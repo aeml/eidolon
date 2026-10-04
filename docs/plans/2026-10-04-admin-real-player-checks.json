@@ -1,4 +1,5 @@
 {
+  "release": "Alpha 1.74.2",
   "status": "LOCAL_CHECKS_PASSED_PUBLIC_DEPLOYMENT_PENDING",
   "request": "Default administrator online/history views to real players, permit inspecting test accounts, and expose daily authenticated logins and recorded session duration without deleting activity.",
   "implementation": {
@@ -13,5 +14,18 @@
     "client": "AdminUI15 tests passed1.164s; affected JavaScript lint passed. Filter resets, daily counts/durations, incomplete-total suppression and stale/disconnected private-data clearing included.",
     "browser": "First layout run could not import UIManagerWindows because generated browser dependencies were absent. After normal prepare:client, System Chrome layout checks passed3/49.7s at1280x720,390x844,844x390, with new population/day controls and daily summary; scrollable/bounded window and existing admin services/reports retained. Synthetic presentation responses, not production or real-device evidence."
   },
-  "publication": "Pending narrow maintenance release from freshly fetched master; unpublished1.75–1.79 roadmap features and schema changes must not be included. Owner worktree untouched. No live acceptance yet."
+  "maintenanceAssembly": {
+    "base": "Freshly fetched origin/master e92ff723a71c106bed699ee58e310ae5ea258d97 (1.74.1 publisher). Admin patch6a91f445 cherry-picked as0b518235. Conflicts resolved preserving only the requested admin feature, excluding future service-diagnostics and hosting content. Later schema23–24/privacy/operations/capacity work excluded; owner worktree untouched.",
+    "native": "Initial narrow-build test referenced a later service message constant in one negative schema case and failed compilation. Replaced with existing admin_status negative-field case. Exact maintenance-source Admin/SessionActivity/ResumeActivity race suites then passed27.255s/1.138s.",
+    "client": "Exact maintenance-source AdminUI plus full VersionPresentation passed368 checks/4.75s; affected lint and diff check passed. Login/package/lock/server/container/deploy/CI/QA/release metadata consistently1.74.2; previous patch entries retained.",
+    "browser": "Exact maintenance-source System Chrome layout checks passed3/56.0s at1280x720,390x844,844x390. Synthetic responses only, no production character mutation.",
+    "scope": "No full campaign/raid/soak repeated for this admin feature; no private production player history fetched for validation. Existing isolated database check reused for the population/query/duration logic. No data backfill or added collection/index."
+  },
+  "sha256": {
+    "src/ui/AdminUI.js": "968fdf4cda5e0cd17adf6e7117897e7abb08cbdde0c248e917a51f2f054e0f6b",
+    "server/internal/database/admin_activity.go": "b95a51289b80e6976b7fa7da0398fd208db30eff0f778bf3950d02aff1e465b1",
+    "server/internal/database/admin_population.go": "acbb151653d4c0db6e8cac982a098ed6774458e6c25af8b7f04ed140f9e325b4",
+    "server/admin_session_activity.go": "4be32eb99a4efd077e32925d5432f07fddb765bef9df8859a2c11695137446de"
+  },
+  "publication": "Narrow1.74.2 assembled with cumulative player notes and administrator guide. Exact push/CI/public identity acceptance still pending. 1.74.1 stays ahead in the deployment queue; no cancellation. No accepted live claim."
 }

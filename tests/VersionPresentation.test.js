@@ -3,7 +3,15 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.74.1';
+const currentVersion = '1.74.2';
+
+test('1.74.2 explains real-player filtering and honest daily session totals', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.74.2"'), previous = html.indexOf('data-version="1.74.1"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Real players', 'Test accounts', 'UTC day', 'unique login accounts',
+        'not active-play', 'legacy durations', 'No records are deleted', 'schema 22']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.74.1 explains the bounded Sell All fix and nonblocking game errors', () => {
     const html = fs.readFileSync('index.html', 'utf8');

@@ -56,6 +56,25 @@ QA-only accounts cannot use it. A role lookup failure hides or disables access.
 activity, with account/action filters. These are structured records, not raw
 server logs or private character dumps.
 
+Alpha1.74.2 defaults both views to **Real players**. **All players** and
+**Test accounts only** remain available. Reserved automation prefixes
+`codex-`, `codexq-`, `codexqa-`, `loadtest-` and `resource-journal-` are matched
+case-insensitively before server pagination; this is a naming convention, not
+general bot detection. History also excludes operations targeting test accounts.
+No accounts or audit records are deleted. Historical digest-only account keys
+cannot be classified from their hash; use All players when inspecting those.
+
+In Activity history, choose a **UTC day** and Refresh history for daily unique
+successful login accounts and recorded closed-connection time. Exact account
+narrows both history and totals; Activity changes only the history list. Clear
+the day to browse all retained history. Login counts exclude resumes and staff
+reads. New disconnect rows show duration; time crossing midnight is apportioned
+to each day. This measures authenticated connection time, not active play/AFK.
+Open connections, sessions without recorded closure and legacy missing durations
+are not estimated. The panel reports missing durations and withholds totals if
+the bounded query cannot produce complete results. Filter changes and loss of
+access clear private results. Existing retention and role checks are unchanged.
+
 **Player reports** (Alpha 1.19) shows the existing in-game support queue.
 Choose **Open**, **Resolved**, or **All reports**, then **Refresh reports**.
 Expand **Inspect report JSON** to see the submitted record, including its ID,

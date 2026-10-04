@@ -420,12 +420,12 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.1`. This narrow hotfix on the accepted
-  1.74/schema22 release raises selling's bounded burst to50 so Sell All can
-  handle a full25-slot bag, and replaces browser error alerts with safe,
-  dismissible in-game notices or the existing login recovery interface.
-  Item protection, ownership, durable vendor effects, accounts and currencies
-  remain unchanged. Later schema23–24/privacy/operations/capacity candidates
+- Current source version: `Alpha 1.74.2`. This narrow administration follow-up
+  defaults online/history views to real players, retaining All/Test selection,
+  and adds UTC-day unique login and recorded closed-session duration totals.
+  It does not estimate legacy/open durations or measure active-play/AFK time.
+  Existing selling/error fixes, accounts, currencies, administrator permissions,
+  retention and schema22 remain unchanged. Later schema23–24/privacy/operations/capacity candidates
   are excluded. Login version and cumulative notes are assembled; exact-source
   CI/public proof remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader
