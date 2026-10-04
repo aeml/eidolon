@@ -16,6 +16,16 @@ test('the actual network message router forwards correlated service replies and 
     expect(handleResult).toHaveBeenCalledTimes(1);
 });
 
+test('an impossible mean cannot appear above its reported maximum', () => {
+    const list = document.createElement('ul');
+    for (const [totalMicros, maxMicros] of [[2001, 1000], [1, 0]]) {
+        renderAdminServiceDiagnostics(list, { health: { operational: {
+            casinoEP: { completed: 2, failed: 0, timedSamples: 2, totalMicros, maxMicros }
+        } } });
+        expect(list.lastElementChild.textContent).toContain('Call timing: Unavailable');
+    }
+});
+
 test('fixed diagnostic rows distinguish missing values, zero counters and unsafe numeric precision', () => {
     const list = document.createElement('ul');
     expect(renderAdminServiceDiagnostics(list, null)).toBe(false);
@@ -39,4 +49,20 @@ test('untrusted release/clock strings and negative counters are never interprete
     expect(list.textContent).not.toContain('private-error'); expect(list.textContent).not.toContain('<img');
     expect(list.querySelector('img, script')).toBeNull();
     expect(list.textContent).toContain('Unknown'); expect(list.textContent).toContain('Unavailable');
+});
+
+test('timing shows measured zero and slow calls but never missing or inconsistent samples', () => {
+    const list = document.createElement('ul');
+    renderAdminServiceDiagnostics(list, { health: { operational: {
+        characterJournal: { completed: 2, failed: 1, timedSamples: 2, totalMicros: 6000, maxMicros: 5000 },
+        characterCommit: { completed: 1, failed: 0, timedSamples: 1, totalMicros: 0, maxMicros: 0 },
+        characterCleanup: { completed: 1, failed: 0, timedSamples: 0, totalMicros: 0, maxMicros: 0 },
+        characterRecovery: { completed: 1, failed: 0, timedSamples: 2, totalMicros: 6000, maxMicros: 5000 },
+        casinoGold: { completed: 1, failed: 0, timedSamples: 1, totalMicros: 5000, maxMicros: 6000 },
+        casinoEP: { completed: 1, failed: 0, timedSamples: 1, totalMicros: Number.MAX_SAFE_INTEGER + 1, maxMicros: 0 }
+    } } });
+    const rows = [...list.children];
+    expect(rows[10].textContent).toContain('Mean call: 3.00 ms · Slowest call: 5.00 ms · Timed samples: 2');
+    expect(rows[11].textContent).toContain('Mean call: 0.00 ms');
+    for (const row of rows.slice(12)) expect(row.textContent).toContain('Call timing: Unavailable');
 });

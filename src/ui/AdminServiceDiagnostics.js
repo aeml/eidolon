@@ -1,5 +1,11 @@
 const count = value => Number.isSafeInteger(value) && value >= 0 ? value.toLocaleString() : 'Unavailable';
 const releaseText = (value, pattern) => typeof value === 'string' && pattern.test(value) ? value : 'Unavailable';
+const timingText = outcome => {
+    const { completed, timedSamples, totalMicros, maxMicros } = outcome || {};
+    if (![completed, timedSamples, totalMicros, maxMicros].every(value => Number.isSafeInteger(value) && value >= 0) ||
+        timedSamples === 0 || timedSamples > completed || maxMicros > totalMicros || totalMicros / timedSamples > maxMicros) return 'Call timing: Unavailable';
+    return `Mean call: ${(totalMicros / timedSamples / 1000).toFixed(2)} ms · Slowest call: ${(maxMicros / 1000).toFixed(2)} ms · Timed samples: ${count(timedSamples)}`;
+};
 
 // Fixed rows only. Never render unknown provider/environment/player fields or
 // infer zero from a missing measurement. The view is one explicit observation,
@@ -33,7 +39,7 @@ export function renderAdminServiceDiagnostics(list, service) {
         ['casinoGold', 'Casino Gold transfer calls'], ['casinoEP', 'Casino EP transfer calls']
     ]) {
         const outcome = health.operational?.[key];
-        row(label, `Completed calls: ${count(outcome?.completed)} · Returned errors: ${count(outcome?.failed)}`);
+        row(label, `Completed calls: ${count(outcome?.completed)} · Returned errors: ${count(outcome?.failed)} · ${timingText(outcome)}`);
     }
     return true;
 }

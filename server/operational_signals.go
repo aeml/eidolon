@@ -2,6 +2,7 @@ package main
 
 import (
 	"sync"
+	"time"
 
 	"eidolon-server/internal/operations"
 )
@@ -25,7 +26,7 @@ var operationalResults = struct {
 // A tiny fixed-size lock protects a coherent snapshot. No IO, player identities,
 // dynamic labels or callbacks run while held; instrumentation cannot alter an
 // operation's saved outcome or turn a lost acknowledgement into compensation.
-func recordOperationalResult(boundary operationalBoundary, err error) {
+func recordOperationalResult(boundary operationalBoundary, err error, elapsed time.Duration) {
 	operationalResults.Lock()
 	defer operationalResults.Unlock()
 	var counts *operations.OutcomeCounts
@@ -48,6 +49,18 @@ func recordOperationalResult(boundary operationalBoundary, err error) {
 	counts.Completed++
 	if err != nil {
 		counts.Failed++
+	}
+	if elapsed >= 0 {
+		micros := uint64(elapsed.Microseconds())
+		counts.TimedSamples++
+		counts.MaxMicros = max(counts.MaxMicros, micros)
+		// Saturate rather than wrapping a process-lifetime sum. At saturation
+		// consumers must not present a derived mean as an exact measurement.
+		if ^uint64(0)-counts.TotalMicros < micros {
+			counts.TotalMicros = ^uint64(0)
+		} else {
+			counts.TotalMicros += micros
+		}
 	}
 }
 

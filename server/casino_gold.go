@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"strings"
+	"time"
 
 	"eidolon-server/internal/database"
 )
@@ -21,7 +22,8 @@ func applyCasinoTransferLocked(tableID string, op database.BlackjackTransfer) er
 }
 
 func applyCasinoGoldTransferLocked(op database.BlackjackTransfer) (resultErr error) {
-	defer func() { recordOperationalResult(boundaryCasinoGold, resultErr) }()
+	started := time.Now()
+	defer func() { recordOperationalResult(boundaryCasinoGold, resultErr, time.Since(started)) }()
 	if err := op.Validate(); err != nil {
 		return err
 	}
@@ -70,7 +72,8 @@ func applyCasinoGoldTransferLocked(op database.BlackjackTransfer) (resultErr err
 }
 
 func applyCasinoEPTransferLocked(op database.BlackjackTransfer) (resultErr error) {
-	defer func() { recordOperationalResult(boundaryCasinoEP, resultErr) }()
+	started := time.Now()
+	defer func() { recordOperationalResult(boundaryCasinoEP, resultErr, time.Since(started)) }()
 	if err := op.Validate(); err != nil {
 		return err
 	}
