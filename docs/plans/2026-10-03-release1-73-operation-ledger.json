@@ -42,7 +42,7 @@
       "invariant": "All six network commands require current item/material quotes and complete prior-save reconciliation; full post-image saves preserve item and consumed materials together. Stale retry cannot silently purchase another rank or change another gem.",
       "source": ["server/forge_handlers.go"],
       "evidence": "2026-10-03-release1-73-forge-checks.json",
-      "status": "prepared economy writer; presentation-only stat-order fix separately pushed as1.70.2, not yet accepted live"
+      "status": "prepared economy writer; presentation-only stat-order fix is already included in accepted public1.71.0"
     },
     {
       "name": "quest acceptance, progress and turn-in",
@@ -78,8 +78,8 @@
   "existingData": "No inferred historical duplication cleanup, item deletion, reward reissue, wallet conversion, stat normalization or account wipe. Ambiguous identities/conflicting receipts fail closed and preserve evidence; any identified real remediation needs exact scope and recoverable plan.",
   "remaining": [
     "This ledger maps the ten required domains to authoritative code/checks and stated limits. It is not a whole-milestone or full crash-safety certification.",
-    "Ordered1.71 recovery and1.72 jump decisions remain open.1.73 requires final packaging/compatibility review, version/cumulative patch notes, exact-source CI, deployment and independent public acceptance.",
+    "1.71 recovery is accepted via exact4bc0b95c and CI37182320668; actual inbox check remains operator-owned.1.71.1 narrow pool guard is pushed with CI37190290208 pending.1.72 jump decision remains open.1.73 requires final packaging/compatibility review, version/cumulative patch notes, exact-source CI, deployment and independent public acceptance.",
     "No completed connected crystal-vigil/Dark King, replica failover or all-history financial remediation claim. Crystal-completion/guild leaderboard local-write failures remain explicitly reported; do not infer a durable financial entitlement from transient completion visuals.",
-    "The1.70.2 corrected Forge presentation hotfix is separately in CI; live acceptance still belongs to the prior1.70.1 receipt until verified. Full1.11–1.99 roadmap remains active."
+    "The1.70.2 Forge presentation and1.71 recovery acceptance are retained with their original scopes; latest independent public acceptance is1.71.0. No whole1.73 acceptance or full-roadmap completion is inferred."
   ]
 }
