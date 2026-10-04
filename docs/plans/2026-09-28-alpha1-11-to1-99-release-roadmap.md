@@ -588,6 +588,18 @@ seat/revision and entitlement regressions also pass. The owned fixture and
 volumes were removed. This bounds loading/presentation growth, not total lifetime
 database storage, full-history startup work or arbitrary outage queue size. Other
 receipt families and release gates remain open; no1.76 deployment is claimed.
+The [journal concurrency follow-up](2026-10-04-release1-76-journal-concurrency-checks.json)
+replaces the single filesystem mutex with 64 fixed account-hash lock groups.
+An account in another group can write, sync, read and acknowledge while one
+account's filesystem operation is blocked. Discovery selects the matching lock
+from each canonical filename; per-account ordering, full recovery snapshots and
+stale-acknowledgement protection remain intact. Race checks cover 50 competing
+old acknowledgements/new writes and 100 saves across 20 accounts with concurrent
+discovery, exact reopen and cleanup. Existing save/replay/coalescing and Gold/EP
+checkpoint checks pass. No database, journal format or schema change was needed.
+Hash collisions still serialize accounts; discovery remains a full scan, and
+this is not a disk-throughput, cross-process ownership or capacity certification.
+The change is locally committed, not deployed or accepted as the full milestone.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
