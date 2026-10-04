@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71.1 narrow mystery-equipment guard",
+  "status": "prepared; CI and independent public acceptance pending",
+  "base": "Accepted Alpha1.71.0 commit4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e plus its committed acceptance metadata f6603350. No future schema22/24 code or1.72 dependencies are included.",
+  "changes": "Whitelist real equipment slots and legacy ring/trinket aliases before selecting the mystery loot pool. Refuse saved levels outside1..100 without normalizing or rewriting them. Hold the player mutex while debiting and inserting. Forged material/relic requests can no longer buy Forge shards/hearts.",
+  "checks": [
+    "Go1.24.5: go test -race ./internal/game -run '^Test(MysteryPurchaseSlot|LootEconomyAuditGambleAndSaleReceipts)' -count=1 -timeout=45s: passed8.744s.16 legitimate slots/aliases retain level100 equipment and35 Gold/level price;6 invalid pools leave inventory and Gold unchanged;4 invalid levels including max int leave all saved state unchanged; existing mystery purchase/sale receipt audit passes.",
+    "Jest VersionPresentation.test.js:349 checks passed7.686s. Login/package/release/backend/container/workflow/operator/isolated-QA version defaults agree on1.71.1; explicit cumulative patch notes precede retained1.71.0 recovery notes.",
+    "gofmt, git diff --check and bash -n deploy/isolated-QA scripts passed. Compatible accepted-release node_modules reused, not a fresh installation or full client/gameplay rerun."
+  ],
+  "mailConfiguration": "Read-only running-container check reports the four owner-specified Postmark/admin environment fields nonempty; values were not displayed. Live1.71.0 frontend and backend independently match4bc0b95c; database ready. No actual provider message sent or inbox delivery claimed. Private recovery links never go to ADMIN_NOTIFICATION_EMAILS.",
+  "unchanged": "Schema17, existing items/balances, equipment rarity/power, legitimate shop prices, account recovery, open-alpha access and all later release gates. No production grants, material removal, rollback, payment integration or service configuration change.",
+  "limits": "This guard is not the broader prepared1.73 durable-purchase handler or wire-level replay deduplication. No claimed campaign, capacity, actual inbox or schema-upgrade proof.",
+  "next": "Fetch/integrate master without overwriting concurrent website changes; push normal CI deployment; Luna monitors actual run and reports completion/failure. Exact frontend/backend identity and public notes must be checked before live acceptance."
+}

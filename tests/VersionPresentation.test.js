@@ -3,7 +3,17 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.71.0';
+const currentVersion = '1.71.1';
+
+test('1.71.1 explains the narrow equipment-shop guard and retains recovery history', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.71.1"'), previous = html.indexOf('data-version="1.71.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['equipment only', 'Forge shards or hearts', '35 Gold per level',
+        'Existing items and balances', 'verified-email recovery', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.71.0 documents explicit verified-email recovery without ownership shortcuts', () => {
     const html = fs.readFileSync('index.html', 'utf8');

@@ -477,11 +477,21 @@ func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex in
 }
 
 func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
+	// Other loot pools include rare Forge materials, not mystery equipment.
+	if !isEquipmentSlot(slot) && slot != "ring" && slot != "trinket" {
+		return nil, false
+	}
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
+		return nil, false
+	}
+
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	if player.Level < 1 || player.Level > MaxPlayerLevel {
 		return nil, false
 	}
 
