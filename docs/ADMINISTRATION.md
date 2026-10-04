@@ -42,12 +42,19 @@ Use the confirmed report-review controls for resolution; see the
 **Service diagnostics** is an explicitly refreshed, read-only observation of
 the connected game process: release and sample time, readiness, goroutines/heap,
 broadcast queue/drop counts and aggregate character-save/Gold/EP call outcomes.
-Each of the six existing operation groups also shows completed-call mean,
+Each of the six existing operation groups also shows a current in-flight call
+count and completed-call mean,
 slowest elapsed time and timed sample count. Failed calls and retries are
 included. These are process-lifetime call measurements, not player latency,
 percentiles or timing of unfinished/stalled work. Journal, database commit,
 cleanup and complete recovery-pass boundaries are measured separately; wallet
 call time includes its nested save/recovery work and must not be added to it.
+In-flight gauges count calls already executing at those six boundaries, including
+a blocked commit; they do not measure account-lock waiters, queue depth, durable
+pending entitlements or how long unfinished work has been waiting. Nested wallet
+and save calls overlap and must not be summed as unique requests. Start/finish
+bookkeeping and completion/timing update share the fixed aggregate lock; a finish
+is accepted once, without changing financial return values or retry behavior.
 It uses the authenticated socket rather than a browser cross-origin health fetch.
 Every request has the existing role/session, size/rate and audit gates, including
 the final role/connection recheck after query and audit IO. Lost access or a
@@ -59,6 +66,8 @@ capacity certificate. Cleanup errors remain distinct from confirmed database
 commits. Missing or unsafe-precision measurements display **Unavailable**, not
 zero. An older server or zero timed samples means timing is **Unavailable**;
 positive samples with zero microseconds are actual sub-microsecond measurements.
+An absent/partial in-flight availability marker means **Unavailable**, while a
+present measured zero means idle at the observation time—not no durable backlog.
 The cumulative microsecond sum saturates rather than wraps; unsafe-precision
 totals are not rendered as an exact derived mean. Unknown fields, mail recipients/tokens, raw logs and account data are not
 rendered. The independent monitor's delivery status is not known to this game

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.78 active save/wallet call gauges",
+  "status": "prepared future source; not assembled or deployed",
+  "sourceCommit": "26ccc8cbb0bd97972db3cb4409520b4ce1c76082",
+  "changes": "Track active calls at the six existing journal/commit/cleanup/recovery/Gold/EP boundaries. A start-owned once-only finish atomically decreases in-flight count and records completion/error/timing under the existing fixed aggregate lock. No IO, error text, account identity, amounts or arbitrary labels are retained by instrumentation. Existing operation returns, save order, compensation and retry semantics remain.",
+  "compatibility": "Fixed readiness projection validates optional inFlight/inFlightKnown fields. Legacy or partial fields mean unavailable, not idle; negative, malformed, overflowing or false-known-positive input is rejected. Active count can exceed completed count. The same16 fixed UI rows show the gauge only for explicit known safe-integer measurements; unknown/private fields are ignored.",
+  "checks": [
+    "Go1.27.1: go test -race . ./internal/operations -run '^Test(OperationalSignals|ReadinessProbeOperational|AdminService|CharacterPersistence)' -count=1 -timeout=45s: root1.989s/operations1.129s passed. New tests cover20 concurrent duplicate finishes without double count/underflow and64 independent concurrent completions with coherent active+completed totals.",
+    "Actual owned filesystem journal plus a barrier-controlled synthetic committer demonstrates inFlight=1/completed=0 during the blocked commit through the actual health handler. On release, active returns to0, commit/cleanup count once and saved Gold1234/EP83 remain unchanged. This is not a real Mongo or production blocked-save test.",
+    "Eleven actual local HTTP probe cases cover active, idle, explicitly unavailable, legacy/partial, malformed/negative/overflow and contradictory gauges; unknown private labels are excluded. Existing outcome/timing/readiness and filesystem cleanup/recovery tests remain passing.",
+    "Node24.18.0/Jest: AdminServiceDiagnostics, QAServiceDiagnostics and AdminUI:34checks/3suites passed5.413s. Eight new UI cases distinguish measured idle/active from unavailable or unsafe values, keep16rows and reject markup. Compatible prepared node_modules reused, not a fresh install or native-browser/GPU pass.",
+    "Instrumentation-only benchmark: GOMAXPROCS=2 Go1.27.1, go test . -run '^$' -bench '^BenchmarkOperationalSignalsInFlight$' -benchtime=100ms -count=1:932215iterations,189.6ns/op,64B/op,2allocations/op; package0.228s. Host-specific short measurement, not a workload/capacity/SLO promise.",
+    "gofmt, affected JS ESLint and git diff --check passed. Intermediate root tests exposed an old whole-struct expectation missing the new explicit availability bit; the expectation was corrected while retaining exact completed/error/timing values. Both earlier failed root runs and their passing operations runs are superseded by the final run above."
+  ],
+  "sourceSha256": {
+    "server/operational_signals.go": "b4f230c2e6fb370356843228595e9c70681b2da6513cc036a1224f3a2a15e703",
+    "server/internal/operations/signals.go": "effbd1c9558825633d7da9e6cac9f684dcac1fb7c75762f60acac212e8e7d568",
+    "src/ui/AdminServiceDiagnostics.js": "a78f2bfbb98e7779fb9938b20eb666e745fdbdc65edca8a8bf5326b63de47648"
+  },
+  "remaining": "These gauges do not measure lock waiters, queue age/depth, durable backlog, storage growth, unfinished-call elapsed time, unique financial effects or currency totals. Nested groups overlap. Growth/pressure coverage, alert owner/budget/retention decisions, actual provider delivery/service installation and representative capacity remain. Broad preparedschema24 tree still requires isolated ordered assembly with current predecessors; never deploy it wholesale or infer1.78 publication. Public remains independently accepted1.71.1/schema17. No live data, provider email, service, role or host configuration changed."
+}

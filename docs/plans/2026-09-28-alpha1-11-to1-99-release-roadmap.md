@@ -1201,8 +1201,16 @@ including returned failures/retries, without player/currency/error labels.
 Legacy/missing timing is unavailable, not measured zero. Coherent concurrent
 snapshots, an actual delayed save, filesystem recovery and12 local HTTP timing
 cases pass;26 focused client checks confirm readonly mean/slowest presentation.
-This is not percentiles, in-flight/player latency, a service installation or
-actual provider delivery. Pressure/growth coverage, service installation,
+The [active-call follow-up](2026-10-04-release1-78-active-call-checks.json)
+now adds current executing-call gauges to those same six groups. A blocked
+owned-journal commit remains visible before its completion count changes;
+once-only finish and concurrent snapshots preserve accounting and saved values.
+Legacy/missing gauges are unavailable, not measured idle. Focused race checks,
+11local HTTP compatibility cases and34client checks pass; a short benchmark
+measures instrumentation only, not multiplayer capacity. These are not queue
+depth/age, unfinished-call elapsed time, unique requests or durable backlog.
+Percentiles/player latency, service installation and actual provider delivery
+remain unproved. Pressure/growth coverage, service installation,
 actual inbox verification, alert ownership,
 retention and operating-budget decisions remain required. Public1.71 was
 separately accepted at4bc0b95c/CI37182320668; this
