@@ -723,6 +723,33 @@
     },
     "next": "Use only the smallest40-client/two-block actual cohort to classify added shared-table participants before considering another100-client run. Same server policies, normal Gold games,120s/five-second admission and all-client sustained-state/paid-result/save gates. No public1.79 acceptance implied."
   },
+  "combined40DiagnosticActualRun": {
+    "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",
+    "startedAtUTC": "2026-10-04T22:40:00Z",
+    "completedObservationUTC": "2026-10-04T22:43:36Z",
+    "sourceCommit": "839f33d1",
+    "ownedContainer": "3e42b07fe070fba53d93de6d4e51fe0d0947892f41e360d324db75980f1659c9",
+    "taskLabel": "combined40-diagnostic-179-20261004",
+    "parentSession": 94301,
+    "namespacePIDs": { "root.test": 79, "server": 94, "loadtest": 105 },
+    "artifacts": "Unchanged normal server c1612a2e99d25859427eb102752fddbb829637eb6b57a6475b4ed9cab616b8bd at/tmp/eidolon-179-weekly-labeled-1DgZal/server. Driver18db0d10b8d78ee4aef3c510a3d2196a7961602ee33599c12072878e05083d53 and race root2409392c5b14367f5523c058a2ac3129a4ef724fc86c97ceee88d620eb11117d at/tmp/eidolon-179-cohort-diagnostics-rlYYQI, matching recorded source above. No new server build, policies or gameplay changes.",
+    "result": "TestLoadCombinedActualConcurrentWorkloadsAndSaves passed160.06s; driver/shutdown/independent saves interval125.553s. All40 ordinary logins/join acknowledgements, every assigned casino participant paid result, both parties formed/all-member impact/actual aggregate healing and every-account fresh save passed. Exact class/equipment/bag/43EP preserved, nonnegative Gold and every party member earned progression; casino wallet checkpoints present, town/social Gold unchanged. Still not final casino settlement/restart, causal shared-kill attribution, per-group healer balance or100-player capacity proof.",
+    "metrics": {
+      "connected": 40, "joined": 40, "authenticated": 40, "admissionFailures": 0,
+      "stateFrames": 103565, "minFrames": 2538, "minFreshOwnUpdates": 2538,
+      "minActiveMilliseconds": 119915, "maxStateGapMilliseconds": 246, "receivedPayloadBytes": 810899955,
+      "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 157, "maxJoinMilliseconds": 88,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "slots": { "clients": 4, "acceptedWagers": 112, "paidResults": 112, "minimumPaidResults": 23, "bonuses": 5, "failed": 0 },
+      "blackjack": { "clients": 8, "acceptedWagers": 24, "paidResults": 16, "minimumPaidResults": 2, "observedActions": 15, "failed": 0 },
+      "house": { "clients": 8, "acceptedWagers": 24, "paidResults": 16, "minimumPaidResults": 2, "failed": 0 },
+      "poker": { "clients": 4, "acceptedWagers": 8, "paidResults": 4, "minimumPaidResults": 1, "observedActions": 19, "failed": 0 },
+      "parties": { "groups": 2, "formed": 2, "members": 8, "minOwnImpacts": 10, "damageEvents": 141, "healEvents": 5, "acceptedCasts": 160, "deniedCasts": 0, "xpProgressUpdates": 100, "observedDeaths": 47, "failed": 0 },
+      "memoryPeakBytes": 686354432, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+    },
+    "diagnostics": "All busy/stale/seat/rate/rejected/timeout/other casino counters0 for every family; no startup failure aggregates. No assumption that the original100-client failure is resolved: normal mixed forty-client result only, next exact target still needs evidence.",
+    "cleanup": "Terminal PASS and absent owned root/server/driver verified; exact owner label/network/OOM/peak checked. Stopped and removed only the owned network-none Mongo fixture and synthetic database; filtered listing empty. Binaries retained. Production player data/services and owner worktree untouched."
+  },
   "raidEntryDeliveryCushion": {
     "finding": "Actual normal server now definitively identifies raid_enter as the rejected action. Matching its refill rate exactly at the client is not sufficient because dispatch/admission epochs differ; actual transport delay for the failed request was not recorded.",
     "reproduction": "New TestRaidEntryBudgetLeavesDeliveryTimingCushion failed0.010s on the original client budget. Declared model mirrors normal two-token/one-per30s server refill, with first request500ms dispatch delay and later100ms delay, preserving socket order. Exact client boundary admits the third request before the model's server budget refills. Model is a reproduced defect, not measurement of the actual failed request's latency.",

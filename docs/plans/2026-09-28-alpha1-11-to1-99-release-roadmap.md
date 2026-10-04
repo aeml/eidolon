@@ -80,8 +80,14 @@ Targeted follow-up reproduced redundant registration by prepared-account bots:
 they now log in directly and refuse missing characters, leaving production
 credential limits unchanged. Whole driver race passed18.290s. Bounded fixed
 admission/casino failure categories will distinguish concurrency/scene failures
-without exposing account/session text. Next actual reproduction is only40 clients,
-not another blind100-client run or replay of the completed20-client baseline.
+without exposing account/session text. The next40-client actual reproduction
+passed160.06s: all40 admitted, every casino participant paid, both parties formed
+with own impacts/aggregate healing, every-account preserved-gear/bag/EP fresh
+saves and sustained fresh-state gates. All failure categories and OOM were0;
+owned fixture removed. This verifies the prepared login path and added shared
+participants at40, not resolution of the original100-client target failure.
+Next target run may reuse these exact checked artifacts without another baseline
+or campaign replay; no production1.79 capacity or ordered publication is implied.
 
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with
