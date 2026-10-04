@@ -26,6 +26,7 @@
     "command": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/operations ./cmd/monitor -count=1 -timeout=15s -v",
     "result": "passed: operations1.210s and command4.044s; six probe/detector groups and three command groups",
     "newActualChecks": "Six real loopback metric responses cover valid counters, missing/partial aggregates, negative values, occupancy above capacity and a private string replacing a numeric field. Unknown queue/account fields never reach sample JSON. Real headers-flushed stalled body hits the50ms request timeout; a10ms caller-context deadline is cancelled and even a one-failure detector emits no outage. Existing actual command outage/recovery loop remains passing.",
+    "optionalCounterFollowUp": "22ccf61cd5e0d37840abe52ad4655cacf6ae8770 also requires every nested queue counter before retaining metrics: missing/null counters remain omitted rather than falsely measured zero. Eight real loopback metric cases passed in1.064s under the focused race command 'go test -race ./internal/operations -run ^TestReadinessProbeActualAggregateMetrics$ -count=1 -timeout=10s -v'. No redundant full monitor/campaign matrix for this parser correction.",
     "limits": "Aggregate diagnostic samples are not pressure alerts, dashboards, a time-series store or server capacity proof. No thresholds or retention policy chosen, no operational email, service install, account/currency mutation or current-release code change. Storage/currency signals and operator delivery/ownership decisions still required."
   },
   "remaining": [
