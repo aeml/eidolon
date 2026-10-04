@@ -184,6 +184,12 @@ manually, **stop on any error**; do not run `up -d` after a rejected preflight.
 The preflight starts Mongo only if necessary, does not recreate an existing
 Mongo container, and leaves the API running. It reads the schema marker without
 opening logs, creating a save journal, applying migrations, or admitting players.
+Before an upgrade backup may stop the old API, the script requires the complete
+single-line schema receipt from the requested build commit, with valid bounded
+schema numbers and a target that supports the current database. Missing, noisy,
+duplicate, mismatched-build or contradictory receipts abort without requesting
+backup or replacing the API. This is not a global writer lock or a substitute
+for the compatible binary's independent startup fence.
 Database failure also aborts deployment. Normal startup repeats the compatibility
 check. Starting with 1.0.57, the script holds `logs/deploy.lock` to refuse another
 deployment through this script while it is active. Manual/older deployment tools

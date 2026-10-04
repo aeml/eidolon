@@ -89,12 +89,25 @@ docker compose up -d --no-recreate --wait mongo
 echo "Checking target server compatibility before replacing the live API..."
 schema_preflight="$(docker compose run --rm --no-deps -T api --check-schema --mongo-uri="${MONGO_URI}")"
 printf '%s\n' "${schema_preflight}"
-if [[ ! "${schema_preflight}" =~ database=([0-9]+)\ supported=([0-9]+) ]]; then
+# Only the target binary's complete single-line receipt may authorize stopping
+# the old writer. Reject a stale/wrong image, surrounding noise or unsafe numeric
+# values before backup or replacement; startup's fence remains independently required.
+schema_contract='^Schema preflight passed: database=(0|[1-9][0-9]{0,5}) supported=([1-9][0-9]{0,5}) commit=([A-Za-z0-9._-]{7,80})$'
+if [[ ! "${schema_preflight}" =~ ${schema_contract} ]]; then
   echo "Target preflight did not report a valid schema contract." >&2
   exit 1
 fi
 database_schema="${BASH_REMATCH[1]}"
 target_schema="${BASH_REMATCH[2]}"
+preflight_commit="${BASH_REMATCH[3]}"
+if [ "${preflight_commit}" != "${EIDOLON_BUILD_COMMIT}" ]; then
+  echo "Target preflight release identity does not match the requested build; leaving the previous API unchanged." >&2
+  exit 1
+fi
+if (( database_schema > target_schema )); then
+  echo "Target preflight cannot support the current database schema; leaving the previous API unchanged." >&2
+  exit 1
+fi
 if (( database_schema < target_schema )); then
   echo "Save-format upgrade ${database_schema} -> ${target_schema}: preserving a consistent recovery point..."
   bash ./deploy/backup_before_upgrade.sh

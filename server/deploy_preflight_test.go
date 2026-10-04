@@ -15,7 +15,7 @@ func TestDeploySchemaPreflightPrecedesLiveReplacement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo", "missing-previous-image"} {
+	for _, scenario := range []string{"compatible", "upgrade", "backup-failed", "future-schema", "database-unavailable", "missing-contract", "foreign-mongo", "missing-previous-image", "wrong-build", "noisy-contract", "duplicate-contract", "unsupported-success", "zero-target", "leading-zero", "oversized-schema", "fresh-database"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			for _, dir := range []string{"deploy", "bin"} {
@@ -44,6 +44,16 @@ case "$*" in
   'compose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017')
     if [ "$PREFLIGHT_SCENARIO" = future-schema ]; then exit 1; fi
     if [ "$PREFLIGHT_SCENARIO" = missing-contract ]; then exit 0; fi
+    case "$PREFLIGHT_SCENARIO" in
+      wrong-build) echo 'Schema preflight passed: database=7 supported=8 commit=wrong-commit'; exit 0 ;;
+      noisy-contract) echo 'unexpected output Schema preflight passed: database=7 supported=8 commit=fixture-commit'; exit 0 ;;
+      duplicate-contract) printf '%s\n' 'Schema preflight passed: database=7 supported=8 commit=fixture-commit' 'Schema preflight passed: database=7 supported=8 commit=fixture-commit'; exit 0 ;;
+      unsupported-success) echo 'Schema preflight passed: database=9 supported=8 commit=fixture-commit'; exit 0 ;;
+      zero-target) echo 'Schema preflight passed: database=0 supported=0 commit=fixture-commit'; exit 0 ;;
+      leading-zero) echo 'Schema preflight passed: database=007 supported=008 commit=fixture-commit'; exit 0 ;;
+      oversized-schema) echo 'Schema preflight passed: database=999999999999999999999999999 supported=8 commit=fixture-commit'; exit 0 ;;
+      fresh-database) echo 'Schema preflight passed: database=0 supported=8 commit=fixture-commit'; exit 0 ;;
+    esac
     if [ "$PREFLIGHT_SCENARIO" = upgrade ] || [ "$PREFLIGHT_SCENARIO" = backup-failed ]; then
       echo 'Schema preflight passed: database=7 supported=8 commit=fixture-commit'
     else
@@ -76,12 +86,15 @@ esac
 			if err != nil {
 				t.Fatal(err)
 			}
-			if scenario != "compatible" && scenario != "upgrade" {
+			if scenario != "compatible" && scenario != "upgrade" && scenario != "fresh-database" {
 				if runErr == nil || string(state) != "healthy-previous-release" || strings.Contains(string(commands), "compose up -d\n") {
 					t.Fatalf("failed preflight replaced live API: %v\n%s\n%s", runErr, commands, output)
 				}
 				if scenario == "missing-previous-image" && strings.Contains(string(commands), "compose build api") {
 					t.Fatal("missing previous image must stop deployment before replacing its tag")
+				}
+				if scenario != "backup-failed" && strings.Contains(string(commands), "backup\n") {
+					t.Fatal("invalid preflight must leave the old writer running, without requesting an upgrade backup")
 				}
 				return
 			}
@@ -89,7 +102,7 @@ esac
 				t.Fatalf("compatible deployment failed: %v\n%s", runErr, output)
 			}
 			expected := "pin-previous-image\ncompose build api\ncompose up -d --no-recreate --wait mongo\ncompose run --rm --no-deps -T api --check-schema --mongo-uri=mongodb://mongo:27017\n"
-			if scenario == "upgrade" {
+			if scenario == "upgrade" || scenario == "fresh-database" {
 				expected += "backup\n"
 			} else if strings.Contains(string(commands), "backup\n") {
 				t.Fatal("same-format deployment unnecessarily stopped for an upgrade backup")
