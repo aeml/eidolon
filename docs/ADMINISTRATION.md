@@ -12,6 +12,39 @@ An allowlisted authenticated player can type `/relevel` in chat. The server cons
 
 QA authorization is independent. `EIDOLON_QA_USERNAMES` does not grant administrator access, and the administrator role does not grant QA commands.
 
+### Prepared 1.74 permission review
+
+These are existing server permission boundaries, not new powers. Ordinary,
+VIP and QA-only accounts have no access to the privileged actions below. Every
+privileged request uses the authenticated actor and a durable administrator-role
+lookup; a client flag, supplied actor or bootstrap-name match is insufficient.
+
+| Action | Permitted result or effect | Boundary |
+| --- | --- | --- |
+| Access / online players | Current operator account, canonical item catalog; at most 50 account/name/class/level entries per page | No credentials, recovery links, raw saves or arbitrary database query |
+| Activity history | At most 50 structured audit entries with bounded account/action filters | No raw logs, chat transcripts or submitted report bodies |
+| Player reports | At most 10 explicitly submitted cases with staff review metadata | Private text-rendered JSON; own-report lookup is separately author-bound |
+| Report review | Explicit resolve/reopen decision at the displayed revision | No automatic sanction, appeal reversal or character change |
+| Moderation target check | Exact account identity, restriction notices and current revision | No passwords, private receipts or complete character snapshots |
+| Moderation decision | Explicit mute, suspend, name-change requirement or exact withdrawal | Confirmed account/case/revision and private receipt; report status is independent |
+| Gold / item creation | Bounded canonical server-built grant with exact target and reason | No arbitrary stats, EP grant, negative Gold or role/credential change |
+| Teleport | Valid town or available-player destination | No arbitrary coordinates or bypass of private-instance/VIP/landing guards |
+
+Read results recheck access and connection ownership after query and audit IO.
+New mutation intents recheck authority after intervening recovery/audit work;
+already-approved durable intents still finish safely after role revocation.
+Remote role lookup and delivery/storage commit are not one atomic transaction.
+Timeouts are not proof of either success or failure: use the retained exact
+operation, not a replacement grant. Dual database/journal outage retains only
+bounded RAM evidence until storage recovers; forced termination can lose it.
+
+The prepared 1.74 history selector adds **Moderation decisions** and
+**Moderation target checks**. Selecting either is only a read filter; it does
+not apply a sanction or reveal private moderation receipts. Until 1.74 is
+deployed, these entries are already available under **All activity**.
+No new retention, account deletion/export, staff role or ownership policy is
+approved here; those decisions remain in their later roadmap stages.
+
 ## In-game panel (available since Alpha 1.9.17)
 
 Open the game menu and select **Administration**. The launcher appears only after

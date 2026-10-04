@@ -32,6 +32,8 @@ export class AdminUI {
                     <label>Activity<select data-action><option value="">All activity</option>
                         <option value="admin_status">Access checks</option><option value="admin_players">Player list reads</option>
                         <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="admin_report_review">Report review requests</option><option value="login">Login</option>
+                        <option value="admin_chat_moderation">Moderation decisions</option>
+                        <option value="admin_chat_moderation_target">Moderation target checks</option>
                         <option value="resume">Resume</option><option value="disconnect">Disconnect</option>
                         <option value="admin_grant_gold">Gold grants</option><option value="admin_grant_item">Item creation</option>
                         <option value="admin_teleport">Teleports</option></select></label>

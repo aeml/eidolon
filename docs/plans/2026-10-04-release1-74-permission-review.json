@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.74 Administration safety and discoverability",
+  "status": "isolated successor preparation; ordered1.72/1.73 acceptance and own release gates remain",
+  "base": "1c7c8291aa7bf7f703d45fdb41a67630c2fd9e6b schema22 successor retains recovery, narrow authority backports, valuable-operation coordination and1.71.1 pool guard. This branch does not import schema23/24, privacy decisions or1.78 service diagnostics.",
+  "review": {
+    "contract": "docs/ADMINISTRATION.md prepared1.74 permission matrix maps all eight privileged read/effect groups to real handlers and private result schemas. QA, VIP and bootstrap identities are not durable administrator authority. No new role, password reset, EP grant or arbitrary item/coordinate API.",
+    "reads": "admin_console_handlers.go closed decoders, current connection plus durable role, paginated minimal DTOs, separate audited query and post-query/post-audit recheck. admin_chat_moderation_target.go confirms exact target/revision and returns only bounded public notices, never full saves/credentials/private receipts.",
+    "effects": "admin_mutation_handlers.go owns ordered discovered trade/account locks and exact operation identity, confirms durable grant/teleport and audit before final success. admin_report_review.go and admin_chat_moderation.go audit/recheck before the case/account update; outcomes are separate from sanction/case closure. Previously approved durable grants recover independently of later role revocation.",
+    "UI": "AdminUI handles only matching live request/type IDs, resets private lists on loss of access/disconnect, and text-renders untrusted names/report JSON/audit content. AdminOperations retains exact request for same-account in-memory retry, clears it on changed actor and never automatically sends a new grant. Server authorization remains the boundary, not UI hiding.",
+    "outages": "Existing append/journal replay and transport retirement are retained. Simultaneous database and journal failure falls back to RAM and is not crash-durable. Role lookup and delivery/storage commit are not one distributed atomic transaction. No invented retention or financial remediation."
+  },
+  "newGapFixed": "Activity history's UI selector omitted two already-supported audited actions: moderation decisions and moderation target checks. Added their read filters; no new endpoint, moderation action or private data. Existing entries remain visible under All activity on current live release.",
+  "checks": {
+    "command": "Node24.18.0 Jest AdminUI, AdminOperations, AdminReportReview and AdminChatModeration --runInBand --silent",
+    "result": "46 checks across4 suites passed2.952s. New test selects both filters, discards previous query cursor, sends only bounded admin_history reads and confirms no moderation request. Existing explicit-confirmation, exact-retry, stale-result/role/disconnect and text-rendering checks retained.",
+    "hygiene": "git diff --check passes. Reused compatible accepted1.71 node_modules; initial link mistakenly targeted future tree without installed modules, failed before tests, corrected to accepted release modules. No fresh-install or fresh connected-server proof.",
+    "retainedBackendEvidence": "2026-10-04-release1-72-admin-authority-checks.json records narrow guard/audit backport regression scopes;1.73 isolated assembly records integration checks. Historical real two-account/socket/restart/rendered receipts retain their original scope. New readonly UI filter does not justify repeating unmodified backend/raid/campaign tests; directly invalidated checks and exact release CI still apply."
+  },
+  "sourceSHA256": {
+    "src/ui/AdminUI.js": "b915a9a84aab756fffbf37fc17fbd773901cc34979d71ca07eac920bf3ffef8b",
+    "tests/AdminUI.test.js": "6c96479549e7d732ebd66fe80f6fb79f54d40913caffa1c8c7717320d78d97d7",
+    "server/admin_console_handlers.go": "5595a8127b124a32f4970b6eb092ec0906f4f45993f90d9042700e3a32ce3729",
+    "server/admin_mutation_handlers.go": "cbaac47838ca538dd608214a85352ee20dafc6349b32724b21fbae2cf5e94857",
+    "server/admin_report_review.go": "bfb9a2e74db887f1fe1791d26fa6680e6bb54218b2d68f8dbaccd7f8499635d7",
+    "server/admin_chat_moderation.go": "1b992fc30b35a56205f7b483c9e75450bf267d5272d226310b28938c5238613a",
+    "server/admin_chat_moderation_target.go": "f736fed579f602baf7f10ccf4d873c56d896b8d0662988e1d7746de4b3342c99"
+  },
+  "remaining": "No1.74 version/cumulative patch-note assembly, push, CI or public acceptance claimed. Incorporate accepted ordered predecessors, run directly invalidated integration checks, publish own notes/version and verify both live identities. Later privacy retention/export/deletion and ownership policies remain separate. No production grant, role edit, moderation, provider mail, service or account change was performed. Full roadmap goal stays active."
+}

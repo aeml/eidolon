@@ -1334,6 +1334,14 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October4: an isolated **1.74 Administration** successor now documents the
+actual permission/data boundaries for eight read/effect groups and adds the two
+missing Activity-history filters for moderation decisions and target checks.
+These are private, read-only filters—not new sanctions or powers.46 focused
+client checks pass; unchanged backend/socket evidence retains its original
+scope. Ordered predecessors, own notes/version and CI/public acceptance remain
+required. [Permission review](2026-10-04-release1-74-permission-review.json).
+
 October4: prepared **Alpha1.71.1** maintenance safeguard restricts mystery
 purchases to equipment, blocking forged material/relic loot-pool requests for
 Forge shards/hearts and invalid saved-level prices. Existing items, balances,

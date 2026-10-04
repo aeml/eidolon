@@ -107,6 +107,22 @@ test('launcher stays hidden until an authenticated server response verifies the 
     expect(ui.role.textContent).toContain('verified by server');
 });
 
+test('history exposes moderation audit filters without making a moderation change', () => {
+    ui.connectionState('connected'); reply(); ui.launcher.click(); reply({ players: [] });
+    ui.root.querySelector('[data-view="history"]').click();
+    reply({ history: { entries: [], next: 'old-cursor', retentionDays: 90 } });
+    for (const action of ['admin_chat_moderation', 'admin_chat_moderation_target']) {
+        ui.action.value = action;
+        expect(ui.action.value).toBe(action);
+        ui.action.dispatchEvent(new Event('input'));
+        expect(ui.cursor).toBe(''); expect(ui.next.hidden).toBe(true);
+        ui.refresh.click();
+        expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: '', actor: '', action });
+        reply({ history: { entries: [], next: 'old-cursor', retentionDays: 90 } });
+    }
+    expect(send.mock.calls.every(([type]) => ['admin_status', 'admin_players', 'admin_history'].includes(type))).toBe(true);
+});
+
 test('online list loads, paginates, refreshes and renders untrusted names only as text', () => {
     ui.connectionState('connected'); reply(); ui.launcher.click();
     expect(ui.root.style.display).toBe('flex');
