@@ -532,6 +532,8 @@ func (db *DB) DeleteAuction(auctionID string) error {
 	return err
 }
 
+// LoadAuctions returns a complete inspection snapshot. Runtime startup must
+// use LoadAuctionsPage instead of accumulating this unbounded diagnostic list.
 func (db *DB) LoadAuctions() ([]*Auction, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
