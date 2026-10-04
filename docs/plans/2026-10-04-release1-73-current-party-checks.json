@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "Alpha1.73 current-source ordinary party integration",
+  "status": "prepared connected check passed; not release acceptance",
+  "sourceCommit": "1c7c8291aa7bf7f703d45fdb41a67630c2fd9e6b",
+  "whyRun": "Known living-caster/attack admission and impact guards plus bounded network work were integrated after older room/first-boss connected receipts. Exercise only their directly invalidated ordinary four-class combat and valuable-operation recovery paths once; no whole campaign or historical replay matrix.",
+  "command": "Compiled Go1.27.1 race root test binary: -test.run '^Test(DungeonRoomRewardActualPartyClearCrashAndRecovery|BossVictoryActualPartyKillCrashAndRecovery)$' -test.count=1 -test.timeout=240s -test.v",
+  "results": {
+    "BossVictoryActualPartyKillCrashAndRecovery": "passed36.22s",
+    "DungeonRoomRewardActualPartyClearCrashAndRecovery": "passed34.68s",
+    "exit": 0,
+    "scope": "Actual ordinary WebSockets, consenting four-player Fighter/Cleric/Wizard/Rogue party, normally clamped class-appropriate Uncommon/Rare gear, accepted class abilities and basic attacks. Earned room/first-guardian outcome saved in real Mongo before successful feedback; rejected recipient's exact filesystem journal survives SIGKILL and a fresh server. Full-bag recipient retains original claim, room ordinary-drop/retry grants once, subsequent restart preserves original value and party quest credits. No production character, accelerated combat, protected bot or stat scaling.",
+    "independentDatabase": "8 disposable accounts; exactly1 complete four-member boss victory and1 complete four-member room reward; schema22 durable_boss_victory_cohorts. No additional public-drop pickup proof inferred.",
+    "processChecks": "Terminal Docker exec status0; subsequent exact-container process scan found no server or party.test process. All five retained server logs have no race/panic/fatal/update-worker-panic markers; fixture OOMKilled=false."
+  },
+  "artifacts": {
+    "directory": "/tmp/eidolon-173-party-current-gVcVfJ",
+    "serverSHA256": "2da4abb671c198d3546fbe0e8a9a00effd5cd4f57763764cff7105eb496d008d",
+    "testSHA256": "bae148abf82fa9c7f91714b443554775fd1cb236f5abcfd01ad0cc0c18967b97",
+    "build": "Go1.27.1 -race, p2/GOMAXPROCS2. Existing harness requires buildCommit=server and /tmp/server filename; version remains inheritedAlpha1.71.1, not a1.73 release binary.",
+    "logs": ["eidolon-compat-session-3142799022/server.log", "eidolon-compat-session-2097951009/server.log", "eidolon-compat-session-268594781/server.log", "eidolon-compat-session-1256178473/server.log", "eidolon-compat-session-3117111646/server.log"]
+  },
+  "monitor": "Owner-authorized Luna watch_party_current_1004 attempted the exact root terminal handle74199, discovered handles are not shared, and verified the same running process inside the owned fixture without starting another run. Root retrieved final result once. Future delegated terminal monitors need explicit log/status artifacts or their own original execution handle; do not claim Luna observed terminal completion here.",
+  "cleanup": "Exact owner/task labels and full container ID verified before removal: d1a382018a0b7cb391e66cb2cfb7bad7223ada716b514c36518223908d16b435, ownercodex/task173-current-party-20261004. Mongo7.0.14 image0032d2ca, networknone/noports,2CPU/2GiB cap, both data paths tmpfs. Initial768MiB limit was increased before any test. Fixture and all synthetic data removed; matching container listing empty. Compiled artifacts/logs retained; production and mail untouched.",
+  "limits": "Prepared valid layout plus room/first-guardian acceptance, not generated whole-dungeon/campaign pacing, final crystal-vigil/Dark King, physical phone, replica-set failover, capacity or actual provider mail. Retained other-domain evidence keeps original scope. Ordered1.72 decision/acceptance, cumulative1.73 release notes/version, normal synchronized push, CI and independent public identity checks remain. Full roadmap goal is active."
+}
