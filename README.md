@@ -420,10 +420,10 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.2`. The narrowly scoped Sell All/error and
-  real-player administration maintenance releases have been ordinarily merged
-  from master. 1.74.1's CI/public proof passed; 1.74.2 remains in the deployment
-  queue with its own checks/public acceptance pending. This isolated, unpublished
+- Current source version: `Alpha 1.74.3`. Narrow Sell All/error, real-player
+  administration and casino performance maintenance releases have been ordinarily
+  merged from master. 1.74.2's exact CI/public proof passed; 1.74.3 is pushed as
+  8b7ab8dd with CI37244170015 running, not accepted. This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
@@ -503,15 +503,12 @@ Notes:
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.74.1`, exact
-  e92ff723a71c106bed699ee58e310ae5ea258d97, successful CI37233489356 (all ten jobs).
-  [Public acceptance](docs/plans/2026-10-04-release1-74-1-public-acceptance.json)
-  retains skipped scopes and exact served-asset checks; this is not full-roadmap completion.
-  Post-terminal public IPv4 frontend/backend identity, database readiness, login
-  version, cumulative notes, administration UI and bootstrap/recovery runtime files match the accepted source.
-  [Public acceptance](docs/plans/2026-10-04-release1-74-public-acceptance.json)
-  lists passed and skipped checks; it does not claim fresh animation/GPU coverage
-  or actual inbox delivery. The [earlier recovery acceptance](docs/plans/2026-10-04-release1-71-1-public-acceptance.json),1.70.2 maintenance and Forge receipts remain historical.
+- Last independently verified live release: `Alpha 1.74.2`, exact
+  c0ea6ec48b13eb4fa2a077875639a3f5ebe8ff16, successful CI37235677126 (all ten jobs).
+  [Admin acceptance](docs/plans/2026-10-04-admin-real-player-checks.json) retains
+  public frontend/backend identities, database readiness and publisher-rewritten
+  AdminUI byte checks. No private production history or administrator mutation
+  was used for validation. Earlier release/recovery receipts retain their scopes.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.

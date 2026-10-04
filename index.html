@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.74.2</span>
+                    <span class="start-version-row__label">Alpha 1.74.3</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -774,6 +774,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.74.3">
+                    <h3 class="patch-note-entry__title">Alpha 1.74.3 (casino response performance)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Successful casino game actions respond to the acting player first and refresh only connected players at the same table. Physical seating, readiness and floor changes still update the shared casino presence.</li>
+                        <li>Casino responses build only the seated game's view, avoiding waits on unrelated games' settlement locks. Your own table state, shared seats and occupants remain available; normal settlement, timers, wagers and payouts are unchanged.</li>
+                        <li>The fixed floor catalogue is indexed once, with detached copies protecting table and seat geometry. Repeated lookups avoid rebuilding every table and machine. All existing games, furniture positions, currencies and retired funded-hand recovery remain unchanged.</li>
+                        <li>No account wipe, schema migration, reward or rate-limit change. Existing real-player administration and full prior patch history remain below. This maintenance patch does not publish unfinished 1.75–1.79 milestones or certify 100-player launch capacity.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.74.2">
                     <h3 class="patch-note-entry__title">Alpha 1.74.2 (real-player administration)</h3>
                     <ul class="patch-note-entry__list">
