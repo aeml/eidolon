@@ -82,6 +82,9 @@ type Auction struct {
 type Character struct {
 	// Trusted load context only; never stored inside the character or exposed.
 	AccountID                primitive.ObjectID             `bson:"-" json:"-"`
+	GroundAccountOrdinal     int64                          `bson:"ground_account_ordinal,omitempty" json:"-"`
+	GroundAccountOperationID string                         `bson:"ground_account_operation_id,omitempty" json:"-"`
+	GroundAccountFingerprint string                         `bson:"ground_account_fingerprint,omitempty" json:"-"`
 	DirectTradeState         bson.Raw                       `bson:"direct_trade_state,omitempty"`
 	GuildBankRevision        int64                          `bson:"guild_bank_revision,omitempty"`
 	GuildBankOpID            string                         `bson:"last_guild_bank_operation_id,omitempty"`

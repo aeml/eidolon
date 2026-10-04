@@ -123,6 +123,9 @@ func TestGroundItemActualSocketsRejectedSaveCrashAndRecovery(t *testing.T) {
 		t.Fatal("ordinary failed drop lost its real shared intent", pending, err)
 	}
 	drop := pending[0]
+	if drop.Version != 2 || drop.AccountOrdinal != 1 {
+		t.Fatal("ordinary native drop did not freeze the first ordered checkpoint")
+	}
 	before, err := repo.GetDirectTradeCharacter(source.Name, source.Name)
 	if err != nil || before == nil || len(before.Inventory) != 1 || database.GroundItemCharacterReceiptMatches(before, drop.GroundItemOperation) {
 		t.Fatal("rejected save changed actual stored source custody", err)
@@ -172,6 +175,13 @@ func TestGroundItemActualSocketsRejectedSaveCrashAndRecovery(t *testing.T) {
 		}
 		if character.Name == source.Name && len(saved.Inventory) != 0 || character.Name == recipient.Name && (len(saved.Inventory) != 1 || !database.GroundItemCharacterReceiptMatches(saved, pickup.GroundItemOperation)) {
 			t.Fatal("ordinary inventory acknowledgement preceded actual saved custody")
+		}
+		op := drop.GroundItemOperation
+		if character.Name == recipient.Name {
+			op = pickup.GroundItemOperation
+		}
+		if op.Version != 2 || saved.GroundAccountOrdinal != 1 || len(saved.ItemDeliveryReceipts) != 0 || !database.GroundItemCharacterReceiptMatches(saved, op) {
+			t.Fatal("actual native save lost ordered proof or grew the legacy map")
 		}
 	}
 	crash() // Restart while the original ground lifetime is still active.

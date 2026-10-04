@@ -205,6 +205,7 @@ func applyAndSaveGroundItemCharacterLocked(op database.GroundItemOperation) erro
 		return database.ErrGroundItemConflict
 	}
 	entity := &game.Entity{ID: op.PlayerID, Name: op.Username, Type: game.TypePlayer,
+		GroundAccountOrdinal: character.GroundAccountOrdinal, GroundAccountOperationID: character.GroundAccountOperationID, GroundAccountFingerprint: character.GroundAccountFingerprint,
 		ItemDeliveryReceipts: cloneItemDeliveryReceipts(character.ItemDeliveryReceipts), Equipment: map[string]game.Item{}}
 	for _, item := range character.Inventory {
 		entity.Inventory = append(entity.Inventory, gameItemFromDatabaseExact(item))
@@ -224,6 +225,7 @@ func applyAndSaveGroundItemCharacterLocked(op database.GroundItemOperation) erro
 	}
 	character.Inventory = databaseItems(entity.Inventory, true)
 	character.ItemDeliveryReceipts = cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)
+	character.GroundAccountOrdinal, character.GroundAccountOperationID, character.GroundAccountFingerprint = entity.GroundAccountOrdinal, entity.GroundAccountOperationID, entity.GroundAccountFingerprint
 	if op.Kind == database.GroundItemPickup {
 		var moved game.Item
 		if err := json.Unmarshal([]byte(op.MovedPayload), &moved); err != nil {

@@ -57,6 +57,12 @@ func TestSchemaMigrationCatalogFencesOriginalBossVictoryCohorts(t *testing.T) {
 	}
 }
 
+func TestSchemaMigrationCatalogFencesOrderedGroundCheckpoints(t *testing.T) {
+	if CurrentSchemaVersion < 24 || len(schemaMigrations) < 24 || schemaMigrations[23].Name != "ordered_ground_item_delivery_checkpoints" {
+		t.Fatal("older full-character writers must not erase ordered ground proofs")
+	}
+}
+
 func TestEPWalletRequiresNewWriterSchema(t *testing.T) {
 	// Schema11 predates EP wallets, grants and wager receipts. Its full-character
 	// writers must not be admitted after any of those values have been saved.
@@ -176,6 +182,7 @@ func TestRunMigrationsIsIdempotentAndBuildsQueryIndexes(t *testing.T) {
 			"direct_trade_recovery":                true,
 		},
 		"ground_item_operations": {
+			"unique_ground_account_ordinal":       true,
 			"one_pending_ground_item_per_account": true,
 			"one_pending_ground_item_per_loot":    true,
 			"ground_item_generations":             true,

@@ -245,6 +245,7 @@ func TestGroundItemCoordinatorOfflinePreservesUnrelatedState(t *testing.T) {
 		t.Fatal("offline source debit lost")
 	}
 	after.Inventory, after.ItemDeliveryReceipts, after.LastSaveID = before.Inventory, before.ItemDeliveryReceipts, before.LastSaveID
+	after.GroundAccountOrdinal, after.GroundAccountOperationID, after.GroundAccountFingerprint = before.GroundAccountOrdinal, before.GroundAccountOperationID, before.GroundAccountFingerprint
 	if !reflect.DeepEqual(before, after) {
 		t.Fatal("offline recovery changed unrelated resources, currency, rest or legacy gear")
 	}
@@ -279,6 +280,7 @@ func TestGroundItemCoordinatorOfflinePickupCreditsOnlyMatchingCollectionOnce(t *
 		t.Fatal("offline pickup lost exact gear, matching collection credit or receipt")
 	}
 	after.Inventory, after.Quests, after.ItemDeliveryReceipts, after.LastSaveID = before.Inventory, before.Quests, before.ItemDeliveryReceipts, before.LastSaveID
+	after.GroundAccountOrdinal, after.GroundAccountOperationID, after.GroundAccountFingerprint = before.GroundAccountOrdinal, before.GroundAccountOperationID, before.GroundAccountFingerprint
 	if !reflect.DeepEqual(before, after) {
 		t.Fatal("offline pickup changed unrelated saved state")
 	}
@@ -322,8 +324,8 @@ func TestGroundItemCoordinatorFullBagAndConsumedLootReplay(t *testing.T) {
 			t.Fatal("old operation re-granted consumed loot or collection credit", err)
 		}
 	}
-	if len(store.characters[recipient.Name].ItemDeliveryReceipts) != 1 {
-		t.Fatal("recipient lost its permanent replay receipt")
+	if !database.GroundItemCharacterReceiptMatches(store.characters[recipient.Name], pickup) || len(store.characters[recipient.Name].ItemDeliveryReceipts) != 0 {
+		t.Fatal("recipient lost its ordered replay proof or grew a per-operation map")
 	}
 }
 

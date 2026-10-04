@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 23
+const CurrentSchemaVersion = 24
 
 type schemaMigration struct {
 	Version int
@@ -107,6 +107,9 @@ var schemaMigrations = []schemaMigration{
 	// Private journal format is part of writer compatibility even without a
 	// character backfill. Old binaries neither preserve nor replay account binding.
 	{Version: 23, Name: "account_bound_character_journals", Apply: func(context.Context, *DB) error { return nil }},
+	// Preserve legacy receipts without backfill. Older writers erase the new
+	// contiguous ground-delivery checkpoint and cannot extend version2 custody.
+	{Version: 24, Name: "ordered_ground_item_delivery_checkpoints", Apply: applyGroundItemOperationIndexes},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

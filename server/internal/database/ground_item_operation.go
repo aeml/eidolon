@@ -20,11 +20,14 @@ const (
 
 // A server-owned frozen plan. The shared ground-loot coordinator must durably
 // reserve this identity/loot generation BEFORE applying its character effect.
-// Existing ItemDeliveryReceipts carry its fingerprint through complete saves;
-// no new character format or unbounded ground-item payload is exposed publicly.
+// Legacy ItemDeliveryReceipts remain intact; version2 uses a private contiguous
+// checkpoint through complete saves. Neither proof is exposed publicly.
 // The shared store retains this plan; ordinary command/recovery integration is
 // separate and must not infer durable custody from this model alone.
 type GroundItemOperation struct {
+	// Version2 uses a contiguous account checkpoint instead of adding one
+	// character-side map entry forever. Omit zero to preserve legacy hashes.
+	AccountOrdinal   int64     `bson:"account_ordinal,omitempty" json:",omitempty"`
 	Version          int       `bson:"version"`
 	ID               string    `bson:"_id"`
 	Kind             string    `bson:"kind"`
@@ -89,7 +92,8 @@ func (op GroundItemOperation) Validate() error {
 	id := strings.TrimPrefix(op.ID, groundItemPrefix)
 	_, idErr := hex.DecodeString(id)
 	fingerprint, err := GroundItemFingerprint(op)
-	if op.Version != 1 || !strings.HasPrefix(op.ID, groundItemPrefix) || len(id) != 64 || idErr != nil ||
+	validVersion := op.Version == 1 && op.AccountOrdinal == 0 || op.Version == 2 && op.AccountOrdinal > 0
+	if !validVersion || !strings.HasPrefix(op.ID, groundItemPrefix) || len(id) != 64 || idErr != nil ||
 		!boundedActivityText(op.Username, 256, true) || op.PlayerID != "player-"+op.Username ||
 		!boundedActivityText(op.LootID, 512, true) || !boundedActivityText(op.InstanceID, 512, false) ||
 		!boundedActivityText(op.LootOwnerID, 512, false) || !boundedActivityText(op.LootPartyID, 512, false) ||
@@ -139,6 +143,30 @@ func (op GroundItemOperation) Validate() error {
 }
 
 func GroundItemCharacterReceiptMatches(character *Character, op GroundItemOperation) bool {
-	return character != nil && op.Validate() == nil && character.Name == op.Username &&
-		character.ItemDeliveryReceipts[op.ID] == op.Fingerprint
+	if character == nil || op.Validate() != nil || character.Name != op.Username {
+		return false
+	}
+	if op.Version == 2 {
+		if previous, found := character.ItemDeliveryReceipts[op.ID]; found && previous != op.Fingerprint {
+			return false
+		}
+		return GroundItemCheckpointMatches(character.GroundAccountOrdinal, character.GroundAccountOperationID, character.GroundAccountFingerprint, op)
+	}
+	return character.ItemDeliveryReceipts[op.ID] == op.Fingerprint
+}
+
+func GroundItemCheckpointValid(ordinal int64, id, fingerprint string) bool {
+	if ordinal == 0 {
+		return id == "" && fingerprint == ""
+	}
+	decoded, err := hex.DecodeString(fingerprint)
+	return ordinal > 0 && validGroundItemOperationID(id) && err == nil && len(decoded) == 32 && hex.EncodeToString(decoded) == fingerprint
+}
+
+// Only a canonical immutable version2 ledger record may use this proof. Its
+// unique account ordinal and strict contiguous saved application establish all
+// preceding deliveries; the current head additionally checks exact identity.
+func GroundItemCheckpointMatches(ordinal int64, id, fingerprint string, op GroundItemOperation) bool {
+	return op.Version == 2 && op.AccountOrdinal > 0 && GroundItemCheckpointValid(ordinal, id, fingerprint) &&
+		(ordinal > op.AccountOrdinal || ordinal == op.AccountOrdinal && id == op.ID && fingerprint == op.Fingerprint)
 }

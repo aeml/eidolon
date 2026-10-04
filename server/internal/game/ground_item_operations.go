@@ -79,7 +79,10 @@ func groundDropSourceSlot(player *Entity, moved Item) (int, error) {
 }
 
 func freezeGroundItemPlan(player *Entity, loot *Entity, kind string, moved, remaining Item, operationID string) (database.GroundItemOperation, error) {
-	op := database.GroundItemOperation{Version: 1, ID: operationID, Kind: kind,
+	if !database.GroundItemCheckpointValid(player.GroundAccountOrdinal, player.GroundAccountOperationID, player.GroundAccountFingerprint) || player.GroundAccountOrdinal == math.MaxInt64 {
+		return database.GroundItemOperation{}, ErrGroundItemIdentity
+	}
+	op := database.GroundItemOperation{Version: 2, AccountOrdinal: player.GroundAccountOrdinal + 1, ID: operationID, Kind: kind,
 		Username: player.Name, PlayerID: player.ID, LootID: loot.ID, InstanceID: loot.InstanceID,
 		LootOwnerID: loot.LootOwnerID, LootPartyID: loot.LootPartyID, X: loot.X, Z: loot.Z,
 		LootTime: loot.LootTime.UTC().Truncate(time.Millisecond), LootCreatedAt: loot.CreatedAt.UTC().Truncate(time.Millisecond),
@@ -324,7 +327,8 @@ func (w *World) ApplyDurableGroundItem(op database.GroundItemOperation) (bool, e
 	if player.Type != TypePlayer || player.Name != op.Username {
 		return false, errors.New("ground item owner changed")
 	}
-	if _, found := player.ItemDeliveryReceipts[op.ID]; found {
+	_, legacyReceipt := player.ItemDeliveryReceipts[op.ID]
+	if legacyReceipt || database.GroundItemCheckpointMatches(player.GroundAccountOrdinal, player.GroundAccountOperationID, player.GroundAccountFingerprint, op) {
 		return player.ApplyGroundItemCharacterEffect(op)
 	}
 	if op.Kind == database.GroundItemPickup {
@@ -357,6 +361,20 @@ func (player *Entity) ApplyGroundItemCharacterEffect(op database.GroundItemOpera
 	if player == nil || player.Type != TypePlayer || player.Name != op.Username || player.ID != op.PlayerID {
 		return false, ErrGroundItemIdentity
 	}
+	if op.Version == 2 {
+		if previous, found := player.ItemDeliveryReceipts[op.ID]; found && previous != op.Fingerprint {
+			return false, ErrGroundItemIdentity
+		}
+		if !database.GroundItemCheckpointValid(player.GroundAccountOrdinal, player.GroundAccountOperationID, player.GroundAccountFingerprint) {
+			return false, ErrGroundItemIdentity
+		}
+		if database.GroundItemCheckpointMatches(player.GroundAccountOrdinal, player.GroundAccountOperationID, player.GroundAccountFingerprint, op) {
+			return false, nil
+		}
+		if player.GroundAccountOrdinal == math.MaxInt64 || op.AccountOrdinal != player.GroundAccountOrdinal+1 {
+			return false, ErrGroundItemIdentity
+		}
+	}
 	if previous, found := player.ItemDeliveryReceipts[op.ID]; found {
 		if previous != op.Fingerprint {
 			return false, ErrGroundItemIdentity
@@ -385,10 +403,14 @@ func (player *Entity) ApplyGroundItemCharacterEffect(op database.GroundItemOpera
 		}
 	}
 	player.Inventory = inventory
-	if player.ItemDeliveryReceipts == nil {
-		player.ItemDeliveryReceipts = map[string]string{}
+	if op.Version == 2 {
+		player.GroundAccountOrdinal, player.GroundAccountOperationID, player.GroundAccountFingerprint = op.AccountOrdinal, op.ID, op.Fingerprint
+	} else {
+		if player.ItemDeliveryReceipts == nil {
+			player.ItemDeliveryReceipts = map[string]string{}
+		}
+		player.ItemDeliveryReceipts[op.ID] = op.Fingerprint
 	}
-	player.ItemDeliveryReceipts[op.ID] = op.Fingerprint
 	player.UnjournaledSave = true
 	return true, nil
 }
