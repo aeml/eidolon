@@ -11,7 +11,73 @@ import {
 
 const playwrightExpect = jest.fn();
 jest.unstable_mockModule('@playwright/test', () => ({ expect: playwrightExpect }));
-const { collectBrowserFailures, openGame, returnToTown, jumpByGroundClick, settlePointerRaycast, waitForPersistedPickup } = await import('./e2e/helpers.js');
+const { collectBrowserFailures, openGame, returnToTown, jumpByGroundClick, settlePointerRaycast, waitForPersistedPickup, freePersistentQALootSlot } = await import('./e2e/helpers.js');
+
+describe('persistent QA bag rotation with earned deliveries', () => {
+    let previousGame;
+    beforeEach(() => {
+        previousGame = window.game;
+        playwrightExpect.mockImplementation(actual => ({ not: { toBeNull: () => expect(actual).not.toBeNull() } }));
+        playwrightExpect.poll = jest.fn(observe => ({
+            toBe: async expected => expect(await observe()).toBe(expected),
+            toBeLessThan: async expected => expect(await observe()).toBeLessThan(expected)
+        }));
+    });
+    afterEach(() => {
+        window.game = previousGame;
+        playwrightExpect.mockReset();
+        delete playwrightExpect.poll;
+    });
+    const spare = id => ({ id, type: 'ARMOR', slot: 'head', rarity: 'Common', value: 1 });
+    const harness = (inventory, pending = [], rejectSale = false) => {
+        const sales = [];
+        window.game = { player: { inventory, equipment: {} }, uiManager: { inventory: { onSellItem: index => {
+            sales.push(inventory[index].id);
+            if (rejectSale) return;
+            inventory.splice(index, 1);
+            inventory.push(pending.shift() || null);
+        } } } };
+        const page = { evaluate: jest.fn(async (fn, arg) => fn.name === 'readPlayerStateInPage'
+            ? { inventoryCount: inventory.filter(item => item?.id).length } : fn(arg)) };
+        return { page, sales };
+    };
+    test('verifies individual removals and rechecks space after two preserved earned deliveries', async () => {
+        const bag = Array.from({ length: 25 }, (_, index) => spare(`spare-${index}`));
+        const invested = { ...spare('invested'), potency: 7, stats: { damage: 73 } };
+        const protectedQuest = { ...spare('chronicle-item-protected') };
+        bag[0] = invested;
+        bag[1] = protectedQuest;
+        const firstEarned = { ...spare('earned-one'), potency: 7 };
+        const secondEarned = { ...spare('earned-two'), rarity: 'Legendary' };
+        const { page, sales } = harness(bag, [firstEarned, secondEarned]);
+        await freePersistentQALootSlot(page);
+        expect(sales).toEqual(['spare-2', 'spare-3', 'spare-4']);
+        expect(bag.filter(item => item?.id)).toHaveLength(24);
+        expect(bag).toEqual(expect.arrayContaining([invested, protectedQuest, firstEarned, secondEarned]));
+        expect(playwrightExpect.poll).toHaveBeenCalledTimes(3);
+    });
+    test('a rejected sale fails on that exact item, without retrying another obsolete index', async () => {
+        const { page, sales } = harness(Array.from({ length: 25 }, (_, index) => spare(`spare-${index}`)), [], true);
+        await expect(freePersistentQALootSlot(page)).rejects.toThrow();
+        expect(sales).toEqual(['spare-0']);
+    });
+    test('a protected full bag is not cleared, sold or silently accepted', async () => {
+        const { page, sales } = harness(Array.from({ length: 25 }, (_, index) => ({ ...spare(`protected-${index}`), potency: 1 })));
+        await expect(freePersistentQALootSlot(page)).rejects.toThrow();
+        expect(sales).toEqual([]);
+    });
+    test('an existing free slot requires no rotation', async () => {
+        const { page, sales } = harness([...Array.from({ length: 24 }, (_, index) => spare(`spare-${index}`)), null]);
+        await freePersistentQALootSlot(page);
+        expect(sales).toEqual([]);
+    });
+    test('unbounded deferred loot cannot cause unbounded vendor actions', async () => {
+        const { page, sales } = harness(Array.from({ length: 25 }, (_, index) => spare(`spare-${index}`)),
+            Array.from({ length: 26 }, (_, index) => ({ ...spare(`earned-${index}`), potency: 7 })));
+        await expect(freePersistentQALootSlot(page)).rejects.toThrow();
+        expect(sales).toHaveLength(25);
+    });
+});
 
 describe('fresh-login exact pickup readiness', () => {
     afterEach(() => { playwrightExpect.mockReset(); delete playwrightExpect.poll; });

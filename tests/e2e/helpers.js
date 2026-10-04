@@ -1496,40 +1496,56 @@ async function readCombatDiagnostic(page, targetId) {
     }, targetId);
 }
 
-export async function exerciseCombatAndLoot(page) {
-    // Persistent production QA characters can reconnect where a previous run
-    // was killed after its final assertion. Clear that legitimate gameplay
-    // state through the visible respawn action before opening Settings; the
-    // death overlay intentionally intercepts every menu click while active.
-    await recoverThroughDeathScreen(page);
-
-    // The persistent release account eventually fills across successful runs.
-    // Rotate one equippable item through the existing sell path so this test can
-    // continue proving a real loot pickup and its persistence on every deploy.
-    if ((await readPlayerState(page)).inventoryCount >= 25) {
+export async function freePersistentQALootSlot(page) {
+    // Already-earned deliveries can legitimately occupy a sold item's slot.
+    // Verify each exact sale, then re-read the bag; never delete pending loot,
+    // bypass persistence or repeatedly submit the same obsolete index.
+    for (let rotation = 0; rotation < 25; rotation += 1) {
+        if ((await readPlayerState(page)).inventoryCount < 25) return;
         const soldItemId = await page.evaluate(() => {
             const game = window.game;
             const equipmentSlots = new Set([
                 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders',
                 'belt', 'ring', 'neck', 'trinket', 'mainHand', 'offHand'
             ]);
-            const index = (game?.player?.inventory || []).findIndex((item) =>
-                item?.id && equipmentSlots.has(item.slot)
-            );
-            if (index < 0 || typeof game?.uiManager?.inventory?.onSellItem !== 'function') return null;
-            const itemId = game.player.inventory[index].id;
+            const worn = new Set(Object.values(game?.player?.equipment || {}).map(item => item?.id));
+            const candidates = (game?.player?.inventory || []).map((item, index) => ({ item, index }))
+                .filter(({ item }) => item?.id && !item.id.startsWith('chronicle-item-') && !worn.has(item.id) &&
+                    ['ARMOR', 'WEAPON'].includes(item.type) && equipmentSlots.has(item.slot) &&
+                    !item.potency && !item.sockets && !item.gems?.length && !item.setId && !item.uniqueEffect &&
+                    ['Common', 'Uncommon', 'Rare'].includes(item.rarity?.name || item.rarity))
+                .sort((a, b) => {
+                    const ranks = ['Common', 'Uncommon', 'Rare'];
+                    return ranks.indexOf(a.item.rarity?.name || a.item.rarity) - ranks.indexOf(b.item.rarity?.name || b.item.rarity) ||
+                        (a.item.value || 0) - (b.item.value || 0) || a.index - b.index;
+                });
+            if (!candidates.length || typeof game?.uiManager?.inventory?.onSellItem !== 'function') return null;
+            const { item, index } = candidates[0];
             game.uiManager.inventory.onSellItem(index);
-            return itemId;
+            return item.id;
         });
-        expect(soldItemId, 'A full QA inventory must contain equipment that can be rotated').not.toBeNull();
-        await expect.poll(async () => (await readPlayerState(page)).inventoryCount, {
-            timeout: 15_000
-        }).toBeLessThan(25);
+        expect(soldItemId, 'Full QA bag needs ordinary spare gear; protected/invested items are not discarded').not.toBeNull();
+        await expect.poll(() => page.evaluate(id =>
+            (window.game?.player?.inventory || []).some(item => item?.id === id), soldItemId), {
+            timeout: 15_000, message: 'The exact vendor item must leave the authoritative bag before another sale'
+        }).toBe(false);
     }
+    await expect.poll(async () => (await readPlayerState(page)).inventoryCount, {
+        timeout: 15_000, message: 'Bounded QA vendor rotation must leave room after earned deliveries'
+    }).toBeLessThan(25);
+}
+
+export async function exerciseCombatAndLoot(page) {
+    // Persistent production QA characters can reconnect where a previous run
+    // was killed after its final assertion. Clear that legitimate gameplay
+    // state through the visible respawn action before opening Settings; the
+    // death overlay intentionally intercepts every menu click while active.
+    await recoverThroughDeathScreen(page);
+    await disableAutoLootThroughSettings(page);
+    await freePersistentQALootSlot(page);
 
     let abilityWasUsed = false;
 
-    await disableAutoLootThroughSettings(page);
     // Observe actual outgoing pickup requests without changing controls,
     // messages or inventory. An earlier real combat click can acquire a drop
     // before the dedicated pickup step; it still needs item-specific evidence.
