@@ -7,9 +7,12 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"strings"
 	"sync"
 	"testing"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Actual primary/majority repository, indexes and saved receipts. Characters
@@ -29,12 +32,51 @@ func TestBossVictoryStoreActualMongo(t *testing.T) {
 	t.Cleanup(func() { _ = repo.Close(context.Background()) })
 	op := bossVictoryFixture()
 	nonce := time.Now().UnixNano()
+	// Other socket checks deliberately retain completed victories and their
+	// original drops in this disposable database. Do not delete that history or
+	// mistake an additional active victory for a failed projection query.
+	unrelated := bossVictoryFixture()
+	unrelated.InstanceID = fmt.Sprintf("dungeon_boss_unrelated_%d", nonce)
+	unrelated.BossID = unrelated.BossType + "-" + unrelated.InstanceID
+	unrelated.ID = BossVictoryID(unrelated.InstanceID, unrelated.BossID)
+	unrelated.Drops[0].LootID = fmt.Sprintf("loot-boss-%s-0", strings.TrimPrefix(unrelated.ID, bossVictoryPrefix))
+	unrelated.Fingerprint, _ = BossVictoryFingerprint(unrelated)
+	sharedVictories := repo.bossVictories
+	fixtureVictories := repo.client.Database("eidolon").Collection(fmt.Sprintf("boss_victory_store_%d", nonce))
+	t.Cleanup(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := fixtureVictories.Drop(ctx); err != nil {
+			t.Error(err)
+		}
+		if _, err := sharedVictories.DeleteOne(ctx, bson.M{"_id": unrelated.ID}); err != nil {
+			t.Error(err)
+		}
+	})
+	if _, err := repo.PrepareBossVictory(unrelated); err != nil {
+		t.Fatal(err)
+	}
+	repo.bossVictories = fixtureVictories
+	if err := applyBossVictoryIndexes(t.Context(), repo); err != nil {
+		t.Fatal(err)
+	}
 	characters := make([]*Character, 2)
+	var usernames []string
+	t.Cleanup(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if len(usernames) > 0 {
+			if _, err := repo.users.DeleteMany(ctx, bson.M{"username": bson.M{"$in": usernames}}); err != nil {
+				t.Error(err)
+			}
+		}
+	})
 	for index := range characters {
 		name := fmt.Sprintf("boss-store-%d-%02d", nonce, index)
 		if err := repo.CreateUser(name, name+"@example.invalid", "isolated-fixture-password"); err != nil {
 			t.Fatal(err)
 		}
+		usernames = append(usernames, name)
 		characters[index] = &Character{Name: name, Level: 30, Gold: 99, EP: 43}
 		if err := repo.SetFirstCharacter(name, characters[index]); err != nil {
 			t.Fatal(err)
@@ -104,6 +146,7 @@ func TestBossVictoryStoreActualMongo(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { _ = fresh.Close(context.Background()) })
+	fresh.bossVictories = fresh.client.Database("eidolon").Collection(fixtureVictories.Name())
 	stored, err := fresh.GetBossVictory(op.ID)
 	if err != nil || stored == nil || !reflect.DeepEqual(stored.BossVictoryOperation, op) || stored.State != BossVictoryComplete {
 		t.Fatal("fresh repository lost original victory or ground metadata", err)
@@ -162,5 +205,10 @@ func TestBossVictoryStoreActualMongo(t *testing.T) {
 		if _, err := fresh.ActiveBossVictoryDropPage(query.after, query.now, query.limit); !errors.Is(err, ErrBossVictoryConflict) {
 			t.Fatal("unbounded or malformed active projection query was accepted", err)
 		}
+	}
+	var retained BossVictoryRecord
+	if err := sharedVictories.FindOne(t.Context(), bson.M{"_id": unrelated.ID}).Decode(&retained); err != nil ||
+		retained.State != BossVictoryPending || !reflect.DeepEqual(retained.BossVictoryOperation, unrelated) {
+		t.Fatal("isolated repository check changed unrelated retained victory", err)
 	}
 }
