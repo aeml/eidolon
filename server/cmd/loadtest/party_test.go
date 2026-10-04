@@ -248,7 +248,7 @@ func TestPartyLoadFourActualBotsNormalConsentAndCombatWithPreparedGear(t *testin
 				return
 			case cmd := <-commands:
 				index, known := indexByConnection[cmd.connection]
-				if cmd.message.Type == "register" {
+				if cmd.message.Type == "login" {
 					var registration struct{ Username string }
 					_ = json.Unmarshal(cmd.message.Payload, &registration)
 					for i := range creds {
@@ -264,8 +264,6 @@ func TestPartyLoadFourActualBotsNormalConsentAndCombatWithPreparedGear(t *testin
 					return
 				}
 				switch cmd.message.Type {
-				case "register":
-					write(index, partyMessage("error", "Registration failed: username already exists"))
 				case "login":
 					write(index, partyMessage("login_success", map[string]interface{}{"hasCharacter": true, "characterType": partyLoadClasses[index]}))
 				case "join":

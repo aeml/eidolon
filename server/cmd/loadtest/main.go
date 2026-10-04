@@ -373,6 +373,7 @@ func main() {
 		results, valid := summarizeCombinedCasino(assignments, observations)
 		for _, result := range results {
 			log.Printf("Combined casino coverage: scenario=%s clients=%d accepted_wagers=%d paid_results=%d min_paid_results=%d observed_actions=%d completed_bonuses=%d failed=%d", result.scenario, result.clients, result.wagers, result.paid, result.minimum, result.observedActions, result.bonuses, result.failed)
+			log.Printf("Combined casino rejection coverage: scenario=%s busy=%d stale=%d seat=%d rate=%d rejected=%d timeout=%d other=%d", result.scenario, result.failures[casinoFailureBusy], result.failures[casinoFailureStale], result.failures[casinoFailureSeat], result.failures[casinoFailureRate], result.failures[casinoFailureRejected], result.failures[casinoFailureTimeout], result.failures[casinoFailureUnknown])
 		}
 		log.Printf("Combined workload: clients=%d party_clients=%d poker_clients=%d blackjack_clients=%d house_clients=%d slots_clients=%d town_clients=%d social_clients=%d", *count, *count/5, *count/10, *count/5, *count/5, *count/10, *count/10, *count/10)
 		casinoFailed = !valid
@@ -632,7 +633,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 				continue
 			}
 			if casino != nil && joined && (msg.Type == "casino_action_error" || msg.Type == "error") {
-				casino.reject()
+				casino.rejectServer(msg)
 				continue
 			}
 			if party != nil && joined && msg.Type == "error" {
@@ -757,16 +758,22 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 			log.Printf("Bot %d startup admission failed (%s).", id, err.Error())
 		}
 	}
-	registrationStart := time.Now()
-	if send(c, "register", map[string]string{"username": cred.Username, "email": cred.Username + "@bot.com", "password": cred.Password}) != nil {
-		rejectAdmission(fmt.Errorf("admission_write_failed"))
-		return
+	// Prepared workloads require existing accounts/characters. A redundant
+	// register request still hashes a password before duplicate detection and
+	// can consume normal credential admission slots. Do not create or re-register
+	// these accounts; ordinary login still proves the supplied credentials.
+	if !assignment.preserveGear {
+		registrationStart := time.Now()
+		if send(c, "register", map[string]string{"username": cred.Username, "email": cred.Username + "@bot.com", "password": cred.Password}) != nil {
+			rejectAdmission(fmt.Errorf("admission_write_failed"))
+			return
+		}
+		if _, err := waitAdmissionReply("registered", replies, stop, done, *admissionTimeout); err != nil {
+			rejectAdmission(err)
+			return
+		}
+		observation.registrationTime = time.Since(registrationStart)
 	}
-	if _, err := waitAdmissionReply("registered", replies, stop, done, *admissionTimeout); err != nil {
-		rejectAdmission(err)
-		return
-	}
-	observation.registrationTime = time.Since(registrationStart)
 	select {
 	case <-stop:
 		return

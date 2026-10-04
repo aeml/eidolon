@@ -63,6 +63,7 @@ type combinedCasinoCoverage struct {
 	clients, failed          int
 	wagers, paid, minimum    uint64
 	observedActions, bonuses uint64
+	failures                 [casinoFailureKinds]uint64
 }
 
 // Include every assigned client, including zero results, not just aggregate
@@ -94,6 +95,11 @@ func summarizeCombinedCasino(assignments []botAssignment, observations []loadObs
 			c.bonuses += observation.bonuses
 			if observation.failed {
 				c.failed++
+				stage := observation.failureStage
+				if stage >= casinoFailureKinds {
+					stage = casinoFailureUnknown
+				}
+				c.failures[stage]++
 			}
 		}
 		valid = valid && c.clients > 0 && c.minimum > 0 && c.failed == 0

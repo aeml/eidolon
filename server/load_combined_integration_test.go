@@ -110,8 +110,16 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 	command := exec.CommandContext(ctx, driver, "-addr", address, "-scheme", "ws", "-scenario", "combined", "-n", strconv.Itoa(count), "-credentials-file", credentialPath, "-casino-bet", "100", "-party-combat-x", "400", "-party-combat-z", "600", "-duration", "120s", "-admission-timeout", "5s")
 	started := time.Now()
 	output, runErr := command.CombinedOutput()
+	// The driver already emits fixed startup failure codes. Preserve aggregate
+	// causes without printing bot IDs, credentials or arbitrary socket output.
+	for _, reason := range []string{"admission_busy", "admission_rejected", "admission_timeout", "admission_connection_closed", "invalid_admission_response", "unexpected_admission_response", "admission_write_failed", "prepared_workload_requires_character", "party_requires_prepared_class"} {
+		pattern := regexp.MustCompile(`Bot [0-9]+ startup admission failed \(` + reason + `\)\.`)
+		if total := len(pattern.FindAll(output, -1)); total > 0 {
+			t.Logf("Admission failure coverage: stage=%s count=%d", reason, total)
+		}
+	}
 	for _, line := range strings.Split(string(output), "\n") {
-		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Party coverage|Combined casino coverage|Combined workload): [a-z_0-9= -]+$`).FindString(line); match != "" {
+		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Party coverage|Combined casino coverage|Combined casino rejection coverage|Combined workload): [a-z_0-9= -]+$`).FindString(line); match != "" {
 			t.Log(match) // Aggregate fields only; never raw credential/socket logs.
 		}
 	}

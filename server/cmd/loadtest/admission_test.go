@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -32,6 +33,76 @@ func TestAdmissionRepliesUseOnlyFixedAcknowledgementsAndKnownClasses(t *testing.
 		if reply.kind != test.kind || reply.characterType != test.class || recognized != test.recognized || strings.Contains(reply.kind+reply.characterType, "synthetic-private") {
 			t.Fatal("incorrect or private acknowledgement", reply)
 		}
+	}
+}
+
+func TestPreparedLoadAdmissionLogsInWithoutRegistrationOrCharacterCreation(t *testing.T) {
+	for _, existing := range []bool{true, false} {
+		t.Run(fmt.Sprint(existing), func(t *testing.T) {
+			metrics.connected.Store(0)
+			metrics.joined.Store(0)
+			metrics.authenticated.Store(0)
+			metrics.admissionErrors.Store(0)
+			upgrader := websocket.Upgrader{}
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				connection, err := upgrader.Upgrade(w, r, nil)
+				if err != nil {
+					t.Error("fixture upgrade failed")
+					return
+				}
+				defer connection.Close()
+				_ = connection.SetReadDeadline(time.Now().Add(2 * time.Second))
+				var request Message
+				if connection.ReadJSON(&request) != nil || request.Type != "login" {
+					t.Error("prepared account attempted registration instead of login")
+					return
+				}
+				_ = connection.WriteJSON(partyMessage("login_success", map[string]interface{}{"hasCharacter": existing, "characterType": "Fighter"}))
+				if !existing {
+					if connection.ReadJSON(&request) == nil {
+						t.Error("missing prepared character was created or another request retried")
+					}
+					return
+				}
+				if connection.ReadJSON(&request) != nil || request.Type != "join" {
+					t.Error("prepared account did not join through normal protocol")
+					return
+				}
+				_ = connection.WriteJSON(partyMessage("state", map[string]Entity{
+					"player-synthetic-prepared": {ID: "player-synthetic-prepared", Type: "Player", SubType: "Fighter", Health: 100, Mana: 100, Z: 200},
+				}))
+				for connection.ReadJSON(&request) == nil {
+					if request.Type == "register" || request.Type == "join" || request.Type == "equip" || request.Type == "sell" {
+						t.Error("prepared account recreated or mutated preserved equipment")
+					}
+				}
+			}))
+			defer server.Close()
+			stop, ended := make(chan struct{}), make(chan struct{})
+			var observation loadObservation
+			go func() {
+				runAssignedBot(0, "ws"+strings.TrimPrefix(server.URL, "http"), BotCredentials{Username: "synthetic-prepared", Password: "synthetic-private-password"}, botAssignment{scenario: "town", preserveGear: true}, stop, &observation)
+				close(ended)
+			}()
+			deadline := time.Now().Add(time.Second)
+			for existing && metrics.joined.Load() == 0 && time.Now().Before(deadline) {
+				time.Sleep(time.Millisecond)
+			}
+			if existing {
+				close(stop)
+			}
+			select {
+			case <-ended:
+			case <-time.After(2 * time.Second):
+				if !existing {
+					close(stop)
+				}
+				t.Fatal("prepared admission did not terminate")
+			}
+			if observation.registrationTime != 0 || metrics.authenticated.Load() != 1 || existing && (metrics.joined.Load() != 1 || metrics.admissionErrors.Load() != 0) || !existing && (metrics.joined.Load() != 0 || metrics.admissionErrors.Load() != 1) {
+				t.Fatal("prepared admission invented registration, join or character evidence")
+			}
+		})
 	}
 }
 

@@ -76,6 +76,12 @@ formed. Transport/decode errors and OOM were zero; independent all-account save
 acceptance was not reached. Exact failure causes still need targeted diagnosis,
 not a server-limit increase or automatic repeat. Owned fixture removed. Neither
 this result nor one healthy runtime snapshot is100-player capacity acceptance.
+Targeted follow-up reproduced redundant registration by prepared-account bots:
+they now log in directly and refuse missing characters, leaving production
+credential limits unchanged. Whole driver race passed18.290s. Bounded fixed
+admission/casino failure categories will distinguish concurrency/scene failures
+without exposing account/session text. Next actual reproduction is only40 clients,
+not another blind100-client run or replay of the completed20-client baseline.
 
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with

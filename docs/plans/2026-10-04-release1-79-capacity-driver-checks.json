@@ -702,6 +702,27 @@
     "sourceFinding": "Credential admission source has four concurrent work slots and explicit busy rejection; it is not keyed by IP. Driver launches at100ms intervals, with observed755ms maximum login latency. Overlap can exhaust that gate, but current aggregate does not classify the actual ten admission failures. Shared-table failures likewise have no retained exact rejection classification. Do not assume resource saturation, busy rejection or stale revision was the actual cause without targeted evidence.",
     "cleanup": "Terminal parent failure and absent root/server/driver verified. Exact owner/network/OOM/peak checked. Explicitly stopped and removed only this owned fixture; filtered listing empty. Synthetic database removed, compiled artifacts retained. No production player data/services affected."
   },
+  "preparedAccountAdmissionAndCasinoDiagnostics": {
+    "finding": "Prepared-account workloads unnecessarily attempted registration before login. CreateUser hashes the supplied password before duplicate insert rejection, consuming ordinary credential-work slots even for an existing account. This source finding is independent of the unclassified ten actual100-client admission failures; no proof those ten were busy rejections is asserted.",
+    "change": "Driver skips registration only for preserveGear prepared-account workloads (combined and prepared parties), still requiring ordinary credential login and an existing character, never creating a missing one. Default generated/legacy workload registration remains unchanged. Production registration/authentication and its four-slot budget unchanged. Party wire fixture now identifies prepared connections at login rather than manufacturing a register acknowledgement.",
+    "reproduction": "New prepared-account actual loopback test failed1.067s before fix: first request was register in both existing and missing-character scenarios. After correction, existing character joins normally without registration; missing character refuses without a join/create or retry. Registration duration stays0 by definition for this login-only preparation.",
+    "diagnostics": "Root actual combined test retains only aggregate counts of nine already-fixed startup failure codes, omitting bot IDs and arbitrary socket output. Driver adds closed casino rejection categories busy/stale/seat/rate/rejected/timeout/other per assigned game family. Parse bounded generic or structured rejection payloads, retain no session/error text, preserve first cause and still fail every rejection. Never retry an uncertain wager or invent a paid result. Inactive/domain and other unclassified controller failures stay other rather than an assumed server cause.",
+    "checks": "Focused admission/prepared/party race passed2.391s; expanded admission/party/casino-rejection/combined race passed2.697s. Final whole driver race passed18.290s. Fixed-cause tests cover generic and structured messages, private/oversized diagnostics, first-cause preservation and forbidden action/movement after failure. No long raid/campaign or20-player baseline replay.",
+    "sha256": {
+      "server/cmd/loadtest/main.go": "3a16e739df4b1e2e7c9dedf248dd7a5f4eb1916dfd2f2bc0236d57c438434aa2",
+      "server/cmd/loadtest/admission_test.go": "f57827116e87b79e78a3b44296888ef4b4effab762d92341eb734050ef4be8e0",
+      "server/cmd/loadtest/casino_failure.go": "d15e33671fd407ae7aba3c55e7009ad5483b8fcd2f0e68fd0d7e3bbeca9f9ee8",
+      "server/cmd/loadtest/casino_failure_test.go": "ccfe07bc25d2cdee08bcb8fc4b6b7fd393adc2fd80c328376544f946f5db8f0e",
+      "server/load_combined_integration_test.go": "ae848c102bbc807711ff6c7d970ea30543f3d753bf9f99d1049f76c38861626e"
+    },
+    "artifacts": {
+      "driverPath": "/tmp/eidolon-179-cohort-diagnostics-rlYYQI/loadtest",
+      "driverSHA256": "18db0d10b8d78ee4aef3c510a3d2196a7961602ee33599c12072878e05083d53",
+      "rootPath": "/tmp/eidolon-179-cohort-diagnostics-rlYYQI/root.test",
+      "rootSHA256": "2409392c5b14367f5523c058a2ac3129a4ef724fc86c97ceee88d620eb11117d"
+    },
+    "next": "Use only the smallest40-client/two-block actual cohort to classify added shared-table participants before considering another100-client run. Same server policies, normal Gold games,120s/five-second admission and all-client sustained-state/paid-result/save gates. No public1.79 acceptance implied."
+  },
   "raidEntryDeliveryCushion": {
     "finding": "Actual normal server now definitively identifies raid_enter as the rejected action. Matching its refill rate exactly at the client is not sufficient because dispatch/admission epochs differ; actual transport delay for the failed request was not recorded.",
     "reproduction": "New TestRaidEntryBudgetLeavesDeliveryTimingCushion failed0.010s on the original client budget. Declared model mirrors normal two-token/one-per30s server refill, with first request500ms dispatch delay and later100ms delay, preserving socket order. Exact client boundary admits the third request before the model's server budget refills. Model is a reproduced defect, not measurement of the actual failed request's latency.",
