@@ -8,15 +8,15 @@ do not close the whole goal or restart historical queues.
 
 ## Current checkpoint October 4
 
-Alpha1.72.0 is accepted live at1cf51d22ee16daa62406aeb9c1ecba92b66895e0,
-CI37196079883, with all ten jobs successful. Independent post-terminal IPv4
+Alpha1.73.0 is accepted live atad59bffbeb0f471d27da125f7bc5c0c1b3d95619,
+CI37201238962, with all ten jobs successful. Independent post-terminal IPv4
 checks verified matching frontend/backend identities, database readiness,
 login/cumulative notes and five exact publisher-rewritten runtime modules.
-The [acceptance receipt](2026-10-04-release1-72-public-acceptance.json) preserves
-QA skips and earlier failed/corrected CI provenance. Recovery is live but
-actual inbox delivery is not certified.1.73 valuable operations is assembled
-with schema22, its own version/notes and retained focused/party/migration proofs;
-its exact-source CI/public deployment remains required. Later privacy decisions,
+The [acceptance receipt](2026-10-04-release1-73-public-acceptance.json) preserves
+QA skips and both earlier failed/corrected CI runs. Recovery is live but
+actual inbox delivery is not certified.1.73 valuable operations through schema22
+has its own version/notes and retained focused/party/migration proofs. The1.74
+administration candidate is assembled but not published. Later privacy decisions,
 storage checkpoints, capacity, modern-art approval and the full1.99 goal stay open.
 
 ## Historical checkpoint October 2
