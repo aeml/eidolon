@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.71.1';
+const currentVersion = '1.72.0';
+
+test('1.72.0 documents authoritative gameplay and network bounds without later release claims', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.72.0"'), previous = html.indexOf('data-version="1.71.1"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['server-owned speed', 'distance-scaled airtime', '13.5 world units per second',
+        '0.46-second minimum', 'restart or redirect', 'Zero-health and disconnected', 'after wind-up',
+        'payload-byte', 'scene visibility', 'bounded, tracked work', 'verified-email recovery',
+        'not a launch-capacity certification', 'later durable trade/reward milestone', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.71.1 explains the narrow equipment-shop guard and retains recovery history', () => {
     const html = fs.readFileSync('index.html', 'utf8');

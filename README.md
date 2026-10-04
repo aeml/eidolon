@@ -420,10 +420,11 @@ Notes:
 
 ## Project Status
 
-- Current inherited version: `Alpha 1.71.1`. This isolated, unpublished1.72
-  candidate includes protocol/worker bounds, living combat/movement admission and
-  the longer-flight jump candidate. The owner jump choice, release assembly and
-  exact-source CI/public acceptance remain open; do not deploy it as1.71.1.
+- Current source version: `Alpha 1.72.0`. This release candidate includes
+  protocol/worker bounds and living combat/movement admission. Distance-scaled
+  airtime preserves existing jump reach at the existing13.5units/second travel
+  speed; the range-limited alternative remains a possible later owner tuning.
+  Exact-source CI/public acceptance remains open; source assembly is not live acceptance.
   Schema17 remains; future valuable-operation/privacy/operations writers are
   excluded. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic proof from actual inbox delivery, still owner-verified.
