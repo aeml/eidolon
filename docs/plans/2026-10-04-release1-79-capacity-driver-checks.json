@@ -545,7 +545,7 @@
     }
   },
   "weeklyFollowUp": {
-    "status": "CONTROLLER_TESTED_FIRST_ACTUAL_FAILED_CORRECTION_NOT_YET_RUN",
+    "status": "FIRST_ACTUAL_FAILED_CORRECTED_ACTUAL_RUNNING",
     "change": "Support actual weekly_raid level100/Mythic five-to-ten-player conversion/consent/access. Every client must observe matching living in-instance ordered Orun/Earth, Neris/Water, Pyralis/Fire, Aeral/Air phase messages plus actual boss-room clear and alive town exit. No synthetic transformation, damage, aid, reward or quest completion. Explicit maximum duration up to30m; existing elemental and default mixed behavior retained.",
     "evidence": "Focused weekly/preparation race1.377s; complete cmd/loadtest race17.714s. Domain preparation now includes real game weekly readiness/access with declared synthetic replies at5/10 members. Unit negatives cover nil/foreign/wrong identity/zero/high/skipped/regressed/dead/town/unprepared phases and wrong repair crystal; boss-only and phase-only views cannot pass. Root opt-in test compiles but skipped without disposable opt-in; this is not runtime success.",
     "actualCheck": "New opt-in TestLoadWeeklyActualFiveRolesPhasesExitAndSaves prepares five level100 uncommon/rare Fighter/Cleric/Rogue/Wizard/Fighter roles, legal plate/shields, leather/dual daggers, cloth/staff/tome and completed gate access, then ordinary server/driver requests. Requires all-own four phases, boss clear/town exit, original shared Dark King victory, personal weekly cache/lockout receipts, settled outbox, earned unclaimed finale readiness, preserved equipment/bag/EP, saved Gold/resonance. Initial level/access/gear are fixtures, not campaign proof. Not yet run.",
@@ -572,6 +572,22 @@
       "followUp": "Added closed-vocabulary first-failure diagnostics for runtime checkpoint/foreign-instance/unexpected-town/request/timeout/cast failures; tests1.376s preserve first cause and no retries. Corrected the actual-check room assertion from2 to1 because coverage counts cleared non-start rooms, not layout size; weekly has one boss and one start. The mandatory earned boss/phase/save gates remain. No rerun yet; user Sell All/in-game-error fixes take priority."
     },
     "limits": "Controller/unit preparation only. Need actual earned isolated encounter/save evidence. Announcements do not independently prove Eidolon aid mechanics or human balance. No five-to-ten-minute balance, full campaign, representative100-player/headroom or public release claim. Accepted previous encounters not replayed."
+  },
+  "weeklyCorrectedActualRun": {
+    "statusAtObservation": "RUNNING_NO_TERMINAL_OR_SUCCESS_CLAIM",
+    "sourceCommit": "8db6ea00",
+    "ownedContainer": "8fdc790db22a09c68d56ee83dfc1fb43e2daa29e67a970cd2552aac9b04d3143",
+    "taskLabel": "weekly-179-corrected-20261004",
+    "parentSession": 2403,
+    "namespaceProcesses": {"rootPID": 78, "serverPID": 93, "driverPID": 104},
+    "isolation": "Mongo7.0.14/networknone/no public ports,2CPU/2GiB/.25GiB cache,512MiB database/16MiB config tmpfs, readonly root/driver/server binds. Explicit disposable loopback opt-in. Driver20m/root22m maxima, early completion/failure. No production data or in-run grants/accelerated clock/health/damage/rate changes.",
+    "artifacts": {
+      "driver": {"path": "/tmp/eidolon-179-weekly-corrected-pQTsvO/loadtest", "sha256": "1451f49aaa6a8f7bf11ab2c3ec7420a7f5535d78981e6f835d33d9c70edf7f48"},
+      "raceRoot": {"path": "/tmp/eidolon-179-weekly-corrected-pQTsvO/root.test", "sha256": "50ffcfe9f67ae0d7569e55279c780a0540a1c0178e52f99bc8d0d13e3ed5f8ec"},
+      "unchangedServer": {"path": "/tmp/eidolon-179-poker-actual-eociud/server", "sha256": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc"}
+    },
+    "observation": "Mongo ping, actual test header, normal owned-server marker and exact root/server/driver PID/comm verified. Parent session2403 remains live. Observed fixture peak656924672B, all cgroup max/OOM/OOM-kill events0. Luna watch_dungeon179_1004 monitors exact processes/resources only; parent must retrieve terminal result, independently verify rewards/saves and remove exact owned fixture after termination. Process exit or observation timeout is not pass. Previous passed encounters were not replayed.",
+    "scope": "Corrected entry-budget/fixed diagnostic controller against same original game executable isolates the bot correction, not a claim that new admin-duration source ran in this executable. Required each-client ordered phases, real boss clear/Town exit and original durable reward/weekly/quest/character proofs remain unchanged."
   },
   "eventCorrectedActualRun": {
     "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",
