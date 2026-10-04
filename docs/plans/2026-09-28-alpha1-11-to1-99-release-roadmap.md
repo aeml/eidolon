@@ -70,8 +70,12 @@ to100 while retaining20 as its default and its original earned baseline. Per-blo
 class preparation and independent save checks scale to five parties and the
 real table/machine assignments. Complete sustained per-client coverage is now
 predeclared at5 updates/sec and90% of the120s window; focused count/coverage race
-checks passed1.082s. The100-client run is not yet started, and this is not capacity
-acceptance or a reason to overlap its measurement with the current finale test.
+checks passed1.082s. The later separate100-client run failed222.34s:90 admitted,
+10 admission failures, incomplete paid shared-table coverage, four of five parties
+formed. Transport/decode errors and OOM were zero; independent all-account save
+acceptance was not reached. Exact failure causes still need targeted diagnosis,
+not a server-limit increase or automatic repeat. Owned fixture removed. Neither
+this result nor one healthy runtime snapshot is100-player capacity acceptance.
 
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with

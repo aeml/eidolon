@@ -668,7 +668,7 @@
     }
   },
   "combined100ActualRun": {
-    "statusAtObservation": "PREPARING_OWNED_FIXTURES_NOT_ACCEPTED",
+    "statusAtObservation": "TERMINAL_FAIL_PARTIAL_ADMISSION_AND_CASINO_FIXTURE_REMOVED",
     "startedAtUTC": "2026-10-04T22:21:01Z",
     "sourceBase": "73de1a1a cohort test; unchanged compatible normal server and prior driver reused",
     "ownedContainer": "3af21461ee3a3a5a995d2d3efedf171d44c9db15004768db32fe9e546135c2fe",
@@ -683,7 +683,24 @@
       "rootPath": "/tmp/eidolon-179-combined100-yybMM9/root-current.test",
       "rootSHA256": "86d20c1e5acbdadcb1432147069167126656f0788aa184721e0e5f7e93fd9925"
     },
-    "isolation": "Only after terminal weekly run and exact owned fixture cleanup. Mongo7.0.14, network none/no published ports,2CPU/2GiB,512MiB database and16MiB config tmpfs,0.25GiB cache, read-only artifact binds. Explicit100 clients,120s driver/five-second admission,6m root bound includes preparation. Ping/owner/network/root PID verified. No production data/accounts/services used. Aggregate output only; independent every-account save checks required before passing."
+    "isolation": "Only after terminal weekly run and exact owned fixture cleanup. Mongo7.0.14, network none/no published ports,2CPU/2GiB,512MiB database and16MiB config tmpfs,0.25GiB cache, read-only artifact binds. Explicit100 clients,120s driver/five-second admission,6m root bound includes preparation. Ping/owner/network/root PID verified. No production data/accounts/services used.",
+    "result": "Terminal FAIL222.34s/exit1.100 connected but only90 authenticated/joined;10 admission failures. Several shared casino clients lacked any paid result and failed. Four of five parties formed; one failed. Driver returned failure before independent every-account save acceptance. No automatic retry, capacity acceptance or server limit relaxation.",
+    "metrics": {
+      "connected": 100, "joined": 90, "authenticated": 90, "admissionFailures": 10,
+      "stateFrames": 120868, "coveredClients": 90, "minFrames": 0, "minFreshOwnUpdates": 0,
+      "minActiveMilliseconds": 0, "maxStateGapMilliseconds": 641, "receivedPayloadBytes": 1310129752,
+      "maxRegistrationMilliseconds": 271, "maxLoginMilliseconds": 755, "maxJoinMilliseconds": 659,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "slots": { "clients": 10, "acceptedWagers": 8, "paidResults": 8, "minimumPaidResults": 0, "failed": 8 },
+      "blackjack": { "clients": 20, "acceptedWagers": 16, "paidResults": 3, "minimumPaidResults": 0, "failed": 19 },
+      "house": { "clients": 20, "acceptedWagers": 28, "paidResults": 21, "minimumPaidResults": 0, "failed": 10 },
+      "poker": { "clients": 10, "acceptedWagers": 6, "paidResults": 1, "minimumPaidResults": 0, "observedActions": 4, "failed": 8 },
+      "parties": { "groups": 5, "formed": 4, "members": 16, "minOwnImpacts": 0, "damageEvents": 305, "healEvents": 9, "acceptedCasts": 529, "deniedCasts": 4, "xpProgressUpdates": 228, "observedDeaths": 168, "failed": 1 },
+      "memoryPeakBytes": 779878400, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+    },
+    "runtimeObservation": "One isolated-server health sample at2026-10-04T22:24:36Z: status ok/database ready/commit server,239 goroutines,135170112 heap bytes; broadcast/encounter queued0 and all dropped counters0. Discovered only owned loopback listening port from proc. Initial mongosh top-level-await attempt failed parsing; async-wrapped read succeeded. One sample is not a time series, peak component attribution, supported headroom or latency/tick/database-capacity proof.",
+    "sourceFinding": "Credential admission source has four concurrent work slots and explicit busy rejection; it is not keyed by IP. Driver launches at100ms intervals, with observed755ms maximum login latency. Overlap can exhaust that gate, but current aggregate does not classify the actual ten admission failures. Shared-table failures likewise have no retained exact rejection classification. Do not assume resource saturation, busy rejection or stale revision was the actual cause without targeted evidence.",
+    "cleanup": "Terminal parent failure and absent root/server/driver verified. Exact owner/network/OOM/peak checked. Explicitly stopped and removed only this owned fixture; filtered listing empty. Synthetic database removed, compiled artifacts retained. No production player data/services affected."
   },
   "raidEntryDeliveryCushion": {
     "finding": "Actual normal server now definitively identifies raid_enter as the rejected action. Matching its refill rate exactly at the client is not sufficient because dispatch/admission epochs differ; actual transport delay for the failed request was not recorded.",
