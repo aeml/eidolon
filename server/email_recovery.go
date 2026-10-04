@@ -98,9 +98,9 @@ func (s *emailRecoveryService) deliver(job recoveryMailJob) {
 		}
 		if job.kind == "verify" {
 			subject = "Verify your Eidolon recovery email"
-			text = "A signed-in account owner requested this recovery address. To confirm it within30 minutes, open this link and choose Confirm email:\n\n" + link + "\n\nIf you did not request this, ignore this message. Your address is not verified until you confirm."
+			text = "A signed-in account owner requested this recovery address. To confirm it within 30 minutes, open this link and choose Confirm email:\n\n" + link + "\n\nIf you did not request this, ignore this message. Your address is not verified until you confirm."
 		} else {
-			text = "To reset your Eidolon password within15 minutes, open this link and choose a new password:\n\n" + link + "\n\nIf you did not request this, ignore this message. This request has not changed your password or signed you out."
+			text = "To reset your Eidolon password within 15 minutes, open this link and choose a new password:\n\n" + link + "\n\nIf you did not request this, ignore this message. This request has not changed your password or signed you out."
 		}
 	}
 	if err := s.mailer.send(s.ctx, job.recipient, subject, text); err != nil {

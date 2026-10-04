@@ -4,6 +4,7 @@ const PRODUCTION_HOSTS = new Set(['eidolonrealms.com', 'www.eidolonrealms.com', 
 
 /** One tag and cookie scope for the public website and game; no QA traffic. */
 export function initializeAnalytics(surface, win = window, doc = document) {
+    if (win.__eidolonRecoverySensitivePage) return () => {};
     if (!PRODUCTION_HOSTS.has(win.location.hostname)) return () => {};
     if (!win.__eidolonGoogleTagInitialized) {
         win.__eidolonGoogleTagInitialized = true;

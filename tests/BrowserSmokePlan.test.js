@@ -73,6 +73,7 @@ test('integrated desktop presentation checks run once in the existing interface 
     // Authenticated reference routes must not enter the anonymous hosted job.
     const baseline = browserSmokeBaselineFiles(manifest);
     expect(stages.filter(stage => stage.files.includes('tests/e2e/password-change-login.spec.js')).map(stage => stage.name)).toEqual(['interface']);
+    expect(stages.filter(stage => stage.files.includes('tests/e2e/email-recovery-login.spec.js')).map(stage => stage.name)).toEqual(['interface']);
     expect(baseline).not.toContain('tests/e2e/desktop-presentation-gameplay.spec.js');
     expect(baseline).not.toContain('tests/e2e/bastion-approach-gameplay.spec.js');
 });

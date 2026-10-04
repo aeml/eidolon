@@ -1,9 +1,10 @@
 import { jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
+import { URL as NodeURL } from 'node:url';
 
 // Keep account-help wiring real while these fixtures isolate asset/login boot.
 // Reuse the delivered form rather than a second incomplete copy of its fields.
-const currentMarkup = new DOMParser().parseFromString(readFileSync(new URL('../index.html', import.meta.url), 'utf8'), 'text/html');
+const currentMarkup = new DOMParser().parseFromString(readFileSync(new NodeURL('../index.html', import.meta.url), 'utf8'), 'text/html');
 const accountHelpMarkup = currentMarkup.getElementById('login-account-help').outerHTML
     + currentMarkup.getElementById('report-screen').outerHTML;
 

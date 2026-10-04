@@ -12,7 +12,7 @@ export class PasswordChangeUI {
         this.root.className = 'support-field password-change';
         const prefix = `account-password-${++nextFieldID}`;
         this.root.innerHTML = `<summary>Account security — change password</summary>
-            <p class="support-field__hint">Use your current password to choose a new one. Forgotten-password recovery is not available here. The game does not store your password on this device; your password manager may offer to save it.</p>
+            <p class="support-field__hint">Use your current password to choose a new one. Verify a recovery email with the separate form below; forgotten-password links are used on the login screen. The game does not store your password on this device; your password manager may offer to save it.</p>
             <form autocomplete="on">
                 <label class="support-field__label" for="${prefix}-current">Current password</label>
                 <input class="support-field__control" id="${prefix}-current" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" required maxlength="72">

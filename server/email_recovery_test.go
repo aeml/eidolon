@@ -208,3 +208,13 @@ func TestEmailRecoveryWorkersJoinShutdownAndDisableUnconfiguredMail(t *testing.T
 		t.Fatal("stopped mail service admitted work")
 	}
 }
+
+func TestEmailRecoveryInboundRejectionsKeepReceiptIdentity(t *testing.T) {
+	for _, kind := range []string{MsgSetRecoveryEmail, MsgRequestPasswordRecovery, MsgConfirmRecoveryEmail, MsgCompletePasswordRecovery} {
+		c := &Client{prioritySend: make(chan []byte, 4)}
+		c.sendInboundRejection(emailRecoveryMessage(kind, "owner", strings.Repeat("a", 64)), "Please wait before retrying.")
+		if ok, message := emailRecoveryReply(t, c); ok || message != "Please wait before retrying." {
+			t.Fatal("recovery rejection lost typed receipt", kind)
+		}
+	}
+}

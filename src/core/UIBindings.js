@@ -1,5 +1,6 @@
 import { collectReportContext } from '../ui/ReportUI.js';
 import { PasswordChangeUI } from '../ui/PasswordChangeUI.js';
+import { RecoveryEmailSetupUI } from '../ui/EmailRecoveryUI.js';
 
 const PROTECTED_INVENTORY_TYPES = new Set(['GEM', 'MATERIAL', 'RELIC']);
 const PROTECTED_INVENTORY_SLOTS = new Set(['gem', 'material', 'relic']);
@@ -117,6 +118,8 @@ export class UIBindings {
                 && engine.network?.socket?.readyState === WebSocket.OPEN;
             ui.passwordChange = new PasswordChangeUI({ parent: passwordParent, isCurrent: current,
                 send: payload => current() && engine.network.send('change_password', payload) });
+            ui.recoveryEmail = new RecoveryEmailSetupUI({ parent: passwordParent, isCurrent: current,
+                send: (type, payload) => current() && engine.network.send(type, payload) });
         }
         ui.getPlaytestContext = () => ({ level: engine.player?.level,
             className: engine.player?.meshType,

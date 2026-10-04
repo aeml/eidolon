@@ -28,6 +28,16 @@ func (c *Client) sendInboundRejection(msg Message, reason string) {
 		}
 	}
 	switch msg.Type {
+	case MsgSetRecoveryEmail, MsgRequestPasswordRecovery, MsgConfirmRecoveryEmail, MsgCompletePasswordRecovery:
+		if p, known := inboundMessagePolicies[msg.Type]; known && len(msg.Payload) <= p.maxPayloadBytes {
+			var request struct {
+				RequestID string `json:"requestId"`
+			}
+			if json.Unmarshal(msg.Payload, &request) == nil && reportRequestIDPattern.MatchString(request.RequestID) {
+				sendEmailRecoveryResult(c, msg, request.RequestID, false, reason)
+				return
+			}
+		}
 	case MsgChangePassword:
 		if p, known := inboundMessagePolicies[msg.Type]; known && len(msg.Payload) <= p.maxPayloadBytes {
 			var request struct {
