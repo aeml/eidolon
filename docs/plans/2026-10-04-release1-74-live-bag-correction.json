@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.74 live character QA correction",
+  "status": "focused checks passed; corrected exact-source deployment pending",
+  "failedSource": "d1a9dd5c3a380636db15e0c295cc5ec76f474c4c",
+  "failedRun": "https://github.com/aeml/eidolon/actions/runs/37203989155",
+  "failedJob": 111446130835,
+  "failure": "Live anonymous and persistent-character QA: overworld loot/dungeon/persistence scenario waited 15 seconds for inventoryCount < 25 after one vendor sale. Prior build, browser, predeploy, Pages and backend deployment gates passed, but the release was not accepted.",
+  "publicObservation": "2026-10-04 13:49:24 UTC: verified IPv4 HTTPS frontend and backend identify d1a9dd5c/Alpha1.74.0; backend status ok and database ready. This identity check is not runtime-byte or final release acceptance.",
+  "causeEvidence": "Real vendor handler plus deferred boss-loot bag-change hook reproduces a successful exact-item sale whose freed slot is filled by already-earned loot, leaving 25 items. The failed production account/outbox was not inspected; this demonstrates the old aggregate-count assumption is invalid, not which delivery occurred on that private account.",
+  "correction": "Disable auto-loot through normal Settings before cleanup. Re-read the authoritative bag after each exact-item sale and rotate at most 25 ordinary Common/Uncommon/Rare spares through the existing vendor UI. Protect worn, chronicle, invested, socketed, set, unique and Epic+ items. Fail on a rejected sale or no eligible spare; retain all pending rewards and require real free space before continuing pickup/persistence proof. No grants, raw account edits, outbox erasure or retries of stale indices.",
+  "checks": {
+    "goCommand": "env GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p 2 -race . -run '^TestBossLootDeferredDeliveryMayRefillSuccessfulVendorSale$' -count=1 -timeout=20s",
+    "goResult": "Passed root1.307s: real handlers with synthetic repository and owned local journal. First sale preserves original earned potency7/damage73 item while bag stays full; second sale leaves 24 items; Gold proceeds and EP43 remain correct. Not production-account or actual-Mongo inspection.",
+    "clientResult": "Node24.18.0 Jest --experimental-vm-modules: E2EHelpers and VersionPresentation, 378 checks/two suites passed2.001s. Five new helper cases cover multiple refills, exact-sale rejection, protected-only full bag, already-free bag and bounded exhaustion. Mock page callbacks exercise actual helper code; not live-browser acceptance.",
+    "hygiene": "Affected JavaScript ESLint, gofmt and git diff --check passed.",
+    "sha256": {
+      "tests/e2e/helpers.js": "cd2c477dde000bf84a5ea3a351da8f52a038c3a19800bc0c6e2e5095f5159972",
+      "tests/E2EHelpers.test.js": "7a5b7fac5449fc579ab9536f4c830135cfffbc48cdb215960e0c9f110e8cfad2",
+      "server/boss_loot_delivery_test.go": "2036dcce56f4bf8fda67016790589b3c7ccef081d40f8041ca05f0c3d0783265"
+    }
+  },
+  "scope": "Test-only correction and provenance. Production client/backend behavior, schema22, Alpha1.74 version and cumulative notes are unchanged. No new mail, private account inspection, service/configuration changes, whole campaign, soak, GPU or capacity claim.",
+  "recoveryConfiguration": "Running server presence-only check confirms all four owner-named Postmark/notification keys are configured. Values were not printed. Recovery supports the fixed Postmark provider and sends no administrator copies; sender/stream/token eligibility and actual inbox delivery still require the owner's explicit verification flow.",
+  "remaining": "Fetch/merge remote, normal push, Luna terminal CI monitoring, independent post-terminal public verification. Predecessor1.73 remains last accepted; broad roadmap and owner validation gates remain open."
+}

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.74.0 administration release assembly",
-  "status": "assembled, unpublished; predecessor1.73 independently accepted",
+  "status": "deployed at d1a9dd5c but not accepted: live character QA failed; test-only corrective candidate awaits exact-source gates",
   "integratedPredecessorSource": "ad59bffbeb0f471d27da125f7bc5c0c1b3d95619 corrective1.73, carrying accepted1.72/1cf51d22 and its independent acceptance record. First corrective source4c6ff137 isolated the shared actual boss repository fixture; its CI then failed a dungeon room-completion functional assertion, not a data-race diagnostic. The current correction waits for tracked earned work before checking the checkpoint, without changing production ordering. Neither failed run deployed.",
   "permissionReviewSource": "73564b4f742f755fbe68817db62f6bbbf31a85af",
   "version": "Alpha 1.74.0",
@@ -15,5 +15,6 @@
     "hygiene": "Affected JavaScript ESLint, deployment and isolatedQA bash-n, git diff --check passed."
   },
   "predecessorAcceptance": "Corrective1.73/ad59bffb CI37201238962 passed all ten jobs. Root independent post-terminal public verification at2026-10-04T12:50:43.914Z passed matching frontend/backend commit/version/readiness, login/cumulative notes and exact publisher-rewritten changed UI/bootstrap/recovery files. Acceptance receipt carried in this substantive1.74 release; earlier failed/skipped scopes remain recorded.",
-  "remaining": "Fetch/merge current master preserving other agents' edits, normal push and verify own exact-source CI plus independent post-terminal public version/commit/database/notes/runtime. No production grant, teleport, moderation, role edit, account deletion, mail or service change was performed.1.75 owner privacy decisions and all later roadmap gates remain separate."
+  "liveQACorrection": "2026-10-04-release1-74-live-bag-correction.json records the failed exact-source run, bounded ordinary spare-gear rotation, five helper checks and actual vendor/deferred-loot race regression. Production code, schema, version and release notes remain unchanged; this corrects a test assumption, not the deployed gameplay ordering.",
+  "remaining": "Fetch/merge current master preserving other agents' edits, push the test-only correction and verify its exact-source CI plus independent post-terminal public version/commit/database/notes/runtime. Predecessor1.73 remains the last independently accepted release. No production grant, teleport, moderation, role edit, account deletion, mail or service change was performed.1.75 owner privacy decisions and all later roadmap gates remain separate."
 }
