@@ -533,6 +533,16 @@ Current schema-catalog/recovery checks also pass. Embedded-account receipt growt
 still needs a replay-safe scalability solution; no arbitrary receipt pruning,
 new schema, capacity promise or1.76 release is claimed. The owned container and
 volumes were removed. Ordered predecessor decisions and the full goal remain open.
+The [character-query follow-up](2026-10-04-release1-76-character-projection-checks.json)
+fixes a confirmed unnecessary full-account fetch in ordinary and primary/majority
+recovery loads. An exact-account/name projection returns the complete selected
+character without credentials, account metadata or unrelated characters. Actual
+Mongo replies shrink from a1.61MB synthetic account to a147KB selected character;
+private opaque recovery fields, exact receipts, target-only saves and negative
+account/name boundaries pass in1.495 seconds. Focused related store regressions
+also pass; owned temporary data was removed. No schema, authority, receipt pruning
+or new deployment occurred. Individual receipt growth and ordered release gates
+remain open; the full roadmap goal is not complete.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

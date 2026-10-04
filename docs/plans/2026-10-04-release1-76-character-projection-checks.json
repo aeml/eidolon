@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.76 database and persistence scale",
+  "status": "prepared-unpublished-character-query-follow-up",
+  "sourceCommit": "a099cc99746970bc1bfe9cd65def5f174045b7b2",
+  "sourceSHA256": {
+    "server/internal/database/character_repository.go": "644f95a9a70236ebefe379fd03160c8243abc957953861301956824ef0218a0d",
+    "server/internal/database/character_repository_projection_test.go": "46b9a146f0a05b6b17beef6069ad760fa29f07b877433df5a2f52320ba788d98"
+  },
+  "baselineReproduction": "Two driver-command regressions failed before correction: both normal loads and primary/majority recovery loads requested the complete account document without projection, including credentials and unrelated characters' receipt maps.",
+  "changes": "The shared character repository retains its exact username/character-name filter and adds an elemMatch projection of the complete selected character, excluding account fields and unrelated array members. A narrow result DTO replaces the full User decode. No character fields, save behavior, authority, read concerns, schema or replay records changed.",
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/database -run '^Test(CharacterRepository|DirectTradeStore|GroundItemStore|DungeonRoomRewardStore|BossVictoryStore)' -count=1 -timeout=30s",
+    "focusedResult": "passed, package1.135s; synthetic driver/store regressions, with environment-gated actual Mongo checks not counted as new acceptance",
+    "actualCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 EIDOLON_PERSISTENCE_TEST_MONGO_URI=mongodb://127.0.0.1:32891 go test -race ./internal/database -run '^TestCharacterRepository' -count=1 -timeout=30s -v",
+    "actualResult": "passed, actual test0.45s/package1.495s, plus both command regressions",
+    "actualCoverage": "A requested non-first character with1,000 exact receipts, opaque future private trade state and retained boss rolls loads identically through ordinary and durable recovery reads. Captured actual Mongo firstBatch contains only characters with one selected member, not credentials/account fields or the unrelated10,000-receipt character. A target save preserves both unrelated character and account email/hash. Cross-account and missing-character queries return no character.",
+    "measuredReplyShape": {"completeSyntheticAccountBSONBytes": 1607181, "projectedDocumentBSONBytes": 146599, "ordinaryAndDurableReadShapesMatch": true},
+    "correctedCheckError": "The initial new command test did not compile because it used nonexistent bson.Raw.ElementsMust. Replaced with the installed driver's Elements method before the baseline reproduction and accepted runs; the failed compile supplies no test evidence.",
+    "hygiene": "gofmt and git diff --check passed. Remote master was fetched and remains accepted526bc229; no unrelated remote website changes were overwritten."
+  },
+  "ownedFixture": {
+    "containerID": "f5d0a543382e7eaf6c3f46590fa87858d5acf62022a0503feaf2e0986c0c65cf",
+    "imageSHA256": "b6421fd6d1c5ded6377b397d8983e2f82e2100dc5123332dcfda2065a472be5b",
+    "environment": "Mongo7.0.40 standalone,1 CPU/512MiB, ephemeral port32891 bound only to127.0.0.1; eidolon.qa.owner=codex and eidolon.qa.task=character-projection-176-20261004",
+    "cleanup": "Only the uniquely named synthetic test collection was dropped. The exact label-validated owned container and anonymous volumes83903d62aa74b324faab511f6ffa9af08415fee3b3ceeb61640accb20407948c/d08dbec84fc7769fb4c8c34e9e0bb5069095a6496f99263d633583378ab688ad were then removed; filtered listings confirm absence. Fixtures are reproducible; no production data or services were changed."
+  },
+  "proposedPatchNote": "Character loading now fetches only your selected character rather than the whole account document, reducing unnecessary data transfer while preserving complete character and reward-recovery state.",
+  "limits": [
+    "Actual projection/provider/save-isolation proof, not a new connected party run, migration/rollback acceptance, replica failover or a multiplayer capacity promise. Existing compatible recovery evidence remains separately scoped.",
+    "This reduces unrelated data transfer; it does not solve an individual character's lifetime receipt growth or embedded-account size ceiling. The replay-safe growth strategy recorded in2026-10-04-release1-76-persistence-scale-checks.json remains necessary.",
+    "Prepared source is committed locally, not pushed/versioned/deployed as1.76. Live remains Alpha1.70.2 at526bc22953e79cbe4869580e8f628d55c39c1b1c. Owner choices and ordered predecessor publication plus the later full roadmap remain open."
+  ]
+}
