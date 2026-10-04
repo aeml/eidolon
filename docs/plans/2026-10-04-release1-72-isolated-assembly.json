@@ -1,12 +1,14 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.72 protocol and gameplay abuse boundaries",
-  "status": "isolated successor preparation; jump choice and predecessor acceptance open, not published",
+  "status": "isolated successor preparation; predecessor accepted, jump choice open, not published",
+  "acceptedPredecessor": "Alpha1.71.0 / exact4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e / successfulCI37182320668, post-terminal public identity/runtime proof in2026-10-04-release1-71-public-acceptance.json; merged acceptance metadata, actual inbox check separate",
   "sourceCommit": "69c56bffe5422a8079ae44d51a174a4557e49777",
   "preparedFeatureBase": "7a495387, work/alpha-1-72-protocol-security-20261002",
   "predecessorCandidate": "73585e52ba20afe3f9ecc66b91305a3de0b68452, correctedAlpha1.71.0 / actualCI37180182645 confirmedpending; not accepted by this record",
   "integration": "Created dedicatedwork/alpha-1-72-release-20261004 at/tmp/eidolon-1-72-release-h2rS6C from prepared protocol branch. Merged current public account/recovery release711b82ce, preserving existing security work and resolving only the roadmap conflict by retaining both recovery progress and all1.72 evidence. Merged corrected73585e52 without conflict. Broader preparedschema24 tree remains untouched and excluded.",
   "sourceBoundary": "This candidate remains schema17. Prepared HTTP/socket/work reservations, frame/envelope/byte limits, private feedback/scene interest, walking/cast/jump input authority and bounded save/completion work are retained with Go1.27.1 dependency/toolchain preparation. Alpha1.71.0 defaults intentionally remain until1.72 is ready; neither future schema18–24 writers nor a1.72 publication is inferred from merging source.",
+  "socialWork": "2026-10-04-release1-72-social-work-checks.json records source46d3b939 and focused race pass3.206s. One tracked/coalesced social broadcast worker and one owned/coalesced friend-presence worker per connection replace raw join/status goroutine launches, preserving current-state lookup, immediate acknowledgements and existing filtering. Actual lease retention, dirty-pass/rejection/shutdown guards and concurrent invalidation checks passed. Connected Mongo/load and other worker scopes remain separate.",
   "checks": {
     "command": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(EmailRecovery(Request|Setup|Reset|Protocol|Workers|Inbound)|RecoveryMail|ResumeToken|Credential|InboundMessage)' -count=1 -timeout=30s",
     "result": "passed: root12.058s on merged source",
@@ -21,7 +23,7 @@
     "trackedSecretReview": "Current tracked-filename inventory finds server/.env.example and ordinary environment-named documentation/tests, no private-key containers. Filename-only tracked-text search found no private-key header, GitHub token or AWS access-ID pattern matches. The new mailer uses operator environment references, fixed Postmark HTTPS, no redirects and generic provider errors. Recovery handoff clears fragments before analytics and suppresses analytics on private pages. Narrow review only: not proof of historical/operator-secret absence, arbitrary encodings or comprehensive security certification."
   },
   "remaining": [
-    "Corrected1.71 exact-source CI and independent public acceptance before successor publication. Actual operator mailbox-delivery validation remains separate from synthetic proof.",
+    "Predecessor1.71 exact-source CI and independent public acceptance passed. Actual operator mailbox-delivery validation remains separate from synthetic proof.",
     "Owner jump-range/travel-time choice. Current network jump validates finite input/floor/context and rejects midflight restart but arbitrary distance still tops out at1.28seconds. Do not claim impossible-movement boundary closed. Follow-up question asks quick approximately17metre cap versus distance-scaled longer flight.",
     "Finish chosen jump policy and directly invalidated client/QA route checks; retain meaningful keyboard, geometry, movement and gameplay assertions. Reuse existing compatible proof instead of rerunning every historical matrix.",
     "Assemble1.72 cumulative notes/version and exact-source release checks after requirements are closed; fetch/pull concurrent remote changes and publish only this ordered successor, not broader future writers. Full1.11–1.99 goal and later owner/human gates remain active."

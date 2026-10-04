@@ -19,6 +19,13 @@ refused preflight and normal startup afterward without mutation. The focused
 race-instrumented check took0.54s. Its disposable container was removed; no
 production migration, backup or release was performed. Ordered1.72 acceptance,
 its open jump policy and final1.73 domain/release gates remain required.
+Prepared1.72 [social-worker bounds](2026-10-04-release1-72-social-work-checks.json)
+replace detached social-list and join-presence launches with tracked coalesced
+refreshes: one global list worker and one connection-owned friend worker, each
+with a dirty bit rather than an invalidation queue. Focused race checks passed
+in3.206s, retaining immediate status acknowledgements and current-state lookup.
+No connected-Mongo/load or live release acceptance is inferred; the jump-policy
+choice and other ordered1.72 gates remain open.
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes

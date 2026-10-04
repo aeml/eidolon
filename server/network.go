@@ -257,7 +257,7 @@ func cleanupClientWithTradeOwnershipLocked(client *Client, recoverTrade bool) {
 
 	// 5. Notify online friends that this player has gone offline (0.38.1).
 	if client.username != "" {
-		scheduleClientCharacterWork(client, func() { notifyFriendsPresence(client.username) })
+		scheduleFriendPresence(client)
 		scheduleClientCharacterWork(client, func() { touchAndBroadcastGuildPresence(client.playerID, time.Now()) })
 	}
 

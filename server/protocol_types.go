@@ -152,6 +152,7 @@ type Client struct {
 	connectionWorkReleased bool
 	cleanupOnce            sync.Once
 	replacementCloseOnce   sync.Once
+	friendPresenceWork     coalescedSocialWork
 }
 
 // Message types

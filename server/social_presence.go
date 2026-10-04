@@ -17,7 +17,7 @@ func autoSetSocialStatus(c *Client, playerID, newStatus string) {
 	ackPayload, _ := json.Marshal(SocialStatusPayload{Status: status})
 	c.sendSafe(createMessage(MsgSocialStatus, ackPayload))
 	// Broadcast fresh list to all sessions.
-	go broadcastSocialToAll()
+	scheduleSocialBroadcast()
 }
 
 func buildSocialList() []SocialEntry {
