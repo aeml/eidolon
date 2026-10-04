@@ -21,24 +21,25 @@ const RecoveryMailCooldown = time.Minute
 
 // Registration email is deliberately NOT ownership proof. These optional,
 // private account fields are established only by password proof + mail proof.
+// Database-only projections: any wire response must use an explicit safe DTO.
 type recoveryEmail struct {
-	Address    string    `bson:"address"`
-	VerifiedAt time.Time `bson:"verified_at"`
+	Address    string    `bson:"address" json:"-"`
+	VerifiedAt time.Time `bson:"verified_at" json:"-"`
 }
 
 type recoveryChallenge struct {
-	Digest       string    `bson:"digest"`
-	Address      string    `bson:"address"`
-	PasswordHash string    `bson:"password_hash"`
-	IssuedAt     time.Time `bson:"issued_at"`
-	ExpiresAt    time.Time `bson:"expires_at"`
+	Digest       string    `bson:"digest" json:"-"`
+	Address      string    `bson:"address" json:"-"`
+	PasswordHash string    `bson:"password_hash" json:"-"`
+	IssuedAt     time.Time `bson:"issued_at" json:"-"`
+	ExpiresAt    time.Time `bson:"expires_at" json:"-"`
 }
 
 type recoveryAccount struct {
-	Hash         string            `bson:"password_hash"`
-	Email        recoveryEmail     `bson:"recovery_email"`
-	Verification recoveryChallenge `bson:"recovery_email_pending"`
-	Reset        recoveryChallenge `bson:"password_recovery"`
+	Hash         string            `bson:"password_hash" json:"-"`
+	Email        recoveryEmail     `bson:"recovery_email" json:"-"`
+	Verification recoveryChallenge `bson:"recovery_email_pending" json:"-"`
+	Reset        recoveryChallenge `bson:"password_recovery" json:"-"`
 }
 
 // Require exactly one bare mailbox, not a display name or recipient list.
