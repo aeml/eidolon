@@ -420,8 +420,9 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.1`. The narrowly scoped Sell All/error
-  hotfix has been ordinarily merged from master; its exact CI/public proof is
+- Current source version: `Alpha 1.74.2`. The narrowly scoped Sell All/error and
+  real-player administration maintenance releases have been ordinarily merged
+  from master; their exact CI/public proof is
   still pending. This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only

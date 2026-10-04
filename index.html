@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.74.1</span>
+                    <span class="start-version-row__label">Alpha 1.74.2</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -774,6 +774,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.74.2">
+                    <h3 class="patch-note-entry__title">Alpha 1.74.2 (real-player administration)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Administration online players and activity history default to Real players, excluding reserved Codex/load-test account prefixes on the server before pagination. All players and Test accounts remain available. No records are deleted.</li>
+                        <li>Select a UTC day to see unique login accounts and recorded closed-session time; select an exact account for its totals. Reconnects and administration reads do not inflate login counts. New disconnect records display connection duration.</li>
+                        <li>Time measures closed authenticated connections, not active-play or AFK detection. Open sessions, missing disconnects and unrecorded legacy durations are not estimated. Incomplete bounded-query totals are withheld; filters and disconnects clear private stale data.</li>
+                        <li>Existing administrator permissions, schema 22, retention, characters, currency and public access remain unchanged. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.74.1">
                     <h3 class="patch-note-entry__title">Alpha 1.74.1 (Sell All and in-game errors)</h3>
                     <ul class="patch-note-entry__list">
