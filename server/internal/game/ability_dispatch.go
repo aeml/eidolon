@@ -33,7 +33,7 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
-	if !ok {
+	if !ok || player.Type != TypePlayer {
 		return AbilityResult{SkillName: skillName, Reason: "player_not_found"}
 	}
 	result := AbilityResult{SkillName: skillName, Mana: player.Mana}
@@ -44,11 +44,12 @@ func (w *World) PerformAbility(playerID string, targetX, targetZ float64, target
 		result.Reason = "invalid_target"
 		return result
 	}
-	if player.State == "DEAD" {
+	// Health is authoritative even before the death state/animation catches up.
+	if player.Health <= 0 || player.State == "DEAD" {
 		result.Reason = "dead"
 		return result
 	}
-	if player.CasinoSeat != nil || player.State == "JUMPING" || player.IsCharging {
+	if player.Disconnected || player.CasinoSeat != nil || player.State == "JUMPING" || player.IsCharging {
 		result.Reason = "action_locked"
 		return result
 	}
