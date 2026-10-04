@@ -521,5 +521,16 @@
       "loadtest/event_test.go": "c25256d6a43d58ca601960bedb1ff08ff96d5f2f33216aa308a0da9a5e97cafb"
     }
   },
+  "eventReturningLeaderCorrection": {
+    "source": "bb9406d1 plus matching active-combat/target-delegation range and returning-leader regression. Event-only controller change, no production server or success-threshold change.",
+    "reproduction": "The returning leader at50 units was eligible for target delegation (65) while its own event step still required travel before combat (40). TestEventLoadKeepsLiveCombatDuringAnotherMembersRecovery/leader-returning failed0.011s before the fix. Target delegation now uses the same40-unit combat gate; physical participation remains65 and still needs every member's actual four waves/completion/exit.",
+    "focusedEventRaceSeconds": 1.400,
+    "compatibilityScope": "Preceding full driver race17.790s retained; this subsequent one-line event eligibility change and new boundary case are covered by focused event race checks. No rerun of actual accepted dungeon/raid/casino/combined encounters.",
+    "sha256": {
+      "loadtest/event.go": "187b91671d10d886aac0c7f89d132d9a4bfb6c44188d6d2929bd6433df9ca4e5",
+      "loadtest/event_test.go": "4916583add7f2a6015806f5aaa1b944196d6431e3fbbdaf5a842a95cbc9b4ed4"
+    },
+    "actualCorrectedRun": "NOT RUN; build final changed driver before scheduling the next real Root window. Earlier corrected artifact42276555 predates this boundary correction and is retained at its original scope."
+  },
   "remaining": "Default mixed still distributes only combat/town/social; explicit combined covers real concurrent party combat, public Gold games and saves at20. Normal four-class Verdant dungeon entry/routing/town recovery/checkpoint/earned clear/exit and independent reward/character saves pass. Corrected normal five-player Earth raid assault/three-wave repair/exit, original shared boss rewards and earned unclaimed repair readiness for every member now pass535.31s; fixture removed, original artifacts retained. First naturally scheduled four-class Root attempt FAILED481.98s at expiry; terminal retrieved and fixture removed. Demonstrated bot all-member recovery pause/dead-leader targeting is corrected and focused/full compatibility races pass; corrected actual encounter/save remains missing. Dark King/other actual rituals and integrated event/save workloads remain missing; reuse the previously earned naturally scheduled Root encounter only at its original single-Wizard scope. Measure acknowledged action/travel outcomes and declared cohort tick/network/DB/client criteria with owner-approved duration/headroom. No claim that20 implies100. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for authorized long raid/dungeon monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }

@@ -285,18 +285,20 @@ func TestEventRecoveryPreservesBarsAndWaitsForTown(t *testing.T) {
 }
 
 func TestEventLoadKeepsLiveCombatDuringAnotherMembersRecovery(t *testing.T) {
-	for _, scenario := range []string{"cleric-away", "leader-dead"} {
+	for _, scenario := range []string{"cleric-away", "leader-dead", "leader-returning"} {
 		t.Run(scenario, func(t *testing.T) {
 			p, now := eventFixture(t, 0)
 			index, missing := 0, 1
-			if scenario == "leader-dead" {
+			if scenario != "cleric-away" {
 				index, missing = 1, 0
 			}
 			me := p.members[missing].state
 			if scenario == "cleric-away" {
 				me.X, me.Z = -1.25, 200
-			} else {
+			} else if scenario == "leader-dead" {
 				me.Health, me.State = 0, "DEAD"
+			} else {
+				me.X += 50 // Still in event participation range, outside combat range.
 			}
 			p.state(missing, me, now)
 			for i := range p.members {
@@ -315,7 +317,11 @@ func TestEventLoadKeepsLiveCombatDuringAnotherMembersRecovery(t *testing.T) {
 			if p.failed || requests != 1 || p.target.ID != enemy.ID {
 				t.Fatal("one recovering/dead member disabled the live cohort")
 			}
-			if p.eventCounts().complete != 0 || p.eventCounts().minWaveViews != 0 {
+			wantWaves := uint64(0)
+			if scenario == "leader-returning" {
+				wantWaves = 1 // Actual near-site wave view, not distant/dead credit.
+			}
+			if p.eventCounts().complete != 0 || p.eventCounts().minWaveViews != wantWaves {
 				t.Fatal("continuing combat fabricated absent member's participation")
 			}
 		})

@@ -248,7 +248,7 @@ func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, time
 func (e *eventLoad) combatLeader(p *partyLoad, index int) bool {
 	for i, member := range p.members {
 		me := member.state
-		if me.Health > 0 && me.State != "DEAD" && me.InstanceID == "" && math.Hypot(me.X-e.site.X, me.Z-e.site.Z) <= 65 {
+		if me.Health > 0 && me.State != "DEAD" && me.InstanceID == "" && math.Hypot(me.X-e.site.X, me.Z-e.site.Z) <= 40 {
 			return i == index
 		}
 	}
