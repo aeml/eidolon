@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"math"
 	"regexp"
 	"strings"
 	"time"
@@ -30,11 +31,14 @@ type BlackjackTableRecord struct {
 }
 
 type BlackjackTransfer struct {
-	ID        string `bson:"id"`
-	PlayerID  string `bson:"player_id"`
-	Currency  string `bson:"currency"`
-	Amount    int    `bson:"amount"` // Negative debit, positive inclusive payout/refund.
-	NextState []byte `bson:"next_state"`
+	TableID      string `bson:"table_id,omitempty" json:",omitempty"`
+	TableVersion int64  `bson:"table_version,omitempty" json:",omitempty"`
+	Fingerprint  string `bson:"fingerprint,omitempty" json:",omitempty"`
+	ID           string `bson:"id"`
+	PlayerID     string `bson:"player_id"`
+	Currency     string `bson:"currency"`
+	Amount       int    `bson:"amount"` // Negative debit, positive inclusive payout/refund.
+	NextState    []byte `bson:"next_state"`
 }
 
 func validBlackjackState(state []byte) bool {
@@ -42,6 +46,12 @@ func validBlackjackState(state []byte) bool {
 }
 
 func (op BlackjackTransfer) Validate() error {
+	if op.TableVersion != 0 || op.TableID != "" || op.Fingerprint != "" {
+		fingerprint, err := casinoTransferFingerprint(op)
+		if op.TableVersion < 2 || len(op.TableID) == 0 || len(op.TableID) > 96 || err != nil || op.Fingerprint != fingerprint {
+			return errors.New("invalid casino checkpoint identity")
+		}
+	}
 	maxDebit := 100000
 	maxReturn := 1600000 // Four doubled 100,000 Gold hands, each returning 2×.
 	// Receipt families have separate limits; game intent validation recomputes outcomes.
@@ -84,6 +94,9 @@ func CasinoCurrencyForRecord(tableID string) (string, error) {
 func (op BlackjackTransfer) ValidateForTable(tableID string) error {
 	if err := op.Validate(); err != nil {
 		return err
+	}
+	if op.TableVersion != 0 && op.TableID != tableID {
+		return ErrBlackjackTableConflict
 	}
 	currency, err := CasinoCurrencyForRecord(tableID)
 	if err != nil {
@@ -142,13 +155,16 @@ func (db *DB) GetBlackjackTable(tableID string) (*BlackjackTableRecord, error) {
 		if err := record.Pending.ValidateForTable(tableID); err != nil {
 			return nil, err
 		}
+		if record.Pending.TableVersion != 0 && record.Pending.TableVersion != record.Version {
+			return nil, ErrBlackjackTableConflict
+		}
 	}
 	return &record, nil
 }
 
 // A normal deal/turn update cannot cross an unresolved money operation.
 func (db *DB) AdvanceBlackjackTable(tableID string, version int64, state []byte) (*BlackjackTableRecord, error) {
-	if version <= 0 || !validBlackjackState(state) {
+	if version <= 0 || version == math.MaxInt64 || !validBlackjackState(state) {
 		return nil, errors.New("invalid blackjack advance")
 	}
 	return db.updateBlackjackTable(bson.M{"_id": tableID, "version": version, "pending": nil},
@@ -159,8 +175,14 @@ func (db *DB) BeginBlackjackTransfer(tableID string, version int64, op Blackjack
 	if err := op.ValidateForTable(tableID); err != nil {
 		return nil, err
 	}
-	if version <= 0 {
+	if version <= 0 || version >= math.MaxInt64-1 {
 		return nil, ErrBlackjackTableConflict
+	}
+	legacyInput := op.TableVersion == 0 && op.TableID == "" && op.Fingerprint == ""
+	var stampErr error
+	op, stampErr = op.WithCasinoCheckpoint(tableID, version+1)
+	if stampErr != nil {
+		return nil, stampErr
 	}
 	record, err := db.updateBlackjackTable(bson.M{"_id": tableID, "version": version, "pending": nil},
 		bson.M{"$set": bson.M{"pending": op}, "$inc": bson.M{"version": 1}})
@@ -172,7 +194,8 @@ func (db *DB) BeginBlackjackTransfer(tableID string, version int64, op Blackjack
 	current, readErr := db.GetBlackjackTable(tableID)
 	if readErr == nil && current.Version == version+1 && current.Pending != nil {
 		p := current.Pending
-		if p.ID == op.ID && p.PlayerID == op.PlayerID && p.Currency == op.Currency && p.Amount == op.Amount && bytes.Equal(p.NextState, op.NextState) {
+		checkpointMatches := p.TableVersion == op.TableVersion && p.TableID == op.TableID && p.Fingerprint == op.Fingerprint || legacyInput && p.TableVersion == 0
+		if checkpointMatches && p.ID == op.ID && p.PlayerID == op.PlayerID && p.Currency == op.Currency && p.Amount == op.Amount && bytes.Equal(p.NextState, op.NextState) {
 			return current, nil
 		}
 	}
@@ -187,6 +210,9 @@ func (db *DB) ResolveBlackjackTransfer(record BlackjackTableRecord, accepted boo
 	}
 	if err := record.Pending.ValidateForTable(record.TableID); err != nil {
 		return nil, err
+	}
+	if record.Version <= 0 || record.Version == math.MaxInt64 || record.Pending.TableVersion != 0 && record.Pending.TableVersion != record.Version {
+		return nil, ErrBlackjackTableConflict
 	}
 	if !accepted && record.Pending.Amount > 0 {
 		return nil, errors.New("earned blackjack payout cannot be discarded")

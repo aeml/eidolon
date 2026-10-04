@@ -1,6 +1,7 @@
 package game
 
 import (
+	"eidolon-server/internal/database"
 	"fmt"
 	"reflect"
 	"sync"
@@ -14,7 +15,8 @@ func TestStateBatchSharesOnlyDetachedCurrentBroadcast(t *testing.T) {
 		p := &Entity{ID: id, Type: TypePlayer, X: float64(i), Health: 100,
 			EP: 83, EPExchangeReceipts: map[string]int{"private": 1},
 			EPCasinoReceipts: map[string]int{"private": -10}, VIPAllowanceReceipts: map[string]int{"private": 100},
-			Inventory: []Item{{ID: "private-bag-item"}}, AppearanceCollection: map[string]EquipmentAppearance{"private": {}},
+			CasinoWalletCheckpoints: map[string]database.CasinoWalletCheckpoint{"private-table": {Version: 9, ID: "private-operation", Fingerprint: "private-fingerprint"}},
+			Inventory:               []Item{{ID: "private-bag-item"}}, AppearanceCollection: map[string]EquipmentAppearance{"private": {}},
 			UnlockedSkills: []string{"Fireball"}, Equipment: map[string]Item{
 				"mainHand": {ID: "staff", Description: "omit", Stats: map[string]int{"damage": 7}}}}
 		if i == 2 {
@@ -41,7 +43,7 @@ func TestStateBatchSharesOnlyDetachedCurrentBroadcast(t *testing.T) {
 	if a["beyond-radius"] != nil || b["beyond-radius"] != nil {
 		t.Fatal("batch crossed view radius")
 	}
-	if a[ids[0]].EP != 0 || a[ids[0]].EPExchangeReceipts != nil || a[ids[0]].EPCasinoReceipts != nil ||
+	if a[ids[0]].EP != 0 || a[ids[0]].EPExchangeReceipts != nil || a[ids[0]].EPCasinoReceipts != nil || a[ids[0]].CasinoWalletCheckpoints != nil ||
 		a[ids[0]].VIPAllowanceReceipts != nil || a[ids[0]].Inventory != nil || a[ids[0]].AppearanceCollection != nil ||
 		a[ids[0]].Equipment["mainHand"].Description != "" {
 		t.Fatal("snapshot exposed private wallet or changed wire stripping")

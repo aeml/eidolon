@@ -31,7 +31,7 @@ func TestGroundItemCheckpointActualMongoContiguousSaveRaceAndReopen(t *testing.T
 	if err := repo.RunMigrations(t.Context()); err != nil {
 		t.Fatal("schema23 repeat migration", err)
 	}
-	if version, err := repo.SchemaVersion(t.Context()); err != nil || version != 23 {
+	if version, err := repo.SchemaVersion(t.Context()); err != nil || version != CurrentSchemaVersion {
 		t.Fatal("writer fence not installed", version, err)
 	}
 	owner := fmt.Sprintf("checkpoint-fixture-%d", time.Now().UnixNano())
