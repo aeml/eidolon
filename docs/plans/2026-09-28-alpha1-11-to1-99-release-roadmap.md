@@ -495,6 +495,14 @@ pass, along with focused administration/session/mutation race regressions in
 prepared source, not a connected acceptance or1.74 deployment. Existing RAM-only
 dual-store-outage limits remain explicit; ordered release gates and the full
 roadmap goal stay open.
+The same receipt's mutation-admission follow-up covers a second confirmed gap:
+new grants now recheck authority after planning/recovery, and report updates
+recheck after their admission-audit IO. Six failing-before/passing-after boundary
+cases are retained. Focused administration/session/recovery race checks pass in
+9.619 seconds; an additional2.221-second check preserves exactly-once recovery of
+an already-approved grant after role revocation without exposing success to the
+revoked actor. No atomic cross-store permission guarantee or new connected/Mongo
+acceptance is implied. Both corrections remain prepared and unpublished.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

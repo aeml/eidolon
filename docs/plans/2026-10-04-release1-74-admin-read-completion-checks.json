@@ -21,5 +21,15 @@
     "The existing simultaneous Mongo/disk outage fallback is bounded RAM only. Readiness and clean shutdown fail closed until recovery, but forced process loss can discard RAM-only activity. No new crash durability is claimed.",
     "Prepared source is not versioned, pushed or deployed as 1.74. Accepted live remains Alpha1.70.2 at526bc22953e79cbe4869580e8f628d55c39c1b1c. Ordered predecessor decisions and release gates, administration review and the full later roadmap remain open."
   ],
-  "proposedPatchNote": "Administration screens discard private results if your administrator access or connection changes while a read is in progress. Late denials retain correlated audit history through the existing storage-recovery path."
+  "mutationAdmissionFollowUp": {
+    "sourceCommit": "04bf5e6c8498f1f726b5c481058c74e52f88dede",
+    "baselineReproduction": "Six injected role-revocation, role-outage and connection-replacement cases failed: grants after operation lookup still created intent, and report reviews after admission-audit IO still changed the case.",
+    "changes": "The shared authority check runs after detached planning/recovery and before new administrator operation intent, and after the report admission audit before its case update. Late denials are correlated and audited even on a replaced authenticated connection. Existing approved durable operations retain their independent recovery contract.",
+    "regressionCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(AdminRead|AdminConsole|AdminReports|AdminReportReview|SessionActivity|AdminMutation|AdminRecovery)' -count=1 -timeout=60s",
+    "regressionResult": "passed, server package 9.619s",
+    "finalAddedCheckCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(AdminMutationDurableApprovedIntent|AdminMutationRevalidates|AdminReportReviewRevalidates|AdminRecovery)' -count=1 -timeout=30s",
+    "finalAddedCheckResult": "passed, server package 2.221s; a modeled failed character save leaves approved grant intent, role revocation does not prevent background completion, a second recovery does not duplicate the grant, and the revoked actor cannot replay its privileged success",
+    "limits": "In-process synthetic stores with existing temporary disk journals; not a new connected or Mongo acceptance. Remote role lookup and intent/report storage commit are not one atomic transaction. Existing exactly-once operation storage and outage recovery remain unchanged; no current production account or data was modified."
+  },
+  "proposedPatchNote": "Administration screens discard private results if your administrator access or connection changes while a read is in progress. New grants and report reviews also recheck access after intervening storage work; already-approved operations retain safe recovery. Late denials retain correlated audit history through the existing storage-recovery path."
 }
