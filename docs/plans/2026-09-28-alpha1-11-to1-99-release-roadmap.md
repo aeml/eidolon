@@ -1886,6 +1886,17 @@ on concurrent entity-map iteration/write and auto-restarted. Read-only deployed
 source inspection identifies an unprotected periodic elite-spawn publication as
 a candidate writer; no code repair/deployment has been authorized in response
 to the diagnostic request. See the [incident diagnosis](2026-10-04-live-map-crash-diagnosis.md).
+
+October4: the prepared1.79 weekly-raid controller now supports the actual
+level100/Mythic five-to-ten-player access and consent flow, every-client ordered
+four Eidolon phase views, separate actual boss clear and town exit gates.
+Focused weekly/preparation race1.377s and full driver race17.714s pass. A new
+opt-in five-class-role isolated-server check requires original shared victory,
+personal weekly delivery/lockout receipts, unclaimed finale readiness and
+independent preserved gear/bag/EP plus Gold/resonance saves. Its initial
+level/chapter/uncommon-rare equipment are fixtures; no earned Dark King runtime
+pass, aid-mechanics, human balance or capacity claim yet. Existing accepted
+encounter checks remain scoped and are not replayed.
 Prepared capacity work does not imply that this production crash is fixed.
 
 ## References

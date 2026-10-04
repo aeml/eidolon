@@ -12,6 +12,9 @@ func raidEncounterFixture(t *testing.T, kind string) *partyLoad {
 	t.Helper()
 	p := raidFixture(5, kind)
 	p.dungeon = &dungeonLoad{kind: kind, difficulty: game.DifficultyNormal, level: p.raid.level, objective: -2}
+	if kind == "weekly_raid" {
+		p.dungeon.difficulty = game.DifficultyMythic
+	}
 	p.raid.converted, p.raid.checkSent = true, true
 	ready := make([]bool, len(p.members))
 	for i := range ready {
@@ -43,8 +46,11 @@ func raidEncounterFixture(t *testing.T, kind string) *partyLoad {
 	}
 	summary := loadDungeonSummary(layout, 0)
 	summary.RunLevel = p.raid.level
+	summary.Difficulty = string(p.dungeon.difficulty)
 	definition, _ := game.ElementalRaidDefinitionForType(kind)
-	summary.Crystal = &game.CrystalSanctumSnapshot{InstanceID: "dungeon_synthetic", RaidType: kind, Element: definition.Element, Name: definition.Crystal, Stage: "fractured", TotalWaves: 3, X: 200}
+	if kind != "weekly_raid" {
+		summary.Crystal = &game.CrystalSanctumSnapshot{InstanceID: "dungeon_synthetic", RaidType: kind, Element: definition.Element, Name: definition.Crystal, Stage: "fractured", TotalWaves: 3, X: 200}
+	}
 	for i := range p.members {
 		// Fresh normal raid responses do not contain a spawn field.
 		scene := partyMessage("enter_instance", map[string]interface{}{"instanceId": "dungeon_synthetic", "type": kind, "layout": layout, "roomState": summary})

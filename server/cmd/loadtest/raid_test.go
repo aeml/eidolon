@@ -38,14 +38,24 @@ func conversionReply() Message {
 }
 
 func TestRaidPreparationNormalDomainConversionAndEveryConsent(t *testing.T) {
-	for _, kind := range []string{"earth_crystal_raid", "water_crystal_raid", "fire_crystal_raid", "air_crystal_raid"} {
+	for _, kind := range []string{"earth_crystal_raid", "water_crystal_raid", "fire_crystal_raid", "air_crystal_raid", "weekly_raid"} {
 		for _, count := range []int{5, 10} {
 			t.Run(fmt.Sprintf("%s/%d", kind, count), func(t *testing.T) {
 				p := raidFixture(count, kind)
 				definition, _ := game.ElementalRaidDefinitionForType(kind)
+				quest := definition.RequiredDungeonQuest
+				if kind == "weekly_raid" {
+					quest = game.ChronicleGateOpenedID
+				}
 				world := &game.World{Entities: map[string]*game.Entity{}, Parties: map[string]*game.Party{}}
 				for _, member := range p.members {
-					world.Entities[member.id] = &game.Entity{ID: member.id, Type: game.TypePlayer, SubType: member.state.SubType, Level: definition.RequiredLevel, Quests: []game.Quest{{ID: definition.RequiredDungeonQuest, Completed: true}}}
+					world.Entities[member.id] = &game.Entity{ID: member.id, Type: game.TypePlayer, SubType: member.state.SubType, Level: p.raid.level, Quests: []game.Quest{{ID: quest, Completed: true}}}
+				}
+				validate := func() (*game.Party, []string, error) {
+					if kind == "weekly_raid" {
+						return world.ValidateWeeklyRaidParty(p.members[0].id)
+					}
+					return world.ValidateElementalRaidParty(p.members[0].id, p.raid.kind)
 				}
 				var party *game.Party
 				type reply struct {
@@ -103,7 +113,7 @@ func TestRaidPreparationNormalDomainConversionAndEveryConsent(t *testing.T) {
 								replies = append(replies, reply{0, conversionReply()})
 							case "party_ready_check":
 								checks++
-								if _, _, err := world.ValidateElementalRaidParty(p.members[0].id, p.raid.kind); err == nil {
+								if _, _, err := validate(); err == nil {
 									t.Fatal("entry passed without consent")
 								}
 								var err error
@@ -140,8 +150,13 @@ func TestRaidPreparationNormalDomainConversionAndEveryConsent(t *testing.T) {
 				if p.failed || !p.raid.prepared() || !p.formed() || conversions != 1 || checks != 1 || consents != count {
 					t.Fatal("incomplete/repeated preparation", conversions, checks, consents)
 				}
-				if _, members, err := world.ValidateElementalRaidParty(p.members[0].id, p.raid.kind); err != nil || len(members) != count {
+				if _, members, err := validate(); err != nil || len(members) != count {
 					t.Fatal("domain entry still denied", err)
+				}
+				if kind == "weekly_raid" {
+					if err := world.RequirePartyChronicleQuest(p.partyID, game.ChronicleGateOpenedID); err != nil {
+						t.Fatal("prepared chapter gate rejected", err)
+					}
 				}
 				p.raid.members[count-1].allReadySeen = false
 				if p.raid.prepared() {
@@ -166,7 +181,7 @@ func TestRaidPreparationRefusesUnprovenOrChangedConsent(t *testing.T) {
 			case "too-large":
 				p = raidFixture(11, p.raid.kind)
 			case "unknown":
-				p = raidFixture(5, "weekly_raid") // Dark finale needs its own gate/controller.
+				p = raidFixture(5, "unrecognized_raid")
 			case "under-level":
 				me := p.members[4].state
 				me.Level--

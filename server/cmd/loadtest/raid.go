@@ -27,6 +27,7 @@ type raidLoadMember struct {
 	ritualWave                                     int
 	waterReturning                                 bool
 	pointSince                                     time.Time
+	phasesSeen                                     uint8
 }
 
 // Shares partyLoad.mu. Preparation is separate from encounter/repair proof.
@@ -42,17 +43,20 @@ const raidConversionMessage = "Raid group formed. Invite 5-10 qualified players,
 
 func newRaidParty(credentials []BotCredentials, kind string) *partyLoad {
 	p := newPartyCohort(credentials, 0, 0, 5, 10)
-	definition, valid := game.ElementalRaidDefinitionForType(kind)
+	level, valid := raidLoadLevel(kind)
 	if !valid {
 		p.failed = true
 	}
-	p.raid = &raidLoad{kind: kind, level: definition.RequiredLevel, members: make([]raidLoadMember, len(p.members))}
+	p.raid = &raidLoad{kind: kind, level: level, members: make([]raidLoadMember, len(p.members))}
 	return p
 }
 
 func newRaidWorkload(credentials []BotCredentials, kind string) *partyLoad {
 	p := newRaidParty(credentials, kind)
 	p.dungeon = &dungeonLoad{kind: kind, level: p.raid.level, difficulty: game.DifficultyNormal, objective: -2}
+	if kind == "weekly_raid" {
+		p.dungeon.difficulty = game.DifficultyMythic
+	}
 	return p
 }
 
@@ -183,6 +187,13 @@ func (r *raidLoad) prepare(p *partyLoad, index int, now time.Time, timeout time.
 }
 
 func (r *raidLoad) receiveCrystal(p *partyLoad, index int, crystal *game.CrystalSanctumSnapshot, initial, assaultClear bool) bool {
+	if r.kind == "weekly_raid" {
+		if crystal != nil {
+			p.failed = true // Dark King raid is not an elemental repair scene.
+			return false
+		}
+		return true
+	}
 	m := &r.members[index]
 	definition, _ := game.ElementalRaidDefinitionForType(r.kind)
 	chamber := p.dungeon.layout.Rooms[len(p.dungeon.layout.Rooms)-1]

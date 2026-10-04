@@ -438,7 +438,33 @@ terminal success. The fixture/synthetic data is removed; binaries retained.
 The full driver race suite passes17.397s. Existing earned
 dungeon/casino/combined receipts are not rerun or reclassified, and the default
 mixed/nightly profile is unchanged. Dark King phases/rewards, actual non-Earth
-rituals, world events and declared capacity/headroom remain separate checks.
+rituals and declared capacity/headroom remain separate checks. The later Root
+event receipt below retains its own earned, bounded scope.
+
+### Dark King weekly-raid candidate
+
+`-scenario party-raid -n 5 -raid-type weekly_raid -duration 20m` reuses the
+normal five-to-ten-player raid conversion and every-member consent flow. All
+prepared saves need level100 and the completed Umbral Nexus gate chapter.
+The server chooses Mythic. Each client must observe its own live, matching
+instance's ordered Orun/Earth, Neris/Water, Pyralis/Fire and Aeral/Air phases;
+skipped, regressed, foreign, dead/town or unprepared phase evidence fails.
+Announcements alone cannot prove a clear: every member must also observe the
+actual cleared boss room and return alive to town. The explicit duration is a
+maximum up to30m, not a soak or fight-duration acceptance criterion.
+
+Preparation domain tests now include weekly raids at five and ten members.
+Focused weekly/preparation race tests pass1.377s; the whole driver race package
+passes17.714s. These use declared unit snapshots, not earned encounter evidence.
+`TestLoadWeeklyActualFiveRolesPhasesExitAndSaves` is an opt-in actual-server
+check using disposable level100 uncommon/rare fixtures, plate/shields for the
+Fighter/Cleric, leather and dual daggers for the Rogue, and cloth/staff/tome for
+the Wizard. Initial gear, level and chapter access are not an earned campaign.
+Independent saves must preserve gear/bag/EP and show the original shared Dark
+King victory, each personal weekly receipt/lockout, settled delivery outbox,
+Gold/resonance and unclaimed finale readiness. The check has not yet earned a
+runtime pass. Phase messages do not independently prove aid mechanics, human
+balance, the requested five-to-ten-minute fight or representative capacity.
 
 ## Naturally scheduled four-class events
 

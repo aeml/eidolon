@@ -532,6 +532,18 @@
     },
     "actualCorrectedRun": "PASS225.27s. Final480126be driver completed the actual naturally scheduled four-class20:00UTC Root event/town exits and independent saves with unchanged root/server binaries. Earlier corrected artifact42276555 predates this boundary correction and is retained at its original scope."
   },
+  "weeklyFollowUp": {
+    "status": "CONTROLLER_TESTED_ACTUAL_ENCOUNTER_NOT_YET_RUN",
+    "change": "Support actual weekly_raid level100/Mythic five-to-ten-player conversion/consent/access. Every client must observe matching living in-instance ordered Orun/Earth, Neris/Water, Pyralis/Fire, Aeral/Air phase messages plus actual boss-room clear and alive town exit. No synthetic transformation, damage, aid, reward or quest completion. Explicit maximum duration up to30m; existing elemental and default mixed behavior retained.",
+    "evidence": "Focused weekly/preparation race1.377s; complete cmd/loadtest race17.714s. Domain preparation now includes real game weekly readiness/access with declared synthetic replies at5/10 members. Unit negatives cover nil/foreign/wrong identity/zero/high/skipped/regressed/dead/town/unprepared phases and wrong repair crystal; boss-only and phase-only views cannot pass. Root opt-in test compiles but skipped without disposable opt-in; this is not runtime success.",
+    "actualCheck": "New opt-in TestLoadWeeklyActualFiveRolesPhasesExitAndSaves prepares five level100 uncommon/rare Fighter/Cleric/Rogue/Wizard/Fighter roles, legal plate/shields, leather/dual daggers, cloth/staff/tome and completed gate access, then ordinary server/driver requests. Requires all-own four phases, boss clear/town exit, original shared Dark King victory, personal weekly cache/lockout receipts, settled outbox, earned unclaimed finale readiness, preserved equipment/bag/EP, saved Gold/resonance. Initial level/access/gear are fixtures, not campaign proof. Not yet run.",
+    "sha256": {
+      "loadtest/weekly.go": "69d76b6bae7ed3c8c039de980b6157f5eea15c7e077fdc5cf8a3deca85413000",
+      "loadtest/weekly_test.go": "d92676a928dd77ebfb4b1a0e331790048a2773114893af948d5b0b3359dbf6ce",
+      "load_weekly_integration_test.go": "5aca9f713cafdda00ebfefc51373389f530d50c5fa1d3efe6cf55a418034152a"
+    },
+    "limits": "Controller/unit preparation only. Need actual earned isolated encounter/save evidence. Announcements do not independently prove Eidolon aid mechanics or human balance. No five-to-ten-minute balance, full campaign, representative100-player/headroom or public release claim. Accepted previous encounters not replayed."
+  },
   "eventCorrectedActualRun": {
     "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",
     "observedAtUTC": "2026-10-04T20:04:44Z",

@@ -151,6 +151,9 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 	defer p.mu.Unlock()
 	defer p.signal(index)
 	m := &p.members[index]
+	if p.raid != nil && message.Type == "raid_phase" {
+		return p.raid.receivePhase(p, index, message)
+	}
 	if p.event != nil && message.Type == "public_event" {
 		return p.event.receive(p, index, message, now)
 	}

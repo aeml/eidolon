@@ -40,7 +40,7 @@ var (
 	dungeonType       = flag.String("dungeon-type", "verdant_bastion_catacombs", "ordinary regional dungeon for party-dungeon; qualified prepared saves required")
 	dungeonLevel      = flag.Int("dungeon-level", 30, "predeclared unlocked run level for party-dungeon")
 	dungeonDifficulty = flag.String("dungeon-difficulty", "normal", "predeclared unlocked normal/heroic/mythic difficulty for party-dungeon")
-	raidType          = flag.String("raid-type", "earth_crystal_raid", "elemental raid for party-raid;5–10 qualified prepared saves required")
+	raidType          = flag.String("raid-type", "earth_crystal_raid", "elemental raid or weekly_raid Dark King for party-raid;5–10 qualified prepared saves required")
 	eventSite         = flag.String("event-site", "current", "party-event selection: current, root, tide, ember or gale; normal schedule/qualified prepared saves")
 )
 
@@ -174,8 +174,11 @@ func main() {
 		}
 	}
 	if selectedScenario == "party-raid" {
-		if _, valid := game.ElementalRaidDefinitionForType(*raidType); !valid || *count < 5 || *count > 10 {
-			log.Fatal("party-raid requires5–10 clients and an explicit supported elemental raid")
+		if _, valid := raidLoadLevel(*raidType); !valid || *count < 5 || *count > 10 {
+			log.Fatal("party-raid requires5–10 clients and an explicit supported elemental/weekly raid")
+		}
+		if *raidType == "weekly_raid" && (*duration <= 0 || *duration > 30*time.Minute) {
+			log.Fatal("weekly_raid requires an explicit maximum duration up to30m")
 		}
 	}
 	if selectedScenario == "party-event" && (*count < 4 || *count > 100 || *count%4 != 0 || !validEventSelection(*eventSite) || *duration <= 0 || *duration > 45*time.Minute) {
@@ -419,8 +422,15 @@ func main() {
 	}
 	if selectedScenario == "party-raid" {
 		counts := parties[0].raidCounts()
-		log.Printf("Raid coverage: groups=1 converted=%t prepared=%t ready_members=%d restored=%d min_wave_views=%d", counts.converted, counts.prepared, counts.readyMembers, counts.restored, counts.minWaveViews)
-		casinoFailed = casinoFailed || !counts.converted || !counts.prepared || counts.readyMembers != uint64(*count) || counts.restored != uint64(*count) || counts.minWaveViews != 3
+		casinoFailed = casinoFailed || !counts.converted || !counts.prepared || counts.readyMembers != uint64(*count)
+		if *raidType == "weekly_raid" {
+			weekly := parties[0].weeklyCounts()
+			log.Printf("Weekly raid coverage: groups=1 converted=%t prepared=%t ready_members=%d phase_members=%d min_phase_views=%d", counts.converted, counts.prepared, counts.readyMembers, weekly.members, weekly.minimum)
+			casinoFailed = casinoFailed || weekly.members != uint64(*count) || weekly.minimum != 4
+		} else {
+			log.Printf("Raid coverage: groups=1 converted=%t prepared=%t ready_members=%d restored=%d min_wave_views=%d", counts.converted, counts.prepared, counts.readyMembers, counts.restored, counts.minWaveViews)
+			casinoFailed = casinoFailed || counts.restored != uint64(*count) || counts.minWaveViews != 3
+		}
 	}
 	if selectedScenario == "party-event" {
 		var selected, present, complete, exited, minimum uint64
@@ -624,7 +634,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 				party.reject()
 				continue
 			}
-			if party != nil && (msg.Type == "party_request" || msg.Type == "party_update" || msg.Type == "ability_result" || msg.Type == "damage" || msg.Type == "heal" || party.raid != nil && msg.Type == "chat" || party.event != nil && msg.Type == "public_event" || party.dungeon != nil && (msg.Type == "enter_instance" || msg.Type == "get_dungeon_status" || msg.Type == "dungeon_room_state")) {
+			if party != nil && (msg.Type == "party_request" || msg.Type == "party_update" || msg.Type == "ability_result" || msg.Type == "damage" || msg.Type == "heal" || party.raid != nil && (msg.Type == "chat" || msg.Type == "raid_phase") || party.event != nil && msg.Type == "public_event" || party.dungeon != nil && (msg.Type == "enter_instance" || msg.Type == "get_dungeon_status" || msg.Type == "dungeon_room_state")) {
 				if !party.receive(memberIndex, msg, time.Now()) {
 					metrics.decodeErrors.Add(1)
 				}

@@ -113,7 +113,7 @@ func (d *dungeonLoad) summaryFor(p *partyLoad, index int, summary game.DungeonRo
 		return false
 	}
 	m.summary, m.summaryKnown = summary, true
-	if m.entered && objective == -1 && (p.raid == nil || p.raid.members[index].restored) {
+	if m.entered && objective == -1 && (p.raid == nil || p.raid.encounterObserved(index)) {
 		m.clear = true
 	}
 	return true
