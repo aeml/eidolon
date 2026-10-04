@@ -27,5 +27,12 @@
     "fix": "Give existing connection help a unique login-session-help ID and make its keyboard test select that panel. Keep exact focus, expand/collapse, GitHub link, outline and mobile-viewport assertions; no timeout increase, gameplay, provider or password/session change. Align previously outdated BETA_OPERATIONS recovery status.",
     "targetedCheck": "Affected desktop/mobile anonymous keyboard route plus3synthetic recovery bootstrap cases passed4/4in18.9s. Focused ESLint/git diff --check pass. No repeated actual-Mongo/campaign/soak matrix for this ID/selector/documentation-only correction."
   },
+  "accessibilityCorrection": {
+    "source": "73585e52ba20afe3f9ecc66b91305a3de0b68452",
+    "ci": 37180182645,
+    "finding": "Exact-source CI completed with failure. Browser Smoke2/3 job111371175439 failed the two desktop/phone account-field keyboard cases: nested password guidance expanded the native accessible name beyond Password.44other cases in that job passed; Client Tests, Server Tests and Browser Smoke1/3 and3/3 succeeded. No deployment jobs ran.",
+    "fix": "Separate Email and Password labels from guidance while retaining the auth-field layout. Associate guidance using aria-describedby. Preserve the exact Password accessible-name/focus assertion and add exact Email naming and both field descriptions; no timeout weakening or server/provider changes.",
+    "targetedCheck": "Six real-browser cases passed in28.5s: desktop and phone account naming/tab order/browser zoom, existing project-credit keyboard route, and verify/reset/setup recovery bootstrap. Focused keyboard-settings ESLint and git diff --check passed. No repeated Mongo/campaign/soak matrix for this HTML accessibility correction."
+  },
   "remaining": "Fetch/pull current master before corrected normal push; preserve concurrent website edits. Confirm corrected exact CI handle, delegate its monitoring to user-authorized Luna, independently check frontend/runtime/backend identities and notes. Ask owner to verify actual inbox delivery without sharing secrets. Broader roadmap and owner/human gates remain active."
 }

@@ -371,12 +371,14 @@
                 <label class="auth-field" for="auth-username">Username
                     <input type="text" id="auth-username" class="auth-input" placeholder="Username" autocomplete="username" autocapitalize="none" spellcheck="false">
                 </label>
-                <label class="auth-field" for="auth-email">Email <span class="auth-field__hint">only needed to register</span>
-                    <input type="email" id="auth-email" class="auth-input" placeholder="Email (Optional for Login)" autocomplete="email">
-                </label>
-                <label class="auth-field" for="auth-password">Password <span class="auth-field__hint">new accounts: 15+ characters, up to 72 UTF-8 bytes</span>
-                    <input type="password" id="auth-password" class="auth-input" placeholder="Password" autocomplete="current-password">
-                </label>
+                <div class="auth-field">
+                    <label for="auth-email">Email</label><span id="auth-email-hint" class="auth-field__hint">only needed to register</span>
+                    <input type="email" id="auth-email" class="auth-input" placeholder="Email (Optional for Login)" autocomplete="email" aria-describedby="auth-email-hint">
+                </div>
+                <div class="auth-field">
+                    <label for="auth-password">Password</label><span id="auth-password-hint" class="auth-field__hint">new accounts: 15+ characters, up to 72 UTF-8 bytes</span>
+                    <input type="password" id="auth-password" class="auth-input" placeholder="Password" autocomplete="current-password" aria-describedby="auth-password-hint">
+                </div>
                 
                 <div class="auth-panel__actions">
                     <button id="btn-login" class="auth-btn auth-btn--fill">Login</button>
