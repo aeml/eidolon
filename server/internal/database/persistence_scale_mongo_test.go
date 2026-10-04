@@ -3,8 +3,8 @@ package database
 import (
 	"context"
 	"fmt"
+	"maps"
 	"os"
-	"reflect"
 	"regexp"
 	"strings"
 	"sync"
@@ -171,7 +171,7 @@ func TestPersistenceActualMongoHistoryQueriesAndReceiptGrowth(t *testing.T) {
 			t.Fatal(err)
 		}
 		loaded, err := repo.GetCharacter(character.Name, character.Name)
-		if err != nil || loaded == nil || loaded.Gold != 12346 || loaded.EP != 43 || loaded.Class != character.Class || loaded.Level != character.Level || !reflect.DeepEqual(loaded.ItemDeliveryReceipts, character.ItemDeliveryReceipts) {
+		if err != nil || loaded == nil || loaded.Gold != 12346 || loaded.EP != 43 || loaded.Class != character.Class || loaded.Level != character.Level || !maps.Equal(loaded.ItemDeliveryReceipts, character.ItemDeliveryReceipts) {
 			t.Fatal("growth/save changed exact currency, class or receipt contents", size, err)
 		}
 		t.Logf("character_roundtrip receipts=%d bson_bytes=%d elapsed=%s", size, len(encoded), time.Since(started))
