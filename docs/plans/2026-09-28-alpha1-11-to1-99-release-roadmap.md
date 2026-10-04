@@ -1176,9 +1176,10 @@ art approval or a closed-beta transition. Keep those distinctions when closing Q
 
 The [prepared1.78 readiness/incident foundation](2026-10-04-release1-78-readiness-signals.json)
 adds bounded secret-free HTTP probes and fixed-size debounced outage/recovery
-signals with explicitly supplied thresholds. Actual local HTTP failures and
-synthetic incident-clock checks pass. It is not connected to notification
-delivery or deployed; independent service wiring, queue/storage/currency signals,
+signals with explicitly supplied thresholds. Its independent command now emits
+JSON incident events; real local HTTP outage/recovery through the command's
+polling loop and synthetic incident-clock checks pass. It is not connected to
+notification delivery or deployed; service installation, queue/storage/currency signals,
 alert ownership, retention and operating-budget decisions remain required.
 Current ordered1.71 publication is monitored separately; this preparation does
 not publish later schema24 writers or approve operational emails.

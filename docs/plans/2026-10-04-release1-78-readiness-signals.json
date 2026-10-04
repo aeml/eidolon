@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.78 observability and operating budgets",
-  "status": "prepared readiness/incident foundation only; not wired or deployed",
+  "status": "prepared readiness component and independent JSON monitor command; no delivery adapter or production installation",
   "sourceCommit": "9202c8fce5b996b5850a68ab871e5c8ff45b3f8f",
   "scope": "Independent-monitor readiness component: validated HTTPS or loopback HTTP health endpoint, no URL credentials/query/fragment, no redirects, explicitly bounded timeout up to10seconds and32KiB body. Only known status/database/release fields survive parsing; release identities have bounded syntax and optional exact expected-commit comparison. Samples expose fixed cause/release/latency fields, not arbitrary peer error text or unknown response fields. Fixed-size incident state debounces transient failure/recovery, bounds reminders by caller-supplied cooldown, ignores shutdown cancellation and prevents backwards-clock reminder amplification. Thresholds must be explicitly supplied; no new approved SLA or operational policy inferred.",
   "checks": {
@@ -11,10 +11,19 @@
     "incidentState": "Synthetic clock advances, not wall-clock sleeps: transient failure resets, sustained failure emits one sanitized outage notice, cooldown and backwards clock suppress repeats, exact cooldown permits a reminder, two healthy samples confirm recovery, subsequent healthy samples stay quiet and shutdown cancellation leaves incident state unchanged.",
     "hygiene": "gofmt and git diff --check pass. No Docker/production fixture, service installation, provider request, real email, account/value mutation or full campaign/soak/capacity test. Existing broader prepared tree remains isolated from public schema17 releases."
   },
+  "independentCommand": {
+    "sourceCommit": "eb2313976b47ecec9adffca0874316f7d2e69b29",
+    "scope": "server/cmd/monitor parses explicitly supplied bounded endpoint/timeout/poll/incident settings, runs independently of the game and emits JSON outage/reminder/recovery events with sanitized samples. Ordinary healthy polling stays quiet; SIGINT/SIGTERM cancel the context. No guessed SLA, daemon installation, provider delivery or ADMIN_NOTIFICATION_EMAILS consumption.",
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/operations ./cmd/monitor -count=1 -timeout=15s -v",
+    "result": "passed: operations1.110s and command4.057s; command adds three test groups",
+    "actualRoute": "Command argument parser and production monitor loop observe four real loopback HTTP requests, two503s then twohealthy samples, producing exactly one outage and one recovery JSON event. Unknown/private peer fields and URL stay absent. Output-sink failure returns generic error; unsafe/missing/extra arguments cannot echo private supplied values; pre-cancelled context emits no outage. Fixtures closed; no external provider or public endpoint request.",
+    "corrections": "Initial gofmt invocation used an incorrect server/ prefix from the server directory and was corrected. First compilation found unused time import; removed it, made the test's HTTP request counter explicitly atomic, then the final race invocation passed. No assertions or timeout bounds weakened.",
+    "limits": "Tests exercise command parsing and the actual polling loop, not an installed systemd process or actual OS signal/inbox delivery. A blocked downstream output pipe can require process termination. Incident state is RAM-only; full operations dashboards, broader metrics, delivery failure/retry ownership and retention/cost policy remain open."
+  },
   "remaining": [
-    "Wire an independently running bounded monitor and useful notification delivery/administrator view at the1.78 stage. This component currently emits typed notice values only; no inbox or live alert delivery is claimed.",
+    "Install/configure the independently running monitor and useful notification delivery/administrator view at the1.78 stage after owner policy decisions. It currently emits JSON incidents only; no inbox or live alert delivery is claimed.",
     "Integrate appropriate queue/error/latency/storage/currency signals with explicitly chosen thresholds and secret-free summaries; choose alert recipients/ownership, retention and operating budget with the owner rather than inventing policy.",
     "Disposable end-to-end failure-to-notification proof after delivery integration. Postmark ADMIN_NOTIFICATION_EMAILS remains reserved; current recovery configuration does not authorize sending operational alerts now.",
-    "Ordered1.71–1.77 acceptance,1.78 version/cumulative notes, exact-source CI and independent public verification. Current corrected1.71 candidate73585e52/CI37180182645 remains under user-authorized Luna monitoring; no out-of-order deployment or full-goal completion claimed."
+    "Ordered1.71–1.77 acceptance,1.78 version/cumulative notes, exact-source CI and independent public verification. Current corrected1.71 candidate85f1bccd/CI37181802120 was confirmedin_progress this turn and is under user-authorized Luna monitoring; older73585e52CI failed before deployment. No out-of-order deployment or full-goal completion claimed."
   ]
 }
