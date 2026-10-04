@@ -60,8 +60,11 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await page.getByLabel('Username', { exact: true }).focus();
         await page.keyboard.press('Tab');
         await expect(page.locator('#auth-email')).toBeFocused();
+        await expect(page.locator('#auth-email')).toHaveAccessibleName('Email');
+        await expect(page.locator('#auth-email')).toHaveAccessibleDescription('only needed to register');
         await page.keyboard.press('Tab');
         await expect(page.getByLabel('Password', { exact: true })).toBeFocused();
+        await expect(page.locator('#auth-password')).toHaveAccessibleDescription('new accounts: 15+ characters, up to 72 UTF-8 bytes');
         await page.keyboard.press('Tab');
         await expect(page.getByRole('button', { name: 'Login', exact: true })).toBeFocused();
         await page.keyboard.press('Tab');
