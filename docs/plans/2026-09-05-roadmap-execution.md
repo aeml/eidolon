@@ -6,7 +6,20 @@ now owns future scope, gates and execution receipts through full-release
 readiness. This ledger preserves prior delivery evidence; individual hotfixes
 do not close the whole goal or restart historical queues.
 
-## Current checkpoint October 2
+## Current checkpoint October 4
+
+Alpha1.72.0 is accepted live at1cf51d22ee16daa62406aeb9c1ecba92b66895e0,
+CI37196079883, with all ten jobs successful. Independent post-terminal IPv4
+checks verified matching frontend/backend identities, database readiness,
+login/cumulative notes and five exact publisher-rewritten runtime modules.
+The [acceptance receipt](2026-10-04-release1-72-public-acceptance.json) preserves
+QA skips and earlier failed/corrected CI provenance. Recovery is live but
+actual inbox delivery is not certified.1.73 valuable operations is assembled
+with schema22, its own version/notes and retained focused/party/migration proofs;
+its exact-source CI/public deployment remains required. Later privacy decisions,
+storage checkpoints, capacity, modern-art approval and the full1.99 goal stay open.
+
+## Historical checkpoint October 2
 
 Alpha1.60.0 is accepted live at15df739e6f15e631d0ccff576947ae2d99237296,
 CI36981917813, with all ten jobs successful. Independent public IPv4 checks
