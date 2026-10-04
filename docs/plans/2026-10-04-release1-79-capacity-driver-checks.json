@@ -533,14 +533,16 @@
     "actualCorrectedRun": "WAITING_FOR_REAL_ROOT_WINDOW, NOT ACCEPTED. Final480126be driver built and verified; owned bounded fixture is waiting for the real20:00UTC announcement. Earlier corrected artifact42276555 predates this boundary correction and is retained at its original scope."
   },
   "eventCorrectedActualRun": {
-    "statusAtObservation": "WAITING_FOR_REAL_ROOT_WINDOW_NOT_ACCEPTED",
-    "observedAtUTC": "2026-10-04T19:56:33Z",
+    "statusAtObservation": "ACTUAL_RUN_STARTED_NOT_ACCEPTED",
+    "observedAtUTC": "2026-10-04T20:01:05Z",
     "sourceCommit": "480126be",
     "ownedContainer": "1a61e1cfaca2d1b2d5cc1d7c1e78af5e7d690788f0d9ac811bfd82bb140f74a5",
     "taskLabel": "event-179-corrected-20261004",
     "parentSession": 40860,
     "waiterPID": 73,
     "timeoutPID": 67,
+    "actualProcesses": {"rootPID": 73, "serverPID": 143, "driverPID": 154},
+    "startEvidence": "Same parent session40860 printed the exact actual test header and normal-server startup evidence at the real20:00UTC Root window. All three exact processes verified alive; no terminal result or completion/save acceptance yet.",
     "isolation": "Owned Mongo7.0.14 container/networknone/no public ports,2CPU/2GiB,512MiB database/16MiB config tmpfs/.25GiB Mongo cache. Read-only final driver, unchanged root harness and server binary binds. Mongo ping, exact ID/task/network/limits/OOMfalse and live wait process verified. Bounded22-minute outer timeout; root11-minute and driver9-minute maximum, early completion/failure exit. No accelerated event clock, in-run grants or production data/environment/service mutation.",
     "artifacts": {
       "driver": {"path": "/tmp/eidolon-179-event-corrected-final-M0pDKR/loadtest", "sha256": "a4aa84b84c234a0b0170ccb0e51699faee293c69c1cb14f0c06128d941ae5055"},

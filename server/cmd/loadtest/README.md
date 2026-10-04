@@ -484,7 +484,8 @@ wave/completion/town-exit gates are unchanged. Focused race checks pass1.378s an
 the full driver race suite17.790s. A subsequent focused returning-leader
 regression failed0.011s before aligning target delegation with the40-unit active
 combat range; all event race checks then pass1.400s. The65-unit physical
-participation range is unchanged. **The corrected actual run is not yet done**.
+participation range is unchanged. **The corrected actual run started at the real
+October4 20:00UTC Root window; terminal encounter/save evidence remains pending**.
 The failed fixture/synthetic data was removed and original binaries retained.
 Post-failure saves showed XP1190 for each class, not successful town exits or
 independently checked gear/reward preservation. Do not reclassify the earlier
