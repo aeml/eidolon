@@ -1334,6 +1334,15 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October4: isolated **1.75 privacy preparation** now includes the accepted
+verified-email recovery data and Postmark/browser handoff in its
+[inventory](2026-10-04-release1-75-data-inventory.json). Link expiry is explicitly
+not record erasure; retention/provider handling still need approval. Defensive
+JSON exclusions protect password hashes and internal recovery projections while
+preserving their BSON persistence. Reproduced synthetic serialization failures
+now pass with focused race checks; no actual provider/connected proof, privacy
+policy, export/removal endpoint or1.75 publication is inferred.
+
 October4: an isolated **1.74 Administration** successor now documents the
 actual permission/data boundaries for eight read/effect groups and adds the two
 missing Activity-history filters for moderation decisions and target checks.
