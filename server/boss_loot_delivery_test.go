@@ -57,6 +57,52 @@ func TestBossLootDeliveryFullBagAndActiveTradeDoNotWriteOrConsume(t *testing.T) 
 	}
 }
 
+func TestBossLootDeferredDeliveryMayRefillSuccessfulVendorSale(t *testing.T) {
+	store, player, _ := bossLootDeliveryFixture(t)
+	t.Cleanup(world.StopBackground)
+	player.Inventory[0] = game.Item{ID: "qa-spare-one", Name: "Spare", Type: game.ItemArmor, Slot: "head", Stack: 1, Value: 3}
+	player.Inventory[1] = game.Item{ID: "qa-spare-two", Name: "Spare", Type: game.ItemArmor, Slot: "head", Stack: 1, Value: 5}
+	client := newLevelCommandClient()
+	client.username, client.playerID = player.Name, player.ID
+	sell := func(id string) {
+		payload, _ := json.Marshal(SellPayload{ItemID: id})
+		handleVendorTransaction(client, Message{Type: MsgSell, Payload: payload})
+		retryBossLootAfterBagChangeLocked(client, MsgSell) // Same bag-change recovery invoked after dispatch.
+		drainSentMessages(client.send)
+	}
+	occupied := func() int {
+		count := 0
+		for _, item := range player.Inventory {
+			if item.ID != "" {
+				count++
+			}
+		}
+		return count
+	}
+	sell("qa-spare-one")
+	if occupied() != game.MaxInventorySize || player.Gold != 80 || len(player.PendingBossLoot) != 0 {
+		t.Fatal("successful sale should allow the already-earned original boss item to refill the bag")
+	}
+	for _, item := range player.Inventory {
+		if item.ID == "qa-spare-one" {
+			t.Fatal("sale did not remove the exact vendor item")
+		}
+	}
+	sell("qa-spare-two")
+	if occupied() != game.MaxInventorySize-1 || player.Gold != 85 {
+		t.Fatal("another ordinary spare sale did not leave actual loot space")
+	}
+	found := false
+	for _, item := range store.characters[player.Name].Inventory {
+		if item.ID == "original-blade" {
+			found = item.Potency == 7 && item.Stats["damage"] == 73
+		}
+	}
+	if !found || len(store.characters[player.Name].PendingBossLoot) != 0 || store.characters[player.Name].EP != 43 {
+		t.Fatal("vendor rotation changed original earned equipment, queue custody or EP")
+	}
+}
+
 func TestBossLootDeliveryRejectedAndLostSaveRepliesRecoverLatestImage(t *testing.T) {
 	for _, after := range []bool{false, true} {
 		t.Run(fmt.Sprint(after), func(t *testing.T) {
