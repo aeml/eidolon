@@ -509,6 +509,12 @@
     "reproducedBeforeFix": "TestEventLoadKeepsLiveCombatDuringAnotherMembersRecovery failed both cleric-away and leader-dead cases on the original controller (0.017s). Any recovering member stopped the live cohort; only index0 could select targets. This is a demonstrated bot flaw, not proof of the sole cause of every recovery in the actual run.",
     "change": "Continue live members' combat/healing; elect first living near-site member to maintain the normal selected-occurrence enemy target. Wizard gets an actual own damage/heal opportunity before ward duty and fights when alone with remaining attackers. Only normal requests/movement are sent. Keep all four own physical wave/actual completion/town-exit gates, strict malformed/stale/expiry rejection and minimum positive own combat-impact gate. No fake credit/reward/resource or weakened success threshold.",
     "checks": {"focusedEventRaceSeconds": 1.378, "fullDriverCompatibilityRaceSeconds": 17.790, "correctedActualRun": "NOT RUN; schedule only at the next appropriate real Root window after rebuilding the changed driver. Reuse the unchanged root/server binaries and completed encounter receipts rather than a full repeated campaign."},
+    "preparedDriver": {
+      "sourceCommit": "f5b017a8",
+      "path": "/tmp/eidolon-179-event-corrected-9pqpin/loadtest",
+      "sha256": "422765550d1c17c13aff35c5be82c30005ffd656c64a9d07a588d0a2c7b03c26",
+      "build": "Go1.27.1 production-style build completed. This is prepared for the missing corrected real-clock encounter, not a successful run. Unchanged root-current.test/f035cc05 and server/484503ad may be reused; failed original artifacts remain intact."
+    },
     "sha256": {
       "loadtest/party.go": "63d60b41a30736425eacdb2ab0431499f964d5950608e3e8bd478c770bb2f0fc",
       "loadtest/event.go": "9ff12f9802eb3b91a5104c5f9939ef21ad03ba9fee5c0a8ee42c4c2123cbdcef",
