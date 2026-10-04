@@ -420,13 +420,13 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.73.0`. This isolated, unpublished
+- Current source version: `Alpha 1.74.0`. This isolated, unpublished
   1.75 candidate integrates prepared 1.72 security and 1.73 valuable-operation
   writers through schema22, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
   credential/recovery JSON exclusions. Retention, owner export/removal and notices
   still need policy approval and implementation. Later schema23–24 checkpoints
-  and operations-monitor work remain excluded. Do not deploy it as1.73 or before
+  and operations-monitor work remain excluded. Do not deploy it as1.74 or before
   ordered1.72/1.73/1.74 acceptance. Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader

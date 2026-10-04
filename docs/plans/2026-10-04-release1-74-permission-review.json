@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.74 Administration safety and discoverability",
-  "status": "isolated successor preparation; ordered1.72/1.73 acceptance and own release gates remain",
+  "status": "Alpha1.74.0 version/notes assembled; ordered1.72/1.73 acceptance and own CI/public gates remain",
   "base": "1c7c8291aa7bf7f703d45fdb41a67630c2fd9e6b schema22 successor retains recovery, narrow authority backports, valuable-operation coordination and1.71.1 pool guard. This branch does not import schema23/24, privacy decisions or1.78 service diagnostics.",
   "review": {
     "contract": "docs/ADMINISTRATION.md prepared1.74 permission matrix maps all eight privileged read/effect groups to real handlers and private result schemas. QA, VIP and bootstrap identities are not durable administrator authority. No new role, password reset, EP grant or arbitrary item/coordinate API.",
@@ -33,5 +33,6 @@
     "clientCorrection": "Four admin suites passed in the first combined invocation, but inherited version test failed because README said Current inherited source version. Corrected documentation to the strict Current source version prefix, while retaining the explicit unpublished1.74 boundary; no test relaxed.",
     "finalClientResult": "After the documentation correction, Node24.18.0 Jest AdminUI, AdminOperations, AdminReportReview, AdminChatModeration and VersionPresentation passed all397checks/five suites4.499s. Compatible dependencies reused; no new provider, actual Mongo/socket or rendered phone acceptance."
   },
-  "remaining": "No1.74 version/cumulative patch-note assembly, push, CI or public acceptance claimed. Ordered1.72/1.73 candidates are integrated, but accepted live predecessor metadata is still required. Publish own notes/version and verify exact-source CI and both live identities. Later privacy retention/export/deletion and ownership policies remain separate. No production grant, role edit, moderation, provider mail, service or account change was performed. Full roadmap goal stays active."
+  "releaseAssembly": "2026-10-04-release1-74-release-checks.json records ownAlpha1.74.0 version/defaults and cumulative notes, with398focused client checks passing. No release push or public acceptance inferred.",
+  "remaining": "Ordered1.72/1.73 candidates are integrated, but accepted live predecessor metadata is still required. Normal fetch/merge/push and exact-source CI plus independent public acceptance remain. Later privacy retention/export/deletion and ownership policies remain separate. No production grant, role edit, moderation, provider mail, service or account change was performed. Full roadmap goal stays active."
 }

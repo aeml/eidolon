@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.73.0';
+const currentVersion = '1.74.0';
+
+test('1.74.0 publishes read-only moderation filters and honest administration boundaries', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.74.0"'), previous = html.indexOf('data-version="1.73.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Moderation decisions', 'Moderation target checks', 'read-only filters',
+        'durable administrator role', 'do not grant staff access', 'confirmed operation',
+        'not crash-durable', 'no new staff powers', 'schema 22', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.73.0 explains durable valuable operations without resets or unsafe rollback promises', () => {
     const html = fs.readFileSync('index.html', 'utf8');
