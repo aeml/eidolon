@@ -557,6 +557,23 @@ checks and actual index/migration repeat checks pass; the disposable fixture and
 both volumes were removed. This does not compact historical maps, solve every
 receipt domain, establish replica/rollback/capacity acceptance, or publish1.76.
 Ordered predecessor choices and the full roadmap goal remain open.
+The [casino wallet-growth follow-up](2026-10-04-release1-76-casino-checkpoint-checks.json)
+now keeps one saved private head per casino record instead of one signed map
+entry per new wager or return. Durable table versions bind the exact recipient,
+currency, amount and candidate before effects; pending table changes remain
+fenced until a complete wallet/head save. The current account catalog fits37
+records beneath an explicit64-head bound. Historical maps and original pending
+intents are preserved, not pruned or reinterpreted. Schema24 blocks older writers
+from erasing the new field without backfilling player value. Two thousand modeled
+effects and200 actual signed settlements retain fixed saved size; eight actual
+contenders select one intent, repository reopening preserves money, and old
+funded intents still recover. Four failed-save/journal-reopen cases cover Gold/EP
+wagers and returns. A10.27-second native slot check retains spin result, wallet,
+resume and restart state; focused fresh-database interruption/bonus/poker checks
+also pass. Failed test-fixture overlap and obsolete assertions are retained in
+the receipt rather than counted as acceptance. Other receipt domains, lifetime
+storage/rollback/capacity evidence, predecessor choices and ordered publication
+remain open. This is prepared1.76 work, not a release or full-goal completion.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login

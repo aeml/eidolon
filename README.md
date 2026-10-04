@@ -420,7 +420,7 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.70.2` accepted presentation hotfix. Forge previews and bag tooltips share a fixed stat order across refreshes. This prepared successor also includes unpublished1.71–1.76 work and a schema23 writer fence; do not deploy the entire tree as the presentation hotfix. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
+- Current source version: `Alpha 1.70.2` accepted presentation hotfix. Forge previews and bag tooltips share a fixed stat order across refreshes. This prepared successor also includes unpublished1.71–1.76 work and schema24 writer fences; do not deploy the entire tree as the presentation hotfix. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
 - Last independently verified live release: `Alpha 1.70.2`, exact
   526bc22953e79cbe4869580e8f628d55c39c1b1c, successful CI37137636915 (all ten jobs,
   including predeploy and live character QA). Public IPv4 frontend/backend
