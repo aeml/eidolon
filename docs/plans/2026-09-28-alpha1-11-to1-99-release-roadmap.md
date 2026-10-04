@@ -1861,10 +1861,16 @@ must cover all four waves, normal completion and town exit; remote/late/expired
 or partial evidence cannot pass. Roles use ordinary combat/healing and live
 ward movement, never event-clock or resource/reward overrides. Focused race
 checks pass1.345s; preceding full driver suite17.594s. The opt-in level35 Root
-normal-server/disposable-save check started in the real October4 19:20UTC Root
-window; **terminal clear/save evidence is pending**. It skips outside the
-first40s of a real announcement. No four-player earned event/save, all-realms
-or capacity acceptance yet. Existing raid/dungeon/casino
+normal-server/disposable-save check at the real October4 19:20UTC Root window
+**failed481.98s at normal expiry** despite every member's four wave views.
+No member completed/exited;41 ordinary recoveries acknowledged, no OOM/read/write
+errors. A focused regression reproduces the event controller's all-member pause
+during town recovery and dead-leader target stall. The corrected event-only
+controller keeps live combat/healing and hands targeting to a living nearby
+member; the Wizard fights before ward duty and defends if alone. Participation/
+completion gates are unchanged. Focused race1.378s/full driver race17.790s pass,
+but a corrected actual encounter/save is still missing. Failed owned synthetic
+data was removed; original artifacts retained. Existing raid/dungeon/casino
 receipts retain their scope and are not rerun. Default mixed/combined unchanged.
 
 October4 live availability incident remains open: the Alpha1.74 backend crashed

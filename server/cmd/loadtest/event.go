@@ -240,18 +240,28 @@ func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, time
 		move(e.site.X, e.site.Z)
 		return false
 	}
-	for _, member := range p.members {
-		if member.state.Health <= 0 || member.state.InstanceID != "" || math.Hypot(member.state.X-e.site.X, member.state.Z-e.site.Z) > 65 {
-			return false
-		}
-	}
+	// Keep live members fighting/healing while an ally returns from town.
+	// Each member's own participation/completion gates remain unchanged.
 	return true
 }
 
-func (e *eventLoad) wardMove(index int, me Entity, now time.Time, move func(float64, float64)) bool {
+func (e *eventLoad) combatLeader(p *partyLoad, index int) bool {
+	for i, member := range p.members {
+		me := member.state
+		if me.Health > 0 && me.State != "DEAD" && me.InstanceID == "" && math.Hypot(me.X-e.site.X, me.Z-e.site.Z) <= 65 {
+			return i == index
+		}
+	}
+	return false
+}
+
+func (e *eventLoad) wardMove(p *partyLoad, index int, me Entity, now time.Time, move func(float64, float64)) bool {
 	view := e.members[index].view
 	if index != 3 || view == nil || view.Phase != "defending" || e.members[index].complete {
 		return false
+	}
+	if p.members[index].damage+p.members[index].heals == 0 || view.Remaining > 0 && e.combatLeader(p, index) {
+		return false // Fight first; a lone ward-holder must defend, not watch attackers.
 	}
 	x, z := view.RuneX, view.RuneZ
 	if view.Site.ID == "ember" {

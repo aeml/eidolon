@@ -473,9 +473,18 @@ It prepares level35 uncommon/rare class gear and full initial resources clamped
 by login to the normal build maxima, requires full waves/champion/town
 exit, then independently reads saved XP/Gold and preserved equipment/bag
 sentinel/EP. Prepared positioning and equipment are fixtures, not an earned
-journey. This connected check **started on the real October4 19:20UTC Root
-window and is not yet accepted**; terminal clear/save evidence is pending.
-Do not reclassify the earlier
+journey. The first connected check **failed481.98s at normal expiry**: all four
+observed four waves, but nobody completed/exited; no OOM or read/write errors.
+Forty-one ordinary recoveries were acknowledged. A focused regression reproduces
+the controller's all-member recovery pause/dead-leader target stall; the corrected
+event-only controller lets live members keep fighting/healing and delegates
+target selection to the first living nearby member. The Wizard earns a real own
+combat impact before ward duty and defends if left alone with attackers. Own
+wave/completion/town-exit gates are unchanged. Focused race checks pass1.378s and
+the full driver race suite17.790s; **the corrected actual run is not yet done**.
+The failed fixture/synthetic data was removed and original binaries retained.
+Post-failure saves showed XP1190 for each class, not successful town exits or
+independently checked gear/reward preservation. Do not reclassify the earlier
 single-Wizard Root evidence or repeat accepted raid/dungeon/casino checks.
 Events remain separate from `combined` and default mixed/nightly workloads.
 

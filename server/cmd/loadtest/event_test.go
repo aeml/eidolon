@@ -223,13 +223,14 @@ func TestEventWardMovementAllFourFamiliesWithoutCredit(t *testing.T) {
 		for i := range p.members {
 			p.receive(i, partyMessage("public_event", eventView(site, 1)), now)
 		}
+		p.members[3].damage = 1 // Declared unit evidence, not an actual earned hit.
 		var x, z float64
 		moves := 0
 		move := func(a, b float64) { x, z = a, b; moves++ }
-		if p.event.wardMove(0, p.members[0].state, now, move) {
+		if p.event.wardMove(p, 0, p.members[0].state, now, move) {
 			t.Fatal("tank replaced by ward-only role")
 		}
-		if !p.event.wardMove(3, p.members[3].state, now, move) || moves != 1 {
+		if !p.event.wardMove(p, 3, p.members[3].state, now, move) || moves != 1 {
 			t.Fatal("missing normal wizard ward movement")
 		}
 		v := p.event.members[3].view
@@ -239,7 +240,7 @@ func TestEventWardMovementAllFourFamiliesWithoutCredit(t *testing.T) {
 		}
 		if site == 3 {
 			firstX, firstZ := x, z
-			p.event.wardMove(3, p.members[3].state, now.Add(time.Second), move)
+			p.event.wardMove(p, 3, p.members[3].state, now.Add(time.Second), move)
 			if math.Hypot(x-firstX, z-firstZ) < .5 {
 				t.Fatal("gale participant not moving")
 			}
@@ -280,5 +281,75 @@ func TestEventRecoveryPreservesBarsAndWaitsForTown(t *testing.T) {
 	p.event.step(p, 0, me, now, time.Second, request, func(float64, float64) { moves++ })
 	if p.failed || moves != 1 || requests != 1 {
 		t.Fatal("normal healed return unavailable")
+	}
+}
+
+func TestEventLoadKeepsLiveCombatDuringAnotherMembersRecovery(t *testing.T) {
+	for _, scenario := range []string{"cleric-away", "leader-dead"} {
+		t.Run(scenario, func(t *testing.T) {
+			p, now := eventFixture(t, 0)
+			index, missing := 0, 1
+			if scenario == "leader-dead" {
+				index, missing = 1, 0
+			}
+			me := p.members[missing].state
+			if scenario == "cleric-away" {
+				me.X, me.Z = -1.25, 200
+			} else {
+				me.Health, me.State = 0, "DEAD"
+			}
+			p.state(missing, me, now)
+			for i := range p.members {
+				p.receive(i, partyMessage("public_event", eventView(0, 4)), now)
+			}
+			enemy := Entity{ID: p.event.enemyPrefix + "4-0", Type: "Enemy", Health: 100, X: p.event.site.X + 1, Z: p.event.site.Z}
+			requests := 0
+			p.step(index, p.members[index].state, map[string]Entity{enemy.ID: enemy}, now, time.Second,
+				func(kind string, _ interface{}) error {
+					if kind != "ability" && kind != "attack" {
+						t.Fatal("not ordinary live combat", kind)
+					}
+					requests++
+					return nil
+				}, func(float64, float64) { t.Fatal("walked away from nearby enemy") })
+			if p.failed || requests != 1 || p.target.ID != enemy.ID {
+				t.Fatal("one recovering/dead member disabled the live cohort")
+			}
+			if p.eventCounts().complete != 0 || p.eventCounts().minWaveViews != 0 {
+				t.Fatal("continuing combat fabricated absent member's participation")
+			}
+		})
+	}
+}
+
+func TestEventWardRequiresOwnCombatAndDefendsAlone(t *testing.T) {
+	p, now := eventFixture(t, 0)
+	for i := range p.members {
+		p.receive(i, partyMessage("public_event", eventView(0, 1)), now)
+	}
+	move := func(float64, float64) {}
+	if p.event.wardMove(p, 3, p.members[3].state, now, move) {
+		t.Fatal("wizard never got an opportunity for actual own combat")
+	}
+	p.members[3].damage = 1 // Unit fixture only; production waits for a real damage event.
+	if !p.event.wardMove(p, 3, p.members[3].state, now, move) {
+		t.Fatal("combat-ready wizard did not resume live ward work")
+	}
+	for i := 0; i < 3; i++ {
+		me := p.members[i].state
+		me.X, me.Z = -1.25, 200
+		p.state(i, me, now)
+	}
+	if p.event.wardMove(p, 3, p.members[3].state, now, move) || !p.event.combatLeader(p, 3) {
+		t.Fatal("lone wizard held ward instead of selecting live attackers")
+	}
+	view := eventView(0, 1)
+	view.Remaining = 0
+	p.receive(3, partyMessage("public_event", view), now)
+	if !p.event.wardMove(p, 3, p.members[3].state, now, move) {
+		t.Fatal("cleared ward could not charge while allies returned")
+	}
+	if p.eventCounts().complete != 0 || p.eventCounts().minWaveViews != 1 {
+		t.Fatal("role recovery fabricated later participation/completion")
 	}
 }

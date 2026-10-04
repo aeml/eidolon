@@ -367,7 +367,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 	}
 	leader := p.members[0].state
 	vigil := p.raid != nil && p.raid.inVigil(index) || p.event != nil
-	if p.event != nil && p.event.wardMove(index, me, now, move) {
+	if p.event != nil && p.event.wardMove(p, index, me, now, move) {
 		return
 	}
 	if p.raid != nil && vigil && p.raid.vigilMove(p, index, me, now, move) {
@@ -377,7 +377,11 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		move(leader.X, leader.Z)
 		return
 	}
-	if index == 0 {
+	targetLeader := index == 0
+	if p.event != nil {
+		targetLeader = p.event.combatLeader(p, index)
+	}
+	if targetLeader {
 		if p.target.ID != "" {
 			if fresh, found := state[p.target.ID]; found && fresh.Type == "Enemy" && fresh.InstanceID == me.InstanceID && (fresh.State == "DEAD" || fresh.Health <= 0) {
 				p.deaths++
@@ -409,13 +413,13 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			}
 		}
 		for _, member := range p.members {
-			if member.state.Health <= 0 || !vigil && math.Hypot(member.state.X-me.X, member.state.Z-me.Z) > 15 {
+			if p.event == nil && member.state.Health <= 0 || !vigil && math.Hypot(member.state.X-me.X, member.state.Z-me.Z) > 15 {
 				return
 			}
 		}
 	}
 	if p.target.ID == "" {
-		if index == 0 {
+		if targetLeader {
 			move(p.anchorX, p.anchorZ)
 		}
 		return
