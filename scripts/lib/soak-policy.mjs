@@ -34,6 +34,12 @@ export function validateSoakEvidence(log, samples, { durationSeconds = 0, minimu
         !ownCoverage.slice(1).every(value => Number.isSafeInteger(Number(value))) ||
         Number(ownCoverage[1]) !== 100 || Number(ownCoverage[2]) < 1 ||
         Number(ownCoverage[2]) > Number(coverage[2])) throw new Error('Fresh own-state soak coverage failed');
+    const recoveries = [...log.matchAll(/Recovery coverage: clients=(\d+) requested=(\d+) completed=(\d+) pending=(\d+) failed=(\d+)\r?$/gm)];
+    const recovery = recoveries[0];
+    if (recoveries.length !== 1 || log.split('\n').filter(line => line.includes('Recovery coverage:')).length !== 1 ||
+        !recovery.slice(1).every(value => Number.isSafeInteger(Number(value))) ||
+        Number(recovery[1]) !== 100 || Number(recovery[2]) !== Number(recovery[3]) ||
+        Number(recovery[4]) !== 0 || Number(recovery[5]) !== 0) throw new Error('Acknowledged town recovery failed');
     if (samples.length < 2) throw new Error('Insufficient runtime samples');
     if (samples.some(sample => sample?.status !== 'ok' || sample.database !== 'ready' ||
         typeof sample.commit !== 'string' || !sample.commit || sample.commit !== samples[0].commit ||
@@ -49,5 +55,6 @@ export function validateSoakEvidence(log, samples, { durationSeconds = 0, minimu
         minClientFrames: Number(coverage[2]), minClientActiveMS: Number(coverage[3]),
         maxClientStateGapMS: Number(coverage[4]), receivedPayloadBytes: Number(coverage[5]),
         minClientOwnUpdates: Number(ownCoverage[2]),
+        completedRecoveries: Number(recovery[3]),
         maxRegistrationMS: Number(admission[3]), maxLoginMS: Number(admission[4]), maxJoinMS: Number(admission[5]) };
 }

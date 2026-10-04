@@ -4,7 +4,23 @@ const health = { status: 'ok', database: 'ready', commit: 'owned-run', goroutine
 const log = 'Load summary: connected=100 joined=100 state_frames=1000 read_errors=0 write_errors=0 decode_errors=0\n' +
     'State coverage: clients=100 min_frames=10 min_active_ms=1000 max_gap_ms=150 wire_bytes=100000\n' +
     'Own state coverage: clients=100 min_updates=1\n' +
-    'Admission coverage: authenticated=100 failed=0 max_registration_ms=400 max_login_ms=300 max_join_ms=100';
+    'Admission coverage: authenticated=100 failed=0 max_registration_ms=400 max_login_ms=300 max_join_ms=100\n' +
+    'Recovery coverage: clients=100 requested=0 completed=0 pending=0 failed=0';
+
+test('recovery must include fresh town acknowledgement without missing, pending or failed operations', () => {
+    const recovered = log.replace('requested=0 completed=0', 'requested=3 completed=3');
+    expect(validateSoakEvidence(recovered, [health, health])).toMatchObject({ completedRecoveries: 3 });
+    for (const bad of [recovered.replace('requested=3', 'requested=4'),
+        recovered.replace('completed=3', 'completed=4'), recovered.replace('pending=0', 'pending=1'),
+        recovered.replace('pending=0 failed=0', 'pending=0 failed=1'),
+        recovered.replace('Recovery coverage: clients=100', 'Recovery coverage: clients=99'),
+        recovered.replace('completed=3', 'completed=9007199254740992'),
+        recovered.replace('completed=3', 'completed=3.5'), recovered.replace('pending=0', 'pending=-1'),
+        log.replace(/\nRecovery coverage:.*$/, ''), `${log}\nRecovery coverage: incomplete`,
+        `${log}\nRecovery coverage: clients=100 requested=0 completed=0 pending=0 failed=0`]) {
+        expect(() => validateSoakEvidence(bad, [health, health])).toThrow();
+    }
+});
 
 test('readiness requires the exact owned run and a ready database', () => {
     expect(verifySoakHealth(health, 'owned-run')).toBe(health);

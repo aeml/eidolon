@@ -265,6 +265,19 @@ func main() {
 	log.Printf("Own state coverage: clients=%d min_updates=%d", coverage.ownClients, coverage.minOwnUpdates)
 	log.Printf("Admission coverage: authenticated=%d failed=%d max_registration_ms=%d max_login_ms=%d max_join_ms=%d",
 		metrics.authenticated.Load(), metrics.admissionErrors.Load(), coverage.maxRegistration.Milliseconds(), coverage.maxLogin.Milliseconds(), coverage.maxJoin.Milliseconds())
+	var requestedRecoveries, completedRecoveries uint64
+	var pendingRecoveries, failedRecoveries int
+	for _, observation := range observations {
+		requestedRecoveries += observation.recovery.requested
+		completedRecoveries += observation.recovery.completed
+		if observation.recovery.pending {
+			pendingRecoveries++
+		}
+		if observation.recovery.failed {
+			failedRecoveries++
+		}
+	}
+	log.Printf("Recovery coverage: clients=%d requested=%d completed=%d pending=%d failed=%d", *count, requestedRecoveries, completedRecoveries, pendingRecoveries, failedRecoveries)
 	casinoFailed := false
 	if selectedScenario == "casino-slots" {
 		var completed, bonuses, minimum, minimumPaid uint64
@@ -348,6 +361,7 @@ func main() {
 	}
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
 		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) || coverage.ownClients != uint64(*count) ||
+		pendingRecoveries != 0 || failedRecoveries != 0 || requestedRecoveries != completedRecoveries ||
 		metrics.authenticated.Load() != int64(*count) || metrics.admissionErrors.Load() != 0 || casinoFailed {
 		os.Exit(1)
 	}
@@ -438,6 +452,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 		close(readerStopping)
 		_ = c.Close()
 		<-done // Final coverage/errors are read only after the reader has stopped.
+		observation.recovery = movement.counts()
 		if casino != nil {
 			observation.casino = casino.counts()
 		}
@@ -486,6 +501,9 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 				observation.state(worldState, myID, time.Now(), update.entities[myID].Type == "Player")
 				if party != nil && update.entities[myID].Type == "Player" {
 					party.state(memberIndex, worldState[myID], time.Now())
+				}
+				if update.entities[myID].Type == "Player" {
+					movement.observePlayer(worldState[myID])
 				}
 				if observeOwnAdmission(worldState, myID, &joined) {
 					metrics.joined.Add(1)
@@ -551,6 +569,9 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 					observation.state(worldState, myID, time.Now(), entities[myID].Type == "Player")
 					if party != nil && entities[myID].Type == "Player" {
 						party.state(memberIndex, worldState[myID], time.Now())
+					}
+					if entities[myID].Type == "Player" {
+						movement.observePlayer(worldState[myID])
 					}
 					if observeOwnAdmission(worldState, myID, &joined) {
 						metrics.joined.Add(1)
@@ -756,6 +777,15 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 			}
 			return
 		case <-ticker.C:
+			if movement.expire(time.Now(), *admissionTimeout) {
+				if party != nil {
+					party.reject()
+				}
+				if casino != nil {
+					casino.reject()
+				}
+				return // No repeated recovery or combat after missing nonce/town acknowledgement.
+			}
 			stateMu.RLock()
 			me, ok := worldState[myID]
 			// Copy state to avoid holding lock during logic

@@ -447,7 +447,10 @@ Notes:
   decode/evidence validation and response-driven registration/login/join admission.
   Startup phase latencies are reported; rejected/missing acknowledgements fail
   without limit bypass or retries. Socket-reader termination precedes final totals;
-  targeted loopback fixtures are not a100-player capacity result. Actual mixed
+  targeted loopback fixtures are not a100-player capacity result. Bot respawn now
+  proposes a fresh nonce and requires its server echo plus a fresh alive-in-town
+  state within the admission bound; incomplete recoveries fail the driver and
+  strict evidence validator without retries. Actual mixed
   town/casino/party/raid/event/save workloads and headroom remain required. A
   separate public Gold slot profile now approaches/enters/seats normally and
   measures exact-revision paid/free spin and bonus acknowledgements without

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -11,10 +12,46 @@ import (
 // Match the normal client's current recovery context and monotonic input
 // ordering. Context is private protocol state, never output in load evidence.
 type botMovement struct {
-	mu       sync.Mutex
-	context  string
-	known    bool
-	sequence uint64
+	mu                   sync.Mutex
+	context              string
+	known                bool
+	sequence             uint64
+	recovery             string // Pending fresh recovery nonce; never output as evidence.
+	awaitingTown         bool
+	recoveryAt           time.Time
+	requested, completed uint64
+	failed               bool
+}
+
+type recoveryCounts struct {
+	requested, completed uint64
+	pending, failed      bool
+}
+
+func (m *botMovement) counts() recoveryCounts {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return recoveryCounts{m.requested, m.completed, m.recovery != "" || m.awaitingTown, m.failed}
+}
+
+// The nonce echo alone is not proof that the player actually recovered. Only
+// a subsequent fresh own-player town state completes the pending operation.
+func (m *botMovement) observePlayer(me Entity) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if !m.failed && m.awaitingTown && m.known && me.Type == "Player" && me.Health > 0 && me.State != "DEAD" && me.InstanceID == "" && math.Hypot(me.X+1.25, me.Z-200) <= 2 {
+		m.awaitingTown = false
+		m.completed++
+	}
+}
+
+func (m *botMovement) expire(now time.Time, timeout time.Duration) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if (m.recovery != "" || m.awaitingTown) && now.Sub(m.recoveryAt) >= timeout {
+		m.failed = true
+	}
+	return m.failed
 }
 
 func (m *botMovement) updateContext(payload json.RawMessage) bool {
@@ -26,7 +63,11 @@ func (m *botMovement) updateContext(payload json.RawMessage) bool {
 	}
 	m.mu.Lock()
 	defer m.mu.Unlock()
+	if m.recovery != "" && *update.Context != m.recovery {
+		return false // An old acknowledgement cannot enable post-recovery moves.
+	}
 	m.context, m.known = *update.Context, true // Empty initial context is valid, missing is not.
+	m.recovery = ""
 	return true
 }
 
@@ -64,7 +105,7 @@ func (m *botMovement) move(connection *websocket.Conn, me Entity, x, z float64) 
 	}
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if !m.known || m.sequence == math.MaxUint64 {
+	if !m.known || m.awaitingTown || m.failed || m.sequence == math.MaxUint64 {
 		return false
 	}
 	m.sequence++
@@ -78,5 +119,20 @@ func (m *botMovement) move(connection *websocket.Conn, me Entity, x, z float64) 
 func (m *botMovement) respawn(connection *websocket.Conn) bool {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	return m.known && send(connection, "respawn", map[string]string{"movementContext": m.context}) == nil
+	if !m.known || m.recovery != "" || m.awaitingTown || m.failed {
+		return false
+	}
+	context, err := randomHex(16)
+	if err != nil || context == m.context {
+		return false
+	}
+	// Like the real client, propose a fresh nonce for recovery. Do not reuse
+	// the current movement authority or move again before the server echoes it.
+	if send(connection, "respawn", map[string]string{"movementContext": context}) != nil {
+		return false
+	}
+	m.recovery, m.known = context, false
+	m.awaitingTown, m.recoveryAt = true, time.Now()
+	m.requested++
+	return true
 }

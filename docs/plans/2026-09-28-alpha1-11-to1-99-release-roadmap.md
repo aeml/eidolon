@@ -1799,6 +1799,16 @@ client rendering and declared100-player runtime/DB headroom remain required.
 Default mixed/nightly coverage is unchanged; no milestone deployment is implied.
 Ordered predecessor/version/deployment and remaining operations gates stay open.
 
+October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
+the old driver sent the existing movement context for Respawn, but normal game
+authority requires a fresh nonce. The driver now follows that rule, stops moves
+until matching server echo plus fresh alive-in-town state, and fails missing or
+pending recovery at the declared timeout without retry. Actual wire-to-domain
+tests exercise both old-nonce rejection and fresh recovery/movement; final
+driver/strict nightly evidence separately records requested/completed recovery.
+This changes no production recovery rules and is not a completed dungeon profile
+or clear. Dungeon routing, entry/reentry and earned party encounters remain next.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

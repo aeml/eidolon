@@ -42,9 +42,51 @@ func TestBotMovementUsesReportedSpeedAndRequiresKnownContext(t *testing.T) {
 	}
 }
 
+func TestBotRecoveryRequiresEchoAndFreshTownStateWithinBound(t *testing.T) {
+	now := time.Unix(100, 0)
+	for _, scenario := range []string{"echo-only", "state-before-echo", "dead", "instance", "away", "wrong-type", "complete"} {
+		t.Run(scenario, func(t *testing.T) {
+			movement := &botMovement{recovery: "new-private-nonce", awaitingTown: true, recoveryAt: now, requested: 1}
+			me := Entity{Type: "Player", Health: 100, X: -1.25, Z: 200}
+			if scenario == "state-before-echo" {
+				movement.observePlayer(me)
+				if movement.counts().completed != 0 {
+					t.Fatal("state without nonce echo acknowledged recovery")
+				}
+			}
+			if !movement.updateContext(json.RawMessage(`{"movementContext":"new-private-nonce"}`)) {
+				t.Fatal("matching echo refused")
+			}
+			switch scenario {
+			case "dead":
+				me.Health = 0
+			case "instance":
+				me.InstanceID = "dungeon-synthetic"
+			case "away":
+				me.X = 50
+			case "wrong-type":
+				me.Type = "Enemy"
+			}
+			if scenario != "echo-only" && scenario != "state-before-echo" {
+				movement.observePlayer(me)
+			}
+			if scenario == "complete" {
+				movement.observePlayer(me) // Repeated fresh town states cannot double-count.
+				if movement.expire(now.Add(5*time.Second), time.Second) || movement.counts().completed != 1 || movement.counts().pending {
+					t.Fatal("complete recovery repeated or timed out")
+				}
+			} else {
+				if movement.expire(now.Add(999*time.Millisecond), time.Second) || !movement.expire(now.Add(time.Second), time.Second) || movement.counts().completed != 0 || !movement.counts().pending || movement.move(nil, me, 0, 200) || movement.respawn(nil) {
+					t.Fatal("incomplete recovery did not fail at the declared bound without retry/move")
+				}
+			}
+		})
+	}
+}
+
 func TestBotMovementActualWirePassesGameAuthorityAndRotatesRecoveryContext(t *testing.T) {
 	upgrader := websocket.Upgrader{}
-	packets := make(chan Message, 3)
+	packets := make(chan Message, 8)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		connection, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -126,7 +168,52 @@ func TestBotMovementActualWirePassesGameAuthorityAndRotatesRecoveryContext(t *te
 	}
 	message := read()
 	var payload struct{ MovementContext string }
-	if message.Type != "respawn" || json.Unmarshal(message.Payload, &payload) != nil || payload.MovementContext != "synthetic-recovery" {
-		t.Fatal("respawn omitted current authority context")
+	if message.Type != "respawn" || json.Unmarshal(message.Payload, &payload) != nil || payload.MovementContext == "synthetic-recovery" || len(payload.MovementContext) != 32 {
+		t.Fatal("respawn did not propose a bounded fresh recovery nonce")
+	}
+	if err := world.PerformRespawn(player.ID, "synthetic-recovery"); err == nil {
+		t.Fatal("fixture did not exercise the old nonce rejection")
+	}
+	if err := world.PerformRespawn(player.ID, payload.MovementContext); err != nil {
+		t.Fatal("actual respawn wire request failed normal game authority")
+	}
+	if player.InstanceID != "" || player.Health != player.MaxHealth || player.MovementContext != payload.MovementContext {
+		t.Fatal("normal recovery did not return the real entity to town with new authority")
+	}
+	if movement.move(connection, me, 10, 200) || movement.respawn(connection) {
+		t.Fatal("unacknowledged recovery moved or was retried")
+	}
+	if movement.updateContext(json.RawMessage(`{"movementContext":"synthetic-recovery"}`)) {
+		t.Fatal("stale acknowledgement enabled post-recovery movement")
+	}
+	acknowledged, _ := json.Marshal(map[string]string{"movementContext": player.MovementContext})
+	if !movement.updateContext(acknowledged) {
+		t.Fatal("normal server echo did not acknowledge fresh recovery")
+	}
+	if world.UpdatePlayerMovementWithContext(player.ID, 2, 0, 200, 0, "MOVING", 12, "synthetic-recovery") {
+		t.Fatal("old-context movement remained valid after real recovery")
+	}
+	me.X, me.Z = player.X, player.Z
+	me.Type = "Player"
+	movement.observePlayer(me)
+	if got := movement.counts(); got.requested != 1 || got.completed != 1 || got.pending || got.failed {
+		t.Fatal("fresh nonce echo and actual town state did not complete recovery")
+	}
+	movement.observeSequence(player.LastMoveSequence)
+	if !movement.move(connection, me, 10, 200) {
+		t.Fatal("acknowledged recovery did not resume normal bounded movement")
+	}
+	apply(read(), payload.MovementContext, 12)
+	if math.Abs(player.X-(me.X+1)) > 1e-9 {
+		t.Fatal("fresh-context recovery movement did not advance at normal speed")
+	}
+	// A later recovery must rotate again, not reuse the first successful nonce.
+	if !movement.respawn(connection) {
+		t.Fatal("subsequent recovery request missing")
+	}
+	var next struct{ MovementContext string }
+	message = read()
+	if json.Unmarshal(message.Payload, &next) != nil || next.MovementContext == payload.MovementContext || len(next.MovementContext) != 32 || world.PerformRespawn(player.ID, next.MovementContext) != nil {
+		t.Fatal("subsequent recovery did not rotate accepted authority")
 	}
 }

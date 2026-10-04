@@ -31,7 +31,15 @@ remote closure remains a read failure. Writes have a five-second deadline.
 Bots also retain the received movement/recovery context, seed monotonic movement
 sequences from authoritative state and limit each200ms walking step to reported
 speed. Missing context or invalid/dead actor state sends no movement. Dead bots
-request normal context-bound respawn once, then wait for an alive snapshot.
+request normal respawn once with a fresh cryptographic nonce, like the real
+client, not the current movement context (which game authority rejects).
+Walking stays disabled until the server echoes that nonce and a subsequent fresh
+own-player state shows alive in Lanternhold. A stale echo, missing nonce/state
+acknowledgement or expiry at the declared admission timeout fails without retry.
+`Recovery coverage` reports configured clients, requested/completed recoveries,
+pending clients and failed clients; final success requires no pending/failures
+and every requested recovery completed. The nightly validator requires that line
+even when no recovery occurs; historical receipts keep their original scope.
 This corrects post-recovery movement, but does not make sent moves proof of
 accepted travel or provide collision/pathfinding or encounter-clear evidence.
 The additional `State coverage` line reports:
