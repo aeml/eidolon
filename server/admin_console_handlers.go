@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
@@ -24,6 +25,8 @@ const (
 	MsgAdminHistoryResult = "admin_history_result"
 	MsgAdminReports       = "admin_reports"
 	MsgAdminReportsResult = "admin_reports_result"
+	MsgAdminService       = "admin_service"
+	MsgAdminServiceResult = "admin_service_result"
 	adminPlayerPageSize   = 50
 )
 
@@ -76,6 +79,12 @@ type adminReadResult struct {
 	Reports           *database.ReportPage        `json:"reports,omitempty"`
 	Account           string                      `json:"account,omitempty"`
 	Items             []game.AdminItemDefinition  `json:"items,omitempty"`
+	Service           *adminServiceDiagnostics    `json:"service,omitempty"`
+}
+
+type adminServiceDiagnostics struct {
+	SampledAt time.Time      `json:"sampledAt"`
+	Health    healthResponse `json:"health"`
 }
 
 // Read requests have a deliberately small, closed schema. In particular actor,
@@ -169,6 +178,9 @@ func handleAdminRead(c *Client, msg Message) {
 	if msg.Type == MsgAdminReports {
 		responseType = MsgAdminReportsResult
 	}
+	if msg.Type == MsgAdminService {
+		responseType = MsgAdminServiceResult
+	}
 	defer func() {
 		// Do not acknowledge a privileged read without its durable audit entry.
 		// A later mutation must couple this to its own recoverable operation;
@@ -212,6 +224,14 @@ func handleAdminRead(c *Client, msg Message) {
 		result.Success, result.Message = true, "Administrator access verified."
 		result.ModerationEnabled = worldEntryModeration != nil && chatService.authorizeSend != nil
 		result.Account, result.Items = c.username, game.AdminItemCatalog()
+		return
+	}
+	if msg.Type == MsgAdminService {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		health, _ := collectHealthResponse(ctx, pingServiceDatabase)
+		result.Service = &adminServiceDiagnostics{SampledAt: time.Now().UTC(), Health: health}
+		result.Success, result.Message = true, "Service diagnostics refreshed."
 		return
 	}
 	if msg.Type == MsgAdminReports {

@@ -150,7 +150,7 @@ func TestAdminConsoleOnlinePagesAreBoundedSortedAndMinimal(t *testing.T) {
 }
 
 func TestAdminConsoleAdmissionRequiresAuthenticationAndRateLimits(t *testing.T) {
-	for _, kind := range []string{MsgAdminStatus, MsgAdminPlayers, MsgAdminHistory} {
+	for _, kind := range []string{MsgAdminStatus, MsgAdminPlayers, MsgAdminHistory, MsgAdminService} {
 		policy := inboundMessagePolicies[kind]
 		if policy.access != accessAuthenticated || policy.maxPayloadBytes != 1024 || policy.burst != 5 || messageHandlers[kind] == nil {
 			t.Fatal(kind, policy)
@@ -202,7 +202,7 @@ func TestAdminConsoleHistoryAuthorizationAuditAndFailure(t *testing.T) {
 }
 
 func TestAdminReadAuditOutagePreservesExactEvent(t *testing.T) {
-	for _, kind := range []string{MsgAdminStatus, MsgAdminPlayers, MsgAdminHistory} {
+	for _, kind := range []string{MsgAdminStatus, MsgAdminPlayers, MsgAdminHistory, MsgAdminService} {
 		t.Run(kind, func(t *testing.T) {
 			c, _ := adminReadFixture(t)
 			dir, store := sessionActivityFixture(t)

@@ -470,7 +470,7 @@ class GameEngineNetworkMessageMethods {
             this.uiManager?.report?.lookup?.handleResult(msg.payload);
         } else if (msg.type === 'moderation_notice_result') {
             this.uiManager?.report?.notice?.handleResult(msg.payload);
-        } else if (['admin_status_result', 'admin_players_result', 'admin_history_result', 'admin_reports_result',
+        } else if (['admin_status_result', 'admin_players_result', 'admin_history_result', 'admin_reports_result', 'admin_service_result',
             'admin_report_review_result',
             'admin_chat_moderation_result', 'admin_chat_moderation_target_result',
             'admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(msg.type)) {

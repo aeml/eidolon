@@ -2,6 +2,7 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { AdminOperations } from './AdminOperations.js';
 import { AdminReportReview } from './AdminReportReview.js';
 import { AdminChatModeration } from './AdminChatModeration.js';
+import { renderAdminServiceDiagnostics } from './AdminServiceDiagnostics.js';
 
 // Visibility is only presentation. Every read and operation must be
 // independently authorized by the server against the current durable role.
@@ -26,12 +27,13 @@ export class AdminUI {
                 <div class="administration-actions" aria-label="Administration views">
                     <button type="button" data-view="players" aria-pressed="true">Online players</button>
                     <button type="button" data-view="history" aria-pressed="false">Activity history</button>
-                    <button type="button" data-view="reports" aria-pressed="false">Player reports</button></div>
+                    <button type="button" data-view="reports" aria-pressed="false">Player reports</button>
+                    <button type="button" data-view="service" aria-pressed="false">Service diagnostics</button></div>
                 <div class="administration-filters" hidden>
                     <label>Exact account<input data-actor maxlength="71" autocomplete="off" placeholder="All accounts"></label>
                     <label>Activity<select data-action><option value="">All activity</option>
                         <option value="admin_status">Access checks</option><option value="admin_players">Player list reads</option>
-                        <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="admin_report_review">Report review requests</option><option value="login">Login</option>
+                        <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="admin_service">Service diagnostic reads</option><option value="admin_report_review">Report review requests</option><option value="login">Login</option>
                         <option value="resume">Resume</option><option value="disconnect">Disconnect</option>
                         <option value="admin_grant_gold">Gold grants</option><option value="admin_grant_item">Item creation</option>
                         <option value="admin_teleport">Teleports</option></select></label>
@@ -82,8 +84,8 @@ export class AdminUI {
             this.view = button.dataset.view;
             this.filters.hidden = this.view !== 'history';
             this.reportFilters.hidden = this.view !== 'reports';
-            this.refresh.textContent = this.view === 'reports' ? 'Refresh reports' : this.view === 'history' ? 'Refresh history' : 'Refresh players';
-            this.list.setAttribute('aria-label', this.view === 'reports' ? 'Submitted player reports' : this.view === 'history' ? 'Activity history entries' : 'Online players');
+            this.refresh.textContent = this.view === 'service' ? 'Refresh diagnostics' : this.view === 'reports' ? 'Refresh reports' : this.view === 'history' ? 'Refresh history' : 'Refresh players';
+            this.list.setAttribute('aria-label', this.view === 'service' ? 'Service diagnostics' : this.view === 'reports' ? 'Submitted player reports' : this.view === 'history' ? 'Activity history entries' : 'Online players');
             for (const view of this.views) view.setAttribute('aria-pressed', String(view === button));
             this.refreshView('');
         });
@@ -161,6 +163,11 @@ export class AdminUI {
         if (this.view === 'players') { this.requestPlayers(cursor); return; }
         if (!this.connected || !this.authorized || this.pending) return;
         this.clearReportReviews(); this.list.replaceChildren();
+        if (this.view === 'service') {
+            this.cursor = ''; this.next.hidden = true;
+            this.request('admin_service');
+            return;
+        }
         if (this.view === 'reports') {
             this.request('admin_reports', { before: cursor, status: this.reportStatus.value,
                 ...(this.reportType.value ? { reportType: this.reportType.value } : {}) });
@@ -204,6 +211,13 @@ export class AdminUI {
         }
         if (type === 'admin_reports_result') {
             this.renderReports(result.reports);
+            return;
+        }
+        if (type === 'admin_service_result') {
+            const valid = renderAdminServiceDiagnostics(this.list, result.service);
+            this.cursor = ''; this.next.hidden = true;
+            this.note.textContent = 'Explicit current-process observation · counters reset on restart and include retries/rejected calls, not unique payouts or balances. Cleanup failures are separate from confirmed commits. Independent-monitor delivery and server capacity are not proved here.';
+            this.status.textContent = valid ? 'Service diagnostics refreshed. Refresh explicitly for a new observation.' : 'Service diagnostics are unavailable. Try refreshing.';
             return;
         }
         if (type !== 'admin_players_result') return;
