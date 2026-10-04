@@ -483,7 +483,8 @@ version, cumulative notes and three exact changed Forge/inventory runtime files.
 The [acceptance](2026-10-03-release1-70-2-forge-checks.json) retains the failed first
 candidate and its supported dependency correction separately. This deploys only
 the stat-order hotfix/test-tool correction, not the unpublished1.71–1.73 writers.
-Owner recovery/jump choices remain open; administration-safety preparation may
+Owner jump choice remains open; the October4 Postmark recovery decision is
+recorded below. Administration-safety preparation may
 continue without publishing out of order. The full1.11–1.99 goal remains active.
 The [1.74 read-completion follow-up](2026-10-04-release1-74-admin-read-completion-checks.json)
 now revalidates durable administrator authority and connection ownership after
@@ -660,8 +661,19 @@ adds authenticated Account help and online Settings forms, clears typed secrets
 on submission/close/disconnect, and consumes token rotation at the current
 transport even after closing the form or entering the world. Scoped browser
 bootstrap checks include phone-sized blocked storage; this is not live.
-The safe recovery-method decision/workflow and ordered version/notes/publication
-remain unfinished. Password change is not forgotten-password recovery.
+Password change is not forgotten-password recovery. The owner subsequently
+chose emailed links and supplied Postmark configuration on October4. The
+[email recovery follow-up](2026-10-04-release1-71-email-recovery-checks.json)
+prepares verified-mailbox setup, expiring single-use hashed challenges,
+password-reset proof, bounded asynchronous Postmark delivery, generic anonymous
+requests, shared admission, proved session invalidation and password-free owner
+notifications. A disposable Mongo check retained legacy/character data and
+exactly one winner among eight reset attempts. Scoped mocked-session, actual
+local TLS-provider and shutdown checks pass; their failed fixture candidates are
+retained separately. No real mail was sent. Login/settings UI, pre-analytics
+fragment handoff, connected acceptance, version/notes and exact-source publication
+remain unfinished. Work is isolated on the schema17 1.71 branch; do not publish
+the broader prepared schema24 successor in its place.
 Partial 1.72 now meters network walking against server-derived speed and elapsed
 time, bounds retained lag credit, acknowledges denied predictions, and keeps
 walking height server-owned. [Scoped walking checks](2026-10-02-release1-72-walking-checks.json)
@@ -826,9 +838,9 @@ retries and imported larger backlogs, and reconstructs its count on restart.
 Burst/restart/acknowledgement checks and a real one-slot journal in the game
 settlement hook pass: capacity holds the frozen result until it can be recorded
 and applied once. This is not a cross-process or overall disk quota, nor crash
-durability before recording. Account recovery remains an owner choice; a
-dependency-free one-time recovery-code option has been proposed, not approved
-or implemented. Ordered publication and broader release gates remain open.
+durability before recording. The recovery-code proposal was not implemented;
+the owner selected Postmark email recovery on October4, as recorded above.
+Ordered publication and broader release gates remain open.
 The [envelope follow-up](2026-10-02-release1-72-envelope-checks.json) resolves
 the former8KiB transport ceiling conflicting with larger report, casino and
 moderation payload policies. The bounded33KiB envelope now fits every declared
