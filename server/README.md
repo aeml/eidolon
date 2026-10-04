@@ -3,12 +3,12 @@
 This is the authoritative multiplayer server for Eidolon, written in Go.
 
 ## Current runtime notes
-- Go module/toolchain version: `go 1.24.5`
+- Go module/toolchain version: `go 1.27.1` (prepared 1.72 source)
 - Persistence: MongoDB
 - Networking: Gorilla WebSocket + protobuf state envelopes
 
 ## Prerequisites
-- Go 1.24.5
+- Go 1.27.1
 - MongoDB (local or Atlas)
 
 ## Run locally without TLS
@@ -65,6 +65,29 @@ go build -trimpath -o eidolon-server .
 
 ## Database
 The server uses MongoDB for user and character persistence.
+
+## Emailed account recovery
+
+Configure `POSTMARK_SERVER_TOKEN`, `POSTMARK_FROM_EMAIL` (a Postmark-verified
+sender) and `POSTMARK_MESSAGE_STREAM` (a transactional stream; blank defaults
+to `outbound`) in the private deployment environment. Never commit or print
+the token. All three blank disables mail; invalid partial configuration refuses
+startup. Existing Docker deployment loads the server `.env`; no new sudo
+installation or service is required. Recovery never BCCs `ADMIN_NOTIFICATION_EMAILS`.
+
+Players first sign in and use Account help or Settings to prove their current
+password and verify a recovery mailbox using its 30-minute confirmation link.
+The original registration email is not trusted automatically. Forgot your
+password on the login screen then requests a 15-minute, single-use reset link.
+Both links require explicit submission. Resets invalidate existing sessions
+but preserve characters, items, currency and roles. There is no admin ownership
+override or automatic sign-in. Mail acceptance is not inbox-delivery proof.
+
+After deployment, verify delivery using your own account: request verification,
+check inbox/spam, and explicitly confirm the address. A reset test changes the
+password and closes other sessions, so only request one when prepared to do so.
+Check Postmark sender/stream permissions if mail does not arrive; do not paste
+tokens, links, passwords or raw provider responses into reports.
 
 ## QA-only commands
 

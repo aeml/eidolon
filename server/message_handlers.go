@@ -7,6 +7,10 @@ type messageHandler func(*Client, Message)
 
 var messageHandlers = map[string]messageHandler{
 	MsgChangePassword:            handlePasswordChange,
+	MsgSetRecoveryEmail:          handleEmailRecovery,
+	MsgRequestPasswordRecovery:   handleEmailRecovery,
+	MsgConfirmRecoveryEmail:      handleEmailRecovery,
+	MsgCompletePasswordRecovery:  handleEmailRecovery,
 	MsgAdminChatModeration:       handleAdminChatModeration,
 	MsgAdminChatModerationTarget: handleAdminChatModerationTarget,
 	MsgPublicNameCorrection:      handlePublicNameCorrection,

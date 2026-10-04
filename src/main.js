@@ -5,6 +5,10 @@ import { resolveServerAddress } from './core/serverAddress.js';
 import { showSessionRecoveryLogin } from './ui/SessionRecovery.js';
 import { LoginModerationUI } from './ui/LoginModerationUI.js';
 import { credentialTokenChange } from './core/CredentialToken.js';
+import { PublicEmailRecoveryUI } from './ui/EmailRecoveryUI.js';
+
+const recoveryHandoff = window.__eidolonRecoveryHandoff;
+delete window.__eidolonRecoveryHandoff;
 
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 800);
@@ -134,6 +138,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     let authSocket = null;
     let isAuthenticated = false;
     let loginModeration = null;
+    let publicEmailRecovery = null;
     let serverTerrainProfile = 'flat-v1';
     let pendingAuthRequest = null;
     let inFlightLoginRequest = null;
@@ -304,12 +309,14 @@ window.addEventListener('DOMContentLoaded', async () => {
         authSocket.onopen = () => {
             if (socket !== authSocket) return;
             console.log("Connected to server for auth");
+            publicEmailRecovery?.connectionState('connected');
             sendPendingAuthRequest();
         };
 
         authSocket.onmessage = (event) => {
             if (socket !== authSocket) return;
             const msg = JSON.parse(event.data);
+            if (msg.type === 'email_recovery_result' && publicEmailRecovery?.handleResult(msg.payload)) return;
             if (msg.type === 'password_change_result') {
                 const token = credentialTokenChange(msg.payload);
                 if (token !== undefined) updateCredentialToken(token);
@@ -323,6 +330,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             } else if (msg.type === 'login_success') {
                 finishAuthRequest();
                 isAuthenticated = true;
+                publicEmailRecovery?.close();
                 if (!loginModeration?.current()) {
                     loginModeration?.dispose();
                     loginModeration = new LoginModerationUI({ root: document.getElementById('report-screen'),
@@ -367,6 +375,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         };
 
         authSocket.onclose = () => {
+            if (socket === authSocket) publicEmailRecovery?.connectionState('closed');
             if (socket === authSocket) { loginModeration?.dispose(); loginModeration = null; }
             if (socket === authSocket && !isAuthenticated) retryInterruptedLogin();
         };
@@ -383,6 +392,17 @@ window.addEventListener('DOMContentLoaded', async () => {
         connectAuth();
         sendPendingAuthRequest();
     };
+
+    if (loginPanel) {
+        const currentRecovery = () => !isAuthenticated && !pendingAuthRequest && !inFlightLoginRequest && authSocket?.readyState === WebSocket.OPEN && !startScreen.classList.contains('hidden');
+        publicEmailRecovery = new PublicEmailRecoveryUI({ parent: loginPanel, handoff: recoveryHandoff,
+            isCurrent: currentRecovery, connect: connectAuth, onPasswordReset: () => updateCredentialToken(null),
+            send: (type, payload) => {
+                if (!currentRecovery()) return false;
+                try { authSocket.send(JSON.stringify({ type, payload })); return true; } catch { return false; }
+            } });
+        if (recoveryHandoff) connectAuth();
+    }
 
     if (btnLogin) {
         btnLogin.addEventListener('click', () => {
@@ -477,6 +497,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     window.game?.uiManager?.admin?.connectionState(state);
                     window.game?.uiManager?.skillTree?.handleBuildConnectionState?.(state);
                     window.game?.uiManager?.passwordChange?.connectionState(state);
+                    window.game?.uiManager?.recoveryEmail?.connectionState(state);
                 };
                 window.game.network.onReconnectFailed = reason => {
                     if (window.game !== sessionGame) return;
@@ -490,6 +511,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     sessionGame.destroy();
                     window.game = null;
                     showSessionRecoveryLogin({ message: reason?.kind === 'moderation' ? reason.message : undefined });
+                    publicEmailRecovery?.connectionState('closed');
                 };
             }
             if (window.game?.uiManager) {

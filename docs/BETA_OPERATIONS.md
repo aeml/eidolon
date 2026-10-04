@@ -35,8 +35,31 @@ rotation independently of the form, including a late world-entry handoff or
 blocked browser storage. [UI checks](plans/2026-10-02-release1-71-password-ui-checks.json)
 use scoped mocked browser sockets; the earlier backend receipt records actual
 disposable Mongo/fresh-process proof separately.
-Forgotten-password recovery still needs an approved ownership/delivery method;
-this form does not provide it. Production is accepted Alpha 1.70.1.
+The owner chose **emailed recovery links via Postmark** on October 4. The prepared
+database/provider helpers require password proof and a separate mailbox
+verification before an address can recover an account; registration email alone
+does not prove ownership. Challenges store only token digests, expire, and are
+consumed by a conditional credential update. Password changes also invalidate
+outstanding recovery/verification challenges. No roles, characters, Gold or EP
+are replaced. Provider requests use a fixed HTTPS endpoint, finite timeout,
+no redirects and no tracking or administrator copies. Configure
+`POSTMARK_SERVER_TOKEN`, `POSTMARK_FROM_EMAIL` and `POSTMARK_MESSAGE_STREAM` only
+in the server environment, using a verified Postmark sender and transactional
+stream. `ADMIN_NOTIFICATION_EMAILS` is not a recovery recipient list.
+The prepared protocol now supports password-proved setup, anonymous verification
+and reset, generic asynchronous recovery requests, bounded/shared admission and
+session invalidation only after proved credential mutation. Two bounded mail
+workers join shutdown; reset notifications contain no password. Partial mail
+delivery is not retried automatically or represented as guaranteed inbox delivery.
+Login/settings UI and the pre-analytics private-link handoff are integrated in
+the assembled1.71.0 candidate. Three native browser/bootstrap checks and a real
+disposable-Mongo/socket test verify the bounded explicit-action flow, including
+link durability across restart and old-session revocation. The browser sockets
+are mocked; the separate connected proof uses real game processes and a local
+TLS Postmark stand-in. Neither proves actual inbox delivery. Exact-source CI and
+independent public acceptance remain required before calling1.71 live.
+Production remains Alpha 1.70.2; maintenance acceptance is recorded separately.
+See [prepared email checks](plans/2026-10-04-release1-71-email-recovery-checks.json).
 Administrators gain no arbitrary reset, ownership or password-reading action.
 
 ## Direct-trade escrow-edit hotfix

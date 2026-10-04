@@ -189,6 +189,14 @@ check. Starting with 1.0.57, the script holds `logs/deploy.lock` to refuse anoth
 deployment through this script while it is active. Manual/older deployment tools
 do not share that protection and must not run concurrently.
 
+Deployment health probes have a two-second connection deadline and five-second
+total request deadline, with at most 30 attempts and two-second retry pauses.
+They still require the exact build commit and ready database; a stalled response
+cannot hold one attempt indefinitely. CI's public client/runtime/server identity
+wait uses the same request deadlines, a five-minute elapsed wait (plus at most
+one bounded probe batch), and an outer six-minute Actions step limit. These are
+release-check bounds, not game-session timeouts or a fix for stale DDNS/IPv6.
+
 Deployment validates that the API's URI points to the same `mongo:27017` service
 that the backup captures. Remote database URIs fail closed; they require a
 separately verified backup workflow rather than an unrelated local archive.

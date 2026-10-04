@@ -420,14 +420,22 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.70.2` accepted presentation hotfix. Forge previews and bag tooltips share a fixed stat order across refreshes. This prepared successor also includes unpublished1.71–1.73 work; do not deploy the entire tree as the presentation hotfix. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
+- Current inherited source version: `Alpha 1.71.0`. This isolated, unpublished
+  1.73 candidate integrates prepared 1.72 security and 1.73 valuable-operation
+  writers through schema22, excluding later schema23–24 checkpoints, admin/privacy
+  follow-ups and operations-monitor work. Do not deploy it as 1.71 or before
+  1.71/1.72 acceptance. Version/notes assembly and exact-source CI/public proof
+  remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
+  distinguish synthetic connected proof from actual inbox delivery. Broader
+  owner/commercial and human gates remain open; no capacity, payment launch or
+  closed-beta transition is implied.
 - Last independently verified live release: `Alpha 1.70.2`, exact
-  526bc22953e79cbe4869580e8f628d55c39c1b1c, successful CI37137636915 (all ten jobs,
-  including predeploy and live character QA). Public IPv4 frontend/backend
-  identities, database readiness, login version, cumulative notes and the
-  three changed Forge/inventory runtime files match the release. Ilyra artwork
-  remains unchanged. [Acceptance](docs/plans/2026-10-03-release1-70-2-forge-checks.json).
-  Prepared1.71 source remains unpublished.
+  ddfa60e3b2bd20b08a175de124eb00fae66dc299, successful CI37175484045 (all ten jobs,
+  including both deploys and live QA). Independent public IPv4 frontend/backend
+  identities, database readiness, login version, notes and runtime release query
+  match. [Maintenance acceptance](docs/plans/2026-10-04-release1-77-network-probe-checks.json)
+  preserves its scope; the [Forge acceptance](docs/plans/2026-10-03-release1-70-2-forge-checks.json)
+  remains historical. Prepared1.71 is not accepted live merely by its assembly.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.

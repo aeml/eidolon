@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71 account security and emailed recovery",
+  "status": "assembled; exact-source CI and public acceptance pending",
+  "testedAccountSource": "8ede63f2c12439e2c1827e31b1c2c8bb8cf18bbb",
+  "acceptedPredecessor": "Alpha1.70.2, ddfa60e3b2bd20b08a175de124eb00fae66dc299 / successfulCI37175484045; independent public acceptance in2026-10-04-release1-77-network-probe-checks.json",
+  "scope": "Publish prepared credentials, session/token and current-password change work together with owner-chosen Postmark recovery. Explicit verify/reset forms, verified mailbox separate from registration email, bounded workers/admission, conditional digest-based expiring one-use challenges and proved reset session revocation. Schema17 remains; no later schema18–24 writers/dependency changes, new models, rewards, payments, closed-beta transition or arbitrary administrator recovery grant.",
+  "evidence": ["2026-10-02-release1-71-combined-checks.json", "2026-10-02-release1-71-password-checks.json", "2026-10-02-release1-71-password-ui-checks.json", "2026-10-04-release1-71-publication-alignment.json", "2026-10-04-release1-71-email-recovery-checks.json"],
+  "assemblyChecks": {
+    "versions": "package/root lock, release manifest, login, backend, Dockerfile/compose, operator deployment, workflow and isolated QA defaults allAlpha1.71.0. Explicit cumulative1.71.0 patch notes precede retained1.70.2 history.",
+    "client": "Five version, exact deployment checkout and browser-plan/coverage/sharding suites:380 tests passed in4.638s. Earlier143 focused UI tests and three native7.6s cases retain their own source/scope; not repeated after text/version-only assembly.",
+    "server": "GOTOOLCHAIN=go1.24.5 focused account/recovery/provider/policy/password/session/registration/schema race regressions passed root3.570s/database1.033s. Existing actual Mongo/socket source receipts retain their scope, not relabelled as a new deployed binary.",
+    "hygiene": "Focused version ESLint, JSON receipt/js-yaml parsing, bash -n for deployment/isolated-QA scripts, gofmt and git diff --check pass.",
+    "corrections": "Initial assembly check found remaining1.70.2 release/container/operator/isolated-QA defaults and an invocation naming a nonexistent PublicationContract suite. Updated all required defaults and used the existing DeploymentCheckout suite; final380 checks pass. Initial shell syntax invocation used a wrong relative prefix fromserver/; reran from repo root successfully.",
+    "ci": "Existing disposable connected-server CI step now includes bounded real email-recovery test with synthetic configuration/local-only TLS sink. Final fixture separates the unverified account from the account later verified to remove an asynchronous eligibility race; this fixture-only follow-up awaits exact CI, not claimed in the older local connected receipt. Real provider endpoint unchanged; no user mail/API token sent by tests."
+  },
+  "threatReview": {
+    "publicOwnership": "Registration email is never proof. Current-password setup plus mailbox confirmation is required; unknown/unverified/verified public requests have the same acknowledgement before lookup. Per-action client/shared budgets and bounded workers reduce spam/hash amplification; distributed abuse and account-targeted temporary denial remain residual risks for later infrastructure review.",
+    "bearerProof": "CSPRNG64hex secrets, digest-only database storage, account/password-hash/address binding, exact expiry and compare-and-set single consumer. Fragment scrub/private-page analytics guard and no persistent UI proof storage reduce incidental leakage; a stolen unexpired link remains sensitive, and email account security/provider compromise remain external dependencies.",
+    "sessionAndSupport": "Only proved/ambiguous writes revoke sessions; invalid token/read failure cannot kick an owner. Normal login after reset, no administrator BCC/password disclosure/ownership override. Protected durable roles and existing negative admin tests retain scope.",
+    "operations": "Configured provider startup validation, eight-second no-redirect HTTP bound, sanitized diagnostics, bounded shutdown-owned RAM queue, no auto-retry. Accepted messages may not arrive; queued unsent messages may be lost on restart and users must deliberately request again after cooldown. Human mailbox delivery, sender/stream eligibility and support handling remain operator checks."
+  },
+  "publicationCorrection": {
+    "firstSource": "711b82ce8c0a2167256b0c06111d6c13879bd347",
+    "firstCI": 37179739092,
+    "finding": "Browser Smoke1/3, Run anonymous real-browser smoke, job111369701198 failed anonymous.spec.js:19 because a generic .auth-session-help summary selector matched both connection help and the new recovery disclosure.43other layout checks passed. Server's new real connected recovery check passed. Failed job blocks acceptance; no1.71 public deployment claimed.",
+    "fix": "Give existing connection help a unique login-session-help ID and make its keyboard test select that panel. Keep exact focus, expand/collapse, GitHub link, outline and mobile-viewport assertions; no timeout increase, gameplay, provider or password/session change. Align previously outdated BETA_OPERATIONS recovery status.",
+    "targetedCheck": "Affected desktop/mobile anonymous keyboard route plus3synthetic recovery bootstrap cases passed4/4in18.9s. Focused ESLint/git diff --check pass. No repeated actual-Mongo/campaign/soak matrix for this ID/selector/documentation-only correction."
+  },
+  "accessibilityCorrection": {
+    "source": "73585e52ba20afe3f9ecc66b91305a3de0b68452",
+    "ci": 37180182645,
+    "finding": "Exact-source CI completed with failure. Browser Smoke2/3 job111371175439 failed the two desktop/phone account-field keyboard cases: nested password guidance expanded the native accessible name beyond Password.44other cases in that job passed; Client Tests, Server Tests and Browser Smoke1/3 and3/3 succeeded. No deployment jobs ran.",
+    "fix": "Separate Email and Password labels from guidance while retaining the auth-field layout. Associate guidance using aria-describedby. Preserve the exact Password accessible-name/focus assertion and add exact Email naming and both field descriptions; no timeout weakening or server/provider changes.",
+    "targetedCheck": "Six real-browser cases passed in28.5s: desktop and phone account naming/tab order/browser zoom, existing project-credit keyboard route, and verify/reset/setup recovery bootstrap. Focused keyboard-settings ESLint and git diff --check passed. No repeated Mongo/campaign/soak matrix for this HTML accessibility correction."
+  },
+  "menuContractCorrection": {
+    "source": "85f1bccd58643f5c5fedef3391ac6518e75a5ceb",
+    "ci": 37181802120,
+    "finding": "Client Tests job111375702357 failed one MenuPolish static-markup assertion expecting auth-field on wrapping labels rather than the accessibility-correct wrappers.628other suites and9296other tests passed. Run was stillin_progress when failure was inspected; no public acceptance inferred.",
+    "fix": "Parse the actual HTML into detached DOM and assert native label association and exact field text, shared auth-field/auth-input styling without inline wrapper chrome, plus separate aria-describedby guidance. Retain the existing login/register/status/CSS regressions. No runtime, password, provider or timeout change.",
+    "targetedCheck": "MenuPolish, EmailRecoveryUI, RecoveryLinkBoot and VersionPresentation passed443tests in4suites in12.938s. Focused ESLint and git diff --check passed. The six native accessibility/recovery cases passed on the unchanged runtime in the preceding correction; no redundant rerun or historical Mongo/campaign matrix."
+  },
+  "remaining": "Fetch/pull current master before corrected normal push; preserve concurrent website edits. Confirm corrected exact CI handle, delegate its monitoring to user-authorized Luna, independently check frontend/runtime/backend identities and notes. Ask owner to verify actual inbox delivery without sharing secrets. Broader roadmap and owner/human gates remain active."
+}
