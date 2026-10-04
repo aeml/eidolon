@@ -420,7 +420,9 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.0`. This isolated, unpublished
+- Current source version: `Alpha 1.74.1`. The narrowly scoped Sell All/error
+  hotfix has been ordinarily merged from master; its exact CI/public proof is
+  still pending. This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
@@ -493,7 +495,7 @@ Notes:
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.
-  1.74 is independently accepted; this candidate must not deploy as1.74 or
+  1.74 is independently accepted; this candidate must not deploy as1.74.x or
   before1.75/1.76/1.77/1.78 acceptance and its own full1.79 gates.
   Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
