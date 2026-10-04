@@ -38,9 +38,9 @@ describe('tooling baseline', () => {
         expect(fs.readFileSync(path.join(repoRoot, '.nvmrc'), 'utf8').trim()).toBe('24');
         expect(packageJson.engines.node).toBe('>=24.0.0 <25.0.0');
         expect(workflow).toContain("node-version: '24'");
-        expect(workflow).toContain("go-version: '1.24.5'");
-        expect(goMod).toContain('go 1.24.5');
-        expect(dockerfile).toContain('ARG GO_VERSION=1.24.5');
+        expect(workflow).toContain("go-version: '1.27.1'");
+        expect(goMod).toContain('go 1.27.1');
+        expect(dockerfile).toContain('ARG GO_VERSION=1.27.1');
         expect(dockerignore).toContain('.env');
     });
 
