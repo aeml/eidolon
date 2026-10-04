@@ -11,6 +11,14 @@ See [public acceptance](2026-10-04-release1-71-public-acceptance.json) for passe
 and skipped scopes. Actual Postmark inbox delivery remains owner-initiated;
 no new animation/GPU coverage, IPv6 fix or capacity promise is inferred.
 Earlier maintenance/runtime/model receipts retain their separate scopes.
+Prepared 1.73 now has a [real schema17-to22 upgrade check](2026-10-04-release1-73-schema17-upgrade-checks.json).
+An isolated Mongo fixture retained existing account BSON, recovery-email state,
+roles, value and indexes exactly; created only empty indexed operation collections;
+and remained unchanged on repeated startup. The exact live schema17 executable
+refused preflight and normal startup afterward without mutation. The focused
+race-instrumented check took0.54s. Its disposable container was removed; no
+production migration, backup or release was performed. Ordered1.72 acceptance,
+its open jump policy and final1.73 domain/release gates remain required.
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes

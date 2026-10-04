@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 schema17-to22 upgrade packaging",
+  "status": "focused actual disposable-Mongo proof; prepared, not deployed",
+  "sourceCommit": "48f73fdfe9eedca397a739b6d78ba48ba9ef5ecf",
+  "checkedAt": "2026-10-04T08:05:17Z",
+  "test": "TestSchema17UpgradePreservesAccountsAndFencesPreviousWriter",
+  "testSourceSHA256": "1df05294cfd4172e88f70b37cd2c00ee0f2bcfe6fa15af7e6e7ce350bde0ee2d",
+  "compiledRaceTestSHA256": "7c7ca54f9cff4d6dbbe633b5e8ae20d374d1505925fde494561185d0a22c2dc1",
+  "previousExecutable": {
+    "commit": "4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e",
+    "schema": 17,
+    "source": "Read-only copy of /app/eidolon-server from exact running container0d29fbfd713d7f24bb886d622893dda048d7599ff4c26b8c5bf32b80351db703; no environment or app directory copied.",
+    "image": "sha256:2bb19858216ab9389c505d91ff8b86f14c357f5c5a72fba64e1c816c4a672636",
+    "sha256": "518724d3f815a92ed4639c5eb2aeb0eebfad2feac6651c360649f7961341a7b9",
+    "attestation": "Before fixture setup, previous executable's fresh-database preflight exactly reported database0/supported17/commit4bc0b95c and left database/files empty. Both post-upgrade CLI preflight and ordinary startup then exited1 with supports(17)/refusing-before-writes, no admission or files, and unchanged complete database/index snapshots. Child environment contains only GOMAXPROCS2, no operator or mail configuration."
+  },
+  "fixture": {
+    "mongo": "7.0.14, image sha256:0032d2ca20db5fa34926f196c8a43b74e34ed239a7f2453ff1505b6f12ba8ea6",
+    "isolation": "Owned container8bcd6447a44f1692d4b37ce302b5a53a7e4534ebb8f09ed664963d4df27a0992; networknone/no published ports,1CPU/512MiB, tmpfs256MiB database/16MiB config,0.25GiB WiredTiger cache. Test executes inside its loopback namespace, not against host or production Mongo.",
+    "setup": "Explicit disposable marker/loopback URI/absolute old executable/exact old SHA gates; fresh-empty fixed eidolon database required. Catalog/index builders1..17 are unchanged versus accepted4bc0b95c and applied only as an old fixture prefix. No schema downgrade, removed markers or historical value cleanup.",
+    "data": "Synthetic account with Gold1209/EP83, inventory/equipment, Well Rested, currency/raid/admin receipts, cosmetic ownership, administrator role, password hash, verified recovery mailbox and pending verification/reset digests, unknown account/character fields, plus legacy auction sentinel. All values synthetic; no real mailbox or credential."
+  },
+  "checks": {
+    "actualMongo": "Race-instrumented Go1.27.1 database test passed0.54s, including two normal New constructors. All legacy raw BSON documents/indexes and all17 existing marker documents remain byte-identical. Five new markers reach schema22. Exactly four new operation collections remain empty: direct trade, ground items, dungeon room rewards, boss victories. Verified index counts and six unique identity/partial-pending fences, with no TTL on new operation indexes. Repeat startup and both previous-binary refusals retain complete document/index snapshots.",
+    "component": "Focused schema catalog and unsupported-future-version race validators passed1.040s before actual fixture execution; the new fixture itself skipped in that unconfigured component invocation. Actual proof is the separate explicitly configured0.54s invocation.",
+    "hygiene": "gofmt and git diff --check passed.",
+    "cleanup": "Removed only the resolved label-verified task-owned container and its disposable tmpfs fixture. Filtered docker ps --all returned no remaining matching fixture. Compiled test/copied executable retained in task temp directory; no production container stopped, restarted or modified."
+  },
+  "limits": [
+    "No production backup, migration, restore, data deletion, mail delivery, service installation or release push/deployment was performed.",
+    "This proves migration preservation and incompatible-writer refusal for the synthetic schema17 fixture, not financial gameplay replay, a complete campaign, load/capacity, backup recovery point or RPO/RTO.",
+    "Ordered1.72 acceptance/jump-policy resolution and latest1.73 final release assembly/required connected domain checks/patch notes/version/exact-source CI/public acceptance remain open. Production remains acceptedAlpha1.71.0/schema17.",
+    "After a real schema22 upgrade, use a compatible tested forward fix; an older image alone is not a safe rollback. Restoring an older archive requires separately approved stopped-writer matching Mongo/journal/image recovery and acknowledges data loss."
+  ]
+}

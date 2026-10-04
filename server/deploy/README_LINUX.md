@@ -236,6 +236,21 @@ upgrade must also run the backup script after a successful preflight and before
 
 ## Save-format upgrades and recovery
 
+Prepared Alpha1.73 advances the currently accepted schema17 to schema22 for
+durable trade/drop/reward custody. The focused disposable-Mongo
+`TestSchema17UpgradePreservesAccountsAndFencesPreviousWriter` verifies unchanged
+legacy documents/indexes, empty new ledgers, repeated-startup stability and
+refusal by the exact previously deployed schema17 executable. See
+[upgrade evidence](../../docs/plans/2026-10-04-release1-73-schema17-upgrade-checks.json).
+It requires explicit disposable-database, loopback and previous-binary gates;
+the ordinary unit suite skips it without that configuration. This is not a
+production migration or complete valuable-operation replay certificate.
+Once schema22 is recorded, a pinned schema17 image cannot safely write it.
+Use a tested compatible forward fix; restoring an older recovery set is a
+separate approved data-loss action with all writers stopped and matching
+Mongo, private journals and image. Never delete migration markers to bypass
+the fence. The release is still unassembled and unpublished.
+
 Alpha 1.0.56 is the schema-7 compatibility bridge. Deploy and verify it before
 Alpha 1.0.57, the schema-8 resource/auction-persistence release. This
 bridge alone does not deliver the resource-persistence feature.

@@ -13,6 +13,7 @@
   },
   "domainEvidence": "2026-10-03-release1-73-operation-ledger.json retains ten domains, immutable custody/cohort/post-image invariants and exact prior failure/concurrency/replay scopes. The new integration checks do not relabel that historical evidence as a new connected binary.",
   "preflightPackaging": "2026-10-04-release1-73-preflight-identity-checks.json records the exact single-line/build-identity/support guard before any old-writer stop and16-scenario mock proof plus actual loopback timeout regression. Production remains accepted1.71/schema17; no migration/deployment run by this check.",
+  "schemaUpgradePackaging": "2026-10-04-release1-73-schema17-upgrade-checks.json records an actual isolated Mongo7.0.14 race test0.54s on source48f73fdf. Catalog1..17/index builders match accepted1.71; schema17-to22 retains all legacy BSON, recovery state, roles, value and indexes without backfill. Two normal constructors are stable. Exact copied public4bc0b95c executable refuses preflight and ordinary startup afterward without changing database/files. No production migration or backup/replay acceptance inferred.",
   "restoreSafetyBackport": {
     "sourceCommit": "fbf16a597b9aa7654349702f9405a10fd376cb9a",
     "importedSource": "17a01bb66e914b9c43421776fe9bbb0d86b3585b",
@@ -26,7 +27,7 @@
   },
   "remaining": [
     "Alpha1.71.0 accepted via exact4bc0b95c/CI37182320668 and post-terminal public checks; acceptance metadata merged. Resolve1.72 jump policy and accept its own ordered release, then merge its final code/metadata into this candidate. InheritedAlpha1.71.0 defaults are intentional until1.73 assembly.",
-    "Final schema17-to22 packaging/backup/writer compatibility review; schema advancement cannot justify unsafe rollback to an older writer or arbitrary historical financial cleanup.",
+    "Focused actual schema17-to22 preservation/old-writer refusal is verified; final release backup/recovery compatibility and directly required business replay gates still apply. Schema advancement cannot justify unsafe rollback to an older writer or arbitrary historical financial cleanup.",
     "Complete directly required current-source valuable-operation checks, cumulative1.73 notes/version, normal fetch/pull/push preserving concurrent remote edits, exact-source CI and independent frontend/backend/runtime public acceptance.",
     "Broader1.74 administration review,1.75 owner privacy decisions,1.76 bounded checkpoints and later operations/launch/human gates remain required. Full1.11–1.99 goal remains active."
   ]
