@@ -600,6 +600,18 @@ checkpoint checks pass. No database, journal format or schema change was needed.
 Hash collisions still serialize accounts; discovery remains a full scan, and
 this is not a disk-throughput, cross-process ownership or capacity certification.
 The change is locally committed, not deployed or accepted as the full milestone.
+The [market startup follow-up](2026-10-04-release1-76-market-startup-checks.json)
+uses indexed 50-record pages instead of unrestricted temporary auction/decision
+arrays. Each component installs its working map only after complete validation;
+later-page failure preserves prior maps and blocks readiness/refund delivery.
+Existing claims, refunds, kindless legacy bids and unpublished listing decisions
+remain recoverable. Focused race checks cover exact-page boundaries and failures.
+Actual Mongo startup twice retains 151 auctions and 152 decisions, preserves
+legacy stored gear while applying its existing in-memory normalization, and
+refuses a late invalid intent without changing its evidence. The owned fixture
+and volumes were removed. Outstanding working maps and full scan work remain
+proportional to legitimate pending activity; no capacity or lifetime-storage
+acceptance, settlement rewrite or deployment is claimed.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
