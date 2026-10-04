@@ -2,10 +2,122 @@ package main
 
 import (
 	"encoding/json"
+	"sync"
 	"testing"
+	"time"
 
+	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
 )
+
+func TestCasinoOwnViewDoesNotWaitForUnrelatedGameLocks(t *testing.T) {
+	for _, kind := range []string{"unseated", "slots", "blackjack", "poker", "roulette"} {
+		t.Run(kind, func(t *testing.T) {
+			setupSlotCacheTest(t)
+			id := "player-notification-view"
+			player := &game.Entity{ID: id, Type: game.TypePlayer, Health: 100, InstanceID: game.CasinoInstanceID}
+			world.Entities[id] = player
+			world.Entities["player-other-table"] = &game.Entity{ID: "player-other-table", Type: game.TypePlayer, Health: 100, InstanceID: game.CasinoInstanceID,
+				CasinoSeat: &game.CasinoSeatSession{TableID: "public-blackjack-earth", Seat: 1, SessionID: "other-private-session"}}
+			if kind != "unseated" {
+				tableID := "public-" + kind
+				if kind == "slots" {
+					tableID = "public-slots-earth"
+					state := preparedWinningSlot(t, id)
+					slotsCache[slotRecordKey(id, "earth")] = slotCacheEntry{State: state}
+				}
+				player.CasinoSeat = &game.CasinoSeatSession{TableID: tableID, Seat: 0, SessionID: "private-fixture-session"}
+			}
+			switch kind {
+			case "blackjack":
+				oldRecord, oldAvailable := blackjackCached, blackjackAvailable
+				t.Cleanup(func() { blackjackCached, blackjackAvailable = oldRecord, oldAvailable })
+				state, err := newBlackjackLobby()
+				if err != nil {
+					t.Fatal(err)
+				}
+				encoded, _ := json.Marshal(state)
+				setBlackjackCache(publicBlackjackTable, &database.BlackjackTableRecord{TableID: publicBlackjackTable, Version: 1, State: encoded}, true)
+			case "poker":
+				oldRecord, oldAvailable, oldOwner := pokerCached, pokerAvailable, pokerPendingOwner
+				t.Cleanup(func() { pokerCached, pokerAvailable, pokerPendingOwner = oldRecord, oldAvailable, oldOwner })
+				state, err := newPokerLobby(-1)
+				if err != nil {
+					t.Fatal(err)
+				}
+				encoded, _ := json.Marshal(state)
+				setPokerCache(publicPokerTable, &database.BlackjackTableRecord{TableID: publicPokerTable, Version: 1, State: encoded}, true, "")
+			case "roulette":
+				oldCache := houseCache
+				t.Cleanup(func() { houseCache = oldCache })
+				state, err := newHouseLobby("roulette", time.Now())
+				if err != nil {
+					t.Fatal(err)
+				}
+				encoded, _ := json.Marshal(state)
+				houseCache = map[string]houseCacheEntry{"public-roulette": {record: &database.BlackjackTableRecord{TableID: "public-roulette", Version: 1, State: encoded}, available: true}}
+			}
+			var blocked []*sync.Mutex
+			if kind != "blackjack" {
+				blocked = append(blocked, &blackjackMu)
+			}
+			if kind != "poker" {
+				blocked = append(blocked, &pokerMu)
+			}
+			if kind != "roulette" {
+				blocked = append(blocked, &houseMu)
+			}
+			for _, lock := range blocked {
+				lock.Lock()
+			}
+			client := &Client{playerID: id, send: make(chan []byte, 8)}
+			done := make(chan struct{})
+			go func() { sendCasinoState(client); close(done) }()
+			blockedByOtherGame := false
+			select {
+			case <-done:
+			case <-time.After(250 * time.Millisecond):
+				blockedByOtherGame = true
+			}
+			for _, lock := range blocked {
+				lock.Unlock()
+			}
+			select {
+			case <-done:
+			case <-time.After(2 * time.Second):
+				t.Fatal("notification worker did not finish after releasing fixture locks")
+			}
+			if blockedByOtherGame {
+				t.Error("own casino response waited on unrelated game's storage/timer mutex")
+			}
+			var message Message
+			if len(client.send) != 1 || json.Unmarshal(<-client.send, &message) != nil || message.Type != "casino_update" {
+				t.Fatal("own response missing or duplicated")
+			}
+			var payload struct {
+				game.CasinoPresence
+				Blackjack blackjackTableView `json:"blackjack"`
+				Poker     pokerTableView     `json:"poker"`
+				Slots     *slotMachineView   `json:"slots"`
+				House     *houseTableView    `json:"house"`
+			}
+			if json.Unmarshal(message.Payload, &payload) != nil || len(payload.Tables) != len(game.CasinoTables()) || len(payload.Occupants) == 0 ||
+				payload.Occupants[0].PlayerID == "" {
+				t.Fatal("selective game view discarded shared floor presence")
+			}
+			if kind == "slots" && (payload.Slots == nil || !payload.Slots.Available || payload.Slots.Session.Revision != 2) ||
+				kind == "blackjack" && (!payload.Blackjack.Available || payload.Blackjack.RoundID == "") ||
+				kind == "poker" && (!payload.Poker.Available || payload.Poker.RoundID == "") ||
+				kind == "roulette" && (payload.House == nil || !payload.House.Available || payload.House.RoundID == "") {
+				t.Fatal("selective views discarded the seated game's state")
+			}
+			if kind != "blackjack" && payload.Blackjack.Available || kind != "poker" && payload.Poker.Available ||
+				kind != "slots" && payload.Slots != nil || kind != "roulette" && payload.House != nil {
+				t.Fatal("response included unrelated game state")
+			}
+		})
+	}
+}
 
 func TestCasinoPhysicalActionAcknowledgesActorAndRefreshesCasinoPeers(t *testing.T) {
 	for _, actorRegistered := range []bool{false, true} {

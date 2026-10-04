@@ -140,7 +140,33 @@ func sendCasinoState(client *Client) game.CasinoPresence {
 	if client == nil || client.playerID == "" || world == nil {
 		return game.CasinoPresence{}
 	}
-	presence := world.CasinoPresenceFor(client.playerID, time.Now())
+	now := time.Now()
+	presence := world.CasinoPresenceFor(client.playerID, now)
+	// The client displays only the seated game's view. Reading unrelated games
+	// would wait on their durable settlement locks before acknowledging this
+	// player, even though their tables cannot affect this response.
+	blackjack := blackjackTableView{ServerNow: now, Players: []blackjackParticipant{}}
+	poker := pokerTableView{ServerNow: now, Players: []pokerParticipantView{}}
+	var slots *slotMachineView
+	var house *houseTableView
+	if presence.YourSeat != nil {
+		for _, table := range presence.Tables {
+			if table.ID != presence.YourSeat.TableID {
+				continue
+			}
+			switch table.Game {
+			case "blackjack":
+				blackjack = blackjackViewFor(client.playerID)
+			case "poker":
+				poker = pokerViewFor(client.playerID)
+			case "slots":
+				slots = slotViewFor(client.playerID)
+			case "roulette", "baccarat":
+				house = houseViewFor(client.playerID)
+			}
+			break
+		}
+	}
 	encoded, _ := json.Marshal(struct {
 		game.CasinoPresence
 		Floor     string             `json:"floor"`
@@ -149,7 +175,7 @@ func sendCasinoState(client *Client) game.CasinoPresence {
 		Slots     *slotMachineView   `json:"slots,omitempty"`
 		Poker     pokerTableView     `json:"poker"`
 		House     *houseTableView    `json:"house,omitempty"`
-	}{CasinoPresence: presence, Floor: casinoFloorFor(client.playerID), VIP: casinoVIPFor(client.playerID), Blackjack: blackjackViewFor(client.playerID), Slots: slotViewFor(client.playerID), Poker: pokerViewFor(client.playerID), House: houseViewFor(client.playerID)})
+	}{CasinoPresence: presence, Floor: casinoFloorFor(client.playerID), VIP: casinoVIPFor(client.playerID), Blackjack: blackjack, Slots: slots, Poker: poker, House: house})
 	client.sendSafe(createMessage("casino_update", encoded))
 	return presence
 }

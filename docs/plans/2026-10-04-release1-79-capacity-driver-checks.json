@@ -787,6 +787,24 @@
     "cleanup": "Definitive parent failure consumed; absent root/server/driver and exact owner label/network/OOM/peak checked. Stopped and removed only this fixture and its synthetic database, filtered listing empty. Exact artifacts retained. No production data/services changed.",
     "next": "Do not blindly repeat another cohort. Identify pending action at timeout using bounded fixed-stage diagnostics and inspect recovery/table-lock costs before another actual comparison. Keep unchanged failure/paid/save criteria."
   },
+  "casinoSeatedGameViewIsolation": {
+    "finding": "sendCasinoState constructed blackjack, poker, slots and house views on every casino response, even for unseated players or players using a different game. The getters acquire family-wide settlement/timer mutexes; consequently unrelated money IO can block the actor's response. Current CasinoController uses only the game matching its server-owned seat; shared table/occupant presence is independent.",
+    "reproduction": "After correcting an initial fixture compile error (SlotView is a value, not a pointer), race TestCasinoOwnViewDoesNotWaitForUnrelatedGameLocks failed1.421s: all five cases (unseated, slots, blackjack, poker, roulette) waited on unrelated held game mutexes. Each fixture explicitly releases its locks and joins the worker before global cleanup. This proves an unnecessary cross-game dependency, not the measured cause of each prior100-client timeout.",
+    "change": "Select the seated game's getter from the already-detached presence/catalog. Preserve complete physical tables/occupants and private own-seat fence. Other game fields are empty/unavailable; no game is rendered when unseated. No money/timer/settlement/recovery rules, storage, rate limits or controller pass criteria change. Coarse recovery locks before dispatch remain and require evidence before redesign.",
+    "checks": "Initial corrected focused notification suite passed1.238s. Expanded exact-source race suite passed1.264s with valid prepared cache views for every selected game, unrelated locks held, unavailable other games, own slot revision preservation, shared floor presence, actor acknowledgement and physical/table audiences. Synthetic cached state is not payment or storage proof.",
+    "sha256": {
+      "server/casino_handlers.go": "34b9ce9d36bafc35ed4b1dfc7c71b5d21f14166097d5ace281a47ed4ddee9a0c",
+      "server/casino_notification_test.go": "8092f6ad13503d1d5c15c463881c0c5891f74a5d0ca9367c35e630f890c8b627"
+    },
+    "artifacts": {
+      "directory": "/tmp/eidolon-179-own-game-view-r71lFv",
+      "normalServerSHA256": "77a039bfa3ab88e4af5e042285e290e71a19fa1209b47213ff18b102cd933c4e",
+      "raceRootSHA256": "1f29eb48896c4b2bcdbf34a7c8f2dfde584db10f56139e7a00360c5648ffb9d0",
+      "normalDriverSHA256": "b87da6e9787c9d9c889b046e8c7311e83795193203872d5ebb5033588b7a2514"
+    },
+    "artifactScope": "Root built before the expanded cache-view unit assertions; actual combined test source and code are unchanged between build and final focused checks. New driver includes fixed action diagnostics and waiting-healer support (unused by overworld combined). Normal server includes only production notification/view changes relative to the prior comparison, with existing policies/schema.",
+    "next": "A single60-client diagnostic comparison is running in an owned network-none Mongo fixture, using the same2CPU/2GiB budget and120s/five-second admission, every-player fresh state/paid result/impact/save criteria. Sixty is the smallest new cohort above accepted forty; no inference from it to100 or production capacity."
+  },
   "casinoTimeoutActionDiagnostic": {
     "reason": "The retained two corrected100-client outcomes classify timeout but do not identify the outstanding command. Without this distinction, physical-entry/seating delay and money-operation delay cannot be separated; do not attribute the observed failures to a guessed cause.",
     "change": "Driver records only a closed enum for the original timed-out pending action: enter, sit, slot spin/bonus, blackjack bet/play, house bet, poker buy-in/play or unknown. Per-family aggregates include every failed assigned client; malformed enum normalizes to unknown, ordinary rejection is not counted as timeout, and late rejection preserves first cause. Root forwards only the new fixed aggregate line. No identities, private seat/round tokens or arbitrary input/error labels retained. No retries, longer timeout, weakened result gate or production change.",
