@@ -669,7 +669,7 @@
     }
   },
   "weeklyCushionActualRun": {
-    "statusAtObservation": "RUNNING_NOT_ACCEPTED",
+    "statusAtObservation": "TERMINAL_FAIL_UNCLASSIFIED_RECEIVE_CHECK_FIXTURE_REMOVED",
     "startedAtUTC": "2026-10-04T22:00:56Z",
     "sourceBase": "c6171547 plus recorded driver-only cushion changes",
     "ownedContainer": "7c65a2244f8b72ad54729c0962e5108739995265ae9254d9f04d4a35e100ef75",
@@ -681,7 +681,21 @@
       "root": { "path": "/tmp/eidolon-179-weekly-diagnostic-D38hVF/root.test", "sha256": "b95d6007943020e631097089f7e8a233664033d0081fe6b55ef1fe67cf4badf9" },
       "driver": { "path": "/tmp/eidolon-179-weekly-cushion-6lsOWt/loadtest", "sha256": "78d167c558eea1020c91f8035951e0a8ad47098e4d7b4acb2c1121a3c7e7421f" }
     },
-    "isolation": "Reused compatible unchanged normal server and race root. Only new driver rebuilt. Mongo7.0.14, network none, no published ports, two CPUs/2GiB memory,512MiB database tmpfs/16MiB config tmpfs and0.25GiB cache. Ping and exact namespace processes verified. Luna monitors terminal state; parent owns definitive outcome. Mandatory phases/clear/exit/reward/save gates unchanged. No production database or real player accounts used."
+    "isolation": "Reused compatible unchanged normal server and race root. Only new driver rebuilt. Mongo7.0.14, network none, no published ports, two CPUs/2GiB memory,512MiB database tmpfs/16MiB config tmpfs and0.25GiB cache. Ping and exact namespace processes verified. Luna detected process end; parent consumed definitive outcome. No production database or real player accounts used.",
+    "result": "Terminal FAIL976.18s/exit1. No rate rejection reported; two receive/decode failures and unclassified group failure. Three clients observed all four phases; minimum across all five was two. Boss clear/exit/original reward-save gates not reached. Receipt cannot attribute the two failures to a particular message or assume malformed server bytes: driver counter also includes local domain-check rejection. No new long raid retry started.",
+    "metrics": {
+      "connected": 5, "joined": 5, "authenticated": 5, "admissionFailures": 0,
+      "stateFrames": 147119, "minFrames": 29419, "minFreshOwnUpdates": 29419,
+      "minActiveMilliseconds": 970785, "maxStateGapMilliseconds": 67, "receivedPayloadBytes": 694694384,
+      "maxRegistrationMilliseconds": 64, "maxLoginMilliseconds": 107, "maxJoinMilliseconds": 33,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 2,
+      "recoveriesRequested": 118, "recoveriesCompleted": 118, "pendingRecoveries": 0, "failedRecoveries": 0,
+      "minOwnImpacts": 125, "damageEvents": 1153, "healEvents": 65, "acceptedCasts": 509, "deniedCasts": 10,
+      "reentryRequests": 118, "checkpointReturns": 118, "phaseMembers": 3, "minPhaseViews": 2,
+      "cleared": 0, "exited": 0, "memoryPeakBytes": 661094400,
+      "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+    },
+    "cleanup": "Terminal parent failure and absent root/server/driver verified. Exact owner label/network/OOM/peak checked; initial plain removal correctly refused while Mongo was running. Explicitly stopped then removed only this owned fixture, with filtered listing empty. Synthetic database removed; compiled artifacts retained. No player data or production service affected."
   },
   "eventCorrectedActualRun": {
     "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",

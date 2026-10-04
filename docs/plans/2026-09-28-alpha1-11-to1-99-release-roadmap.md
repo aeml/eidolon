@@ -58,8 +58,12 @@ terminal metrics and a prepared allowlisted-action rate-rejection diagnostic
 with root/driver race checks. The next diagnostic run failed717.14s and confirmed
 raid_enter as the rejected action. A delayed-delivery model reproduced the
 client/server refill-boundary defect; a driver-only31-second refill cushion
-passes focused and full race checks. Its actual five-role finale run is now
-running; no limits, health/damage or mandatory clear/phase/save gates relaxed.
+passes focused and full race checks. Its actual five-role finale run failed
+976.18s with two unclassified receive/decode checks, no reported rate rejection,
+three all-phase clients and two phases minimum across all five. Boss/reward/save
+acceptance was not reached; owned fixture removed. Driver decode counters also
+include local domain rejection, so this does not prove malformed server bytes.
+No limits, health/damage or mandatory clear/phase/save gates were relaxed.
 
 The existing actual combined-workload harness now supports explicit cohorts up
 to100 while retaining20 as its default and its original earned baseline. Per-block
