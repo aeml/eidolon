@@ -62,6 +62,68 @@ func TestReadinessProbeOperationalCountsActualHTTPAndPrivacy(t *testing.T) {
 	}
 }
 
+func TestReadinessProbeOperationalInFlightActualHTTPAndCompatibility(t *testing.T) {
+	for _, scenario := range []string{"active", "idle", "unavailable", "legacy", "missing-value", "missing-known", "negative", "bad-value", "bad-known", "unknown-positive", "overflow"} {
+		t.Run(scenario, func(t *testing.T) {
+			groups := map[string]any{}
+			for _, name := range []string{"characterJournal", "characterCommit", "characterCleanup", "characterRecovery", "casinoGold", "casinoEP"} {
+				groups[name] = map[string]any{"completed": 2, "failed": 1, "inFlight": 50, "inFlightKnown": true, "account": "private-active-marker"}
+			}
+			counts := groups["casinoEP"].(map[string]any)
+			switch scenario {
+			case "idle":
+				counts["inFlight"] = 0
+			case "unavailable":
+				counts["inFlight"], counts["inFlightKnown"] = 0, false
+			case "legacy":
+				delete(counts, "inFlight")
+				delete(counts, "inFlightKnown")
+			case "missing-value":
+				delete(counts, "inFlight")
+			case "missing-known":
+				delete(counts, "inFlightKnown")
+			case "negative":
+				counts["inFlight"] = -1
+			case "bad-value":
+				counts["inFlight"] = "private-active-marker"
+			case "bad-known":
+				counts["inFlightKnown"] = "private-active-marker"
+			case "unknown-positive":
+				counts["inFlightKnown"] = false
+			case "overflow":
+				counts["inFlight"] = json.Number("18446744073709551616")
+			}
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+				_ = json.NewEncoder(w).Encode(map[string]any{"status": "ok", "database": "ready", "commit": "abcdef1", "version": "Alpha 1.78.0", "operational": groups})
+			}))
+			defer server.Close()
+			probe, err := NewProbe(server.URL+"/healthz", "", time.Second)
+			if err != nil {
+				t.Fatal(err)
+			}
+			sample := probe.Check(context.Background())
+			valid := scenario == "active" || scenario == "idle" || scenario == "unavailable" || scenario == "legacy" || scenario == "missing-value" || scenario == "missing-known"
+			if sample.Ready != valid || !valid && sample.Cause != "invalid_response" {
+				t.Fatal("active-work validation lost readiness boundary", sample)
+			}
+			if valid {
+				if sample.Operational == nil || sample.Operational.CasinoEP.Completed != 2 || sample.Operational.CasinoEP.Failed != 1 {
+					t.Fatal("active gauge lost independent completion counts")
+				}
+				gauge := sample.Operational.CasinoEP
+				known := scenario == "active" || scenario == "idle"
+				if gauge.InFlightKnown != known || known && scenario == "active" && gauge.InFlight != 50 || scenario != "active" && gauge.InFlight != 0 {
+					t.Fatal("missing gauge became measured zero or active work was lost")
+				}
+			}
+			encoded, _ := json.Marshal(sample)
+			if strings.Contains(string(encoded), "private-active-marker") || strings.Contains(string(encoded), "account") {
+				t.Fatal("unknown active-work label leaked")
+			}
+		})
+	}
+}
+
 func TestReadinessProbeOperationalTimingsActualHTTPAndCompatibility(t *testing.T) {
 	for _, scenario := range []string{"valid", "measured-zero", "legacy", "partial", "bad-samples", "bad-maximum", "bad-mean", "zero-maximum", "unsampled-positive", "bad-type", "negative", "saturated"} {
 		t.Run(scenario, func(t *testing.T) {

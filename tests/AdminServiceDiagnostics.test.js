@@ -2,6 +2,22 @@ import { renderAdminServiceDiagnostics } from '../src/ui/AdminServiceDiagnostics
 import { jest } from '@jest/globals';
 import { installGameEngineNetworkMessages } from '../src/core/GameEngineNetworkMessages.js';
 
+test.each([
+    [true, 0, '0'], [true, 5, '5'], [false, 0, 'Unavailable'],
+    [undefined, 3, 'Unavailable'], [true, undefined, 'Unavailable'],
+    [true, -1, 'Unavailable'], [true, Number.MAX_SAFE_INTEGER + 1, 'Unavailable'],
+    [true, '<img src=x>', 'Unavailable']
+])('active work requires an explicit available bounded measurement (%s/%s)', (known, value, expected) => {
+    const list = document.createElement('ul');
+    renderAdminServiceDiagnostics(list, { health: { operational: {
+        characterJournal: { completed: 2, failed: 1, inFlightKnown: known, inFlight: value }
+    } } });
+    expect(list.children).toHaveLength(16);
+    expect(list.children[10].textContent).toContain(`In flight: ${expected} · Completed calls: 2 · Returned errors: 1`);
+    expect(list.textContent).not.toContain('<img');
+    expect(list.querySelector('img')).toBeNull();
+});
+
 test('the actual network message router forwards correlated service replies and ignores destroyed sessions', () => {
     class EngineFixture {}
     installGameEngineNetworkMessages(EngineFixture);

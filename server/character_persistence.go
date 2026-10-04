@@ -5,7 +5,6 @@ import (
 	"log"
 	"sort"
 	"sync"
-	"time"
 
 	"eidolon-server/internal/database"
 )
@@ -67,8 +66,8 @@ func persistCharacterSnapshot(username string, character *database.Character) er
 // Also used for the shutdown journal-all-before-database pass. A slow database
 // must not prevent the remaining characters from reaching durable local storage.
 func journalCharacterSnapshot(username string, character *database.Character) (snapshot *database.PendingCharacterSave, resultErr error) {
-	started := time.Now()
-	defer func() { recordOperationalResult(boundaryCharacterJournal, resultErr, time.Since(started)) }()
+	finish := beginOperationalCall(boundaryCharacterJournal)
+	defer func() { finish(resultErr) }()
 	if characterSaveJournal == nil || characterSaveCommitter == nil {
 		return nil, errors.New("character persistence is not initialized")
 	}
@@ -89,15 +88,15 @@ func commitPendingCharacterSave(pending *database.PendingCharacterSave) error {
 	if err != nil {
 		return err
 	}
-	started := time.Now()
+	finishCommit := beginOperationalCall(boundaryCharacterCommit)
 	commitErr := characterSaveCommitter.CommitCharacterSave(pending.Username, character, pending.SaveID)
-	recordOperationalResult(boundaryCharacterCommit, commitErr, time.Since(started))
+	finishCommit(commitErr)
 	if commitErr != nil {
 		return commitErr
 	}
-	started = time.Now()
+	finishCleanup := beginOperationalCall(boundaryCharacterCleanup)
 	cleanupErr := characterSaveJournal.Acknowledge(pending.Username, pending.SaveID)
-	recordOperationalResult(boundaryCharacterCleanup, cleanupErr, time.Since(started))
+	finishCleanup(cleanupErr)
 	if cleanupErr != nil {
 		// Mongo has confirmed this exact receipt. A remaining file is safe to
 		// replay idempotently; a failed directory sync after removal must not
@@ -144,8 +143,8 @@ func retryPendingCharacterSaveLocked(username string) error {
 }
 
 func retryPendingCharacterSaves() (resultErr error) {
-	started := time.Now()
-	defer func() { recordOperationalResult(boundaryCharacterRecovery, resultErr, time.Since(started)) }()
+	finish := beginOperationalCall(boundaryCharacterRecovery)
+	defer func() { finish(resultErr) }()
 	if characterSaveJournal == nil {
 		return nil
 	}
