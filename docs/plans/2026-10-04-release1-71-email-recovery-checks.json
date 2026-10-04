@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.71 account security and recovery",
-  "status": "prepared-database-and-provider-foundation; not exposed or deployed",
+  "status": "prepared-provider-database-and-protocol; UI/connected acceptance pending, not deployed",
   "sourceCommit": "f7a71dce",
   "ownerDecision": "October4: emailed recovery links, using operator-provided POSTMARK_SERVER_TOKEN, POSTMARK_FROM_EMAIL and POSTMARK_MESSAGE_STREAM. ADMIN_NOTIFICATION_EMAILS must not receive player recovery links. No token values were read or printed and no real messages sent.",
   "changes": "Separate verified recovery mailbox from unverified registration email. Require current-password proof plus a30-minute single-use confirmation link to establish/replace the mailbox. Password-reset links last15 minutes; only SHA256 digests are stored, bound to exact account, observed password hash and verified address. Durable per-account one-minute issuance cooldown preserves the current link on rejected resends. Conditional updates consume challenges; ordinary password changes invalidate outstanding challenges. Preserve all unrelated account/character/role/value data. Postmark provider uses fixed HTTPS/email endpoint, eight-second timeout, no redirects, no administrator copies and disabled open/link tracking; parse provider acknowledgement without exposing diagnostics.",
@@ -25,8 +25,16 @@
     "removedVolumes": ["4d1dd1cfea29e34800f918592d0322d40654f28cf197e121f54cccd99c87759f", "199b26912c8147c8688b4e581b511bd658f6ae1f719ab00a5b654f11d7aa8ce7"],
     "result": "Validated exact ownership/mounts, removed only this disposable container and anonymous volumes; scoped listings empty. No production accounts, files, DNS, services or owner credentials changed."
   },
+  "protocolFollowUp": {
+    "sourceCommit": "7f6af42ee16a5cc5d9f081edd9df5d613817129d",
+    "changes": "Wire four explicitly bounded protocol policies/handlers, shared cross-connection credential admission, authenticated-owner-only password-proved mail setup, anonymous confirmation/reset on fresh signed-out sockets and generic asynchronous recovery requests that acknowledge before lookup. Two shutdown-owned workers with32 queued jobs bound outbound work and release account locks before provider IO. Proved successful or ambiguous reset writes revoke account resume tokens and retire the old live session; invalid proof/read failures/CAS losses cannot disconnect an owner. Successful reset requests a password-free owner notification. No automatic sign-in, retries, administrator copies or new gameplay rewards.",
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(EmailRecovery(Request|Setup|Reset|Protocol|Workers|Input)|RecoveryMail|InboundMessage|PasswordChange|Credential)' -count=1 -timeout=30s",
+    "result": "passed: root1.491s/database1.049s",
+    "scope": "Mocked store/session checks plus actual local TLS provider requests: immediate identical known/unknown request messages with zero eligibility lookups, fixed queue exhaustion, authenticated account override prevention, public-action refusal on authenticated sockets, proved/unproved/ambiguous credential-update session/token boundaries, policy/shared-rate checks and worker joining. Actual stalled HTTP provider request cancels with shutdown context. Existing protocol/password/credential regressions pass. Not connected-game or new actual-Mongo acceptance.",
+    "checkCorrection": "Initial shutdown test cancelled the actual client request successfully but left its synthetic server handler waiting on an unread request body, causing httptest.Close to block and the30s test deadline to fail. Drained that fixture body before observing cancellation and added a two-second safety fallback; corrected final scoped check passed. No production timeout/session fix was inferred from the failed fixture.",
+    "operatorConfiguration": "Read-only presence check found all four owner-named Postmark/notification keys in the actual deployment .env at/home/aeml/eidolon/server/.env. Only boolean presence was printed; values were not exposed. This does not prove sender verification, stream eligibility, token validity or inbox delivery. Provider sender parsing also supports a single optional display name without allowing recipient lists or header injection."
+  },
   "remaining": [
-    "Integrate bounded asynchronous recovery requests, credential/abuse admission, authenticated setup and anonymous token completion with account-work locking and session invalidation. Return generic request responses without exposing account/mail eligibility; notify the owner after completed reset.",
     "Add login/settings verification and reset UI; consume/scrub URL fragment before analytics or asset initialization, never auto-submit GET links, persist passwords/tokens or automatically retry uncertain changes.",
     "Check connected protocol/UI behavior on synthetic accounts and a local provider fixture. Confirm operator Postmark sender/transactional-stream configuration without exposing token values; provider acceptance is not mailbox delivery.",
     "Assemble1.71 version/cumulative notes, fetch/integrate remote changes, publish exact-source CI and independently verify both public releases. Schema17 remains; later schema24 writers are excluded. No1.71 acceptance or full-goal completion yet."
