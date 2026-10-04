@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "milestone": "Prepared Alpha1.78 current-source operations integration",
+  "status": "isolated unpublished successor; not milestone or production acceptance",
+  "source": "46c04521f1fd30b53e63b211e7bde2f7e3e55a2e",
+  "base": "120126aa906e3a1e92ae27c3e023ca9fb58b67f1 prepared1.77, including current1.72 guards, corrective1.73/ad59bffb, assembled1.74, prepared1.75 owner-snapshot/privacy guards and1.76 narrowed entry reads/schema24 checkpoints",
+  "inheritedVersion": "Alpha1.74.0",
+  "schemaVersion": 24,
+  "integration": "Cherry-picked only the nine scoped readiness/independent-monitor/opt-in-provider/audited-service/timing/gauge commits from earlier isolated work:9202c8fc,eb231397,02b9596c,22ccf61c,4193de90,e35b43b5,3216d0fc,1c9f79e7,26ccc8cb. Did not merge or deploy the stale broader source. The one AdminUI conflict was resolved by retaining both current moderation-history filters and adding the service-read filter; current role/session checks and late audit/authority denial remain intact.",
+  "features": {
+    "monitor": "Independent bounded health probe and incident detector with explicit caller-selected timeout/poll/debounce/cooldown controls, whitelisted fixed runtime/outcome/latency/in-flight aggregates, generic failure causes, no redirects and silent healthy/cancelled polling. Optional Postmark operator alerts remain disabled by default and read mail settings only after explicit opt-in; no real provider request or installation occurred.",
+    "runtime": "Fixed-size mutex-protected observations around character journal/commit/cleanup/recovery and Gold/EP casino calls, with coherent in-flight/completion/timing counters and no identities, balances, paths or private error text. Confirmed commits still succeed when journal cleanup fails; metrics never cause financial compensation or change replay/checkpoint authority. Public health reuses its existing runtime/readiness semantics.",
+    "administration": "Manual Service diagnostics view over bounded authenticated admin_service requests; audited reads recheck current durable role and connection after all query/audit IO. Audit outage or late denial removes the entire private response. Fixed text-only rows omit unknown data, distinguish missing measurements from zero, handle unsafe precision and clear on disconnect/access loss. No new player power, administrator mutation or polling loop."
+  },
+  "checks": {
+    "operationsCommand": "env GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race ./internal/operations ./cmd/monitor -count=1 -timeout=15s",
+    "operationsResult": "Passed operations3.370s/monitor4.025s; real loopback HTTP timeout/metrics/error fixtures and local TLS Postmark stand-in prove sanitized outage/recovery delivery paths without contacting upstream. These are small targeted packages, not a campaign/soak/capacity run.",
+    "serverCommand": "env GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race . ./internal/database -run '^Test(AdminService|AdminConsole|AdminRead|OperationalSignals|HealthHandler|CharacterPersistence|CasinoGold|CasinoEP|CharacterEntryAccount|AuthenticateProjects|AccountJSON|RecoveryAccountJSON|OwnerProgressSnapshot)' -count=1 -timeout=45s",
+    "serverResult": "Passed root6.690s/database1.116s. Current authority/audit revocation/outage/replacement, secret-free coherent concurrent/active-call observations, actual owned-directory journal/cleanup failure, saved Gold/EP outcome, health and private serialization/projection regressions pass. Environment-gated actual Mongo fixtures were not enabled; earlier current1.76 actual login/guild/projection evidence retains its own scope.",
+    "clientCommand": "Node24.18.0 --experimental-vm-modules Jest --runInBand --runTestsByPath tests/AdminUI.test.js tests/AdminServiceDiagnostics.test.js tests/ProtocolContract.test.js tests/VersionPresentation.test.js",
+    "clientResult": "Passed380 tests/four suites3.248s, including both retained moderation filters, service request correlation/late replies/session clearing, network router, explicit refresh/no automatic polling, text safety and unchanged inherited version/notes contracts. Dependencies reused from compatible prepared1.74; not a fresh-install or native/physical-phone proof.",
+    "hygiene": "Affected JavaScript/tests ESLint and git diff --check passed. No whole native-browser matrix, campaign, raid, backup or production smoke repeated. No .env/credential values read, data changed, real mail sent, service installed or DNS changed."
+  },
+  "sourceHashes": {
+    "operational_signals.go": "b4f230c2e6fb370356843228595e9c70681b2da6513cc036a1224f3a2a15e703",
+    "character_persistence.go": "fe606f9ee6c36a7ca980682668f41eb01bc5271d9613ff3cd360014f779f16fc",
+    "casino_gold.go": "b87439b04e0d5f548390b50acec65bfdf7b726b8b8c5b1817c58d858cb30b2a3",
+    "main.go": "f1d96a58230a9c946989f0e85beb96501117517e7a9006e3fa49388d19c50413",
+    "admin_console_handlers.go": "5fd319027d5d59e65fe5dd58dae9023760e769729c75dd42e780135204d278ed",
+    "AdminUI.js": "673e3d9f9f5b5089600eb13446cee27d2cc7578589bb66b4c494a82b098b09af",
+    "AdminServiceDiagnostics.js": "a78f2bfbb98e7779fb9938b20eb666e745fdbdc65edca8a8bf5326b63de47648"
+  },
+  "remaining": "Ordered1.73–1.77 acceptance; complete required pressure/growth/domain signals and metrics/alerts/log retention, explicitly agreed thresholds/operator/hosting budgets, approved independent supervisor/restart/output policy and actual provider/inbox verification. No capacity or financial-ledger claim from counters. Assemble own1.78 version/cumulative notes, fetch/merge remote and verify exact-source CI/public deployment before publishing. Privacy/request/retention decisions and later full-roadmap/human-art/playtest/launch gates remain open."
+}

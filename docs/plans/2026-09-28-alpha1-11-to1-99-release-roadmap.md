@@ -1492,6 +1492,16 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October4: the prepared **1.78 operations components** are integrated onto the
+current ordered successor, not the stale broad preparation. The
+[current-source receipt](2026-10-04-release1-78-current-integration-checks.json)
+records targeted server/monitor race checks and380 client checks for bounded
+monitoring, opt-in notifications, fixed save/wallet timing/active-call gauges and
+the audited manual Administration service view. Both1.74 moderation filters and
+current late-read authority remain. No real emails or service installation;
+pressure/domain coverage, thresholds, owners, retention/budget approval,
+predecessor acceptance and own version/notes/deployment gates remain open.
+
 October4: unpublished **1.76 entry reads** now avoid whole-account fetches for
 password verification, first-character login/join and social target labels.
 The [current integration receipt](2026-10-04-release1-76-current-integration-checks.json)
