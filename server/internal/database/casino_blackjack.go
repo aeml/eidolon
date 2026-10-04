@@ -148,18 +148,25 @@ func (db *DB) GetBlackjackTable(tableID string) (*BlackjackTableRecord, error) {
 	if err := collection.FindOne(ctx, bson.M{"_id": tableID}).Decode(&record); err != nil {
 		return nil, err
 	}
-	if record.Version <= 0 || !validBlackjackState(record.State) {
-		return nil, errors.New("corrupt blackjack table state")
-	}
-	if record.Pending != nil {
-		if err := record.Pending.ValidateForTable(tableID); err != nil {
-			return nil, err
-		}
-		if record.Pending.TableVersion != 0 && record.Pending.TableVersion != record.Version {
-			return nil, ErrBlackjackTableConflict
-		}
+	if err := record.Validate(); err != nil {
+		return nil, err
 	}
 	return &record, nil
+}
+
+func (record BlackjackTableRecord) Validate() error {
+	if record.TableID == "" || len(record.TableID) > 96 || record.Version <= 0 || !validBlackjackState(record.State) {
+		return errors.New("corrupt blackjack table state")
+	}
+	if record.Pending != nil {
+		if err := record.Pending.ValidateForTable(record.TableID); err != nil {
+			return err
+		}
+		if record.Pending.TableVersion != 0 && record.Pending.TableVersion != record.Version {
+			return ErrBlackjackTableConflict
+		}
+	}
+	return nil
 }
 
 // A normal deal/turn update cannot cross an unresolved money operation.
@@ -252,16 +259,24 @@ func (db *DB) updateBlackjackTable(filter, update bson.M) (*BlackjackTableRecord
 }
 
 // The legacy-named collection is the existing private casino intent ledger.
-// Slot records are owner/theme scoped. Scan on startup (not on player movement)
-// so the debit-resolved / payout-not-yet-started gap is recoverable as well.
-func (db *DB) CasinoSlotRecords() ([]BlackjackTableRecord, error) {
+// Slot records are owner/theme scoped. Keyset pages bound startup memory while
+// still scanning every record, including debit-resolved / payout-not-yet-started
+// gaps that do not have a pending transfer. Settlements run outside query timeouts.
+func (db *DB) CasinoSlotRecordsPage(afterID string, limit int) ([]BlackjackTableRecord, error) {
+	if limit < 1 || limit > 50 || len(afterID) > 96 || afterID != "" && !strings.HasPrefix(afterID, "slots:") {
+		return nil, errors.New("invalid slot recovery page")
+	}
 	collection, err := db.blackjackCollection()
 	if err != nil {
 		return nil, err
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cursor, err := collection.Find(ctx, bson.M{"_id": bson.M{"$regex": "^slots:"}})
+	identity := bson.M{"$regex": "^slots:"}
+	if afterID != "" {
+		identity["$gt"] = afterID
+	}
+	cursor, err := collection.Find(ctx, bson.M{"_id": identity}, options.Find().SetSort(bson.D{{Key: "_id", Value: 1}}).SetLimit(int64(limit)).SetBatchSize(int32(limit)))
 	if err != nil {
 		return nil, err
 	}
@@ -269,6 +284,11 @@ func (db *DB) CasinoSlotRecords() ([]BlackjackTableRecord, error) {
 	var records []BlackjackTableRecord
 	if err := cursor.All(ctx, &records); err != nil {
 		return nil, err
+	}
+	for _, record := range records {
+		if err := record.Validate(); err != nil {
+			return nil, err
+		}
 	}
 	return records, nil
 }

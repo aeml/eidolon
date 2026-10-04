@@ -85,16 +85,85 @@ func markSlotPending(key, owner string) {
 	slotsMu.Lock()
 	defer slotsMu.Unlock()
 	slotsPending[key] = strings.TrimPrefix(owner, "player-")
-	cached := slotsCache[key]
-	cached.Processing = true
-	slotsCache[key] = cached
+	if cached, exists := slotsCache[key]; exists {
+		cached.Processing = true
+		slotsCache[key] = cached
+	}
 }
 
 func cacheSettledSlot(key string, state slotSavedState) {
+	// Keep only presentation for the currently held machine. The durable table
+	// stores entitlements; absence/eviction cannot discard a payout or bonus.
+	seated := false
+	if world != nil {
+		world.Mu.RLock()
+		defer world.Mu.RUnlock()
+		if player := world.Entities[state.Owner]; player != nil {
+			player.Mu.RLock()
+			defer player.Mu.RUnlock()
+			seated = slotRecordHeldByPlayer(player, key)
+		}
+	}
 	slotsMu.Lock()
 	defer slotsMu.Unlock()
-	slotsCache[key] = slotCacheEntry{State: state}
+	if seated {
+		for otherKey, cached := range slotsCache {
+			if otherKey != key && cached.State.Owner == state.Owner {
+				delete(slotsCache, otherKey)
+			}
+		}
+		slotsCache[key] = slotCacheEntry{State: state}
+	} else {
+		delete(slotsCache, key)
+	}
 	delete(slotsPending, key)
+}
+
+// Caller holds world/player read locks. Disconnected characters keep a held
+// seat during their normal resume window; only losing the seat ends visibility.
+func slotRecordHeldByPlayer(player *game.Entity, key string) bool {
+	theme, currency, seated := slotSeatDetails(player)
+	return seated && player.Type == game.TypePlayer && player.InstanceID == game.CasinoInstanceID && slotRecordKey(player.ID, theme, currency) == key
+}
+
+func pruneUnseatedSlotCache() {
+	slotsMu.RLock()
+	keys := make([]string, 0, len(slotsCache))
+	for key := range slotsCache {
+		keys = append(keys, key)
+	}
+	slotsMu.RUnlock()
+	if world != nil {
+		world.Mu.RLock()
+		defer world.Mu.RUnlock()
+	}
+	for _, key := range keys {
+		// Snapshot owner without holding slotsMu while acquiring player locks.
+		slotsMu.RLock()
+		cached, exists := slotsCache[key]
+		slotsMu.RUnlock()
+		if !exists {
+			continue
+		}
+		var player *game.Entity
+		if world != nil {
+			player = world.Entities[cached.State.Owner]
+		}
+		if player != nil {
+			player.Mu.RLock()
+		}
+		keep := player != nil && slotRecordHeldByPlayer(player, key)
+		// World -> player -> slots lock order matches cacheSettledSlot. Holding
+		// world/player through deletion prevents racing a same-key reseat/load.
+		slotsMu.Lock()
+		if current, present := slotsCache[key]; present && current.State.Owner == cached.State.Owner && !keep {
+			delete(slotsCache, key)
+		}
+		slotsMu.Unlock()
+		if player != nil {
+			player.Mu.RUnlock()
+		}
+	}
 }
 
 func validateSlotIntent(record *database.BlackjackTableRecord, state *slotSavedState) error {
@@ -198,6 +267,7 @@ func recoverAccountSlotsLocked(username string) error {
 }
 
 func tickSlotRecovery() error {
+	pruneUnseatedSlotCache()
 	slotsMu.RLock()
 	owners := map[string]bool{}
 	for _, owner := range slotsPending {
@@ -217,20 +287,33 @@ func tickSlotRecovery() error {
 }
 
 func initializeSlots() error {
-	records, err := db.CasinoSlotRecords()
-	if err != nil {
-		return err
-	}
-	for _, record := range records {
-		state, err := decodeSlotState(record.TableID, record.State)
+	const pageSize = 25
+	afterID := ""
+	for {
+		records, err := db.CasinoSlotRecordsPage(afterID, pageSize)
 		if err != nil {
 			return err
 		}
-		if record.Pending != nil || state.Owed > 0 {
-			markSlotPending(record.TableID, state.Owner)
+		for _, record := range records {
+			state, err := decodeSlotState(record.TableID, record.State)
+			if err != nil {
+				return err
+			}
+			if record.Pending != nil || state.Owed > 0 {
+				markSlotPending(record.TableID, state.Owner)
+				unlock := lockCharacterWork(strings.TrimPrefix(state.Owner, "player-"))
+				err := recoverSlotRecordLocked(record.TableID, strings.TrimPrefix(state.Owner, "player-"))
+				unlock()
+				if err != nil && !casinoInsufficientFunds(err) {
+					return err
+				}
+			}
 		}
+		if len(records) < pageSize {
+			return nil
+		}
+		afterID = records[len(records)-1].TableID
 	}
-	return tickSlotRecovery()
 }
 
 func slotCurrency(currency string) string {
