@@ -12,6 +12,17 @@
     "scope": "Synthetic/local component integration proof and existing exact historical domain receipts only. No new full campaign, raid, capacity, production role/value mutation, service installation or provider mail. No public1.73 acceptance inferred."
   },
   "domainEvidence": "2026-10-03-release1-73-operation-ledger.json retains ten domains, immutable custody/cohort/post-image invariants and exact prior failure/concurrency/replay scopes. The new integration checks do not relabel that historical evidence as a new connected binary.",
+  "restoreSafetyBackport": {
+    "sourceCommit": "fbf16a597b9aa7654349702f9405a10fd376cb9a",
+    "importedSource": "17a01bb66e914b9c43421776fe9bbb0d86b3585b",
+    "whyEarlier": "Before schema17-to22 publication, do not leave the legacy restore helper able to mix older users/schema markers with newer operation collections. Bring forward the already-prepared explicit whole-Eidolon restore boundary; no production restore or automatic rollback is authorized.",
+    "scope": "Default requires empty fixed eidolon target. Existing stopped-writer/credential/namespace guards remain. Non-empty replacement needs additional --replace-eidolon-database plus --confirm-data-loss; read-only collection probe and archive dry-run precede any destructive command. No other database is a replacement target. Operator instructions preserve exact archive/journal/image approval and stopped admission on failure.",
+    "currentChecks": "Go1.27.1 focused RestoreArchive, DeploySchemaPreflight and SchemaMigrationCatalog race checks passed root3.339s/database1.089s. bash -n and git diff --check pass; cherry-pick applied without conflict.",
+    "retainedActualProof": "The existing prepared2026-10-04-release1-76-restore-boundary-checks.json records a real two-container archive/restore test38.73s/package39.821s with exact EJSON document/index comparisons, default refusal unchanged, invalid-archive dry-run refusal unchanged, explicit replacement removing later-only ledger and unrelated-database sentinel preserved. Compared current helper and both test SHA256s: all exactly match that receipt. Reuse this compatible script/archive proof rather than rerunning Docker; do not relabel it as a new schema22 game-start/replay or production recovery proof.",
+    "scriptSHA256": "393702e9dfd8bccad03f981621153e66b0046138df2a61c696bd613834e88aac",
+    "primaryReference": "https://www.mongodb.com/docs/database-tools/mongorestore/",
+    "limits": "Readiness/stopped Compose API is not a global writer lock. Explicit whole-database replacement is destructive even if later restoration fails. No restoration, container/data deletion, account/value changes or service stop/start was run in this backport; only mock guards/schema tests. Owner-approved retention/RPO/RTO, matching journals and compatible server remain required; full1.76/1.81/1.82 gates are not complete."
+  },
   "remaining": [
     "Accept1.71 exact-source CI/public release, resolve1.72 jump policy and accept its own ordered release, then merge their final code/metadata into this candidate. InheritedAlpha1.71.0 defaults are intentional until1.73 assembly.",
     "Final schema17-to22 packaging/backup/writer compatibility review; schema advancement cannot justify unsafe rollback to an older writer or arbitrary historical financial cleanup.",
