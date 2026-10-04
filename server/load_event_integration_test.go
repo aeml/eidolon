@@ -38,6 +38,10 @@ func TestLoadEventActualFourClassRootClearExitAndSaves(t *testing.T) {
 	credentials := make([]map[string]string, 4)
 	for index := range fixtures {
 		fixture, password := loadPreparedClassFixture(t, repo, index, site.Level)
+		// The shared party fixture starts its tank wounded to exercise healing.
+		// Here start with normal full preparation; injuries/recovery must come
+		// from this short, naturally timed encounter, not a forced initial trip.
+		fixture.Resources.Health = 10000 // Login clamps this to build-derived max.
 		fixture.X, fixture.Z = site.X+float64(index), site.Z
 		if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
 			t.Fatal("could not persist disposable event starting fixture")

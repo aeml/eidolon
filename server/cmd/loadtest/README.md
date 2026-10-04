@@ -469,7 +469,8 @@ declared unit-test timestamps, **not earned connected event completion**.
 server/driver/disposable-Mongo test: set `EIDOLON_LOAD_EVENT_FULL=1` alongside the
 isolated environment flags above, and start during the first40s of an actual
 Root announcement. Outside that window it skips rather than advancing time.
-It prepares level35 uncommon/rare class gear, requires full waves/champion/town
+It prepares level35 uncommon/rare class gear and full initial resources clamped
+by login to the normal build maxima, requires full waves/champion/town
 exit, then independently reads saved XP/Gold and preserved equipment/bag
 sentinel/EP. Prepared positioning and equipment are fixtures, not an earned
 journey. This connected check has **not yet run**. Do not reclassify the earlier
