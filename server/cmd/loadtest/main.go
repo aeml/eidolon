@@ -25,18 +25,21 @@ import (
 )
 
 var (
-	addr             = flag.String("addr", "localhost:8080", "http service address")
-	scheme           = flag.String("scheme", "wss", "websocket scheme (ws or wss)")
-	count            = flag.Int("n", 10, "number of bots")
-	townMode         = flag.Bool("town", false, "bots only roam in town")
-	insecure         = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
-	credentialsFile  = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
-	duration         = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
-	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, combined, casino-slots, casino-blackjack, casino-house, casino-poker, or party-combat")
-	admissionTimeout = flag.Duration("admission-timeout", 15*time.Second, "maximum wait for each registration, login and own-player acknowledgement, 100ms to60s")
-	casinoBet        = flag.Int("casino-bet", 20, "Gold casino stake; poker requires100–100000 in steps of100, other games20–100000 in steps of20; isolated funded accounts required")
-	partyCombatX     = flag.Float64("party-combat-x", math.NaN(), "required predeclared overworld combat anchor for party-combat/combined")
-	partyCombatZ     = flag.Float64("party-combat-z", math.NaN(), "required predeclared overworld combat anchor for party-combat/combined")
+	addr              = flag.String("addr", "localhost:8080", "http service address")
+	scheme            = flag.String("scheme", "wss", "websocket scheme (ws or wss)")
+	count             = flag.Int("n", 10, "number of bots")
+	townMode          = flag.Bool("town", false, "bots only roam in town")
+	insecure          = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
+	credentialsFile   = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
+	duration          = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
+	scenario          = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, combined, casino-slots, casino-blackjack, casino-house, casino-poker, party-combat, or party-dungeon")
+	admissionTimeout  = flag.Duration("admission-timeout", 15*time.Second, "maximum wait for each registration, login and own-player acknowledgement, 100ms to60s")
+	casinoBet         = flag.Int("casino-bet", 20, "Gold casino stake; poker requires100–100000 in steps of100, other games20–100000 in steps of20; isolated funded accounts required")
+	partyCombatX      = flag.Float64("party-combat-x", math.NaN(), "required predeclared overworld combat anchor for party-combat/combined")
+	partyCombatZ      = flag.Float64("party-combat-z", math.NaN(), "required predeclared overworld combat anchor for party-combat/combined")
+	dungeonType       = flag.String("dungeon-type", "verdant_bastion_catacombs", "ordinary regional dungeon for party-dungeon; qualified prepared saves required")
+	dungeonLevel      = flag.Int("dungeon-level", 30, "predeclared unlocked run level for party-dungeon")
+	dungeonDifficulty = flag.String("dungeon-difficulty", "normal", "predeclared unlocked normal/heroic/mythic difficulty for party-dungeon")
 )
 
 type loadMetrics struct {
@@ -72,6 +75,8 @@ type Entity struct {
 	State          string          `json:"state"`
 	Health         int             `json:"health"`
 	MaxHealth      int             `json:"maxHealth"`
+	Mana           int             `json:"mana"`
+	MaxMana        int             `json:"maxMana"`
 	Experience     int64           `json:"experience"`
 	UnlockedSkills []string        `json:"unlockedSkills"`
 	Level          int             `json:"level"`
@@ -142,8 +147,8 @@ func main() {
 	if *townMode {
 		selectedScenario = "town"
 	}
-	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "combined" && selectedScenario != "casino-slots" && selectedScenario != "casino-blackjack" && selectedScenario != "casino-house" && selectedScenario != "casino-poker" && selectedScenario != "party-combat" {
-		log.Fatal("-scenario must be combat, town, social, mixed, combined, casino-slots, casino-blackjack, casino-house, casino-poker, or party-combat")
+	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "combined" && selectedScenario != "casino-slots" && selectedScenario != "casino-blackjack" && selectedScenario != "casino-house" && selectedScenario != "casino-poker" && selectedScenario != "party-combat" && selectedScenario != "party-dungeon" {
+		log.Fatal("-scenario must be combat, town, social, mixed, combined, casino-slots, casino-blackjack, casino-house, casino-poker, party-combat, or party-dungeon")
 	}
 	if selectedScenario == "casino-slots" && (*count > 32 || *casinoBet < 20 || *casinoBet > 100000 || *casinoBet%20 != 0) {
 		log.Fatal("casino-slots requires1–32 public machines and a Gold bet20–100000 in steps of20")
@@ -159,6 +164,12 @@ func main() {
 	}
 	if selectedScenario == "party-combat" && (*count%4 != 0 || *count > 100 || math.IsNaN(*partyCombatX) || math.IsNaN(*partyCombatZ) || math.IsInf(*partyCombatX, 0) || math.IsInf(*partyCombatZ, 0) || math.Abs(*partyCombatX) > math.MaxFloat32 || math.Abs(*partyCombatZ) > math.MaxFloat32) {
 		log.Fatal("party-combat requires 4–100 clients in groups of four and finite predeclared combat coordinates")
+	}
+	if selectedScenario == "party-dungeon" {
+		minimum, supported := game.DungeonEntryLevels()[*dungeonType]
+		if *count < 4 || *count > 100 || *count%4 != 0 || !supported || *dungeonLevel < minimum || game.ValidateDungeonEntrySelection(100, *dungeonLevel, game.DungeonDifficulty(*dungeonDifficulty)) != nil {
+			log.Fatal("party-dungeon requires4–100 clients in groups of four and a valid explicit regional run/difficulty")
+		}
 	}
 	rand.Seed(time.Now().UnixNano())
 	interrupt := make(chan os.Signal, 1)
@@ -187,7 +198,7 @@ func main() {
 			log.Fatal(err)
 		}
 	}
-	if selectedScenario == "party-combat" {
+	if selectedScenario == "party-combat" || selectedScenario == "party-dungeon" {
 		if len(creds) < *count {
 			log.Fatal("party-combat requires supplied prepared test accounts for every client")
 		}
@@ -199,7 +210,11 @@ func main() {
 			seen[credential.Username] = true
 		}
 		for i := 0; i < *count; i += 4 {
-			parties = append(parties, newPartyLoad(creds[i:i+4], *partyCombatX, *partyCombatZ))
+			if selectedScenario == "party-dungeon" {
+				parties = append(parties, newDungeonParty(creds[i:i+4], *dungeonType, *dungeonLevel, *dungeonDifficulty))
+			} else {
+				parties = append(parties, newPartyLoad(creds[i:i+4], *partyCombatX, *partyCombatZ))
+			}
 		}
 	}
 	if len(creds) < *count {
@@ -230,7 +245,7 @@ func main() {
 				botScenario = []string{"combat", "town", "social"}[idx%3]
 			}
 			var party *partyLoad
-			if botScenario == "party-combat" {
+			if botScenario == "party-combat" || botScenario == "party-dungeon" {
 				party = parties[idx/4]
 			}
 			runBot(idx, u.String(), creds[idx], botScenario, stop, &observations[idx], party)
@@ -239,13 +254,19 @@ func main() {
 		time.Sleep(100 * time.Millisecond)
 	}
 
+	allBotsDone := make(chan struct{})
+	go func() { wg.Wait(); close(allBotsDone) }()
 	if *duration > 0 {
 		select {
 		case <-interrupt:
 		case <-time.After(*duration):
+		case <-allBotsDone:
 		}
 	} else {
-		<-interrupt
+		select {
+		case <-interrupt:
+		case <-allBotsDone:
+		}
 	}
 	log.Println("Stopping bots...")
 	close(stop)
@@ -331,7 +352,7 @@ func main() {
 		log.Printf("Combined workload: clients=%d party_clients=%d poker_clients=%d blackjack_clients=%d house_clients=%d slots_clients=%d town_clients=%d social_clients=%d", *count, *count/5, *count/10, *count/5, *count/5, *count/10, *count/10, *count/10)
 		casinoFailed = !valid
 	}
-	if selectedScenario == "party-combat" || selectedScenario == "combined" {
+	if selectedScenario == "party-combat" || selectedScenario == "combined" || selectedScenario == "party-dungeon" {
 		var formed, members, damage, heals, casts, denials, xp, deaths, minimum, failures uint64
 		for index, party := range parties {
 			counts := party.counts()
@@ -359,6 +380,21 @@ func main() {
 		}
 		casinoFailed = casinoFailed || failures != 0 || formed != uint64(len(parties)) || members != uint64(expectedMembers) || minimum == 0
 	}
+	if selectedScenario == "party-dungeon" {
+		var entered, cleared, exited, rooms, bosses, reentries, checkpointReturns uint64
+		for _, party := range parties {
+			counts := party.dungeonCounts()
+			entered += counts.entered
+			cleared += counts.cleared
+			exited += counts.exited
+			rooms += counts.rooms
+			bosses += counts.bosses
+			reentries += counts.reentries
+			checkpointReturns += counts.checkpointReturns
+		}
+		log.Printf("Dungeon coverage: groups=%d entered=%d cleared=%d exited=%d cleared_rooms=%d cleared_bosses=%d reentry_requests=%d checkpoint_returns=%d", len(parties), entered, cleared, exited, rooms, bosses, reentries, checkpointReturns)
+		casinoFailed = casinoFailed || entered != uint64(*count) || cleared != uint64(*count) || exited != uint64(*count) || reentries != checkpointReturns
+	}
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
 		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) || coverage.ownClients != uint64(*count) ||
 		pendingRecoveries != 0 || failedRecoveries != 0 || requestedRecoveries != completedRecoveries ||
@@ -381,6 +417,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	assignment := botAssignment{scenario: botScenario, index: id}
 	if len(cohorts) > 0 {
 		assignment.party = cohorts[0]
+		assignment.preserveGear = cohorts[0] != nil
 	}
 	runAssignedBot(id, urlStr, cred, assignment, stop, observation)
 }
@@ -418,7 +455,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 	isSelling := false
 	myID := "player-" + cred.Username
 	party := assignment.party
-	if botScenario == "party-combat" && party == nil {
+	if (botScenario == "party-combat" || botScenario == "party-dungeon") && party == nil {
 		metrics.admissionErrors.Add(1)
 		return
 	}
@@ -540,7 +577,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 				party.reject()
 				continue
 			}
-			if party != nil && (msg.Type == "party_request" || msg.Type == "party_update" || msg.Type == "ability_result" || msg.Type == "damage" || msg.Type == "heal") {
+			if party != nil && (msg.Type == "party_request" || msg.Type == "party_update" || msg.Type == "ability_result" || msg.Type == "damage" || msg.Type == "heal" || party.dungeon != nil && (msg.Type == "enter_instance" || msg.Type == "get_dungeon_status" || msg.Type == "dungeon_room_state")) {
 				if !party.receive(memberIndex, msg, time.Now()) {
 					metrics.decodeErrors.Add(1)
 				}
@@ -698,7 +735,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 		randomArchetype = authentication.characterType // Match the existing character's kit; do not pretend it was reclassed.
 	}
 	if assignment.preserveGear && authentication.characterType == "" {
-		rejectAdmission(fmt.Errorf("combined_requires_prepared_character"))
+		rejectAdmission(fmt.Errorf("prepared_workload_requires_character"))
 		return
 	}
 	if party != nil && authentication.characterType != partyLoadClasses[memberIndex] {
@@ -814,8 +851,21 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 			}
 			if party != nil {
 				party.step(memberIndex, me, currentState, time.Now(), *admissionTimeout,
-					func(kind string, payload interface{}) error { return send(c, kind, payload) },
+					func(kind string, payload interface{}) error {
+						if kind == "recall" {
+							if movement.recover(c, kind) {
+								return nil
+							}
+							return fmt.Errorf("recovery_request_unavailable")
+						}
+						return send(c, kind, payload)
+					},
 					func(x, z float64) { movement.move(c, me, x, z) })
+				if botScenario == "party-dungeon" {
+					if party.counts().failed || party.dungeonCounts().exited == 4 {
+						return
+					}
+				}
 				continue // Preserve prepared gear: no sale, auto-equipment, pickup or unrelated actions.
 			}
 

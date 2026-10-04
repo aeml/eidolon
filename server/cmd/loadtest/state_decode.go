@@ -101,6 +101,8 @@ func entityFromProto(entity *statepb.Entity) Entity {
 		State:          entity.State,
 		Health:         int(entity.Health),
 		MaxHealth:      int(entity.MaxHealth),
+		Mana:           int(entity.Mana),
+		MaxMana:        int(entity.MaxMana),
 		Experience:     entity.Experience,
 		UnlockedSkills: append([]string(nil), entity.UnlockedSkills...),
 		Level:          int(entity.Level),

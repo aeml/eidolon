@@ -7,7 +7,8 @@ credentials are read-only. The driver creates accounts and changes synthetic
 characters through normal commands, so it is not a read-only production probe.
 
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
-`casino-blackjack`, `casino-house`, `casino-poker`, `party-combat` and `combined`. Mixed
+`casino-blackjack`, `casino-house`, `casino-poker`, `party-combat`, `party-dungeon`
+and `combined`. Mixed
 still assigns only combat/town/social round-robin. It does **not** exercise casino
 wagering, coordinated dungeon/raid parties or all world-event flows. The separate
 combined profile below covers combat/casino/save at20; dungeon/raid/event and
@@ -277,6 +278,62 @@ member while preserving equipment, bag and EP exactly. Enable only with
 `EIDOLON_LOADTEST_BINARY` paths. This earned-combat/save check is not a dungeon or
 raid clear, unique per-kill receipt, fresh-process reload or100-player capacity
 result. It is opt-in, not an automatic repeated45s run on every release.
+
+## Equipped four-class dungeon workload
+
+`-scenario party-dungeon -n 4 -credentials-file /absolute/test-accounts.json
+-dungeon-type verdant_bastion_catacombs -dungeon-level 30
+-dungeon-difficulty normal -duration 12m -admission-timeout 5s`
+uses the same consenting Fighter/Cleric/Rogue/Wizard account order and prepared
+class-appropriate gear as party combat. Counts are4–100 in groups of four, not
+a100-player capacity result. Every account needs an existing qualified character
+outside an instance/party; no character is created, equipped, sold or reset.
+Specify an unlocked regional run band at or above that dungeon's minimum.
+Normal/heroic/mythic qualifications and Umbral story gates stay server-owned;
+raids use a different ready-check flow and are not included here.
+
+After normal invitations and all four roster views, every member requests the
+ordinary dungeon status and refuses any existing run. Only the leader starts a
+fresh run, once. Every member must receive the same bounded validated canonical
+layout and a fresh own-player entry state before combat. The party follows the
+first uncleared objective room using overlap portals between canonical floor
+rectangles. Segment-union checks prevent direct movement/casts/heals through
+missing floor space; actual walking still obeys normal reported speed, context
+and sequence. This is not telegraph dodging, full encounter tactics or renderer
+pathfinding acceptance.
+
+The normal class/target/healing/cooldown controller fights without forced spawns,
+kills, stat scaling, mana refills or cooldown bypass. At under25% Health or15%
+Mana, living characters Recall normally (not health-refilling unstuck Respawn).
+Dead characters use normal Respawn. Both wait for fresh nonce/town acknowledgement;
+reentry waits for at least90% Health and Mana from ordinary safe-zone regeneration,
+uses the same run and verifies its unchanged layout and latest contiguous cleared
+boss checkpoint. No reset or fifteen-minute logout-policy change is introduced.
+
+`Dungeon coverage` includes each configured member's own entry, full room-clear
+view and alive town exit, plus per-group cleared rooms/bosses, requested reentries
+and acknowledged checkpoint returns. A peer's clear, historical run, changed
+scene/layout, regressed progress, missing acknowledgement or incomplete exit
+cannot pass. Final clear requires all nonstart rooms cleared in every member's
+own current-run view; every member then Recalls once. Existing party impact and
+global fresh-state/admission/recovery/error gates also remain required.
+
+The duration is a maximum for this earned-clear check, not a minimum soak window.
+Bots finish after every cohort member clears and exits, or on cohort failure;
+once all bot workers finish, the command ends rather than waiting out its timer.
+An unfinished run at the bound fails; do not increase time or fabricate clears
+to turn it green. Default mixed/nightly workload remains separate.
+
+Focused controller cases use explicit room/response/checkpoint fixtures, not
+earned clears. Separate routing checks traverse every room in actual generated
+Earth/Water/Fire/Air layouts. The opt-in root
+`TestLoadDungeonActualFourClassClearExitAndSaves` is now running once against an
+isolated production-style server/driver and Mongo, with uncommon/rare class gear
+and a12-minute maximum. It additionally requires every participant's durable
+original boss receipts, saved XP, protected bag item, gear and EP after ordinary
+town exit. **No actual clear is accepted until that exact run finishes.** It is
+not an automatic campaign/soak on every release, raid clear,100-player capacity,
+fresh-process replay or human pacing proof.
 
 ## Concurrent combined workload
 

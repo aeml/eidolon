@@ -117,9 +117,13 @@ func (m *botMovement) move(connection *websocket.Conn, me Entity, x, z float64) 
 }
 
 func (m *botMovement) respawn(connection *websocket.Conn) bool {
+	return m.recover(connection, "respawn")
+}
+
+func (m *botMovement) recover(connection *websocket.Conn, kind string) bool {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if !m.known || m.recovery != "" || m.awaitingTown || m.failed {
+	if (kind != "respawn" && kind != "recall") || !m.known || m.recovery != "" || m.awaitingTown || m.failed {
 		return false
 	}
 	context, err := randomHex(16)
@@ -128,7 +132,7 @@ func (m *botMovement) respawn(connection *websocket.Conn) bool {
 	}
 	// Like the real client, propose a fresh nonce for recovery. Do not reuse
 	// the current movement authority or move again before the server echoes it.
-	if send(connection, "respawn", map[string]string{"movementContext": context}) != nil {
+	if send(connection, kind, map[string]string{"movementContext": context}) != nil {
 		return false
 	}
 	m.recovery, m.known = context, false

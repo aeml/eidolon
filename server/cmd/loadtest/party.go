@@ -34,6 +34,7 @@ type partyLoad struct {
 	target           Entity
 	deaths           uint64
 	failed           bool
+	dungeon          *dungeonLoad
 }
 
 type partyLoadCounts struct {
@@ -124,6 +125,9 @@ func (p *partyLoad) state(index int, me Entity, now time.Time) {
 		m.xpUpdates++ // Observed progression, not attribution to a particular kill.
 	}
 	m.state = me
+	if p.dungeon != nil {
+		p.dungeon.observe(p, index, me)
+	}
 }
 
 func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
@@ -131,6 +135,9 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 	defer p.mu.Unlock()
 	defer p.signal(index)
 	m := &p.members[index]
+	if p.dungeon != nil && (message.Type == "get_dungeon_status" || message.Type == "enter_instance" || message.Type == "dungeon_room_state") {
+		return p.dungeon.receive(p, index, message, now)
+	}
 	switch message.Type {
 	case "party_request":
 		var invite struct{ TargetName, InvitationID, Context string }
@@ -301,15 +308,28 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		}
 		return
 	}
-	if me.InstanceID != "" {
-		p.failed = true
-		return
-	} // Explicit overworld profile, not dungeon navigation.
 	if m.pendingSkill != "" {
 		if now.Sub(m.abilitySent) >= timeout {
 			p.failed = true
 		}
 		return // Never repeat an unacknowledged cast.
+	}
+	if p.dungeon != nil {
+		if !p.dungeon.step(p, index, me, now, timeout, request) || p.failed {
+			return
+		}
+		originalMove := move
+		move = func(x, z float64) {
+			point, valid := p.dungeon.route.next(dungeonPoint{me.X, me.Z}, dungeonPoint{x, z})
+			if !valid {
+				p.failed = true
+				return
+			}
+			originalMove(point.x, point.z)
+		}
+	} else if me.InstanceID != "" {
+		p.failed = true
+		return // The original overworld profile does not silently enter instances.
 	}
 	leader := p.members[0].state
 	if index != 0 && math.Hypot(me.X-leader.X, me.Z-leader.Z) > 12 {
@@ -330,6 +350,10 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		}
 		if p.target.ID == "" {
 			nearest := 30.0
+			if p.dungeon != nil {
+				room := p.dungeon.layout.Rooms[p.dungeon.objective]
+				nearest = math.Hypot(room.Width/2, room.Height/2) + 20
+			}
 			for _, enemy := range state {
 				if enemy.Type != "Enemy" || enemy.Health <= 0 || enemy.State == "DEAD" || enemy.InstanceID != me.InstanceID || enemy.ID == "" {
 					continue
@@ -369,6 +393,10 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 	}
 	if skill == "" {
 		skill = [4]string{"Charge", "Spirit Guardians", "Piercing Throw", "Fireball"}[index]
+	}
+	if p.dungeon != nil && !p.dungeon.route.direct(dungeonPoint{me.X, me.Z}, dungeonPoint{target.X, target.Z}) {
+		move(target.X, target.Z)
+		return // Neither enemy attacks nor targeted heals cut a missing floor.
 	}
 	if !now.Before(m.readyAt[skill]) && (skill == "Healing Light" || distance <= 12) {
 		m.pendingSkill, m.abilitySent = skill, now

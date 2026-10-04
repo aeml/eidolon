@@ -1806,8 +1806,18 @@ until matching server echo plus fresh alive-in-town state, and fails missing or
 pending recovery at the declared timeout without retry. Actual wire-to-domain
 tests exercise both old-nonce rejection and fresh recovery/movement; final
 driver/strict nightly evidence separately records requested/completed recovery.
-This changes no production recovery rules and is not a completed dungeon profile
-or clear. Dungeon routing, entry/reentry and earned party encounters remain next.
+This changes no production recovery rules and is not itself an earned dungeon
+clear. The subsequent opt-in four-class dungeon profile now uses normal status,
+leader entry, shared bounded canonical layout, overlap-floor navigation,
+class combat/healing, living Recall/death Respawn, safe-zone resource recovery,
+unchanged-run latest contiguous cleared boss checkpoint, every-client room-clear
+views and ordinary town exits. Missing/changed/history-only/partial results fail;
+the driver finishes early on completed clear/exit or failed cohorts instead of
+waiting out its maximum. Focused response/checkpoint fixtures and actual generated
+four-realm floor routing pass; one12-minute-maximum actual Verdant clear/save check
+is running under Luna process monitoring. It must finish with earned per-member
+durable original boss rewards before acceptance. Raids/events and declared cohort
+capacity/headroom, ordered publication and operating-policy gates remain open.
 
 ## References
 
