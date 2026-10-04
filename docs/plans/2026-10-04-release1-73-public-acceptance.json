@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "milestone": "Alpha1.73 valuable-operation release",
+  "status": "accepted live; not full-roadmap, capacity or inbox-delivery certification",
+  "checkedAt": "2026-10-04T12:50:43.914Z",
+  "commit": "ad59bffbeb0f471d27da125f7bc5c0c1b3d95619",
+  "version": "Alpha 1.73.0",
+  "ci": {
+    "run": 37201238962,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Server Tests (Go)",
+        "id": 111433194698,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:29:03Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 2/3)",
+        "id": 111433194839,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:30:56Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 1/3)",
+        "id": 111433194885,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:33:53Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 3/3)",
+        "id": 111433194893,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:21:10Z"
+      },
+      {
+        "name": "Client Tests (Jest)",
+        "id": 111433194953,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:16:22Z"
+      },
+      {
+        "name": "Predeploy Character QA (System Chrome)",
+        "id": 111436990770,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:36:51Z"
+      },
+      {
+        "name": "Validate Production QA Inputs",
+        "id": 111437496931,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:36:58Z"
+      },
+      {
+        "name": "Deploy to GitHub Pages",
+        "id": 111437513689,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:38:12Z"
+      },
+      {
+        "name": "Deploy Server (SSH)",
+        "id": 111437513751,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:37:37Z"
+      },
+      {
+        "name": "Live Release and Character QA",
+        "id": 111437718178,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T12:48:45Z"
+      }
+    ],
+    "url": "https://github.com/aeml/eidolon/actions/runs/37201238962",
+    "skipped": [
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run deterministic High/Low animation gallery"
+      },
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run required Well Rested rendering and GPU lifecycle QA"
+      },
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run disposable full-character gameplay"
+      },
+      {
+        "job": "Live Release and Character QA",
+        "step": "Run live four-class and remote-animation QA"
+      }
+    ]
+  },
+  "independentPublic": {
+    "frontend": {
+      "commit": "ad59bffbeb0f471d27da125f7bc5c0c1b3d95619",
+      "version": "Alpha 1.73.0"
+    },
+    "backend": {
+      "commit": "ad59bffbeb0f471d27da125f7bc5c0c1b3d95619",
+      "version": "Alpha 1.73.0",
+      "status": "ok",
+      "database": "ready"
+    },
+    "loginAndNotes": true,
+    "runtime": [
+      {
+        "path": "src/ui/DirectTradeUI.js",
+        "sha256": "59356f48b30a4313943a01349df385f93c5ea3c2e6a62ce813e62b1527b65717"
+      },
+      {
+        "path": "src/ui/UIManagerFeedback.js",
+        "sha256": "a1bc4e5e8d2de61541d6184a40e17b075cbeaf3fea3456116af5519f79174437"
+      },
+      {
+        "path": "src/main.js",
+        "sha256": "b9381f79632c9de9d2bac4e2768dd856cd0e86ae3b2d1cfcc42aac79dc2ed878"
+      },
+      {
+        "path": "src/ui/EmailRecoveryUI.js",
+        "sha256": "874b5bf6755c6cfdd82c6427858b0fe575b3913edf1ce1d5550d82d4ca53e3e5"
+      },
+      {
+        "path": "src/core/RecoveryLinkBoot.js",
+        "sha256": "d98fd4214724063a4cbb94ca084d9e645932ef00dd2cbf7fe57e31afbcce9baa"
+      }
+    ]
+  },
+  "databaseWriterSchema": 22,
+  "verificationScope": "Post-terminal root checks used IPv4 verified HTTPS, no-cache,2-second connect/5-second total request limits. Frontend/backend identity and database readiness, login/cumulative1.73/1.72/1.71.1 notes and exact publisher-rewritten bytes for both changed UI modules plus bootstrap/recovery modules passed. Writer schema22 is the source/startup contract, not a new raw production-database inspection. Later schema23/24 writers remain excluded.",
+  "failedPredecessors": [
+    {
+      "run": 37199081570,
+      "source": "20d6f1af50a7fbcfd7c0beccb84cfd658303206a",
+      "failure": "Shared actual boss-repository fixture assumed it was the only retained victory; corrected isolated fixture and unrelated-history guard. Did not deploy."
+    },
+    {
+      "run": 37199769860,
+      "source": "4c6ff1374b07448537649e475631ff8f566bc04b",
+      "failure": "Dungeon loot test observed checkpoint completion before the tracked earned-effect worker finished. Functional assertion, not a data-race diagnostic; test-only drain/lock correction. Did not deploy."
+    }
+  ],
+  "limits": "Current actual geared-party boss/crash recovery, room/manual quest/valuable-operation fixtures and migration/backup tests retain their exact scopes. No complete earned campaign/raid or pacing, fresh GPU/animation, physical-phone party, actual inbox delivery, public IPv6/DDNS remediation or100-player capacity acceptance implied. Earlier1.72/model/maintenance acceptance remains historical. Full goal remains active; Alpha1.74 and later milestones are not accepted by this receipt."
+}

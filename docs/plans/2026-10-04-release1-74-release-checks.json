@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.74.0 administration release assembly",
-  "status": "assembled, unpublished; ordered predecessor acceptance required",
+  "status": "assembled, unpublished; predecessor1.73 independently accepted",
   "integratedPredecessorSource": "ad59bffbeb0f471d27da125f7bc5c0c1b3d95619 corrective1.73, carrying accepted1.72/1cf51d22 and its independent acceptance record. First corrective source4c6ff137 isolated the shared actual boss repository fixture; its CI then failed a dungeon room-completion functional assertion, not a data-race diagnostic. The current correction waits for tracked earned work before checking the checkpoint, without changing production ordering. Neither failed run deployed.",
   "permissionReviewSource": "73564b4f742f755fbe68817db62f6bbbf31a85af",
   "version": "Alpha 1.74.0",
@@ -10,9 +10,10 @@
   "packaging": "Own login/version manifest, package/lock, server/Docker/Compose/deployment/QA/CI defaults agree. Cumulative explicit1.74 patch notes retain1.73 and all earlier history and state simultaneous database/journal outage RAM-only limitations without claiming crash durability.",
   "checks": {
     "clientCommand": "Node24.18.0 Jest --runInBand --runTestsByPath tests/VersionPresentation.test.js tests/AdminUI.test.js tests/AdminOperations.test.js tests/AdminReportReview.test.js tests/AdminChatModeration.test.js",
-    "clientResult": "398 checks/five suites passed5.237s, with strict version/defaults, new patch-note scope, both read filters, confirmation/retry, stale-result/session and text-rendering assertions. Compatible dependencies reused, not a fresh install or rendered/production-role proof.",
+    "clientResult": "398 checks/five suites passed5.237s during assembly and passed2.998s again after the predecessor acceptance documentation update, with strict version/defaults, new patch-note scope, both read filters, confirmation/retry, stale-result/session and text-rendering assertions. Compatible dependencies reused, not a fresh install or rendered/production-role proof.",
     "serverResult": "Permission review receipt retains current integration Go1.27.1 race root20.275s. This assembly changes only backend build-version metadata, not handlers/schema. Actual Mongo/socket fixtures remain separately scoped; exact release CI still required.",
     "hygiene": "Affected JavaScript ESLint, deployment and isolatedQA bash-n, git diff --check passed."
   },
-  "remaining": "Accept corrective1.73 exact-source CI/public deployment (run37201238962) and merge final metadata;1.72 is independently accepted. Fetch/merge current master preserving other agents' edits, normal push and verify own exact-source CI plus independent post-terminal public version/commit/database/notes/runtime. No production grant, teleport, moderation, role edit, account deletion, mail or service change was performed.1.75 owner privacy decisions and all later roadmap gates remain separate."
+  "predecessorAcceptance": "Corrective1.73/ad59bffb CI37201238962 passed all ten jobs. Root independent post-terminal public verification at2026-10-04T12:50:43.914Z passed matching frontend/backend commit/version/readiness, login/cumulative notes and exact publisher-rewritten changed UI/bootstrap/recovery files. Acceptance receipt carried in this substantive1.74 release; earlier failed/skipped scopes remain recorded.",
+  "remaining": "Fetch/merge current master preserving other agents' edits, normal push and verify own exact-source CI plus independent post-terminal public version/commit/database/notes/runtime. No production grant, teleport, moderation, role edit, account deletion, mail or service change was performed.1.75 owner privacy decisions and all later roadmap gates remain separate."
 }
