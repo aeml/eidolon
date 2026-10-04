@@ -445,7 +445,11 @@ Notes:
   Startup phase latencies are reported; rejected/missing acknowledgements fail
   without limit bypass or retries. Socket-reader termination precedes final totals;
   targeted loopback fixtures are not a100-player capacity result. Actual mixed
-  town/casino/party/raid/event/save workloads and headroom remain required.
+  town/casino/party/raid/event/save workloads and headroom remain required. A
+  separate public Gold slot profile now approaches/enters/seats normally and
+  measures exact-revision paid/free spin and bonus acknowledgements without
+  grants, EP/VIP access or uncertain money retries; local stand-in proof does
+  not complete real-game casino, card-table or combined capacity work.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.

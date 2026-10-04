@@ -31,8 +31,9 @@ var (
 	insecure         = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
 	credentialsFile  = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
 	duration         = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
-	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, or mixed")
+	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, or casino-slots")
 	admissionTimeout = flag.Duration("admission-timeout", 15*time.Second, "maximum wait for each registration, login and own-player acknowledgement, 100ms to60s")
+	casinoBet        = flag.Int("casino-bet", 20, "casino-slots Gold stake,20 to100000 in steps of20; isolated funded accounts required")
 )
 
 type loadMetrics struct {
@@ -61,6 +62,7 @@ type Entity struct {
 	Z            float64         `json:"z"`
 	Speed        float64         `json:"speed"`
 	MoveSequence uint64          `json:"moveSequence"`
+	InstanceID   string          `json:"instanceId"`
 	State        string          `json:"state"`
 	Health       int             `json:"health"`
 	Level        int             `json:"level"`
@@ -131,8 +133,11 @@ func main() {
 	if *townMode {
 		selectedScenario = "town"
 	}
-	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" {
-		log.Fatal("-scenario must be combat, town, social, or mixed")
+	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "casino-slots" {
+		log.Fatal("-scenario must be combat, town, social, mixed, or casino-slots")
+	}
+	if selectedScenario == "casino-slots" && (*count > 32 || *casinoBet < 20 || *casinoBet > 100000 || *casinoBet%20 != 0) {
+		log.Fatal("casino-slots requires1–32 public machines and a Gold bet20–100000 in steps of20")
 	}
 	rand.Seed(time.Now().UnixNano())
 	interrupt := make(chan os.Signal, 1)
@@ -146,6 +151,9 @@ func main() {
 	creds, err := loadCredentials(*credentialsFile)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if selectedScenario == "casino-slots" && len(creds) < *count {
+		log.Fatal("casino-slots requires supplied credentials for every approved, funded test account")
 	}
 	if len(creds) < *count {
 		log.Printf("Generating %d disposable in-memory bot accounts...", *count-len(creds))
@@ -201,9 +209,29 @@ func main() {
 		coverage.clients, coverage.minFrames, coverage.minActive.Milliseconds(), coverage.maxGap.Milliseconds(), coverage.wireBytes)
 	log.Printf("Admission coverage: authenticated=%d failed=%d max_registration_ms=%d max_login_ms=%d max_join_ms=%d",
 		metrics.authenticated.Load(), metrics.admissionErrors.Load(), coverage.maxRegistration.Milliseconds(), coverage.maxLogin.Milliseconds(), coverage.maxJoin.Milliseconds())
+	casinoFailed := false
+	if selectedScenario == "casino-slots" {
+		var completed, bonuses, minimum, minimumPaid uint64
+		var failures int
+		for index, observation := range observations {
+			completed += observation.casino.spins
+			bonuses += observation.casino.bonuses
+			if index == 0 || observation.casino.spins < minimum {
+				minimum = observation.casino.spins
+			}
+			if index == 0 || observation.casino.paidSpins < minimumPaid {
+				minimumPaid = observation.casino.paidSpins
+			}
+			if observation.casino.failed {
+				failures++
+			}
+		}
+		log.Printf("Casino coverage: clients=%d min_spins=%d min_paid_spins=%d completed_spins=%d completed_bonuses=%d failed=%d", *count, minimum, minimumPaid, completed, bonuses, failures)
+		casinoFailed = failures != 0 || minimumPaid == 0
+	}
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
 		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) ||
-		metrics.authenticated.Load() != int64(*count) || metrics.admissionErrors.Load() != 0 {
+		metrics.authenticated.Load() != int64(*count) || metrics.admissionErrors.Load() != 0 || casinoFailed {
 		os.Exit(1)
 	}
 }
@@ -250,6 +278,10 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	isSelling := false
 	myID := "player-" + cred.Username
 	movement := &botMovement{}
+	var casino *casinoLoad
+	if botScenario == "casino-slots" {
+		casino = newCasinoLoad(id)
+	}
 
 	// Movement State
 	var roamTargetX, roamTargetZ float64
@@ -265,6 +297,9 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 		close(readerStopping)
 		_ = c.Close()
 		<-done // Final coverage/errors are read only after the reader has stopped.
+		if casino != nil {
+			observation.casino = casino.counts()
+		}
 	}()
 	go func() {
 		defer close(done)
@@ -327,6 +362,16 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				if !movement.updateContext(msg.Payload) {
 					metrics.decodeErrors.Add(1)
 				}
+				continue
+			}
+			if casino != nil && msg.Type == "casino_update" {
+				if !casino.receive(msg.Payload) {
+					metrics.decodeErrors.Add(1)
+				}
+				continue
+			}
+			if casino != nil && joined && (msg.Type == "casino_action_error" || msg.Type == "error") {
+				casino.reject()
 				continue
 			}
 			if !joined {
@@ -525,8 +570,14 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	for {
 		select {
 		case <-stop:
+			if casino != nil {
+				casino.awaitSettled(done, *admissionTimeout)
+			}
 			return
 		case <-done:
+			if casino != nil {
+				casino.reject()
+			}
 			return
 		case <-ticker.C:
 			stateMu.RLock()
@@ -551,6 +602,10 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				continue // Do not pretend dead actors are moving/fighting.
 			}
 			recoveryRequested = false
+			if casino != nil {
+				casino.play(c, movement, me, time.Now(), *casinoBet, *admissionTimeout)
+				continue // No combat, sale, chat, equipment or other workloads while seated.
+			}
 
 			// 1. Selling Logic
 			if selling {

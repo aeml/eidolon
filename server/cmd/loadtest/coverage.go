@@ -9,6 +9,7 @@ type loadObservation struct {
 	firstStateAt, lastStateAt             time.Time
 	maxGap                                time.Duration
 	registrationTime, loginTime, joinTime time.Duration
+	casino                                casinoLoadCounts
 }
 
 func (observation *loadObservation) state(state map[string]Entity, playerID string, now time.Time) {

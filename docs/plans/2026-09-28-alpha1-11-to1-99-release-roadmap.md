@@ -1704,6 +1704,16 @@ local actual-wire/domain-authority check proves new-context movement and stale
 context refusal, not travel/collision/encounter/load acceptance. Required representative
 workload/headroom and ordered predecessor/version/deployment gates remain open.
 
+Prepared1.79 also adds an explicit **public Gold slot workload**, separate from
+the existing combat/town/social mixed profile:1–32 supplied funded test accounts
+approach/enter/walk/sit through normal commands, use current seat/revision for
+single outstanding spins and bonus choices, and report acknowledged outcomes for
+every client. Rejected, uncertain, underfunded or EP/VIP states fail without grants,
+automatic money retries or access bypass. Focused race checks include an actual
+bot/WebSocket acknowledgement flow; real-game persistence and representative
+capacity remain unproven. Card-table, party/raid, event/save and combined workloads
+remain required, not silently replaced by this slot-only profile.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

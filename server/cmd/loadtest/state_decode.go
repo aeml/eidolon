@@ -94,6 +94,7 @@ func entityFromProto(entity *statepb.Entity) Entity {
 		Z:            float64(entity.Z),
 		Speed:        float64(entity.Speed),
 		MoveSequence: entity.MoveSequence,
+		InstanceID:   entity.InstanceId,
 		State:        entity.State,
 		Health:       int(entity.Health),
 		Level:        int(entity.Level),
