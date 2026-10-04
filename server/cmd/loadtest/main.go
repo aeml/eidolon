@@ -31,7 +31,7 @@ var (
 	insecure         = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
 	credentialsFile  = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
 	duration         = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
-	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, or casino-slots")
+	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, casino-slots, or casino-blackjack")
 	admissionTimeout = flag.Duration("admission-timeout", 15*time.Second, "maximum wait for each registration, login and own-player acknowledgement, 100ms to60s")
 	casinoBet        = flag.Int("casino-bet", 20, "casino-slots Gold stake,20 to100000 in steps of20; isolated funded accounts required")
 )
@@ -133,11 +133,14 @@ func main() {
 	if *townMode {
 		selectedScenario = "town"
 	}
-	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "casino-slots" {
-		log.Fatal("-scenario must be combat, town, social, mixed, or casino-slots")
+	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "casino-slots" && selectedScenario != "casino-blackjack" {
+		log.Fatal("-scenario must be combat, town, social, mixed, casino-slots, or casino-blackjack")
 	}
 	if selectedScenario == "casino-slots" && (*count > 32 || *casinoBet < 20 || *casinoBet > 100000 || *casinoBet%20 != 0) {
 		log.Fatal("casino-slots requires1–32 public machines and a Gold bet20–100000 in steps of20")
+	}
+	if selectedScenario == "casino-blackjack" && (*count > 24 || *casinoBet < 20 || *casinoBet > 100000 || *casinoBet%20 != 0) {
+		log.Fatal("casino-blackjack requires1–24 public seats and a Gold bet20–100000 in steps of20")
 	}
 	rand.Seed(time.Now().UnixNano())
 	interrupt := make(chan os.Signal, 1)
@@ -152,8 +155,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if selectedScenario == "casino-slots" && len(creds) < *count {
-		log.Fatal("casino-slots requires supplied credentials for every approved, funded test account")
+	if (selectedScenario == "casino-slots" || selectedScenario == "casino-blackjack") && len(creds) < *count {
+		log.Fatal("casino workloads require supplied credentials for every approved, funded test account")
 	}
 	if len(creds) < *count {
 		log.Printf("Generating %d disposable in-memory bot accounts...", *count-len(creds))
@@ -229,6 +232,23 @@ func main() {
 		log.Printf("Casino coverage: clients=%d min_spins=%d min_paid_spins=%d completed_spins=%d completed_bonuses=%d failed=%d", *count, minimum, minimumPaid, completed, bonuses, failures)
 		casinoFailed = failures != 0 || minimumPaid == 0
 	}
+	if selectedScenario == "casino-blackjack" {
+		var wagers, rounds, actions, minimum uint64
+		var failures int
+		for index, observation := range observations {
+			wagers += observation.casino.wagers
+			rounds += observation.casino.rounds
+			actions += observation.casino.actions
+			if index == 0 || observation.casino.rounds < minimum {
+				minimum = observation.casino.rounds
+			}
+			if observation.casino.failed {
+				failures++
+			}
+		}
+		log.Printf("Blackjack coverage: clients=%d accepted_wagers=%d completed_rounds=%d min_completed_rounds=%d observed_stands=%d failed=%d", *count, wagers, rounds, minimum, actions, failures)
+		casinoFailed = failures != 0 || minimum == 0
+	}
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
 		metrics.writeErrors.Load() != 0 || metrics.decodeErrors.Load() != 0 || coverage.clients != uint64(*count) ||
 		metrics.authenticated.Load() != int64(*count) || metrics.admissionErrors.Load() != 0 || casinoFailed {
@@ -281,6 +301,9 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	var casino *casinoLoad
 	if botScenario == "casino-slots" {
 		casino = newCasinoLoad(id)
+	}
+	if botScenario == "casino-blackjack" {
+		casino = newBlackjackLoad(id, myID)
 	}
 
 	// Movement State

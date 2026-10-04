@@ -1714,6 +1714,16 @@ bot/WebSocket acknowledgement flow; real-game persistence and representative
 capacity remain unproven. Card-table, party/raid, event/save and combined workloads
 remain required, not silently replaced by this slot-only profile.
 
+Prepared1.79 adds a separate **public multiplayer blackjack workload**:24 distinct
+chairs across four tables, exact owner/round wagers, advertised own-turn stands
+and fresh paid completed-hand evidence for every configured bot. Existing history,
+peer activity, unpaid hands and duplicate views do not count; late rejections and
+uncertain actions fail without retries. Pure shared-revision checks and a local
+actual bot/WebSocket flow pass, not actual game/Mongo or multiplayer capacity.
+Observed stands are not causal acceptance proof, and bounded shutdown observation
+does not certify all last funded shared rounds settled. Other card games,
+party/raid/event/save and combined workload gates remain open.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

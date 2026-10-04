@@ -6,7 +6,8 @@ target. Default-generated account credentials stay in memory; optional supplied
 credentials are read-only. The driver creates accounts and changes synthetic
 characters through normal commands, so it is not a read-only production probe.
 
-`-scenario` supports `combat`, `town`, `social`, `mixed` and `casino-slots`. Mixed
+`-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
+`casino-blackjack`. Mixed
 still assigns only combat/town/social round-robin. It does **not** exercise casino
 wagering, coordinated dungeon/raid parties or all world-event flows; those remain
 separate required workloads before the1.79 milestone can be accepted. Registration,
@@ -95,6 +96,41 @@ combat/town/social mixed profile, not this separately reported workload.
 At shutdown bots stop issuing actions, observe any one outstanding spin/bonus
 acknowledgement for at most the declared admission timeout, then close and join
 their reader. Missing final acknowledgement fails instead of silently passing.
+
+## Multiplayer blackjack workload
+
+`-scenario casino-blackjack -n 1..24 -credentials-file /absolute/test-accounts.json
+-casino-bet 20 -duration 120s` assigns six distinct chairs at each of the four
+public Gold blackjack tables. It uses the same approved funded-account,
+door/entry/walking/seating and legal Gold-stake rules as slots. Declare a duration
+that covers travel, the normal betting window, turns and settlement;120s is an
+example, not measured capacity or a promised SLA. Multiple bots at a table share
+the real table; no NPC substitutes, rigged decks, wallet grants or VIP/EP access.
+
+Bots submit one wager for the exact current round and private seat, wait for
+their own funded participant entry, then stand only when that player's advertised
+turn offers `stand`, using the current shared revision. Another player's wager,
+turn or revision advance cannot count as the bot's own accepted bet or finished
+hand. Observed stands require own-hand completion plus revision progress; the
+counter is deliberately not causal acceptance proof, because a server timeout
+can also finish a hand. Any explicit late rejection still fails the workload.
+
+Completed-round evidence requires a newly acknowledged bot wager for that exact
+round, a completed hand with a known nonnegative outcome and the bot's own paid
+participant flag. Existing history, dealt hands, unconfirmed payouts, duplicate
+snapshots and other players' outcomes do not count. `Blackjack coverage` reports
+accepted wagers, paid completed rounds, minimum paid completions across every
+client, observed stands and failures. Every bot must complete at least one newly
+funded paid round to pass. Stale/wrong-session/round/bet, uncertain acknowledgements,
+late rejections and underfunding fail without monetary retries.
+
+Shutdown observes only the last outstanding request acknowledgement within its
+bound, not an entire newly funded table round; accepted ongoing wagers remain
+under normal server timer/persistence rules. This does not prove all last rounds
+settled after disconnect, payout conservation, durability or production load.
+Focused local bot/WebSocket fixtures are not actual game/Mongo acceptance.
+Poker, roulette, baccarat, coordinated parties/raids, events/save and representative
+combined workloads remain required before the capacity milestone is complete.
 
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible

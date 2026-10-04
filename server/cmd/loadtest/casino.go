@@ -15,6 +15,8 @@ import (
 type casinoLoad struct {
 	mu                 sync.Mutex
 	table              game.CasinoTable
+	seat               int
+	blackjack          *blackjackLoad
 	view               casinoLoadView
 	pending            string
 	pendingSession     string
@@ -31,8 +33,10 @@ type casinoLoadView struct {
 	YourSeat *struct {
 		TableID   string `json:"tableId"`
 		SessionID string `json:"sessionId"`
+		Seat      int    `json:"seat"`
 	} `json:"yourSeat"`
-	Slots *struct {
+	Blackjack *blackjackLoadView `json:"blackjack"`
+	Slots     *struct {
 		Currency   string `json:"currency"`
 		Balance    int    `json:"balance"`
 		Available  bool   `json:"available"`
@@ -51,9 +55,10 @@ type casinoLoadView struct {
 }
 
 type casinoLoadCounts struct {
-	spins, bonuses uint64
-	paidSpins      uint64
-	failed         bool
+	spins, bonuses          uint64
+	paidSpins               uint64
+	failed                  bool
+	wagers, rounds, actions uint64
 }
 
 func newCasinoLoad(index int) *casinoLoad {
@@ -71,7 +76,11 @@ func newCasinoLoad(index int) *casinoLoad {
 func (b *casinoLoad) counts() casinoLoadCounts {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	return casinoLoadCounts{spins: b.spins, bonuses: b.bonuses, paidSpins: b.paidSpins, failed: b.failed}
+	counts := casinoLoadCounts{spins: b.spins, bonuses: b.bonuses, paidSpins: b.paidSpins, failed: b.failed}
+	if b.blackjack != nil {
+		counts.wagers, counts.rounds, counts.actions = b.blackjack.wagers, b.blackjack.rounds, b.blackjack.actions
+	}
+	return counts
 }
 
 func (b *casinoLoad) receive(payload json.RawMessage) bool {
@@ -84,7 +93,7 @@ func (b *casinoLoad) receive(payload json.RawMessage) bool {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	defer b.signal()
-	if view.Floor != "public" || view.YourSeat != nil && view.YourSeat.TableID != b.table.ID || view.Slots != nil && view.Slots.Currency != "gold" {
+	if view.Floor != "public" || view.YourSeat != nil && (view.YourSeat.TableID != b.table.ID || view.YourSeat.Seat != b.seat) || view.Slots != nil && view.Slots.Currency != "gold" {
 		b.failed = true // EP/VIP cannot be mislabeled as this Gold workload.
 		return true
 	}
@@ -95,6 +104,10 @@ func (b *casinoLoad) receive(payload json.RawMessage) bool {
 	b.view = view
 	if b.pending == "sit" && view.YourSeat != nil {
 		b.pending = ""
+	}
+	if b.blackjack != nil {
+		b.blackjack.receive(b)
+		return true
 	}
 	if (b.pending == "slot_spin" || b.pending == "slot_bonus") && view.YourSeat != nil && view.Slots != nil && !view.Slots.Processing && view.Slots.Available {
 		if view.YourSeat.SessionID != b.pendingSession {
@@ -130,9 +143,7 @@ func (b *casinoLoad) reject() {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	defer b.signal()
-	if b.pending != "" {
-		b.failed = true
-	} // Fixed classification only; no peer diagnostics retained.
+	b.failed = true // Even a late rejection after a shared-table update must fail; never retain peer diagnostics.
 }
 
 func (b *casinoLoad) signal() {
@@ -149,7 +160,7 @@ func (b *casinoLoad) awaitSettled(readerDone <-chan struct{}, timeout time.Durat
 	defer timer.Stop()
 	for {
 		b.mu.Lock()
-		pending := !b.failed && (b.pending == "slot_spin" || b.pending == "slot_bonus")
+		pending := !b.failed && (b.pending == "slot_spin" || b.pending == "slot_bonus" || b.pending == "bet" || b.pending == "play")
 		b.mu.Unlock()
 		if !pending {
 			return
@@ -209,12 +220,16 @@ func (b *casinoLoad) step(me Entity, now time.Time, bet int, timeout time.Durati
 		return
 	}
 	if b.view.YourSeat == nil {
-		position := b.table.Seats[0]
+		position := b.table.Seats[b.seat]
 		if math.Hypot(me.X-position.ExitX, me.Z-position.ExitZ) > 1.5 {
 			move(position.ExitX, position.ExitZ)
 			return
 		}
-		issue("sit", map[string]interface{}{"tableId": b.table.ID, "seat": 0})
+		issue("sit", map[string]interface{}{"tableId": b.table.ID, "seat": b.seat})
+		return
+	}
+	if b.blackjack != nil {
+		b.blackjack.step(b, now, bet, request, issue)
 		return
 	}
 	slots := b.view.Slots
