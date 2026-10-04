@@ -421,10 +421,11 @@ Notes:
 ## Project Status
 
 - Current source version: `Alpha 1.74.0`. This isolated, unpublished
-  1.78 candidate integrates prepared 1.72 security and 1.73 valuable-operation
+  1.78 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
-  credential/recovery JSON exclusions. Retention, owner export/removal and notices
+  credential/recovery JSON exclusions and an unexposed owner-progress serializer.
+  Retention, owner export/removal and notices
   still need policy approval and implementation. Prepared persistence scaling
   advances to schema24 with ordered ground/casino checkpoints, paged startup
   queries, selected-character reads and bounded journal-lock shards.
@@ -433,25 +434,26 @@ Notes:
   index, and enable the opt-in checkpoint/paging tests in disposable CI.
   These are storage checks, not production acceptance or player capacity.
   [Prepared operations integration](docs/plans/2026-10-04-release1-78-current-integration-checks.json)
-  now carries bounded independent monitoring, opt-in operator notifications,
+  now carries bounded independent monitoring with optional pressure budgets,
+  opt-in operator notifications,
   fixed save/wallet diagnostics and an audited manual Administration view.
   Operational emails/services are not enabled; thresholds, retention,
   ownership and operating budgets remain explicit gates.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.
-  1.72 is independently accepted; this candidate must not deploy as1.74 or
-  before1.73/1.74/1.75/1.76/1.77 acceptance.
+  1.73 is independently accepted; this candidate must not deploy as1.74 or
+  before1.74/1.75/1.76/1.77 acceptance.
   Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.72.0`, exact
-  1cf51d22ee16daa62406aeb9c1ecba92b66895e0, successful CI37196079883 (all ten jobs).
+- Last independently verified live release: `Alpha 1.73.0`, exact
+  ad59bffbeb0f471d27da125f7bc5c0c1b3d95619, successful CI37201238962 (all ten jobs).
   Post-terminal public IPv4 frontend/backend identity, database readiness, login
-  version, notes, movement and four recovery/analytics runtime files match the accepted source.
-  [Public acceptance](docs/plans/2026-10-04-release1-72-public-acceptance.json)
+  version, cumulative notes, both changed UI modules and bootstrap/recovery runtime files match the accepted source.
+  [Public acceptance](docs/plans/2026-10-04-release1-73-public-acceptance.json)
   lists passed and skipped checks; it does not claim fresh animation/GPU coverage
   or actual inbox delivery. The [earlier recovery acceptance](docs/plans/2026-10-04-release1-71-1-public-acceptance.json),1.70.2 maintenance and Forge receipts remain historical.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
@@ -469,7 +471,8 @@ Notes:
   Accepted 1.70 adds reliable casino connection feedback and an isolated
   QA-artifact privacy correction. Accepted1.71 provides account security and
   Postmark recovery; accepted1.72 provides authoritative movement/living combat
-  and bounded protocol/work admission. Broader privacy and capacity work remain staged.
+  and bounded protocol/work admission. Accepted1.73 adds durable valuable-operation
+  recovery and earned reward custody through schema22. Broader privacy and capacity work remain staged.
   Class rules, faster dual-wield Rogue attacks, campaign rewards and open-alpha
   access are unchanged. Modern-art approval, broader crowd performance,
   physical-phone checks, human pacing and commercial decisions remain separate.
