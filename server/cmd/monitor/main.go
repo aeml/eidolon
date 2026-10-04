@@ -1,4 +1,4 @@
-// monitor emits JSON incident signals; it does not install itself or send mail.
+// monitor emits JSON incident signals with an explicitly opt-in alert adapter.
 package main
 
 import (
@@ -23,6 +23,9 @@ func run(ctx context.Context, args []string, output io.Writer) error {
 	failures := flags.Int("failure-threshold", 0, "required consecutive failures, 1 to 60")
 	recoveries := flags.Int("recovery-threshold", 0, "required consecutive successes, 1 to 60")
 	cooldown := flags.Duration("notice-cooldown", 0, "required, 1m to 24h")
+	postmarkAlerts := flags.Bool("postmark-alerts", false, "explicitly enable operator emails")
+	mailTimeout := flags.Duration("mail-timeout", 0, "required with alerts, positive and at most10s")
+	mailMinInterval := flags.Duration("mail-min-interval", 0, "required with alerts,1m to24h between all attempts")
 	if flags.Parse(args) != nil || flags.NArg() != 0 {
 		return fmt.Errorf("invalid monitor arguments; see server/cmd/monitor/README.md")
 	}
@@ -34,7 +37,18 @@ func run(ctx context.Context, args []string, output io.Writer) error {
 	if err != nil {
 		return err
 	}
-	return operations.Monitor(ctx, probe, detector, *interval, output)
+	var notifier operations.Notifier
+	if *postmarkAlerts {
+		notifier, err = operations.NewPostmarkNotifier(operations.PostmarkConfig{Token: os.Getenv("POSTMARK_SERVER_TOKEN"),
+			From: os.Getenv("POSTMARK_FROM_EMAIL"), Stream: os.Getenv("POSTMARK_MESSAGE_STREAM"),
+			Recipients: os.Getenv("ADMIN_NOTIFICATION_EMAILS"), Timeout: *mailTimeout, MinInterval: *mailMinInterval})
+		if err != nil {
+			return err
+		}
+	} else if *mailTimeout != 0 || *mailMinInterval != 0 {
+		return fmt.Errorf("mail settings require explicit postmark-alerts opt-in")
+	}
+	return operations.MonitorWithNotifier(ctx, probe, detector, *interval, output, notifier)
 }
 
 func main() {
