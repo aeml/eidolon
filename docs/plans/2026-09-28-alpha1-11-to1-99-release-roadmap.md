@@ -510,6 +510,17 @@ checks remain intact, with focused race coverage passing in7.251 seconds.
 Authenticated actors are retained on replaced connections without attributing a
 changed username to the original requester. No production sanction was applied;
 the prepared1.74 safety work remains unpublished.
+The [prepared1.75 data inventory](2026-10-04-release1-75-data-inventory.json)
+maps all19 registered Mongo collections plus RAM session/chat, private journals,
+backups/logs, browser storage, aggregate economy summaries, third-party analytics,
+the optional local timer and QA artifacts. The collection list is checked against
+current source and all48 source references exist. Focused owner-state/target/log
+redaction race checks and25 timer/analytics mock tests pass. Existing Google
+collection is explicitly separate from the user-approved local-only timer;
+provider settings and consent are not claimed verified. Retention, bounded owner
+export, coordinated removal, backup resurrection handling and notices remain
+explicit approval/implementation gates. No collection policy, production data or
+access changed; this is preparation, not1.75 completion or publication.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
