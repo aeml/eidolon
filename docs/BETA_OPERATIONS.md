@@ -51,9 +51,13 @@ and reset, generic asynchronous recovery requests, bounded/shared admission and
 session invalidation only after proved credential mutation. Two bounded mail
 workers join shutdown; reset notifications contain no password. Partial mail
 delivery is not retried automatically or represented as guaranteed inbox delivery.
-Login/settings UI, pre-analytics link handoff and connected acceptance remain to
-be integrated; do not deploy this partial candidate. The old form alone does not
-provide recovery.
+Login/settings UI and the pre-analytics private-link handoff are integrated in
+the assembled1.71.0 candidate. Three native browser/bootstrap checks and a real
+disposable-Mongo/socket test verify the bounded explicit-action flow, including
+link durability across restart and old-session revocation. The browser sockets
+are mocked; the separate connected proof uses real game processes and a local
+TLS Postmark stand-in. Neither proves actual inbox delivery. Exact-source CI and
+independent public acceptance remain required before calling1.71 live.
 Production remains Alpha 1.70.2; maintenance acceptance is recorded separately.
 See [prepared email checks](plans/2026-10-04-release1-71-email-recovery-checks.json).
 Administrators gain no arbitrary reset, ownership or password-reading action.
