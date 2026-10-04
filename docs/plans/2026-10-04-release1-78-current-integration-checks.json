@@ -30,5 +30,18 @@
     "AdminUI.js": "673e3d9f9f5b5089600eb13446cee27d2cc7578589bb66b4c494a82b098b09af",
     "AdminServiceDiagnostics.js": "a78f2bfbb98e7779fb9938b20eb666e745fdbdc65edca8a8bf5326b63de47648"
   },
-  "remaining": "Ordered1.73–1.77 acceptance; complete required pressure/growth/domain signals and metrics/alerts/log retention, explicitly agreed thresholds/operator/hosting budgets, approved independent supervisor/restart/output policy and actual provider/inbox verification. No capacity or financial-ledger claim from counters. Assemble own1.78 version/cumulative notes, fetch/merge remote and verify exact-source CI/public deployment before publishing. Privacy/request/retention decisions and later full-roadmap/human-art/playtest/launch gates remain open."
+  "pressureFollowUp": {
+    "base": "900e80247aeede723064b8f42804bc377104708a current-source operations integration",
+    "scope": "Optional operator-selected external monitor budgets for whole-request latency, current live heap, goroutines, either broadcast queue utilization and sum of six measured active-call gauges. Every limit defaults to zero/off; no production thresholds, service or mail enabled. Sustained pressure uses the existing incident debounce/cooldown/recovery path and fixed secret-free causes. Missing required counters report metrics_unavailable rather than idle. Database/HTTP/identity/timeout/cancellation failures keep precedence; lifetime failure/max-duration counters are not recovery-capable pressure triggers.",
+    "checks": "Go1.27.1 race/p2/GOMAXPROCS2 operations and monitor packages passed3.347s/7.025s. Actual loopback queue saturation over four polls produced exactly a debounced queue_budget outage and sustained ready recovery without peer-text leakage or external provider mail. Boundary tests cover disabled controls, exact/above maxima, both queues, small-capacity rounding, missing/partial gauges and uint64 overflow. Added actual slow response-body latency test then ran only all TestPressure cases: operations1.074s passed. Invalid/overflowing/negative CLI settings reject generically before polling; valid explicit controls honor pre-cancelled shutdown. No long campaign, native browser or capacity test repeated.",
+    "hashes": {
+      "pressure.go": "81801199aaa0e605bab099c9e85cb4a29f0d334ba6f105c885dd807a56e5b24c",
+      "pressure_test.go": "f179b53d91b512291dde2fc2b75da5f57aedec37229e25b1eeb639feca4dda51",
+      "readiness.go": "840293620270be8835aba1ea7d9231db7eefcbdba3e9049da9998d0da4d47c87",
+      "postmark.go": "6d331f71ce3ba2ed2daa815efc2817a15f9d97e9b7d3b8f0022560be79b9ef0a",
+      "monitor/main.go": "e2a48ddcadd32d33ad97943ae5e5e258c08fdbc7939b8fa4e76d939103eee295",
+      "monitor/main_test.go": "209a94a3fd6719d291713524ec1d0687916b0ad9c18c0fe19f1beb5d9500528a"
+    }
+  },
+  "remaining": "Ordered1.74–1.77 acceptance; remaining growth/storage/domain/error-rate signals and log retention, explicitly agreed thresholds/operator/hosting budgets, approved independent supervisor/restart/output policy and actual provider/inbox verification. Optional pressure controls do not choose those policies or establish capacity. No financial-ledger claim from counters. Assemble own1.78 version/cumulative notes, fetch/merge remote and verify exact-source CI/public deployment before publishing. Privacy/request/retention decisions and later full-roadmap/human-art/playtest/launch gates remain open."
 }

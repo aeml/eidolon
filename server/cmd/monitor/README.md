@@ -18,6 +18,28 @@ polling is silent. No URLs, arbitrary peer/error text, account records or mail
 credentials are output. SIGINT/SIGTERM stop polling; cancellation is not an
 outage. An unavailable output sink exits with a generic error.
 
+## Optional pressure budgets
+
+All pressure checks are **disabled by default**. An operator can explicitly set
+`-max-probe-latency` (positive, no greater than the request timeout),
+`-max-heap-bytes`, `-max-goroutines`, `-max-inflight-calls`, or
+`-queue-alert-percent` (1–100). Zero disables the corresponding check. These
+are external alert controls, not limits enforced on the game or capacity claims.
+Choose them from representative measurements and an agreed operating budget;
+this preparation does not choose thresholds or enable a production monitor.
+
+Latency includes the whole request and response-body read. Heap, goroutine and
+total active-call checks trigger **above** their maximum; either broadcast queue
+triggers **at or above** its chosen percentage (rounded up to a whole entry).
+Active calls sum the six instrumented groups, so nested operations can count
+more than once; this is not a player, transaction, waiter or entitlement count.
+Missing required metrics or zero queue capacities report `metrics_unavailable`,
+never a measured idle/healthy result. Pressure notices use the same consecutive
+failure/recovery and cooldown settings as readiness incidents. Existing HTTP,
+database, identity, timeout and cancellation failures retain precedence. Historical
+failure totals and lifetime latency maxima cannot establish recovery and do not
+trigger these pressure alerts. Default probes remain compatible with older servers.
+
 Newer servers also expose optional fixed `operational` counts for character
 journal writes, database commits, journal cleanup, whole recovery passes and
 Gold/EP casino transfer calls. The health path reads only an in-memory snapshot,
