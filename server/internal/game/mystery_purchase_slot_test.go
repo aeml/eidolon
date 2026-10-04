@@ -38,3 +38,18 @@ func TestMysteryPurchaseSlotCannotPurchaseForgeMaterialsOrOtherPools(t *testing.
 		})
 	}
 }
+
+func TestMysteryPurchaseSlotRejectsInvalidLevelWithoutChangingSavedState(t *testing.T) {
+	for _, level := range []int{-1, 0, MaxPlayerLevel + 1, int(^uint(0) >> 1)} {
+		w := newTestWorld()
+		t.Cleanup(w.StopBackground)
+		p := newTestPlayer("mystery-invalid-level", "Fighter")
+		p.Level, p.Gold = level, 3500
+		p.Inventory = make([]Item, MaxInventorySize)
+		before := append([]Item(nil), p.Inventory...)
+		w.AddEntity(p)
+		if _, bought := w.PerformBuyGamble(p.ID, "mainHand"); bought || p.Level != level || p.Gold != 3500 || !reflect.DeepEqual(before, p.Inventory) {
+			t.Fatal("invalid saved level changed wallet, inventory or level")
+		}
+	}
+}

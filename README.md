@@ -420,7 +420,7 @@ Notes:
 
 ## Project Status
 
-- Current inherited source version: `Alpha 1.71.0`. This isolated, unpublished
+- Current inherited source version: `Alpha 1.71.1`. This isolated, unpublished
   1.73 candidate integrates prepared 1.72 security and 1.73 valuable-operation
   writers through schema22, including the narrow administrator authority fixes
   brought forward into1.72. Later schema23–24 checkpoints, broader privacy/admin
