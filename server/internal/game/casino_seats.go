@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"slices"
 	"sort"
 	"time"
 )
@@ -39,7 +40,31 @@ type CasinoTable struct {
 	MinimumPlayers int                  `json:"minimumPlayers"`
 }
 
+// Geometry/rules are fixed for this binary. Keep the canonical catalogue
+// private and return detached seat slices so callers cannot mutate authority.
+var casinoTableCatalog = buildCasinoTables()
+var casinoTableIndex = func() map[string]CasinoTable {
+	index := make(map[string]CasinoTable, len(casinoTableCatalog))
+	for _, table := range casinoTableCatalog {
+		index[table.ID] = table
+	}
+	return index
+}()
+
+func cloneCasinoTable(table CasinoTable) CasinoTable {
+	table.Seats = slices.Clone(table.Seats)
+	return table
+}
+
 func CasinoTables() []CasinoTable {
+	tables := make([]CasinoTable, len(casinoTableCatalog))
+	for i, table := range casinoTableCatalog {
+		tables[i] = cloneCasinoTable(table)
+	}
+	return tables
+}
+
+func buildCasinoTables() []CasinoTable {
 	var tables []CasinoTable
 	for _, floor := range []string{"public", "vip"} {
 		y, currency := 0.0, "gold"
@@ -110,35 +135,27 @@ func CasinoTables() []CasinoTable {
 // owes its original outcomes. Keep its recovery/timer path after expansion.
 func CasinoBlackjackRecoveryTables() []CasinoTable {
 	var tables []CasinoTable
-	for _, table := range CasinoTables() {
+	for _, table := range casinoTableCatalog {
 		if table.Game == "blackjack" {
-			tables = append(tables, table)
+			tables = append(tables, cloneCasinoTable(table))
 		}
 	}
 	return append(tables, CasinoTable{ID: "public-blackjack-water", Game: "blackjack", Floor: "public", Currency: "gold"})
 }
 
 func CasinoTableByID(id string) (CasinoTable, bool) {
-	for _, table := range CasinoTables() {
-		if table.ID == id {
-			return table, true
-		}
-	}
-	return CasinoTable{}, false
+	table, ok := casinoTableIndex[id]
+	return cloneCasinoTable(table), ok
 }
 
 func IsCasinoPokerTable(id string) bool {
-	table, ok := CasinoTableByID(id)
+	table, ok := casinoTableIndex[id]
 	return ok && table.Game == "poker"
 }
 
 func IsCasinoBlackjackTable(id string) bool {
-	for _, table := range CasinoTables() {
-		if table.ID == id {
-			return table.Game == "blackjack"
-		}
-	}
-	return false
+	table, ok := casinoTableIndex[id]
+	return ok && table.Game == "blackjack"
 }
 
 // Seat claims live on the character, not in a second ownership map. World.Mu

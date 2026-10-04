@@ -420,24 +420,25 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.2`. This narrow administration follow-up
-  defaults online/history views to real players, retaining All/Test selection,
-  and adds UTC-day unique login and recorded closed-session duration totals.
-  It does not estimate legacy/open durations or measure active-play/AFK time.
-  Existing selling/error fixes, accounts, currencies, administrator permissions,
-  retention and schema22 remain unchanged. Later schema23–24/privacy/operations/capacity candidates
+- Current source version: `Alpha 1.74.3`. This narrow casino performance follow-up
+  responds to actors first, limits game-action notifications to their table,
+  builds only the seated game's view and indexes immutable furniture geometry.
+  Shared physical presence, saved settlements, wagers, timers and payouts remain
+  unchanged. Existing real-player administration, selling/error fixes, accounts,
+  currencies, permissions, retention and schema22 remain unchanged. Later
+  schema23–24/privacy/operations/capacity candidates and load-test driver changes
   are excluded. Login version and cumulative notes are assembled; exact-source
   CI/public proof remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.73.0`, exact
-  ad59bffbeb0f471d27da125f7bc5c0c1b3d95619, successful CI37201238962 (all ten jobs).
-  Post-terminal public IPv4 frontend/backend identity, database readiness, login
-  version, cumulative notes, both changed UI modules and bootstrap/recovery runtime files match the accepted source.
-  [Public acceptance](docs/plans/2026-10-04-release1-73-public-acceptance.json)
-  lists passed and skipped checks; it does not claim fresh animation/GPU coverage
-  or actual inbox delivery. The [earlier recovery acceptance](docs/plans/2026-10-04-release1-71-1-public-acceptance.json),1.70.2 maintenance and Forge receipts remain historical.
+- Last independently verified live release: `Alpha 1.74.2`, exact
+  c0ea6ec48b13eb4fa2a077875639a3f5ebe8ff16, successful CI37235677126 (all ten jobs).
+  Post-terminal public IPv4 frontend/backend identities and database readiness
+  agree; public AdminUI matches the exact source after publisher import rewriting.
+  This verifies the requested real/test filters and recorded-session UI deployment,
+  not private real-player history, active-play measurement or fresh animation QA.
+  Earlier release/recovery,1.70.2 maintenance and Forge receipts retain their scopes.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.

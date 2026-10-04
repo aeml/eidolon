@@ -111,6 +111,11 @@ func handleMsgCasino(client *Client, message Message) {
 		return
 	}
 	sendMovementContext(client)
+	// Acknowledge the actor before peer notifications. A game action affects
+	// its own table, not every unrelated machine/table on the gaming floor.
+	// Seating/floor/ready changes still refresh the complete physical audience.
+	presence := sendCasinoState(client)
+	peers, scoped := casinoActionPeers(request.Action, presence)
 	// Do not hold the session map while obtaining World.Mu for presence.
 	sessionsMu.Lock()
 	clients := make([]*Client, 0, len(activeSessions))
@@ -119,16 +124,48 @@ func handleMsgCasino(client *Client, message Message) {
 	}
 	sessionsMu.Unlock()
 	for _, observer := range clients {
+		if observer == client || scoped && !peers[observer.playerID] {
+			continue
+		}
 		player := world.GetEntityCopy(observer.playerID)
-		if observer == client || (player != nil && player.InstanceID == game.CasinoInstanceID) {
+		if player != nil && player.InstanceID == game.CasinoInstanceID {
 			sendCasinoState(observer)
 		}
 	}
 }
 
-func sendCasinoState(client *Client) {
+// The detached presence can also select same-table peers without another
+// world scan. It contains no peer seat/session bearer identities.
+func sendCasinoState(client *Client) game.CasinoPresence {
 	if client == nil || client.playerID == "" || world == nil {
-		return
+		return game.CasinoPresence{}
+	}
+	now := time.Now()
+	presence := world.CasinoPresenceFor(client.playerID, now)
+	// The client displays only the seated game's view. Reading unrelated games
+	// would wait on their durable settlement locks before acknowledging this
+	// player, even though their tables cannot affect this response.
+	blackjack := blackjackTableView{ServerNow: now, Players: []blackjackParticipant{}}
+	poker := pokerTableView{ServerNow: now, Players: []pokerParticipantView{}}
+	var slots *slotMachineView
+	var house *houseTableView
+	if presence.YourSeat != nil {
+		for _, table := range presence.Tables {
+			if table.ID != presence.YourSeat.TableID {
+				continue
+			}
+			switch table.Game {
+			case "blackjack":
+				blackjack = blackjackViewFor(client.playerID)
+			case "poker":
+				poker = pokerViewFor(client.playerID)
+			case "slots":
+				slots = slotViewFor(client.playerID)
+			case "roulette", "baccarat":
+				house = houseViewFor(client.playerID)
+			}
+			break
+		}
 	}
 	encoded, _ := json.Marshal(struct {
 		game.CasinoPresence
@@ -138,8 +175,26 @@ func sendCasinoState(client *Client) {
 		Slots     *slotMachineView   `json:"slots,omitempty"`
 		Poker     pokerTableView     `json:"poker"`
 		House     *houseTableView    `json:"house,omitempty"`
-	}{CasinoPresence: world.CasinoPresenceFor(client.playerID, time.Now()), Floor: casinoFloorFor(client.playerID), VIP: casinoVIPFor(client.playerID), Blackjack: blackjackViewFor(client.playerID), Slots: slotViewFor(client.playerID), Poker: pokerViewFor(client.playerID), House: houseViewFor(client.playerID)})
+	}{CasinoPresence: presence, Floor: casinoFloorFor(client.playerID), VIP: casinoVIPFor(client.playerID), Blackjack: blackjack, Slots: slots, Poker: poker, House: house})
 	client.sendSafe(createMessage("casino_update", encoded))
+	return presence
+}
+
+func casinoActionPeers(action string, presence game.CasinoPresence) (map[string]bool, bool) {
+	switch action {
+	case "bet", "play", "slot_spin", "slot_bonus", "poker_buy_in", "poker_play", "house_bet":
+		peers := map[string]bool{}
+		if presence.YourSeat != nil {
+			for _, occupant := range presence.Occupants {
+				if occupant.Connected && occupant.TableID == presence.YourSeat.TableID {
+					peers[occupant.PlayerID] = true
+				}
+			}
+		}
+		return peers, true
+	default:
+		return nil, false // Physical presence, readiness and floor changes.
+	}
 }
 
 func casinoFloorFor(playerID string) string {

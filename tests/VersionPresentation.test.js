@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.74.2';
+const currentVersion = '1.74.3';
+
+test('1.74.3 explains scoped casino performance without changing economic authority', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.74.3"'), previous = html.indexOf('data-version="1.74.2"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['acting player first', 'same table', 'shared seats', 'settlement locks',
+        'detached copies', 'payouts are unchanged', 'No account wipe', 'schema migration',
+        'unfinished 1.75–1.79', '100-player launch capacity', 'full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.74.2 explains real-player filtering and honest daily session totals', () => {
     const html = fs.readFileSync('index.html', 'utf8');

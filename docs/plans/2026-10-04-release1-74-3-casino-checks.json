@@ -1,0 +1,20 @@
+{
+  "release": "Alpha 1.74.3",
+  "status": "LOCAL_CHECKS_PASSED_PUBLICATION_PENDING",
+  "scope": "Narrow maintenance from freshly fetched origin/master c0ea6ec48b13eb4fa2a077875639a3f5ebe8ff16. Carry only casino handler notification/view code, immutable indexed furniture catalogue, focused tests and release metadata/notes. Preserve schema22, website changes, accounts, administrator activity, settlement rules, wagers, payouts, currencies, admission limits and open-alpha access. Exclude prepared schema23–24, privacy/operations/capacity services and all load-driver changes.",
+  "finding": "Every successful action rebuilt every casino player's view; each view also acquired unrelated game-family settlement mutexes. One ID lookup rebuilt every table/machine. Scoped actor-first/table-peer responses, seated-game-only views and detached indexed catalogue remove confirmed unnecessary dependencies/work without replacing valuable-operation authority.",
+  "checks": {
+    "native": "Initial maintenance root compile found a helper available only in the future test branch. Made the regression fixture self-contained. Exact narrow-source casino own-view/audience/physical-handler/rejection and pending-account recovery-gate race tests then passed1.280s. Catalogue/seat/presence/readiness/expansion/floor race tests passed1.134s. Authored geometry/order/ID/currency equality, unknown/retired-active refusal, isolated returned copies and concurrent caller mutation covered.",
+    "client": "Shared already-installed dependencies from the prior maintenance worktree; package-lock changes only root version strings. Initial combined CasinoController/VersionPresentation run passed392 of393 checks, failing on missed Docker Compose version default. Corrected default; all355 VersionPresentation checks then passed2.257s. All38 unchanged CasinoController checks passed in the first run. Affected test lint and diff check passed. No gameplay/rendering claim from metadata tests.",
+    "comparison": "Prepared schema24 normal-server comparison passed actual60-client mixed game/party/state/save criteria in176.78s. Subsequent prepared100-client comparison had no casino timeouts or read/write/decode errors, all100 admitted, and all slots/house/poker participants paid; two blackjack rejections still failed acceptance215.60s and root save gate was not reached. Both disposable Mongo fixtures removed. These are evidence for shared checked production code, not exact-schema22 capacity certification, per-player settlement conservation/restart or milestone1.79 acceptance.",
+    "benchmark": "Focused200ms host microbenchmarks: existing slot ID lookup78395B/605 allocations to48B/1; paired game-kind lookup156791B/1210 to0B/0. Returned catalogue/seat geometry remains detached. No claim this alone measures production CPU or latency/headroom."
+  },
+  "sha256": {
+    "server/casino_handlers.go": "34b9ce9d36bafc35ed4b1dfc7c71b5d21f14166097d5ace281a47ed4ddee9a0c",
+    "server/casino_notification_test.go": "2b9a93a3b382104ad0c2bfe7c8707fa412c9a3c9b3d235b579003d983bca2056",
+    "server/internal/game/casino_seats.go": "4a985532aa90ab742ae2f03f3bfdea29bcb6b82d923d8db33bff6782953691ec",
+    "server/internal/game/casino_catalog_test.go": "c3dd51cfd752d7080120c8cd24410adf71133a012b488bdf3be924951e03aeb7",
+    "server/internal/game/casino_catalog_benchmark_test.go": "b07825185ecbf1e0820e8767b946295b2475541b72b5ffe8daa7e9aa3aadf9dd"
+  },
+  "publication": "Not accepted until exact-source CI/deployment terminal success and public frontend/backend identity/readiness/notes checks. Use Luna for deployment monitoring, not root tick-by-tick polling. No fresh campaign/soak replay. Broader roadmap stays active; privacy/ops owner decisions and remaining encounter/capacity gates are not waived."
+}
