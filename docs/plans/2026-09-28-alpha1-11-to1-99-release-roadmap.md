@@ -30,6 +30,14 @@ Admin1.74.2 is now live with successful terminal CI and matching public identity
 now records its optional session-start timestamps and ephemeral daily totals;
 existing retention and all unresolved owner privacy decisions are unchanged.
 
+Prepared1.75 also now includes an internal, uncalled owner account-profile
+serializer alongside the character snapshot. Restricted projection and explicit
+output fields distinguish submitted and verified recovery addresses, omit private
+credentials/staff records, reject mismatched owner identities and enforce a
+response-size budget. Focused synthetic race checks passed1.043s; no export
+endpoint, delivery or removal is enabled. Owner policy and bounded authorized
+readers still gate publication; this is not a full personal-data export.
+
 Prepared1.76 [session precision validation](2026-10-04-release1-76-session-precision-checks.json)
 rejects sub-millisecond optional audit session-start times before journaling, so
 Mongo date truncation cannot create an immutable-replay mismatch. The new

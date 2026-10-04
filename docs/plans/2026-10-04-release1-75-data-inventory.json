@@ -279,6 +279,19 @@
     "testSHA256": "a7391c4c93ca7477f71e7ed036bca367710f2eab81726881c403298bf954dbeb",
     "remaining": "Owner request/delivery/retention/analytics choices, account and approved shared-data coverage, authorized bounded reader/API/UI, no unauthorized third-party output, actual delivery/access tests and reviewed notice. All1.75 and full-goal gates remain open."
   },
+  "preparedOwnerProfileSnapshot": {
+    "sources": ["server/internal/database/owner_profile_snapshot.go", "server/internal/database/owner_profile_snapshot_test.go"],
+    "scope": "Internal currently uncalled account-profile serializer complements the character progression snapshot. A restricted single-account BSON projection admits only username, public name, submitted registration email, creation timestamp and verified recovery address/time. Explicit versioned output separates submitted/unverified address from verified recovery provenance. Missing legacy creation and unverified/invalid recovery addresses are not invented. No database query, endpoint, UI, ownership verification or export delivery is enabled.",
+    "authority": "Caller must obtain one detached projection through a proved owner identity; serializer rejects mismatched or missing owner name. This extra identity fence is not authentication proof. Fields must come from one account query, never an unrelated supplied recovery address. No password/hash/token/challenge, characters, roles/staff decisions or other account data enters this output. Source projection fields all exclude accidental JSON serialization.",
+    "bounds": "Positive caller response budget required; exact-sized output accepted, exhausted/invalid budget returns nil output and fixed error. Like existing progression serializer, output-size enforcement is not an input/allocation or query-work bound. Bounded reader/admission and authorized delivery remain required.",
+    "command": "env GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -race -p2 ./internal/database -run '^Test(OwnerProfileSnapshot|OwnerProgressSnapshot|AccountJSON|RecoveryAccountJSON)' -count=1 -timeout=30s",
+    "result": "Passed1.043s. Synthetic account-shaped BSON includes sentinel private credentials, recovery challenges, staff records and characters; restricted projection and JSON omit all sentinels. Tests preserve owned fields, escaped display text, UTC/version, exact and insufficient budgets, identity rejection, source non-mutation, deterministic output and omitted unverified/legacy values. No actual Mongo, provider, authenticated access or delivery proof claimed.",
+    "sha256": {
+      "server/internal/database/owner_profile_snapshot.go": "103d07ca2a028cd083d792a85b560df26b9ee9bdfce17b0ec742d48822457543",
+      "server/internal/database/owner_profile_snapshot_test.go": "9f15f80c3d66b1350eac981e1c783548fa87d2f1682182249c781bd6d9d381e3"
+    },
+    "remaining": "Owner export/deletion request policy, authorized bounded readers/delivery, approved shared-record and relationship/report coverage, coordinated removal and backup handling, public notice and targeted access tests. Not a full personal-data export, backup or1.75 publication."
+  },
   "sessionSourceFollowUp": {
     "change": "Explicitly reference both the new population/daily-summary helper and existing connection-activity recorder alongside admin_activity. Optional stored session-start and bounded ephemeral daily counts are described in the collection entry; no new analytics collection, backfill or retention policy.",
     "validation": "Node24 source-reference walk:19 inventory collection entries with no duplicate names; all55 unique referenced source paths exist. JSON parses and diff check passes. This validates current references, not renewed production/provider/legal inspection or new Mongo/serialization evidence. Earlier51/53-source receipts retain their historical scopes."
