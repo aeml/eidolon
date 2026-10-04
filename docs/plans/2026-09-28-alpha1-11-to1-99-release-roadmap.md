@@ -1868,9 +1868,17 @@ errors. A focused regression reproduces the event controller's all-member pause
 during town recovery and dead-leader target stall. The corrected event-only
 controller keeps live combat/healing and hands targeting to a living nearby
 member; the Wizard fights before ward duty and defends if alone. Participation/
-completion gates are unchanged. Focused race1.378s/full driver race17.790s pass,
-but a corrected actual encounter/save is still missing. Failed owned synthetic
-data was removed; original artifacts retained. Existing raid/dungeon/casino
+completion gates are unchanged. Focused race1.378s/full driver race17.790s pass;
+subsequent returning-leader range regression is corrected (focused race1.400s).
+The corrected real20:00UTC Root encounter/save now **passes225.27s**: all four
+normal waves/completion/town exits, minimum32 own combat impacts, independent
+saved progression/Gold and preserved class/equipment/bag sentinel/EP. Eighteen
+normal recoveries acknowledged; no read/write/decode/admission errors or OOM;
+whole fixture peak576675840B. Parent retrieved definitive same-session PASS,
+verified ownership/final counters and removed the corrected synthetic fixture.
+Failed original evidence/artifacts remain retained. This proves one earned
+four-class Root encounter, not all realms,100-player/headroom, full role/telegraph
+balance, renderer/Internet, restart or human campaign pacing. Existing raid/dungeon/casino
 receipts retain their scope and are not rerun. Default mixed/combined unchanged.
 
 October4 live availability incident remains open: the Alpha1.74 backend crashed

@@ -484,8 +484,16 @@ wave/completion/town-exit gates are unchanged. Focused race checks pass1.378s an
 the full driver race suite17.790s. A subsequent focused returning-leader
 regression failed0.011s before aligning target delegation with the40-unit active
 combat range; all event race checks then pass1.400s. The65-unit physical
-participation range is unchanged. **The corrected actual run started at the real
-October4 20:00UTC Root window; terminal encounter/save evidence remains pending**.
+participation range is unchanged. **The corrected actual run passed225.27s at
+the real October4 20:00UTC Root window**, ending early after all-four normal
+completion/town exits and independently saved progression/Gold with unchanged
+class/equipment/EP and protected bag sentinel. All members observed all four
+waves and had positive own combat impacts (minimum32). Eighteen normal
+recoveries were acknowledged; no read/write/decode/admission errors or OOM.
+Whole fixture peak576675840B is not game-heap/headroom evidence. The corrected
+fixture/synthetic data is removed and exact binaries retained. One earned
+four-player Root encounter, not other realms,100-player capacity, unique kill
+attribution, full healer/telegraph balance, renderer/Internet or campaign pacing.
 The failed fixture/synthetic data was removed and original binaries retained.
 Post-failure saves showed XP1190 for each class, not successful town exits or
 independently checked gear/reward preservation. Do not reclassify the earlier
