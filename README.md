@@ -420,14 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.71.0`, assembled for publication with password changes, session/token safeguards and explicit verified-email recovery through Postmark. Verify an address in signed-in Account help or Settings before using Forgot your password on the login screen. Opening a link alone never changes credentials. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json) distinguish synthetic connected proof from actual inbox delivery. This branch retains schema17 and excludes later unpublished schema24 writers. Exact-source CI/public acceptance is still required; broader security/valuable-operation, owner/commercial and human gates stay open. This is not a capacity promise, payment launch or closed-beta transition.
-- Last independently verified live release: `Alpha 1.70.2`, exact
-  ddfa60e3b2bd20b08a175de124eb00fae66dc299, successful CI37175484045 (all ten jobs,
-  including both deploys and live QA). Independent public IPv4 frontend/backend
-  identities, database readiness, login version, notes and runtime release query
-  match. [Maintenance acceptance](docs/plans/2026-10-04-release1-77-network-probe-checks.json)
-  preserves its scope; the [Forge acceptance](docs/plans/2026-10-03-release1-70-2-forge-checks.json)
-  remains historical. Prepared1.71 is not accepted live merely by its assembly.
+- Current source version: `Alpha 1.71.0`, accepted live with password changes, session/token safeguards and explicit verified-email recovery through Postmark. Verify an address in signed-in Account help or Settings before using Forgot your password on the login screen. Opening a link alone never changes credentials. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json) distinguish synthetic connected proof from actual inbox delivery, which still needs an owner check. This branch retains schema17 and excludes later unpublished schema24 writers. Broader security/valuable-operation, owner/commercial and human gates stay open. This is not a capacity promise, payment launch or closed-beta transition.
+- Last independently verified live release: `Alpha 1.71.0`, exact
+  4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e, successful CI37182320668 (all ten jobs).
+  Post-terminal public IPv4 frontend/backend identity, database readiness, login
+  version, notes and four recovery/analytics runtime files match the accepted source.
+  [Public acceptance](docs/plans/2026-10-04-release1-71-public-acceptance.json)
+  lists passed and skipped checks; it does not claim fresh animation/GPU coverage
+  or actual inbox delivery. Earlier1.70.2 maintenance and Forge receipts remain historical.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.

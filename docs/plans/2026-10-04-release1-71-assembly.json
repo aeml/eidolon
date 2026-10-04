@@ -1,7 +1,8 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.71 account security and emailed recovery",
-  "status": "assembled; exact-source CI and public acceptance pending",
+  "status": "accepted live Alpha1.71.0; operator inbox verification remains separate",
+  "publicAcceptance": "2026-10-04-release1-71-public-acceptance.json: exact4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e / successfulCI37182320668, independently checked after terminal success at2026-10-04T07:07:03.667Z",
   "testedAccountSource": "8ede63f2c12439e2c1827e31b1c2c8bb8cf18bbb",
   "acceptedPredecessor": "Alpha1.70.2, ddfa60e3b2bd20b08a175de124eb00fae66dc299 / successfulCI37175484045; independent public acceptance in2026-10-04-release1-77-network-probe-checks.json",
   "scope": "Publish prepared credentials, session/token and current-password change work together with owner-chosen Postmark recovery. Explicit verify/reset forms, verified mailbox separate from registration email, bounded workers/admission, conditional digest-based expiring one-use challenges and proved reset session revocation. Schema17 remains; no later schema18–24 writers/dependency changes, new models, rewards, payments, closed-beta transition or arbitrary administrator recovery grant.",
@@ -41,5 +42,5 @@
     "fix": "Parse the actual HTML into detached DOM and assert native label association and exact field text, shared auth-field/auth-input styling without inline wrapper chrome, plus separate aria-describedby guidance. Retain the existing login/register/status/CSS regressions. No runtime, password, provider or timeout change.",
     "targetedCheck": "MenuPolish, EmailRecoveryUI, RecoveryLinkBoot and VersionPresentation passed443tests in4suites in12.938s. Focused ESLint and git diff --check passed. The six native accessibility/recovery cases passed on the unchanged runtime in the preceding correction; no redundant rerun or historical Mongo/campaign matrix."
   },
-  "remaining": "Fetch/pull current master before corrected normal push; preserve concurrent website edits. Confirm corrected exact CI handle, delegate its monitoring to user-authorized Luna, independently check frontend/runtime/backend identities and notes. Ask owner to verify actual inbox delivery without sharing secrets. Broader roadmap and owner/human gates remain active."
+  "remaining": "Operator should verify actual inbox delivery through signed-in Account help or Settings without sharing secrets. Preserve historical failed CI/correction evidence above; the final corrected source is accepted by the separate public receipt. Continue ordered1.72 preparation, keeping its unresolved jump choice and broader roadmap/owner/human gates open. Carry acceptance metadata with the next milestone rather than triggering another full deployment solely for receipts."
 }

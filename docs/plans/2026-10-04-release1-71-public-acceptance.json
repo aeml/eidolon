@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71 account security and emailed recovery",
+  "status": "accepted live release; not a whole-roadmap or inbox-delivery certification",
+  "commit": "4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e",
+  "version": "Alpha 1.71.0",
+  "databaseSchema": 17,
+  "ci": {
+    "run": 37182320668,
+    "url": "https://github.com/aeml/eidolon/actions/runs/37182320668",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      { "name": "Browser Smoke (Playwright 1/3)", "id": 111377581450, "conclusion": "success" },
+      { "name": "Browser Smoke (Playwright 3/3)", "id": 111377581530, "conclusion": "success" },
+      { "name": "Client Tests (Jest)", "id": 111377581764, "conclusion": "success" },
+      { "name": "Browser Smoke (Playwright 2/3)", "id": 111377581814, "conclusion": "success" },
+      { "name": "Server Tests (Go)", "id": 111377581930, "conclusion": "success" },
+      { "name": "Predeploy Character QA (System Chrome)", "id": 111380876474, "conclusion": "success" },
+      { "name": "Validate Production QA Inputs", "id": 111381530976, "conclusion": "success" },
+      { "name": "Deploy to GitHub Pages", "id": 111381546990, "conclusion": "success" },
+      { "name": "Deploy Server (SSH)", "id": 111381547019, "conclusion": "success" },
+      { "name": "Live Release and Character QA", "id": 111381736582, "conclusion": "success" }
+    ],
+    "liveCompletedAt": "2026-10-04T07:01:41Z",
+    "passedScope": "Client/server checks, three anonymous-browser shards, configured predeploy checks, both deploys, live anonymous/persistent-character QA and live town healing/Well Rested checks. Server checks include the disposable connected recovery fixture with a local TLS Postmark stand-in, not actual provider delivery.",
+    "skippedScope": ["Predeploy High/Low animation gallery", "Predeploy Well Rested rendering and GPU lifecycle", "Predeploy disposable full-character gameplay", "Live four-class and remote-animation QA"]
+  },
+  "independentPublicCheck": {
+    "checkedAt": "2026-10-04T07:07:03.667Z",
+    "method": "IPv4 verified HTTPS; no-cache request; connect timeout2s, total5s per resource, no retries. Root independently confirmed exact terminal CI identity, then checked public resources.",
+    "backend": "https://server.eidolonrealms.com/healthz returned statusok/databaseready and exact accepted commit/version",
+    "frontend": "https://play.eidolonrealms.com/release.json returned exact accepted commit/version",
+    "html": "LoginAlpha1.71.0 and cumulative data-version1.71.0 notes present; main and RecoveryLinkBoot carry accepted release query. Classic recovery bootstrap occurs before module/analytics evaluation.",
+    "runtime": [
+      { "path": "src/core/RecoveryLinkBoot.js", "sha256": "d98fd4214724063a4cbb94ca084d9e645932ef00dd2cbf7fe57e31afbcce9baa" },
+      { "path": "src/ui/EmailRecoveryUI.js", "sha256": "74375b1afbc7493ac140ce41f440bbf58cc4caffd4bfd6933aca519e8d28492a" },
+      { "path": "src/main.js", "sha256": "867bfc335b0cde5c02e6932ae0cf781dabfb834493066de29bdfa98017a961f2" },
+      { "path": "src/analytics/GoogleAnalytics.js", "sha256": "570b2ebc1dc7aa3b647695ba539a48dcde7626d6e96b0d7914aa6c94437361f4" }
+    ],
+    "runtimeComparison": "All four files match publisher-rewritten accepted local source byte-for-byte, not raw unversioned import hashes. Earlier preterminal check at06:53:08.224Z matched; the recorded acceptance check is after CI terminal success.",
+    "runtimeConfig": "Read-only inspect of exact eidolon-api-1 confirmed nonempty POSTMARK_SERVER_TOKEN, POSTMARK_FROM_EMAIL, POSTMARK_MESSAGE_STREAM and ADMIN_NOTIFICATION_EMAILS. Only boolean presence was emitted; no values or provider request. ADMIN_NOTIFICATION_EMAILS does not receive player recovery links."
+  },
+  "remaining": "Owner-initiated verified-mailbox/inbox delivery and sender/stream eligibility check; no actual Postmark API or mail was sent by acceptance probes. IPv6/DDNS remains deferred. Later protocol/valuable-operation/schema18–24, privacy, capacity, art/device/pacing and commercial/beta decisions retain their separate gates. Earlier failed runs/corrections remain in the assembly receipt."
+}

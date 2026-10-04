@@ -2,13 +2,15 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.70.2, exact ddfa60e3b2bd20b08a175de124eb00fae66dc299,
-CI37175484045. All ten CI jobs, including both deploys and live character QA, passed.
-Independent public IPv4 checks verified backend/frontend identities, database
-readiness, login version, cumulative hotfix notes and the retained dressed Ilyra
-GLB. Earlier receipts retain distinct runtime and model checks; no claim that
-every route or economy operation was sampled. See the current
-[maintenance acceptance receipt](2026-10-04-release1-77-network-probe-checks.json).
+baseline is Alpha 1.71.0, exact4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e,
+CI37182320668. All ten CI jobs, including both deploys and live character/town
+recovery QA, passed. Post-terminal independent IPv4 checks verified public
+frontend/backend identities, database readiness, login version, cumulative notes
+and four recovery/analytics runtime files against publisher-rewritten source.
+See [public acceptance](2026-10-04-release1-71-public-acceptance.json) for passed
+and skipped scopes. Actual Postmark inbox delivery remains owner-initiated;
+no new animation/GPU coverage, IPv6 fix or capacity promise is inferred.
+Earlier maintenance/runtime/model receipts retain their separate scopes.
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -178,7 +180,8 @@ Go1.27.1 source checks passed. This is not connected to live trading: the shared
 durable decision store, two-account coordinator, escrow saves, delivery claims
 and startup/login recovery remain required. Ship compatible readers before the
 new writer; retention alone is not recovery or unrestricted rollback.
-1.71 account-security work is partial, not a completed milestone.
+The account-security delivery below is accepted in1.71; actual inbox delivery
+and later security/readiness gates remain separate.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
@@ -188,14 +191,14 @@ checks pass. The [player-facing password follow-up](2026-10-02-release1-71-passw
 adds authenticated Account help and online Settings forms, clears typed secrets
 on submission/close/disconnect, and consumes token rotation at the current
 transport even after closing the form or entering the world. Scoped browser
-bootstrap checks include phone-sized blocked storage; this is not live.
+bootstrap checks include phone-sized blocked storage; the flow is now live.
 The owner chose emailed links using the configured Postmark account on October4.
 The [recovery implementation and checks](2026-10-04-release1-71-email-recovery-checks.json)
 cover a separately verified mailbox, single-use expiring links, protected login
 and Settings forms, bounded mail workers, real disposable-Mongo/socket recovery,
 restart durability and old-session revocation. Alpha1.71.0 version and cumulative
-notes are assembled; exact-source CI/public acceptance remains required before
-declaring1.71 accepted. Local provider fixtures do not prove actual inbox delivery.
+notes are published; exact-source CI and post-terminal public acceptance passed.
+Local provider fixtures do not prove actual inbox delivery.
 No future schema24 writer, commercial integration or beta transition is included.
 Partial 1.72 now meters network walking against server-derived speed and elapsed
 time, bounds retained lag credit, acknowledges denied predictions, and keeps
