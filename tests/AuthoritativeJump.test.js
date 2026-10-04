@@ -1037,7 +1037,10 @@ describe('authoritative jump flow', () => {
             start: expect.any(THREE.Vector3),
             end: expect.any(THREE.Vector3)
         }));
-        expect(remoteEntity.jumpVisualState.progress).toBeGreaterThan(0.45);
+        // The inferred 20-unit flight now takes its full distance-scaled
+        // duration, rather than inheriting the old 1.28-second time cap.
+        expect(remoteEntity.jumpVisualState.duration).toBeCloseTo(20 / 13.5, 5);
+        expect(remoteEntity.jumpVisualState.progress).toBeCloseTo(0.6 / (20 / 13.5), 5);
         expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(5);
 
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);

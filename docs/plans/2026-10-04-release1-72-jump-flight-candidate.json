@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 distance-scaled jump candidate",
+  "status": "focused checks passed; selected reach-preserving1.72 default under roadmap implementation authority; not yet accepted live",
+  "sourceCommit": "77d2978957b87d6130811a43772c7394de32ca53",
+  "reproduction": "Before the fix, both the Go network-jump test and client prediction test failed for27,54 and135 world units: each flight was capped at1.28seconds instead of2,4 and10seconds. The3 and17.28unit cases passed unchanged.",
+  "candidate": "Remove only the upper flight-time cap in server and client prediction. Retain13.5world units/second and0.46second minimum flight time, destinations, geometry/context/finite-coordinate admission, arc-height limits, animations and no midflight restart. This prepares the longer-flight option, not approval of that option or a new short-range cap.",
+  "checks": [
+    "Go1.27.1: go test -race ./internal/game . -run '^Test(NetworkJump|StartPlayerJump|WorldUpdate.*Jump|NetworkMovementBudget|NetworkWalking|TownRecoveryContext|RecoveryContext|DarkRealmReentry)' -count=1 -timeout=60s: game3.764s and root2.582s passed. Five new accepted-distance cases verify exact duration, bounded quarter-second displacement and canonical landing. Existing jump/flight/dead-update, walking allowance and recovery context regressions remain.",
+    "Node24.18/Jest: GameEngineCtrlClickJump, AuthoritativeJump, GroundJumpInput and AnimationGalleryJumpCleanup:71checks in4suites passed3.333s. Compatible accepted-release node_modules reused; no fresh dependency installation claimed.",
+    "Remote missing-metadata test now asserts exact inferred20unit duration and0.6second progress instead of its outdated capped-time threshold; visible arc, rotation and mesh-height assertions remain.",
+    "Ground-click helper keeps full unobscured real Ctrl-click, displacement and actual-landing assertions. Landing observation scales to flight time plus2seconds, with8second minimum and60second maximum. Four mocked helper cases verify timeout policy without an actual wait or claiming a connected browser route.",
+    "ESLint for affected client/tests/helper and git diff --check passed; new Go test formatted with gofmt."
+  ],
+  "sourceSha256": {
+    "server/internal/game/world.go": "076944fbd7db616d9a0eaad90fbed803ac764ad12b91c556b666c821855ac73d",
+    "src/core/GameEngineMovement.js": "8673691e85d5138d42c3b710a0c74f04c6c8d2e55c114e9ecca15244b783885d",
+    "server/internal/game/jump_input_authority_test.go": "05d5716c7890ab3aeb93daa0bb9b8ead6a3a67039ad1e01339b97f4e6d497672",
+    "tests/e2e/helpers.js": "41cad3737c22f6f5798610f34d50ff1df6f5ceec992a6db58b9d5da54b622857"
+  },
+  "limits": "Unit/component evidence only: not a fresh connected browser/socket trajectory, physical phone, campaign, PvP/capacity certificate or production deployment. This receipt preserves the earlier tested source/hash scopes. Default now selected to retain existing reach and travel speed while removing the time cap; not an explicit owner approval or a new range limit. Owner can request shorter jumps later. Exact-source CI/public acceptance remains required. No live saves, services, credentials or provider mail changed by these tests."
+}

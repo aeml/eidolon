@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72.0 protocol and gameplay safeguards",
+  "status": "assembled candidate; exact-source CI and public acceptance pending",
+  "sourceBase": "fe994335 plus version/notes assembly; accepted public predecessor1b6f44d286b7689bd646999e1fa9c8e1859d9087 fetched unchanged and already integrated",
+  "version": "Alpha 1.72.0",
+  "databaseSchema": 17,
+  "jumpDecision": "Scope-preserving implementation default: retain existing reach and13.5world units/second speed, remove the old1.28second cap and retain0.46second minimum flight. Announced before publication; no explicit owner answer falsely claimed. A17unit cap would remove accepted reach and remains possible later owner tuning.",
+  "changes": "Prepared1.72 HTTP/connection/frame/envelope/byte/work bounds, walking/context/floor/path and combat authority, scene/private feedback, bounded save/social/presence/cleanup work and late administrator authority revalidation. Earlier recovery and narrow equipment-shop safeguard retained. No later schema18–24 custody writers, privacy policy/exports or operations dashboards published.",
+  "verification": {
+    "clientCommand": "Node24.18.0 --experimental-vm-modules node_modules/jest/bin/jest.js tests/VersionPresentation.test.js tests/GameEngineCtrlClickJump.test.js tests/AuthoritativeJump.test.js tests/GroundJumpInput.test.js tests/AnimationGalleryJumpCleanup.test.js --runInBand --silent",
+    "client": "421checks/5suites passed5.627s. Exact version defaults and explicit cumulative notes agree; previous1.71.1/1.71.0 and full patch history retained. Compatible accepted-release node_modules reused, not a fresh install or full client suite.",
+    "goCommand": "GOMAXPROCS=2 GOTOOLCHAIN=go1.27.1 go test -p2 -race . ./internal/game -run '^Test(Network|StartPlayerJump|WorldUpdate.*Jump|MoveDispatch|MovementDispatch|Inbound|Websocket|HTTP|FriendPresence|Social|QA.*Disconnect|Credential|EmailRecovery(Request|Setup|Reset|Protocol|Workers|Inbound)|RecoveryMail|ResumeToken|Living)' -count=1 -timeout=90s -json",
+    "go": "Game3.578s/root15.815s passed;280pass events/0failures. TestCredentialActualFreshConnectionsAndTakeover skipped without disposable-Mongo opt-in. Component/native TCP/TLS/WebSocket cases are not a fresh browser/connected-Mongo/campaign/capacity proof.",
+    "hygiene": "Affected JS ESLint, bash-n for deploy/isolated-QA scripts and git diff --check passed. Dedicated schema17 worktree preserves original owner-dirty workspace and separate future candidates.",
+    "dependencyScope": "Earlier exact dependency scan in isolated assembly has0called/0imported findings and1unused module-only OpenPGP advisory. Keep the unmaintained OpenPGP package excluded and rescan before future use; it is not hidden by an exclusion. Full current CI retains module verification, pinned scanner, npm audit and fresh dependencies. Narrow tracked-secret review is not historical/operator-secret certification."
+  },
+  "remaining": "Normal synchronized push, Luna monitoring actual CI, configured connected/release gates and independent post-terminal public identity/readiness/login/notes/runtime verification. Do not call the candidate live from source version or a green early job. Human art/device/pacing, provider inbox and later owner/commercial/privacy/beta/launch gates remain separate. Full roadmap goal is not complete."
+}

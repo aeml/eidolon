@@ -24,15 +24,16 @@ replace detached social-list and join-presence launches with tracked coalesced
 refreshes: one global list worker and one connection-owned friend worker, each
 with a dirty bit rather than an invalidation queue. Focused race checks passed
 in3.206s, retaining immediate status acknowledgements and current-state lookup.
-No connected-Mongo/load or live release acceptance is inferred; the jump-policy
-choice and other ordered1.72 gates remain open.
+No connected-Mongo/load or live release acceptance is inferred. The later1.72
+assembly selects distance-scaled flight as a reach-preserving default; exact CI
+and public acceptance remain open.
 The [QA worker follow-up](2026-10-04-release1-72-qa-worker-checks.json) makes the
 allowlisted reconnect fault once-per-connection and lifecycle/lease tracked.
 Concurrent actual-close and handler/allowlist regressions passed1.372s;
 current-source native TCP/TLS/WebSocket flood/admission cases passed1.569s.
 Remaining direct production launches are fixed service workers or joined
 simulation/state work, not detached per-trigger social/QA jobs. Transitive
-schedulers, latest connected-game compatibility and the jump policy remain
+schedulers and latest connected-game compatibility remain
 separate release gates; no capacity or public deployment is claimed.
 The [living-combat fix](2026-10-04-release1-72-living-combat-checks.json) rejects
 zero-health/disconnected casters, basic attacks and delayed basic-hit resolution
@@ -557,8 +558,9 @@ invalid-input and offset-dungeon coordinate contracts passed scoped race checks;
 full jump/ability authority and connected release gates are still unfinished.
 [Jump input/floor checks](2026-10-02-release1-72-jump-input-checks.json) now reject
 invalid coordinates and mid-flight restarts and keep landing height server-owned.
-The quick-jump range versus distance-scaled flight policy still needs resolution;
-neither this partial work nor its isolated tests is a 1.72 release acceptance.
+The later1.72 assembly selects distance-scaled flight, preserving existing reach
+and13.5units/second speed without the capped airtime. A short-range cap remains
+later owner tuning. Neither isolated tests nor source assembly is live acceptance.
 The [administrator authority backport](2026-10-04-release1-72-admin-authority-checks.json)
 brings prepared post-query/audit role and connection revalidation forward from
 the1.74 review so known authority races are not deliberately deferred. New
@@ -1334,12 +1336,30 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
-October4: **1.72 living movement** rejects network walking/jumping from
-zero-health or disconnected actors without changing trusted recovery reposition.
-The independent guard is also in prepared1.73, excluding the unapproved longer-
-flight candidate. [Movement checks](2026-10-04-release1-72-living-movement-checks.json)
-record reproduced failures, fixture corrections and both focused race runs;
-ordered jump-policy/integration/publication gates remain open.
+October4: **Alpha1.72.0 release assembly** now has its own login version and
+cumulative patch notes covering authoritative movement/combat, bounded network
+work and private scene feedback. Distance-scaled airtime is the declared default
+to preserve existing reach—not falsely attributed to an owner answer.421focused
+client/version checks and280backend pass events succeed; schema17 is unchanged.
+Remote master was fetched unchanged. Exact-source CI and public acceptance are
+still required; [assembly checks](2026-10-04-release1-72-release-checks.json)
+separate this candidate from accepted1.71.1 and later unpublished writers.
+
+October4: **1.72 living movement** now rejects network walking/jumping from
+zero-health or disconnected actors under the actor lock, without changing
+trusted recovery repositioning. Reproduced component/message-dispatch failures
+now pass alongside speed, geometry, grounding and recovery regressions.
+[Movement checks](2026-10-04-release1-72-living-movement-checks.json) record fixture
+corrections and focused race evidence. Prepared1.73 now merges the predecessor's
+reach-preserving jump default; exact-source checks and publication remain open.
+
+October4: prepared the **1.72 longer-flight jump candidate** on both server
+and client, removing the1.28second flight-time cap while retaining13.5units/second
+travel, short-jump timing, arc limits and geometry/context guards. The defect was
+reproduced before the fix; focused race checks and71client/helper checks now pass.
+The [candidate receipt](2026-10-04-release1-72-jump-flight-candidate.json) preserves
+the initial pending choice and subsequent declared default selection; this does
+not substitute for exact-source CI or a live1.72 acceptance.
 
 October4: accepted **Alpha1.71.1** maintenance safeguard restricts mystery
 purchases to equipment, blocking forged material/relic loot-pool requests for
