@@ -1,7 +1,21 @@
 {
   "schema": 1,
   "version": "Alpha 1.70.2",
-  "status": "locally-verified-awaiting-exact-source-ci-and-public-acceptance",
+  "status": "accepted-live-exact-source-ci-and-public-acceptance",
+  "releaseCommit": "526bc22953e79cbe4869580e8f628d55c39c1b1c",
+  "acceptance": {
+    "ciRun": 37137636915,
+    "ciUrl": "https://github.com/aeml/eidolon/actions/runs/37137636915",
+    "ci": "Root independently verified terminal success, exact head SHA and all ten successful jobs, including audit/client, server, three browser shards, native predeploy, QA-input validation, both deployments and live release/character QA. Luna monitored the deployment.",
+    "verifiedAtUTC": "2026-10-04T00:44:22.242Z",
+    "public": "Public IPv4 HTTPS frontend release.json and backend healthz report the exact release SHA and Alpha1.70.2; database ready. Login label and cumulative1.70.2/1.70.1 patch entries match. Three changed runtime files equal the exact source after normal release import rewriting.",
+    "runtimeSha256": {
+      "src/ui/ItemStatOrder.js": "6e0c4e5105502a8e223dc178c4d76b99ac0ade7738778e89040f880d746e9e06",
+      "src/ui/ForgeDecisionPreview.js": "5e39618b8ca1f12e2e450fa6b0e11f6c460f855336346649a47f58d38d239f81",
+      "src/ui/InventoryUI.js": "891ff82770130492c450a5e372d4336c5ad77ef2c982576ef68e058361081eae"
+    },
+    "scope": "Presentation hotfix plus test-tool dependency remediation, not publication of the prepared1.71–1.73 server writers. No production character, currency or account mutation was used for independent acceptance."
+  },
   "sourceCommit": "bf92f443f4d4d651e428bf16b8e5a9dc695316c4",
   "baselineCommit": "fa414f0b288e8ee014d5ce72f7affdca485e1c7f",
   "failedCandidate": {
@@ -16,7 +30,7 @@
     "freshInstall": "Remove only the owned candidate's node_modules symlink, preserving its shared target. Fresh npm ci succeeded in10 seconds against the corrected lockfile and prepared browser runtime dependencies.",
     "audit": "npm audit --audit-level=low: found0 vulnerabilities; exit0.",
     "client": "The same seven focused Forge/release suites passed using the fresh Jest30.5.2 install:399 checks in6.207 seconds. Full lint passed; movement benchmark completed one million iterations in78.972ms. The unchanged Forge source retains its earlier two accepted System Chrome checks; exact-source hosted CI must still pass.",
-    "remaining": "Corrected-candidate CI, deployment and independent public acceptance remain required; the original failed run is not overwritten or counted as success."
+    "remaining": "Corrected candidate passed CI, deployment and independent public acceptance as recorded above; the original failed run remains separate and is not counted as success."
   },
   "changes": [
     "Backport only the prepared client stat-order helper and its Forge/inventory consumers. Upgrade, potency and capped-item previews consistently order Damage, Defense, STR, DEX, INT, WIS, VIT, then alphabetical extra stats, retaining zero-valued rows.",
@@ -32,7 +46,7 @@
     "correction": "The first focused command guessed a nonexistent ForgeDecisionPreview test filename. Its six real suites passed, but the command failed; discovered the existing ForgeUI suite and reran the corrected seven-suite command successfully. No failed run is counted as acceptance."
   },
   "limits": [
-    "Publication and public version/commit/asset verification are still required. Do not describe this candidate as live before those gates pass.",
+    "Public IPv4 release/version/asset acceptance is recorded above; this does not prove unresolved IPv6 reachability, a physical phone session or full beta readiness.",
     "No material cost, stat value, reward rate, persistence schema, account data, payment integration or beta access change. Existing Ilyra NPC artwork remains unchanged.",
     "The user's dirty shared workspace is untouched. This candidate uses a separate worktree based on accepted master rather than deploying the unpublished successor tree.",
     "The full 1.11–1.99 roadmap remains active, including ordered1.71/1.72 decisions and remaining1.73 review/packaging."

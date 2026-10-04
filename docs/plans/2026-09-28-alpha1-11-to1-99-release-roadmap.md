@@ -476,6 +476,15 @@ notes. Its first CI candidate failed a newly reported development dependency
 audit; the corrected Jest30 test tree removes the vulnerable path and audits clean.
 Exact-source corrected CI/deployment and public acceptance remain open; the
 unpublished security/economy writer tree is not part of that presentation hotfix.
+Superseding publication checkpoint: **1.70.2 accepted live**, exact
+`526bc22953e79cbe4869580e8f628d55c39c1b1c`, CI37137636915, all ten jobs successful.
+Root verified public IPv4 frontend/backend identity, healthy database, login
+version, cumulative notes and three exact changed Forge/inventory runtime files.
+The [acceptance](2026-10-03-release1-70-2-forge-checks.json) retains the failed first
+candidate and its supported dependency correction separately. This deploys only
+the stat-order hotfix/test-tool correction, not the unpublished1.71–1.73 writers.
+Owner recovery/jump choices remain open; administration-safety preparation may
+continue without publishing out of order. The full1.11–1.99 goal remains active.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
