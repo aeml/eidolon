@@ -994,6 +994,13 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October4: **1.72 living movement** now rejects network walking/jumping from
+zero-health or disconnected actors under the actor lock, without changing
+trusted recovery repositioning. Reproduced component/message-dispatch failures
+now pass alongside speed, geometry, grounding and recovery regressions.
+[Movement checks](2026-10-04-release1-72-living-movement-checks.json) record fixture
+corrections and focused race evidence; jump choice and publication remain open.
+
 October4: prepared the **1.72 longer-flight jump candidate** on both server
 and client, removing the1.28second flight-time cap while retaining13.5units/second
 travel, short-jump timing, arc limits and geometry/context guards. The defect was

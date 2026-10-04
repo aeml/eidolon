@@ -420,7 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.71.1`, accepted narrow mystery-equipment hotfix retaining password changes, session/token safeguards and explicit verified-email recovery through Postmark. Verify an address in signed-in Account help or Settings before using Forgot your password on the login screen. Opening a link alone never changes credentials. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json) distinguish synthetic connected proof from actual inbox delivery, which still needs an owner check. This branch retains schema17 and excludes later unpublished schema24 writers. Broader security/valuable-operation, owner/commercial and human gates stay open. This is not a capacity promise, payment launch or closed-beta transition.
+- Current inherited version: `Alpha 1.71.1`. This isolated, unpublished1.72
+  candidate includes protocol/worker bounds, living combat/movement admission and
+  the longer-flight jump candidate. The owner jump choice, release assembly and
+  exact-source CI/public acceptance remain open; do not deploy it as1.71.1.
+  Schema17 remains; future valuable-operation/privacy/operations writers are
+  excluded. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
+  distinguish synthetic proof from actual inbox delivery, still owner-verified.
+  No capacity, payment launch or closed-beta transition is implied.
 - Last independently verified live release: `Alpha 1.71.1`, exact
   1b6f44d286b7689bd646999e1fa9c8e1859d9087, successful CI37190290208 (all ten jobs).
   Post-terminal public IPv4 frontend/backend identity, database readiness, login

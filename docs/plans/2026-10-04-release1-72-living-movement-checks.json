@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 living network movement authority",
+  "status": "prepared; not published",
+  "sourceCommit": "a5bb0ba1bd21037a1997bb6cc879655650eff84f",
+  "reproduction": "Before the fix, seven component cases admitted zero/negative-health idle actors, disconnected actors or non-player walking. Four ordinary message-dispatch cases also mutated unavailable actors. Existing DEAD-state rejection and non-player jump rejection already worked.",
+  "fix": "Under the existing world/actor locks, network walking requires player type, positive health and connected state; network jumping requires positive health and connected state in addition to its existing player type check. Reject before changing position, rotation, targets, flight metadata, movement allowance or sequence. Trusted server repositioning is unchanged.",
+  "verification": {
+    "toolchain": "Go1.27.1 with race detector",
+    "command": "go test -race ./internal/game . -run '^Test(NetworkMovement|MovementDispatch|MoveDispatch|NetworkJump|StartPlayerJump|WorldUpdate.*Jump|MovementBudget|NetworkWalking|TownRecoveryContext|RecoveryContext|DarkRealmReentry|World.*Ground|RockMovement|Woodland.*Saved)' -count=1 -timeout=60s",
+    "gameSeconds": 9.734,
+    "serverSeconds": 3.651,
+    "scope": "Ten invalid walk/jump cases preserve authoritative state and allowance; living walking/jumping and trusted zero-health/disconnected recovery reposition still work. Six normal-dispatch cases reject unavailable actors. Existing speed/burst/sequence/context, geometry/grounding, woodland saved-position escape, jump landing and recovery regressions pass.",
+    "fixtureCorrection": "Existing movement-budget and woodland fixtures omitted health; they now represent living actors with100/100HP without weakening movement assertions. The root social helper has zero base Vitality/MaxHealth: initially setting health=maxHealth still left it zero and broke the existing speed/ack test. Both affected root movement fixtures now explicitly use100/100HP, including positive-health disconnected/dead-state cases. Final run above includes that correction.",
+    "hygiene": "gofmt and git diff --check passed. No client behavior/dependency changed by this guard; prior client evidence retains its exact source scope."
+  },
+  "sourceSha256": {
+    "server/internal/game/world.go": "39aa53a87edf0d9b643ea08b6cab5eb90a2309f31dbba4bb39f595ebd5cffcc4",
+    "server/internal/game/living_movement_authority_test.go": "a1f11e9f188ef6db1434a7358add006e684b20f99ea45da7db693321a237d159",
+    "server/movement_authority_test.go": "33c255e70ab1695a639dbcb6b0f9b308a013723308a2fae694bf2b45e0bf4e97"
+  },
+  "limits": "Normal message-handler/component tests, not a new actual TCP/browser/Mongo/campaign/raid/capacity proof. Source includes the unpublished longer-flight candidate; this independent liveness guard does not approve that policy. Public remains accepted1.71.1/schema17. No live character, provider, service or access changes; remaining owner choice and ordered release/version/CI/public gates stay open."
+}
