@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71 account security and recovery",
+  "status": "prepared-database-and-provider-foundation; not exposed or deployed",
+  "sourceCommit": "f7a71dce",
+  "ownerDecision": "October4: emailed recovery links, using operator-provided POSTMARK_SERVER_TOKEN, POSTMARK_FROM_EMAIL and POSTMARK_MESSAGE_STREAM. ADMIN_NOTIFICATION_EMAILS must not receive player recovery links. No token values were read or printed and no real messages sent.",
+  "changes": "Separate verified recovery mailbox from unverified registration email. Require current-password proof plus a30-minute single-use confirmation link to establish/replace the mailbox. Password-reset links last15 minutes; only SHA256 digests are stored, bound to exact account, observed password hash and verified address. Durable per-account one-minute issuance cooldown preserves the current link on rejected resends. Conditional updates consume challenges; ordinary password changes invalidate outstanding challenges. Preserve all unrelated account/character/role/value data. Postmark provider uses fixed HTTPS/email endpoint, eight-second timeout, no redirects, no administrator copies and disabled open/link tracking; parse provider acknowledgement without exposing diagnostics.",
+  "references": [
+    "https://postmarkapp.com/developer/api/email-api",
+    "https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html"
+  ],
+  "checks": {
+    "unitCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(RecoveryMail|EmailRecoveryInput|PasswordChangeUses|PasswordChangeRejects|PasswordChangeMismatch|ResumeToken)' -count=1 -timeout=30s",
+    "unitResult": "passed: root1.571s/database1.061s",
+    "provider": "Actual local TLS HTTP requests with synthetic credentials verify Postmark headers/body/recipient/stream/no tracking, accepted acknowledgement, nonzero/missing code, missing message ID, HTTP failure, malformed/trailing JSON and redirect refusal. Invalid/injected settings and recipient lists refuse; trusted HTTPS fragment links preserve reserved account characters. No Postmark network call or inbox-delivery claim.",
+    "mongoCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_PASSWORD_TEST_MONGO_URI=mongodb://127.0.0.1:32901 EIDOLON_PASSWORD_DISPOSABLE_DATABASE=1 go test -race ./internal/database -run '^Test(EmailRecoveryActualMongoProofReplayAndAccountPreservation|PasswordChangeActualMongoPreservesAccountAndConcurrentOwnership)$' -count=1 -timeout=40s -v",
+    "mongoResult": "passed: email11.02s, existing password9.55s, package21.619s",
+    "mongoScope": "Mongo7 standalone, one CPU/512MiB, fresh synthetic collections. Unverified and unknown accounts give no recipient or mutation. Wrong password/account/token, exact-expiry and consumed links fail. Issuance cooldown keeps the prior link. Eight concurrent resets yield exactly one winner; winning bcrypt password authenticates, old password fails. Legacy metadata, roles, inventory, Gold12345 and EP100 stay exact. A pending new address does not replace verified recovery; subsequent ordinary password change invalidates both pending link families.",
+    "failedCandidates": "Initial safe-link assertion parsed Go's already-decoded URL.Fragment and lost an encoded ampersand; corrected the check to EscapedFragment, matching browser raw-hash parsing. First actual-Mongo check timed out during cold schema13 migration after10s; the existing password check then completed initialization on that same container. Re-polled the unchanged fixture and reran only the targeted database pair; final results above passed. These failures are not accepted proof or hidden by restarting the fixture.",
+    "hygiene": "gofmt, git diff --check, focused race checks passed. No full campaign, soak, browser matrix or production write. Existing socket/browser receipts retain their scope and are not reused as proof of the new recovery flow."
+  },
+  "cleanup": {
+    "container": "fc7873c6a4bc40aa2009d7cfd4c9daa3b7f748117c05bf7eaf3317916faf1670",
+    "ownerLabel": "eidolon.qa.owner=codex; eidolon.qa.task=email-recovery-171-20261004",
+    "removedVolumes": ["4d1dd1cfea29e34800f918592d0322d40654f28cf197e121f54cccd99c87759f", "199b26912c8147c8688b4e581b511bd658f6ae1f719ab00a5b654f11d7aa8ce7"],
+    "result": "Validated exact ownership/mounts, removed only this disposable container and anonymous volumes; scoped listings empty. No production accounts, files, DNS, services or owner credentials changed."
+  },
+  "remaining": [
+    "Integrate bounded asynchronous recovery requests, credential/abuse admission, authenticated setup and anonymous token completion with account-work locking and session invalidation. Return generic request responses without exposing account/mail eligibility; notify the owner after completed reset.",
+    "Add login/settings verification and reset UI; consume/scrub URL fragment before analytics or asset initialization, never auto-submit GET links, persist passwords/tokens or automatically retry uncertain changes.",
+    "Check connected protocol/UI behavior on synthetic accounts and a local provider fixture. Confirm operator Postmark sender/transactional-stream configuration without exposing token values; provider acceptance is not mailbox delivery.",
+    "Assemble1.71 version/cumulative notes, fetch/integrate remote changes, publish exact-source CI and independently verify both public releases. Schema17 remains; later schema24 writers are excluded. No1.71 acceptance or full-goal completion yet."
+  ]
+}
