@@ -210,3 +210,21 @@ func (db *DB) CompletePasswordRecovery(username, token, next string, now time.Ti
 	}
 	return result.ModifiedCount == 1, true, nil
 }
+
+// Internal notification lookup only; never an unauthenticated mail-directory API.
+func (db *DB) RecoveryNotificationAddress(username string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var account recoveryAccount
+	err := db.users.FindOne(ctx, bson.M{"username": username}, options.FindOne().SetProjection(bson.M{"_id": 0, "recovery_email": 1})).Decode(&account)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	if account.Email.VerifiedAt.IsZero() || !ValidRecoveryEmail(account.Email.Address) {
+		return "", nil
+	}
+	return account.Email.Address, nil
+}

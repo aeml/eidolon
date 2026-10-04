@@ -105,3 +105,34 @@ func TestRecoveryMailConfigurationAndSafeLink(t *testing.T) {
 		t.Fatal("invalid secret admitted")
 	}
 }
+
+func TestRecoveryMailHonorsShutdownCancellation(t *testing.T) {
+	entered := make(chan struct{})
+	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = io.Copy(io.Discard, r.Body)
+		close(entered)
+		select {
+		case <-r.Context().Done():
+		case <-time.After(2 * time.Second):
+		}
+	}))
+	defer server.Close()
+	m := &recoveryMailer{token: "synthetic", from: "sender@example.invalid", stream: "outbound", client: server.Client(), endpoint: server.URL}
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan error, 1)
+	go func() { done <- m.send(ctx, "owner@example.invalid", "Recovery", "synthetic content") }()
+	select {
+	case <-entered:
+	case <-time.After(time.Second):
+		t.Fatal("provider request never started")
+	}
+	cancel()
+	select {
+	case err := <-done:
+		if err != errRecoveryMail {
+			t.Fatal("shutdown cancellation was not sanitized", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("shutdown left provider IO running")
+	}
+}

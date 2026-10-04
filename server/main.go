@@ -567,7 +567,12 @@ func main() {
 	}
 	stopEconomyMetrics := startEconomyMetrics(world, *economyMetricsFilePath)
 	defer stopEconomyMetrics()
+	recoveryMailer, err := newRecoveryMailer(os.Getenv)
+	if err != nil {
+		log.Fatal("Account recovery configuration is invalid: ", err)
+	}
 	loops := newServerLoops()
+	accountRecovery = newEmailRecoveryService(db, recoveryMailer, loops)
 
 	// Sweep goroutine: remove disconnected player entities whose resume window
 	// has expired. Runs every 30 seconds.

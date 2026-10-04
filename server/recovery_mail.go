@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"net/mail"
 	"net/url"
 	"strings"
 	"time"
@@ -33,7 +34,8 @@ func newRecoveryMailer(getenv func(string) string) (*recoveryMailer, error) {
 	if token == "" && from == "" && stream == "" {
 		return nil, nil // Optional until configured; no unverifiable reset path.
 	}
-	if token == "" || len(token) > 256 || strings.ContainsAny(token, "\r\n\x00") || !database.ValidRecoveryEmail(from) {
+	sender, senderErr := mail.ParseAddress(from)
+	if token == "" || len(token) > 256 || strings.ContainsAny(token, "\r\n\x00") || strings.ContainsAny(from, "\r\n\x00") || senderErr != nil || !database.ValidRecoveryEmail(sender.Address) {
 		return nil, errors.New("Postmark recovery requires a token and a single verified sender address")
 	}
 	if stream == "" {

@@ -46,9 +46,14 @@ no redirects and no tracking or administrator copies. Configure
 `POSTMARK_SERVER_TOKEN`, `POSTMARK_FROM_EMAIL` and `POSTMARK_MESSAGE_STREAM` only
 in the server environment, using a verified Postmark sender and transactional
 stream. `ADMIN_NOTIFICATION_EMAILS` is not a recovery recipient list.
-These helpers are not an exposed recovery feature yet: protocol, login/settings
-UI, pre-analytics link handoff, session invalidation, abuse controls and connected
-acceptance remain to be integrated. This form alone does not provide recovery.
+The prepared protocol now supports password-proved setup, anonymous verification
+and reset, generic asynchronous recovery requests, bounded/shared admission and
+session invalidation only after proved credential mutation. Two bounded mail
+workers join shutdown; reset notifications contain no password. Partial mail
+delivery is not retried automatically or represented as guaranteed inbox delivery.
+Login/settings UI, pre-analytics link handoff and connected acceptance remain to
+be integrated; do not deploy this partial candidate. The old form alone does not
+provide recovery.
 Production remains Alpha 1.70.2; maintenance acceptance is recorded separately.
 See [prepared email checks](plans/2026-10-04-release1-71-email-recovery-checks.json).
 Administrators gain no arbitrary reset, ownership or password-reading action.
