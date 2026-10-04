@@ -473,7 +473,9 @@ It prepares level35 uncommon/rare class gear and full initial resources clamped
 by login to the normal build maxima, requires full waves/champion/town
 exit, then independently reads saved XP/Gold and preserved equipment/bag
 sentinel/EP. Prepared positioning and equipment are fixtures, not an earned
-journey. This connected check has **not yet run**. Do not reclassify the earlier
+journey. This connected check **started on the real October4 19:20UTC Root
+window and is not yet accepted**; terminal clear/save evidence is pending.
+Do not reclassify the earlier
 single-Wizard Root evidence or repeat accepted raid/dungeon/casino checks.
 Events remain separate from `combined` and default mixed/nightly workloads.
 
