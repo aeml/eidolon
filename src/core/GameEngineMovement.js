@@ -626,7 +626,9 @@ class GameEngineMovementMethods {
 
     getJumpTravelDuration(distance = 0) {
         const safeDistance = Math.max(0, Number(distance) || 0);
-        return Math.max(0.46, Math.min(1.28, safeDistance / 13.5));
+        // Match the server's distance-scaled flight; long jumps must not
+        // predict an early landing while the authoritative actor is airborne.
+        return Math.max(0.46, safeDistance / 13.5);
     }
 
     getJumpArcHeight(distance = 0) {

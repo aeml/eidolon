@@ -1519,7 +1519,9 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	dx := x - e.X
 	dz := z - e.Z
 	travelDistance := math.Sqrt(dx*dx + dz*dz)
-	duration := math.Max(0.46, math.Min(1.28, travelDistance/13.5))
+	// Keep short jumps readable, but never turn a long destination into a
+	// faster-than-intended flight by capping its travel time.
+	duration := math.Max(0.46, travelDistance/13.5)
 	height := math.Max(6.5, math.Min(16.5, travelDistance*0.38+4.2))
 
 	e.TargetX = x
