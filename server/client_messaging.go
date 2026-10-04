@@ -263,26 +263,31 @@ func (c *Client) handleChatCommand(raw string) bool {
 }
 
 func (c *Client) triggerQADisconnect() {
-	if c.qaDisconnect != nil {
-		c.qaDisconnect()
+	if c == nil || (c.qaDisconnect == nil && c.conn == nil) {
 		return
 	}
-	if c.conn == nil {
-		return
-	}
-
-	conn := c.conn
-	go func() {
-		// Let writePump flush the system chat before the server creates a real
-		// transport interruption. NetworkManager must then resume the session.
-		time.Sleep(150 * time.Millisecond)
-		_ = conn.WriteControl(
-			websocket.CloseMessage,
-			websocket.FormatCloseMessage(websocket.CloseGoingAway, "QA reconnect fault"),
-			time.Now().Add(time.Second),
-		)
-		_ = conn.Close()
-	}()
+	c.qaDisconnectOnce.Do(func() {
+		if c.qaDisconnect != nil {
+			c.qaDisconnect()
+			return
+		}
+		conn := c.conn
+		if !scheduleClientCharacterWork(c, func() {
+			// Let writePump flush the system chat before the server creates a
+			// transport interruption. Keep the delayed close owned until done;
+			// repeated allowlisted commands cannot multiply its workers.
+			time.Sleep(150 * time.Millisecond)
+			_ = conn.WriteControl(
+				websocket.CloseMessage,
+				websocket.FormatCloseMessage(websocket.CloseGoingAway, "QA reconnect fault"),
+				time.Now().Add(time.Second),
+			)
+			_ = conn.Close()
+		}) {
+			// Shutdown/released admission must not launch a detached fallback.
+			_ = conn.Close()
+		}
+	})
 }
 
 func (c *Client) sendSystemChat(message string) {

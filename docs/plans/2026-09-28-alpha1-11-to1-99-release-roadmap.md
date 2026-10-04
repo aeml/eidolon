@@ -26,6 +26,14 @@ with a dirty bit rather than an invalidation queue. Focused race checks passed
 in3.206s, retaining immediate status acknowledgements and current-state lookup.
 No connected-Mongo/load or live release acceptance is inferred; the jump-policy
 choice and other ordered1.72 gates remain open.
+The [QA worker follow-up](2026-10-04-release1-72-qa-worker-checks.json) makes the
+allowlisted reconnect fault once-per-connection and lifecycle/lease tracked.
+Concurrent actual-close and handler/allowlist regressions passed1.372s;
+current-source native TCP/TLS/WebSocket flood/admission cases passed1.569s.
+Remaining direct production launches are fixed service workers or joined
+simulation/state work, not detached per-trigger social/QA jobs. Transitive
+schedulers, latest connected-game compatibility and the jump policy remain
+separate release gates; no capacity or public deployment is claimed.
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
