@@ -485,6 +485,16 @@ candidate and its supported dependency correction separately. This deploys only
 the stat-order hotfix/test-tool correction, not the unpublished1.71–1.73 writers.
 Owner recovery/jump choices remain open; administration-safety preparation may
 continue without publishing out of order. The full1.11–1.99 goal remains active.
+The [1.74 read-completion follow-up](2026-10-04-release1-74-admin-read-completion-checks.json)
+now revalidates durable administrator authority and connection ownership after
+query and audit IO. Late denials clear all private status/player/history/report
+data and retain correlated sanitized activity through the existing recovery path.
+Thirteen injected transition cases and an actual disk-journal reopen/exact replay
+pass, along with focused administration/session/mutation race regressions in
+9.015 seconds. No production data, grant policy or schema changed. This is
+prepared source, not a connected acceptance or1.74 deployment. Existing RAM-only
+dual-store-outage limits remain explicit; ordered release gates and the full
+roadmap goal stay open.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
