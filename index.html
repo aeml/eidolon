@@ -772,12 +772,13 @@
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
                 <div class="patch-note-entry" data-version="1.70.2">
-                    <h3 class="patch-note-entry__title">Alpha 1.70.2 (stable Forge stat rows)</h3>
+                    <h3 class="patch-note-entry__title">Alpha 1.70.2 (stable Forge stats and deployment checks)</h3>
                     <ul class="patch-note-entry__list">
                         <li>Forge stats stay in a fixed order: Damage, Defense, STR, DEX, INT, WIS, VIT, then extra stats alphabetically. Server refreshes no longer shuffle the rows while you review an item.</li>
                         <li>The same order applies to upgrade, potency and capped-item previews, matching bag and equipment tooltips. Zero-valued stats remain visible.</li>
                         <li>No material costs, item stats, reward rates, account data or gameplay rules changed. This presentation hotfix does not publish the unfinished account-security or valuable-operation milestones.</li>
                         <li>Update the development test tools to remove a vulnerable pattern-matching dependency; the browser game's runtime dependencies are unchanged.</li>
+                        <li>Deployment health and public release checks now have request timeouts and a bounded wait, so a stalled endpoint cannot hold an attempt indefinitely. Exact release matching is still required.</li>
                         <li>Full prior patch history and Ilyra's permanent wizard outfit remain included.</li>
                     </ul>
                 </div>
