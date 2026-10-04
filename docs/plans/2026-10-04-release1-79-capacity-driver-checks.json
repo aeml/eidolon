@@ -542,6 +542,22 @@
       "loadtest/weekly_test.go": "d92676a928dd77ebfb4b1a0e331790048a2773114893af948d5b0b3359dbf6ce",
       "load_weekly_integration_test.go": "5aca9f713cafdda00ebfefc51373389f530d50c5fa1d3efe6cf55a418034152a"
     },
+    "actualRun": {
+      "status": "RUNNING_VERIFIED_PROCESS_NOT_YET_TERMINAL",
+      "sourceCommit": "d06434bb",
+      "ownedContainer": "005aadbb6143ad735243d7fda9211b71a88c8f734619e6e6dd5451b1a9238514",
+      "taskLabel": "weekly-179-20261004",
+      "parentSession": 71025,
+      "verifiedNamespaceProcesses": {"rootPID": 79, "serverPID": 93, "driverPID": 103},
+      "startEvidence": "Parent session71025 printed actual test header and normal server startup marker. Exact root/server/driver comm verified live; isolated Mongo ping passed. Luna authorized for raid monitoring; parent retrieves definitive terminal result.",
+      "isolation": "Owned Mongo7.0.14/networknone/no ports,2CPU/2GiB,512MiB database/16MiB config tmpfs/.25GiB cache; readonly root/driver/server binds. Root22m and driver20m maximum, early completion. No production data/environment/service mutation or in-run resource/gear/kill/clock grants. Initial nested readonly mount creation failed before Mongo/test launch; its exact created/not-running owned container07e67443 removed before corrected launch, not an encounter failure/retry.",
+      "artifacts": {
+        "driver": {"path": "/tmp/eidolon-179-weekly-actual-VNX9EJ/loadtest", "sha256": "3bcdacbbbda7f5175715ace1427592b589903f7edc330fba1d6150bfbd8572b2"},
+        "raceRoot": {"path": "/tmp/eidolon-179-weekly-actual-VNX9EJ/root.test", "sha256": "81ea5e3cbbc30fa9ccddab18afef3b6facd015445a78920ffa1042c066718a59"},
+        "unchangedServer": {"path": "/tmp/eidolon-179-poker-actual-eociud/server", "sha256": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc"}
+      },
+      "terminalResult": "Not yet retrieved. Startup/process liveness is not completion, reward/save, fight-duration or capacity acceptance."
+    },
     "limits": "Controller/unit preparation only. Need actual earned isolated encounter/save evidence. Announcements do not independently prove Eidolon aid mechanics or human balance. No five-to-ten-minute balance, full campaign, representative100-player/headroom or public release claim. Accepted previous encounters not replayed."
   },
   "eventCorrectedActualRun": {
