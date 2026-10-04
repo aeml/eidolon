@@ -122,7 +122,7 @@ HEALTH_URL="http://127.0.0.1:${HOST_PORT}/healthz"
 echo "Waiting for healthy release ${EIDOLON_BUILD_COMMIT} at ${HEALTH_URL} ..."
 health_json=""
 for attempt in $(seq 1 30); do
-  if health_json="$(curl -fsS "${HEALTH_URL}" 2>/dev/null)" && \
+  if health_json="$(curl --connect-timeout 2 --max-time 5 -fsS "${HEALTH_URL}" 2>/dev/null)" && \
      printf '%s' "${health_json}" | grep -Fq "\"commit\":\"${EIDOLON_BUILD_COMMIT}\"" && \
      printf '%s' "${health_json}" | grep -Fq '"database":"ready"'; then
     break
