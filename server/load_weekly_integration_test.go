@@ -83,7 +83,7 @@ func TestLoadWeeklyActualFiveRolesPhasesExitAndSaves(t *testing.T) {
 		t.Fatal("actual weekly raid driver failed; raw synthetic socket logs omitted")
 	}
 	if !regexp.MustCompile(`Weekly raid coverage: groups=1 converted=true prepared=true ready_members=5 phase_members=5 min_phase_views=4`).Match(output) ||
-		!regexp.MustCompile(`Dungeon coverage: groups=1 entered=5 cleared=5 exited=5 cleared_rooms=2 cleared_bosses=1 `).Match(output) {
+		!regexp.MustCompile(`Dungeon coverage: groups=1 entered=5 cleared=5 exited=5 cleared_rooms=1 cleared_bosses=1 `).Match(output) {
 		t.Fatal("missing every-client ordered phases, earned boss clear or town exit")
 	}
 	stop()

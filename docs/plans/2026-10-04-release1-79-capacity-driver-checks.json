@@ -543,7 +543,7 @@
       "load_weekly_integration_test.go": "5aca9f713cafdda00ebfefc51373389f530d50c5fa1d3efe6cf55a418034152a"
     },
     "actualRun": {
-      "status": "RUNNING_VERIFIED_PROCESS_NOT_YET_TERMINAL",
+      "status": "TERMINAL_FAIL_FIXTURE_REMOVED",
       "sourceCommit": "d06434bb",
       "ownedContainer": "005aadbb6143ad735243d7fda9211b71a88c8f734619e6e6dd5451b1a9238514",
       "taskLabel": "weekly-179-20261004",
@@ -556,7 +556,8 @@
         "raceRoot": {"path": "/tmp/eidolon-179-weekly-actual-VNX9EJ/root.test", "sha256": "81ea5e3cbbc30fa9ccddab18afef3b6facd015445a78920ffa1042c066718a59"},
         "unchangedServer": {"path": "/tmp/eidolon-179-poker-actual-eociud/server", "sha256": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc"}
       },
-      "terminalResult": "Not yet retrieved. Startup/process liveness is not completion, reward/save, fight-duration or capacity acceptance."
+      "terminalResult": "Parent retrieved session71025 FAIL107.64s/exit1, not a skip. All5 admitted/entered; phase minimum1,0 complete phase members/clear/exits. Recovery15requested/completed, reentry14/checkpoint13; min own impact14, damage184/heals9/casts80/denied1, observed deaths0, XP updates0 (level100 counter does not measure resonance). Read/write/decode/admission errors0. Exact failure site was not retained by the original bool-only controller; recovery/reentry counts are not proof of cause. Normal server stopped without fatal marker. Peak578134016B/OOMfalse/all cgroup max/OOM counters0. Original artifacts retained; exact owned fixture/synthetic data removed after terminal/ownership/peak checks. No earned weekly reward/save or human balance claim.",
+      "followUp": "Added closed-vocabulary first-failure diagnostics for runtime checkpoint/foreign-instance/unexpected-town/request/timeout/cast failures; tests1.376s preserve first cause and no retries. Corrected the actual-check room assertion from2 to1 because coverage counts cleared non-start rooms, not layout size; weekly has one boss and one start. The mandatory earned boss/phase/save gates remain. No rerun yet; user Sell All/in-game-error fixes take priority."
     },
     "limits": "Controller/unit preparation only. Need actual earned isolated encounter/save evidence. Announcements do not independently prove Eidolon aid mechanics or human balance. No five-to-ten-minute balance, full campaign, representative100-player/headroom or public release claim. Accepted previous encounters not replayed."
   },

@@ -56,12 +56,12 @@ func (d *dungeonLoad) observe(p *partyLoad, index int, me Entity) {
 	}
 	if me.InstanceID != "" {
 		if !d.launched || d.instance != "" && me.InstanceID != d.instance {
-			p.failed = true
+			p.failAt(failureForeignInstance)
 			return
 		}
 		if m.scene && me.InstanceID == d.instance {
 			if (!m.entered || m.pending == "enter") && math.Hypot(me.X-m.spawn.x, me.Z-m.spawn.z) > 3 {
-				p.failed = true
+				p.failAt(failureCheckpointPosition)
 				return
 			}
 			wasEntered := m.entered
@@ -76,7 +76,7 @@ func (d *dungeonLoad) observe(p *partyLoad, index int, me Entity) {
 			}
 		}
 	} else if m.entered && !m.dead && !m.recovering && !m.exitRequested {
-		p.failed = true
+		p.failAt(failureUnexpectedTown)
 	}
 	if m.pending == "recover" && m.townScene && me.InstanceID == "" && me.Health > 0 && me.State != "DEAD" && math.Hypot(me.X+1.25, me.Z-200) <= 2 {
 		m.pending = ""
@@ -227,11 +227,11 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 	issue := func(kind, pending string, payload interface{}) {
 		m.pending, m.sentAt = pending, now
 		if request(kind, payload) != nil {
-			p.failed = true
+			p.failAt(failureDungeonRequest)
 		}
 	}
 	if m.pending != "" && now.Sub(m.sentAt) >= timeout {
-		p.failed = true
+		p.failAt(failureDungeonTimeout)
 		return false
 	}
 	if !m.statusSent {
@@ -256,7 +256,7 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 		return false
 	}
 	if !m.entered && now.Sub(d.launchAt) >= timeout {
-		p.failed = true
+		p.failAt(failureInitialEntryTimeout)
 		return false
 	}
 	if !m.entered || m.pending != "" || m.exited {
@@ -264,7 +264,7 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 	}
 	if me.InstanceID == "" {
 		if !m.dead && !m.recovering && !m.exitRequested {
-			p.failed = true
+			p.failAt(failureUnexpectedTown)
 			return false
 		}
 		if m.exitRequested {

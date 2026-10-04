@@ -418,6 +418,11 @@ func main() {
 			checkpointReturns += counts.checkpointReturns
 		}
 		log.Printf("Dungeon coverage: groups=%d entered=%d cleared=%d exited=%d cleared_rooms=%d cleared_bosses=%d reentry_requests=%d checkpoint_returns=%d", len(parties), entered, cleared, exited, rooms, bosses, reentries, checkpointReturns)
+		for index, party := range parties {
+			if code := party.failureCode(); code != "none" {
+				log.Printf("Failure coverage: group=%d stage=%s", index, code)
+			}
+		}
 		casinoFailed = casinoFailed || entered != uint64(*count) || cleared != uint64(*count) || exited != uint64(*count) || reentries != checkpointReturns
 	}
 	if selectedScenario == "party-raid" {

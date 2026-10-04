@@ -35,6 +35,7 @@ type partyLoad struct {
 	target           Entity
 	deaths           uint64
 	failed           bool
+	failureStage     loadFailureStage
 	dungeon          *dungeonLoad
 	raid             *raidLoad
 	event            *eventLoad
@@ -344,7 +345,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 	}
 	if m.pendingSkill != "" {
 		if now.Sub(m.abilitySent) >= timeout {
-			p.failed = true
+			p.failAt(failureCastTimeout)
 		}
 		return // Never repeat an unacknowledged cast.
 	}
