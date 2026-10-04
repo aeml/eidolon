@@ -11,6 +11,12 @@ See [public acceptance](2026-10-04-release1-72-public-acceptance.json) for passe
 and skipped scopes. Actual Postmark inbox delivery remains owner-initiated;
 no new animation/GPU coverage, IPv6 fix or capacity promise is inferred.
 Earlier maintenance/runtime/model receipts retain their separate scopes.
+The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
+guards the generic installer against replacing canonical two-host routes with
+an API-only frontend. Eighteen pure argument cases pass; current origin TLS,
+redirects and enabled service/timer observations are retained separately.
+No live Nginx/DNS/certificate change was made. Renewal-challenge/publicIPv6 and
+ordered predecessor release gates remain open; this is not1.77 publication.
 Prepared 1.73 now has a [real schema17-to22 upgrade check](2026-10-04-release1-73-schema17-upgrade-checks.json).
 An isolated Mongo fixture retained existing account BSON, recovery-email state,
 roles, value and indexes exactly; created only empty indexed operation collections;

@@ -421,7 +421,7 @@ Notes:
 ## Project Status
 
 - Current source version: `Alpha 1.74.0`. This isolated, unpublished
-  1.76 candidate integrates prepared 1.72 security and 1.73 valuable-operation
+  1.77 candidate integrates prepared 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
   credential/recovery JSON exclusions. Retention, owner export/removal and notices
@@ -432,8 +432,12 @@ Notes:
   preserve legacy BSON across schema17-to24, require the new permanent ordinal
   index, and enable the opt-in checkpoint/paging tests in disposable CI.
   These are storage checks, not production acceptance or player capacity. Later1.78
-  operations-monitor work remains excluded.1.72 is independently accepted;
-  this candidate must not deploy as1.74 or before1.73/1.74/1.75 acceptance.
+  operations-monitor work remains excluded.
+  [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
+  add safe single-host installer argument guards and two-host instructions;
+  read-only origin TLS/service observations are not future renewal/IPv6 proof.
+  1.72 is independently accepted; this candidate must not deploy as1.74 or
+  before1.73/1.74/1.75/1.76 acceptance.
   Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader

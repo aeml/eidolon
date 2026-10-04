@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "milestone": "Prepared Alpha1.77 hosting/network integration",
+  "status": "unpublished; predecessor and remaining network gates open",
+  "integrationSource": "7db2e36d92d16d5930630301b55038f1c4202554 prepared1.76, carrying accepted1.72 and corrective1.73 fixture/source",
+  "inheritedVersion": "Alpha1.74.0",
+  "inheritedSchema": 24,
+  "liveObserved": "Alpha1.72.0/1cf51d22ee16daa62406aeb9c1ecba92b66895e0/schema17. Corrective1.73 CI37199769860 is running; no later release acceptance inferred.",
+  "changes": {
+    "installerGuard": "Generic single-host installer previously accepted either canonical hostname and would generate an API-only proxy into eidolon.conf. It now rejects both canonical names, including uppercase/trailing-dot variants, before privileged/file effects. Validate DNS labels/total length and decimal1..65535 port before root admission. The pure validator can be sourced without invoking an installer. Existing valid custom-host setup remains available; no runtime DNS/configuration was changed.",
+    "operatorInstructions": "Document fresh additive two-host installation with explicit absence/symlink guards and nginx tests. Existing installations must not reinstall or overwrite working shared configuration. Preserve Pages TLS name/Host, complete paths/release queries and backend WebSocket upgrade behavior. Explain host-specific resolver and that outbound ipv6=off does not force browser/public IPv4. Certificate timer/no-op success is not renewal-challenge evidence."
+  },
+  "localChecks": {
+    "command": "Go1.27.1 GOMAXPROCS2/p2 go test -race . -run '^TestTLSSetupArgumentSafety$' -count=1 -timeout=30s",
+    "result": "Root1.139s passed18 cases: valid/default/normalized custom host and ports; missing/extra arguments; both canonical domains and variants; URL/path/option/shell/control/empty/overlong labels; zero/overflow/injected ports. Source-only validation executes no installer or privileged command even on root CI. Also checks actual main calls validation before root admission. bash-n, gofmt and git diff --check passed.",
+    "setupScriptSHA256": "aec786dbad0abb3b04e4e3ede8b0ba69be74b15192d0a3487d8f23d4988f00fb",
+    "testSHA256": "a2d63d59a2b295713a086aa2fd527e45d3a4a68fb48af3e50940ee18ae52eb8d"
+  },
+  "hostObservation": {
+    "dateUTC": "2026-10-04; final frontend handshake11:58UTC",
+    "scope": "Read-only installed config directives, systemd unit metadata, public/loopback HTTPS certificate handshakes and bounded health/HTTP redirects. No private certificate key, .env contents, raw logs or provider settings read. No sudo/install/reload/renew/DNS/service modification performed.",
+    "activeConfig": "sites-enabled/eidolonrealms.conf links to sites-available/eidolonrealms.conf. Frontend proxies aeml.github.io with upstream SNI/nameaeml.github.io and HTTPHostplay.eidolonrealms.com; backend127.0.0.1:18082 retains HTTP1.1 Upgrade/Connection,3600s read timeout and bufferingoff. Both listen on IPv4/IPv6 locally; that alone is not publicIPv6 reachability.",
+    "certificate": "Origin certificate via loopback443/SNI has both canonical DNS SANs, valid2026-09-11T03:32:28Z through2026-12-10T03:32:27Z. Separate bounded hostname-verified TLS1.3 handshakes for both names returned VerificationOK. Direct fullchain file access was permission-denied; no elevated/private-key read attempted.",
+    "services": "nginx and docker active/enabled. certbot.timer active/waiting/enabled, next event2026-10-04T23:29:13Z, last trigger06:41:42Z. certbot.service last result success/exit0; not claimed actual certificate renewal or ACME dry-run acceptance.",
+    "api": "Bounded2s-connect/5s-total HTTPS request resolving backend hostname to127.0.0.1 returned statusok/database ready/exact accepted1cf51d22/Alpha1.72.0. This verifies current local TLS proxy/API path, not the prepared1.77 build.",
+    "redirects": "Separate bounded publicIPv4 HTTP requests for both canonical host roots returned301 to their corresponding HTTPS URLs. Prior exact1.72 public acceptance independently covers frontend/runtime and API."
+  },
+  "remaining": "Owner-deferred publicIPv6/DDNS remediation or explicit supported-path decision before launch; actual approved renewal/challenge test; reboot resilience and supported environment separation/rollback recovery review. Retain earlier bounded probe/restart proof scopes rather than launching redundant campaigns. Finish owner policy and ordered1.73–1.76 releases, assemble own version/notes and verify exact-source CI/public deployment before publishing1.77.1.78 operational code is excluded; no capacity, payment, beta or full1.99 acceptance."
+}
