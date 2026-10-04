@@ -770,13 +770,18 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
-October4: prepared **Alpha1.71.1** maintenance safeguard restricts mystery
+October4: accepted **Alpha1.71.1** maintenance safeguard restricts mystery
 purchases to equipment, blocking forged material/relic loot-pool requests for
 Forge shards/hearts and invalid saved-level prices. Existing items, balances,
 legitimate prices and verified-email recovery are preserved. Schema17 remains;
 this does not publish the broader durable-purchase milestone. Scoped checks,
-mail-configuration boundaries and pending deployment acceptance are recorded in
+mail-configuration boundaries are recorded in
 [the maintenance receipt](2026-10-04-release1-71-1-shop-checks.json).
+All ten CI jobs in run37190290208 passed; independent post-terminal public checks
+matched1b6f44d2 on both services, login/notes and four recovery runtime files.
+[Public acceptance](2026-10-04-release1-71-1-public-acceptance.json) records skipped
+visual scopes and the still-unconfirmed actual inbox delivery; no whole-roadmap
+or closed-beta completion is inferred.
 
 September 28, 2026: forward roadmap created; all 1.11–1.99 milestones planned.
 No game version bump, deployment, payment integration, infrastructure change,

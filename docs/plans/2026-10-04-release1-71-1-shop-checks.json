@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.71.1 narrow mystery-equipment guard",
-  "status": "prepared; CI and independent public acceptance pending",
+  "status": "accepted live; scoped checks and public acceptance recorded separately",
   "base": "Accepted Alpha1.71.0 commit4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e plus its committed acceptance metadata f6603350. No future schema22/24 code or1.72 dependencies are included.",
   "changes": "Whitelist real equipment slots and legacy ring/trinket aliases before selecting the mystery loot pool. Refuse saved levels outside1..100 without normalizing or rewriting them. Hold the player mutex while debiting and inserting. Forged material/relic requests can no longer buy Forge shards/hearts.",
   "checks": [
@@ -12,5 +12,6 @@
   "mailConfiguration": "Read-only running-container check reports the four owner-specified Postmark/admin environment fields nonempty; values were not displayed. Live1.71.0 frontend and backend independently match4bc0b95c; database ready. No actual provider message sent or inbox delivery claimed. Private recovery links never go to ADMIN_NOTIFICATION_EMAILS.",
   "unchanged": "Schema17, existing items/balances, equipment rarity/power, legitimate shop prices, account recovery, open-alpha access and all later release gates. No production grants, material removal, rollback, payment integration or service configuration change.",
   "limits": "This guard is not the broader prepared1.73 durable-purchase handler or wire-level replay deduplication. No claimed campaign, capacity, actual inbox or schema-upgrade proof.",
-  "next": "Fetch/integrate master without overwriting concurrent website changes; push normal CI deployment; Luna monitors actual run and reports completion/failure. Exact frontend/backend identity and public notes must be checked before live acceptance."
+  "acceptance": "2026-10-04-release1-71-1-public-acceptance.json records all ten CI jobs successful in run37190290208 and independent post-terminal exact-source public checks for1b6f44d286b7689bd646999e1fa9c8e1859d9087. All four mail settings remain present; actual inbox delivery still requires the owner check.",
+  "next": "Carry acceptance metadata into the next substantive ordered release without a receipt-only deployment. Keep broader1.72/1.73 and human gates distinct."
 }
