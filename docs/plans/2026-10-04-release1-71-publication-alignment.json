@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.71 account security and recovery",
+  "status": "prepared-isolated-candidate; recovery decision and implementation pending",
+  "sourceCommit": "96ba0496",
+  "branch": "work/alpha-1-71-account-security-20261002",
+  "integration": "Merged public master ddfa60e3 into the existing account-security branch. Resolved only the README status conflict, retaining current public fixes and the prepared credential, token and password-change work. This branch uses schema17/Go1.24.5 and excludes unpublished schema18–24 writers and later dependency changes. The broader prepared branch remains separate.",
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(ResumeToken|PasswordChange|Credential(Fresh|Busy|Admission|Budget|Clock|Concurrent|Release|Dispatch)|Registration|PublicRegistration|BootstrapRegistration|AuthDispatch|SchemaMigrationCatalog|SchemaCompatibilityRejectsUnknownFutureWriters)' -count=1 -timeout=30s",
+    "result": "passed: root1.482s, database1.034s",
+    "scope": "Selected account/token/password and schema unit regressions after merging public maintenance. Not another connected-session, actual-Mongo or browser acceptance run; earlier receipts retain their original scope.",
+    "assembly": "Read-only Node check confirms package/login/backend Alpha1.70.2, schema17, retained password UI and cumulative deployment-timeout notes. git diff --check passes. No version promotion or remote push."
+  },
+  "remaining": "Owner choice between offline one-time recovery codes and an explicitly configured mail provider; implement and check the chosen ownership-proof/recovery flow, assemble explicit1.71 version/notes, publish exact-source CI and independently verify public release. Current maintenance CI37175484045 remains pending at this check; last accepted baseline is526bc229."
+}
