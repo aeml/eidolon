@@ -1866,6 +1866,13 @@ it skips outside the first40s of a real announcement. No four-player earned
 event/save, all-realms or capacity acceptance yet. Existing raid/dungeon/casino
 receipts retain their scope and are not rerun. Default mixed/combined unchanged.
 
+October4 live availability incident remains open: the Alpha1.74 backend crashed
+on concurrent entity-map iteration/write and auto-restarted. Read-only deployed
+source inspection identifies an unprotected periodic elite-spawn publication as
+a candidate writer; no code repair/deployment has been authorized in response
+to the diagnostic request. See the [incident diagnosis](2026-10-04-live-map-crash-diagnosis.md).
+Prepared capacity work does not imply that this production crash is fixed.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)
