@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Eidolon Online</title>
+    <script src="./src/core/RecoveryLinkBoot.js"></script>
     <script type="module" src="./src/analytics/game.js"></script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23070a10'/%3E%3Cpath d='M32 7 49 18 45 45 32 57 19 45 15 18Z' fill='%2318202d' stroke='%23c6a15b' stroke-width='3'/%3E%3Cpath d='m22 21 10-7 10 7-7 11 8 13-11 7-11-7 8-13Z' fill='%235b456f' stroke='%23b8d5dc' stroke-width='2'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23f0b85c'/%3E%3C/svg%3E">
     <link rel="preload" href="./assets/fonts/Cinzel-Variable.ttf" as="font" type="font/ttf" crossorigin>
@@ -346,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.70.1</span>
+                    <span class="start-version-row__label">Alpha 1.71.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -388,7 +389,7 @@
                     <p>A brief disconnect retries automatically. If recovery fails, log in again with your existing username; do not register another account to recover a character. Existing passwords remain valid. For a new account, use a unique passphrase or password manager.</p>
                     <p>One active session owns your character. A new login replaces the older session. Use Menu to leave the world and return here; your progress is saved by the server.</p>
                     <p>Private dungeon progress retains its 15-minute logout window. An eligible return uses the latest cleared boss checkpoint, not a fresh run.</p>
-                    <p>There is no self-service password reset yet. For account trouble, contact the server operator through your established support channel. Never post passwords, session tokens or private account details in public issues.</p>
+                    <p>Forgot your password? Use the email recovery form below. First verify a recovery address in Account help or Settings while signed in; an unverified registration email cannot recover an account. For other account trouble, use your established support channel. Never post passwords, recovery links or session tokens in public issues.</p>
                 </details>
                 <p class="auth-project-note">Eidolon is an open-source project.<br>
                     <a href="https://github.com/aeml/eidolon" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in a new tab)">View on GitHub</a>
@@ -771,6 +772,28 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.71.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.71.0 (account security and emailed recovery)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Verify a recovery email from signed-in Account help or Settings. Your current password and an explicit confirmation link are required; an unverified registration email never grants account ownership. Verification links expire in 30 minutes.</li>
+                        <li>Forgot your password? Request an emailed link by username on the login screen. Single-use reset links expire in 15 minutes; opening a link does not reset your password or sign you in. A successful reset invalidates existing sessions; sign in normally with your new password.</li>
+                        <li>Change your password while signed in with current-password proof. New passwords require at least 15 characters and at most 72 UTF-8 bytes. Existing passwords remain valid until you choose to change them; characters, gear, Gold, EP and administrator roles are preserved.</li>
+                        <li>Credential work and repeated attempts are bounded across connections, live session replacement invalidates the previous token, and ordinary disconnect recovery starts its existing five-minute window when you disconnect. Dungeon progress still uses the separate 15-minute rule.</li>
+                        <li>Private links are removed from the address bar before analytics initializes. Recovery pages disable analytics; passwords and recovery links are not saved by the forms. Unconfirmed changes are never retried automatically, and administrators do not receive your private recovery emails.</li>
+                        <li>Postmark delivers configured transactional mail. Only previously verified recovery addresses receive resets; requests do not reveal whether an account has one. This release adds no payments, gameplay rewards or early closed-beta transition. Full prior patch history and Ilyra's permanent wizard outfit remain included.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="1.70.2">
+                    <h3 class="patch-note-entry__title">Alpha 1.70.2 (stable Forge stats and deployment checks)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Forge stats stay in a fixed order: Damage, Defense, STR, DEX, INT, WIS, VIT, then extra stats alphabetically. Server refreshes no longer shuffle the rows while you review an item.</li>
+                        <li>The same order applies to upgrade, potency and capped-item previews, matching bag and equipment tooltips. Zero-valued stats remain visible.</li>
+                        <li>No material costs, item stats, reward rates, account data or gameplay rules changed. This presentation hotfix does not publish the unfinished account-security or valuable-operation milestones.</li>
+                        <li>Update the development test tools to remove a vulnerable pattern-matching dependency; the browser game's runtime dependencies are unchanged.</li>
+                        <li>Deployment health and public release checks now have request timeouts and a bounded wait, so a stalled endpoint cannot hold an attempt indefinitely. Exact release matching is still required.</li>
+                        <li>Full prior patch history and Ilyra's permanent wizard outfit remain included.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.70.1">
                     <h3 class="patch-note-entry__title">Alpha 1.70.1 (safe direct-trade offer edits)</h3>
                     <ul class="patch-note-entry__list">

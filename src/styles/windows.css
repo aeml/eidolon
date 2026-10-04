@@ -1515,6 +1515,8 @@
 .quest-contract:focus-visible { outline: 2px solid var(--quest-accent); outline-offset: -2px; }
 
 .trading-read-status { padding: 8px 12px; color: #d4dce7; font-size: 13px; line-height: 1.5; }
-.password-change form { display: grid; gap: .55rem; margin-top: .65rem; }
-.password-change input { width: 100%; min-width: 0; box-sizing: border-box; }
-.password-change summary { cursor: pointer; }
+.password-change form, .email-recovery form { display: grid; gap: .55rem; margin-top: .65rem; }
+.password-change input, .email-recovery input { width: 100%; min-width: 0; box-sizing: border-box; }
+.password-change summary, .email-recovery summary { cursor: pointer; }
+.email-recovery .support-field__row { flex-wrap: wrap; }
+.email-recovery input { font-size: 16px; }

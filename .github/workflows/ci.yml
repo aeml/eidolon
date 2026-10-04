@@ -112,6 +112,7 @@ jobs:
           duel_binary_dir="$(mktemp -d "$RUNNER_TEMP/eidolon-duel-XXXXXX")"
           go build -race -ldflags='-X main.buildCommit=server' -o "$duel_binary_dir/server" .
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCredentialActualFreshConnectionsAndTakeover$' -count=1
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestEmailRecoveryActualConnectedSessions$' -count=1 -timeout=45s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDuelActualSocketsReplacementConsentAndSurrender$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestAdmin(ConsoleActualSessionsAndHistoryRestart|ModerationActualSessionsAndRestart)$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestGroupFinderActualSocketsConsentPrivacyAndReady$' -count=1
@@ -561,7 +562,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.70.1" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.71.0" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:
@@ -591,19 +592,23 @@ jobs:
           sg render -c 'EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome npm run verify:browser-gpu'
 
       - name: Wait for matching live releases
+        timeout-minutes: 6
         env:
           EXPECTED_COMMIT: ${{ github.sha }}
         run: |
+          # Bound each request and the complete release wait. A finite retry
+          # count alone cannot terminate a request stalled before its response.
+          release_deadline=$((SECONDS + 300))
           for attempt in $(seq 1 60); do
-            client_commit="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/release.json?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).commit || ""' 2>/dev/null || true)"
-            client_runtime_release="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/?release=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*src\/main\.js?release=\([^"]*\)".*/\1/p' | tail -1 || true)"
-            server_commit="$(curl -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_HEALTH_URL}?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).commit || ""' 2>/dev/null || true)"
+            client_commit="$(curl --connect-timeout 2 --max-time 5 -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/release.json?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).commit || ""' 2>/dev/null || true)"
+            client_runtime_release="$(curl --connect-timeout 2 --max-time 5 -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_BASE_URL%/}/?release=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | sed -n 's/.*src\/main\.js?release=\([^"]*\)".*/\1/p' | tail -1 || true)"
+            server_commit="$(curl --connect-timeout 2 --max-time 5 -fsS -H 'Cache-Control: no-cache' "${EIDOLON_E2E_HEALTH_URL}?expected=${EXPECTED_COMMIT}&attempt=${attempt}" 2>/dev/null | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).commit || ""' 2>/dev/null || true)"
             if [ "${client_commit}" = "${EXPECTED_COMMIT}" ] && \
                [ "${client_runtime_release}" = "${EXPECTED_COMMIT}" ] && \
                [ "${server_commit}" = "${EXPECTED_COMMIT}" ]; then
               exit 0
             fi
-            if [ "${attempt}" -eq 60 ]; then
+            if [ "${attempt}" -eq 60 ] || [ "${SECONDS}" -ge "${release_deadline}" ]; then
               echo "Live release mismatch: client=${client_commit:-unavailable} runtime=${client_runtime_release:-unavailable} server=${server_commit:-unavailable} expected=${EXPECTED_COMMIT}" >&2
               exit 1
             fi

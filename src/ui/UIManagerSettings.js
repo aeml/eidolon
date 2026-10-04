@@ -39,6 +39,8 @@ class UIManagerSettingsMethods {
         this.toggleStaticModal(this.settingsScreen, this.isMobile ? 'flex' : 'block');
         if (opening) this.passwordChange?.refresh();
         else this.passwordChange?.clearFields();
+        if (opening) this.recoveryEmail?.refresh();
+        else this.recoveryEmail?.clearFields();
     }
 
     togglePatchNotes() {

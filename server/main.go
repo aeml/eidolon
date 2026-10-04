@@ -72,7 +72,7 @@ var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Ge
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.70.1"
+	buildVersion = "Alpha 1.71.0"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -534,7 +534,12 @@ func main() {
 	}
 	stopEconomyMetrics := startEconomyMetrics(world, *economyMetricsFilePath)
 	defer stopEconomyMetrics()
+	recoveryMailer, err := newRecoveryMailer(os.Getenv)
+	if err != nil {
+		log.Fatal("Account recovery configuration is invalid: ", err)
+	}
 	loops := newServerLoops()
+	accountRecovery = newEmailRecoveryService(db, recoveryMailer, loops)
 
 	// Sweep goroutine: remove disconnected player entities whose resume window
 	// has expired. Runs every 30 seconds.

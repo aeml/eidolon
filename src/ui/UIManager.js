@@ -640,7 +640,7 @@ export class UIManager {
         disposeOwnedEvents(this);
         for (const name of ['quest', 'skillTree', 'phoneMenu', 'keyboardSettings', 'phoneSettings',
             'forge', 'trading', 'directTrade', 'wardrobe', 'epWallet', 'cosmeticVendor', 'admin',
-            'inventory', 'report', 'playtest', 'social', 'pvp', 'chat', 'passwordChange']) {
+            'inventory', 'report', 'playtest', 'social', 'pvp', 'chat', 'passwordChange', 'recoveryEmail']) {
             const child = this[name];
             if (!child) continue;
             disposeOwnedEvents(child);

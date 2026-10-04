@@ -3,7 +3,26 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.70.1';
+const currentVersion = '1.71.0';
+
+test('1.71.0 documents explicit verified-email recovery without ownership shortcuts', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.71.0"'), previous = html.indexOf('data-version="1.70.2"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['unverified registration email never grants', '30 minutes', '15 minutes',
+        'invalidates existing sessions', 'at least 15 characters', '72 UTF-8 bytes',
+        'Recovery pages disable analytics', 'never retried automatically', 'administrators do not receive',
+        'no payments', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
+
+test('1.70.2 explains stable Forge presentation without publishing unfinished milestones', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.70.2"'), previous = html.indexOf('data-version="1.70.1"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['fixed order', 'extra stats alphabetically', 'no longer shuffle',
+        'upgrade, potency and capped-item', 'Zero-valued stats', 'No material costs',
+        'does not publish the unfinished', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.70.1 documents atomic trade edits without claiming durable settlement or account recovery', () => {
     const html = fs.readFileSync('index.html', 'utf8');

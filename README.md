@@ -420,12 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.70.1` (accepted direct-trade escrow-edit hotfix, exact `fa414f0b`; all ten CI jobs and independent public checks passed). [Acceptance](docs/plans/2026-10-02-release1-70-1-trade-checks.json) records the release. Offer edits retain selected escrow identity and reject overflow before mutation; this does not certify crash-durable two-account settlement. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
-- Last independently verified live release: `Alpha 1.70.1`, exact
-  fa414f0b288e8ee014d5ce72f7affdca485e1c7f, successful CI37068064995 (all ten jobs,
-  including predeploy and live character QA). Public IPv4 frontend/backend
-  identities, database readiness, login version, cumulative notes and the
-  dressed Ilyra GLB match the release. Prepared1.71 source remains unpublished.
+- Current source version: `Alpha 1.71.0`, assembled for publication with password changes, session/token safeguards and explicit verified-email recovery through Postmark. Verify an address in signed-in Account help or Settings before using Forgot your password on the login screen. Opening a link alone never changes credentials. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json) distinguish synthetic connected proof from actual inbox delivery. This branch retains schema17 and excludes later unpublished schema24 writers. Exact-source CI/public acceptance is still required; broader security/valuable-operation, owner/commercial and human gates stay open. This is not a capacity promise, payment launch or closed-beta transition.
+- Last independently verified live release: `Alpha 1.70.2`, exact
+  ddfa60e3b2bd20b08a175de124eb00fae66dc299, successful CI37175484045 (all ten jobs,
+  including both deploys and live QA). Independent public IPv4 frontend/backend
+  identities, database readiness, login version, notes and runtime release query
+  match. [Maintenance acceptance](docs/plans/2026-10-04-release1-77-network-probe-checks.json)
+  preserves its scope; the [Forge acceptance](docs/plans/2026-10-03-release1-70-2-forge-checks.json)
+  remains historical. Prepared1.71 is not accepted live merely by its assembly.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.

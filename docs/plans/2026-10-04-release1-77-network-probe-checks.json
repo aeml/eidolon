@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.77 hosting/network reliability; backported current-release maintenance",
+  "status": "maintenance-accepted-live; broader1.77 gates remain open",
+  "preparedSourceCommit": "c26f339ba1e18fa152b8ef791d185d0b2d6aa74d",
+  "publicSourceCommit": "ddfa60e3b2bd20b08a175de124eb00fae66dc299",
+  "publicSourceSHA256": {
+    ".github/workflows/ci.yml": "f8a05a8d42d6c7304bae722bac04f63e29c8e1acbd32e89e9b92f45673aa56b7",
+    "server/deploy/deploy_linux.sh": "d8fc1e88d265b604bc5d64c1de1748b94c78dd4af96e81745ceee298f817f1e8",
+    "server/deploy_network_timeout_test.go": "ff7dae45349478940c89056a97c327130601209f684103426732d27ca0ae9d85",
+    "index.html": "d7f95c6f03b439e30c329c8b64900aff8e80c07f58e5d0260cce7285dfc927dc"
+  },
+  "confirmedPriorBehavior": "Standalone deployment health and CI public release loops counted retries but used curl without connection or total-request deadlines. A stalled response could keep a single attempt from completing. Source establishes this risk; no specific production outage is attributed to it.",
+  "changes": "Add a two-second connect deadline and five-second total request deadline to all relevant probes. Standalone health retains its30-attempt/two-second-pause budget and exact commit/ready-database requirement. CI still checks client manifest, client runtime release query and server commit; add a300-second elapsed deadline with at most one bounded batch overrun, plus an outer six-minute Actions step cap. Keep cache bypass and actionable mismatch output. This is operation-check timing, not a gameplay/session or DNS change.",
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(DeployHealthRealStalledResponse|LiveReleaseWorkflowBounds|DeploySchemaPreflight)' -count=1 -timeout=40s",
+    "preparedResult": "passed: root11.831s; a real loopback HTTP response stalls until curl's deadline, then the second request succeeds after5.112923385s. Docker/Git effects are mocked; this is actual curl/HTTP timeout evidence, not an actual stack deployment.",
+    "publicBackportResult": "passed again on isolated schema17 public source: root11.224s",
+    "workflowCoverage": "Execute the actual YAML step's shell with mocked endpoints and real Node JSON parsing. Three matching identities pass. Wrong client, runtime or server commit; malformed JSON; and curl timeout refuse readiness. Every request retains deadlines/cache bypass. Advance Bash's elapsed clock only at the retry boundary to verify overall-deadline diagnostics without a five-minute test sleep; not a real elapsed five-minute measurement.",
+    "hygiene": "bash -n, gofmt, git diff --check and actual js-yaml parsing pass. Public package/login/backend/workflow version remain Alpha1.70.2. No runtime dependencies or gameplay/protocol/schema files changed. All turn checks passed; no repeat campaign, dungeon or raid matrix or owned Docker fixture.",
+    "remoteIntegration": "Fetched and pulled current master before normal non-force push. Backport includes only workflow, operator deploy script/instructions, new targeted tests and cumulative1.70.2 maintenance notes. Unpublished security/valuable-operation/persistence code stays off master. Prepared branch then merged the public update without conflicts, preserving both lines."
+  },
+  "deployment": {
+    "runID": 37175484045,
+    "sha": "ddfa60e3b2bd20b08a175de124eb00fae66dc299",
+    "monitor": "User-authorized Luna agent /root/watch_deploy_network_1004 monitors this exact confirmed queued run read-only and reports terminal state/failure; no repeated root tick polling.",
+    "acceptance": "Exact-source CI37175484045 completed successfully; all ten jobs succeeded, including both deploys and live QA. Live anonymous/persistent-character and town-recovery/Well Rested steps succeeded. Four-class/remote-animation checks were explicitly skipped because this maintenance did not change gameplay/model assets; do not relabel the skipped scope as new proof.",
+    "jobs": ["Server Tests (Go)", "Browser Smoke (Playwright 1/3)", "Browser Smoke (Playwright 2/3)", "Browser Smoke (Playwright 3/3)", "Client Tests (Jest)", "Predeploy Character QA (System Chrome)", "Validate Production QA Inputs", "Deploy to GitHub Pages", "Deploy Server (SSH)", "Live Release and Character QA"],
+    "independentPublic": {"checkedAt": "2026-10-04T04:45:58.730Z", "addressFamily": "IPv4", "result": "Bounded cache-bypassing HTTPS checks match exactddfa60e3 on backendhealth/database-ready, frontendrelease.json and injected HTMLruntime query. Backend/frontend/login versionAlpha1.70.2 and cumulative maintenance note match. Previous changed-asset receipts retain their own scopes; runtime/model assets did not change here."}
+  },
+  "limits": [
+    "This maintenance backport keeps the existing Alpha1.70.2 gameplay and schema17; it does not complete or publish Alpha1.77, pending Alpha1.71–1.76 milestones, a beta transition or account-policy choices.",
+    "Finite release waits do not fix unreachable address families, stale DDNS, origin outages, certificate renewal, global connection protection or overall runner queue availability. Existing IPv6/owner-support decisions remain open; no DNS, nginx, TLS, service or payment policy was changed.",
+    "Maintenance acceptance is scoped to actual exact-source CI/public checks above, not inferred from the push or local tests. No full1.77,1.71–1.76, beta or full-roadmap acceptance is claimed."
+  ]
+}
