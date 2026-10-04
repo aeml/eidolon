@@ -31,5 +31,13 @@
     "finalAddedCheckResult": "passed, server package 2.221s; a modeled failed character save leaves approved grant intent, role revocation does not prevent background completion, a second recovery does not duplicate the grant, and the revoked actor cannot replay its privileged success",
     "limits": "In-process synthetic stores with existing temporary disk journals; not a new connected or Mongo acceptance. Remote role lookup and intent/report storage commit are not one atomic transaction. Existing exactly-once operation storage and outage recovery remain unchanged; no current production account or data was modified."
   },
-  "proposedPatchNote": "Administration screens discard private results if your administrator access or connection changes while a read is in progress. New grants and report reviews also recheck access after intervening storage work; already-approved operations retain safe recovery. Late denials retain correlated audit history through the existing storage-recovery path."
+  "moderationAuditFollowUp": {
+    "sourceCommit": "dbfb882efbb3b048b8b6baa57d62b6eb008d306b",
+    "baselineReproduction": "All six new post-audit revocation/outage/replacement cases correctly refused sanctions and private target previews but omitted their subsequent denial from activity history.",
+    "changes": "Existing moderation and target-preview authority checks are preserved. Late denials now use the existing sanitized rejection/outbox path; authenticated actor identity is retained on replaced connections, but a changed username is never attributed to the original actor.",
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(AdminModerationLate|AdminChatModeration|AdminRead|AdminReportReview)' -count=1 -timeout=60s",
+    "result": "passed, server package 7.251s",
+    "limits": "Focused injected in-process checks; no production sanctions, actual account writes or new connected/Mongo acceptance. Existing privacy/authority regressions remain passing. The original admission entry does not assert a sanction occurred; the case/account receipt remains authoritative."
+  },
+  "proposedPatchNote": "Administration screens discard private results if your administrator access or connection changes while a read is in progress. New grants and report reviews also recheck access after intervening storage work; already-approved operations retain safe recovery. Late read, mutation and moderation denials retain correlated audit history through the existing storage-recovery path."
 }

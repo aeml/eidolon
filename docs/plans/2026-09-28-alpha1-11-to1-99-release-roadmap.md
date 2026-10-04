@@ -503,6 +503,13 @@ cases are retained. Focused administration/session/recovery race checks pass in
 an already-approved grant after role revocation without exposing success to the
 revoked actor. No atomic cross-store permission guarantee or new connected/Mongo
 acceptance is implied. Both corrections remain prepared and unpublished.
+Moderation already refused late authority changes, but its rejection history
+could omit them. The same receipt now covers six failing-before/passing-after
+post-audit cases for sanctions and target previews. Existing authority/privacy
+checks remain intact, with focused race coverage passing in7.251 seconds.
+Authenticated actors are retained on replaced connections without attributing a
+changed username to the original requester. No production sanction was applied;
+the prepared1.74 safety work remains unpublished.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
