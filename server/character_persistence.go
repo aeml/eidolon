@@ -33,20 +33,28 @@ func noteCharacterSaveFailure(username string, failed bool) {
 // Caller owns the account work lock. Reconcile a prior durable snapshot before
 // any new operation or offline hydration can act on older database state.
 func reconcilePendingCharacterSaveLocked(username string) error {
+	_, err := reconcilePendingCharacterSaveWithStatusLocked(username)
+	return err
+}
+
+// Reports whether this command had to settle a previous uncertain post-image.
+// Random purchases can then resynchronize without treating a recovery attempt
+// as consent to pay for another roll. The caller still owns the account lock.
+func reconcilePendingCharacterSaveWithStatusLocked(username string) (bool, error) {
 	if characterSaveJournal == nil || characterSaveCommitter == nil {
-		return errors.New("character persistence unavailable")
+		return false, errors.New("character persistence unavailable")
 	}
 	pending, err := characterSaveJournal.Read(username)
 	if err != nil {
-		return err
+		return false, err
 	}
 	failedCharacterSaves.Lock()
 	failed := failedCharacterSaves.users[username]
 	failedCharacterSaves.Unlock()
 	if pending != nil || failed {
-		return retryPendingCharacterSaveLocked(username)
+		return true, retryPendingCharacterSaveLocked(username)
 	}
-	return nil
+	return false, nil
 }
 
 // All callers hold the per-account work lock. Journal before the database;

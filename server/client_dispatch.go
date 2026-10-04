@@ -1237,25 +1237,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		handleDirectTradeCancel(c, msg)
 
 	case MsgBuyGamble:
-		if c.playerID == "" {
-			return
-		}
-		var payload BuyGamblePayload
-		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
-			return
-		}
-
-		player, success := world.PerformBuyGamble(c.playerID, payload.Slot)
-		if success {
-			// Send Inventory Update
-			invPayload, _ := json.Marshal(player.Inventory)
-			msg := Message{
-				Type:    MsgInventory,
-				Payload: invPayload,
-			}
-			b, _ := json.Marshal(msg)
-			c.sendSafe(b)
-		}
+		handleMysteryPurchase(c, msg)
 
 	case MsgSell, MsgBuyback:
 		handleVendorTransaction(c, msg)

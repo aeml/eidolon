@@ -472,11 +472,23 @@ func (w *World) PerformForgeRemoveGem(playerID, equipSlot string, socketIndex in
 }
 
 func (w *World) PerformBuyGamble(playerID, slot string) (*Entity, bool) {
+	// The loot pool also contains Forge materials/relics. A forged shop slot
+	// must not turn those rare drops into purchasable mystery equipment.
+	if !isEquipmentSlot(slot) && slot != "ring" && slot != "trinket" {
+		return nil, false
+	}
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 
 	player, ok := w.Entities[playerID]
 	if !ok {
+		return nil, false
+	}
+	player.Mu.Lock()
+	defer player.Mu.Unlock()
+	// Saved level is authoritative, not permission for an invalid/overflowed
+	// price to mint Gold. Do not normalize or change a malformed legacy save.
+	if player.Level < 1 || player.Level > MaxPlayerLevel {
 		return nil, false
 	}
 
