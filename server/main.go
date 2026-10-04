@@ -25,6 +25,7 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	"eidolon-server/internal/operations"
 
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -125,14 +126,15 @@ func isQAUsername(username string) bool {
 }
 
 type healthResponse struct {
-	Status          string                `json:"status"`
-	Database        string                `json:"database"`
-	Commit          string                `json:"commit"`
-	Version         string                `json:"version"`
-	Goroutines      int                   `json:"goroutines"`
-	HeapAllocBytes  uint64                `json:"heapAllocBytes"`
-	HeapObjects     uint64                `json:"heapObjects"`
-	BroadcastQueues broadcastQueueMetrics `json:"broadcastQueues"`
+	Status          string                        `json:"status"`
+	Database        string                        `json:"database"`
+	Commit          string                        `json:"commit"`
+	Version         string                        `json:"version"`
+	Goroutines      int                           `json:"goroutines"`
+	HeapAllocBytes  uint64                        `json:"heapAllocBytes"`
+	HeapObjects     uint64                        `json:"heapObjects"`
+	BroadcastQueues broadcastQueueMetrics         `json:"broadcastQueues"`
+	Operational     operations.OperationalMetrics `json:"operational"`
 }
 
 func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
@@ -153,6 +155,7 @@ func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
 			Goroutines: runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
 			HeapObjects:     memory.HeapObjects,
 			BroadcastQueues: transientBroadcastMetrics(),
+			Operational:     operationalMetricsSnapshot(),
 		}
 		statusCode := http.StatusOK
 		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)

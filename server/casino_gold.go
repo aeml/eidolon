@@ -20,7 +20,8 @@ func applyCasinoTransferLocked(tableID string, op database.BlackjackTransfer) er
 	return applyCasinoGoldTransferLocked(op)
 }
 
-func applyCasinoGoldTransferLocked(op database.BlackjackTransfer) error {
+func applyCasinoGoldTransferLocked(op database.BlackjackTransfer) (resultErr error) {
+	defer func() { recordOperationalResult(boundaryCasinoGold, resultErr) }()
 	if err := op.Validate(); err != nil {
 		return err
 	}
@@ -68,7 +69,8 @@ func applyCasinoGoldTransferLocked(op database.BlackjackTransfer) error {
 	return persistCharacterSnapshot(username, character)
 }
 
-func applyCasinoEPTransferLocked(op database.BlackjackTransfer) error {
+func applyCasinoEPTransferLocked(op database.BlackjackTransfer) (resultErr error) {
+	defer func() { recordOperationalResult(boundaryCasinoEP, resultErr) }()
 	if err := op.Validate(); err != nil {
 		return err
 	}
