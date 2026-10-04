@@ -1814,9 +1814,13 @@ unchanged-run latest contiguous cleared boss checkpoint, every-client room-clear
 views and ordinary town exits. Missing/changed/history-only/partial results fail;
 the driver finishes early on completed clear/exit or failed cohorts instead of
 waiting out its maximum. Focused response/checkpoint fixtures and actual generated
-four-realm floor routing pass; one12-minute-maximum actual Verdant clear/save check
-is running under Luna process monitoring. It must finish with earned per-member
-durable original boss rewards before acceptance. Raids/events and declared cohort
+four-realm floor routing pass. The one12-minute-maximum actual Verdant clear/save
+check now passes312.19s, ending early after the earned clear: four members,
+ten rooms/four bosses,35 healing deliveries,12 confirmed recoveries/eight unchanged-run
+checkpoint returns, and independent per-member durable original boss credits,
+XP and preserved gear/bag/EP. Luna monitored the process; parent retrieved exact
+terminal success. Owned synthetic data removed. This is one normal four-class
+Verdant clear, not all regional encounters or human pacing. Raids/events and declared cohort
 capacity/headroom, ordered publication and operating-policy gates remain open.
 
 ## References

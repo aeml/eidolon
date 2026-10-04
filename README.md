@@ -453,7 +453,9 @@ Notes:
   strict evidence validator without retries. An opt-in four-class dungeon profile
   now uses normal entry, canonical-floor routing, living/death town recovery,
   same-run checkpoint returns and per-client clear/exit gates. Its one actual
-  earned-clear/save check is running, not yet accepted or deployed. Actual mixed
+  earned four-class Verdant clear/save check passes: four bosses, healing, town
+  recoveries, unchanged-run checkpoints and durable original boss credits for
+  every member. This is prepared evidence, not a milestone deployment. Actual mixed
   town/casino/party/raid/event/save workloads and headroom remain required. A
   separate public Gold slot profile now approaches/enters/seats normally and
   measures exact-revision paid/free spin and bonus acknowledgements without

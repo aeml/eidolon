@@ -327,11 +327,15 @@ to turn it green. Default mixed/nightly workload remains separate.
 Focused controller cases use explicit room/response/checkpoint fixtures, not
 earned clears. Separate routing checks traverse every room in actual generated
 Earth/Water/Fire/Air layouts. The opt-in root
-`TestLoadDungeonActualFourClassClearExitAndSaves` is now running once against an
+`TestLoadDungeonActualFourClassClearExitAndSaves` now passes once against an
 isolated production-style server/driver and Mongo, with uncommon/rare class gear
-and a12-minute maximum. It additionally requires every participant's durable
+and a12-minute maximum, ending after about five minutes. All four members clear
+ten rooms/four bosses and exit, with12 confirmed town recoveries, eight unchanged-run
+checkpoint returns and35 actual healing deliveries. Independent Mongo checks
+confirm every participant's durable
 original boss receipts, saved XP, protected bag item, gear and EP after ordinary
-town exit. **No actual clear is accepted until that exact run finishes.** It is
+town exit. The owned fixture and synthetic database were removed after terminal
+success. This is one actual normal Verdant clear, not all regional encounters. It is
 not an automatic campaign/soak on every release, raid clear,100-player capacity,
 fresh-process replay or human pacing proof.
 
