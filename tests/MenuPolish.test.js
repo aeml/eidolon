@@ -1272,8 +1272,24 @@ describe('menu polish regressions', () => {
         expect(html).toContain('<button id="btn-login" class="auth-btn auth-btn--fill">Login</button>');
         expect(html).toContain('<button id="btn-register" class="auth-btn auth-btn--fill">Register</button>');
         expect(html).toContain('<div id="auth-status" class="auth-status" role="status" aria-live="polite"></div>');
-        for (const field of ['username', 'email', 'password']) {
-            expect(html).toContain(`<label class="auth-field" for="auth-${field}">`);
+        const authDocument = new DOMParser().parseFromString(html, 'text/html');
+        for (const [field, name] of [['username', 'Username'], ['email', 'Email'], ['password', 'Password']]) {
+            const input = authDocument.getElementById(`auth-${field}`);
+            expect(input.classList.contains('auth-input')).toBe(true);
+            expect(input.closest('.auth-field')).not.toBeNull();
+            expect(input.closest('.auth-field').hasAttribute('style')).toBe(false);
+            expect(input.labels).toHaveLength(1);
+            expect(input.labels[0].textContent.trim()).toBe(name);
+        }
+        for (const [field, guidance] of [
+            ['email', 'only needed to register'],
+            ['password', 'new accounts: 15+ characters, up to 72 UTF-8 bytes']
+        ]) {
+            const input = authDocument.getElementById(`auth-${field}`);
+            const description = authDocument.getElementById(input.getAttribute('aria-describedby'));
+            expect(description).not.toBeNull();
+            expect(description.textContent).toBe(guidance);
+            expect(description.closest('label')).toBeNull();
         }
         expect(html).toContain('<div id="play-container" class="play-container">');
         expect(html).toContain('<button id="btn-play-character" class="menu-btn play-container__button">ENTER WORLD</button>');
