@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.73 deployment packaging safety",
+  "status": "prepared and locally checked; not published",
+  "finding": "Upgrade admission used an unanchored database/supported substring from preflight output and did not compare the target binary's commit before requesting the backup that stops the old API. A wrong-image or contradictory success receipt could reach the stop boundary before later health checks noticed it.",
+  "change": "Require one complete exact schema receipt, canonical bounded nonnegative database version, positive supported version, matching requested build commit and database<=supported. Refuse noisy, duplicate, malformed, overflowing, wrong-build or unsupported success receipts before backup/replacement. Normal startup's independent compatibility fence is unchanged.",
+  "checks": {
+    "preflight": "Go1.27.1 race test TestDeploySchemaPreflightPrecedesLiveReplacement passed root1.982s:16 scenarios exercise the actual shell against mocked commands. Compatible, upgrade and fresh schema0 proceed; malformed/wrong-image/unsupported receipts never request backup or replace the simulated API. Existing failed-backup, missing-image, future-schema, missing-contract, unavailable-database and foreign-Mongo refusals remain covered.",
+    "regressions": "TestDeployHealthRealStalledResponseTimesOutAndRetries and TestPinPreviousImageFailsClosedWithoutStoppingAPI passed under the race detector in6.453s. Health uses actual loopback HTTP/curl with a first stalled response and subsequent recovery; image pin uses mock Docker, not production image changes.",
+    "hygiene": "gofmt, bash -n and git diff --check pass. Existing check-schema binary emits the full accepted single-line format; inspected current mocked call sites for compatibility.",
+    "deploymentScriptSHA256": "18af4ad09c6268954b5a3c4d5ba6b727fbec4b3eb7083a10507461077662688b",
+    "preflightTestSHA256": "1dc8dc68845e679527a95151e2450f7d2f5b0c7d84bee678a2a3c4d49cd7cb59",
+    "unchangedBackupScriptSHA256": "901672e57e58bf9b528a46b3df69cfe94620aff8debd5f00a434eb30b59b7231"
+  },
+  "limits": "No actual Docker backup, schema migration, production service stop/start, restore or deployment executed. This shell receipt is not a global writer lock, crash-safety proof or rollback authorization. Retain exact prior recovery/migration proof and stop unrelated writers before a real schema upgrade. Ordered1.72 jump-policy/publication gate remains open; do not deploy the isolated schema22 candidate as inherited1.71. Broader roadmap remains active."
+}
