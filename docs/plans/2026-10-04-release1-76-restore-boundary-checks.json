@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.76 persistence compatibility; shared recovery readiness for 1.81/1.82",
+  "status": "prepared-unpublished-restore-boundary-follow-up",
+  "sourceCommit": "17a01bb66e914b9c43421776fe9bbb0d86b3585b",
+  "sourceSHA256": {
+    "server/deploy/restore_mongo_archive.sh": "393702e9dfd8bccad03f981621153e66b0046138df2a61c696bd613834e88aac",
+    "server/deploy/README_LINUX.md": "5e7f79ec3f7029ab70f7c489cb94400ce7428f442227c037d8a3a7a1052b4283",
+    "server/deploy_restore_test.go": "612e1f4d80c444bb10b27dadb4066d7000c0602f463fdb931b088ac38893ba6a",
+    "server/deploy_restore_integration_test.go": "fe453ef10fc39b52f287e27a41e47b5df2f74cf0a85048dd37db9f962ba21fc8"
+  },
+  "confirmedPriorBehavior": "The legacy helper used mongorestore --drop against an existing target. MongoDB documents that collections absent from an archive are not dropped, so restoring an older snapshot could leave newer operation ledgers alongside older users/schema markers. Existing readiness/stopped-writer guards did not detect that mixed recovery set. No production restore incident is claimed.",
+  "primaryReference": "https://www.mongodb.com/docs/database-tools/mongorestore/",
+  "changes": "Default restores require an empty eidolon target. A non-empty target is refused before writes unless the operator additionally supplies --replace-eidolon-database after --confirm-data-loss. After existing stopped-writer and credential guards, a read-only collection probe and archive dry-run precede any mutation. Explicit replacement drops the fixed eidolon database before namespace-limited archive import, avoiding retained later collections; other databases are not replacement targets. Instructions explain whole-database data loss, incomplete-restore handling, matching journals/server, manual checksum verification and continued admission shutdown. No production restore, automatic archive selection, arbitrary target-name interpolation, writer stop/start, schema change or player-state repair was performed.",
+  "checks": {
+    "focusedCommand": "env GOTOOLCHAIN=go1.27.1 go test -race . ./internal/database -run '^Test(RestoreArchive|DeploySchemaPreflight|SchemaMigrationCatalog)' -count=1 -timeout=30s",
+    "focusedResult": "passed: root 2.753s/database 1.072s. Restore guard matrix covers stopped/missing/ambiguous API, credentials, probe failures/invalid results, non-empty default refusal, unknown flags, dry-run refusal before replacement, failed drop/restore/verification and quoted archive names. Existing deployment preflight ordering and schema catalog checks remain green.",
+    "actualCommand": "env GOTOOLCHAIN=go1.27.1 EIDOLON_DEPLOY_BACKUP_DISPOSABLE=1 go test -race . -run '^TestRestoreActualArchiveRejectsMixedStateAndReplacesOnlyEidolon$' -v -count=1 -timeout=150s",
+    "actualResult": "passed: test 38.73s/package 39.821s. Real mongodump/mongorestore and the actual helper first restore a fresh target. Full EJSON document/index snapshots match source, including health17/mana0, Gold1184/EP83, ground/casino checkpoints, legacy receipts, allowance/exchange/cosmetics, opaque metadata, schema marker and a private pending wager. Adding later data then restoring without replacement is refused with exact destination unchanged. A valid-gzip/non-Mongo archive fails dry-run before deletion, also leaving exact destination unchanged. Explicit replacement restores the exact original collection set/documents/indexes, removes the later-only ledger and preserves an unrelated database sentinel.",
+    "candidateCorrection": "The first integration compile found an unused strings import; removed it before the accepted run. That candidate never started Docker fixtures and is not accepted evidence.",
+    "hygiene": "bash -n, gofmt and git diff --check pass. Fresh master fetch remains 526bc22953e79cbe4869580e8f628d55c39c1b1c, an ancestor of this prepared branch; unrelated remote/user changes were preserved."
+  },
+  "ownedFixture": {
+    "project": "eidolon-restore-proof-1791084347381543230",
+    "environment": "Two Mongo7.0.14 containers from image0032d2ca20db5fa34926f196c8a43b74e34ed239a7f2453ff1505b6f12ba8ea6; each1 CPU/512MiB, network_mode:none, no published ports. API service is defined but never started; this is archive/operator-helper evidence, not actual game shutdown or admission proof.",
+    "cleanup": "Only this uniquely checked Compose project's containers and volumes were removed with compose down --volumes; command succeeded and exact project-container/project-named-volume listings are empty. Test temporary archives are automatically cleaned. Synthetic data is reproducible; no production data, services, DNS, journals or accounts changed."
+  },
+  "proposedPatchNote": "Mongo recovery now refuses non-empty targets unless whole-Eidolon replacement is explicitly approved. Archive preflight runs before destructive replacement, preventing older snapshots from silently retaining newer operation collections. Operator recovery instructions clarify matching journals, compatible servers and data-loss risks.",
+  "limits": [
+    "The helper remains an explicitly authorized, destructive Mongo-only recovery, not image rollback or coordinated journal restoration. Dry-run cannot guarantee later BSON/index/IO success; after replacement, a failure can leave all prior Eidolon data gone. Writers must remain stopped until the full recovery set is verified.",
+    "Stopped Compose API checks are not a global writer/deployment lock. The owner/operator must stop external writers, serialize recovery and approve the exact archive and loss of subsequent progress; tests do not authorize production use.",
+    "Synthetic raw archival fields/ledgers prove retention and replacement boundaries, not business-valid operation replay, full-game startup, majority failover, recovery time objectives or complete 1.76/1.81/1.82 acceptance. Compatible earlier journal/game recovery proofs remain separate; owner backup/retention/RPO/RTO decisions remain open.",
+    "Source is local and unpublished; accepted public release remains Alpha1.70.2. No version promotion, push, deployment or whole-roadmap completion is claimed. Earlier recovery-method, jump and data-policy choices and ordered release gates remain open."
+  ]
+}

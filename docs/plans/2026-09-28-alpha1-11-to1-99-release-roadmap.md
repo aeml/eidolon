@@ -612,6 +612,19 @@ refuses a late invalid intent without changing its evidence. The owned fixture
 and volumes were removed. Outstanding working maps and full scan work remain
 proportional to legitimate pending activity; no capacity or lifetime-storage
 acceptance, settlement rewrite or deployment is claimed.
+The [restore-boundary follow-up](2026-10-04-release1-76-restore-boundary-checks.json)
+addresses a cross-version recovery hazard: Mongo's `--drop` leaves collections
+absent from an archive intact. The helper now refuses non-empty targets unless
+whole-`eidolon` replacement is separately explicit, and performs read-only target
+and archive preflight before mutation. A disposable, port-free real-tool check
+restores exact private fields/indexes into a fresh target, proves unchanged state
+on refusal/invalid-archive preflight, and then explicitly replaces only Eidolon,
+removing a newer ledger absent from the backup while preserving another database.
+Operator instructions explain full replacement/data loss and matching journals
+and server requirements. All scoped guard/preflight checks pass; owned fixtures
+were removed. This prepares shared 1.76/1.81/1.82 recovery work, not a production
+restore, gameplay replay, global writer lock, rollback certification or completed
+recovery policy. No deployment or full-milestone acceptance is claimed.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
