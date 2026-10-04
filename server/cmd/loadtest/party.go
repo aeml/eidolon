@@ -21,12 +21,12 @@ type partyLoadMember struct {
 	damage, heals, casts, denials, xpUpdates uint64
 }
 
-// Four fixed consenting test accounts, one pending invite/cast per participant.
+// Fixed consenting test accounts, one pending invite/cast per participant.
 // No account/party/target identifiers or actor history enter final evidence.
 type partyLoad struct {
 	mu               sync.Mutex
-	members          [4]partyLoadMember
-	joined           [4]bool
+	members          []partyLoadMember
+	joined           []bool
 	partyID          string
 	anchorX, anchorZ float64
 	inviteIndex      int
@@ -35,6 +35,7 @@ type partyLoad struct {
 	deaths           uint64
 	failed           bool
 	dungeon          *dungeonLoad
+	raid             *raidLoad
 }
 
 type partyLoadCounts struct {
@@ -44,11 +45,17 @@ type partyLoadCounts struct {
 }
 
 func newPartyLoad(credentials []BotCredentials, x, z float64) *partyLoad {
+	return newPartyCohort(credentials, x, z, 4, 4)
+}
+
+func newPartyCohort(credentials []BotCredentials, x, z float64, minimum, maximum int) *partyLoad {
 	p := &partyLoad{anchorX: x, anchorZ: z, inviteIndex: -1}
-	if len(credentials) != 4 || math.IsNaN(x) || math.IsNaN(z) || math.IsInf(x, 0) || math.IsInf(z, 0) || math.Abs(x) > math.MaxFloat32 || math.Abs(z) > math.MaxFloat32 {
+	if minimum < 4 || maximum > 10 || minimum > maximum || len(credentials) < minimum || len(credentials) > maximum || math.IsNaN(x) || math.IsNaN(z) || math.IsInf(x, 0) || math.IsInf(z, 0) || math.Abs(x) > math.MaxFloat32 || math.Abs(z) > math.MaxFloat32 {
 		p.failed = true
 		return p
 	}
+	p.members = make([]partyLoadMember, len(credentials))
+	p.joined = make([]bool, len(credentials))
 	for i, credential := range credentials {
 		if credential.Username == "" || len(credential.Username) > 128 {
 			p.failed = true
@@ -105,7 +112,7 @@ func (p *partyLoad) state(index int, me Entity, now time.Time) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	m := &p.members[index]
-	if me.Type != "Player" || me.ID != m.id || me.SubType != partyLoadClasses[index] || me.Name == "" || len(me.Name) > 128 || me.Experience < 0 || me.Level < 1 || me.Level > 100 || me.MaxHealth <= 0 || len(me.UnlockedSkills) > 100 {
+	if me.Type != "Player" || me.ID != m.id || me.SubType != partyLoadClasses[index%4] || me.Name == "" || len(me.Name) > 128 || me.Experience < 0 || me.Level < 1 || me.Level > 100 || me.MaxHealth <= 0 || len(me.UnlockedSkills) > 100 || p.raid != nil && me.Level < p.raid.level {
 		p.failed = true
 		return
 	}
@@ -135,6 +142,9 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 	defer p.mu.Unlock()
 	defer p.signal(index)
 	m := &p.members[index]
+	if p.raid != nil && message.Type == "chat" {
+		return p.raid.receiveConversion(p, index, message)
+	}
 	if p.dungeon != nil && (message.Type == "get_dungeon_status" || message.Type == "enter_instance" || message.Type == "dungeon_room_state") {
 		return p.dungeon.receive(p, index, message, now)
 	}
@@ -151,20 +161,17 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 		}
 		m.invitation = invite.InvitationID
 	case "party_update":
-		var view struct {
-			PartyID, LeaderID string
-			Members           []struct{ ID, Class string }
-		}
-		if json.Unmarshal(message.Payload, &view) != nil || view.PartyID == "" || len(view.PartyID) > 256 || view.LeaderID != p.members[0].id || len(view.Members) < 1 || len(view.Members) > 4 || p.partyID != "" && view.PartyID != p.partyID {
+		var view partyLoadView
+		if json.Unmarshal(message.Payload, &view) != nil || view.PartyID == "" || len(view.PartyID) > 256 || view.LeaderID != p.members[0].id || len(view.Members) < 1 || len(view.Members) > len(p.members) || p.partyID != "" && view.PartyID != p.partyID {
 			p.failed = true
 			return false
 		}
-		var seen [4]bool
+		seen := make([]bool, len(p.members))
 		for _, member := range view.Members {
 			found := false
 			for i := range p.members {
 				if member.ID == p.members[i].id {
-					if seen[i] || member.Class != partyLoadClasses[i] {
+					if seen[i] || member.Class != partyLoadClasses[i%4] {
 						p.failed = true
 						return false
 					}
@@ -184,9 +191,12 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 		for i, present := range seen {
 			p.joined[i] = p.joined[i] || present
 		}
-		m.confirmed = len(view.Members) == 4
+		m.confirmed = len(view.Members) == len(p.members)
 		if p.inviteIndex >= 0 && seen[p.inviteIndex] {
 			p.inviteIndex = -1
+		}
+		if p.raid != nil && !p.raid.receiveRoster(p, index, view) {
+			return false
 		}
 	case "ability_result":
 		var result struct {
@@ -237,6 +247,9 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 }
 
 func (p *partyLoad) formed() bool {
+	if len(p.members) == 0 {
+		return false
+	}
 	for _, m := range p.members {
 		if !m.confirmed {
 			return false
@@ -279,7 +292,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		}
 	}
 	if !p.formed() {
-		if m.admitted && now.Sub(m.admittedAt) >= 4*timeout {
+		if m.admitted && now.Sub(m.admittedAt) >= time.Duration(len(p.members))*timeout {
 			p.failed = true
 			return
 		}
@@ -292,8 +305,11 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			p.failed = true
 			return
 		}
+		if p.raid != nil && p.partyID != "" && !p.raid.convert(p, index, now, timeout, request) {
+			return
+		}
 		if index == 0 && p.inviteIndex < 0 {
-			for i := 1; i < 4; i++ {
+			for i := 1; i < len(p.members); i++ {
 				if p.joined[i] {
 					continue
 				}
@@ -307,6 +323,9 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			issue("party_response", map[string]interface{}{"inviterName": p.members[0].username, "invitationId": m.invitation, "accepted": true})
 		}
 		return
+	}
+	if p.raid != nil && (!p.raid.prepare(p, index, now, timeout, request) || p.dungeon == nil) {
+		return // Preparation alone never claims raid combat or crystal restoration.
 	}
 	if m.pendingSkill != "" {
 		if now.Sub(m.abilitySent) >= timeout {
@@ -377,7 +396,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		return
 	}
 	target, skill, distance := p.target, "", math.Hypot(me.X-p.target.X, me.Z-p.target.Z)
-	if index == 1 {
+	if index%4 == 1 {
 		for _, unlocked := range me.UnlockedSkills {
 			if unlocked != "Healing Light" {
 				continue
@@ -392,7 +411,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		}
 	}
 	if skill == "" {
-		skill = [4]string{"Charge", "Spirit Guardians", "Piercing Throw", "Fireball"}[index]
+		skill = [4]string{"Charge", "Spirit Guardians", "Piercing Throw", "Fireball"}[index%4]
 	}
 	if p.dungeon != nil && !p.dungeon.route.direct(dungeonPoint{me.X, me.Z}, dungeonPoint{target.X, target.Z}) {
 		move(target.X, target.Z)
@@ -404,7 +423,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		return
 	}
 	attackRange := 3.0
-	if index == 3 {
+	if index%4 == 3 {
 		attackRange = 12
 	}
 	if distance <= attackRange {

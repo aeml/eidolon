@@ -1823,6 +1823,18 @@ terminal success. Owned synthetic data removed. This is one normal four-class
 Verdant clear, not all regional encounters or human pacing. Raids/events and declared cohort
 capacity/headroom, ordered publication and operating-policy gates remain open.
 
+The subsequent staged elemental-raid preparation controller passes bounded
+five- and ten-member groups for all four realm definitions through the actual
+game conversion/readiness/access methods with synthetic protocol responses.
+Each member must confirm its own complete roster and readiness; conversion
+acknowledgement precedes additional invitations, and missing/changed/contradictory
+consent fails without retry. The existing four-player dungeon profile stays
+four-player. Whole load-driver race checks pass16.886s. This is not an actual
+raid clear or crystal restoration: normal raid entry, the three-wave Vigil,
+earned repair, exit and independent per-member saves remain to be connected
+and checked before exposing a completion scenario. No new long run, production
+mutation, version acceptance or deployment is claimed by preparation tests.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

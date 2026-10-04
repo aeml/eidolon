@@ -385,6 +385,25 @@ profile remains unchanged. Final funded casino rounds can remain in normal
 durable recovery; this is not full final settlement, raid/event participation,
 renderer/Internet latency, runtime/DB headroom or100-player capacity acceptance.
 
+The staged elemental-raid controller now supports bounded5–10-player cohorts
+with repeated Fighter/Cleric/Rogue/Wizard roles. It waits for the normal leader
+conversion response before further invitations, then requires every player's
+own full-roster ready-check view, affirmative ready request, readiness
+acknowledgement and final all-ready view. Missing replies time out without
+retry; changed cohorts, unsolicited/revoked readiness and contradictory views
+fail. The normal four-player party/dungeon constructors remain four-player.
+
+`TestRaidPreparationNormalDomainConversionAndEveryConsent` exercises five and
+ten participants for all four elemental raid definitions using the actual game
+party conversion, ready-check and raid-access methods with synthetic protocol
+responses. This is controller/domain preparation evidence, not a production
+WebSocket/server, dungeon/raid clear, crystal repair or save check. The raid
+scenario is deliberately not exposed as a runnable completion workload until
+normal instance entry, three-wave elemental Vigil objectives, earned repair,
+exit and per-member saved rewards are connected and independently verified.
+Preparation alone sends no movement, encounter or reward actions. The current
+driver's command-line scenarios and existing nightly profile are unchanged.
+
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible
 existing checks and run only the remaining scoped workloads, not another full
