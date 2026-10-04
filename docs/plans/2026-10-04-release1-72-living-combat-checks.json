@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 combat command authority",
+  "status": "reproduced, fixed and locally checked; not deployed",
+  "sourceCommit": "e28f79668f1fbe677d2a9bb39ad6748b928850ae",
+  "bug": "Casting and basic attack admission/impact primarily trusted the DEAD state label. Real dispatcher/impact repros demonstrated zero/negative-health and disconnected actors could commit abilities and attacks while the label was stale. Direct hostile targeting also admitted such recipients. This is a game-layer gap; no assertion that ordinary players can bypass existing transport ownership gates is made.",
+  "fix": "PerformAbility requires a player entity, positive health, non-DEAD state and connected status before any mana/cooldown/combo/cast mutation. Basic attack initial/commit admission and post-wind-up source/target checks also require positive health and connected status. The existing direct-target helper now requires living/connected recipients for hostile targets as well as support. Existing type, scene, range/body radius, wall/rock, relationship, PvP and control rules remain. No schema, power, balance, resurrection ability, saved health or projectile-in-flight behavior changed.",
+  "checks": {
+    "reproduction": "New four-group actual game-layer repro run failed against prior source in1.279s: unavailable casters could pay/publish casts, unavailable attacks could start, post-wind-up zero-health/disconnected sources could damage, and direct hostile helper admitted zero-health/disconnected targets. Fixture-only correction confines Cloak prepared-hit setup to source-unavailable cases; target-unavailable cases do not assert a new missed-swing Cloak policy.",
+    "correction": "First wider race run27.592s still failed non-player-caster cases: an overly broad patch had placed the type check in GetAbilityCooldownSnapshot instead of PerformAbility. Moved it to the actual dispatcher and restored the untouched cooldown-snapshot function. No passing current-source claim is derived from that failed run.",
+    "finalCommand": "GOTOOLCHAIN=go1.27.1 go test -race ./internal/game -run '^(TestAbilityAdmissionRequiresLivingConnectedPlayerAcrossSelectableKit|TestBasicAttackAdmission|TestBasicAttackImpact|TestDirectOffensiveAbility|TestSelectableAbilitiesHaveConfigAndAuthoritativeHandler|TestPaidStunBlocksAlreadyStartedEnemySwing)' -count=1 -timeout=30s -json",
+    "finalResult": "Passed16.188s,341 pass test/subtest events,0failed,0skipped. Includes52 selectable abilities x5 unavailable-caster conditions (zero/negative health, stale DEAD state with positive health, disconnected, non-player),8 source/target attack-admission cases,8 changed-after-valid-wind-up actual impact cases,4 invalid plus1valid direct-target cases, positive authoritative handler contracts for all52 abilities, and existing paid-stun wind-up compatibility.",
+    "scope": "Synthetic game-layer fixtures and actual public dispatcher/basic-impact functions, including owned pending-callback cancellation. No actual client socket/Mongo/campaign/raid, sustained load, full-security or current complete legacy targeting-matrix acceptance. Existing range/cover/relationship receipts retain their original source scopes; final release CI and directly required current integration remain separate.",
+    "hygiene": "gofmt and git diff --check pass; no production data, services, roles, currency or provider request changed."
+  },
+  "hashes": {
+    "server/internal/game/combat_living_admission_test.go": "3d0b66d8f945423f6a5356a335e5b96c9642cb89f21fc02437dbcfdccd78df31",
+    "server/internal/game/ability_dispatch.go": "a3984a880c1ef27d73e3baa65c1a80bc0e975024057e16caa23855b0b9d56870",
+    "server/internal/game/ability_helpers.go": "f79dcf81b970abd6524a7fc9b729a59d811120b7730e6a8f3a17821722fa322e",
+    "server/internal/game/combat_attack.go": "238758d8a6dc3bec6b888d4737b8954449bb8f28bde20c6e7420de12248465c5"
+  },
+  "remaining": "Owner jump-range/travel-time choice, affected route compatibility, latest-source integration and ordered1.72 notes/version/normal synchronized push/exact-source CI/public acceptance. Production remains accepted Alpha1.71.0/schema17. Broader persistence/privacy/operations and human beta/launch gates stay open; the full1.11-to1.99 objective is not complete."
+}
