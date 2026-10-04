@@ -100,6 +100,30 @@ func TestAdminPopulationReservedPrefixesAndCursor(t *testing.T) {
 	}
 }
 
+func TestAdminActivityDisconnectDurationRequiresBSONPrecision(t *testing.T) {
+	now := time.Now().UTC().Truncate(time.Millisecond)
+	event, err := NewAdminActivity("hero", "", "disconnect", "session-event", "success", "Disconnected.", now, 90)
+	if err != nil {
+		t.Fatal(err)
+	}
+	start := now.Add(-time.Minute)
+	event.SessionStartedAt = &start
+	if err := ValidateAdminActivity(event); err != nil {
+		t.Fatal("valid recorded duration rejected", err)
+	}
+	for _, invalid := range []time.Time{start.Add(time.Nanosecond), time.Time{}, now.Add(time.Millisecond)} {
+		event.SessionStartedAt = &invalid
+		if ValidateAdminActivity(event) == nil {
+			t.Fatal("invalid duration accepted")
+		}
+	}
+	event.SessionStartedAt = &start
+	event.Action = "login"
+	if ValidateAdminActivity(event) == nil {
+		t.Fatal("duration attached to non-disconnect")
+	}
+}
+
 func TestAdminDailyUTCDayAndClosedConnectionClipping(t *testing.T) {
 	now := time.Date(2026, 10, 4, 12, 0, 0, 0, time.UTC)
 	start, end, err := adminActivityDay("2026-10-04", now, 90)

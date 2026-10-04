@@ -103,7 +103,10 @@ func validAdminActivityAction(action string) bool {
 }
 
 func ValidateAdminActivity(event AdminActivity) error {
-	if event.SessionStartedAt != nil && (event.Action != "disconnect" || event.SessionStartedAt.IsZero() || event.SessionStartedAt.After(event.At)) {
+	// BSON dates lose sub-millisecond precision. Reject it before journaling so
+	// exact immutable replay cannot disagree with the stored duration field.
+	if event.SessionStartedAt != nil && (event.Action != "disconnect" || event.SessionStartedAt.IsZero() ||
+		event.SessionStartedAt.Nanosecond()%1_000_000 != 0 || event.SessionStartedAt.After(event.At)) {
 		return errors.New("invalid session duration")
 	}
 	if event.ID.IsZero() || event.At.IsZero() || !event.ExpiresAt.After(event.At) ||

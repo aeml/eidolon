@@ -1,0 +1,12 @@
+{
+  "milestone": "Prepared Alpha1.76 persistence compatibility",
+  "status": "REGRESSION_REPRODUCED_FIXED_AND_UNIT_RACE_CHECKED_NOT_PUBLISHED",
+  "finding": "Optional admin disconnect session-start timestamps were checked for valid action/order but allowed sub-millisecond precision. Mongo BSON dates truncate that precision, so an otherwise valid immutable duplicate replay could disagree with the retained journal payload. Current login/resume producers already use millisecond timestamps; no evidence of affected production data.",
+  "change": "ValidateAdminActivity rejects sub-millisecond session-start timestamps before journaling/insertion. Existing missing-duration records and correctly normalized current producers remain accepted; no stored record rewrite, retention/index/schema/permission change.",
+  "checks": "New TestAdminActivityDisconnectDurationRequiresBSONPrecision failed0.007s before change ('invalid duration accepted'). After change, focused AdminActivity/AdminPopulation/AdminDaily database race suite passed1.109s, including valid start, invalid precision/zero/future start and non-disconnect attachment. Opt-in connected Mongo cases skipped in this focused run, not claimed passed. Earlier actual normal-duration immutable replay proof retains its separate scope.",
+  "sha256": {
+    "server/internal/database/admin_activity.go": "5957e2e72ab1e48e69291ef96ea37b8c2cac0a3e856cd3a5a1ba4dc0c92e3330",
+    "server/internal/database/admin_population_test.go": "77a591b1c1c10cca731fdb26b8d6bb4a31a702d67c6586d83c58571de16bc53d"
+  },
+  "publication": "Prepared roadmap source only; not part of already pushed1.74.2, no extra deployment/test campaign. Ordered1.75/1.76 release and owner policy gates remain. Ongoing weekly test uses its retained pre-guard root and unchanged game executable; no claim that this source ran there."
+}

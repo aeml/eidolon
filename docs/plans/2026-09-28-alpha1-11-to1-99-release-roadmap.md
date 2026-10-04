@@ -28,6 +28,13 @@ Admin1.74.2 is queued afterward, not yet accepted live. The1.75 data inventory
 now records its optional session-start timestamps and ephemeral daily totals;
 existing retention and all unresolved owner privacy decisions are unchanged.
 
+Prepared1.76 [session precision validation](2026-10-04-release1-76-session-precision-checks.json)
+rejects sub-millisecond optional audit session-start times before journaling, so
+Mongo date truncation cannot create an immutable-replay mismatch. The new
+regression failed before the fix; focused database race checks passed1.109s.
+Existing producers already normalize timestamps; no production corruption or
+backfill is asserted. Not part of the pushed1.74.2 or a new public release.
+
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with
 an API-only frontend. Eighteen pure argument cases pass; current origin TLS,
