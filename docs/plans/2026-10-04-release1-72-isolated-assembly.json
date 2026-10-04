@@ -26,7 +26,7 @@
   },
   "remaining": [
     "Predecessor1.71 exact-source CI and independent public acceptance passed. Actual operator mailbox-delivery validation remains separate from synthetic proof.",
-    "Owner jump-range/travel-time choice. Current network jump validates finite input/floor/context and rejects midflight restart but arbitrary distance still tops out at1.28seconds. Do not claim impossible-movement boundary closed. Follow-up question asks quick approximately17metre cap versus distance-scaled longer flight.",
+    "Owner jump-range/travel-time choice. Source77d29789 prepares distance-scaled13.5units/second flight without the old1.28second cap; matching prediction, canonical landing and directly affected helper checks pass. This is only the longer-flight candidate, not an approved policy or completed movement boundary. See2026-10-04-release1-72-jump-flight-candidate.json. The approximately17unit quick-jump alternative remains the pending owner choice.",
     "Finish chosen jump policy and directly invalidated client/QA route checks; retain meaningful keyboard, geometry, movement and gameplay assertions. Reuse existing compatible proof instead of rerunning every historical matrix.",
     "Assemble1.72 cumulative notes/version and exact-source release checks after requirements are closed; fetch/pull concurrent remote changes and publish only this ordered successor, not broader future writers. Full1.11–1.99 goal and later owner/human gates remain active."
   ]
