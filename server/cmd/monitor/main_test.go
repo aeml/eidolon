@@ -1,0 +1,106 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"sync/atomic"
+	"testing"
+)
+
+type captureWriter struct {
+	text    strings.Builder
+	onWrite func()
+}
+
+func (w *captureWriter) Write(p []byte) (int, error) {
+	n, err := w.text.Write(p)
+	if w.onWrite != nil {
+		w.onWrite()
+	}
+	return n, err
+}
+
+func arguments(endpoint string) []string {
+	return []string{"-health-url", endpoint, "-request-timeout", "100ms", "-poll-interval", "1s", "-failure-threshold", "2", "-recovery-threshold", "2", "-notice-cooldown", "1m"}
+}
+
+func TestMonitorCommandActualOutageRecovery(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		if requests.Add(1) <= 2 {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			fmt.Fprint(w, "synthetic-private-peer-text")
+			return
+		}
+		fmt.Fprint(w, `{"status":"ok","database":"ready","commit":"abcdef0","version":"Alpha 1.78.0","private":"synthetic-private-peer-text"}`)
+	}))
+	defer server.Close()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	writes := 0
+	output := &captureWriter{onWrite: func() {
+		writes++
+		if writes == 2 {
+			cancel()
+		}
+	}}
+	if err := run(ctx, arguments(server.URL+"/healthz"), output); err != nil {
+		t.Fatal(err)
+	}
+	lines := strings.Split(strings.TrimSpace(output.text.String()), "\n")
+	if len(lines) != 2 || requests.Load() != 4 {
+		t.Fatalf("got %d notices from %d polls", len(lines), requests.Load())
+	}
+	for i, kind := range []string{"outage", "recovered"} {
+		var event struct {
+			Notice struct{ Kind, Cause string }
+			Sample struct{ Ready bool }
+		}
+		if err := json.Unmarshal([]byte(lines[i]), &event); err != nil {
+			t.Fatal(err)
+		}
+		if event.Notice.Kind != kind || event.Sample.Ready != (i == 1) {
+			t.Fatalf("unexpected event: %s", lines[i])
+		}
+	}
+	if strings.Contains(output.text.String(), "synthetic-private") || strings.Contains(output.text.String(), server.URL) {
+		t.Fatal("private response or URL leaked")
+	}
+}
+
+type rejectedWriter struct{}
+
+func (rejectedWriter) Write([]byte) (int, error) {
+	return 0, errors.New("synthetic-private-output-error")
+}
+
+func TestMonitorCommandOutputFailure(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusServiceUnavailable) }))
+	defer server.Close()
+	args := append(arguments(server.URL+"/healthz"), "-failure-threshold", "1")
+	err := run(context.Background(), args, rejectedWriter{})
+	if err == nil || err.Error() != "monitor output unavailable" {
+		t.Fatalf("unexpected output error: %v", err)
+	}
+}
+
+func TestMonitorCommandConfigurationAndShutdown(t *testing.T) {
+	for _, args := range [][]string{nil, {"-health-url", "https://synthetic-private-user:secret@example.com/healthz"}, {"-unknown", "synthetic-private-value"}, {"synthetic-private-positional"}, append(arguments("http://127.0.0.1/healthz"), "-poll-interval", "0s")} {
+		var out strings.Builder
+		err := run(context.Background(), args, &out)
+		if err == nil || strings.Contains(err.Error(), "synthetic-private") || out.Len() != 0 {
+			t.Fatalf("unsafe invalid configuration: %v", err)
+		}
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	var out strings.Builder
+	if err := run(ctx, arguments("http://127.0.0.1/healthz"), &out); err != nil || out.Len() != 0 {
+		t.Fatalf("shutdown wrote an outage: %v", err)
+	}
+}
