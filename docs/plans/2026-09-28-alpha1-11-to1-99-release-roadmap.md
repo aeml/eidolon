@@ -34,6 +34,12 @@ Remaining direct production launches are fixed service workers or joined
 simulation/state work, not detached per-trigger social/QA jobs. Transitive
 schedulers, latest connected-game compatibility and the jump policy remain
 separate release gates; no capacity or public deployment is claimed.
+The [living-combat fix](2026-10-04-release1-72-living-combat-checks.json) rejects
+zero-health/disconnected casters, basic attacks and delayed basic-hit resolution
+even before a stale state label reaches DEAD. Direct hostile targeting now also
+requires living/connected recipients. Focused race checks passed16.188s, retaining
+valid contracts for all52 selectable abilities. No balance/projectile-in-flight,
+save-format or production change was made; ordered release gates remain open.
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes

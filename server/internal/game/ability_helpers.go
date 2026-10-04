@@ -364,7 +364,8 @@ func (w *World) validDungeonGroundCastTarget(player *Entity, x, z float64) bool 
 }
 
 func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64, allowedTypes ...EntityType) bool {
-	if player == nil || target == nil || player.InstanceID != target.InstanceID || target.State == "DEAD" {
+	if player == nil || target == nil || player.InstanceID != target.InstanceID ||
+		target.State == "DEAD" || target.Health <= 0 || target.Disconnected {
 		return false
 	}
 	typeAllowed := false
@@ -386,11 +387,9 @@ func validDirectAbilityTarget(w *World, player, target *Entity, maxRange float64
 	if offensive && !w.CanDamage(player, target) {
 		return false
 	}
-	// Cursor selection and secondary support recipients need the same living,
-	// connected eligibility as an explicitly selected ally. A heal is not a revive.
-	if !offensive && (target.Health <= 0 || target.Disconnected) {
-		return false
-	}
+	// All direct targets must be living/connected, including homing recipients.
+	// Friendly support additionally respects combat relationship; healing is
+	// not resurrection and hostile players are never friendly cursor fallback.
 	if !offensive && target.Type == TypePlayer && w.CombatRelationship(player, target) == RelationshipHostile {
 		return false
 	}

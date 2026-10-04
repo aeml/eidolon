@@ -35,7 +35,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		return 0, false
 	}
 	attacker.Mu.RLock()
-	attackerBlocked := attacker.CasinoSeat != nil || attacker.State == "DEAD" || attacker.State == "JUMPING" || attacker.IsCharging || attacker.Stunned
+	attackerBlocked := attacker.Health <= 0 || attacker.Disconnected || attacker.CasinoSeat != nil || attacker.State == "DEAD" || attacker.State == "JUMPING" || attacker.IsCharging || attacker.Stunned
 	attackerInstanceID := attacker.InstanceID
 	attackerType := attacker.Type
 	attackerSubType := attacker.SubType
@@ -53,7 +53,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 		return 0, false
 	}
 	target.Mu.RLock()
-	targetBlocked := target.State == "DEAD"
+	targetBlocked := target.Health <= 0 || target.Disconnected || target.State == "DEAD"
 	targetInstanceID := target.InstanceID
 	targetType := target.Type
 	targetX, targetZ := target.X, target.Z
@@ -93,7 +93,7 @@ func (w *World) PerformAttack(attackerID, targetID string) (int, bool) {
 	// Commit atomically after validation. Recheck the mutable action gates in
 	// case a parallel world tick applied crowd control during target validation.
 	attacker.Mu.Lock()
-	if attacker.State == "DEAD" || attacker.State == "JUMPING" || attacker.IsCharging || attacker.Stunned ||
+	if attacker.Health <= 0 || attacker.Disconnected || attacker.State == "DEAD" || attacker.State == "JUMPING" || attacker.IsCharging || attacker.Stunned ||
 		time.Since(attacker.LastAttackTime) < attacker.AttackCooldown {
 		attacker.Mu.Unlock()
 		return 0, false
@@ -144,7 +144,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 	att.Mu.Lock()
 	// An accepted wind-up is not permission to land a swing while stunned.
 	// This does not remove projectiles already launched or alter boss immunity.
-	if att.State == "DEAD" || att.Stunned || att.InstanceID != attackerInstanceID {
+	if att.Health <= 0 || att.Disconnected || att.State == "DEAD" || att.Stunned || att.InstanceID != attackerInstanceID {
 		att.Mu.Unlock()
 		return
 	}
@@ -165,7 +165,7 @@ func (w *World) applyAttackImpact(attID, tgtID, attackerInstanceID string, walkR
 
 	// Lock target for modification
 	tgt.Mu.Lock()
-	if tgt.State == "DEAD" || tgt.InstanceID != attackerInstanceID {
+	if tgt.Health <= 0 || tgt.Disconnected || tgt.State == "DEAD" || tgt.InstanceID != attackerInstanceID {
 		tgt.Mu.Unlock()
 		return
 	}
