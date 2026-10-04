@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.77 hosting/network reliability; backported current-release maintenance",
-  "status": "maintenance-pushed-acceptance-pending",
+  "status": "maintenance-accepted-live; broader1.77 gates remain open",
   "preparedSourceCommit": "c26f339ba1e18fa152b8ef791d185d0b2d6aa74d",
   "publicSourceCommit": "ddfa60e3b2bd20b08a175de124eb00fae66dc299",
   "publicSourceSHA256": {
@@ -24,11 +24,13 @@
     "runID": 37175484045,
     "sha": "ddfa60e3b2bd20b08a175de124eb00fae66dc299",
     "monitor": "User-authorized Luna agent /root/watch_deploy_network_1004 monitors this exact confirmed queued run read-only and reports terminal state/failure; no repeated root tick polling.",
-    "acceptance": "Pending CI, both deploys, live character QA and independent public identity checks. Last accepted live release remains526bc229/CI37137636915 until this update is verified."
+    "acceptance": "Exact-source CI37175484045 completed successfully; all ten jobs succeeded, including both deploys and live QA. Live anonymous/persistent-character and town-recovery/Well Rested steps succeeded. Four-class/remote-animation checks were explicitly skipped because this maintenance did not change gameplay/model assets; do not relabel the skipped scope as new proof.",
+    "jobs": ["Server Tests (Go)", "Browser Smoke (Playwright 1/3)", "Browser Smoke (Playwright 2/3)", "Browser Smoke (Playwright 3/3)", "Client Tests (Jest)", "Predeploy Character QA (System Chrome)", "Validate Production QA Inputs", "Deploy to GitHub Pages", "Deploy Server (SSH)", "Live Release and Character QA"],
+    "independentPublic": {"checkedAt": "2026-10-04T04:45:58.730Z", "addressFamily": "IPv4", "result": "Bounded cache-bypassing HTTPS checks match exactddfa60e3 on backendhealth/database-ready, frontendrelease.json and injected HTMLruntime query. Backend/frontend/login versionAlpha1.70.2 and cumulative maintenance note match. Previous changed-asset receipts retain their own scopes; runtime/model assets did not change here."}
   },
   "limits": [
     "This maintenance backport keeps the existing Alpha1.70.2 gameplay and schema17; it does not complete or publish Alpha1.77, pending Alpha1.71–1.76 milestones, a beta transition or account-policy choices.",
     "Finite release waits do not fix unreachable address families, stale DDNS, origin outages, certificate renewal, global connection protection or overall runner queue availability. Existing IPv6/owner-support decisions remain open; no DNS, nginx, TLS, service or payment policy was changed.",
-    "Public acceptance is still pending and must not be inferred from local tests or a successful push. Once CI and independent checks complete, record their actual scoped results."
+    "Maintenance acceptance is scoped to actual exact-source CI/public checks above, not inferred from the push or local tests. No full1.77,1.71–1.76, beta or full-roadmap acceptance is claimed."
   ]
 }

@@ -422,11 +422,11 @@ Notes:
 
 - Current source version: `Alpha 1.70.2` accepted presentation hotfix. Forge previews and bag tooltips share a fixed stat order across refreshes. This prepared successor also includes unpublished1.71–1.76 work and schema24 writer fences; do not deploy the entire tree as the presentation hotfix. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
 - Last independently verified live release: `Alpha 1.70.2`, exact
-  526bc22953e79cbe4869580e8f628d55c39c1b1c, successful CI37137636915 (all ten jobs,
+  ddfa60e3b2bd20b08a175de124eb00fae66dc299, successful CI37175484045 (all ten jobs,
   including predeploy and live character QA). Public IPv4 frontend/backend
-  identities, database readiness, login version, cumulative notes and the
-  three changed Forge/inventory runtime files match the release. Ilyra artwork
-  remains unchanged. [Acceptance](docs/plans/2026-10-03-release1-70-2-forge-checks.json).
+  identities, database readiness, login version and cumulative maintenance notes
+  match the release. Earlier Forge/runtime/model receipts retain their scopes;
+  gameplay/artwork is unchanged. [Acceptance](docs/plans/2026-10-04-release1-77-network-probe-checks.json).
   Prepared1.71 source remains unpublished.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.

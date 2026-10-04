@@ -2,13 +2,13 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.70.2, exact 526bc22953e79cbe4869580e8f628d55c39c1b1c,
-CI37137636915. All ten CI jobs, including both deploys and live character QA, passed.
+baseline is Alpha 1.70.2, exact ddfa60e3b2bd20b08a175de124eb00fae66dc299,
+CI37175484045. All ten CI jobs, including both deploys and live character QA, passed.
 Independent public IPv4 checks verified backend/frontend identities, database
-readiness, login version, cumulative hotfix notes and three changed Forge/bag
-runtime assets. Earlier receipts retain dressed Ilyra and distinct model checks; no claim that
+readiness, login version and cumulative maintenance notes. Earlier receipts retain
+the three Forge/bag runtime files, dressed Ilyra and distinct model checks; no claim that
 every route or economy operation was sampled. See the current
-[acceptance receipt](2026-10-03-release1-70-2-forge-checks.json).
+[acceptance receipt](2026-10-04-release1-77-network-probe-checks.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -647,10 +647,12 @@ actual workflow-shell checks retain all identity/cache conditions and refuse
 mismatches, malformed replies and timeout. The isolated schema17 backport passes
 the same focused checks. Exact ddfa60e3 was pushed normally after fresh remote
 integration, with cumulative maintenance notes and no gameplay/schema changes.
-Luna watches confirmed CI37175484045; acceptance and independent live checks
-are still pending. This neither advances a roadmap milestone nor resolves
-IPv6/DDNS/TLS and other hosting gates; the last accepted baseline remains the
-earlier 526bc229 release until this maintenance update is verified.
+Luna reported successful CI37175484045; root confirmed all ten job results and
+independently verified exact public IPv4 frontend/backend identities, database
+readiness, version and maintenance notes at04:45:58UTC. This neither advances a
+roadmap milestone nor resolves IPv6/DDNS/TLS and other hosting gates; the accepted
+maintenance baseline is nowddfa60e3. Earlier model/campaign evidence retains its
+scope; skipped four-class/animation steps are not new proof.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
