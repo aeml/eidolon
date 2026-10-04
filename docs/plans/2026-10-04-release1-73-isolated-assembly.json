@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "Alpha 1.73 valuable-operation invariants",
-  "status": "isolated successor preparation; not versioned, pushed or accepted",
+  "status": "Alpha1.73.0 version/notes assembled; not pushed or accepted",
   "sourceCommit": "00caa61b6f8cc63db72948e6739a09d4f33eb690",
   "featureBoundary": "0d3367e9408c0a2959b7b2d7150dc193abc4ca91 contains the prepared valuable-operation work through schema22 before the later privacy/projection and schema23–24 checkpoint changes. Verified7a495387 is its merge base with the prepared protocol branch. Created dedicated work/alpha-1-73-release-20261004 in/tmp/eidolon-1-73-release-JVY1Ls; original dirty workspace and full future tree preserved.",
   "integration": "Merged current isolated1.72 preparation with1.71 recovery and both login-test corrections. Resolved only workflow and README conflicts: retained all valuable-operation socket fixtures plus the new recovery fixture, preserved latest verified1.70.2 public identity and clearly labelled inherited1.71 defaults/schema22 as unpublished1.73 preparation. Then merged the narrow known administrator authority fixes brought forward into1.72, without conflicts; later privacy, monitor and schema23–24 writers remain excluded.",
@@ -31,8 +31,9 @@
     "limits": "Readiness/stopped Compose API is not a global writer lock. Explicit whole-database replacement is destructive even if later restoration fails. No restoration, container/data deletion, account/value changes or service stop/start was run in this backport; only mock guards/schema tests. Owner-approved retention/RPO/RTO, matching journals and compatible server remain required; full1.76/1.81/1.82 gates are not complete."
   },
   "livingMovementIntegration": "Sourcece5c1e36 cherry-picks only the independent1.72 living/connected network walking/jump guard and test-fixture corrections. The unapproved longer-flight candidate is excluded. Focused race checks passed game9.062s/root4.302s; see2026-10-04-release1-72-living-movement-checks.json for exact source and scope. This is not a new four-player connected proof or a release assembly.",
+  "orderedReleaseAssembly": "Merged85a25073 and corrective1cf51d22 as dba5f874. Source now includes the predecessor's declared reach-preserving jump default and its CI corrections, with ownAlpha1.73.0 version/cumulative notes. See2026-10-04-release1-73-release-checks.json for current integration checks and their limits. Older source entries above retain historical scope.1.72 CI37196079883 and public acceptance remain pending; no1.73 push is authorized before that ordered gate.",
   "remaining": [
-    "Alpha1.71.0 accepted via exact4bc0b95c/CI37182320668 and post-terminal public checks; acceptance metadata merged. Resolve1.72 jump policy and accept its own ordered release, then merge its final code/metadata into this candidate. InheritedAlpha1.71.0 defaults are intentional until1.73 assembly.",
+    "Accepted1.71.1/1b6f44d2/CI37190290208 metadata is included. Final1.72 code is merged; accept its corrective exact-source CI/public release and carry metadata before publishing this candidate.",
     "Focused actual schema17-to22 preservation/old-writer refusal is verified; final release backup/recovery compatibility and directly required business replay gates still apply. Schema advancement cannot justify unsafe rollback to an older writer or arbitrary historical financial cleanup.",
     "Complete directly required current-source valuable-operation checks, cumulative1.73 notes/version, normal fetch/pull/push preserving concurrent remote edits, exact-source CI and independent frontend/backend/runtime public acceptance.",
     "Broader1.74 administration review,1.75 owner privacy decisions,1.76 bounded checkpoints and later operations/launch/human gates remain required. Full1.11–1.99 goal remains active."

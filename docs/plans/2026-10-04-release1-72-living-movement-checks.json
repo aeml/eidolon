@@ -23,7 +23,7 @@
   "successorIntegration": {
     "milestone": "Prepared Alpha1.73",
     "sourceCommit": "ce5c1e3693ebb952ac8ca0f319008a9f6e0fcff9",
-    "method": "Cherry-picked only independent liveness guard and its test/fixture corrections; longer-flight candidate and its helper edits excluded. Existing1.28second capped jump timing remains until the owner choice and ordered predecessor integration.",
+    "method": "Historical independent-guard cherry-pick initially excluded longer-flight changes. Subsequent merge of85a25073 brings the predecessor's declared reach-preserving jump default and Alpha1.72.0 source defaults; the focused timings below belong to the earlier ce5c1e36 source, not the new merge.",
     "verification": {
       "command": "go test -race ./internal/game . -run '^Test(NetworkMovement|MovementDispatch|MoveDispatch|NetworkJump|StartPlayerJump|WorldUpdate.*Jump|MovementBudget|NetworkWalking|TownRecoveryContext|RecoveryContext|DarkRealmReentry|World.*Ground|RockMovement|Woodland.*Saved)' -count=1 -timeout=60s",
       "gameSeconds": 9.062,

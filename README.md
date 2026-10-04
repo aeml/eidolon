@@ -420,11 +420,11 @@ Notes:
 
 ## Project Status
 
-- Current inherited source version: `Alpha 1.71.1`. This isolated, unpublished
+- Current inherited source version: `Alpha 1.73.0`. This isolated, unpublished
   1.74 candidate integrates prepared 1.72 security and 1.73 valuable-operation
   writers through schema22, plus the 1.74 permission review and read-only
   moderation-history filters. Later schema23–24 checkpoints, broader privacy
-  and operations-monitor work remain excluded. Do not deploy it as1.71 or before
+  and operations-monitor work remain excluded. Do not deploy it as1.73 or before
   ordered1.72/1.73 acceptance. Version/notes assembly and exact-source CI/public proof
   remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader

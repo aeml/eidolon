@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.71.1</span>
+                    <span class="start-version-row__label">Alpha 1.73.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -774,6 +774,28 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.73.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.73.0 (reliable items, trades and earned rewards)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Direct trades retain original items and Gold through disconnects, interrupted saves and restarts. Both participants' saved receipts must confirm settlement; a full bag keeps owed items available to claim instead of destroying or rerolling them.</li>
+                        <li>Ground drops and pickups retain exact item custody, partial-stack quantities and original expiry. Auction, guild-bank, vendor and Forge actions confirm their complete saved effects before success feedback. Mystery purchases keep the original random gear and payment together; recovering a pending purchase does not buy another box.</li>
+                        <li>Dungeon room, boss and weekly raid awards retain original recipients and original reward rolls. Full bags keep rewards owed, with no rerolls or duplicate payments after recovery. Elemental guardian victories still require the three-wave crystal defense; a guardian kill alone never repairs a crystal.</li>
+                        <li>Accepted quest rewards, collected-item consumption and manual quest turn-in share confirmed saves. Ordinary progress and investigation feedback follow the saved quest image; quests never turn themselves in. Crystal and public-event completion cannot overtake pending enemy-reward work.</li>
+                        <li>Casino Gold and EP wallets remain separate, with original pending transfers recovered before new actions. No EP-to-Gold route, player-power purchase, reward inflation or gameplay stat scaling is introduced.</li>
+                        <li>The database advances to schema 22 for original trade, drop and encounter records. Older writers refuse unsupported saves: an older server image alone is not a safe rollback. No account wipe, historical balance cleanup, new payments, capacity certification or closed-beta transition is performed. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="1.72.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.72.0 (movement, combat and network safeguards)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Walking follows server-owned speed, elapsed-time allowance, recovery context and canonical collision paths. Repeated packets cannot mint extra movement; stale scene commands cannot undo town recovery.</li>
+                        <li>Long jumps keep their existing reach but use distance-scaled airtime at 13.5 world units per second, with the existing 0.46-second minimum. Landing height is server-owned, and another request cannot restart or redirect a jump mid-flight. Casino interiors remain walking-only.</li>
+                        <li>Zero-health and disconnected characters cannot walk, jump, cast or start basic attacks. Basic-attack impacts recheck the attacker after wind-up, and direct hostile skills require living, connected targets. Already launched projectiles retain their existing rules; class damage and equipment power are unchanged.</li>
+                        <li>Connection, HTTP, WebSocket frame, payload-byte and command-work limits reject malformed or excessive input. Private feedback stays with its owner; world and encounter broadcasts follow scene visibility instead of revealing private progression or another instance.</li>
+                        <li>Social refreshes, character saves and connection cleanup use bounded, tracked work. Replaced connections lose command authority, and sensitive administrator actions recheck role/session access after intervening work. Saved account data, Gold, EP and verified-email recovery are preserved.</li>
+                        <li>Update the Go toolchain and pinned backend dependencies. This release is not a launch-capacity certification, privacy-policy approval or the later durable trade/reward milestone. No payments, stat scaling or closed-beta transition are added. Full prior patch history and Ilyra's permanent outfit remain included.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.71.1">
                     <h3 class="patch-note-entry__title">Alpha 1.71.1 (mystery equipment shop safeguard)</h3>
                     <ul class="patch-note-entry__list">

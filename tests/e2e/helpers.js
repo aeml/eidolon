@@ -614,7 +614,9 @@ export async function jumpByGroundClick(page, deltaX, deltaZ) {
     }, { timeout: 4_000 }).toBeGreaterThan(1);
     try {
         await expect.poll(() => page.evaluate(() => window.game?.playerJumpState === null), {
-            timeout: 8_000
+            // Long flights take distance / 13.5 seconds. Keep a bounded
+            // observation window without weakening the landing assertion.
+            timeout: Math.min(60_000, Math.max(8_000, Math.ceil(magnitude / 13.5 * 1_000) + 2_000))
         }).toBe(true);
     } catch (error) {
         const diagnostic = await page.evaluate(() => {

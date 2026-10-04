@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72.0 CI correction before publication",
+  "failedCandidate": "85a25073b17fd20902cf7a10009b1e00e07bee8d",
+  "run": 37195541214,
+  "status": "focused corrections passed; replacement exact-source CI and live acceptance required",
+  "findings": [
+    "Client coverage completed 629 suites with 627 passing and two stale source assertions failing: ToolingBaseline retained Go1.24.5 despite the patched1.27.1 build; CombatFeedbackProtocolCoverage omitted the new captured ActorID and bounded transient queue.",
+    "ReportAppealAdmission retained the old16KiB rejection threshold. The already-tested32KiB policy accommodates JSON escaping while the4000-character content limit remains unchanged. The corrected test pins32KiB and rejects its first excess byte; existing actual envelope checks exercise full-size Unicode/control-character reports.",
+    "QAGuaranteedLoot omitted attacker health, so the new living-combat admission correctly rejected its zero-health actor. The fixture now has100/100 health; no production liveness exception or damage scaling added.",
+    "The real production read-pump probe closed at10seconds, but Linux reported connection reset instead of WebSocket1006 when unread continuation frames remained. The assertion accepts ECONNRESET as well as1006, never a peer timeout, while retaining the9-to13second window, stopped fragment writer, transport closure and exact unregister handoff. The production10second assembly deadline is unchanged."
+  ],
+  "verification": {
+    "client": "Node24.18.0 Jest --runInBand --runTestsByPath tests/ToolingBaseline.test.js tests/CombatFeedbackProtocolCoverage.test.js:10 checks/two suites passed0.879s; reused compatible dependencies, not a new full client run.",
+    "serverCommand": "GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -race . ./internal/game -run '^Test(ReportAppealAdmission|InboundMessage|InboundEnvelope|BroadcastActorInterest|CombatBroadcast|QAGuaranteedLoot|Living)' -count=1 -timeout=60s",
+    "server": "Root11.861s and game1.481s passed, including actual TCP fragmentation/deadline/size/envelope checks, queued-snapshot combat visibility, and living combat regressions.",
+    "hygiene": "Affected JavaScript ESLint, Go formatting and git diff --check pass."
+  },
+  "limits": "These are test corrections, not a deployed release, a provider/inbox check, a campaign/raid run or a capacity claim. Live remains accepted Alpha1.71.1/schema17 until replacement exact-source CI and independent post-terminal public checks pass. Successor1.73 remains unpublished; no new production schema, save, mail, service or character mutation is introduced here."
+}

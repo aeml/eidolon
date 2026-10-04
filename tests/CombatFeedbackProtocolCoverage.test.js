@@ -36,8 +36,8 @@ describe('combat feedback protocol coverage', () => {
     test('damage and heal payloads retain context and broadcasts stay instance-scoped', () => {
         expect(helperSource).toContain('Kind: kind, InstanceID: instanceID');
         expect(mainSource).toContain('Kind: evt.Kind, InstanceID: evt.InstanceID');
-        expect(mainSource).toContain('BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID}');
-        expect(mainSource).toContain('BroadcastMessage{Type: MsgHeal, Data: dataBytes, InstanceID: evt.InstanceID}');
+        expect(mainSource).toContain('enqueueTransientBroadcast(BroadcastMessage{Type: MsgDamage, Data: dataBytes, InstanceID: evt.InstanceID, ActorID: evt.TargetID})');
+        expect(mainSource).toContain('enqueueTransientBroadcast(BroadcastMessage{Type: MsgHeal, Data: dataBytes, InstanceID: evt.InstanceID, ActorID: evt.TargetID})');
         expect(mainSource).toMatch(/Kind:\s+string\(evt\.HazardType\)/);
     });
 });
