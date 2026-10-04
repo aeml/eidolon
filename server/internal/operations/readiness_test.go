@@ -72,7 +72,7 @@ func TestReadinessProbeActualTimeoutAndShutdown(t *testing.T) {
 }
 
 func TestReadinessProbeActualAggregateMetrics(t *testing.T) {
-	for _, scenario := range []string{"valid", "missing", "partial", "negative", "over-capacity", "bad-type"} {
+	for _, scenario := range []string{"valid", "missing", "partial", "partial-queue", "null-counter", "negative", "over-capacity", "bad-type"} {
 		t.Run(scenario, func(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 				body := `{"status":"ok","database":"ready","commit":"abcdef1","version":"Alpha 1.78.0","goroutines":12,"heapAllocBytes":1024,"heapObjects":50,"broadcastQueues":{"queued":3,"capacity":1024,"encounterQueued":1,"encounterCapacity":128,"dropped":8,"encounterDropped":2,"invalidDropped":5,"private":"secret-marker"},"players":[{"username":"secret-marker"}]}`
@@ -81,6 +81,10 @@ func TestReadinessProbeActualAggregateMetrics(t *testing.T) {
 					body = `{"status":"ok","database":"ready","commit":"abcdef1","version":"Alpha 1.78.0"}`
 				case "partial":
 					body = strings.Replace(body, `"goroutines":12,`, "", 1)
+				case "partial-queue":
+					body = strings.Replace(body, `"invalidDropped":5,`, "", 1)
+				case "null-counter":
+					body = strings.Replace(body, `"dropped":8`, `"dropped":null`, 1)
 				case "negative":
 					body = strings.Replace(body, `"goroutines":12`, `"goroutines":-1`, 1)
 				case "over-capacity":
@@ -96,7 +100,7 @@ func TestReadinessProbeActualAggregateMetrics(t *testing.T) {
 				t.Fatal(err)
 			}
 			sample := probe.Check(context.Background())
-			valid := scenario == "valid" || scenario == "missing" || scenario == "partial"
+			valid := scenario == "valid" || scenario == "missing" || scenario == "partial" || scenario == "partial-queue" || scenario == "null-counter"
 			if sample.Ready != valid || (sample.Runtime != nil) != (scenario == "valid") {
 				t.Fatalf("unexpected aggregate sample: %+v", sample)
 			}
