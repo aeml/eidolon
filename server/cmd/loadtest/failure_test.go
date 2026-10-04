@@ -39,6 +39,13 @@ func TestDungeonFailureStagesPreserveFirstCauseWithoutActorData(t *testing.T) {
 func TestServerFailureClassificationNeverRetainsRawPayloads(t *testing.T) {
 	for _, entry := range []struct{ payload, want string }{
 		{`"message rate limit exceeded"`, "server_rate_limit"},
+		{`"message rate limit exceeded: raid_enter"`, "server_rate_limit_raid_enter"},
+		{`"message rate limit exceeded: move"`, "server_rate_limit_move"},
+		{`"message rate limit exceeded: attack"`, "server_rate_limit_attack"},
+		{`"message rate limit exceeded: ability"`, "server_rate_limit_ability"},
+		{`"message rate limit exceeded: recall"`, "server_rate_limit_recall"},
+		{`"message rate limit exceeded: respawn"`, "server_rate_limit_respawn"},
+		{`"message rate limit exceeded: private-account-name"`, "server_rejection"},
 		{`"private account details"`, "server_rejection"},
 		{`{"password":"private"}`, "server_rejection"},
 	} {

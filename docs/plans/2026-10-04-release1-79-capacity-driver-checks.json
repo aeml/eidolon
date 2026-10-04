@@ -545,7 +545,7 @@
     }
   },
   "weeklyFollowUp": {
-    "status": "FIRST_ACTUAL_FAILED_CORRECTED_ACTUAL_RUNNING",
+    "status": "CORRECTED_ACTUAL_FAILED_RATE_LIMIT_ACTION_NOT_IDENTIFIED",
     "change": "Support actual weekly_raid level100/Mythic five-to-ten-player conversion/consent/access. Every client must observe matching living in-instance ordered Orun/Earth, Neris/Water, Pyralis/Fire, Aeral/Air phase messages plus actual boss-room clear and alive town exit. No synthetic transformation, damage, aid, reward or quest completion. Explicit maximum duration up to30m; existing elemental and default mixed behavior retained.",
     "evidence": "Focused weekly/preparation race1.377s; complete cmd/loadtest race17.714s. Domain preparation now includes real game weekly readiness/access with declared synthetic replies at5/10 members. Unit negatives cover nil/foreign/wrong identity/zero/high/skipped/regressed/dead/town/unprepared phases and wrong repair crystal; boss-only and phase-only views cannot pass. Root opt-in test compiles but skipped without disposable opt-in; this is not runtime success.",
     "actualCheck": "New opt-in TestLoadWeeklyActualFiveRolesPhasesExitAndSaves prepares five level100 uncommon/rare Fighter/Cleric/Rogue/Wizard/Fighter roles, legal plate/shields, leather/dual daggers, cloth/staff/tome and completed gate access, then ordinary server/driver requests. Requires all-own four phases, boss clear/town exit, original shared Dark King victory, personal weekly cache/lockout receipts, settled outbox, earned unclaimed finale readiness, preserved equipment/bag/EP, saved Gold/resonance. Initial level/access/gear are fixtures, not campaign proof. Not yet run.",
@@ -574,7 +574,7 @@
     "limits": "Controller/unit preparation only. Need actual earned isolated encounter/save evidence. Announcements do not independently prove Eidolon aid mechanics or human balance. No five-to-ten-minute balance, full campaign, representative100-player/headroom or public release claim. Accepted previous encounters not replayed."
   },
   "weeklyCorrectedActualRun": {
-    "statusAtObservation": "RUNNING_NO_TERMINAL_OR_SUCCESS_CLAIM",
+    "statusAtObservation": "TERMINAL_FAIL_FIXTURE_REMOVED",
     "sourceCommit": "8db6ea00",
     "ownedContainer": "8fdc790db22a09c68d56ee83dfc1fb43e2daa29e67a970cd2552aac9b04d3143",
     "taskLabel": "weekly-179-corrected-20261004",
@@ -586,8 +586,30 @@
       "raceRoot": {"path": "/tmp/eidolon-179-weekly-corrected-pQTsvO/root.test", "sha256": "50ffcfe9f67ae0d7569e55279c780a0540a1c0178e52f99bc8d0d13e3ed5f8ec"},
       "unchangedServer": {"path": "/tmp/eidolon-179-poker-actual-eociud/server", "sha256": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc"}
     },
-    "observation": "Mongo ping, actual test header, normal owned-server marker and exact root/server/driver PID/comm verified. Parent session2403 remains live. Observed fixture peak656924672B, all cgroup max/OOM/OOM-kill events0. Luna watch_dungeon179_1004 monitors exact processes/resources only; parent must retrieve terminal result, independently verify rewards/saves and remove exact owned fixture after termination. Process exit or observation timeout is not pass. Previous passed encounters were not replayed.",
+    "observation": "Mongo ping, actual test header, normal owned-server marker and exact root/server/driver PID/comm verified. Luna detected all three owned processes ended; parent retrieved original session2403 terminal FAIL380.39s/exit1, not a skip. Final fixture peak658358272B, all cgroup max/OOM/OOM-kill events0/DockerOOMfalse. Only owned Mongo remained; exact ID/task/networknone/OOM state revalidated before removing owned fixture/synthetic database, filtered listing empty. Artifacts retained; previous passed encounters not replayed.",
+    "terminalMetrics": {
+      "elapsedSeconds": 380.39,
+      "connected": 5, "joined": 5, "authenticated": 5, "admissionFailures": 0,
+      "frames": 56844, "minimumFrames": 11364, "minimumOwnUpdates": 11364, "minimumActiveMS": 374974, "maximumGapMS": 67, "wireBytes": 268248586,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "recoveriesRequested": 46, "recoveriesCompleted": 46, "pendingRecoveries": 0, "failedRecoveries": 0,
+      "minimumOwnImpacts": 49, "damageEvents": 544, "healingDeliveries": 31, "acceptedCasts": 224, "deniedCasts": 2,
+      "entered": 5, "cleared": 0, "exited": 0, "reentries": 46, "checkpointReturns": 45,
+      "minimumPhaseViews": 2, "completedPhaseMembers": 0, "failedGroups": 1,
+      "firstFailure": "server_rate_limit"
+    },
+    "finding": "Confirmed a normal server rate-limit rejection after phase2; original server returned only a generic string so the exact action is not established. Existing raid-entry budget did not eliminate every rate rejection. No claim that raid entry specifically caused it; do not change server budgets, boss health/damage or success gates to force a pass. Independent earned reward/save proof was not reached.",
     "scope": "Corrected entry-budget/fixed diagnostic controller against same original game executable isolates the bot correction, not a claim that new admin-duration source ran in this executable. Required each-client ordered phases, real boss clear/Town exit and original durable reward/weekly/quest/character proofs remain unchanged."
+  },
+  "rateRejectionActionDiagnostic": {
+    "status": "PREPARED_UNIT_RACE_CHECKED_NOT_ACTUALLY_RUN_OR_PUBLISHED",
+    "change": "Server rate rejection retains existing JSON-string error shape but identifies the message type only after the static policy allowlist check. Never echo payload, actor/credentials or an unknown request type. No policy limit/burst/access/handler change. Driver retains closed failure enums for raid_enter/move/attack/ability/recall/respawn plus legacy generic rejection; arbitrary/private suffixed text remains generic server_rejection and is never stored or printed.",
+    "evidence": "Focused root Inbound rate/auth/access/known-type coverage passed race11.549s; driver server/failure/recovery cases passed race1.089s. Exact first-cause preservation and unknown/private suffix rejection included. No actual new-diagnostic game executable run yet; previous380.39s failure retains original generic diagnosis.",
+    "sha256": {
+      "server/protocol_policy.go": "eacf7917f7d7333d12c56ccc9be2d6e25b8765432a0dcfc8766ae395999d4053",
+      "server/cmd/loadtest/failure.go": "48a5b8ff9ae5e6225649024243d0c91c58746607ce125b35fd5ee2d783aec4d0"
+    },
+    "next": "Build exact prepared normal server and driver; preserve prior failed artifacts. Only a missing compatible isolated finale/action-diagnostic run is needed, not replayed dungeon/elemental raid/casino/event/full campaign or relaxed success gates."
   },
   "eventCorrectedActualRun": {
     "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",

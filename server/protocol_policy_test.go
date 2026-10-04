@@ -78,6 +78,24 @@ func TestInboundMessagePoliciesCoverDispatcher(t *testing.T) {
 	}
 }
 
+func TestInboundRateRejectionIdentifiesOnlyAllowlistedAction(t *testing.T) {
+	c := &Client{username: "private-account", playerID: "private-character"}
+	now := time.Now()
+	msg := Message{Type: MsgRaidEnter}
+	for count := 0; count < inboundMessagePolicies[msg.Type].burst; count++ {
+		if err := c.acceptInboundMessage(msg, now); err != nil {
+			t.Fatal(err)
+		}
+	}
+	err := c.acceptInboundMessage(msg, now)
+	if err == nil || err.Error() != "message rate limit exceeded: raid_enter" {
+		t.Fatal("missing fixed action diagnosis")
+	}
+	if err := c.acceptInboundMessage(Message{Type: "private-unknown-payload"}, now); err == nil || err.Error() != "unsupported message type" {
+		t.Fatal("unknown request type reflected")
+	}
+}
+
 func messageConstantValues(t *testing.T, filename string) map[string]string {
 	t.Helper()
 	fset := token.NewFileSet()

@@ -17,6 +17,12 @@ const (
 	failureCastTimeout
 	failureServerRejection
 	failureServerRateLimit
+	failureServerRaidEntryRateLimit
+	failureServerMoveRateLimit
+	failureServerAttackRateLimit
+	failureServerAbilityRateLimit
+	failureServerRecallRateLimit
+	failureServerRespawnRateLimit
 )
 
 func (p *partyLoad) failAt(stage loadFailureStage) {
@@ -51,6 +57,18 @@ func (p *partyLoad) failureCode() string {
 		return "server_rejection"
 	case failureServerRateLimit:
 		return "server_rate_limit"
+	case failureServerRaidEntryRateLimit:
+		return "server_rate_limit_raid_enter"
+	case failureServerMoveRateLimit:
+		return "server_rate_limit_move"
+	case failureServerAttackRateLimit:
+		return "server_rate_limit_attack"
+	case failureServerAbilityRateLimit:
+		return "server_rate_limit_ability"
+	case failureServerRecallRateLimit:
+		return "server_rate_limit_recall"
+	case failureServerRespawnRateLimit:
+		return "server_rate_limit_respawn"
 	default:
 		return "unclassified"
 	}
@@ -62,8 +80,23 @@ func (p *partyLoad) rejectServer(payload json.RawMessage) {
 	defer p.mu.Unlock()
 	stage := failureServerRejection
 	var message string
-	if len(payload) <= 2048 && json.Unmarshal(payload, &message) == nil && message == "message rate limit exceeded" {
-		stage = failureServerRateLimit
+	if len(payload) <= 2048 && json.Unmarshal(payload, &message) == nil {
+		switch message {
+		case "message rate limit exceeded":
+			stage = failureServerRateLimit // Retain older game executable compatibility.
+		case "message rate limit exceeded: raid_enter":
+			stage = failureServerRaidEntryRateLimit
+		case "message rate limit exceeded: move":
+			stage = failureServerMoveRateLimit
+		case "message rate limit exceeded: attack":
+			stage = failureServerAttackRateLimit
+		case "message rate limit exceeded: ability":
+			stage = failureServerAbilityRateLimit
+		case "message rate limit exceeded: recall":
+			stage = failureServerRecallRateLimit
+		case "message rate limit exceeded: respawn":
+			stage = failureServerRespawnRateLimit
+		}
 	}
 	p.failAt(stage)
 	for index := range p.members {

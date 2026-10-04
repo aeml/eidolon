@@ -35,6 +35,14 @@ regression failed before the fix; focused database race checks passed1.109s.
 Existing producers already normalize timestamps; no production corruption or
 backfill is asserted. Not part of the pushed1.74.2 or a new public release.
 
+The corrected five-role finale check failed380.39s at a confirmed generic
+server rate-limit rejection after each client observed at least two phases;
+it is not boss/reward/save acceptance. Owned fixture removed, artifacts retained.
+The [1.79 receipt](2026-10-04-release1-79-capacity-driver-checks.json) now carries
+terminal metrics and a prepared allowlisted-action rate-rejection diagnostic
+with root/driver race checks. Exact rejecting action still needs the next
+actual run; no limits, health/damage or mandatory clear/phase/save gates relaxed.
+
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with
 an API-only frontend. Eighteen pure argument cases pass; current origin TLS,

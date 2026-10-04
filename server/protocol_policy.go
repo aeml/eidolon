@@ -280,7 +280,9 @@ func (c *Client) acceptInboundMessage(msg Message, now time.Time) error {
 		return fmt.Errorf("active character required")
 	}
 	if !c.consumeMessageRate(msg.Type, p, now) {
-		return fmt.Errorf("message rate limit exceeded")
+		// Type passed the static policy allowlist above. Do not echo payloads,
+		// identities or unknown type strings; retain the existing string wire shape.
+		return fmt.Errorf("message rate limit exceeded: %s", msg.Type)
 	}
 	return nil
 }
