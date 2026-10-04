@@ -41,7 +41,8 @@ func (db *DB) ChangePassword(username, current, next string) (bool, error) {
 	}
 	result, err := db.users.UpdateOne(ctx,
 		bson.M{"username": username, "password_hash": observed.Hash},
-		bson.M{"$set": bson.M{"password_hash": string(hash)}})
+		bson.M{"$set": bson.M{"password_hash": string(hash)},
+			"$unset": bson.M{"password_recovery": "", "recovery_email_pending": ""}})
 	if err != nil {
 		return false, err
 	}

@@ -35,8 +35,22 @@ rotation independently of the form, including a late world-entry handoff or
 blocked browser storage. [UI checks](plans/2026-10-02-release1-71-password-ui-checks.json)
 use scoped mocked browser sockets; the earlier backend receipt records actual
 disposable Mongo/fresh-process proof separately.
-Forgotten-password recovery still needs an approved ownership/delivery method;
-this form does not provide it. Production is accepted Alpha 1.70.1.
+The owner chose **emailed recovery links via Postmark** on October 4. The prepared
+database/provider helpers require password proof and a separate mailbox
+verification before an address can recover an account; registration email alone
+does not prove ownership. Challenges store only token digests, expire, and are
+consumed by a conditional credential update. Password changes also invalidate
+outstanding recovery/verification challenges. No roles, characters, Gold or EP
+are replaced. Provider requests use a fixed HTTPS endpoint, finite timeout,
+no redirects and no tracking or administrator copies. Configure
+`POSTMARK_SERVER_TOKEN`, `POSTMARK_FROM_EMAIL` and `POSTMARK_MESSAGE_STREAM` only
+in the server environment, using a verified Postmark sender and transactional
+stream. `ADMIN_NOTIFICATION_EMAILS` is not a recovery recipient list.
+These helpers are not an exposed recovery feature yet: protocol, login/settings
+UI, pre-analytics link handoff, session invalidation, abuse controls and connected
+acceptance remain to be integrated. This form alone does not provide recovery.
+Production remains Alpha 1.70.2; maintenance acceptance is recorded separately.
+See [prepared email checks](plans/2026-10-04-release1-71-email-recovery-checks.json).
 Administrators gain no arbitrary reset, ownership or password-reading action.
 
 ## Direct-trade escrow-edit hotfix
