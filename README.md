@@ -458,7 +458,11 @@ Notes:
   A shared roulette/baccarat profile now assigns36 public chairs and distinguishes
   exact owner stake acknowledgement from reveal and paid completion. Local
   socket checks cover both games, not actual-game settlement or capacity; poker,
-  party/raid/event/save and combined workloads remain required.
+  party/raid/event/save and combined workloads remain required. A separate
+  player-only poker profile now uses legal buy-ins and advertised check/call
+  turns, with fresh paid-hand evidence and no stranded single-player table.
+  Its two-controller actual-domain hand check is not actual-server/Mongo capacity
+  acceptance; all casino profiles still need scoped representative integration.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.

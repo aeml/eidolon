@@ -7,7 +7,7 @@ credentials are read-only. The driver creates accounts and changes synthetic
 characters through normal commands, so it is not a read-only production probe.
 
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
-`casino-blackjack` and `casino-house`. Mixed
+`casino-blackjack`, `casino-house` and `casino-poker`. Mixed
 still assigns only combat/town/social round-robin. It does **not** exercise casino
 wagering, coordinated dungeon/raid parties or all world-event flows; those remain
 separate required workloads before the1.79 milestone can be accepted. Registration,
@@ -97,8 +97,8 @@ controller failures, alongside
 the ordinary transport/admission checks. This is protocol outcome evidence, not
 rendered slot animation, independent wallet/payout conservation, collision-route
 coverage or save-after-restart proof. Local socket stand-ins are not real-game
-capacity acceptance. Card-table workloads and a representative combined profile
-still need implementation; the32 public machines do not imply a100-slot-player
+capacity acceptance. Representative card-table integration and a combined profile
+still need completion; the32 public machines do not imply a100-slot-player
 capacity promise. The existing100-client nightly validator remains for the
 combat/town/social mixed profile, not this separately reported workload.
 At shutdown bots stop issuing actions, observe any one outstanding spin/bonus
@@ -137,7 +137,7 @@ bound, not an entire newly funded table round; accepted ongoing wagers remain
 under normal server timer/persistence rules. This does not prove all last rounds
 settled after disconnect, payout conservation, durability or production load.
 Focused local bot/WebSocket fixtures are not actual game/Mongo acceptance.
-Poker, coordinated parties/raids, events/save and representative
+Coordinated parties/raids, events/save and representative
 combined workloads remain required before the capacity milestone is complete.
 
 ## Shared roulette and baccarat workload
@@ -166,6 +166,36 @@ fixtures verify both games through two accepted wagers and one paid round, with
 the second round still pending settlement. They do not prove actual-game/Mongo
 travel, wallet conservation, multiplayer capacity or restart durability. The
 default mixed workload and100-client nightly validator remain unchanged.
+
+## Player-only Hold'em workload
+
+`-scenario casino-poker -n 2 -credentials-file /absolute/test-accounts.json
+-casino-bet 100 -duration 120s` assigns public Gold poker chairs, six per table,
+with the same normal physical approach and funded-account requirements. Valid
+counts are2–24 except7,13,19, which would leave a lone player at the final table.
+There are no house opponents. Gold buy-in is100–100000 in steps of100; specify
+it explicitly because the other games' default20 is not a legal poker buy-in.
+The example duration is not measured capacity: allow travel, shared betting,
+all betting streets and settlement under normal timers.
+
+Bots acknowledge only their exact own seat/session/round buy-in, then check or
+call only on their advertised own turn, using the current revision. No raises,
+rigged cards, forced deals, bankroll grants, VIP/EP use or uncertain money retries.
+Peer-only revision progress cannot acknowledge an unchanged own turn. Observed
+turn progress is not causal action proof, since timeouts can also check. Names,
+hole cards, decks and hand descriptions are omitted from the retained view.
+
+`Poker coverage` reports accepted buy-ins, fresh paid completed rounds, minimum
+paid rounds across every bot, observed turns and failures. Fresh completion needs
+a previously acknowledged own buy-in, a real two-or-more-player completed hand,
+the own participant paid flag and nonnegative own payout. History, a lone funded
+lobby, showdown without payment, peer results and duplicates do not count.
+Shutdown observes outstanding requests, not all last funded rounds; normal server
+cash-out/recovery remains authoritative. Focused checks play a two-controller hand
+through the actual poker rules with the ordinary shuffled deck and advertised
+revision-bound actions. This is domain/protocol evidence, not actual-server socket,
+wallet persistence, multiplayer capacity or restart acceptance. Representative
+combined and party/raid/event/save workloads still remain required.
 
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible

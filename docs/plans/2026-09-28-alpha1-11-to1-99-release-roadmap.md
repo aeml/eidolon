@@ -1741,6 +1741,16 @@ requirements for idle players. Actual socket checks include peer-only and empty
 deltas after admission; strict evidence validation rejects missing/duplicate or
 impossible fresh-update totals. No new capacity run or production change.
 
+Prepared1.79 also includes a **player-only public Hold'em workload** with legal
+Gold buy-ins, advertised revision-bound check/call turns and fresh own paid-hand
+evidence. Counts that strand a lone player at the final table are rejected;
+no house players or wallet grants. A two-controller hand plays through actual
+poker rules with the normal shuffled deck; historical/unpaid/peer/duplicate
+states and uncertain funding cannot count as completion. This remains domain
+evidence, not actual-server/Mongo capacity or cash-out/restart acceptance.
+Party/raid/event/save, representative combined workloads and ordered predecessor
+publication remain open.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Gold-only, one physical public machine per bot. No grants, VIP bypass,
+// Gold-only, one distinct physical public seat per bot. No grants, VIP bypass,
 // artificial outcomes or retries of uncertain money-changing commands.
 type casinoLoad struct {
 	mu                 sync.Mutex
@@ -18,6 +18,7 @@ type casinoLoad struct {
 	seat               int
 	blackjack          *blackjackLoad
 	house              *houseLoad
+	poker              *pokerLoad
 	view               casinoLoadView
 	pending            string
 	pendingSession     string
@@ -38,6 +39,7 @@ type casinoLoadView struct {
 	} `json:"yourSeat"`
 	Blackjack *blackjackLoadView `json:"blackjack"`
 	House     *houseLoadView     `json:"house"`
+	Poker     *pokerLoadView     `json:"poker"`
 	Slots     *struct {
 		Currency   string `json:"currency"`
 		Balance    int    `json:"balance"`
@@ -85,6 +87,9 @@ func (b *casinoLoad) counts() casinoLoadCounts {
 	if b.house != nil {
 		counts.wagers, counts.rounds = b.house.wagers, b.house.rounds
 	}
+	if b.poker != nil {
+		counts.wagers, counts.rounds, counts.actions = b.poker.wagers, b.poker.rounds, b.poker.actions
+	}
 	return counts
 }
 
@@ -116,6 +121,10 @@ func (b *casinoLoad) receive(payload json.RawMessage) bool {
 	}
 	if b.house != nil {
 		b.house.receive(b)
+		return true
+	}
+	if b.poker != nil {
+		b.poker.receive(b)
 		return true
 	}
 	if (b.pending == "slot_spin" || b.pending == "slot_bonus") && view.YourSeat != nil && view.Slots != nil && !view.Slots.Processing && view.Slots.Available {
@@ -169,7 +178,7 @@ func (b *casinoLoad) awaitSettled(readerDone <-chan struct{}, timeout time.Durat
 	defer timer.Stop()
 	for {
 		b.mu.Lock()
-		pending := !b.failed && (b.pending == "slot_spin" || b.pending == "slot_bonus" || b.pending == "bet" || b.pending == "play" || b.pending == "house_bet")
+		pending := !b.failed && (b.pending == "slot_spin" || b.pending == "slot_bonus" || b.pending == "bet" || b.pending == "play" || b.pending == "house_bet" || b.pending == "poker_buy_in" || b.pending == "poker_play")
 		b.mu.Unlock()
 		if !pending {
 			return
@@ -243,6 +252,10 @@ func (b *casinoLoad) step(me Entity, now time.Time, bet int, timeout time.Durati
 	}
 	if b.house != nil {
 		b.house.step(b, now, bet, request, issue)
+		return
+	}
+	if b.poker != nil {
+		b.poker.step(b, now, bet, request, issue)
 		return
 	}
 	slots := b.view.Slots

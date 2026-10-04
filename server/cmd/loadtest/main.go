@@ -20,6 +20,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"eidolon-server/internal/game"
 	"github.com/gorilla/websocket"
 )
 
@@ -31,9 +32,9 @@ var (
 	insecure         = flag.Bool("insecure-skip-verify", false, "skip TLS certificate verification for local/self-signed testing")
 	credentialsFile  = flag.String("credentials-file", "", "optional read-only JSON credential file; generated credentials otherwise remain in memory")
 	duration         = flag.Duration("duration", 0, "stop automatically after this duration (zero waits for interrupt)")
-	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, casino-slots, casino-blackjack, or casino-house")
+	scenario         = flag.String("scenario", "combat", "scripted flow: combat, town, social, mixed, casino-slots, casino-blackjack, casino-house, or casino-poker")
 	admissionTimeout = flag.Duration("admission-timeout", 15*time.Second, "maximum wait for each registration, login and own-player acknowledgement, 100ms to60s")
-	casinoBet        = flag.Int("casino-bet", 20, "casino-slots Gold stake,20 to100000 in steps of20; isolated funded accounts required")
+	casinoBet        = flag.Int("casino-bet", 20, "Gold casino stake; poker requires100–100000 in steps of100, other games20–100000 in steps of20; isolated funded accounts required")
 )
 
 type loadMetrics struct {
@@ -133,8 +134,8 @@ func main() {
 	if *townMode {
 		selectedScenario = "town"
 	}
-	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "casino-slots" && selectedScenario != "casino-blackjack" && selectedScenario != "casino-house" {
-		log.Fatal("-scenario must be combat, town, social, mixed, casino-slots, casino-blackjack, or casino-house")
+	if selectedScenario != "combat" && selectedScenario != "town" && selectedScenario != "social" && selectedScenario != "mixed" && selectedScenario != "casino-slots" && selectedScenario != "casino-blackjack" && selectedScenario != "casino-house" && selectedScenario != "casino-poker" {
+		log.Fatal("-scenario must be combat, town, social, mixed, casino-slots, casino-blackjack, casino-house, or casino-poker")
 	}
 	if selectedScenario == "casino-slots" && (*count > 32 || *casinoBet < 20 || *casinoBet > 100000 || *casinoBet%20 != 0) {
 		log.Fatal("casino-slots requires1–32 public machines and a Gold bet20–100000 in steps of20")
@@ -144,6 +145,9 @@ func main() {
 	}
 	if selectedScenario == "casino-house" && (*count > 36 || *casinoBet < 20 || *casinoBet > 100000 || *casinoBet%20 != 0) {
 		log.Fatal("casino-house requires1–36 public seats and Gold bet20–100000 in steps of20")
+	}
+	if selectedScenario == "casino-poker" && (!validPokerClientCount(*count) || !game.ValidPokerBuyIn(*casinoBet)) {
+		log.Fatal("casino-poker requires2–24 public seats (no lone final table) and Gold buy-in100–100000 in steps of100")
 	}
 	rand.Seed(time.Now().UnixNano())
 	interrupt := make(chan os.Signal, 1)
@@ -158,7 +162,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if (selectedScenario == "casino-slots" || selectedScenario == "casino-blackjack" || selectedScenario == "casino-house") && len(creds) < *count {
+	if (selectedScenario == "casino-slots" || selectedScenario == "casino-blackjack" || selectedScenario == "casino-house" || selectedScenario == "casino-poker") && len(creds) < *count {
 		log.Fatal("casino workloads require supplied credentials for every approved, funded test account")
 	}
 	if len(creds) < *count {
@@ -236,7 +240,7 @@ func main() {
 		log.Printf("Casino coverage: clients=%d min_spins=%d min_paid_spins=%d completed_spins=%d completed_bonuses=%d failed=%d", *count, minimum, minimumPaid, completed, bonuses, failures)
 		casinoFailed = failures != 0 || minimumPaid == 0
 	}
-	if selectedScenario == "casino-blackjack" || selectedScenario == "casino-house" {
+	if selectedScenario == "casino-blackjack" || selectedScenario == "casino-house" || selectedScenario == "casino-poker" {
 		var wagers, rounds, actions, minimum uint64
 		var failures int
 		for index, observation := range observations {
@@ -254,7 +258,11 @@ func main() {
 		if selectedScenario == "casino-house" {
 			label = "House"
 		}
-		log.Printf("%s coverage: clients=%d accepted_wagers=%d completed_rounds=%d min_completed_rounds=%d observed_stands=%d failed=%d", label, *count, wagers, rounds, minimum, actions, failures)
+		actionLabel := "observed_stands"
+		if selectedScenario == "casino-poker" {
+			label, actionLabel = "Poker", "observed_turns"
+		}
+		log.Printf("%s coverage: clients=%d accepted_wagers=%d completed_rounds=%d min_completed_rounds=%d %s=%d failed=%d", label, *count, wagers, rounds, minimum, actionLabel, actions, failures)
 		casinoFailed = failures != 0 || minimum == 0
 	}
 	if metrics.joined.Load() != int64(*count) || metrics.readErrors.Load() != 0 ||
@@ -315,6 +323,9 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	}
 	if botScenario == "casino-house" {
 		casino = newHouseLoad(id, myID)
+	}
+	if botScenario == "casino-poker" {
+		casino = newPokerLoad(id, myID)
 	}
 
 	// Movement State
