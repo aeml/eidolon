@@ -2,13 +2,13 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.70.1, exact fa414f0b288e8ee014d5ce72f7affdca485e1c7f,
-CI37068064995. All ten CI jobs, including both deploys and live character QA, passed.
+baseline is Alpha 1.70.2, exact ddfa60e3b2bd20b08a175de124eb00fae66dc299,
+CI37175484045. All ten CI jobs, including both deploys and live character QA, passed.
 Independent public IPv4 checks verified backend/frontend identities, database
 readiness, login version, cumulative hotfix notes and the retained dressed Ilyra
 GLB. Earlier receipts retain distinct runtime and model checks; no claim that
 every route or economy operation was sampled. See the current
-[acceptance receipt](2026-10-02-release1-70-1-trade-checks.json).
+[maintenance acceptance receipt](2026-10-04-release1-77-network-probe-checks.json).
 The [accepted 1.54 record](2026-09-30-release1-54-acceptance.md) retains live
 rigged Fighter integration and exact optimized assets; final art stays open.
 The accepted [1.56 season milestone](2026-10-01-release1-56-seasons.md) publishes
@@ -189,8 +189,14 @@ adds authenticated Account help and online Settings forms, clears typed secrets
 on submission/close/disconnect, and consumes token rotation at the current
 transport even after closing the form or entering the world. Scoped browser
 bootstrap checks include phone-sized blocked storage; this is not live.
-The safe recovery-method decision/workflow and ordered version/notes/publication
-remain unfinished. Password change is not forgotten-password recovery.
+The owner chose emailed links using the configured Postmark account on October4.
+The [recovery implementation and checks](2026-10-04-release1-71-email-recovery-checks.json)
+cover a separately verified mailbox, single-use expiring links, protected login
+and Settings forms, bounded mail workers, real disposable-Mongo/socket recovery,
+restart durability and old-session revocation. Alpha1.71.0 version and cumulative
+notes are assembled; exact-source CI/public acceptance remains required before
+declaring1.71 accepted. Local provider fixtures do not prove actual inbox delivery.
+No future schema24 writer, commercial integration or beta transition is included.
 The [A1 integration review](2026-09-28-1-20-integration.md) preserves the final
 art/actor and human-playtest dependencies rather than declaring beta ready.
 

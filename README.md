@@ -420,15 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.70.2` with prepared, unpublished 1.71 account-security work. Forge previews and bag tooltips share a fixed stat order across refreshes; deployment probes have bounded request and retry waits. Account recovery remains an owner decision before 1.71 publication. This isolated branch retains schema17 and does not include the later schema24 writers. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
+- Current source version: `Alpha 1.71.0`, assembled for publication with password changes, session/token safeguards and explicit verified-email recovery through Postmark. Verify an address in signed-in Account help or Settings before using Forgot your password on the login screen. Opening a link alone never changes credentials. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json) distinguish synthetic connected proof from actual inbox delivery. This branch retains schema17 and excludes later unpublished schema24 writers. Exact-source CI/public acceptance is still required; broader security/valuable-operation, owner/commercial and human gates stay open. This is not a capacity promise, payment launch or closed-beta transition.
 - Last independently verified live release: `Alpha 1.70.2`, exact
-  526bc22953e79cbe4869580e8f628d55c39c1b1c, successful CI37137636915 (all ten jobs,
-  including predeploy and live character QA). Public IPv4 frontend/backend
-  identities, database readiness, login version, cumulative notes and the
-  three changed Forge/inventory runtime files match the release.
-  [Acceptance](docs/plans/2026-10-03-release1-70-2-forge-checks.json).
-  New maintenance candidate ddfa60e3/CI37175484045 is not accepted until CI and
-  independent public checks pass. Prepared1.71 source remains unpublished.
+  ddfa60e3b2bd20b08a175de124eb00fae66dc299, successful CI37175484045 (all ten jobs,
+  including both deploys and live QA). Independent public IPv4 frontend/backend
+  identities, database readiness, login version, notes and runtime release query
+  match. [Maintenance acceptance](docs/plans/2026-10-04-release1-77-network-probe-checks.json)
+  preserves its scope; the [Forge acceptance](docs/plans/2026-10-03-release1-70-2-forge-checks.json)
+  remains historical. Prepared1.71 is not accepted live merely by its assembly.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.

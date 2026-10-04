@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.70.2</span>
+                    <span class="start-version-row__label">Alpha 1.71.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -772,6 +772,17 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.71.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.71.0 (account security and emailed recovery)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Verify a recovery email from signed-in Account help or Settings. Your current password and an explicit confirmation link are required; an unverified registration email never grants account ownership. Verification links expire in 30 minutes.</li>
+                        <li>Forgot your password? Request an emailed link by username on the login screen. Single-use reset links expire in 15 minutes; opening a link does not reset your password or sign you in. A successful reset invalidates existing sessions; sign in normally with your new password.</li>
+                        <li>Change your password while signed in with current-password proof. New passwords require at least 15 characters and at most 72 UTF-8 bytes. Existing passwords remain valid until you choose to change them; characters, gear, Gold, EP and administrator roles are preserved.</li>
+                        <li>Credential work and repeated attempts are bounded across connections, live session replacement invalidates the previous token, and ordinary disconnect recovery starts its existing five-minute window when you disconnect. Dungeon progress still uses the separate 15-minute rule.</li>
+                        <li>Private links are removed from the address bar before analytics initializes. Recovery pages disable analytics; passwords and recovery links are not saved by the forms. Unconfirmed changes are never retried automatically, and administrators do not receive your private recovery emails.</li>
+                        <li>Postmark delivers configured transactional mail. Only previously verified recovery addresses receive resets; requests do not reveal whether an account has one. This release adds no payments, gameplay rewards or early closed-beta transition. Full prior patch history and Ilyra's permanent wizard outfit remain included.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.70.2">
                     <h3 class="patch-note-entry__title">Alpha 1.70.2 (stable Forge stats and deployment checks)</h3>
                     <ul class="patch-note-entry__list">

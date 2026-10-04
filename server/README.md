@@ -66,6 +66,29 @@ go build -trimpath -o eidolon-server .
 ## Database
 The server uses MongoDB for user and character persistence.
 
+## Emailed account recovery
+
+Configure `POSTMARK_SERVER_TOKEN`, `POSTMARK_FROM_EMAIL` (a Postmark-verified
+sender) and `POSTMARK_MESSAGE_STREAM` (a transactional stream; blank defaults
+to `outbound`) in the private deployment environment. Never commit or print
+the token. All three blank disables mail; invalid partial configuration refuses
+startup. Existing Docker deployment loads the server `.env`; no new sudo
+installation or service is required. Recovery never BCCs `ADMIN_NOTIFICATION_EMAILS`.
+
+Players first sign in and use Account help or Settings to prove their current
+password and verify a recovery mailbox using its 30-minute confirmation link.
+The original registration email is not trusted automatically. Forgot your
+password on the login screen then requests a 15-minute, single-use reset link.
+Both links require explicit submission. Resets invalidate existing sessions
+but preserve characters, items, currency and roles. There is no admin ownership
+override or automatic sign-in. Mail acceptance is not inbox-delivery proof.
+
+After deployment, verify delivery using your own account: request verification,
+check inbox/spam, and explicitly confirm the address. A reset test changes the
+password and closes other sessions, so only request one when prepared to do so.
+Check Postmark sender/stream permissions if mail does not arrive; do not paste
+tokens, links, passwords or raw provider responses into reports.
+
 ## QA-only commands
 
 `/level`, `/qa-waypoint <combat|encounter|verdant>`, `/qa-hazard <earth|water|fire|air|town>`, and `/qa-loot-next` are disabled for normal accounts. Set a comma-separated `EIDOLON_QA_USERNAMES` value (or `--qa-usernames`) to allow dedicated authenticated QA usernames. Combat and Verdant use fixed coordinates; encounter places only the QA character near the live overworld enemy nearest the fixed combat anchor and cannot accept arbitrary coordinates. All ordinary waypoints use a bounded five-minute protection window. The hazard pilgrimage uses fixed canonical centers and a 45-second inspection clock that admits real environmental damage while retaining unrelated hostile protection, then returns through `town`; `/qa-loot-next` forces the next eligible normal kill through the usual loot generator. Do not add normal player accounts.

@@ -94,6 +94,11 @@ func TestEmailRecoveryActualConnectedSessions(t *testing.T) {
 	repo, uri, binary := resourceJournalIntegration(t)
 	messages := recoveryConnectedMailSink(t)
 	fixture, current := resourceJournalFixture(t, repo)
+	// Use a separate unverified account so asynchronous request processing
+	// cannot race this fixture's later mailbox confirmation into eligibility.
+	if err := repo.CreateUser(fixture.Name+"-unverified", "registration@example.invalid", current); err != nil {
+		t.Fatal(err)
+	}
 	const next = "  New connected recovery passphrase  "
 	address, stop := compatStartServer(t, binary, uri, 1711, "-save-journal-dir", t.TempDir())
 	defer stop()
@@ -137,7 +142,7 @@ func TestEmailRecoveryActualConnectedSessions(t *testing.T) {
 	}
 	guest := credentialSocket(t, address)
 	unknown := request(guest, MsgRequestPasswordRecovery, map[string]string{"username": fixture.Name + "-unknown"})
-	unverified := request(guest, MsgRequestPasswordRecovery, map[string]string{"username": fixture.Name})
+	unverified := request(guest, MsgRequestPasswordRecovery, map[string]string{"username": fixture.Name + "-unverified"})
 	if unknown != unverified {
 		t.Fatal("request enumerated account eligibility")
 	}
