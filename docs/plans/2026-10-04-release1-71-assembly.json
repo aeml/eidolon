@@ -34,5 +34,12 @@
     "fix": "Separate Email and Password labels from guidance while retaining the auth-field layout. Associate guidance using aria-describedby. Preserve the exact Password accessible-name/focus assertion and add exact Email naming and both field descriptions; no timeout weakening or server/provider changes.",
     "targetedCheck": "Six real-browser cases passed in28.5s: desktop and phone account naming/tab order/browser zoom, existing project-credit keyboard route, and verify/reset/setup recovery bootstrap. Focused keyboard-settings ESLint and git diff --check passed. No repeated Mongo/campaign/soak matrix for this HTML accessibility correction."
   },
+  "menuContractCorrection": {
+    "source": "85f1bccd58643f5c5fedef3391ac6518e75a5ceb",
+    "ci": 37181802120,
+    "finding": "Client Tests job111375702357 failed one MenuPolish static-markup assertion expecting auth-field on wrapping labels rather than the accessibility-correct wrappers.628other suites and9296other tests passed. Run was stillin_progress when failure was inspected; no public acceptance inferred.",
+    "fix": "Parse the actual HTML into detached DOM and assert native label association and exact field text, shared auth-field/auth-input styling without inline wrapper chrome, plus separate aria-describedby guidance. Retain the existing login/register/status/CSS regressions. No runtime, password, provider or timeout change.",
+    "targetedCheck": "MenuPolish, EmailRecoveryUI, RecoveryLinkBoot and VersionPresentation passed443tests in4suites in12.938s. Focused ESLint and git diff --check passed. The six native accessibility/recovery cases passed on the unchanged runtime in the preceding correction; no redundant rerun or historical Mongo/campaign matrix."
+  },
   "remaining": "Fetch/pull current master before corrected normal push; preserve concurrent website edits. Confirm corrected exact CI handle, delegate its monitoring to user-authorized Luna, independently check frontend/runtime/backend identities and notes. Ask owner to verify actual inbox delivery without sharing secrets. Broader roadmap and owner/human gates remain active."
 }
