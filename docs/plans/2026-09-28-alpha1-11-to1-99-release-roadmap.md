@@ -2,12 +2,12 @@
 
 Requested September 28, 2026. **Execution authorized; milestone scope is not
 claimed implemented, tested, or deployed merely by this document.** Last verified live
-baseline is Alpha 1.71.0, exact4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e,
-CI37182320668. All ten CI jobs, including both deploys and live character/town
+baseline is Alpha 1.71.1, exact1b6f44d286b7689bd646999e1fa9c8e1859d9087,
+CI37190290208. All ten CI jobs, including both deploys and live character/town
 recovery QA, passed. Post-terminal independent IPv4 checks verified public
 frontend/backend identities, database readiness, login version, cumulative notes
 and four recovery/analytics runtime files against publisher-rewritten source.
-See [public acceptance](2026-10-04-release1-71-public-acceptance.json) for passed
+See [public acceptance](2026-10-04-release1-71-1-public-acceptance.json) for passed
 and skipped scopes. Actual Postmark inbox delivery remains owner-initiated;
 no new animation/GPU coverage, IPv6 fix or capacity promise is inferred.
 Earlier maintenance/runtime/model receipts retain their separate scopes.
@@ -1341,6 +1341,13 @@ These are private, read-only filters—not new sanctions or powers.46 focused
 client checks pass; unchanged backend/socket evidence retains its original
 scope. Ordered predecessors, own notes/version and CI/public acceptance remain
 required. [Permission review](2026-10-04-release1-74-permission-review.json).
+
+October4: **1.72 living movement** rejects network walking/jumping from
+zero-health or disconnected actors without changing trusted recovery reposition.
+The independent guard is also in prepared1.73, excluding the unapproved longer-
+flight candidate. [Movement checks](2026-10-04-release1-72-living-movement-checks.json)
+record reproduced failures, fixture corrections and both focused race runs;
+ordered jump-policy/integration/publication gates remain open.
 
 October4: accepted **Alpha1.71.1** maintenance safeguard restricts mystery
 purchases to equipment, blocking forged material/relic loot-pool requests for

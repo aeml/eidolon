@@ -8,7 +8,7 @@ import (
 
 func movementBudgetWorld() (*World, *Entity, time.Time) {
 	w := NewWorld(nil)
-	e := &Entity{ID: "budget-player", Type: TypePlayer, State: "IDLE", Speed: 5,
+	e := &Entity{ID: "budget-player", Type: TypePlayer, State: "IDLE", Speed: 5, Health: 100, MaxHealth: 100,
 		X: 0, Z: 200, MovementContext: "budget-context", RecoveryContextReady: true}
 	w.AddEntity(e)
 	return w, e, time.Unix(1000, 0)

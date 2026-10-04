@@ -30,6 +30,7 @@
     "primaryReference": "https://www.mongodb.com/docs/database-tools/mongorestore/",
     "limits": "Readiness/stopped Compose API is not a global writer lock. Explicit whole-database replacement is destructive even if later restoration fails. No restoration, container/data deletion, account/value changes or service stop/start was run in this backport; only mock guards/schema tests. Owner-approved retention/RPO/RTO, matching journals and compatible server remain required; full1.76/1.81/1.82 gates are not complete."
   },
+  "livingMovementIntegration": "Sourcece5c1e36 cherry-picks only the independent1.72 living/connected network walking/jump guard and test-fixture corrections. The unapproved longer-flight candidate is excluded. Focused race checks passed game9.062s/root4.302s; see2026-10-04-release1-72-living-movement-checks.json for exact source and scope. This is not a new four-player connected proof or a release assembly.",
   "remaining": [
     "Alpha1.71.0 accepted via exact4bc0b95c/CI37182320668 and post-terminal public checks; acceptance metadata merged. Resolve1.72 jump policy and accept its own ordered release, then merge its final code/metadata into this candidate. InheritedAlpha1.71.0 defaults are intentional until1.73 assembly.",
     "Focused actual schema17-to22 preservation/old-writer refusal is verified; final release backup/recovery compatibility and directly required business replay gates still apply. Schema advancement cannot justify unsafe rollback to an older writer or arbitrary historical financial cleanup.",
