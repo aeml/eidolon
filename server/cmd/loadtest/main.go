@@ -54,14 +54,17 @@ type Message struct {
 }
 
 type Entity struct {
-	ID        string          `json:"id"`
-	Type      string          `json:"type"`
-	X         float64         `json:"x"`
-	Z         float64         `json:"z"`
-	State     string          `json:"state"`
-	Health    int             `json:"health"`
-	Level     int             `json:"level"`
-	Equipment map[string]Item `json:"equipment"`
+	ID           string          `json:"id"`
+	Type         string          `json:"type"`
+	X            float64         `json:"x"`
+	Y            float64         `json:"y"`
+	Z            float64         `json:"z"`
+	Speed        float64         `json:"speed"`
+	MoveSequence uint64          `json:"moveSequence"`
+	State        string          `json:"state"`
+	Health       int             `json:"health"`
+	Level        int             `json:"level"`
+	Equipment    map[string]Item `json:"equipment"`
 }
 
 type Item struct {
@@ -246,6 +249,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 	var inventory []Item
 	isSelling := false
 	myID := "player-" + cred.Username
+	movement := &botMovement{}
 
 	// Movement State
 	var roamTargetX, roamTargetZ float64
@@ -302,6 +306,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				}
 				stateMu.Lock()
 				applyStateUpdate(worldState, update)
+				movement.observeSequence(worldState[myID].MoveSequence)
 				observation.state(worldState, myID, time.Now())
 				if observeOwnAdmission(worldState, myID, &joined) {
 					metrics.joined.Add(1)
@@ -316,6 +321,12 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 			var msg Message
 			if err := json.Unmarshal(message, &msg); err != nil || msg.Type == "" {
 				metrics.decodeErrors.Add(1)
+				continue
+			}
+			if msg.Type == "movement_context" {
+				if !movement.updateContext(msg.Payload) {
+					metrics.decodeErrors.Add(1)
+				}
 				continue
 			}
 			if !joined {
@@ -337,6 +348,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				if err := json.Unmarshal(msg.Payload, &entities); err == nil {
 					stateMu.Lock()
 					worldState = entities
+					movement.observeSequence(worldState[myID].MoveSequence)
 					observation.state(worldState, myID, time.Now())
 					if observeOwnAdmission(worldState, myID, &joined) {
 						metrics.joined.Add(1)
@@ -504,6 +516,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 		abilityCooldown = 10 * time.Second
 	}
 	lastAbilityTime := time.Time{}
+	recoveryRequested := false
 
 	// 4. AI Loop
 	ticker := time.NewTicker(200 * time.Millisecond) // Faster tick for smoother movement
@@ -531,6 +544,13 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 			if !ok {
 				continue // Wait until we exist
 			}
+			if me.Health <= 0 || me.State == "DEAD" {
+				if !recoveryRequested {
+					recoveryRequested = movement.respawn(c)
+				}
+				continue // Do not pretend dead actors are moving/fighting.
+			}
+			recoveryRequested = false
 
 			// 1. Selling Logic
 			if selling {
@@ -555,7 +575,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 					// Town bounds approx -100 to 100 X, 100 to 300 Z
 					targetX := (rand.Float64() * 160) - 80     // -80 to 80
 					targetZ := 200 + (rand.Float64()*160 - 80) // 120 to 280
-					sendMove(c, targetX, targetZ)
+					movement.move(c, me, targetX, targetZ)
 				}
 				continue
 			}
@@ -593,12 +613,12 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				dist := math.Sqrt(dx*dx + dz*dz)
 
 				if dist < step {
-					sendMove(c, roamTargetX, roamTargetZ)
+					movement.move(c, me, roamTargetX, roamTargetZ)
 					hasRoamTarget = false
 				} else {
 					newX := me.X + (dx/dist)*step
 					newZ := me.Z + (dz/dist)*step
-					sendMove(c, newX, newZ)
+					movement.move(c, me, newX, newZ)
 				}
 				continue
 			}
@@ -638,7 +658,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 					send(c, "pickup", map[string]string{"lootId": loot.ID})
 				} else {
 					// Move to loot
-					sendMove(c, loot.X, loot.Z)
+					movement.move(c, me, loot.X, loot.Z)
 				}
 				hasRoamTarget = false
 			} else if target != nil && minDist < 30.0 {
@@ -671,7 +691,7 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 					tx := me.X + math.Cos(moveAngle)*5.0
 					tz := me.Z + math.Sin(moveAngle)*5.0
 
-					sendMove(c, tx, tz)
+					movement.move(c, me, tx, tz)
 				}
 			} else {
 				// Roam based on Level
@@ -735,12 +755,12 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 				dist := math.Sqrt(dx*dx + dz*dz)
 
 				if dist < step {
-					sendMove(c, roamTargetX, roamTargetZ)
+					movement.move(c, me, roamTargetX, roamTargetZ)
 					hasRoamTarget = false
 				} else {
 					newX := me.X + (dx/dist)*step
 					newZ := me.Z + (dz/dist)*step
-					sendMove(c, newX, newZ)
+					movement.move(c, me, newX, newZ)
 				}
 			}
 		}
@@ -748,17 +768,6 @@ func runBot(id int, urlStr string, cred BotCredentials, botScenario string, stop
 }
 
 var writeLocks sync.Map
-
-func sendMove(c *websocket.Conn, x, z float64) {
-	payload := map[string]interface{}{
-		"x":        x,
-		"y":        0,
-		"z":        z,
-		"rotation": 0,
-		"state":    "MOVING",
-	}
-	send(c, "move", payload)
-}
 
 func send(c *websocket.Conn, msgType string, payload interface{}) error {
 	pBytes, err := json.Marshal(payload)

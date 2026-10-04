@@ -12,7 +12,7 @@ func TestDecodeStateFrameAppliesFullAndDeltaSnapshots(t *testing.T) {
 	full := &statepb.StateEnvelope{
 		Version: uint32(stateFrameVersion),
 		Payload: &statepb.StateEnvelope_Full{Full: &statepb.StateFull{Entities: []*statepb.Entity{
-			{Id: "player-1", Type: "Player", X: 2, Z: 3, Health: 100, Level: 4, Equipment: map[string]*statepb.Item{
+			{Id: "player-1", Type: "Player", X: 2, Y: 8, Z: 3, Speed: 5, MoveSequence: 17, Health: 100, Level: 4, Equipment: map[string]*statepb.Item{
 				"mainHand": {Id: "sword-1", Name: "Sword", Slot: "mainHand", Level: 4, Rarity: "Rare", Value: 20},
 			}},
 			{Id: "enemy-1", Type: "Enemy", X: 8, Z: 9, Health: 50, Level: 3},
@@ -22,6 +22,9 @@ func TestDecodeStateFrameAppliesFullAndDeltaSnapshots(t *testing.T) {
 	applyDecodedFrame(t, world, full)
 	if len(world) != 2 || world["player-1"].Equipment["mainHand"].ID != "sword-1" {
 		t.Fatalf("full frame did not replace state: %+v", world)
+	}
+	if got := world["player-1"]; got.Y != 8 || got.Speed != 5 || got.MoveSequence != 17 {
+		t.Fatal("movement authority fields lost in protobuf conversion")
 	}
 
 	delta := &statepb.StateEnvelope{

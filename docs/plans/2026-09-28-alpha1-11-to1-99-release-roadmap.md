@@ -1698,7 +1698,10 @@ coordinated parties/raids and events. Follow-up replaces fixed authentication
 sleeps with measured, bounded registration/login/own-player acknowledgements and
 preserves the acknowledged existing class. Four actual loopback failure/shutdown
 fixtures and the strict admission-evidence validator pass; this is not actual-game
-database admission or burst/capacity proof. Required representative
+database admission or burst/capacity proof. Bots now retain authoritative movement
+contexts, ordered sequences and reported speed, with normal death recovery; a
+local actual-wire/domain-authority check proves new-context movement and stale
+context refusal, not travel/collision/encounter/load acceptance. Required representative
 workload/headroom and ordered predecessor/version/deployment gates remain open.
 
 ## References

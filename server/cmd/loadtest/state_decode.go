@@ -87,14 +87,17 @@ func entityFromProto(entity *statepb.Entity) Entity {
 		equipment[slot] = itemFromProto(item)
 	}
 	return Entity{
-		ID:        entity.Id,
-		Type:      entity.Type,
-		X:         float64(entity.X),
-		Z:         float64(entity.Z),
-		State:     entity.State,
-		Health:    int(entity.Health),
-		Level:     int(entity.Level),
-		Equipment: equipment,
+		ID:           entity.Id,
+		Type:         entity.Type,
+		X:            float64(entity.X),
+		Y:            float64(entity.Y),
+		Z:            float64(entity.Z),
+		Speed:        float64(entity.Speed),
+		MoveSequence: entity.MoveSequence,
+		State:        entity.State,
+		Health:       int(entity.Health),
+		Level:        int(entity.Level),
+		Equipment:    equipment,
 	}
 }
 

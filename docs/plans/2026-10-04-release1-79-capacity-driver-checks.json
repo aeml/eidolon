@@ -40,5 +40,17 @@
       "SoakIsolation.test.js": "44a6291ca23f46a814d6667ee63796f7e146d4d1fd62edff24fce9cfcfefe2c6"
     }
   },
-  "remaining": "Current mixed profile only distributes combat/town/social; implement remaining dense casino, party/raid, event and save workloads and predeclare representative duration/headroom and tick/network/DB/client criteria, including launch profile rather than treating the current100ms stagger as burst proof. Perform only missing compatible disposable actual-game/database capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.74–1.78 acceptance, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
+  "movementFollowUp": {
+    "finding": "The previous driver sent no movementContext or sequence and had no death recovery. Normal game authority rejects old/missing contexts after scene/town recovery, so connected bots could silently stop exercising movement. Several target/loot steps also exceeded one tick of player speed.",
+    "changes": "Retain bounded received movement context privately, distinguish valid empty initial context from missing input, seed monotonically increasing move sequence from authoritative JSON/protobuf snapshots without regression/wrap and retain reported Y/speed. Limit every200ms move to server-reported speed; refuse invalid/dead actors and missing context. Dead bots use normal context-bound respawn once and wait for alive state. No fabricated scene authority, speed, teleport, rewards or actor reset.",
+    "checks": "Whole small load-driver race package passed2.152s with new pure guard/protobuf cases and actual WebSocket packet-to-game-authority test. Actual serialized packets move a real game Entity through UpdatePlayerMovementWithContext; old recovery context refuses, new context plus authoritative sequence seed succeeds, and respawn carries the current context. Final numeric bounds checked again in focused TestBotMovement race run. This is local wire plus domain-authority proof, not a production game/database load, whole bot campaign or collision/pathfinding certification.",
+    "sha256": {
+      "loadtest/main.go": "08731f278f5dd4fa8f2630bf9df62f9da5f319db726f5a3f0ab04416ccf08346",
+      "loadtest/state_decode.go": "03d6004424aa84b825b5d85867bf11fb796c36a591c242bb047d635682c61e00",
+      "loadtest/movement.go": "62040e49c71e9d3c0f9627e33d1ecb1c8c313bd8994cb8b8edf5c70796f130ca",
+      "loadtest/movement_test.go": "4993c5cf145c836ce470d1bdafe866951f7472b3b15713971dcb1132bd692f06",
+      "loadtest/state_decode_test.go": "458791047442cb0d5ff1547fd28cc2a6032db85a9d093507194465b648b9bb91"
+    }
+  },
+  "remaining": "Current mixed profile only distributes combat/town/social; implement remaining dense casino, party/raid, event and save workloads, measure actual action/travel acceptance and predeclare representative duration/headroom and tick/network/DB/client criteria, including launch profile rather than treating current100ms stagger as burst proof. Perform only missing compatible disposable actual-game/database capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.74–1.78 acceptance, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }

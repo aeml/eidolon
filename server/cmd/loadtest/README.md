@@ -26,6 +26,12 @@ startup failures and reports maximum registration, login and join acknowledgemen
 latencies. Operator cancellation is separate from admission failure; intentional
 local reader cleanup is not counted as a network read error. Actual unexpected
 remote closure remains a read failure. Writes have a five-second deadline.
+Bots also retain the received movement/recovery context, seed monotonic movement
+sequences from authoritative state and limit each200ms walking step to reported
+speed. Missing context or invalid/dead actor state sends no movement. Dead bots
+request normal context-bound respawn once, then wait for an alive snapshot.
+This corrects post-recovery movement, but does not make sent moves proof of
+accepted travel or provide collision/pathfinding or encounter-clear evidence.
 The additional `State coverage` line reports:
 
 - clients with at least one own-player state observation;
