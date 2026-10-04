@@ -476,6 +476,12 @@ Notes:
   and durable cash-out with conserved Gold and unchanged gear/bag/EP. That check
   found and fixed stale-view polling in shared-table bots; two seats are not a
   capacity result. Earlier failed instrumented/stale-view runs remain recorded.
+  A separate combined profile now supports20–100 prepared clients, preserving
+  class gear across simultaneous party, poker, blackjack, baccarat, roulette,
+  slots and town/social activity. One real20-client/120s integration passes all
+  paid/party-impact gates and fresh gear/bag/EP-preserving saves. Raid/event,
+  action-specific town/social, full settlement and100-player headroom evidence
+  remain open; the default nightly mixed workload is unchanged.
   [Prepared hosting checks](docs/plans/2026-10-04-release1-77-hosting-integration-checks.json)
   add safe single-host installer argument guards and two-host instructions;
   read-only origin TLS/service observations are not future renewal/IPv6 proof.

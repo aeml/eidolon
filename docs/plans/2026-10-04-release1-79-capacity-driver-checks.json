@@ -233,5 +233,50 @@
     "isolation": "Owned successful containerc301e3f70d10f19ac26d7e943a00d18d6536a60b31defa45020b7cb3c7b7535a, codex.task=poker-179-refresh-20261004, Mongo7.0.14, networknone/no published ports,1CPU/1GiB,512MiB database/16MiB config tmpfs and0.25GiB cache. Exact ID/label/network verified before cleanup; container/synthetic data removed. Artifacts retained at/tmp/eidolon-179-poker-actual-eociud. No production account, database, service, mail, DNS or dirty owner-worktree mutation.",
     "limits": "Two-player actual entry/play/cash-out evidence, not24-chair/four-table or100-player capacity, renderer/Internet latency, per-process heap, runtime/DB headroom, restart acceptance or milestone release. Whole cgroup memory includes Mongo, harness, server, driver and tmpfs. Observed turns may also advance via timeouts and are not causal action receipts. The check is opt-in, not an automatic90s run on every version."
   },
-  "remaining": "Mixed profile still distributes only combat/town/social; finish dungeon/raid, event/save and representative combined workloads; validate remaining actual-server/database casino profiles and measure actual action/travel acceptance at the declared cohort with predeclared duration/headroom and tick/network/DB/client criteria. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for long monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
+  "combinedFollowUp": {
+    "source": "0efe1243 plus combined assignment/coverage, normal driver dispatch and opt-in actual-server test. Inherited Alpha1.74/schema24, not a published1.79 build. Game-server source unchanged; reuse the accepted normal server artifact rather than rebuilding or rerunning the finished party/poker checks.",
+    "changes": "New explicit combined profile accepts20–100 distinct supplied prepared accounts in blocks of20: four class-role party members, two player-only poker, four blackjack, two baccarat/two roulette, two slots, two town and two social clients. Require finite explicit combat anchor and100Gold stake; allocate existing distinct physical seats without lone poker tables, protect every role's prepared gear/bag and refuse character creation. Final coverage includes every assigned casino client and requires a paid result for each, all party members formed with impacts, fresh own-player state for all clients and no transport/admission/controller errors. Legacy mixed/nightly behavior unchanged.",
+    "checks": "Focused combined race cases passed1.162s across every supported20/40/60/80/100 allocation, invalid credentials/count/anchor and per-client paid-result failures. Full load-driver race package passed16.446s. Default opt-in root test compile/skip passed0.011s, not gameplay proof. Gofmt and git diff --check passed. Current extracted prepared-party fixture is exercised by the actual combined test; historical four-player source hashes remain unchanged in their original receipt.",
+    "actualResult": "TestLoadCombinedActualConcurrentWorkloadsAndSaves passed139.15s; driver/shutdown/independent-save interval122.618s. Twenty actual normal clients share one production-style server and disposable Mongo for a predeclared120s/five-second admission bound. Party uses legal uncommon/rare level30 class gear and ordinary overworld combat/healing; casino clients enter normally, walk/sit and play shuffled Gold games with initial disposable bankrolls, no during-play grants or forced outcomes. Independent Mongo checks after normal disconnect/shutdown show fresh saves for all20, exact preserved class/equipment/bag/43EP, nonnegative Gold, persisted progression for every party member and durable wallet checkpoints for all12 casino clients. Town/social bankrolls unchanged.",
+    "metrics": {
+      "connected": 20,
+      "joined": 20,
+      "authenticated": 20,
+      "readErrors": 0,
+      "writeErrors": 0,
+      "decodeErrors": 0,
+      "admissionFailures": 0,
+      "stateFrames": 72001,
+      "coveredClients": 20,
+      "minViewFrames": 3573,
+      "minFreshOwnUpdates": 3573,
+      "minActiveMilliseconds": 119869,
+      "maxStateGapMilliseconds": 132,
+      "receivedPayloadBytes": 321678934,
+      "maxRegistrationMilliseconds": 101,
+      "maxLoginMilliseconds": 255,
+      "maxJoinMilliseconds": 134,
+      "slots": { "clients": 2, "acceptedPaidSpins": 59, "paidResults": 59, "minPaidResults": 28, "completedBonuses": 2, "failed": 0 },
+      "blackjack": { "clients": 4, "acceptedWagers": 12, "paidParticipantResults": 8, "minPaidResults": 2, "observedActions": 8, "failed": 0 },
+      "house": { "clients": 4, "acceptedWagers": 12, "paidParticipantResults": 8, "minPaidResults": 2, "failed": 0 },
+      "poker": { "clients": 2, "acceptedWagers": 4, "paidParticipantResults": 4, "minPaidResults": 2, "observedActions": 16, "failed": 0 },
+      "party": { "formed": 1, "members": 4, "minImpacts": 48, "damageEvents": 264, "healEvents": 3, "acceptedCasts": 142, "deniedCasts": 16, "xpProgressUpdates": 160, "observedDeaths": 40, "failed": 0 },
+      "wholeFixturePeakBytes": 596086784,
+      "oomEvents": 0,
+      "oomKills": 0
+    },
+    "sha256": {
+      "loadtest/main.go": "7a21388909b82eb3e597d6b6d1fad824c20700390b869b901be973c80917f405",
+      "loadtest/combined.go": "1ed7ae2fcda1cd6584a46a8764839a0bfdc71bcec31bbac478e347c25240e900",
+      "loadtest/combined_test.go": "54bac8602b351c107e050c42f81532b90fc05c765f54afaa046bc9a9b80d252a",
+      "load_party_integration_test.go": "b383a199e9d4768046c6ee5adde7ced6bb3c6e98ecd894d1566e5108afeb9183",
+      "load_combined_integration_test.go": "9fa3b39074c4222e3312f4e9eb334f7e7cfeda6d265841b9495a266182d15693",
+      "serverBinary": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc",
+      "driverBinary": "1206e92d9660b77b7ba1e5d5688186f825ad8c38047691358e776c7e4687d820",
+      "rootTestBinary": "ffdeddde6c8dfb1e0ecf4731ebc0d4731517abb22b955dd0e634bac5b21ddbda"
+    },
+    "isolation": "Owned containercd0d7b7229cbde8414ae17a216cbbe11dcc1537ae2b95ce5de44b9fe888598b9, codex.task=combined-179-20261004, Mongo7.0.14, networknone/no published ports,2CPU/2GiB,512MiB database/16MiB config tmpfs and0.25GiB cache. Exact ID/label/network and final peak/OOM counters verified before removal; container/synthetic database removed, filtered listing empty. Compiled artifacts retained at/tmp/eidolon-179-combined-actual-6IHAUZ. Production services/data/accounts/mail/DNS and dirty owner worktree untouched by this test.",
+    "limits": "Twenty-client actual concurrent combat/casino/save proof, not100-player capacity, raid/event clear, full healer-role balance, unique per-kill attribution, acknowledged town/social actions or travel, fresh-process reload, final settlement/conservation of every casino round, renderer/Internet latency or declared runtime/DB headroom. Unfinished final funded rounds retain normal authoritative recovery. Whole fixture peak includes all processes and tmpfs, not game heap. Observed table actions are not causal receipts and denials remain reported. No automatic120s run on every release or redundant campaign/soak."
+  },
+  "remaining": "Default mixed still distributes only combat/town/social; new explicit combined now covers real concurrent party combat, public Gold games and saves at20. Finish missing dungeon/raid and event/save profiles; measure acknowledged action/travel outcomes and declared cohort tick/network/DB/client criteria with owner-approved duration/headroom. No claim that20 implies100. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for authorized long raid/dungeon monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }

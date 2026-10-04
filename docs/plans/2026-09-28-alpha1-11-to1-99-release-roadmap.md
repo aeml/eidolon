@@ -1787,6 +1787,16 @@ poll idle views read-only at the normal client's three-second cadence without
 repeating money requests. An initial instrumented1GiB OOM and the subsequent
 stale-view failure remain recorded. The corrected same-budget90s production-style
 run is small-cohort integration, not100-player capacity, restart or release proof.
+
+Prepared1.79 now has a **concurrent combined profile** for20–100 supplied clients
+in twenty-account blocks: four class-role combat members, two poker, four
+blackjack, two baccarat, two roulette, two slots and four town/social participants.
+Distinct real seats, two-or-more-player poker, gear preservation and per-client
+paid/impact gates are checked. A current real20-client/120s run passes party
+healing, all five Gold games and ordinary saves with exact gear/bag/EP preserved.
+Raid/event participation, town/social action receipts, final casino settlement,
+client rendering and declared100-player runtime/DB headroom remain required.
+Default mixed/nightly coverage is unchanged; no milestone deployment is implied.
 Ordered predecessor/version/deployment and remaining operations gates stay open.
 
 ## References

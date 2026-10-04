@@ -26,64 +26,14 @@ func TestLoadPartyActualCombatAndSavedGear(t *testing.T) {
 		t.Fatal("requires an absolute prepared load-driver binary path")
 	}
 	classes := []string{"Fighter", "Cleric", "Rogue", "Wizard"}
-	weapons := []string{"iron-sword", "cleric-mace", "steel-dagger", "wooden-staff"}
 	type credential struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
 	credentials := make([]credential, 4)
 	fixtures := make([]*database.Character, 4)
-	for i, class := range classes {
-		fixture, password := resourceJournalFixture(t, repo)
-		fixture.Class, fixture.SelectedBranch, fixture.EP = class, "A", 43
-		fixture.X, fixture.Z = 400+float64(i), 600
-		fixture.Stats = database.Stats{Strength: 68, Vitality: 68, Dexterity: 39, Intelligence: 39, Wisdom: 39}
-		fixture.UnlockedSkills = []string{"Charge", "Whirlwind", "Shield Slam", "Iron Fortress"}
-		switch class {
-		case "Cleric":
-			fixture.Stats.Strength, fixture.Stats.Wisdom = 39, 68
-			fixture.UnlockedSkills = []string{"Radiant Strike", "Healing Light", "Guardian Embrace", "Purifying Wave"}
-		case "Rogue":
-			fixture.Stats.Strength, fixture.Stats.Dexterity = 39, 68
-			fixture.UnlockedSkills = []string{"Piercing Throw", "Backstab", "Weak Point Mark", "Shadow Lunge"}
-		case "Wizard":
-			fixture.Stats.Strength, fixture.Stats.Intelligence = 39, 68
-			fixture.UnlockedSkills = []string{"Fireball", "Flame Whip", "Flame Tornado", "Meteor Drop"}
-		}
-		fixture.Resources = &database.CharacterResources{Version: 1, Health: 10000, Mana: 10000}
-		if class == "Fighter" {
-			fixture.Resources.Health = 350 // A prepared wound, not a player-caused injury.
-		}
-		fixture.Equipment = map[string]database.Item{}
-		for gearIndex, itemID := range []string{weapons[i], "silk-hood", "robes", "silk-skirt", "sandals", "silk-gloves", "velvet-mantle", "silk-sash", "gold-ring", "silver-ring"} {
-			rarity := game.RarityUncommon
-			if gearIndex%2 == 0 {
-				rarity = game.RarityRare
-			}
-			items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: itemID, Rarity: rarity, Level: 30, Quantity: 1})
-			if err != nil {
-				t.Fatal("could not prepare legal class equipment")
-			}
-			slot := items[0].Slot
-			if slot == "ring" {
-				slot = "ring1"
-				if _, found := fixture.Equipment[slot]; found {
-					slot = "ring2"
-				}
-			}
-			fixture.Equipment[slot] = databaseItem(items[0])
-		}
-		if class == "Rogue" {
-			items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: "steel-dagger", Rarity: game.RarityRare, Level: 30, Quantity: 1})
-			if err != nil {
-				t.Fatal("could not prepare legal Rogue offhand")
-			}
-			fixture.Equipment["offHand"] = databaseItem(items[0])
-		}
-		fixture.Inventory = []database.Item{{ID: "party-keep-bag", Name: "Party gear preservation fixture", Type: "ARMOR", Slot: "chest", Rarity: "LEGENDARY", Level: 1, Stack: 1, MaxStack: 1, Value: 9999, StatScaleVersion: game.ItemStatScaleVersion}}
-		if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
-			t.Fatal("could not persist disposable prepared character")
-		}
+	for i := range classes {
+		fixture, password := loadPreparedPartyFixture(t, repo, i)
 		fixtures[i], credentials[i] = fixture, credential{Username: fixture.Name, Password: password}
 	}
 	encoded, err := json.Marshal(credentials)
@@ -127,4 +77,66 @@ func TestLoadPartyActualCombatAndSavedGear(t *testing.T) {
 		}
 	}
 	t.Log(fmt.Sprintf("four class saves retain gear/bag/EP and each gain XP after ordinary randomized-enemy party combat; elapsed=%s; no dungeon/raid, unique kill attribution or capacity claim", time.Since(started).Round(time.Millisecond)))
+}
+
+// Reuse the already checked legal class gear/build preparation in combined
+// integration. These are explicit disposable saves, never production grants.
+func loadPreparedPartyFixture(t *testing.T, repo *database.DB, index int) (*database.Character, string) {
+	t.Helper()
+	if index < 0 || index > 3 {
+		t.Fatal("invalid prepared party class")
+	}
+	class := []string{"Fighter", "Cleric", "Rogue", "Wizard"}[index]
+	weapon := []string{"iron-sword", "cleric-mace", "steel-dagger", "wooden-staff"}[index]
+	fixture, password := resourceJournalFixture(t, repo)
+	fixture.Class, fixture.SelectedBranch, fixture.EP = class, "A", 43
+	fixture.X, fixture.Z = 400+float64(index), 600
+	fixture.Stats = database.Stats{Strength: 68, Vitality: 68, Dexterity: 39, Intelligence: 39, Wisdom: 39}
+	fixture.UnlockedSkills = []string{"Charge", "Whirlwind", "Shield Slam", "Iron Fortress"}
+	switch class {
+	case "Cleric":
+		fixture.Stats.Strength, fixture.Stats.Wisdom = 39, 68
+		fixture.UnlockedSkills = []string{"Radiant Strike", "Healing Light", "Guardian Embrace", "Purifying Wave"}
+	case "Rogue":
+		fixture.Stats.Strength, fixture.Stats.Dexterity = 39, 68
+		fixture.UnlockedSkills = []string{"Piercing Throw", "Backstab", "Weak Point Mark", "Shadow Lunge"}
+	case "Wizard":
+		fixture.Stats.Strength, fixture.Stats.Intelligence = 39, 68
+		fixture.UnlockedSkills = []string{"Fireball", "Flame Whip", "Flame Tornado", "Meteor Drop"}
+	}
+	fixture.Resources = &database.CharacterResources{Version: 1, Health: 10000, Mana: 10000}
+	if class == "Fighter" {
+		fixture.Resources.Health = 350 // A prepared wound, not a player-caused injury.
+	}
+	fixture.Equipment = map[string]database.Item{}
+	for gearIndex, itemID := range []string{weapon, "silk-hood", "robes", "silk-skirt", "sandals", "silk-gloves", "velvet-mantle", "silk-sash", "gold-ring", "silver-ring"} {
+		rarity := game.RarityUncommon
+		if gearIndex%2 == 0 {
+			rarity = game.RarityRare
+		}
+		items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: itemID, Rarity: rarity, Level: 30, Quantity: 1})
+		if err != nil {
+			t.Fatal("could not prepare legal class equipment")
+		}
+		slot := items[0].Slot
+		if slot == "ring" {
+			slot = "ring1"
+			if _, found := fixture.Equipment[slot]; found {
+				slot = "ring2"
+			}
+		}
+		fixture.Equipment[slot] = databaseItem(items[0])
+	}
+	if class == "Rogue" {
+		items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: "steel-dagger", Rarity: game.RarityRare, Level: 30, Quantity: 1})
+		if err != nil {
+			t.Fatal("could not prepare legal Rogue offhand")
+		}
+		fixture.Equipment["offHand"] = databaseItem(items[0])
+	}
+	fixture.Inventory = []database.Item{{ID: "party-keep-bag", Name: "Party gear preservation fixture", Type: "ARMOR", Slot: "chest", Rarity: "LEGENDARY", Level: 1, Stack: 1, MaxStack: 1, Value: 9999, StatScaleVersion: game.ItemStatScaleVersion}}
+	if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
+		t.Fatal("could not persist disposable prepared character")
+	}
+	return fixture, password
 }

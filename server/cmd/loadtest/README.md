@@ -7,10 +7,11 @@ credentials are read-only. The driver creates accounts and changes synthetic
 characters through normal commands, so it is not a read-only production probe.
 
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
-`casino-blackjack`, `casino-house`, `casino-poker` and `party-combat`. Mixed
+`casino-blackjack`, `casino-house`, `casino-poker`, `party-combat` and `combined`. Mixed
 still assigns only combat/town/social round-robin. It does **not** exercise casino
-wagering, coordinated dungeon/raid parties or all world-event flows; those remain
-separate required workloads before the1.79 milestone can be accepted. Registration,
+wagering, coordinated dungeon/raid parties or all world-event flows. The separate
+combined profile below covers combat/casino/save at20; dungeon/raid/event and
+declared capacity acceptance remain open. Registration,
 login and join now wait for their actual acknowledgements, with a bounded
 `-admission-timeout` per phase (default15s, allowed100ms–60s). Existing-account
 registration refusal is followed by real login; the acknowledged existing class
@@ -97,8 +98,8 @@ controller failures, alongside
 the ordinary transport/admission checks. This is protocol outcome evidence, not
 rendered slot animation, independent wallet/payout conservation, collision-route
 coverage or save-after-restart proof. Local socket stand-ins are not real-game
-capacity acceptance. Representative card-table integration and a combined profile
-still need completion; the32 public machines do not imply a100-slot-player
+capacity acceptance. The separate combined check below covers actual card tables
+and slots at20 total clients, not all machine seats; the32 public machines do not imply a100-slot-player
 capacity promise. The existing100-client nightly validator remains for the
 combat/town/social mixed profile, not this separately reported workload.
 At shutdown bots stop issuing actions, observe any one outstanding spin/bonus
@@ -147,8 +148,8 @@ bound, not an entire newly funded table round; accepted ongoing wagers remain
 under normal server timer/persistence rules. This does not prove all last rounds
 settled after disconnect, payout conservation, durability or production load.
 Focused local bot/WebSocket fixtures are not actual game/Mongo acceptance.
-Coordinated parties/raids, events/save and representative
-combined workloads remain required before the capacity milestone is complete.
+The separate combined check below covers party combat, tables and normal saves;
+dungeon/raid/event and declared capacity acceptance remain open.
 
 ## Shared roulette and baccarat workload
 
@@ -205,7 +206,7 @@ cash-out/recovery remains authoritative. Focused checks play a two-controller ha
 through the actual poker rules with the ordinary shuffled deck and advertised
 revision-bound actions. This is domain/protocol evidence, not actual-server socket,
 wallet persistence, multiplayer capacity or restart acceptance. Representative
-combined and party/raid/event/save workloads still remain required.
+combined capacity, dungeon/raid/event and restart acceptance still remain required.
 
 The separate opt-in `TestLoadPokerActualEntryPlayAndCashOut` now passes with two
 real bots, production-style server/driver and disposable Mongo: town-door entry,
@@ -256,7 +257,7 @@ The local four-socket fixture uses real party creation/invitation/consent rules
 but synthetic ability results and impacts. It verifies distinct class inputs,
 healing selection, consent, inventory preservation and shutdown, not actual
 game-server combat, Mongo persistence, dungeon/raid clears or multiplayer capacity.
-Those representative workloads and a combined profile remain required.
+Actual combat/save evidence follows; dungeon/raid and declared capacity remain open.
 
 The separate opt-in `TestLoadPartyActualCombatAndSavedGear` now verifies the
 current profile against the normal race-built server and disposable Mongo:
@@ -268,6 +269,52 @@ member while preserving equipment, bag and EP exactly. Enable only with
 `EIDOLON_LOADTEST_BINARY` paths. This earned-combat/save check is not a dungeon or
 raid clear, unique per-kill receipt, fresh-process reload or100-player capacity
 result. It is opt-in, not an automatic repeated45s run on every release.
+
+## Concurrent combined workload
+
+`-scenario combined -n 20 -credentials-file /absolute/test-accounts.json
+-casino-bet 100 -party-combat-x X -party-combat-z Z -duration 120s` runs20–100
+clients in fixed twenty-account blocks. All accounts must be distinct and have
+prepared existing characters. Each block, in credential order, contains:
+
+| Account positions (one-based) | Workload |
+| --- | --- |
+| 1–4 | Fighter, Cleric, Rogue, Wizard overworld party |
+| 5–6 | Player-only poker |
+| 7–10 | Multiplayer blackjack |
+| 11–12 | Baccarat |
+| 13–14 | Roulette |
+| 15–16 | Distinct public slot machines |
+| 17–18 | Town walking/chat attempts |
+| 19–20 | Town/social registry-read/chat attempts |
+
+The explicit100Gold stake is legal across all included casino games. Declare
+enough initial disposable-account funding for the duration, not wallet top-ups
+or artificial wins. Party members must be outside instances and existing parties;
+casino participants start in town/public casino, and town/social participants in
+town. The normal entry/seat/consent/ability/cooldown rules remain unchanged. Every
+role preserves class gear and bags; no legacy auto-equip, sell or pickup behavior.
+No house-filled poker opponents or shared/reused casino chairs are invented.
+
+Each `Combined casino coverage` line includes the assigned clients, accepted
+wagers (slots: acknowledged paid spins), paid results, minimum paid results across
+every assigned client, observed actions, bonus completions and failures. Every
+casino participant needs at least one fresh paid result. The separate party
+coverage gate still requires all four-member roster views and every member's own
+positive impact. Global transport/admission/fresh-state checks include all clients,
+not only the busiest roles. Town/social allocation and state coverage do **not**
+prove chat/read action acknowledgements or accepted walking distance.
+
+`TestLoadCombinedActualConcurrentWorkloadsAndSaves` passes one bounded20-client,
+120s production-style server/driver run on an owned disposable Mongo: concurrent
+party impacts/healing and paid poker/blackjack/baccarat/roulette/slot results,
+followed by fresh normal saves for all twenty, exact gear/bag/EP preservation and
+saved XP for each party member. It reuses the preceding prepared class gear and
+build setup; no whole-campaign or repeat of accepted individual workloads.
+Use the opt-in isolated environment flags above. The default mixed/nightly100
+profile remains unchanged. Final funded casino rounds can remain in normal
+durable recovery; this is not full final settlement, raid/event participation,
+renderer/Internet latency, runtime/DB headroom or100-player capacity acceptance.
 
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible
