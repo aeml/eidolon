@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 protocol and authority boundaries",
+  "status": "prepared security backport; not published or complete administration milestone",
+  "sourceCommit": "4cf6a333701ca02da9466c77b9c4efe8350b7239",
+  "importedSources": ["e46247ba7b6a2e144b066b5442c6f24f4f3f27da", "04bf5e6c8498f1f726b5c481058c74e52f88dede", "dbfb882efbb3b048b8b6baa57d62b6eb008d306b"],
+  "whyEarlier": "Known privileged-read and new-mutation races are authority-boundary fixes, so do not defer them solely to the later1.74 administration review. Import only prepared guard/audit code and direct regressions into the schema17 protocol successor; do not merge later valuable-operation writers, privacy policies or schema23–24 work.",
+  "scope": "Recheck durable administrator role and current transport/session ownership after read-query and audit IO, before admitting new grant intent and after report-review admission audit. Late denial drops private result fields and retains correlated sanitized audit history. Existing approved durable operations remain recoverable independently of later role revocation. Moderation/preview late-denial audit gaps use the existing rejection/outbox path without attributing a changed username to the previous actor. No arbitrary ownership reset or new administrator powers.",
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(AdminRead|AdminConsole|AdminReports|AdminReportReview|SessionActivity|AdminMutation|AdminRecovery|AdminModerationLate|AdminChatModeration)' -count=1 -timeout=60s",
+    "result": "passed: root21.489s on merged schema17 security source",
+    "scope": "Injected role-revocation/outage/session-replacement IO boundaries, actual temporary disk-journal reopen/replay and existing administration/privacy/recovery regressions. Environment-gated actual Mongo/socket fixtures remain skipped; this is not new connected acceptance or a capacity test.",
+    "hygiene": "All three cherry-picks applied without conflicts; git diff --check passed. Original dirty owner workspace, current1.71 release and broader prepared schema24 tree unchanged. No production role, account, item, currency, service or provider operation."
+  },
+  "limits": "A remote role lookup and network delivery/storage commit are not a single atomic transaction. Existing bounded RAM fallback during simultaneous Mongo/disk outage is not crash-durable. This focused backport does not complete1.74 discoverability, operational permission/data-boundary review or all1.72 release gates. Jump-policy decision, ordered predecessor acceptance, version/cumulative notes, exact CI and independent public proof remain open."
+}

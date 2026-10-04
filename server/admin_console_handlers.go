@@ -173,35 +173,16 @@ func handleAdminRead(c *Client, msg Message) {
 		// Do not acknowledge a privileged read without its durable audit entry.
 		// A later mutation must couple this to its own recoverable operation;
 		// this read handler never grants currency, items or movement.
-		if c.username != "" && currentCharacterConnection(c) {
-			outcome := "error"
-			if result.Success && result.Authorized {
-				outcome = "success"
-			} else if result.Message == "Administrator access is not enabled for this account." {
-				outcome = "denied"
-			}
-			id := result.ID
-			if id == "" {
-				id = "invalid-request"
-			}
-			var auditErr error
-			if adminActivities == nil {
-				auditErr = errors.New("activity unavailable")
-			} else {
-				event, err := database.NewAdminActivity(c.username, "", msg.Type, id, outcome, result.Message, time.Now(), adminActivities.AdminActivityRetentionDays())
-				auditErr = err
-				if err == nil {
-					auditErr = adminActivities.AppendAdminActivity(event)
-					if auditErr != nil {
-						// Retain the original identity and content: an ambiguous
-						// database error may have followed a committed insert.
-						// Journal recovery does not authorize this read response.
-						retainFailedAdminActivity(c, event)
-					}
-				}
-			}
-			if auditErr != nil {
-				result = adminReadResult{ID: result.ID, Message: "Administration activity storage is unavailable. Try refreshing."}
+		result = auditAdminReadResult(c, msg.Type, result)
+		if result.Success && result.Authorized {
+			// Both the data query and audit append can block. Recheck durable
+			// authority after ALL of that IO, not only at request admission.
+			if message := adminAuthorityDenial(c); message != "" {
+				result = adminReadResult{ID: result.ID, Message: message}
+				// The completed query was audited; separately retain its delivery
+				// denial. Reuse the existing outage outbox, never send private data
+				// based on fallback storage or a retired connection.
+				result = auditAdminReadResult(c, msg.Type, result)
 			}
 		}
 		payload, _ := json.Marshal(result)
@@ -273,6 +254,64 @@ func handleAdminRead(c *Client, msg Message) {
 	}
 	result.Players, result.Next = adminOnlinePage(request.After)
 	result.Success, result.Message = true, "Online players refreshed."
+}
+
+func adminAuthorityDenial(c *Client) string {
+	const unavailable = "Administrator access could not be confirmed. Try refreshing."
+	const replaced = "Administration connection changed. Reconnect and refresh."
+	if c.transportClosed.Load() || !currentCharacterConnection(c) {
+		return replaced
+	}
+	if adminRoles == nil {
+		return unavailable
+	}
+	authorized, err := adminRoles.HasAdminRole(c.username)
+	// The role lookup itself can overlap transport closure/session replacement.
+	if c.transportClosed.Load() || !currentCharacterConnection(c) {
+		return replaced
+	}
+	if err != nil {
+		return unavailable
+	}
+	if !authorized {
+		return "Administrator access is not enabled for this account."
+	}
+	return ""
+}
+
+func auditAdminReadResult(c *Client, action string, result adminReadResult) adminReadResult {
+	if c.username == "" {
+		return result
+	}
+	outcome := "error"
+	if result.Success && result.Authorized {
+		outcome = "success"
+	} else if result.Message == "Administrator access is not enabled for this account." {
+		outcome = "denied"
+	}
+	id := result.ID
+	if id == "" {
+		id = "invalid-request"
+	}
+	var auditErr error
+	if adminActivities == nil {
+		auditErr = errors.New("activity unavailable")
+	} else {
+		event, err := database.NewAdminActivity(c.username, "", action, id, outcome, result.Message, time.Now(), adminActivities.AdminActivityRetentionDays())
+		auditErr = err
+		if err == nil {
+			auditErr = adminActivities.AppendAdminActivity(event)
+			if auditErr != nil {
+				// Preserve exact ID/content after an ambiguous acknowledgement.
+				// Recovery retains history but never authorizes the response.
+				retainFailedAdminActivity(c, event)
+			}
+		}
+	}
+	if auditErr != nil {
+		return adminReadResult{ID: result.ID, Message: "Administration activity storage is unavailable. Try refreshing."}
+	}
+	return result
 }
 
 // Use the authenticated session registry, not nearby entities or a client-sent
