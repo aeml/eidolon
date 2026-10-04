@@ -37,6 +37,11 @@ credentials/staff records, reject mismatched owner identities and enforce a
 response-size budget. Focused synthetic race checks passed1.043s; no export
 endpoint, delivery or removal is enabled. Owner policy and bounded authorized
 readers still gate publication; this is not a full personal-data export.
+Its internal profile reader now verifies the current password before a narrow
+account projection and fences a raced password reset by matching the proved
+hash again. Fixed errors expose no partial profile; both queries have3s server
+deadlines. Focused mocked-query/snapshot race checks passed1.146s. It remains
+uncalled, with authenticated transport, admission and actual delivery gates open.
 
 Prepared1.76 [session precision validation](2026-10-04-release1-76-session-precision-checks.json)
 rejects sub-millisecond optional audit session-start times before journaling, so

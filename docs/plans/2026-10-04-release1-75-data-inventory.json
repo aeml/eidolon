@@ -292,6 +292,17 @@
     },
     "remaining": "Owner export/deletion request policy, authorized bounded readers/delivery, approved shared-record and relationship/report coverage, coordinated removal and backup handling, public notice and targeted access tests. Not a full personal-data export, backup or1.75 publication."
   },
+  "preparedOwnerProfileReader": {
+    "sources": ["server/internal/database/owner_profile_snapshot.go", "server/internal/database/owner_profile_reader_test.go"],
+    "scope": "Internal uncalled reader supplies the prepared profile serializer without loading the full account or character array. No new protocol, endpoint, feature flag, UI or public delivery is enabled. Caller must bind account to its authenticated session and apply bounded password-proof admission; administrator role or email knowledge does not substitute for current password.",
+    "queries": "First exact-owner query projects only password_hash. bcrypt proof must pass before the second exact-owner query, which additionally matches the proved hash to reject concurrent password resets. Second projection contains only username/public_name/email/created_at and the two verified recovery-address fields. Both reads have3s server maxTime and a shared3s context. Fixed generic errors return nil output without database details. Context deadline is not a CPU cancellation guarantee for bcrypt; eventual admission remains required.",
+    "checks": "Focused race OwnerProfileReader/OwnerProfileSnapshot/OwnerProgressSnapshot passed1.146s. Mocked Mongo commands prove exact filters, both narrow projections, deadlines, no profile read on invalid proof, password-change fence, wrong-owner reply refusal and generic database/response-budget failures. Invalid inputs reject before any query. Existing serializer/profile and character-preservation checks reused. No actual Mongo, public authorization or delivery acceptance claimed.",
+    "sha256": {
+      "server/internal/database/owner_profile_snapshot.go": "f6f771868a9bcbd39b350ec8e11be3c1fefa030f726295125a4d557a847e6869",
+      "server/internal/database/owner_profile_reader_test.go": "7c5d7dcb7d718606c543972514f836511b2fd9d94794831593930ac1966d7a63"
+    },
+    "remaining": "Owner policy, authenticated transport binding and admission, full approved export coverage, targeted actual delivery/access checks, coordinated removal/backup handling and notices still required for1.75. Earlier serializer hashes/checks retain their historical source scope."
+  },
   "sessionSourceFollowUp": {
     "change": "Explicitly reference both the new population/daily-summary helper and existing connection-activity recorder alongside admin_activity. Optional stored session-start and bounded ephemeral daily counts are described in the collection entry; no new analytics collection, backfill or retention policy.",
     "validation": "Node24 source-reference walk:19 inventory collection entries with no duplicate names; all55 unique referenced source paths exist. JSON parses and diff check passes. This validates current references, not renewed production/provider/legal inspection or new Mongo/serialization evidence. Earlier51/53-source receipts retain their historical scopes."
