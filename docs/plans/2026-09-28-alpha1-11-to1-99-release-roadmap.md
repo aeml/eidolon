@@ -1189,7 +1189,13 @@ rejected input, not unique payouts or balances. An explicitly opt-in Postmark
 adapter now provides globally spaced, bounded mail attempts and sanitized
 accepted/unconfirmed/suppressed output; two actual local health-to-TLS-provider
 outage/recovery paths pass, including a rejected first delivery. Alerts remain
-off by default and no real provider or inbox delivery is claimed. Pressure/growth/
+off by default and no real provider or inbox delivery is claimed. An audited
+read-only Service diagnostics administration tab now shows fixed current-process
+aggregates through the authenticated socket; late authority/session denial drops
+the payload. Role/audit failure, missing metrics and independent delivery are not
+disguised as healthy measurements. Scoped race/DOM and three native desktop/phone
+layout routes pass; this is prepared UI, not a live service installation.
+Pressure/growth/
 latency signals, service installation, actual inbox verification, alert ownership,
 retention and operating-budget decisions remain required. Public1.71 was
 separately accepted at4bc0b95c/CI37182320668; this
