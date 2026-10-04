@@ -60,7 +60,13 @@ TLS Postmark stand-in. Neither proves actual inbox delivery. Exact-source CI3718
 and post-terminal independent public checks accepted4bc0b95c as Alpha1.71.0.
 Runtime mail configuration is present; the owner must still verify an address
 and confirm actual inbox delivery. [Public acceptance](plans/2026-10-04-release1-71-public-acceptance.json)
-records exact identity and skipped visual/full-gameplay scopes. This is not a beta announcement.
+records exact identity and skipped visual/full-gameplay scopes. The successor
+Alpha1.71.1 also passed all ten CI jobs in run37190290208; post-terminal public
+checks matched1b6f44d2 on both services and the recovery runtime files. Its
+[public acceptance](plans/2026-10-04-release1-71-1-public-acceptance.json)
+records the narrow mystery-equipment safeguard and all four mail settings present
+without exposing values. Schema17 remains; this is not the later durable-purchase
+handler, actual inbox delivery proof or a beta announcement.
 See [prepared email checks](plans/2026-10-04-release1-71-email-recovery-checks.json).
 Administrators gain no arbitrary reset, ownership or password-reading action.
 

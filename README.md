@@ -420,14 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.71.1`, prepared narrow mystery-equipment hotfix retaining password changes, session/token safeguards and explicit verified-email recovery through Postmark. Verify an address in signed-in Account help or Settings before using Forgot your password on the login screen. Opening a link alone never changes credentials. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json) distinguish synthetic connected proof from actual inbox delivery, which still needs an owner check. Live acceptance below is for1.71.0;1.71.1 awaits CI and public acceptance. This branch retains schema17 and excludes later unpublished schema24 writers. Broader security/valuable-operation, owner/commercial and human gates stay open. This is not a capacity promise, payment launch or closed-beta transition.
-- Last independently verified live release: `Alpha 1.71.0`, exact
-  4bc0b95c082d89a29239bd6e96f73cf3a2bd1b8e, successful CI37182320668 (all ten jobs).
+- Current source version: `Alpha 1.71.1`, accepted narrow mystery-equipment hotfix retaining password changes, session/token safeguards and explicit verified-email recovery through Postmark. Verify an address in signed-in Account help or Settings before using Forgot your password on the login screen. Opening a link alone never changes credentials. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json) distinguish synthetic connected proof from actual inbox delivery, which still needs an owner check. This branch retains schema17 and excludes later unpublished schema24 writers. Broader security/valuable-operation, owner/commercial and human gates stay open. This is not a capacity promise, payment launch or closed-beta transition.
+- Last independently verified live release: `Alpha 1.71.1`, exact
+  1b6f44d286b7689bd646999e1fa9c8e1859d9087, successful CI37190290208 (all ten jobs).
   Post-terminal public IPv4 frontend/backend identity, database readiness, login
   version, notes and four recovery/analytics runtime files match the accepted source.
-  [Public acceptance](docs/plans/2026-10-04-release1-71-public-acceptance.json)
+  [Public acceptance](docs/plans/2026-10-04-release1-71-1-public-acceptance.json)
   lists passed and skipped checks; it does not claim fresh animation/GPU coverage
-  or actual inbox delivery. Earlier1.70.2 maintenance and Forge receipts remain historical.
+  or actual inbox delivery. The [earlier recovery acceptance](docs/plans/2026-10-04-release1-71-public-acceptance.json),1.70.2 maintenance and Forge receipts remain historical.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.
