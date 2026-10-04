@@ -28,6 +28,7 @@ type casinoLoad struct {
 	paidSpins          uint64
 	failed             bool
 	failureStage       casinoFailureStage
+	timeoutAction      casinoTimeoutAction
 	changed            chan struct{}
 }
 
@@ -65,6 +66,7 @@ type casinoLoadCounts struct {
 	failed                  bool
 	wagers, rounds, actions uint64
 	failureStage            casinoFailureStage
+	timeoutAction           casinoTimeoutAction
 }
 
 func newCasinoLoad(index int) *casinoLoad {
@@ -82,7 +84,7 @@ func newCasinoLoad(index int) *casinoLoad {
 func (b *casinoLoad) counts() casinoLoadCounts {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	counts := casinoLoadCounts{spins: b.spins, bonuses: b.bonuses, paidSpins: b.paidSpins, failed: b.failed, failureStage: b.failureStage}
+	counts := casinoLoadCounts{spins: b.spins, bonuses: b.bonuses, paidSpins: b.paidSpins, failed: b.failed, failureStage: b.failureStage, timeoutAction: b.timeoutAction}
 	if b.blackjack != nil {
 		counts.wagers, counts.rounds, counts.actions = b.blackjack.wagers, b.blackjack.rounds, b.blackjack.actions
 	}
@@ -209,6 +211,7 @@ func (b *casinoLoad) step(me Entity, now time.Time, bet int, timeout time.Durati
 	if b.pending != "" {
 		if now.Sub(b.sentAt) >= timeout {
 			b.failureStage = casinoFailureTimeout
+			b.timeoutAction = casinoTimeoutActionFor(b.pending)
 			b.failed = true
 		}
 		return // Never repeat an uncertain wager or bonus choice.

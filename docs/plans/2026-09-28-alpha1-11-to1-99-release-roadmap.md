@@ -1886,8 +1886,12 @@ candidate now responds to casino actors first and restricts game-action snapshot
 to the affected table; physical seat/floor changes still reach the whole casino.
 Focused audience/handler checks pass. A separate bot-only fix permits ordinary
 Cleric healing during party recovery pauses with normal safety fences retained.
-These changes are unpublished and require their own actual workload evidence;
-they do not complete the outstanding finale or ordered release gates.
+The table-scoped comparison admits all100 and meets sustained fresh-own delivery
+with no read/write/decode errors, but retains casino timeouts and incomplete
+per-player paid results; its save gate is not reached. The synthetic database
+was removed and the failed result retained. No further blind cohort retry is
+planned before action-stage diagnosis. These changes remain unpublished and do
+not complete the outstanding finale or ordered release gates.
 
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game

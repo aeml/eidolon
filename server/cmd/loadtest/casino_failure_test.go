@@ -42,3 +42,41 @@ func TestCasinoRejectionKeepsFixedCauseAndNeverRetries(t *testing.T) {
 		}
 	}
 }
+
+func TestCasinoTimeoutKeepsClosedActionAndNeverRetries(t *testing.T) {
+	now := time.Unix(100, 0)
+	for _, sample := range []struct {
+		action string
+		want   casinoTimeoutAction
+	}{
+		{"enter", casinoTimeoutEnter}, {"sit", casinoTimeoutSit},
+		{"slot_spin", casinoTimeoutSpin}, {"slot_bonus", casinoTimeoutBonus},
+		{"bet", casinoTimeoutBlackjackBet}, {"play", casinoTimeoutBlackjackPlay},
+		{"house_bet", casinoTimeoutHouseBet}, {"poker_buy_in", casinoTimeoutPokerBuyIn},
+		{"poker_play", casinoTimeoutPokerPlay}, {"private/session/account-text", casinoTimeoutUnknown},
+	} {
+		b := newCasinoLoad(0)
+		b.pending, b.sentAt = sample.action, now.Add(-time.Second)
+		for tick := 0; tick < 2; tick++ {
+			b.step(Entity{Health: 100}, now, 100, time.Second,
+				func(map[string]interface{}) error { t.Fatal("uncertain request retried"); return nil },
+				func(float64, float64) { t.Fatal("timed-out workload moved") })
+		}
+		b.rejectServer(partyMessage("error", "round changed; review the table"))
+		counts := b.counts()
+		if !counts.failed || counts.failureStage != casinoFailureTimeout || counts.timeoutAction != sample.want {
+			t.Fatal("late response changed first timeout cause/action")
+		}
+	}
+	assignments := []botAssignment{{scenario: "casino-slots"}, {scenario: "casino-slots"}, {scenario: "casino-slots"}}
+	observations := []loadObservation{
+		{casino: casinoLoadCounts{failed: true, failureStage: casinoFailureTimeout, timeoutAction: casinoTimeoutSpin}},
+		{casino: casinoLoadCounts{failed: true, failureStage: casinoFailureTimeout, timeoutAction: casinoTimeoutKinds}},
+		{casino: casinoLoadCounts{failed: true, failureStage: casinoFailureRejected, timeoutAction: casinoTimeoutSpin}},
+	}
+	results, valid := summarizeCombinedCasino(assignments, observations)
+	if valid || results[0].failed != 3 || results[0].failures[casinoFailureTimeout] != 2 ||
+		results[0].timeouts[casinoTimeoutSpin] != 1 || results[0].timeouts[casinoTimeoutUnknown] != 1 {
+		t.Fatal("timeout aggregation counted rejection or lost invalid/unknown action")
+	}
+}

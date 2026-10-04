@@ -757,7 +757,48 @@
       "server/cmd/loadtest/party.go": "9ca8f9fd84feba2f4c611c5aabe087991a4f003a4feaea5ef9593f96d6c2821e",
       "server/cmd/loadtest/weekly_test.go": "bd18f31bb90f1a7af24b0fa36c124a1cc1a6eaed9f73564c71f9fc2c4467f2a9"
     },
-    "next": "One isolated100-client comparison uses new normal server ca5809150abb9b839fcaf43d8908ce445b1e2e0a36d522dd813344bf40c9e1e4 at/tmp/eidolon-179-table-audience-yY1jLv/server, unchanged checked root2409392c5b14367f5523c058a2ac3129a4ef724fc86c97ceee88d620eb11117d and login-only driver18db0d10b8d78ee4aef3c510a3d2196a7961602ee33599c12072878e05083d53. Waiting-healer changes are irrelevant to this overworld profile and deliberately not rebuilt into the driver, isolating server notification behavior. Running is not acceptance."
+    "comparison": "The completed isolated100-client comparison below used new normal server ca5809150abb9b839fcaf43d8908ce445b1e2e0a36d522dd813344bf40c9e1e4 at/tmp/eidolon-179-table-audience-yY1jLv/server, unchanged checked root2409392c5b14367f5523c058a2ac3129a4ef724fc86c97ceee88d620eb11117d and login-only driver18db0d10b8d78ee4aef3c510a3d2196a7961602ee33599c12072878e05083d53. Waiting-healer changes are irrelevant to this overworld profile and deliberately not rebuilt into the driver, isolating server notification behavior. Terminal failure is not acceptance."
+  },
+  "combined100TableAudienceActualRun": {
+    "statusAtObservation": "TERMINAL_FAIL_CASINO_TIMEOUTS_FIXTURE_REMOVED",
+    "startedAtUTC": "2026-10-04T23:02:35Z",
+    "sourceCommit": "b148d9bf",
+    "ownedContainer": "72799849c8dbbb8e995e57cb1c4d715dc4be9717aff30ffc95d5e749ec1f878e",
+    "taskLabel": "combined100-table-audience-179-20261004",
+    "parentSession": 40488,
+    "namespacePIDs": { "root.test": 79, "server": 100, "loadtest": 110 },
+    "artifacts": "New normal server ca5809150abb9b839fcaf43d8908ce445b1e2e0a36d522dd813344bf40c9e1e4 at/tmp/eidolon-179-table-audience-yY1jLv/server; unchanged root and driver recorded in casinoTableNotificationAndWaitingHeal. Only casino server notification code changes affect this workload.",
+    "result": "Terminal FAIL218.57s/exit1. All100 authenticated, sustained fresh-own delivery meets declared600 updates/108000ms, and no read/write/decode failures. Every slot participant has one paid spin, but all ten later time out; other games also retain missing individual paid results and timeouts. All five parties formed with own impacts and aggregate healing. No all-account durable-save acceptance because driver failure stops the root test before that gate. This comparison is consistent with reduced unnecessary fanout but does not prove the cause of past read failures or solve100-player capacity.",
+    "metrics": {
+      "connected": 100, "joined": 100, "authenticated": 100, "admissionFailures": 0,
+      "stateFrames": 139792, "minFrames": 1341, "minFreshOwnUpdates": 1341,
+      "minActiveMilliseconds": 119406, "maxStateGapMilliseconds": 608, "receivedPayloadBytes": 1323670269,
+      "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 380, "maxJoinMilliseconds": 497,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "slots": { "clients": 10, "acceptedWagers": 10, "paidResults": 10, "minimumPaidResults": 1, "failed": 10, "timeouts": 10 },
+      "blackjack": { "clients": 20, "acceptedWagers": 15, "paidResults": 5, "minimumPaidResults": 0, "observedActions": 4, "failed": 17, "timeouts": 17 },
+      "house": { "clients": 20, "acceptedWagers": 36, "paidResults": 22, "minimumPaidResults": 0, "failed": 10, "timeouts": 10 },
+      "poker": { "clients": 10, "acceptedWagers": 8, "paidResults": 0, "minimumPaidResults": 0, "observedActions": 2, "failed": 9, "timeouts": 8, "rejected": 1 },
+      "parties": { "groups": 5, "formed": 5, "members": 20, "minOwnImpacts": 2, "damageEvents": 230, "healEvents": 10, "acceptedCasts": 486, "deniedCasts": 2, "xpProgressUpdates": 136, "observedDeaths": 143, "failed": 0 },
+      "memoryPeakBytes": 676491264, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false,
+      "aggregateCgroupCPUUsageMicroseconds": 334295428, "throttledPeriods": 748, "throttledMicroseconds": 12893791
+    },
+    "limits": "Two-CPU/2GiB network-none Mongo fixture includes database fixture preparation, normal server, race root and normal driver in the aggregate resource figures. Single189.89% CPU607.8MiB Docker sample is utilization, not per-component profiling or tick/DB headroom proof. No alpha100-player capacity promise or publication.",
+    "cleanup": "Definitive parent failure consumed; absent root/server/driver and exact owner label/network/OOM/peak checked. Stopped and removed only this fixture and its synthetic database, filtered listing empty. Exact artifacts retained. No production data/services changed.",
+    "next": "Do not blindly repeat another cohort. Identify pending action at timeout using bounded fixed-stage diagnostics and inspect recovery/table-lock costs before another actual comparison. Keep unchanged failure/paid/save criteria."
+  },
+  "casinoTimeoutActionDiagnostic": {
+    "reason": "The retained two corrected100-client outcomes classify timeout but do not identify the outstanding command. Without this distinction, physical-entry/seating delay and money-operation delay cannot be separated; do not attribute the observed failures to a guessed cause.",
+    "change": "Driver records only a closed enum for the original timed-out pending action: enter, sit, slot spin/bonus, blackjack bet/play, house bet, poker buy-in/play or unknown. Per-family aggregates include every failed assigned client; malformed enum normalizes to unknown, ordinary rejection is not counted as timeout, and late rejection preserves first cause. Root forwards only the new fixed aggregate line. No identities, private seat/round tokens or arbitrary input/error labels retained. No retries, longer timeout, weakened result gate or production change.",
+    "checks": "Focused rejection/timeout/combined driver race passed1.188s; focused root client-count/view-coverage race passed1.072s. All nine known commands and untrusted text tested; timeout issues no request/movement, second tick cannot retry, late rejection cannot replace cause, unknown enum safely retained, and rejected actions do not inflate timeout totals. No new actual cohort/raid/campaign started.",
+    "sha256": {
+      "server/cmd/loadtest/casino_failure.go": "8aed066ee4429044773dd7fde1fe2d9be81f77d1177753b8508deafe474a16bb",
+      "server/cmd/loadtest/casino_failure_test.go": "afe80f5531f9da2f65e9578b9bace03a2b036956741c6cbf3b58f67b384b0fa0",
+      "server/cmd/loadtest/casino.go": "34f01dc4c0326fcd087c02a1e26f404f0930f47719d37e943bce0d2cfa4c32c7",
+      "server/cmd/loadtest/combined.go": "09e871d30827ffe36dc569e68d58932f72c75f60c8599336309204c9bae89945",
+      "server/cmd/loadtest/main.go": "710b8bbf67b52e802fccd04de96243dce493457435c9db2d1208c60d61b1060f",
+      "server/load_combined_integration_test.go": "f0582a07af516e4cae35ad7b60b1731a1673e22a574ef5c03aaee9be01a2b269"
+    }
   },
   "combined40DiagnosticActualRun": {
     "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",

@@ -4,6 +4,49 @@ import "encoding/json"
 
 type casinoFailureStage uint8
 
+// Timeout diagnostics retain only a closed action category, not session,
+// round, account or error text. Unknown input never becomes a log label.
+type casinoTimeoutAction uint8
+
+const (
+	casinoTimeoutUnknown casinoTimeoutAction = iota
+	casinoTimeoutEnter
+	casinoTimeoutSit
+	casinoTimeoutSpin
+	casinoTimeoutBonus
+	casinoTimeoutBlackjackBet
+	casinoTimeoutBlackjackPlay
+	casinoTimeoutHouseBet
+	casinoTimeoutPokerBuyIn
+	casinoTimeoutPokerPlay
+	casinoTimeoutKinds
+)
+
+func casinoTimeoutActionFor(action string) casinoTimeoutAction {
+	switch action {
+	case "enter":
+		return casinoTimeoutEnter
+	case "sit":
+		return casinoTimeoutSit
+	case "slot_spin":
+		return casinoTimeoutSpin
+	case "slot_bonus":
+		return casinoTimeoutBonus
+	case "bet":
+		return casinoTimeoutBlackjackBet
+	case "play":
+		return casinoTimeoutBlackjackPlay
+	case "house_bet":
+		return casinoTimeoutHouseBet
+	case "poker_buy_in":
+		return casinoTimeoutPokerBuyIn
+	case "poker_play":
+		return casinoTimeoutPokerPlay
+	default:
+		return casinoTimeoutUnknown
+	}
+}
+
 const (
 	casinoFailureUnknown casinoFailureStage = iota
 	casinoFailureBusy
