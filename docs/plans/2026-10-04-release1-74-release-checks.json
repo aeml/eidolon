@@ -2,7 +2,7 @@
   "schema": 1,
   "milestone": "Alpha 1.74.0 administration release assembly",
   "status": "assembled, unpublished; ordered predecessor acceptance required",
-  "integratedPredecessorSource": "4c6ff1374b07448537649e475631ff8f566bc04b corrective1.73, carrying accepted1.72/1cf51d22 and its independent acceptance record. The original1.73 run failed only the shared boss-repository fixture assumption and never deployed; the correction isolates actual test collections while retaining production/history checks.",
+  "integratedPredecessorSource": "ad59bffbeb0f471d27da125f7bc5c0c1b3d95619 corrective1.73, carrying accepted1.72/1cf51d22 and its independent acceptance record. First corrective source4c6ff137 isolated the shared actual boss repository fixture; its CI then failed a dungeon room-completion functional assertion, not a data-race diagnostic. The current correction waits for tracked earned work before checking the checkpoint, without changing production ordering. Neither failed run deployed.",
   "permissionReviewSource": "73564b4f742f755fbe68817db62f6bbbf31a85af",
   "version": "Alpha 1.74.0",
   "schemaVersion": 22,
@@ -14,5 +14,5 @@
     "serverResult": "Permission review receipt retains current integration Go1.27.1 race root20.275s. This assembly changes only backend build-version metadata, not handlers/schema. Actual Mongo/socket fixtures remain separately scoped; exact release CI still required.",
     "hygiene": "Affected JavaScript ESLint, deployment and isolatedQA bash-n, git diff --check passed."
   },
-  "remaining": "Accept corrective1.73 exact-source CI/public deployment (run37199769860) and merge final metadata;1.72 is independently accepted. Fetch/merge current master preserving other agents' edits, normal push and verify own exact-source CI plus independent post-terminal public version/commit/database/notes/runtime. No production grant, teleport, moderation, role edit, account deletion, mail or service change was performed.1.75 owner privacy decisions and all later roadmap gates remain separate."
+  "remaining": "Accept corrective1.73 exact-source CI/public deployment (run37201238962) and merge final metadata;1.72 is independently accepted. Fetch/merge current master preserving other agents' edits, normal push and verify own exact-source CI plus independent post-terminal public version/commit/database/notes/runtime. No production grant, teleport, moderation, role edit, account deletion, mail or service change was performed.1.75 owner privacy decisions and all later roadmap gates remain separate."
 }
