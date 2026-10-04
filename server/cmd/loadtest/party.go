@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"math"
+	"strings"
 	"sync"
 	"time"
 )
@@ -36,6 +37,7 @@ type partyLoad struct {
 	failed           bool
 	dungeon          *dungeonLoad
 	raid             *raidLoad
+	event            *eventLoad
 }
 
 type partyLoadCounts struct {
@@ -132,6 +134,9 @@ func (p *partyLoad) state(index int, me Entity, now time.Time) {
 		m.xpUpdates++ // Observed progression, not attribution to a particular kill.
 	}
 	m.state = me
+	if p.event != nil {
+		p.event.observe(index, me)
+	}
 	if p.raid != nil && me.InstanceID == "" {
 		p.raid.members[index].waterReturning = false
 		p.raid.members[index].pointSince = time.Time{}
@@ -146,6 +151,9 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 	defer p.mu.Unlock()
 	defer p.signal(index)
 	m := &p.members[index]
+	if p.event != nil && message.Type == "public_event" {
+		return p.event.receive(p, index, message, now)
+	}
 	if p.raid != nil && message.Type == "chat" {
 		return p.raid.receiveConversion(p, index, message)
 	}
@@ -354,9 +362,15 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		p.failed = true
 		return // The original overworld profile does not silently enter instances.
 	}
+	if p.event != nil && (!p.event.step(p, index, me, now, timeout, request, move) || p.failed) {
+		return
+	}
 	leader := p.members[0].state
-	vigil := p.raid != nil && p.raid.inVigil(index)
-	if vigil && p.raid.vigilMove(p, index, me, now, move) {
+	vigil := p.raid != nil && p.raid.inVigil(index) || p.event != nil
+	if p.event != nil && p.event.wardMove(index, me, now, move) {
+		return
+	}
+	if p.raid != nil && vigil && p.raid.vigilMove(p, index, me, now, move) {
 		return
 	}
 	if !vigil && index != 0 && math.Hypot(me.X-leader.X, me.Z-leader.Z) > 12 {
@@ -377,12 +391,15 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		}
 		if p.target.ID == "" {
 			nearest := 30.0
+			if p.event != nil {
+				nearest = 65
+			}
 			if p.dungeon != nil {
 				room := p.dungeon.layout.Rooms[p.dungeon.objective]
 				nearest = math.Hypot(room.Width/2, room.Height/2) + 20
 			}
 			for _, enemy := range state {
-				if enemy.Type != "Enemy" || enemy.Health <= 0 || enemy.State == "DEAD" || enemy.InstanceID != me.InstanceID || enemy.ID == "" {
+				if enemy.Type != "Enemy" || enemy.Health <= 0 || enemy.State == "DEAD" || enemy.InstanceID != me.InstanceID || enemy.ID == "" || p.event != nil && !strings.HasPrefix(enemy.ID, p.event.enemyPrefix) {
 					continue
 				}
 				distance := math.Hypot(enemy.X-p.anchorX, enemy.Z-p.anchorZ)

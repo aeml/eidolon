@@ -1855,6 +1855,17 @@ normal five-player Earth encounter, not full raid-family/capacity acceptance.
 Dark King, actual other-ritual and world-event workloads still remain. No live
 service/database/DNS mutation, production acceptance or capacity extrapolation.
 
+Prepared1.79 now has a separate four-class **naturally scheduled world-event
+controller** for Root/Tide/Ember/Gale. Every player's own near-site live views
+must cover all four waves, normal completion and town exit; remote/late/expired
+or partial evidence cannot pass. Roles use ordinary combat/healing and live
+ward movement, never event-clock or resource/reward overrides. Focused race
+checks pass1.345s; preceding full driver suite17.594s. The opt-in level35 Root
+normal-server/disposable-save check is written and compiled, but **has not run**;
+it skips outside the first40s of a real announcement. No four-player earned
+event/save, all-realms or capacity acceptance yet. Existing raid/dungeon/casino
+receipts retain their scope and are not rerun. Default mixed/combined unchanged.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)

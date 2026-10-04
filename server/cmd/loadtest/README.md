@@ -7,8 +7,8 @@ credentials are read-only. The driver creates accounts and changes synthetic
 characters through normal commands, so it is not a read-only production probe.
 
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
-`casino-blackjack`, `casino-house`, `casino-poker`, `party-combat`, `party-dungeon`
-and `combined`. Mixed
+`casino-blackjack`, `casino-house`, `casino-poker`, `party-combat`, `party-dungeon`,
+`party-raid`, `party-event` and `combined`. Mixed
 still assigns only combat/town/social round-robin. It does **not** exercise casino
 wagering, coordinated dungeon/raid parties or all world-event flows. The separate
 combined profile below covers combat/casino/save at20; dungeon/raid/event and
@@ -439,6 +439,42 @@ The full driver race suite passes17.397s. Existing earned
 dungeon/casino/combined receipts are not rerun or reclassified, and the default
 mixed/nightly profile is unchanged. Dark King phases/rewards, actual non-Earth
 rituals, world events and declared capacity/headroom remain separate checks.
+
+## Naturally scheduled four-class events
+
+`-scenario party-event -n 4 -event-site root -duration 9m` requires supplied,
+distinct prepared accounts in Fighter/Cleric/Rogue/Wizard order. Counts may be
+4–100 in groups of four; duration must be explicit and at most45m. Selection can be
+`current`, `root`, `tide`, `ember` or `gale`. Prepare level-appropriate legal
+uncommon/rare gear and each site's recommended level35/55/72/72; the suitability
+check is not a new game entry restriction. Existing gear and bag items are not
+sold, equipped or picked up by this scenario.
+
+The leader adopts only an announcement or first defending wave, never an
+already completed or late-wave event. Every client must observe all four waves
+while alive and physically near the site, then actual completion and a fresh
+normal Recall return to town. Global views seen remotely or in private instances
+do not prove participation. Expiry, changed occurrences, regressing counters,
+invalid/stale views or missing recovery acknowledgements fail without retry.
+The Wizard holds the live ward/rune/rim or moves with Gale; other roles fight
+and heal through ordinary commands. No event clock, kill, charge, reward or
+resource bar is assigned by the controller. Completion exits early; the duration
+is a maximum, not a capacity-soak claim. `Event coverage` separates selected
+groups, present/completed/exited players and the minimum own wave observations.
+
+Focused race checks pass1.345s; the preceding full driver suite passes17.594s.
+Those are controller/unit fixtures, including actual game empty schedules with
+declared unit-test timestamps, **not earned connected event completion**.
+`TestLoadEventActualFourClassRootClearExitAndSaves` is a separate opt-in normal
+server/driver/disposable-Mongo test: set `EIDOLON_LOAD_EVENT_FULL=1` alongside the
+isolated environment flags above, and start during the first40s of an actual
+Root announcement. Outside that window it skips rather than advancing time.
+It prepares level35 uncommon/rare class gear, requires full waves/champion/town
+exit, then independently reads saved XP/Gold and preserved equipment/bag
+sentinel/EP. Prepared positioning and equipment are fixtures, not an earned
+journey. This connected check has **not yet run**. Do not reclassify the earlier
+single-Wizard Root evidence or repeat accepted raid/dungeon/casino checks.
+Events remain separate from `combined` and default mixed/nightly workloads.
 
 Predeclare the workload, duration, acceptable tick/network/database/client
 metrics and headroom before a representative capacity run. Reuse compatible

@@ -82,26 +82,32 @@ func TestLoadPartyActualCombatAndSavedGear(t *testing.T) {
 // Reuse the already checked legal class gear/build preparation in combined
 // integration. These are explicit disposable saves, never production grants.
 func loadPreparedPartyFixture(t *testing.T, repo *database.DB, index int) (*database.Character, string) {
+	return loadPreparedClassFixture(t, repo, index, 30)
+}
+
+func loadPreparedClassFixture(t *testing.T, repo *database.DB, index, level int) (*database.Character, string) {
 	t.Helper()
-	if index < 0 || index > 3 {
-		t.Fatal("invalid prepared party class")
+	if index < 0 || index > 3 || level < 30 || level > 100 {
+		t.Fatal("invalid prepared party class or level")
 	}
 	class := []string{"Fighter", "Cleric", "Rogue", "Wizard"}[index]
 	weapon := []string{"iron-sword", "cleric-mace", "steel-dagger", "wooden-staff"}[index]
 	fixture, password := resourceJournalFixture(t, repo)
 	fixture.Class, fixture.SelectedBranch, fixture.EP = class, "A", 43
+	fixture.Level = level
 	fixture.X, fixture.Z = 400+float64(index), 600
-	fixture.Stats = database.Stats{Strength: 68, Vitality: 68, Dexterity: 39, Intelligence: 39, Wisdom: 39}
+	primary, secondary := 10+2*(level-1), 10+(level-1)
+	fixture.Stats = database.Stats{Strength: primary, Vitality: primary, Dexterity: secondary, Intelligence: secondary, Wisdom: secondary}
 	fixture.UnlockedSkills = []string{"Charge", "Whirlwind", "Shield Slam", "Iron Fortress"}
 	switch class {
 	case "Cleric":
-		fixture.Stats.Strength, fixture.Stats.Wisdom = 39, 68
+		fixture.Stats.Strength, fixture.Stats.Wisdom = secondary, primary
 		fixture.UnlockedSkills = []string{"Radiant Strike", "Healing Light", "Guardian Embrace", "Purifying Wave"}
 	case "Rogue":
-		fixture.Stats.Strength, fixture.Stats.Dexterity = 39, 68
+		fixture.Stats.Strength, fixture.Stats.Dexterity = secondary, primary
 		fixture.UnlockedSkills = []string{"Piercing Throw", "Backstab", "Weak Point Mark", "Shadow Lunge"}
 	case "Wizard":
-		fixture.Stats.Strength, fixture.Stats.Intelligence = 39, 68
+		fixture.Stats.Strength, fixture.Stats.Intelligence = secondary, primary
 		fixture.UnlockedSkills = []string{"Fireball", "Flame Whip", "Flame Tornado", "Meteor Drop"}
 	}
 	fixture.Resources = &database.CharacterResources{Version: 1, Health: 10000, Mana: 10000}
@@ -114,7 +120,7 @@ func loadPreparedPartyFixture(t *testing.T, repo *database.DB, index int) (*data
 		if gearIndex%2 == 0 {
 			rarity = game.RarityRare
 		}
-		items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: itemID, Rarity: rarity, Level: 30, Quantity: 1})
+		items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: itemID, Rarity: rarity, Level: level, Quantity: 1})
 		if err != nil {
 			t.Fatal("could not prepare legal class equipment")
 		}
@@ -128,7 +134,7 @@ func loadPreparedPartyFixture(t *testing.T, repo *database.DB, index int) (*data
 		fixture.Equipment[slot] = databaseItem(items[0])
 	}
 	if class == "Rogue" {
-		items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: "steel-dagger", Rarity: game.RarityRare, Level: 30, Quantity: 1})
+		items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: "steel-dagger", Rarity: game.RarityRare, Level: level, Quantity: 1})
 		if err != nil {
 			t.Fatal("could not prepare legal Rogue offhand")
 		}
