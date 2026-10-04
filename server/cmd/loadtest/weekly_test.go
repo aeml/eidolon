@@ -1,11 +1,45 @@
 package main
 
 import (
+	"math"
 	"testing"
 	"time"
 
 	"eidolon-server/internal/game"
 )
+
+func TestRaidEntryBudgetLeavesDeliveryTimingCushion(t *testing.T) {
+	r := &raidLoad{members: make([]raidLoadMember, 1)}
+	start := time.Unix(100, 0)
+	// Model the production policy's two-token, one-per30s server bucket.
+	// Initial dispatch reaches the server500ms later, later requests100ms
+	// later. WebSocket ordering is preserved; client/server budget epochs differ.
+	tokens, serverAt := 2.0, start.Add(500*time.Millisecond)
+	accepted := 0
+	for _, seconds := range []int{0, 1, 30, 31, 32, 61, 62, 63} {
+		dispatch := start.Add(time.Duration(seconds) * time.Second)
+		if !r.admitEntry(0, dispatch) {
+			continue
+		}
+		accepted++
+		delay := 100 * time.Millisecond
+		if seconds == 0 {
+			delay = 500 * time.Millisecond
+		}
+		receive := dispatch.Add(delay)
+		if receive.After(serverAt) {
+			tokens = math.Min(2, tokens+receive.Sub(serverAt).Seconds()/30)
+			serverAt = receive
+		}
+		if tokens < 1 {
+			t.Fatal("client admitted entry before delayed server budget refilled")
+		}
+		tokens--
+	}
+	if accepted != 4 {
+		t.Fatal("cushioned recovery stalled instead of making safe entries")
+	}
+}
 
 func weeklyPhase(p *partyLoad, phase int) game.RaidPhaseEvent {
 	identities := [4][2]string{{"Orun", "Earth"}, {"Neris", "Water"}, {"Pyralis", "Fire"}, {"Aeral", "Air"}}
@@ -80,8 +114,12 @@ func TestRaidRecoveryWaitsForNormalEntryRateBudget(t *testing.T) {
 		t.Fatal("recovery sent a third request before the normal two-per-minute raid budget refilled")
 	}
 	p.dungeon.step(p, index, me, now.Add(30*time.Second), time.Second, request)
+	if p.failed || requests != 2 || m.pending != "" {
+		t.Fatal("entry omitted delivery cushion")
+	}
+	p.dungeon.step(p, index, me, now.Add(31*time.Second+time.Millisecond), time.Second, request)
 	if p.failed || requests != 3 || m.reentries != 3 || m.pending != "enter" {
-		t.Fatal("normal raid entry did not resume after one token refilled")
+		t.Fatal("raid entry did not resume after cushioned token refill")
 	}
 }
 

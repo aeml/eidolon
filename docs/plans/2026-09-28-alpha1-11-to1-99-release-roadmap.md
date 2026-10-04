@@ -18,13 +18,15 @@ UTC-day unique authenticated login counts and recorded closed-connection time.
 Test records remain available; no deletion/backfill/retention change. Legacy or
 unclosed session durations are not estimated, and this is not active-play/AFK
 measurement. Focused race, actual isolated Mongo and three browser-layout checks
-passed; exact maintenance deployment/public identity remains pending. This work
+passed; all ten maintenance CI jobs now passed, and independent public IPv4
+frontend/backend checks match c0ea6ec48b13eb4fa2a077875639a3f5ebe8ff16,
+Alpha1.74.2, with a ready database. This work
 does not assert1.79 capacity or change the separate open map-crash diagnosis.
 
 The narrow Sell All/error maintenance release [1.74.1 public acceptance](2026-10-04-release1-74-1-public-acceptance.json)
 records all10 CI jobs passing and independently observed exact public IPv4
 frontend/backend identity, healthy database and changed notice/CSS assets.
-Admin1.74.2 is queued afterward, not yet accepted live. The1.75 data inventory
+Admin1.74.2 is now live with successful terminal CI and matching public identity. The1.75 data inventory
 now records its optional session-start timestamps and ephemeral daily totals;
 existing retention and all unresolved owner privacy decisions are unchanged.
 
@@ -40,8 +42,11 @@ server rate-limit rejection after each client observed at least two phases;
 it is not boss/reward/save acceptance. Owned fixture removed, artifacts retained.
 The [1.79 receipt](2026-10-04-release1-79-capacity-driver-checks.json) now carries
 terminal metrics and a prepared allowlisted-action rate-rejection diagnostic
-with root/driver race checks. Exact rejecting action still needs the next
-actual run; no limits, health/damage or mandatory clear/phase/save gates relaxed.
+with root/driver race checks. The next diagnostic run failed717.14s and confirmed
+raid_enter as the rejected action. A delayed-delivery model reproduced the
+client/server refill-boundary defect; a driver-only31-second refill cushion
+passes focused and full race checks. Its actual five-role finale run is now
+running; no limits, health/damage or mandatory clear/phase/save gates relaxed.
 
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with

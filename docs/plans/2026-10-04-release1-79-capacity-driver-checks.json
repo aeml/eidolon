@@ -545,7 +545,7 @@
     }
   },
   "weeklyFollowUp": {
-    "status": "CORRECTED_ACTUAL_FAILED_RATE_LIMIT_ACTION_NOT_IDENTIFIED",
+    "status": "ACTUAL_DIAGNOSTIC_IDENTIFIED_RAID_ENTRY_LIMIT_CUSHION_UNIT_CHECKED",
     "change": "Support actual weekly_raid level100/Mythic five-to-ten-player conversion/consent/access. Every client must observe matching living in-instance ordered Orun/Earth, Neris/Water, Pyralis/Fire, Aeral/Air phase messages plus actual boss-room clear and alive town exit. No synthetic transformation, damage, aid, reward or quest completion. Explicit maximum duration up to30m; existing elemental and default mixed behavior retained.",
     "evidence": "Focused weekly/preparation race1.377s; complete cmd/loadtest race17.714s. Domain preparation now includes real game weekly readiness/access with declared synthetic replies at5/10 members. Unit negatives cover nil/foreign/wrong identity/zero/high/skipped/regressed/dead/town/unprepared phases and wrong repair crystal; boss-only and phase-only views cannot pass. Root opt-in test compiles but skipped without disposable opt-in; this is not runtime success.",
     "actualCheck": "New opt-in TestLoadWeeklyActualFiveRolesPhasesExitAndSaves prepares five level100 uncommon/rare Fighter/Cleric/Rogue/Wizard/Fighter roles, legal plate/shields, leather/dual daggers, cloth/staff/tome and completed gate access, then ordinary server/driver requests. Requires all-own four phases, boss clear/town exit, original shared Dark King victory, personal weekly cache/lockout receipts, settled outbox, earned unclaimed finale readiness, preserved equipment/bag/EP, saved Gold/resonance. Initial level/access/gear are fixtures, not campaign proof. Not yet run.",
@@ -602,9 +602,9 @@
     "scope": "Corrected entry-budget/fixed diagnostic controller against same original game executable isolates the bot correction, not a claim that new admin-duration source ran in this executable. Required each-client ordered phases, real boss clear/Town exit and original durable reward/weekly/quest/character proofs remain unchanged."
   },
   "rateRejectionActionDiagnostic": {
-    "status": "UNIT_AND_CLIENT_CHECKED_ACTUAL_DIAGNOSTIC_RUNNING_NOT_PUBLISHED",
+    "status": "ACTUAL_DIAGNOSTIC_CONFIRMED_RAID_ENTRY_LIMIT_UNPUBLISHED",
     "change": "Server rate rejection retains existing JSON-string error shape but identifies the message type only after the static policy allowlist check. Never echo payload, actor/credentials or an unknown request type. No policy limit/burst/access/handler change. Driver retains closed failure enums for raid_enter/move/attack/ability/recall/respawn plus legacy generic rejection; arbitrary/private suffixed text remains generic server_rejection and is never stored or printed.",
-    "evidence": "Focused root Inbound rate/auth/access/known-type coverage passed race11.549s; driver server/failure/recovery cases passed race1.089s. Exact first-cause preservation and unknown/private suffix rejection included. Additional InGameActionErrors3 client checks passed1.352s and lint passed: both generic and action-specific string errors use existing game notification, retain quest callback/auto-spin stop and never native alert. Actual correctly labelled executable is running; previous380.39s failure retains original generic diagnosis.",
+    "evidence": "Focused root Inbound rate/auth/access/known-type coverage passed race11.549s; driver server/failure/recovery cases passed race1.089s. Exact first-cause preservation and unknown/private suffix rejection included. Additional InGameActionErrors3 client checks passed1.352s and lint passed: both generic and action-specific string errors use existing game notification, retain quest callback/auto-spin stop and never native alert. Actual labelled run failed717.14s with server_rate_limit_raid_enter; previous380.39s failure retains original generic diagnosis.",
     "sha256": {
       "server/protocol_policy.go": "eacf7917f7d7333d12c56ccc9be2d6e25b8765432a0dcfc8766ae395999d4053",
       "server/cmd/loadtest/failure.go": "48a5b8ff9ae5e6225649024243d0c91c58746607ce125b35fd5ee2d783aec4d0"
@@ -612,7 +612,7 @@
     "next": "Build exact prepared normal server and driver; preserve prior failed artifacts. Only a missing compatible isolated finale/action-diagnostic run is needed, not replayed dungeon/elemental raid/casino/event/full campaign or relaxed success gates."
   },
   "weeklyDiagnosticActualRun": {
-    "statusAtObservation": "RUNNING_NO_TERMINAL_OR_COMPLETION_CLAIM",
+    "statusAtObservation": "TERMINAL_FAIL_RAID_ENTRY_RATE_LIMIT_FIXTURE_REMOVED",
     "sourceCommit": "b206083b",
     "observedAtUTC": "2026-10-04T21:38:50Z",
     "ownedContainer": "edffdc9264eec04db338fc172aaf91b70611c9b0e86d9c6e5ba227461b83f814",
@@ -621,6 +621,16 @@
     "namespaceProcesses": {"rootPID": 79, "serverPID": 100, "driverPID": 111},
     "isolation": "Owned Mongo7.0.14/networknone/no public ports,2CPU/2GiB/.25GiB cache,512MiB database/16MiB config tmpfs. Readonly artifacts; explicit disposable loopback fixture. Normal five-role level100/uncommon-rare initial preparation, no in-run grants/clock acceleration. Driver20m/root22m maxima, early terminal completion/failure. Luna watches PID/comm and resource counters; parent retrieves definitive result and removes exact fixture after terminal proof.",
     "startEvidence": "Mongo ping, test header and normal compat owned-server marker printed by original parent session11386. Exact root/server/driver PID/comm verified live. The harness required healthy database and expected server identity before starting the actual driver. Mandatory each-client ordered phases, real boss clear/Town exits and independent original weekly/reward/quest/character receipts retained.",
+    "terminalEvidence": "Luna detected root79/server100/driver111 absent; parent retrieved original session11386 FAIL717.14s/exit1. Fixed first cause server_rate_limit_raid_enter identifies the normal policy rejection without raw player/network data. No boss clear, final exits or independent reward/save acceptance. Final peak579833856B/all cgroup max/OOM/OOM-kill events0/DockerOOMfalse. Exact task/network/terminal ownership verified; owned container and synthetic database removed, filtered listing empty. Original artifacts retained.",
+    "terminalMetrics": {
+      "elapsedSeconds": 717.14, "connected": 5, "joined": 5, "authenticated": 5, "admissionFailures": 0,
+      "stateFrames": 107828, "minimumFrames": 21558, "minimumOwnUpdates": 21558, "minimumActiveMS": 711375, "maximumGapMS": 83, "wireBytes": 555250331,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "recoveriesRequested": 100, "recoveriesCompleted": 100, "pendingRecoveries": 0, "failedRecoveries": 0,
+      "minimumOwnImpacts": 114, "damageEvents": 977, "healingDeliveries": 37, "acceptedCasts": 409, "deniedCasts": 2,
+      "entered": 5, "cleared": 0, "exited": 0, "reentries": 99, "checkpointReturns": 98,
+      "minimumPhaseViews": 3, "completedPhaseMembers": 0, "failedGroups": 1
+    },
     "artifacts": {
       "server": {"path": "/tmp/eidolon-179-weekly-labeled-1DgZal/server", "sha256": "c1612a2e99d25859427eb102752fddbb829637eb6b57a6475b4ed9cab616b8bd", "build": "Go1.27.1 normal build with -ldflags=-X main.buildCommit=server, matching the existing harness basename identity rule."},
       "driver": {"path": "/tmp/eidolon-179-weekly-diagnostic-D38hVF/loadtest", "sha256": "deab26098a18adfa5af0ac2370d51a5a6c9a25adf9d3dc4f748c665d0b5a8dbf"},
@@ -635,6 +645,31 @@
       "artifact": {"path": "/tmp/eidolon-179-weekly-diagnostic-D38hVF/server", "sha256": "cd13866049dd6c114756fb8077f64824d4b25d7edf6bea1cffb668760f67ee5a"},
       "cleanup": "Terminal parent failure and absent root/server/driver verified; exact owner label/network/OOMfalse/peak579903488B/all OOM events0 checked before removing owned fixture/synthetic database. No production data affected."
     }
+  },
+  "raidEntryDeliveryCushion": {
+    "finding": "Actual normal server now definitively identifies raid_enter as the rejected action. Matching its refill rate exactly at the client is not sufficient because dispatch/admission epochs differ; actual transport delay for the failed request was not recorded.",
+    "reproduction": "New TestRaidEntryBudgetLeavesDeliveryTimingCushion failed0.010s on the original client budget. Declared model mirrors normal two-token/one-per30s server refill, with first request500ms dispatch delay and later100ms delay, preserving socket order. Exact client boundary admits the third request before the model's server budget refills. Model is a reproduced defect, not measurement of the actual failed request's latency.",
+    "change": "Driver retains two-request burst but refills one token per31s, giving one-second dispatch/admission cushion. Production server remains exactly2/minute, no uncertain-request retries, rate bypass, health/damage/reward change or relaxed all-client phase/clear/exit/save gate. Not arbitrary latency or Internet capacity proof.",
+    "checks": "Focused entry/recovery/weekly/failure race passed1.145s. Negative forbids boundary entry; positive requires four permitted modeled entries instead of a stalled controller. Intermediate exact31-second recovery fixture failed0.152s because repeated fractional refill can land infinitesimally below one token; fixture resumes at31s+1ms, without introducing an admission epsilon or reducing safety. Full driver compatibility race passed17.485s, then independently reran17.885s after continuation; this repetition was not necessary for the unchanged source. Actual cushioned encounter is running, not accepted.",
+    "sha256": {
+      "server/cmd/loadtest/raid.go": "8948020311a61613cedea480baf909b75a60277dd7f9aac3500d56186d6fef99",
+      "server/cmd/loadtest/weekly_test.go": "4fc0b485995be4691e450671f3a03ac360a884a4232a105f434ed1b8b13a684c"
+    }
+  },
+  "weeklyCushionActualRun": {
+    "statusAtObservation": "RUNNING_NOT_ACCEPTED",
+    "startedAtUTC": "2026-10-04T22:00:56Z",
+    "sourceBase": "c6171547 plus recorded driver-only cushion changes",
+    "ownedContainer": "7c65a2244f8b72ad54729c0962e5108739995265ae9254d9f04d4a35e100ef75",
+    "taskLabel": "weekly-179-cushion-20261004",
+    "parentSession": 15411,
+    "namespacePIDs": { "root.test": 79, "server": 94, "loadtest": 105 },
+    "artifacts": {
+      "server": { "path": "/tmp/eidolon-179-weekly-labeled-1DgZal/server", "sha256": "c1612a2e99d25859427eb102752fddbb829637eb6b57a6475b4ed9cab616b8bd" },
+      "root": { "path": "/tmp/eidolon-179-weekly-diagnostic-D38hVF/root.test", "sha256": "b95d6007943020e631097089f7e8a233664033d0081fe6b55ef1fe67cf4badf9" },
+      "driver": { "path": "/tmp/eidolon-179-weekly-cushion-6lsOWt/loadtest", "sha256": "78d167c558eea1020c91f8035951e0a8ad47098e4d7b4acb2c1121a3c7e7421f" }
+    },
+    "isolation": "Reused compatible unchanged normal server and race root. Only new driver rebuilt. Mongo7.0.14, network none, no published ports, two CPUs/2GiB memory,512MiB database tmpfs/16MiB config tmpfs and0.25GiB cache. Ping and exact namespace processes verified. Luna monitors terminal state; parent owns definitive outcome. Mandatory phases/clear/exit/reward/save gates unchanged. No production database or real player accounts used."
   },
   "eventCorrectedActualRun": {
     "statusAtObservation": "TERMINAL_PASS_FIXTURE_REMOVED",
