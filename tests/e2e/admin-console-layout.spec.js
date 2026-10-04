@@ -46,6 +46,13 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                     })), next: 'history-cursor', retentionDays: 90, daily: {
                         day: payload.day, uniqueLogins: 8, closedSessionSeconds: 7200, missingDurations: 1, complete: true
                     } } } : {}),
+                    ...(type === 'admin_service' ? { service: { sampledAt: '2026-10-04T07:00:00Z', health: {
+                        status: 'ok', database: 'ready', version: 'Alpha 1.78.0', commit: 'abcdef1'.padEnd(40, '0'),
+                        goroutines: 48, heapAllocBytes: 104857600, heapObjects: 700000,
+                        broadcastQueues: { queued: 2, capacity: 1024, encounterQueued: 1, encounterCapacity: 128, dropped: 0, encounterDropped: 0, invalidDropped: 0 },
+                        operational: Object.fromEntries(['characterJournal', 'characterCommit', 'characterCleanup', 'characterRecovery', 'casinoGold', 'casinoEP']
+                            .map(name => [name, { completed: 100, failed: 1 }])), private: 'private-config-marker'
+                    } } } : {}),
                     ...(type === 'admin_reports' ? { reports: { reports: Array.from({ length: 10 }, (_, index) => ({
                         id: String(index + (payload.before ? 10 : 0)).padStart(24, '0'), username: 'fixture-reporter',
                         reportType: payload.reportType || 'Bug Report', status: payload.status || 'open', createdAt: '2026-09-28T12:00:00Z',
@@ -76,6 +83,21 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await expect(dialog.locator('li').last()).toBeInViewport();
         await dialog.getByRole('button', { name: 'Refresh players' }).scrollIntoViewIfNeeded();
         await page.screenshot({ path: testInfo.outputPath('administration.png') });
+        await dialog.getByRole('button', { name: 'Service diagnostics', exact: true }).click();
+        await expect(dialog.getByRole('list', { name: 'Service diagnostics' }).locator('li')).toHaveCount(16);
+        await expect(dialog).toContainText('100.00 MiB');
+        await expect(dialog).not.toContainText('private-config-marker');
+        await expect(dialog.locator('[data-next]')).toBeHidden();
+        await expect(dialog.getByLabel('Exact account')).toBeHidden();
+        expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+        await dialog.locator('li').last().scrollIntoViewIfNeeded();
+        await expect(dialog.locator('li').last()).toBeInViewport();
+        const refreshDiagnostics = dialog.getByRole('button', { name: 'Refresh diagnostics', exact: true });
+        await refreshDiagnostics.focus();
+        await page.keyboard.press('Enter');
+        await expect(refreshDiagnostics).toBeEnabled();
+        await expect(dialog.getByRole('status')).toContainText('Refresh explicitly');
+        await page.screenshot({ path: testInfo.outputPath('administration-service.png') });
         await dialog.getByRole('button', { name: 'Activity history', exact: true }).click();
         await expect(dialog.locator('li')).toHaveCount(50);
         await expect(dialog.locator('li').first()).toContainText('admin_players · success');

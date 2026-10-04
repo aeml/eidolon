@@ -89,6 +89,25 @@ Redact usernames and personal details before sharing a reproduction publicly.
 Use the confirmed report-review controls for resolution; see the
 [operations handoff](BETA_OPERATIONS.md) for migration and privacy cautions.
 
+### Prepared 1.78 service diagnostics — not live in 1.71
+
+**Service diagnostics** is an explicitly refreshed, read-only observation of
+the connected game process: release and sample time, readiness, goroutines/heap,
+broadcast queue/drop counts and aggregate character-save/Gold/EP call outcomes.
+It uses the authenticated socket rather than a browser cross-origin health fetch.
+Every request has the existing role/session, size/rate and audit gates, including
+the final role/connection recheck after query and audit IO. Lost access or a
+disconnect clears the view; no background polling or local history is stored.
+
+Counters reset on process restart and include retries and rejected calls. They
+are not player balances, unique payouts, pending entitlements or a durability/
+capacity certificate. Cleanup errors remain distinct from confirmed database
+commits. Missing or unsafe-precision measurements display **Unavailable**, not
+zero. Unknown fields, mail recipients/tokens, raw logs and account data are not
+rendered. The independent monitor's delivery status is not known to this game
+process; the panel does not claim alerts are enabled or delivered. A role/audit
+storage outage may prevent viewing it, so independent monitoring is still needed.
+
 Alpha 1.59 adds **Moderation Appeal** to the player's existing report
 form. Players can include a notice/report reference and their explanation; it
 enters this same private queue as an open report. Submission requests review,

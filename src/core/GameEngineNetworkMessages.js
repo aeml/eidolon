@@ -478,7 +478,7 @@ class GameEngineNetworkMessageMethods {
             this.uiManager?.report?.exportDownload?.handleResult(msg.payload);
         } else if (msg.type === 'moderation_notice_result') {
             this.uiManager?.report?.notice?.handleResult(msg.payload);
-        } else if (['admin_status_result', 'admin_players_result', 'admin_history_result', 'admin_reports_result',
+        } else if (['admin_status_result', 'admin_players_result', 'admin_history_result', 'admin_reports_result', 'admin_service_result',
             'admin_report_review_result',
             'admin_privacy_export_approval_result',
             'admin_removal_review_result',

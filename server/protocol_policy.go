@@ -73,6 +73,7 @@ var inboundMessagePolicies = map[string]messagePolicy{
 	MsgCompletePasswordRecovery:   policy(accessPublic, 1<<10, 5, time.Minute),
 	MsgResumeSession:              policy(accessPublic, 4<<10, 10, time.Minute),
 	MsgJoin:                       policy(accessAuthenticated, 2<<10, 3, 10*time.Second),
+	MsgAdminService:               policy(accessAuthenticated, 1<<10, 5, 10*time.Second),
 
 	MsgMove:    policy(accessCharacter, 2<<10, 90, time.Second),
 	MsgJump:    policy(accessCharacter, 2<<10, 12, time.Second),

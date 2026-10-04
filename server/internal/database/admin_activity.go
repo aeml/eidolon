@@ -94,7 +94,7 @@ func boundedActivityText(value string, max int, required bool) bool {
 
 func validAdminActivityAction(action string) bool {
 	switch action {
-	case "login", "resume", "disconnect", "admin_status", "admin_players", "admin_history", "admin_reports",
+	case "login", "resume", "disconnect", "admin_status", "admin_players", "admin_history", "admin_reports", "admin_service",
 		"admin_report_review", "admin_privacy_export_approval", "admin_removal_review", "admin_chat_moderation", "admin_chat_moderation_target",
 		"owner_export_section",
 		"admin_grant_gold", "admin_grant_item", "admin_teleport":

@@ -137,6 +137,41 @@ type healthResponse struct {
 	Operational     operations.OperationalMetrics `json:"operational"`
 }
 
+func collectHealthResponse(ctx context.Context, pingDatabase func(context.Context) error) (healthResponse, int) {
+	var memory runtime.MemStats
+	runtime.ReadMemStats(&memory)
+	response := healthResponse{
+		Status:     "ok",
+		Database:   "ready",
+		Commit:     buildCommit,
+		Version:    buildVersion,
+		Goroutines: runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
+		HeapObjects:     memory.HeapObjects,
+		BroadcastQueues: transientBroadcastMetrics(),
+		Operational:     operationalMetricsSnapshot(),
+	}
+	statusCode := http.StatusOK
+	if pingDatabase == nil || pingDatabase(ctx) != nil {
+		response.Status = "unavailable"
+		response.Database = "unavailable"
+		statusCode = http.StatusServiceUnavailable
+	}
+	return response, statusCode
+}
+
+func pingServiceDatabase(ctx context.Context) error {
+	if !sessionActivityJournalHealthy() {
+		return errors.New("session activity awaits durable storage")
+	}
+	if serverStopping.Load() {
+		return errors.New("server is shutting down")
+	}
+	if db == nil {
+		return errors.New("database is not initialized")
+	}
+	return db.Ping(ctx)
+}
+
 func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
@@ -144,27 +179,9 @@ func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
-
-		var memory runtime.MemStats
-		runtime.ReadMemStats(&memory)
-		response := healthResponse{
-			Status:     "ok",
-			Database:   "ready",
-			Commit:     buildCommit,
-			Version:    buildVersion,
-			Goroutines: runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
-			HeapObjects:     memory.HeapObjects,
-			BroadcastQueues: transientBroadcastMetrics(),
-			Operational:     operationalMetricsSnapshot(),
-		}
-		statusCode := http.StatusOK
 		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 		defer cancel()
-		if pingDatabase == nil || pingDatabase(ctx) != nil {
-			response.Status = "unavailable"
-			response.Database = "unavailable"
-			statusCode = http.StatusServiceUnavailable
-		}
+		response, statusCode := collectHealthResponse(ctx, pingDatabase)
 
 		w.Header().Set("Cache-Control", "no-store")
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -1045,18 +1062,7 @@ func main() {
 	})
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/healthz", healthHandler(func(ctx context.Context) error {
-		if !sessionActivityJournalHealthy() {
-			return errors.New("session activity awaits durable storage")
-		}
-		if serverStopping.Load() {
-			return errors.New("server is shutting down")
-		}
-		if db == nil {
-			return fmt.Errorf("database is not initialized")
-		}
-		return db.Ping(ctx)
-	}))
+	mux.HandleFunc("/healthz", healthHandler(pingServiceDatabase))
 	mux.HandleFunc("/ws", serveWs)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Anything that isn't the game's websocket endpoint is almost always noise on a public IP.

@@ -45,6 +45,7 @@ var messageHandlers = map[string]messageHandler{
 	MsgForgeInsertGem:             handleForgeTransaction,
 	MsgForgeCombineGem:            handleForgeTransaction,
 	MsgForgeRemoveGem:             handleForgeTransaction,
+	MsgAdminService:               handleAdminRead,
 
 	MsgPartyInvite:     handleMsgPartyInvite,
 	MsgPartyResponse:   handleMsgPartyResponse,

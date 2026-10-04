@@ -16,6 +16,11 @@ import (
 const MsgOwnerExportSection = "owner_export_section"
 
 const (
+	MsgAdminService       = "admin_service"
+	MsgAdminServiceResult = "admin_service_result"
+)
+
+const (
 	MsgGetCosmeticVendor    = "get_cosmetic_vendor"
 	MsgBuyCosmetic          = "buy_cosmetic"
 	MsgCosmeticVendorResult = "cosmetic_vendor_result"
