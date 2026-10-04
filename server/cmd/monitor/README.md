@@ -13,7 +13,11 @@ HTTP with path `/healthz`, without credentials, query strings or fragments.
 Redirects are refused and TLS verification remains enabled.
 
 Stdout contains one JSON line per outage, cooldown reminder or sustained
-recovery, with sanitized cause, release identity and request latency. Healthy
+recovery, with sanitized cause, release identity, request latency and optional
+aggregate goroutine/heap/broadcast-queue diagnostics. Request or body timeouts
+have a distinct `probe_timeout` cause; cancellation during either phase remains
+silent. Missing/partial aggregates are omitted, not reported as measured zero.
+Runtime diagnostics do not yet enable pressure thresholds or a metrics store. Healthy
 polling is silent. No URLs, arbitrary peer/error text, account records or mail
 credentials are output. SIGINT/SIGTERM stop polling; cancellation is not an
 outage. An unavailable output sink exits with a generic error.

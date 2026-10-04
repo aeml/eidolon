@@ -20,10 +20,18 @@
     "corrections": "Initial gofmt invocation used an incorrect server/ prefix from the server directory and was corrected. First compilation found unused time import; removed it, made the test's HTTP request counter explicitly atomic, then the final race invocation passed. No assertions or timeout bounds weakened.",
     "limits": "Tests exercise command parsing and the actual polling loop, not an installed systemd process or actual OS signal/inbox delivery. A blocked downstream output pipe can require process termination. Incident state is RAM-only; full operations dashboards, broader metrics, delivery failure/retry ownership and retention/cost policy remain open."
   },
+  "runtimeDiagnostics": {
+    "sourceCommit": "02b9596c5a54136959d966c5e5c9eee3c40fdb6c",
+    "scope": "Whitelisted optional aggregate runtime fields from the existing health response: goroutines, heap allocation/object counts, broadcast queue occupancy/capacity and drop counters. No new public endpoint, player labels, arbitrary metric names or database work. Complete optional aggregates are retained; absent/partial aggregates remain omitted rather than pretending to measure zero. Negative/wrong-type values and impossible queue occupancy fail closed. Separate fixed probe_timeout cause covers request/header and response-body deadlines; context cancellation at either phase never triggers an incident.",
+    "command": "env GOTOOLCHAIN=go1.27.1 go test -race ./internal/operations ./cmd/monitor -count=1 -timeout=15s -v",
+    "result": "passed: operations1.210s and command4.044s; six probe/detector groups and three command groups",
+    "newActualChecks": "Six real loopback metric responses cover valid counters, missing/partial aggregates, negative values, occupancy above capacity and a private string replacing a numeric field. Unknown queue/account fields never reach sample JSON. Real headers-flushed stalled body hits the50ms request timeout; a10ms caller-context deadline is cancelled and even a one-failure detector emits no outage. Existing actual command outage/recovery loop remains passing.",
+    "limits": "Aggregate diagnostic samples are not pressure alerts, dashboards, a time-series store or server capacity proof. No thresholds or retention policy chosen, no operational email, service install, account/currency mutation or current-release code change. Storage/currency signals and operator delivery/ownership decisions still required."
+  },
   "remaining": [
     "Install/configure the independently running monitor and useful notification delivery/administrator view at the1.78 stage after owner policy decisions. It currently emits JSON incidents only; no inbox or live alert delivery is claimed.",
     "Integrate appropriate queue/error/latency/storage/currency signals with explicitly chosen thresholds and secret-free summaries; choose alert recipients/ownership, retention and operating budget with the owner rather than inventing policy.",
     "Disposable end-to-end failure-to-notification proof after delivery integration. Postmark ADMIN_NOTIFICATION_EMAILS remains reserved; current recovery configuration does not authorize sending operational alerts now.",
-    "Ordered1.71–1.77 acceptance,1.78 version/cumulative notes, exact-source CI and independent public verification. Current corrected1.71 candidate85f1bccd/CI37181802120 was confirmedin_progress this turn and is under user-authorized Luna monitoring; older73585e52CI failed before deployment. No out-of-order deployment or full-goal completion claimed."
+    "Ordered1.71–1.77 acceptance,1.78 version/cumulative notes, exact-source CI and independent public verification. Corrected1.71 candidate4bc0b95c/CI37182320668 confirmedpending this turn and is monitored by user-authorized Luna. Only the superseded85f1bccdCI37181802120 was cancelled after its failed client gate and confirmed absence of deployment jobs. No out-of-order deployment or full-goal completion claimed."
   ]
 }
