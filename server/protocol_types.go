@@ -149,6 +149,7 @@ type Client struct {
 	connectionWorkReleased bool
 	cleanupOnce            sync.Once
 	replacementCloseOnce   sync.Once
+	qaDisconnectOnce       sync.Once
 	friendPresenceWork     coalescedSocialWork
 }
 
