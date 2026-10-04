@@ -43,5 +43,22 @@
       "monitor/main_test.go": "209a94a3fd6719d291713524ec1d0687916b0ad9c18c0fe19f1beb5d9500528a"
     }
   },
-  "remaining": "Ordered1.74–1.77 acceptance; remaining growth/storage/domain/error-rate signals and log retention, explicitly agreed thresholds/operator/hosting budgets, approved independent supervisor/restart/output policy and actual provider/inbox verification. Optional pressure controls do not choose those policies or establish capacity. No financial-ledger claim from counters. Assemble own1.78 version/cumulative notes, fetch/merge remote and verify exact-source CI/public deployment before publishing. Privacy/request/retention decisions and later full-roadmap/human-art/playtest/launch gates remain open."
+  "storageFollowUp": {
+    "scope": "Optional local-filesystem headroom on one explicit absolute path with a required positive timeout up to10s and optional byte/percentage available-space floors. Defaults perform no filesystem read. Linux statfs observes fragment/block units and unprivileged available blocks, not directory/file/database contents; only total and available bytes enter monitor output or operator mail. Floors trigger strictly below either selected threshold with overflow-safe integer percentage ceilings. This observes the monitor's mount namespace, not a remote health server or arbitrary container data mount.",
+    "bounds": "At most one filesystem read can remain in flight per probe. Caller deadline/cancellation returns without waiting for an uninterruptible kernel read; subsequent polls report storage_unavailable rather than accumulating workers, and late results are discarded. Failed/unsupported/nil/zero/impossible/overflowing measurements are unavailable, not healthy zero. HTTP/database/identity/runtime failures retain precedence; cancellation is not an incident. HTTP latency remains separate from the storage timeout. Paths, mount IDs and raw kernel errors are never serialized.",
+    "checks": "Focused Go1.27.1 race storage/CLI checks passed operations1.052s/monitor1.018s. Final two small affected packages passed operations6.435s/monitor7.034s. Actual local Linux filesystem and absent-path calls, arithmetic/reserved-space units and floor equality/rounding/uint64 edges, generic invalid CLI configuration, pre-cancelled no-IO setup, a blocked read with100 subsequent refused polls and recovery after release. Four actual loopback HTTP polls with simulated low-space→healthy metrics traverse debounce/recovery, local trusted TLS Postmark stand-in and output, producing exactly two accepted notifications with aggregate numbers and no path/peer/URL/credential leakage. No upstream mail or disk exhaustion performed; unavailable/timeouts remain fixed causes.",
+    "hashes": {
+      "storage.go": "8f987d9e031c6384d69a766b7cd8db192d7feb2b807f758fe2226d2799e6a04c",
+      "storage_linux.go": "16667e91dcd1f221c32ea614a58813c608ce469154988107d02e1d389461b6cb",
+      "storage_unsupported.go": "c0b2fe9eb17d54cff0cfcb532a8666a0f158b60c91567ed34fb215c8bd773e75",
+      "storage_test.go": "dfc507dbba59e5711ddd35dfb00faca34bc13149a0be091500f20a3fa9fcfa0e",
+      "storage_linux_test.go": "07e0196940c5a6c0bce478e77ab0b3f77061250309ab6b3a27b3fa19ef6b9ad5",
+      "readiness.go": "ffbb7bce7a807f72f826a735dc3c4271e94ccef6a4c3a3f37450c0ec4ddbcae0",
+      "postmark.go": "6db507fdf7f07cb0db8007184ab0d246af21d7a5bf4f671014edbe8c2ca4f46c",
+      "monitor/main.go": "ae1e539133d28971603255f764b4a90a189ee7a930ca369fa68d4f33d32fdb73",
+      "monitor/main_test.go": "678da726f1646dc1834f34b003d191a6c6a7a2520db6b4766a282300a33f8dd3"
+    },
+    "limits": "No production path, floors, monitor service or notifications enabled. This does not measure inode/writable/quota state, collection/log/journal growth, disk throughput or future headroom. A kernel/mount fault may still require operator intervention. Owner thresholds/alert ownership/retention/budgets and actual inbox verification remain separate gates; no new dependency, public game health field, financial behavior, schema, campaign or capacity change."
+  },
+  "remaining": "Ordered1.75–1.77 acceptance after independently accepted corrective1.74; remaining growth/domain/error-rate/inode signals and log retention, explicitly agreed thresholds/operator/hosting budgets, approved independent supervisor/restart/output policy and actual provider/inbox verification. Optional pressure/storage controls do not choose those policies or establish capacity. No financial-ledger claim from counters. Assemble own1.78 version/cumulative notes, fetch/merge remote and verify exact-source CI/public deployment before publishing. Privacy/request/retention decisions and later full-roadmap/human-art/playtest/launch gates remain open."
 }

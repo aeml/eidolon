@@ -25,6 +25,7 @@ type Sample struct {
 	LatencyMS   int64               `json:"latencyMs"`
 	Runtime     *RuntimeMetrics     `json:"runtime,omitempty"`
 	Operational *OperationalMetrics `json:"operational,omitempty"`
+	Storage     *StorageMetrics     `json:"storage,omitempty"`
 }
 
 // Fixed aggregate fields only: no account labels or arbitrary metric names.
@@ -62,6 +63,7 @@ type Probe struct {
 	endpoint, expectedCommit string
 	client                   *http.Client
 	limits                   PressureLimits
+	storage                  *StorageProbe
 }
 
 // Permit ordinary loopback HTTP and authenticated HTTPS, never URL credentials,
@@ -91,6 +93,20 @@ func NewProbeWithLimits(endpoint, expectedCommit string, timeout time.Duration, 
 		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
 }
 
+// Storage is measured locally by the independent monitor, not exposed through
+// the game health endpoint. Zero configuration leaves ordinary probes unchanged.
+func NewProbeWithStorage(endpoint, expectedCommit string, timeout time.Duration, limits PressureLimits, storage StorageConfig) (*Probe, error) {
+	p, err := NewProbeWithLimits(endpoint, expectedCommit, timeout, limits)
+	if err != nil {
+		return nil, err
+	}
+	p.storage, err = NewStorageProbe(storage)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
 func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	start := time.Now()
 	defer func() {
@@ -98,6 +114,13 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 		sample.LatencyMS = elapsed.Milliseconds()
 		if sample.Ready {
 			if cause := p.limits.cause(sample, elapsed); cause != "" {
+				sample.Ready, sample.Cause = false, cause
+			}
+		}
+		if p.storage != nil {
+			metrics, cause := p.storage.check(ctx)
+			sample.Storage = metrics
+			if cause == "cancelled" || sample.Ready && cause != "" {
 				sample.Ready, sample.Cause = false, cause
 			}
 		}
@@ -228,7 +251,8 @@ func (d *Detector) Observe(sample Sample, now time.Time) *Notice {
 	cause := "probe_failed"
 	switch sample.Cause {
 	case "probe_failed", "probe_timeout", "http_unavailable", "invalid_response", "not_ready", "invalid_identity", "release_mismatch",
-		"latency_budget", "heap_budget", "goroutine_budget", "queue_budget", "inflight_budget", "metrics_unavailable":
+		"latency_budget", "heap_budget", "goroutine_budget", "queue_budget", "inflight_budget", "metrics_unavailable",
+		"storage_budget", "storage_timeout", "storage_unavailable":
 		cause = sample.Cause
 	}
 	return &Notice{Kind: kind, Cause: cause}

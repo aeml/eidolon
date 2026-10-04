@@ -435,6 +435,8 @@ Notes:
   These are storage checks, not production acceptance or player capacity.
   [Prepared operations integration](docs/plans/2026-10-04-release1-78-current-integration-checks.json)
   now carries bounded independent monitoring with optional pressure budgets,
+  opt-in local filesystem headroom (one read-only path, bounded wait and one
+  in-flight worker; no path/kernel-text disclosure),
   opt-in operator notifications,
   fixed save/wallet diagnostics and an audited manual Administration view.
   Operational emails/services are not enabled; thresholds, retention,

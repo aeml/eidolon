@@ -1751,6 +1751,17 @@ evidence, not actual-server/Mongo capacity or cash-out/restart acceptance.
 Party/raid/event/save, representative combined workloads and ordered predecessor
 publication remain open.
 
+Prepared1.78 now adds **opt-in local filesystem headroom** to the independent
+monitor. An explicit path/timeout selects the monitor's own filesystem; optional
+byte/percentage floors alert below the chosen limits. One read-only Linux stat,
+not directory scans or file/DB contents; only total/available bytes enter events.
+Missing/invalid/unsupported measurements cannot be healthy zeros. A bounded
+wait and single in-flight worker prevent a hung mount from accumulating reads.
+Existing failure/cancellation precedence and incident debounce/recovery remain.
+The path/floors, production service and real mail are not enabled; this is neither
+remote-disk capacity nor collection/log/journal growth or inode acceptance.
+Ordered predecessor/version/deployment and remaining operations gates stay open.
+
 ## References
 
 - [Product roadmap](../../ROADMAP.md)
