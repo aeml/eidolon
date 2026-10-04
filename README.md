@@ -422,8 +422,8 @@ Notes:
 
 - Current source version: `Alpha 1.74.2`. The narrowly scoped Sell All/error and
   real-player administration maintenance releases have been ordinarily merged
-  from master; their exact CI/public proof is
-  still pending. This isolated, unpublished
+  from master. 1.74.1's CI/public proof passed; 1.74.2 remains in the deployment
+  queue with its own checks/public acceptance pending. This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
@@ -503,8 +503,10 @@ Notes:
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.74.0`, exact
-  76225a2f4278be3c897af624de5c0c1b91e1e7f8, successful CI37207389001 (all ten jobs).
+- Last independently verified live release: `Alpha 1.74.1`, exact
+  e92ff723a71c106bed699ee58e310ae5ea258d97, successful CI37233489356 (all ten jobs).
+  [Public acceptance](docs/plans/2026-10-04-release1-74-1-public-acceptance.json)
+  retains skipped scopes and exact served-asset checks; this is not full-roadmap completion.
   Post-terminal public IPv4 frontend/backend identity, database readiness, login
   version, cumulative notes, administration UI and bootstrap/recovery runtime files match the accepted source.
   [Public acceptance](docs/plans/2026-10-04-release1-74-public-acceptance.json)

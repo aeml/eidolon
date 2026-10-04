@@ -25,7 +25,7 @@
     {
       "name": "admin_activity",
       "source": "server/internal/database/admin_activity.go",
-      "data": "Bounded actor/target identity, action, request correlation, time, result, summary and applicable operator reason. Login/disconnect activity uses the same history.",
+      "data": "Bounded actor/target identity, action, request correlation, time, result, summary and applicable operator reason. Login/disconnect activity uses the same history. Maintenance1.74.2 additionally records optional session_started_at on future disconnects, representing closed authenticated connection duration, not AFK/active gameplay. Administrator real/test/all filters and UTC-day totals read existing retained activity; distinct-account maps and derived totals are bounded ephemeral response data, not a new analytics collection or stored per-player profile. No historical duration backfill or test-account deletion. Older digest-only identities cannot be classified from their hash.",
       "retention": "Existing default 90 days, configurable within 7–365 days. Reads enforce the current cutoff; Mongo TTL uses each record's original expiry and is asynchronous. A shorter setting does not instantly physically delete all older records."
     },
     {

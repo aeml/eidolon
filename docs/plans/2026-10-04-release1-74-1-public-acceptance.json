@@ -1,0 +1,22 @@
+{
+  "release": "Alpha 1.74.1",
+  "commit": "e92ff723a71c106bed699ee58e310ae5ea258d97",
+  "status": "CI_SUCCESS_AND_INDEPENDENT_PUBLIC_IPV4_IDENTITY_ACCEPTED",
+  "checkedAtUTC": "2026-10-04T21:23:51Z",
+  "ci": {
+    "run": 37233489356,
+    "conclusion": "success",
+    "jobs": "All10 jobs succeeded, including both deployments, three browser smoke shards, client/native tests, predeploy character QA and live release/character QA. Luna monitored; root re-read terminal structured exact-SHA job evidence.",
+    "skipped": ["Run deterministic High/Low animation gallery", "Run required Well Rested rendering and GPU lifecycle QA", "Run disposable full-character gameplay", "Run live four-class and remote-animation QA"]
+  },
+  "independentPublic": {
+    "frontend": "IPv4 HTTPS play.eidolonrealms.com/release.json returned exact commit/version; login Alpha1.74.1, new note50-request burst/dismissible in-game notice and retained1.74.0 note present.",
+    "backend": "IPv4 HTTPS server.eidolonrealms.com/healthz returned exact commit/version, statusok/databaseready. /health and /release.json probes returned404 because they are not this API's health/identity endpoints; /healthz succeeded.",
+    "assets": {
+      "src/ui/ActionErrorNotice.js": "4a00e07bcc8fd4410ea472e9c9103e37815895ef0dd5a178a5921909a5d464d5",
+      "src/styles/hud.css": "eaebc8147928ebf62101866bc77f7debf934b94e5f136fc8cd0d6ce3ac46c296"
+    },
+    "assetScope": "Both served assets match exact publisher source digests from the local release receipt. No claim that uninspected imported modules match byte-for-byte or that synthetic layout tests prove every live sale."
+  },
+  "remaining": "Admin1.74.2 follows in the non-cancelling queue. Map-crash diagnosis remains separately open/unpatched; human campaign/device/pacing and skipped GPU/animation scopes remain. No IPv6, privacy-policy approval, capacity promise, closed-beta transition or full-roadmap completion. Public check made no production player/value/service writes."
+}

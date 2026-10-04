@@ -21,6 +21,13 @@ measurement. Focused race, actual isolated Mongo and three browser-layout checks
 passed; exact maintenance deployment/public identity remains pending. This work
 does not assert1.79 capacity or change the separate open map-crash diagnosis.
 
+The narrow Sell All/error maintenance release [1.74.1 public acceptance](2026-10-04-release1-74-1-public-acceptance.json)
+records all10 CI jobs passing and independently observed exact public IPv4
+frontend/backend identity, healthy database and changed notice/CSS assets.
+Admin1.74.2 is queued afterward, not yet accepted live. The1.75 data inventory
+now records its optional session-start timestamps and ephemeral daily totals;
+existing retention and all unresolved owner privacy decisions are unchanged.
+
 The [prepared1.77 hosting follow-up](2026-10-04-release1-77-hosting-integration-checks.json)
 guards the generic installer against replacing canonical two-host routes with
 an API-only frontend. Eighteen pure argument cases pass; current origin TLS,
