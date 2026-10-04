@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.72 bounded protocol workers",
+  "status": "prepared source and focused race checks; not deployed",
+  "sourceCommit": "46d3b939bd8790eaec75b12d76372f1533e653a2",
+  "change": "Replaced both untracked social-list goroutine triggers and both untracked join friend-presence triggers. Social-list invalidations now share one lifecycle-tracked refresh worker plus a dirty bit. Join and disconnect friend-presence invalidations share one coalesced worker per connection using its existing owned-work reservation. No trigger queue or growing account map; callbacks derive current state rather than carrying stale online/offline snapshots. There is no scheduling mutex during world/character locks or Mongo IO.",
+  "behavior": "Player status acknowledgements remain immediate and individual. Lists retain existing per-viewer ignore/block filtering. Friend presence retains its account-handoff serialization and post-IO current-session lookup. These are presentation invalidations only; no reward, save, currency, report or individually reliable message is coalesced. Dirty invalidations during a refresh produce another current-state pass. Rejected scheduling clears admission state; no untracked fallback launches on sealed shutdown or a released transport.",
+  "checks": {
+    "command": "GOTOOLCHAIN=go1.27.1 go test -race . -run '^Test(SocialWork|MsgSocialStatus|AutoSetSocialStatus|BuildSocialList|ConnectionWork|FriendsPresence)' -count=1 -timeout=40s",
+    "result": "Passed root3.206s. Four new focused cases cover200 concurrent invalidations -> one worker/two refreshes, rejected scheduling followed by successful reuse and sealed refusal,100 dirty requests -> one connection-owned reference plus latest-state refresh with reservation released only afterward, and missing-account/sealed broadcast refusal. Existing manual/automatic social-status/list and four connection-lease regressions also passed.",
+    "scopeCorrection": "The regex FriendsPresence did not match the actual TestNotifyFriendsPresence_ReconcilesDelayedConnectionEvents; do not claim that separate Mongo-gated friend lookup test ran here. Existing account-handoff/current-presence implementation is unchanged. The new ownership test uses actual scheduling/lease infrastructure with a bounded synthetic callback, not a Mongo query or connected browser.",
+    "hygiene": "gofmt and git diff --check passed. Targeted source scan found no remaining go notifyFriendsPresence or go broadcastSocialToAll launch sites."
+  },
+  "hashes": {
+    "server/social_work.go": "93471d11a20c955d8edeee8ac46b96adbd29ee22c1eccfa880a7ca74af20a23f",
+    "server/social_work_test.go": "136deb4b3a22c96c621811cd1ef30d22db6a9ed9e0cc4f708b8d4fd22cf99f37"
+  },
+  "limits": [
+    "No capacity/load, connected Mongo/browser, full campaign, raid, provider delivery, production mutation or deployment was run. This is a worker-count/ownership boundary, not a guarantee on total friend-list cardinality or IO latency.",
+    "Shutdown still depends on stopping external producers before draining its existing character-work group. Repeated invalidations may keep a worker busy; coalescing is not a new social-rate limit or persistence queue.",
+    "Other background paths and latest-source connected evidence remain separate. The allowlisted QA disconnect still has a direct delayed close goroutine and needs ownership review; synchronous state fanout is joined per broadcast and must not be called a detached-work leak solely because it uses goroutines.",
+    "The owner jump-range/travel-time choice and directly invalidated route checks, cumulative1.72 version/notes, normal synchronized push, exact-source CI and independent public acceptance remain required. Production remains Alpha1.71.0/schema17."
+  ]
+}
