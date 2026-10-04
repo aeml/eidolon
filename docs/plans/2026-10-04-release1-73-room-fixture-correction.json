@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "milestone": "Alpha1.73 asynchronous dungeon reward fixture correction",
+  "status": "focused checks passed; corrective CI and deployment acceptance pending",
+  "failedSource": "4c6ff1374b07448537649e475631ff8f566bc04b",
+  "failedRun": 37199769860,
+  "failure": "The Go race-detector command reported a functional assertion in TestDungeonKillKeepsGeneratedLootInsideItsInstance, not a data-race diagnostic. Generated loot becomes visible before the earned-reward worker releases its reservation and clears the room. The test incorrectly treated loot visibility as worker completion. Actual geared-party boss/crash recovery and the corrected actual-Mongo repository test passed earlier in this run. Jest and all three browser jobs passed; deployment and live jobs were skipped. Alpha1.72 remains the accepted public release.",
+  "correction": "Test only: give the player valid living health, drain tracked earned background work without holding locks, verify every generated equipment drop remains in the dungeon, and read the cleared room under its instance mutex. Production ordering, reward rules, schema22 and Alpha1.73.0 are unchanged.",
+  "checks": {
+    "command": "env GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p 2 -race ./internal/game -run '^Test(DungeonKillKeepsGeneratedLootInsideItsInstance|DungeonRoomCheckpointWaitsForEveryConcurrentKillEffect|DungeonRoomPendingKillDoesNotBlockAnotherRoomOrInstance|QAGuaranteedLoot)' -count=3 -timeout=45s",
+    "result": "Passed, game3.800s; includes the concurrent reward/checkpoint ordering guards, repeated three times.",
+    "testSourceSHA256": "efe195e5b0a6fb7d97b3da8b8a2e51170bfa84fbb8f275e6d347a7f3e7e69d1e",
+    "broadAttempt": "A single local full game-package race run with GOMAXPROCS2/p2 hit the package-wide180-second deadline while running a ground-area wall subtest for about one second. This is an incomplete suite, not a passed suite or evidence that this subtest deadlocked. CI retains its ordinary full race command and default timeout. No further broad local rerun or manual party/campaign soak was started.",
+    "hygiene": "gofmt and git diff --check passed; no production, database, mail or provider-setting mutations."
+  },
+  "remaining": "Normal fetched/merged corrective push, exact-source CI, then independent public frontend/backend identity and readiness verification. No inbox, physical-phone, campaign-pacing or capacity acceptance implied."
+}

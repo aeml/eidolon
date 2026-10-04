@@ -77,6 +77,8 @@ func TestDungeonKillKeepsGeneratedLootInsideItsInstance(t *testing.T) {
 		ID:               "player-dungeon-loot",
 		Type:             TypePlayer,
 		SubType:          "Wizard",
+		Health:           100,
+		MaxHealth:        100,
 		Level:            40,
 		InstanceID:       instanceID,
 		State:            "IDLE",
@@ -117,27 +119,30 @@ func TestDungeonKillKeepsGeneratedLootInsideItsInstance(t *testing.T) {
 	enemy.Mu.Lock()
 	w.handleDeath(enemy, player, nil)
 	enemy.Mu.Unlock()
-	deadline := time.Now().Add(time.Second)
-	for time.Now().Before(deadline) {
-		w.Mu.RLock()
-		for _, entity := range w.Entities {
-			if entity.Type == TypeLoot && entity.LootItem != nil && entity.LootItem.Type != ItemMaterial && entity.LootItem.Type != ItemRelic {
-				lootInstanceID := entity.InstanceID
-				roomCleared := w.InstanceLayouts[instanceID].RoomState.Rooms[1].Cleared
-				w.Mu.RUnlock()
-				if lootInstanceID != instanceID {
-					t.Fatalf("expected dungeon loot in %s, got %q", instanceID, lootInstanceID)
-				}
-				if !roomCleared {
-					t.Fatal("expected the production death path to clear the defeated encounter room")
-				}
-				return
+	// Loot is published before the earned-effect reservation is released and
+	// the room checkpoint follows. Drain that tracked work with no locks held;
+	// observing a loot entity alone is not proof that its worker has finished.
+	w.StopBackground()
+	w.Mu.RLock()
+	defer w.Mu.RUnlock()
+	found := false
+	for _, entity := range w.Entities {
+		if entity.Type == TypeLoot && entity.LootItem != nil && entity.LootItem.Type != ItemMaterial && entity.LootItem.Type != ItemRelic {
+			if entity.InstanceID != instanceID {
+				t.Fatalf("expected dungeon loot in %s, got %q", instanceID, entity.InstanceID)
 			}
+			found = true
 		}
-		w.Mu.RUnlock()
-		time.Sleep(5 * time.Millisecond)
 	}
-	t.Fatal("expected the deterministic dungeon kill to generate scoped loot")
+	if !found {
+		t.Fatal("expected the deterministic dungeon kill to generate scoped loot")
+	}
+	instance := w.InstanceLayouts[instanceID]
+	instance.Mu.RLock()
+	defer instance.Mu.RUnlock()
+	if !instance.RoomState.Rooms[1].Cleared {
+		t.Fatal("expected the production death path to clear the defeated encounter room")
+	}
 }
 
 func TestQAGuaranteedLootMakesNextAcceptedBasicAttackDeterministic(t *testing.T) {
