@@ -188,6 +188,69 @@ func TestBlackjackLoadWaitsForOwnBetTurnAndPaidCompletion(t *testing.T) {
 	}
 }
 
+func TestBlackjackLoadDelayedViewCannotReplayFinishedHand(t *testing.T) {
+	b := newBlackjackLoad(0, "player-synthetic-blackjack")
+	now := time.Unix(100, 0)
+	me := Entity{InstanceID: game.CasinoInstanceID, Health: 100}
+	requests := 0
+	request := func(payload map[string]interface{}) error {
+		if payload["action"] != "get" {
+			requests++
+		}
+		return nil
+	}
+	move := func(float64, float64) { t.Fatal("seated player walked") }
+	b.receive(blackjackFixtureView(b, "betting", "", 0, false, false, false))
+	b.step(me, now, 20, time.Second, request, move)
+	b.receive(blackjackFixtureView(b, "playing", b.blackjack.playerID, 8, true, false, false))
+	b.step(me, now.Add(3*time.Second), 20, time.Second, request, move)
+	b.receive(blackjackFixtureView(b, "playing", "player-synthetic-peer", 9, true, true, false))
+	if requests != 2 || b.pending != "" || b.counts().actions != 1 {
+		t.Fatal("normal owner action was not acknowledged")
+	}
+	// Another sender may queue a snapshot built before the actor's response.
+	b.receive(blackjackFixtureView(b, "playing", b.blackjack.playerID, 8, true, false, false))
+	b.step(me, now.Add(6*time.Second), 20, time.Second, request, move)
+	if requests != 2 || b.view.Blackjack.Round.Revision != 9 || b.counts().actions != 1 || b.failed {
+		t.Fatal("older same-seat round replayed the completed owner's action")
+	}
+}
+
+func TestBlackjackLoadRegressionGuardCannotHideMalformedOrUnfundedViews(t *testing.T) {
+	for _, change := range []string{"currency", "balance", "phase", "round-identity", "empty-own-hand", "pending-round", "funded-seat", "seat"} {
+		t.Run(change, func(t *testing.T) {
+			b := newBlackjackLoad(0, "player-synthetic-blackjack")
+			b.receive(blackjackFixtureView(b, "playing", "player-synthetic-peer", 9, true, true, false))
+			var incoming casinoLoadView
+			json.Unmarshal(blackjackFixtureView(b, "playing", b.blackjack.playerID, 8, true, false, false), &incoming)
+			switch change {
+			case "currency":
+				incoming.Blackjack.Currency = "ep"
+			case "balance":
+				incoming.Blackjack.Balance = -1
+			case "phase":
+				incoming.Blackjack.Phase = "forged"
+			case "round-identity":
+				incoming.Blackjack.Round.ID = "foreign"
+			case "empty-own-hand":
+				incoming.Blackjack.Round.Players[0].Hands = nil
+			case "pending-round":
+				b.pending, b.pendingSession, b.blackjack.pendingRound = "bet", incoming.YourSeat.SessionID, "foreign"
+			case "funded-seat":
+				b.blackjack.fundedRound, b.blackjack.fundedSession = incoming.Blackjack.RoundID, "foreign"
+			case "seat":
+				incoming.YourSeat.SessionID = "new-seat"
+				b.blackjack.fundedRound, b.blackjack.fundedSession = incoming.Blackjack.RoundID, "synthetic-owner-seat"
+			}
+			payload, _ := json.Marshal(incoming)
+			b.receive(payload)
+			if !b.failed {
+				t.Fatal("revision guard hid malformed/ownership failure")
+			}
+		})
+	}
+}
+
 func TestBlackjackLoadExistingHistoryAndForeignOutcomesDoNotProveFreshPlay(t *testing.T) {
 	b := newBlackjackLoad(0, "player-synthetic-blackjack")
 	b.receive(blackjackFixtureView(b, "complete", "", 11, true, true, true))

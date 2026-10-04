@@ -115,6 +115,17 @@ func (b *casinoLoad) receive(payload json.RawMessage) bool {
 		b.view.Slots != nil && view.Slots != nil && view.Slots.Session.Revision < b.view.Slots.Session.Revision {
 		return true
 	}
+	// Peer notifications and own responses have multiple senders. An older
+	// same-seat hand must not restore a turn after its action was acknowledged.
+	if b.blackjack != nil && b.view.YourSeat != nil && view.YourSeat != nil && b.view.YourSeat.SessionID == view.YourSeat.SessionID &&
+		b.view.Blackjack != nil && view.Blackjack != nil && view.Blackjack.Available && !view.Blackjack.Processing &&
+		validBlackjackLoadView(view.Blackjack, b.blackjack.playerID) &&
+		(b.blackjack.fundedRound == "" || b.blackjack.fundedSession == view.YourSeat.SessionID) &&
+		(b.pending != "bet" && b.pending != "play" || b.pendingSession == view.YourSeat.SessionID && b.blackjack.pendingRound == view.Blackjack.RoundID) &&
+		b.view.Blackjack.RoundID == view.Blackjack.RoundID && b.view.Blackjack.Round != nil && view.Blackjack.Round != nil &&
+		view.Blackjack.Round.Revision < b.view.Blackjack.Round.Revision {
+		return true
+	}
 	b.view = view
 	if b.pending == "sit" && view.YourSeat != nil {
 		b.pending = ""

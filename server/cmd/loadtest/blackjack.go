@@ -56,6 +56,28 @@ func newBlackjackLoad(index int, playerID string) *casinoLoad {
 	return &casinoLoad{failed: true}
 }
 
+func validBlackjackLoadView(v *blackjackLoadView, playerID string) bool {
+	if v.Currency != "gold" || v.Balance < 0 || len(v.Players) > 6 || v.Round != nil && len(v.Round.Players) > 6 {
+		return false
+	}
+	switch v.Phase {
+	case "betting", "playing", "settling", "complete":
+	default:
+		return false
+	}
+	if v.Round != nil {
+		if v.Round.ID != v.RoundID || len(v.RoundID) != 32 {
+			return false
+		}
+		for _, player := range v.Round.Players {
+			if player.PlayerID == playerID && (len(player.Hands) < 1 || len(player.Hands) > 4) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 // Caller owns casinoLoad.mu. Shared round revisions may advance from peers;
 // only this owner's exact bet or completed hand acknowledges their action.
 func (j *blackjackLoad) receive(b *casinoLoad) {
@@ -63,13 +85,7 @@ func (j *blackjackLoad) receive(b *casinoLoad) {
 	if v == nil || !v.Available || v.Processing {
 		return
 	}
-	if v.Currency != "gold" || v.Balance < 0 || len(v.Players) > 6 || v.Round != nil && len(v.Round.Players) > 6 {
-		b.failed = true
-		return
-	}
-	switch v.Phase {
-	case "betting", "playing", "settling", "complete":
-	default:
+	if !validBlackjackLoadView(v, j.playerID) {
 		b.failed = true
 		return
 	}
@@ -100,17 +116,9 @@ func (j *blackjackLoad) receive(b *casinoLoad) {
 	if v.Round == nil {
 		return
 	}
-	if v.Round.ID != v.RoundID || len(v.RoundID) != 32 {
-		b.failed = true
-		return
-	}
 	for _, p := range v.Round.Players {
 		if p.PlayerID != j.playerID || p.Seat != b.seat {
 			continue
-		}
-		if len(p.Hands) < 1 || len(p.Hands) > 4 {
-			b.failed = true
-			return
 		}
 		if b.pending == "play" && v.Round.Revision > b.pendingRevision && j.pendingHand >= 0 && j.pendingHand < len(p.Hands) && p.Hands[j.pendingHand].Done {
 			b.pending = ""

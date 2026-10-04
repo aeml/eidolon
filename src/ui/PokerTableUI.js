@@ -53,6 +53,13 @@ export class PokerTableUI {
     }
 
     update(view, playerID, presence = {}) {
+        // Keep the latest ready hand when another sender delivers an older
+        // revision; never hide new ownership or unavailable/saving feedback.
+        if (this.playerID === playerID && view?.available && !view.processing && this.view?.roundId &&
+            view.roundId === this.view.roundId && view.currency === this.view.currency &&
+            presence.yourSeat?.sessionId === this.presence?.yourSeat?.sessionId &&
+            Number.isSafeInteger(view.round?.revision) && Number.isSafeInteger(this.view.round?.revision) &&
+            view.round.revision < this.view.round.revision) view = this.view;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
         if (!view) { this.signature = null; this.controlsKey = null; this.pending = false; this.table.clear(); this.celebration?.clear(); return; }
         this.presence = presence; this.table.update(view, playerID, presence);

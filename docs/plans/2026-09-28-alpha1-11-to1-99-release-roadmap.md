@@ -1903,6 +1903,16 @@ single-table allocations in measured microbenchmarks; this optimization is not
 part of the60-client binaries or proof of100-client headroom. The target cohort,
 finale, other representative workloads and ordered publication gates stay open.
 
+The subsequent target100 comparison eliminates casino timeouts and transport/
+decode errors, but two blackjack rejections still fail the per-player result
+gate; saves are not certified. Independently reproduced delayed lower-revision
+ready snapshots can restore a passed card-table turn. Prepared blackjack/poker
+UI and blackjack-driver guards now preserve the current same-seat/hand view,
+without hiding new owners, hands, unavailable/saving feedback, invalid data or
+rejections. Focused negative tests pass; this is not an actual target-cohort pass
+or a general ordering fence.1.74.3 is separately pushed with casino performance
+notes and version, monitored by Luna; these later guards are not in that release.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves

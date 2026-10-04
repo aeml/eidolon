@@ -48,6 +48,13 @@ export class BlackjackTableUI {
     button(text, handler) { const button = node('button', text); button.type = 'button'; button.onclick = handler; return button; }
 
     update(view, playerID, presence = {}) {
+        // A delayed ready snapshot cannot restore an already-passed turn.
+        // New owners/seats/hands and unavailable/saving states still apply.
+        if (this.playerID === playerID && view?.available && !view.processing && this.view?.roundId &&
+            view.roundId === this.view.roundId && view.currency === this.view.currency &&
+            presence.yourSeat?.sessionId === this.presence?.yourSeat?.sessionId &&
+            Number.isSafeInteger(view.round?.revision) && Number.isSafeInteger(this.view.round?.revision) &&
+            view.round.revision < this.view.round.revision) view = this.view;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
         if (!view) { this.pendingKey = null; this.renderKey = null; this.table.clear(); this.celebration.clear(); return; }
         this.presence = presence; this.table.update(view, playerID, presence);
