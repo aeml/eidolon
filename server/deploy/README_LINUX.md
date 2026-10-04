@@ -265,26 +265,49 @@ bridge alone does not deliver the resource-persistence feature.
 
 ## 3) Restore Mongo data from existing archive
 
-**Destructive, Mongo-only legacy helper:** this runs `mongorestore --drop` and can
-partially replace data even if it fails. Stop all game writers first and explicitly
-approve the restore target and loss of subsequent progress. For schema-8 recovery,
-do not use this helper alone: restore the corresponding private journal and use
-the matching compatible server as described above. A local `COMPLETE` marker
-checks archive integrity; it does not authorize a restore or prove that an
-arbitrary image can read the saved format.
+**Destructive, Mongo-only recovery helper:** stop all game writers first and
+explicitly approve the exact target, selected recovery set and loss of subsequent
+progress. After any save-format change, do not use this helper alone: restore the
+corresponding private journals and use a matching compatible server as described
+above. This includes pending market decisions and the newer ground/casino
+checkpoints. A `COMPLETE` marker records backup completion, not current integrity;
+verify its `SHA256SUMS` before recovery. Neither marker nor checksums authorize a
+restore or prove that an arbitrary image can read the saved format.
 
 After explicit recovery approval, specify the exact archive and confirm the
-loss of subsequent progress. There is no automatic archive selection:
+loss of subsequent progress. The default requires an empty `eidolon` database,
+such as an isolated restoration target. There is no automatic archive selection:
 
 ```bash
 ./deploy/restore_mongo_archive.sh ./your_dump.archive.gz --confirm-data-loss
 ```
 
+Mongo's `--drop` only replaces collections contained in the archive, leaving
+later-created collections behind. An older recovery set must not silently inherit
+newer operation ledgers. [MongoDB restore documentation](https://www.mongodb.com/docs/database-tools/mongorestore/)
+
+For an approved in-place replacement of a **non-empty** target, additionally
+confirm replacement of the entire fixed `eidolon` database:
+
+```bash
+./deploy/restore_mongo_archive.sh ./your_dump.archive.gz --confirm-data-loss --replace-eidolon-database
+```
+
+That explicit mode removes every prior `eidolon` collection before importing the
+archive; other databases are not replacement targets. It can lose all prior game
+data even if the later restore fails. Preserve the original recovery set, keep
+writers stopped and follow the recovery plan; do not delete Docker volumes or
+migration markers as a workaround. A successful Mongo restore is not an image
+rollback or a journal restore.
+
 The helper checks gzip integrity, one running Compose Mongo container and that
 the Compose API is stopped; it refuses running, paused, restarting or ambiguous
 API state without stopping it. Operators must also stop any writers outside this
 Compose project and prevent concurrent deployment/restart throughout recovery.
-The guard is not a global database lock. It streams the selected archive on stdin,
+The guard is not a global database lock. A read-only collection probe and archive
+dry-run precede destructive commands; a failed probe/dry-run refuses writes.
+Dry-run does not guarantee that later BSON, index or IO processing cannot fail.
+The helper streams the selected archive on stdin,
 limits restoration to `eidolon.*` and stops on restore errors. It does not copy
 the archive to a container filename or execute the host `.env` as shell code.
 Mongo credentials are expanded only inside the existing container. A successful
