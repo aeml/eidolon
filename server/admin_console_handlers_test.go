@@ -189,7 +189,7 @@ func TestAdminConsolePopulationSchema(t *testing.T) {
 		{MsgAdminHistory, `{"id":"read-request-000001","population":"bots"}`},
 		{MsgAdminHistory, `{"id":"read-request-000001","population":"real","population":"all"}`},
 		{MsgAdminPlayers, `{"id":"read-request-000001","day":"2026-10-04"}`},
-		{MsgAdminService, `{"id":"read-request-000001","population":"all"}`},
+		{MsgAdminStatus, `{"id":"read-request-000001","population":"all"}`},
 		{MsgAdminReports, `{"id":"read-request-000001","population":"all"}`},
 	} {
 		if _, err := decodeAdminRead(Message{Type: tc.kind, Payload: json.RawMessage(tc.payload)}); err == nil {
