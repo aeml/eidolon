@@ -637,6 +637,19 @@ and volumes were removed. This is not a historical23-to24 rollout, pending-value
 replay or permission to erase migration markers; incompatible rollback remains
 prohibited. Wider migration/storage/recovery gates and ordered deployment stay
 open, with no new production code or milestone completion claimed.
+The [network-probe follow-up](2026-10-04-release1-77-network-probe-checks.json)
+prepares a concrete 1.77 reliability seam and backports it independently as
+current Alpha1.70.2 maintenance. Release probes now have connection/response
+timeouts; CI's identity wait also has an elapsed deadline and outer step cap.
+A real stalled local HTTP response times out and recovers on the second request;
+actual workflow-shell checks retain all identity/cache conditions and refuse
+mismatches, malformed replies and timeout. The isolated schema17 backport passes
+the same focused checks. Exact ddfa60e3 was pushed normally after fresh remote
+integration, with cumulative maintenance notes and no gameplay/schema changes.
+Luna watches confirmed CI37175484045; acceptance and independent live checks
+are still pending. This neither advances a roadmap milestone nor resolves
+IPv6/DDNS/TLS and other hosting gates; the last accepted baseline remains the
+earlier 526bc229 release until this maintenance update is verified.
 The [password-change backend follow-up](2026-10-02-release1-71-password-checks.json)
 adds current-password proof, shared hash/rate bounds, compare-and-set credential
 replacement and resume-token rotation for the authenticated owner only. Login
