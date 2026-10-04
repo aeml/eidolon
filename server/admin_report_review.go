@@ -102,7 +102,7 @@ func handleAdminReportReview(c *Client, msg Message) {
 	// Rejected attempts retain only their validated correlation ID and a fixed
 	// description. Allegations and private review reasons stay on the case.
 	auditRejected := func(outcome, summary string) {
-		if c.username != "" && !c.transportClosed.Load() && currentCharacterConnection(c) {
+		if c.username != "" {
 			auditAdminRejectedRequest(c, MsgAdminReportReview, adminMutationRequest{ID: result.ID}, outcome, summary)
 		}
 	}
@@ -144,6 +144,18 @@ func handleAdminReportReview(c *Client, msg Message) {
 	if err := adminActivities.AppendAdminActivity(event); err != nil {
 		retainFailedAdminActivity(c, event)
 		result.Message = "Administration activity storage is unavailable. The report was not changed."
+		return
+	}
+	// The admission audit can block. It does not approve a case mutation when
+	// durable authority or connection ownership changed during that IO.
+	if message := adminAuthorityDenial(c); message != "" {
+		result.Authorized = false
+		result.Message = message
+		outcome := "error"
+		if message == "Administrator access is not enabled for this account." {
+			outcome = "denied"
+		}
+		auditRejected(outcome, message)
 		return
 	}
 	receipt, err := store.ReviewReport(c.username, request)

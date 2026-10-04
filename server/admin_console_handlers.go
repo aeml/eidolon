@@ -177,7 +177,7 @@ func handleAdminRead(c *Client, msg Message) {
 		if result.Success && result.Authorized {
 			// Both the data query and audit append can block. Recheck durable
 			// authority after ALL of that IO, not only at request admission.
-			if message := adminReadCompletionDenial(c); message != "" {
+			if message := adminAuthorityDenial(c); message != "" {
 				result = adminReadResult{ID: result.ID, Message: message}
 				// The completed query was audited; separately retain its delivery
 				// denial. Reuse the existing outage outbox, never send private data
@@ -256,7 +256,7 @@ func handleAdminRead(c *Client, msg Message) {
 	result.Success, result.Message = true, "Online players refreshed."
 }
 
-func adminReadCompletionDenial(c *Client) string {
+func adminAuthorityDenial(c *Client) string {
 	const unavailable = "Administrator access could not be confirmed. Try refreshing."
 	const replaced = "Administration connection changed. Reconnect and refresh."
 	if c.transportClosed.Load() || !currentCharacterConnection(c) {
