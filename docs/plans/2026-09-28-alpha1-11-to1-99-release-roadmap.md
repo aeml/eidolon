@@ -1180,11 +1180,17 @@ signals with explicitly supplied thresholds. Its independent command now emits
 JSON incident events; real local HTTP outage/recovery through the command's
 polling loop and synthetic incident-clock checks pass. Optional whitelisted
 queue/heap/goroutine diagnostics and header/body timeout causes are now retained;
-private fields stay excluded and cancellation cannot create an outage. It is not connected to
-notification delivery or deployed; service installation, queue/storage/currency signals,
-alert ownership, retention and operating-budget decisions remain required.
-Current ordered1.71 publication is monitored separately; this preparation does
-not publish later schema24 writers or approve operational emails.
+private fields stay excluded and cancellation cannot create an outage. Prepared
+save-journal/commit/cleanup/recovery and Gold/EP casino outcome counters now add
+constant-size secret-free diagnostics without health-triggered IO or financial
+compensation. Real owned-filesystem failure and exact recovery, concurrent
+snapshot and actual HTTP filtering checks pass; counters include retries and
+rejected input, not unique payouts or balances. It is not connected to
+notification delivery or deployed; pressure/growth/latency signals, service
+installation, alert ownership, retention and operating-budget decisions remain
+required. Public1.71 was separately accepted at4bc0b95c/CI37182320668; this
+broader preparation is not that binary and does not publish later schema24
+writers or approve operational emails.
 
 | Version | Delivery scope | Exit evidence / dependency |
 | --- | --- | --- |
