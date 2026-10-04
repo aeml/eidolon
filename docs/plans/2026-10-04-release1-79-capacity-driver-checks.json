@@ -794,7 +794,7 @@
     "checks": "Initial corrected focused notification suite passed1.238s. Expanded exact-source race suite passed1.264s with valid prepared cache views for every selected game, unrelated locks held, unavailable other games, own slot revision preservation, shared floor presence, actor acknowledgement and physical/table audiences. Synthetic cached state is not payment or storage proof.",
     "sha256": {
       "server/casino_handlers.go": "34b9ce9d36bafc35ed4b1dfc7c71b5d21f14166097d5ace281a47ed4ddee9a0c",
-      "server/casino_notification_test.go": "8092f6ad13503d1d5c15c463881c0c5891f74a5d0ca9367c35e630f890c8b627"
+      "server/casino_notification_test.go": "2b9a93a3b382104ad0c2bfe7c8707fa412c9a3c9b3d235b579003d983bca2056"
     },
     "artifacts": {
       "directory": "/tmp/eidolon-179-own-game-view-r71lFv",
@@ -839,7 +839,32 @@
       "server/internal/game/casino_catalog_test.go": "c3dd51cfd752d7080120c8cd24410adf71133a012b488bdf3be924951e03aeb7",
       "server/internal/game/casino_catalog_benchmark_test.go": "b07825185ecbf1e0820e8767b946295b2475541b72b5ffe8daa7e9aa3aadf9dd"
     },
-    "next": "Prepare normal server only, reuse compatible checked root/driver from the60-client run, then check one target100-client comparison with unchanged budgets/gates and retained action diagnostics. Do not repeat40/60 or an earned campaign."
+    "comparison": "Prepared only new normal server3b844c44d5492bffaca7e2ca2e7fefee3036b666eda2dd1ced85153e5d7e6d70 at/tmp/eidolon-179-catalog-server-F5ATGg/server; compatible root/driver reused from60. The retained target100 comparison below has no casino timeout, but fails two blackjack rejections; no100-player acceptance. No40/60/campaign replay."
+  },
+  "combined100CatalogActualRun": {
+    "statusAtObservation": "TERMINAL_FAIL_TWO_BLACKJACK_REJECTIONS_FIXTURE_REMOVED",
+    "startedAtUTC": "2026-10-04T23:26:05Z",
+    "sourceBase": "581bd35d production catalogue/notification code; later test-only self-contained setup does not affect workload",
+    "ownedContainer": "378f70237b54281cb965128356888363d0b3971c4073106c7351341469ef9109",
+    "taskLabel": "combined100-catalog-179-20261004",
+    "parentSession": 13608,
+    "artifacts": "New server3b844c44d5492bffaca7e2ca2e7fefee3036b666eda2dd1ced85153e5d7e6d70, unchanged race root1f29eb48896c4b2bcdbf34a7c8f2dfde584db10f56139e7a00360c5648ffb9d0 and driverb87da6e9787c9d9c889b046e8c7311e83795193203872d5ebb5033588b7a2514; normal server path in catalogue comparison above, latter two at/tmp/eidolon-179-own-game-view-r71lFv.",
+    "result": "Terminal FAIL215.60s/exit1. All100 authenticate and meet sustained fresh-own coverage; no read/write/decode failures or casino timeouts. All assigned slots/house/poker players have a fresh paid completed result. Two blackjack players fail with generic rejected cause and minimum paid rounds0, so aggregate29 rounds cannot satisfy all-player acceptance. All five combat parties formed with every-member impact and aggregate healing. Root save gate not reached because driver fails. Do not infer the two rejection messages/causes or silently permit them; no target capacity certification.",
+    "metrics": {
+      "connected": 100, "joined": 100, "authenticated": 100, "admissionFailures": 0,
+      "stateFrames": 123781, "minFrames": 1181, "minFreshOwnUpdates": 1181,
+      "minActiveMilliseconds": 119528, "maxStateGapMilliseconds": 914, "receivedPayloadBytes": 1417632287,
+      "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 332, "maxJoinMilliseconds": 541,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "slots": { "clients": 10, "acceptedWagers": 292, "paidResults": 292, "minimumPaidResults": 25, "bonuses": 8, "failed": 0 },
+      "blackjack": { "clients": 20, "acceptedWagers": 45, "paidResults": 29, "minimumPaidResults": 0, "observedActions": 31, "failed": 2, "rejected": 2 },
+      "house": { "clients": 20, "acceptedWagers": 60, "paidResults": 40, "minimumPaidResults": 2, "failed": 0 },
+      "poker": { "clients": 10, "acceptedWagers": 18, "paidResults": 12, "minimumPaidResults": 1, "observedActions": 48, "failed": 0 },
+      "parties": { "groups": 5, "formed": 5, "members": 20, "minOwnImpacts": 2, "damageEvents": 310, "healEvents": 10, "acceptedCasts": 629, "deniedCasts": 6, "xpProgressUpdates": 188, "observedDeaths": 192, "failed": 0 },
+      "memoryPeakBytes": 683888640, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+    },
+    "cleanup": "Definitive parent failure consumed, absent owned root/server/driver and owner label/network/OOM/peak checked. Stopped and removed only this fixture/synthetic database; filtered listing empty. Artifacts retained; production and owner worktree untouched.",
+    "next": "No further target replay before identifying the remaining blackjack rejection boundary. Narrow1.74.3 maintenance assembly carries only checked production casino performance code, schema22 and own notes/version; future drivers and policy-gated milestones excluded."
   },
   "casinoTimeoutActionDiagnostic": {
     "reason": "The retained two corrected100-client outcomes classify timeout but do not identify the outstanding command. Without this distinction, physical-entry/seating delay and money-operation delay cannot be separated; do not attribute the observed failures to a guessed cause.",

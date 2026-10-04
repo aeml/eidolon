@@ -13,7 +13,10 @@ import (
 func TestCasinoOwnViewDoesNotWaitForUnrelatedGameLocks(t *testing.T) {
 	for _, kind := range []string{"unseated", "slots", "blackjack", "poker", "roulette"} {
 		t.Run(kind, func(t *testing.T) {
-			setupSlotCacheTest(t)
+			previousWorld, previousSlots, previousPending := world, slotsCache, slotsPending
+			t.Cleanup(func() { world, slotsCache, slotsPending = previousWorld, previousSlots, previousPending })
+			world = &game.World{Entities: map[string]*game.Entity{}, Grid: game.NewSpatialMap(50)}
+			slotsCache, slotsPending = map[string]slotCacheEntry{}, map[string]string{}
 			id := "player-notification-view"
 			player := &game.Entity{ID: id, Type: game.TypePlayer, Health: 100, InstanceID: game.CasinoInstanceID}
 			world.Entities[id] = player
