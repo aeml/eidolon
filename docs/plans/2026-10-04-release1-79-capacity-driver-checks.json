@@ -530,7 +530,24 @@
       "loadtest/event.go": "187b91671d10d886aac0c7f89d132d9a4bfb6c44188d6d2929bd6433df9ca4e5",
       "loadtest/event_test.go": "4916583add7f2a6015806f5aaa1b944196d6431e3fbbdaf5a842a95cbc9b4ed4"
     },
-    "actualCorrectedRun": "NOT RUN; build final changed driver before scheduling the next real Root window. Earlier corrected artifact42276555 predates this boundary correction and is retained at its original scope."
+    "actualCorrectedRun": "WAITING_FOR_REAL_ROOT_WINDOW, NOT ACCEPTED. Final480126be driver built and verified; owned bounded fixture is waiting for the real20:00UTC announcement. Earlier corrected artifact42276555 predates this boundary correction and is retained at its original scope."
+  },
+  "eventCorrectedActualRun": {
+    "statusAtObservation": "WAITING_FOR_REAL_ROOT_WINDOW_NOT_ACCEPTED",
+    "observedAtUTC": "2026-10-04T19:56:33Z",
+    "sourceCommit": "480126be",
+    "ownedContainer": "1a61e1cfaca2d1b2d5cc1d7c1e78af5e7d690788f0d9ac811bfd82bb140f74a5",
+    "taskLabel": "event-179-corrected-20261004",
+    "parentSession": 40860,
+    "waiterPID": 73,
+    "timeoutPID": 67,
+    "isolation": "Owned Mongo7.0.14 container/networknone/no public ports,2CPU/2GiB,512MiB database/16MiB config tmpfs/.25GiB Mongo cache. Read-only final driver, unchanged root harness and server binary binds. Mongo ping, exact ID/task/network/limits/OOMfalse and live wait process verified. Bounded22-minute outer timeout; root11-minute and driver9-minute maximum, early completion/failure exit. No accelerated event clock, in-run grants or production data/environment/service mutation.",
+    "artifacts": {
+      "driver": {"path": "/tmp/eidolon-179-event-corrected-final-M0pDKR/loadtest", "sha256": "a4aa84b84c234a0b0170ccb0e51699faee293c69c1cb14f0c06128d941ae5055"},
+      "unchangedRaceRoot": {"path": "/tmp/eidolon-179-event-prepared-AdIUwx/root-current.test", "sha256": "f035cc0570cfde696fb96656dde35731146ce405477c788debebba2f4c967199"},
+      "unchangedServer": {"path": "/tmp/eidolon-179-poker-actual-eociud/server", "sha256": "484503ad510bc2f6287d96a7cdc16364c97f692fa3d4a85879d13390ce05b7bc"}
+    },
+    "retrieval": "Parent must retrieve terminal output from the same session, distinguish a skip/timeout/failure from actual every-client completion/town exits and independent saved XP/gear/bag/EP, then inspect final peak/OOM/ownership and remove only the exact owned fixture. Root monitors until optional Luna world-event permission is actually answered. Do not restart for observation expiry."
   },
   "remaining": "Default mixed still distributes only combat/town/social; explicit combined covers real concurrent party combat, public Gold games and saves at20. Normal four-class Verdant dungeon entry/routing/town recovery/checkpoint/earned clear/exit and independent reward/character saves pass. Corrected normal five-player Earth raid assault/three-wave repair/exit, original shared boss rewards and earned unclaimed repair readiness for every member now pass535.31s; fixture removed, original artifacts retained. First naturally scheduled four-class Root attempt FAILED481.98s at expiry; terminal retrieved and fixture removed. Demonstrated bot all-member recovery pause/dead-leader targeting is corrected and focused/full compatibility races pass; corrected actual encounter/save remains missing. Dark King/other actual rituals and integrated event/save workloads remain missing; reuse the previously earned naturally scheduled Root encounter only at its original single-Wizard scope. Measure acknowledged action/travel outcomes and declared cohort tick/network/DB/client criteria with owner-approved duration/headroom. No claim that20 implies100. Current100ms launch stagger is not burst proof. Perform only missing compatible disposable capacity stages, using Luna for authorized long raid/dungeon monitoring, not a whole earned campaign. Owner operating/cohort budgets, ordered1.75–1.78 acceptance after accepted corrective1.74, own1.79 version/cumulative notes and exact-source CI/public deployment remain required. No closed-beta transition or full1.99 completion."
 }
