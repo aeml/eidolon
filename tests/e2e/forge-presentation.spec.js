@@ -16,7 +16,8 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             const equipment = Object.fromEntries(forge._equipSlots().map(slot => {
                 const base = BASE_ITEMS.find(item => item.slot === slot) || BASE_ITEMS.find(item => item.slot === 'mainHand');
                 return [slot, { ...base, id: `forge-review-${slot}`, name: `Keeper's ${slot} of the First Covenant`,
-                    rarity: RARITY.RARE, level: 30, potency: 2, sockets: 1, gems: [], stats: { damage: 42, strength: 8 } }];
+                    rarity: RARITY.RARE, level: 30, potency: 2, sockets: 1, gems: [],
+                    stats: { vitality: 6, wisdom: 7, dexterity: 9, intelligence: 10, strength: 8, damage: 42 } }];
             }));
             const player = { id: 'forge-presentation', level: 100, equipment,
                 inventory: [{ name: 'Eidolon Shard', stack: 100000 }, { name: 'Eidolon Heart', stack: 100000 }] };
@@ -28,6 +29,8 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         const first = forge.locator('#forge-equipment-list [data-slot="mainHand"]');
         await first.focus(); await page.keyboard.press('Enter');
         await expect(first.locator('.forge-item-label__name')).toBeVisible();
+        const orderedStats = ['Damage', 'Strength', 'Dexterity', 'Intelligence', 'Wisdom', 'Vitality'];
+        await expect(forge.locator('#forge-upgrade-stats tbody th[scope="row"]')).toHaveText([...orderedStats, 'Shards left']);
         for (const row of await forge.locator('#forge-equipment-list .forge-item-choice').all()) {
             const bounds = await row.boundingBox(), label = await row.locator('.forge-item-label').boundingBox();
             expect(label.y + label.height).toBeLessThanOrEqual(bounds.y + bounds.height - 2);
@@ -44,11 +47,14 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         expect(await page.evaluate(() => window.__forgePresentation.player.equipment.mainHand.level)).toBe(30);
         await page.evaluate(() => {
             const { forge, player } = window.__forgePresentation;
-            player.equipment.mainHand = { ...player.equipment.mainHand, level: 31, stats: { damage: 44, strength: 8 } };
+            const previous = player.equipment.mainHand;
+            player.equipment.mainHand = { ...previous, level: 31,
+                stats: Object.fromEntries(Object.entries({ ...previous.stats, damage: 44 }).reverse()) };
             forge.refresh(player);
         });
         await expect(action).toBeFocused();
         await expect(forge.locator('#forge-upgrade-stats')).toContainText('Level: 31');
+        await expect(forge.locator('#forge-upgrade-stats tbody th[scope="row"]')).toHaveText([...orderedStats, 'Shards left']);
         await expect(first.locator('.forge-item-label__meta')).toContainText('Level 31');
         await page.evaluate(() => {
             const { forge, player } = window.__forgePresentation;
@@ -58,6 +64,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         await expect(action).toHaveText('Maximum level reached');
         await expect(forge.locator('#forge-upgrade-cost')).toBeHidden();
         await expect(forge.locator('#forge-upgrade-stats')).toContainText('Item level 100 reached');
+        await expect(forge.locator('#forge-upgrade-stats dt')).toHaveText(orderedStats);
         for (const [tab, list, info, button] of [
             ['potency', 'forge-potency-list', 'forge-potency-stats', 'btn-forge-potency'],
             ['socket', 'forge-socket-list', 'forge-socket-stats', 'btn-forge-socket']
@@ -65,6 +72,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             await forge.locator(`#tab-forge-${tab}`).click();
             await forge.locator(`#${list} [data-slot="mainHand"]`).click();
             await expect(forge.locator(`#${info} .forge-limit`)).toBeVisible();
+            await expect(forge.locator(`#${info} dt`)).toHaveText(orderedStats);
             await expect(forge.locator(`#${button}`)).toBeDisabled();
             await expect(forge.locator(`#forge-${tab}-cost`)).toBeHidden();
             await forge.locator(`#${button}`).scrollIntoViewIfNeeded();

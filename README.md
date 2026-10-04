@@ -420,12 +420,15 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.70.1` (accepted direct-trade escrow-edit hotfix, exact `fa414f0b`; all ten CI jobs and independent public checks passed). [Acceptance](docs/plans/2026-10-02-release1-70-1-trade-checks.json) records the release. Offer edits retain selected escrow identity and reject overflow before mutation; this does not certify crash-durable two-account settlement. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
-- Last independently verified live release: `Alpha 1.70.1`, exact
-  fa414f0b288e8ee014d5ce72f7affdca485e1c7f, successful CI37068064995 (all ten jobs,
+- Current source version: `Alpha 1.70.2` with prepared, unpublished 1.71 account-security work. Forge previews and bag tooltips share a fixed stat order across refreshes; deployment probes have bounded request and retry waits. Account recovery remains an owner decision before 1.71 publication. This isolated branch retains schema17 and does not include the later schema24 writers. The broader security/valuable-operation milestones and E-gate owner/commercial and human findings remain open. This is not a capacity promise, payment launch or closed-beta transition.
+- Last independently verified live release: `Alpha 1.70.2`, exact
+  526bc22953e79cbe4869580e8f628d55c39c1b1c, successful CI37137636915 (all ten jobs,
   including predeploy and live character QA). Public IPv4 frontend/backend
   identities, database readiness, login version, cumulative notes and the
-  dressed Ilyra GLB match the release. Prepared1.71 source remains unpublished.
+  three changed Forge/inventory runtime files match the release.
+  [Acceptance](docs/plans/2026-10-03-release1-70-2-forge-checks.json).
+  New maintenance candidate ddfa60e3/CI37175484045 is not accepted until CI and
+  independent public checks pass. Prepared1.71 source remains unpublished.
   Earlier runtime/model receipts retain their scopes; DNS/IPv6, commercial
   decisions and final art/device/pacing approval remain separate.
 - Visual polish candidate: refined procedural characters/equipment, an equipped 3D character sheet, unified responsive menus, clearer terrain and warnings, and a distinct Dark King. Scope, comparisons and hardware/gameplay evidence: [visual polish ledger](docs/art/VISUAL_POLISH_PLAN.md). Reproduce the controlled ten-hero workload with `npm run test:e2e:visual-load`.

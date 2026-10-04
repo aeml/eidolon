@@ -42,6 +42,19 @@ function setup() {
 }
 
 describe('open forge authoritative refresh', () => {
+    test('stat rows stay fixed when server deltas replace the stats map in a different order', () => {
+        const { forge, item, delta } = setup();
+        const stats = { vitality: 9, intelligence: 4, dexterity: 3, strength: 2, damage: 30 };
+        const expected = ['damage', 'strength', 'dexterity', 'intelligence', 'vitality'];
+        for (const entries of [Object.entries(stats), Object.entries(stats).reverse(), Object.entries(stats)]) {
+            delta({ equipment: { mainHand: { ...item, stats: Object.fromEntries(entries) } } });
+            for (const id of ['forge-upgrade-stats', 'forge-potency-stats']) {
+                const labels = [...document.querySelectorAll(`#${id} tbody th`)].map(node => node.textContent);
+                expect(labels.slice(0, -1)).toEqual(expected);
+            }
+        }
+        expect(forge.upgradeQuote.itemId).toBe('staff');
+    });
     test('all three caps keep current stats visible and clear stale spending actions until another item arrives', () => {
         const { engine, forge, item, delta } = setup();
         forge.selectedForgeSocketSlot = 'mainHand';
