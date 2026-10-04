@@ -37,6 +37,12 @@ export class AdminUI {
                         <option value="resume">Resume</option><option value="disconnect">Disconnect</option>
                         <option value="admin_grant_gold">Gold grants</option><option value="admin_grant_item">Item creation</option>
                         <option value="admin_teleport">Teleports</option></select></label>
+                    <label>UTC day<input data-day type="date"></label>
+                </div>
+                <div class="administration-filters" data-population-filters>
+                    <label>Players<select data-population><option value="real">Real players</option>
+                        <option value="all">All players</option><option value="tests">Test accounts only</option></select></label>
+                    <span>Test accounts are identified by reserved codex-, codexq-, codexqa-, loadtest- and resource-journal- prefixes. Nothing is deleted.</span>
                 </div>
                 <div class="administration-filters" data-report-filters hidden>
                     <label>Report status<select data-report-status><option value="open">Open</option>
@@ -48,6 +54,7 @@ export class AdminUI {
                 <div class="administration-actions"><button type="button" data-refresh>Refresh players</button>
                     <button type="button" data-next hidden>Next page</button></div>
                 <p role="status" aria-live="polite"></p>
+                <p data-daily hidden></p>
                 <ul class="administration-players" aria-label="Online players"></ul>
                 <p class="administration-note">Up to 50 players per page. Presence can change between pages; Refresh starts again.</p>
             </div>`;
@@ -58,6 +65,11 @@ export class AdminUI {
         this.refresh = this.root.querySelector('[data-refresh]');
         this.next = this.root.querySelector('[data-next]');
         this.filters = this.root.querySelector('.administration-filters');
+        this.populationFilters = this.root.querySelector('[data-population-filters]');
+        this.population = this.root.querySelector('[data-population]');
+        this.day = this.root.querySelector('[data-day]');
+        this.day.value = new Date().toISOString().slice(0, 10);
+        this.daily = this.root.querySelector('[data-daily]');
         this.reportFilters = this.root.querySelector('[data-report-filters]');
         this.reportStatus = this.root.querySelector('[data-report-status]');
         this.reportType = this.root.querySelector('[data-report-type]');
@@ -83,17 +95,21 @@ export class AdminUI {
             if (this.pending || !this.authorized) return;
             this.view = button.dataset.view;
             this.filters.hidden = this.view !== 'history';
+            this.populationFilters.hidden = !['players', 'history'].includes(this.view);
+            this.clearDaily();
             this.reportFilters.hidden = this.view !== 'reports';
             this.refresh.textContent = this.view === 'reports' ? 'Refresh reports' : this.view === 'history' ? 'Refresh history' : 'Refresh players';
             this.list.setAttribute('aria-label', this.view === 'reports' ? 'Submitted player reports' : this.view === 'history' ? 'Activity history entries' : 'Online players');
             for (const view of this.views) view.setAttribute('aria-pressed', String(view === button));
             this.refreshView('');
         });
-        for (const filter of [this.actor, this.action, this.reportStatus, this.reportType]) ownedEvent(this, filter, 'input', () => {
+        for (const filter of [this.actor, this.action, this.day, this.population, this.reportStatus, this.reportType]) ownedEvent(this, filter, 'input', () => {
             // Never combine a previous query's cursor with changed filters.
             this.cursor = '';
             this.next.hidden = true;
-            if (this.view === 'reports') this.status.textContent = 'Filters changed. Refresh reports to load this selection.';
+            this.clearDaily();
+            this.clearReportReviews(); this.list.replaceChildren();
+            this.status.textContent = `Filters changed. ${this.refresh.textContent} to load this selection.`;
         });
         this.setAuthorized(false);
     }
@@ -104,6 +120,7 @@ export class AdminUI {
         this.role.textContent = this.authorized ? 'Administrator · verified by server' : 'Administrator access is unavailable.';
         this.refresh.disabled = !this.authorized;
         this.reportStatus.disabled = this.reportType.disabled = !this.authorized || Boolean(this.pending);
+        this.actor.disabled = this.action.disabled = this.day.disabled = this.population.disabled = !this.authorized || Boolean(this.pending);
         for (const view of this.views) view.disabled = !this.authorized;
         this.operations.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
         for (const review of this.reportReviews) review.setState(Boolean(this.pending));
@@ -112,6 +129,7 @@ export class AdminUI {
             this.chatModerationEnabled = false;
             this.clearReportReviews();
             this.list.replaceChildren();
+            this.clearDaily();
             this.next.hidden = true;
             this.cursor = '';
         }
@@ -123,7 +141,7 @@ export class AdminUI {
         this.refresh.disabled = true;
         this.next.disabled = true;
         for (const view of this.views) view.disabled = true;
-        this.actor.disabled = this.action.disabled = this.reportStatus.disabled = this.reportType.disabled = true;
+        this.actor.disabled = this.action.disabled = this.day.disabled = this.population.disabled = this.reportStatus.disabled = this.reportType.disabled = true;
         this.status.textContent = 'Loading from server…';
         this.root.setAttribute('aria-busy', 'true');
         this.operations.setState({ authorized: this.authorized, busy: true });
@@ -156,19 +174,21 @@ export class AdminUI {
     requestPlayers(after) {
         if (!this.connected || !this.authorized || this.pending) return;
         this.clearReportReviews(); this.list.replaceChildren();
-        this.request('admin_players', { after });
+        this.request('admin_players', { after, population: this.population.value });
     }
 
     refreshView(cursor) {
         if (this.view === 'players') { this.requestPlayers(cursor); return; }
         if (!this.connected || !this.authorized || this.pending) return;
         this.clearReportReviews(); this.list.replaceChildren();
+        if (!cursor) this.clearDaily();
         if (this.view === 'reports') {
             this.request('admin_reports', { before: cursor, status: this.reportStatus.value,
                 ...(this.reportType.value ? { reportType: this.reportType.value } : {}) });
             return;
         }
-        this.request('admin_history', { before: cursor, actor: this.actor.value, action: this.action.value });
+        this.request('admin_history', { before: cursor, actor: this.actor.value, action: this.action.value,
+            population: this.population.value, day: this.day.value });
     }
 
     handleResult(type, result) {
@@ -266,6 +286,15 @@ export class AdminUI {
     }
 
     renderHistory(history) {
+        if (history?.daily) {
+            const daily = history.daily;
+            const valid = daily.day === this.day.value && [daily.uniqueLogins, daily.closedSessionSeconds, daily.missingDurations]
+                .every(value => Number.isSafeInteger(value) && value >= 0);
+            this.daily.hidden = false;
+            this.daily.textContent = valid && daily.complete === true
+                ? `${daily.day} UTC · ${daily.uniqueLogins} unique login accounts · ${this.sessionDuration(daily.closedSessionSeconds)} recorded closed-session time · ${daily.missingDurations} disconnects without duration.`
+                : 'Daily totals are unavailable or exceed the bounded query limit. Narrow the account filter; partial totals are not displayed.';
+        }
         const entries = Array.isArray(history?.entries) ? history.entries.slice(0, 50) : [];
         for (const entry of entries) {
             const row = document.createElement('li');
@@ -275,6 +304,10 @@ export class AdminUI {
             actor.textContent = `${entry.actor}${entry.target ? ` → ${entry.target}` : ''} · ${new Date(entry.at).toLocaleString()}`;
             const summary = document.createElement('span');
             summary.textContent = entry.summary;
+            if (entry.action === 'disconnect') {
+                const seconds = (Date.parse(entry.at) - Date.parse(entry.sessionStartedAt)) / 1000;
+                summary.textContent += ` · Connected time: ${Number.isFinite(seconds) && seconds >= 0 ? this.sessionDuration(Math.floor(seconds)) : 'not recorded'}`;
+            }
             row.append(title, actor, summary);
             if (entry.reason) {
                 const reason = document.createElement('span'); reason.textContent = `Reason: ${entry.reason}`; row.append(reason);
@@ -284,8 +317,17 @@ export class AdminUI {
         this.cursor = typeof history?.next === 'string' ? history.next : '';
         this.next.hidden = !this.cursor;
         this.next.disabled = false;
-        this.note.textContent = `Newest first · up to 50 entries per page · retention: ${history?.retentionDays || 'unknown'} days. Session activity syncs every 5 seconds; pending records recover after a restart.`;
+        this.note.textContent = `Newest first · up to 50 entries per page · retention: ${history?.retentionDays || 'unknown'} days. Choose a UTC day for totals (independent of Activity selection), or clear it for all retained history. Time is closed authenticated connections, not active play; currently open sessions and unrecorded legacy durations are excluded. Session activity syncs every 5 seconds.`;
         this.status.textContent = entries.length ? `${entries.length} activity record${entries.length === 1 ? '' : 's'} on this page.` : 'No activity matches these filters.';
+    }
+
+    sessionDuration(seconds) {
+        return `${Math.floor(seconds / 3600)}h ${Math.floor(seconds % 3600 / 60)}m ${seconds % 60}s`;
+    }
+
+    clearDaily() {
+        this.daily.hidden = true;
+        this.daily.textContent = '';
     }
 
     connectionState(state) {

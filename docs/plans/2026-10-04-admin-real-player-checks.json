@@ -1,0 +1,17 @@
+{
+  "status": "LOCAL_CHECKS_PASSED_PUBLIC_DEPLOYMENT_PENDING",
+  "request": "Default administrator online/history views to real players, permit inspecting test accounts, and expose daily authenticated logins and recorded session duration without deleting activity.",
+  "implementation": {
+    "population": "Server-side filtering before pagination: real (default), tests, all. Case-insensitive anchored known disposable account prefixes codex-, codexq-, codexqa-, loadtest-, resource-journal-. History also filters targets so test-account administration does not pollute the real-player view. Naming convention, not arbitrary bot detection; hashed legacy audit identities cannot be reclassified from their digest.",
+    "daily": "UTC-day selector within existing retention. Unique successful login accounts, not resumes, characters or administrator reads. Independent of Activity selection, honoring population and exact account. Closed authenticated connection seconds clipped to the day, including later recorded disconnects overlapping the day. At most10001 records observed; incomplete totals explicitly withheld by UI. Current open sessions, abnormal sessions without a recorded disconnect and legacy durations are not estimated. Not active-play or AFK measurement.",
+    "duration": "Future login/resume records establish a connection start only after durable audit journaling. Disconnect records optionally retain the start and actual transport closure timestamp. Immutable replay compares the optional timestamp; old records remain valid. No new collection/index/retention policy or production backfill.",
+    "ui": "Real/All/Test selector on online players and history only. Changed filters retire cursor, rows and daily totals; revocation/disconnect clears private data and stale replies cannot restore it. Ordinary server role rechecks remain mandatory. Per-disconnect duration, daily missing-duration count and bounded-query warning use plain text."
+  },
+  "checks": {
+    "server": "Focused root/database Admin and SessionActivity/ResumeActivity race suites passed20.438s/1.116s. Covers authorization, replay, outage recovery, population before pagination, strict schema, UTC clipping and unique login counting.",
+    "database": "New race-instrumented isolated Mongo7.0.14 integration passed0.31s: actual real/test/all population queries and keyset pagination, distinct login totals and durations, Activity filter independence, immutable identical replay and rejected changed/removed timestamps. Explicit disposable opt-in/network-none Mongo fixture removed after terminal pass; no production database accessed.",
+    "client": "AdminUI15 tests passed1.164s; affected JavaScript lint passed. Filter resets, daily counts/durations, incomplete-total suppression and stale/disconnected private-data clearing included.",
+    "browser": "First layout run could not import UIManagerWindows because generated browser dependencies were absent. After normal prepare:client, System Chrome layout checks passed3/49.7s at1280x720,390x844,844x390, with new population/day controls and daily summary; scrollable/bounded window and existing admin services/reports retained. Synthetic presentation responses, not production or real-device evidence."
+  },
+  "publication": "Pending narrow maintenance release from freshly fetched master; unpublished1.75–1.79 roadmap features and schema changes must not be included. Owner worktree untouched. No live acceptance yet."
+}

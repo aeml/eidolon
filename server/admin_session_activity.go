@@ -57,6 +57,40 @@ func recordSessionDisconnect(username string) error {
 	if err != nil {
 		return err
 	}
+	return recordDisconnectEvent(event)
+}
+
+func recordClientSessionActivity(client *Client, username, action string) error {
+	event, err := newSessionActivity(username, action)
+	if err != nil {
+		return err
+	}
+	if err := adminActivityJournal.Write(event); err != nil {
+		return err
+	}
+	client.sessionStartedMillis.Store(event.At.UnixMilli())
+	return nil
+}
+
+func recordClientSessionDisconnect(client *Client) error {
+	event, err := newSessionActivity(client.username, "disconnect")
+	if err != nil {
+		return err
+	}
+	if closed := client.transportClosedAt.Load(); closed != nil {
+		at := closed.UTC().Truncate(time.Millisecond)
+		event.At, event.ExpiresAt = at, at.Add(time.Duration(adminActivities.AdminActivityRetentionDays())*24*time.Hour)
+	}
+	if millis := client.sessionStartedMillis.Load(); millis > 0 {
+		start := time.UnixMilli(millis).UTC()
+		if !start.After(event.At) {
+			event.SessionStartedAt = &start
+		}
+	}
+	return recordDisconnectEvent(event)
+}
+
+func recordDisconnectEvent(event database.AdminActivity) error {
 	if err := adminActivityJournal.Write(event); err != nil {
 		unjournaledActivity.Lock()
 		unjournaledActivity.events[event.ID] = event

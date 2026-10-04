@@ -53,6 +53,8 @@ type adminReadRequest struct {
 	Action     string `json:"action,omitempty"`
 	Status     string `json:"status,omitempty"`
 	ReportType string `json:"reportType,omitempty"`
+	Population string `json:"population,omitempty"`
+	Day        string `json:"day,omitempty"`
 }
 
 type adminOnlinePlayer struct {
@@ -101,6 +103,16 @@ func decodeAdminRead(msg Message) (adminReadRequest, error) {
 			return request, errors.New("field must be a string")
 		}
 		switch key {
+		case "population":
+			if (msg.Type != MsgAdminPlayers && msg.Type != MsgAdminHistory) || !database.ValidAdminPopulation(text) {
+				return request, errors.New("invalid population")
+			}
+			request.Population = text
+		case "day":
+			if msg.Type != MsgAdminHistory || len(text) > 10 {
+				return request, errors.New("invalid day")
+			}
+			request.Day = text
 		case "id":
 			request.ID = text
 		case "after":
@@ -238,7 +250,7 @@ func handleAdminRead(c *Client, msg Message) {
 			result.Authorized = false
 			return
 		}
-		page, err := adminActivities.ReadAdminActivity(database.AdminActivityQuery{Before: request.Before, Actor: request.Actor, Action: request.Action})
+		page, err := adminActivities.ReadAdminActivity(database.AdminActivityQuery{Before: request.Before, Actor: request.Actor, Action: request.Action, Population: request.Population, Day: request.Day})
 		if err != nil {
 			result.Authorized = false
 			result.Message = "Activity history unavailable or filter invalid. Refresh with valid filters."
@@ -252,7 +264,7 @@ func handleAdminRead(c *Client, msg Message) {
 		result.Authorized = false
 		return
 	}
-	result.Players, result.Next = adminOnlinePage(request.After)
+	result.Players, result.Next = adminOnlinePage(request.After, request.Population)
 	result.Success, result.Message = true, "Online players refreshed."
 }
 
@@ -318,11 +330,18 @@ func auditAdminReadResult(c *Client, action string, result adminReadResult) admi
 // account. Copy only public character identity; never serialize full characters.
 // Pagination is a sorted account keyset. Refresh starts a new live observation;
 // players joining/leaving between pages are not a historical snapshot.
-func adminOnlinePage(after string) ([]adminOnlinePlayer, string) {
+func adminOnlinePage(after string, populations ...string) ([]adminOnlinePlayer, string) {
+	population := "real"
+	if len(populations) > 0 {
+		population = populations[0]
+	}
 	type binding struct{ account, playerID, key string }
 	sessionsMu.Lock()
 	bindings := make([]binding, 0, len(activeSessions))
 	for account, client := range activeSessions {
+		if !database.AdminPopulationIncludes(account, population) {
+			continue
+		}
 		key := database.AdminActivityAccountKey(account)
 		if key > after && client != nil && client.playerID != "" &&
 			!client.retired.Load() && !client.transportClosed.Load() {

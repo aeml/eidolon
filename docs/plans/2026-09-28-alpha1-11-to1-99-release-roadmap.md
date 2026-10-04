@@ -11,6 +11,16 @@ See [public acceptance](2026-10-04-release1-73-public-acceptance.json) for passe
 and skipped scopes. Actual Postmark inbox delivery remains owner-initiated;
 no new animation/GPU coverage, IPv6 fix or capacity promise is inferred.
 Earlier maintenance/runtime/model receipts retain their separate scopes.
+
+October4 maintenance follow-up: [real-player administration checks](2026-10-04-admin-real-player-checks.json)
+implement default real/test/all population filters before online/history pagination,
+UTC-day unique authenticated login counts and recorded closed-connection time.
+Test records remain available; no deletion/backfill/retention change. Legacy or
+unclosed session durations are not estimated, and this is not active-play/AFK
+measurement. Focused race, actual isolated Mongo and three browser-layout checks
+passed; exact maintenance deployment/public identity remains pending. This work
+does not assert1.79 capacity or change the separate open map-crash diagnosis.
+
 The dated preparation receipts below remain historical; this acceptance
 supersedes their1.73 publication gap, not their wider human/policy limitations.
 Prepared 1.73 now has a [real schema17-to22 upgrade check](2026-10-04-release1-73-schema17-upgrade-checks.json).

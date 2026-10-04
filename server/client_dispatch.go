@@ -84,7 +84,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.transportClosed.Load() || c.retired.Load() {
 			return
 		}
-		if err := recordSessionActivity(payload.Username, "login"); err != nil {
+		if err := recordClientSessionActivity(c, payload.Username, "login"); err != nil {
 			c.sendError("Login activity storage is unavailable. Please retry shortly.")
 			return
 		}
@@ -948,7 +948,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("No resumable session found. Please log in and join normally.")
 			return
 		}
-		if err := recordSessionActivity(username, "resume"); err != nil {
+		if err := recordClientSessionActivity(c, username, "resume"); err != nil {
 			// Do not extend the existing session/instance window on an audit
 			// failure. The client has not received a resume acknowledgement.
 			if !previousDisconnectedAt.IsZero() {

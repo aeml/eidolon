@@ -43,7 +43,9 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                     ...(type === 'admin_history' ? { history: { entries: Array.from({ length: 50 }, (_, index) => ({
                         actor: 'realm-operator', action: 'admin_players', result: 'success', at: '2026-09-19T12:00:00Z',
                         summary: `Online players refreshed. Read ${index}.`
-                    })), next: 'history-cursor', retentionDays: 90 } } : {}),
+                    })), next: 'history-cursor', retentionDays: 90, daily: {
+                        day: payload.day, uniqueLogins: 8, closedSessionSeconds: 7200, missingDurations: 1, complete: true
+                    } } } : {}),
                     ...(type === 'admin_reports' ? { reports: { reports: Array.from({ length: 10 }, (_, index) => ({
                         id: String(index + (payload.before ? 10 : 0)).padStart(24, '0'), username: 'fixture-reporter',
                         reportType: payload.reportType || 'Bug Report', status: payload.status || 'open', createdAt: '2026-09-28T12:00:00Z',
@@ -60,6 +62,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         const dialog = page.getByRole('dialog', { name: 'Administration', exact: true });
         await expect(dialog).toBeVisible();
         await expect(dialog.locator('li')).toHaveCount(50);
+        await expect(dialog.locator('[data-population]')).toHaveValue('real');
         const box = await dialog.boundingBox();
         const header = await dialog.locator('.window-header').boundingBox();
         const body = await dialog.locator('.administration-body').boundingBox();
@@ -77,6 +80,9 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await expect(dialog.locator('li')).toHaveCount(50);
         await expect(dialog.locator('li').first()).toContainText('admin_players · success');
         await expect(dialog.getByLabel('Exact account')).toBeVisible();
+        await expect(dialog.getByLabel('UTC day')).toBeVisible();
+        await expect(dialog.locator('[data-daily]')).toContainText('8 unique login accounts');
+        await expect(dialog.locator('[data-daily]')).toContainText('2h 0m 0s');
         expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
         await page.screenshot({ path: testInfo.outputPath('administration-history.png') });
         await dialog.getByRole('button', {name: 'Player reports', exact: true}).click();

@@ -149,6 +149,55 @@ func TestAdminConsoleOnlinePagesAreBoundedSortedAndMinimal(t *testing.T) {
 	}
 }
 
+func TestAdminConsolePopulationFilteringBeforePagination(t *testing.T) {
+	adminReadFixture(t)
+	for index := 0; index < 61; index++ {
+		name := fmt.Sprintf("codex-test-%03d", index)
+		id := "player-" + name
+		activeSessions[name] = &Client{username: name, playerID: id}
+		world.AddEntity(&game.Entity{ID: id, Type: game.TypePlayer})
+	}
+	activeSessions["real-player"] = &Client{username: "real-player", playerID: "player-real"}
+	world.AddEntity(&game.Entity{ID: "player-real", Type: game.TypePlayer})
+	real, next := adminOnlinePage("")
+	if len(real) != 1 || real[0].Account != "real-player" || next != "" {
+		t.Fatal("default list includes tests")
+	}
+	tests, next := adminOnlinePage("", "tests")
+	if len(tests) != 50 || next == "" {
+		t.Fatal("test list is not paginated")
+	}
+	rest, _ := adminOnlinePage(next, "tests")
+	if len(rest) != 11 {
+		t.Fatal("lost test accounts")
+	}
+	all, _ := adminOnlinePage("", "all")
+	if len(all) != 50 {
+		t.Fatal("all list is not bounded")
+	}
+}
+
+func TestAdminConsolePopulationSchema(t *testing.T) {
+	for _, population := range []string{"real", "all", "tests"} {
+		payload := json.RawMessage(`{"id":"read-request-000001","population":"` + population + `","day":"2026-10-04"}`)
+		request, err := decodeAdminRead(Message{Type: MsgAdminHistory, Payload: payload})
+		if err != nil || request.Population != population || request.Day != "2026-10-04" {
+			t.Fatal(err)
+		}
+	}
+	for _, tc := range []struct{ kind, payload string }{
+		{MsgAdminHistory, `{"id":"read-request-000001","population":"bots"}`},
+		{MsgAdminHistory, `{"id":"read-request-000001","population":"real","population":"all"}`},
+		{MsgAdminPlayers, `{"id":"read-request-000001","day":"2026-10-04"}`},
+		{MsgAdminService, `{"id":"read-request-000001","population":"all"}`},
+		{MsgAdminReports, `{"id":"read-request-000001","population":"all"}`},
+	} {
+		if _, err := decodeAdminRead(Message{Type: tc.kind, Payload: json.RawMessage(tc.payload)}); err == nil {
+			t.Fatal("unexpected fields accepted")
+		}
+	}
+}
+
 func TestAdminConsoleAdmissionRequiresAuthenticationAndRateLimits(t *testing.T) {
 	for _, kind := range []string{MsgAdminStatus, MsgAdminPlayers, MsgAdminHistory} {
 		policy := inboundMessagePolicies[kind]

@@ -18,6 +18,34 @@ beforeEach(() => {
 });
 afterEach(() => { ui.dispose(); jest.useRealTimers(); });
 
+test('real player default, population changes and UTC daily totals are filter safe and private', () => {
+    ui.connectionState('connected'); reply(); ui.launcher.click();
+    expect(send).toHaveBeenLastCalledWith('admin_players', {id: ui.pending.id, after: '', population: 'real'});
+    reply({players: [], next: 'old'});
+    ui.population.value = 'tests'; ui.population.dispatchEvent(new Event('input'));
+    expect(ui.cursor).toBe(''); expect(ui.next.hidden).toBe(true);
+    ui.refresh.click();
+    expect(send).toHaveBeenLastCalledWith('admin_players', {id: ui.pending.id, after: '', population: 'tests'});
+    reply({players: []});
+    ui.root.querySelector('[data-view="history"]').click();
+    const history = {entries: [{actor: 'fixture', action: 'disconnect', result: 'success',
+        at: '2026-10-04T01:02:00Z', sessionStartedAt: '2026-10-04T00:00:00Z', summary: 'Disconnected.'}],
+    daily: {day: ui.day.value, uniqueLogins: 3, closedSessionSeconds: 3720, missingDurations: 2, complete: true}};
+    reply({history});
+    expect(ui.daily.textContent).toContain('3 unique login accounts');
+    expect(ui.daily.textContent).toContain('1h 2m 0s');
+    expect(ui.list.textContent).toContain('Connected time: 1h 2m 0s');
+    ui.refresh.click(); reply({history: {...history, daily: {...history.daily, complete: false}}});
+    expect(ui.daily.textContent).toContain('partial totals are not displayed');
+    expect(ui.daily.textContent).not.toContain('3 unique');
+    ui.day.value = ''; ui.day.dispatchEvent(new Event('input'));
+    expect(ui.daily.hidden).toBe(true); expect(ui.list.children).toHaveLength(0);
+    ui.refresh.click(); const staleID = ui.pending.id;
+    ui.connectionState('disconnected');
+    ui.handleResult('admin_history_result', {id: staleID, success: true, authorized: true, history});
+    expect(ui.daily.textContent).toBe(''); expect(ui.daily.hidden).toBe(true);
+});
+
 test('moderation capability requires a current verified status response and resets on disconnect', () => {
     ui.connectionState('connected');
     reply({ moderationEnabled: true });
@@ -117,7 +145,7 @@ test('history exposes moderation audit filters without making a moderation chang
         ui.action.dispatchEvent(new Event('input'));
         expect(ui.cursor).toBe(''); expect(ui.next.hidden).toBe(true);
         ui.refresh.click();
-        expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: '', actor: '', action });
+        expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: '', actor: '', action, population: 'real', day: ui.day.value });
         reply({ history: { entries: [], next: 'old-cursor', retentionDays: 90 } });
     }
     expect(send.mock.calls.every(([type]) => ['admin_status', 'admin_players', 'admin_history'].includes(type))).toBe(true);
@@ -135,13 +163,13 @@ test('online list loads, paginates, refreshes and renders untrusted names only a
     expect(ui.refresh.disabled).toBe(false);
     expect(ui.next.hidden).toBe(false);
     ui.next.click();
-    expect(send).toHaveBeenLastCalledWith('admin_players', { id: ui.pending.id, after: 'hero' });
+    expect(send).toHaveBeenLastCalledWith('admin_players', { id: ui.pending.id, after: 'hero', population: 'real' });
     expect(ui.list.children).toHaveLength(0);
     reply({ players: [] });
     expect(ui.status.textContent).toContain('No authenticated players');
     expect(ui.next.hidden).toBe(true);
     ui.refresh.click();
-    expect(send).toHaveBeenLastCalledWith('admin_players', { id: ui.pending.id, after: '' });
+    expect(send).toHaveBeenLastCalledWith('admin_players', { id: ui.pending.id, after: '', population: 'real' });
 });
 
 test('role removal or lookup failure clears visible data and disables further queries', () => {
@@ -189,20 +217,20 @@ test('a mismatched response type cannot enable administration', () => {
 test('history uses bounded filters and drops its previous cursor when filters change', () => {
     ui.connectionState('connected'); reply(); ui.launcher.click(); reply({ players: [] });
     ui.root.querySelector('[data-view="history"]').click();
-    expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: '', actor: '', action: '' });
+    expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: '', actor: '', action: '', population: 'real', day: ui.day.value });
     reply({ history: { entries: [{ actor: 'operator', action: 'admin_players', result: 'success',
         at: '2026-09-19T12:00:00Z', summary: '<script>private()</script>' }], next: 'cursor-one', retentionDays: 90 } });
     expect(ui.list.textContent).toContain('admin_players · success');
     expect(ui.list.querySelector('script')).toBeNull();
     expect(ui.note.textContent).toContain('90 days');
     ui.next.click();
-    expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: 'cursor-one', actor: '', action: '' });
+    expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: 'cursor-one', actor: '', action: '', population: 'real', day: ui.day.value });
     reply({ history: { entries: [], next: 'cursor-two', retentionDays: 90 } });
     ui.actor.value = 'someone-else'; ui.actor.dispatchEvent(new Event('input'));
     expect(ui.next.hidden).toBe(true);
     expect(ui.cursor).toBe('');
     ui.refresh.click();
-    expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: '', actor: 'someone-else', action: '' });
+    expect(send).toHaveBeenLastCalledWith('admin_history', { id: ui.pending.id, before: '', actor: 'someone-else', action: '', population: 'real', day: ui.day.value });
 });
 
 test('dispose removes its launcher listener and pending timeout', () => {

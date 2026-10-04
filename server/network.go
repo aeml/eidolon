@@ -188,7 +188,7 @@ func cleanupClientWithTradeOwnershipLocked(client *Client, recoverTrade bool) {
 	if !currentCharacterConnection(client) {
 		return
 	}
-	if err := recordSessionDisconnect(client.username); err != nil {
+	if err := recordClientSessionDisconnect(client); err != nil {
 		log.Print("Session disconnect activity awaits durable local storage")
 	}
 	client.retired.Store(true)

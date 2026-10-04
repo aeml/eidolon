@@ -117,32 +117,33 @@ type EntitySnapshot struct {
 
 // Client represents a connected player
 type Client struct {
-	publicName        atomic.Pointer[string]
-	retired           atomic.Bool
-	transportClosed   atomic.Bool
-	transportClosedAt atomic.Pointer[time.Time]
-	sendMu            sync.RWMutex
-	sendClosed        bool
-	stateMu           sync.Mutex
-	conn              *websocket.Conn
-	releaseSocketSlot func() // Immutable before publish; reader/cleanup/owned work share the reservation.
-	send              chan []byte
-	prioritySend      chan []byte
-	playerID          string
-	username          string
-	lastState         map[string]*EntitySnapshot // Track last sent state per entity
-	lastEndgame       *game.EndgameProgress      // Guarded by stateMu; only successfully queued progress.
-	seenIDs           map[string]bool            // Track which entities client knows about
-	seenScene         string                     // Guarded by stateMu; scene of queued snapshot history.
-	qaDisconnect      func()                     // Optional test hook for the allowlisted reconnect fault.
-	policyMu          sync.Mutex
-	messageRates      map[string]*messageRateBucket
-	saveMu            sync.Mutex // Only coordinates requests; never held during character/world/IO work.
-	saveRunning       bool
-	savePending       bool // Another latest-state capture is needed, not a stored snapshot or job queue.
-	pvpStateMu        sync.Mutex
-	pvpStateRunning   bool
-	pvpStatePending   bool // Fresh presentation only; never a reward/persistence queue.
+	publicName           atomic.Pointer[string]
+	retired              atomic.Bool
+	transportClosed      atomic.Bool
+	transportClosedAt    atomic.Pointer[time.Time]
+	sessionStartedMillis atomic.Int64
+	sendMu               sync.RWMutex
+	sendClosed           bool
+	stateMu              sync.Mutex
+	conn                 *websocket.Conn
+	releaseSocketSlot    func() // Immutable before publish; reader/cleanup/owned work share the reservation.
+	send                 chan []byte
+	prioritySend         chan []byte
+	playerID             string
+	username             string
+	lastState            map[string]*EntitySnapshot // Track last sent state per entity
+	lastEndgame          *game.EndgameProgress      // Guarded by stateMu; only successfully queued progress.
+	seenIDs              map[string]bool            // Track which entities client knows about
+	seenScene            string                     // Guarded by stateMu; scene of queued snapshot history.
+	qaDisconnect         func()                     // Optional test hook for the allowlisted reconnect fault.
+	policyMu             sync.Mutex
+	messageRates         map[string]*messageRateBucket
+	saveMu               sync.Mutex // Only coordinates requests; never held during character/world/IO work.
+	saveRunning          bool
+	savePending          bool // Another latest-state capture is needed, not a stored snapshot or job queue.
+	pvpStateMu           sync.Mutex
+	pvpStateRunning      bool
+	pvpStatePending      bool // Fresh presentation only; never a reward/persistence queue.
 
 	questSaveRequested uint64 // Guarded by saveMu; feedback generations only, never earned value.
 	questSaveConfirmed uint64
