@@ -3,7 +3,16 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.74.0';
+const currentVersion = '1.74.1';
+
+test('1.74.1 explains the bounded Sell All fix and nonblocking game errors', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.74.1"'), previous = html.indexOf('data-version="1.74.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['25-slot bag', '50-request burst', 'protected-item checks',
+        'dismissible in-game notice', 'desktop and phone', 'six seconds',
+        'No account wipe', 'schema migration', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.74.0 publishes read-only moderation filters and honest administration boundaries', () => {
     const html = fs.readFileSync('index.html', 'utf8');

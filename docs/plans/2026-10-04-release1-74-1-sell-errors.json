@@ -1,0 +1,21 @@
+{
+  "release": "Alpha 1.74.1",
+  "status": "LOCAL_CHECKS_PASSED_PUBLIC_DEPLOYMENT_PENDING",
+  "base": "Accepted origin/master 76225a2f4278be3c897af624de5c0c1b91e1e7f8, freshly fetched; narrow shop/error patch69131d8b cherry-picked as92816596. No unpublished1.75–1.79 features or schema23–24 work.",
+  "selling": "Raise only MsgSell burst from10 to2*MaxInventorySize=50 per second. Sell All continues one original item-ID request per matching unprotected bag slot. Character/authentication, payload bound, ownership/protected item rules and durable vendor effects/replay safeguards are unchanged. Excess flood still rejected and budget refills normally.",
+  "feedback": "One bounded text-only ActionErrorNotice above menus/map, desktop/phone-safe44px dismissal, six-second lifetime, consecutive duplicate suppression and lifecycle cleanup. Shown errors also enter existing Game log. No blocking browser alerts in server errors, connection failure or startup/character-login errors. Existing inventory-full/Respawn guidance, quest-action error handling and casino auto-spin stop retained.",
+  "checks": {
+    "before": "New selling burst regression failed on item10 before the limit change. Initial new client fixture lacked a player and was corrected; that fixture failure is not claimed as reproduction of the browser alert.",
+    "server": "Exact hotfix source focused SellLimit/InboundMessage/Vendor race tests passed13.687s. Existing vendor save/replay/full-bag/protected-item invariants included. Admission test allows two full bags, rejects next excess request, refills, and refuses unauthenticated selling.",
+    "client": "Affected5-suite client checks passed83/1.766s before adding explicit full25-slot Sell All wiring regression; that regression then passed within UI binding20/0.647s. Exact hotfix rerun passed84 affected checks. Version metadata assertions initially exposed unbumped runtime defaults and were corrected; final entire VersionPresentation suite353/2.262s passes, including login/package/lock/server/container/deploy/CI/QA/release metadata and retained cumulative notes.",
+    "browser": "Exact hotfix anonymous System Chrome check passed2/5.2s at1280x720 and390x844: text notice visible, within viewport, no horizontal overflow, above generated menus,44px dismissal and no native browser dialogs. Local presentation, not actual player sale/Internet or real-device acceptance.",
+    "lint": "Affected JavaScript ESLint and git diff --check pass. No full campaign or additional raid/soak run for this hotfix."
+  },
+  "sha256": {
+    "server/protocol_policy.go": "0fad49b9eba25186335d631931d5a0348900eebf443fc9063b6dc859d15153f1",
+    "src/ui/ActionErrorNotice.js": "4a00e07bcc8fd4410ea472e9c9103e37815895ef0dd5a178a5921909a5d464d5",
+    "src/core/GameEngineNetworkMessages.js": "2693963c37a48624582241a79c00fe9c10b4db8d7ff98e6ca5c3f69efa4995f5",
+    "src/styles/hud.css": "eaebc8147928ebf62101866bc77f7debf934b94e5f136fc8cd0d6ce3ac46c296"
+  },
+  "publication": "Login/package/lock/server/container/deploy/CI/QA/release metadata advanced to1.74.1 with a cumulative player-facing patch-note entry; prior notes retained. Schema22 and all saves/currencies/access unchanged. Exact source push/CI/backend/Pages/public identity not yet accepted. This hotfix does not repair the separately diagnosed map crash or authorize privacy/retention/commerce/DNS changes."
+}

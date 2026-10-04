@@ -420,15 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.0`. This isolated, unpublished
-  1.74 candidate integrates accepted 1.72 security and 1.73 valuable-operation
-  writers through schema22, plus the 1.74 permission review and read-only
-  moderation-history filters. Later schema23–24 checkpoints, broader privacy
-  and operations-monitor work remain excluded.1.73 is independently accepted;
-  this candidate still requires its own
-  exact-source release gates. Login version and cumulative notes are assembled;
-  exact-source CI/public proof
-  remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
+- Current source version: `Alpha 1.74.1`. This narrow hotfix on the accepted
+  1.74/schema22 release raises selling's bounded burst to50 so Sell All can
+  handle a full25-slot bag, and replaces browser error alerts with safe,
+  dismissible in-game notices or the existing login recovery interface.
+  Item protection, ownership, durable vendor effects, accounts and currencies
+  remain unchanged. Later schema23–24/privacy/operations/capacity candidates
+  are excluded. Login version and cumulative notes are assembled; exact-source
+  CI/public proof remain required. [Recovery checks](docs/plans/2026-10-04-release1-71-email-recovery-checks.json)
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
