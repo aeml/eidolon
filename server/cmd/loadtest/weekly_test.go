@@ -55,6 +55,36 @@ func TestWeeklyLoadBossClearDoesNotSubstituteForOwnPhases(t *testing.T) {
 	}
 }
 
+func TestRaidRecoveryWaitsForNormalEntryRateBudget(t *testing.T) {
+	p := raidEncounterFixture(t, "weekly_raid")
+	index := 1 // Initial follower entry was server-driven, not a sent request.
+	m := &p.dungeon.members[index]
+	me := p.members[index].state
+	me.InstanceID, me.Health, me.Mana = "", me.MaxHealth, me.MaxMana
+	m.dead, m.recovering, m.townScene = true, true, true
+	now := time.Unix(100, 0)
+	requests := 0
+	request := func(kind string, _ interface{}) error {
+		if kind != "raid_enter" {
+			t.Fatal("unexpected recovery request")
+		}
+		requests++
+		return nil
+	}
+	for attempt := 0; attempt < 2; attempt++ {
+		p.dungeon.step(p, index, me, now, time.Second, request)
+		m.pending = "" // Declared fixture acknowledgement; no runtime credit.
+	}
+	p.dungeon.step(p, index, me, now.Add(time.Second), time.Second, request)
+	if p.failed || requests != 2 || m.reentries != 2 || m.pending != "" {
+		t.Fatal("recovery sent a third request before the normal two-per-minute raid budget refilled")
+	}
+	p.dungeon.step(p, index, me, now.Add(30*time.Second), time.Second, request)
+	if p.failed || requests != 3 || m.reentries != 3 || m.pending != "enter" {
+		t.Fatal("normal raid entry did not resume after one token refilled")
+	}
+}
+
 func TestWeeklyLoadRefusesForeignMissingOrHistoricalPhases(t *testing.T) {
 	for _, scenario := range []string{"nil", "wrong-instance", "wrong-eidolon", "wrong-element", "zero", "too-high", "skipped", "regressed", "dead", "town", "unprepared", "repair-crystal"} {
 		t.Run(scenario, func(t *testing.T) {

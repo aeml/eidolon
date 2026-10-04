@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 )
@@ -32,5 +33,23 @@ func TestDungeonFailureStagesPreserveFirstCauseWithoutActorData(t *testing.T) {
 	p.failed = true
 	if p.failureCode() != "unclassified" {
 		t.Fatal("unknown failure invents a cause")
+	}
+}
+
+func TestServerFailureClassificationNeverRetainsRawPayloads(t *testing.T) {
+	for _, entry := range []struct{ payload, want string }{
+		{`"message rate limit exceeded"`, "server_rate_limit"},
+		{`"private account details"`, "server_rejection"},
+		{`{"password":"private"}`, "server_rejection"},
+	} {
+		p := &partyLoad{}
+		p.rejectServer(json.RawMessage(entry.payload))
+		if p.failureCode() != entry.want {
+			t.Fatal("incorrect fixed classification")
+		}
+		p.rejectServer(json.RawMessage(`"another private error"`))
+		if p.failureCode() != entry.want {
+			t.Fatal("later rejection replaced first cause")
+		}
 	}
 }

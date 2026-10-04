@@ -249,6 +249,9 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 			}
 		}
 		if index == 0 {
+			if p.raid != nil && !p.raid.admitEntry(index, now) {
+				return false
+			}
 			d.launched, d.launchAt = true, now
 			kind, payload := d.entryRequest(p)
 			issue(kind, "enter", payload)
@@ -271,6 +274,9 @@ func (d *dungeonLoad) step(p *partyLoad, index int, me Entity, now time.Time, ti
 			return false
 		}
 		if !m.townScene || me.MaxHealth <= 0 || me.MaxMana <= 0 || float64(me.Health)/float64(me.MaxHealth) < .9 || float64(me.Mana)/float64(me.MaxMana) < .9 {
+			return false
+		}
+		if p.raid != nil && !p.raid.admitEntry(index, now) {
 			return false
 		}
 		m.reentries++

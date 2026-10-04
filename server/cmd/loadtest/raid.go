@@ -28,6 +28,9 @@ type raidLoadMember struct {
 	waterReturning                                 bool
 	pointSince                                     time.Time
 	phasesSeen                                     uint8
+	entryBudgetStarted                             bool
+	entryTokens                                    float64
+	entryBudgetAt                                  time.Time
 }
 
 // Shares partyLoad.mu. Preparation is separate from encounter/repair proof.
@@ -40,6 +43,25 @@ type raidLoad struct {
 }
 
 const raidConversionMessage = "Raid group formed. Invite 5-10 qualified players, then complete a ready check."
+
+// Match normal MsgRaidEnter's two-request/minute budget. Recovery waits in
+// town; it never retries a rejected request or changes the server's policy.
+// Caller owns partyLoad.mu. Server-driven initial follower entry costs nothing.
+func (r *raidLoad) admitEntry(index int, now time.Time) bool {
+	m := &r.members[index]
+	if !m.entryBudgetStarted {
+		m.entryBudgetStarted, m.entryTokens, m.entryBudgetAt = true, 2, now
+	}
+	if now.After(m.entryBudgetAt) {
+		m.entryTokens = math.Min(2, m.entryTokens+now.Sub(m.entryBudgetAt).Seconds()/30)
+		m.entryBudgetAt = now
+	}
+	if m.entryTokens < 1 {
+		return false
+	}
+	m.entryTokens--
+	return true
+}
 
 func newRaidParty(credentials []BotCredentials, kind string) *partyLoad {
 	p := newPartyCohort(credentials, 0, 0, 5, 10)

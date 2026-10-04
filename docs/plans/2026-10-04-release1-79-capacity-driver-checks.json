@@ -532,8 +532,20 @@
     },
     "actualCorrectedRun": "PASS225.27s. Final480126be driver completed the actual naturally scheduled four-class20:00UTC Root event/town exits and independent saves with unchanged root/server binaries. Earlier corrected artifact42276555 predates this boundary correction and is retained at its original scope."
   },
+  "weeklyEntryPacing": {
+    "finding": "The initial failed run retained only a failed-group boolean, not the exact failure site. Source inspection found normal MsgRaidEnter is limited to2/minute but the recovery controller sent returns without an entry budget. This is a demonstrated driver defect, not proof that it alone caused the original107.64s failure.",
+    "reproduction": "New TestRaidRecoveryWaitsForNormalEntryRateBudget failed0.016s before implementation: a third request was sent before refill. Driver now charges only sent leader/follower raid_enter requests against a local2/minute budget and waits in ordinary town recovery before sending another permitted request. Server-initiated initial follower entry costs no request. No rejected-request retries or production rate/access/health/damage/reward changes.",
+    "diagnostics": "Retain fixed first-cause server_rejection or server_rate_limit for normal error messages, never server payloads/identities. Actual weekly harness now prints fixed Failure coverage alongside bounded numeric totals. Earlier checkpoint/timeout diagnostics and mandatory every-client phase/boss/exit/save gates retained.",
+    "checks": "Focused weekly/preparation/recovery/failure race1.381s; full cmd/loadtest compatibility race18.450s. No actual corrected weekly rerun yet; requested real-player administration filtering takes priority.",
+    "sha256": {
+      "loadtest/raid.go": "cb2e522a63be3076de19e2fd9b5432557bb3889ab2165f896bfa5cbfcec09fef",
+      "loadtest/failure.go": "6cb8b48679951add91ff7782b58a841cb7dce9af4e8a038e4d75443ea54d1dbb",
+      "loadtest/weekly_test.go": "734507c05f11ca299fbb980eba753f7489a1148e4df12e163f591fcb0d1aa728",
+      "load_weekly_integration_test.go": "b6d61c8b362349e6bde32f299a13391d9bcb03dd40a0e9ef90fb68bcfaaa5e94"
+    }
+  },
   "weeklyFollowUp": {
-    "status": "CONTROLLER_TESTED_ACTUAL_ENCOUNTER_NOT_YET_RUN",
+    "status": "CONTROLLER_TESTED_FIRST_ACTUAL_FAILED_CORRECTION_NOT_YET_RUN",
     "change": "Support actual weekly_raid level100/Mythic five-to-ten-player conversion/consent/access. Every client must observe matching living in-instance ordered Orun/Earth, Neris/Water, Pyralis/Fire, Aeral/Air phase messages plus actual boss-room clear and alive town exit. No synthetic transformation, damage, aid, reward or quest completion. Explicit maximum duration up to30m; existing elemental and default mixed behavior retained.",
     "evidence": "Focused weekly/preparation race1.377s; complete cmd/loadtest race17.714s. Domain preparation now includes real game weekly readiness/access with declared synthetic replies at5/10 members. Unit negatives cover nil/foreign/wrong identity/zero/high/skipped/regressed/dead/town/unprepared phases and wrong repair crystal; boss-only and phase-only views cannot pass. Root opt-in test compiles but skipped without disposable opt-in; this is not runtime success.",
     "actualCheck": "New opt-in TestLoadWeeklyActualFiveRolesPhasesExitAndSaves prepares five level100 uncommon/rare Fighter/Cleric/Rogue/Wizard/Fighter roles, legal plate/shields, leather/dual daggers, cloth/staff/tome and completed gate access, then ordinary server/driver requests. Requires all-own four phases, boss clear/town exit, original shared Dark King victory, personal weekly cache/lockout receipts, settled outbox, earned unclaimed finale readiness, preserved equipment/bag/EP, saved Gold/resonance. Initial level/access/gear are fixtures, not campaign proof. Not yet run.",

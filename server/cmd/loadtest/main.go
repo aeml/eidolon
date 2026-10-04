@@ -636,7 +636,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 				continue
 			}
 			if party != nil && joined && msg.Type == "error" {
-				party.reject()
+				party.rejectServer(msg.Payload)
 				continue
 			}
 			if party != nil && (msg.Type == "party_request" || msg.Type == "party_update" || msg.Type == "ability_result" || msg.Type == "damage" || msg.Type == "heal" || party.raid != nil && (msg.Type == "chat" || msg.Type == "raid_phase") || party.event != nil && msg.Type == "public_event" || party.dungeon != nil && (msg.Type == "enter_instance" || msg.Type == "get_dungeon_status" || msg.Type == "dungeon_room_state")) {
