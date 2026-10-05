@@ -18,7 +18,7 @@ func TestRestoreArchiveRequiresExplicitStoppedTarget(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"success", "no-arguments", "no-confirmation", "unknown-replace-flag", "missing-archive", "bad-gzip", "missing-mongo", "mongo-lookup-failed", "running", "paused", "restarting", "created", "inspect-failed", "ambiguous-api", "api-lookup-failed", "missing-api", "missing-credentials", "probe-failed", "invalid-probe", "nonempty-target", "replace-target", "empty-dry-run-failed", "replace-dry-run-failed", "replace-drop-failed", "restore-failed", "verify-failed"} {
+	for _, scenario := range []string{"success", "operations-active", "no-arguments", "no-confirmation", "unknown-replace-flag", "missing-archive", "bad-gzip", "missing-mongo", "mongo-lookup-failed", "running", "paused", "restarting", "created", "inspect-failed", "ambiguous-api", "api-lookup-failed", "missing-api", "missing-credentials", "probe-failed", "invalid-probe", "nonempty-target", "replace-target", "empty-dry-run-failed", "replace-dry-run-failed", "replace-drop-failed", "restore-failed", "verify-failed"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			for _, directory := range []string{"deploy", "bin"} {
@@ -31,6 +31,12 @@ func TestRestoreArchiveRequiresExplicitStoppedTarget(t *testing.T) {
 				".env":                            "touch env-executed\n", // Must be read by Compose, never sourced here.
 				"bin/docker": `#!/bin/bash
 set -eu
+touch "$RESTORE_ROOT/docker-invoked"
+[ -f "$RESTORE_ROOT/logs/deploy.lock" ] || exit 97
+if flock -n "$RESTORE_ROOT/logs/deploy.lock" true; then
+  echo "Docker reached without held operations lock" >&2
+  exit 98
+fi
 case "$*" in
   'compose ps --status running -q mongo')
     [ "$RESTORE_SCENARIO" != mongo-lookup-failed ] || exit 31
@@ -119,6 +125,27 @@ if [ "$RESTORE_SCENARIO" = verify-failed ]; then exit 24; fi
 			} else if scenario == "unknown-replace-flag" {
 				args = append(args, "--replace-any-database")
 			}
+			if scenario == "operations-active" {
+				if err := os.Mkdir(filepath.Join(root, "logs"), 0700); err != nil {
+					t.Fatal(err)
+				}
+				lockPath := filepath.Join(root, "logs/deploy.lock")
+				lock, err := os.OpenFile(lockPath, os.O_CREATE|os.O_RDWR, 0600)
+				if err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(func() { lock.Close() })
+				// flock's child shares this open file description. The Go
+				// parent keeps it alive until cleanup, without a sleeper.
+				hold := exec.Command("flock", "-n", "3")
+				hold.ExtraFiles = []*os.File{lock}
+				if err := hold.Run(); err != nil {
+					t.Fatal("could not hold actual operations lock", err)
+				}
+				if err := exec.Command("flock", "-n", lockPath, "true").Run(); err == nil {
+					t.Fatal("fixture did not retain lock")
+				}
+			}
 			command := exec.Command("bash", args...)
 			command.Env = append(os.Environ(), "PATH="+filepath.Join(root, "bin")+":"+os.Getenv("PATH"),
 				"RESTORE_ROOT="+root, "RESTORE_SCENARIO="+scenario,
@@ -127,6 +154,26 @@ if [ "$RESTORE_SCENARIO" = verify-failed ]; then exit 24; fi
 			success := scenario == "success" || scenario == "missing-api" || scenario == "created" || scenario == "replace-target"
 			if (runErr == nil) != success {
 				t.Fatalf("unexpected result: %v\n%s", runErr, output)
+			}
+			if scenario == "operations-active" {
+				if !strings.Contains(string(output), "deployment or restore is active") {
+					t.Fatal("busy operations message missing")
+				}
+				if _, err := os.Stat(filepath.Join(root, "docker-invoked")); !os.IsNotExist(err) {
+					t.Fatal("busy restore reached Docker")
+				}
+				// Refusal must neither remove the lock nor unlock its holder.
+				if err := exec.Command("flock", "-n", filepath.Join(root, "logs/deploy.lock"), "true").Run(); err == nil {
+					t.Fatal("refusal bypassed active holder")
+				}
+			}
+			if scenario != "operations-active" {
+				lockPath := filepath.Join(root, "logs/deploy.lock")
+				if _, err := os.Stat(lockPath); err == nil {
+					if err := exec.Command("flock", "-n", lockPath, "true").Run(); err != nil {
+						t.Fatal("finished helper leaked operations lock", scenario, err)
+					}
+				}
 			}
 			for _, forbidden := range []string{"env-executed", "filename-executed"} {
 				if _, err := os.Stat(filepath.Join(root, forbidden)); !os.IsNotExist(err) {
@@ -169,5 +216,17 @@ if [ "$RESTORE_SCENARIO" = verify-failed ]; then exit 24; fi
 				t.Fatalf("incorrect success announcement: %s", output)
 			}
 		})
+	}
+}
+
+func TestRestoreAndDeployShareTheAuthoritativeCheckoutLock(t *testing.T) {
+	for _, file := range []string{"deploy/restore_mongo_archive.sh", "deploy/deploy_linux.sh"} {
+		source, err := os.ReadFile(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !bytes.Contains(source, []byte("exec 9>logs/deploy.lock")) || !bytes.Contains(source, []byte("flock -n 9")) {
+			t.Fatal("operation helper does not share held deployment lock", file)
+		}
 	}
 }

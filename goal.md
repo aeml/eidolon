@@ -43,6 +43,22 @@ bounded selection and no stat/potency rewrite. Native prior receipts retain old
 random-cloth scope; no fresh encounter/capacity acceptance inferred. See
 [role gear receipt](docs/plans/2026-10-05-capacity-role-equipment-checks.json).
 
+Latest clean7dcd2cfb target100 parent99353 fails234.69s. Integrated20 town/social
+roles now pass all required deliveries;100 admit and read/write/decode0, but
+minimum572 fresh own updates below600,32 casino timeouts and party minimum
+impact0 keep full capacity/all-account-save acceptance incomplete. Party15
+observed deaths are enemy-target defeats, not player deaths. Owned fixture
+removed after verified terminal/normal child exit/peak710815744/OOM0. Retain
+original gates and use short pending-request/settlement/game-loop diagnosis;
+no unchanged rerun. See [latest comparison](docs/plans/2026-10-05-capacity-role-social-checks.json).
+
+Prepared restore now shares deployment FD9 logs/deploy.lock in the authoritative
+server checkout. Real held-lock regression reproduced unwanted simulated restore
+before fix;27-scenario race matrix then passes2.924s, holding lock through every
+Docker phase and releasing on success/failure. Not a global writer fence, live
+restore or RPO/RTO approval. See [restore lock checks](docs/plans/2026-10-05-restore-deployment-lock-checks.json).
+Owner retention-period question is open; no policy/TTL/account deletion inferred.
+
 Full original1.11–1.99 roadmap remains active. Ordered1.75–1.78 privacy/retention/
 operations/hosting owner gates,1.79 integrated town/social outcomes, current finale/
 remaining rituals, settlement/restart and representative headroom, later feature/

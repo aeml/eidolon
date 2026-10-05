@@ -2054,6 +2054,23 @@ patch notes/login version included. Future schema24/privacy/ops/driver work is
 excluded. Own terminal/public acceptance remains required, independently of
 unpublished capacity evidence. The complete1.75–1.99 original gates remain open.
 
+Changed role-equipment/social comparison at7dcd2cfb subsequently fails234.69s:
+100 admitted, all20 assigned town/social participants deliver required views;
+fresh-own minimum572 below600,32 casino timeouts and party minimum impact0
+prevent all-account-save/full capacity acceptance. Read/write/decode0, no OOM;
+exact fixture/private data removed. Keep original gates and diagnose short
+request/settlement/game-loop boundaries before another target, no unchanged
+retry. [Latest receipt](2026-10-05-capacity-role-social-checks.json) explicitly
+distinguishes observed enemy defeats from player deaths and retains evidence
+limits. Prior encounter/smaller checks keep their original gear scope.
+
+For1.76/1.81/1.82, [restore/deployment exclusion](2026-10-05-restore-deployment-lock-checks.json)
+is now prepared: same checkout helpers share logs/deploy.lock and refuse overlap
+before Docker; actual flock regression plus27-case simulated-command race checks
+pass. External writers/other checkouts remain operator-coordinated; no live
+restore or global writer/recovery-objective approval inferred. Privacy/retention
+questions remain open, without changing current production policies.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves

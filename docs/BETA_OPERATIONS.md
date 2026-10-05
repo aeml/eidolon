@@ -172,8 +172,12 @@ loss of post-snapshot progress.
 
 The legacy Mongo-only restore helper requires an exact archive and explicit
 data-loss confirmation. It refuses active/ambiguous Compose API state and limits
-restoration to Eidolon, but it is not a global writer lock or a full recovery.
-Stop external writers too, serialize operations, preserve the original backup
+restoration to Eidolon. Restore and deployment helpers share `logs/deploy.lock`
+within the same authoritative server checkout; a busy lock refuses restore
+before Docker reads or writes. Keep that lock file in place: deleting it can
+allow competing operations to hold different inodes. This is not a global writer
+lock, coordination across different checkouts, or a full recovery.
+Stop external writers too, use the authoritative checkout, preserve the original backup
 and restore a compatible journal/database/server set under explicit approval.
 A failed `--drop` restore may already have removed data. Do not remove volumes,
 journals or schema markers to force an older server to start. Use isolated

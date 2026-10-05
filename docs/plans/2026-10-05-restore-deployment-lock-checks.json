@@ -1,0 +1,11 @@
+{
+  "status": "PREPARED_UNPUBLISHED_SAME_CHECKOUT_RESTORE_DEPLOYMENT_EXCLUSION_PASSED",
+  "finding": "Deployment acquires logs/deploy.lock, but restore previously did not. Actual subprocess regression with held real flock proceeded through simulated restore/verification before fix FAIL0.207s; source lock-contract test also FAIL0.030s. No production restoration or incident claimed.",
+  "change": "After explicit archive/data-loss/env validation and before any Docker read/write, restore requires flock and acquires the same FD9 nonblocking logs/deploy.lock as deploy. Process retains descriptor through target/archive preflight, optional replacement, import and verification; normal/error exit releases it. Does not unlink/recreate the held lock. No auto-stop/start, approval bypass, archive selection, schema or live data change.",
+  "checks": "bash -n passes both helpers. Initial focused restore/deploy/schema race scope PASS3.667s. Stronger exact restore race matrix PASS2.924s: all27 scenarios include held actual lock refusal before Docker; every simulated Docker phase checks lock remains held; successful/failed operations release it; refusing another holder cannot unlock/bypass it. Archive quoting, explicit replacement, stopped writer and partial failure safeguards retained. Docker/Mongo commands are simulated, not live database writes.",
+  "limits": "Only cooperating helpers in the same authoritative server checkout serialize. Other checkouts/external writers are not fenced; operator must explicitly stop them and preserve matching backup/journal/server recovery set. Do not delete lock file while operations may hold it. Previously earned actual Mongo archive/replacement38.73s evidence retains prior helper source; no new full restore, RPO/RTO, writer-global lock or production acceptance inferred. Owner policy and ordered1.76/1.81/1.82 gates remain. Narrow1.74.6 excludes this unpublished change.",
+  "sha256": {
+    "server/deploy/restore_mongo_archive.sh": "f4e3d416162e9b49a7a65a5f559b20e7ef95aa438e1661a9ff37aeb983d4f997",
+    "server/deploy_restore_test.go": "1dfac4b2ceb6674570d42e48adf0194e15a7ae8f989072e30f1168d2d04afc09"
+  }
+}

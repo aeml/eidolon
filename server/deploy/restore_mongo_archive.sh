@@ -28,6 +28,17 @@ if [ ! -f ".env" ]; then
   exit 1
 fi
 
+# Share the deployment lock from this authoritative server checkout and retain
+# it until this process exits. Never unlink/recreate a lock held by another
+# helper. This does not stop external writers or coordinate other checkouts.
+if ! command -v flock >/dev/null 2>&1; then
+  echo "flock is required to serialize deployments and restores" >&2
+  exit 1
+fi
+mkdir -p logs
+exec 9>logs/deploy.lock
+flock -n 9 || { echo "Another deployment or restore is active; refusing overlap." >&2; exit 1; }
+
 # Compose reads its own env file. Do not execute it as a host shell script or
 # put database credentials into host-side command arguments.
 mongo_id="$(docker compose ps --status running -q mongo)"

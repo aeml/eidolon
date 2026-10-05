@@ -1,0 +1,29 @@
+{
+  "status": "TERMINAL_FAIL_OWNED_FIXTURE_REMOVED",
+  "sourceCommit": "7dcd2cfbff2fd0f0ad8c119ea253bd83ffd58c96",
+  "ownedContainer": "eb272ebb33febb59d29acc51327f42fe272e5b30a41f6932c52030a174661ef0",
+  "taskLabel": "combined100-role-social-179-20261005",
+  "parentSession": 99353,
+  "scope": "One changed100 comparison: class-focused normally generated uncommon/rare starting gear with appropriate materials/offhands, no unused casino world/bag decision copies, mandatory delivered town/social outcomes. All three executables rebuilt from exact clean source; normal server and driver, race-instrumented root harness. Same100 cohort/120s/five-second admission/Gold100 bets/table allocation/party anchor400,600/sustained600 fresh-own updates and108000ms/every paid result/positive per-member impact/healing/independent-save gates. No harder-to-easier enemy replacement, money/stat grant during play, timeout extension or lower gate.",
+  "artifacts": {
+    "directory": "/tmp/eidolon-179-role-social-uRNdYr",
+    "serverSHA256": "94b591bc462e73b3853072fc3d6ccae405b1db8159d0af7978c419757628f71c",
+    "rootTestSHA256": "0479e20647c6038c6cfe5ad629e10e8bd8f5877170439f6d25354c12d5fc899e",
+    "driverSHA256": "0563dfea302469796352aa2f8bfcb6a4b97d4657050330ee222fb4e5a4c71323"
+  },
+  "result": "FAIL234.69s/exit1: all100 admit, integrated20 town/social players observe all required responses, but minimum572 own updates falls below600.32 casino timeouts and three casino paid minima0; party minimum own impact0. Independent all-account saves not reached. Read/write/decode0. No unchanged retry.",
+  "metrics": {
+    "connected":100,"joined":100,"stateFrames":60357,"minFrames":572,"minFreshOwnUpdates":572,"minActiveMilliseconds":119479,"maxStateGapMilliseconds":1399,"receivedPayloadBytes":829877466,
+    "maxLoginMilliseconds":708,"maxJoinMilliseconds":817,"admissionFailures":0,"readErrors":0,"writeErrors":0,"decodeErrors":0,
+    "slots":{"clients":10,"paidResults":36,"minimumPaidResults":1,"bonuses":0,"failed":9,"spinTimeouts":9},
+    "blackjack":{"clients":20,"acceptedWagers":19,"paidResults":2,"minimumPaidResults":0,"observedActions":3,"failed":13,"sitTimeouts":1,"betTimeouts":12},
+    "house":{"clients":20,"acceptedWagers":48,"paidResults":32,"minimumPaidResults":0,"failed":4,"betTimeouts":4},
+    "poker":{"clients":10,"acceptedWagers":14,"paidResults":6,"minimumPaidResults":0,"observedActions":24,"failed":6,"buyInTimeouts":6},
+    "social":{"clients":20,"complete":20,"failed":0,"ownChat":20,"ownPresence":10,"friends":10,"guild":10,"pvp":10,"leaderboard":10},
+    "parties":{"groups":5,"formed":5,"members":20,"minimumOwnImpacts":0,"damageEvents":18,"healEvents":5,"acceptedCasts":70,"deniedCasts":0,"xpProgressUpdates":24,"observedEnemyDefeats":15,"failed":0},
+    "memoryPeakBytes":710815744,"oomEvents":0,"oomKills":0,"dockerOOMKilled":false
+  },
+  "diagnosticLimits": "All casino fixed rejection categories0; failures are timeouts, not proven request rejection. Party observed_deaths output counts observed enemy-target defeats, NOT player deaths or distinct earned kills. Container terminal cpu.stat usage266906296us/nr_periods3585/nr_throttled13/throttled143317us covers entire fixture including Mongo initialization and account preparation/idle, not solely admitted120s workload; cannot infer tick or CPU headroom/causation. No fatal error/panic/data-race marker matched own normal-server log; normal binary is not server-race instrumentation. Historical smaller/encounter evidence retains original gear scope. No per-action timestamp/operation correspondence retained; do not blame counters, gear or shared host without evidence.",
+  "cleanup": "Definitive original parent failure consumed. Verified only mongod remains plus exact ID/label/networknone/2CPU2GiB/no ports/peak/OOM before stop/removal. Owned filtered listing empty. Removed only this disposable database/private synthetic accounts/credentials/logs, retained immutable binaries. Normal owned child exit and no forced-stop error; individual drain labels not asserted because final label extraction did not match before removal. No production/player data, services or owner workspace touched.",
+  "remaining": "Integrated town/social delivery gate now earned in declared100, not total capacity or independent saves. Diagnose actual pending-request/settlement and game-loop/update latency using a bounded targeted experiment; no unchanged100 replay or longer deadline. Current finale/other rituals, representative integration/headroom/final settlement/restart and owner-approved1.75–1.78/feature/art/beta/release gates remain. No full1.79/1.99 acceptance."
+}
