@@ -10,6 +10,7 @@ type blackjackLoadView struct {
 	Balance               int    `json:"balance"`
 	Available, Processing bool
 	RoundID, Phase        string
+	DealAt                time.Time `json:"dealAt"`
 	Players               []struct {
 		PlayerID  string `json:"playerId"`
 		Seat, Bet int
@@ -167,6 +168,9 @@ func (j *blackjackLoad) step(b *casinoLoad, now time.Time, bet int, request func
 		return
 	}
 	if v.Phase == "betting" {
+		if !casinoWagerWindowOpen(v.DealAt, now) {
+			return
+		}
 		// Lobby snapshots have no round revision. Once our exact wager has
 		// been acknowledged, an older empty lobby must not submit it again.
 		// A different round still needs its own normal explicit wager.

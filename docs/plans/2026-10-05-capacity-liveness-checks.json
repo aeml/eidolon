@@ -1,0 +1,47 @@
+{
+  "actualTarget": {
+    "status": "TERMINAL_FAIL_FIXTURE_REMOVED",
+    "sourceCommit": "ee81b493",
+    "startedAtUTC": "2026-10-05T00:26:00Z",
+    "ownedContainer": "8a63a0809202c410696025b66e6d601ea8e4168292ef9e2754fac6a7e00faa22",
+    "taskLabel": "combined100-liveness-179-20261005",
+    "parentSession": 76812,
+    "artifacts": {
+      "directory": "/tmp/eidolon-179-liveness-diagnostics-AKnsXL",
+      "normalServerSHA256": "f7a0f4293dfd4af6ac31e8d1be11ac73d9092b6f998807c2036938208b6c478c",
+      "raceRootSHA256": "21a7977d28222e3ee3141433e88423b77415a1f070365491dd4674c731188417",
+      "normalDriverSHA256": "74b800fc6f3632b2b794a6e8a5d6ec9eb3b7edfb4a690555e20d738fcb19313e"
+    },
+    "scope": "New checked keepalive/driver-wager fences and fixed diagnostics. Same network-none Mongo7.0.14,2CPU/2GiB,tmpfs, normal server,120s/five-second admission and all-player paid/own-state/impact/save gates. Prepared schema24/version1.74.4 is not exact narrow production1.74.4. Later advertised-window fix below was not in these binaries. No lower-cohort or campaign/raid replay.",
+    "result": "FAIL220.00s/exit1. All100 admitted and sustain own updates; no read/write/decode errors or casino timeouts. Slots and house meet all-client paid gate. Three blackjack round-or-bet rejections and two generic poker rejections fail their per-player paid gates; zero minimum combat impact also fails despite all five parties formed and aggregate real healing. Root independent saves not reached. Cleanup additionally required forced server shutdown after the original five-second deadline; do not extend it or infer all-account durable saves. No capacity acceptance.",
+    "metrics": {
+      "connected": 100, "joined": 100, "authenticated": 100, "admissionFailures": 0,
+      "stateFrames": 133356, "minFrames": 1276, "minFreshOwnUpdates": 1276,
+      "minActiveMilliseconds": 119206, "maxStateGapMilliseconds": 750, "receivedPayloadBytes": 1511249297,
+      "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 754, "maxJoinMilliseconds": 1287,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "slots": { "clients": 10, "acceptedWagers": 244, "paidResults": 244, "minimumPaidResults": 5, "bonuses": 17, "failed": 0 },
+      "blackjack": { "clients": 20, "acceptedWagers": 43, "paidResults": 28, "minimumPaidResults": 0, "observedActions": 29, "failed": 3, "roundOrBetRejected": 3 },
+      "house": { "clients": 20, "acceptedWagers": 60, "paidResults": 40, "minimumPaidResults": 2, "failed": 0 },
+      "poker": { "clients": 10, "acceptedWagers": 18, "paidResults": 10, "minimumPaidResults": 0, "observedActions": 46, "failed": 2, "genericRejected": 2 },
+      "parties": { "groups": 5, "formed": 5, "members": 20, "minOwnImpacts": 0, "damageEvents": 345, "healEvents": 10, "acceptedCasts": 697, "deniedCasts": 7, "xpProgressUpdates": 228, "observedDeaths": 225, "failed": 0 },
+      "memoryPeakBytes": 763801600, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+    },
+    "diagnostics": "All fixed read categories0. Three exact blackjack combined round/stake instruction matches; do not infer the rejected requests' exact round-versus-limit cause. Other fixed casino categories0 except two generic poker rejections. No fatal error/panic marker matched owned server log at terminal check; this does not explain forced shutdown. No raw socket/account strings retained.",
+    "cleanup": "Consumed definitive parent failure. Verified owned root/server/driver absent, exact label/network and memory/OOM counters. Stopped and removed only this fixture/synthetic database; filtered listing empty. Binaries retained; production and owner worktree untouched."
+  },
+  "advertisedWagerWindowCorrection": {
+    "finding": "Blackjack/poker/house bots omitted dealAt and therefore submitted ordinary bets even when the advertised window had expired. These are source-backed short reproductions, not proof of each actual rejection's cause.",
+    "reproduction": "Four game fixtures each at expired, exact-deadline,1s-left and2s-left boundaries failed before fix (16 failures/0.013s); each wrongly submitted a new wager. Windows2s+1ns and30s remain usable.",
+    "change": "Decode existing server dealAt and defer new blackjack wagers, poker buy-ins and house wagers within two seconds of expiry. Normal three-second read-only refresh discovers the next window. Zero/unstarted poker and legacy fixture deadlines retain behavior. No server clock/window/payout changes, retry of uncertain money, rejection suppression, paid credit or relaxed gate. Minimum paid result still fails when no fresh funded round occurs.",
+    "checks": "Final broad focused blackjack/poker/house/rejection/timeout/read and24 advertised-window race cases passed10.819s. Additional exact zero-deadline compatibility and malformed-date refusal plus window checks passed1.093s. gofmt/diff passed. No further actual target replay after correction.",
+    "sha256": {
+      "server/cmd/loadtest/casino.go": "21a15d4917529d47bce2d5373098fcc228f96688f13ffce3e45367fd8b3b80dd",
+      "server/cmd/loadtest/blackjack.go": "7784472bdf6ce694e10189215028c5bae432d967a778bd9262776af8c5228fc7",
+      "server/cmd/loadtest/poker.go": "0bf7cb872cc23eaffbfecfd2212afb332726da933e3ba7dc29960bc84b1ec0be",
+      "server/cmd/loadtest/house.go": "4a32cf8f2ab7e8419b881248a08359a6d2f67f9dc6a84227cecd86c880b97f34",
+      "server/cmd/loadtest/wager_window_test.go": "c578a717aca91743841de1d1d033e414a46c8cc927408bffee1aeee024adaf80"
+    }
+  },
+  "remaining": "Need precise remaining poker rejection/party-impact/shutdown diagnosis before another large run. Accepted smaller/encounter/storage scopes retained, not extrapolated. Town/social action receipts, current finale/rituals, representative raid/event integration, explicit owner runtime/headroom/client criteria, final settlement/restart and ordered1.75–1.78 acceptance plus own1.79 version/notes/deployment remain open.1.74.4 narrow interface CI/public acceptance still monitored by Luna; no full1.99 or closed-beta completion."
+}

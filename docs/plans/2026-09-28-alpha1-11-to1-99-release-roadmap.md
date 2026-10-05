@@ -1939,6 +1939,18 @@ Exact1.74.3 CI/public identities/readiness/login/notes are independently accepte
 1.74.4 interface-only commit9560ac60 is pushed, CI37246677139 monitored by Luna.
 The keepalive and bot wager replay corrections are not in that release.
 
+The next declared target100 comparison with those checked corrections sustains
+all100 own-state streams and has no transport/decode errors or casino timeouts,
+but fails three blackjack combined round-or-bet rejections, two generic poker
+rejections and minimum combat impact0. The independent save gate is not reached;
+server cleanup also misses the original five-second shutdown bound. Exact
+fixture removed; no capacity/headroom or save acceptance is inferred.
+Short four-game fixtures then reproduce bots ignoring the advertised betting
+deadline. Prepared bots now defer new wagers at expired/near-expiry windows,
+refresh normally and still require actual own paid results. Focused race checks
+pass. Remaining poker/impact/shutdown causes require diagnosis before another
+large run; no further campaign, lower-cohort or unmodified target replay.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves

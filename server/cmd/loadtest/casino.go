@@ -69,6 +69,13 @@ type casinoLoadCounts struct {
 	timeoutAction           casinoTimeoutAction
 }
 
+// Observe the server's real betting window instead of submitting a new money
+// action on an expired/closing view. An unstarted poker window (zero deadline)
+// and older fixtures retain their normal behavior. Waiting earns no credit.
+func casinoWagerWindowOpen(deadline, now time.Time) bool {
+	return deadline.IsZero() || deadline.After(now.Add(2*time.Second))
+}
+
 func newCasinoLoad(index int) *casinoLoad {
 	for _, table := range game.CasinoTables() {
 		if table.Game == "slots" && table.Floor == "public" && table.Currency == "gold" {

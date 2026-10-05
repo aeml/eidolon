@@ -9,6 +9,7 @@ import (
 // Only public turn/settlement fields: no names, hole cards, deck or hand history.
 type pokerLoadView struct {
 	Currency, RoundID, Phase string
+	DealAt                   time.Time `json:"dealAt"`
 	Balance                  int
 	Available, Processing    bool
 	Players                  []struct {
@@ -145,6 +146,9 @@ func (p *pokerLoad) step(b *casinoLoad, now time.Time, buyIn int, request func(m
 		return
 	}
 	if v.Phase == "betting" {
+		if !casinoWagerWindowOpen(v.DealAt, now) {
+			return
+		}
 		for _, participant := range v.Players {
 			if participant.PlayerID == p.playerID {
 				return

@@ -1,5 +1,5 @@
 {
-  "status": "FOCUSED_CHECKS_PASSED_ACTUAL_TARGET_PENDING",
+  "status": "FOCUSED_CHECKS_PASSED_ACTUAL_TARGET_FAILED_RECORDED",
   "scope": "Prepared driver/root diagnostics only, excluded from narrow1.74.4. Preserve all acceptance criteria, original failure counts, no automatic money retry and no raw socket/account/provider error output.",
   "reads": "Reader stores only a fixed failure enum on unexpected ReadMessage error, after the existing stop/reader-shutdown suppression. Final aggregation occurs after reader termination. Categories timeout, policy, abnormal, going-away, normal, protocol/unsupported, too-big, server, EOF, unknown. Remote close reason/error/address text is never retained. Invalid enum normalizes to unknown; absent read failure remains uncounted. Every unexpected category still increments original readErrors and rejects success.",
   "casino": "Exact source-backed blackjack current-round/stake-limits instruction now has a separate round_or_bet category. Server combines stale/closed round and invalid stake validation, so diagnostic deliberately does not infer stale as the sole cause. Recognize only exact current Gold/EP rule-generated instruction; suffix/unknown/private/malformed/oversized input remains generic rejected. Two missed exact blackjack seat-return instructions map to seat. First cause and rejection/no-retry gates unchanged.",
@@ -12,5 +12,5 @@
     "server/cmd/loadtest/main.go": "9720389d22ec846afc83f56da3091a270c25cb0c06155e1d16c6caf1d143781e",
     "server/load_combined_integration_test.go": "4afd1c01f61cf6d64443223fde1029186db6872632b5e572a8285828ada528c4"
   },
-  "next": "One bounded declared target100 comparison may use the checked single-writer keepalive correction and acknowledged-wager replay guard with these diagnostics. Do not replay unchanged smaller earned cohorts or full campaigns; retain failures and require actual all-player paid/state/impact/save criteria. General renderer/headroom/raid-event/social/settlement/restart and ordered release gates remain open."
+  "next": "One bounded declared target100 comparison now ran with checked single-writer keepalive correction, acknowledged-wager replay guard and these diagnostics. Read categories all0; three blackjack combined round-or-bet matches, two generic poker rejections, zero minimum own combat impact and forced shutdown reject acceptance. Exact receipt2026-10-05-capacity-liveness-checks.json. Diagnose remaining boundaries before another large run. Earlier paid/state/save gates, earned scopes and broader/ordered release requirements remain unchanged."
 }

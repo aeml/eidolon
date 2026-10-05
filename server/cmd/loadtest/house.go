@@ -7,6 +7,7 @@ import (
 
 type houseLoadView struct {
 	Game, Currency, RoundID, Phase string
+	DealAt                         time.Time `json:"dealAt"`
 	Balance                        int
 	Available, Processing          bool
 	Number                         *int
@@ -123,6 +124,9 @@ func (h *houseLoad) step(b *casinoLoad, now time.Time, bet int, request func(map
 		return
 	}
 	if v.Phase != "betting" {
+		return
+	}
+	if !casinoWagerWindowOpen(v.DealAt, now) {
 		return
 	}
 	for _, p := range v.Players {
