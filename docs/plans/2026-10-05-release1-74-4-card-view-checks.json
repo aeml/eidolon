@@ -12,5 +12,5 @@
     "tests/BlackjackTableUI.test.js": "9ccc88f47412c40bfbb176e8574b7b9550232e5a0e6a68a3f88de2157f17831b",
     "tests/PokerTableUI.test.js": "0c05f651fed44de15406417a2bb7850f3f88054d2ee95734f73688fe887a8dc2"
   },
-  "publication": "Pending prior-release acceptance, fresh remote comparison, commit/push, exact terminal CI and independent public identities/readiness/login/notes plus changed runtime byte checks. Use Luna for monitoring. Full roadmap and ordered policy/operations/capacity gates remain open."
+  "publication": "Prior1.74.3 exact terminal/public acceptance recorded, master freshly fetched and ordinarily merged (unchanged8b7ab8dd). Narrow1.74.4 pushed as9560ac60cc48a6daf6b65b57c0d23b092d18b3f0 with CI37246677139 queued at root observation and monitored read-only by Luna. Not live-accepted until exact terminal CI and independent public identities/readiness/login/notes plus changed runtime byte checks. Full roadmap and ordered policy/operations/capacity gates remain open; prepared bot and keepalive changes excluded."
 }
