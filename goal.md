@@ -13,6 +13,10 @@ fixture. Corrected routes, exact wall/matrix assertions and bounded fixture-only
 retry pass; actual Mongo guild-bank recovery race suite passes49.117s. Final
 connected stash run on clean2ec7e4f3 passes all four tests2.9m, including eight
 portrait/landscape entry cycles. Atlas marker matches the relocated stash.
+Second CI37263815257 finds stale minimap and admin-teleport obstruction anchors.
+Corrected fixtures, offline fallback parity and local stash paving pass381
+minimap/ground/version checks plus all admin teleport race checks5.502s. No
+guard or paved-ground assertion relaxed; replacement deployment still pending.
 See [maintenance evidence](docs/plans/2026-10-05-release1-74-7-checks.json).
 This does not close future policy, capacity, art or beta gates. Historical
 checkpoints below are retained as history, not the current live status.

@@ -16,6 +16,7 @@ const ROUTES = [
 const COURTS = [
     { x: 0, z: 200, rx: 19, rz: 19 },
     { x: -19, z: 198, rx: 13, rz: 17 },
+    { x: -28, z: 210, rx: 8, rz: 8 }, // Relocated smithy–stash–forge service court.
     { x: 26, z: 212, rx: 13, rz: 10 },
     { x: 28, z: 235, rx: 13, rz: 12 },
     ...LANTERNHOLD_COURTYARDS.map(site => ({ x: site.x, z: site.z, rx: 12, rz: 12 }))

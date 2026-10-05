@@ -4,7 +4,7 @@ import { createProceduralTerrainMaterial } from '../src/art/ProceduralRealmTerra
 
 test('connected town surfaces retain paved service courts and gates, with unpaved quiet edges', () => {
     for (const [x, z] of [[0, 100], [0, 300], [-100, 200], [100, 200], [0, 200],
-        [-16, 193], [0, 182], [-55, 238], [55, 240], [40, 222], [-40, 229]]) {
+        [-28, 210], [0, 182], [-55, 238], [55, 240], [40, 222], [-40, 229]]) {
         expect(sampleLanternholdGround(x, z).paving).toBeGreaterThan(.85);
     }
     for (const [x, z] of [[-80, 120], [80, 280], [-80, 280], [70, 150]]) {

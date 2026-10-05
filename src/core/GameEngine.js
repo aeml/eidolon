@@ -1463,10 +1463,10 @@ export class GameEngine {
         storyWizard.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
         this.addEntity(storyWizard);
 
-        // Stash beside the Trading House, west of the casino entrance approach.
+        // Offline stash mirrors the authoritative smithy–stash–forge lane.
         const stash = new Stash('stash-local');
-        stash.position.set(-16, 0, 193);
-        stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0);
+        stash.position.set(-28, 0, 210);
+        stash.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
         this.addEntity(stash);
     }
 
