@@ -1,0 +1,13 @@
+{
+  "milestones": ["Alpha1.76 persistence growth", "Alpha1.79 measured headroom"],
+  "status": "PREPARED_UNPUBLISHED_BOUNDED_FRAME_READ_NOT_CAPACITY_ACCEPTANCE",
+  "base": "619afed5 isolated future preparation; accepted live remains Alpha1.74.6",
+  "finding": "Each production broadcast previously called GetEntityCopy for every player solely for scene/position and owner Resonance progress. That generic save-capable copy clones bag, stash, equipment and growing private custody receipts that frame code never uses.",
+  "change": "GetPlayerBroadcastContext reads only position, instance and normalized detached EndgameProgress under the same World-before-Entity lock order. Explicit menus and frame reads share the existing normalization. Broadcasting keeps normal Resonance update suppression/recovery, dungeon progress updates and room summaries; no saved-character snapshot, item, wallet, damage, cadence or gameplay rule changed. Context is not sent to observers.",
+  "checks": {
+    "focusedRace": "Actual frame, live Resonance synchronization, shared replication/queue recovery, dungeon room and new context tests PASS root12.260s/game13.992s. Additional recipient immutability, Resonance normalization/cap reward and generic saved-character/ability snapshot regressions PASS root1.334s/game2.285s.",
+    "boundedAllocation": "Separate allocation-growth regression PASS1.358s: frame reads allocate the same number with empty storage and with100 bag/400 stash items and1024 Gold receipts. Concurrent coherent position/progress mutations, detached maps, missing/nonplayer actors and normalization equivalence pass.",
+    "microbenchmark": "Synthetic stationary fixture: full character+progress303066ns/329216B/1013alloc per read; context435.4ns/256B/2alloc.200ms per case, whole benchmark0.892s. This measures avoided copying only, not live population, game frame budget or the cause of earlier100-player timeouts."
+  },
+  "remaining": "No new native100 comparison, production deployment or account mutation. All original paid/party/save/headroom/finale/other crystal and ordered owner-policy milestone gates remain. Later publication must include its own version/notes and deployment checks."
+}

@@ -96,6 +96,16 @@ cadence, wallet/reward/deadline change, new alert policy or capacity acceptance.
 Legacy probes keep missing phase gauges unavailable; existing financial active
 call budgets stay unchanged. No new100 run or deployment of future source.
 
+Prepared frame reads now avoid copying each player's bag/stash/equipment/private
+receipts just to retrieve position and owner Resonance. Existing normalization,
+lock order, dungeon tracking and live progress delivery remain; focused race and
+allocation-growth checks pass. Synthetic full-storage read improves303066ns/
+329216B/1013alloc to435.4ns/256B/2alloc, not a capacity/timeout-cause claim. See
+[bounded frame receipt](docs/plans/2026-10-05-player-broadcast-context-checks.json).
+User now requests stash between forge and quest house, matching their facing,
+and normal jump arrival in2–3 seconds. Handle separately from unpublished future
+schema24 preparation, preserving owner workspace and ordered milestone gates.
+
 **Historical checkpoint (September28):** Alpha1.21.0 is accepted live at
 614acf03d01eb794e90b9653f5b470671c8fed2b, CI36456025227 all ten jobs successful.
 Root exact public IPv4 frontend/backend/database/login/history/five-asset checks

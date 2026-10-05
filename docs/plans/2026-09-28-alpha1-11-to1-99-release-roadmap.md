@@ -2084,6 +2084,13 @@ missing measurements remain unavailable. Existing financial call budgets and
 gameplay delta/cadence remain unchanged. These are diagnostic signals, not a
 reproduction of the100-client cause, accepted headroom or another long run.
 
+October5: [bounded player frame read](2026-10-05-player-broadcast-context-checks.json)
+removes full bag/stash/equipment/private-receipt copying from each frame's owner
+position/Resonance lookup. Same coherent lock order, normalized progress and
+dungeon tracking remain. Race and allocation-growth checks pass; synthetic large
+storage context drops303066ns/329216B/1013alloc to435.4ns/256B/2alloc. Not a live
+frame-budget/capacity verdict; no unchanged100 workload replayed.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves

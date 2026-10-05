@@ -218,6 +218,12 @@ func (w *World) EndgameProgressForPlayer(playerID string) (EndgameProgress, bool
 func (player *Entity) EndgameProgress() EndgameProgress {
 	player.Mu.RLock()
 	defer player.Mu.RUnlock()
+	return player.endgameProgressLocked()
+}
+
+// Caller owns player.Mu. Both explicit menu reads and lightweight frame reads
+// use identical normalization without recursively acquiring the actor lock.
+func (player *Entity) endgameProgressLocked() EndgameProgress {
 	ranks := map[string]int{"power": 0, "ward": 0, "fortune": 0}
 	for trait, rank := range player.ResonanceRanks {
 		if _, exists := resonanceTraits[trait]; exists {
