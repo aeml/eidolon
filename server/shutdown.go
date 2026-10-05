@@ -20,6 +20,30 @@ var serverAdmission = &lifecycle.Group{}
 var serverStopping atomic.Bool
 var hubQuiesce = make(chan chan []*Client)
 
+// Fixed local drain milestones only: no users, request values or storage paths.
+// Diagnostic progress does not authorize a timeout extension or partial save.
+var shutdownDrainStages = [...]string{"refund_delivery", "admission", "loops", "world_background", "pvp", "hub", "character_work", "activity_journal", "final_characters", "complete"}
+
+func logShutdownDrainStage(stage string) {
+	for _, known := range shutdownDrainStages {
+		if stage == known {
+			log.Printf("Shutdown drain phase: %s", known)
+			return
+		}
+	}
+}
+
+func lastKnownShutdownDrainStage(contents []byte) string {
+	stage, latest := "unknown", -1
+	text := string(contents)
+	for _, known := range shutdownDrainStages {
+		if offset := strings.LastIndex(text, "Shutdown drain phase: "+known+"\n"); offset > latest {
+			stage, latest = known, offset
+		}
+	}
+	return stage
+}
+
 // Only startup adds loops; shutdown cancels and joins them before world drain.
 type serverLoops struct {
 	ctx    context.Context
@@ -109,19 +133,27 @@ func saveFinalCharacters() error {
 
 func drainServer(loops *serverLoops) {
 	serverStopping.Store(true)
+	logShutdownDrainStage("refund_delivery")
 	world.Trading.StopRefundDelivery()
+	logShutdownDrainStage("admission")
 	serverAdmission.CloseAndWait()
+	logShutdownDrainStage("loops")
 	loops.Stop()
+	logShutdownDrainStage("world_background")
 	world.StopBackground()
 	// A maintenance stop is not a player forfeit. Preserve already-decided
 	// results; cancel unfinished matches using the existing exit recovery.
+	logShutdownDrainStage("pvp")
 	world.FinishPvPForShutdown()
 	response := make(chan []*Client)
+	logShutdownDrainStage("hub")
 	hubQuiesce <- response
 	for _, client := range <-response {
 		scheduleClientCleanup(client)
 	}
+	logShutdownDrainStage("character_work")
 	backgroundCharacterWork.SealWhenIdle()
+	logShutdownDrainStage("activity_journal")
 	for {
 		if err := persistUnjournaledActivity(); err == nil {
 			break
@@ -129,6 +161,7 @@ func drainServer(loops *serverLoops) {
 		log.Print("Shutdown waiting for durable session activity storage")
 		time.Sleep(time.Second)
 	}
+	logShutdownDrainStage("final_characters")
 	for {
 		if err := saveFinalCharacters(); err == nil {
 			break
@@ -139,6 +172,7 @@ func drainServer(loops *serverLoops) {
 		}
 		time.Sleep(time.Second)
 	}
+	logShutdownDrainStage("complete")
 	log.Println("Character shutdown drain complete")
 }
 

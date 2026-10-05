@@ -14,6 +14,22 @@ import (
 	"eidolon-server/internal/lifecycle"
 )
 
+func TestShutdownDrainDiagnosticsRetainOnlyLatestFixedStage(t *testing.T) {
+	for _, sample := range []struct{ log, want string }{
+		{"", "unknown"},
+		{"Shutdown drain phase: private-user/provider/path\n", "unknown"},
+		{"Shutdown drain phase: admission private-token\n", "unknown"},
+		{"Shutdown drain phase: admission\nShutdown drain phase: private-user\n", "admission"},
+		{"2026/10/05 00:00:00 Shutdown drain phase: character_work\n", "character_work"},
+		{"Shutdown drain phase: final_characters\nShutdown drain phase: loops\n", "loops"},
+		{"Shutdown drain phase: admission\nShutdown drain phase: complete\n", "complete"},
+	} {
+		if lastKnownShutdownDrainStage([]byte(sample.log)) != sample.want {
+			t.Fatal("latest fixed shutdown stage missing or arbitrary diagnostic retained")
+		}
+	}
+}
+
 func TestShutdownAdmissionRejectsCommandsAndWebSocketUpgrade(t *testing.T) {
 	old := serverAdmission
 	serverAdmission = &lifecycle.Group{}

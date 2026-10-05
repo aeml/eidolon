@@ -261,6 +261,7 @@ func compatStartServerWithCrash(t *testing.T, binary, uri string, phase int, int
 		} else {
 			command.Process.Signal(os.Interrupt)
 		}
+		forced := false
 		select {
 		case err := <-done:
 			if intentionalCrash {
@@ -272,6 +273,7 @@ func compatStartServerWithCrash(t *testing.T, binary, uri string, phase int, int
 				t.Errorf("phase%d owned server shutdown failed: %v (evidence %s)", phase, err, evidence)
 			}
 		case <-time.After(5 * time.Second):
+			forced = true
 			command.Process.Kill()
 			<-done
 			t.Errorf("phase%d owned server required forced shutdown (evidence %s)", phase, evidence)
@@ -281,6 +283,9 @@ func compatStartServerWithCrash(t *testing.T, binary, uri string, phase int, int
 		if err != nil {
 			t.Error(err)
 			return
+		}
+		if forced {
+			t.Logf("phase%d owned shutdown stalled_stage=%s", phase, lastKnownShutdownDrainStage(contents))
 		}
 		for _, marker := range []string{"WARNING: DATA RACE", "panic:", "fatal error:", "Worker panic:", "Recovered from panic in Update:"} {
 			if strings.Contains(string(contents), marker) {

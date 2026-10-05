@@ -1936,7 +1936,10 @@ are unchanged, and control still precedes state. Focused race checks pass after
 joining the hijacked writer during fixture cleanup. This is not proof of the
 three observed target100 read failures' causes or general state fairness.
 Exact1.74.3 CI/public identities/readiness/login/notes are independently accepted;
-1.74.4 interface-only commit9560ac60 is pushed, CI37246677139 monitored by Luna.
+1.74.4 interface-only commit9560ac60 is accepted: CI37246677139 succeeds in all
+ten jobs; independent public identities/database readiness/login/notes and both
+changed publisher-rewritten runtime files match. Skipped gallery/rendering and
+full-character/live-animation scopes remain explicitly unclaimed.
 The keepalive and bot wager replay corrections are not in that release.
 
 The next declared target100 comparison with those checked corrections sustains
@@ -1950,6 +1953,18 @@ deadline. Prepared bots now defer new wagers at expired/near-expiry windows,
 refresh normally and still require actual own paid results. Focused race checks
 pass. Remaining poker/impact/shutdown causes require diagnosis before another
 large run; no further campaign, lower-cohort or unmodified target replay.
+
+October5: a short synthetic fixture independently reproduces lost own damage
+credit after the party leader changes target. Prepared driver accounting retains
+one most recently successfully written eligible enemy target per member; only
+a real positive own-source same-scene damage notification earns credit. Foreign,
+zero, unrelated, replaced-target, scene-changed and failed-write cases still do
+not contribute. Focused party/dungeon/raid/event race checks pass3.702s. This
+does not alter production party credit or prove the actual100 minimum-impact
+failure's cause. Fixed local shutdown milestones now identify the last reported
+drain stage on forced fixture shutdown; root shutdown/combined checks pass1.804s.
+The original five-second stop bound and all save/paid/impact gates are unchanged.
+Neither correction has earned a fresh target100 acceptance or final-raid clear.
 
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game

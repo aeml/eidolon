@@ -1,0 +1,16 @@
+{
+  "status": "PREPARED_FOCUSED_CHECKS_PASSED_NOT_DEPLOYED",
+  "partyReproduction": "Synthetic ordinary request/accepted-ability/positive own-damage sequence failed0.016s when the leader switched enemy before that damage arrived. This independently reproduces an accounting defect, not the cause of the recorded actual100 minimum impact0.",
+  "partyChange": "Retain one latest successfully written eligible enemy target and scene per member. Clear on own scene change, replace on newer offensive request. Only positive own-source damage in current own scene against current group target or retained target contributes. Requests/acceptance alone earn no damage. Original per-member, paid, progression, phase, exit and save gates unchanged. No gameplay or server party-credit changes.",
+  "partyChecks": "Final focused party/dungeon/raid/event race suite passed3.702s. Positive delayed hit credits only its owner; untouched members still have minimum0. Negative foreign source, wrong target, zero damage, wrong scene, other member, absent request, own scene change, replaced own target and failed write earn no credit. Synthetic accounting fixtures are not actual native combat/encounter proof.",
+  "shutdownChange": "Local fixed-label milestones: refund_delivery, admission, loops, world_background, pvp, hub, character_work, activity_journal, final_characters, complete. Forced owned fixture shutdown reports only the last recognized label, otherwise unknown. No raw accounts, storage paths or provider errors retained by this diagnostic. complete is world drain only, not subsequent HTTP/database closure. Save ordering/retry policy and original five-second forced-stop failure bound unchanged.",
+  "shutdownChecks": "Root Shutdown/CombinedIntegration race selection passed1.804s, including recognized/unknown/suffixed/chronological label parsing plus existing drain/save/late-work gates. No actual failing shutdown run yet exercises these diagnostics; the latest target100 stalled stage remains unknown.",
+  "sha256": {
+    "server/cmd/loadtest/party.go": "62d6efb49879681e293385f84d85696a47c132d2e6a5de46633e3d0253d2152e",
+    "server/cmd/loadtest/party_test.go": "4838e7da9c108f4b54cfb5d8cafde9f6ddf3374723966ce12486687a3e5f5bb1",
+    "server/shutdown.go": "574eb9a9aaa1b988318498ad396ea1ff03f5e577155170762041f7b89c7b46bc",
+    "server/shutdown_test.go": "f2edd88c048db878134c7a3724f6228626d09ad0727b801984521ace8aba6601",
+    "server/progression_session_integration_test.go": "a0401db181376493da30434ab12d406dab81c8e3d03ddde524354ccc363774ac"
+  },
+  "remaining": "Actual target100 participation/rejections/drain diagnosis, town/social acknowledged outcomes, final raid and full capacity/persistence acceptance remain open. No repeat campaign, raid or unchanged soak performed. These candidate changes are excluded from the separately assembled keepalive maintenance release."
+}

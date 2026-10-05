@@ -424,8 +424,9 @@ Notes:
   administration and casino performance maintenance releases have been ordinarily
   merged from master. 1.74.3's exact all-ten-job CI37244170015 and independent
   public frontend/backend/login/notes proof passed at8b7ab8dd. Interface-only
-  1.74.4 is pushed as9560ac60 with CI37246677139 monitored by Luna; its435 focused
-  checks pass, but exact public acceptance remains pending. This isolated, unpublished
+  1.74.4 is accepted at9560ac60: all ten CI37246677139 jobs succeed and independent
+  public identities/readiness/login/notes and exact changed runtime bytes match.
+  Its435 focused checks pass. This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
@@ -505,8 +506,11 @@ Notes:
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.74.3`, exact
-  8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0, successful CI37244170015 (all ten jobs).
+- Last independently verified live release: `Alpha 1.74.4`, exact
+  9560ac60cc48a6daf6b65b57c0d23b092d18b3f0, successful CI37246677139 (all ten jobs).
+  [Card-table view acceptance](docs/plans/2026-10-05-release1-74-4-card-view-checks.json)
+  records exact identities/database readiness/login/notes and changed runtime bytes,
+  with skipped CI scopes stated explicitly.
   [Casino performance acceptance](docs/plans/2026-10-04-release1-74-3-casino-checks.json)
   records independent public IPv4 identities/database readiness/login/notes;
   it does not certify prepared future code or100-player capacity.

@@ -130,6 +130,84 @@ func TestPartyLoadRefusesForeignInvitesExistingGroupsAndMissingAcknowledgements(
 	}
 }
 
+func TestPartyLoadDelayedOwnHitSurvivesLeaderTargetChange(t *testing.T) {
+	p, _ := partyFixture()
+	now := time.Unix(100, 0)
+	for i := range p.members {
+		p.receive(i, partyRoster(p, 4), now)
+	}
+	p.target = Entity{ID: "synthetic-enemy-a", Type: "Enemy", Health: 100, X: 2}
+	requests := 0
+	p.step(3, p.members[3].state, nil, now, time.Second, func(kind string, payload any) error {
+		if kind != "ability" || payload.(map[string]any)["targetId"] != "synthetic-enemy-a" {
+			t.Fatal("missing ordinary targeted cast")
+		}
+		requests++
+		return nil
+	}, func(float64, float64) { t.Fatal("in-range fixture moved") })
+	p.receive(3, partyMessage("ability_result", map[string]any{"skillName": "Fireball", "accepted": true, "cooldownRemaining": 2}), now)
+	// The leader may choose another enemy before the projectile's damage
+	// notification reaches this player's reader. The positive owned hit is
+	// still against the enemy this player actually targeted in this scene.
+	p.target = Entity{ID: "synthetic-enemy-b", Type: "Enemy", Health: 100, X: 3}
+	p.receive(3, partyMessage("damage", map[string]any{"sourceId": p.members[3].id, "targetId": "synthetic-enemy-a", "amount": 10}), now.Add(time.Second))
+	if got := p.counts(); requests != 1 || got.failed || got.casts != 1 || got.damage != 1 || got.minImpacts != 0 {
+		t.Fatal("delayed own hit lost or unrelated members received synthetic credit")
+	}
+}
+
+func TestPartyLoadWrittenTargetDoesNotGrantUnrelatedOrFailedCredit(t *testing.T) {
+	for _, scenario := range []string{"foreign-source", "wrong-target", "zero", "wrong-scene", "other-member", "no-request", "scene-changed", "replaced-target", "write-failed"} {
+		t.Run(scenario, func(t *testing.T) {
+			p, _ := partyFixture()
+			now := time.Unix(100, 0)
+			for i := range p.members {
+				p.receive(i, partyRoster(p, 4), now)
+			}
+			p.target = Entity{ID: "synthetic-enemy-a", Type: "Enemy", Health: 100, X: 2}
+			request := func(string, any) error {
+				if scenario == "write-failed" {
+					return fmt.Errorf("opaque fixture write failure")
+				}
+				return nil
+			}
+			if scenario != "no-request" {
+				p.step(3, p.members[3].state, nil, now, time.Second, request, func(float64, float64) { t.Fatal("fixture moved") })
+				if scenario != "write-failed" {
+					p.receive(3, partyMessage("ability_result", map[string]any{"skillName": "Fireball", "accepted": true, "cooldownRemaining": 2}), now)
+				}
+			}
+			p.target = Entity{ID: "synthetic-enemy-b", Type: "Enemy", Health: 100, X: 3}
+			index := 3
+			payload := map[string]any{"sourceId": p.members[index].id, "targetId": "synthetic-enemy-a", "amount": 10}
+			switch scenario {
+			case "foreign-source":
+				payload["sourceId"] = "outside-cohort"
+			case "wrong-target":
+				payload["targetId"] = "unwritten-enemy"
+			case "zero":
+				payload["amount"] = 0
+			case "wrong-scene":
+				payload["instanceId"] = "foreign-scene"
+			case "other-member":
+				index = 0
+				payload["sourceId"] = p.members[index].id
+			case "scene-changed":
+				me := p.members[index].state
+				me.InstanceID = "next-scene"
+				p.state(index, me, now.Add(time.Second))
+				payload["instanceId"] = "next-scene"
+			case "replaced-target":
+				p.step(3, p.members[3].state, nil, now.Add(3*time.Second), time.Second, request, func(float64, float64) { t.Fatal("fixture moved") })
+			}
+			p.receive(index, partyMessage("damage", payload), now.Add(4*time.Second))
+			if got := p.counts(); got.damage != 0 || got.minImpacts != 0 || scenario == "write-failed" && !got.failed {
+				t.Fatal("unrelated/old/failed request earned impact credit")
+			}
+		})
+	}
+}
+
 func TestPartyLoadImpactsAreOwnPartyOnlyAndXPIsNotKillAttribution(t *testing.T) {
 	p, _ := partyFixture()
 	now := time.Unix(100, 0)

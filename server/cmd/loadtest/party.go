@@ -20,6 +20,18 @@ type partyLoadMember struct {
 	readyAt                                  map[string]time.Time
 	changed                                  chan struct{}
 	damage, heals, casts, denials, xpUpdates uint64
+	offenseTargetID, offenseScene            string
+}
+
+// One latest successfully written offensive target per member, not a history.
+// A leader changing its target must not erase an in-flight owned hit. This
+// remembers a request, not damage or acceptance; only a real positive own
+// damage notification can contribute an impact.
+func (m *partyLoadMember) rememberOffense(me, target Entity) {
+	if me.ID == m.id && me.Type == "Player" && target.ID != "" && target.Type == "Enemy" &&
+		target.Health > 0 && target.State != "DEAD" && target.InstanceID == me.InstanceID {
+		m.offenseTargetID, m.offenseScene = target.ID, me.InstanceID
+	}
 }
 
 // Fixed consenting test accounts, one pending invite/cast per participant.
@@ -134,6 +146,9 @@ func (p *partyLoad) state(index int, me Entity, now time.Time) {
 	} else if me.Level > m.state.Level || me.Level == m.state.Level && me.Experience > m.state.Experience {
 		m.xpUpdates++ // Observed progression, not attribution to a particular kill.
 	}
+	if m.state.InstanceID != me.InstanceID {
+		m.offenseTargetID, m.offenseScene = "", ""
+	}
 	m.state = me
 	if p.event != nil {
 		p.event.observe(index, me)
@@ -245,7 +260,9 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 		if event.SourceID != m.id || event.Amount <= 0 || event.InstanceID != m.state.InstanceID {
 			return true
 		}
-		if message.Type == "damage" && p.target.ID != "" && event.TargetID == p.target.ID {
+		currentTarget := p.target.ID != "" && event.TargetID == p.target.ID
+		ownWrittenTarget := m.offenseTargetID != "" && event.TargetID == m.offenseTargetID && event.InstanceID == m.offenseScene
+		if message.Type == "damage" && (currentTarget || ownWrittenTarget) {
 			m.damage++
 		}
 		if message.Type == "heal" {
@@ -302,10 +319,12 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		return
 	}
 	m := &p.members[index]
-	issue := func(kind string, payload interface{}) {
+	issue := func(kind string, payload interface{}) bool {
 		if request(kind, payload) != nil {
 			p.failed = true
+			return false
 		}
+		return true
 	}
 	if !p.formed() {
 		if m.admitted && now.Sub(m.admittedAt) >= time.Duration(len(p.members))*timeout {
@@ -455,7 +474,9 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 	}
 	if !now.Before(m.readyAt[skill]) && (skill == "Healing Light" || distance <= 12) {
 		m.pendingSkill, m.abilitySent = skill, now
-		issue("ability", map[string]interface{}{"skillName": skill, "targetId": target.ID, "targetX": target.X, "targetZ": target.Z})
+		if issue("ability", map[string]interface{}{"skillName": skill, "targetId": target.ID, "targetX": target.X, "targetZ": target.Z}) {
+			m.rememberOffense(me, target)
+		}
 		return
 	}
 	attackRange := 3.0
@@ -463,7 +484,9 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		attackRange = 12
 	}
 	if distance <= attackRange {
-		issue("attack", map[string]string{"targetId": p.target.ID})
+		if issue("attack", map[string]string{"targetId": p.target.ID}) {
+			m.rememberOffense(me, p.target)
+		}
 	} else {
 		move(p.target.X, p.target.Z)
 	}
