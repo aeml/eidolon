@@ -1,6 +1,6 @@
 {
   "release": "Alpha 1.74.5",
-  "status": "EXACT_LOCAL_CHECKS_PASSED_PUBLICATION_PENDING",
+  "status": "PUSHED_EXACT_CI_IN_PROGRESS_PUBLIC_ACCEPTANCE_PENDING",
   "base": "Fresh origin/master9560ac60cc48a6daf6b65b57c0d23b092d18b3f0. Previous1.74.4 exact terminal all-ten-job CI and public frontend/backend identities/database readiness/login/notes/runtime bytes independently accepted before this assembly.",
   "finding": "An independently reproduced scheduler defect let an always-ready control queue bypass a due ping. Synthetic real-WebSocket before-correction regression failed0.012s. This does not establish the cause of historical target100 read failures or the separately diagnosed world-map mutation incident.",
   "scope": "Only server single-writer keepalive scheduling, real-wire ordering tests and release metadata/notes. An already-due ping is checked before draining control. Control still precedes state. Same54s ping period,60s idle limit,10s write deadline, access checks, ingress guards and schema22. No extra writer/goroutine/queue, casino authority, economy, account, permission or access changes. General world-state fairness is not implemented by this patch.",
@@ -10,5 +10,5 @@
     "server/write_pump_keepalive_test.go": "c7a88bd2988537fb7aa4703b3d11477014295db316d161e596fd35297bf47bc6"
   },
   "assembly": "Login/package/lock/server/container/Compose/deploy/CI/disposable-QA/release metadata consistently1.74.5. New player-facing connection patch notes precede full retained history. Future schema23–24, bot changes, drain diagnostics and unapproved privacy/ops changes excluded. Owner dirty worktree unchanged.",
-  "publication": "Requires fresh ordinary merge of remote master, non-force push, exact terminal CI and independent public identities/readiness/login/notes proof. Luna authorized for deployment monitoring. This maintenance release does not complete ordered1.75–1.79 or the full1.99 roadmap."
+  "publication": "Freshly fetched master9560ac60 ordinarily merged (unchanged) immediately before committing/pushingba5983bbcabfec47601d22ea036fb3e108b74e1a to master without force. CI37250096379 confirmed in progress on exact head; Luna monitoring. Terminal CI and independent public identities/readiness/login/notes still required; not live-accepted yet. Future candidate merge ae31e781 preserves unpublished schema24/policy/ops/driver scope and is not the production deployment. This maintenance release does not complete ordered1.75–1.79 or the full1.99 roadmap."
 }
