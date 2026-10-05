@@ -51,6 +51,8 @@ func (limits PressureLimits) cause(sample Sample, elapsed time.Duration) string 
 		}
 	}
 	if limits.MaxInFlightCalls > 0 {
+		// Existing custody/persistence budget covers its original six boundaries.
+		// Frame phases are diagnostic timings, not additional financial calls.
 		if sample.Operational == nil {
 			return "metrics_unavailable"
 		}

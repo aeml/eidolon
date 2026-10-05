@@ -1,6 +1,6 @@
 {
   "release": "Alpha 1.74.6",
-  "status": "NARROW_CANDIDATE_PUSHED_EXACT_CI_PUBLIC_ACCEPTANCE_PENDING",
+  "status": "NARROW_RELEASE_ACCEPTED_EXACT_CI_AND_PUBLIC_IPV4_VERIFICATION",
   "base": "Fresh origin/master59dfed48b0d83515391b3592d02d7aa0ba1ec432, accepted Alpha1.74.5. Isolated narrow maintenance worktree; selected production/UI/test changes from prepared9db4c8ef, no future driver/schema24/privacy/ops scope. Owner dirty worktree unchanged.",
   "finding": "Hand-local revisions do not order different lobbies/hands. Earlier prepared before-fix tests independently reproduced all three UIs restoring older lobby3 failures and house driver choosing an older round1 failure. These fixtures demonstrate the ordering defect, not the unique cause of any100-player timeout or rejection.",
   "scope": "Four table-game projections expose existing saved table identity and int64 version as an exact canonical decimal string. Client retains newer ready view only for unchanged owner/private seat/table/seat/currency/game when a known older counter arrives. Fresh occupants still render; changed ownership/tables/currencies, unavailable/saving and equal/newer/legacy/malformed versions retain ordinary handling. Existing hand-local compatibility guard retained. No schema/index, wallet authority, economic rule, payout, timer, permission, payment or account wipe change.",
@@ -16,5 +16,11 @@
     "server/casino_house_sessions.go": "2b0b000bcd1f4bf4c9a73dc5fd355e7de25fcb3734691b743ceaaea5fa754625",
     "server/casino_poker_sessions.go": "fa2d8aa8e24f6e5ec4e9f6db237132b91b168cca0badf16714d3253be12ce620"
   },
-  "publication": "Narrow candidate1c47e16a7247991f77a20607381fbbf910c190cd pushed after fresh ordinary remote merge (master unchanged at59dfed48). CI37256836401 confirmed in_progress on exact SHA, delegated to Luna. Own mandatory CI/deployment/live QA plus independent public identity/readiness/login/notes/four-changed-byte verification still required. Exact verifier prepared outside repo at/tmp/eidolon-179-social-sjpErQ/verify-1746.mjs. Accepted1.74.5 remains the live baseline. Prepared future branch ordinarily merges published changes separately; no receipt-only deployment. No full roadmap, beta, finale,100-client capacity or final-art completion claim."
+  "publication": "Narrow1c47e16a7247991f77a20607381fbbf910c190cd pushed after fresh ordinary remote merge (master unchanged at59dfed48). Luna confirmed CI37256836401 terminal success/all ten jobs. Root subsequently ran the prepared exact verifier: public IPv4 frontend/backend commits and Alpha1.74.6 versions match, database ready, login and all retained1.74.1–6 notes present, and all four publisher-rewritten runtime files match local source. This is the accepted live baseline. Skipped scopes: predeploy High/Low animation gallery, Well-Rested rendering/GPU lifecycle, full-character gameplay; live four-class and remote animations. No fresh evidence claimed for skipped scopes. No receipt-only deployment or full roadmap, beta, finale,100-client capacity or final-art completion claim.",
+  "publishedRuntimeSHA256": {
+    "src/ui/CasinoTableOrdering.js": "bd130966f68638de7066968dc2141c41ab00eea2dea3c2c0ca80a3ad33d5c603",
+    "src/ui/BlackjackTableUI.js": "f9690f20a49d67e2515c597261783975257fbd96a3c86c2e3aa6c55682848756",
+    "src/ui/PokerTableUI.js": "626e06dd5cb5387da906e42fa1abfc460251f74376e7fa0b9a09393a65ce5323",
+    "src/ui/HouseTableUI.js": "94ad17ca1e219fafc78485bf0a44d23035b4384d048e3a9aea85d5c6a0bba5af"
+  }
 }

@@ -421,11 +421,12 @@ Notes:
 ## Project Status
 
 - Current source version: `Alpha 1.74.6`. Narrow persistent cross-hand table
-  ordering is pushed at1c47e16a, CI37256836401 monitored by Luna; own terminal
-  CI/public acceptance pending.486 focused client/version checks, exact narrow
+  ordering is accepted live at1c47e16a: CI37256836401 all ten jobs succeed and
+  subsequent independent public IPv4 identities/readiness/login/retained notes
+  and all four changed runtime bytes match.486 focused client/version checks, exact narrow
   server race checks and three phone-sized presentation cases pass. No new
-  money, payout, timer, currency or schema change. Accepted1.74.5 remains the
-  live baseline until those gates pass. Narrow Sell All/error, real-player
+  money, payout, timer, currency or schema change. Optional animation/gallery,
+  Well-Rested/full-character/four-class scopes were skipped. Narrow Sell All/error, real-player
   administration and casino performance maintenance releases have been ordinarily
   merged from master. 1.74.3's exact all-ten-job CI37244170015 and independent
   public frontend/backend/login/notes proof passed at8b7ab8dd. Interface-only

@@ -1,6 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint (October5):** Alpha1.74.5 is independently accepted live
+**Current checkpoint (October5):** Alpha1.74.6 is now accepted live at
+1c47e16a7247991f77a20607381fbbf910c190cd. Luna confirms CI37256836401 terminal
+success/all ten jobs; root's subsequent exact public IPv4 verification passes
+frontend/backend identities, database readiness, login/cumulative patch notes and
+all four changed runtime bytes. Skipped animation/Well-Rested/full-character/
+four-class scopes retain their limitations. No receipt-only deployment needed.
+The admin real-player default and daily figures were independently verified in
+the published AdminUI;14 focused UI checks and prefix/day tests pass.
+
+Prior Alpha1.74.5 is independently accepted live
 at59dfed48b0d83515391b3592d02d7aa0ba1ec432. Luna confirmed CI37253104723 terminal
 success/all ten jobs; root subsequently verified exact public IPv4 frontend and
 backend versions/commits, database readiness, login/cumulative notes and all four
@@ -34,7 +43,8 @@ registry outcomes; no request-ID acknowledgement claim. New short two-player
 native check passes27.19s with every registry and independently fresh unchanged
 progression/Gold/EP/gear/bag saves. Owned fixture/private data removed. See
 [social receipt](docs/plans/2026-10-05-capacity-social-outcomes-checks.json).
-New outcomes remain mandatory but unearned in the full100 cohort; no replay.
+New outcomes were later earned in the full100 cohort below; overall capacity
+remains incomplete, and no unchanged replay is authorized.
 Prepared party/raid/event starting gear now matches the owner's requested class
 focus: plate strength Fighter, plate wisdom Cleric, dexterity leather dual-dagger
 Rogue, intelligence cloth Wizard, ordinary offhands and uncommon/rare natural
@@ -68,14 +78,23 @@ publish this future branch as maintenance. Luna watches deployments and long
 raid/dungeon processes; coding remains with root.
 
 Narrow1.74.6 is pushed at1c47e16a7247991f77a20607381fbbf910c190cd;
-CI37256836401 confirmed in_progress and delegated to Luna. Exact narrow486
+CI37256836401 is now terminal success and independently public-verified above. Exact narrow486
 client/version tests, focused server race2.121s and three System Chrome
 phone-sized presentation cases pass. Own patch notes/login/package/server/
 container/deploy defaults synchronized; future driver/schema24/policy/ops
-excluded.1.74.5 remains last accepted live until own terminal/public proof.
+excluded.1.74.6 is the accepted live baseline.
 Prepared branch ordinarily merges master at0f0b2038, resolving only README
 scope while preserving future work and owner workspace. Independent verifier
-prepared at/tmp/eidolon-179-social-sjpErQ/verify-1746.mjs. No receipt-only push.
+prepared at/tmp/eidolon-179-social-sjpErQ/verify-1746.mjs and now passes. No receipt-only push.
+
+Prepared1.78/1.79 diagnostics now distinguish actual realtime simulation from
+state broadcasting through existing bounded, identity-free health aggregates.
+An actual frame blocked on its client's snapshot lock shows completed simulation
+and in-flight broadcast; release queues its state and records completion. Native
+focused race checks and full monitor/operations suites pass. No gameplay delta,
+cadence, wallet/reward/deadline change, new alert policy or capacity acceptance.
+Legacy probes keep missing phase gauges unavailable; existing financial active
+call budgets stay unchanged. No new100 run or deployment of future source.
 
 **Historical checkpoint (September28):** Alpha1.21.0 is accepted live at
 614acf03d01eb794e90b9653f5b470671c8fed2b, CI36456025227 all ten jobs successful.

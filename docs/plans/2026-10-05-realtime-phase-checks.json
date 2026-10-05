@@ -1,0 +1,14 @@
+{
+  "milestones": ["Alpha1.78 observability", "Alpha1.79 measured headroom"],
+  "status": "PREPARED_UNPUBLISHED_PHASE_DIAGNOSTICS_NOT_CAPACITY_ACCEPTANCE",
+  "base": "e222b497d79b0e0b455e7265f56e7f76636562f9 isolated future preparation, separate from accepted live1.74.6",
+  "scope": "Reuse existing fixed-size operational aggregates for realtimeUpdate and stateBroadcast. Actual33ms frame still advances the same0.033 simulation delta, then broadcasts. Record elapsed wall-time samples/maxima/saturating totals and current in-flight gauges separately. No accounts, entities, amounts, errors or dynamic labels. No timer/cadence/reward/authority change, new threshold or monitoring service enablement.",
+  "proof": {
+    "actualFrame": "TestRealtimeSignalsSeparateActualSimulationAndBlockedBroadcast runs the production frame with an ordinary World and client. While the actual client snapshot lock is deliberately held, simulation has completed once and broadcast is in-flight, not falsely idle. Actual health HTTP reports both phases without the private player ID. Releasing the lock completes broadcast and queues one production state frame; completed/timed counts are one each. This is an in-process deliberately blocked fixture, not a reproduction or explanation of the native100 failure.",
+    "consumer": "Nine actual HTTP probe scenarios cover active broadcast, older server without either phase, partial pairs/counts, negative or malformed values, impossible failures/timing and unavailable-positive gauges. Older absence remains unavailable, not idle; peer error marker is not retained. Existing six custody/persistence active-call pressure budgets remain unchanged and do not count frame phases.",
+    "focusedRace": "Root/operations focused realtime, operational, health, readiness and pressure tests PASS1.843s and1.437s respectively.",
+    "fullConsumerRace": "Entire operations and monitor command suites PASS6.602s and7.045s.",
+    "instrumentationMicrobenchmark": "Reused beginOperationalCall helper:100ms benchmark,1,000,000 iterations,194.6ns/op,64B/op,2allocs/op. Synthetic helper cost only; two phase observations per production frame. Not a full game/CPU/network/database/client budget or capacity proof."
+  },
+  "remaining": "Use these prepared fixed phase signals alongside existing durable-call gauges in the next evidence-directed bounded diagnosis. Latest changed100 remains FAIL; do not replay unchanged or weaken per-client/paid/party/save gates. Current finale, other crystals, representative integrated/restart/headroom and owner policy/operations approvals remain open. Future code is not published as maintenance and no long native workload or production player mutation was performed."
+}

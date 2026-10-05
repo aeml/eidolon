@@ -2051,8 +2051,11 @@ art claim. Separate narrow1.74.6 table-timeline correction is pushed at1c47e16a,
 CI37256836401 monitored by Luna. Exact narrow486 client/version checks, server
 projection/view race checks and three portrait presentation cases pass; own
 patch notes/login version included. Future schema24/privacy/ops/driver work is
-excluded. Own terminal/public acceptance remains required, independently of
-unpublished capacity evidence. The complete1.75–1.99 original gates remain open.
+excluded. CI is now terminal success/all ten jobs; subsequent root exact public
+IPv4 identity/readiness/login/cumulative-note/four-runtime-byte checks pass.
+1.74.6 is the accepted live baseline, independently of unpublished capacity
+evidence. Optional animation/Well-Rested/full-character/four-class scopes remain
+skipped, not newly proved. The complete1.75–1.99 original gates remain open.
 
 Changed role-equipment/social comparison at7dcd2cfb subsequently fails234.69s:
 100 admitted, all20 assigned town/social participants deliver required views;
@@ -2070,6 +2073,16 @@ before Docker; actual flock regression plus27-case simulated-command race checks
 pass. External writers/other checkouts remain operator-coordinated; no live
 restore or global writer/recovery-objective approval inferred. Privacy/retention
 questions remain open, without changing current production policies.
+
+October5: [realtime phase diagnostics](2026-10-05-realtime-phase-checks.json)
+advance1.78/1.79 preparation: actual simulation and state broadcast are separately
+timed with in-flight gauges through existing fixed private-label-free health
+aggregates. A production frame deliberately blocked on its client snapshot lock
+shows completed simulation and active broadcast, then queues state normally when
+released. Focused native race and whole monitor/operations suites pass; legacy
+missing measurements remain unavailable. Existing financial call budgets and
+gameplay delta/cadence remain unchanged. These are diagnostic signals, not a
+reproduction of the100-client cause, accepted headroom or another long run.
 
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
