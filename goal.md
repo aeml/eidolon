@@ -44,6 +44,16 @@ launch closed beta, claim final art, weaken gates, rerun unchanged campaigns or
 publish this future branch as maintenance. Luna watches deployments and long
 raid/dungeon processes; coding remains with root.
 
+Narrow1.74.6 is pushed at1c47e16a7247991f77a20607381fbbf910c190cd;
+CI37256836401 confirmed in_progress and delegated to Luna. Exact narrow486
+client/version tests, focused server race2.121s and three System Chrome
+phone-sized presentation cases pass. Own patch notes/login/package/server/
+container/deploy defaults synchronized; future driver/schema24/policy/ops
+excluded.1.74.5 remains last accepted live until own terminal/public proof.
+Prepared branch ordinarily merges master at0f0b2038, resolving only README
+scope while preserving future work and owner workspace. Independent verifier
+prepared at/tmp/eidolon-179-social-sjpErQ/verify-1746.mjs. No receipt-only push.
+
 **Historical checkpoint (September28):** Alpha1.21.0 is accepted live at
 614acf03d01eb794e90b9653f5b470671c8fed2b, CI36456025227 all ten jobs successful.
 Root exact public IPv4 frontend/backend/database/login/history/five-asset checks

@@ -2032,6 +2032,28 @@ acceptance or causal attribution to counter fields/shared host load inferred.
 Use short timeout/update/settlement diagnosis before another target; no
 unchanged replay, longer timeout or easier workload. Broader roadmap stays open.
 
+October5 follow-up: [short town/social evidence](2026-10-05-capacity-social-outcomes-checks.json)
+now proves both actual players receive own live chat and the social/presence,
+friends, guild, PvP-own-profile and correct leaderboard views, followed by fresh
+independent saves preserving progression/Gold/EP/gear/bag. Native27.19s; owned
+fixture/private data removed. Registry delivery is post-request, not uniquely
+correlated acknowledgement (no request IDs). Every combined assigned town/social
+role now has mandatory observed-outcome gates; these are not yet earned in100.
+The ordinary mixed/nightly profile is unchanged. Unused casino decision-world/
+bag copies are also removed with focused race and allocation evidence, not a
+claim to explain100 failures. No unchanged full workload repeated.
+
+Narrow1.74.5 is independently live-accepted at59dfed48 after all ten jobs in
+CI37253104723 succeed and root verifies public IPv4 exact frontend/backend,
+database readiness, login/history and all four changed runtime bytes. Optional
+animation/Well-Rested/full-character/four-class scopes were skipped; no fresh
+art claim. Separate narrow1.74.6 table-timeline correction is pushed at1c47e16a,
+CI37256836401 monitored by Luna. Exact narrow486 client/version checks, server
+projection/view race checks and three portrait presentation cases pass; own
+patch notes/login version included. Future schema24/privacy/ops/driver work is
+excluded. Own terminal/public acceptance remains required, independently of
+unpublished capacity evidence. The complete1.75–1.99 original gates remain open.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves
