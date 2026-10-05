@@ -91,6 +91,10 @@ func classifyCasinoRejection(message Message) casinoFailureStage {
 		if reason == fmt.Sprintf("review the current round and choose %d–%d %s in steps of %d", minimum, maximum, currency, step) {
 			return casinoFailureRoundOrBet
 		}
+		minimum, maximum, step = game.CasinoBetLimits("poker", currency)
+		if reason == fmt.Sprintf("review the hand and choose %d–%d %s in steps of %d", minimum, maximum, currency, step) {
+			return casinoFailureRoundOrBet
+		}
 	}
 	switch reason {
 	case "table funds are being saved; please wait", "poker funds are being saved; please wait", "poker is recovering; please wait", "slot settlement still pending":

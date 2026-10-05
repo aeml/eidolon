@@ -12,5 +12,13 @@
     "server/cmd/loadtest/main.go": "9720389d22ec846afc83f56da3091a270c25cb0c06155e1d16c6caf1d143781e",
     "server/load_combined_integration_test.go": "4afd1c01f61cf6d64443223fde1029186db6872632b5e572a8285828ada528c4"
   },
+  "pokerBoundsFollowUp": {
+    "scope": "After the failed actual run, recognize the separate exact poker current-hand/buy-in limits instruction using current Gold/EP rule values. Preserve round_or_bet ambiguity, generic/private/suffixed input fallback, first rejection and no retries. Earlier actual poker rejections remain generic: do not retrospectively assign a reason.",
+    "checks": "Exact generic/structured rejection and timeout race checks passed1.086s; both currency instructions recognized and suffixed private input remains generic. No new actual run or production change.",
+    "sha256": {
+      "server/cmd/loadtest/casino_failure.go": "b7275d37e3ad3293c3cd1001cd059fe88024913f43a4d6897fc1dd8cc5dfc833",
+      "server/cmd/loadtest/casino_failure_test.go": "f2664b4064196d60ac46014422f51e9e15f0142ab982721c4c16b9716a980d5c"
+    }
+  },
   "next": "One bounded declared target100 comparison now ran with checked single-writer keepalive correction, acknowledged-wager replay guard and these diagnostics. Read categories all0; three blackjack combined round-or-bet matches, two generic poker rejections, zero minimum own combat impact and forced shutdown reject acceptance. Exact receipt2026-10-05-capacity-liveness-checks.json. Diagnose remaining boundaries before another large run. Earlier paid/state/save gates, earned scopes and broader/ordered release requirements remain unchanged."
 }
