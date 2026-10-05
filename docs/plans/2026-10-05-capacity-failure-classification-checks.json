@@ -1,0 +1,16 @@
+{
+  "status": "FOCUSED_CHECKS_PASSED_ACTUAL_TARGET_PENDING",
+  "scope": "Prepared driver/root diagnostics only, excluded from narrow1.74.4. Preserve all acceptance criteria, original failure counts, no automatic money retry and no raw socket/account/provider error output.",
+  "reads": "Reader stores only a fixed failure enum on unexpected ReadMessage error, after the existing stop/reader-shutdown suppression. Final aggregation occurs after reader termination. Categories timeout, policy, abnormal, going-away, normal, protocol/unsupported, too-big, server, EOF, unknown. Remote close reason/error/address text is never retained. Invalid enum normalizes to unknown; absent read failure remains uncounted. Every unexpected category still increments original readErrors and rejects success.",
+  "casino": "Exact source-backed blackjack current-round/stake-limits instruction now has a separate round_or_bet category. Server combines stale/closed round and invalid stake validation, so diagnostic deliberately does not infer stale as the sole cause. Recognize only exact current Gold/EP rule-generated instruction; suffix/unknown/private/malformed/oversized input remains generic rejected. Two missed exact blackjack seat-return instructions map to seat. First cause and rejection/no-retry gates unchanged.",
+  "root": "Combined actual harness permits only the new static aggregate Read failure coverage prefix alongside existing fixed fields. No arbitrary socket logs, identity, exception body or changed pass/save gate.",
+  "checks": "Initial read/state/blackjack race checks passed4.303s. Final exact driver classification/closed rejection/timeout/combined/state/blackjack race suite passed4.530s; root client-count/sustained-view validation race checks passed1.160s. Actual loopback policy-close frame (with deliberately opaque synthetic reason) classified policy, not guessed timeout. Wrapped known close codes, wrapped EOF, timeout, unknown errors, invalid enum, absent failure and retained first-rejection cause covered. Normal loopback blackjack shutdown stays error-free. gofmt/diff check passed. This does not retrospectively classify any earlier failed actual run.",
+  "sha256": {
+    "server/cmd/loadtest/read_failure.go": "cfdd79ed11871685a268cc042de15efc2c87675bb55f6b7fcda3c7a20a018e70",
+    "server/cmd/loadtest/read_failure_test.go": "3734d7bf1f3205278508f4dcc778bd8fc603ad2d530ece522d4ec4bcc9eaca44",
+    "server/cmd/loadtest/casino_failure.go": "e912ea47961fcb63c4651dc3455e3a84b090d97f1f25aedd9ecaeb23fb0edf8c",
+    "server/cmd/loadtest/main.go": "9720389d22ec846afc83f56da3091a270c25cb0c06155e1d16c6caf1d143781e",
+    "server/load_combined_integration_test.go": "4afd1c01f61cf6d64443223fde1029186db6872632b5e572a8285828ada528c4"
+  },
+  "next": "One bounded declared target100 comparison may use the checked single-writer keepalive correction and acknowledged-wager replay guard with these diagnostics. Do not replay unchanged smaller earned cohorts or full campaigns; retain failures and require actual all-player paid/state/impact/save criteria. General renderer/headroom/raid-event/social/settlement/restart and ordered release gates remain open."
+}

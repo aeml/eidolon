@@ -311,6 +311,9 @@ func main() {
 	log.Printf("Own state coverage: clients=%d min_updates=%d", coverage.ownClients, coverage.minOwnUpdates)
 	log.Printf("Admission coverage: authenticated=%d failed=%d max_registration_ms=%d max_login_ms=%d max_join_ms=%d",
 		metrics.authenticated.Load(), metrics.admissionErrors.Load(), coverage.maxRegistration.Milliseconds(), coverage.maxLogin.Milliseconds(), coverage.maxJoin.Milliseconds())
+	reads := summarizeReadFailures(observations)
+	log.Printf("Read failure coverage: timeout=%d policy=%d abnormal=%d going_away=%d normal=%d protocol=%d too_big=%d server=%d eof=%d unknown=%d",
+		reads[readFailureTimeout], reads[readFailurePolicy], reads[readFailureAbnormal], reads[readFailureGoingAway], reads[readFailureNormal], reads[readFailureProtocol], reads[readFailureTooBig], reads[readFailureServer], reads[readFailureEOF], reads[readFailureUnknown])
 	var requestedRecoveries, completedRecoveries uint64
 	var pendingRecoveries, failedRecoveries int
 	for _, observation := range observations {
@@ -373,7 +376,7 @@ func main() {
 		results, valid := summarizeCombinedCasino(assignments, observations)
 		for _, result := range results {
 			log.Printf("Combined casino coverage: scenario=%s clients=%d accepted_wagers=%d paid_results=%d min_paid_results=%d observed_actions=%d completed_bonuses=%d failed=%d", result.scenario, result.clients, result.wagers, result.paid, result.minimum, result.observedActions, result.bonuses, result.failed)
-			log.Printf("Combined casino rejection coverage: scenario=%s busy=%d stale=%d seat=%d rate=%d rejected=%d timeout=%d other=%d", result.scenario, result.failures[casinoFailureBusy], result.failures[casinoFailureStale], result.failures[casinoFailureSeat], result.failures[casinoFailureRate], result.failures[casinoFailureRejected], result.failures[casinoFailureTimeout], result.failures[casinoFailureUnknown])
+			log.Printf("Combined casino rejection coverage: scenario=%s busy=%d stale=%d seat=%d rate=%d round_or_bet=%d rejected=%d timeout=%d other=%d", result.scenario, result.failures[casinoFailureBusy], result.failures[casinoFailureStale], result.failures[casinoFailureSeat], result.failures[casinoFailureRate], result.failures[casinoFailureRoundOrBet], result.failures[casinoFailureRejected], result.failures[casinoFailureTimeout], result.failures[casinoFailureUnknown])
 			log.Printf("Combined casino timeout coverage: scenario=%s enter=%d sit=%d slot_spin=%d slot_bonus=%d blackjack_bet=%d blackjack_play=%d house_bet=%d poker_buy_in=%d poker_play=%d unknown=%d", result.scenario, result.timeouts[casinoTimeoutEnter], result.timeouts[casinoTimeoutSit], result.timeouts[casinoTimeoutSpin], result.timeouts[casinoTimeoutBonus], result.timeouts[casinoTimeoutBlackjackBet], result.timeouts[casinoTimeoutBlackjackPlay], result.timeouts[casinoTimeoutHouseBet], result.timeouts[casinoTimeoutPokerBuyIn], result.timeouts[casinoTimeoutPokerPlay], result.timeouts[casinoTimeoutUnknown])
 		}
 		log.Printf("Combined workload: clients=%d party_clients=%d poker_clients=%d blackjack_clients=%d house_clients=%d slots_clients=%d town_clients=%d social_clients=%d", *count, *count/5, *count/10, *count/5, *count/5, *count/10, *count/10, *count/10)
@@ -569,6 +572,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 				case <-readerStopping:
 				default:
 					metrics.readErrors.Add(1)
+					observation.readFailure = classifyReadFailure(err)
 				}
 				return
 			}

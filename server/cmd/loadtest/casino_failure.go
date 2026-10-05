@@ -1,6 +1,11 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+
+	"eidolon-server/internal/game"
+)
 
 type casinoFailureStage uint8
 
@@ -53,6 +58,7 @@ const (
 	casinoFailureStale
 	casinoFailureSeat
 	casinoFailureRate
+	casinoFailureRoundOrBet
 	casinoFailureRejected
 	casinoFailureTimeout
 	casinoFailureKinds
@@ -78,12 +84,20 @@ func classifyCasinoRejection(message Message) casinoFailureStage {
 	} else if message.Type != "error" || json.Unmarshal(message.Payload, &reason) != nil {
 		return stage
 	}
+	// This handler combines a stale/closed round and invalid stake bounds in
+	// one instruction. Retain that ambiguity instead of calling it stale.
+	for _, currency := range []string{"gold", "ep"} {
+		minimum, maximum, step := game.CasinoBetLimits("blackjack", currency)
+		if reason == fmt.Sprintf("review the current round and choose %d–%d %s in steps of %d", minimum, maximum, currency, step) {
+			return casinoFailureRoundOrBet
+		}
+	}
 	switch reason {
 	case "table funds are being saved; please wait", "poker funds are being saved; please wait", "poker is recovering; please wait", "slot settlement still pending":
 		return casinoFailureBusy
 	case "round changed; review the table", "blackjack round changed; review the table", "blackjack round changed; refresh the table", "wait for your blackjack turn", "blackjack turn expired", "poker hand changed; review the table", "slot state changed; refresh before acting", "betting has closed for this round", "this hand is closed to new buy-ins":
 		return casinoFailureStale
-	case "that seat is occupied or reserved for a reconnect", "leave your current seat first", "finish your current action before sitting in the casino", "walk up to the seat first", "go to that casino floor before sitting", "approach the casino door in Lanternhold first", "sit at the table before wagering", "sit at the poker table before playing", "sit at an elemental machine before playing":
+	case "that seat is occupied or reserved for a reconnect", "leave your current seat first", "finish your current action before sitting in the casino", "walk up to the seat first", "go to that casino floor before sitting", "approach the casino door in Lanternhold first", "sit at the table before wagering", "sit at the blackjack table before playing", "return to your funded blackjack seat before playing this hand", "sit at the poker table before playing", "sit at an elemental machine before playing":
 		return casinoFailureSeat
 	case "message rate limit exceeded", "message rate limit exceeded: casino":
 		return casinoFailureRate

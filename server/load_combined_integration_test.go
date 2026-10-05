@@ -119,7 +119,7 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 		}
 	}
 	for _, line := range strings.Split(string(output), "\n") {
-		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Party coverage|Combined casino coverage|Combined casino rejection coverage|Combined casino timeout coverage|Combined workload): [a-z_0-9= -]+$`).FindString(line); match != "" {
+		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Read failure coverage|Party coverage|Combined casino coverage|Combined casino rejection coverage|Combined casino timeout coverage|Combined workload): [a-z_0-9= -]+$`).FindString(line); match != "" {
 			t.Log(match) // Aggregate fields only; never raw credential/socket logs.
 		}
 	}
