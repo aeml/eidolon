@@ -105,11 +105,21 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 		t.Fatal("could not store disposable credentials")
 	}
 	address, stop := compatStartServer(t, binary, uri, 179, "-save-journal-dir", t.TempDir())
+	logPhases := func(stage string) {
+		value, err := readCombinedPhaseEvidence(address)
+		if err != nil {
+			t.Logf("Combined phase measurements: stage=%s unavailable=true", stage)
+			return
+		}
+		t.Logf("Combined phase measurements: stage=%s counters=%s", stage, value)
+	}
+	logPhases("before-driver")
 	ctx, cancel := context.WithTimeout(context.Background(), 150*time.Second)
 	defer cancel()
 	command := exec.CommandContext(ctx, driver, "-addr", address, "-scheme", "ws", "-scenario", "combined", "-n", strconv.Itoa(count), "-credentials-file", credentialPath, "-casino-bet", "100", "-party-combat-x", "400", "-party-combat-z", "600", "-duration", "120s", "-admission-timeout", "5s")
 	started := time.Now()
 	output, runErr := command.CombinedOutput()
+	logPhases("after-driver")
 	// The driver already emits fixed startup failure codes. Preserve aggregate
 	// causes without printing bot IDs, credentials or arbitrary socket output.
 	for _, reason := range []string{"admission_busy", "admission_rejected", "admission_timeout", "admission_connection_closed", "invalid_admission_response", "unexpected_admission_response", "admission_write_failed", "prepared_workload_requires_character", "party_requires_prepared_class"} {

@@ -1,0 +1,7 @@
+{
+  "status": "prepared-diagnostic-not-published-or-exercised-in-a-new-capacity-run",
+  "scope": "Existing native combined workload now reads two bounded loopback health snapshots, before and after its driver. Reuses the readiness probe's response, redirect, numeric and timing validation. Emits only fixed simulation/broadcast counters, never arbitrary health JSON, player identities, request contents or credentials.",
+  "verification": "Focused CombinedPhaseEvidence/CombinedIntegrationClientCount/CombinedIntegrationViewCoverage race checks pass1.181s. Actual HTTP cases cover observed counters, unavailable legacy/partial measurements, invalid counts, redirects and oversized responses; non-loopback/malformed addresses rejected. Existing sustained view/client-count gates retained.",
+  "invariants": "No workload cohort, enemies, gear, driver duration, admission deadline, view coverage, casino settlement, party credit/healing or independent-save threshold changed. Missing diagnostics are labeled unavailable, not observed zero. Two requests only; no periodic sampling or automatic retry.",
+  "limits": "Fixed process-lifetime counters and maxima are not interval maxima, CPU cost, percentile/SLA measurements or unique causes of timeouts. The probe requires valid build identity metadata; next fresh native binaries must set exact source buildCommit. No100-player replay performed, no current capacity or headroom acceptance inferred. Actual ordered1.75–1.99 gates remain open."
+}

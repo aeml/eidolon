@@ -2,6 +2,9 @@
 
 **Maintenance publication:** Alpha1.74.7 is pushed at7af0b2798f0cb0b2ed245736df0c95aacedff586.
 Its exact CI37264989129 is confirmed pending; Luna monitors the specific run.
+Root canceled only superseded, failed d6ca9 CI37263815257 after confirming its
+required client/server jobs failed and one static browser job still held the
+publication queue. No production action, latest-run cancellation or gate bypass.
 Stash/jump/activity durability checks and all three connected stash browser
 layouts pass. Its own CI, exact public bytes and retained-history recheck are
 pending. Only the narrow maintenance branch was published; this future candidate
@@ -24,6 +27,12 @@ guard or paved-ground assertion relaxed; replacement deployment still pending.
 See [maintenance evidence](docs/plans/2026-10-05-release1-74-7-checks.json).
 This does not close future policy, capacity, art or beta gates. Historical
 checkpoints below are retained as history, not the current live status.
+
+Future capacity diagnostics now capture two bounded, numeric-only real
+simulation/broadcast health snapshots around the existing combined driver.
+Focused actual HTTP/privacy/validation and unchanged count/coverage race checks
+pass1.181s. No new100 run, periodic sampler, workload/deadline relaxation or
+capacity claim. See [diagnostic preparation](docs/plans/2026-10-05-combined-phase-evidence-checks.json).
 
 **Current checkpoint (October5):** Alpha1.74.6 is now accepted live at
 1c47e16a7247991f77a20607381fbbf910c190cd. Luna confirms CI37256836401 terminal
