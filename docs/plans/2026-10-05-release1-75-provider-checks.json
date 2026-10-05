@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "4afb5bbf",
+  "status": "provider-code-documentation-reviewed-analytics-boundary-locally-verified-unpublished",
+  "scope": [
+    "Shared game/website analytics wrapper no longer forwards arbitrary event names/properties or URL paths. Existing game start/engagement/end and website Play click only, closed enums and numeric durations in0..one year (positive engagement, total not above elapsed); canonical production-root location, fixed title and origin-only referrer are explicit on configuration and each custom send.",
+    "Sensitive query/fragment markers independently prevent initial tag loading and later custom events; late sensitive flag rechecked. Existing provider code is not unloaded or previous data recalled. Dashboard-enabled automatic measurement remains outside the custom emitter's control.",
+    "Primary Google/Postmark documentation reviewed for PII boundaries, independent automatic events, retention/deletion scope and recovery-message tracking/content storage. Current dashboard settings not accessed or inferred, no provider policy/retention/consent changes or compliance certification."
+  ],
+  "providerSources": [
+    {"url": "https://support.google.com/analytics/answer/6366371?hl=en", "finding": "Protect URL paths/parameters/titles and custom fields, not just query strings."},
+    {"url": "https://support.google.com/analytics/answer/9216061?hl=en", "finding": "Enhanced Measurement independently collects options configured in the provider UI; custom allowlists do not disable those events."},
+    {"url": "https://support.google.com/analytics/answer/7667196?hl=en", "finding": "User/event-level retention is separate from standard aggregated reporting; actual property value unverified."},
+    {"url": "https://support.google.com/analytics/answer/9940393?hl=en", "finding": "Deletion requests have specific scope; parameter erasure can leave events counted. No deletion requested."},
+    {"url": "https://postmarkapp.com/developer/api/email-api", "finding": "Explicit per-message TrackOpens/TrackLinks controls match the current no-tracking mail contract."},
+    {"url": "https://postmarkapp.com/support/article/how-does-the-retention-add-on-work", "finding": "Message/activity retention and expiry queues are separate from aggregates/suppressions; account setting unverified and unchanged."},
+    {"url": "https://postmarkapp.com/support/article/can-i-hide-or-turn-off-saving-of-message-content-in-my-activity-page", "finding": "Tracking suppression is not immediate message-content removal."},
+    {"url": "https://postmarkapp.com/manual", "finding": "Older bounce/complaint retention wording differs from current support distinctions; no promise of complete provider erasure without clarification."}
+  ],
+  "checks": [
+    {"scope": "Focused analytics/private support", "result": "Final four Jest suites69 tests pass2.919s: arbitrary private name/path/property/destination input, enum normalization, invalid/nonnumeric/negative/nonfinite/oversized durations, impossible total, extras and known-field accessors/inherited values, cross-surface events, unsupported surface/hosts, independent sensitive query/fragment/duplicate-marker suppression/late flag, tag single initialization and existing gameplay time accounting/private request/download/notice regressions."},
+    {"scope": "Local TLS recovery mail", "result": "Focused root race TestRecoveryMail pass1.190s using only synthetic local TLS server. Correct payload/no tracking, acceptance vs rejection, no private diagnostic/header leak, configuration safety and redirect refusal remain verified. No actual Postmark request or real recovery email sent."},
+    {"scope": "Shared website integration", "result": "Final website build succeeds; copied GoogleAnalytics.js matches source byteSHA2562f390d854989fb1476d3188025572289cdcad995c40b9b6e263bf00a47c79671. Existing website CTA mapping remains accepted. No website deployment or external settings mutation."},
+    {"scope": "Static/isolation", "result": "Affected ESLint and whitespace checks pass; two JSON records parse and all113 referenced source paths exist. Fresh fetch shows no remote commits beyond the current base7af0b279. No production/player/provider writes, schema/TTL changes, actual-device/provider network acceptance, deployment or unchanged long campaign/capacity/raid replay."}
+  ],
+  "remaining": [
+    "Read-only owner confirmation of current GA4 retention/Enhanced Measurement and Postmark retention, requested without credentials or changes.",
+    "Mechanical coordinated removal/writer/journal/archive safeguards before any erasure operation, provider clarification/qualified review as needed, and full1.75 notes/version/merge/CI/exact live acceptance.",
+    "Full1.99 roadmap objective remains active; this is not complete account export/removal or beta/full-release acceptance."
+  ]
+}

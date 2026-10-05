@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 provider-boundary checkpoint:** Primary Google/Postmark docs and current
+code reviewed without provider writes, actual mail or retention/consent changes.
+Closed the shared analytics wrapper's arbitrary event/property/path forwarding:
+only existing coarse events, enums, bounded durations and canonical safe page
+context can be sent. Sensitive markers independently suppress bootstrap/manual
+emission; this does not control provider automatic events or erase old data.
+Focused analytics/private-support tests and local TLS mail contract pass; website
+build copies the exact shared module. Provider dashboard settings still need
+owner read-only confirmation, and mechanical removal/restore plus1.75 release
+acceptance remain open. See
+[provider evidence](docs/plans/2026-10-05-release1-75-provider-checks.json).
+
 **October5 reviewed-removal safeguards checkpoint:** Added a case-quote-bound,
 audited staff dependency read showing14 constant reference-presence flags and
 non-frozen session/pending-character-save observations. It exposes no raw private

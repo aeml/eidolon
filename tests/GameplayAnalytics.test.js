@@ -124,14 +124,17 @@ describe('GA4 production bootstrap', () => {
 
     test.each(['eidolonrealms.com', 'play.eidolonrealms.com'])('shares the tag and cookie scope on %s without URL secrets', host => {
         const { win, doc } = browser(host);
-        const send = initializeAnalytics(host.startsWith('play.') ? 'game' : 'website', win, doc);
-        send('play_click', { cta_location: 'hero' });
+        const surface = host.startsWith('play.') ? 'game' : 'website';
+        const send = initializeAnalytics(surface, win, doc);
+        const name = surface === 'game' ? 'gameplay_start' : 'play_click';
+        const parameters = surface === 'game' ? {player_class:'Wizard'} : {cta_location:'hero'};
+        send(name, parameters);
         const config = [...win.dataLayer[1]];
         expect(config.slice(0, 2)).toEqual(['config', MEASUREMENT_ID]);
         expect(config[2]).toMatchObject({ cookie_domain: 'eidolonrealms.com', page_location: `https://${host}/`, page_referrer: 'https://example.com/', allow_google_signals: false, allow_ad_personalization_signals: false });
         expect(JSON.stringify(win.dataLayer)).not.toContain('private');
         expect(doc.head.appendChild.mock.calls[0][0].src).toBe(`https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`);
-        expect([...win.dataLayer[2]]).toEqual(['event', 'play_click', expect.objectContaining({ cta_location: 'hero', send_to: MEASUREMENT_ID })]);
+        expect([...win.dataLayer[2]]).toEqual(['event', name, expect.objectContaining({ ...parameters, send_to: MEASUREMENT_ID })]);
     });
 
     test('initializes once so repeated imports do not duplicate page views', () => {
@@ -140,5 +143,78 @@ describe('GA4 production bootstrap', () => {
         initializeAnalytics('website', win, doc);
         expect(doc.head.appendChild).toHaveBeenCalledTimes(1);
         expect(win.dataLayer).toHaveLength(2);
+    });
+
+    test('canonical paths and closed event fields exclude arbitrary personal text and destination overrides', () => {
+        const { win, doc } = browser('play.eidolonrealms.com');
+        win.location.pathname='/private-owner@example.com/private-reset';
+        const send=initializeAnalytics('game',win,doc);
+        const extras={account:'private-owner',password:'private-proof',token:'private-link',report:'private-report',
+            user_id:'private-identity',page_location:'https://private-url',page_referrer:'private-referrer',send_to:'private-tag',site_surface:'private-surface'};
+        send('gameplay_start',{player_class:'Wizard',...extras});
+        send('gameplay_engagement',{player_class:'Rogue',active_play_seconds:30,...extras});
+        send('gameplay_end',{player_class:'Cleric',total_active_play_seconds:45,elapsed_session_seconds:60,end_reason:'pagehide',...extras});
+        send('private-event-name',extras);send('play_click',{cta_location:'hero'});
+        expect(win.dataLayer).toHaveLength(5);
+        expect(JSON.stringify(win.dataLayer)).not.toContain('private-');
+        expect([...win.dataLayer[1]][2].page_location).toBe('https://play.eidolonrealms.com/');
+        expect(Object.keys([...win.dataLayer[2]][2]).sort()).toEqual(['page_location','page_referrer','page_title','player_class','send_to','site_surface']);
+        win.location.pathname='/another-private-path';doc.referrer='https://private-path.example/account';
+        send('gameplay_start',{player_class:'Wizard'});
+        expect([...win.dataLayer[5]][2]).toMatchObject({page_location:'https://play.eidolonrealms.com/',page_referrer:'https://example.com/',page_title:'Eidolon Online'});
+    });
+
+    test('unrecognized enum values are normalized or refused and durations are bounded numbers', () => {
+        const {win,doc}=browser('play.eidolonrealms.com');const send=initializeAnalytics('game',win,doc);
+        send('gameplay_start',{player_class:'private-name'});
+        send('gameplay_end',{player_class:'Wizard',total_active_play_seconds:0,elapsed_session_seconds:0,end_reason:'private-email@example.com'});
+        const count=win.dataLayer.length;
+        for(const value of ['private-duration',-1,NaN,Infinity,365*86400+1]){
+            send('gameplay_engagement',{player_class:'Wizard',active_play_seconds:value});
+            send('gameplay_end',{total_active_play_seconds:0,elapsed_session_seconds:value});
+        }
+        send('gameplay_engagement',{active_play_seconds:0});send('gameplay_end',{total_active_play_seconds:2,elapsed_session_seconds:1});
+        send('gameplay_start',null);send('gameplay_start',[]);
+        expect(win.dataLayer).toHaveLength(count);expect(JSON.stringify(win.dataLayer)).not.toContain('private-');
+        expect([...win.dataLayer[2]][2].player_class).toBe('Unknown');expect([...win.dataLayer[3]][2].end_reason).toBe('exit');
+    });
+
+    test('website event uses only known placements and ignores unknown properties without reading getters', () => {
+        const {win,doc}=browser('www.eidolonrealms.com');const send=initializeAnalytics('website',win,doc);
+        const parameters={cta_location:'hero',get privateValue(){throw new Error('must not read');}};
+        expect(()=>send('play_click',parameters)).not.toThrow();
+        send('play_click',{cta_location:'private-player'});send('gameplay_start',{player_class:'Wizard'});
+        expect(win.dataLayer).toHaveLength(3);expect([...win.dataLayer[2]][2]).toEqual({cta_location:'hero',site_surface:'website',send_to:MEASUREMENT_ID,
+            page_location:'https://www.eidolonrealms.com/',page_referrer:'https://example.com/',page_title:'Eidolon — Multiplayer Browser Action RPG'});
+    });
+
+    test('known-field accessors and inherited properties cannot change value between validation and emission', () => {
+        const {win,doc}=browser('play.eidolonrealms.com');const send=initializeAnalytics('game',win,doc);
+        const read=jest.fn(()=> 'private-owner');
+        const fields={get player_class(){return read();},get active_play_seconds(){return read();}};
+        send('gameplay_start',fields);send('gameplay_engagement',fields);
+        send('gameplay_start',Object.create({player_class:'private-owner'}));
+        expect(read).not.toHaveBeenCalled();expect(win.dataLayer).toHaveLength(4);
+        expect([...win.dataLayer[2]][2].player_class).toBe('Unknown');expect([...win.dataLayer[3]][2].player_class).toBe('Unknown');
+        const website=browser('eidolonrealms.com');const click=initializeAnalytics('website',website.win,website.doc);
+        click('play_click',{get cta_location(){return read();}});expect(website.win.dataLayer).toHaveLength(2);
+        expect(read).not.toHaveBeenCalled();expect(JSON.stringify(win.dataLayer)).not.toContain('private-');
+    });
+
+    test.each(['?eidolon-private=account','?eidolon-recovery=invalid&account=private-owner','?eidolon-private=account&eidolon-private=invalid','#eidolon-private=invalid','#eidolon-recovery=reset&account=private-owner&token=private-proof'])('private marker %s independently suppresses initialization and later manual events', marker => {
+        const {win,doc}=browser('play.eidolonrealms.com');const send=initializeAnalytics('game',win,doc);
+        if(marker.startsWith('?'))win.location.search=marker;else win.location.hash=marker;
+        const count=win.dataLayer.length;send('gameplay_start',{player_class:'Wizard'});expect(win.dataLayer).toHaveLength(count);
+        const fresh=browser('play.eidolonrealms.com');
+        if(marker.startsWith('?'))fresh.win.location.search=marker;else fresh.win.location.hash=marker;
+        initializeAnalytics('game',fresh.win,fresh.doc)('gameplay_start',{player_class:'Wizard'});
+        expect(fresh.doc.head.appendChild).not.toHaveBeenCalled();expect(fresh.win.dataLayer).toBeUndefined();
+    });
+
+    test('late sensitive flag and invalid surface stop our emitter without claiming to unload existing provider code', () => {
+        const {win,doc}=browser('play.eidolonrealms.com');const send=initializeAnalytics('game',win,doc);
+        win.__eidolonRecoverySensitivePage=true;send('gameplay_start',{player_class:'Wizard'});expect(win.dataLayer).toHaveLength(2);
+        const fresh=browser('eidolonrealms.com');initializeAnalytics('private-owner',fresh.win,fresh.doc)('play_click',{cta_location:'hero'});
+        expect(fresh.doc.head.appendChild).not.toHaveBeenCalled();
     });
 });

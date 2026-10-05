@@ -431,6 +431,75 @@ without claiming legal certification or provider cleanup. Focused automated UI
 and boot regressions pass; actual-device/live notice acceptance is not claimed.
 See [notice checks](2026-10-05-release1-75-notice-checks.json).
 
-Website analytics/provider policy review, full export coverage, delivery access
-checks, coordinated-removal fixtures and qualified review where required remain
-milestone gates. No beta/full-release readiness claim follows from this workflow.
+The provider code/documentation review below does not establish current dashboard
+settings. Provider configuration confirmation, remaining removal/restore fences,
+live delivery acceptance and qualified review where required remain milestone
+gates. No beta/full-release readiness claim follows from this workflow.
+
+## Provider review — code and documentation, not dashboard acceptance
+
+Reviewed October5 against current code and primary provider documentation. No
+provider dashboard/API settings, retention, consent choice or real-player data
+were changed. This is a technical review, not legal certification.
+
+### Google Analytics
+
+Google requires personal information to be excluded from URL paths/parameters,
+titles and custom event fields. The shared game/website wrapper previously
+forwarded arbitrary event names/properties and retained arbitrary URL paths;
+current callers were coarse, but the forwarding boundary could admit personal
+text. It now admits only the existing three gameplay events and website Play
+click, fixed class/placement/end-reason enums and bounded numeric durations.
+Unknown fields, identity/destination overrides and extra getters are not read or
+forwarded. Initial configuration and every custom event carry a canonical public
+root URL, fixed title and origin-only referrer. Sensitive markers are checked
+independently at bootstrap and on every custom emission. These changes do not
+unload an already initialized provider tag or recall previously sent data.
+[Google PII guidance](https://support.google.com/analytics/answer/6366371?hl=en).
+
+Provider-enabled Enhanced Measurement can independently collect history-based
+page views, outbound link URLs, searches, downloads and form metadata; it is
+configured in the provider interface. A custom-event allowlist does not control
+that separate collection. Inspect and record the actual stream/tag settings,
+including history changes, forms, search, links and downloads, before claiming
+complete URL/form redaction. No dashboard change was made or inferred.
+[Enhanced Measurement](https://support.google.com/analytics/answer/9216061?hl=en).
+
+GA retention applies to user/event-level data but not all standard aggregated
+reports. Do not substitute Eidolon's activity-history cutoff for provider
+retention. Record the actual property settings without changing them. A separate
+authorized provider deletion request has its own scope/status; it is not proof
+that every event or aggregate disappeared or that a game case was fulfilled.
+[Retention](https://support.google.com/analytics/answer/7667196?hl=en),
+[deletion scope](https://support.google.com/analytics/answer/9940393?hl=en).
+
+### Postmark recovery mail
+
+Existing code supplies only the needed sender/recipient/stream/subject/text and
+private recovery link; it explicitly sends `TrackOpens:false` and
+`TrackLinks:"None"`, with no CC/BCC or administrator copy. Acceptance is not inbox
+delivery. TLS fixture tests verify the contract, redirect refusal and generic
+errors without contacting Postmark or sending real mail.
+[Email API](https://postmarkapp.com/developer/api/email-api).
+
+Provider support describes45-day default message/activity retention with optional
+7–365-day settings; this is not confirmation of this account's configured value.
+Retention changes affect future messages, expiry queues physical removal, and
+aggregate statistics/suppression history have separate treatment. Disabling open
+or link tracking does not stop message-body retention. The support article also
+states that content cannot simply be hidden or immediately deleted.
+[Retention support](https://postmarkapp.com/support/article/how-does-the-retention-add-on-work),
+[content retention](https://postmarkapp.com/support/article/can-i-hide-or-turn-off-saving-of-message-content-in-my-activity-page).
+
+An older manual describes indefinite bounce/complaint retention whereas the
+updated support article distinguishes expired message/activity copies from
+remaining suppression history. Do not promise full provider erasure from either
+wording alone; obtain provider clarification for an actual separately authorized
+request. Recipient mailbox and downstream copies also remain outside Eidolon's
+Mongo export/removal workflow. No provider cleanup was attempted.
+[Manual](https://postmarkapp.com/manual).
+
+Current GA dashboard options/retention and Postmark retention have been requested
+from the owner as a read-only check; they remain unverified. Preserve current
+settings and do not collect credentials or change provider policy as part of
+this review. See [provider checks](2026-10-05-release1-75-provider-checks.json).

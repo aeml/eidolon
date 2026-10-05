@@ -214,7 +214,7 @@
         "src/analytics/GameSessionTracker.js",
         "docs/ANALYTICS.md"
       ],
-      "data": "Existing Google tag on the three configured production hosts, parent-domain cookie scope, page view and aggregate class/session/active-play events. Custom locations omit query/fragment, referrers retain origin, and custom tracking does not inspect input values.",
+      "data": "Existing Google tag on the three configured production hosts, parent-domain cookie scope and initial page view. Unpublished shared wrapper restricts custom sends to three existing gameplay events and website Play click, closed class/placement/end-reason values and bounded numeric duration fields. Configuration and every custom event carry canonical public-root URL, fixed title and origin-only referrer; arbitrary paths, event names/extra identity/destination fields are not forwarded. Sensitive markers independently stop bootstrap/custom sends. Provider-enabled automatic measurement remains separately configured and unverified; this is not complete provider redaction or proof the data is anonymous.",
       "boundary": "The normal third-party tag/cookies remain separate from the optional timer. No consent platform is configured in this source. Provider retention, Enhanced Measurement settings, access, consent/opt-out and accurate player notice require an explicit owner decision and appropriate review; local mocks do not establish provider behavior. Accepted recovery-link pages suppress this loader; that safeguard does not settle collection/consent policy on ordinary pages."
     },
     {
@@ -353,6 +353,12 @@
     ],
     "scope": "Exact removal case/status/review quote, current durable staff authority and fail-closed audited delivery. Bounded case owner plus14 current reference-presence flags only, not raw payloads/counts/custody reconciliation. Separate online and exact hashed-path pending-save observations; missing journal configuration is not checked, unavailable volume/nonregular/linked/oversized save fails. No body read, replay, acknowledgement, deletion, settlement or new storage/retention. Empty observations and case resolution never enable erasure. Restore additionally requires independent privacy/journal-plan acknowledgment before Docker operations; attestation is not mechanical anti-resurrection verification.",
     "remaining": "Individually authorized erasure would first need durable writer/journal/archive removal fences, shared custody reconciliation and independent retained-copy verification. Other journals, hosts/writers, RAM, archives/provider/browser copies require separate handling. No removal operation is enabled or actual player erased."
+  },
+  "providerReview": {
+    "status": "code-and-primary-documentation-reviewed-dashboard-settings-unverified",
+    "sources": ["src/analytics/GoogleAnalytics.js", "src/analytics/game.js", "src/analytics/GameSessionTracker.js", "tests/GameplayAnalytics.test.js", "tests/RecoveryLinkBoot.test.js", "website/src/analytics.js", "website/scripts/build.mjs", "server/recovery_mail.go", "server/recovery_mail_test.go"],
+    "scope": "Closed custom analytics emission and safe page context verified locally. Primary Google docs distinguish custom URL/field protection from dashboard-enabled automatic collection and user/event retention from aggregated reports. Primary Postmark docs establish per-message no-open/no-link flags and separate message/activity retention, deletion queues, suppression/aggregate/mailbox copies; current actual settings remain unknown and older manual wording is not used to promise full erasure. No real mail, provider query/write/deletion, consent gate, retention change or compliance claim.",
+    "remaining": "Owner read-only confirmation of GA retention/Enhanced Measurement and Postmark retention; provider clarification/qualified review when required for actual separately authorized requests. Live/private-download and durable removal/restore acceptance remain distinct gates."
   },
   "publicDataNotice": {
     "status": "locally-verified-unpublished",
