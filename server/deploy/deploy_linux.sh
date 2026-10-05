@@ -17,7 +17,7 @@ fi
 if [ -z "${EIDOLON_BUILD_COMMIT:-}" ] && [ -n "${REPO_ROOT:-}" ]; then
   EIDOLON_BUILD_COMMIT="$(git -C "${REPO_ROOT}" rev-parse HEAD)"
 fi
-EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.74.6}"
+EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.74.7}"
 export EIDOLON_BUILD_COMMIT EIDOLON_BUILD_VERSION
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -69,7 +69,8 @@ flock -n 9 || { echo "Another deployment is active; refusing overlap." >&2; exit
 
 if [ "${CLEAN_SERVER_TREE:-false}" = "true" ] && git rev-parse --show-toplevel >/dev/null 2>&1; then
   echo "Cleaning untracked files under server/ before build..."
-  git -C "${SERVER_DIR}" clean -fd
+  # Preserve the durable activity/character outboxes even if ignore rules change.
+  git -C "${SERVER_DIR}" clean -fd -e logs/ -e .env
 fi
 
 if ! docker info >/dev/null 2>&1; then

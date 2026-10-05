@@ -420,7 +420,18 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.6`. Narrow persistent table ordering prevents
+- Current source version: `Alpha 1.74.7`. Stash moves between the west-side
+  quest-giver smithy and forge, facing east; the western planter moves clear of
+  the approach and smithy collisions follow walls rather than roof/sign bounds.
+  Long jumps cap at three seconds with elapsed-time live flight; short hops and
+  server landing/input constraints remain. Deployment explicitly preserves
+  logs/environment, pins the pending activity journal to its persistent mount
+  and retains the existing MongoDB history/90-day default retention.
+  This maintenance candidate still needs its own CI/public acceptance; no wipe,
+  schema migration or future1.75–1.79 preparation is included.
+  Prior1.74.6 is accepted live at1c47e16a after CI37256836401 all ten jobs and
+  exact independent public identity/readiness/login/notes/runtime checks pass.
+  Narrow persistent table ordering prevents
   delayed lobbies or previous hands from replacing newer ready blackjack,
   Hold'em, roulette and baccarat views. Exact decimal-string table versions
   retain ordering beyond JavaScript's precise integer range; shared occupants,
@@ -428,7 +439,7 @@ Notes:
   Wager authority, payouts, timers, currencies and schema22 are unchanged.
   Alpha1.74.5 is independently accepted live after CI37253104723 all ten jobs
   succeeded and exact public identity/readiness/login/notes/runtime checks passed.
-  This1.74.6 candidate still requires its own CI/deployment/public acceptance.
+  Full milestone/capacity acceptance remains separate from maintenance.
   The included earlier connection maintenance fix
   serves already-due keepalives before queued control traffic can defer them.
   A single writer retains control-before-state ordering and existing ping/idle,

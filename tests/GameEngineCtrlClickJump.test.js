@@ -193,12 +193,12 @@ describe('GameEngine ctrl-click jump', () => {
     test.each([3, 17.28, 27, 54, 135])('jump prediction uses distance-scaled travel time for %s units', distance => {
         const engine = createEngineHarness();
         const destination = new THREE.Vector3(distance, 0, 0);
-        const duration = Math.max(0.46, distance / 13.5);
+        const duration = Math.max(0.46, Math.min(3, distance / 13.5));
 
         expect(engine.startPlayerJump(destination)).toBe(true);
         expect(engine.playerJumpState.duration).toBeCloseTo(duration, 9);
         engine.updatePlayerJump(0.25);
-        expect(engine.player.position.x).toBeLessThanOrEqual(13.5 * 0.25 + 1e-9);
+        expect(engine.player.position.x).toBeCloseTo(distance * 0.25 / duration, 9);
         expect(engine.player.state).toBe('JUMPING');
         engine.updatePlayerJump(duration - 0.25);
         expect(engine.player.state).toBe('IDLE');

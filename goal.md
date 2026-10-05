@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**2026-10-05 maintenance checkpoint:** Alpha 1.74.6 is accepted live at
+1c47e16a after all ten CI37256836401 jobs and exact public IPv4 verification.
+Alpha 1.74.7 is a local candidate: west-side aligned stash, bounded three-second
+long jumps and explicit persistent activity-journal/deployment cleanup protection.
+Focused controller, geometry, version and race checks pass; connected browser
+and this candidate's own deployment/public acceptance are still pending.
+See [maintenance evidence](docs/plans/2026-10-05-release1-74-7-checks.json).
+This does not close future policy, capacity, art or beta gates. Historical
+checkpoints below are retained as history, not the current live status.
+
 **Current checkpoint:** Alpha1.21.0 is accepted live at
 614acf03d01eb794e90b9653f5b470671c8fed2b, CI36456025227 all ten jobs successful.
 Root exact public IPv4 frontend/backend/database/login/history/five-asset checks

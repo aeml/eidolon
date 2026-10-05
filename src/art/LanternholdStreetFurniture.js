@@ -19,7 +19,9 @@ export function createLanternholdStreetFurniture({ quality = 'high', cx = 0, cz 
     const footprints = [], cells = new Map();
     for (const side of [-1, 1]) {
         const root = new THREE.Group(); root.name = `street-rest-edge:${side}`;
-        root.position.set(cx + side * 19, 0, cz + 6.5);
+        // Keep the western service approaches clear: its planter/bench sits
+        // north of the forge, not across the new smithy–stash–forge lane.
+        root.position.set(cx + side * 19, 0, cz + (side < 0 ? 24 : 6.5));
         root.rotation.y = side < 0 ? Math.PI : 0;
         const batches = new Map();
         const part = (geometry, key, x, y, z, rotation = [0, 0, 0], scale = 1) => {

@@ -990,10 +990,10 @@ func (w *World) spawnStash() {
 		ID:        "stash-1",
 		Type:      TypeStash,
 		SubType:   "Stash",
-		X:         -16,
-		Y:         0.5, // Slightly above ground
-		Z:         193, // Beside the Trading House, west of the casino door approach.
-		Rotation:  0,
+		X:         -28,
+		Y:         0.5,         // Slightly above ground
+		Z:         210,         // Between the quest-giver smithy and forge, clear of both approaches.
+		Rotation:  math.Pi / 2, // Face east like the neighboring smithy and forge.
 		State:     "IDLE",
 		Health:    100000,
 		MaxHealth: 100000,
@@ -1542,9 +1542,9 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	dx := x - e.X
 	dz := z - e.Z
 	travelDistance := math.Sqrt(dx*dx + dz*dz)
-	// Keep short jumps readable, but never turn a long destination into a
-	// faster-than-intended flight by capping its travel time.
-	duration := math.Max(0.46, travelDistance/13.5)
+	// Preserve quick short hops; longer click-to-jump flights arrive within
+	// three seconds rather than spending many seconds slowly crossing the scene.
+	duration := math.Max(0.46, math.Min(3, travelDistance/13.5))
 	height := math.Max(6.5, math.Min(16.5, travelDistance*0.38+4.2))
 
 	e.TargetX = x
@@ -1557,6 +1557,7 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	e.JumpTargetZ = z
 	e.JumpDuration = duration
 	e.JumpElapsed = 0
+	e.jumpStartedAt = time.Now()
 	e.JumpHeight = height
 	e.JumpProgress = 0
 	e.State = "JUMPING"

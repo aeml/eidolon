@@ -259,6 +259,7 @@ type Entity struct {
 	JumpTargetZ               float64   `json:"jumpTargetZ,omitempty"`
 	JumpDuration              float64   `json:"jumpDuration,omitempty"`
 	JumpElapsed               float64   `json:"jumpElapsed,omitempty"`
+	jumpStartedAt             time.Time // Live monotonic flight clock; never persisted or sent.
 	JumpHeight                float64   `json:"jumpHeight,omitempty"`
 	JumpProgress              float64   `json:"jumpProgress,omitempty"`
 
