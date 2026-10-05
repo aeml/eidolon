@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { readFileSync } from 'node:fs';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 import { createProceduralLanternholdStructure, getLanternholdWalkCollider } from '../src/art/ProceduralLanternholdArchitecture.js';
 import { Forge } from '../src/entities/Forge.js';
@@ -11,6 +12,14 @@ installGameEngineMovement(InteractionFixture);
 installGameEngineEntitySync(InteractionFixture);
 
 describe('current town building footprints', () => {
+    test('offline spawn and orphan-stash recovery mirror the current authoritative lane', () => {
+        const spawn = readFileSync(new URL('../src/core/GameEngine.js', import.meta.url), 'utf8');
+        const runtime = readFileSync(new URL('../src/core/GameEngineRuntime.js', import.meta.url), 'utf8');
+        expect(spawn).toMatch(/stash\.position\.set\(-28, 0, 210\)/);
+        expect(spawn).toMatch(/stash\.rotation\.setFromAxisAngle\([^;]+Math\.PI \/ 2\)/);
+        expect(runtime).toMatch(/entity\.id === 'stash-local'[\s\S]+entity\.position\.set\(-28, 0, 210\)/);
+        expect(runtime).not.toMatch(/entity\.position\.set\(-16, 0, 193\)/);
+    });
     test('entity synchronization preserves authoritative stash placement', () => {
         const stash = { id: 'stash-1', x: -28, y: 0.5, z: 210, rotation: Math.PI / 2 };
         new InteractionFixture().applyPositionHacks(stash);

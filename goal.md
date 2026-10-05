@@ -1,6 +1,7 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Maintenance publication:** Alpha1.74.7 is pushed atd6ca9e6b54b77a8fe8779d024233fa17426e302f.
+**Maintenance publication:** Alpha1.74.7 is pushed at7af0b2798f0cb0b2ed245736df0c95aacedff586.
+Its exact CI37264989129 is confirmed pending; Luna monitors the specific run.
 Stash/jump/activity durability checks and all three connected stash browser
 layouts pass. Its own CI, exact public bytes and retained-history recheck are
 pending. Only the narrow maintenance branch was published; this future candidate
@@ -16,6 +17,11 @@ fixture. Corrected routes, exact wall/matrix assertions and bounded fixture-only
 retry pass; actual Mongo guild-bank recovery race suite passes49.117s. Final
 connected stash run on clean2ec7e4f3 passes all four tests2.9m, including eight
 portrait/landscape entry cycles. Atlas marker matches the relocated stash.
+Second CI37263815257 finds stale minimap and admin-teleport obstruction anchors.
+Corrected fixtures, offline fallback parity and local stash paving pass381
+minimap/ground/version checks plus all admin teleport race checks5.502s. No
+guard or paved-ground assertion relaxed; replacement deployment still pending.
+See [maintenance evidence](docs/plans/2026-10-05-release1-74-7-checks.json).
 This does not close future policy, capacity, art or beta gates. Historical
 checkpoints below are retained as history, not the current live status.
 

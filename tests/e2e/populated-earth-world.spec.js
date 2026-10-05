@@ -37,7 +37,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             let windUniforms;
             const compileWind = windMaterial.onBeforeCompile;
             windMaterial.onBeforeCompile = shader => { compileWind(shader); windUniforms = shader.uniforms; };
-            for (const [kind, x, z, angle] of [['trading_house', -22, 185, Math.PI / 4], ['forge', -28, 218, Math.PI / 2], ['stash', -16, 193, 0]]) {
+            for (const [kind, x, z, angle] of [['trading_house', -22, 185, Math.PI / 4], ['forge', -28, 218, Math.PI / 2], ['stash', -28, 210, Math.PI / 2]]) {
                 const type = { trading_house: 'TradingHouse', forge: 'Forge', stash: 'Stash' }[kind];
                 const mesh = await MeshFactory.createMeshForType(type);
                 if (!(mesh.userData.drawMeshCount < mesh.userData.sourceMeshCount)) throw new Error(`Unoptimized production service: ${type}`);

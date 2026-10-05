@@ -34,7 +34,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             // Services are replicated entities in production, not buildings
             // owned by loadBuildings. Include them before judging town density.
             for (const [type, x, z, yaw] of [['TradingHouse', -22, 185, Math.PI / 4],
-                ['Forge', -28, 218, Math.PI / 2], ['Stash', -16, 193, 0],
+                ['Forge', -28, 218, Math.PI / 2], ['Stash', -28, 210, Math.PI / 2],
                 ['QuestNPC', -20, 200, Math.PI / 2], ['DwarfSalesman', 22.5, 200, -Math.PI / 2],
                 ['Wizard', 20, 215, -Math.PI / 2], ['RespecNPC', 0, 220, 0], ['DungeonNPC', 0, 240, Math.PI]]) {
                 const mesh = await MeshFactory.createMeshForType(type);

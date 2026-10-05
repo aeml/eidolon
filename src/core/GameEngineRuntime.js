@@ -183,7 +183,8 @@ class GameEngineRuntimeMethods {
                              this.chunkManager.removeEntity(entity);
                         } else if (entity.position.lengthSq() < 1) {
                              console.warn(`Restoring stash-local town position`);
-                             entity.position.set(-16, 0, 193);
+                             entity.position.set(-28, 0, 210);
+                             entity.rotation.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
                              this.chunkManager.updateEntityChunk(entity);
                         }
                     }
