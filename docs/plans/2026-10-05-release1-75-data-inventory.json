@@ -291,6 +291,9 @@
       "server/internal/database/owner_social_market_export.go",
       "server/internal/database/owner_social_market_export_test.go",
       "server/internal/database/owner_social_market_export_mongo_test.go",
+      "server/internal/database/owner_guild_reward_export.go",
+      "server/internal/database/owner_guild_reward_export_test.go",
+      "server/internal/database/owner_guild_reward_export_mongo_test.go",
       "server/client_dispatch.go",
       "server/owner_export.go",
       "server/owner_export_test.go",
@@ -299,7 +302,11 @@
       "src/core/RecoveryLinkBoot.js"
     ],
     "scope": "Explicit profile/gameplay DTOs and owner-submitted report, retained-session, current social relationship and marketplace summary pages. Profile includes roster, recorded VIP periods and current public moderation notices. Password-fenced reads with predecode projected BSON bounds16KiB/profile,256KiB/one character,16KiB/report or market summary and2KiB/session or social event; pages cap ten entries plus one continuation candidate. Output up to512KiB, three-second deadline and bounded bcrypt cost. Oversized selected rows become failure sentinels, never silent skips. Session filters preserve current retention/expiry; social omits others' private block/ignore choices and market only projects own refund amounts/applicable claims. No arbitrary collection/field query, whole User export or partial/truncated completion claim.",
-    "remaining": "Guild/invite and further economic/reward/PvP/raid coverage and paging, full held-item/shared-operation handling, removal/anti-resurrection, complete notices/provider review and acceptance checks. Current social relationship and marketplace summaries are now supported with honest coverage limits. Staff approval is separate from case review; all pages retain current proof and permission/session fences, with private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
+    "additionalSections": [
+      {"sections": ["guilds", "invites", "raids"], "predecodeProjectedBytesPerRow": 2048, "scope": "Own membership and active invitation/weekly records only, not shared bank, other members, raw reward/retry or private operation payloads."},
+      {"sections": ["pvp"], "predecodeProjectedBytesPerRow": 16384, "scope": "Own stored competitive summary/season history/queue penalty only; no profile creation, season rolling or reward settlement, private match/revision identities or opponent anti-abuse counts."}
+    ],
+    "remaining": "Full held-item/shared economic/casino/reward-operation handling, journals/archives/provider copies, removal/anti-resurrection, complete notices/provider review and acceptance checks. Current guild membership/active invitation, stored competitive and own weekly raid sections are now supported alongside earlier account/report/session/social/market summaries, with explicit coverage limits. Staff approval is separate from case review; all pages retain current proof and permission/session fences, with private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
   },
   "implementationRemaining": [
     "Complete bounded owner-scoped export preparation, access/redaction tests and safe delivery. The request queue is not a complete account export.",

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "9eeb87af",
+  "status": "guild-invite-competitive-raid-sections-locally-verified-unpublished-milestone-incomplete",
+  "scope": [
+    "Current own guild membership/name/tag/rank/join/last-online with no invented missing timestamp, shared bank, other members, audit/events or private operation state. Duplicate/malformed own memberships fail.",
+    "Active own sent/received invitations, current expiry and public counterpart gameplay IDs only; no reconstruction of deleted/expired history.",
+    "Stored own competitive counters, last owner-facing result, season history and queue penalty; private match/revision identities and opponent anti-abuse counts omitted. No hydration, profile creation, season rolling or reward settlement.",
+    "Own weekly raid completion and stored pending flag; no other cohorts/players, reward payloads, worker retries or reward grants. Legacy missing pending flags retain existing false semantics.",
+    "Existing shared bounded ten-entry continuation, three-second deadlines,2KiB/guild/invite/raid and16KiB/competitive predecode source bounds, current password/approval/session/admission gates and manual prepare/Save/next. Central Go selection/format registry prevents protocol/reader category drift; selection validation is not authorization."
+  ],
+  "checks": [
+    {"scope": "Focused root/database race regressions", "result": "Root4.024s/database2.210s pass for protocol/categories/approval, owner source/projection/private identity/reset boundaries. Final narrow guild/reward/source/registry test1.407s pass after optional last-online omission was added; actual-source suite also covers the current serializer."},
+    {"scope": "Owner download/account support UI", "result": "Four Jest suites82 tests pass5.302s, including all four new formats/categories, target-free requests and explicit manual Save/next without automatic read/download."},
+    {"scope": "Actual disposable Mongo7.0.14", "result": "Guild/reward and existing social/market/session/report/source/approval focused race suite pass6.438s on explicit loopback32942. Exact10/2 guild/invite/weekly-record pages and one stored competitive record; expired/unrelated records and huge private member/bank/season/opponent/replay/reward fields excluded. Own season/rating/last result/queue penalty retained. Empty continuation performs no initialization. Oversized guild fails, counts remain14/14/2/13 and competitive revision9/season unchanged; revoke stops further category reads."},
+    {"scope": "Lint/whitespace", "result": "Affected UI/test ESLint and diff whitespace checks pass."},
+    {"scope": "Cleanup and limits", "result": "Exact owned container eidolon-guild-reward-export-qa-175-1005 removed. Multiple-guild rows are disposable pagination fixtures, not a new gameplay membership policy/capacity claim. No production/player writes, real download, actual-device acceptance, provider mail, TTL/schema change or long campaign/capacity/raid rerun."}
+  ],
+  "remaining": [
+    "Full held-item/shared economic/casino/reward-operation owner-facing handling, journals/archives/provider copies and complete support/data notices; current sections do not claim complete account export.",
+    "Coordinated individually authorized removal, shared custody/replay preservation and journal/archive anti-resurrection safeguards.",
+    "Complete milestone notes/version, CI and exact live acceptance;1.75 remains unpublished and the full1.99 goal active."
+  ]
+}

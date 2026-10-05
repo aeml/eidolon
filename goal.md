@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 guild/competitive/raid checkpoint:** Added own guild membership and
+active invitation sections, stored competitive counters/results/seasons/queue
+penalty and own weekly completion/delivery-pending records. No other members,
+shared-bank contents, private replay/reward/opponent state, invented missing
+timestamps, profile hydration or reward/season mutation. All reuse bounded manual
+pages and proof/approval/session fences. Focused UI/race and actual disposable
+Mongo projection/pagination/source-integrity/revoke checks pass; fixture removed.
+Full held-item/shared-operation handling, notices/provider review, coordinated
+removal/restore and complete1.75 publication remain open. See
+[guild/reward evidence](docs/plans/2026-10-05-release1-75-guild-reward-checks.json).
+
 **October5 social/market checkpoint:** Added owner-scoped social relationship
 pages (not other players' private block/ignore choices) and marketplace summaries
 with only own refunds and applicable claims/deposit. Ownership follows the actual

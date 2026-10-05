@@ -14,13 +14,17 @@ import (
 const ownerReportPageSize = 10
 const ownerReportSourceBytes = 16 << 10
 
-func validOwnerExportQuery(query OwnerExportQuery) bool {
+// Selection validation only, never authorization or proof of ownership.
+func ValidOwnerExportQuery(query OwnerExportQuery) bool {
+	if OwnerExportFormat(query.Section) == "" {
+		return false
+	}
 	switch query.Section {
 	case "profile":
 		return query.CharacterName == "" && query.Before == ""
 	case "progress":
 		return query.CharacterName != "" && len(query.CharacterName) <= 128 && query.Before == ""
-	case "reports", "sessions", "social", "market":
+	default:
 		if query.CharacterName != "" {
 			return false
 		}
@@ -29,9 +33,22 @@ func validOwnerExportQuery(query OwnerExportQuery) bool {
 		}
 		id, err := primitive.ObjectIDFromHex(query.Before)
 		return err == nil && !id.IsZero() && id.Hex() == query.Before
-	default:
-		return false
 	}
+}
+
+var ownerExportFormats = map[string]string{
+	"profile": "eidolon-owner-account-profile", "progress": "eidolon-owner-progression", "reports": "eidolon-owner-report-submissions", "sessions": "eidolon-owner-session-history",
+	"social": "eidolon-owner-social-relationships", "market": "eidolon-owner-marketplace-summary", "guilds": "eidolon-owner-guild-memberships", "invites": "eidolon-owner-guild-invitations", "pvp": "eidolon-owner-competitive-records", "raids": "eidolon-owner-weekly-raid-records",
+}
+
+func OwnerExportFormat(section string) string { return ownerExportFormats[section] }
+func IsOwnerExportFormat(format string) bool {
+	for _, known := range ownerExportFormats {
+		if known == format {
+			return true
+		}
+	}
+	return false
 }
 
 // Explicit owner-authored fields only. A report's private staff review,

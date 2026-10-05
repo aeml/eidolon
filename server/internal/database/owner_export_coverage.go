@@ -14,7 +14,7 @@ type ownerExportCoverage struct {
 func ownerSectionCoverage(section string) ownerExportCoverage {
 	coverage := ownerExportCoverage{
 		WithheldPrivate:  []string{"Credential hashes, recovery digests and authentication secrets", "Private staff reasons, review receipts and economic replay/custody payloads", "Other accounts' private records"},
-		SeparateHandling: []string{"Additional account/staff and historical moderation information", "Guilds/invites, direct trades and economic/reward outcome summaries", "PvP profiles, raid lockouts and shared casino state", "Save journals, server logs, backups and infrastructure records", "Postmark/analytics provider copies and data held by your browser/device"},
+		SeparateHandling: []string{"Additional account/staff and historical moderation information", "Direct trades, guild-bank and economic/reward outcome summaries", "Shared casino state and omitted private replay/custody data", "Save journals, server logs, backups and infrastructure records", "Postmark/analytics provider copies and data held by your browser/device"},
 		Consistency:      "Current bounded section read, not a restore image or cross-store point-in-time account snapshot. Unsupported data is not assumed absent.",
 	}
 	switch section {
@@ -40,6 +40,22 @@ func ownerSectionCoverage(section string) ownerExportCoverage {
 		coverage.Included = []string{"One page of current stored auctions where you are seller/current bidder/buyer or have pending refunds", "Your participation flags, public listing/item summary and prices/times/status; only your refund amounts and applicable claim/deposit information"}
 		coverage.NotIncluded = []string{"Other account sections and unrelated auction listings", "Other players' identity/refunds/claim state and private operation/replay payloads", "Full held-item stats/appearance/socket data, cleared historical bids/refunds and unpublished listing/bid operations"}
 		coverage.Consistency = "Current marketplace summaries in immutable-ID keyset pages of at most ten, not a frozen account snapshot/ledger or full item/operation export. Listings/refunds/claim state may change during paging; unsupported historical/private custody data needs staff handling."
+	case "guilds":
+		coverage.Included = []string{"One page of current guild identity/name/tag and your own rank/join/last-online membership fields"}
+		coverage.NotIncluded = []string{"Other account sections, guild invitations and historical/removed memberships", "Other members' account/status data, shared bank, audit/events and private operation state"}
+		coverage.Consistency = "Current membership summaries in immutable-ID pages of at most ten, not a frozen account snapshot or shared guild archive. Duplicate/malformed own memberships fail rather than being truncated."
+	case "invites":
+		coverage.Included = []string{"One page of active guild invitations sent or received by you: guild identity/name/tag, direction, counterpart public player ID and timestamps"}
+		coverage.NotIncluded = []string{"Other account sections and invitations not involving you", "Expired/deleted invitations, other accounts' profiles and shared guild state"}
+		coverage.Consistency = "Current active invitations in immutable-ID pages of at most ten, not a frozen account snapshot. Existing invitation expiry applies at each read; expired/deleted records are not reconstructed."
+	case "pvp":
+		coverage.Included = []string{"Stored own rating/wins/losses/Honor/season points/victories, last owner-facing result summary and season history", "Stored own queue-penalty day/deserter-until, with Unix-second timestamps"}
+		coverage.NotIncluded = []string{"Other account sections and missing/unrecorded historical matches", "Private match/revision replay identities, opponent anti-abuse counts and other profiles"}
+		coverage.Consistency = "Current stored own competitive records in immutable-ID pages of at most ten, not a frozen account snapshot. Reads do not create profiles, roll seasons, settle rewards or invent missing records; oversized season history requires staff handling."
+	case "raids":
+		coverage.Included = []string{"One page of own weekly raid lockout/completion time and stored reward-delivery-pending flag"}
+		coverage.NotIncluded = []string{"Other account sections, private cohort/reward payloads, worker retry schedules and replay receipts", "Unrecorded raid participation and other players' lockouts"}
+		coverage.Consistency = "Current stored own weekly records in immutable-ID pages of at most ten, not a frozen account snapshot or full reward ledger. Missing legacy pending flags remain false under existing semantics; this read does not grant/settle rewards or change eligibility."
 	}
 	return coverage
 }

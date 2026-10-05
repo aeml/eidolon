@@ -33,7 +33,7 @@ func (db *DB) readOwnerExportQuery(parent context.Context, owner, password strin
 	section, characterName := query.Section, query.CharacterName
 	if parent == nil || db == nil || db.users == nil || owner == "" || len(owner) > 128 || len(password) < 1 || len(password) > 72 ||
 		at.IsZero() || maxBytes < 1 || maxBytes > maximumOwnerExportResponse ||
-		!validOwnerExportQuery(query) {
+		!ValidOwnerExportQuery(query) {
 		return nil, errOwnerExportSection
 	}
 	ctx, cancel := context.WithTimeout(parent, 3*time.Second)
@@ -55,7 +55,7 @@ func (db *DB) readOwnerExportQuery(parent context.Context, owner, password strin
 	if err != nil || cost > maximumOwnerExportPasswordCost || bcrypt.CompareHashAndPassword([]byte(proof.Hash), []byte(password)) != nil || ctx.Err() != nil {
 		return nil, errOwnerExportSection
 	}
-	if section == "reports" || section == "sessions" || section == "social" || section == "market" {
+	if section != "profile" && section != "progress" {
 		var encoded []byte
 		if section == "reports" {
 			encoded, err = db.readOwnerReportPage(ctx, owner, query.Before, at, maxBytes)
@@ -63,8 +63,19 @@ func (db *DB) readOwnerExportQuery(parent context.Context, owner, password strin
 			encoded, err = db.readOwnerSessionPage(ctx, owner, query.Before, at, maxBytes)
 		} else if section == "social" {
 			encoded, err = db.readOwnerFriendPage(ctx, owner, query.Before, at, maxBytes)
-		} else {
+		} else if section == "market" {
 			encoded, err = db.readOwnerMarketPage(ctx, owner, query.Before, at, maxBytes)
+		} else {
+			switch section {
+			case "guilds":
+				encoded, err = db.readOwnerGuildPage(ctx, owner, query.Before, at, maxBytes)
+			case "invites":
+				encoded, err = db.readOwnerInvitePage(ctx, owner, query.Before, at, maxBytes)
+			case "pvp":
+				encoded, err = db.readOwnerCompetitivePage(ctx, owner, query.Before, at, maxBytes)
+			case "raids":
+				encoded, err = db.readOwnerRaidPage(ctx, owner, query.Before, at, maxBytes)
+			}
 		}
 		// These pages are in other collections: recheck the exact credential after
 		// the page read so a concurrent reset/removal cannot admit old proof.

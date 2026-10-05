@@ -79,7 +79,7 @@ func TestOwnerExportStrictSchemaCurrentOwnerAndPrivateAudit(t *testing.T) {
 }
 
 func TestOwnerExportPagedSectionsStrictCursor(t *testing.T) {
-	for _, section := range []string{"reports", "sessions", "social", "market"} {
+	for _, section := range []string{"reports", "sessions", "social", "market", "guilds", "invites", "pvp", "raids"} {
 		t.Run(section, func(t *testing.T) {
 			payload := strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"`+section+`"`, 1)
 			for _, cursor := range []string{"", "0123456789abcdef01234560"} {

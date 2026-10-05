@@ -20,7 +20,7 @@ func (db *DB) ReadApprovedOwnerExportSection(parent context.Context, owner, pass
 func (db *DB) ReadApprovedOwnerExportQuery(parent context.Context, owner, password, reportID string, approvalRevision int64, query OwnerExportQuery, at time.Time, maxBytes int) ([]byte, error) {
 	id, err := primitive.ObjectIDFromHex(reportID)
 	if parent == nil || db == nil || db.reports == nil || owner == "" || len(owner) > 128 || err != nil || id.IsZero() || id.Hex() != reportID ||
-		approvalRevision < 1 || approvalRevision >= MaximumPrivacyExportChanges || approvalRevision%2 != 1 || !validOwnerExportQuery(query) {
+		approvalRevision < 1 || approvalRevision >= MaximumPrivacyExportChanges || approvalRevision%2 != 1 || !ValidOwnerExportQuery(query) {
 		return nil, errOwnerExportSection
 	}
 	ctx, cancel := context.WithTimeout(parent, 3*time.Second)

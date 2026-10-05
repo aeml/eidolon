@@ -2,8 +2,8 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 
 let nextID = 0;
 const privatePage = () => window.__eidolonRecoverySensitivePage === true && !window.__eidolonGoogleTagInitialized;
-const FORMATS = {profile:'eidolon-owner-account-profile',progress:'eidolon-owner-progression',reports:'eidolon-owner-report-submissions',sessions:'eidolon-owner-session-history',social:'eidolon-owner-social-relationships',market:'eidolon-owner-marketplace-summary'};
-const PAGED_SECTIONS = new Set(['reports','sessions','social','market']);
+const FORMATS = {profile:'eidolon-owner-account-profile',progress:'eidolon-owner-progression',reports:'eidolon-owner-report-submissions',sessions:'eidolon-owner-session-history',social:'eidolon-owner-social-relationships',market:'eidolon-owner-marketplace-summary',guilds:'eidolon-owner-guild-memberships',invites:'eidolon-owner-guild-invitations',pvp:'eidolon-owner-competitive-records',raids:'eidolon-owner-weekly-raid-records'};
+const PAGED_SECTIONS = new Set(['reports','sessions','social','market','guilds','invites','pvp','raids']);
 
 // Only deliberate approved-section reads. Passwords are never kept in pending
 // state. A reply prepares one bounded in-memory file; Save is a separate click.
@@ -25,7 +25,7 @@ export class OwnerExportDownload {
         }
         const prefix = `owner-export-${++nextID}`;
         this.root.insertAdjacentHTML('beforeend', `<p>This prepares one section with a coverage manifest, not a complete account export or restore image. First check your own export request above. The operator must separately approve it. Nothing downloads automatically.</p>
-            <form autocomplete="on"><label for="${prefix}-section">Section</label><select id="${prefix}-section" class="support-field__control"><option value="profile">Account profile</option><option value="progress">One character gameplay section</option><option value="reports">My report submissions — one page</option><option value="sessions">My retained login/session history — one page</option><option value="social">My current social relationships — one page</option><option value="market">My marketplace summaries — one page</option></select>
+            <form autocomplete="on"><label for="${prefix}-section">Section</label><select id="${prefix}-section" class="support-field__control"><option value="profile">Account profile</option><option value="progress">One character gameplay section</option><option value="reports">My report submissions — one page</option><option value="sessions">My retained login/session history — one page</option><option value="social">My current social relationships — one page</option><option value="market">My marketplace summaries — one page</option><option value="guilds">My current guild memberships — one page</option><option value="invites">My active guild invitations — one page</option><option value="pvp">My stored competitive records — one page</option><option value="raids">My weekly raid records — one page</option></select>
             <label for="${prefix}-character">Character name (gameplay section only)</label><input id="${prefix}-character" class="support-field__control" maxlength="128" autocomplete="off">
             <label for="${prefix}-before">Page cursor (blank to start; use next from your previous file of this section)</label><input id="${prefix}-before" class="support-field__control" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false">
             <label for="${prefix}-password">Current password</label><input id="${prefix}-password" class="support-field__control" type="password" autocomplete="current-password" maxlength="72" autocapitalize="none" spellcheck="false">

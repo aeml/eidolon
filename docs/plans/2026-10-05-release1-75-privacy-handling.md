@@ -39,7 +39,8 @@ revision, current owner password, and checks permission again before returning
 data. Staff role alone is not an owner's password proof. The unpublished branch
 now provides authenticated owner delivery of profile, one-character gameplay,
 paged owner-submitted reports, retained login/session history, current social
-relationships and marketplace summaries. Complete category coverage remains unimplemented. Approval itself
+relationships, marketplace summaries, guild memberships/invitations and stored
+PvP/weekly raid records. Complete category coverage remains unimplemented. Approval itself
 changes permission metadata only; the owner must separately request a section
 and click Save. No deletion action exists.
 Do not put tokens,
@@ -138,6 +139,27 @@ restore image. No export changes the listed items, funds, claims or relationship
 Both use the same ten-entry manual continuation, proof/approval/session fences,
 three-second deadline and failure sentinels. No category gets a client target.
 
+Guild membership exports select only that player's current membership and guild
+identity/name/tag. Own rank/join/last-online fields are owner-scoped before
+decoding; missing last-online timestamps are not invented. Other members' account
+or status data, bank contents, audit/events and operation state are excluded.
+Duplicate/malformed own memberships fail instead of selecting an arbitrary one.
+Invitation exports contain only active sent/received invitations involving the
+owner, with direction, public counterpart ID, guild identity and timestamps.
+Existing invite expiry applies, without reconstructing deleted/expired records.
+
+Competitive exports read stored own rating/counters, owner-facing last result,
+season history and day/deserter-until queue state with explicit output DTOs. They
+exclude private match/revision identities and opponent anti-abuse counts. The
+read does not call profile hydration/season settlement: missing records stay
+missing and oversized histories require staff handling, not silent truncation.
+Weekly raid pages show own week, completion time and stored delivery-pending
+flag, excluding worker retry schedules, other players and private cohort/reward
+payloads. Existing absent legacy pending flags remain false; no rewards are
+granted or settled. These are current stored records, not full reward/operation
+ledgers or immutable account archives. All four retain the same bounded manual
+paging, credential/approval/session fences and non-mutating read behavior.
+
 Every profile, gameplay and report file includes a coverage manifest naming its
 included fields, omitted sections, withheld private/security data and categories
 requiring separate handling. Unsupported categories are not assumed absent and
@@ -154,6 +176,7 @@ account-export facility. See the [delivery checks](2026-10-05-release1-75-delive
 See also [report-page and manifest checks](2026-10-05-release1-75-report-page-checks.json).
 See [account and session checks](2026-10-05-release1-75-account-session-checks.json).
 See [social and marketplace checks](2026-10-05-release1-75-social-market-checks.json).
+See [guild and competitive/raid checks](2026-10-05-release1-75-guild-reward-checks.json).
 
 ## Removal review procedure — no automatic deletion
 

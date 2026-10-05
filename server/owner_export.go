@@ -73,18 +73,8 @@ func decodeOwnerExport(payload []byte) (ownerExportPayload, error) {
 		return request, invalid
 	}
 	if !reportRequestIDPattern.MatchString(request.RequestID) || len(request.ReportID) != 24 || request.ApprovalRevision < 1 || request.ApprovalRevision >= 256 || request.ApprovalRevision%2 != 1 ||
-		len(request.CurrentPassword) < 1 || len(request.CurrentPassword) > 72 || (request.Section != "profile" && request.Section != "progress" && request.Section != "reports" && request.Section != "sessions" && request.Section != "social" && request.Section != "market") ||
-		(request.Section == "profile" && request.CharacterName != "") || (request.Section == "progress" && (request.CharacterName == "" || len(request.CharacterName) > 128)) {
+		len(request.CurrentPassword) < 1 || len(request.CurrentPassword) > 72 || !database.ValidOwnerExportQuery(database.OwnerExportQuery{Section: request.Section, CharacterName: request.CharacterName, Before: request.Before}) {
 		return request, invalid
-	}
-	if (request.Section == "profile" || request.Section == "progress") && request.Before != "" || request.Section != "profile" && request.Section != "progress" && request.CharacterName != "" {
-		return request, invalid
-	}
-	if request.Before != "" {
-		cursor, err := primitive.ObjectIDFromHex(request.Before)
-		if err != nil || cursor.IsZero() || cursor.Hex() != request.Before {
-			return request, invalid
-		}
 	}
 	return request, nil
 }
@@ -101,7 +91,7 @@ func sendOwnerExportResult(c *Client, id string, data []byte) {
 		Format  string `json:"format"`
 		Version int    `json:"version"`
 	}
-	if len(data) > 0 && len(data) <= maximumOwnerSectionBytes && json.Unmarshal(data, &marker) == nil && marker.Version == 1 && (marker.Format == "eidolon-owner-account-profile" || marker.Format == "eidolon-owner-progression" || marker.Format == "eidolon-owner-report-submissions" || marker.Format == "eidolon-owner-session-history" || marker.Format == "eidolon-owner-social-relationships" || marker.Format == "eidolon-owner-marketplace-summary") {
+	if len(data) > 0 && len(data) <= maximumOwnerSectionBytes && json.Unmarshal(data, &marker) == nil && marker.Version == 1 && database.IsOwnerExportFormat(marker.Format) {
 		result.Success = true
 		result.Data = data
 		result.Message = "Section ready. This is not a complete account export or a restore image."

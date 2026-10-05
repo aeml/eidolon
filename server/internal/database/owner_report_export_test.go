@@ -69,14 +69,14 @@ func TestOwnerReportExportQueryBoundsAndCredentialResetFence(t *testing.T) {
 }
 
 func TestOwnerExportCoverageDoesNotClaimCompleteAccountOrProviderRetrieval(t *testing.T) {
-	for _, section := range []string{"profile", "progress", "reports", "sessions", "social", "market"} {
+	for _, section := range []string{"profile", "progress", "reports", "sessions", "social", "market", "guilds", "invites", "pvp", "raids"} {
 		coverage := ownerSectionCoverage(section)
 		if coverage.CompleteAccountExport || len(coverage.Included) == 0 || len(coverage.NotIncluded) == 0 || len(coverage.WithheldPrivate) == 0 || len(coverage.SeparateHandling) == 0 || !strings.Contains(coverage.Consistency, "snapshot") {
 			t.Fatal("missing honest section scope", section)
 		}
 	}
 	for _, query := range []OwnerExportQuery{{Section: "reports", Before: "invalid"}, {Section: "reports", CharacterName: "Other"}, {Section: "reports", Before: "000000000000000000000000"}, {Section: "profile", Before: "0123456789abcdef01234560"}} {
-		if validOwnerExportQuery(query) {
+		if ValidOwnerExportQuery(query) {
 			t.Fatal("invalid scoped query accepted")
 		}
 	}
