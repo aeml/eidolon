@@ -35,6 +35,13 @@ native check passes27.19s with every registry and independently fresh unchanged
 progression/Gold/EP/gear/bag saves. Owned fixture/private data removed. See
 [social receipt](docs/plans/2026-10-05-capacity-social-outcomes-checks.json).
 New outcomes remain mandatory but unearned in the full100 cohort; no replay.
+Prepared party/raid/event starting gear now matches the owner's requested class
+focus: plate strength Fighter, plate wisdom Cleric, dexterity leather dual-dagger
+Rogue, intelligence cloth Wizard, ordinary offhands and uncommon/rare natural
+rolls only. Production equip-legality tests pass all classes at30/60/100 with
+bounded selection and no stat/potency rewrite. Native prior receipts retain old
+random-cloth scope; no fresh encounter/capacity acceptance inferred. See
+[role gear receipt](docs/plans/2026-10-05-capacity-role-equipment-checks.json).
 
 Full original1.11–1.99 roadmap remains active. Ordered1.75–1.78 privacy/retention/
 operations/hosting owner gates,1.79 integrated town/social outcomes, current finale/

@@ -91,7 +91,6 @@ func loadPreparedClassFixture(t *testing.T, repo *database.DB, index, level int)
 		t.Fatal("invalid prepared party class or level")
 	}
 	class := []string{"Fighter", "Cleric", "Rogue", "Wizard"}[index]
-	weapon := []string{"iron-sword", "cleric-mace", "steel-dagger", "wooden-staff"}[index]
 	fixture, password := resourceJournalFixture(t, repo)
 	fixture.Class, fixture.SelectedBranch, fixture.EP = class, "A", 43
 	fixture.Level = level
@@ -115,30 +114,12 @@ func loadPreparedClassFixture(t *testing.T, repo *database.DB, index, level int)
 		fixture.Resources.Health = 350 // A prepared wound, not a player-caused injury.
 	}
 	fixture.Equipment = map[string]database.Item{}
-	for gearIndex, itemID := range []string{weapon, "silk-hood", "robes", "silk-skirt", "sandals", "silk-gloves", "velvet-mantle", "silk-sash", "gold-ring", "silver-ring"} {
-		rarity := game.RarityUncommon
-		if gearIndex%2 == 0 {
-			rarity = game.RarityRare
-		}
-		items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: itemID, Rarity: rarity, Level: level, Quantity: 1})
-		if err != nil {
-			t.Fatal("could not prepare legal class equipment")
-		}
-		slot := items[0].Slot
-		if slot == "ring" {
-			slot = "ring1"
-			if _, found := fixture.Equipment[slot]; found {
-				slot = "ring2"
-			}
-		}
-		fixture.Equipment[slot] = databaseItem(items[0])
+	roleEquipment, err := preparedRoleEquipment(class, level, game.GenerateAdminItems)
+	if err != nil {
+		t.Fatal("could not prepare declared normal class-focused equipment", err)
 	}
-	if class == "Rogue" {
-		items, err := game.GenerateAdminItems(game.AdminItemSpec{Item: "steel-dagger", Rarity: game.RarityRare, Level: level, Quantity: 1})
-		if err != nil {
-			t.Fatal("could not prepare legal Rogue offhand")
-		}
-		fixture.Equipment["offHand"] = databaseItem(items[0])
+	for slot, item := range roleEquipment {
+		fixture.Equipment[slot] = databaseItem(item)
 	}
 	fixture.Inventory = []database.Item{{ID: "party-keep-bag", Name: "Party gear preservation fixture", Type: "ARMOR", Slot: "chest", Rarity: "LEGENDARY", Level: 1, Stack: 1, MaxStack: 1, Value: 9999, StatScaleVersion: game.ItemStatScaleVersion}}
 	if err := repo.SaveCharacter(fixture.Name, fixture); err != nil {
