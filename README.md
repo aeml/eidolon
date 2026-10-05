@@ -428,7 +428,10 @@ Notes:
   public identities/readiness/login/notes and exact changed runtime bytes match.
   Its435 focused checks pass. Initial1.74.5 CI37250096379 failed predeploy loot;
   no deployment ran. Corrected keepalive/loot-arrival maintenance1.74.5 is pushed
-  as59dfed48 with CI37253104723 monitored by Luna, not yet live-accepted.
+  as59dfed48 and accepted live: CI37253104723 all ten jobs successful; subsequent
+  independent public IPv4 frontend/backend/database/login/notes/four-runtime
+  checks pass. Optional animation/Well-Rested/full-character/four-class QA scopes
+  were skipped; this is scoped maintenance acceptance, not full1.79 completion.
   Own current-scene confirmed-arrival ordering and single-flight pickups pass430
   affected checks and all four focused disposable browser routes; no inventory
   grant or server-distance relaxation. Future candidate source remains separate.

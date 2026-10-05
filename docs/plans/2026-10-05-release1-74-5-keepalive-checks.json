@@ -1,6 +1,6 @@
 {
   "release": "Alpha 1.74.5",
-  "status": "CORRECTED_CANDIDATE_PUSHED_EXACT_CI_PUBLIC_ACCEPTANCE_PENDING",
+  "status": "EXACT_CI_AND_INDEPENDENT_PUBLIC_IPV4_ACCEPTED",
   "base": "Fresh origin/master9560ac60cc48a6daf6b65b57c0d23b092d18b3f0. Previous1.74.4 exact terminal all-ten-job CI and public frontend/backend identities/database readiness/login/notes/runtime bytes independently accepted before this assembly.",
   "finding": "An independently reproduced scheduler defect let an always-ready control queue bypass a due ping. Synthetic real-WebSocket before-correction regression failed0.012s. This does not establish the cause of historical target100 read failures or the separately diagnosed world-map mutation incident.",
   "scope": "Server single-writer keepalive scheduling plus client single-flight loot requests and confirmed-arrival ordering, focused tests and release metadata/notes. Due pings precede queued control, control still precedes state. Same54s ping period,60s idle limit,10s write deadline, access/ingress guards and schema22. Repeated clicks/interaction ticks share one pending pickup per pile; inventory remains authoritative and original pending expiry allows unconfirmed retry. Confirmed pickup IDs cannot be reopened by delayed world frames. Pickup flushes ordinary movement and waits for own, same-scene finite in-range acknowledgement; scene entry/recovery invalidates old proof. Server pickup range/authority unchanged. No extra writer/queue, gameplay rewards, casino authority, account, permission or access changes. Not general world-state fairness.",
@@ -22,5 +22,12 @@
     "tests/GameEngineMovementSmoothness.test.js": "184025344ec62db0d4711cc09246cd9e8d1cfa69b0a388502b677e1e8461fe5a"
   },
   "assembly": "Metadata stays1.74.5 because initial candidate was not deployed; cumulative notes now include client loot scheduling. Future schema23–24, bot changes, drain diagnostics and unapproved privacy/ops changes excluded. Owner dirty worktree unchanged.",
-  "publication": "Corrected candidate passed focused disposable route. Fresh origin/master ordinarily merged unchanged immediately before non-force push59dfed48b0d83515391b3592d02d7aa0ba1ec432. CI37253104723 confirmed queued on exact source; Luna monitoring. Exact terminal CI and independent public identities/readiness/login/notes/runtime proof still required. This future-candidate ordinary merge preserves unpublished schema24/policy/ops/driver scope and is not the production deployment. Not ordered1.75–1.79 or full1.99 completion."
+  "publication": "Corrected candidate passed focused disposable route. Fresh origin/master ordinarily merged unchanged immediately before non-force push59dfed48b0d83515391b3592d02d7aa0ba1ec432. Luna confirmed CI37253104723 terminal success/all ten jobs including both deployments and live QA. Root independently verified public IPv4 exact release/health commits and Alpha1.74.5, database ready, login version, retained1.74.1–5 notes, corrected-arrival text and publisher-rewritten SHA256 equality of four changed runtime assets after terminal success. Future candidate ordinary merge preserves unpublished schema24/policy/ops/driver scope and is not the production deployment. Not ordered1.75–1.79 or full1.99 completion.",
+  "skippedScopes": ["Predeploy deterministic High/Low animation gallery", "Predeploy Well Rested rendering and GPU lifecycle QA", "Predeploy disposable full-character gameplay", "Live four-class and remote-animation QA"],
+  "publishedRuntimeSHA256": {
+    "src/core/GameEngine.js": "fcc2de1eecbea483c526a5695b38a21b720f89b59ae69e933ac1b261d939547f",
+    "src/core/GameEngineEntitySync.js": "1e9e150674c2af061965088c4053df0a92d1624d62b7827ac3af29f9ff67f67d",
+    "src/core/GameEngineMovement.js": "2cbba4e816f09a271c7683d95af650de9dc3f35dc9ae118cf7c65adaa6c294fe",
+    "src/core/GameEngineNetworkMessages.js": "32d40af6d4d9ddd0cf92e6623218c05ad015b5fe9239a7d476160edb65d2103b"
+  }
 }

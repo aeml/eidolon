@@ -1,14 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint (October5):** Alpha1.74.4 remains the last independently
-accepted live release at9560ac60, CI37246677139 all ten jobs successful plus exact
-public identities/database readiness/login/history/changed runtime bytes.
+**Current checkpoint (October5):** Alpha1.74.5 is independently accepted live
+at59dfed48b0d83515391b3592d02d7aa0ba1ec432. Luna confirmed CI37253104723 terminal
+success/all ten jobs; root subsequently verified exact public IPv4 frontend and
+backend versions/commits, database readiness, login/cumulative notes and all four
+changed publisher-rewritten runtime bytes. Optional animation-gallery/Well-Rested/
+full-character/four-class scopes were skipped, not claimed as fresh evidence.
 Initial1.74.5 CI37250096379 failed focused predeploy loot; deployment skipped.
-Corrected1.74.5 is pushed at59dfed48, CI37253104723 monitored by Luna. Independent
-single-flight and predicted-arrival regressions are corrected;430 focused checks
-and all4 disposable System Chrome release routes pass. Exact terminal/public
-acceptance still required. Owner dirty workspace is unchanged; publication uses
-narrow maintenance worktree and a fresh ordinary remote merge.
+Corrected single-flight and predicted-arrival regressions,430 focused checks and
+all4 disposable System Chrome release routes pass. Owner dirty workspace is
+unchanged; publication used a narrow maintenance worktree and fresh ordinary
+remote merge. No receipt-only deployment is needed.
 
 Separate unpublished schema24/policy/ops/capacity candidate includes the
 accepted smaller/dungeon/Earth-raid/Root-event scoped evidence, not full capacity.
