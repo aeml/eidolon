@@ -7,10 +7,15 @@ import (
 	"sync"
 
 	"eidolon-server/internal/database"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type characterCommitter interface {
 	CommitCharacterSave(string, *database.Character, string) error
+}
+
+type boundCharacterCommitter interface {
+	CommitBoundCharacterSave(primitive.ObjectID, string, *database.Character, string) error
 }
 
 var characterSaveJournal *database.CharacterSaveJournal
@@ -90,11 +95,25 @@ func journalCharacterSnapshot(username string, character *database.Character) (*
 }
 
 func commitPendingCharacterSave(pending *database.PendingCharacterSave) error {
+	if pending == nil {
+		return errors.New("character journal record required")
+	}
 	character, err := pending.Character()
 	if err != nil {
 		return err
 	}
-	if err := characterSaveCommitter.CommitCharacterSave(pending.Username, character, pending.SaveID); err != nil {
+	if pending.Version == 2 && !pending.AccountID.IsZero() {
+		bound, ok := characterSaveCommitter.(boundCharacterCommitter)
+		if !ok {
+			return errors.New("bound character commit unavailable; preserving journal")
+		}
+		err = bound.CommitBoundCharacterSave(pending.AccountID, pending.Username, character, pending.SaveID)
+	} else if pending.Version == 1 && pending.AccountID.IsZero() {
+		err = characterSaveCommitter.CommitCharacterSave(pending.Username, character, pending.SaveID)
+	} else {
+		return errors.New("invalid character journal identity version")
+	}
+	if err != nil {
 		return err
 	}
 	if err := characterSaveJournal.Acknowledge(pending.Username, pending.SaveID); err != nil {

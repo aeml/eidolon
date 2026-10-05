@@ -159,12 +159,14 @@
       "kind": "private-recovery-journals",
       "sources": [
         "server/internal/database/character_journal.go",
+        "server/internal/database/character_commit.go",
+        "server/character_persistence.go",
         "server/internal/database/admin_activity_journal.go",
         "server/internal/database/guild_clear_journal.go",
         "server/internal/database/pvp_result_journal.go"
       ],
       "data": "Pending complete character images or exact activity/guild-clear/PvP recovery records with identities. Journal directories are created with mode0700; exact receipts are acknowledged only by their recovery contract.",
-      "boundary": "Not public artifacts. Do not wipe pending journals as privacy cleanup; reconcile them with the matching Mongo recovery point. Repository modes do not certify actual host ownership or encryption."
+      "boundary": "Not public artifacts. Do not wipe pending journals as privacy cleanup; reconcile them with the matching Mongo recovery point. Unpublished version2 character-journal primitives bind account ObjectID in write/replay/receipt proof, reject rebinding or legacy overwrite of a bound pending file and retain rejected evidence; normal producers still write legacy version1, so full identity pinning/adoption and controlled old-record transition remain open. Other journals and archive decisions need separate coordination. Repository modes do not certify actual host ownership or encryption."
     },
     {
       "kind": "backups-and-runtime-logs",

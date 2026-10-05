@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "5d65587d",
+  "status": "account-bound-character-journal-primitives-locally-verified-not-adopted-by-normal-writer-unpublished",
+  "scope": [
+    "Version2 journal writer binds an existing Mongo ObjectID to the username, detached character payload and save receipt. Reader rejects inconsistent identity/version combinations and preserves valid version1 compatibility without inventing binding. Pending write refuses different-ID replacement, implicit old-record rebinding or legacy downgrade; newer same-generation snapshots remain supported.",
+    "Bound commit scopes both majority/journaled update and primary-majority receipt proof to the same account ID and username; no upsert or copied receipt from a replacement account can confirm the old bound save. Retry projects only the matching character and does not overwrite later credits after the same receipt was stored.",
+    "Replay dispatch never downgrades version2 to username-only commit. Missing capability or failed identity/commit leaves the exact journal available for operator handling; acknowledgment follows confirmed bound success only.",
+    "No production account removal, retention change, archive/journal purge, live writer identity pinning, schema migration or deployment. Normal snapshot writer is still legacy/unbound; this is staged groundwork, not end-to-end anti-resurrection acceptance."
+  ],
+  "checks": [
+    {"scope": "Focused race", "result": "Final root1.774s/database1.354s pass for character bound/journal/commit/persistence and coalesced-save tests against explicit disposable Mongo. Bound identity survives reopen; zero identity refuses without replacing prior save; wrong acknowledgment preserves it; invalid version/identity combinations refuse; mixed-account writes, implicit legacy rebinding and downgrade refuse while newer same-generation writes succeed. Bound replay cannot fall back and retains rejected save; exact confirmed replay acknowledges. Existing legacy durability/replay/receipt, live latest-state, failed-database and burst-coalescing checks pass."},
+    {"scope": "Actual disposable Mongo7.0.14", "result": "Independent explicit non-skipped TestCharacterBoundCommitMongoRejectsReusedAccountAndCopiedReceipt passes: test body0.04s/package1.078s at loopback32949. Original bound save succeeds; confirmed retry preserves later independent credit by whole-BSON checksum. Fixture-only removal cannot be resurrected by old save; same-name replacement with copied receipt refuses and remains byte-identical. Original journal identity/receipt remains. Wrong ID/name refuses, legitimate new owner save succeeds, foreign whole account checksum remains unchanged."},
+    {"scope": "CI/static/source state", "result": "Added a bounded45-second hosted-CI step against the existing job-owned Mongo service for the new identity primitives/actual fixture. gofmt, whitespace and three JSON parsers pass. Fresh fetch origin/master shows zero remote-ahead commits; no force, push or deployment performed. Exact owned tmpfs Mongo container d0c327303aa039c9cd9057a0c01aac084418a49c058c5d289c404697651783bb removed and absence verified; no production data or persistent volume deleted."}
+  ],
+  "remaining": [
+    "Pin stable account identity before admitting live/offline producers and switch normal/shutdown/recovery writes to bound records without adding database IO before shutdown's journal-all pass. Current username-only producers remain unchanged.",
+    "Controlled legacy-journal transition: do not infer an old record's ownership from a current username lookup. No automatic discard, forced binding or old-file deletion.",
+    "Coordinate all other custody writers/replay journals, separately approved removal record and restored-archive handling before any erasure can be enabled. No account-removal operation exists.",
+    "Provider remaining settings/network confirmation, complete release/version/patch notes/master integration/CI/exact live acceptance and the full1.99 goal remain open."
+  ]
+}

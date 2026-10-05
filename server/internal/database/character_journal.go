@@ -12,6 +12,7 @@ import (
 	"sync"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const characterJournalVersion = 1
@@ -20,11 +21,12 @@ const maxCharacterJournalBytes = 16 << 20
 // PendingCharacterSave is detached from the live entity. One durable file per
 // account always contains the newest attempted complete character snapshot.
 type PendingCharacterSave struct {
-	Version  int    `bson:"version"`
-	Username string `bson:"username"`
-	SaveID   string `bson:"save_id"`
-	Payload  []byte `bson:"payload"`
-	Checksum []byte `bson:"checksum"`
+	Version   int                `bson:"version"`
+	AccountID primitive.ObjectID `bson:"account_id,omitempty"`
+	Username  string             `bson:"username"`
+	SaveID    string             `bson:"save_id"`
+	Payload   []byte             `bson:"payload"`
+	Checksum  []byte             `bson:"checksum"`
 }
 
 func (save *PendingCharacterSave) Character() (*Character, error) {
@@ -68,6 +70,20 @@ func (journal *CharacterSaveJournal) syncDirectory() error {
 }
 
 func (journal *CharacterSaveJournal) Write(username string, character *Character) (*PendingCharacterSave, error) {
+	return journal.write(primitive.NilObjectID, username, character)
+}
+
+// WriteForAccount binds replay to the existing Mongo account identity, not to a
+// reusable username. Legacy writes remain readable during the staged rollout;
+// an unbound record cannot be upgraded by looking up whoever now owns its name.
+func (journal *CharacterSaveJournal) WriteForAccount(accountID primitive.ObjectID, username string, character *Character) (*PendingCharacterSave, error) {
+	if accountID.IsZero() {
+		return nil, errors.New("character journal account identity required")
+	}
+	return journal.write(accountID, username, character)
+}
+
+func (journal *CharacterSaveJournal) write(accountID primitive.ObjectID, username string, character *Character) (*PendingCharacterSave, error) {
 	if username == "" || character == nil || character.Name == "" {
 		return nil, errors.New("invalid character journal save")
 	}
@@ -82,6 +98,9 @@ func (journal *CharacterSaveJournal) Write(username string, character *Character
 	digest := sha256.Sum256(payload)
 	save := &PendingCharacterSave{Version: characterJournalVersion, Username: username,
 		SaveID: hex.EncodeToString(id), Payload: payload, Checksum: digest[:]}
+	if !accountID.IsZero() {
+		save.Version, save.AccountID = 2, accountID
+	}
 	encoded, err := bson.Marshal(save)
 	if err != nil {
 		return nil, err
@@ -91,6 +110,16 @@ func (journal *CharacterSaveJournal) Write(username string, character *Character
 	}
 	journal.mu.Lock()
 	defer journal.mu.Unlock()
+	// A newer live snapshot may replace only the same account generation's
+	// pending work. Legacy retry must not erase a bound rejection before the
+	// dispatcher can enforce the identity fence.
+	existing, err := journal.readFile(journal.filename(username))
+	if err != nil {
+		return nil, err
+	}
+	if existing != nil && existing.AccountID != accountID {
+		return nil, errors.New("pending character journal account identity conflict")
+	}
 	temporary, err := os.CreateTemp(journal.dir, ".pending-")
 	if err != nil {
 		return nil, err
@@ -135,7 +164,8 @@ func (journal *CharacterSaveJournal) readFile(name string) (*PendingCharacterSav
 		return nil, err
 	}
 	digest := sha256.Sum256(save.Payload)
-	if save.Version != characterJournalVersion || save.Username == "" || len(save.SaveID) != 32 ||
+	validVersion := (save.Version == characterJournalVersion && save.AccountID.IsZero()) || (save.Version == 2 && !save.AccountID.IsZero())
+	if !validVersion || save.Username == "" || len(save.SaveID) != 32 ||
 		hex.EncodeToString(digest[:]) != hex.EncodeToString(save.Checksum) || journal.filename(save.Username) != name {
 		return nil, errors.New("invalid or unsupported character journal record")
 	}

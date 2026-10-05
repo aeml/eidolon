@@ -158,6 +158,12 @@ jobs:
           go test -race ./internal/database -run '^TestReportReviewMongo' -count=1 -v
           go test -race . -run '^TestReportReviewMongoPreparedChatModerationFlow$' -count=1 -v
 
+      - name: Verify disposable account-bound character journal replay
+        working-directory: server
+        env:
+          EIDOLON_OWNER_EXPORT_TEST_MONGO_URI: mongodb://127.0.0.1:27017
+        run: go test -race . ./internal/database -run '^TestCharacter(Bound|JournalAccountIdentity|JournalRejectsMixedIdentity)' -count=1 -timeout=45s
+
       - name: Run Go tests with coverage
         working-directory: server
         run: |

@@ -2,6 +2,16 @@
   "schema": 1,
   "milestone": "1.75",
   "baseCommit": "4afb5bbf",
+  "ownerReportedSettings": {
+    "reportedDate": "2026-10-05",
+    "source": "Owner read-only dashboard observations; no independent provider access or settings changes",
+    "postmarkRetentionDays": 45,
+    "postmarkRetentionEditableOnCurrentAccount": false,
+    "ga4HistoryBasedPageViews": true,
+    "ga4Retention": "unconfirmed",
+    "ga4FormInteractions": "unconfirmed",
+    "ga4OutboundClicks": "unconfirmed"
+  },
   "status": "provider-code-documentation-reviewed-analytics-boundary-locally-verified-unpublished",
   "scope": [
     "Shared game/website analytics wrapper no longer forwards arbitrary event names/properties or URL paths. Existing game start/engagement/end and website Play click only, closed enums and numeric durations in0..one year (positive engagement, total not above elapsed); canonical production-root location, fixed title and origin-only referrer are explicit on configuration and each custom send.",
@@ -25,7 +35,7 @@
     {"scope": "Static/isolation", "result": "Affected ESLint and whitespace checks pass; two JSON records parse and all113 referenced source paths exist. Fresh fetch shows no remote commits beyond the current base7af0b279. No production/player/provider writes, schema/TTL changes, actual-device/provider network acceptance, deployment or unchanged long campaign/capacity/raid replay."}
   ],
   "remaining": [
-    "Read-only owner confirmation of current GA4 retention/Enhanced Measurement and Postmark retention, requested without credentials or changes.",
+    "Owner confirms Postmark45 days/not editable on the current account and GA4 history-based page views enabled. GA4 retention, Form interactions and Outbound clicks remain unconfirmed; independent automatic-event/private-navigation network checks remain open. No credentials requested or settings changed.",
     "Mechanical coordinated removal/writer/journal/archive safeguards before any erasure operation, provider clarification/qualified review as needed, and full1.75 notes/version/merge/CI/exact live acceptance.",
     "Full1.99 roadmap objective remains active; this is not complete account export/removal or beta/full-release acceptance."
   ]

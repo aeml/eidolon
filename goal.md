@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 account-identity checkpoint:** Added version2 account-ID-bound journal
+write/read and identity-fenced commit/receipt proof; replay never downgrades a
+bound save. Focused race and actual disposable Mongo checks reject absent/reused
+accounts and copied receipts without changing replacement/foreign accounts or
+discarding rejected journals. Normal producers still write legacy records;
+stable identity pinning, producer adoption/legacy transition and the other
+writer/archive fences remain required before any erasure. Owner reports
+Postmark45 days/not editable and GA4 history-based page views enabled; remaining
+GA options/retention still unconfirmed. No deletion, retention changes or1.75
+publication. See [identity evidence](docs/plans/2026-10-05-release1-75-identity-checks.json).
+
 **October5 provider-boundary checkpoint:** Primary Google/Postmark docs and current
 code reviewed without provider writes, actual mail or retention/consent changes.
 Closed the shared analytics wrapper's arbitrary event/property/path forwarding:

@@ -499,7 +499,42 @@ request. Recipient mailbox and downstream copies also remain outside Eidolon's
 Mongo export/removal workflow. No provider cleanup was attempted.
 [Manual](https://postmarkapp.com/manual).
 
-Current GA dashboard options/retention and Postmark retention have been requested
-from the owner as a read-only check; they remain unverified. Preserve current
-settings and do not collect credentials or change provider policy as part of
+Owner read-only confirmation on October5: Postmark shows45-day retention with
+no editable setting on the current account/plan; GA4's page changes based on
+browser-history events is checked. These are owner-reported observations, not
+independent dashboard or automatic-event network verification. GA4 user/event
+retention and Form interactions/Outbound clicks are still unconfirmed. Preserve
+all settings; do not collect credentials or change provider policy as part of
 this review. See [provider checks](2026-10-05-release1-75-provider-checks.json).
+
+## Account-bound journal replay: staged, not a complete removal fence
+
+New `WriteForAccount` writes a version2 character journal with the existing Mongo
+account ObjectID. Restart reads preserve that identity and reject mixed identity/
+version records. Replay dispatch requires the bound commit capability; it never
+downgrades such a record to the username-only path. A pending write also rejects
+a different account ID, upgrading legacy without reconciliation, or overwriting
+a bound record with legacy data; newer same-identity saves remain supported.
+A rejected replay keeps the
+pending file and receipt. `CommitBoundCharacterSave` scopes both the update and
+its majority-primary receipt proof to account ID plus username, never upserts,
+and preserves a later independent credit on confirmed retry. This also narrows
+the receipt read to the one matching character rather than the full account.
+
+Disposable Mongo checks cover absent accounts, replacement accounts reusing the
+same username and character name, a copied old receipt, mismatched ID/name,
+legitimate replacement saves, exact retained journal identity and an unchanged
+foreign account. Fixture-only removal/re-registration does not enable an
+operator or production erasure API. See
+[identity checks](2026-10-05-release1-75-identity-checks.json).
+
+**Adoption remains unfinished:** the normal snapshot writer still writes legacy
+version1 records. Existing version1 records remain readable and replayable under
+the current protocol; they cannot safely be rebound by looking up today's owner
+of the username. Before relying on this fence for removal, acquire/pin account
+identity before accepting live/offline work, switch every producer (including
+shutdown/recovery), and verify a controlled legacy-journal transition. Other
+custody writers and replay journals plus restored archive decisions also require
+coordination. These primitives alone do not drain old live writers, prevent
+archive resurrection or authorize deletion. No retention change or erasure is
+enabled, and1.75 remains unpublished.
