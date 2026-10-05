@@ -602,6 +602,10 @@
 .report-diagnostics-option { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; }
 .report-diagnostics-option input { width: 20px; height: 20px; flex-shrink: 0; }
 .report-context-preview summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.data-privacy-notice > summary { min-height: 44px; display: flex; align-items: center; }
+.data-privacy-notice > a { display: inline-flex; min-height: 44px; align-items: center; overflow-wrap: anywhere; }
+.data-privacy-notice p { overflow-wrap: anywhere; line-height: 1.5; }
+.data-privacy-notice :is(summary, a):focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
 .report-context-preview summary::after { content: '▸'; margin-left: auto; padding-left: 8px; }
 .report-context-preview[open] summary::after { content: '▾'; }
 .report-context-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; }

@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 player-facing data notice checkpoint:** Added the same collapsed
+notice before sign-in, in Settings and account support, with a fallback if script
+boot fails. It explains existing stores/providers/retention, current export
+coverage, private support and the separate approval required for removal. No
+consent gate, telemetry, automatic deletion or retention change. Focused notice
+and account-support regressions pass; native-device/live acceptance remains part
+of publication. Full shared-operation coverage, coordinated removal/restore and
+1.75 publication remain open. See
+[notice evidence](docs/plans/2026-10-05-release1-75-notice-checks.json).
+
 **October5 guild/competitive/raid checkpoint:** Added own guild membership and
 active invitation sections, stored competitive counters/results/seasons/queue
 penalty and own weekly completion/delivery-pending records. No other members,

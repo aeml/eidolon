@@ -396,6 +396,7 @@
                 <p class="auth-project-note">Eidolon is an open-source project.<br>
                     <a href="https://github.com/aeml/eidolon" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in a new tab)">View on GitHub</a>
                 </p>
+                <div data-eidolon-data-notice data-notice-style="login"><p>Account-data exports and removal requests are administrator-reviewed. No automatic deletion; current retention settings are unchanged. Sign in for Account help. Never share passwords or recovery/session tokens.</p></div>
             </div>
 
             <div id="play-container" class="play-container">
@@ -445,6 +446,7 @@
         <div id="settings-screen" class="window support-window support-window--settings" style="display: none;">
             <div class="window-header"><span>SETTINGS</span><button id="btn-close-settings-header" class="close-btn" type="button" aria-label="Close settings">×</button></div>
             <div class="support-window__body support-window__body--settings">
+                <div data-eidolon-data-notice><p>Use Account help or Menu → Report Bug / Feature for private data requests. Case review does not itself deliver or delete data.</p></div>
                 <div class="support-field">
                     <label for="graphics-quality" class="support-field__label">Graphics Quality</label>
                     <select id="graphics-quality" class="support-field__control" aria-describedby="graphics-quality-help">
@@ -662,6 +664,7 @@
                 <textarea id="report-text" class="support-field__control support-field__textarea" rows="6" maxlength="3200" aria-describedby="report-guidance report-count report-status" placeholder="Describe your issue or idea..."></textarea>
                 <output id="report-count" for="report-text">0 / 3200 characters</output>
                 <p>Account privacy requests are administrator-reviewed. Requesting or resolving a case does not itself export or delete data. Current retention settings remain unchanged. Privacy requests attach no automatic diagnostics.</p>
+                <div data-eidolon-data-notice><p>No automatic deletion. Staff review shared custody and retained copies before any separately authorized removal.</p></div>
                 <label class="report-diagnostics-option"><input id="report-diagnostics" type="checkbox"> Include optional diagnostics (quality, viewport, controls and rounded position)</label>
                 <details class="report-context-preview"><summary>Context included with this report</summary><p>Ordinary reports include build and area. Privacy requests attach no automatic context. Optional diagnostics are off by default. No automatic chat, logs, account or inventory dumps.</p><pre id="report-context"></pre></details>
                 <p id="report-status" role="status" aria-live="polite"></p>

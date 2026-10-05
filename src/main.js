@@ -6,6 +6,7 @@ import { showSessionRecoveryLogin } from './ui/SessionRecovery.js';
 import { LoginModerationUI } from './ui/LoginModerationUI.js';
 import { credentialTokenChange } from './core/CredentialToken.js';
 import { PublicEmailRecoveryUI } from './ui/EmailRecoveryUI.js';
+import { mountDataPrivacyNotices } from './ui/DataPrivacyNotice.js';
 
 const recoveryHandoff = window.__eidolonRecoveryHandoff;
 delete window.__eidolonRecoveryHandoff;
@@ -103,6 +104,7 @@ window.addEventListener('unhandledrejection', function(event) {
 });
 
 window.addEventListener('DOMContentLoaded', async () => {
+    mountDataPrivacyNotices();
     if (!await ensureGameStylesReady()) return;
     void syncFullscreenPreference(false);
     void AssetCacheManager.registerServiceWorker().catch((error) => {

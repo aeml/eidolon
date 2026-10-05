@@ -4,6 +4,7 @@ import { ModerationNoticeUI } from './ModerationNoticeUI.js';
 import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
 import { REPORT_TYPES, PRIVACY_REPORT_TYPES } from './reportTypes.js';
 import { OwnerExportDownload } from './OwnerExportDownload.js';
+import { mountDataPrivacyNotices } from './DataPrivacyNotice.js';
 
 const MAX_TEXT = 3200;
 const SAFE_TAG = /^[a-zA-Z0-9 ._-]{1,80}$/;
@@ -48,6 +49,7 @@ export class ReportUI {
         this.root?.__eidolonReportUI?.dispose();
         if (!this.root) return;
         this.root.__eidolonReportUI = this;
+        mountDataPrivacyNotices(this.root);
         this.text = ui.reportText;
         this.type = ui.reportType;
         this.button = ui.btnSubmitReport;

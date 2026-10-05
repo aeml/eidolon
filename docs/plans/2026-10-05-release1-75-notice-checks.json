@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "73c6d3dd",
+  "status": "public-data-notice-locally-verified-unpublished-milestone-incomplete",
+  "ownerPolicy": "Administrator-reviewed exports/removal requests; preserve current retention; no automatic deletion. Submission or case resolution does not authorize delivery or erasure.",
+  "scope": [
+    "Shared static notice before sign-in, Settings and account support with script-independent fallbacks; no authentication requirement for reading the notice.",
+    "Existing account/shared/browser/provider stores, actual retention limits, section coverage, manual approved exports and separate removal/custody/archive review explained without a compliance or erasure promise.",
+    "No storage/account reads, network, telemetry, consent controls or changed analytics/defaults. Clean private-support navigation forces a fresh document; existing sensitive-page guard prevents its analytics tag from loading.",
+    "Native collapsed details, idempotent mounting, wrapping,44px summary/link targets and visible keyboard focus. Request navigation uses the actual Report Bug / Feature menu label."
+  ],
+  "checks": [
+    {"scope": "Focused notice/account-support/boot regressions", "result": "Six Jest suites100 tests pass5.485s: DataPrivacyNotice,ReportUI,LoginModerationUI,OwnerExportDownload,RecoveryLinkBoot,GameplayAnalytics. No storage/fetch/tag calls or secret-bearing URL; identical idempotent notices and source fallback/mount-before-style-gate verified."},
+    {"scope": "Final wording regression", "result": "Notice suite rerun after matching the actual game menu label; all three tests pass."},
+    {"scope": "Static checks", "result": "Affected main/notice/report/test ESLint and diff whitespace checks pass."},
+    {"scope": "Limits", "result": "No production/player/provider writes, email, retention/schema changes, native-device/browser acceptance, deployment or repeated long campaign/capacity/raid tests."}
+  ],
+  "remaining": [
+    "Full held-item/shared-operation coverage and provider-policy review; existing section files remain explicitly incomplete account exports.",
+    "Separately authorized coordinated removal, shared custody/replay preservation and save-journal/archive anti-resurrection fixtures.",
+    "Complete milestone notes/version, CI and exact live acceptance. Full1.99 roadmap goal remains active."
+  ]
+}

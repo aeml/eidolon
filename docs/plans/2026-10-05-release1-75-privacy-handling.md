@@ -217,6 +217,22 @@ copies follow existing configurations; no new deletion deadline is promised.
 The optional playtest timer remains local until explicitly shared; that is
 separate from existing website analytics and recovery messages sent via Postmark.
 
+The unpublished player-facing notice is available before sign-in, in Settings
+and Account help/Report Bug / Feature. All three surfaces share source-backed
+text and keep a short script-independent fallback. Native collapsed details,
+44px summary/link targets, wrapping and visible keyboard focus preserve the
+existing menus. Mounting reads no storage or account state and sends no data;
+it adds neither a consent gate nor an analytics/provider setting. A clean private
+support link reloads the document before suppressing the analytics tag.
+
+The notice distinguishes request/review from export permission, section files
+from a complete account export, connection duration from active play, expiry from
+erasure and case resolution from authorized removal. It discloses existing
+Google Analytics/Postmark and out-of-band archives/provider/mailbox copies,
+without claiming legal certification or provider cleanup. Focused automated UI
+and boot regressions pass; actual-device/live notice acceptance is not claimed.
+See [notice checks](2026-10-05-release1-75-notice-checks.json).
+
 Website analytics/provider policy review, full export coverage, delivery access
 checks, coordinated-removal fixtures and qualified review where required remain
 milestone gates. No beta/full-release readiness claim follows from this workflow.
