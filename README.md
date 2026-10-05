@@ -426,8 +426,12 @@ Notes:
   public frontend/backend/login/notes proof passed at8b7ab8dd. Interface-only
   1.74.4 is accepted at9560ac60: all ten CI37246677139 jobs succeed and independent
   public identities/readiness/login/notes and exact changed runtime bytes match.
-  Its435 focused checks pass. Native keepalive maintenance1.74.5 is pushed
-  asba5983bb with CI37250096379 monitored by Luna, not yet live-accepted.
+  Its435 focused checks pass. Initial1.74.5 CI37250096379 failed predeploy loot;
+  no deployment ran. Corrected keepalive/loot-arrival maintenance1.74.5 is pushed
+  as59dfed48 with CI37253104723 monitored by Luna, not yet live-accepted.
+  Own current-scene confirmed-arrival ordering and single-flight pickups pass430
+  affected checks and all four focused disposable browser routes; no inventory
+  grant or server-distance relaxation. Future candidate source remains separate.
   This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only

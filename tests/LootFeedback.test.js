@@ -183,7 +183,7 @@ describe('GameEngine loot pickup feedback', () => {
         expect(engine.remotePlayers.has(loot.id)).toBe(false);
     });
 
-    test('a pickup without server confirmation remains retryable and does not create a ghost item', () => {
+    test('unconfirmed pickup is single-flight and becomes retryable only after its deadline', () => {
         const engine = createEngineHarness();
         const loot = createLootEntity({ id: 'loot-retry' });
         engine.remotePlayers.set(loot.id, loot);
@@ -192,9 +192,60 @@ describe('GameEngine loot pickup feedback', () => {
         engine.pickupLoot(loot.id);
         engine.pickupLoot(loot.id);
 
-        expect(engine.network.send).toHaveBeenCalledTimes(2);
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
         expect(engine.remotePlayers.has(loot.id)).toBe(true);
         expect(engine.player.inventory.filter(Boolean)).toHaveLength(0);
+        expect(engine.pendingLootPickups.has(loot.id)).toBe(true);
+        jest.advanceTimersByTime(engine.pendingLootPickupTimeout);
+        expect(engine.pendingLootPickups.has(loot.id)).toBe(false);
+        expect(engine.pickupLoot(loot.id)).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledTimes(2);
+        expect(engine.player.inventory.filter(Boolean)).toHaveLength(0);
+    });
+
+    test('world removal before inventory confirmation cannot resend the consumed loot request', () => {
+        const engine = createEngineHarness(), loot = createLootEntity();
+        engine.remotePlayers.set(loot.id, loot);
+        engine.pickupLoot(loot.id);
+        engine.remotePlayers.delete(loot.id);
+        expect(engine.pickupLoot(loot.id)).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
+        expect(engine.uiManager.showLootPickupToast).not.toHaveBeenCalled();
+        engine.confirmPendingLootPickups([loot.item]);
+        engine.remotePlayers.set(loot.id, loot); // A delayed world frame cannot reopen confirmed loot.
+        expect(engine.pickupLoot(loot.id)).toBe(false);
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
+    });
+
+    test('predicted arrival waits for an own same-scene in-range movement acknowledgement', () => {
+        const engine = createEngineHarness(), loot = createLootEntity();
+        engine.isMultiplayer = true;
+        engine.player.id = 'own-player';
+        engine.currentInstanceId = 'own-scene';
+        engine.sendPlayerMovementIfNeeded = jest.fn();
+        engine.remotePlayers.set(loot.id, loot);
+        engine.movementNetworkState = {
+            playerId: engine.player.id, lastAcknowledgedInstanceId: engine.currentInstanceId,
+            lastAcknowledgedServerPosition: { x: 8, z: 0 }
+        };
+        for (const state of [
+            { playerId: 'other-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: { x: 0, z: 0 } },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'old-scene', lastAcknowledgedServerPosition: { x: 0, z: 0 } },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: null },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: { x: NaN, z: 0 } },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: { x: 0, z: Infinity } },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: { x: 5.01, z: 0 } },
+            engine.movementNetworkState
+        ]) {
+            engine.movementNetworkState = state;
+            expect(engine.pickupLoot(loot.id)).toBe(true);
+            expect(engine.network.send).not.toHaveBeenCalled();
+            expect(engine.pendingLootPickups.size).toBe(0);
+        }
+        expect(engine.sendPlayerMovementIfNeeded).toHaveBeenCalledWith(0, { flush: true });
+        engine.movementNetworkState.lastAcknowledgedServerPosition = { x: 0, z: 0 };
+        expect(engine.pickupLoot(loot.id)).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
         expect(engine.pendingLootPickups.has(loot.id)).toBe(true);
     });
 

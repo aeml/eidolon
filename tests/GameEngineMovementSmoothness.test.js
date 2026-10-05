@@ -35,13 +35,28 @@ describe('GameEngine ordered movement transport', () => {
         const engine = movementHarness();
         engine.sendPlayerMovementIfNeeded(1 / 60);
         expect(engine.network.send.mock.lastCall[1].movementContext).toBe('');
+        engine.getLocalPositionCorrectionReason({ moveSequence: 1, instanceId: '' }, new THREE.Vector3(), 0);
+        expect(engine.ensureMovementNetworkState().lastAcknowledgedServerPosition).not.toBeNull();
         engine.handleServerMessage({ type: 'movement_context', payload: { movementContext: 'fresh-recall' } });
         expect(engine.ensureMovementNetworkState().lastPacket).toBeNull();
+        expect(engine.ensureMovementNetworkState().lastAcknowledgedServerPosition).toBeNull();
+        expect(engine.ensureMovementNetworkState().lastAcknowledgedInstanceId).toBeNull();
         engine.sendPlayerMovementIfNeeded(1 / 30);
         expect(engine.network.send.mock.lastCall[1].movementContext).toBe('fresh-recall');
         engine.handleServerMessage({ type: 'movement_context', payload: { movementContext: '' } });
         expect(engine.ensureMovementNetworkState().recoveryContext).toBe('');
     });
+    test('movement acknowledgement retains scene provenance even at an unchanged sequence and position', () => {
+        const engine = movementHarness(), position = new THREE.Vector3();
+        engine.getLocalPositionCorrectionReason({ moveSequence: 4, instanceId: 'old-scene' }, position, 0);
+        expect(engine.ensureMovementNetworkState().lastAcknowledgedInstanceId).toBe('old-scene');
+        engine.getLocalPositionCorrectionReason({ moveSequence: 4, instanceId: 'new-scene' }, position, 0);
+        expect(engine.ensureMovementNetworkState().lastAcknowledgedInstanceId).toBe('new-scene');
+        engine.getLocalPositionCorrectionReason({ moveSequence: 3, instanceId: 'old-scene' }, position, 0);
+        expect(engine.ensureMovementNetworkState().lastAcknowledgedInstanceId).toBe('new-scene');
+        expect(engine.getMovementMetrics().local.staleAcknowledgements).toBe(1);
+    });
+
     test('server-owned charge reconciles short steps and the final landing without replaying it', () => {
         const engine = movementHarness();
         engine.sendPlayerMovementIfNeeded(1 / 60);

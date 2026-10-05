@@ -594,8 +594,8 @@ export class GameEngine {
         this.recentLootExpiryTimers = new Map();
         this.recentlyPickedUpLootTimeout = 5000; // 5 seconds
         // A pickup is not real until the server's inventory packet confirms it.
-        // Keeping pending loot retryable prevents rejected requests from
-        // creating client-only "ghost" items.
+        // One in-flight request per pile prevents duplicate consumed-loot
+        // requests; the existing deadline still permits unconfirmed retries.
         this.pendingLootPickups = new Map();
         this.pendingLootPickupTimeout = 10000;
     }

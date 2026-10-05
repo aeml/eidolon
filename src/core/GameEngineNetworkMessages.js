@@ -32,6 +32,10 @@ class GameEngineNetworkMessageMethods {
         const previousInstanceType = this.currentInstanceType || 'overworld';
         this.currentInstanceId = instanceId;
         this.currentInstanceType = type;
+        if (this.movementNetworkState) {
+            this.movementNetworkState.lastAcknowledgedServerPosition = null;
+            this.movementNetworkState.lastAcknowledgedInstanceId = null;
+        }
         this.currentDungeonRoomState = decorateDungeonRoomState(roomState);
         this.currentDungeonLayout = layout || null;
         // Hovered services and raycast hits belong to the scene being removed.
@@ -756,6 +760,8 @@ class GameEngineNetworkMessageMethods {
                 // The next frame must publish the current prediction even if
                 // its last old-context sample was rejected during recovery.
                 movement.lastPacket = null;
+                movement.lastAcknowledgedServerPosition = null;
+                movement.lastAcknowledgedInstanceId = null;
             }
         } else if (msg.type === 'build_action') {
             this.uiManager?.skillTree?.handleBuildActionResult?.(msg.payload);
