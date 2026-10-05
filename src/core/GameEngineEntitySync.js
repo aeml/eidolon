@@ -561,6 +561,23 @@ class GameEngineEntitySyncMethods {
             return false;
         }
 
+        if (this.isMultiplayer) {
+            // Prediction can arrive before the server accepts the last move.
+            // Publish normal movement first, then let the interaction retry
+            // until an own, same-scene acknowledgement is inside pickup range.
+            // Waiting is not a full bag or a successful/issued pickup.
+            this.sendPlayerMovementIfNeeded(0, { flush: true });
+            const movement = this.movementNetworkState;
+            const position = movement?.lastAcknowledgedServerPosition;
+            const radius = Math.min(5, this.getLootPickupRadius(entity));
+            if (movement?.playerId !== this.player.id ||
+                movement?.lastAcknowledgedInstanceId !== (this.currentInstanceId || '') ||
+                !Number.isFinite(position?.x) || !Number.isFinite(position?.z) ||
+                Math.hypot(position.x - entity.position.x, position.z - entity.position.z) > radius) {
+                return true;
+            }
+        }
+
         if (!this.pendingLootPickups.has(lootId)) {
             const item = this.hydrateItem({ ...entity.item });
             const quantityBefore = this.player.inventory.reduce((total, inventoryItem) =>

@@ -903,6 +903,7 @@ class GameEngineMovementMethods {
             nextSequence: 1,
             lastAcknowledgedSequence: 0,
             lastAcknowledgedServerPosition: null,
+            lastAcknowledgedInstanceId: null,
             authoritativeChargeActive: false,
             lastPacket: null,
             sentHistory: new Map()
@@ -984,6 +985,7 @@ class GameEngineMovementMethods {
             }
 
             if (acknowledgedSequence === movement.lastAcknowledgedSequence &&
+                movement.lastAcknowledgedInstanceId === (pData?.instanceId ?? null) &&
                 movement.lastAcknowledgedServerPosition &&
                 horizontalDistance(movement.lastAcknowledgedServerPosition, serverPosition) <=
                     LOCAL_SERVER_ADJUSTMENT_TOLERANCE) {
@@ -999,6 +1001,7 @@ class GameEngineMovementMethods {
 
             const sent = movement.sentHistory.get(acknowledgedSequence);
             movement.lastAcknowledgedSequence = acknowledgedSequence;
+            movement.lastAcknowledgedInstanceId = pData?.instanceId ?? null;
             movement.lastAcknowledgedServerPosition = {
                 x: serverPosition.x,
                 y: serverPosition.y,

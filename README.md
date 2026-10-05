@@ -426,6 +426,8 @@ Notes:
   frame and access guards. Client loot requests are single-flight per pile until
   authoritative inventory confirmation or the existing pending deadline; repeated
   clicks cannot resend consumed loot while inventory delivery is in flight.
+  Pickup also waits for an own, current-scene in-range movement acknowledgement;
+  normal movement is flushed before pickup without relaxing server distance checks.
   Existing card-table ordering, casino performance,
   real-player administration, selling/error fixes, accounts,
   currencies, permissions, retention and schema22 remain unchanged. Later

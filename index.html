@@ -780,6 +780,7 @@
                         <li>Due connection keepalives are sent before draining queued control traffic, so a busy control queue cannot indefinitely postpone an already-due ping. Control messages still take precedence over world-state messages.</li>
                         <li>The same single WebSocket writer handles all frames. Existing ping intervals, idle limits, frame guards and access checks are unchanged.</li>
                         <li>Repeated clicks and interaction ticks share one in-flight pickup request per loot pile. World removal before inventory confirmation cannot resend a consumed item. Inventory confirmation remains authoritative; unconfirmed requests retain their existing retry deadline.</li>
+                        <li>Loot pickup waits for confirmed arrival in the current scene rather than sending from a predicted position still outside server range. Travel and recovery discard the previous scene's arrival proof; the server's pickup-distance check is unchanged.</li>
                         <li>No account wipe, schema migration, wager, payout, currency, reward or permission change. Previous card-table, real-player administration and Sell All fixes remain included.</li>
                         <li>This targeted scheduling correction does not certify 100-player capacity or complete unfinished 1.75–1.79 milestones. Full prior patch history remains below.</li>
                     </ul>

@@ -217,6 +217,38 @@ describe('GameEngine loot pickup feedback', () => {
         expect(engine.network.send).toHaveBeenCalledTimes(1);
     });
 
+    test('predicted arrival waits for an own same-scene in-range movement acknowledgement', () => {
+        const engine = createEngineHarness(), loot = createLootEntity();
+        engine.isMultiplayer = true;
+        engine.player.id = 'own-player';
+        engine.currentInstanceId = 'own-scene';
+        engine.sendPlayerMovementIfNeeded = jest.fn();
+        engine.remotePlayers.set(loot.id, loot);
+        engine.movementNetworkState = {
+            playerId: engine.player.id, lastAcknowledgedInstanceId: engine.currentInstanceId,
+            lastAcknowledgedServerPosition: { x: 8, z: 0 }
+        };
+        for (const state of [
+            { playerId: 'other-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: { x: 0, z: 0 } },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'old-scene', lastAcknowledgedServerPosition: { x: 0, z: 0 } },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: null },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: { x: NaN, z: 0 } },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: { x: 0, z: Infinity } },
+            { playerId: 'own-player', lastAcknowledgedInstanceId: 'own-scene', lastAcknowledgedServerPosition: { x: 5.01, z: 0 } },
+            engine.movementNetworkState
+        ]) {
+            engine.movementNetworkState = state;
+            expect(engine.pickupLoot(loot.id)).toBe(true);
+            expect(engine.network.send).not.toHaveBeenCalled();
+            expect(engine.pendingLootPickups.size).toBe(0);
+        }
+        expect(engine.sendPlayerMovementIfNeeded).toHaveBeenCalledWith(0, { flush: true });
+        engine.movementNetworkState.lastAcknowledgedServerPosition = { x: 0, z: 0 };
+        expect(engine.pickupLoot(loot.id)).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
+        expect(engine.pendingLootPickups.has(loot.id)).toBe(true);
+    });
+
     test('retired pickup deadline cannot delete a replacement scene request for the same ID', () => {
         const engine = createEngineHarness(), loot = createLootEntity({ id: 'reused-loot' });
         engine.remotePlayers.set(loot.id, loot); engine.pickupLoot(loot.id);
