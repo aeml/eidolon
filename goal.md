@@ -17,8 +17,12 @@ rejection despite all100 own-state and every poker paid result; independent
 all-account saves not reached. Small regressions then reproduce old lobby
 restoration across hands. Prepared9db4c8ef uses persistent table versions as
 precise bounded strings;128 UI checks and native projection/driver race suites
-pass. Changed native100 comparison has just launched in one verified owned
-network-none bounded fixture; no terminal/capacity acceptance yet. See
+pass. Changed native100 comparison fails230.96s: all100 admit, but minimum own
+updates567 falls below600,23 monetary timeouts and2 blackjack round-or-bet
+rejections leave three casino minima0; party minimum impact0. All-account fresh
+save validation not reached. Normal child drain succeeds, peak808284160/OOM0;
+owned fixture/private data removed. Diagnose with short checks before any new
+target, no unchanged rerun or relaxed gates. See
 [current run](docs/plans/2026-10-05-capacity-table-order-checks.json).
 
 Full original1.11–1.99 roadmap remains active. Ordered1.75–1.78 privacy/retention/

@@ -1,5 +1,5 @@
 {
-  "status": "ACTUAL_CHANGED_TARGET_RUNNING_NO_ACCEPTANCE",
+  "status": "TERMINAL_FAIL_FIXTURE_REMOVED",
   "sourceCommit": "9db4c8efa4aa02566cb5b1d66d4c63ff81757399",
   "ownedContainer": "a292168bab076d6bf2902a8b21c219f1071c879133ad31389ab8cc28aa4d581d",
   "taskLabel": "combined100-table-order-identity-179-20261005",
@@ -12,5 +12,21 @@
     "normalDriverSHA256": "f9df342751c9a96422d3632ec8fdf8dc58d835fdac3f79cb02c45ce7bc32dfb3"
   },
   "scope": "New persistent-table identity/version projections and prepared UI/driver ordering pass focused reproductions/boundary checks before one changed target comparison. Rebuilt normal server/driver and race root from exact clean9db4c8ef; not reused old native binaries. Same100 clients,120s workload/five-second admission, six-seat table distribution, own positive party impact/healing, every casino client's paid result and every independent fresh saved character gates. Candidate schema24, not narrow production capacity. Network-none/no published ports Mongo7.0.14,2CPU/2GiB,512MiB database/16MiB config tmpfs,.25GiB Mongo cache; exact label/ID/limits/OOMfalse and ping verified before start. Six-minute root/seven-minute parent bounds. No production data, campaign/raid replay, in-run grants, changed difficulty or weakened success threshold.",
-  "remaining": "Observe same parent handle to definitive terminal outcome, inspect exact owned process/OOM/peak, remove only owned disposable fixture/private data and record result. No acceptance implied by a launch. Town/social outcomes, finale/other rituals, final settlement/restart/representative headroom, ordered1.75–1.78 and own1.79 version/notes/CI/public gates remain."
+  "result": "Corrected-identity parent79873 terminalFAIL230.96s/exit1. All100 admit and sustain119056ms but minimum567 fresh own updates is below600. No read/write/decode errors. Casino5 slot-spin/8 blackjack-bet/4 house-bet/6 poker-buy-in timeouts plus2 blackjack round-or-bet rejections; blackjack/house/poker minimum paid0. Five formed parties have minimum own impact0 despite real damage/healing. Driver fails, so all-account independent fresh-save validation not reached. These broader failures do not demonstrate ordering fix solved capacity, or establish exact causes of earlier/later rejections. No unchanged rerun.",
+  "metrics": {
+    "connected": 100, "joined": 100, "authenticated": 100, "admissionFailures": 0,
+    "stateFrames": 60340, "minFrames": 567, "minFreshOwnUpdates": 567,
+    "minActiveMilliseconds": 119056, "maxStateGapMilliseconds": 1343, "receivedPayloadBytes": 1047921925,
+    "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 639, "maxJoinMilliseconds": 1027,
+    "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+    "slots": { "clients": 10, "acceptedWagers": 125, "paidResults": 125, "minimumPaidResults": 1, "bonuses": 4, "failed": 5, "spinTimeouts": 5 },
+    "blackjack": { "clients": 20, "acceptedWagers": 26, "paidResults": 12, "minimumPaidResults": 0, "observedActions": 14, "failed": 10, "roundOrBetRejected": 2, "betTimeouts": 8 },
+    "house": { "clients": 20, "acceptedWagers": 49, "paidResults": 33, "minimumPaidResults": 0, "failed": 4, "betTimeouts": 4 },
+    "poker": { "clients": 10, "acceptedWagers": 14, "paidResults": 6, "minimumPaidResults": 0, "observedActions": 24, "failed": 6, "buyInTimeouts": 6 },
+    "parties": { "groups": 5, "formed": 5, "members": 20, "minOwnImpacts": 0, "damageEvents": 300, "healEvents": 10, "acceptedCasts": 627, "deniedCasts": 8, "xpProgressUpdates": 200, "observedDeaths": 188, "failed": 0 },
+    "memoryPeakBytes": 808284160, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+  },
+  "diagnostics": "Every read category0. Every casino fixed rejection category0 except23 timeouts and2 ambiguous blackjack round-or-bet. No exact action-error/phase/tick/database/journal latency correspondence retained, so no causal attribution to version fields, server load or shared host contention. No fatal/panic/race markers in exact owned server log; absence does not explain throughput/timeouts. Normal child exit under original5s bound; all fixed drain labels through complete. Peak covers all processes/Mongo/tmpfs, not game heap.",
+  "cleanup": "Definitive parent failure consumed. Only mongod remained. Verified exact ID/task/network/OOM/peak; stopped and removed only owned a292168bab076d6bf2902a8b21c219f1071c879133ad31389ab8cc28aa4d581d fixture and its disposable accounts/database/private logs, filtered listing empty. Immutable binaries/symlink retained. Production/owner workspace/services untouched.",
+  "remaining": "First diagnose timeout/update cadence and request/settlement ordering with short bounded evidence before another target. Do not lengthen timeouts, reduce cohort/workload, relax paid/impact/save gates or rerun unchanged. Town/social outcomes, finale/other rituals, final settlement/restart/representative headroom, ordered1.75–1.78 and own1.79 version/notes/CI/public gates remain."
 }

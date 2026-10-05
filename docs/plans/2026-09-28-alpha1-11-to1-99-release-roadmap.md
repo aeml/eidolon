@@ -2020,6 +2020,18 @@ focused root race projections and driver race checks pass. No wager/payout/timer
 schema or acceptance threshold changes. This is not retrospective proof of the
 two actual100 stale causes, target capacity acceptance or a deployed feature.
 
+The changed native100 [comparison](2026-10-05-capacity-table-order-checks.json)
+then fails230.96s: all100 admit and no transport/decode failures, but minimum567
+own updates is below600;23 casino action timeouts and2 blackjack round-or-bet
+rejections leave blackjack/house/poker minima0, party minimum own impact0.
+All-account independent save checks are not reached. Original gates retained,
+normal owned drain/all labels complete, peak808284160bytes/OOM0; exact fixture
+and disposable private data removed. Prior setup failure was a binary-basename/
+embedded-build-ID mismatch, corrected without weakening readiness. No100-player
+acceptance or causal attribution to counter fields/shared host load inferred.
+Use short timeout/update/settlement diagnosis before another target; no
+unchanged replay, longer timeout or easier workload. Broader roadmap stays open.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves
