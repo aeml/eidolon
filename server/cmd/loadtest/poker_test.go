@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -47,6 +49,137 @@ func TestPokerLoadDistinctSeatsAndNoStrandedSinglePlayer(t *testing.T) {
 		if validPokerClientCount(n) != want {
 			t.Fatal("one player could be stranded without a real opponent", n)
 		}
+	}
+}
+
+func TestPokerOwnTurnDoesNotWaitForReadRefreshCooldown(t *testing.T) {
+	for _, count := range []int{2, 6} {
+		t.Run(strconv.Itoa(count), func(t *testing.T) {
+			now := time.Unix(100, 0)
+			bots := make([]*casinoLoad, count)
+			entries := make([]game.PokerEntry, count)
+			me := Entity{InstanceID: game.CasinoInstanceID, Health: 100}
+			for i := range bots {
+				b := newPokerLoad(i, "player-synthetic-"+strconv.Itoa(i))
+				bots[i] = b
+				b.receive(pokerFixtureView(b, "betting", false, false, nil))
+				b.step(me, now, 100, time.Second, func(payload map[string]interface{}) error {
+					if payload["action"] != "poker_buy_in" {
+						t.Fatal("normal funding request missing")
+					}
+					return nil
+				}, func(float64, float64) { t.Fatal("seated bot moved") })
+				b.receive(pokerFixtureView(b, "betting", true, false, nil))
+				entries[i] = game.PokerEntry{PlayerID: b.poker.playerID, Seat: b.seat, BuyIn: 100}
+			}
+			round, err := game.NewPokerRoundForCurrency(strings.Repeat("a", 32), entries, -1, now, "gold")
+			if err != nil {
+				t.Fatal(err)
+			}
+			b := bots[round.Turn]
+			b.receive(pokerFixtureView(b, "playing", true, false, round))
+			requests := 0
+			request := func(payload map[string]interface{}) error {
+				requests++
+				if payload["action"] != "poker_play" || payload["roundRevision"] != round.Revision {
+					t.Fatal("fresh own turn replaced by poll or wrong revision")
+				}
+				if _, err := round.Propose(b.poker.playerID, payload["gameAction"].(string), 0, round.Revision, now); err != nil {
+					t.Fatal("ordinary domain rejected decision", err)
+				}
+				return nil
+			}
+			b.step(me, now.Add(time.Millisecond), 100, time.Second, request, func(float64, float64) { t.Fatal("seated bot moved") })
+			if requests != 1 || b.pending != "poker_play" || b.counts().rounds != 0 {
+				t.Fatal("fresh legal own turn stalled behind artificial read-refresh cooldown")
+			}
+			b.receive(pokerFixtureView(b, "playing", true, false, round))
+			b.step(me, now.Add(2*time.Millisecond), 100, time.Second, request, func(float64, float64) { t.Fatal("seated bot moved") })
+			if requests != 1 {
+				t.Fatal("unchanged snapshot repeated an uncertain decision")
+			}
+		})
+	}
+}
+
+func TestPokerImmediateTurnKeepsOwnershipAndDecisionFences(t *testing.T) {
+	changes := map[string]func(*casinoLoad){
+		"peer turn":             func(b *casinoLoad) { b.view.Poker.Round.TurnPlayerID = "player-synthetic-peer" },
+		"unfunded":              func(b *casinoLoad) { b.poker.fundedRound = "" },
+		"changed session":       func(b *casinoLoad) { b.view.YourSeat.SessionID = "changed-seat" },
+		"missing seat":          func(b *casinoLoad) { b.view.YourSeat = nil },
+		"processing":            func(b *casinoLoad) { b.view.Poker.Processing = true },
+		"unavailable":           func(b *casinoLoad) { b.view.Poker.Available = false },
+		"different hand":        func(b *casinoLoad) { b.view.Poker.RoundID = strings.Repeat("b", 32) },
+		"different nested hand": func(b *casinoLoad) { b.view.Poker.Round.ID = strings.Repeat("b", 32) },
+		"complete phase":        func(b *casinoLoad) { b.view.Poker.Phase = "complete" },
+		"nested complete phase": func(b *casinoLoad) { b.view.Poker.Round.Phase = "complete" },
+		"zero revision":         func(b *casinoLoad) { b.view.Poker.Round.Revision = 0 },
+		"no legal decision":     func(b *casinoLoad) { b.view.Poker.Round.Actions = []string{"raise"} },
+		"no own participant":    func(b *casinoLoad) { b.view.Poker.Round.Players = nil },
+		"pending decision":      func(b *casinoLoad) { b.pending = "poker_play" },
+		"already requested": func(b *casinoLoad) {
+			b.poker.lastDecisionRound, b.poker.lastDecisionRevision = b.view.Poker.RoundID, b.view.Poker.Round.Revision
+		},
+		"older revision": func(b *casinoLoad) {
+			b.poker.lastDecisionRound, b.poker.lastDecisionRevision = b.view.Poker.RoundID, b.view.Poker.Round.Revision+1
+		},
+	}
+	for name, change := range changes {
+		t.Run(name, func(t *testing.T) {
+			now := time.Unix(100, 0)
+			entries := []game.PokerEntry{{PlayerID: "player-synthetic-a", Seat: 0, BuyIn: 100}, {PlayerID: "player-synthetic-b", Seat: 1, BuyIn: 100}}
+			round, err := game.NewPokerRoundForCurrency(strings.Repeat("a", 32), entries, -1, now, "gold")
+			if err != nil {
+				t.Fatal(err)
+			}
+			owner := round.Players[round.Turn]
+			b := newPokerLoad(owner.Seat, owner.PlayerID)
+			me := Entity{InstanceID: game.CasinoInstanceID, Health: 100}
+			b.receive(pokerFixtureView(b, "betting", false, false, nil))
+			b.step(me, now, 100, time.Second, func(map[string]interface{}) error { return nil }, func(float64, float64) { t.Fatal("seated bot moved") })
+			b.receive(pokerFixtureView(b, "playing", true, false, round))
+			if !b.poker.canAct(b) {
+				t.Fatal("positive own-turn precondition missing")
+			}
+			change(b)
+			if b.poker.canAct(b) {
+				t.Fatal("unsafe or duplicate decision passed readiness fence")
+			}
+			b.step(me, now.Add(time.Millisecond), 100, time.Second, func(map[string]interface{}) error {
+				t.Fatal("negative view bypassed polling cooldown")
+				return nil
+			}, func(float64, float64) { t.Fatal("seated bot moved") })
+			if b.counts().rounds != 0 || b.counts().actions != 0 {
+				t.Fatal("negative view invented completion or accepted action")
+			}
+		})
+	}
+}
+
+func TestPokerImmediateFailedWriteDoesNotRecordDecision(t *testing.T) {
+	now := time.Unix(100, 0)
+	entries := []game.PokerEntry{{PlayerID: "player-synthetic-a", Seat: 0, BuyIn: 100}, {PlayerID: "player-synthetic-b", Seat: 1, BuyIn: 100}}
+	round, err := game.NewPokerRoundForCurrency(strings.Repeat("a", 32), entries, -1, now, "gold")
+	if err != nil {
+		t.Fatal(err)
+	}
+	owner := round.Players[round.Turn]
+	b := newPokerLoad(owner.Seat, owner.PlayerID)
+	me := Entity{InstanceID: game.CasinoInstanceID, Health: 100}
+	b.receive(pokerFixtureView(b, "betting", false, false, nil))
+	b.step(me, now, 100, time.Second, func(map[string]interface{}) error { return nil }, func(float64, float64) { t.Fatal("seated bot moved") })
+	b.receive(pokerFixtureView(b, "playing", true, false, round))
+	requests := 0
+	b.step(me, now.Add(time.Millisecond), 100, time.Second, func(payload map[string]interface{}) error {
+		requests++
+		if payload["action"] != "poker_play" {
+			t.Fatal("fresh own turn replaced by read")
+		}
+		return errors.New("owned fixture write failure")
+	}, func(float64, float64) { t.Fatal("seated bot moved") })
+	if requests != 1 || !b.failed || b.poker.lastDecisionRound != "" || b.poker.lastDecisionRevision != 0 || b.counts().actions != 0 || b.counts().rounds != 0 {
+		t.Fatal("failed decision write earned request/acceptance/paid credit")
 	}
 }
 

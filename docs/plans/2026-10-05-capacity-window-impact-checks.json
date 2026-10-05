@@ -1,0 +1,32 @@
+{
+  "status": "TERMINAL_FAIL_FIXTURE_REMOVED",
+  "sourceCommit": "ae31e781",
+  "launchObservedAtUTC": "2026-10-05T01:08:36Z",
+  "ownedContainer": "33150c8baba2c8e756531d98a179c6a91761231d99b17341feb21813dfb992b8",
+  "taskLabel": "combined100-window-impact-179-20261005",
+  "parentSession": 49587,
+  "artifacts": {
+    "directory": "/tmp/eidolon-179-window-impact-7kNXbs",
+    "normalServerSHA256": "fae72654995e1a6ccc68c7475180b6925013046380a3b6dc718426d3cf42408f",
+    "raceRootSHA256": "e9dfe7056e19e3af3118707262d0b95d8b7e5944149a9ff9a1604af7390ada76",
+    "normalDriverSHA256": "16a1df76d8b1c752267564712ac5181a5a6fdcc50ffdc9f1cc9e090dc157e686"
+  },
+  "scope": "One changed target100 run with advertised-wager deadlines, delayed own-party hit accounting and fixed shutdown diagnostics. Normal server/schema24 candidate, raced root, normal driver; not exact narrow production1.74.5 capacity. Owned network-none Mongo7.0.14,2CPU/2GiB,tmpfs512MiB DB/16MiB config/cache0.25GiB. Same120s workload/five-second admission, sustained per-client own-state, every casino client's paid result, real party impact/healing and all-account independent save gates. No lowered threshold, reshuffled poker tables or longer workload/shutdown limit. Later poker turn responsiveness correction is not in these binaries.",
+  "result": "FAIL218.51s/exit1: all100 admitted/sustained own state, all blackjack/slots/house participants paid, five parties formed with minimum impact2 and healing. No read/write/decode errors, casino rejections or timeouts. Poker10 clients have10 paid results aggregate but minimum0, so driver still fails. All-account independent save validation not reached. Owned child shutdown completes normally under original bound; no forced-stop error.",
+  "metrics": {
+    "connected": 100, "joined": 100, "stateFrames": 117658,
+    "minFrames": 1122, "minFreshOwnUpdates": 1122, "minActiveMilliseconds": 119197,
+    "maxStateGapMilliseconds": 969, "receivedPayloadBytes": 1335581708,
+    "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 464, "maxJoinMilliseconds": 1082,
+    "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+    "slots": {"clients": 10, "paidResults": 303, "minimumPaidResults": 25, "bonuses": 6, "failed": 0},
+    "blackjack": {"clients": 20, "acceptedWagers": 48, "paidResults": 30, "minimumPaidResults": 1, "observedActions": 29, "failed": 0},
+    "house": {"clients": 20, "acceptedWagers": 60, "paidResults": 40, "minimumPaidResults": 2, "failed": 0},
+    "poker": {"clients": 10, "acceptedWagers": 18, "paidResults": 10, "minimumPaidResults": 0, "observedActions": 49, "failed": 0},
+    "parties": {"groups": 5, "formed": 5, "members": 20, "minOwnImpacts": 2, "damageEvents": 224, "healEvents": 10, "acceptedCasts": 469, "deniedCasts": 1, "xpProgressUpdates": 168, "observedDeaths": 126, "failed": 0},
+    "memoryPeakBytes": 761196544, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+  },
+  "diagnostics": "All fixed casino rejection/timeout and read-failure categories0. Owned drain reports refund_delivery through complete and child exits without forced shutdown. complete label alone denotes world drain; normal owned process termination separately covers HTTP/database exit. No fatal/race/panic marker matched local normal-server log; this is not an instrumented server-race proof or a causal explanation of earlier failed shutdown.",
+  "cleanup": "Definitive parent failure consumed. docker top confirms only mongod remains; exact label/network and cgroup peak/OOM checked. Stopped and removed only exact owned fixture/synthetic database, filtered listing empty. Private fixture logs/accounts removed with container; immutable binaries retained. No production data, services or owner worktree touched.",
+  "remaining": "Diagnose absent per-client poker paid completion without relaxing its gate; short fresh-own-turn cooldown regression follows separately. Acknowledged town/social outcomes, representative raids/events, current finale/other rituals, final settlement/restart, tick/network/DB/client budgets and ordered1.75–1.78 policy/ops acceptance plus own1.79 publication remain open. This is not100-player capacity or full1.99 completion."
+}

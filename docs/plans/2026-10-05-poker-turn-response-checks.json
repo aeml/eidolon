@@ -1,0 +1,12 @@
+{
+  "status": "PREPARED_FOCUSED_CHECKS_PASSED_NOT_DEPLOYED_OR_TARGET_REPLAYED",
+  "finding": "The load driver's three-second read-refresh/action cadence also blocked a newly observed legal own poker decision. Ordinary domain-rule two- and six-player fixtures reproduce the delay; before correction both fail, command0.067s. This is not proof of why particular clients missed paid completion in the actual100 comparison.",
+  "change": "A fresh playable own turn in an acknowledged funded hand/private seat may bypass only the polling cooldown. Pending requests/timeouts still precede this gate. One latest successfully requested round/revision prevents repeated or older decisions. Other games and read polling keep their cadence; actual request acknowledgement and paid completion counters are unchanged. No server timers, casino distribution, monetary limits, payout rules, workload duration or success-threshold change.",
+  "checks": "Final Poker/Casino/Advertised/Blackjack/House race selection passed14.469s. Two- and six-player domain-rule own turns issue one legal check/call without the artificial delay; unchanged pending snapshots do not repeat it. Sixteen negative ownership/funding/availability/phase/revision/action/participant/pending cases do not bypass polling. Failed write fails the client without recording a requested revision, accepted action or paid completion. Existing ordinary-hand completion, uncertain funding, deadline and rejection boundaries retained. gofmt/diff passed. Synthetic rule-backed fixtures are not a native full six-player hand or target100 pass.",
+  "sha256": {
+    "server/cmd/loadtest/poker.go": "8d9e4a8310585288add88e19cb622e57bddbc0c088f0a5a1df1931887c8d73c7",
+    "server/cmd/loadtest/casino.go": "31c060397143d1e5d41c509fd73a9a6827b311c845842df85edf5a9e8b70a733",
+    "server/cmd/loadtest/poker_test.go": "ec76aaeaa2499cf6b0e199eb6581fa8d18e2d84c7f1a043ac374414470980538"
+  },
+  "remaining": "Later targeted actual comparison must still require every assigned poker client to observe a newly funded paid result and all-account independent saves. Do not extend120s, reshuffle into easier tables or count requests/history/peer payments as completion. Full1.79 and ordered policy/ops milestones remain open. Excluded from native keepalive1.74.5."
+}

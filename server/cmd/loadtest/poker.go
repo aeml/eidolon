@@ -35,6 +35,33 @@ type pokerLoad struct {
 	pendingStreet                                                     string
 	pendingBuyIn, pendingStack, pendingCommitted                      int
 	wagers, rounds, actions                                           uint64
+	lastDecisionRound                                                 string
+	lastDecisionRevision                                              uint64
+}
+
+// Read polling has a three-second cadence, but a fresh legal own turn should
+// not inherit that artificial delay. Never bypass a pending decision or reuse
+// a previously requested revision; server acceptance and paid results remain
+// separate observations.
+func (p *pokerLoad) canAct(b *casinoLoad) bool {
+	v := b.view.Poker
+	if b.pending != "" || v == nil || !v.Available || v.Processing || v.Currency != "gold" ||
+		v.Phase != "playing" || v.RoundID != p.fundedRound || b.view.YourSeat == nil ||
+		b.view.YourSeat.SessionID != p.fundedSession || v.Round == nil || v.Round.ID != v.RoundID ||
+		v.Round.Phase != "playing" || v.Round.TurnPlayerID != p.playerID || v.Round.Revision == 0 ||
+		(v.RoundID == p.lastDecisionRound && v.Round.Revision <= p.lastDecisionRevision) {
+		return false
+	}
+	for _, player := range v.Round.Players {
+		if player.PlayerID == p.playerID && player.Seat == b.seat && player.Stack >= 0 && player.Committed >= 0 {
+			for _, action := range v.Round.Actions {
+				if action == "check" || action == "call" {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
 
 func validPokerClientCount(n int) bool {
@@ -163,7 +190,7 @@ func (p *pokerLoad) step(b *casinoLoad, now time.Time, buyIn int, request func(m
 		issue("poker_buy_in", map[string]interface{}{"sessionId": b.pendingSession, "roundId": v.RoundID, "bet": buyIn})
 		return
 	}
-	if v.Phase != "playing" || v.Round == nil || v.Round.TurnPlayerID != p.playerID || v.RoundID != p.fundedRound {
+	if !p.canAct(b) {
 		return
 	}
 	for _, choice := range []string{"check", "call"} {
@@ -179,6 +206,9 @@ func (p *pokerLoad) step(b *casinoLoad, now time.Time, buyIn int, request func(m
 				p.pendingStack, p.pendingCommitted = player.Stack, player.Committed
 				b.pendingSession, b.pendingRevision = b.view.YourSeat.SessionID, v.Round.Revision
 				issue("poker_play", map[string]interface{}{"sessionId": b.pendingSession, "roundId": v.RoundID, "roundRevision": v.Round.Revision, "gameAction": choice, "bet": 0})
+				if !b.failed && b.pending == "poker_play" {
+					p.lastDecisionRound, p.lastDecisionRevision = v.RoundID, v.Round.Revision
+				}
 				return
 			}
 		}

@@ -1966,6 +1966,27 @@ drain stage on forced fixture shutdown; root shutdown/combined checks pass1.804s
 The original five-second stop bound and all save/paid/impact gates are unchanged.
 Neither correction has earned a fresh target100 acceptance or final-raid clear.
 
+The next changed target100 comparison (ae31e781) fails218.51s only at minimum
+poker paid result0: all100 admit/sustain own updates, all blackjack/slots/house
+clients are paid, five parties have minimum impact2 with real healing, and all
+transport/casino rejection/timeout counters are0. Owned shutdown completes under
+the original bound with all fixed drain labels; all-account independent saves
+are not reached because the driver fails. Exact isolated fixture removed,
+peak761196544bytes/OOM0. This narrows the next action; it is not capacity or
+headroom acceptance and does not explain each earlier failure retrospectively.
+The [target receipt](2026-10-05-capacity-window-impact-checks.json) preserves
+source/binary identities, original criteria and limits. Native-only keepalive
+maintenance1.74.5 is separately pushed atba5983bb, CI37250096379 monitored by Luna.
+
+Short ordinary-rule two- and six-player fixtures then reproduce artificial
+polling cooldown delaying a fresh legal own poker turn. Prepared driver now
+responds promptly only in the acknowledged funded hand/private seat, preserving
+pending/timeouts and refusing previously requested or older revisions. Sixteen
+negative cases and failed-write fencing pass with existing casino/deadline
+checks (race14.469s). No server timer, payout, table distribution,120s workload
+or completion threshold change. No further target replay yet; the prior actual
+minimum-paid failure is not retrospectively explained by these fixtures.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves

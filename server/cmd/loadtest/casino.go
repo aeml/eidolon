@@ -234,7 +234,7 @@ func (b *casinoLoad) step(me Entity, now time.Time, bet int, timeout time.Durati
 		}
 		return // Never repeat an uncertain wager or bonus choice.
 	}
-	if now.Before(b.nextAction) {
+	if now.Before(b.nextAction) && (b.poker == nil || !b.poker.canAct(b)) {
 		return
 	}
 	issue := func(action string, payload map[string]interface{}) {
