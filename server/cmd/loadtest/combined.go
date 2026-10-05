@@ -6,10 +6,11 @@ import (
 )
 
 type botAssignment struct {
-	scenario     string
-	index        int
-	party        *partyLoad
-	preserveGear bool
+	scenario      string
+	index         int
+	party         *partyLoad
+	preserveGear  bool
+	observeSocial bool
 }
 
 // Fixed twenty-client blocks: four class-role party members, two poker, four
@@ -49,8 +50,10 @@ func combinedAssignments(n int, credentials []BotCredentials, x, z float64) ([]b
 				assignment.scenario, assignment.index = "casino-slots", block+(local-14)*16
 			case local < 18:
 				assignment.scenario = "town"
+				assignment.observeSocial = true
 			default:
 				assignment.scenario = "social"
+				assignment.observeSocial = true
 			}
 			assignments[start+local] = assignment
 		}

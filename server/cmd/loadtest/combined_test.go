@@ -49,6 +49,9 @@ func TestCombinedAssignmentsUseDistinctRealSeatsAndFourClassCohorts(t *testing.T
 				b = newPokerLoad(assignment.index, "player-synthetic")
 				pokerSeats[b.table.ID]++
 			case "town", "social":
+				if !assignment.observeSocial {
+					t.Fatal("social/town role has no delivered outcome gate")
+				}
 				continue
 			default:
 				t.Fatal("unexpected representative workload")

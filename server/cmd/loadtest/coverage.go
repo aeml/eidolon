@@ -10,6 +10,7 @@ type loadObservation struct {
 	maxGap                                time.Duration
 	registrationTime, loginTime, joinTime time.Duration
 	casino                                casinoLoadCounts
+	social                                socialLoadCounts
 	readFailure                           readFailureStage
 	recovery                              recoveryCounts
 }

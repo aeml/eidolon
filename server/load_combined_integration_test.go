@@ -119,7 +119,7 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 		}
 	}
 	for _, line := range strings.Split(string(output), "\n") {
-		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Read failure coverage|Party coverage|Combined casino coverage|Combined casino rejection coverage|Combined casino timeout coverage|Combined workload): [a-z_0-9= -]+$`).FindString(line); match != "" {
+		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Read failure coverage|Party coverage|Social coverage|Combined casino coverage|Combined casino rejection coverage|Combined casino timeout coverage|Combined workload): [a-z_0-9= -]+$`).FindString(line); match != "" {
 			t.Log(match) // Aggregate fields only; never raw credential/socket logs.
 		}
 	}
@@ -134,6 +134,10 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 	party := fmt.Sprintf(`Party coverage: groups=%d formed=%d members=%d min_impacts=[1-9][0-9]* damage_events=[1-9][0-9]* heal_events=[1-9][0-9]*`, blocks, blocks, 4*blocks)
 	if !strings.Contains(string(output), workload) || !regexp.MustCompile(party).Match(output) {
 		t.Fatal("missing configured roles, party impacts or real healing")
+	}
+	social := fmt.Sprintf("Social coverage: clients=%d complete=%d failed=0 own_chat=%d own_presence=%d friends=%d guild=%d pvp=%d leaderboard=%d", 4*blocks, 4*blocks, 4*blocks, 2*blocks, 2*blocks, 2*blocks, 2*blocks, 2*blocks)
+	if !strings.Contains(string(output), social) {
+		t.Fatal("missing every assigned town/social delivered outcome")
 	}
 	stop() // Normal disconnect/shutdown; table recovery remains authoritative.
 	for index, fixture := range fixtures {

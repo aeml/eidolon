@@ -262,6 +262,11 @@ func main() {
 				runAssignedBot(idx, u.String(), creds[idx], assignments[idx], stop, &observations[idx])
 				return
 			}
+			if selectedScenario == "town" || selectedScenario == "social" {
+				assignment := botAssignment{scenario: selectedScenario, preserveGear: true, observeSocial: true}
+				runAssignedBot(idx, u.String(), creds[idx], assignment, stop, &observations[idx])
+				return
+			}
 			botScenario := selectedScenario
 			if botScenario == "mixed" {
 				botScenario = []string{"combat", "town", "social"}[idx%3]
@@ -381,6 +386,18 @@ func main() {
 		}
 		log.Printf("Combined workload: clients=%d party_clients=%d poker_clients=%d blackjack_clients=%d house_clients=%d slots_clients=%d town_clients=%d social_clients=%d", *count, *count/5, *count/10, *count/5, *count/5, *count/10, *count/10, *count/10)
 		casinoFailed = !valid
+	}
+	if selectedScenario == "combined" || selectedScenario == "town" || selectedScenario == "social" {
+		socialAssignments := assignments
+		if selectedScenario != "combined" {
+			socialAssignments = make([]botAssignment, len(observations))
+			for i := range socialAssignments {
+				socialAssignments[i] = botAssignment{scenario: selectedScenario, observeSocial: true}
+			}
+		}
+		coverage, valid := summarizeSocial(socialAssignments, observations)
+		log.Printf("Social coverage: clients=%d complete=%d failed=%d own_chat=%d own_presence=%d friends=%d guild=%d pvp=%d leaderboard=%d", coverage.clients, coverage.complete, coverage.failed, coverage.observed[0], coverage.observed[1], coverage.observed[2], coverage.observed[3], coverage.observed[4], coverage.observed[5])
+		casinoFailed = casinoFailed || !valid
 	}
 	if selectedScenario == "party-combat" || selectedScenario == "combined" || selectedScenario == "party-dungeon" || selectedScenario == "party-raid" || selectedScenario == "party-event" {
 		var formed, members, damage, heals, casts, denials, xp, deaths, minimum, failures uint64
@@ -541,6 +558,10 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 	if botScenario == "casino-poker" {
 		casino = newPokerLoad(assignment.index, myID)
 	}
+	var social *socialLoad
+	if assignment.observeSocial {
+		social = newSocialLoad(cred.Username, botScenario == "social")
+	}
 
 	// Movement State
 	var roamTargetX, roamTargetZ float64
@@ -559,6 +580,9 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 		observation.recovery = movement.counts()
 		if casino != nil {
 			observation.casino = casino.counts()
+		}
+		if social != nil {
+			observation.social = social.counts()
 		}
 	}()
 	go func() {
@@ -630,6 +654,14 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 					metrics.decodeErrors.Add(1)
 				}
 				continue
+			}
+			if social != nil && joined {
+				if recognized, valid := social.receive(msg, time.Now()); recognized {
+					if !valid {
+						metrics.decodeErrors.Add(1)
+					}
+					continue
+				}
 			}
 			if casino != nil && msg.Type == "casino_update" {
 				if !casino.receive(msg.Payload) {
@@ -972,6 +1004,9 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 			// Town and social scenarios exercise presence, bounded chat, and
 			// read-heavy feature registries without manufacturing combat load.
 			if botScenario == "town" || botScenario == "social" {
+				if social != nil {
+					social.step(time.Now(), func(kind string, payload interface{}) error { return send(c, kind, payload) })
+				}
 				if botScenario == "social" && rand.Intn(75) == 0 {
 					send(c, "social", map[string]interface{}{})
 					send(c, "friend_list", map[string]interface{}{})
