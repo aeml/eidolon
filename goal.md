@@ -1,7 +1,8 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
 **Maintenance publication:** Alpha1.74.7 is pushed at7af0b2798f0cb0b2ed245736df0c95aacedff586.
-Its exact CI37264989129 is confirmed pending; Luna monitors the specific run.
+Its exact CI37264989129 is confirmed in_progress at7af0b279; Luna monitors the
+specific run. Prior37263815257 is definitively terminal cancelled, not running.
 Root canceled only superseded, failed d6ca9 CI37263815257 after confirming its
 required client/server jobs failed and one static browser job still held the
 publication queue. No production action, latest-run cancellation or gate bypass.
