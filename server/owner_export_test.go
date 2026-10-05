@@ -78,21 +78,25 @@ func TestOwnerExportStrictSchemaCurrentOwnerAndPrivateAudit(t *testing.T) {
 	}
 }
 
-func TestOwnerExportReportPageStrictCursor(t *testing.T) {
-	payload := strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"reports"`, 1)
-	for _, cursor := range []string{"", "0123456789abcdef01234560"} {
-		request, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1)))
-		if err != nil || request.Before != cursor || request.Section != "reports" {
-			t.Fatal("valid bounded report page rejected", err)
-		}
-	}
-	for _, cursor := range []string{"000000000000000000000000", "0123456789ABCDEF01234560", "another-account", strings.Repeat("a", 25)} {
-		if _, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1))); err == nil {
-			t.Fatal("invalid cursor accepted")
-		}
-	}
-	if _, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"Other character"`, 1))); err == nil {
-		t.Fatal("report page used character target")
+func TestOwnerExportPagedSectionsStrictCursor(t *testing.T) {
+	for _, section := range []string{"reports", "sessions"} {
+		t.Run(section, func(t *testing.T) {
+			payload := strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"`+section+`"`, 1)
+			for _, cursor := range []string{"", "0123456789abcdef01234560"} {
+				request, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1)))
+				if err != nil || request.Before != cursor || request.Section != section {
+					t.Fatal("valid bounded page rejected", err)
+				}
+			}
+			for _, cursor := range []string{"000000000000000000000000", "0123456789ABCDEF01234560", "another-account", strings.Repeat("a", 25)} {
+				if _, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1))); err == nil {
+					t.Fatal("invalid cursor accepted")
+				}
+			}
+			if _, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"Other character"`, 1))); err == nil {
+				t.Fatal("paged section used character target")
+			}
+		})
 	}
 }
 func TestOwnerExportFailsClosedOnAuditAndConnectionChange(t *testing.T) {

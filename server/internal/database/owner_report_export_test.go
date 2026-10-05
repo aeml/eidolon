@@ -69,7 +69,7 @@ func TestOwnerReportExportQueryBoundsAndCredentialResetFence(t *testing.T) {
 }
 
 func TestOwnerExportCoverageDoesNotClaimCompleteAccountOrProviderRetrieval(t *testing.T) {
-	for _, section := range []string{"profile", "progress", "reports"} {
+	for _, section := range []string{"profile", "progress", "reports", "sessions"} {
 		coverage := ownerSectionCoverage(section)
 		if coverage.CompleteAccountExport || len(coverage.Included) == 0 || len(coverage.NotIncluded) == 0 || len(coverage.WithheldPrivate) == 0 || len(coverage.SeparateHandling) == 0 || !strings.Contains(coverage.Consistency, "snapshot") {
 			t.Fatal("missing honest section scope", section)

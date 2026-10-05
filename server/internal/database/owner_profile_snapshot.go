@@ -13,11 +13,18 @@ var errOwnerProfileSnapshot = errors.New("owner account profile could not be enc
 // using the authenticated owner's identity. It must not combine an account
 // document with a recovery address supplied by a client or another account.
 type ownerProfileSource struct {
-	Username      string        `bson:"username" json:"-"`
-	PublicName    string        `bson:"public_name" json:"-"`
-	Email         string        `bson:"email" json:"-"`
-	CreatedAt     time.Time     `bson:"created_at" json:"-"`
-	RecoveryEmail recoveryEmail `bson:"recovery_email" json:"-"`
+	Username      string                  `bson:"username" json:"-"`
+	PublicName    string                  `bson:"public_name" json:"-"`
+	Email         string                  `bson:"email" json:"-"`
+	CreatedAt     time.Time               `bson:"created_at" json:"-"`
+	RecoveryEmail recoveryEmail           `bson:"recovery_email" json:"-"`
+	VIPPeriods    []VIPPeriod             `bson:"vip_periods" json:"-"`
+	Characters    []ownerCharacterSummary `bson:"character_roster" json:"-"`
+	Moderation    struct {
+		Mute       *ChatMuteNotice `bson:"mute"`
+		Suspension *ChatMuteNotice `bson:"suspension"`
+		NameChange *ChatMuteNotice `bson:"name_change"`
+	} `bson:"chat_moderation" json:"-"`
 }
 
 type ownerProfileSnapshot struct {
@@ -37,6 +44,31 @@ type ownerAccountProfile struct {
 	SubmittedEmail        string                        `json:"submitted_email"`
 	CreatedAt             *time.Time                    `json:"created_at,omitempty"`
 	VerifiedRecoveryEmail *ownerVerifiedRecoveryAddress `json:"verified_recovery_email,omitempty"`
+	VIPPeriods            []ownerVIPPeriod              `json:"vip_periods"`
+	Characters            []ownerCharacterSummary       `json:"character_roster"`
+	ModerationNotices     []ownerModerationNotice       `json:"current_public_moderation_notices"`
+}
+
+type ownerCharacterSummary struct {
+	Name  string `bson:"name" json:"name"`
+	Class string `bson:"class" json:"class"`
+	Level int    `bson:"level" json:"level"`
+}
+
+type ownerVIPPeriod struct {
+	ID       string    `json:"id"`
+	StartsAt time.Time `json:"starts_at"`
+	EndsAt   time.Time `json:"ends_at"`
+	Revoked  bool      `json:"revoked"`
+}
+
+type ownerModerationNotice struct {
+	ID           string     `json:"id"`
+	Kind         string     `json:"kind"`
+	StartedAt    time.Time  `json:"started_at"`
+	ExpiresAt    *time.Time `json:"expires_at,omitempty"`
+	PublicReason string     `json:"public_reason"`
+	Active       bool       `json:"active_at_read"`
 }
 
 type ownerVerifiedRecoveryAddress struct {
@@ -50,6 +82,36 @@ func encodeOwnerProfileSnapshot(source ownerProfileSource, provedOwner string, g
 		return nil, errOwnerProfileSnapshot
 	}
 	profile := ownerAccountProfile{Username: source.Username, PublicName: source.PublicName, SubmittedEmail: source.Email}
+	profile.Characters = append([]ownerCharacterSummary{}, source.Characters...)
+	profile.VIPPeriods = make([]ownerVIPPeriod, 0, len(source.VIPPeriods))
+	if ValidateVIPPeriods(source.VIPPeriods) != nil {
+		return nil, errOwnerProfileSnapshot
+	}
+	for _, period := range source.VIPPeriods {
+		profile.VIPPeriods = append(profile.VIPPeriods, ownerVIPPeriod{period.ID, period.StartsAt.UTC(), period.EndsAt.UTC(), period.Revoked})
+	}
+	profile.ModerationNotices = make([]ownerModerationNotice, 0, 3)
+	for index, notice := range []*ChatMuteNotice{source.Moderation.Mute, source.Moderation.Suspension, source.Moderation.NameChange} {
+		if notice == nil {
+			continue
+		}
+		if !notice.Valid() {
+			return nil, errOwnerProfileSnapshot
+		}
+		kind := notice.Kind
+		if kind == "" {
+			kind = ChatModerationMute
+		}
+		if kind != []string{ChatModerationMute, ModerationSuspend, ModerationRequireNameChange}[index] {
+			return nil, errOwnerProfileSnapshot
+		}
+		view := ownerModerationNotice{ID: notice.ID, Kind: kind, StartedAt: notice.StartedAt.UTC(), PublicReason: notice.Reason, Active: notice.Active(generatedAt)}
+		if !notice.ExpiresAt.IsZero() {
+			expires := notice.ExpiresAt.UTC()
+			view.ExpiresAt = &expires
+		}
+		profile.ModerationNotices = append(profile.ModerationNotices, view)
+	}
 	if !source.CreatedAt.IsZero() {
 		created := source.CreatedAt.UTC()
 		profile.CreatedAt = &created

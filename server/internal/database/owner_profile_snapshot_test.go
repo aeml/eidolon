@@ -101,3 +101,43 @@ func TestOwnerProfileSnapshotDoesNotInventVerificationOrLegacyCreation(t *testin
 		}
 	}
 }
+
+func TestOwnerProfileIncludesMembershipRosterAndOnlyPublicModeration(t *testing.T) {
+	now := time.Date(2026, 10, 5, 12, 0, 0, 0, time.UTC)
+	period, err := NewVIPPeriod(now.Add(-24*time.Hour), now.Add(29*24*time.Hour))
+	if err != nil {
+		t.Fatal(err)
+	}
+	id := strings.Repeat("a", 64)
+	stored, err := bson.Marshal(bson.M{"username": "owner", "vip_periods": bson.A{bson.M{"id": period.ID, "starts_at": period.StartsAt, "ends_at": period.EndsAt, "revoked": false, "provider_secret": "private-provider"}},
+		"character_roster": bson.A{bson.M{"name": "My fighter", "class": "Fighter", "level": 30, "secret": "private-character"}},
+		"chat_moderation":  bson.M{"mute": bson.M{"id": id, "reason": "Owner-visible reason", "started_at": now.Add(-time.Minute), "expires_at": now.Add(time.Minute), "private_reason": "private-note"}, "receipts": bson.M{"hidden": "private-review"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var source ownerProfileSource
+	if bson.Unmarshal(stored, &source) != nil {
+		t.Fatal("source decode failed")
+	}
+	data, err := encodeOwnerProfileSnapshot(source, "owner", now, 4096)
+	if err != nil || strings.Contains(string(data), "private-") {
+		t.Fatal("public profile data failed or leaked", err)
+	}
+	var view ownerProfileSnapshot
+	if json.Unmarshal(data, &view) != nil {
+		t.Fatal("output decode failed")
+	}
+	if len(view.Profile.VIPPeriods) != 1 || view.Profile.VIPPeriods[0].ID != period.ID || len(view.Profile.Characters) != 1 || view.Profile.Characters[0].Name != "My fighter" || len(view.Profile.ModerationNotices) != 1 || view.Profile.ModerationNotices[0].Kind != ChatModerationMute || !view.Profile.ModerationNotices[0].Active || view.Profile.ModerationNotices[0].PublicReason != "Owner-visible reason" {
+		t.Fatal("owner record fields lost provenance")
+	}
+	source.Moderation.Mute.Kind = ModerationSuspend
+	if data, err := encodeOwnerProfileSnapshot(source, "owner", now, 4096); err != errOwnerProfileSnapshot || data != nil {
+		t.Fatal("mismatched moderation kind accepted")
+	}
+	source.Moderation.Mute.Kind = ""
+	source.VIPPeriods[0].ID = "invalid-membership"
+	if data, err := encodeOwnerProfileSnapshot(source, "owner", now, 4096); err != errOwnerProfileSnapshot || data != nil {
+		t.Fatal("invalid recorded membership returned partial data")
+	}
+}

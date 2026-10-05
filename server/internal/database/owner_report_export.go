@@ -20,7 +20,7 @@ func validOwnerExportQuery(query OwnerExportQuery) bool {
 		return query.CharacterName == "" && query.Before == ""
 	case "progress":
 		return query.CharacterName != "" && len(query.CharacterName) <= 128 && query.Before == ""
-	case "reports":
+	case "reports", "sessions":
 		if query.CharacterName != "" {
 			return false
 		}

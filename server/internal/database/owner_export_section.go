@@ -55,9 +55,14 @@ func (db *DB) readOwnerExportQuery(parent context.Context, owner, password strin
 	if err != nil || cost > maximumOwnerExportPasswordCost || bcrypt.CompareHashAndPassword([]byte(proof.Hash), []byte(password)) != nil || ctx.Err() != nil {
 		return nil, errOwnerExportSection
 	}
-	if section == "reports" {
-		encoded, err := db.readOwnerReportPage(ctx, owner, query.Before, at, maxBytes)
-		// Reports are in another collection: recheck the exact credential after
+	if section == "reports" || section == "sessions" {
+		var encoded []byte
+		if section == "reports" {
+			encoded, err = db.readOwnerReportPage(ctx, owner, query.Before, at, maxBytes)
+		} else {
+			encoded, err = db.readOwnerSessionPage(ctx, owner, query.Before, at, maxBytes)
+		}
+		// These pages are in other collections: recheck the exact credential after
 		// the page read so a concurrent reset/removal cannot admit old proof.
 		var current struct {
 			Hash string `bson:"password_hash"`
@@ -106,9 +111,16 @@ func ownerExportSectionPipeline(owner, hash, section, characterName string) mong
 	projection := bson.M{"_id": 0, "username": 1}
 	inputLimit := 16 << 10
 	if section == "profile" {
-		for _, field := range []string{"public_name", "email", "created_at", "recovery_email.address", "recovery_email.verified_at"} {
+		for _, field := range []string{"public_name", "email", "created_at", "recovery_email.address", "recovery_email.verified_at",
+			"vip_periods.id", "vip_periods.starts_at", "vip_periods.ends_at", "vip_periods.revoked"} {
 			projection[field] = 1
 		}
+		for _, notice := range []string{"mute", "suspension", "name_change"} {
+			for _, field := range []string{"id", "kind", "started_at", "expires_at", "reason"} {
+				projection["chat_moderation."+notice+"."+field] = 1
+			}
+		}
+		projection["character_roster"] = bson.M{"$map": bson.M{"input": bson.M{"$ifNull": bson.A{"$characters", bson.A{}}}, "as": "entry", "in": bson.M{"name": "$$entry.name", "class": "$$entry.class", "level": "$$entry.level"}}}
 	} else {
 		inputLimit = 256 << 10
 		pipeline = append(pipeline, bson.D{{Key: "$project", Value: bson.M{"_id": 0, "username": 1,

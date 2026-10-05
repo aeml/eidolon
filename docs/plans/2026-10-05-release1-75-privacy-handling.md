@@ -37,8 +37,8 @@ prevents future admissions; it cannot recall data already delivered.
 The bounded account reader requires the exact approved case/owner/permission
 revision, current owner password, and checks permission again before returning
 data. Staff role alone is not an owner's password proof. The unpublished branch
-now provides authenticated owner delivery of profile, one-character gameplay
-and paged owner-submitted report sections. Complete category coverage remains unimplemented. Approval itself
+now provides authenticated owner delivery of profile, one-character gameplay,
+paged owner-submitted reports and retained login/session history. Complete category coverage remains unimplemented. Approval itself
 changes permission metadata only; the owner must separately request a section
 and click Save. No deletion action exists.
 Do not put tokens,
@@ -65,8 +65,14 @@ passwords, identity documents or full account dumps in review reasons.
    email or place the export in a public report response. Record delivery outcome
    and limitations privately without storing the exported data in general audit.
 
-The internal reader now supplies bounded profile and one-character gameplay
-sections, using explicit DTOs reused from the prepared serializers. It verifies a
+The internal reader supplies bounded profile and one-character gameplay
+sections, using explicit DTOs. Profile now includes the name/class/level character
+roster, recorded VIP periods and current stored owner-facing moderation notices
+(including public reasons and whether each is active at read). It does not expose
+private moderation receipts, staff reasons or provider/payment data. Recorded VIP
+periods are not a derived claim about administrator VIP entitlements. Invalid
+recorded membership/notice data fails instead of being silently reported absent.
+It verifies a
 current password, matches its hash again during the data read, limits projected
 Mongo input before driver decoding, caps output, and fails closed instead of
 truncating a source. Profile input is capped16KiB, one character256KiB, response
@@ -99,6 +105,18 @@ after reading; reset/removal or withdrawn approval cannot admit an old proof.
 Pages are not a frozen point-in-time history: new submissions and status changes
 may occur while downloading. This is not a source for personal data in staff notes.
 
+Retained login/session exports use the same explicit ten-entry continuation and
+credential/approval/session safeguards. They select only this account's login,
+resume and disconnect events with no other target, matching the exact normalized
+account key (including legacy hashed identities). They apply the current activity
+retention cutoff, per-record expiry and read-time upper bound. Staff-only actions,
+reason/summary/correlation and other accounts' history are excluded before
+decoding; malformed/oversized selected sources fail the page. The file includes
+the current retention days/cutoff and recorded connection start on disconnect if
+available. Older missing starts are not backfilled. Connection duration is not
+active or AFK gameplay. Pages follow immutable IDs, not event-time ordering, and
+history may expire/change between reads. No retained record is modified.
+
 Every profile, gameplay and report file includes a coverage manifest naming its
 included fields, omitted sections, withheld private/security data and categories
 requiring separate handling. Unsupported categories are not assumed absent and
@@ -113,6 +131,7 @@ saved the file. Full category coverage and paging for remaining stores remain
 work. Neither this control nor the request queue is a complete
 account-export facility. See the [delivery checks](2026-10-05-release1-75-delivery-checks.json).
 See also [report-page and manifest checks](2026-10-05-release1-75-report-page-checks.json).
+See [account and session checks](2026-10-05-release1-75-account-session-checks.json).
 
 ## Removal review procedure — no automatic deletion
 

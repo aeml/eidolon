@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "030846b2",
+  "status": "account-and-session-sections-locally-verified-unpublished-milestone-incomplete",
+  "scope": [
+    "Explicit profile DTOs add name/class/level roster, recorded VIP membership periods and current stored owner-facing moderation notices/public reasons with active-at-read status. No derived administrator VIP promise, private receipt/staff/provider projection or malformed-data silent omission.",
+    "Ten-entry immutable-ID session pages select the owner's normalized account key, only login/resume/disconnect with no other target; current retention cutoff, record expiry and read-time upper bound retained.",
+    "Predecode narrow projected source capped2KiB/event, eleven-entry batch/continuation candidate, three-second deadline and bounded response. Oversized selected rows fail rather than disappear from the output.",
+    "No staff reason/summary/correlation or other accounts' history delivered. Missing historical starts are not invented; connection duration is not active gameplay. History is current retained data, not a frozen archive or event-time sorted account snapshot.",
+    "Same current password, approval, audit/admission/session boundaries and manual prepare/Save/next workflow. No automatic retry/download, new retention/TTL/schema or production-data changes."
+  ],
+  "checks": [
+    {"scope": "Focused root/database race regression", "result": "Root3.601s/database1.591s pass for owner/profile/progression/reports/session/approval boundaries. After expanding both paged protocol cases, final strict cursor root check1.084s pass."},
+    {"scope": "Owner export and account-support UI", "result": "Four Jest suites76 tests pass3.633s, including session-specific format/selection, proof discard, manual Save/continuation and cursor reset when changing category."},
+    {"scope": "Actual disposable Mongo7.0.14", "result": "Session/profile, report paging, source limits and approval focused race suite pass6.524s on explicit loopback32938. Legacy hashed owner identity selects twelve exact session IDs across10/2 pages; other/expired/old/staff/future/other-target events excluded. Huge private staff/provider/character inventory fields excluded from profile/history projections. Oversized selected event fails, retained count remains19, revoke prevents later-page access."},
+    {"scope": "Mocked and serializer coverage", "result": "Current cutoff/expiry/source limit/projection asserted; cross-owner, staff action, invalid start, expired/outside-retention, oversized sentinel and reset-after-read fail without partial data. Public profile provenance, malformed recorded VIP/notice rejection and legacy missing duration are tested."},
+    {"scope": "Lint/whitespace", "result": "Affected owner-download UI/test ESLint and diff whitespace checks pass."},
+    {"scope": "Cleanup and limits", "result": "Exact owned container eidolon-session-export-qa-175-1005 removed. No production/player writes, real-account file saved, provider mail, actual-device acceptance or long capacity/campaign/raid rerun."
+    }
+  ],
+  "remaining": [
+    "Social/economic/reward owner-facing summaries and bounded handling for remaining stores, full support/data notices and provider review; current files do not claim complete account coverage.",
+    "Coordinated individually authorized removal, shared custody/replay preservation and journal/archive anti-resurrection handling.",
+    "Complete milestone notes/version, CI and exact live acceptance;1.75 remains unpublished and full1.99 goal active."
+  ]
+}

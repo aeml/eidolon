@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 account/session checkpoint:** Profile exports now include the roster,
+recorded VIP periods and public moderation notices, not staff/private provider
+metadata. Added retained owner login/resume/disconnect pages with unchanged
+retention/expiry, legacy hashed identity matching and no invented historical
+duration or active-play metric. Focused UI/race and actual disposable Mongo
+projection/paging/filter/source-integrity/revoke checks pass; fixture removed.
+Remaining social/economic/reward coverage, coordinated removal/restore safeguards,
+notices/provider review and full1.75 publication gates are still open. See
+[account/session evidence](docs/plans/2026-10-05-release1-75-account-session-checks.json).
+
 **October5 report-export checkpoint:** Added bounded owner-authored report pages
 with explicit manual continuation, current proof/approval checks on every page,
 cross-store password-reset fencing and no private staff/receipt projection.

@@ -77,3 +77,12 @@ test('invalid cursor, backwards/non-decreasing next or unbounded report page can
     ]){submit();ui.handleResult({...response(),data:{format:'eidolon-owner-report-submissions',version:1,...data}});expect(ui.prepared).toBeNull();}
     expect(URL.createObjectURL).not.toHaveBeenCalled();
 });
+test('retained session history uses its own page format and requires manual save/continuation',()=>{
+    ui.section.value='sessions';ui.section.dispatchEvent(new Event('change'));submit();
+    expect(send).toHaveBeenLastCalledWith(expect.objectContaining({section:'sessions',before:'',characterName:''}));
+    const next='0123456789abcdef01234560';
+    ui.handleResult({...response(),data:{format:'eidolon-owner-session-history',version:1,retention_days:90,entries:[{action:'disconnect',at:'2026-10-05T11:00:00Z'}],next}});
+    expect(ui.prepared.text).toContain('disconnect');expect(ui.next.disabled).toBe(true);expect(send).toHaveBeenCalledTimes(1);
+    ui.save.click();ui.next.click();expect(ui.before.value).toBe(next);expect(ui.password.value).toBe('');expect(send).toHaveBeenCalledTimes(1);
+    ui.section.value='reports';ui.section.dispatchEvent(new Event('change'));expect(ui.before.value).toBe('');expect(ui.next.hidden).toBe(true);
+});
