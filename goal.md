@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 report-export checkpoint:** Added bounded owner-authored report pages
+with explicit manual continuation, current proof/approval checks on every page,
+cross-store password-reset fencing and no private staff/receipt projection.
+Oversized owner data fails instead of disappearing from an apparently complete
+page. Every supported file now carries an honest coverage/consistency manifest.
+Focused UI/race checks and actual disposable Mongo10/10/5 pagination/redaction,
+source-limit and revoke checks pass. Full store coverage, coordinated removal,
+restore protection and milestone publication remain open. See
+[report-page evidence](docs/plans/2026-10-05-release1-75-report-page-checks.json).
+
 **October5 owner-delivery checkpoint:** The narrow1.75 branch now offers approved
 owner-only profile/character gameplay downloads with current password proof,
 bounded credential/data work and current-session fences. Owner status reveals

@@ -37,8 +37,8 @@ prevents future admissions; it cannot recall data already delivered.
 The bounded account reader requires the exact approved case/owner/permission
 revision, current owner password, and checks permission again before returning
 data. Staff role alone is not an owner's password proof. The unpublished branch
-now provides authenticated owner delivery of profile and one-character gameplay
-sections. Complete category coverage remains unimplemented. Approval itself
+now provides authenticated owner delivery of profile, one-character gameplay
+and paged owner-submitted report sections. Complete category coverage remains unimplemented. Approval itself
 changes permission metadata only; the owner must separately request a section
 and click Save. No deletion action exists.
 Do not put tokens,
@@ -86,13 +86,33 @@ bound password verification. Fixed-content durable admission history contains
 no password, exported contents or claim that a file was saved. Audit failure,
 revoked/stale approval and replaced/closed sessions fail closed.
 
+Report submissions use newest-first immutable-ID keyset pages of at most ten.
+The owner can manually choose the next page after saving the current one, or
+enter the cursor from their previously saved file. Each page repeats current
+password and approval verification; no next-page read happens automatically.
+Reports about the owner but submitted by someone else are not returned. Only
+the owner's submitted text, reference, type, case status and timestamps are
+projected. Private review/permission metadata is excluded before decoding.
+Oversized projected rows emit a bounded failure sentinel, not a filter that
+silently skips a submission. Cross-store reads recheck the current password hash
+after reading; reset/removal or withdrawn approval cannot admit an old proof.
+Pages are not a frozen point-in-time history: new submissions and status changes
+may occur while downloading. This is not a source for personal data in staff notes.
+
+Every profile, gameplay and report file includes a coverage manifest naming its
+included fields, omitted sections, withheld private/security data and categories
+requiring separate handling. Unsupported categories are not assumed absent and
+`complete_account_export` remains false. No provider/local/archive retrieval is
+claimed. Sources with oversized data still require operator handling.
+
 One bounded section is prepared in memory; **Save section locally** is a second
 deliberate click using a short-lived object URL. Close, disconnect, replacement
 or timeout discards pending work/proof; there is no automatic retry/download or
 browser storage catalog. The application cannot verify that the browser actually
-saved the file. Complete categories, accurate coverage manifests and bounded
-paging remain work. Neither this control nor the request queue is a complete
+saved the file. Full category coverage and paging for remaining stores remain
+work. Neither this control nor the request queue is a complete
 account-export facility. See the [delivery checks](2026-10-05-release1-75-delivery-checks.json).
+See also [report-page and manifest checks](2026-10-05-release1-75-report-page-checks.json).
 
 ## Removal review procedure — no automatic deletion
 

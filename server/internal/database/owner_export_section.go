@@ -16,16 +16,24 @@ const maximumOwnerExportPasswordCost = 14
 
 var errOwnerExportSection = errors.New("account export section unavailable")
 
-// Internal building block, deliberately not exposed through any transport.
-// This proves a current password and bounds one owner-scoped source/response.
-// It is NOT admin approval, a complete account export, delivery or restoration.
-// The eventual request workflow must additionally admit an explicitly approved
-// case, bind owner to its current authenticated session and bound concurrency.
+// Internal query selection; the approved reader and transport supply case,
+// session and concurrency admission. These helpers alone prove only current
+// ownership and bounded section reads, not complete account coverage/restoration.
+type OwnerExportQuery struct {
+	Section       string
+	CharacterName string
+	Before        string
+}
+
 func (db *DB) readOwnerExportSection(parent context.Context, owner, password, section, characterName string, at time.Time, maxBytes int) ([]byte, error) {
+	return db.readOwnerExportQuery(parent, owner, password, OwnerExportQuery{Section: section, CharacterName: characterName}, at, maxBytes)
+}
+
+func (db *DB) readOwnerExportQuery(parent context.Context, owner, password string, query OwnerExportQuery, at time.Time, maxBytes int) ([]byte, error) {
+	section, characterName := query.Section, query.CharacterName
 	if parent == nil || db == nil || db.users == nil || owner == "" || len(owner) > 128 || len(password) < 1 || len(password) > 72 ||
 		at.IsZero() || maxBytes < 1 || maxBytes > maximumOwnerExportResponse ||
-		(section != "profile" && section != "progress") || (section == "profile" && characterName != "") ||
-		(section == "progress" && (characterName == "" || len(characterName) > 128)) {
+		!validOwnerExportQuery(query) {
 		return nil, errOwnerExportSection
 	}
 	ctx, cancel := context.WithTimeout(parent, 3*time.Second)
@@ -46,6 +54,18 @@ func (db *DB) readOwnerExportSection(parent context.Context, owner, password, se
 	cost, err := bcrypt.Cost([]byte(proof.Hash))
 	if err != nil || cost > maximumOwnerExportPasswordCost || bcrypt.CompareHashAndPassword([]byte(proof.Hash), []byte(password)) != nil || ctx.Err() != nil {
 		return nil, errOwnerExportSection
+	}
+	if section == "reports" {
+		encoded, err := db.readOwnerReportPage(ctx, owner, query.Before, at, maxBytes)
+		// Reports are in another collection: recheck the exact credential after
+		// the page read so a concurrent reset/removal cannot admit old proof.
+		var current struct {
+			Hash string `bson:"password_hash"`
+		}
+		if err != nil || db.users.FindOne(ctx, bson.M{"username": owner, "password_hash": proof.Hash}, options.FindOne().SetProjection(bson.M{"_id": 0, "password_hash": 1}).SetMaxTime(3*time.Second)).Decode(&current) != nil || current.Hash != proof.Hash || ctx.Err() != nil {
+			return nil, errOwnerExportSection
+		}
+		return encoded, nil
 	}
 	pipeline := ownerExportSectionPipeline(owner, proof.Hash, section, characterName)
 	cursor, err := db.users.Aggregate(ctx, pipeline, options.Aggregate().SetMaxTime(3*time.Second).SetBatchSize(1))

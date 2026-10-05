@@ -23,9 +23,10 @@ type ownerExportPayload struct {
 	CurrentPassword  string `json:"currentPassword"`
 	Section          string `json:"section"`
 	CharacterName    string `json:"characterName"`
+	Before           string `json:"before,omitempty"`
 }
 type ownerExportStore interface {
-	ReadApprovedOwnerExportSection(context.Context, string, string, string, int64, string, string, time.Time, int) ([]byte, error)
+	ReadApprovedOwnerExportQuery(context.Context, string, string, string, int64, database.OwnerExportQuery, time.Time, int) ([]byte, error)
 }
 
 var ownerExports ownerExportStore
@@ -41,6 +42,8 @@ func decodeOwnerExport(payload []byte) (ownerExportPayload, error) {
 		return request, invalid
 	}
 	allowed := map[string]bool{"requestId": true, "reportId": true, "approvalRevision": true, "currentPassword": true, "section": true, "characterName": true}
+	required := len(allowed)
+	allowed["before"] = true
 	seen := map[string]bool{}
 	for decoder.More() {
 		token, err := decoder.Token()
@@ -54,8 +57,13 @@ func decodeOwnerExport(payload []byte) (ownerExportPayload, error) {
 			return request, invalid
 		}
 	}
-	if token, err := decoder.Token(); err != nil || token != json.Delim('}') || len(seen) != len(allowed) {
+	if token, err := decoder.Token(); err != nil || token != json.Delim('}') || len(seen) < required {
 		return request, invalid
+	}
+	for key := range allowed {
+		if key != "before" && !seen[key] {
+			return request, invalid
+		}
 	}
 	if _, err := decoder.Token(); err != io.EOF || json.Unmarshal(payload, &request) != nil {
 		return request, invalid
@@ -65,9 +73,18 @@ func decodeOwnerExport(payload []byte) (ownerExportPayload, error) {
 		return request, invalid
 	}
 	if !reportRequestIDPattern.MatchString(request.RequestID) || len(request.ReportID) != 24 || request.ApprovalRevision < 1 || request.ApprovalRevision >= 256 || request.ApprovalRevision%2 != 1 ||
-		len(request.CurrentPassword) < 1 || len(request.CurrentPassword) > 72 || (request.Section != "profile" && request.Section != "progress") ||
+		len(request.CurrentPassword) < 1 || len(request.CurrentPassword) > 72 || (request.Section != "profile" && request.Section != "progress" && request.Section != "reports") ||
 		(request.Section == "profile" && request.CharacterName != "") || (request.Section == "progress" && (request.CharacterName == "" || len(request.CharacterName) > 128)) {
 		return request, invalid
+	}
+	if request.Section != "reports" && request.Before != "" || request.Section == "reports" && request.CharacterName != "" {
+		return request, invalid
+	}
+	if request.Before != "" {
+		cursor, err := primitive.ObjectIDFromHex(request.Before)
+		if err != nil || cursor.IsZero() || cursor.Hex() != request.Before {
+			return request, invalid
+		}
 	}
 	return request, nil
 }
@@ -84,7 +101,7 @@ func sendOwnerExportResult(c *Client, id string, data []byte) {
 		Format  string `json:"format"`
 		Version int    `json:"version"`
 	}
-	if len(data) > 0 && len(data) <= maximumOwnerSectionBytes && json.Unmarshal(data, &marker) == nil && marker.Version == 1 && (marker.Format == "eidolon-owner-account-profile" || marker.Format == "eidolon-owner-progression") {
+	if len(data) > 0 && len(data) <= maximumOwnerSectionBytes && json.Unmarshal(data, &marker) == nil && marker.Version == 1 && (marker.Format == "eidolon-owner-account-profile" || marker.Format == "eidolon-owner-progression" || marker.Format == "eidolon-owner-report-submissions") {
 		result.Success = true
 		result.Data = data
 		result.Message = "Section ready. This is not a complete account export or a restore image."
@@ -141,7 +158,7 @@ func handleOwnerExport(c *Client, msg Message) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	data, err := store.ReadApprovedOwnerExportSection(ctx, c.username, request.CurrentPassword, request.ReportID, request.ApprovalRevision, request.Section, request.CharacterName, time.Now(), maximumOwnerSectionBytes)
+	data, err := store.ReadApprovedOwnerExportQuery(ctx, c.username, request.CurrentPassword, request.ReportID, request.ApprovalRevision, database.OwnerExportQuery{Section: request.Section, CharacterName: request.CharacterName, Before: request.Before}, time.Now(), maximumOwnerSectionBytes)
 	request.CurrentPassword = ""
 	// The socket may have been replaced while approval/password/source IO ran.
 	if err != nil || ctx.Err() != nil || c.transportClosed.Load() || !currentCharacterConnection(c) {

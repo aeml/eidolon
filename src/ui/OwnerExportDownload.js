@@ -22,21 +22,28 @@ export class OwnerExportDownload {
             this.root.append(hint, link); return;
         }
         const prefix = `owner-export-${++nextID}`;
-        this.root.insertAdjacentHTML('beforeend', `<p>This prepares one profile or character gameplay section, not a complete account export or restore image. First check your own export request above. The operator must separately approve it. Nothing downloads automatically.</p>
-            <form autocomplete="on"><label for="${prefix}-section">Section</label><select id="${prefix}-section" class="support-field__control"><option value="profile">Account profile</option><option value="progress">One character gameplay section</option></select>
+        this.root.insertAdjacentHTML('beforeend', `<p>This prepares one section with a coverage manifest, not a complete account export or restore image. First check your own export request above. The operator must separately approve it. Nothing downloads automatically.</p>
+            <form autocomplete="on"><label for="${prefix}-section">Section</label><select id="${prefix}-section" class="support-field__control"><option value="profile">Account profile</option><option value="progress">One character gameplay section</option><option value="reports">My report submissions — one page</option></select>
             <label for="${prefix}-character">Character name (gameplay section only)</label><input id="${prefix}-character" class="support-field__control" maxlength="128" autocomplete="off">
+            <label for="${prefix}-before">Report page cursor (blank for newest; use next from your previous file)</label><input id="${prefix}-before" class="support-field__control" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false">
             <label for="${prefix}-password">Current password</label><input id="${prefix}-password" class="support-field__control" type="password" autocomplete="current-password" maxlength="72" autocapitalize="none" spellcheck="false">
-            <div class="support-field__row"><button class="menu-btn" type="submit">Prepare section</button><button class="menu-btn" type="button" data-save hidden>Save section locally</button><button class="menu-btn" type="button" data-close>Close and discard</button></div>
+            <div class="support-field__row"><button class="menu-btn" type="submit">Prepare section</button><button class="menu-btn" type="button" data-save hidden>Save section locally</button><button class="menu-btn" type="button" data-next hidden>Choose next report page</button><button class="menu-btn" type="button" data-close>Close and discard</button></div>
             <p role="status" aria-live="polite">Check your own approved export request first.</p></form>`);
         this.form = this.root.querySelector('form');
         this.section = this.root.querySelector('select');
-        [this.character, this.password] = this.root.querySelectorAll('input');
+        this.character = this.root.querySelector(`#${prefix}-character`); this.password = this.root.querySelector(`#${prefix}-password`);
+        this.before = this.root.querySelector(`#${prefix}-before`); this.next = this.root.querySelector('[data-next]');
         this.button = this.root.querySelector('[type="submit"]'); this.save = this.root.querySelector('[data-save]'); this.status = this.root.querySelector('[role="status"]');
         ownedEvent(this, this.form, 'submit', event => {event.preventDefault(); this.submit();});
         ownedEvent(this, this.save, 'click', () => this.saveFile());
+        ownedEvent(this, this.next, 'click', () => {
+            if (!this.current() || !this.nextCursor || this.pending) return;
+            this.before.value = this.nextCursor; this.nextCursor = null; this.discard(); this.clearProof();
+            this.status.textContent = 'Next page selected. Enter your current password and prepare it manually. Save each page you need; no automatic download.'; this.refresh();
+        });
         ownedEvent(this, this.root.querySelector('[data-close]'), 'click', () => {this.close();this.root.open=false;});
         ownedEvent(this, this.root, 'toggle', () => {if (!this.root.open) this.close();this.refresh();});
-        ownedEvent(this, this.section, 'change', () => {this.discard();this.refresh();});
+        ownedEvent(this, this.section, 'change', () => {this.discard();this.clearProof();this.before.value='';this.nextCursor=null;this.refresh();});
         this.refresh();
     }
     owns() {return !this.disposed && this.parent.__eidolonOwnerExport === this;}
@@ -57,39 +64,45 @@ export class OwnerExportDownload {
         const locked = !this.current() || !this.approval || Boolean(this.pending);
         for(const field of [this.section,this.password,this.button])field.disabled=locked;
         this.character.disabled=locked || this.section.value !== 'progress';
+        this.before.disabled=locked || this.section.value !== 'reports';
+        this.next.hidden=!this.nextCursor;this.next.disabled=!this.current() || Boolean(this.pending) || Boolean(this.prepared);
         this.save.disabled=!this.current() || !this.prepared;
     }
     submit() {
         if(!this.current() || !this.approval || this.pending){this.clearProof();return;}
-        const currentPassword=this.password.value, characterName=this.section.value === 'progress' ? this.character.value : '';
-        if(!['profile','progress'].includes(this.section.value) || !currentPassword || new Blob([currentPassword]).size>72 || (this.section.value==='progress' && (!characterName || new Blob([characterName]).size>128))){this.status.textContent='Enter your current password and exact character name for a gameplay section.';return;}
+        const currentPassword=this.password.value, characterName=this.section.value === 'progress' ? this.character.value : '', before=this.section.value==='reports'?this.before.value:'';
+        if(!['profile','progress','reports'].includes(this.section.value) || !currentPassword || new Blob([currentPassword]).size>72 || (this.section.value==='progress' && (!characterName || new Blob([characterName]).size>128)) || (before && (!/^[a-f0-9]{24}$/.test(before) || /^0+$/.test(before)))){this.status.textContent='Enter your current password, exact character name for gameplay, and a valid report cursor if paging.';return;}
         this.discard();
+        this.nextCursor=null;
         const requestId=crypto.randomUUID();
-        this.pending={requestId,section:this.section.value};this.clearProof();this.refresh();
+        this.pending={requestId,section:this.section.value,before};this.clearProof();this.refresh();
         this.status.textContent='Preparing this section… No automatic retry or download.';
         try {
-            if(this.send({requestId,reportId:this.approval.reportId,approvalRevision:this.approval.revision,currentPassword,section:this.section.value,characterName})!==true)throw new Error('offline');
+            if(this.send({requestId,reportId:this.approval.reportId,approvalRevision:this.approval.revision,currentPassword,section:this.section.value,characterName,before})!==true)throw new Error('offline');
         } catch {this.pending=null;this.status.textContent='Not connected. Enter your proof again after reconnecting; no automatic retry.';this.refresh();return;}
         if(this.pending?.requestId !== requestId)return;
         this.timer=setTimeout(()=>{if(this.pending?.requestId!==requestId)return;this.pending=null;this.status.textContent='No section confirmed. Recheck approval and retry manually; no file or password was retained.';this.refresh();},10000);
     }
     handleResult(result) {
         if(!this.owns() || !this.pending || result?.requestId!==this.pending.requestId)return false;
-        const section=this.pending.section;clearTimeout(this.timer);this.pending=null;this.clearProof();this.discard();
+        const {section,before}=this.pending;clearTimeout(this.timer);this.pending=null;this.clearProof();this.discard();
         if(!this.current()){this.refresh();return false;}
-        const expected=section==='profile'?'eidolon-owner-account-profile':'eidolon-owner-progression';
+        const expected={profile:'eidolon-owner-account-profile',progress:'eidolon-owner-progression',reports:'eidolon-owner-report-submissions'}[section];
         if(result.success!==true || result.data?.format!==expected || result.data.version!==1){this.status.textContent='Section unavailable. Recheck approval and ownership or ask the operator about missing/larger data.';this.refresh();return true;}
+        const cursor=result.data.next;
+        if(section==='reports' && (!Array.isArray(result.data.reports) || result.data.reports.length>10 || (cursor!==undefined && (!/^[a-f0-9]{24}$/.test(cursor) || /^0+$/.test(cursor) || (before && cursor>=before))))){this.status.textContent='Invalid report page. Nothing was saved; ask the operator.';this.refresh();return true;}
         let text;
         try {text=JSON.stringify(result.data);if(new Blob([text]).size>512*1024)throw new Error('oversized');} catch {this.status.textContent='Section exceeds the supported size. Nothing was saved; ask the operator.';this.refresh();return true;}
-        this.prepared={text,section};this.save.hidden=false;this.status.textContent='One section is ready in memory. Save it locally only if you want it; protect the file. Close discards it. This is not your complete account export.';this.refresh();return true;
+        this.nextCursor=section==='reports'?cursor:null;
+        this.prepared={text,section,before};this.save.hidden=false;this.status.textContent=`One section is ready in memory. Save it locally only if you want it; protect the file. Close discards it. This is not your complete account export.${section==='reports'?(cursor?' More report pages remain; choose next manually.':' No older report page at this read; other account categories remain.'):''}`;this.refresh();return true;
     }
     saveFile() {
         if(!this.current() || !this.prepared)return;
         const url=URL.createObjectURL(new Blob([this.prepared.text],{type:'application/json'}));
-        try {const link=document.createElement('a');link.href=url;link.download=`eidolon-${this.prepared.section}-section.json`;document.body.append(link);try{link.click();}finally{link.remove();}}
+        try {const link=document.createElement('a');link.href=url;link.download=`eidolon-${this.prepared.section}${this.prepared.section==='reports'?`-${this.prepared.before||'newest'}`:''}-section.json`;document.body.append(link);try{link.click();}finally{link.remove();}}
         finally {setTimeout(()=>URL.revokeObjectURL(url),1000);this.discard();this.status.textContent='Section offered to your browser for saving. We cannot verify the device saved it; keep it private.';this.refresh();}
     }
-    close() {this.clearProof();this.discard();this.pending=null;clearTimeout(this.timer);this.refresh();}
+    close() {this.clearProof();this.discard();this.nextCursor=null;if(this.before)this.before.value='';this.pending=null;clearTimeout(this.timer);this.refresh();}
     connectionState(state) {if(state!=='connected'){this.close();this.approval=null;}this.refresh();}
     dispose() {if(this.disposed)return;this.close();this.disposed=true;disposeOwnedEvents(this);this.root.remove();if(this.parent.__eidolonOwnerExport===this)delete this.parent.__eidolonOwnerExport;}
 }

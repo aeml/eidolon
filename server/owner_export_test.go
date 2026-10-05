@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"eidolon-server/internal/database"
 )
 
 const validOwnerExportPayload = `{"requestId":"owner-section-00001","reportId":"0123456789abcdef01234567","approvalRevision":1,"currentPassword":"synthetic owner proof","section":"profile","characterName":""}`
@@ -19,7 +21,7 @@ type fakeOwnerExportStore struct {
 	after           func()
 }
 
-func (s *fakeOwnerExportStore) ReadApprovedOwnerExportSection(ctx context.Context, owner, password, report string, revision int64, section, character string, at time.Time, budget int) ([]byte, error) {
+func (s *fakeOwnerExportStore) ReadApprovedOwnerExportQuery(ctx context.Context, owner, password, report string, revision int64, query database.OwnerExportQuery, at time.Time, budget int) ([]byte, error) {
 	s.calls++
 	s.owner = owner
 	s.password = password
@@ -57,6 +59,8 @@ func TestOwnerExportStrictSchemaCurrentOwnerAndPrivateAudit(t *testing.T) {
 		strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"users"`, 1),
 		strings.Replace(validOwnerExportPayload, `"characterName":""`, `"characterName":"","username":"victim"`, 1),
 		strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"profile","section":"progress"`, 1),
+		strings.Replace(validOwnerExportPayload, `"characterName":""`, `"characterName":"","before":null`, 1),
+		strings.Replace(validOwnerExportPayload, `"characterName":""`, `"characterName":"","before":"0123456789abcdef01234560"`, 1),
 		validOwnerExportPayload + ` {}`, strings.Repeat("x", 2049),
 	} {
 		if _, err := decodeOwnerExport([]byte(payload)); err == nil {
@@ -71,6 +75,24 @@ func TestOwnerExportStrictSchemaCurrentOwnerAndPrivateAudit(t *testing.T) {
 	encoded, _ := json.Marshal(adminActivities.(*fakeAdminActivityStore).events)
 	if strings.Contains(string(encoded), "synthetic owner proof") || strings.Contains(string(encoded), "owner@example.invalid") || !strings.Contains(string(encoded), MsgOwnerExportSection) {
 		t.Fatal("read admission audit missing or leaked export contents")
+	}
+}
+
+func TestOwnerExportReportPageStrictCursor(t *testing.T) {
+	payload := strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"reports"`, 1)
+	for _, cursor := range []string{"", "0123456789abcdef01234560"} {
+		request, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1)))
+		if err != nil || request.Before != cursor || request.Section != "reports" {
+			t.Fatal("valid bounded report page rejected", err)
+		}
+	}
+	for _, cursor := range []string{"000000000000000000000000", "0123456789ABCDEF01234560", "another-account", strings.Repeat("a", 25)} {
+		if _, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1))); err == nil {
+			t.Fatal("invalid cursor accepted")
+		}
+	}
+	if _, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"Other character"`, 1))); err == nil {
+		t.Fatal("report page used character target")
 	}
 }
 func TestOwnerExportFailsClosedOnAuditAndConnectionChange(t *testing.T) {

@@ -14,9 +14,13 @@ import (
 // alone cannot substitute for this owner's current password. No export artifact
 // is persisted. Permission is checked before reading AND before returning data.
 func (db *DB) ReadApprovedOwnerExportSection(parent context.Context, owner, password, reportID string, approvalRevision int64, section, character string, at time.Time, maxBytes int) ([]byte, error) {
+	return db.ReadApprovedOwnerExportQuery(parent, owner, password, reportID, approvalRevision, OwnerExportQuery{Section: section, CharacterName: character}, at, maxBytes)
+}
+
+func (db *DB) ReadApprovedOwnerExportQuery(parent context.Context, owner, password, reportID string, approvalRevision int64, query OwnerExportQuery, at time.Time, maxBytes int) ([]byte, error) {
 	id, err := primitive.ObjectIDFromHex(reportID)
 	if parent == nil || db == nil || db.reports == nil || owner == "" || len(owner) > 128 || err != nil || id.IsZero() || id.Hex() != reportID ||
-		approvalRevision < 1 || approvalRevision >= MaximumPrivacyExportChanges || approvalRevision%2 != 1 {
+		approvalRevision < 1 || approvalRevision >= MaximumPrivacyExportChanges || approvalRevision%2 != 1 || !validOwnerExportQuery(query) {
 		return nil, errOwnerExportSection
 	}
 	ctx, cancel := context.WithTimeout(parent, 3*time.Second)
@@ -39,7 +43,7 @@ func (db *DB) ReadApprovedOwnerExportSection(parent context.Context, owner, pass
 	if !allowed() {
 		return nil, errOwnerExportSection
 	}
-	encoded, err := db.readOwnerExportSection(ctx, owner, password, section, character, at, maxBytes)
+	encoded, err := db.readOwnerExportQuery(ctx, owner, password, query, at, maxBytes)
 	if err != nil || !allowed() {
 		return nil, errOwnerExportSection
 	}

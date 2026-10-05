@@ -18,6 +18,7 @@ type ownerProgressSnapshot struct {
 	Format      string                 `json:"format"`
 	Version     int                    `json:"version"`
 	GeneratedAt time.Time              `json:"generated_at"`
+	Coverage    ownerExportCoverage    `json:"coverage"`
 	Character   ownerCharacterSnapshot `json:"character"`
 }
 
@@ -216,7 +217,7 @@ func encodeOwnerProgressSnapshot(character *Character, generatedAt time.Time, ma
 			Chapter: quest.Chapter, ObjectiveText: quest.ObjectiveText}
 	}
 	encoded, err := json.Marshal(ownerProgressSnapshot{
-		Format: "eidolon-owner-progression", Version: 1, GeneratedAt: generatedAt.UTC(), Character: snapshot,
+		Format: "eidolon-owner-progression", Version: 1, GeneratedAt: generatedAt.UTC(), Coverage: ownerSectionCoverage("progress"), Character: snapshot,
 	})
 	// This bounds the returned response, not total serializer allocations. The
 	// eventual reader/admission path also needs its own workload and input bounds.

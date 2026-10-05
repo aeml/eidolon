@@ -26,7 +26,7 @@ test('ordinary or already-tagged page renders no export password input and only 
 test('only explicit approved request sends; proof clears and pending retains no credential',()=>{
     expect(send).not.toHaveBeenCalled();submit();ui.submit();
     expect(send).toHaveBeenCalledTimes(1);expect(send).toHaveBeenCalledWith(expect.objectContaining({reportId:approval.id,approvalRevision:1,currentPassword:'synthetic owner proof',section:'profile',characterName:''}));
-    expect(ui.password.value).toBe('');expect(ui.pending).toEqual({requestId:'owner-section-00001',section:'profile'});
+    expect(ui.password.value).toBe('');expect(ui.pending).toEqual({requestId:'owner-section-00001',section:'profile',before:''});
 });
 test('real engine reply route prepares in RAM; save needs another click and revokes its object URL',()=>{
     submit();GameEngine.prototype.handleServerMessage.call({player:{id:'owner'},uiManager:{report:{exportDownload:ui}}},{type:'owner_export_section_result',payload:response()});
@@ -53,4 +53,27 @@ test('approval revocation or another case clears current proof and prepared cont
 });
 test('timeout retains no password/file, releases read controls and never resends',()=>{
     submit();jest.advanceTimersByTime(11000);expect(ui.pending).toBeNull();expect(ui.prepared).toBeNull();expect(ui.password.value).toBe('');expect(send).toHaveBeenCalledTimes(1);
+});
+test('reports use explicit owner-scoped pages; next never reads or downloads automatically',()=>{
+    ui.section.value='reports';ui.section.dispatchEvent(new Event('change'));
+    const next='0123456789abcdef01234560';submit();
+    expect(send).toHaveBeenLastCalledWith(expect.objectContaining({section:'reports',characterName:'',before:''}));
+    ui.handleResult({...response(),data:{format:'eidolon-owner-report-submissions',version:1,reports:[{submitted_text:'Owner authored text'}],next,coverage:{complete_account_export:false}}});
+    expect(ui.prepared.text).toContain('Owner authored text');expect(parent.textContent).not.toContain('Owner authored text');
+    expect(send).toHaveBeenCalledTimes(1);expect(URL.createObjectURL).not.toHaveBeenCalled();
+    ui.save.click();ui.next.click();expect(ui.before.value).toBe(next);expect(ui.password.value).toBe('');
+    expect(ui.prepared).toBeNull();expect(send).toHaveBeenCalledTimes(1);
+    submit();expect(send).toHaveBeenLastCalledWith(expect.objectContaining({before:next}));
+    ui.handleResult({...response(),data:{format:'eidolon-owner-report-submissions',version:1,reports:[]}});
+    expect(ui.next.hidden).toBe(true);expect(ui.status.textContent).toContain('other account categories remain');
+});
+test('invalid cursor, backwards/non-decreasing next or unbounded report page cannot be saved',()=>{
+    ui.section.value='reports';ui.section.dispatchEvent(new Event('change'));ui.before.value='forged';submit();expect(send).not.toHaveBeenCalled();
+    ui.before.value='0123456789abcdef01234560';
+    for(const data of [
+        {reports:[],next:'0123456789abcdef01234567'},
+        {reports:[],next:'000000000000000000000000'},
+        {reports:Array.from({length:11},()=>({}))},
+    ]){submit();ui.handleResult({...response(),data:{format:'eidolon-owner-report-submissions',version:1,...data}});expect(ui.prepared).toBeNull();}
+    expect(URL.createObjectURL).not.toHaveBeenCalled();
 });

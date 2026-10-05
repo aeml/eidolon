@@ -24,6 +24,7 @@ type ownerProfileSnapshot struct {
 	Format      string              `json:"format"`
 	Version     int                 `json:"version"`
 	GeneratedAt time.Time           `json:"generated_at"`
+	Coverage    ownerExportCoverage `json:"coverage"`
 	Profile     ownerAccountProfile `json:"profile"`
 }
 
@@ -59,7 +60,7 @@ func encodeOwnerProfileSnapshot(source ownerProfileSource, provedOwner string, g
 		}
 	}
 	encoded, err := json.Marshal(ownerProfileSnapshot{
-		Format: "eidolon-owner-account-profile", Version: 1, GeneratedAt: generatedAt.UTC(), Profile: profile,
+		Format: "eidolon-owner-account-profile", Version: 1, GeneratedAt: generatedAt.UTC(), Coverage: ownerSectionCoverage("profile"), Profile: profile,
 	})
 	// Response-size bound, not an input/allocation bound. The eventual reader
 	// needs its own admission and bounded projection before enabling delivery.

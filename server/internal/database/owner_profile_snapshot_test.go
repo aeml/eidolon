@@ -42,6 +42,9 @@ func TestOwnerProfileSnapshotPreservesOnlyOwnerProfile(t *testing.T) {
 	if got.Format != "eidolon-owner-account-profile" || got.Version != 1 || !got.GeneratedAt.Equal(now) || got.GeneratedAt.Location() != time.UTC {
 		t.Fatal("missing versioned UTC envelope")
 	}
+	if got.Coverage.CompleteAccountExport || len(got.Coverage.Included) == 0 || len(got.Coverage.SeparateHandling) == 0 {
+		t.Fatal("missing bounded-section coverage manifest")
+	}
 	profile := got.Profile
 	if profile.Username != "owner" || profile.PublicName != source.PublicName || profile.SubmittedEmail != source.Email || profile.CreatedAt == nil || !profile.CreatedAt.Equal(now.Add(-time.Hour)) || profile.CreatedAt.Location() != time.UTC {
 		t.Fatal("owner profile lost data")

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "a26f5b76",
+  "status": "report-pages-and-section-manifests-locally-verified-unpublished-milestone-incomplete",
+  "scope": [
+    "Owner-authored reports only, newest-first canonical immutable-ID cursor, ten entries plus one continuation candidate, three-second query deadline and bounded batches/output.",
+    "Narrow predecode projection; an oversized projected row becomes a bounded sentinel and fails the whole page instead of silently skipping owner data. Private staff/permission/receipt payloads are never decoded or returned.",
+    "Existing approved owner/session/admission gates retained. Cross-collection reads also recheck the exact current credential after fetching reports, fencing a reset/removal during the read.",
+    "Manual report-page preparation and separate Save, explicit next-page selection with fresh proof, no automatic read/download/retry. Closing/disconnecting clears transient cursor/data/proof.",
+    "Every supported file includes included/omitted/withheld/separate-handling categories and consistency limits; complete_account_export is false. Unsupported sources are not reported absent."
+  ],
+  "checks": [
+    {"scope": "Focused root/database race regression", "result": "Final root3.727s/database1.486s pass, including section serializers, report/query/coverage, approval and admission regressions."},
+    {"scope": "Owner download and existing account-support integration", "result": "Four Jest suites75 tests pass5.364s. Final owner-download suite12 tests pass1.955s after next-page selection was disabled until the prepared file was offered to the browser. No claimed browser/device save confirmation."},
+    {"scope": "Disposable actual Mongo7.0.14", "result": "Owner report paging, existing section source limits and existing approval suite pass6.257s on explicit loopback32937.25 authored reports cross three pages10/10/5, no duplicate/missing owner IDs, huge private staff records excluded, another owner/proof denied, oversized authored projection fails with no partial output/source mutation, revocation stops later pages."},
+    {"scope": "Mocked query/reset boundaries", "result": "Owner literal/canonical keyset, seven-field projection, eleven-source batch and three-second deadline asserted. Cross-owner, invalid order, oversized sentinel, reset-after-read and missing input fail closed; valid empty page is distinct from failure."},
+    {"scope": "Lint/whitespace", "result": "Affected UI/test ESLint and diff whitespace checks pass."},
+    {"scope": "Cleanup and evidence limits", "result": "Owned container eidolon-report-export-qa-175-1005 removed. No production/player writes, real account download, actual browser/device-save acceptance, provider email, schema/TTL changes or long capacity/campaign/raid rerun."}
+  ],
+  "remaining": [
+    "Account/session and social/economic/reward owner-facing summaries and bounded handling of the remaining stores; current files are not complete account coverage.",
+    "Coordinated individually authorized removal, shared custody and replay preservation, journal/archive anti-resurrection, provider/privacy review.",
+    "Release notes/version, CI and exact live acceptance. No1.75 deployment or full roadmap completion claim."
+  ]
+}
