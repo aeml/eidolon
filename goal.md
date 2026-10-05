@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 live acceptance:** Alpha1.74.7 at7af0b279 passed all ten CI37264989129
+jobs after one failed-job retry for a transient Mongo connection failure; client
+and browser scopes reused their success on the same source. Root exact public
+IPv4 release/backend/db/login/cumulative notes/eight runtime hash checks pass.
+Mongo volume and logs bind persist; the same preupdate retained-activity cohort
+still counts6404 after deployment. See the maintenance receipt for expired-fence
+limits. This supersedes the historical pending1.74.7 checkpoint below.1.75 remains
+unpublished and incomplete; full future roadmap and capacity gates remain open.
+
 **October5 privacy policy answer:** Owner approved administrator-reviewed account
 exports/removal requests, current retention unchanged, with no automatic deletion.
 The narrow1.75 branch implements authenticated account-help/in-game request cases,

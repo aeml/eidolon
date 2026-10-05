@@ -1,6 +1,6 @@
 {
   "version": "Alpha 1.74.7",
-  "status": "local-checks-passed-own-deployment-pending",
+  "status": "accepted-live-exact-source-verified",
   "base": "1c47e16a7247991f77a20607381fbbf910c190cd",
   "scope": [
     "Stash at (-28,210), facing east between smithy and forge; actual wall footprint and western planter leave approach clear",
@@ -41,6 +41,25 @@
     "retest": "All admin teleport race checks pass5.502s; minimap/ground/version381 checks pass13.446s; offline spawn and server-authoritative placement two checks pass2.118s; scoped ESLint/whitespace pass",
     "scope": "No production admin teleport guard weakened; no connected movement, retention, wallet or database changes in this correction"
   },
-  "pending": ["Own CI and exact public release/runtime verification", "Recheck retained aggregate after deployment"],
+  "ci": {
+    "run": 37264989129,
+    "source": "7af0b2798f0cb0b2ed245736df0c95aacedff586",
+    "result": "Terminal success: all ten jobs. Attempt1 hit a transient10-second Mongo selection timeout in TestRemoveFriend_OrderIndependent; neighbouring Mongo tests passed and no crash/address cause was proven. One failed-job retry on unchanged source passed server tests and downstream deployment/live checks. Client and three browser shards were successful scopes reused from attempt1, not newly rerun. No test gate or timeout relaxed."
+  },
+  "liveAcceptance": {
+    "checkedAtUTC": "2026-10-05T20:22:44Z",
+    "commit": "7af0b2798f0cb0b2ed245736df0c95aacedff586",
+    "version": "Alpha 1.74.7",
+    "public": "Root independent Node24 public IPv4 exact frontend/backend readiness, database, login version, cumulative1.74.1–7 notes and eight publisher-rewritten runtime SHA256 checks pass.",
+    "mounts": ["eidolon_mongo_data -> /data/db", "/home/aeml/eidolon/server/logs -> /app/logs"],
+    "retainedHistory": {
+      "capturedAtUTC": "2026-10-05T16:57:45.414Z",
+      "expiresAfterUTC": "2026-10-05T18:57:45.414Z",
+      "baseline": 6404,
+      "postDeploymentCount": 6404,
+      "scope": "Exact same preupdate query retains its baseline count. Expiry fence elapsed before final verification: the guarded verifier correctly refused a negative-loss inference; a separate read-only positive count check still found all6404. This is aggregate retention evidence, not per-record identity or a forever-retention guarantee. No production writes/raw account or log export."
+    }
+  },
+  "pending": [],
   "limits": ["Default admin activity retention stays 90 days, not forever", "No full campaign or unchanged 100-player replay", "No real-phone or full future-roadmap acceptance claim"]
 }
