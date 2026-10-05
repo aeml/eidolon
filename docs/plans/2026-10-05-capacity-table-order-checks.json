@@ -1,9 +1,10 @@
 {
   "status": "ACTUAL_CHANGED_TARGET_RUNNING_NO_ACCEPTANCE",
   "sourceCommit": "9db4c8efa4aa02566cb5b1d66d4c63ff81757399",
-  "ownedContainer": "4149bb4874d6fa9b5e2bec74a23f1a04f94d34fdd77eabfd3aedb275c92ddc98",
-  "taskLabel": "combined100-table-order-179-20261005",
-  "parentSession": 57074,
+  "ownedContainer": "a292168bab076d6bf2902a8b21c219f1071c879133ad31389ab8cc28aa4d581d",
+  "taskLabel": "combined100-table-order-identity-179-20261005",
+  "parentSession": 79873,
+  "initialPreparationFailure": "First parent57074 terminalFAIL103.60s before player workload: strict compatStartServer readiness requires health commit==binary basename. Build embeds exact9db4c8ef source SHA but artifact was named server. No code/ordering outcome or all-account save acceptance. Exact4149bb4874d6fa9b5e2bec74a23f1a04f94d34fdd77eabfd3aedb275c92ddc98 has only mongod after terminal; fixed drain all phases/normal child exit, peak609009664bytes/OOM0/false. No fatal/panic/failed/error markers in owned startup log. Verified label/network and stopped/removed only this fixture/private accounts/logs. A filtered-list formatting typo corrected with uppercase ID before recheck. Native artifact bytes unchanged; new relative symlink names binary by its embedded9db4c8ef SHA. Fresh isolated fixture uses that absolute path; strict readiness predicate untouched. This is a corrected test preparation, not an unchanged failed workload replay.",
   "artifacts": {
     "directory": "/tmp/eidolon-179-table-order-UFDklp",
     "normalServerSHA256": "f3e8cc3416ed8c370aec12a1eadb88b58a9d464e375171ac98116b9b8dd6a63a",
