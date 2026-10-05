@@ -420,11 +420,12 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.3`. This narrow casino performance follow-up
-  responds to actors first, limits game-action notifications to their table,
-  builds only the seated game's view and indexes immutable furniture geometry.
-  Shared physical presence, saved settlements, wagers, timers and payouts remain
-  unchanged. Existing real-player administration, selling/error fixes, accounts,
+- Current source version: `Alpha 1.74.4`. This narrow card-table interface follow-up
+  prevents delayed lower-revision ready snapshots of the same hand/private seat
+  from restoring passed blackjack or Hold'em turns. Fresh physical presence,
+  new hands and ownership, unavailable/saving feedback, server wager authority,
+  settlements, timers and payouts retain their normal behavior. Existing casino
+  performance, real-player administration, selling/error fixes, accounts,
   currencies, permissions, retention and schema22 remain unchanged. Later
   schema23–24/privacy/operations/capacity candidates and load-test driver changes
   are excluded. Login version and cumulative notes are assembled; exact-source

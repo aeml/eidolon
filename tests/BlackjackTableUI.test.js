@@ -7,6 +7,37 @@ const playing = () => ({ ...betting(), phase: 'playing', players: [{ playerId: '
     actions: ['hit', 'stand', 'double', 'split'], players: [{ playerId: 'alice', seat: 0, hands: [{ cards: [7, 20], bet: 100 }] }]
 } });
 
+test('a delayed lower revision cannot restore an earlier blackjack turn', () => {
+    const send = jest.fn(), ui = new BlackjackTableUI(send);
+    const newer = playing(); newer.round.revision = 2; newer.round.turnPlayerId = 'bob'; newer.round.actions = [];
+    const presence = { yourSeat: { seat: 0, sessionId: 'own-seat' } };
+    ui.update(newer, 'alice', presence);
+    ui.update(playing(), 'alice', presence); ui.choose('stand');
+    expect(ui.view).toBe(newer); expect(send).not.toHaveBeenCalled();
+    ui.update(null, 'alice');
+});
+
+test.each(['equal revision', 'new hand', 'new seat', 'new player', 'unavailable', 'saving'])(
+    'blackjack revision guard preserves %s updates', change => {
+        const ui = new BlackjackTableUI(jest.fn()), newer = playing(), incoming = playing();
+        newer.round.revision = 2;
+        const presence = { yourSeat: { seat: 0, sessionId: 'own-seat' } };
+        ui.update(newer, 'alice', presence);
+        const nextPresence = { yourSeat: { ...presence.yourSeat } };
+        let playerID = 'alice';
+        if (change === 'equal revision') incoming.round.revision = 2;
+        if (change === 'new hand') incoming.roundId = 'round-two';
+        if (change === 'new seat') nextPresence.yourSeat.sessionId = 'new-seat';
+        if (change === 'new player') playerID = 'bob';
+        if (change === 'unavailable') incoming.available = false;
+        if (change === 'saving') incoming.processing = true;
+        ui.update(incoming, playerID, nextPresence);
+        expect(ui.view).toBe(incoming);
+        if (['unavailable', 'saving'].includes(change)) expect(ui.bet.disabled).toBe(true);
+        ui.update(null, playerID);
+    }
+);
+
 test('visible hand counts and saved blackjack win popup show profit without replay', () => {
     jest.useFakeTimers(); const ui = new BlackjackTableUI(jest.fn());
     try {

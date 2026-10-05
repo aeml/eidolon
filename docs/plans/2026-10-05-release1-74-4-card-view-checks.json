@@ -1,0 +1,16 @@
+{
+  "release": "Alpha 1.74.4",
+  "status": "LOCAL_CHECKS_PASSED_PUBLICATION_PENDING",
+  "base": "Freshly fetched origin/master 8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0. Prior 1.74.3 publication is still monitored separately; do not supersede an active deployment.",
+  "scope": "Only blackjack/Hold'em interface freshness guards, focused tests and version/notes. Preserve schema22, server authority, wagers, payouts, timers, currencies, accounts, permissions and access. Exclude all prepared load-driver, privacy, persistence and operations changes.",
+  "reproduction": "Prepared synthetic regression tests failed before the correction: a lower-revision ready snapshot restored a passed own turn in both card-table interfaces. This proves a UI defect, not the cause of the two prior actual100 blackjack rejections.",
+  "change": "Keep the current game view only when the same player, private seat session, currency and nonempty hand identity receive a ready, nonprocessing lower safe-integer revision. Still apply fresh presence. Equal/newer revisions, changed owner/seat/hand and unavailable/saving feedback follow existing paths. Not a general transport-ordering fence.",
+  "checks": "Exact narrow maintenance source: all435 BlackjackTableUI, PokerTableUI, CasinoController and VersionPresentation checks passed4.994s. Covers both stale-turn regressions and equal/new-hand/new-seat/new-player/unavailable/saving boundaries. Affected JavaScript lint and git diff check passed. Existing installed dependencies reused; lock changes only root version. No repeated campaign, raid or soak; backend gameplay is unchanged apart from build-version metadata.",
+  "sha256": {
+    "src/ui/BlackjackTableUI.js": "4324c28e15166ca87b3c5e12e604a48b448bfbb44950e1eec5f824d65ec916ce",
+    "src/ui/PokerTableUI.js": "41b1af7cc66f1605b3d74ca1abc0c615498a2f191610c14e45d9ad0f5e15bdf7",
+    "tests/BlackjackTableUI.test.js": "9ccc88f47412c40bfbb176e8574b7b9550232e5a0e6a68a3f88de2157f17831b",
+    "tests/PokerTableUI.test.js": "0c05f651fed44de15406417a2bb7850f3f88054d2ee95734f73688fe887a8dc2"
+  },
+  "publication": "Pending prior-release acceptance, fresh remote comparison, commit/push, exact terminal CI and independent public identities/readiness/login/notes plus changed runtime byte checks. Use Luna for monitoring. Full roadmap and ordered policy/operations/capacity gates remain open."
+}

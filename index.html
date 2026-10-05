@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.74.3</span>
+                    <span class="start-version-row__label">Alpha 1.74.4</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -774,6 +774,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.74.4">
+                    <h3 class="patch-note-entry__title">Alpha 1.74.4 (card-table view ordering)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Blackjack and Hold'em keep the newer ready view when a delayed lower-revision snapshot arrives for the same hand and seat. An old snapshot can no longer restore a turn that has already passed.</li>
+                        <li>Shared seats and occupants still refresh. New hands, seat ownership changes, equal or newer revisions, and unavailable or saving feedback retain their normal behavior.</li>
+                        <li>Server wager authority, payouts, currencies and timers are unchanged. No account wipe, schema migration, access change or payment feature is included.</li>
+                        <li>This targeted interface correction does not certify 100-player capacity or complete the unfinished 1.75–1.79 milestones. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.74.3">
                     <h3 class="patch-note-entry__title">Alpha 1.74.3 (casino response performance)</h3>
                     <ul class="patch-note-entry__list">

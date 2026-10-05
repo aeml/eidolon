@@ -9,6 +9,36 @@ const playing = () => ({ ...lobby(), phase: 'playing', players: [{ playerId: 'A'
         { playerId: 'B', seat: 1, stack: 180, streetBet: 20, committed: 20, cards: [-1, -1] }]
 } });
 
+test('a delayed lower revision cannot restore an earlier poker turn', () => {
+    const send = jest.fn(), ui = new PokerTableUI(send);
+    const newer = playing(); newer.round.revision = 2; newer.round.turnPlayerId = 'B'; newer.round.actions = [];
+    const presence = { yourSeat: { seat: 0, sessionId: 'own-seat' } };
+    ui.update(newer, 'A', presence);
+    ui.update(playing(), 'A', presence); ui.choose('call');
+    expect(ui.view).toBe(newer); expect(send).not.toHaveBeenCalled();
+    ui.update(null, 'A');
+});
+
+test.each(['equal revision', 'new hand', 'new seat', 'new player', 'unavailable', 'saving'])(
+    'poker revision guard preserves %s updates', change => {
+        const ui = new PokerTableUI(jest.fn()), newer = playing(), incoming = playing();
+        newer.round.revision = 2;
+        const presence = { yourSeat: { seat: 0, sessionId: 'own-seat' } };
+        ui.update(newer, 'A', presence);
+        const nextPresence = { yourSeat: { ...presence.yourSeat } };
+        let playerID = 'A';
+        if (change === 'equal revision') incoming.round.revision = 2;
+        if (change === 'new hand') incoming.roundId = 'hand-2';
+        if (change === 'new seat') nextPresence.yourSeat.sessionId = 'new-seat';
+        if (change === 'new player') playerID = 'B';
+        if (change === 'unavailable') incoming.available = false;
+        if (change === 'saving') incoming.processing = true;
+        ui.update(incoming, playerID, nextPresence);
+        expect(ui.view).toBe(incoming);
+        ui.update(null, playerID);
+    }
+);
+
 test('current best hand and settled winner popup do not reveal hidden opponents', () => {
     jest.useFakeTimers(); const ui = new PokerTableUI(jest.fn());
     try {
