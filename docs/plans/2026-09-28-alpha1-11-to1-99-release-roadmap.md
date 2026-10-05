@@ -4,8 +4,9 @@ October5 maintenance status: Alpha1.74.6 is accepted live at1c47e16a,
 CI37256836401 all ten jobs successful, followed by exact public IPv4 frontend,
 backend, database, login, cumulative-note and rewritten runtime checks.
 Alpha1.74.7 is a local stash/jump/activity-persistence candidate; see
-[bounded checks](2026-10-05-release1-74-7-checks.json). Its own connected browser,
-deployment and retained-history check remain pending. Existing real-player
+[bounded checks](2026-10-05-release1-74-7-checks.json). Its connected stash route
+passes all three desktop/phone-sized layouts on clean48bf1a5e; own deployment
+and retained-history check remain pending. Existing real-player
 administration filtering is live; no account deletion or retention change.
 The older baseline/publication paragraphs below are historical. Future policy,
 capacity, final art and closed-beta gates remain open.

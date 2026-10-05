@@ -4,8 +4,10 @@
 1c47e16a after all ten CI37256836401 jobs and exact public IPv4 verification.
 Alpha 1.74.7 is a local candidate: west-side aligned stash, bounded three-second
 long jumps and explicit persistent activity-journal/deployment cleanup protection.
-Focused controller, geometry, version and race checks pass; connected browser
-and this candidate's own deployment/public acceptance are still pending.
+Focused controller, geometry, version and race checks pass. The isolated connected
+stash route passes desktop/portrait/landscape (three cases, one minute) on clean
+48bf1a5e; inspected captures and disposable-resource cleanup pass. This
+candidate's own deployment/public acceptance and retained-history recheck remain pending.
 See [maintenance evidence](docs/plans/2026-10-05-release1-74-7-checks.json).
 This does not close future policy, capacity, art or beta gates. Historical
 checkpoints below are retained as history, not the current live status.
