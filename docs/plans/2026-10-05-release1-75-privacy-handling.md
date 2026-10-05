@@ -178,6 +178,42 @@ See [account and session checks](2026-10-05-release1-75-account-session-checks.j
 See [social and marketplace checks](2026-10-05-release1-75-social-market-checks.json).
 See [guild and competitive/raid checks](2026-10-05-release1-75-guild-reward-checks.json).
 
+### Direct-trade and guild-bank operation sections
+
+Approved owners can now manually prepare/save `trades` and `bank` pages. These
+collections use immutable hashed string IDs, not ObjectIDs. The 64-character
+lowercase hex cursor is a navigation reference scoped by the server-selected
+section prefix and owner filter, not an encrypted secret or authority. Binary
+keyset ordering handles equal timestamps without offsets or chronological claims.
+Current proof, case approval/revision, session and response-size checks remain
+mandatory for every read. At most ten entries plus one validated continuation
+candidate are read; malformed/oversized rows fail the entire page, not silently
+disappear. Projected sources are bounded before driver decoding at272KiB/trade
+and72KiB/bank; response512KiB and three-second deadlines remain unchanged.
+
+Trades include the owner's character/offered Gold and explicit gameplay item
+fields, stored settlement/cancellation/state/time and agreed incoming offers
+only for settlement. Cancellation does not decode/expose the peer's offer.
+Peer account/character/revision, fingerprints, raw trade IDs and arbitrary item
+recovery/forge payload fields are not exported. Guild-bank pages show only the
+owner's character/guild/action, Gold or explicit item fields and recorded state;
+other members/transfers, bank contents, private request IDs/revisions and replay
+plans stay excluded. Shared private fields are projected out before decoding.
+
+Pending/complete/rejected state describes the durable intent/coordinator record,
+not independent confirmation that each participant or guild/character effect was
+applied. Reads never execute recovery, settlement, refunds or item transfer.
+The source custody validator's accepted legacy empty offer is retained as zero,
+not rewritten or silently discarded. These files are not restore images.
+
+Focused race/UI and actual disposable Mongo tests cover10/2 pages for12 rows per
+section sharing the same timestamp, own gameplay item fields, cancelled-peer
+redaction, binary cursor ordering, reset/revoke/source-size fences and unchanged
+whole-source checksums. See
+[operation checks](2026-10-05-release1-75-operation-checks.json). Marketplace
+held-item, other reward/economic/casino operations and coordinated removal remain
+open; twelve supported sections still do not constitute a complete account export.
+
 ## Removal review procedure — no automatic deletion
 
 1. Verify the request owner and exact scope. Obtain separate explicit approval

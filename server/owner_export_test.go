@@ -99,6 +99,26 @@ func TestOwnerExportPagedSectionsStrictCursor(t *testing.T) {
 		})
 	}
 }
+func TestOwnerExportOperationSectionsStrictCursor(t *testing.T) {
+	for _, section := range []string{"trades", "bank"} {
+		payload := strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"`+section+`"`, 1)
+		for _, cursor := range []string{"", strings.Repeat("a", 64), strings.Repeat("0", 64)} {
+			request, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1)))
+			if err != nil || request.Before != cursor || request.Section != section {
+				t.Fatal("valid operation selection rejected", err)
+			}
+		}
+		for _, cursor := range []string{strings.Repeat("a", 24), strings.Repeat("A", 64), strings.Repeat("a", 65), "directtrade:" + strings.Repeat("a", 64)} {
+			if _, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1))); err == nil {
+				t.Fatal("invalid operation cursor admitted")
+			}
+		}
+		if _, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"Other character"`, 1))); err == nil {
+			t.Fatal("operation export accepted client target")
+		}
+	}
+}
+
 func TestOwnerExportFailsClosedOnAuditAndConnectionChange(t *testing.T) {
 	for _, mode := range []string{"audit", "superseded-after-source", "superseded-during-audit", "store", "oversized", "malformed"} {
 		t.Run(mode, func(t *testing.T) {

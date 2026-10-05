@@ -75,6 +75,10 @@ func (db *DB) readOwnerExportQuery(parent context.Context, owner, password strin
 				encoded, err = db.readOwnerCompetitivePage(ctx, owner, query.Before, at, maxBytes)
 			case "raids":
 				encoded, err = db.readOwnerRaidPage(ctx, owner, query.Before, at, maxBytes)
+			case "trades":
+				encoded, err = db.readOwnerTradePage(ctx, owner, query.Before, at, maxBytes)
+			case "bank":
+				encoded, err = db.readOwnerBankPage(ctx, owner, query.Before, at, maxBytes)
 			}
 		}
 		// These pages are in other collections: recheck the exact credential after

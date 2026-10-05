@@ -31,6 +31,9 @@ func ValidOwnerExportQuery(query OwnerExportQuery) bool {
 		if query.Before == "" {
 			return true
 		}
+		if ownerOperationPrefix(query.Section) != "" {
+			return ownerOperationCursorPattern.MatchString(query.Before)
+		}
 		id, err := primitive.ObjectIDFromHex(query.Before)
 		return err == nil && !id.IsZero() && id.Hex() == query.Before
 	}
@@ -39,6 +42,7 @@ func ValidOwnerExportQuery(query OwnerExportQuery) bool {
 var ownerExportFormats = map[string]string{
 	"profile": "eidolon-owner-account-profile", "progress": "eidolon-owner-progression", "reports": "eidolon-owner-report-submissions", "sessions": "eidolon-owner-session-history",
 	"social": "eidolon-owner-social-relationships", "market": "eidolon-owner-marketplace-summary", "guilds": "eidolon-owner-guild-memberships", "invites": "eidolon-owner-guild-invitations", "pvp": "eidolon-owner-competitive-records", "raids": "eidolon-owner-weekly-raid-records",
+	"trades": "eidolon-owner-direct-trade-offers", "bank": "eidolon-owner-guild-bank-transfers",
 }
 
 func OwnerExportFormat(section string) string { return ownerExportFormats[section] }

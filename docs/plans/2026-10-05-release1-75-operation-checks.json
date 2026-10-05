@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "b4c4aa45",
+  "status": "owner-trade-bank-operation-sections-locally-verified-unpublished-milestone-incomplete",
+  "scope": [
+    "Owner trade character/offer Gold and explicit gameplay item fields; agreed incoming offer only for settlement, not cancellation. No peer private account/character/revision, raw trade ID, fingerprint or arbitrary item recovery/forge fields.",
+    "Owner guild-bank transfer character/guild/action, Gold or explicit item fields, recorded state/time only. No other members, shared bank contents, private requests/revisions or execution plans.",
+    "String-ID collections use section-selected prefix plus64-character lowercase hashed navigation cursor, binary immutable-ID keyset, at most10 entries plus1 validated continuation candidate. References are not encrypted secrets, chronological ordering or authority.",
+    "Projected predecode source bounds272KiB/trade and72KiB/bank,512KiB response and three-second deadlines; malformed/oversized rows fail rather than silently disappear. Current case permission/password/session/admission and separate manual Prepare/Save/next remain mandatory.",
+    "No recovery/settlement/refund/transfer execution. Pending/complete/rejected intent state is not independent proof of every participant or guild/character delivery. Existing accepted legacy empty trade offers remain zero, not rewritten."
+  ],
+  "checks": [
+    {"scope": "Focused root/database race and actual Mongo", "result": "Root3.782s/database5.832s pass for OwnerExport/Operation/GuildReward and ApprovedOwnerExport. Actual Mongo7.0.14 explicit loopback32943 verifies12 own records per section, exact10/2 pages at identical timestamps, settlement incoming fields, cancelled-peer exclusion even with huge malformed peer payload, own item stats/potency, Gold intents, unrelated/private-field filters, oversized failure and approval revocation. Full original trade/bank raw-record checksums and13-record counts remain unchanged."},
+    {"scope": "Focused account-support UI", "result": "Three Jest suites71 tests pass4.521s. Both operation formats use64-character cursors and deliberate Save/next; wrong cursor kind, non-decreasing cursor, namespace-prefixed and non-string cursors fail. Changing section clears artifacts/cursor; no automatic read/download."},
+    {"scope": "Final narrow regressions", "result": "Operation selection/source/fence race tests pass1.645s after rejecting invalid UTF-8 bank payloads rather than rewriting their text. Updated notice suite3 tests pass2.979s; no unchanged long workload rerun."},
+    {"scope": "Static checks", "result": "Affected download/notice/test ESLint, gofmt and diff whitespace checks pass. Inventory and operation receipt parse; all85 referenced source paths exist."},
+    {"scope": "Isolation/limits", "result": "Only synthetic uniquely named collections in owned disposable container eidolon-operation-export-qa-175-1005. Fixture removed after checks. No production/player/provider writes, delivery/erasure, email, new TTL/schema/collection, deployment or long campaign/capacity/raid replay."}
+  ],
+  "remaining": [
+    "Full marketplace held-item and other economic/reward/casino operation owner-facing handling, journals/archives/provider copies and provider-policy review; twelve sections are not complete account exports.",
+    "Separately authorized coordinated removal, shared custody/replay preservation and journal/archive anti-resurrection safeguards/fixtures.",
+    "Complete milestone notes/version, CI and exact live acceptance; full1.99 roadmap goal remains active."
+  ]
+}

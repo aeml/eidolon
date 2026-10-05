@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 trade/bank export checkpoint:** Approved owners now have direct-trade
+offer and own guild-bank intent sections, with hashed-ID binary keyset pages,
+current proof/session/approval gates and separate manual Save/next. Shared peer,
+bank and private replay fields stay excluded; cancelled peer offers are not read.
+Stored state is explicitly not independent delivery confirmation. Focused UI/race
+and actual disposable Mongo10/2 pages, source bounds, redaction/revoke and whole
+custody-record checksum checks pass. Full remaining economic/reward/casino,
+held-item and coordinated removal/restore work plus1.75 publication remain open.
+See [operation evidence](docs/plans/2026-10-05-release1-75-operation-checks.json).
+
 **October5 player-facing data notice checkpoint:** Added the same collapsed
 notice before sign-in, in Settings and account support, with a fallback if script
 boot fails. It explains existing stores/providers/retention, current export

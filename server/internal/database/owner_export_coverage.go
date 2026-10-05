@@ -56,6 +56,16 @@ func ownerSectionCoverage(section string) ownerExportCoverage {
 		coverage.Included = []string{"One page of own weekly raid lockout/completion time and stored reward-delivery-pending flag"}
 		coverage.NotIncluded = []string{"Other account sections, private cohort/reward payloads, worker retry schedules and replay receipts", "Unrecorded raid participation and other players' lockouts"}
 		coverage.Consistency = "Current stored own weekly records in immutable-ID pages of at most ten, not a frozen account snapshot or full reward ledger. Missing legacy pending flags remain false under existing semantics; this read does not grant/settle rewards or change eligibility."
+	case "trades":
+		coverage.Included = []string{"One page of direct-trade decisions involving you, own character and offered Gold/gameplay item fields", "Agreed incoming Gold/gameplay items for settlement only; cancellation exposes only your offer", "Stored pending/complete operation state, creation time and hashed navigation reference"}
+		coverage.NotIncluded = []string{"Other account sections, unrelated trades and other participants' private account/character/revision fields", "Fingerprints, raw trade IDs, execution/replay plans and private item recovery/forge metadata", "Per-participant delivery confirmation and unstored/deleted trade history"}
+		coverage.SeparateHandling = []string{"Other account sections and unsupported economic/reward/casino records", "Save journals, logs, archives, private custody/replay fields and provider/device copies"}
+		coverage.Consistency = "Binary immutable hashed-ID keyset pages of at most ten; navigation references are not encrypted secrets or authorization, nor chronological ordering. Current operation state/agreements are not proof that every participant effect was delivered. No settlement/recovery runs and no frozen cross-store snapshot; failed/oversized pages need staff handling."
+	case "bank":
+		coverage.Included = []string{"One page of your own guild-bank transfer intents: character/guild identity, action, Gold or gameplay item fields", "Stored pending/complete/rejected operation state, creation time and hashed navigation reference"}
+		coverage.NotIncluded = []string{"Other account sections, other members' transfers and shared bank contents", "Fingerprints, request IDs, revisions, private item recovery/forge metadata and replay plans", "Independent per-side delivery confirmation and unstored/deleted history"}
+		coverage.SeparateHandling = []string{"Other account sections and unsupported economic/reward/casino records", "Save journals, logs, archives, private custody/replay fields and provider/device copies"}
+		coverage.Consistency = "Binary immutable hashed-ID keyset pages of at most ten; navigation references are not encrypted secrets or authorization, nor chronological ordering. An operation record is not independent proof that both guild and character effects were applied. Reads do not execute, settle, refund or mutate transfers; failed/oversized pages need staff handling."
 	}
 	return coverage
 }

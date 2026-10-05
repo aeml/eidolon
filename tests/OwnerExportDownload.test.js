@@ -93,3 +93,19 @@ test.each([['social','eidolon-owner-social-relationships'],['market','eidolon-ow
     expect(ui.prepared.text).toContain(format);expect(ui.next.disabled).toBe(true);expect(send).toHaveBeenCalledTimes(1);expect(URL.createObjectURL).not.toHaveBeenCalled();
     ui.save.click();ui.next.click();expect(ui.before.value).toBe('0123456789abcdef01234560');expect(send).toHaveBeenCalledTimes(1);
 });
+
+test.each([['trades','eidolon-owner-direct-trade-offers'],['bank','eidolon-owner-guild-bank-transfers']])('%s uses hashed navigation, separate Save and manual continuation', (section,format)=>{
+    ui.section.value=section;ui.section.dispatchEvent(new Event('change'));
+    ui.before.value='0123456789abcdef01234560';submit();expect(send).not.toHaveBeenCalled();
+    ui.before.value='';submit();
+    expect(send).toHaveBeenLastCalledWith(expect.objectContaining({section,characterName:'',before:''}));
+    const next='b'.repeat(64);
+    ui.handleResult({...response(),data:{format,version:1,entries:[{reference:'c'.repeat(64),operation_state:'pending'}],next,coverage:{complete_account_export:false}}});
+    expect(ui.prepared.text).toContain('pending');expect(ui.next.disabled).toBe(true);expect(URL.createObjectURL).not.toHaveBeenCalled();
+    ui.save.click();ui.next.click();expect(ui.before.value).toBe(next);expect(send).toHaveBeenCalledTimes(1);
+    for(const cursor of ['0123456789abcdef01234560','c'.repeat(64),'b'.repeat(64),'guildbank:'+'a'.repeat(64),123]){
+        submit();ui.handleResult({...response(),data:{format,version:1,entries:[],next:cursor}});expect(ui.prepared).toBeNull();
+    }
+    submit();ui.handleResult({...response(),data:{format,version:1,entries:[],next:'a'.repeat(64)}});expect(ui.prepared).not.toBeNull();
+    ui.section.value='reports';ui.section.dispatchEvent(new Event('change'));expect(ui.before.value).toBe('');expect(ui.prepared).toBeNull();expect(ui.next.hidden).toBe(true);
+});

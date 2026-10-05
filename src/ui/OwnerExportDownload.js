@@ -2,8 +2,10 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 
 let nextID = 0;
 const privatePage = () => window.__eidolonRecoverySensitivePage === true && !window.__eidolonGoogleTagInitialized;
-const FORMATS = {profile:'eidolon-owner-account-profile',progress:'eidolon-owner-progression',reports:'eidolon-owner-report-submissions',sessions:'eidolon-owner-session-history',social:'eidolon-owner-social-relationships',market:'eidolon-owner-marketplace-summary',guilds:'eidolon-owner-guild-memberships',invites:'eidolon-owner-guild-invitations',pvp:'eidolon-owner-competitive-records',raids:'eidolon-owner-weekly-raid-records'};
-const PAGED_SECTIONS = new Set(['reports','sessions','social','market','guilds','invites','pvp','raids']);
+const FORMATS = {profile:'eidolon-owner-account-profile',progress:'eidolon-owner-progression',reports:'eidolon-owner-report-submissions',sessions:'eidolon-owner-session-history',social:'eidolon-owner-social-relationships',market:'eidolon-owner-marketplace-summary',guilds:'eidolon-owner-guild-memberships',invites:'eidolon-owner-guild-invitations',pvp:'eidolon-owner-competitive-records',raids:'eidolon-owner-weekly-raid-records',trades:'eidolon-owner-direct-trade-offers',bank:'eidolon-owner-guild-bank-transfers'};
+const PAGED_SECTIONS = new Set(['reports','sessions','social','market','guilds','invites','pvp','raids','trades','bank']);
+const OPERATION_SECTIONS = new Set(['trades','bank']);
+const validCursor = (section,cursor) => OPERATION_SECTIONS.has(section) ? /^[a-f0-9]{64}$/.test(cursor) : /^[a-f0-9]{24}$/.test(cursor) && !/^0+$/.test(cursor);
 
 // Only deliberate approved-section reads. Passwords are never kept in pending
 // state. A reply prepares one bounded in-memory file; Save is a separate click.
@@ -25,9 +27,9 @@ export class OwnerExportDownload {
         }
         const prefix = `owner-export-${++nextID}`;
         this.root.insertAdjacentHTML('beforeend', `<p>This prepares one section with a coverage manifest, not a complete account export or restore image. First check your own export request above. The operator must separately approve it. Nothing downloads automatically.</p>
-            <form autocomplete="on"><label for="${prefix}-section">Section</label><select id="${prefix}-section" class="support-field__control"><option value="profile">Account profile</option><option value="progress">One character gameplay section</option><option value="reports">My report submissions — one page</option><option value="sessions">My retained login/session history — one page</option><option value="social">My current social relationships — one page</option><option value="market">My marketplace summaries — one page</option><option value="guilds">My current guild memberships — one page</option><option value="invites">My active guild invitations — one page</option><option value="pvp">My stored competitive records — one page</option><option value="raids">My weekly raid records — one page</option></select>
+            <form autocomplete="on"><label for="${prefix}-section">Section</label><select id="${prefix}-section" class="support-field__control"><option value="profile">Account profile</option><option value="progress">One character gameplay section</option><option value="reports">My report submissions — one page</option><option value="sessions">My retained login/session history — one page</option><option value="social">My current social relationships — one page</option><option value="market">My marketplace summaries — one page</option><option value="guilds">My current guild memberships — one page</option><option value="invites">My active guild invitations — one page</option><option value="pvp">My stored competitive records — one page</option><option value="raids">My weekly raid records — one page</option><option value="trades">My direct-trade offers — one page</option><option value="bank">My guild-bank transfer intents — one page</option></select>
             <label for="${prefix}-character">Character name (gameplay section only)</label><input id="${prefix}-character" class="support-field__control" maxlength="128" autocomplete="off">
-            <label for="${prefix}-before">Page cursor (blank to start; use next from your previous file of this section)</label><input id="${prefix}-before" class="support-field__control" maxlength="24" autocomplete="off" autocapitalize="none" spellcheck="false">
+            <label for="${prefix}-before">Page cursor (blank to start; use next from your previous file of this section)</label><input id="${prefix}-before" class="support-field__control" maxlength="64" autocomplete="off" autocapitalize="none" spellcheck="false">
             <label for="${prefix}-password">Current password</label><input id="${prefix}-password" class="support-field__control" type="password" autocomplete="current-password" maxlength="72" autocapitalize="none" spellcheck="false">
             <div class="support-field__row"><button class="menu-btn" type="submit">Prepare section</button><button class="menu-btn" type="button" data-save hidden>Save section locally</button><button class="menu-btn" type="button" data-next hidden>Choose next page</button><button class="menu-btn" type="button" data-close>Close and discard</button></div>
             <p role="status" aria-live="polite">Check your own approved export request first.</p></form>`);
@@ -73,7 +75,7 @@ export class OwnerExportDownload {
     submit() {
         if(!this.current() || !this.approval || this.pending){this.clearProof();return;}
         const currentPassword=this.password.value, characterName=this.section.value === 'progress' ? this.character.value : '', before=PAGED_SECTIONS.has(this.section.value)?this.before.value:'';
-        if(!Object.hasOwn(FORMATS,this.section.value) || !currentPassword || new Blob([currentPassword]).size>72 || (this.section.value==='progress' && (!characterName || new Blob([characterName]).size>128)) || (before && (!/^[a-f0-9]{24}$/.test(before) || /^0+$/.test(before)))){this.status.textContent='Enter your current password, exact character name for gameplay, and a valid page cursor if paging.';return;}
+        if(!Object.hasOwn(FORMATS,this.section.value) || !currentPassword || new Blob([currentPassword]).size>72 || (this.section.value==='progress' && (!characterName || new Blob([characterName]).size>128)) || (before && !validCursor(this.section.value,before))){this.status.textContent='Enter your current password, exact character name for gameplay, and a valid page cursor if paging.';return;}
         this.discard();
         this.nextCursor=null;
         const requestId=crypto.randomUUID();
@@ -93,7 +95,7 @@ export class OwnerExportDownload {
         if(result.success!==true || result.data?.format!==expected || result.data.version!==1){this.status.textContent='Section unavailable. Recheck approval and ownership or ask the operator about missing/larger data.';this.refresh();return true;}
         const cursor=result.data.next;
         const paged=PAGED_SECTIONS.has(section), entries=result.data[section==='reports'?'reports':'entries'];
-        if(paged && (!Array.isArray(entries) || entries.length>10 || (cursor!==undefined && (!/^[a-f0-9]{24}$/.test(cursor) || /^0+$/.test(cursor) || (before && cursor>=before))))){this.status.textContent='Invalid page. Nothing was saved; ask the operator.';this.refresh();return true;}
+        if(paged && (!Array.isArray(entries) || entries.length>10 || (cursor!==undefined && (typeof cursor!=='string' || !validCursor(section,cursor) || (before && cursor>=before))))){this.status.textContent='Invalid page. Nothing was saved; ask the operator.';this.refresh();return true;}
         let text;
         try {text=JSON.stringify(result.data);if(new Blob([text]).size>512*1024)throw new Error('oversized');} catch {this.status.textContent='Section exceeds the supported size. Nothing was saved; ask the operator.';this.refresh();return true;}
         this.nextCursor=paged?cursor:null;
@@ -102,7 +104,7 @@ export class OwnerExportDownload {
     saveFile() {
         if(!this.current() || !this.prepared)return;
         const url=URL.createObjectURL(new Blob([this.prepared.text],{type:'application/json'}));
-        try {const link=document.createElement('a');link.href=url;link.download=`eidolon-${this.prepared.section}${PAGED_SECTIONS.has(this.prepared.section)?`-${this.prepared.before||'newest'}`:''}-section.json`;document.body.append(link);try{link.click();}finally{link.remove();}}
+        try {const link=document.createElement('a');link.href=url;link.download=`eidolon-${this.prepared.section}${PAGED_SECTIONS.has(this.prepared.section)?`-${this.prepared.before||'start'}`:''}-section.json`;document.body.append(link);try{link.click();}finally{link.remove();}}
         finally {setTimeout(()=>URL.revokeObjectURL(url),1000);this.discard();this.status.textContent='Section offered to your browser for saving. We cannot verify the device saved it; keep it private.';this.refresh();}
     }
     close() {this.clearProof();this.discard();this.nextCursor=null;if(this.before)this.before.value='';this.pending=null;clearTimeout(this.timer);this.refresh();}
