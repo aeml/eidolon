@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -696,23 +697,25 @@ type pokerParticipantView struct {
 	Paid     bool   `json:"paid"`
 }
 type pokerTableView struct {
-	Currency    string                 `json:"currency"`
-	Balance     int                    `json:"balance"`
-	MinBuyIn    int                    `json:"minBuyIn"`
-	BuyInStep   int                    `json:"buyInStep"`
-	SmallBlind  int                    `json:"smallBlind"`
-	BigBlind    int                    `json:"bigBlind"`
-	ServerNow   time.Time              `json:"serverNow"`
-	NextRoundAt time.Time              `json:"nextRoundAt"`
-	MaxBuyIn    int                    `json:"maxBuyIn"`
-	Available   bool                   `json:"available"`
-	Processing  bool                   `json:"processing"`
-	RoundID     string                 `json:"roundId"`
-	Phase       string                 `json:"phase"`
-	Players     []pokerParticipantView `json:"players"`
-	DealAt      time.Time              `json:"dealAt"`
-	Round       *game.PokerView        `json:"round,omitempty"`
-	Gold        int                    `json:"gold"`
+	TableID      string                 `json:"tableId"`
+	TableVersion string                 `json:"tableVersion,omitempty"`
+	Currency     string                 `json:"currency"`
+	Balance      int                    `json:"balance"`
+	MinBuyIn     int                    `json:"minBuyIn"`
+	BuyInStep    int                    `json:"buyInStep"`
+	SmallBlind   int                    `json:"smallBlind"`
+	BigBlind     int                    `json:"bigBlind"`
+	ServerNow    time.Time              `json:"serverNow"`
+	NextRoundAt  time.Time              `json:"nextRoundAt"`
+	MaxBuyIn     int                    `json:"maxBuyIn"`
+	Available    bool                   `json:"available"`
+	Processing   bool                   `json:"processing"`
+	RoundID      string                 `json:"roundId"`
+	Phase        string                 `json:"phase"`
+	Players      []pokerParticipantView `json:"players"`
+	DealAt       time.Time              `json:"dealAt"`
+	Round        *game.PokerView        `json:"round,omitempty"`
+	Gold         int                    `json:"gold"`
 }
 
 func pokerViewFor(owner string) pokerTableView {
@@ -724,7 +727,7 @@ func pokerViewFor(owner string) pokerTableView {
 		id = player.CasinoSeat.TableID
 	}
 	pokerCached, pokerAvailable, pokerPendingOwner := getPokerCache(id)
-	v := pokerTableView{ServerNow: time.Now(), Available: pokerAvailable, Players: []pokerParticipantView{}, MaxBuyIn: game.PokerMaxBuyIn}
+	v := pokerTableView{TableID: id, ServerNow: time.Now(), Available: pokerAvailable, Players: []pokerParticipantView{}, MaxBuyIn: game.PokerMaxBuyIn}
 	v.Currency, _ = database.CasinoCurrencyForRecord(id)
 	v.MinBuyIn, v.MaxBuyIn, v.BuyInStep = game.CasinoBetLimits("poker", v.Currency)
 	v.SmallBlind, v.BigBlind = game.PokerBlinds(v.Currency)
@@ -737,6 +740,7 @@ func pokerViewFor(owner string) pokerTableView {
 		return v
 	}
 	v.RoundID, v.Phase, v.DealAt, v.Processing = s.RoundID, s.Phase, s.DealAt, pokerPendingOwner != ""
+	v.TableVersion = strconv.FormatInt(pokerCached.Version, 10)
 	if s.Phase == "complete" {
 		v.NextRoundAt = s.FinishedAt.Add(casinoResultPause)
 	}

@@ -8,6 +8,7 @@ import (
 
 // Only public turn/settlement fields: no names, hole cards, deck or hand history.
 type pokerLoadView struct {
+	TableID, TableVersion    string
 	Currency, RoundID, Phase string
 	DealAt                   time.Time `json:"dealAt"`
 	Balance                  int

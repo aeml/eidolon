@@ -1,4 +1,5 @@
 import { CardTableScene } from './CardTableScene.js';
+import { isOlderCasinoTableView } from './CasinoTableOrdering.js';
 import { CasinoCelebration, goldText } from './CasinoCelebration.js';
 
 const node = (tag, text = '', className = '') => {
@@ -44,11 +45,13 @@ export class HouseTableUI {
 
     update(view, playerID, presence = {}) {
         if (this.disposed) return;
+        if (this.playerID === playerID && isOlderCasinoTableView(this.view, view, this.presence?.yourSeat, presence.yourSeat)) view = this.view;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
         if (!view) {
             this.pending = false; this.roundId = null; this.boardKey = null; this.boardEpoch = null;
             this.draft.clear(); this.table.clear(); this.celebration.clear(); return;
         }
+        this.presence = presence;
         const currency = view.currency === 'ep' ? 'EP' : 'Gold';
         const changedGame = this.kind !== view.game || this.currency !== currency;
         if (changedGame || this.roundId !== view.roundId) {

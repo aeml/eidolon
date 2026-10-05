@@ -6,6 +6,7 @@ import (
 )
 
 type houseLoadView struct {
+	TableID, TableVersion          string
 	Game, Currency, RoundID, Phase string
 	DealAt                         time.Time `json:"dealAt"`
 	Balance                        int

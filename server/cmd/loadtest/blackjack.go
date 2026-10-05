@@ -6,6 +6,7 @@ import (
 )
 
 type blackjackLoadView struct {
+	TableID, TableVersion string
 	Currency              string `json:"currency"`
 	Balance               int    `json:"balance"`
 	Available, Processing bool

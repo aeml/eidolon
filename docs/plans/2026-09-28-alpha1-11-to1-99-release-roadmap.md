@@ -2003,6 +2003,23 @@ confirmation. Narrow corrected candidate5201c567 is single-flight per loot pile
 with the original deadline, no optimistic item grant;408 affected checks pass.
 Focused disposable release route and exact terminal/public proof remain required.
 
+The corrected clean d83c0c2c focused disposable browser route passes all4 checks
+in1.8min after own same-scene confirmed-arrival gating, normal movement flush
+and scene/recovery proof invalidation. Server range and inventory authority stay
+unchanged;430 affected loot/movement/version checks pass. Narrow1.74.5 publisher
+59dfed48 is pushed after a fresh ordinary merge; CI37253104723 is monitored by
+Luna. Terminal/public acceptance is still required, not implied by local checks.
+
+Separate [table ordering regressions](2026-10-05-casino-table-ordering-checks.json)
+reproduce old lobby restoration across hand transitions in all three UI types
+and ordinary roulette/baccarat driver requests. Prepared snapshots expose the
+existing persistent table counter as a precise bounded decimal string, with
+same-owner/private-seat/table/currency/game ordering and fresh presence retained.
+New ownership and unavailable/saving states still apply;128 UI/controller checks,
+focused root race projections and driver race checks pass. No wager/payout/timer,
+schema or acceptance threshold changes. This is not retrospective proof of the
+two actual100 stale causes, target capacity acceptance or a deployed feature.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves

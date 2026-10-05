@@ -118,6 +118,9 @@ func (b *casinoLoad) receive(payload json.RawMessage) bool {
 		b.failed = true // EP/VIP cannot be mislabeled as this Gold workload.
 		return true
 	}
+	if b.olderReadyTableView(view) {
+		return true
+	}
 	if b.view.YourSeat != nil && view.YourSeat != nil && b.view.YourSeat.SessionID == view.YourSeat.SessionID &&
 		b.view.Slots != nil && view.Slots != nil && view.Slots.Session.Revision < b.view.Slots.Session.Revision {
 		return true
