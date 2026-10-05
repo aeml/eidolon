@@ -10,6 +10,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"strings"
 	"testing"
 	"time"
 
@@ -129,12 +130,20 @@ func bankSettlementFixture(t *testing.T, action string) (*database.DB, database.
 	if err := repo.CreateCharacter(username, character); err != nil {
 		t.Fatal(err)
 	}
-	bytes := make([]byte, 2)
-	if _, err := crand.Read(bytes); err != nil {
-		t.Fatal(err)
+	// Tags have only 65536 fixture values. The shared disposable database
+	// retains earlier fixtures, so a random collision must not fail recovery QA.
+	var guild *database.Guild
+	for attempt := 0; attempt < 16; attempt++ {
+		bytes := make([]byte, 2)
+		if _, err := crand.Read(bytes); err != nil {
+			t.Fatal(err)
+		}
+		tag := "B" + hex.EncodeToString(bytes)
+		guild, err = repo.CreateGuild("Bank "+tag, tag, op.PlayerID, username)
+		if err == nil || !strings.Contains(err.Error(), "guild name, tag, or membership is already in use") {
+			break
+		}
 	}
-	tag := "B" + hex.EncodeToString(bytes)
-	guild, err := repo.CreateGuild("Bank "+tag, tag, op.PlayerID, username)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -429,8 +429,8 @@ describe('WorldGenerator shadow setup', () => {
         const cart = generator.scene.add.mock.calls[1][1];
         expect(cart.name).toBe('Lanternhold stranded supply cart');
         expect(cart.userData.walkFootprints).toHaveLength(3);
-        // The shared-zone entrance has a closed physical door in addition to
-        // the existing 22 town colliders; entry now uses its dialogue.
+        // The shared-zone entrance retains a closed physical door. Smithy
+        // walls now use an oriented footprint rather than the roof's AABB.
         const earthSolids = locations.userData.walkFootprints.length;
         expect(earthSolids).toBe(27);
         const elemental = generator.scene.add.mock.calls[2];
@@ -442,13 +442,16 @@ describe('WorldGenerator shadow setup', () => {
         const streets = generator.scene.add.mock.calls[7][0];
         expect(streets.name).toBe('Lanternhold planted street edges');
         expect(streets.userData.walkFootprints).toHaveLength(4);
-        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(23 + worldSolids + 13 + 4);
+        expect(generator.collisionManager.addCollider).toHaveBeenCalledTimes(22 + worldSolids + 13 + 4);
         const doorCollider = generator.collisionManager.addCollider.mock.calls[worldSolids][0];
         expect(doorCollider.getCenter(new THREE.Vector3()).toArray()).toEqual([0, 2.4, -21.65]);
         expect(doorCollider.getSize(new THREE.Vector3()).toArray()).toEqual([5, 4.8, 0.5]);
         expect(doorCollider.containsPoint(new THREE.Vector3(0, 1, -21.65))).toBe(true);
         expect(doorCollider.containsPoint(new THREE.Vector3(0, 1, -19))).toBe(false);
-        expect(generator.collisionManager.addOrientedCollider).not.toHaveBeenCalled();
+        expect(generator.collisionManager.addOrientedCollider).toHaveBeenCalledTimes(1);
+        const smithy = generator.collisionManager.addOrientedCollider.mock.calls[0][0];
+        expect(smithy.box.getSize(new THREE.Vector3()).toArray()).toEqual([11.8, 32, 10.2]);
+        expect(new THREE.Vector3().setFromMatrixPosition(smithy.matrix).toArray()).toEqual([-30, -0.5, 0]);
         const structures = generator.scene.add.mock.calls.slice(3).map(([object]) => object);
         expect(structures.slice(0, 3).map((structure) => structure.userData.structureId)).toEqual([
             'casino',
