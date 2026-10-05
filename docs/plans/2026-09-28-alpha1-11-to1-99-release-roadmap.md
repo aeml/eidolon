@@ -1913,6 +1913,16 @@ rejections. Focused negative tests pass; this is not an actual target-cohort pas
 or a general ordering fence.1.74.3 is separately pushed with casino performance
 notes and version, monitored by Luna; these later guards are not in that release.
 
+October5: one bounded target100 comparison with the corrected driver still
+fails one generic blackjack rejection and three read failures; some clients
+stop around60s, below the original sustained-delivery gate, and party impact
+also fails. No all-account save or capacity acceptance is claimed. The fixture
+is removed, compatible server/root binaries and earlier earned checks reused.
+No unchanged replay is planned. A narrow1.74.4 interface-only assembly passes
+all435 focused card/controller/version checks with cumulative notes; publication
+waits for prior1.74.3 terminal/public acceptance. Neither maintenance patch
+substitutes for the ordered policy, operations or broader1.79 milestones.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves
