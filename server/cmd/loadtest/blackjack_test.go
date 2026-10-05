@@ -188,6 +188,44 @@ func TestBlackjackLoadWaitsForOwnBetTurnAndPaidCompletion(t *testing.T) {
 	}
 }
 
+func TestBlackjackLoadDelayedLobbyCannotReplayFundedWager(t *testing.T) {
+	b := newBlackjackLoad(0, "player-synthetic-blackjack")
+	now := time.Unix(100, 0)
+	me := Entity{InstanceID: game.CasinoInstanceID, Health: 100}
+	requests := 0
+	request := func(payload map[string]interface{}) error {
+		if payload["action"] == "get" {
+			return nil
+		}
+		if payload["action"] != "bet" {
+			t.Fatal("unexpected money action")
+		}
+		requests++
+		return nil
+	}
+	b.receive(blackjackFixtureView(b, "betting", "", 0, false, false, false))
+	b.step(me, now, 20, time.Second, request, func(float64, float64) {})
+	b.receive(blackjackFixtureView(b, "playing", "player-synthetic-peer", 1, true, false, false))
+	if requests != 1 || b.pending != "" || b.counts().wagers != 1 {
+		t.Fatal("missing exact own wager acknowledgement")
+	}
+	// A lobby view has no round revision, so the same-hand revision guard
+	// cannot fence it. The owner already knows this wager was accepted.
+	b.receive(blackjackFixtureView(b, "betting", "", 0, false, false, false))
+	b.step(me, now.Add(4*time.Second), 20, time.Second, request, func(float64, float64) {})
+	if requests != 1 || b.pending != "" || b.counts().failed {
+		t.Fatal("delayed lobby replayed an already funded wager")
+	}
+	// A fresh round still requires an ordinary explicit wager; no paid result
+	// or current hand completion is invented by suppressing the stale request.
+	fresh := strings.ReplaceAll(string(blackjackFixtureView(b, "betting", "", 0, false, false, false)), strings.Repeat("a", 32), strings.Repeat("b", 32))
+	b.receive(json.RawMessage(fresh))
+	b.step(me, now.Add(8*time.Second), 20, time.Second, request, func(float64, float64) {})
+	if requests != 2 || b.pending != "bet" || b.counts().rounds != 0 {
+		t.Fatal("fresh wager refused or paid completion invented")
+	}
+}
+
 func TestBlackjackLoadDelayedViewCannotReplayFinishedHand(t *testing.T) {
 	b := newBlackjackLoad(0, "player-synthetic-blackjack")
 	now := time.Unix(100, 0)

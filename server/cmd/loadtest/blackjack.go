@@ -167,6 +167,12 @@ func (j *blackjackLoad) step(b *casinoLoad, now time.Time, bet int, request func
 		return
 	}
 	if v.Phase == "betting" {
+		// Lobby snapshots have no round revision. Once our exact wager has
+		// been acknowledged, an older empty lobby must not submit it again.
+		// A different round still needs its own normal explicit wager.
+		if v.RoundID == j.fundedRound && b.view.YourSeat.SessionID == j.fundedSession {
+			return
+		}
 		for _, p := range v.Players {
 			if p.PlayerID == j.playerID {
 				return

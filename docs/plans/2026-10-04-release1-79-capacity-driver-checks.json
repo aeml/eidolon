@@ -1009,6 +1009,16 @@
     "independentSaveProof": "After normal server shutdown, each prepared Fighter/Cleric/Rogue/Wizard level35 class has fresh LastLogout and empty InstanceID after actual town exit, positive saved progression, starting Gold preserved plus normal earned Gold, unchanged class/equipment/EP43 and exact initial protected bag item preserved. No in-run item/HP/mana/clock grants or fabricated completion. Prepared access/position/gear are fixtures, not an earned level35 journey.",
     "limits": "One earned naturally scheduled four-class Root event/champion/completion/town-exit/save, not all realms,100-player/headroom, full healer/telegraph balance, public Internet/renderer, restart replay or human pacing. Healing deliveries are not unique casts; XP updates/observed target deaths are not unique attributed event kills and do not exclude incidental kill XP. Recovery totals do not distinguish living Recall from death Respawn. Peak includes all processes/Mongo/tmpfs, not game heap. Default mixed/combined/nightly unchanged; finished raid/dungeon/casino evidence not rerun."
   },
+  "blackjackAcknowledgedWagerReplayFence": {
+    "finding": "The ready-round revision guard does not cover lobby snapshots, which have no round revision. After exact own wager acknowledgement, an older same-hand empty lobby caused the bot to submit that wager again. This is independently reproduced, not established as the latest generic rejection's cause.",
+    "reproduction": "First test attempt omitted the casino scene and failed its admission precondition; corrected scene/read-only-get fixture then failed0.010s at the intended assertion: delayed lobby replayed an already funded wager.",
+    "change": "In the bot only, suppress a bet when both round identity and private seat session match the already acknowledged own funded wager. Normal idle read-only refresh remains. A different round requires another ordinary explicit wager; no paid completion, missing receipt, history or currency value is invented. No production server/UI change, ambiguous request retry or lowered gate.",
+    "checks": "Focused blackjack, closed rejection and timeout race tests passed4.308s, including normal loopback wager/stand/paid result/shutdown, delayed ready/lobby regressions, schema/ownership negative fences and fresh-round wager boundary. gofmt/diff check passed. No actual cohort replay after this fix.",
+    "sha256": {
+      "server/cmd/loadtest/blackjack.go": "abb4425b5e026840595b0604b8007382f4cdff307dd0716be212f11d257ef4bf",
+      "server/cmd/loadtest/blackjack_test.go": "5cf6fc14c464becd9bdc4e1140f8939d588ccbc6d9ef182567582892f58e7995"
+    }
+  },
   "combined100CardReadyGuardActualRun": {
     "statusAtObservation": "TERMINAL_FAIL_FIXTURE_REMOVED",
     "sourceCommit": "0b1398f6",

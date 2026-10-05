@@ -1923,6 +1923,12 @@ all435 focused card/controller/version checks with cumulative notes; publication
 waits for prior1.74.3 terminal/public acceptance. Neither maintenance patch
 substitutes for the ordered policy, operations or broader1.79 milestones.
 
+A further bot-only fixture reproduces an old empty betting-lobby replay after
+the exact own wager was acknowledged; lobby snapshots have no round revision.
+The driver now refuses that already-funded same-round/private-seat wager while
+allowing the next fresh round and keeping paid-result gates. Focused race checks
+pass; no new target replay or production fix is inferred from this evidence.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves
