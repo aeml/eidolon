@@ -6,6 +6,10 @@ layouts pass. Its own CI, exact public bytes and retained-history recheck are
 pending. Only the narrow maintenance branch was published; this future candidate
 has ordinarily merged it without publishing schema24/privacy/ops/capacity code.
 See [bounded maintenance checks](docs/plans/2026-10-05-release1-74-7-checks.json).
+Merged maintenance source preserves future frame-context/phase diagnostics:
+focused jump/restored town/context race checks pass2.054s and actual blocked
+broadcast/frame-signals race check passes1.488s. No100-player replay, deployment
+of this future branch or new capacity acceptance is inferred.
 
 **Current checkpoint (October5):** Alpha1.74.6 is now accepted live at
 1c47e16a7247991f77a20607381fbbf910c190cd. Luna confirms CI37256836401 terminal
