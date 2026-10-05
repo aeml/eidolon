@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.74.4';
+const currentVersion = '1.74.5';
+
+test('1.74.5 explains due keepalive scheduling without changing connection guards', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.74.5"'), previous = html.indexOf('data-version="1.74.4"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['keepalives', 'queued control traffic', 'already-due ping',
+        'Control messages still take precedence', 'single WebSocket writer', 'idle limits',
+        'frame guards', 'access checks are unchanged', 'No account wipe', 'schema migration',
+        'unfinished 1.75–1.79', '100-player capacity', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.74.4 explains same-hand ready-view ordering without changing wager authority', () => {
     const html = fs.readFileSync('index.html', 'utf8');

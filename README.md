@@ -420,13 +420,15 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.4`. Narrow Sell All/error, real-player
+- Current source version: `Alpha 1.74.5`. Narrow Sell All/error, real-player
   administration and casino performance maintenance releases have been ordinarily
   merged from master. 1.74.3's exact all-ten-job CI37244170015 and independent
   public frontend/backend/login/notes proof passed at8b7ab8dd. Interface-only
   1.74.4 is accepted at9560ac60: all ten CI37246677139 jobs succeed and independent
   public identities/readiness/login/notes and exact changed runtime bytes match.
-  Its435 focused checks pass. This isolated, unpublished
+  Its435 focused checks pass. Native keepalive maintenance1.74.5 is pushed
+  asba5983bb with CI37250096379 monitored by Luna, not yet live-accepted.
+  This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
