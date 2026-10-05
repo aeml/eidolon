@@ -1,0 +1,12 @@
+{
+  "status": "PREPARED_FOCUSED_CHECKS_PASSED_NOT_DEPLOYED",
+  "finding": "The writer's initial nonblocking priority receive continued the loop whenever control was queued. A due ping was only considered in the lower select, so a sustained priority backlog could delay it beyond the60s read-idle window. Latest target100 had three read failures around60s, but those exact reasons are not observed; this is a separate reproduced scheduler defect, not causal proof.",
+  "reproduction": "Extracted the unchanged production writer with an injected tick channel; production retains the original54s ticker. Actual local WebSocket fixture queues eight control messages and state plus an already-due tick. Before correction TestWritePumpDueKeepalivePrecedesQueuedPriorityTraffic failed0.012s because a control message preceded the due ping. No real-time54s wait or whole load repeat needed.",
+  "change": "The same single writer checks an already-due ping before draining priority traffic. Control retains precedence over state. Existing ping period, write deadline, read-idle/assembly/security guards and access-denial flush remain unchanged. No extra writer, new goroutine/queue, relaxed ingress limit, idle deadline reset or gameplay/economy change. This does not implement general state-queue fairness.",
+  "checks": "Initial corrected focused race run exposed a fixture teardown bug: a hijacked idle writer could outlive peer closure; result failed2.782s. Fixture now explicitly closes client queues and joins handler before cleanup. Both socket ordering cases passed five repeats/race1.078s. Final exact source broader focused writer/client queues/player binding/snapshot reset/idle deadline/fragment keepalive/frame guard race suite passed1.750s. gofmt and diff checks passed. These short real-wire scheduling checks do not establish production traffic capacity or resolve the recorded target100 read errors.",
+  "sha256": {
+    "server/network.go": "192f88dab937b7f76bfe1717148df5179deb4d59fab5de303fc51d2e8b1098cf",
+    "server/write_pump_keepalive_test.go": "c7a88bd2988537fb7aa4703b3d11477014295db316d161e596fd35297bf47bc6"
+  },
+  "publication": "Prepared only; excluded from1.74.4 card-interface maintenance. Requires exact narrow assembly/version/notes, terminal CI and public acceptance if published independently. Do not claim it fixes the separately diagnosed world-map mutation incident."
+}

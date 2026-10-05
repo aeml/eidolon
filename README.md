@@ -422,8 +422,8 @@ Notes:
 
 - Current source version: `Alpha 1.74.3`. Narrow Sell All/error, real-player
   administration and casino performance maintenance releases have been ordinarily
-  merged from master. 1.74.2's exact CI/public proof passed; 1.74.3 is pushed as
-  8b7ab8dd with CI37244170015 running, not accepted. This isolated, unpublished
+  merged from master. 1.74.3's exact all-ten-job CI37244170015 and independent
+  public frontend/backend/login/notes proof passed at8b7ab8dd. This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
@@ -503,8 +503,11 @@ Notes:
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.74.2`, exact
-  c0ea6ec48b13eb4fa2a077875639a3f5ebe8ff16, successful CI37235677126 (all ten jobs).
+- Last independently verified live release: `Alpha 1.74.3`, exact
+  8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0, successful CI37244170015 (all ten jobs).
+  [Casino performance acceptance](docs/plans/2026-10-04-release1-74-3-casino-checks.json)
+  records independent public IPv4 identities/database readiness/login/notes;
+  it does not certify prepared future code or100-player capacity.
   [Admin acceptance](docs/plans/2026-10-04-admin-real-player-checks.json) retains
   public frontend/backend identities, database readiness and publisher-rewritten
   AdminUI byte checks. No private production history or administrator mutation

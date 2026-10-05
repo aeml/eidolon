@@ -1929,6 +1929,16 @@ The driver now refuses that already-funded same-round/private-seat wager while
 allowing the next fresh round and keeping paid-result gates. Focused race checks
 pass; no new target replay or production fix is inferred from this evidence.
 
+An independent short real-WebSocket fixture now reproduces a due keepalive being
+deferred by queued priority traffic. Prepared single-writer scheduling serves
+due pings before draining that queue; existing54s/60s liveness and ingress guards
+are unchanged, and control still precedes state. Focused race checks pass after
+joining the hijacked writer during fixture cleanup. This is not proof of the
+three observed target100 read failures' causes or general state fairness.
+Exact1.74.3 CI/public identities/readiness/login/notes are independently accepted;
+1.74.4 interface-only commit9560ac60 is pushed, CI37246677139 monitored by Luna.
+The keepalive and bot wager replay corrections are not in that release.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves

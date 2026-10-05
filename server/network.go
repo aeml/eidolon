@@ -381,8 +381,14 @@ func decodeInboundMessage(frame []byte) (Message, error) {
 
 func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
+	defer ticker.Stop()
+	c.writePumpWithTicks(ticker.C)
+}
+
+// The production writer owns both data and keepalive frames. A supplied tick
+// channel lets bounded socket checks exercise its scheduling without a54s wait.
+func (c *Client) writePumpWithTicks(pings <-chan time.Time) {
 	defer func() {
-		ticker.Stop()
 		c.conn.Close()
 		c.finishConnectionWork()
 	}()
@@ -412,9 +418,23 @@ func (c *Client) writePump() {
 		return nil
 	}
 
+	writePing := func() error {
+		c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+		return c.conn.WriteMessage(websocket.PingMessage, nil)
+	}
+
 	for {
-		// Give already-queued control traffic strict precedence without
-		// preventing state or ping progress when the priority lane is empty.
+		// Keepalives have their own deadline: an always-ready priority queue
+		// must not defer the ping past the reader's idle timeout. Only the
+		// existing writer emits it; control still precedes queued state.
+		select {
+		case <-pings:
+			if writePing() != nil {
+				return
+			}
+		default:
+		}
+		// Give already-queued control traffic precedence over state.
 		select {
 		case message, ok := <-c.prioritySend:
 			if !ok || writeMessage(message) != nil {
@@ -437,9 +457,8 @@ func (c *Client) writePump() {
 			if writeMessage(message) != nil {
 				return
 			}
-		case <-ticker.C:
-			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+		case <-pings:
+			if writePing() != nil {
 				return
 			}
 		}

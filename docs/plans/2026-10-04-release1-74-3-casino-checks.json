@@ -1,6 +1,6 @@
 {
   "release": "Alpha 1.74.3",
-  "status": "LOCAL_CHECKS_PASSED_PUBLICATION_PENDING",
+  "status": "LOCAL_CHECKS_TERMINAL_CI_AND_PUBLIC_IDENTITY_ACCEPTED",
   "scope": "Narrow maintenance from freshly fetched origin/master c0ea6ec48b13eb4fa2a077875639a3f5ebe8ff16. Carry only casino handler notification/view code, immutable indexed furniture catalogue, focused tests and release metadata/notes. Preserve schema22, website changes, accounts, administrator activity, settlement rules, wagers, payouts, currencies, admission limits and open-alpha access. Exclude prepared schema23–24, privacy/operations/capacity services and all load-driver changes.",
   "finding": "Every successful action rebuilt every casino player's view; each view also acquired unrelated game-family settlement mutexes. One ID lookup rebuilt every table/machine. Scoped actor-first/table-peer responses, seated-game-only views and detached indexed catalogue remove confirmed unnecessary dependencies/work without replacing valuable-operation authority.",
   "checks": {
@@ -16,5 +16,6 @@
     "server/internal/game/casino_catalog_test.go": "c3dd51cfd752d7080120c8cd24410adf71133a012b488bdf3be924951e03aeb7",
     "server/internal/game/casino_catalog_benchmark_test.go": "b07825185ecbf1e0820e8767b946295b2475541b72b5ffe8daa7e9aa3aadf9dd"
   },
-  "publication": "Not accepted until exact-source CI/deployment terminal success and public frontend/backend identity/readiness/notes checks. Use Luna for deployment monitoring, not root tick-by-tick polling. No fresh campaign/soak replay. Broader roadmap stays active; privacy/ops owner decisions and remaining encounter/capacity gates are not waived."
+  "publication": "Narrow1.74.3 pushed as8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0. Exact CI37244170015 completed success with all ten jobs successful. Root independently rechecked terminal SHA/conclusions, public IPv4 frontend release.json and backend healthz identities and database readiness on2026-10-05; login label and1.74.3 performance notes are served. No real-player/private/admin mutation used. Publication acceptance is limited to exact narrow schema22 maintenance, not prepared future drivers/services or100-player capacity. Broader roadmap stays active.",
+  "skippedCIScopes": ["Run deterministic High/Low animation gallery", "Run required Well Rested rendering and GPU lifecycle QA", "Run disposable full-character gameplay", "Run live four-class and remote-animation QA"]
 }
