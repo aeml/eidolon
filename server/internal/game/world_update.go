@@ -100,7 +100,7 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 				}
 			}()
 			for e := range entityChan {
-				w.updateEntity(e, dt, players, deferred)
+				w.updateEntity(e, dt, players, deferred, restNow)
 			}
 		}()
 	}

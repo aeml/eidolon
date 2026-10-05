@@ -135,6 +135,7 @@ func resetSceneMovementLocked(player *Entity) {
 	player.JumpStartX, player.JumpStartY, player.JumpStartZ = player.X, 0, player.Z
 	player.JumpTargetX, player.JumpTargetY, player.JumpTargetZ = player.X, 0, player.Z
 	player.JumpDuration, player.JumpElapsed, player.JumpHeight, player.JumpProgress = 0, 0, 0, 0
+	player.jumpStartedAt = time.Time{}
 	player.LastRespawnTime = time.Now() // Existing move admission rejects old-context samples for one second.
 	player.MoveLockUntil = time.Now().Add(AbilityMovementLockDuration)
 }

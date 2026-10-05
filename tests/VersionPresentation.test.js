@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.74.6';
+const currentVersion = '1.74.7';
+
+test('1.74.7 documents aligned town services, bounded real-time jumps and retained activity', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.74.7"'), previous = html.indexOf('data-version="1.74.6"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['stash', 'quest-giver smithy', 'Forge', 'facing east', 'planter',
+        'three seconds', 'short hops', 'elapsed time', 'landing constraints', 'Admin activity',
+        'persistent MongoDB', '90-day', 'updates do not reset history', 'No account wipe',
+        'schema migration', 'unfinished 1.75–1.79', '100-player capacity', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.74.6 explains cross-hand persistent table ordering without changing wagering', () => {
     const html = fs.readFileSync('index.html', 'utf8');

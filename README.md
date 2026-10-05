@@ -420,7 +420,11 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.6`. Narrow persistent cross-hand table
+- Current source version: `Alpha 1.74.7`. Narrow stash/jump/activity persistence
+  maintenance is pushed as50f7749e, with scoped race/controller/geometry/version
+  checks and three connected stash browser layouts passing. Own deployment and
+  public/retained-history verification are pending. Future preparation below
+  remains unpublished. Narrow persistent cross-hand table
   ordering is accepted live at1c47e16a: CI37256836401 all ten jobs succeed and
   subsequent independent public IPv4 identities/readiness/login/retained notes
   and all four changed runtime bytes match.486 focused client/version checks, exact narrow

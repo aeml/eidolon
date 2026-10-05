@@ -1,6 +1,19 @@
 package game
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
+
+func TestStashFacesEastBetweenSmithyAndForge(t *testing.T) {
+	w := NewWorld(nil)
+	defer w.StopBackground()
+	stash, forge, quest := w.GetEntityCopy("stash-1"), w.GetEntityCopy("forge-1"), w.GetEntityCopy("quest-npc-1")
+	if stash == nil || forge == nil || quest == nil || stash.X != forge.X || stash.Z <= quest.Z || stash.Z >= forge.Z ||
+		stash.Rotation != math.Pi/2 || stash.Rotation != forge.Rotation || stash.Rotation != quest.Rotation {
+		t.Fatal("stash is not between the western services facing their east-side lane")
+	}
+}
 
 func TestQuestGiverSpawnsOutsideSmithyDoor(t *testing.T) {
 	w := NewWorld(nil)

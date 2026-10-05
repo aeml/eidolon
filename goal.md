@@ -1,5 +1,12 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Maintenance publication:** Alpha1.74.7 is pushed at50f7749e2698082ccf79014258dee36dddf95dfd.
+Stash/jump/activity durability checks and all three connected stash browser
+layouts pass. Its own CI, exact public bytes and retained-history recheck are
+pending. Only the narrow maintenance branch was published; this future candidate
+has ordinarily merged it without publishing schema24/privacy/ops/capacity code.
+See [bounded maintenance checks](docs/plans/2026-10-05-release1-74-7-checks.json).
+
 **Current checkpoint (October5):** Alpha1.74.6 is now accepted live at
 1c47e16a7247991f77a20607381fbbf910c190cd. Luna confirms CI37256836401 terminal
 success/all ten jobs; root's subsequent exact public IPv4 verification passes

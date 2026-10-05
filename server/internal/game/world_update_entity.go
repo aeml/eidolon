@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred *deferredActions) {
+func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred *deferredActions, frameTimes ...time.Time) {
 	// --- Loot Cleanup ---
 	if e.Type == TypeLoot {
 		e.Mu.Lock()
@@ -896,7 +896,13 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			if jumpDuration <= 0 {
 				jumpDuration = 0.35
 			}
-			e.JumpElapsed = math.Min(jumpDuration, e.JumpElapsed+dt)
+			elapsed := e.JumpElapsed + dt
+			if len(frameTimes) > 0 && !frameTimes[0].IsZero() && !e.jumpStartedAt.IsZero() {
+				// Live flight uses elapsed monotonic time, not the number of
+				// simulation frames. A delayed/older frame cannot rewind it.
+				elapsed = math.Max(e.JumpElapsed, frameTimes[0].Sub(e.jumpStartedAt).Seconds())
+			}
+			e.JumpElapsed = math.Min(jumpDuration, elapsed)
 			progress := e.JumpElapsed / jumpDuration
 			if progress < 0 {
 				progress = 0
@@ -917,6 +923,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 				e.Y = e.JumpTargetY
 				e.Z = e.JumpTargetZ
 				e.State = "IDLE"
+				e.jumpStartedAt = time.Time{}
 				w.Grid.Update(e, oldX, oldZ)
 				e.Mu.Unlock()
 				return

@@ -12,9 +12,9 @@ installGameEngineEntitySync(InteractionFixture);
 
 describe('current town building footprints', () => {
     test('entity synchronization preserves authoritative stash placement', () => {
-        const stash = { id: 'stash-1', x: -16, y: 0.5, z: 193 };
+        const stash = { id: 'stash-1', x: -28, y: 0.5, z: 210, rotation: Math.PI / 2 };
         new InteractionFixture().applyPositionHacks(stash);
-        expect(stash).toEqual({ id: 'stash-1', x: -16, y: 0.5, z: 193 });
+        expect(stash).toEqual({ id: 'stash-1', x: -28, y: 0.5, z: 210, rotation: Math.PI / 2 });
     });
     test.each([false, true])('forge hearth blocks walking but leaves its interaction edge reachable by a full-size hero (batched %s)', optimized => {
         const forge = createProceduralLanternholdStructure('forge', { optimized });
@@ -64,13 +64,16 @@ describe('current town building footprints', () => {
         const trading = createProceduralLanternholdStructure('trading_house');
         trading.position.set(-22, .5, 185); trading.rotation.y = Math.PI / 4;
         manager.addOrientedCollider(getLanternholdWalkCollider(trading));
-        // A circle enclosing the entire coffer footprint fits between buildings.
-        expect(manager.checkCollision(new THREE.Vector3(-16, 0, 193), 2.2)).toBeNull();
+        const forge = createProceduralLanternholdStructure('forge');
+        forge.position.set(-28, .5, 218); forge.rotation.y = Math.PI / 2;
+        manager.addOrientedCollider(getLanternholdWalkCollider(forge));
+        // The coffer fits between smithy and forge and faces their eastern lane.
+        expect(manager.checkCollision(new THREE.Vector3(-28, 0, 210), 2.2)).toBeNull();
         const stash = createProceduralLanternholdStructure('stash');
-        stash.position.set(-16, 0.5, 193);
+        stash.position.set(-28, 0.5, 210); stash.rotation.y = Math.PI / 2;
         manager.addOrientedCollider(getLanternholdWalkCollider(stash));
         expect(manager.checkCollision(new THREE.Vector3(0, 0, 180.5), 0.5)).toBeNull();
-        expect(manager.checkCollision(new THREE.Vector3(-16, 0, 193), 1.25)).not.toBeNull();
+        expect(manager.checkCollision(new THREE.Vector3(-28, 0, 210), 1.25)).not.toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(-16, 0, 197), 1.25)).toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(-10, 0, 193), 1.25)).toBeNull();
         expect(manager.checkCollision(new THREE.Vector3(-8, 0, 185), 1.25)).toBeNull();
@@ -78,8 +81,8 @@ describe('current town building footprints', () => {
         manager.addCircularCollider(-20, 200, 1.25);
         const path = (from, to) => Array.from({ length: 101 }, (_, i) =>
             new THREE.Vector3(...from).lerp(new THREE.Vector3(...to), i / 100));
-        const approach = [-12, 0, 195];
-        expect(Math.hypot(approach[0] + 16, approach[2] - 193)).toBeLessThan(5);
+        const approach = [-24, 0, 210];
+        expect(Math.hypot(approach[0] + 28, approach[2] - 210)).toBeLessThan(5);
         for (const start of [[-1.25, 0, 200], [-8, 0, 197]]) for (const p of path(start, approach)) {
             expect(manager.checkCollision(p, 1.25)).toBeNull();
         }
