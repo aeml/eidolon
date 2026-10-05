@@ -24,7 +24,7 @@ for (const mode of ['desktop', 'portrait', 'landscape']) {
             await expect.poll(() => page.evaluate(() => window.game.remotePlayers.has('stash-1'))).toBe(true);
             // On phones, ordinary joystick travel brings the west-side coffer
             // on screen. Leave enough distance to exercise tap-to-approach.
-            if (phone) await walkChronicleByTouch(page, page.context(), -8, 197, 20_000);
+            if (phone) await walkChronicleByTouch(page, page.context(), -18, 210, 20_000);
             let target;
             await expect.poll(async () => {
                 await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));

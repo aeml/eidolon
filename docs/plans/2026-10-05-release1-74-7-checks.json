@@ -21,6 +21,7 @@
       "privacy": "Aggregate count and mount types only; no account contents, credentials or raw logs exported"
     }
   },
-  "pending": ["Isolated connected stash approach browser route", "Own CI and exact public release/runtime verification", "Recheck retained aggregate after deployment"],
+  "browserFirstAttempt": "Desktop passed; both phone layouts stopped before interaction because the old stash waypoint no longer put the relocated stash on screen. Update normal joystick waypoint to (-18,210), still outside interaction range; no visibility or interaction assertion relaxed.",
+  "pending": ["Corrected isolated connected stash approach browser route", "Own CI and exact public release/runtime verification", "Recheck retained aggregate after deployment"],
   "limits": ["Default admin activity retention stays 90 days, not forever", "No full campaign or unchanged 100-player replay", "No real-phone or full future-roadmap acceptance claim"]
 }
