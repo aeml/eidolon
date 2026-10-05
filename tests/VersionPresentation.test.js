@@ -11,7 +11,8 @@ test('1.74.5 explains due keepalive scheduling without changing connection guard
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['keepalives', 'queued control traffic', 'already-due ping',
         'Control messages still take precedence', 'single WebSocket writer', 'idle limits',
-        'frame guards', 'access checks are unchanged', 'No account wipe', 'schema migration',
+        'frame guards', 'access checks are unchanged', 'one in-flight pickup request',
+        'Inventory confirmation remains authoritative', 'existing retry deadline', 'No account wipe', 'schema migration',
         'unfinished 1.75–1.79', '100-player capacity', 'Full prior patch history']) {
         expect(html.slice(start, previous)).toContain(text);
     }

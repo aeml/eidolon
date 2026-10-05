@@ -183,7 +183,7 @@ describe('GameEngine loot pickup feedback', () => {
         expect(engine.remotePlayers.has(loot.id)).toBe(false);
     });
 
-    test('a pickup without server confirmation remains retryable and does not create a ghost item', () => {
+    test('unconfirmed pickup is single-flight and becomes retryable only after its deadline', () => {
         const engine = createEngineHarness();
         const loot = createLootEntity({ id: 'loot-retry' });
         engine.remotePlayers.set(loot.id, loot);
@@ -192,10 +192,29 @@ describe('GameEngine loot pickup feedback', () => {
         engine.pickupLoot(loot.id);
         engine.pickupLoot(loot.id);
 
-        expect(engine.network.send).toHaveBeenCalledTimes(2);
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
         expect(engine.remotePlayers.has(loot.id)).toBe(true);
         expect(engine.player.inventory.filter(Boolean)).toHaveLength(0);
         expect(engine.pendingLootPickups.has(loot.id)).toBe(true);
+        jest.advanceTimersByTime(engine.pendingLootPickupTimeout);
+        expect(engine.pendingLootPickups.has(loot.id)).toBe(false);
+        expect(engine.pickupLoot(loot.id)).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledTimes(2);
+        expect(engine.player.inventory.filter(Boolean)).toHaveLength(0);
+    });
+
+    test('world removal before inventory confirmation cannot resend the consumed loot request', () => {
+        const engine = createEngineHarness(), loot = createLootEntity();
+        engine.remotePlayers.set(loot.id, loot);
+        engine.pickupLoot(loot.id);
+        engine.remotePlayers.delete(loot.id);
+        expect(engine.pickupLoot(loot.id)).toBe(true);
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
+        expect(engine.uiManager.showLootPickupToast).not.toHaveBeenCalled();
+        engine.confirmPendingLootPickups([loot.item]);
+        engine.remotePlayers.set(loot.id, loot); // A delayed world frame cannot reopen confirmed loot.
+        expect(engine.pickupLoot(loot.id)).toBe(false);
+        expect(engine.network.send).toHaveBeenCalledTimes(1);
     });
 
     test('retired pickup deadline cannot delete a replacement scene request for the same ID', () => {

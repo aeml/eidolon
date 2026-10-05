@@ -503,6 +503,11 @@ class GameEngineEntitySyncMethods {
     }
 
     pickupLoot(lootId) {
+        // An accepted pickup can remove world loot before its inventory packet
+        // arrives. Keep one in-flight request for that pile instead of sending
+        // another request for loot the server has already consumed.
+        if (this.recentlyPickedUpLoot?.has(lootId)) return false;
+        if (this.pendingLootPickups.has(lootId)) return true;
         const entity = this.remotePlayers.get(lootId);
 
         const isEmptyInventorySlot = (slot) => !slot || !slot.id;
@@ -573,9 +578,9 @@ class GameEngineEntitySyncMethods {
             this.pendingLootPickups.set(lootId, pending);
         }
 
-        // Keep the item and inventory unchanged until the server's inventory
-        // response confirms success. The interaction loop can safely retry a
-        // request rejected because the authoritative player position lagged.
+        // Keep the item and inventory unchanged until authoritative inventory
+        // confirms success. An unconfirmed request becomes retryable after its
+        // existing pending deadline; repeated interaction ticks do not resend it.
         this.network.send('pickup', { lootId: lootId });
 
         return true;

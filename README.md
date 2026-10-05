@@ -423,7 +423,10 @@ Notes:
 - Current source version: `Alpha 1.74.5`. This narrow connection maintenance fix
   serves already-due keepalives before queued control traffic can defer them.
   A single writer retains control-before-state ordering and existing ping/idle,
-  frame and access guards. Existing card-table ordering, casino performance,
+  frame and access guards. Client loot requests are single-flight per pile until
+  authoritative inventory confirmation or the existing pending deadline; repeated
+  clicks cannot resend consumed loot while inventory delivery is in flight.
+  Existing card-table ordering, casino performance,
   real-player administration, selling/error fixes, accounts,
   currencies, permissions, retention and schema22 remain unchanged. Later
   schema23–24/privacy/operations/capacity candidates and load-test driver changes
