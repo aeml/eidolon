@@ -1,0 +1,34 @@
+{
+  "status": "TERMINAL_FAIL_FIXTURE_REMOVED",
+  "sourceCommit": "961f9900",
+  "launchObservedAtUTC": "2026-10-05T01:23:59Z",
+  "ownedContainer": "6eaa870fbaaaf89b3398a2c35fbe3909dfdaccd2b01b7178f5418bf1721e6474",
+  "taskLabel": "combined100-poker-response-179-20261005",
+  "parentSession": 57046,
+  "artifacts": {
+    "normalServer": "/tmp/eidolon-179-window-impact-7kNXbs/server",
+    "normalServerSHA256": "fae72654995e1a6ccc68c7475180b6925013046380a3b6dc718426d3cf42408f",
+    "raceRoot": "/tmp/eidolon-179-window-impact-7kNXbs/root.test",
+    "raceRootSHA256": "e9dfe7056e19e3af3118707262d0b95d8b7e5944149a9ff9a1604af7390ada76",
+    "normalDriver": "/tmp/eidolon-179-poker-response-NYxNV8/loadtest",
+    "normalDriverSHA256": "4dcd57014e4ff0cb89fc0c29ad08fed339ba6764330e01d4cb780d151cfb724a"
+  },
+  "scope": "Only driver poker turn responsiveness differs from prior target. git diff ae31e781..961f9900 server excludes cmd/loadtest clean; verified unchanged native server/race-root binaries reused. Same100 clients, six-seat poker distribution,120s workload/five-second admission and per-client own-state/paid/party-impact/save gates. Network-none Mongo7.0.14,2CPU/2GiB,tmpfs/cache bounds unchanged. Candidate schema24 is not exact narrow production capacity. No unchanged replay or campaign/raid repetition.",
+  "result": "FAIL219.86s/exit1. All100 admit/sustain own state; every poker client now observes paid completion, all slots paid, five parties minimum impact2/healing, transport/decode0. One blackjack and one house client receive fixed stale-category rejections, each cohort minimum paid0; driver fails and all-account independent saves are not reached. Owned child drains/exits within original stop bound.",
+  "metrics": {
+    "connected": 100, "joined": 100, "stateFrames": 103683,
+    "minFrames": 982, "minFreshOwnUpdates": 982, "minActiveMilliseconds": 119328,
+    "maxStateGapMilliseconds": 699, "receivedPayloadBytes": 1379856703,
+    "maxRegistrationMilliseconds": 0, "maxLoginMilliseconds": 710, "maxJoinMilliseconds": 876,
+    "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+    "slots": {"clients": 10, "paidResults": 279, "minimumPaidResults": 15, "bonuses": 8, "failed": 0},
+    "blackjack": {"clients": 20, "acceptedWagers": 45, "paidResults": 28, "minimumPaidResults": 0, "observedActions": 28, "failed": 1, "staleRejected": 1},
+    "house": {"clients": 20, "acceptedWagers": 56, "paidResults": 37, "minimumPaidResults": 0, "failed": 1, "staleRejected": 1},
+    "poker": {"clients": 10, "acceptedWagers": 28, "paidResults": 18, "minimumPaidResults": 1, "observedActions": 72, "failed": 0},
+    "parties": {"groups": 5, "formed": 5, "members": 20, "minOwnImpacts": 2, "damageEvents": 386, "healEvents": 11, "acceptedCasts": 655, "deniedCasts": 22, "xpProgressUpdates": 204, "observedDeaths": 229, "failed": 0},
+    "memoryPeakBytes": 765681664, "oomEvents": 0, "oomKills": 0, "dockerOOMKilled": false
+  },
+  "diagnostics": "All timeout/read categories0; two fixed stale rejection categories only. Not enough information to distinguish changed round, closed betting, wrong turn or expired decision. Do not invent exact reasons or causal correspondence to previous runs. Every fixed drain phase through complete reported and normal owned child termination observed; no forced-stop error.",
+  "cleanup": "Consumed definitive parent failure; verified only mongod remains plus exact task/network and peak/OOM. Stopped/removed exact owned fixture/synthetic database; filtered listing empty. Immutable binaries retained, private fixture logs/accounts removed. Production and owner worktree untouched.",
+  "remaining": "Diagnose remaining blackjack/house snapshot rejection boundaries before another target run. Acknowledged town/social outcomes, current finale/other rituals, representative integration/headroom, all-account independent saves/final settlement/restart and ordered1.75–1.78 plus own1.79 publication remain open. No100-player capacity or full1.99 completion."
+}

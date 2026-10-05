@@ -1987,6 +1987,22 @@ checks (race14.469s). No server timer, payout, table distribution,120s workload
 or completion threshold change. No further target replay yet; the prior actual
 minimum-paid failure is not retrospectively explained by these fixtures.
 
+The changed poker-response target100 comparison (961f9900) fails219.86s: all
+poker clients now observe a paid hand, all100 sustain own updates, five parties
+minimum impact2/healing and transport/decode/timeout counters0. One blackjack
+and one house client each get a fixed stale rejection, so their minima remain0
+and all-account independent saves are not reached. Unchanged server/root binaries
+are verified/reused; original cohort/duration/table distribution/gates retained.
+Normal drain succeeds, exact synthetic fixture removed, peak765681664bytes/OOM0.
+No capacity acceptance or exact stale cause inferred; the next check must
+diagnose ordering/rejection boundaries rather than replay unchanged code.
+Native keepalive1.74.5 initial CI37250096379 fails predeploy combat/loot on a
+duplicate-consumed-loot error; no deployment runs. An independent short client
+fixture reproduces pending pickup resends and world removal before inventory
+confirmation. Narrow corrected candidate5201c567 is single-flight per loot pile
+with the original deadline, no optimistic item grant;408 affected checks pass.
+Focused disposable release route and exact terminal/public proof remain required.
+
 October4: dungeon-workload preparation uncovered a **bot-only recovery gap**:
 the old driver sent the existing movement context for Respawn, but normal game
 authority requires a fresh nonce. The driver now follows that rule, stops moves
