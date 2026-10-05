@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.74.5</span>
+                    <span class="start-version-row__label">Alpha 1.74.6</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -774,6 +774,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.74.6">
+                    <h3 class="patch-note-entry__title">Alpha 1.74.6 (persistent casino table timelines)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Blackjack, Hold'em, roulette and baccarat keep the newer ready table view when an older lobby or previous hand arrives late. Ordering now follows the table's persistent version across hand transitions, not just the current hand's revision.</li>
+                        <li>Shared seats and occupants still refresh. Changed ownership, tables, currencies, unavailable or saving feedback, and equal or newer views retain their normal behavior. Exact decimal-string versions avoid rounding large counters.</li>
+                        <li>Wager authority, payouts, timers and currencies are unchanged. No account wipe, schema migration, access change or payment feature is included. Earlier connection, loot, real-player administration and selling fixes remain included.</li>
+                        <li>This targeted correction does not certify 100-player capacity or complete unfinished 1.75–1.79 milestones. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.74.5">
                     <h3 class="patch-note-entry__title">Alpha 1.74.5 (connection and loot-request scheduling)</h3>
                     <ul class="patch-note-entry__list">
