@@ -20,7 +20,7 @@ test('same notice is idempotent and explains existing providers, retention, limi
     document.body.innerHTML = '<div data-eidolon-data-notice></div><div data-eidolon-data-notice></div>';
     mountDataPrivacyNotices();const first=document.querySelector('details');first.open=true;mountDataPrivacyNotices();
     expect(document.querySelectorAll('.data-privacy-notice')).toHaveLength(2);expect(document.querySelector('details')).toBe(first);expect(first.open).toBe(true);
-    for(const phrase of ['Google Analytics','Postmark','7–365','90 days','no generic account-deletion timer','no automatic diagnostics','current password','Prepare and Save','do not claim complete account exports','separately authorized removal','not active-play or AFK','Menu → Report Bug / Feature'])expect(first.textContent.toLowerCase()).toContain(phrase.toLowerCase());
+    for(const phrase of ['Google Analytics','Postmark','7–365','90 days','no generic account-deletion timer','no automatic diagnostics','current password','Prepare and Save','do not claim complete account exports','separately authorized removal','not active-play or AFK','Menu → Report Bug / Feature','not past overwritten rounds','other players’ cards'])expect(first.textContent.toLowerCase()).toContain(phrase.toLowerCase());
     expect(first.textContent).toBe(document.querySelectorAll('details')[1].textContent);
 });
 test('login, settings and private report surfaces keep source fallbacks and share the mounted notice', () => {

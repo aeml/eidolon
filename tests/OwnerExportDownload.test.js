@@ -109,3 +109,14 @@ test.each([['trades','eidolon-owner-direct-trade-offers'],['bank','eidolon-owner
     submit();ui.handleResult({...response(),data:{format,version:1,entries:[],next:'a'.repeat(64)}});expect(ui.prepared).not.toBeNull();
     ui.section.value='reports';ui.section.dispatchEvent(new Event('change'));expect(ui.before.value).toBe('');expect(ui.prepared).toBeNull();expect(ui.next.hidden).toBe(true);
 });
+
+test('casino uses known logical references, manual Save/next and no arbitrary or non-decreasing cursors',()=>{
+    ui.section.value='casino';ui.section.dispatchEvent(new Event('change'));
+    for(const cursor of ['public-poker-water','vip-roulette-air','slots:another:earth','a'.repeat(64)]){ui.before.value=cursor;submit();expect(send).not.toHaveBeenCalled();}
+    ui.before.value='';submit();
+    ui.handleResult({...response(),data:{format:'eidolon-owner-casino-records',version:1,entries:[{id:'vip-poker',own_participant:{seat:1,buyIn:100}}],next:'public-poker'}});
+    expect(ui.prepared).not.toBeNull();expect(ui.next.disabled).toBe(true);expect(URL.createObjectURL).not.toHaveBeenCalled();
+    ui.save.click();ui.next.click();expect(ui.before.value).toBe('public-poker');expect(send).toHaveBeenCalledTimes(1);
+    for(const next of ['vip-poker','public-poker','public-poker-water']){submit();ui.handleResult({...response(),data:{format:'eidolon-owner-casino-records',version:1,entries:[],next}});expect(ui.prepared).toBeNull();}
+    submit();ui.handleResult({...response(),data:{format:'eidolon-owner-casino-records',version:1,entries:[],next:'public-blackjack-water'}});expect(ui.prepared).not.toBeNull();
+});

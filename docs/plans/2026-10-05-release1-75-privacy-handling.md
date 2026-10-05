@@ -298,6 +298,43 @@ Eighteen sections are locally ready but unpublished; casino, coordinated reviewe
 removal/anti-resurrection, provider-policy and complete publication gates remain.
 See [economy checks](2026-10-05-release1-75-economy-checks.json).
 
+## Current casino section — local, unpublished
+
+`casino` adds the nineteenth section. Reads select exactly the current29 shared
+table keys (including retired funded blackjack) and8 owner/theme/currency slot
+keys, contract-tested against the actual game catalog and slot writers. Slots
+are stored per owner/theme/currency, not per physical cabinet. Only retained own
+participation/wagers, own round cards/hands/stakes/payout fields, slot entitlement
+and last-result summary, recorded owed/payment state and own pending transfer
+currency/amount are returned. Logical references reveal no hashed owner identity.
+
+Private pending next-state/transfer fields are projected away before driver
+decoding. Current binary state is privately parsed through bounded closed DTOs;
+the owner selector is decoded before own participant details. Other players'
+cards/wagers/names, dealer holes/decks/burns, hidden bonus offers, timeout/seat/
+session identities and private replay fields never enter the exported DTO.
+This is not a full history, wallet-delivery proof, restore image or live chair
+guarantee. Known malformed sources fail rather than certify owner absence.
+
+Each current read streams at most37 records,264KiB projected/256KiB binary state
+per record, with a three-second deadline and512KiB response bound. Logical-reference
+keyset pages return at most10 own entries; no all-player slot scan, hydration,
+dealing, spinning, bonus selection, recovery or currency transfer executes.
+Existing current password, case permission and session fences remain mandatory,
+with deliberate Prepare, Save and next-page actions. Current records may change
+between reads and past overwritten rounds are not reconstructed.
+
+Disposable Mongo proves34 own entries in10/10/10/4 pages across all games,
+Gold/EP slots and legacy funded blackjack; three valid unowned table states and
+a foreign malformed slot stay out. Own pending join survives without fabricating
+current seating. Giant private next-state payloads are projected away, oversized
+or malformed known current state fails, revocation denies reads, and all38 whole
+source records and owner balances remain unchanged. See
+[casino checks](2026-10-05-release1-75-casino-checks.json).
+
+Nineteen sections are now locally verified, unpublished. Coordinated reviewed
+removal/anti-resurrection, provider-policy review and publication remain open.
+
 ## Removal review procedure — no automatic deletion
 
 1. Verify the request owner and exact scope. Obtain separate explicit approval

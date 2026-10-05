@@ -115,7 +115,7 @@
     {
       "name": "casino_blackjack_tables",
       "source": "server/internal/database/casino_blackjack.go",
-      "data": "Shared table/round state and account/player wallet-transfer records.",
+      "data": "Shared current table/round state and account/player wallet-transfer records; slot state is owner/theme/currency scoped, not per physical cabinet. Unpublished owner casino pages select a closed29-table catalog including the retired funded table plus8 owner-hashed slot keys. Only own participation, cards/hands, stakes, slot entitlement/last-result summary and own pending currency/amount are emitted. Other players, hidden cards/decks/bonus offers, private tokens/replay/next-state plans remain omitted. Current overwritten state is not complete historical play or independent wallet delivery proof.",
       "retention": "Reconcile unsettled shared wagers and transfers before approved cleanup; no assumption that Gold or EP receipts may be blindly deleted."
     },
     {
@@ -304,6 +304,14 @@
       "server/internal/database/owner_economy_export.go",
       "server/internal/database/owner_economy_export_test.go",
       "server/internal/database/owner_economy_export_mongo_test.go",
+      "server/internal/database/owner_casino_export.go",
+      "server/internal/database/owner_casino_export_test.go",
+      "server/internal/database/owner_casino_export_mongo_test.go",
+      "server/owner_casino_contract_test.go",
+      "server/casino_slot_sessions.go",
+      "server/casino_house_sessions.go",
+      "server/casino_blackjack_sessions.go",
+      "server/casino_poker_sessions.go",
       "server/client_dispatch.go",
       "server/owner_export.go",
       "server/owner_export_test.go",
@@ -322,9 +330,10 @@
       {"sections": ["market-items"], "predecodeProjectedBytesPerRow": 81920, "scope": "Explicit gameplay item fields and only derived own seller/bidder/buyer/refund flags/public auction reference. Other IDs/refunds, private forge/replay/restore/arbitrary item properties and asset caches excluded. Existing market summary remains unchanged."},
       {"sections": ["ground"], "predecodeProjectedBytesPerRow": 73728, "scope": "Own moved drop/pickup gameplay item fields, kind/state/time and original recorded lifetime; no before/remaining/other-owner/party/position/instance/replay data or execution/expiry renewal. Pending availability is not invented."},
       {"sections": ["auction-ops"], "predecodeProjectedBytesPerRow": 73728, "scope": "Currently retained own bid/listing/buyout/claim/payout Gold/fee/gameplay item and public listing fields; prior bidder/refund/private operation IDs excluded. ObjectID pages. Existing resolved-intent deletion means this is not complete history; no missing creation time/state invented."},
-      {"sections": ["admin-ops"], "predecodeProjectedBytesPerRow": 69632, "scope": "Only operations targeting the owner: action/state/recorded audit time/result and retained Gold/gameplay-item grant plans. Completed/teleport bodies, staff reasons/identity/requests/anchors/private replay data excluded before decoding; opaque item metadata is not exported. Existing completed payload discard is not reconstructed or claimed as confirmed delivery."}
+      {"sections": ["admin-ops"], "predecodeProjectedBytesPerRow": 69632, "scope": "Only operations targeting the owner: action/state/recorded audit time/result and retained Gold/gameplay-item grant plans. Completed/teleport bodies, staff reasons/identity/requests/anchors/private replay data excluded before decoding; opaque item metadata is not exported. Existing completed payload discard is not reconstructed or claimed as confirmed delivery."},
+      {"sections": ["casino"], "predecodeProjectedBytesPerRow": 270336, "scope": "Closed29 shared table plus8 owner-hashed slot records, privately parsed binary state bounded256KiB; ten own entries per logical-reference page. Own participation/cards/hands/wagers/slot entitlements/last-result summary and pending currency/amount only. Raw private next-state/transfer fields excluded before driver decoding; other players and hidden cards/decks/bonus/replay/seat data never emitted. Current records are not historical play or independent wallet delivery proof. No game action, hydration, recovery or all-player slot scan."}
     ],
-    "remaining": "Casino handling, journals/archives/provider/device copies, coordinated reviewed removal/anti-resurrection, provider-policy review and publication checks. Eighteen supported sections now include own ground/auction/admin intents alongside earlier account/report/session/social/market/item/guild/invite/competitive/weekly-raid/trade/bank/room/boss sections, with explicit coverage limits. Hashed operation references are navigation, not encrypted secrets/chronology/authority; auctions/items keep ObjectID cursors. Existing resolved auction intent/completed admin payload deletion is not reconstructed. Staff approval is separate from case review; all pages retain current proof and permission/session fences, private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
+    "remaining": "Journals/archives/provider/device copies, coordinated reviewed removal/anti-resurrection, provider-policy review and publication checks. Nineteen supported sections now include own current casino records and ground/auction/admin intents alongside earlier account/report/session/social/market/item/guild/invite/competitive/weekly-raid/trade/bank/room/boss sections, with explicit coverage limits. Hashed operation references are navigation, not encrypted secrets/chronology/authority; auctions/items keep ObjectID cursors and casino uses closed logical references. Existing resolved auction intent/completed admin payload deletion and overwritten casino history are not reconstructed. Staff approval is separate from case review; all pages retain current proof and permission/session fences, private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
   },
   "publicDataNotice": {
     "status": "locally-verified-unpublished",

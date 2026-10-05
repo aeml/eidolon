@@ -89,6 +89,8 @@ func (db *DB) readOwnerExportQuery(parent context.Context, owner, password strin
 				encoded, err = db.readOwnerAuctionOperationPage(ctx, owner, query.Before, at, maxBytes)
 			case "admin-ops":
 				encoded, err = db.readOwnerAdminOperationPage(ctx, owner, query.Before, at, maxBytes)
+			case "casino":
+				encoded, err = db.readOwnerCasinoPage(ctx, owner, query.Before, at, maxBytes)
 			}
 		}
 		// These pages are in other collections: recheck the exact credential after

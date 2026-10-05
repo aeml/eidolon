@@ -31,6 +31,9 @@ func ValidOwnerExportQuery(query OwnerExportQuery) bool {
 		if query.Before == "" {
 			return true
 		}
+		if query.Section == "casino" {
+			return validOwnerCasinoCursor(query.Before)
+		}
 		if ownerOperationPrefix(query.Section) != "" {
 			return ownerOperationCursorPattern.MatchString(query.Before)
 		}
@@ -45,6 +48,7 @@ var ownerExportFormats = map[string]string{
 	"trades": "eidolon-owner-direct-trade-offers", "bank": "eidolon-owner-guild-bank-transfers",
 	"rooms": "eidolon-owner-dungeon-room-rewards", "bosses": "eidolon-owner-boss-victory-rewards", "market-items": "eidolon-owner-marketplace-items",
 	"ground": "eidolon-owner-ground-item-transfers", "auction-ops": "eidolon-owner-auction-intents", "admin-ops": "eidolon-owner-administration-intents",
+	"casino": "eidolon-owner-casino-records",
 }
 
 func OwnerExportFormat(section string) string { return ownerExportFormats[section] }

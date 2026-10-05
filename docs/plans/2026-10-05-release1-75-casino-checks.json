@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "5bcfafea",
+  "status": "owner-casino-section-locally-verified-unpublished-milestone-incomplete",
+  "scope": [
+    "Nineteenth approved current-owner section, closed29 shared table plus8 own theme/currency slot keys bound to actual current game/recovery catalogs and slot writers. No arbitrary table selector or all-player slot scan.",
+    "Only retained own participation/wagers, own cards/hands/stakes/payout fields, slot entitlement and last-result summary, recorded owed/payment and own pending currency/amount. Logical references contain no owner hash. Current overwritten state is not complete history, independently verified delivery or live chair guarantee.",
+    "Private pending next-state/transfer data is excluded before driver decoding. Bounded opaque current state is parsed through closed owner DTOs; other players, hidden decks/dealer holes/burns/bonus offers, seat/session/timeout tokens, replay/round IDs and full slot cascade plans are not emitted.",
+    "264KiB projected source,256KiB binary current state, three-second deadline, at most37 current candidates,512KiB response and ten-entry logical keyset pages. Current password/case/approval/session fences and separate manual Prepare/Save/next are unchanged. No game action, hydration, currency transfer, recovery or retention changes."
+  ],
+  "checks": [
+    {"scope": "Focused root/database race", "result": "Root3.170s/database1.470s pass for OwnerCasino/Export and ApprovedOwnerExport. Exact37 source catalog matches current game and legacy recovery tables plus slot writer keys. Closed logical cursor categories, credential/reset/output/source fences pass."},
+    {"scope": "Actual disposable Mongo7.0.14 and casino race", "result": "Final casino suite2.768s pass on explicit loopback32947, including malformed own currency/theme/bet/free-spin/payment/payout/card/seat cases. All37 known records plus one malformed foreign slot fixture:34 own entries in10/10/10/4 pages, three unowned shared states omitted. All four shared games, both slot currencies/all themes and legacy funded blackjack included; pending-only owner join is not fabricated as current seating. Private giant next-state data excluded, malformed/oversized known unowned state fails rather than silently certifying absence. Output limit/revoke fail closed. All38 source records retain whole-record checksums through valid reads and failure paths; the complete owner User BSON checksum, including character Gold123/EP7 and wallet receipts, is unchanged."},
+    {"scope": "Focused UI and notice", "result": "Four Jest suites81 tests pass4.966s. Casino logical references, invalid/non-decreasing cursor rejection, deliberate Prepare/Save/next and no automatic request/download pass. Shared notice explains current retained casino scope and excluded history/other players. Affected ESLint and whitespace checks pass."},
+    {"scope": "Isolation and handoff", "result": "Only disposable synthetic records used; exact owned Mongo container eidolon-casino-export-qa-175-1005 removed. No production/player/provider writes, schema/TTL change, email delivery, live/device acceptance, deployment or unchanged long campaign/capacity/raid replay. Nineteen local sections remain unpublished; full roadmap goal stays active."}
+  ],
+  "remaining": [
+    "Reviewed removal/shared custody/replay preservation and journal/archive anti-resurrection safeguards and fixtures; no automatic or real-player deletion authorized.",
+    "Provider-policy review and honest journal/archive/provider/device handling; section downloads do not certify complete account coverage or legal compliance.",
+    "Complete milestone notes/version, merge current master, CI and exact live acceptance before1.75 publication."
+  ]
+}

@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 casino export checkpoint:** Added the nineteenth authenticated owner
+section, selecting the current29 shared table and8 own slot records without
+scanning other players' slots. Own stakes/cards/hands/slot entitlements and pending
+currency/amount only; hidden decks/bonus offers, other players and private replay/
+seat/next-state data are not exported. Manual current proof, Save and pagination
+remain mandatory. Focused UI/race and actual disposable Mongo10/10/10/4 pages,
+redaction, revoke, oversized/malformed failure and whole-record/balance integrity
+checks pass. No gameplay/retention changes or live publication. Reviewed removal/
+restore safeguards, provider-policy review and complete1.75 release gates remain.
+See [casino evidence](docs/plans/2026-10-05-release1-75-casino-checks.json).
+
 **October5 ground/auction/admin export checkpoint:** Added own moved-item drop/pickup
 intents, retained auction bid/listing/buyout/claim/payout intents and administration
 intents targeting the owner with only retained grant Gold/item fields. Shared
