@@ -26,7 +26,7 @@
     {
       "name": "reports",
       "source": "server/internal/database/reports.go",
-      "data": "Authenticated author, type, player-provided text, timestamps, status and private review information. An explicitly attached playtest summary becomes report text.",
+      "data": "Authenticated author, type, player-provided text, timestamps, status and private review information. An explicitly attached playtest summary becomes report text. The unpublished1.75 branch adds case-local export permission and private bounded replay receipts, separately from ordinary case review. Permission metadata contains staff identity, reason, time, revisions and request fingerprint; it contains no export artifact or owner password. No new collection or TTL is introduced.",
       "retention": "No report TTL configured; resolution does not delete the report. Owner approved preserving current retention for the initial administrator-reviewed privacy workflow; no automatic deletion."
     },
     {
@@ -282,7 +282,7 @@
       "server/internal/database/owner_progress_snapshot_test.go"
     ],
     "scope": "Reuse prepared schema-compatible explicit profile/gameplay DTOs; add a new password-fenced current-owner reader with predecode projected BSON bounds16KiB/profile and256KiB/one character, output up to512KiB, single source/batch, three-second deadline and bounded bcrypt cost. No arbitrary collection/field query, whole User export or partial/truncated response.",
-    "remaining": "Explicit staff-approved case admission, authenticated owner-session delivery, all remaining supported account-data categories and pagination, manifest of exclusions/unavailable categories, removal/anti-resurrection and acceptance checks. The internal reader alone supplies neither review approval nor public transport."
+    "remaining": "Authenticated owner-session public delivery, all remaining supported account-data categories and pagination, manifest of exclusions/unavailable categories, removal/anti-resurrection and acceptance checks. Staff approval is separate from case review, and the new approved reader checks the exact owner/case/permission version before and after source reading; no owner download transport is enabled yet."
   },
   "implementationRemaining": [
     "Complete bounded owner-scoped export preparation, access/redaction tests and safe delivery. The request queue is not a complete account export.",

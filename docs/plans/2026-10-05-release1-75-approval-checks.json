@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "status": "staff-approval-and-approved-reader-locally-verified-unpublished-milestone-incomplete",
+  "baseCommit": "bea92026",
+  "scope": [
+    "Separate confirmed approve/revoke control on export cases, never removal cases; reason and exact case/status/review/permission revision quote.",
+    "Durable case-local permission and private replay receipts; bounded256 toggles end disabled so valid exhaustion cannot strand an enabled grant.",
+    "Strict duplicate/null/unknown-field/numeric/type rejection, authenticated payload/rate admission, fresh durable staff role and fail-closed audit, rechecked authority after audit IO.",
+    "Private admission history logs fixed case reference/revision, not staff reasoning or a claim of data delivery. The case couples actual permission and its receipt atomically.",
+    "Approved reader binds exact case author/type/enabled permission/revision, requires current owner password, and rechecks permission after reading before returning data. Still no owner transport or full data export.",
+    "No export artifact, credential, raw token or password persists in approval metadata; current report/history retention and collection registration unchanged."
+  ],
+  "checks": [
+    {"scope": "AdminPrivacyExportApproval/AdminReportReview/AdminUI", "result": "3 Jest suites36 tests pass4.134s: explicit confirm/cancel, revoke, case/permission version, no download/removal, matching real engine reply route, manual exact uncertain retry, stale/disconnected/revoked quote retirement and invalid/exhausted read-only handling."},
+    {"scope": "Approval/approved reader plus unchanged case-review focused race regressions", "result": "database1.167s/root2.653s pass. Initial test fixture accidentally exercised the real three-per-minute limit across multiple independent denial cases; fixture now invokes the registered module while admission limits are independently tested. Production rate limit was not changed."},
+    {"scope": "Real disposable Mongo7.0.14", "result": "Focused race approval/approved-owner tests pass2.715s with explicit loopback32935. Ordinary resolution does not approve,8 concurrent identical approvals produce one durable revision/receipt, another owner denied, current owner proof reads, revoke fences subsequent access, old retry does not reinstate access, reapproval invalidates old version, removal case cannot grant export permission, account/password unchanged."},
+    {"scope": "Lint/whitespace", "result": "Affected UI/engine/test ESLint and diff whitespace checks pass."},
+    {"scope": "Cleanup", "result": "Exact owned container eidolon-approval-qa-175-1005 removed. No production/player writes, email delivery, archive mutation or long100-client/campaign/raid replay."}
+  ],
+  "remaining": [
+    "Authenticated owner-only download transport/UI, current-session proof and privacy-sensitive recording/analytics guards.",
+    "Full supported owner-data categories and bounded pages, with accurate inclusion/exclusion/unavailability manifest, not a profile-only completion claim.",
+    "Coordinated individually authorized removal, shared custody/replay and journal/backup anti-resurrection handling; no automatic deletion.",
+    "Provider/privacy review and complete milestone release identity, patch notes, CI and exact live acceptance.1.75 remains unpublished."
+  ]
+}

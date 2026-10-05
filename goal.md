@@ -28,6 +28,18 @@ approval admission, full account category coverage and owner-session delivery
 remain next, followed by coordinated removal/restore safeguards and release gates.
 See [section evidence](docs/plans/2026-10-05-release1-75-owner-section-checks.json).
 
+**1.75 approval checkpoint:** Added separate confirmed, durable, reversible staff
+export permission, with bounded case-local replay receipts and CAS fences for
+case review/status plus permission revision. Ordinary case resolution is not
+approval; old approval retries cannot reinstate a revoked grant. Durable roles,
+audit availability and post-audit connection/role authority are required. The
+approved owner reader additionally checks the exact owner/case/permission before
+and after password-fenced data reading.36 focused UI checks, root/database race
+checks and real disposable Mongo concurrency/revoke/owner-boundary checks pass.
+The QA container is removed; no production writes or owner export were made.
+Public owner delivery and full category coverage remain next. No1.75 publication
+or roadmap completion claim. See [approval evidence](docs/plans/2026-10-05-release1-75-approval-checks.json).
+
 **2026-10-05 maintenance checkpoint:** Alpha 1.74.6 is accepted live at
 1c47e16a after all ten CI37256836401 jobs and exact public IPv4 verification.
 Alpha 1.74.7 is a local candidate: west-side aligned stash, bounded three-second

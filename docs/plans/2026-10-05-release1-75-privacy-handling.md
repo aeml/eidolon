@@ -25,7 +25,21 @@ Administrators find the two categories under Administration → Reports. Existin
 durable role verification, admission audit and confirmed revision-fenced review
 apply. A review updates the case and private immutable receipt together. It can
 be explicitly reopened; retrying the same quote does not apply another review.
-There is no automatic export or delete action in this queue. Do not put tokens,
+An export case now also has a separate **Approve owner export / Revoke owner
+export approval** control. It requires a reason and explicit confirmation and
+fences both current case review and permission revisions. Its private durable
+receipt is independent of case resolution. Permission starts disabled; exact
+retries return their original decision without reinstating a subsequently revoked
+grant. A changed review quote conflicts instead of granting against stale context.
+Ordinary case review does not itself grant or revoke export permission. Revoking
+prevents future admissions; it cannot recall data already delivered.
+
+The bounded account reader now requires the exact approved case/owner/permission
+revision, current owner password, and checks permission again before returning
+data. Staff role alone is not an owner's password proof. Public owner delivery
+and complete category coverage remain unimplemented: approval changes permission
+metadata only and does not send an export. No deletion action exists.
+Do not put tokens,
 passwords, identity documents or full account dumps in review reasons.
 
 ## Export preparation and delivery procedure
@@ -57,8 +71,9 @@ truncating a source. Profile input is capped16KiB, one character256KiB, response
 512KiB, with a three-second query deadline and bcrypt cost cap14. A source that
 exceeds its bound requires separately implemented paging/staff handling; it is
 not reported complete. These internal helpers have **no public transport** and
-do not supply admin approval or full account coverage. Staff admission, complete
-category coverage and owner-bound delivery are still implementation work. The
+do not supply full account coverage. Staff admission and case-local reversible
+approval are implemented; complete category coverage and owner-bound public
+delivery are still implementation work. The
 request queue must not be described as a complete data-export facility.
 
 ## Removal review procedure — no automatic deletion

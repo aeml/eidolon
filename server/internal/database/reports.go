@@ -108,16 +108,18 @@ func (db *DB) ReadReportPage(query ReportQuery) (ReportPage, error) {
 }
 
 type Report struct {
-	ID             primitive.ObjectID             `bson:"_id,omitempty" json:"id"`
-	Username       string                         `bson:"username" json:"username"`
-	ReportType     string                         `bson:"report_type" json:"reportType"`
-	Text           string                         `bson:"text" json:"text"`
-	Status         string                         `bson:"status" json:"status"`
-	CreatedAt      time.Time                      `bson:"created_at" json:"createdAt"`
-	ResolvedAt     *time.Time                     `bson:"resolved_at,omitempty" json:"resolvedAt,omitempty"`
-	ReviewRevision int64                          `bson:"review_revision,omitempty" json:"reviewRevision"`
-	LastReview     *ReportReviewReceipt           `bson:"last_review,omitempty" json:"lastReview,omitempty"`
-	ReviewReceipts map[string]ReportReviewReceipt `bson:"review_receipts,omitempty" json:"-"`
+	ExportApproval         *PrivacyExportApprovalReceipt           `bson:"export_approval,omitempty" json:"exportApproval,omitempty"`
+	ExportApprovalReceipts map[string]PrivacyExportApprovalReceipt `bson:"export_approval_receipts,omitempty" json:"-"`
+	ID                     primitive.ObjectID                      `bson:"_id,omitempty" json:"id"`
+	Username               string                                  `bson:"username" json:"username"`
+	ReportType             string                                  `bson:"report_type" json:"reportType"`
+	Text                   string                                  `bson:"text" json:"text"`
+	Status                 string                                  `bson:"status" json:"status"`
+	CreatedAt              time.Time                               `bson:"created_at" json:"createdAt"`
+	ResolvedAt             *time.Time                              `bson:"resolved_at,omitempty" json:"resolvedAt,omitempty"`
+	ReviewRevision         int64                                   `bson:"review_revision,omitempty" json:"reviewRevision"`
+	LastReview             *ReportReviewReceipt                    `bson:"last_review,omitempty" json:"lastReview,omitempty"`
+	ReviewReceipts         map[string]ReportReviewReceipt          `bson:"review_receipts,omitempty" json:"-"`
 }
 
 func NewReport(username, reportType, text string, now time.Time) (Report, error) {
