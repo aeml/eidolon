@@ -3,7 +3,17 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.74.3';
+const currentVersion = '1.74.4';
+
+test('1.74.4 explains same-hand ready-view ordering without changing wager authority', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.74.4"'), previous = html.indexOf('data-version="1.74.3"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Blackjack', "Hold'em", 'lower-revision', 'same hand and seat',
+        'Shared seats', 'ownership changes', 'unavailable or saving', 'payouts', 'timers are unchanged',
+        'No account wipe', 'schema migration', 'unfinished 1.75–1.79', '100-player capacity',
+        'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.74.3 explains scoped casino performance without changing economic authority', () => {
     const html = fs.readFileSync('index.html', 'utf8');

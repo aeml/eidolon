@@ -420,10 +420,12 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.3`. Narrow Sell All/error, real-player
+- Current source version: `Alpha 1.74.4`. Narrow Sell All/error, real-player
   administration and casino performance maintenance releases have been ordinarily
   merged from master. 1.74.3's exact all-ten-job CI37244170015 and independent
-  public frontend/backend/login/notes proof passed at8b7ab8dd. This isolated, unpublished
+  public frontend/backend/login/notes proof passed at8b7ab8dd. Interface-only
+  1.74.4 is pushed as9560ac60 with CI37246677139 monitored by Luna; its435 focused
+  checks pass, but exact public acceptance remains pending. This isolated, unpublished
   1.79 candidate integrates accepted 1.72 security and 1.73 valuable-operation
   writers, plus the 1.74 permission review and read-only
   moderation-history filters, plus a source-backed privacy inventory and defensive
