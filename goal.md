@@ -27,8 +27,17 @@ owned fixture/private data removed. Diagnose with short checks before any new
 target, no unchanged rerun or relaxed gates. See
 [current run](docs/plans/2026-10-05-capacity-table-order-checks.json).
 
+Next short driver work removes unused casino detail copies (focused race checks
+pass, helper microbenchmark0 allocations, not causal capacity proof). Explicit
+town/social and combined assigned roles now require delivered own chat/presence/
+registry outcomes; no request-ID acknowledgement claim. New short two-player
+native check passes27.19s with every registry and independently fresh unchanged
+progression/Gold/EP/gear/bag saves. Owned fixture/private data removed. See
+[social receipt](docs/plans/2026-10-05-capacity-social-outcomes-checks.json).
+New outcomes remain mandatory but unearned in the full100 cohort; no replay.
+
 Full original1.11–1.99 roadmap remains active. Ordered1.75–1.78 privacy/retention/
-operations/hosting owner gates,1.79 complete town/social outcomes, current finale/
+operations/hosting owner gates,1.79 integrated town/social outcomes, current finale/
 remaining rituals, settlement/restart and representative headroom, later feature/
 art/security/beta/release gates remain incomplete. Retain user decisions; do not
 launch closed beta, claim final art, weaken gates, rerun unchanged campaigns or

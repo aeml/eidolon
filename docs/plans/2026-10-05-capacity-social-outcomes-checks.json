@@ -1,0 +1,20 @@
+{
+  "status": "SHORT_NATIVE_TWO_PLAYER_TOWN_SOCIAL_AND_SAVES_PASSED_NOT_COMBINED100",
+  "source": "0a82dcda on isolated preparation branch; no production code changes from9db4c8efa4aa02566cb5b1d66d4c63ff81757399, verified by scoped source diff. Reused unchanged native9db server; new ordinary driver and race-instrumented root test executable.",
+  "scope": "Each combined town bot requires its own nonce-bearing non-history World chat; each combined social bot additionally requires a post-request list containing its own valid player/class/level and delivered friends/guild/PvP-own-profile/correct leaderboard responses. Same outcomes available in explicit town/social CLI profiles, preserving their equipment. Default mixed profile unchanged. Added initial reads are staggered one per200ms decision tick; existing random read/chat and normal roaming traffic retained. Successful sends are not outcomes. Original admission, sustained-own-state, per-casino-paid, party-impact and independent-save gates remain.",
+  "limits": "Registry protocol lacks request IDs: post-request delivery is not uniquely correlated acknowledgement. Exact live own chat uses an ephemeral nonce. No peer identities/messages or credentials retained in coverage. No friend/guild membership mutation, arena entry, payment, gear/reward grant, server test command or schema change. New15s response bound never retries or extends itself. Closed per-client failure and every assigned zero outcome are included.",
+  "focused": "Social/Combined/decision race checks PASS1.169s; broader Social/Combined/Casino/BlackjackLoad/HouseLoad/Poker/Party race checks PASS15.422s. Root selected compilation/unit checks PASS1.110s; disposable integration is skipped without explicit environment and is not counted as native evidence from that command.",
+  "actual": {
+    "status": "PASS27.19s; definitive original exec session44630 consumed with exit0",
+    "town": {"clients":2,"complete":2,"ownChat":2,"minOwnUpdates":364,"minActiveMs":11983,"maxGapMs":63,"wireBytes":3627090,"readErrors":0,"writeErrors":0,"decodeErrors":0},
+    "social": {"clients":2,"complete":2,"ownChat":2,"ownPresence":2,"friends":2,"guild":2,"pvp":2,"leaderboard":2,"minOwnUpdates":361,"minActiveMs":11871,"maxGapMs":75,"wireBytes":3299519,"readErrors":0,"writeErrors":0,"decodeErrors":0},
+    "saves": "After both normal12s profiles and normal server shutdown, independently reread both Mongo characters with fresh LastLogout; original class/level/XP/Gold/EP/equipped gear and sentinel bag exactly preserved. Town resource recovery intentionally not held constant.",
+    "isolation": "Explicit opt-in owned Mongo7.0.14 container e79c6c6a882154f8b917021ec232c108e549d1b1de50fc06d410fb6e85d11ad5; tasksocial-179-20261005; networknone/no ports/2CPU/2GiB/database512MiB tmpfs/config16MiB/cache0.25GiB/read-only artifact mounts. Ping passed. Only mongod remains after terminal root; memory peak663269376/OOM counters0/DockerOOMfalse. Exact ID/label/network verified before stop/removal; filtered owned listing empty. Fixture/synthetic data/credentials/private logs removed with container. No production database or owner worktree touched.",
+    "artifactSHA256": {
+      "server": "f3e8cc3416ed8c370aec12a1eadb88b58a9d464e375171ac98116b9b8dd6a63a",
+      "root.test": "1d9786a71f2cbe42e580a00857d80bf1cb5dfc4e6e31e25873e177fa2a5ebd95",
+      "loadtest": "a33e7198e292fbf36b3df74d6dd1f1bc74e3d2850418be1725c2af5796ee8db7"
+    }
+  },
+  "remaining": "Actual short social outcomes earned, not combined100 or representative headroom. New gates must pass in the eventual combined comparison; no unchanged100 replay performed. Current finale/remaining rituals, final casino settlement/restart, capacity and owner policy/art/feature/beta gates remain. Future driver stays unpublished; own1.79 metadata/notes/ordered deployment still required."
+}
