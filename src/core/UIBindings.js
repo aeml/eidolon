@@ -135,6 +135,11 @@ export class UIBindings {
             engine.network.send('report_status', { reportId, requestId });
             return true;
         };
+        ui.isOwnerExportSessionCurrent = () => !ui.disposed && !engine.isDestroyed && window.game === engine && engine.isMultiplayer && engine.network?.socket?.readyState === WebSocket.OPEN;
+        ui.onOwnerExportSection = payload => {
+            if (!ui.isOwnerExportSessionCurrent()) return false;
+            engine.network.send('owner_export_section', payload); return true;
+        };
         ui.onModerationNoticeLookup = requestId => {
             if (!engine.isMultiplayer || engine.network?.socket?.readyState !== WebSocket.OPEN) return false;
             engine.network.send('moderation_notice', { requestId });

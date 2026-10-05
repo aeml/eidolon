@@ -5,8 +5,8 @@ import { initializeAnalytics } from '../src/analytics/GoogleAnalytics.js';
 
 const source = readFileSync(new NodeURL('../src/core/RecoveryLinkBoot.js', import.meta.url), 'utf8');
 const html = readFileSync(new NodeURL('../index.html', import.meta.url), 'utf8');
-function boot(fragment, blocked = false) {
-    const win = { location: new URL(`https://play.eidolonrealms.com/?release=fixture#${fragment}`) };
+function boot(fragment, blocked = false, query = '?release=fixture') {
+    const win = { location: new URL(`https://play.eidolonrealms.com/${query}#${fragment}`) };
     win.history = { replaceState: jest.fn((_, __, path) => { if (blocked) throw new Error('blocked'); win.location = new URL(path, win.location.origin); }) };
     new Function('window', 'URLSearchParams', source)(win, URLSearchParams);
     return win;
@@ -38,4 +38,22 @@ test.each(['eidolon-recovery=evil', 'eidolon-recovery=reset&account=owner&token=
 });
 test('unrelated game anchors are not consumed or treated as account recovery', () => {
     const win = boot('quest-log'); expect(win.history.replaceState).not.toHaveBeenCalled(); expect(win.__eidolonRecoveryHandoff).toBeUndefined();
+});
+test.each(['eidolon-private=account', 'eidolon-private=unexpected', 'eidolon-private=account&eidolon-private=other'])('private export mode suppresses tag before initialization without an account/token handoff: %s', fragment => {
+    const win=boot(fragment);
+    expect(win.location.hash).toBe('');expect(win.location.search).toBe('');
+    expect(win.__eidolonRecoverySensitivePage).toBe(true);expect(win.__eidolonRecoveryHandoff).toBeUndefined();
+    const doc={head:{appendChild:jest.fn()}};
+    initializeAnalytics('game',win,doc)('account_export');
+    expect(doc.head.appendChild).not.toHaveBeenCalled();expect(win.dataLayer).toBeUndefined();
+});
+test('private mode keeps analytics off even when history cannot scrub its nonsecret marker',()=>{
+    const win=boot('eidolon-private=account',true);const doc={head:{appendChild:jest.fn()}};
+    initializeAnalytics('game',win,doc)('account_export');expect(doc.head.appendChild).not.toHaveBeenCalled();
+});
+test('private-mode navigation query boots a fresh sensitive document and is scrubbed before analytics',()=>{
+    const win=boot('',false,'?eidolon-private=account');
+    expect(win.location.search).toBe('');expect(win.__eidolonRecoverySensitivePage).toBe(true);
+    const doc={head:{appendChild:jest.fn()}};
+    initializeAnalytics('game',win,doc)('account_export');expect(doc.head.appendChild).not.toHaveBeenCalled();
 });

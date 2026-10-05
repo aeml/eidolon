@@ -474,6 +474,8 @@ class GameEngineNetworkMessageMethods {
             this.uiManager?.report?.handleResult(msg.payload);
         } else if (msg.type === 'report_status_result') {
             this.uiManager?.report?.lookup?.handleResult(msg.payload);
+        } else if (msg.type === 'owner_export_section_result') {
+            this.uiManager?.report?.exportDownload?.handleResult(msg.payload);
         } else if (msg.type === 'moderation_notice_result') {
             this.uiManager?.report?.notice?.handleResult(msg.payload);
         } else if (['admin_status_result', 'admin_players_result', 'admin_history_result', 'admin_reports_result',

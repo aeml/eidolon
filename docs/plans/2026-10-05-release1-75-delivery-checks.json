@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "status": "owner-section-delivery-locally-verified-unpublished-milestone-incomplete",
+  "baseCommit": "8379d9c0",
+  "scope": [
+    "Authenticated owner-only profile/one-character section delivery after separate administrator approval and current password proof; no target account field.",
+    "Strict bounded protocol, cross-connection per-account admission and shared credential-work slots, fixed-content fail-closed durable audit and current-session checks before/after data IO.",
+    "Owner status exposes only derived approval boolean/revision, not private staff reason/actor/receipts.",
+    "Fresh private support document suppresses the game analytics tag before startup; non-secret query marker is scrubbed. An already tagged document has no download/password form.",
+    "One bounded in-memory section, separate manual Save click, transient object URL, no automatic retry/download or browser storage. Close/disconnect/replacement discards proof and prepared data."
+  ],
+  "checks": [
+    {"scope": "OwnerExportDownload/ReportUI/ReportLookupUI/LoginModerationUI/RecoveryLinkBoot/GameplayAnalytics", "result": "6 Jest suites100 tests pass5.098s. After correcting the private link from same-document fragment navigation to a fresh-document query, final OwnerExportDownload/RecoveryLinkBoot suites23 tests pass3.293s."},
+    {"scope": "Owner transport, approval, admission and reader focused race regressions", "result": "Root3.690s/database1.309s pass: strict schema, proof/current-owner binding, safe audit, audit outage, session replacement, failure/malformed/oversized source, correlated admission rejection, shared credential concurrency and cross-connection account budget."},
+    {"scope": "Real disposable Mongo7.0.14", "result": "Approval/approved-reader focused race tests pass2.885s on explicit loopback32936. Updated owner status exposes revision3 approval while omitting private staff reason, actor and receipt fingerprint. Existing concurrency/revocation/owner-proof/source-integrity boundaries pass."},
+    {"scope": "Lint/whitespace", "result": "Affected UI/engine/test ESLint and diff whitespace checks pass."},
+    {"scope": "Cleanup and limits", "result": "Exact owned container eidolon-owner-delivery-qa-175-1005 removed. No production/player writes, actual account download, provider email, archive mutation, native-browser acceptance or long campaign/capacity/raid rerun."
+    }
+  ],
+  "remaining": [
+    "Complete supported owner-data categories, bounded pages and accurate inclusion/exclusion/unavailability manifest; these sections are not a complete account export.",
+    "Coordinated individually authorized removal, shared custody/replay and journal/backup anti-resurrection handling; no automatic deletion or retention changes.",
+    "Provider/privacy review, milestone notes/version/CI and exact live acceptance.1.75 remains unpublished."
+  ]
+}

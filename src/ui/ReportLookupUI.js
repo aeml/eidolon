@@ -9,8 +9,9 @@ const dateLabel = value => {
 
 // Explicit user-owned lookup, no stored reference catalog or background polling.
 export class ReportLookupUI {
-    constructor(ui) {
+    constructor(ui, onReport = () => {}) {
         this.ui = ui;
+        this.onReport = onReport;
         this.reference = ui.reportScreen?.querySelector('#report-reference');
         this.button = ui.reportScreen?.querySelector('#btn-check-report');
         this.status = ui.reportScreen?.querySelector('#report-lookup-status');
@@ -47,8 +48,10 @@ export class ReportLookupUI {
         clearTimeout(this.timer); this.pending = null; this.setPending(false);
         const report = result.report;
         if (result.success !== true || report?.id !== reference || !TYPES.has(report.reportType) || !['open', 'resolved'].includes(report.status)) {
+            this.onReport(null);
             this.status.textContent = 'Report status unavailable. Verify the reference and use the account that submitted it.'; return;
         }
+        this.onReport(report);
         const meaning = PRIVACY_REPORT_TYPES.has(report.reportType)
             ? 'Review status alone does not mean data was exported or removed. No automatic deletion; current retention is unchanged.'
             : 'Resolution is not a promised fix or sanction reversal.';

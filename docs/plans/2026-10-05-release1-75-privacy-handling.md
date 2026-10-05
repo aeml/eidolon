@@ -34,11 +34,13 @@ grant. A changed review quote conflicts instead of granting against stale contex
 Ordinary case review does not itself grant or revoke export permission. Revoking
 prevents future admissions; it cannot recall data already delivered.
 
-The bounded account reader now requires the exact approved case/owner/permission
+The bounded account reader requires the exact approved case/owner/permission
 revision, current owner password, and checks permission again before returning
-data. Staff role alone is not an owner's password proof. Public owner delivery
-and complete category coverage remain unimplemented: approval changes permission
-metadata only and does not send an export. No deletion action exists.
+data. Staff role alone is not an owner's password proof. The unpublished branch
+now provides authenticated owner delivery of profile and one-character gameplay
+sections. Complete category coverage remains unimplemented. Approval itself
+changes permission metadata only; the owner must separately request a section
+and click Save. No deletion action exists.
 Do not put tokens,
 passwords, identity documents or full account dumps in review reasons.
 
@@ -70,11 +72,27 @@ Mongo input before driver decoding, caps output, and fails closed instead of
 truncating a source. Profile input is capped16KiB, one character256KiB, response
 512KiB, with a three-second query deadline and bcrypt cost cap14. A source that
 exceeds its bound requires separately implemented paging/staff handling; it is
-not reported complete. These internal helpers have **no public transport** and
-do not supply full account coverage. Staff admission and case-local reversible
-approval are implemented; complete category coverage and owner-bound public
-delivery are still implementation work. The
-request queue must not be described as a complete data-export facility.
+not reported complete. These helpers do not supply full account coverage.
+
+The owner download control first links to a fresh private account-support page,
+using a non-secret query marker that the blocking bootstrap scrubs before the
+analytics module starts. A fragment-only navigation would not unload an existing
+analytics tag. An already tagged document offers no password/download form.
+This guard does not protect against extensions or recording on the owner's device.
+After signing in, the owner checks their own approved case, supplies their current
+password and explicitly requests one section. The protocol accepts no target
+account. Cross-connection per-account limits and shared credential-work slots
+bound password verification. Fixed-content durable admission history contains
+no password, exported contents or claim that a file was saved. Audit failure,
+revoked/stale approval and replaced/closed sessions fail closed.
+
+One bounded section is prepared in memory; **Save section locally** is a second
+deliberate click using a short-lived object URL. Close, disconnect, replacement
+or timeout discards pending work/proof; there is no automatic retry/download or
+browser storage catalog. The application cannot verify that the browser actually
+saved the file. Complete categories, accurate coverage manifests and bounded
+paging remain work. Neither this control nor the request queue is a complete
+account-export facility. See the [delivery checks](2026-10-05-release1-75-delivery-checks.json).
 
 ## Removal review procedure — no automatic deletion
 

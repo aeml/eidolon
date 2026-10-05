@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 owner-delivery checkpoint:** The narrow1.75 branch now offers approved
+owner-only profile/character gameplay downloads with current password proof,
+bounded credential/data work and current-session fences. Owner status reveals
+only the permission boolean/revision. A fresh private support document suppresses
+the analytics tag; preparing and saving are separate manual actions, and closing
+or disconnecting discards private transient state. Focused UI/race tests and real
+disposable Mongo owner-status/approval checks pass; the owned fixture is removed.
+Full category coverage, manifests/paging, coordinated removal/restore protection
+and complete release acceptance remain open. No1.75 publication or completion
+claim. See [delivery evidence](docs/plans/2026-10-05-release1-75-delivery-checks.json).
+Earlier1.75 checkpoints below are historical, not current delivery status.
+
 **October5 live acceptance:** Alpha1.74.7 at7af0b279 passed all ten CI37264989129
 jobs after one failed-job retry for a transient Mongo connection failure; client
 and browser scopes reused their success on the same source. Root exact public

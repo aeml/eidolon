@@ -3,6 +3,7 @@ import { ReportLookupUI } from './ReportLookupUI.js';
 import { ModerationNoticeUI } from './ModerationNoticeUI.js';
 import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
 import { REPORT_TYPES, PRIVACY_REPORT_TYPES } from './reportTypes.js';
+import { OwnerExportDownload } from './OwnerExportDownload.js';
 
 const MAX_TEXT = 3200;
 const SAFE_TAG = /^[a-zA-Z0-9 ._-]{1,80}$/;
@@ -55,7 +56,9 @@ export class ReportUI {
         this.status = this.root.querySelector('#report-status');
         this.count = this.root.querySelector('#report-count');
         this.guidance = this.root.querySelector('#report-guidance');
-        this.lookup = new ReportLookupUI(ui);
+        this.exportDownload = new OwnerExportDownload({parent: this.root.querySelector('.support-window__body') || this.root,
+            send: payload => ui.onOwnerExportSection?.(payload), isCurrent: () => !this.disposed && this.root.style.display !== 'none' && ui.isOwnerExportSessionCurrent?.() === true});
+        this.lookup = new ReportLookupUI(ui, report => this.exportDownload.setApproval(report));
         this.notice = new ModerationNoticeUI(ui, this);
         // A new character/session must not inherit another player's draft.
         this.text.value = '';
@@ -68,7 +71,7 @@ export class ReportUI {
             event.stopPropagation();
             if (event.key === 'Escape') { event.preventDefault(); this.ui.toggleReport?.(); }
             if (event.key !== 'Tab') return;
-            const controls = [...this.root.querySelectorAll('button, input, select, textarea, summary')]
+            const controls = [...this.root.querySelectorAll('button, input, select, textarea, summary, a[href]')]
                 .filter(element => {
                     if (element.disabled || element.tabIndex < 0 || !element.getClientRects().length) return false;
                     for (let ancestor = element.parentElement; ancestor && ancestor !== this.root; ancestor = ancestor.parentElement) {
@@ -115,7 +118,7 @@ export class ReportUI {
     updateCount() { if (!this.disposed) this.count.textContent = `${[...this.text.value].length} / ${MAX_TEXT} characters`; }
 
     focusOnOpen() { if (!this.disposed) { this.opener = document.activeElement; this.text.focus(); } }
-    restoreFocus() { if (!this.disposed && this.opener?.isConnected) this.opener.focus(); }
+    restoreFocus() { this.exportDownload?.close(); if (!this.disposed && this.opener?.isConnected) this.opener.focus(); }
 
     startPlayerReport(username, context = '') {
         if (this.disposed) return false;
@@ -227,6 +230,7 @@ export class ReportUI {
         if (this.disposed) return;
         this.disposed = true;
         this.lookup?.dispose();
+        this.exportDownload?.dispose();
         this.notice?.dispose();
         disposeOwnedEvents(this);
         clearTimeout(this.timer);

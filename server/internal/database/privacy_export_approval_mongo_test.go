@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"reflect"
@@ -113,8 +114,12 @@ func TestPrivacyExportApprovalMongoReplayRevokeAndOwnerRead(t *testing.T) {
 		t.Fatal("reapproved owner read unavailable", err)
 	}
 	ownerView, err := db.OwnReportStatus("owner", request.ReportID)
-	if err != nil || ownerView.Status != "resolved" {
+	if err != nil || ownerView.Status != "resolved" || !ownerView.ExportApproved || ownerView.ExportApprovalRevision != 3 {
 		t.Fatal("independent approval mutated case review status", err)
+	}
+	encoded, _ := json.Marshal(ownerView)
+	if strings.Contains(string(encoded), "Owner and requested scope") || strings.Contains(string(encoded), "fingerprint") || strings.Contains(string(encoded), "actor") {
+		t.Fatal("owner status disclosed staff approval details")
 	}
 	removal, err := db.CreateReport("owner", "Account Removal Request", "Please review removal")
 	if err != nil {

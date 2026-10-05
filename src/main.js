@@ -498,6 +498,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                     window.game?.uiManager?.admin?.connectionState(state);
                     window.game?.uiManager?.skillTree?.handleBuildConnectionState?.(state);
                     window.game?.uiManager?.passwordChange?.connectionState(state);
+                    window.game?.uiManager?.report?.exportDownload?.connectionState(state);
                     window.game?.uiManager?.recoveryEmail?.connectionState(state);
                 };
                 window.game.network.onReconnectFailed = reason => {

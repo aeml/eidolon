@@ -22,6 +22,8 @@ export class LoginModerationUI {
             onReportSubmit: (reportType, text, requestId) => ACCOUNT_SUPPORT_REPORT_TYPES.has(reportType)
                 && this.send('report', { reportType, text, requestId }),
             onReportLookup: (reportId, requestId) => this.send('report_status', { reportId, requestId }),
+            onOwnerExportSection: payload => this.send('owner_export_section', payload),
+            isOwnerExportSessionCurrent: () => this.current(),
             onModerationNoticeLookup: requestId => this.send('moderation_notice', { requestId }),
             getReportContext: () => ({ area: 'Account support outside the world' }) };
         this.report = new ReportUI(ui); type.value = 'Moderation Appeal'; this.report.updateGuidance();
@@ -58,6 +60,7 @@ export class LoginModerationUI {
         if (!this.current()) return false;
         this.root.style.zIndex = '10005'; this.root.style.display = 'flex';
         this.passwordChange.refresh();
+        this.report.exportDownload.refresh();
         this.recoveryEmail.refresh();
         this.root.querySelector('#btn-check-moderation')?.focus();
         return true;
@@ -66,6 +69,7 @@ export class LoginModerationUI {
     close() {
         if (!this.current()) return;
         this.passwordChange.clearFields();
+        this.report.exportDownload.close();
         this.recoveryEmail.clearFields();
         this.root.style.display = 'none'; this.button.focus();
     }
@@ -73,6 +77,7 @@ export class LoginModerationUI {
     handleMessage(message) {
         if (!this.current()) return false;
         switch (message?.type) {
+            case 'owner_export_section_result': return this.report.exportDownload.handleResult(message.payload);
             case 'email_recovery_result': return this.recoveryEmail.handleResult(message.payload);
             case 'password_change_result': this.passwordChange.handleResult(message.payload); return true;
             case 'report_result': this.report.handleResult(message.payload); return true;

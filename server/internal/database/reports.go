@@ -32,11 +32,13 @@ type ReportPage struct {
 // An owner's status view deliberately excludes allegations, account identifiers,
 // staff reasons and all review receipts, including the latest private review.
 type ReportStatusView struct {
-	ID         primitive.ObjectID `bson:"_id" json:"id"`
-	ReportType string             `bson:"report_type" json:"reportType"`
-	Status     string             `bson:"status" json:"status"`
-	CreatedAt  time.Time          `bson:"created_at" json:"createdAt"`
-	ResolvedAt *time.Time         `bson:"resolved_at,omitempty" json:"resolvedAt,omitempty"`
+	ExportApproved         bool               `bson:"-" json:"exportApproved,omitempty"`
+	ExportApprovalRevision int64              `bson:"-" json:"exportApprovalRevision,omitempty"`
+	ID                     primitive.ObjectID `bson:"_id" json:"id"`
+	ReportType             string             `bson:"report_type" json:"reportType"`
+	Status                 string             `bson:"status" json:"status"`
+	CreatedAt              time.Time          `bson:"created_at" json:"createdAt"`
+	ResolvedAt             *time.Time         `bson:"resolved_at,omitempty" json:"resolvedAt,omitempty"`
 }
 
 func (db *DB) OwnReportStatus(username, reference string) (ReportStatusView, error) {
@@ -46,14 +48,26 @@ func (db *DB) OwnReportStatus(username, reference string) (ReportStatusView, err
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	var view ReportStatusView
+	var source struct {
+		View     ReportStatusView `bson:",inline"`
+		Approval struct {
+			Enabled  bool      `bson:"enabled"`
+			Revision int64     `bson:"revision"`
+			At       time.Time `bson:"at"`
+		} `bson:"export_approval"`
+	}
 	err = db.reports.FindOne(ctx, bson.M{"_id": id, "username": username}, options.FindOne().SetProjection(
-		bson.M{"report_type": 1, "status": 1, "created_at": 1, "resolved_at": 1})).Decode(&view)
+		bson.M{"report_type": 1, "status": 1, "created_at": 1, "resolved_at": 1,
+			"export_approval.enabled": 1, "export_approval.revision": 1, "export_approval.at": 1})).Decode(&source)
 	if err != nil {
 		return ReportStatusView{}, err
 	}
+	view := source.View
 	if !SupportedReportType(view.ReportType) || view.Status != ReportStatusOpen && view.Status != ReportStatusResolved {
 		return ReportStatusView{}, errors.New("report status unavailable")
+	}
+	if view.ReportType == "Account Data Export" && source.Approval.Enabled && source.Approval.Revision > 0 && source.Approval.Revision < MaximumPrivacyExportChanges && source.Approval.Revision%2 == 1 && !source.Approval.At.IsZero() {
+		view.ExportApproved, view.ExportApprovalRevision = true, source.Approval.Revision
 	}
 	return view, nil
 }

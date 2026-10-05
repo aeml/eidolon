@@ -2,6 +2,12 @@
 // analytics or game modules run. Never consume a link merely by opening it.
 (function () {
     const params = new URLSearchParams(window.location.hash.slice(1));
+    // No account ID, proof or artifact in this marker. It is read before the
+    // deferred analytics module; unknown/duplicate private markers fail closed.
+    if (params.has('eidolon-private') || new URLSearchParams(window.location.search).has('eidolon-private')) {
+        window.__eidolonRecoverySensitivePage = true;
+        try { window.history.replaceState(null, '', window.location.pathname); } catch { /* Keep analytics off. */ }
+    }
     if (!params.has('eidolon-recovery')) return;
     window.__eidolonRecoverySensitivePage = true;
     const kind = params.get('eidolon-recovery');

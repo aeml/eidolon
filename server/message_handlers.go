@@ -6,6 +6,7 @@ package main
 type messageHandler func(*Client, Message)
 
 var messageHandlers = map[string]messageHandler{
+	MsgOwnerExportSection:         handleOwnerExport,
 	MsgChangePassword:             handlePasswordChange,
 	MsgSetRecoveryEmail:           handleEmailRecovery,
 	MsgRequestPasswordRecovery:    handleEmailRecovery,

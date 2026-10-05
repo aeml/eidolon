@@ -384,6 +384,7 @@ class UIManagerWindowMethods {
 
         if (element === this.settingsScreen) this.passwordChange?.clearFields();
         if (element === this.settingsScreen) this.recoveryEmail?.clearFields();
+        if (element === this.reportScreen) this.report?.exportDownload?.close();
         element.style.display = 'none';
         this.playUICue(AUDIO_CUES.uiClose);
         this.syncStaticModalBackdrop();
@@ -391,6 +392,7 @@ class UIManagerWindowMethods {
     }
 
     closeAllStaticModals() {
+        this.report?.exportDownload?.close();
         this.passwordChange?.clearFields();
         this.recoveryEmail?.clearFields();
         let closedAny = false;

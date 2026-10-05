@@ -251,7 +251,7 @@
   "existingRedactionSamples": [
     {
       "source": "server/internal/database/reports.go",
-      "sample": "Owner report status projection includes reference/type/status/timestamps only, not author, allegation body or staff review receipts."
+      "sample": "Owner report status projection includes reference/type/status/timestamps and derived current export permission boolean/revision only, not author, allegation body, staff reasons/actors or review receipts."
     },
     {
       "source": "server/internal/database/moderation_chat_target.go",
@@ -271,7 +271,7 @@
     }
   ],
   "internalOwnerSections": {
-    "status": "locally-verified-internal-only-not-complete-export-or-delivery",
+    "status": "locally-verified-owner-section-delivery-not-complete-export-unpublished",
     "sources": [
       "server/internal/database/owner_export_section.go",
       "server/internal/database/owner_export_section_test.go",
@@ -279,10 +279,16 @@
       "server/internal/database/owner_profile_snapshot.go",
       "server/internal/database/owner_profile_snapshot_test.go",
       "server/internal/database/owner_progress_snapshot.go",
-      "server/internal/database/owner_progress_snapshot_test.go"
+      "server/internal/database/owner_progress_snapshot_test.go",
+      "server/internal/database/approved_owner_export.go",
+      "server/owner_export.go",
+      "server/owner_export_test.go",
+      "src/ui/OwnerExportDownload.js",
+      "tests/OwnerExportDownload.test.js",
+      "src/core/RecoveryLinkBoot.js"
     ],
     "scope": "Reuse prepared schema-compatible explicit profile/gameplay DTOs; add a new password-fenced current-owner reader with predecode projected BSON bounds16KiB/profile and256KiB/one character, output up to512KiB, single source/batch, three-second deadline and bounded bcrypt cost. No arbitrary collection/field query, whole User export or partial/truncated response.",
-    "remaining": "Authenticated owner-session public delivery, all remaining supported account-data categories and pagination, manifest of exclusions/unavailable categories, removal/anti-resurrection and acceptance checks. Staff approval is separate from case review, and the new approved reader checks the exact owner/case/permission version before and after source reading; no owner download transport is enabled yet."
+    "remaining": "All remaining supported account-data categories and pagination, manifest of exclusions/unavailable categories, removal/anti-resurrection and acceptance checks. Staff approval is separate from case review; approved sections now have owner-session transport/current proof and permission rechecks, with private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
   },
   "implementationRemaining": [
     "Complete bounded owner-scoped export preparation, access/redaction tests and safe delivery. The request queue is not a complete account export.",
