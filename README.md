@@ -420,7 +420,16 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.5`. This narrow connection maintenance fix
+- Current source version: `Alpha 1.74.6`. Narrow persistent table ordering prevents
+  delayed lobbies or previous hands from replacing newer ready blackjack,
+  Hold'em, roulette and baccarat views. Exact decimal-string table versions
+  retain ordering beyond JavaScript's precise integer range; shared occupants,
+  changed ownership and saving/unavailable feedback still update normally.
+  Wager authority, payouts, timers, currencies and schema22 are unchanged.
+  Alpha1.74.5 is independently accepted live after CI37253104723 all ten jobs
+  succeeded and exact public identity/readiness/login/notes/runtime checks passed.
+  This1.74.6 candidate still requires its own CI/deployment/public acceptance.
+  The included earlier connection maintenance fix
   serves already-due keepalives before queued control traffic can defer them.
   A single writer retains control-before-state ordering and existing ping/idle,
   frame and access guards. Client loot requests are single-flight per pile until

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -486,21 +487,23 @@ func tickBlackjack(now time.Time, ids ...string) error {
 }
 
 type blackjackTableView struct {
-	Currency    string                 `json:"currency"`
-	Balance     int                    `json:"balance"`
-	MinBet      int                    `json:"minBet"`
-	BetStep     int                    `json:"betStep"`
-	ServerNow   time.Time              `json:"serverNow"`
-	NextRoundAt time.Time              `json:"nextRoundAt"`
-	MaxBet      int                    `json:"maxBet"`
-	Available   bool                   `json:"available"`
-	RoundID     string                 `json:"roundId,omitempty"`
-	Phase       string                 `json:"phase,omitempty"`
-	Processing  bool                   `json:"processing"`
-	Players     []blackjackParticipant `json:"players"`
-	DealAt      time.Time              `json:"dealAt"`
-	Round       *game.BlackjackView    `json:"round,omitempty"`
-	Gold        int                    `json:"gold"`
+	TableID      string                 `json:"tableId"`
+	TableVersion string                 `json:"tableVersion,omitempty"`
+	Currency     string                 `json:"currency"`
+	Balance      int                    `json:"balance"`
+	MinBet       int                    `json:"minBet"`
+	BetStep      int                    `json:"betStep"`
+	ServerNow    time.Time              `json:"serverNow"`
+	NextRoundAt  time.Time              `json:"nextRoundAt"`
+	MaxBet       int                    `json:"maxBet"`
+	Available    bool                   `json:"available"`
+	RoundID      string                 `json:"roundId,omitempty"`
+	Phase        string                 `json:"phase,omitempty"`
+	Processing   bool                   `json:"processing"`
+	Players      []blackjackParticipant `json:"players"`
+	DealAt       time.Time              `json:"dealAt"`
+	Round        *game.BlackjackView    `json:"round,omitempty"`
+	Gold         int                    `json:"gold"`
 }
 
 func blackjackViewFor(playerID string) blackjackTableView {
@@ -512,7 +515,7 @@ func blackjackViewFor(playerID string) blackjackTableView {
 		id = player.CasinoSeat.TableID
 	}
 	blackjackCached, blackjackAvailable := getBlackjackCache(id)
-	view := blackjackTableView{ServerNow: time.Now(), Available: blackjackAvailable, Players: []blackjackParticipant{}, MaxBet: game.BlackjackMaxBet}
+	view := blackjackTableView{TableID: id, ServerNow: time.Now(), Available: blackjackAvailable, Players: []blackjackParticipant{}, MaxBet: game.BlackjackMaxBet}
 	view.Currency, _ = database.CasinoCurrencyForRecord(id)
 	view.MinBet, view.MaxBet, view.BetStep = game.CasinoBetLimits("blackjack", view.Currency)
 	if !blackjackAvailable || blackjackCached == nil {
@@ -524,6 +527,7 @@ func blackjackViewFor(playerID string) blackjackTableView {
 		return view
 	}
 	view.RoundID, view.Phase, view.Processing, view.Players, view.DealAt = state.RoundID, state.Phase, blackjackCached.Pending != nil, state.Players, state.DealAt
+	view.TableVersion = strconv.FormatInt(blackjackCached.Version, 10)
 	if state.Phase == "complete" {
 		view.NextRoundAt = state.FinishedAt.Add(casinoResultPause)
 	}

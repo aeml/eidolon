@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -482,25 +483,27 @@ type houseParticipantView struct {
 	Payout   int                `json:"payout"`
 }
 type houseTableView struct {
-	Game        string                 `json:"game"`
-	Currency    string                 `json:"currency"`
-	Rules       string                 `json:"rules"`
-	Balance     int                    `json:"balance"`
-	MinBet      int                    `json:"minBet"`
-	MaxBet      int                    `json:"maxBet"`
-	BetStep     int                    `json:"betStep"`
-	Available   bool                   `json:"available"`
-	Processing  bool                   `json:"processing"`
-	RoundID     string                 `json:"roundId"`
-	Phase       string                 `json:"phase"`
-	ServerNow   time.Time              `json:"serverNow"`
-	DealAt      time.Time              `json:"dealAt"`
-	RevealAt    time.Time              `json:"revealAt"`
-	NextRoundAt time.Time              `json:"nextRoundAt"`
-	Players     []houseParticipantView `json:"players"`
-	Number      *int                   `json:"number,omitempty"`
-	Baccarat    *game.BaccaratResult   `json:"baccarat,omitempty"`
-	Spots       []game.RouletteSpot    `json:"spots,omitempty"`
+	TableID      string                 `json:"tableId"`
+	TableVersion string                 `json:"tableVersion,omitempty"`
+	Game         string                 `json:"game"`
+	Currency     string                 `json:"currency"`
+	Rules        string                 `json:"rules"`
+	Balance      int                    `json:"balance"`
+	MinBet       int                    `json:"minBet"`
+	MaxBet       int                    `json:"maxBet"`
+	BetStep      int                    `json:"betStep"`
+	Available    bool                   `json:"available"`
+	Processing   bool                   `json:"processing"`
+	RoundID      string                 `json:"roundId"`
+	Phase        string                 `json:"phase"`
+	ServerNow    time.Time              `json:"serverNow"`
+	DealAt       time.Time              `json:"dealAt"`
+	RevealAt     time.Time              `json:"revealAt"`
+	NextRoundAt  time.Time              `json:"nextRoundAt"`
+	Players      []houseParticipantView `json:"players"`
+	Number       *int                   `json:"number,omitempty"`
+	Baccarat     *game.BaccaratResult   `json:"baccarat,omitempty"`
+	Spots        []game.RouletteSpot    `json:"spots,omitempty"`
 }
 
 func houseViewFor(owner string) *houseTableView {
@@ -514,7 +517,7 @@ func houseViewFor(owner string) *houseTableView {
 	if !ok || houseRules(table.Game) == "" {
 		return nil
 	}
-	v := &houseTableView{Game: table.Game, Currency: table.Currency, Rules: houseRules(table.Game), Balance: casinoBalance(p, table.Currency), ServerNow: time.Now(), Players: []houseParticipantView{}}
+	v := &houseTableView{TableID: table.ID, Game: table.Game, Currency: table.Currency, Rules: houseRules(table.Game), Balance: casinoBalance(p, table.Currency), ServerNow: time.Now(), Players: []houseParticipantView{}}
 	v.MinBet, v.MaxBet, v.BetStep = game.CasinoBetLimits(table.Game, table.Currency)
 	entry := houseCache[table.ID]
 	if !entry.available || entry.record == nil {
@@ -525,6 +528,7 @@ func houseViewFor(owner string) *houseTableView {
 		return v
 	}
 	v.Available, v.Processing = true, entry.pendingOwner != ""
+	v.TableVersion = strconv.FormatInt(entry.record.Version, 10)
 	v.RoundID, v.Phase, v.DealAt, v.RevealAt = s.RoundID, s.Phase, s.DealAt, s.RevealAt
 	if s.Game == "roulette" {
 		v.Spots = game.RouletteSpots()

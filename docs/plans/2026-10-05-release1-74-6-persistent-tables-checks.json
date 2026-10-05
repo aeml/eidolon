@@ -1,0 +1,20 @@
+{
+  "release": "Alpha 1.74.6",
+  "status": "EXACT_NARROW_LOCAL_CHECKS_PASSED_CI_PUBLIC_ACCEPTANCE_REQUIRED",
+  "base": "Fresh origin/master59dfed48b0d83515391b3592d02d7aa0ba1ec432, accepted Alpha1.74.5. Isolated narrow maintenance worktree; selected production/UI/test changes from prepared9db4c8ef, no future driver/schema24/privacy/ops scope. Owner dirty worktree unchanged.",
+  "finding": "Hand-local revisions do not order different lobbies/hands. Earlier prepared before-fix tests independently reproduced all three UIs restoring older lobby3 failures and house driver choosing an older round1 failure. These fixtures demonstrate the ordering defect, not the unique cause of any100-player timeout or rejection.",
+  "scope": "Four table-game projections expose existing saved table identity and int64 version as an exact canonical decimal string. Client retains newer ready view only for unchanged owner/private seat/table/seat/currency/game when a known older counter arrives. Fresh occupants still render; changed ownership/tables/currencies, unavailable/saving and equal/newer/legacy/malformed versions retain ordinary handling. Existing hand-local compatibility guard retained. No schema/index, wallet authority, economic rule, payout, timer, permission, payment or account wipe change.",
+  "checks": {
+    "client": "Exact narrow CasinoTableOrdering/BlackjackTableUI/PokerTableUI/HouseTableUI/CasinoController/VersionPresentation486 tests PASS10.964s. Covers all UI regressions, precision boundary and ordering boundaries plus cumulative version metadata/notes. Affected ESLint and diff whitespace pass.",
+    "server": "Exact narrow root projection/view/notification race checks PASS2.121s, including all four game projections at9007199254740993 then9007199254740994 across new hand identities. Exact version is a JSON string. No production database/player data accessed.",
+    "browser": "Native System Chrome phone poker presentation PASS1/13.5s including private cards, stack sizing, ordinary selected raise and safe leave. Separate roulette/baccarat390px layouts PASS2/18.4s with shared seats/dealer, bounded controls and normal reveal/result presentation. Synthetic presentation, not funded connected gameplay, real phone or100-player evidence."
+  },
+  "versions": "Package/lock/login/release/server/container/Compose/deploy/CI/disposable-QA build defaults1.74.6; own cumulative notes inserted with all prior versions retained. Later1.75–1.79 milestones remain explicitly uncompleted.",
+  "sourceSHA256": {
+    "src/ui/CasinoTableOrdering.js": "bd130966f68638de7066968dc2141c41ab00eea2dea3c2c0ca80a3ad33d5c603",
+    "server/casino_blackjack_sessions.go": "2cfe8e8568dffe721bf6d86776b2134c0083612f2eb85ab153242be3227958d8",
+    "server/casino_house_sessions.go": "2b0b000bcd1f4bf4c9a73dc5fd355e7de25fcb3734691b743ceaaea5fa754625",
+    "server/casino_poker_sessions.go": "fa2d8aa8e24f6e5ec4e9f6db237132b91b168cca0badf16714d3253be12ce620"
+  },
+  "publication": "Local narrow candidate only. Fresh ordinary remote merge before non-force publication; own mandatory CI/deployment/live QA plus independent public identity/readiness/login/notes/changed-byte verification still required. Accepted1.74.5 remains the live baseline. No full roadmap, beta, finale,100-client capacity or final-art completion claim."
+}

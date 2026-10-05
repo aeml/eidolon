@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.74.5';
+const currentVersion = '1.74.6';
+
+test('1.74.6 explains cross-hand persistent table ordering without changing wagering', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.74.6"'), previous = html.indexOf('data-version="1.74.5"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Blackjack', "Hold'em", 'roulette', 'baccarat', 'persistent version',
+        'hand transitions', 'Shared seats', 'Changed ownership', 'unavailable or saving',
+        'decimal-string', 'Wager authority', 'payouts', 'timers', 'No account wipe',
+        'schema migration', '100-player capacity', 'unfinished 1.75–1.79', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.74.5 explains due keepalive scheduling without changing connection guards', () => {
     const html = fs.readFileSync('index.html', 'utf8');
