@@ -1,7 +1,7 @@
 {
   "release": "Alpha 1.74.4",
   "status": "LOCAL_CHECKS_PASSED_PUBLICATION_PENDING",
-  "base": "Freshly fetched origin/master 8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0. Prior 1.74.3 publication is still monitored separately; do not supersede an active deployment.",
+  "base": "Freshly fetched origin/master8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0. Prior1.74.3 exact all-ten-job terminal CI and independent public IPv4 identities/readiness/login/notes passed before this publication.",
   "scope": "Only blackjack/Hold'em interface freshness guards, focused tests and version/notes. Preserve schema22, server authority, wagers, payouts, timers, currencies, accounts, permissions and access. Exclude all prepared load-driver, privacy, persistence and operations changes.",
   "reproduction": "Prepared synthetic regression tests failed before the correction: a lower-revision ready snapshot restored a passed own turn in both card-table interfaces. This proves a UI defect, not the cause of the two prior actual100 blackjack rejections.",
   "change": "Keep the current game view only when the same player, private seat session, currency and nonempty hand identity receive a ready, nonprocessing lower safe-integer revision. Still apply fresh presence. Equal/newer revisions, changed owner/seat/hand and unavailable/saving feedback follow existing paths. Not a general transport-ordering fence.",

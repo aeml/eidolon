@@ -433,8 +433,12 @@ Notes:
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.74.2`, exact
-  c0ea6ec48b13eb4fa2a077875639a3f5ebe8ff16, successful CI37235677126 (all ten jobs).
+- Last independently verified live release: `Alpha 1.74.3`, exact
+  8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0, successful CI37244170015 (all ten jobs).
+  Public IPv4 frontend/backend identities/database readiness/login/notes agree.
+  [Acceptance](docs/plans/2026-10-04-release1-74-3-casino-checks.json) retains the
+  narrow schema22 scope; no prepared future-code or100-player capacity approval.
+  Prior1.74.2 proof also retains its original scope:
   Post-terminal public IPv4 frontend/backend identities and database readiness
   agree; public AdminUI matches the exact source after publisher import rewriting.
   This verifies the requested real/test filters and recorded-session UI deployment,
