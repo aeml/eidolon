@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 social/market checkpoint:** Added owner-scoped social relationship
+pages (not other players' private block/ignore choices) and marketplace summaries
+with only own refunds and applicable claims/deposit. Ownership follows the actual
+account-scoped game player ID, never a client target. Narrow source projections,
+common bounded page handling and current proof/approval/session fences pass
+focused UI/race and actual disposable Mongo10/2 pagination/redaction/unchanged
+custody/revoke checks. Fixture removed. Full held-item/shared-operation,
+guild/reward/PvP coverage, coordinated removal/restore, notices/provider review
+and1.75 publication remain open. See
+[social/market evidence](docs/plans/2026-10-05-release1-75-social-market-checks.json).
+
 **October5 account/session checkpoint:** Profile exports now include the roster,
 recorded VIP periods and public moderation notices, not staff/private provider
 metadata. Added retained owner login/resume/disconnect pages with unchanged

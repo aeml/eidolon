@@ -288,14 +288,18 @@
       "server/internal/database/owner_session_export.go",
       "server/internal/database/owner_session_export_test.go",
       "server/internal/database/owner_session_export_mongo_test.go",
+      "server/internal/database/owner_social_market_export.go",
+      "server/internal/database/owner_social_market_export_test.go",
+      "server/internal/database/owner_social_market_export_mongo_test.go",
+      "server/client_dispatch.go",
       "server/owner_export.go",
       "server/owner_export_test.go",
       "src/ui/OwnerExportDownload.js",
       "tests/OwnerExportDownload.test.js",
       "src/core/RecoveryLinkBoot.js"
     ],
-    "scope": "Schema-compatible explicit profile/gameplay DTOs and owner-submitted report/retained-session pages. Profile includes roster, recorded VIP periods and current public moderation notices. Password-fenced reads with predecode projected BSON bounds16KiB/profile,256KiB/one character,16KiB/report and2KiB/session event; pages cap ten entries plus one continuation candidate. Output up to512KiB, three-second deadline and bounded bcrypt cost. Oversized selected rows become failure sentinels, never silent skips. Session filters preserve current retention/expiry; no arbitrary collection/field query, whole User export or partial/truncated completion claim.",
-    "remaining": "Remaining social/economic/reward categories and paging, removal/anti-resurrection, full notices/provider review and acceptance checks. Supported sections include honest coverage manifests. Staff approval is separate from case review; all pages retain current proof and permission/session fences, with private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
+    "scope": "Explicit profile/gameplay DTOs and owner-submitted report, retained-session, current social relationship and marketplace summary pages. Profile includes roster, recorded VIP periods and current public moderation notices. Password-fenced reads with predecode projected BSON bounds16KiB/profile,256KiB/one character,16KiB/report or market summary and2KiB/session or social event; pages cap ten entries plus one continuation candidate. Output up to512KiB, three-second deadline and bounded bcrypt cost. Oversized selected rows become failure sentinels, never silent skips. Session filters preserve current retention/expiry; social omits others' private block/ignore choices and market only projects own refund amounts/applicable claims. No arbitrary collection/field query, whole User export or partial/truncated completion claim.",
+    "remaining": "Guild/invite and further economic/reward/PvP/raid coverage and paging, full held-item/shared-operation handling, removal/anti-resurrection, complete notices/provider review and acceptance checks. Current social relationship and marketplace summaries are now supported with honest coverage limits. Staff approval is separate from case review; all pages retain current proof and permission/session fences, with private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
   },
   "implementationRemaining": [
     "Complete bounded owner-scoped export preparation, access/redaction tests and safe delivery. The request queue is not a complete account export.",

@@ -86,3 +86,10 @@ test('retained session history uses its own page format and requires manual save
     ui.save.click();ui.next.click();expect(ui.before.value).toBe(next);expect(ui.password.value).toBe('');expect(send).toHaveBeenCalledTimes(1);
     ui.section.value='reports';ui.section.dispatchEvent(new Event('change'));expect(ui.before.value).toBe('');expect(ui.next.hidden).toBe(true);
 });
+test.each([['social','eidolon-owner-social-relationships'],['market','eidolon-owner-marketplace-summary']])('%s summaries retain private manual pagination', (section,format)=>{
+    ui.section.value=section;ui.section.dispatchEvent(new Event('change'));submit();
+    expect(send).toHaveBeenLastCalledWith(expect.objectContaining({section,characterName:'',before:''}));
+    ui.handleResult({...response(),data:{format,version:1,entries:[{id:'0123456789abcdef01234561'}],next:'0123456789abcdef01234560',coverage:{complete_account_export:false}}});
+    expect(ui.prepared.text).toContain(format);expect(ui.next.disabled).toBe(true);expect(send).toHaveBeenCalledTimes(1);expect(URL.createObjectURL).not.toHaveBeenCalled();
+    ui.save.click();ui.next.click();expect(ui.before.value).toBe('0123456789abcdef01234560');expect(send).toHaveBeenCalledTimes(1);
+});

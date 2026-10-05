@@ -14,7 +14,7 @@ type ownerExportCoverage struct {
 func ownerSectionCoverage(section string) ownerExportCoverage {
 	coverage := ownerExportCoverage{
 		WithheldPrivate:  []string{"Credential hashes, recovery digests and authentication secrets", "Private staff reasons, review receipts and economic replay/custody payloads", "Other accounts' private records"},
-		SeparateHandling: []string{"Additional account/staff and historical moderation information", "Friendships, guilds/invites, auctions/trades and economic/reward outcome summaries", "PvP profiles, raid lockouts and shared casino state", "Save journals, server logs, backups and infrastructure records", "Postmark/analytics provider copies and data held by your browser/device"},
+		SeparateHandling: []string{"Additional account/staff and historical moderation information", "Guilds/invites, direct trades and economic/reward outcome summaries", "PvP profiles, raid lockouts and shared casino state", "Save journals, server logs, backups and infrastructure records", "Postmark/analytics provider copies and data held by your browser/device"},
 		Consistency:      "Current bounded section read, not a restore image or cross-store point-in-time account snapshot. Unsupported data is not assumed absent.",
 	}
 	switch section {
@@ -32,6 +32,14 @@ func ownerSectionCoverage(section string) ownerExportCoverage {
 		coverage.Included = []string{"One page of retained login, session-resume and disconnect events for this account", "Event time/action/result and recorded connection start on disconnect when available; current retention cutoff"}
 		coverage.NotIncluded = []string{"Account profile, character gameplay and owner-submitted report pages", "Non-session staff/activity events, private notes/summary/correlation, other accounts' events", "Expired/unavailable history and active/AFK gameplay measurement"}
 		coverage.Consistency = "Immutable-ID keyset pages, at most ten retained events per file, not a frozen account snapshot or chronological event-time ordering. The current retention cutoff and per-record expiry apply to each read; missing historical connection starts are not invented. Connection duration is not active gameplay."
+	case "social":
+		coverage.Included = []string{"One page of current accepted friendships, sent/received pending requests and your own block/ignore choices", "Counterpart public gameplay player ID, direction, status and timestamps; no account/profile lookup"}
+		coverage.NotIncluded = []string{"Other account sections, guilds/invites and marketplace summary pages", "Other players' private block/ignore choices and deleted relationship history"}
+		coverage.Consistency = "Current gameplay relationships in immutable-ID keyset pages of at most ten, not a frozen account snapshot. Game player IDs follow the current account-scoped player-username binding. Deleted/changed relationships are not reconstructed."
+	case "market":
+		coverage.Included = []string{"One page of current stored auctions where you are seller/current bidder/buyer or have pending refunds", "Your participation flags, public listing/item summary and prices/times/status; only your refund amounts and applicable claim/deposit information"}
+		coverage.NotIncluded = []string{"Other account sections and unrelated auction listings", "Other players' identity/refunds/claim state and private operation/replay payloads", "Full held-item stats/appearance/socket data, cleared historical bids/refunds and unpublished listing/bid operations"}
+		coverage.Consistency = "Current marketplace summaries in immutable-ID keyset pages of at most ten, not a frozen account snapshot/ledger or full item/operation export. Listings/refunds/claim state may change during paging; unsupported historical/private custody data needs staff handling."
 	}
 	return coverage
 }

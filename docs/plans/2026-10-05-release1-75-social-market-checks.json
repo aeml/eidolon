@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "e0a7843b",
+  "status": "social-and-market-summaries-locally-verified-unpublished-milestone-incomplete",
+  "scope": [
+    "Owner's accepted friendships, sent/received pending requests and own block/ignore choices; other players' private block/ignore choices excluded. Existing public counterpart gameplay IDs only, no account/profile lookup.",
+    "Current marketplace summaries for seller/current bidder/buyer/pending-refund owner. Public listing/item summary and prices/status/time; own refund amounts and applicable claim/deposit fields only. Other participants' IDs/refunds/claim state and raw replay/custody payloads excluded before decoding.",
+    "Ownership follows actual account-scoped player-username binding in client_dispatch.go, never a client-supplied target. Current proof/approval/session/admission boundaries retained, including post-read credential-reset fence.",
+    "Common narrow projected page reader: eleven source candidates, ten output entries, canonical immutable-ID continuation, three-second deadline and bounded batches/output.2KiB/social row and16KiB/market summary; malformed/oversized selected sources fail rather than silently disappear.",
+    "Explicit coverage limits: summaries do not claim full held-item stats/appearance/socket data, cleared historical bids/refunds, unpublished operations, archived data or complete account export. No economic/relationship mutation, retention change or automatic deletion."
+  ],
+  "checks": [
+    {"scope": "Focused root/database race regressions", "result": "Root3.993s/database2.041s pass: protocol cursor/category bounds, credential/approval boundaries, private-choice/source/order/size/reset rejection and explicit source DTO JSON exclusion. An earlier coverage test caught the marketplace consistency text missing its explicit account-snapshot limitation; wording corrected, no guard weakened."},
+    {"scope": "Owner download/account support UI", "result": "Four Jest suites78 tests pass5.837s, including both added category formats, target-free requests, proof discard and explicit Save/next without automatic read/download."},
+    {"scope": "Actual disposable Mongo7.0.14", "result": "Social/market, existing session/report/source/approval focused race suite pass5.231s on explicit loopback32939. Both twelve-record cohorts produce exact10/2 pages. Incoming other-player block/ignore choices, unrelated records, private counterpart/refund/replay/item metadata excluded. Only own pending refund amounts and applicable claims/deposit delivered. Oversized selected auction fails, relationship count15 and auction count14 remain unchanged, revoke stops older-page reads."},
+    {"scope": "Lint/whitespace", "result": "Affected UI/test ESLint and diff whitespace checks pass."},
+    {"scope": "Cleanup and limits", "result": "Exact owned container eidolon-social-market-export-qa-175-1005 removed. No production/player writes, real account download, actual browser/device-save acceptance, provider mail, TTL/schema change or long capacity/campaign/raid rerun."}
+  ],
+  "remaining": [
+    "Guild/invite and economic/reward/PvP/raid owner-facing coverage and appropriate bounded staff handling for remaining stores; full held-item/shared-operation data is not supplied by marketplace summaries.",
+    "Coordinated individually authorized removal, shared custody/replay preservation and journal/archive anti-resurrection, complete notices/provider review.",
+    "Complete milestone notes/version, CI and exact live acceptance;1.75 remains unpublished and the full1.99 goal active."
+  ]
+}

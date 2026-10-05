@@ -55,12 +55,16 @@ func (db *DB) readOwnerExportQuery(parent context.Context, owner, password strin
 	if err != nil || cost > maximumOwnerExportPasswordCost || bcrypt.CompareHashAndPassword([]byte(proof.Hash), []byte(password)) != nil || ctx.Err() != nil {
 		return nil, errOwnerExportSection
 	}
-	if section == "reports" || section == "sessions" {
+	if section == "reports" || section == "sessions" || section == "social" || section == "market" {
 		var encoded []byte
 		if section == "reports" {
 			encoded, err = db.readOwnerReportPage(ctx, owner, query.Before, at, maxBytes)
-		} else {
+		} else if section == "sessions" {
 			encoded, err = db.readOwnerSessionPage(ctx, owner, query.Before, at, maxBytes)
+		} else if section == "social" {
+			encoded, err = db.readOwnerFriendPage(ctx, owner, query.Before, at, maxBytes)
+		} else {
+			encoded, err = db.readOwnerMarketPage(ctx, owner, query.Before, at, maxBytes)
 		}
 		// These pages are in other collections: recheck the exact credential after
 		// the page read so a concurrent reset/removal cannot admit old proof.

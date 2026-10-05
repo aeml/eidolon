@@ -38,7 +38,8 @@ The bounded account reader requires the exact approved case/owner/permission
 revision, current owner password, and checks permission again before returning
 data. Staff role alone is not an owner's password proof. The unpublished branch
 now provides authenticated owner delivery of profile, one-character gameplay,
-paged owner-submitted reports and retained login/session history. Complete category coverage remains unimplemented. Approval itself
+paged owner-submitted reports, retained login/session history, current social
+relationships and marketplace summaries. Complete category coverage remains unimplemented. Approval itself
 changes permission metadata only; the owner must separately request a section
 and click Save. No deletion action exists.
 Do not put tokens,
@@ -117,6 +118,26 @@ available. Older missing starts are not backfilled. Connection duration is not
 active or AFK gameplay. Pages follow immutable IDs, not event-time ordering, and
 history may expire/change between reads. No retained record is modified.
 
+Social pages include accepted friendships, sent/received pending requests and
+the owner's own block/ignore choices. Incoming private block/ignore choices by
+someone else are excluded, not disclosed as relationship statuses. Counterparts
+are the existing public gameplay player IDs; no other account/profile lookup is
+performed. Ownership uses the current server's account-scoped `player-username`
+binding, not a client-provided character/player target. Deleted relationships
+are not reconstructed. Oversized or malformed selected rows fail the page.
+
+Marketplace pages cover current stored auctions where that account is seller,
+current bidder, buyer or has a pending refund. They expose public listing/item
+summary, price/time/status, owner participation and only the owner's refund
+amounts and applicable deposit/claim information. Other participants' identifiers,
+refunds, claim state and internal replay/custody payloads are excluded. Refunds
+are owner-filtered before decoding. Full held-item stats/appearance/socket data,
+cleared historical bids/refunds and unpublished economic operations still require
+separate handling; these summaries are not a full escrow/operation export or a
+restore image. No export changes the listed items, funds, claims or relationships.
+Both use the same ten-entry manual continuation, proof/approval/session fences,
+three-second deadline and failure sentinels. No category gets a client target.
+
 Every profile, gameplay and report file includes a coverage manifest naming its
 included fields, omitted sections, withheld private/security data and categories
 requiring separate handling. Unsupported categories are not assumed absent and
@@ -132,6 +153,7 @@ work. Neither this control nor the request queue is a complete
 account-export facility. See the [delivery checks](2026-10-05-release1-75-delivery-checks.json).
 See also [report-page and manifest checks](2026-10-05-release1-75-report-page-checks.json).
 See [account and session checks](2026-10-05-release1-75-account-session-checks.json).
+See [social and marketplace checks](2026-10-05-release1-75-social-market-checks.json).
 
 ## Removal review procedure — no automatic deletion
 
