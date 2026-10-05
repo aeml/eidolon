@@ -1,0 +1,11 @@
+{
+  "status": "PREPARED_DRIVER_ONLY_FOCUSED_CHECKS_PASSED",
+  "scope": "Remove unused full-world and bag decision copies from casino controller ticks. Own-entity snapshots, socket decoding, world cache, incoming traffic, decision cadence, ordinary casino actions, money authority and all capacity acceptance thresholds remain unchanged. Every non-casino controller retains detached shallow copies.",
+  "regression": "Casino no-copy assertion failed before the early return (0.015s). Corrected focused decision/casino/blackjack/house/poker/party race suites passed15.485s.",
+  "microbenchmark": {
+    "durationSeconds": 0.707,
+    "entities128": {"ordinaryNs": 69558, "ordinaryBytes": 40792, "ordinaryAllocations": 133, "casinoNs": 1.924, "casinoBytes": 0, "casinoAllocations": 0},
+    "entities1024": {"ordinaryNs": 593502, "ordinaryBytes": 303872, "ordinaryAllocations": 1031, "casinoNs": 1.918, "casinoBytes": 0, "casinoAllocations": 0}
+  },
+  "limits": "Synthetic helper microbenchmark, not total driver timing, production performance, a causal explanation of previous failures, or100-player capacity acceptance. No unchanged combined run repeated. Unpublished preparation branch; future schema/policy/ops work not included in maintenance deployment."
+}

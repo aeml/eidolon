@@ -900,12 +900,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 			stateMu.RLock()
 			me, ok := worldState[myID]
 			// Copy state to avoid holding lock during logic
-			currentState := make(map[string]Entity)
-			for k, v := range worldState {
-				currentState[k] = v
-			}
-			currentInv := make([]Item, len(inventory))
-			copy(currentInv, inventory)
+			currentState, currentInv := copyDecisionDetails(worldState, inventory, casino != nil)
 			selling := isSelling
 			stateMu.RUnlock()
 
