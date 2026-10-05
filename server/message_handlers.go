@@ -22,6 +22,7 @@ var messageHandlers = map[string]messageHandler{
 	MsgAdminReports:               handleAdminRead,
 	MsgAdminReportReview:          handleAdminReportReview,
 	MsgAdminPrivacyExportApproval: handleAdminPrivacyExportApproval,
+	MsgAdminRemovalReview:         handleAdminRemovalReview,
 	MsgReportStatus:               handleOwnReportStatus,
 	MsgModerationNotice:           handleOwnModerationNotice,
 	MsgAdminGrantGold:             handleAdminMutation,

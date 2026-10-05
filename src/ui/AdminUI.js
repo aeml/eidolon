@@ -1,6 +1,7 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { AdminOperations } from './AdminOperations.js';
 import { AdminReportReview } from './AdminReportReview.js';
+import { AdminRemovalReview } from './AdminRemovalReview.js';
 import { AdminChatModeration } from './AdminChatModeration.js';
 
 // Visibility is only presentation. Every read and operation must be
@@ -34,6 +35,7 @@ export class AdminUI {
                         <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="admin_report_review">Report review requests</option><option value="login">Login</option>
                         <option value="admin_chat_moderation">Moderation decisions</option>
                         <option value="admin_privacy_export_approval">Export approval decisions</option>
+                        <option value="admin_removal_review">Removal dependency reads</option>
                         <option value="admin_chat_moderation_target">Moderation target checks</option>
                         <option value="resume">Resume</option><option value="disconnect">Disconnect</option>
                         <option value="admin_grant_gold">Gold grants</option><option value="admin_grant_item">Item creation</option>
@@ -201,14 +203,19 @@ export class AdminUI {
         this.actor.disabled = this.action.disabled = this.reportStatus.disabled = this.reportType.disabled = false;
         const mutation = ['admin_grant_gold_result', 'admin_grant_item_result', 'admin_teleport_result'].includes(type);
         const reviewResult = ['admin_report_review_result', 'admin_privacy_export_approval_result'].includes(type);
+        const removalResult = type === 'admin_removal_review_result';
         const moderationResult = ['admin_chat_moderation_result', 'admin_chat_moderation_target_result'].includes(type);
-        this.setAuthorized(result.authorized === true && (mutation || reviewResult || moderationResult || result.success === true));
+        this.setAuthorized(result.authorized === true && (mutation || reviewResult || removalResult || moderationResult || result.success === true));
         if (mutation) this.operations.handleResult(result);
         if (!this.authorized) {
             this.status.textContent = result.message || 'Administrator access is unavailable.';
             return;
         }
         this.status.textContent = result.message || 'Access verified.';
+        if (removalResult) {
+            for (const review of this.reportReviews) review.handleResult(result);
+            return;
+        }
         if (moderationResult) {
             for (const moderation of this.reportModerations) moderation.handleResult(type, result);
             return;
@@ -273,6 +280,9 @@ export class AdminUI {
             this.reportReviews.push(review);
             if (report.reportType === 'Account Data Export') {
                 this.reportReviews.push(new AdminReportReview(row, report, this, 'export'));
+            }
+            if (report.reportType === 'Account Removal Request') {
+                this.reportReviews.push(new AdminRemovalReview(row, report, this));
             }
             if (this.chatModerationEnabled && ['Player Report', 'Moderation Appeal'].includes(report.reportType)) {
                 this.reportModerations.push(new AdminChatModeration(row, report, this));

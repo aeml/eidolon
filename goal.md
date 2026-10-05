@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 reviewed-removal safeguards checkpoint:** Added a case-quote-bound,
+audited staff dependency read showing14 constant reference-presence flags and
+non-frozen session/pending-character-save observations. It exposes no raw private
+payloads and never converts empty sources or case resolution into removal
+authority. Journal observation does not read/replay/acknowledge/delete saves.
+The restore helper requires an additional explicit privacy/journal-plan
+acknowledgment before Docker/database operations; it is operator attestation,
+not mechanical anti-resurrection proof. Focused UI/race and disposable Mongo
+case/role/audit/source-integrity checks pass. No actual erasure or automatic
+deletion enabled. Durable writer/archive fences before any removal operation,
+provider review and1.75 publication remain open. See
+[review evidence](docs/plans/2026-10-05-release1-75-removal-review-checks.json).
+
 **October5 casino export checkpoint:** Added the nineteenth authenticated owner
 section, selecting the current29 shared table and8 own slot records without
 scanning other players' slots. Own stakes/cards/hands/slot entitlements and pending

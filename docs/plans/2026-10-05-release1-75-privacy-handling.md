@@ -337,6 +337,44 @@ removal/anti-resurrection, provider-policy review and publication remain open.
 
 ## Removal review procedure — no automatic deletion
 
+Administrators now have **Inspect removal dependencies** on a removal-request
+row, separate from case resolution and export approval. This explicit read binds
+to the shown exact case/status/review revision, rechecks that quote after database
+reads and requires current durable staff authority. Delivery fails if audit
+storage, role or current connection cannot be verified, including after blocking
+IO. General history receives only a fixed read description, never the case owner,
+case text, dependency contents or private execution payloads.
+
+The three-second read projects only the bounded case owner and one constant
+presence flag from each of14 current reference categories. It inspects current
+auction/intent, trade, guild membership/invitation/bank, ground/encounter/raid,
+administration, social, competitive and closed casino-catalog/own-slot selectors.
+It does not inspect or settle raw private payloads, count unresolved obligations,
+create tables, alter wallets, purge replay identities or delete anything. Casino
+catalog presence is explicitly **not verified owner participation**. Empty flags
+are not clearance, and missing/failed sources do not become empty observations.
+Account existence is observed, not ownership verification or removal outcome.
+
+Current online-session and exact hashed-path pending-character-save presence are
+separate, non-frozen observations. A missing configured journal volume, linked/
+non-regular file or oversized save fails the read; no configured journal leaves
+that field explicitly not checked. Only presence is observed: character bodies
+are not read, replayed, acknowledged or removed. Activity/guild/PvP journals,
+other hosts/writers, archives, providers/browser copies and durable outcome
+reconciliation remain required manual scope even when every flag is absent.
+All responses explicitly keep removal unsupported and unauthorized. The UI
+provides no delete/settle/restore action, clears observations on disconnect/row
+replacement and has no automatic query, retry, download or persistence.
+
+The Mongo-only restore helper now additionally requires
+`--confirm-privacy-and-journal-plan` before any Docker/database operation, as well
+as loss-of-progress approval and the existing stopped-writer/target safeguards.
+Operators must independently review removal decisions outside an old archive and
+the matching journals/server before reopening. This acknowledgment is an
+operator attestation, **not automated anti-resurrection verification**; it does
+not enable erasure, restart writers or fulfill a request. Updated restore
+instructions explain those limits.
+
 1. Verify the request owner and exact scope. Obtain separate explicit approval
    for any irreversible action; submitting this case is not that approval.
 2. Reconcile characters, auctions and held items/refunds, direct trades, shared
@@ -356,8 +394,11 @@ removal/anti-resurrection, provider-policy review and publication remain open.
    have actually been verified. A review can record deferral or a follow-up
    requirement without claiming erasure.
 
-Coordinated removal and anti-resurrection handling remain implementation and
-verification work. No removal command, worker or scheduled purge is enabled.
+Read-only dependency inspection and an explicit restore-plan gate are implemented
+locally. Coordinated irreversible removal and mechanical writer/journal/archive
+anti-resurrection fences remain implementation and verification work before any
+erasure operation may be enabled. No removal command, worker or scheduled purge
+is enabled. See [review checks](2026-10-05-release1-75-removal-review-checks.json).
 
 ## Current retention and data notice
 

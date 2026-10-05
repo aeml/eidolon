@@ -299,8 +299,20 @@ After explicit recovery approval, specify the exact archive and confirm the
 loss of subsequent progress. The default requires an empty `eidolon` database,
 such as an isolated restoration target. There is no automatic archive selection:
 
+`--confirm-privacy-and-journal-plan` separately acknowledges that the operator
+has reviewed removal decisions retained outside the selected old archive, any
+shared custody/replay obligations, provider/archive copies and the matching
+private journals/server. This is an operator attestation, not a tested automated
+anti-resurrection mechanism. Case resolution is not proof of erasure. No account
+removal command is enabled; before any individually authorized removal is ever
+implemented, durable writer/journal/restore fences must also be implemented and
+verified. Do not reopen recovered data containing accounts that were separately
+removed, blindly replay a pre-removal journal, or use an old backup as the only
+source of removal decisions. A successful restore does not fulfill a privacy
+request or change retention.
+
 ```bash
-./deploy/restore_mongo_archive.sh ./your_dump.archive.gz --confirm-data-loss
+./deploy/restore_mongo_archive.sh ./your_dump.archive.gz --confirm-data-loss --confirm-privacy-and-journal-plan
 ```
 
 Mongo's `--drop` only replaces collections contained in the archive, leaving
@@ -311,7 +323,7 @@ For an approved in-place replacement of a **non-empty** target, additionally
 confirm replacement of the entire fixed `eidolon` database:
 
 ```bash
-./deploy/restore_mongo_archive.sh ./your_dump.archive.gz --confirm-data-loss --replace-eidolon-database
+./deploy/restore_mongo_archive.sh ./your_dump.archive.gz --confirm-data-loss --confirm-privacy-and-journal-plan --replace-eidolon-database
 ```
 
 That explicit mode removes every prior `eidolon` collection before importing the

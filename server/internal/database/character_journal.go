@@ -154,6 +154,33 @@ func (journal *CharacterSaveJournal) Read(username string) (*PendingCharacterSav
 	return journal.readFile(journal.filename(username))
 }
 
+// Review-only observation: existence is not validation of the pending save or
+// proof that account writers are drained. Do not read/export the character body.
+func (journal *CharacterSaveJournal) HasPendingAccountSave(username string) (bool, error) {
+	if journal == nil || username == "" {
+		return false, errors.New("pending save observation unavailable")
+	}
+	journal.mu.Lock()
+	defer journal.mu.Unlock()
+	if info, err := os.Stat(journal.dir); err != nil || !info.IsDir() {
+		return false, errors.New("pending save directory unavailable")
+	}
+	info, err := os.Lstat(journal.filename(username))
+	if errors.Is(err, os.ErrNotExist) {
+		if info, err := os.Stat(journal.dir); err != nil || !info.IsDir() {
+			return false, errors.New("pending save directory unavailable")
+		}
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	if !info.Mode().IsRegular() || info.Size() > maxCharacterJournalBytes {
+		return false, errors.New("pending save requires separate operator handling")
+	}
+	return true, nil
+}
+
 func (journal *CharacterSaveJournal) PendingUsers() ([]string, error) {
 	journal.mu.Lock()
 	defer journal.mu.Unlock()

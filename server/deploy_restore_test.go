@@ -18,7 +18,7 @@ func TestRestoreArchiveRequiresExplicitStoppedTarget(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"success", "no-arguments", "no-confirmation", "unknown-replace-flag", "missing-archive", "bad-gzip", "missing-mongo", "mongo-lookup-failed", "running", "paused", "restarting", "created", "inspect-failed", "ambiguous-api", "api-lookup-failed", "missing-api", "missing-credentials", "probe-failed", "invalid-probe", "nonempty-target", "replace-target", "empty-dry-run-failed", "replace-dry-run-failed", "replace-drop-failed", "restore-failed", "verify-failed"} {
+	for _, scenario := range []string{"success", "no-arguments", "no-confirmation", "no-privacy-plan", "unknown-privacy-plan", "unknown-replace-flag", "missing-archive", "bad-gzip", "missing-mongo", "mongo-lookup-failed", "running", "paused", "restarting", "created", "inspect-failed", "ambiguous-api", "api-lookup-failed", "missing-api", "missing-credentials", "probe-failed", "invalid-probe", "nonempty-target", "replace-target", "empty-dry-run-failed", "replace-dry-run-failed", "replace-drop-failed", "restore-failed", "verify-failed"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			for _, directory := range []string{"deploy", "bin"} {
@@ -109,11 +109,15 @@ if [ "$RESTORE_SCENARIO" = verify-failed ]; then exit 24; fi
 					t.Fatal(err)
 				}
 			}
-			args := []string{filepath.Join(root, "deploy/restore_mongo_archive.sh"), archive, "--confirm-data-loss"}
+			args := []string{filepath.Join(root, "deploy/restore_mongo_archive.sh"), archive, "--confirm-data-loss", "--confirm-privacy-and-journal-plan"}
 			if scenario == "no-arguments" {
 				args = args[:1]
 			} else if scenario == "no-confirmation" {
 				args = args[:2]
+			} else if scenario == "no-privacy-plan" {
+				args = args[:3]
+			} else if scenario == "unknown-privacy-plan" {
+				args[3] = "--skip-privacy-review"
 			} else if strings.HasPrefix(scenario, "replace-") {
 				args = append(args, "--replace-eidolon-database")
 			} else if scenario == "unknown-replace-flag" {

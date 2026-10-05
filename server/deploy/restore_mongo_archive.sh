@@ -8,14 +8,16 @@ cd "${SERVER_DIR}"
 
 # This is an operator-approved, destructive Mongo-only recovery, not rollback.
 # Never choose an archive based on its filename or silently stop a live writer.
-if { [ "$#" -ne 2 ] && [ "$#" -ne 3 ]; } || [ "$2" != "--confirm-data-loss" ] ||
-   { [ "$#" -eq 3 ] && [ "$3" != "--replace-eidolon-database" ]; }; then
-  echo "Usage: $0 /exact/archive.gz --confirm-data-loss [--replace-eidolon-database]" >&2
-  echo "Requires approval for lost progress, stopped writers and a matching journal/server recovery plan." >&2
+if { [ "$#" -ne 3 ] && [ "$#" -ne 4 ]; } || [ "$2" != "--confirm-data-loss" ] ||
+   [ "$3" != "--confirm-privacy-and-journal-plan" ] ||
+   { [ "$#" -eq 4 ] && [ "$4" != "--replace-eidolon-database" ]; }; then
+  echo "Usage: $0 /exact/archive.gz --confirm-data-loss --confirm-privacy-and-journal-plan [--replace-eidolon-database]" >&2
+  echo "Requires approval for lost progress, stopped writers and an independently reviewed privacy/journal/server recovery plan." >&2
+  echo "Review approved removals and archive/journal copies; an old archive must not reinstate removed accounts." >&2
   exit 1
 fi
 replace_database=false
-if [ "$#" -eq 3 ]; then replace_database=true; fi
+if [ "$#" -eq 4 ]; then replace_database=true; fi
 archive_file="$1"
 if [ ! -f "${archive_file}" ] || [ ! -r "${archive_file}" ]; then
   echo "Explicit restore archive is missing or unreadable." >&2
@@ -65,6 +67,8 @@ fi
 
 echo "Using archive: ${archive_file}"
 echo "Keep all writers stopped, including any outside this Compose project. Restoring eidolon only."
+echo "Privacy/journal acknowledgement is an operator attestation, not automated erasure or anti-resurrection verification."
+echo "Before reopening, reconcile independently retained removal decisions and the matching journals; case resolution is not deletion."
 # Authenticate and parse the selected archive before any destructive command.
 # This is not a guarantee that later IO/BSON/index restoration cannot fail.
 docker compose exec -T mongo sh -c 'exec mongorestore --dryRun --gzip --archive --nsInclude="eidolon.*" --stopOnError --username "${MONGO_INITDB_ROOT_USERNAME:?Missing Mongo username}" --password "${MONGO_INITDB_ROOT_PASSWORD:?Missing Mongo password}" --authenticationDatabase admin' < "${archive_file}"
@@ -94,4 +98,4 @@ fi
 echo "Restore succeeded. Verifying collections and DB stats..."
 docker compose exec -T mongo sh -c 'exec mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --quiet --eval '\''const d = db.getSiblingDB("eidolon"); printjson(d.getCollectionNames()); const s = d.stats(); printjson(s); if (s.ok !== 1) quit(1);'\'''
 
-echo "Mongo-only restore and verification complete. Writers remain stopped; verify matching journals and server before reopening."
+echo "Mongo-only restore and verification complete. Writers remain stopped; verify privacy/removal scope, matching journals and server before reopening."

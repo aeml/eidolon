@@ -74,8 +74,9 @@ test.each([{enabled: true, revision: 0}, {enabled: 'true', revision: 1}, {enable
     expect(control().action.disabled).toBe(true);
 });
 
-test('a removal request has case review only and never an export approval control', () => {
+test('a removal request has review and read-only dependencies, never an export approval control', () => {
     ui.refresh.click(); reply({reports: {reports: [{...report, reportType: 'Account Removal Request'}]}});
-    expect(ui.reportReviews).toHaveLength(1);
+    expect(ui.reportReviews).toHaveLength(2);
+    expect(ui.list.textContent).toContain('Inspect removal dependencies');
     expect(ui.list.textContent).not.toContain('Approve owner export');
 });

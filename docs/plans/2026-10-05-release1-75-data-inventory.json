@@ -335,6 +335,25 @@
     ],
     "remaining": "Journals/archives/provider/device copies, coordinated reviewed removal/anti-resurrection, provider-policy review and publication checks. Nineteen supported sections now include own current casino records and ground/auction/admin intents alongside earlier account/report/session/social/market/item/guild/invite/competitive/weekly-raid/trade/bank/room/boss sections, with explicit coverage limits. Hashed operation references are navigation, not encrypted secrets/chronology/authority; auctions/items keep ObjectID cursors and casino uses closed logical references. Existing resolved auction intent/completed admin payload deletion and overwritten casino history are not reconstructed. Staff approval is separate from case review; all pages retain current proof and permission/session fences, private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
   },
+  "removalDependencyReview": {
+    "status": "read-only-local-unpublished-no-removal-operation",
+    "sources": [
+      "server/admin_removal_review.go",
+      "server/admin_removal_review_test.go",
+      "server/internal/database/removal_review.go",
+      "server/internal/database/removal_review_test.go",
+      "server/internal/database/removal_review_mongo_test.go",
+      "server/internal/database/removal_journal_review_test.go",
+      "server/internal/database/character_journal.go",
+      "src/ui/AdminRemovalReview.js",
+      "tests/AdminRemovalReview.test.js",
+      "server/deploy/restore_mongo_archive.sh",
+      "server/deploy_restore_test.go",
+      "server/deploy_restore_integration_test.go"
+    ],
+    "scope": "Exact removal case/status/review quote, current durable staff authority and fail-closed audited delivery. Bounded case owner plus14 current reference-presence flags only, not raw payloads/counts/custody reconciliation. Separate online and exact hashed-path pending-save observations; missing journal configuration is not checked, unavailable volume/nonregular/linked/oversized save fails. No body read, replay, acknowledgement, deletion, settlement or new storage/retention. Empty observations and case resolution never enable erasure. Restore additionally requires independent privacy/journal-plan acknowledgment before Docker operations; attestation is not mechanical anti-resurrection verification.",
+    "remaining": "Individually authorized erasure would first need durable writer/journal/archive removal fences, shared custody reconciliation and independent retained-copy verification. Other journals, hosts/writers, RAM, archives/provider/browser copies require separate handling. No removal operation is enabled or actual player erased."
+  },
   "publicDataNotice": {
     "status": "locally-verified-unpublished",
     "sources": [

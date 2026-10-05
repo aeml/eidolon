@@ -124,7 +124,7 @@ d.users.createIndex({username:1},{name:"username_1",unique:true});`)
 		t.Fatal(err)
 	}
 	restore := func(selected string, replacement bool) ([]byte, error) {
-		args := []string{filepath.Join(root, "deploy/restore_mongo_archive.sh"), selected, "--confirm-data-loss"}
+		args := []string{filepath.Join(root, "deploy/restore_mongo_archive.sh"), selected, "--confirm-data-loss", "--confirm-privacy-and-journal-plan"}
 		if replacement {
 			args = append(args, "--replace-eidolon-database")
 		}

@@ -67,17 +67,18 @@ type adminOnlinePlayer struct {
 }
 
 type adminReadResult struct {
-	ID                string                      `json:"id"`
-	Success           bool                        `json:"success"`
-	Authorized        bool                        `json:"authorized"`
-	ModerationEnabled bool                        `json:"moderationEnabled"`
-	Message           string                      `json:"message"`
-	Players           []adminOnlinePlayer         `json:"players,omitempty"`
-	Next              string                      `json:"next,omitempty"`
-	History           *database.AdminActivityPage `json:"history,omitempty"`
-	Reports           *database.ReportPage        `json:"reports,omitempty"`
-	Account           string                      `json:"account,omitempty"`
-	Items             []game.AdminItemDefinition  `json:"items,omitempty"`
+	Removal           *database.RemovalReviewSnapshot `json:"removal,omitempty"`
+	ID                string                          `json:"id"`
+	Success           bool                            `json:"success"`
+	Authorized        bool                            `json:"authorized"`
+	ModerationEnabled bool                            `json:"moderationEnabled"`
+	Message           string                          `json:"message"`
+	Players           []adminOnlinePlayer             `json:"players,omitempty"`
+	Next              string                          `json:"next,omitempty"`
+	History           *database.AdminActivityPage     `json:"history,omitempty"`
+	Reports           *database.ReportPage            `json:"reports,omitempty"`
+	Account           string                          `json:"account,omitempty"`
+	Items             []game.AdminItemDefinition      `json:"items,omitempty"`
 }
 
 // Read requests have a deliberately small, closed schema. In particular actor,
