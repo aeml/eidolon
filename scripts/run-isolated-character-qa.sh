@@ -659,7 +659,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     npx playwright test tests/e2e/phone-stash-entry.spec.js
     ;;
   town-stash-approach)
-    npx playwright test --retries=0 tests/e2e/town-stash-approach.spec.js
+    npx playwright test --retries=0 tests/e2e/town-stash-approach.spec.js tests/e2e/phone-stash-entry.spec.js
     ;;
   all)
     run_qa_stage initial-stats run_initial_stats &&

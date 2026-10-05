@@ -43,7 +43,7 @@ test('full-size heroes can reach both courtyards without hitting services, camps
         expect(part.material.shadowSide).toBe(THREE.FrontSide);
         expect(part.material.depthTest).toBe(true);
     });
-    for (const [kind, x, z, angle] of [['trading_house', -22, 185, Math.PI / 4], ['forge', -28, 218, Math.PI / 2], ['stash', -16, 193, 0]]) {
+    for (const [kind, x, z, angle] of [['trading_house', -22, 185, Math.PI / 4], ['forge', -28, 218, Math.PI / 2], ['stash', -28, 210, Math.PI / 2]]) {
         const mesh = createProceduralLanternholdStructure(kind); mesh.position.set(x, .5, z); mesh.rotation.y = angle;
         collision.addOrientedCollider(getLanternholdWalkCollider(mesh));
     }

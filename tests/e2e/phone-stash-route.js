@@ -1,8 +1,14 @@
 import { expect } from '@playwright/test';
 import { loginAndEnterWorld, projectEntity } from './helpers.js';
 import { readPhoneInventoryState } from './phone-inventory-observation.js';
+import { walkChronicleByTouch } from './chronicle-phone-inputs.js';
 
 export async function openPhoneStash(page) {
+    const nearby = await page.evaluate(() => Math.hypot(window.game.player.position.x + 28,
+        window.game.player.position.z - 210) <= 12);
+    // The relocated coffer is beyond the spawn camera on narrow screens.
+    // Walk normally into view before finding a real, stable tap target.
+    if (!nearby) await walkChronicleByTouch(page, page.context(), -18, 210, 20_000);
     let target, previous, stableSamples = 0;
     // setViewportSize can return before resize/ResizeObserver has updated the
     // orthographic camera. A visible projection from the previous orientation

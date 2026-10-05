@@ -23,6 +23,14 @@
     }
   },
   "browserFirstAttempt": "Desktop passed; both phone layouts stopped before interaction because the old stash waypoint no longer put the relocated stash on screen. Update normal joystick waypoint to (-18,210), still outside interaction range; no visibility or interaction assertion relaxed.",
+  "initialCIFailure": {
+    "run": 37262588370,
+    "source": "50f7749e2698082ccf79014258dee36dddf95dfd",
+    "client": "9379 pass, two fail: courtyard approach crossed western planter at Z224; canonical geometry still expected smithy roof AABB instead of explicit wall footprint",
+    "guildBank": "Recovery fixture failed at creation due to colliding random two-byte guild tag, before exercising requested storage boundary",
+    "corrections": "Western planter moved to Z230, clear of stash and courtyard routes; exact oriented smithy footprint assertion; all current stash fixtures and atlas anchor updated; narrow-screen stash helper uses normal joystick travel into view; bounded retry only for duplicate fixture creation, no production guild change",
+    "guildBankRetest": "Actual disposable Mongo7.0.14, loopback18189, all TestGuildBank race checks pass49.117s; exact owned container removed, no production database writes"
+  },
   "pending": ["Own CI and exact public release/runtime verification", "Recheck retained aggregate after deployment"],
   "limits": ["Default admin activity retention stays 90 days, not forever", "No full campaign or unchanged 100-player replay", "No real-phone or full future-roadmap acceptance claim"]
 }
