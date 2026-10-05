@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "status": "internal-owner-section-reader-locally-verified-unpublished-milestone-incomplete",
+  "baseCommit": "2cb947ae",
+  "scope": "Reuse schema22-compatible serializers from5bbf1407/b8a4c935 and add bounded owner profile/single-character reader. No future schema24 or operational-monitoring source imported.",
+  "implemented": [
+    "Exact current-owner username and password proof; second source read atomically matches the same credential hash.",
+    "Strict profile/progress sections, bounded owner/character identifiers and response cap; fixed errors never return partial data or database details.",
+    "Credential projection bounds stored hash length before decoding and caps bcrypt cost14 because a context cannot interrupt bcrypt CPU work.",
+    "Aggregate projects one selected character or narrow profile, then checks projected BSON size before driver decoding.16KiB/profile,256KiB/one character,512KiB/output, single source, batch1, maxTimeMS3000 and shared3-second context.",
+    "Explicit nested DTOs exclude credentials, private recovery challenges, staff records, unrelated characters and private replay/custody metadata; not restore images."
+  ],
+  "checks": [
+    {"scope": "Serializer reuse compatibility", "result": "Focused schema22 profile/gameplay race tests pass1.056s; BSON/private source state preserved, versioned UTC deterministic safe JSON and exact response-budget failure tested."},
+    {"scope": "Mocked actual Mongo commands and section reader", "result": "Focused section/profile/gameplay race tests pass1.206s. Success, wrong proof, changed credential, another owner/character, empty/rejected source, small output budget and synthetic cost31 paths; query ownership/reset fence, source projection, size predicate, batch, limit/deadline and pre-query validation inspected."},
+    {"scope": "Actual disposable Mongo7.0.14", "result": "Focused section/profile/gameplay race checks pass2.774s using explicit loopback32934. Large unrelated character/private checkpoint excluded; earned Gold/item stats preserved. Missing character and oversized profile/selected inventory rejected with nil output; saved credentials, both characters and private replay field remain unchanged."},
+    {"scope": "Cleanup", "result": "Exact owned container eidolon-owner-export-qa-175-1005 removed. No production reads/writes, real mail, player mutation, long campaign/raid/capacity rerun."}
+  ],
+  "remaining": [
+    "No public transport or approval authority provided by these internal helpers; integrate explicit staff-approved request cases and current owner-session delivery.",
+    "Complete account-data category coverage, bounded pages for larger sources and an accurate included/excluded/unavailable manifest; these two sections are not a complete export.",
+    "Coordinated separately authorized removal, shared custody/replay safety and journal/backup anti-resurrection handling.",
+    "Privacy/provider review and full release identity/notes/CI/exact live acceptance.1.75 is not published or complete."
+  ]
+}

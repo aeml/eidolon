@@ -18,6 +18,16 @@ Full export/delivery, shared-custody removal and backup-resurrection implementat
 remain open; this is not a1.75 publication or milestone-completion claim.
 See [privacy workflow](docs/plans/2026-10-05-release1-75-privacy-handling.md).
 
+**Next1.75 implementation checkpoint:** Reused explicit profile/gameplay DTOs and
+added a password-fenced single-section reader with bounded Mongo input before
+decoding, bounded response and no whole-account fetch/truncation. Mocked command
+and actual disposable Mongo race checks pass, including cross-owner/character
+denial, cost31 rejection, source-size failure and unchanged private replay state.
+The owned export QA container is removed. These helpers are internal only: staff
+approval admission, full account category coverage and owner-session delivery
+remain next, followed by coordinated removal/restore safeguards and release gates.
+See [section evidence](docs/plans/2026-10-05-release1-75-owner-section-checks.json).
+
 **2026-10-05 maintenance checkpoint:** Alpha 1.74.6 is accepted live at
 1c47e16a after all ten CI37256836401 jobs and exact public IPv4 verification.
 Alpha 1.74.7 is a local candidate: west-side aligned stash, bounded three-second

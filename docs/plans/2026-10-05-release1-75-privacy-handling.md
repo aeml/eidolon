@@ -49,7 +49,16 @@ passwords, identity documents or full account dumps in review reasons.
    email or place the export in a public report response. Record delivery outcome
    and limitations privately without storing the exported data in general audit.
 
-The export generator and delivery channel are still implementation work. The
+The internal reader now supplies bounded profile and one-character gameplay
+sections, using explicit DTOs reused from the prepared serializers. It verifies a
+current password, matches its hash again during the data read, limits projected
+Mongo input before driver decoding, caps output, and fails closed instead of
+truncating a source. Profile input is capped16KiB, one character256KiB, response
+512KiB, with a three-second query deadline and bcrypt cost cap14. A source that
+exceeds its bound requires separately implemented paging/staff handling; it is
+not reported complete. These internal helpers have **no public transport** and
+do not supply admin approval or full account coverage. Staff admission, complete
+category coverage and owner-bound delivery are still implementation work. The
 request queue must not be described as a complete data-export facility.
 
 ## Removal review procedure — no automatic deletion

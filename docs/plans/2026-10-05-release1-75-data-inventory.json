@@ -270,6 +270,20 @@
       "sample": "Recovery verification/reset compare digest, expiry and current hash binding atomically; internal recovery projections never authorize a submitted registration email alone. Inventory validity windows do not imply erasure."
     }
   ],
+  "internalOwnerSections": {
+    "status": "locally-verified-internal-only-not-complete-export-or-delivery",
+    "sources": [
+      "server/internal/database/owner_export_section.go",
+      "server/internal/database/owner_export_section_test.go",
+      "server/internal/database/owner_export_section_mongo_test.go",
+      "server/internal/database/owner_profile_snapshot.go",
+      "server/internal/database/owner_profile_snapshot_test.go",
+      "server/internal/database/owner_progress_snapshot.go",
+      "server/internal/database/owner_progress_snapshot_test.go"
+    ],
+    "scope": "Reuse prepared schema-compatible explicit profile/gameplay DTOs; add a new password-fenced current-owner reader with predecode projected BSON bounds16KiB/profile and256KiB/one character, output up to512KiB, single source/batch, three-second deadline and bounded bcrypt cost. No arbitrary collection/field query, whole User export or partial/truncated response.",
+    "remaining": "Explicit staff-approved case admission, authenticated owner-session delivery, all remaining supported account-data categories and pagination, manifest of exclusions/unavailable categories, removal/anti-resurrection and acceptance checks. The internal reader alone supplies neither review approval nor public transport."
+  },
   "implementationRemaining": [
     "Complete bounded owner-scoped export preparation, access/redaction tests and safe delivery. The request queue is not a complete account export.",
     "Coordinated individually authorized removal procedure covering shared custody, operation replay identities, journals and backup resurrection; no automatic deletion.",
