@@ -297,6 +297,10 @@
       "server/internal/database/owner_operation_export.go",
       "server/internal/database/owner_operation_export_test.go",
       "server/internal/database/owner_operation_export_mongo_test.go",
+      "server/internal/database/owner_encounter_export.go",
+      "server/internal/database/owner_encounter_export_test.go",
+      "server/internal/database/owner_encounter_export_mongo_test.go",
+      "server/internal/database/owner_market_item_export.go",
       "server/client_dispatch.go",
       "server/owner_export.go",
       "server/owner_export_test.go",
@@ -309,9 +313,12 @@
       {"sections": ["guilds", "invites", "raids"], "predecodeProjectedBytesPerRow": 2048, "scope": "Own membership and active invitation/weekly records only, not shared bank, other members, raw reward/retry or private operation payloads."},
       {"sections": ["pvp"], "predecodeProjectedBytesPerRow": 16384, "scope": "Own stored competitive summary/season history/queue penalty only; no profile creation, season rolling or reward settlement, private match/revision identities or opponent anti-abuse counts."},
       {"sections": ["trades"], "predecodeProjectedBytesPerRow": 278528, "scope": "Owner character/offered Gold/gameplay item fields and agreed incoming offer only for settlement; cancelled peer offer/private participant/replay fields excluded. Stored decision/state/time and hashed navigation reference, not independent per-participant delivery proof."},
-      {"sections": ["bank"], "predecodeProjectedBytesPerRow": 73728, "scope": "Own guild-bank transfer character/guild/action/Gold or gameplay item fields/state/time and hashed navigation reference; no other members/shared bank/private execution fields or independent per-side delivery confirmation."}
+      {"sections": ["bank"], "predecodeProjectedBytesPerRow": 73728, "scope": "Own guild-bank transfer character/guild/action/Gold or gameplay item fields/state/time and hashed navigation reference; no other members/shared bank/private execution fields or independent per-side delivery confirmation."},
+      {"sections": ["rooms"], "predecodeProjectedBytesPerRow": 147456, "scope": "Only own frozen Gold/XP/gameplay items and shrine health/mana, room hook/objective/public dungeon fields/state/time; no other cohort, instance/replay/drop/private payloads or grant/recovery execution."},
+      {"sections": ["bosses"], "predecodeProjectedBytesPerRow": 589824, "scope": "Only own frozen Gold/XP/gameplay items and incremental quest kill credits, boss type/public dungeon fields/state/time; no other cohort, shared drops, clear/guild projection, instance/replay fields or reward execution. Response limit remains512KiB; large valid pages need staff handling."},
+      {"sections": ["market-items"], "predecodeProjectedBytesPerRow": 81920, "scope": "Explicit gameplay item fields and only derived own seller/bidder/buyer/refund flags/public auction reference. Other IDs/refunds, private forge/replay/restore/arbitrary item properties and asset caches excluded. Existing market summary remains unchanged."}
     ],
-    "remaining": "Full held-item and other economic/casino/reward-operation handling, journals/archives/provider copies, removal/anti-resurrection, provider-policy review and acceptance checks. Current direct-trade offers and own guild-bank intents join earlier account/report/session/social/market/guild/invite/competitive/weekly-raid sections, with explicit coverage limits. Operation collections use64-character hashed navigation cursors and binary immutable-ID paging, not ObjectIDs, chronological ordering, encrypted secrets or authority. Staff approval is separate from case review; all pages retain current proof and permission/session fences, private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
+    "remaining": "Other ground/admin/auction-operation/casino handling, journals/archives/provider copies, removal/anti-resurrection, provider-policy review and acceptance checks. Fifteen supported sections now include own frozen room/boss recipient rewards and separate marketplace gameplay items, alongside earlier account/report/session/social/market/guild/invite/competitive/weekly-raid/trade/bank sections, with explicit coverage limits. Operation collections use64-character hashed navigation cursors and binary immutable-ID paging, not ObjectIDs, chronological ordering, encrypted secrets or authority; marketplace item pages keep ObjectID cursors. Staff approval is separate from case review; all pages retain current proof and permission/session fences, private-page analytics guard and separate manual Save. This is not complete account coverage or a published milestone."
   },
   "publicDataNotice": {
     "status": "locally-verified-unpublished",

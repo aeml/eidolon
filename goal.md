@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 encounter/market-item export checkpoint:** Added own frozen dungeon-room
+and boss-victory recipient pages and separate marketplace gameplay-item pages.
+Only own Gold/XP/items/shrine recovery/quest credits and public encounter fields
+are projected; other cohorts, drops, private replay/forge/instance fields remain
+excluded. Existing marketplace summaries stay narrow. All use current proof,
+approval/session gates and manual Save/next; no grant, settlement or gear mutation.
+Focused UI/race and actual disposable Mongo10/2 pagination, redaction, source
+bounds/revoke and whole-record checksum checks pass; fixture removed. Other
+economic/ground/admin/casino handling, removal/restore and1.75 publication remain
+open. See [encounter evidence](docs/plans/2026-10-05-release1-75-encounter-checks.json).
+
 **October5 trade/bank export checkpoint:** Approved owners now have direct-trade
 offer and own guild-bank intent sections, with hashed-ID binary keyset pages,
 current proof/session/approval gates and separate manual Save/next. Shared peer,

@@ -13,7 +13,7 @@ import (
 )
 
 func TestOwnerOperationExportSelectionAndItemPrivacy(t *testing.T) {
-	for _, section := range []string{"trades", "bank"} {
+	for _, section := range []string{"trades", "bank", "rooms", "bosses"} {
 		for _, cursor := range []string{"", strings.Repeat("0", 64), strings.Repeat("a", 64)} {
 			if !ValidOwnerExportQuery(OwnerExportQuery{Section: section, Before: cursor}) {
 				t.Fatal("valid operation cursor rejected")

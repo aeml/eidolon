@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "de337daa",
+  "status": "owner-encounter-market-item-sections-locally-verified-unpublished-milestone-incomplete",
+  "scope": [
+    "Own frozen room/boss Gold/XP and explicit gameplay item fields with room shrine recovery/objective or boss incremental quest credits; public dungeon fields/time/coordinator state only. Other recipients/drops, private instance/boss/replay/fingerprint/guild-clear data and arbitrary item/forge fields are excluded before decoding.",
+    "Separate current marketplace gameplay-item file with stats/slots/descriptions/stack/potency/socket/gem/set/effect fields and only derived own participation/public auction reference. No other participant/refund fields, private forge/replay/arbitrary properties or asset caches. Original lightweight summary remains unchanged.",
+    "Ten-entry manual pages plus one validated continuation candidate; room/boss hashed binary keyset and market-item ObjectID keyset. Current proof/permission/session/admission fences,512KiB response and three-second deadline preserved. Projected source bounds144KiB/room,576KiB/boss and80KiB/market-item; malformed/oversized sources fail, never disappear.",
+    "Original recipient plans/coordinator state are not independent proof of saved/delivered effects. No grant, shrine heal, quest advance, settlement, recovery, claim, transfer or gear normalization executes. Files remain incomplete account exports, not restore images."
+  ],
+  "checks": [
+    {"scope": "Focused root/database race", "result": "Root2.868s/database2.305s pass for OwnerExport/Operation/GuildReward/SocialMarket and ApprovedOwnerExport; added encounter source/fence tests pass1.470s. Final strict ObjectID and hashed-operation protocol categories pass1.108s."},
+    {"scope": "Focused account-support UI", "result": "Three Jest suites74 tests pass2.869s for owner downloads/report/login support. All three formats/cursor kinds keep separate manual Save/next and category-change discard. Updated public notice3 tests pass1.723s."},
+    {"scope": "Actual disposable Mongo7.0.14", "result": "Encounter/Operation/SocialMarket/GuildReward focused race suite pass7.145s on explicit loopback32944. New sections each return exactly10/2 pages across12 own records; room/boss timestamps equal. Own Gold/XP/stats/potency/gems/shrine/quest fields preserved, giant malformed peer/shared/forge/gem private payloads excluded before decoding. Oversized selected sources fail; revoke stops reads. Whole original raw-source checksums/counts13/13/13 remain unchanged, including failure paths."},
+    {"scope": "Static/isolation", "result": "Affected UI/test ESLint, gofmt and diff whitespace checks pass; inventory/receipt JSON and referenced-source paths checked before commit. Exact owned container eidolon-encounter-export-qa-175-1005 removed. No production/player/provider writes, email, new TTL/schema, device/live acceptance, deployment or long campaign/capacity/raid replay."}
+  ],
+  "remaining": [
+    "Ground/admin/auction-operation/casino owner-facing handling, journals/archives/provider copies and provider-policy review; fifteen local sections do not establish complete account coverage.",
+    "Separately authorized coordinated removal, shared custody/replay preservation and journal/archive anti-resurrection safeguards/fixtures.",
+    "Complete milestone notes/version, CI and exact live acceptance; full1.99 roadmap goal remains active."
+  ]
+}

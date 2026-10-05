@@ -172,9 +172,14 @@ type ownerMarketEntry struct {
 	ItemClaimed       *bool              `json:"own_item_claimed,omitempty"`
 }
 
+func ownerMarketFilter(owner string) bson.M {
+	playerID := "player-" + owner
+	return bson.M{"$or": bson.A{bson.M{"seller_id": playerID}, bson.M{"bidder_id": playerID}, bson.M{"buyer_id": playerID}, bson.M{"pending_refunds.player_id": playerID}}}
+}
+
 func ownerMarketPagePipeline(owner, before string) mongo.Pipeline {
 	playerID := "player-" + owner
-	filter := bson.M{"$or": bson.A{bson.M{"seller_id": playerID}, bson.M{"bidder_id": playerID}, bson.M{"buyer_id": playerID}, bson.M{"pending_refunds.player_id": playerID}}}
+	filter := ownerMarketFilter(owner)
 	projection := bson.M{"_id": 1, "id": 1, "seller_id": 1, "bidder_id": 1, "buyer_id": 1, "bid": 1, "buyout": 1, "sale_price": 1, "deposit": 1, "status": 1, "start_time": 1, "end_time": 1, "item_claimed": 1, "seller_claimed": 1}
 	for _, field := range []string{"id", "name", "type", "rarity", "level", "stack"} {
 		projection["item."+field] = 1

@@ -23,6 +23,10 @@ func ownerOperationPrefix(section string) string {
 		return "directtrade:"
 	case "bank":
 		return "guildbank:"
+	case "rooms":
+		return dungeonRoomRewardPrefix
+	case "bosses":
+		return bossVictoryPrefix
 	}
 	return ""
 }

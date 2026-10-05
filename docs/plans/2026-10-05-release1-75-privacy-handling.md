@@ -132,9 +132,10 @@ current bidder, buyer or has a pending refund. They expose public listing/item
 summary, price/time/status, owner participation and only the owner's refund
 amounts and applicable deposit/claim information. Other participants' identifiers,
 refunds, claim state and internal replay/custody payloads are excluded. Refunds
-are owner-filtered before decoding. Full held-item stats/appearance/socket data,
-cleared historical bids/refunds and unpublished economic operations still require
-separate handling; these summaries are not a full escrow/operation export or a
+are owner-filtered before decoding. Gameplay item stats/socket fields are available
+in the separate `market-items` section described below. Cleared historical
+bids/refunds and other economic operations still require separate handling;
+these summaries are not a full escrow/operation export or a
 restore image. No export changes the listed items, funds, claims or relationships.
 Both use the same ten-entry manual continuation, proof/approval/session fences,
 three-second deadline and failure sentinels. No category gets a client target.
@@ -211,8 +212,49 @@ section sharing the same timestamp, own gameplay item fields, cancelled-peer
 redaction, binary cursor ordering, reset/revoke/source-size fences and unchanged
 whole-source checksums. See
 [operation checks](2026-10-05-release1-75-operation-checks.json). Marketplace
-held-item, other reward/economic/casino operations and coordinated removal remain
-open; twelve supported sections still do not constitute a complete account export.
+held-item coverage is extended below. Other economic/casino operations and
+coordinated removal remain open; supported sections are not a complete account export.
+
+### Frozen recipient rewards and marketplace gameplay items
+
+`rooms` and `bosses` provide owner-scoped pages of retained original room/boss
+outcomes, using the same binary hashed-ID navigation as trades/bank. The server
+filters/maps participants before decoding and includes only the owner's recorded
+Gold, XP and explicit gameplay item fields. Room files include type/hook/objective
+and recorded shrine health/mana recovery; boss files include boss type and own
+incremental quest kill credits. Public dungeon type/difficulty/level/room index,
+creation time and coordinator state are included. Other recipients, shared drops,
+instance/boss/replay identities, private fingerprints and guild clear projections
+are not exposed. Duplicate own recipients/quest/item identities, invalid types,
+payload limits and oversized projections fail the whole page.
+
+Room sources are bounded at144KiB and boss sources at576KiB before driver
+decoding, with existing two/eight item limits and64KiB per opaque item. The
+unchanged512KiB response cap may require separate staff handling for a large
+valid page; it never silently truncates an item or declares complete coverage.
+Coordinator pending/complete state and original recipient plans are not
+independent proof that every character effect was saved/delivered. Reads do not
+grant, clear rooms, award quest credit, settle or run recovery.
+
+`market-items` provides a separate80KiB-bounded explicit gameplay item projection
+from current retained auctions where the owner is seller/current bidder/buyer or
+has pending refunds. It includes stats, slots/descriptions, stack/potency/socket,
+gem/set/effect fields, public auction reference and derived own participation
+flags. It keeps ordinary ObjectID paging, not hashed-operation cursors. Other
+participant IDs/refunds, arbitrary item/gem properties, forge/restore/replay
+metadata and asset caches are excluded before decoding; the explicit item DTO
+prevents future fields becoming public by default. The original16KiB marketplace
+summary stays unchanged, including when full item data is malformed/oversized.
+Item files are neither a custody ledger nor gear restore images; no claim,
+settlement, transfer or normalization occurs.
+
+Focused race/UI tests and actual disposable Mongo verify12 records per new section
+in10/2 pages, own item stats/potency/gems, room shrine recovery, boss quest credits,
+private cohort/drop/forge/refund exclusion, failure sentinels, credential-reset and
+revocation fences, and unchanged whole-source checksums/counts. Fifteen sections
+are supported locally but unpublished. Ground/admin/auction-operation/casino data,
+coordinated removal/restore, provider-policy review and full release acceptance
+remain. See [encounter checks](2026-10-05-release1-75-encounter-checks.json).
 
 ## Removal review procedure — no automatic deletion
 

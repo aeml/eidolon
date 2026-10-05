@@ -14,7 +14,7 @@ type ownerExportCoverage struct {
 func ownerSectionCoverage(section string) ownerExportCoverage {
 	coverage := ownerExportCoverage{
 		WithheldPrivate:  []string{"Credential hashes, recovery digests and authentication secrets", "Private staff reasons, review receipts and economic replay/custody payloads", "Other accounts' private records"},
-		SeparateHandling: []string{"Additional account/staff and historical moderation information", "Direct trades, guild-bank and economic/reward outcome summaries", "Shared casino state and omitted private replay/custody data", "Save journals, server logs, backups and infrastructure records", "Postmark/analytics provider copies and data held by your browser/device"},
+		SeparateHandling: []string{"Additional account/staff and historical moderation information", "Other supported account sections and remaining economic/reward outcome records", "Shared casino state and omitted private replay/custody data", "Save journals, server logs, backups and infrastructure records", "Postmark/analytics provider copies and data held by your browser/device"},
 		Consistency:      "Current bounded section read, not a restore image or cross-store point-in-time account snapshot. Unsupported data is not assumed absent.",
 	}
 	switch section {
@@ -38,7 +38,7 @@ func ownerSectionCoverage(section string) ownerExportCoverage {
 		coverage.Consistency = "Current gameplay relationships in immutable-ID keyset pages of at most ten, not a frozen account snapshot. Game player IDs follow the current account-scoped player-username binding. Deleted/changed relationships are not reconstructed."
 	case "market":
 		coverage.Included = []string{"One page of current stored auctions where you are seller/current bidder/buyer or have pending refunds", "Your participation flags, public listing/item summary and prices/times/status; only your refund amounts and applicable claim/deposit information"}
-		coverage.NotIncluded = []string{"Other account sections and unrelated auction listings", "Other players' identity/refunds/claim state and private operation/replay payloads", "Full held-item stats/appearance/socket data, cleared historical bids/refunds and unpublished listing/bid operations"}
+		coverage.NotIncluded = []string{"Other account sections and unrelated auction listings", "Other players' identity/refunds/claim state and private operation/replay payloads", "Gameplay item stats/socket fields are in the separate market-items section; cleared historical bids/refunds and listing/bid operations are not in this file"}
 		coverage.Consistency = "Current marketplace summaries in immutable-ID keyset pages of at most ten, not a frozen account snapshot/ledger or full item/operation export. Listings/refunds/claim state may change during paging; unsupported historical/private custody data needs staff handling."
 	case "guilds":
 		coverage.Included = []string{"One page of current guild identity/name/tag and your own rank/join/last-online membership fields"}
@@ -66,6 +66,20 @@ func ownerSectionCoverage(section string) ownerExportCoverage {
 		coverage.NotIncluded = []string{"Other account sections, other members' transfers and shared bank contents", "Fingerprints, request IDs, revisions, private item recovery/forge metadata and replay plans", "Independent per-side delivery confirmation and unstored/deleted history"}
 		coverage.SeparateHandling = []string{"Other account sections and unsupported economic/reward/casino records", "Save journals, logs, archives, private custody/replay fields and provider/device copies"}
 		coverage.Consistency = "Binary immutable hashed-ID keyset pages of at most ten; navigation references are not encrypted secrets or authorization, nor chronological ordering. An operation record is not independent proof that both guild and character effects were applied. Reads do not execute, settle, refund or mutate transfers; failed/oversized pages need staff handling."
+	case "rooms", "bosses":
+		coverage.Included = []string{"One page of retained frozen outcomes where you are a recorded recipient: dungeon type/difficulty/level/room index, time, coordinator state and hashed navigation reference", "Only your recorded Gold/XP and explicit gameplay item fields"}
+		if section == "rooms" {
+			coverage.Included = append(coverage.Included, "Room type/hook/objective and your recorded shrine health/mana recovery")
+		} else {
+			coverage.Included = append(coverage.Included, "Boss type and only your recorded incremental quest kill credits")
+		}
+		coverage.NotIncluded = []string{"Other account sections and outcomes without your recorded participation", "Other recipients, shared ground drops, instance/boss/replay IDs, guild run projections, private fingerprints and item recovery/forge payload fields", "Independent character-save/delivery confirmation and unrecorded encounter history"}
+		coverage.SeparateHandling = []string{"Other supported sections, additional economic/casino records and private custody/replay data", "Save journals, logs, archives and provider/device copies"}
+		coverage.Consistency = "Binary immutable hashed-ID keyset pages of at most ten, not chronological ordering or a frozen cross-store snapshot. Navigation references are not encrypted secrets or authority. These are original recipient plans and coordinator state, not independent proof that each effect was saved or delivered. Reads never grant, settle, clear rooms, advance quests or run recovery; failed/oversized data needs staff handling."
+	case "market-items":
+		coverage.Included = []string{"One page of explicit gameplay item fields from current retained auctions where you are seller/current bidder/buyer or have pending refunds", "Item stats, slot/description, stack/potency/socket/gem/set/effect fields and only your participation flags/public auction reference"}
+		coverage.NotIncluded = []string{"Other account sections, pricing/refund/claim details available in market summaries and unrelated listings", "Other players' account/refund fields, raw whole auction, arbitrary item fields, forge/replay/restore metadata and asset caches", "Deleted listings or unrecorded historical custody"}
+		coverage.Consistency = "Current auction item projections in immutable ObjectID keyset pages of at most ten, not a frozen ownership ledger or item restore image. Listing/item/participation may change between pages; source bounds and malformed item types fail instead of silently dropping entries. Reading does not claim, settle, transfer or normalize gear."
 	}
 	return coverage
 }
