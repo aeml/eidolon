@@ -420,12 +420,11 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.4`. This narrow card-table interface follow-up
-  prevents delayed lower-revision ready snapshots of the same hand/private seat
-  from restoring passed blackjack or Hold'em turns. Fresh physical presence,
-  new hands and ownership, unavailable/saving feedback, server wager authority,
-  settlements, timers and payouts retain their normal behavior. Existing casino
-  performance, real-player administration, selling/error fixes, accounts,
+- Current source version: `Alpha 1.74.5`. This narrow connection maintenance fix
+  serves already-due keepalives before queued control traffic can defer them.
+  A single writer retains control-before-state ordering and existing ping/idle,
+  frame and access guards. Existing card-table ordering, casino performance,
+  real-player administration, selling/error fixes, accounts,
   currencies, permissions, retention and schema22 remain unchanged. Later
   schema23–24/privacy/operations/capacity candidates and load-test driver changes
   are excluded. Login version and cumulative notes are assembled; exact-source
@@ -433,11 +432,12 @@ Notes:
   distinguish synthetic connected proof from actual inbox delivery. Broader
   owner/commercial and human gates remain open; no capacity, payment launch or
   closed-beta transition is implied.
-- Last independently verified live release: `Alpha 1.74.3`, exact
-  8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0, successful CI37244170015 (all ten jobs).
+- Last independently verified live release: `Alpha 1.74.4`, exact
+  9560ac60cc48a6daf6b65b57c0d23b092d18b3f0, successful CI37246677139 (all ten jobs).
   Public IPv4 frontend/backend identities/database readiness/login/notes agree.
-  [Acceptance](docs/plans/2026-10-04-release1-74-3-casino-checks.json) retains the
-  narrow schema22 scope; no prepared future-code or100-player capacity approval.
+  [Card-table acceptance](docs/plans/2026-10-05-release1-74-4-card-view-checks.json)
+  includes matching publisher-rewritten public runtime bytes and explicitly
+  skipped CI scopes. No prepared future-code or100-player capacity approval.
   Prior1.74.2 proof also retains its original scope:
   Post-terminal public IPv4 frontend/backend identities and database readiness
   agree; public AdminUI matches the exact source after publisher import rewriting.

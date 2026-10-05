@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.74.4</span>
+                    <span class="start-version-row__label">Alpha 1.74.5</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -774,6 +774,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.74.5">
+                    <h3 class="patch-note-entry__title">Alpha 1.74.5 (connection keepalive scheduling)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Due connection keepalives are sent before draining queued control traffic, so a busy control queue cannot indefinitely postpone an already-due ping. Control messages still take precedence over world-state messages.</li>
+                        <li>The same single WebSocket writer handles all frames. Existing ping intervals, idle limits, frame guards and access checks are unchanged.</li>
+                        <li>No account wipe, schema migration, wager, payout, currency, reward or permission change. Previous card-table, real-player administration and Sell All fixes remain included.</li>
+                        <li>This targeted scheduling correction does not certify 100-player capacity or complete unfinished 1.75–1.79 milestones. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.74.4">
                     <h3 class="patch-note-entry__title">Alpha 1.74.4 (card-table view ordering)</h3>
                     <ul class="patch-note-entry__list">

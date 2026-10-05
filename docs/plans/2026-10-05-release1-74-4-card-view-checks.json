@@ -1,6 +1,6 @@
 {
   "release": "Alpha 1.74.4",
-  "status": "LOCAL_CHECKS_PASSED_PUBLICATION_PENDING",
+  "status": "EXACT_CI_AND_PUBLIC_DEPLOYMENT_ACCEPTED",
   "base": "Freshly fetched origin/master8b7ab8ddf7fccef2dfb09bbb513d29811dc6c9e0. Prior1.74.3 exact all-ten-job terminal CI and independent public IPv4 identities/readiness/login/notes passed before this publication.",
   "scope": "Only blackjack/Hold'em interface freshness guards, focused tests and version/notes. Preserve schema22, server authority, wagers, payouts, timers, currencies, accounts, permissions and access. Exclude all prepared load-driver, privacy, persistence and operations changes.",
   "reproduction": "Prepared synthetic regression tests failed before the correction: a lower-revision ready snapshot restored a passed own turn in both card-table interfaces. This proves a UI defect, not the cause of the two prior actual100 blackjack rejections.",
@@ -12,5 +12,10 @@
     "tests/BlackjackTableUI.test.js": "9ccc88f47412c40bfbb176e8574b7b9550232e5a0e6a68a3f88de2157f17831b",
     "tests/PokerTableUI.test.js": "0c05f651fed44de15406417a2bb7850f3f88054d2ee95734f73688fe887a8dc2"
   },
-  "publication": "Pending prior-release acceptance, fresh remote comparison, commit/push, exact terminal CI and independent public identities/readiness/login/notes plus changed runtime byte checks. Use Luna for monitoring. Full roadmap and ordered policy/operations/capacity gates remain open."
+  "publication": "Prior1.74.3 accepted; freshly fetched master ordinarily merged before pushing9560ac60cc48a6daf6b65b57c0d23b092d18b3f0. Luna monitored CI37246677139 to terminal success; root independently verified exact head and conclusion. All ten jobs succeeded. October5 public IPv4 frontend release.json and backend healthz both identify that commit/Alpha1.74.4, database ready. Login label and cumulative card-view patch notes match. Both changed public JavaScript files match exact source after the publisher import-version rewrite. No private production history or player mutation used. Full roadmap and ordered policy/operations/capacity gates remain open; prepared bot and keepalive changes excluded.",
+  "publicRuntimeSha256": {
+    "src/ui/BlackjackTableUI.js": "ecb590709dbb0361d91c153c103d539e4537c077a8b89d535adaab7ee0f239c7",
+    "src/ui/PokerTableUI.js": "1c977983086e1279dcbc48d75394839cc52bb44957874227898d8e29cdadf082"
+  },
+  "skippedCiScopes": "Deterministic High/Low animation gallery, required Well Rested rendering/GPU lifecycle QA, disposable full-character gameplay, and live four-class/remote-animation steps were skipped. Green job status does not certify those scopes, campaign pacing or target100 capacity."
 }
