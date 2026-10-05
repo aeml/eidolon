@@ -27,6 +27,10 @@ func ownerOperationPrefix(section string) string {
 		return dungeonRoomRewardPrefix
 	case "bosses":
 		return bossVictoryPrefix
+	case "ground":
+		return groundItemPrefix
+	case "admin-ops":
+		return "admin:"
 	}
 	return ""
 }

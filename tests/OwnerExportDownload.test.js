@@ -86,7 +86,7 @@ test('retained session history uses its own page format and requires manual save
     ui.save.click();ui.next.click();expect(ui.before.value).toBe(next);expect(ui.password.value).toBe('');expect(send).toHaveBeenCalledTimes(1);
     ui.section.value='reports';ui.section.dispatchEvent(new Event('change'));expect(ui.before.value).toBe('');expect(ui.next.hidden).toBe(true);
 });
-test.each([['social','eidolon-owner-social-relationships'],['market','eidolon-owner-marketplace-summary'],['market-items','eidolon-owner-marketplace-items'],['guilds','eidolon-owner-guild-memberships'],['invites','eidolon-owner-guild-invitations'],['pvp','eidolon-owner-competitive-records'],['raids','eidolon-owner-weekly-raid-records']])('%s summaries retain private manual pagination', (section,format)=>{
+test.each([['social','eidolon-owner-social-relationships'],['market','eidolon-owner-marketplace-summary'],['market-items','eidolon-owner-marketplace-items'],['auction-ops','eidolon-owner-auction-intents'],['guilds','eidolon-owner-guild-memberships'],['invites','eidolon-owner-guild-invitations'],['pvp','eidolon-owner-competitive-records'],['raids','eidolon-owner-weekly-raid-records']])('%s summaries retain private manual pagination', (section,format)=>{
     ui.section.value=section;ui.section.dispatchEvent(new Event('change'));submit();
     expect(send).toHaveBeenLastCalledWith(expect.objectContaining({section,characterName:'',before:''}));
     ui.handleResult({...response(),data:{format,version:1,entries:[{id:'0123456789abcdef01234561'}],next:'0123456789abcdef01234560',coverage:{complete_account_export:false}}});
@@ -94,7 +94,7 @@ test.each([['social','eidolon-owner-social-relationships'],['market','eidolon-ow
     ui.save.click();ui.next.click();expect(ui.before.value).toBe('0123456789abcdef01234560');expect(send).toHaveBeenCalledTimes(1);
 });
 
-test.each([['trades','eidolon-owner-direct-trade-offers'],['bank','eidolon-owner-guild-bank-transfers'],['rooms','eidolon-owner-dungeon-room-rewards'],['bosses','eidolon-owner-boss-victory-rewards']])('%s uses hashed navigation, separate Save and manual continuation', (section,format)=>{
+test.each([['trades','eidolon-owner-direct-trade-offers'],['bank','eidolon-owner-guild-bank-transfers'],['rooms','eidolon-owner-dungeon-room-rewards'],['bosses','eidolon-owner-boss-victory-rewards'],['ground','eidolon-owner-ground-item-transfers'],['admin-ops','eidolon-owner-administration-intents']])('%s uses hashed navigation, separate Save and manual continuation', (section,format)=>{
     ui.section.value=section;ui.section.dispatchEvent(new Event('change'));
     ui.before.value='0123456789abcdef01234560';submit();expect(send).not.toHaveBeenCalled();
     ui.before.value='';submit();

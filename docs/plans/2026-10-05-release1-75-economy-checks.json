@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "1c24a37e",
+  "status": "owner-ground-auction-admin-sections-locally-verified-unpublished-milestone-incomplete",
+  "scope": [
+    "Own ground drop/pickup moved gameplay item fields, kind/state/time and recorded lifetime only; pending availability not invented. Before/remaining/other owner/loot/party/position/instance/replay data excluded before driver decoding; opaque item input is bounded and never exposed raw.",
+    "Currently retained own bid/listing/buyout/claim/payout intents and planned Gold/fee/item/public listing details. Missing legacy kind labelled bid; private prior bidder/refund/operation IDs excluded. Existing resolved deletion means this is not complete history; no creation time/state invented.",
+    "Administration intents targeting only the owner, action/state/recorded audit time/result and only retained grant Gold or explicit gameplay items. Complete and teleport bodies projected away; no staff identity/reason/summary/requests, anchors/landing or replay data. Discarded grant quantities/items not reconstructed, and pending recorded success is not independent delivery confirmation.",
+    "Projected source bounds72KiB/ground and auction,68KiB/admin, retained grant body64KiB/25 items;512KiB response, three-second deadline, ten-entry manual pages plus validated continuation, current proof/permission/session gates and failure sentinels preserved. Ground/admin hashed binary keyset; auction ObjectID keyset. No mutations, custody execution, recovery or new retention policy."
+  ],
+  "checks": [
+    {"scope": "Focused root/database race", "result": "Root3.197s/database2.230s pass for OwnerEconomy/Export/Operation and ApprovedOwnerExport, including malformed plans, source/credential/reset/budget gates, strict cursor categories, legacy zero-time pending drop and discarded payload omission."},
+    {"scope": "Focused account-support UI", "result": "Three Jest suites77 tests pass2.941s for owner download/report/login support; all three formats/cursor kinds retain separate manual Save/next, category-change discard and no automatic read/download."},
+    {"scope": "Actual disposable Mongo7.0.14", "result": "Economy/Encounter/Operation focused race suite pass6.215s on explicit loopback32945. Exact10/2 pages across12 own rows per new section; all auction kinds/legacy missing kind, pending drop absence and original lifetime, own retained grant Gold/items, complete/teleport raw body exclusion even when giant/malformed. Shared/private source fields remain excluded. Oversized selected source fails; revoke stops reads. Whole original ground/auction/admin checksums and13/13/13 counts remain unchanged, including failure paths."},
+    {"scope": "Static/isolation", "result": "Affected UI/test ESLint, gofmt and diff whitespace checks pass. Updated notice3 tests pass1.521s; three JSON records parse and all92 referenced source paths exist. Exact owned container eidolon-economy-export-qa-175-1005 removed. No production/player/provider writes, email, new TTL/schema, device/live acceptance, deployment or long campaign/capacity/raid replay."}
+  ],
+  "remaining": [
+    "Casino owner-facing coverage, provider-policy review and journals/archives/provider/device handling; eighteen local sections do not certify complete account exports.",
+    "Separately authorized coordinated reviewed removal, shared custody/replay preservation and journal/archive anti-resurrection safeguards/fixtures.",
+    "Complete milestone notes/version, CI and exact live acceptance; full1.99 roadmap goal remains active."
+  ]
+}

@@ -79,7 +79,7 @@ func TestOwnerExportStrictSchemaCurrentOwnerAndPrivateAudit(t *testing.T) {
 }
 
 func TestOwnerExportPagedSectionsStrictCursor(t *testing.T) {
-	for _, section := range []string{"reports", "sessions", "social", "market", "market-items", "guilds", "invites", "pvp", "raids"} {
+	for _, section := range []string{"reports", "sessions", "social", "market", "market-items", "guilds", "invites", "pvp", "raids", "auction-ops"} {
 		t.Run(section, func(t *testing.T) {
 			payload := strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"`+section+`"`, 1)
 			for _, cursor := range []string{"", "0123456789abcdef01234560"} {
@@ -100,7 +100,7 @@ func TestOwnerExportPagedSectionsStrictCursor(t *testing.T) {
 	}
 }
 func TestOwnerExportOperationSectionsStrictCursor(t *testing.T) {
-	for _, section := range []string{"trades", "bank", "rooms", "bosses"} {
+	for _, section := range []string{"trades", "bank", "rooms", "bosses", "ground", "admin-ops"} {
 		payload := strings.Replace(validOwnerExportPayload, `"section":"profile"`, `"section":"`+section+`"`, 1)
 		for _, cursor := range []string{"", strings.Repeat("a", 64), strings.Repeat("0", 64)} {
 			request, err := decodeOwnerExport([]byte(strings.Replace(payload, `"characterName":""`, `"characterName":"","before":"`+cursor+`"`, 1)))

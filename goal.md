@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 ground/auction/admin export checkpoint:** Added own moved-item drop/pickup
+intents, retained auction bid/listing/buyout/claim/payout intents and administration
+intents targeting the owner with only retained grant Gold/item fields. Shared
+custody, previous bidders/refunds, staff reasons/identity and teleport plans stay
+excluded. Existing resolved-intent/payload removal is not reconstructed; recorded
+plans/coordinator/audit state are not independent delivery proof. Current proof,
+approval/session, source bounds and manual Save/next stay mandatory. Focused
+UI/race and actual disposable Mongo10/2 pages, redaction/revoke and whole-record
+checksum checks pass; fixture removed. Casino coverage, coordinated reviewed
+removal/restore, provider-policy review and1.75 publication remain open. See
+[economy evidence](docs/plans/2026-10-05-release1-75-economy-checks.json).
+
 **October5 encounter/market-item export checkpoint:** Added own frozen dungeon-room
 and boss-victory recipient pages and separate marketplace gameplay-item pages.
 Only own Gold/XP/items/shrine recovery/quest credits and public encounter fields

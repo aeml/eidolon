@@ -44,6 +44,7 @@ var ownerExportFormats = map[string]string{
 	"social": "eidolon-owner-social-relationships", "market": "eidolon-owner-marketplace-summary", "guilds": "eidolon-owner-guild-memberships", "invites": "eidolon-owner-guild-invitations", "pvp": "eidolon-owner-competitive-records", "raids": "eidolon-owner-weekly-raid-records",
 	"trades": "eidolon-owner-direct-trade-offers", "bank": "eidolon-owner-guild-bank-transfers",
 	"rooms": "eidolon-owner-dungeon-room-rewards", "bosses": "eidolon-owner-boss-victory-rewards", "market-items": "eidolon-owner-marketplace-items",
+	"ground": "eidolon-owner-ground-item-transfers", "auction-ops": "eidolon-owner-auction-intents", "admin-ops": "eidolon-owner-administration-intents",
 }
 
 func OwnerExportFormat(section string) string { return ownerExportFormats[section] }

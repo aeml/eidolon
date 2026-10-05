@@ -2,9 +2,9 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 
 let nextID = 0;
 const privatePage = () => window.__eidolonRecoverySensitivePage === true && !window.__eidolonGoogleTagInitialized;
-const FORMATS = {profile:'eidolon-owner-account-profile',progress:'eidolon-owner-progression',reports:'eidolon-owner-report-submissions',sessions:'eidolon-owner-session-history',social:'eidolon-owner-social-relationships',market:'eidolon-owner-marketplace-summary',guilds:'eidolon-owner-guild-memberships',invites:'eidolon-owner-guild-invitations',pvp:'eidolon-owner-competitive-records',raids:'eidolon-owner-weekly-raid-records',trades:'eidolon-owner-direct-trade-offers',bank:'eidolon-owner-guild-bank-transfers',rooms:'eidolon-owner-dungeon-room-rewards',bosses:'eidolon-owner-boss-victory-rewards','market-items':'eidolon-owner-marketplace-items'};
-const PAGED_SECTIONS = new Set(['reports','sessions','social','market','guilds','invites','pvp','raids','trades','bank','rooms','bosses','market-items']);
-const OPERATION_SECTIONS = new Set(['trades','bank','rooms','bosses']);
+const FORMATS = {profile:'eidolon-owner-account-profile',progress:'eidolon-owner-progression',reports:'eidolon-owner-report-submissions',sessions:'eidolon-owner-session-history',social:'eidolon-owner-social-relationships',market:'eidolon-owner-marketplace-summary',guilds:'eidolon-owner-guild-memberships',invites:'eidolon-owner-guild-invitations',pvp:'eidolon-owner-competitive-records',raids:'eidolon-owner-weekly-raid-records',trades:'eidolon-owner-direct-trade-offers',bank:'eidolon-owner-guild-bank-transfers',rooms:'eidolon-owner-dungeon-room-rewards',bosses:'eidolon-owner-boss-victory-rewards','market-items':'eidolon-owner-marketplace-items',ground:'eidolon-owner-ground-item-transfers','auction-ops':'eidolon-owner-auction-intents','admin-ops':'eidolon-owner-administration-intents'};
+const PAGED_SECTIONS = new Set(['reports','sessions','social','market','guilds','invites','pvp','raids','trades','bank','rooms','bosses','market-items','ground','auction-ops','admin-ops']);
+const OPERATION_SECTIONS = new Set(['trades','bank','rooms','bosses','ground','admin-ops']);
 const validCursor = (section,cursor) => OPERATION_SECTIONS.has(section) ? /^[a-f0-9]{64}$/.test(cursor) : /^[a-f0-9]{24}$/.test(cursor) && !/^0+$/.test(cursor);
 
 // Only deliberate approved-section reads. Passwords are never kept in pending
@@ -35,6 +35,7 @@ export class OwnerExportDownload {
             <p role="status" aria-live="polite">Check your own approved export request first.</p></form>`);
         this.form = this.root.querySelector('form');
         this.section = this.root.querySelector('select');
+        this.section.insertAdjacentHTML('beforeend','<option value="ground">My ground-item transfer intents — one page</option><option value="auction-ops">My retained auction intents — one page</option><option value="admin-ops">Administration intents targeting me — one page</option>');
         this.character = this.root.querySelector(`#${prefix}-character`); this.password = this.root.querySelector(`#${prefix}-password`);
         this.before = this.root.querySelector(`#${prefix}-before`); this.next = this.root.querySelector('[data-next]');
         this.button = this.root.querySelector('[type="submit"]'); this.save = this.root.querySelector('[data-save]'); this.status = this.root.querySelector('[role="status"]');

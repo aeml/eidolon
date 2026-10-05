@@ -83,6 +83,12 @@ func (db *DB) readOwnerExportQuery(parent context.Context, owner, password strin
 				encoded, err = db.readOwnerEncounterPage(ctx, owner, section, query.Before, at, maxBytes)
 			case "market-items":
 				encoded, err = db.readOwnerMarketItemPage(ctx, owner, query.Before, at, maxBytes)
+			case "ground":
+				encoded, err = db.readOwnerGroundPage(ctx, owner, query.Before, at, maxBytes)
+			case "auction-ops":
+				encoded, err = db.readOwnerAuctionOperationPage(ctx, owner, query.Before, at, maxBytes)
+			case "admin-ops":
+				encoded, err = db.readOwnerAdminOperationPage(ctx, owner, query.Before, at, maxBytes)
 			}
 		}
 		// These pages are in other collections: recheck the exact credential after

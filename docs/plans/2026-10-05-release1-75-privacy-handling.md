@@ -256,6 +256,48 @@ are supported locally but unpublished. Ground/admin/auction-operation/casino dat
 coordinated removal/restore, provider-policy review and full release acceptance
 remain. See [encounter checks](2026-10-05-release1-75-encounter-checks.json).
 
+### Ground, auction and administration intents
+
+`ground` selects only own retained drop/pickup records and exposes moved gameplay
+item fields, original recorded availability/expiry when present, kind/state/time
+and hashed navigation reference. Before/remaining custody payloads, loot/party/
+other owner/instance/position data and fingerprints are not decoded. Pending drops
+do not invent availability, including valid legacy zero-time records. Ground
+availability expiry does not delete the retained operation; reads neither pick
+up/drop nor renew its lifetime. Projected sources are bounded at72KiB.
+
+`auction-ops` selects currently retained own auction operations by the writer's
+account-scoped player/character identity. It exposes public auction/own character,
+bid/listing/buyout/claim/payout kind, planned Gold/fee/gameplay items, original
+listing parameters/end time/claim status and previous public listing price.
+Missing legacy kind means bid. Private operation IDs, prior bidders' identity and
+refund IDs are not decoded. These documents use ordinary ObjectID pages and72KiB
+projected bounds. Existing gameplay removes resolved intents; this file is not
+complete history, and no unsupported creation time/state is invented.
+
+`admin-ops` selects only retained grant/teleport operations targeting the owner.
+It exposes action/state and recorded audit time/result plus a hashed reference.
+Only retained Gold/item grant plans are privately parsed into explicit gameplay
+DTOs; entire teleport plans (including other-player anchors), staff actors,
+reasons/summaries, request IDs/fingerprints and raw execution bodies stay excluded.
+Completed operations discard execution payloads; amounts/items are not invented
+from private audit text or reconstructed. Recorded pending audit success describes
+a planned action, not confirmed delivery, and retained auditing plans may belong
+to a denied action. Sources are bounded at68KiB and grant bodies at64KiB; current
+25-item admin batch bound is preserved. No grant/teleport/recovery/audit executes.
+
+All three use existing proof/permission/session/admission and manual Save/next,
+512KiB responses, three-second deadlines and failure sentinels. Opaque item JSON
+remains bounded private input; only the approved gameplay DTO fields are
+exported, never arbitrary/private forge/recovery data. These files are not restore
+images or independent effect-confirmation ledgers. Actual disposable Mongo tests
+prove12 own records per new section in10/2 pages, source redaction before driver
+decoding, legacy bid/pending availability, all retained auction kinds, completed
+grant/teleport exclusion, source-size/revoke fences and whole-source integrity.
+Eighteen sections are locally ready but unpublished; casino, coordinated reviewed
+removal/anti-resurrection, provider-policy and complete publication gates remain.
+See [economy checks](2026-10-05-release1-75-economy-checks.json).
+
 ## Removal review procedure — no automatic deletion
 
 1. Verify the request owner and exact scope. Obtain separate explicit approval
