@@ -19,6 +19,21 @@ beforeEach(() => {
 });
 afterEach(() => { ui.dispose(); jest.useRealTimers(); });
 
+test.each(['Account Data Export', 'Account Removal Request'])('%s staff review changes only the case and has no fulfillment action', reportType => {
+    expect([...ui.reportType.options].map(option => option.value)).toContain(reportType);
+    ui.refresh.click(); reply({reports: {reports: [{...report, reportType}]}});
+    const row = review();
+    expect(row.status.textContent).toContain('no data is exported or deleted');
+    expect(ui.reportModerations).toHaveLength(0);
+    row.reason.value = 'Ownership and scope require follow-up'; row.action.click();
+    expect(row.confirmation.textContent).toContain('current retention is unchanged');
+    const calls = send.mock.calls.length;
+    row.cancel.click(); expect(send).toHaveBeenCalledTimes(calls);
+    row.action.click(); row.confirm.click();
+    expect(send).toHaveBeenLastCalledWith('admin_report_review', expect.objectContaining({reportId: report.id}));
+    expect(send.mock.calls.some(([type]) => /export|delete|remove/.test(type))).toBe(false);
+});
+
 test('review requires reason and explicit confirmation; cancelling changes nothing', () => {
     const row = review(), calls = send.mock.calls.length;
     row.action.click(); expect(send).toHaveBeenCalledTimes(calls);

@@ -3,6 +3,7 @@ import { PublicNameCorrectionUI } from './PublicNameCorrectionUI.js';
 import { PasswordChangeUI } from './PasswordChangeUI.js';
 import { RecoveryEmailSetupUI } from './EmailRecoveryUI.js';
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
+import { ACCOUNT_SUPPORT_REPORT_TYPES } from './reportTypes.js';
 
 // Reuse the ordinary private report form on the authenticated login socket.
 // No game engine, world entry, background lookup or stored account catalog.
@@ -14,11 +15,11 @@ export class LoginModerationUI {
         this.priorZIndex = root.style.zIndex;
         const type = root.querySelector('#report-type');
         this.options = [...type.options].map(option => ({ option, disabled: option.disabled }));
-        this.options.forEach(({ option }) => { option.disabled = option.value !== 'Moderation Appeal'; });
+        this.options.forEach(({ option }) => { option.disabled = !ACCOUNT_SUPPORT_REPORT_TYPES.has(option.value); });
         const ui = { reportScreen: root, reportText: root.querySelector('#report-text'), reportType: type,
             btnSubmitReport: root.querySelector('#btn-submit-report'),
             toggleReport: () => this.close(),
-            onReportSubmit: (reportType, text, requestId) => reportType === 'Moderation Appeal'
+            onReportSubmit: (reportType, text, requestId) => ACCOUNT_SUPPORT_REPORT_TYPES.has(reportType)
                 && this.send('report', { reportType, text, requestId }),
             onReportLookup: (reportId, requestId) => this.send('report_status', { reportId, requestId }),
             onModerationNoticeLookup: requestId => this.send('moderation_notice', { requestId }),

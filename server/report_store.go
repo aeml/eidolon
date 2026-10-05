@@ -5,6 +5,8 @@ import (
 	"errors"
 	"log"
 	"regexp"
+
+	"eidolon-server/internal/database"
 )
 
 var reportRequestIDPattern = regexp.MustCompile(`^[A-Za-z0-9_-]{1,64}$`)
@@ -38,8 +40,8 @@ func (c *Client) handleReport(payloadBytes []byte) {
 	}
 	var id string
 	var err error
-	if c.playerID == "" && payload.ReportType != "Moderation Appeal" {
-		err = errors.New("active character required for non-appeal reports")
+	if c.playerID == "" && !database.AccountSupportReportType(payload.ReportType) {
+		err = errors.New("active character required for non-account-support reports")
 	} else {
 		id, err = saveReport(c.username, payload)
 	}

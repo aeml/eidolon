@@ -2,9 +2,9 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { ReportLookupUI } from './ReportLookupUI.js';
 import { ModerationNoticeUI } from './ModerationNoticeUI.js';
 import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
+import { REPORT_TYPES, PRIVACY_REPORT_TYPES } from './reportTypes.js';
 
 const MAX_TEXT = 3200;
-const REPORT_TYPES = new Set(['Bug Report', 'Player Report', 'Moderation Appeal', 'Feature Request']);
 const SAFE_TAG = /^[a-zA-Z0-9 ._-]{1,80}$/;
 const tag = value => typeof value === 'string' && SAFE_TAG.test(value) ? value : 'unknown';
 
@@ -63,7 +63,7 @@ export class ReportUI {
         this.submitListener = () => this.submit();
         this.contextListener = () => this.refreshContext();
         this.inputListener = () => this.updateCount();
-        this.typeListener = () => this.updateGuidance();
+        this.typeListener = () => { this.updateGuidance(); this.refreshContext(); };
         this.keyListener = event => {
             event.stopPropagation();
             if (event.key === 'Escape') { event.preventDefault(); this.ui.toggleReport?.(); }
@@ -97,6 +97,15 @@ export class ReportUI {
     setStatus(message) { if (!this.disposed) this.status.textContent = message; }
     updateGuidance() {
         if (this.disposed || !this.guidance) return;
+        const privacy = PRIVACY_REPORT_TYPES.has(this.type.value);
+        this.optIn.disabled = Boolean(this.pending) || privacy;
+        if (privacy) this.optIn.checked = false;
+        if (privacy) {
+            this.guidance.textContent = this.type.value === 'Account Data Export'
+                ? 'Request an export of your own account data. An administrator will verify ownership, scope and a safe delivery method before preparing it. Submission does not generate or send an export. Do not include passwords, tokens or identity documents. No automatic diagnostics are attached.'
+                : 'Request review of removal of your own account data. Submission does not delete your account, characters or history. An administrator must review ownership, shared trades, guild custody and backups before any separately authorized action. Current retention is unchanged; no automatic deletion. Do not include passwords, tokens or identity documents. No automatic diagnostics are attached.';
+            return;
+        }
         this.guidance.textContent = this.type.value === 'Moderation Appeal'
             ? 'Include the moderation notice or report reference, why you think the decision was wrong, and relevant facts. An appeal requests review; it does not automatically cancel a sanction. Do not include passwords or payment details.'
             : this.type.value === 'Player Report'
@@ -145,6 +154,11 @@ export class ReportUI {
 
     refreshContext() {
         if (this.disposed || this.pending) return;
+        if (PRIVACY_REPORT_TYPES.has(this.type.value)) {
+            this.context = '';
+            this.preview.textContent = 'Privacy request: no automatic context or diagnostics attached.';
+            return;
+        }
         this.context = formatReportContext(this.ui.getReportContext?.(this.optIn.checked));
         this.preview.textContent = this.context || 'Build and area unavailable.';
     }
@@ -153,7 +167,7 @@ export class ReportUI {
         this.button.disabled = pending;
         this.text.readOnly = pending;
         this.type.disabled = pending;
-        this.optIn.disabled = pending;
+        this.optIn.disabled = pending || PRIVACY_REPORT_TYPES.has(this.type.value);
         this.button.textContent = pending ? 'Saving…' : 'Submit';
     }
 
@@ -165,7 +179,7 @@ export class ReportUI {
             this.text.focus();
             return;
         }
-        if (this.context === undefined) this.refreshContext();
+        if (this.context === undefined || PRIVACY_REPORT_TYPES.has(this.type.value)) this.refreshContext();
         const requestId = crypto.randomUUID();
         const body = this.context ? `${text}\n\nClient-reported context:\n${this.context}` : text;
         const pending = { requestId, draft: this.text.value, type: this.type.value };

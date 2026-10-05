@@ -1,5 +1,7 @@
 // A case quote belongs to its displayed row. Refresh/disposal retires it;
 // ambiguous replies may retry only the exact confirmed payload and nonce.
+import { PRIVACY_REPORT_TYPES } from './reportTypes.js';
+
 export class AdminReportReview {
     constructor(row, report, admin) {
         Object.assign(this, { row, admin });
@@ -12,7 +14,11 @@ export class AdminReportReview {
         this.reason.placeholder = 'Brief reason; no passwords or private chat dumps';
         label.append(this.reason);
         this.status = document.createElement('p'); this.status.setAttribute('role', 'status');
-        this.status.textContent = 'Resolving a report records review only; it does not punish a player.';
+        const privacy = PRIVACY_REPORT_TYPES.has(report.reportType);
+        const consequence = privacy
+            ? 'Review only: no data is exported or deleted; current retention is unchanged. Verify ownership, custody, redaction and delivery separately.'
+            : 'Resolving a report records review only; it does not punish a player.';
+        this.status.textContent = consequence;
         this.action = document.createElement('button'); this.action.type = 'button'; this.action.className = 'menu-btn';
         this.action.textContent = report.status === 'open' ? 'Mark resolved' : 'Reopen report';
         this.confirmation = document.createElement('div'); this.confirmation.hidden = true;
@@ -37,7 +43,7 @@ export class AdminReportReview {
             }
             this.quote = { id: crypto.randomUUID(), reportId: report.id, expectedRevision: revision,
                 expectedStatus: report.status, status: report.status === 'open' ? 'resolved' : 'open', reason, confirmed: true };
-            warning.textContent = `${this.action.textContent} ${report.id} at revision ${revision}? The report and its review receipt change together; no player sanction is applied.`;
+            warning.textContent = `${this.action.textContent} ${report.id} at revision ${revision}? The report and its review receipt change together; no player sanction is applied. ${privacy ? consequence : ''}`;
             this.reason.readOnly = true; this.action.hidden = true; this.confirmation.hidden = false; this.cancel.focus();
         };
         this.cancel.onclick = () => {

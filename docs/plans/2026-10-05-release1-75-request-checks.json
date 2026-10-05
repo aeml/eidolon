@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "status": "request-workflow-locally-verified-unpublished-milestone-incomplete",
+  "baseCommit": "7af0b2798f0cb0b2ed245736df0c95aacedff586",
+  "ownerDecision": "Administrator-reviewed account exports and removal requests; preserve current retention; no automatic deletion.",
+  "implemented": [
+    "Literal privacy categories shared by submission, authenticated account support and owner status lookup, with strict server category filtering.",
+    "Current-session owner binding; no character required for account privacy support; shared authentication, text, payload and report rate bounds unchanged.",
+    "No automatic diagnostic/context attachment to privacy requests, including cached ordinary report context; drafts retained on failure with no automatic retry.",
+    "Private staff queue filters, confirmed revision-fenced case review and owner-only status notices; resolving is not fulfillment or deletion.",
+    "Reused prepared credential/recovery JSON exclusion guards from648f8c14; BSON storage unchanged, raw User still not an export DTO.",
+    "Source inventory, review/delivery/removal procedures and explicit incomplete-export/backup-resurrection gates."
+  ],
+  "checks": [
+    {"scope": "ReportUI, LoginModerationUI, ReportLookupUI, AdminReportReview, AdminUI and MenuPolish", "result": "6 Jest suites/160 tests pass10.693s, Node24 with experimental VM modules. No native/GPU/mobile acceptance claim."},
+    {"scope": "Credential/recovery JSON/BSON, input proof, privacy admission/category and owner status focused Go race checks", "result": "database1.045s/root2.083s pass. Nonconfigured actual-Mongo groups not included in this command."},
+    {"scope": "Actual disposable Mongo privacy and ordinary report handler persistence, staff filtered read/review/replay and owner-only status", "result": "root race pass2.764s using explicit loopback Mongo7.0.14 container eidolon-privacy-qa-175-1005, port32931. Container removed after completion; no production/player writes or real mail."},
+    {"scope": "Source inventory", "result": "Exact19 registered collection names match with no missing/extra; all52 unique referenced source paths exist. No provider dashboard or production-document audit."},
+    {"scope": "Affected UI/test lint and whitespace", "result": "Pass before final documentation-only additions; final check recorded with commit."}
+  ],
+  "retainedEvidence": "Existing report-review authority/audit/replay tests retained for unchanged mechanisms; no new100-client, campaign or raid run.",
+  "remaining": [
+    "Bounded complete owner-scoped export preparation, redaction and safe authenticated delivery, not just profile download.",
+    "Individually authorized coordinated custody/removal procedures and writer/journal/backup anti-resurrection fixtures; no automatic deletion worker.",
+    "Analytics/provider policy review and qualified review where required.",
+    "Release identity, patch notes, mandatory CI and exact production acceptance after1.74.7 is accepted. No1.75 release pushed."
+  ]
+}

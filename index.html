@@ -654,13 +654,16 @@
                     <option value="Player Report">Player Report</option>
                     <option value="Moderation Appeal">Moderation Appeal</option>
                     <option value="Feature Request">Feature Request</option>
+                    <option value="Account Data Export">Account Data Export</option>
+                    <option value="Account Removal Request">Account Removal Request</option>
                 </select>
-                <label for="report-text">What happened, what you expected, and steps to reproduce</label>
+                <label for="report-text">Issue or request details</label>
                 <p id="report-guidance">Describe what happened and what you expected. Reports go to the game operator; do not include passwords or payment details.</p>
                 <textarea id="report-text" class="support-field__control support-field__textarea" rows="6" maxlength="3200" aria-describedby="report-guidance report-count report-status" placeholder="Describe your issue or idea..."></textarea>
                 <output id="report-count" for="report-text">0 / 3200 characters</output>
+                <p>Account privacy requests are administrator-reviewed. Requesting or resolving a case does not itself export or delete data. Current retention settings remain unchanged. Privacy requests attach no automatic diagnostics.</p>
                 <label class="report-diagnostics-option"><input id="report-diagnostics" type="checkbox"> Include optional diagnostics (quality, viewport, controls and rounded position)</label>
-                <details class="report-context-preview"><summary>Context included with this report</summary><p>Build and area are included. Optional diagnostics are off by default. No automatic chat, logs, account or inventory dumps.</p><pre id="report-context"></pre></details>
+                <details class="report-context-preview"><summary>Context included with this report</summary><p>Ordinary reports include build and area. Privacy requests attach no automatic context. Optional diagnostics are off by default. No automatic chat, logs, account or inventory dumps.</p><pre id="report-context"></pre></details>
                 <p id="report-status" role="status" aria-live="polite"></p>
                 <div class="support-window__actions support-window__actions--split">
                     <button id="btn-cancel-report" class="menu-btn support-window__button--half">Cancel</button>
@@ -668,7 +671,7 @@
                 </div>
                 <details class="report-context-preview report-lookup">
                     <summary>Check a report I submitted</summary>
-                    <p>Use the reference returned when your report was saved. Only reports submitted by this account are visible here. Resolved means review finished, not a promised fix or sanction reversal.</p>
+                    <p>Use the reference returned when your report was saved. Only reports submitted by this account are visible here. Resolved means review finished, not a promised fix, sanction reversal, data export or removal.</p>
                     <label for="report-reference">My report reference</label>
                     <div class="report-lookup-controls">
                         <input id="report-reference" class="support-field__control" maxlength="24" autocomplete="off" spellcheck="false" placeholder="24-character report reference">

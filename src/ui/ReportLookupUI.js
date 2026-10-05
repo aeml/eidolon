@@ -1,7 +1,7 @@
 import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
+import { REPORT_TYPES as TYPES, PRIVACY_REPORT_TYPES } from './reportTypes.js';
 
 const validReference = value => typeof value === 'string' && /^[a-f0-9]{24}$/.test(value) && !/^0+$/.test(value);
-const TYPES = new Set(['Bug Report', 'Player Report', 'Moderation Appeal', 'Feature Request']);
 const dateLabel = value => {
     const date = new Date(value);
     return value && Number.isFinite(date.getTime()) ? date.toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : 'date unavailable';
@@ -49,7 +49,10 @@ export class ReportLookupUI {
         if (result.success !== true || report?.id !== reference || !TYPES.has(report.reportType) || !['open', 'resolved'].includes(report.status)) {
             this.status.textContent = 'Report status unavailable. Verify the reference and use the account that submitted it.'; return;
         }
-        this.status.textContent = `${report.reportType} · ${reference} · ${report.status === 'open' ? 'Awaiting operator review' : 'Review finished'} · Submitted ${dateLabel(report.createdAt)}.${report.resolvedAt ? ` Reviewed ${dateLabel(report.resolvedAt)}.` : ''} Resolution is not a promised fix or sanction reversal.`;
+        const meaning = PRIVACY_REPORT_TYPES.has(report.reportType)
+            ? 'Review status alone does not mean data was exported or removed. No automatic deletion; current retention is unchanged.'
+            : 'Resolution is not a promised fix or sanction reversal.';
+        this.status.textContent = `${report.reportType} · ${reference} · ${report.status === 'open' ? 'Awaiting operator review' : 'Review finished'} · Submitted ${dateLabel(report.createdAt)}.${report.resolvedAt ? ` Reviewed ${dateLabel(report.resolvedAt)}.` : ''} ${meaning}`;
         if (this.status.closest('details')?.open && this.ui.reportScreen.style.display !== 'none') {
             this.status.scrollIntoView?.({block: 'nearest'});
         }

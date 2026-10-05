@@ -92,7 +92,7 @@ func TestReportPageFilterIsBoundedAndStrict(t *testing.T) {
 
 func TestReportCategoryFilterUsesLiteralTypeAndPreservesStatusCursor(t *testing.T) {
 	id := primitive.NewObjectID()
-	for _, category := range []string{"Bug Report", "Feature Request", "Player Report", "Moderation Appeal"} {
+	for _, category := range []string{"Bug Report", "Feature Request", "Player Report", "Moderation Appeal", "Account Data Export", "Account Removal Request"} {
 		filter, err := reportPageFilter(ReportQuery{ReportType: category, Status: ReportStatusResolved, Before: id.Hex()})
 		if err != nil || len(filter) != 3 || filter["report_type"] != category || filter["status"] != ReportStatusResolved || filter["_id"].(bson.M)["$lt"] != id {
 			t.Fatal("invalid combined filter", filter, err)

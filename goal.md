@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 privacy policy answer:** Owner approved administrator-reviewed account
+exports/removal requests, current retention unchanged, with no automatic deletion.
+The narrow1.75 branch implements authenticated account-help/in-game request cases,
+private staff filters and revision-fenced review, and owner-only status wording.
+Requests attach no automatic diagnostics; case review is not export/removal.
+Full export/delivery, shared-custody removal and backup-resurrection implementation
+remain open; this is not a1.75 publication or milestone-completion claim.
+See [privacy workflow](docs/plans/2026-10-05-release1-75-privacy-handling.md).
+
 **2026-10-05 maintenance checkpoint:** Alpha 1.74.6 is accepted live at
 1c47e16a after all ten CI37256836401 jobs and exact public IPv4 verification.
 Alpha 1.74.7 is a local candidate: west-side aligned stash, bounded three-second

@@ -75,7 +75,7 @@ func TestAdminReportCategoryFilterIsStrictAndReachesAuthorizedStore(t *testing.T
 	store := &fakeAdminReports{}
 	adminReports = store
 	t.Cleanup(func() { adminReports = previous })
-	for _, category := range []string{"", "Bug Report", "Feature Request", "Player Report", "Moderation Appeal"} {
+	for _, category := range []string{"", "Bug Report", "Feature Request", "Player Report", "Moderation Appeal", "Account Data Export", "Account Removal Request"} {
 		payload, _ := json.Marshal(map[string]string{"id": "report-read-000001", "reportType": category, "status": "open"})
 		handleAdminRead(c, Message{Type: MsgAdminReports, Payload: payload})
 		messages := drainSentMessages(c.send)

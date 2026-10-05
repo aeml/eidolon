@@ -147,7 +147,13 @@ func NewReport(username, reportType, text string, now time.Time) (Report, error)
 
 // SupportedReportType is shared by submission and strict staff queue filters.
 func SupportedReportType(value string) bool {
-	return value == "Bug Report" || value == "Feature Request" || value == "Player Report" || value == "Moderation Appeal"
+	return value == "Bug Report" || value == "Feature Request" || value == "Player Report" || AccountSupportReportType(value)
+}
+
+// Authenticated account support does not require entering the game world.
+// Privacy requests only create review cases, never exports or deletion jobs.
+func AccountSupportReportType(value string) bool {
+	return value == "Moderation Appeal" || value == "Account Data Export" || value == "Account Removal Request"
 }
 
 func (db *DB) CreateReport(username, reportType, text string) (*Report, error) {

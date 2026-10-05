@@ -41,6 +41,8 @@ type DB struct {
 	guildMu                    sync.Mutex
 }
 
+// Database account image, not a public response or owner-export DTO. Hiding the
+// credential hash does not make email, roles or character images public-safe.
 type User struct {
 	PublicName    string                           `bson:"public_name,omitempty"`
 	PublicNameKey string                           `bson:"public_name_key,omitempty"`
@@ -48,7 +50,7 @@ type User struct {
 	Roles         map[string]AccountRoleAssignment `bson:"roles,omitempty"`
 	Username      string                           `bson:"username"`
 	Email         string                           `bson:"email"`
-	PasswordHash  string                           `bson:"password_hash"`
+	PasswordHash  string                           `bson:"password_hash" json:"-"`
 	CreatedAt     time.Time                        `bson:"created_at"`
 	Characters    []*Character                     `bson:"characters"`
 }

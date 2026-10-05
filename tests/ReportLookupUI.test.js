@@ -37,6 +37,15 @@ test('only the matching response is rendered; staff notes and allegation text st
     expect(lookup.reference.value).toBe(reference); expect(lookup.button.disabled).toBe(false);
 });
 
+test.each(['Account Data Export', 'Account Removal Request'])('%s status does not promise an export or erasure', reportType => {
+    lookup.remember(reference); lookup.button.click();
+    lookup.handleResult({requestId: 'lookup-request-000001', success: true,
+        report: {...report, reportType, status: 'resolved'}});
+    expect(lookup.status.textContent).toContain('Review finished');
+    expect(lookup.status.textContent).toContain('does not mean data was exported or removed');
+    expect(lookup.status.textContent).toContain('current retention is unchanged');
+});
+
 test('resolved and reopened reports do not promise a fix or sanction reversal', () => {
     lookup.remember(reference); lookup.button.click();
     lookup.handleResult({requestId: 'lookup-request-000001', success: true,

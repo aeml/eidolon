@@ -4,7 +4,7 @@ import { GameEngine } from '../src/core/GameEngine.js';
 
 function setup() {
     document.body.innerHTML = `<span class="start-version-row__label">Alpha test</span><div id="report-screen">
-        <select id="report-type"><option>Bug Report</option><option>Player Report</option><option>Moderation Appeal</option></select><p id="report-guidance"></p><textarea id="report-text"></textarea>
+        <select id="report-type"><option>Bug Report</option><option>Player Report</option><option>Moderation Appeal</option><option>Account Data Export</option><option>Account Removal Request</option></select><p id="report-guidance"></p><textarea id="report-text"></textarea>
         <button id="btn-submit-report">Submit</button><input id="report-diagnostics" type="checkbox">
         <pre id="report-context"></pre><p id="report-status"></p><output id="report-count"></output></div>`;
     const ui = { reportScreen: document.querySelector('#report-screen'), reportText: document.querySelector('#report-text'),
@@ -36,6 +36,38 @@ describe('report save confirmation and privacy', () => {
         expect(ui.reportText.value).toBe('');
         expect(ui.btnSubmitReport.disabled).toBe(false);
         expect(ui.report.status.textContent).toContain('0123456789abcdef01234567');
+    });
+
+    test.each(['Account Data Export', 'Account Removal Request'])('%s requests review without diagnostics, automatic actions or double submission', category => {
+        const ui = setup();
+        ui.report.optIn.checked = true;
+        ui.reportType.value = category;
+        ui.reportType.dispatchEvent(new Event('change'));
+        expect(ui.report.optIn.checked).toBe(false);
+        expect(ui.report.optIn.disabled).toBe(true);
+        expect(ui.report.preview.textContent).toContain('no automatic context');
+        ui.getReportContext.mockClear();
+        ui.reportText.value = 'Please review my own account request.';
+        ui.report.submit(); ui.report.submit();
+        expect(ui.onReportSubmit).toHaveBeenCalledTimes(1);
+        expect(ui.onReportSubmit).toHaveBeenCalledWith(category, 'Please review my own account request.', 'test-request-id');
+        expect(ui.getReportContext).not.toHaveBeenCalled();
+        ui.report.handleResult({requestId: 'test-request-id', success: false});
+        expect(ui.reportText.value).toBe('Please review my own account request.');
+        expect(ui.report.optIn.disabled).toBe(true);
+        expect(ui.report.guidance.textContent).toContain('Submission does not');
+        ui.reportType.value = 'Bug Report'; ui.reportType.dispatchEvent(new Event('change'));
+        expect(ui.report.optIn.disabled).toBe(false);
+        expect(ui.report.optIn.checked).toBe(false);
+        expect(ui.report.context).toContain('Lanternhold');
+    });
+
+    test('privacy submission strips previously cached context even without a change event', () => {
+        const ui = setup();
+        expect(ui.report.context).toContain('Lanternhold');
+        ui.reportType.value = 'Account Data Export';
+        ui.report.submit();
+        expect(ui.onReportSubmit).toHaveBeenCalledWith('Account Data Export', 'A detailed bug report', 'test-request-id');
     });
 
     test('appeals use the private report route without implying a sanction reversal', () => {

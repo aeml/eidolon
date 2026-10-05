@@ -1,0 +1,279 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "status": "implementing-not-published-or-complete",
+  "reviewedSourceCommit": "7af0b2798f0cb0b2ed245736df0c95aacedff586",
+  "scope": "Schema22 mainline inventory, inherited source descriptions reviewed for the current request workflow. No future schema24 fields or storage redesign included. No production rows, credentials or provider dashboards included.",
+  "ownerDecision": {
+    "date": "2026-10-05",
+    "mode": "administrator-reviewed exports and removal requests",
+    "retention": "preserve current settings",
+    "automaticDeletion": false,
+    "limits": "Submission and case review do not authorize delivery, arbitrary third-party data disclosure or irreversible erasure. No payment or provider-policy changes."
+  },
+  "mongoCollections": [
+    {
+      "name": "users",
+      "source": "server/internal/database/db.go",
+      "data": "Account username, submitted email, bcrypt password hash, creation time, embedded characters, roles, VIP periods and account moderation state/receipts. Characters include progression, inventory, currencies, appearance, location, run state and deduplication receipts. This mainline schema22 inventory excludes future1.76 checkpoint fields. Private optional recovery_email stores address/verified_at. recovery_email_pending and password_recovery store token digests, recipient address, the current password-hash binding and issue/expiry times; no raw bearer token is stored in Mongo.",
+      "retention": "No generic account privacy expiry configured. Existing owner decision retains alpha accounts and characters. Stored email alone is not verified account ownership. Verification is valid30minutes, reset15minutes, with1minute issuance cooldown. These are authorization validity checks, not physical retention/TTL deletion. Pending expired challenges remain until replaced or explicitly cleared. Successful email confirmation clears pending verification and prior reset; successful password change/reset clears both challenges. Verified address remains. Never add a Mongo TTL to a nested challenge expiry: it would delete the entire user document.",
+      "sources": [
+        "server/internal/database/db.go",
+        "server/internal/database/email_recovery.go",
+        "server/internal/database/password_change.go"
+      ]
+    },
+    {
+      "name": "reports",
+      "source": "server/internal/database/reports.go",
+      "data": "Authenticated author, type, player-provided text, timestamps, status and private review information. An explicitly attached playtest summary becomes report text.",
+      "retention": "No report TTL configured; resolution does not delete the report. Owner approved preserving current retention for the initial administrator-reviewed privacy workflow; no automatic deletion."
+    },
+    {
+      "name": "admin_activity",
+      "source": "server/internal/database/admin_activity.go",
+      "sources": [
+        "server/internal/database/admin_activity.go",
+        "server/internal/database/admin_population.go",
+        "server/admin_session_activity.go"
+      ],
+      "data": "Bounded actor/target identity, action, request correlation, time, result, summary and applicable operator reason. Login/disconnect activity uses the same history. Maintenance1.74.2 additionally records optional session_started_at on future disconnects, representing closed authenticated connection duration, not AFK/active gameplay. Administrator real/test/all filters and UTC-day totals read existing retained activity; distinct-account maps and derived totals are bounded ephemeral response data, not a new analytics collection or stored per-player profile. No historical duration backfill or test-account deletion. Older digest-only identities cannot be classified from their hash.",
+      "retention": "Existing default 90 days, configurable within 7–365 days. Reads enforce the current cutoff; Mongo TTL uses each record's original expiry and is asynchronous. A shorter setting does not instantly physically delete all older records."
+    },
+    {
+      "name": "admin_operations",
+      "source": "server/internal/database/admin_operations.go",
+      "data": "Actor/recipient identity, exact request fingerprint, operation state, audit and pending grant/teleport execution plan.",
+      "retention": "Permanent replay identity is separate from expiring history. Completion removes the execution payload; do not expire deduplication identities to retry a grant."
+    },
+    {
+      "name": "friendships",
+      "source": "server/internal/database/db.go",
+      "data": "Directed account/player relationships, pending/accepted/ignored/blocked status and timestamps.",
+      "retention": "Gameplay relationship changes are implemented; generic privacy retention and account-removal handling remain policy work."
+    },
+    {
+      "name": "guilds",
+      "source": "server/internal/database/guilds.go",
+      "data": "Guild identity, member account/player identifiers, ranks, shared bank, activity and governance metadata.",
+      "retention": "Shared custody and other members' rights require reconciliation before account removal; no generic privacy TTL configured."
+    },
+    {
+      "name": "guild_invites",
+      "source": "server/internal/database/guilds.go",
+      "data": "Guild/inviter/target identifiers, invitation state and expiry.",
+      "retention": "Existing expires_at Mongo TTL; invitation expiry is not a general deletion policy for guild/member records."
+    },
+    {
+      "name": "auctions",
+      "source": "server/internal/database/db.go",
+      "data": "Seller, bidder/buyer identity, exact item metadata, prices, timing, claims and pending refunds.",
+      "retention": "Auction expiry/claim behavior is gameplay custody, not account erasure. Resolve held items and refunds before any approved deletion."
+    },
+    {
+      "name": "auction_bid_operations",
+      "source": "server/internal/database/auction_bids.go",
+      "data": "Player/account operation identity, escrow/refund and item-delivery metadata.",
+      "retention": "Deduplication/recovery records must not be bulk-expired independently of account receipts."
+    },
+    {
+      "name": "direct_trade_operations",
+      "source": "server/internal/database/direct_trade_state.go",
+      "data": "Both participants, exact offered item/Gold payloads, frozen settlement/cancellation decision and delivery state.",
+      "retention": "Shared permanent outcome and custody records need a coordinated removal design; deleting one side can break the other participant's recovery."
+    },
+    {
+      "name": "guild_bank_operations",
+      "source": "server/internal/database/guild_bank_operations.go",
+      "data": "Guild/account/player identity, request fingerprint, exact item/Gold transfer and operation state.",
+      "retention": "Recovery/deduplication records; generic privacy cleanup must not recreate spendable funds or orphan shared custody."
+    },
+    {
+      "name": "ground_item_operations",
+      "source": "server/internal/database/ground_item_operation.go",
+      "data": "Account/player identity, exact drop/pickup payloads, loot generation, instance, ownership, coordinates and timing.",
+      "retention": "Existing replay/custody store. Ground-item lifetime is not a TTL permission to erase operation receipts."
+    },
+    {
+      "name": "dungeon_room_rewards",
+      "source": "server/internal/database/dungeon_room_reward.go",
+      "data": "Original dungeon cohort, account/player identities, frozen rewards and recipient delivery state.",
+      "retention": "Existing immutable outcome and delivery store. Coordinate with character receipts and still-pending recipients before approved cleanup."
+    },
+    {
+      "name": "boss_victories",
+      "source": "server/internal/database/boss_victory.go",
+      "data": "Original cohort, account/player identities, exact private rewards/quest credit, dungeon/guild clear and public-drop outcome.",
+      "retention": "Existing first-outcome/replay store. Public loot expiry does not expire private delivery or victory deduplication."
+    },
+    {
+      "name": "pvp_profiles",
+      "source": "server/internal/database/pvp.go",
+      "data": "Player identity, ratings, honor, seasons and reward/result receipts.",
+      "retention": "Public ranking projections differ from private replay metadata. Season rollover is not account-data erasure."
+    },
+    {
+      "name": "casino_blackjack_tables",
+      "source": "server/internal/database/casino_blackjack.go",
+      "data": "Shared table/round state and account/player wallet-transfer records.",
+      "retention": "Reconcile unsettled shared wagers and transfers before approved cleanup; no assumption that Gold or EP receipts may be blindly deleted."
+    },
+    {
+      "name": "raid_lockouts",
+      "source": "server/internal/database/raids.go",
+      "data": "Player/week completion and pending weekly reward delivery.",
+      "retention": "Weekly gameplay eligibility is separate from durable reward deduplication and privacy policy."
+    },
+    {
+      "name": "guild_dungeon_runs",
+      "source": "server/internal/database/guild_leaderboard.go",
+      "data": "Guild identity/name/tag, season, dungeon/difficulty, timing, member count and clear timestamps.",
+      "retention": "Public guild-result projection; season and generic data retention remain distinct decisions."
+    },
+    {
+      "name": "schema_migrations",
+      "source": "server/internal/database/migrations.go",
+      "data": "Database schema/application compatibility bookkeeping.",
+      "retention": "Operational compatibility metadata, not a player export; removal can admit unsafe writers."
+    }
+  ],
+  "otherStores": [
+    {
+      "kind": "server-memory-session-authority",
+      "sources": [
+        "server/main.go",
+        "server/client_dispatch.go"
+      ],
+      "data": "Authenticated connection/account bindings and CSPRNG single-use resume tokens. Tokens rotate/revoke and the existing resume window is five minutes after transport closure; server restart loses this memory. Dungeon long-logout behavior separately retains the 15-minute rule.",
+      "boundary": "Never put bearer tokens in public events, reports, logs or support exports. Browser persistence does not make a token valid indefinitely."
+    },
+    {
+      "kind": "server-memory-chat",
+      "sources": [
+        "server/chat_service.go"
+      ],
+      "data": "World/party/guild/whisper messages with sender/recipient metadata, reply targets and visibility restrictions. Existing history limit is 50 entries per history bucket.",
+      "boundary": "No chat-message Mongo collection is registered. Reports can still contain copied chat evidence. RAM-only does not imply zero exposure, a global size cap or an approved retention policy."
+    },
+    {
+      "kind": "private-recovery-journals",
+      "sources": [
+        "server/internal/database/character_journal.go",
+        "server/internal/database/admin_activity_journal.go",
+        "server/internal/database/guild_clear_journal.go",
+        "server/internal/database/pvp_result_journal.go"
+      ],
+      "data": "Pending complete character images or exact activity/guild-clear/PvP recovery records with identities. Journal directories are created with mode0700; exact receipts are acknowledged only by their recovery contract.",
+      "boundary": "Not public artifacts. Do not wipe pending journals as privacy cleanup; reconcile them with the matching Mongo recovery point. Repository modes do not certify actual host ownership or encryption."
+    },
+    {
+      "kind": "backups-and-runtime-logs",
+      "sources": [
+        "server/deploy/backup_before_upgrade.sh",
+        "server/deploy/README_LINUX.md",
+        "server/suspicious_logging.go",
+        "server/websocket_logging.go"
+      ],
+      "data": "Mongo archives may contain all account hashes, allegations and private receipts. Application/edge logs may contain connection addresses and diagnostic identifiers. Prepared WebSocket diagnostics omit arbitrary peer close text.",
+      "boundary": "Actual archive location, access, copies, rotation, encryption and edge log format were not inspected here. These remain owner/operations choices; removing a live row cannot guarantee removal from every backup."
+    },
+    {
+      "kind": "economy-summary-file",
+      "sources": [
+        "server/economy_metrics.go",
+        "server/internal/game/economy_telemetry.go"
+      ],
+      "data": "Aggregate time/source/sink totals without account/player/position fields in the summary DTO. Append file is created with mode0644.",
+      "boundary": "Not a durable financial ledger or proof of deployment permissions. Configure the eventual operations retention/access policy separately."
+    },
+    {
+      "kind": "browser-storage",
+      "sources": [
+        "src/main.js",
+        "src/ui/PreferenceStorage.js",
+        "src/ui/EPWalletUI.js",
+        "src/ui/GuildUI.js"
+      ],
+      "data": "Local resume bearer token and display/audio/camera/UI preferences; session-scoped pending EP exchange and guild-bank request correlation with player keys. Recovery handoff is separate: page-local RAM, not local/session storage.",
+      "boundary": "Clearing preferences must not silently turn an uncertain economic request into a new identity. No raw browser storage dump should be accepted as a support export."
+    },
+    {
+      "kind": "optional-local-playtest-timer",
+      "sources": [
+        "src/ui/PlaytestSession.js",
+        "src/ui/PlaytestSessionUI.js"
+      ],
+      "data": "Default-off page-local aggregate activity/class/level-band/party-size timing and player-marked assistance. No timer-owned storage/network, names, chat, item contents or coordinates.",
+      "boundary": "Owner explicitly approved local-only use. Sharing requires explicit draft attachment and separate report submission. This is NOT the production Google Analytics tracker."
+    },
+    {
+      "kind": "production-browser-analytics",
+      "sources": [
+        "src/analytics/GoogleAnalytics.js",
+        "src/analytics/game.js",
+        "src/analytics/GameSessionTracker.js",
+        "docs/ANALYTICS.md"
+      ],
+      "data": "Existing Google tag on the three configured production hosts, parent-domain cookie scope, page view and aggregate class/session/active-play events. Custom locations omit query/fragment, referrers retain origin, and custom tracking does not inspect input values.",
+      "boundary": "The normal third-party tag/cookies remain separate from the optional timer. No consent platform is configured in this source. Provider retention, Enhanced Measurement settings, access, consent/opt-out and accurate player notice require an explicit owner decision and appropriate review; local mocks do not establish provider behavior. Accepted recovery-link pages suppress this loader; that safeguard does not settle collection/consent policy on ordinary pages."
+    },
+    {
+      "kind": "qa-artifacts",
+      "sources": [
+        "scripts/sanitize-playwright-artifacts.mjs",
+        "docs/plans/2026-10-02-release1-72-artifact-privacy-checks.json"
+      ],
+      "data": "Synthetic browser traces, screenshots and runtime evidence; credentialed paths suppress recording and the prepared sanitizer handles supported artifacts.",
+      "boundary": "Never publish production raw logs, account credentials, bearer tokens or full save dumps. Existing backport acceptance is separate; no new artifact-provider retention inspection occurred."
+    },
+    {
+      "kind": "postmark-recovery-mail",
+      "sources": [
+        "server/recovery_mail.go",
+        "server/email_recovery.go",
+        "server/.env.example"
+      ],
+      "data": "Transactional HTTPS requests send configured sender/recipient, stream, subject and text body to Postmark. Verify/reset bodies contain the account identifier and one-use private fragment link. Opens/links tracking is explicitly disabled; no CC/BCC or administrator copy. Provider response identifier is checked for acceptance, not retained as an inbox-delivery receipt.",
+      "boundary": "Two joined workers and32queued jobs hold limited page-independent raw token/address data in RAM, with8second HTTP timeout and no redirects. Generic logs omit recipient/link/token/provider body. POSTMARK_SERVER_TOKEN remains operator configuration, not player/export data. Provider-side retention/access/deletion and backups need owner/provider review; configuration presence and local TLS tests do not prove inbox delivery. The operator example also reserves ADMIN_NOTIFICATION_EMAILS for separate notifications; recovery ignores that list. No raw .env, provider token or real sender/recipient values were inspected by this inventory."
+    },
+    {
+      "kind": "private-browser-recovery-handoff",
+      "sources": [
+        "src/core/RecoveryLinkBoot.js",
+        "src/ui/EmailRecoveryUI.js",
+        "src/main.js",
+        "src/analytics/GoogleAnalytics.js"
+      ],
+      "data": "Blocking head script recognizes a private fragment, marks the page sensitive and attempts history replacement before analytics bootstrap. Validated account/token handoff lives in page-local RAM and requires explicit confirmation/reset submission; opening a link alone does not consume it.",
+      "boundary": "Analytics loader is suppressed for the private page even if history replacement fails or the fragment is invalid. This does not remove copies held by the mail provider, mailbox/browser software or a player screenshot. Never include the handoff or raw URL in support exports, reports or QA artifacts."
+    }
+  ],
+  "existingRedactionSamples": [
+    {
+      "source": "server/internal/database/reports.go",
+      "sample": "Owner report status projection includes reference/type/status/timestamps only, not author, allegation body or staff review receipts."
+    },
+    {
+      "source": "server/internal/database/moderation_chat_target.go",
+      "sample": "Staff target preview projects exact chosen account identity, revision and public notices, excluding credentials, full character saves and private staff receipts."
+    },
+    {
+      "source": "server/internal/database/admin_operations.go",
+      "sample": "Every durable administrator operation field has json:-; a private execution plan is not a history response."
+    },
+    {
+      "source": "server/state_recipient_privacy_test.go",
+      "sample": "Ordinary full/delta world delivery preserves owner-private progression data rather than publishing the complete character image."
+    },
+    {
+      "source": "server/internal/database/email_recovery.go",
+      "sample": "Recovery verification/reset compare digest, expiry and current hash binding atomically; internal recovery projections never authorize a submitted registration email alone. Inventory validity windows do not imply erasure."
+    }
+  ],
+  "implementationRemaining": [
+    "Complete bounded owner-scoped export preparation, access/redaction tests and safe delivery. The request queue is not a complete account export.",
+    "Coordinated individually authorized removal procedure covering shared custody, operation replay identities, journals and backup resurrection; no automatic deletion.",
+    "Verify source inventory and publish accurate notices for current stores/providers without inventing retention periods or legal compliance.",
+    "Preserve milestone and closed-beta gates; owner request-mode approval is not launch, capacity or legal signoff."
+  ]
+}
