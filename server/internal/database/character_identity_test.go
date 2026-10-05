@@ -131,6 +131,36 @@ func TestCharacterJournalAccountIdentityCannotBeReboundOrDowngraded(t *testing.T
 	}
 }
 
+func TestCharacterJournalAccountIdentityPreflightPreservesLegacy(t *testing.T) {
+	j, err := OpenCharacterSaveJournal(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := j.ValidateAccountBoundRecords(); err != nil {
+		t.Fatal("empty journal refused", err)
+	}
+	bound, err := j.WriteForAccount(primitive.NewObjectID(), "bound", &Character{Name: "hero"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := j.ValidateAccountBoundRecords(); err != nil {
+		t.Fatal("bound journal refused", err)
+	}
+	legacy, err := j.Write("legacy", &Character{Name: "legacy", Gold: 123})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := j.ValidateAccountBoundRecords(); err == nil {
+		t.Fatal("legacy upgrade admitted")
+	}
+	for _, want := range []*PendingCharacterSave{bound, legacy} {
+		actual, err := j.Read(want.Username)
+		if err != nil || !reflect.DeepEqual(actual, want) {
+			t.Fatal("preflight changed recovery evidence", err)
+		}
+	}
+}
+
 func TestCharacterBoundCommitFencesWriteAndReceiptProof(t *testing.T) {
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
 	for _, outcome := range []string{"write", "receipt", "missing"} {

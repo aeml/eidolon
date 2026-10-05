@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October5 bound-producer adoption checkpoint:** Trusted account identity now
+survives roster/offline loading, live clones, save projections and journal replay
+without client/embedded-character exposure. Production producers require it;
+shutdown keeps journal-all-before-database ordering. Legacy pending files refuse
+before Mongo initialization/migration without destructive guessing; marker-only
+schema23 fences incompatible old writers. Strict producer/shutdown/privacy and
+actual Mongo live/offline/reopened-journal checks pass, along with42 selected
+affected save-failure tests. Actual release transition, session/other-custody/
+archive safeguards before erasure and1.75 publication remain. Prepared future
+23/24 storage markers require renumbering before ordinary integration. See
+[adoption evidence](docs/plans/2026-10-05-release1-75-identity-adoption-checks.json).
+
 **October5 account-identity checkpoint:** Added version2 account-ID-bound journal
 write/read and identity-fenced commit/receipt proof; replay never downgrades a
 bound save. Focused race and actual disposable Mongo checks reject absent/reused

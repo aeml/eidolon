@@ -441,6 +441,16 @@ func main() {
 		defer closers[i].Close()
 	}
 
+	// Refuse unbound pending work before advancing the writer-compatibility
+	// marker. An old matching server can still reconcile its recovery point.
+	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
+	if err != nil {
+		log.Fatalf("Character save journal unavailable: %v", err)
+	}
+	if err := characterSaveJournal.ValidateAccountBoundRecords(); err != nil {
+		log.Fatalf("Character journal transition required; files preserved: %v", err)
+	}
+	requireBoundCharacterSaves = true
 	db, err = database.New(*mongoURI)
 	if err != nil {
 		log.Fatal(err)
@@ -458,10 +468,6 @@ func main() {
 	bossVictories = db
 	weeklyRaidRewards = db
 	characterSaveCommitter = db
-	characterSaveJournal, err = database.OpenCharacterSaveJournal(*characterJournalDir)
-	if err != nil {
-		log.Fatalf("Character save journal unavailable: %v", err)
-	}
 	if err := retryPendingCharacterSaves(); err != nil {
 		log.Fatalf("Cannot recover pending character saves; refusing stale logins: %v", err)
 	}

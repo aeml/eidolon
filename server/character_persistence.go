@@ -20,6 +20,10 @@ type boundCharacterCommitter interface {
 
 var characterSaveJournal *database.CharacterSaveJournal
 var characterSaveCommitter characterCommitter
+
+// Enabled by the production entry point before replay/admission. Old fixture
+// writers may exercise compatibility, but no running server can opt into it.
+var requireBoundCharacterSaves bool
 var failedCharacterSaves = struct {
 	sync.Mutex
 	users map[string]bool
@@ -87,7 +91,17 @@ func journalCharacterSnapshot(username string, character *database.Character) (*
 	if world != nil {
 		world.SetEntityUnjournaledSave("player-"+username, true)
 	}
-	pending, err := characterSaveJournal.Write(username, character)
+	var pending *database.PendingCharacterSave
+	var err error
+	if character == nil {
+		err = errors.New("character snapshot required")
+	} else if !character.AccountID.IsZero() {
+		pending, err = characterSaveJournal.WriteForAccount(character.AccountID, username, character)
+	} else if requireBoundCharacterSaves {
+		err = errors.New("character snapshot account identity missing; refusing unbound save")
+	} else {
+		pending, err = characterSaveJournal.Write(username, character)
+	}
 	if world != nil {
 		world.SetEntityUnjournaledSave("player-"+username, err != nil)
 	}
@@ -109,6 +123,9 @@ func commitPendingCharacterSave(pending *database.PendingCharacterSave) error {
 		}
 		err = bound.CommitBoundCharacterSave(pending.AccountID, pending.Username, character, pending.SaveID)
 	} else if pending.Version == 1 && pending.AccountID.IsZero() {
+		if requireBoundCharacterSaves {
+			return errors.New("legacy character journal requires controlled transition; preserving file")
+		}
 		err = characterSaveCommitter.CommitCharacterSave(pending.Username, character, pending.SaveID)
 	} else {
 		return errors.New("invalid character journal identity version")

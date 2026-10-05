@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const CurrentSchemaVersion = 22
+const CurrentSchemaVersion = 23
 
 type schemaMigration struct {
 	Version int
@@ -104,6 +104,9 @@ var schemaMigrations = []schemaMigration{
 	// No reward backfill. Older death pipelines ignore the retained original
 	// boss cohort and must not write past this first-outcome recovery boundary.
 	{Version: 22, Name: "durable_boss_victory_cohorts", Apply: applyBossVictoryIndexes},
+	// Private journal format is part of writer compatibility even without a
+	// character backfill. Old binaries neither preserve nor replay account binding.
+	{Version: 23, Name: "account_bound_character_journals", Apply: func(context.Context, *DB) error { return nil }},
 }
 
 // RunMigrations applies every missing migration in ascending version order.

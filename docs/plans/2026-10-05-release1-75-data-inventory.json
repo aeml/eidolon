@@ -3,7 +3,7 @@
   "milestone": "1.75",
   "status": "implementing-not-published-or-complete",
   "reviewedSourceCommit": "7af0b2798f0cb0b2ed245736df0c95aacedff586",
-  "scope": "Schema22 mainline inventory, inherited source descriptions reviewed for the current request workflow. No future schema24 fields or storage redesign included. No production rows, credentials or provider dashboards included.",
+  "scope": "Mainline inventory with unpublished schema23 account-bound-character-journal compatibility marker, no backfill. No prepared future storage/checkpoint fields or redesign included; later branch23/24 markers must be renumbered before integration. No production rows, credentials or provider dashboards included.",
   "ownerDecision": {
     "date": "2026-10-05",
     "mode": "administrator-reviewed exports and removal requests",
@@ -166,7 +166,7 @@
         "server/internal/database/pvp_result_journal.go"
       ],
       "data": "Pending complete character images or exact activity/guild-clear/PvP recovery records with identities. Journal directories are created with mode0700; exact receipts are acknowledged only by their recovery contract.",
-      "boundary": "Not public artifacts. Do not wipe pending journals as privacy cleanup; reconcile them with the matching Mongo recovery point. Unpublished version2 character-journal primitives bind account ObjectID in write/replay/receipt proof, reject rebinding or legacy overwrite of a bound pending file and retain rejected evidence; normal producers still write legacy version1, so full identity pinning/adoption and controlled old-record transition remain open. Other journals and archive decisions need separate coordination. Repository modes do not certify actual host ownership or encryption."
+      "boundary": "Not public artifacts. Do not wipe pending journals as privacy cleanup; reconcile them with the matching Mongo recovery point. Unpublished production snapshot/shutdown/offline producers carry loaded account ObjectID into version2 records; write/replay/receipt proof rejects rebinding/downgrade and retains rejected evidence. Production startup refuses legacy pending files before DB initialization/migration; schema23 fences old version1 writers without backfill. Actual release transition/recovery acceptance and session/other-operation/archive coordination remain open. Repository modes do not certify actual host ownership or encryption."
     },
     {
       "kind": "backups-and-runtime-logs",

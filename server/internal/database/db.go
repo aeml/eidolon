@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
@@ -44,6 +45,7 @@ type DB struct {
 // Database account image, not a public response or owner-export DTO. Hiding the
 // credential hash does not make email, roles or character images public-safe.
 type User struct {
+	ID            primitive.ObjectID               `bson:"_id,omitempty" json:"-"`
 	PublicName    string                           `bson:"public_name,omitempty"`
 	PublicNameKey string                           `bson:"public_name_key,omitempty"`
 	VIPPeriods    []VIPPeriod                      `bson:"vip_periods,omitempty"`
@@ -78,6 +80,8 @@ type Auction struct {
 }
 
 type Character struct {
+	// Trusted load context only; never stored inside the character or exposed.
+	AccountID                primitive.ObjectID             `bson:"-" json:"-"`
 	DirectTradeState         bson.Raw                       `bson:"direct_trade_state,omitempty"`
 	GuildBankRevision        int64                          `bson:"guild_bank_revision,omitempty"`
 	GuildBankOpID            string                         `bson:"last_guild_bank_operation_id,omitempty"`
@@ -379,6 +383,7 @@ func (db *DB) CreateUser(username, email, password string) error {
 	}
 
 	user := User{
+		ID:            primitive.NewObjectID(),
 		PublicName:    username,
 		PublicNameKey: strings.ToLower(username),
 		Username:      username,
@@ -420,10 +425,16 @@ func (db *DB) Authenticate(username, password string) (bool, error) {
 }
 
 func (db *DB) CreateCharacter(username string, char *Character) error {
+	if char == nil || char.Name == "" {
+		return errors.New("character name required")
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	filter := bson.M{"username": username}
+	if !char.AccountID.IsZero() {
+		filter["_id"] = char.AccountID
+	}
 	update := bson.M{"$push": bson.M{"characters": char}}
 
 	result, err := db.users.UpdateOne(ctx, filter, update)
@@ -437,10 +448,16 @@ func (db *DB) CreateCharacter(username string, char *Character) error {
 }
 
 func (db *DB) SetFirstCharacter(username string, char *Character) error {
+	if char == nil || char.Name == "" {
+		return errors.New("character name required")
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	filter := bson.M{"username": username}
+	if !char.AccountID.IsZero() {
+		filter["_id"] = char.AccountID
+	}
 	update := bson.M{"$set": bson.M{"characters": []*Character{char}}}
 
 	result, err := db.users.UpdateOne(ctx, filter, update)
@@ -465,6 +482,11 @@ func (db *DB) GetUser(username string) (*User, error) {
 	err := db.users.FindOne(ctx, bson.M{"username": username}).Decode(&user)
 	if err != nil {
 		return nil, err
+	}
+	for _, character := range user.Characters {
+		if character != nil {
+			character.AccountID = user.ID
+		}
 	}
 	return &user, nil
 }

@@ -111,6 +111,7 @@ jobs:
         run: |
           duel_binary_dir="$(mktemp -d "$RUNNER_TEMP/eidolon-duel-XXXXXX")"
           go build -race -ldflags='-X main.buildCommit=server' -o "$duel_binary_dir/server" .
+          EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCharacterBoundActualStartupLegacyRefusal$' -count=1 -timeout=30s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCredentialActualFreshConnectionsAndTakeover$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestDirectTradeActualSocketsCrashAndRecovery$' -count=1 -timeout=120s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestGroundItemActualSocketsRejectedSaveCrashAndRecovery$' -count=1 -timeout=120s

@@ -215,6 +215,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Failed to load user data")
 			return
 		}
+		if requireBoundCharacterSaves && user.ID.IsZero() {
+			c.sendError("Account identity could not be restored. Please contact support.")
+			return
+		}
 
 		var char *database.Character
 		// Simple logic: Use the first character if it exists, otherwise create one
@@ -228,6 +232,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		} else {
 			// Create new character
 			char = newPlayerCharacter(c.username, payload.Type)
+			char.AccountID = user.ID
 			// Save new character to DB
 			var err error
 			if user.Characters == nil {
@@ -300,6 +305,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 
 		entity := &game.Entity{
+			PersistenceAccountID:     user.ID,
 			PublicName:               clientPublicName(c),
 			ID:                       playerID,
 			Name:                     c.username,

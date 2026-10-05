@@ -254,6 +254,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 
 	// Update DB character
 	char := &database.Character{
+		AccountID:                entity.PersistenceAccountID,
 		GuildBankRevision:        entity.GuildBankRevision,
 		GuildBankOpID:            entity.GuildBankOpID,
 		GuildBankOpFingerprint:   entity.GuildBankOpFingerprint,

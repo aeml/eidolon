@@ -528,13 +528,43 @@ foreign account. Fixture-only removal/re-registration does not enable an
 operator or production erasure API. See
 [identity checks](2026-10-05-release1-75-identity-checks.json).
 
-**Adoption remains unfinished:** the normal snapshot writer still writes legacy
-version1 records. Existing version1 records remain readable and replayable under
-the current protocol; they cannot safely be rebound by looking up today's owner
-of the username. Before relying on this fence for removal, acquire/pin account
-identity before accepting live/offline work, switch every producer (including
-shutdown/recovery), and verify a controlled legacy-journal transition. Other
-custody writers and replay journals plus restored archive decisions also require
-coordination. These primitives alone do not drain old live writers, prevent
-archive resurrection or authorize deletion. No retention change or erasure is
-enabled, and1.75 remains unpublished.
+**Normal producer adoption is now implemented locally:** trusted account/roster
+and offline character loading carry Mongo ObjectID as transient context. Live
+entities and detached/save projections retain it without client replication or
+embedded BSON storage. Production snapshot creation requires that identity and
+writes version2; journal decode restores it for replay. Shutdown still journals
+all final characters before its first database attempt. Delegating commits and
+ordinary repository saves respect carried identity rather than retarget a stale
+image to a replacement account.
+
+The production entry point validates journals before database initialization or
+migrations, refuses every legacy pending record without rewriting/removing it,
+and enables strict bound-save mode before admission. Schema23 is a marker-only
+writer-compatibility fence: old schema22 binaries cannot safely handle version2
+journals, so the existing deployment helper must preserve a consistent recovery
+point on upgrade. No player/currency/item backfill or new retention setting.
+
+For transition, let the original compatible server reconcile its own pending
+work against the matching Mongo/recovery point and finish graceful shutdown;
+preserve Mongo, journals and exact release identity together. Confirm no legacy
+pending character files remain before admitting the new binary. If refusal
+persists, stop the upgrade and retain the original matching recovery set; do not
+delete files, guess a new owner or manually stamp a legacy record with today's
+ObjectID. The early refusal is before schema23 migration so it does not itself
+strand the original binary behind a newer marker. Once schema23 is committed,
+an old schema22 image is not a compatible rollback writer. Restore is still an
+independently approved coordinated operation, not automatic undo.
+
+Focused strict-mode, producer/clone/privacy, legacy preflight, shutdown and actual
+Mongo live/offline/reopened-journal checks are retained in
+[adoption checks](2026-10-05-release1-75-identity-adoption-checks.json). Real
+deployment transition/recovery acceptance remains open. Session/resume admission,
+other shared-custody intents/replay journals and independently restored removal
+decisions still require coordination before any erasure can be enabled. Character
+binding alone does not drain old live writers, prevent archive resurrection or
+authorize deletion. No retention change or erasure is enabled;1.75 is unpublished.
+
+The prepared, unpublished1.76+ branch already assigned its own23/24 storage
+markers. Before integrating it, renumber those later migrations after this
+schema23 fence and update their evidence; do not deploy that older branch or
+reuse a marker number for a different contract.

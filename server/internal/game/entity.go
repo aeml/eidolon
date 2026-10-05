@@ -69,6 +69,7 @@ type Stats struct {
 // ---------------------------------------------------------------------------
 
 type Entity struct {
+	PersistenceAccountID     [12]byte             `json:"-"` // Trusted load context; never client controlled or replicated.
 	Mu                       sync.RWMutex         // Protects concurrent access
 	ID                       string               `json:"id"`
 	InstanceID               string               `json:"instanceId"`
@@ -926,6 +927,7 @@ func (w *World) GetEntityCopy(id string) *Entity {
 
 	// Manual copy to avoid copying the.Mutex
 	newE := &Entity{
+		PersistenceAccountID:     e.PersistenceAccountID,
 		ID:                       e.ID,
 		InstanceID:               e.InstanceID,
 		PvPReturn:                clonePvPOrigin(e.PvPReturn),

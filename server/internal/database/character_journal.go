@@ -37,6 +37,7 @@ func (save *PendingCharacterSave) Character() (*Character, error) {
 	if character.Name == "" {
 		return nil, errors.New("journal character name missing")
 	}
+	character.AccountID = save.AccountID
 	return &character, nil
 }
 
@@ -86,6 +87,9 @@ func (journal *CharacterSaveJournal) WriteForAccount(accountID primitive.ObjectI
 func (journal *CharacterSaveJournal) write(accountID primitive.ObjectID, username string, character *Character) (*PendingCharacterSave, error) {
 	if username == "" || character == nil || character.Name == "" {
 		return nil, errors.New("invalid character journal save")
+	}
+	if !character.AccountID.IsZero() && character.AccountID != accountID {
+		return nil, errors.New("character journal load identity conflict")
 	}
 	payload, err := bson.Marshal(character)
 	if err != nil {
@@ -241,6 +245,26 @@ func (journal *CharacterSaveJournal) PendingUsers() ([]string, error) {
 		}
 	}
 	return users, nil
+}
+
+// Startup only, before database migrations or admission and with no concurrent
+// writer. Legacy records need reconciliation with their original recovery point,
+// not a guess using today's account lookup. Never rewrite or discard them here.
+func (journal *CharacterSaveJournal) ValidateAccountBoundRecords() error {
+	users, err := journal.PendingUsers()
+	if err != nil {
+		return err
+	}
+	for _, username := range users {
+		save, err := journal.Read(username)
+		if err != nil {
+			return err
+		}
+		if save == nil || save.Version != 2 || save.AccountID.IsZero() {
+			return errors.New("legacy character journal requires controlled transition before database migration")
+		}
+	}
+	return nil
 }
 
 // A delayed acknowledgement may never remove a newer queued snapshot.

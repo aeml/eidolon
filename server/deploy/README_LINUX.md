@@ -258,6 +258,16 @@ bridge alone does not deliver the resource-persistence feature.
 - Deploy one release at a time through the ordered CI and live-verification gate.
   Keep the exact verified source commit/image for each supported recovery target.
   Do not run two character-writing API instances against the same database.
+- Unpublished1.75 introduces schema23's marker-only account-bound character
+  journals. Normal producers require the loaded account ObjectID and write
+  version2. Startup refuses legacy pending records **before** Mongo initialization
+  or migration; it never guesses ownership, rewrites or deletes them. Reconcile
+  pending work using its original matching server/Mongo recovery point, complete
+  graceful shutdown, and preserve the coordinated Mongo/journal/image backup.
+  Stop an upgrade if legacy refusal persists; do not erase files to get online.
+  Once schema23 is recorded, a schema22 image cannot safely roll back this writer.
+  No account erasure or retention change is enabled. Prepared later storage
+  migrations must be renumbered after23 before integration.
 - Before a save-format upgrade, stop admission and allow the old API to shut down
   fully. Take a consistent backup of Mongo **and** the private `logs/` volume
   (including `character-saves/` when present) while no writer is running. Retain

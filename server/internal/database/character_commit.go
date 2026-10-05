@@ -20,6 +20,9 @@ import (
 // serialize saves/replay per account and always replay that account's newest
 // durable journal entry, never a captured old entry after a newer save.
 func (db *DB) CommitCharacterSave(username string, character *Character, saveID string) error {
+	if character != nil && !character.AccountID.IsZero() {
+		return db.CommitBoundCharacterSave(character.AccountID, username, character, saveID)
+	}
 	return db.commitCharacterSave(primitive.NilObjectID, username, character, saveID)
 }
 
@@ -28,6 +31,9 @@ func (db *DB) CommitCharacterSave(username string, character *Character, saveID 
 func (db *DB) CommitBoundCharacterSave(accountID primitive.ObjectID, username string, character *Character, saveID string) error {
 	if accountID.IsZero() {
 		return errors.New("character commit account identity required")
+	}
+	if character != nil && !character.AccountID.IsZero() && character.AccountID != accountID {
+		return errors.New("character commit account identity conflict")
 	}
 	return db.commitCharacterSave(accountID, username, character, saveID)
 }

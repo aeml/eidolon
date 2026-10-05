@@ -32,7 +32,7 @@ func TestCharacterBoundCommitMongoRejectsReusedAccountAndCopiedReceipt(t *testin
 	t.Cleanup(func() { _ = client.Disconnect(context.Background()) })
 	users := client.Database("eidolon").Collection(uniqueID("character-identity-"))
 	t.Cleanup(func() { _ = users.Drop(context.Background()) })
-	db := &DB{users: users}
+	db := &DB{users: users, characters: newMongoCharacterRepository(users)}
 	oldID, newID, foreignID := primitive.NewObjectID(), primitive.NewObjectID(), primitive.NewObjectID()
 	insert := func(id primitive.ObjectID, username string, gold, ep int, receipt string) {
 		t.Helper()
@@ -52,6 +52,14 @@ func TestCharacterBoundCommitMongoRejectsReusedAccountAndCopiedReceipt(t *testin
 	}
 	insert(oldID, "owner", 10, 7, "")
 	insert(foreignID, "other", 999, 99, "")
+	loadedUser, err := db.GetUser("owner")
+	if err != nil || loadedUser.ID != oldID || loadedUser.Characters[0].AccountID != oldID {
+		t.Fatal("roster load lost stable identity", err)
+	}
+	loadedCharacter, err := db.GetCharacter("owner", "hero")
+	if err != nil || loadedCharacter.AccountID != oldID {
+		t.Fatal("offline load lost stable identity", err)
+	}
 	foreignBefore := sha256.Sum256(read(foreignID))
 	journal, err := OpenCharacterSaveJournal(t.TempDir())
 	if err != nil {
@@ -91,6 +99,13 @@ func TestCharacterBoundCommitMongoRejectsReusedAccountAndCopiedReceipt(t *testin
 	before = sha256.Sum256(read(newID))
 	if err := db.CommitBoundCharacterSave(oldID, "owner", character, save.SaveID); err == nil || sha256.Sum256(read(newID)) != before {
 		t.Fatal("reused account/copy receipt admitted", err)
+	}
+	if err := db.CommitCharacterSave("owner", character, save.SaveID); err == nil || sha256.Sum256(read(newID)) != before {
+		t.Fatal("delegating wrapper lost carried account fence", err)
+	}
+	loadedCharacter.Gold = 10000
+	if err := db.SaveCharacter("owner", loadedCharacter); err == nil || sha256.Sum256(read(newID)) != before {
+		t.Fatal("ordinary stale character write retargeted replacement", err)
 	}
 	if pending, err := journal.Read("owner"); err != nil || pending == nil || pending.AccountID != oldID || pending.SaveID != save.SaveID {
 		t.Fatal("rejected old journal discarded or rebound", err)

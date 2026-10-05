@@ -27,6 +27,15 @@ func TestSchemaMigrationCatalogIsContiguous(t *testing.T) {
 	}
 }
 
+func TestSchemaMigrationCatalogFencesAccountBoundJournals(t *testing.T) {
+	if CurrentSchemaVersion < 23 || len(schemaMigrations) < 23 || schemaMigrations[22].Name != "account_bound_character_journals" {
+		t.Fatal("old unbound-journal writers must be fenced")
+	}
+	if err := schemaMigrations[22].Apply(context.Background(), nil); err != nil {
+		t.Fatal("marker must not backfill accounts", err)
+	}
+}
+
 func TestSchemaMigrationCatalogFencesGroundItemGenerations(t *testing.T) {
 	if CurrentSchemaVersion < 19 || len(schemaMigrations) < 19 || schemaMigrations[18].Name != "durable_ground_item_generations" {
 		t.Fatal("older ground-item-unaware writers must be fenced before new intents are admitted")

@@ -40,6 +40,7 @@ func (repository *mongoCharacterRepository) LoadCharacter(username, characterNam
 	}
 	for _, character := range user.Characters {
 		if character != nil && character.Name == characterName {
+			character.AccountID = user.ID
 			return character, nil
 		}
 	}
@@ -53,9 +54,13 @@ func (repository *mongoCharacterRepository) SaveCharacter(username string, chara
 	ctx, cancel := context.WithTimeout(context.Background(), repository.timeout)
 	defer cancel()
 
+	filter := bson.M{"username": username, "characters.name": character.Name}
+	if !character.AccountID.IsZero() {
+		filter["_id"] = character.AccountID
+	}
 	result, err := repository.users.UpdateOne(
 		ctx,
-		bson.M{"username": username, "characters.name": character.Name},
+		filter,
 		bson.M{"$set": bson.M{"characters.$": character}},
 	)
 	if err != nil {
