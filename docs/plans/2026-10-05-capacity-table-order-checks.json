@@ -1,0 +1,15 @@
+{
+  "status": "ACTUAL_CHANGED_TARGET_RUNNING_NO_ACCEPTANCE",
+  "sourceCommit": "9db4c8efa4aa02566cb5b1d66d4c63ff81757399",
+  "ownedContainer": "4149bb4874d6fa9b5e2bec74a23f1a04f94d34fdd77eabfd3aedb275c92ddc98",
+  "taskLabel": "combined100-table-order-179-20261005",
+  "parentSession": 57074,
+  "artifacts": {
+    "directory": "/tmp/eidolon-179-table-order-UFDklp",
+    "normalServerSHA256": "f3e8cc3416ed8c370aec12a1eadb88b58a9d464e375171ac98116b9b8dd6a63a",
+    "raceRootSHA256": "699e3762efc2aa96918d1a97d782db049b4b5db3355b9a14381f03110c25691a",
+    "normalDriverSHA256": "f9df342751c9a96422d3632ec8fdf8dc58d835fdac3f79cb02c45ce7bc32dfb3"
+  },
+  "scope": "New persistent-table identity/version projections and prepared UI/driver ordering pass focused reproductions/boundary checks before one changed target comparison. Rebuilt normal server/driver and race root from exact clean9db4c8ef; not reused old native binaries. Same100 clients,120s workload/five-second admission, six-seat table distribution, own positive party impact/healing, every casino client's paid result and every independent fresh saved character gates. Candidate schema24, not narrow production capacity. Network-none/no published ports Mongo7.0.14,2CPU/2GiB,512MiB database/16MiB config tmpfs,.25GiB Mongo cache; exact label/ID/limits/OOMfalse and ping verified before start. Six-minute root/seven-minute parent bounds. No production data, campaign/raid replay, in-run grants, changed difficulty or weakened success threshold.",
+  "remaining": "Observe same parent handle to definitive terminal outcome, inspect exact owned process/OOM/peak, remove only owned disposable fixture/private data and record result. No acceptance implied by a launch. Town/social outcomes, finale/other rituals, final settlement/restart/representative headroom, ordered1.75–1.78 and own1.79 version/notes/CI/public gates remain."
+}

@@ -1,6 +1,35 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**Current checkpoint:** Alpha1.21.0 is accepted live at
+**Current checkpoint (October5):** Alpha1.74.4 remains the last independently
+accepted live release at9560ac60, CI37246677139 all ten jobs successful plus exact
+public identities/database readiness/login/history/changed runtime bytes.
+Initial1.74.5 CI37250096379 failed focused predeploy loot; deployment skipped.
+Corrected1.74.5 is pushed at59dfed48, CI37253104723 monitored by Luna. Independent
+single-flight and predicted-arrival regressions are corrected;430 focused checks
+and all4 disposable System Chrome release routes pass. Exact terminal/public
+acceptance still required. Owner dirty workspace is unchanged; publication uses
+narrow maintenance worktree and a fresh ordinary remote merge.
+
+Separate unpublished schema24/policy/ops/capacity candidate includes the
+accepted smaller/dungeon/Earth-raid/Root-event scoped evidence, not full capacity.
+Latest terminal100 comparison961f9900 fails one blackjack and one house stale
+rejection despite all100 own-state and every poker paid result; independent
+all-account saves not reached. Small regressions then reproduce old lobby
+restoration across hands. Prepared9db4c8ef uses persistent table versions as
+precise bounded strings;128 UI checks and native projection/driver race suites
+pass. Changed native100 comparison has just launched in one verified owned
+network-none bounded fixture; no terminal/capacity acceptance yet. See
+[current run](docs/plans/2026-10-05-capacity-table-order-checks.json).
+
+Full original1.11–1.99 roadmap remains active. Ordered1.75–1.78 privacy/retention/
+operations/hosting owner gates,1.79 complete town/social outcomes, current finale/
+remaining rituals, settlement/restart and representative headroom, later feature/
+art/security/beta/release gates remain incomplete. Retain user decisions; do not
+launch closed beta, claim final art, weaken gates, rerun unchanged campaigns or
+publish this future branch as maintenance. Luna watches deployments and long
+raid/dungeon processes; coding remains with root.
+
+**Historical checkpoint (September28):** Alpha1.21.0 is accepted live at
 614acf03d01eb794e90b9653f5b470671c8fed2b, CI36456025227 all ten jobs successful.
 Root exact public IPv4 frontend/backend/database/login/history/five-asset checks
 passed again after terminal CI. Watcher29138 completed successfully; no active
