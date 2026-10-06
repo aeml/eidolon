@@ -3,6 +3,15 @@
   "milestone": "1.77 hosting and network reliability",
   "baseCommit": "7ebf3a7f",
   "status": "isolated-preparation-not-published-or-complete",
+  "orderedReleaseReview": {
+    "checkedAt": "2026-10-06T08:33:43Z",
+    "candidate": "fbd483717a97e82c0e4084785305cde787f521c4",
+    "freshMaster": "69cc97d9580e1a9e0e5e576f1a475a50b43c6639",
+    "integration": "Fresh fetch succeeds; master is already an ancestor of the clean1.77 candidate. No pull/merge is needed now. Recheck immediately before any release push; preserve concurrent website changes if master advances.",
+    "outgoingReview": "Inspect all19 outgoing files: TLS installer guards and Linux instructions, pure validators/real isolated proxy test, accepted1.76 and staged1.77 receipts/history, synchronized1.77 identities/defaults and cumulative patch notes. No outgoing website, assets, src, game or database changes; main.go only changes its default version. Later1.78–1.88 prepared features and fence performance changes are not part of this ordered1.77 candidate. No dependency, schema, currency, retention, account or deployed Nginx mutation.",
+    "liveReadOnly": "Bounded verified HTTPS/IPv4 frontend release and backend health independently still match69cc97d9/Alpha1.76.0, statusok/database ready. No login, player data, provider mail or service action. These are predecessor health checks, not1.77 deployment/renewal acceptance.",
+    "nextAction": "Owner's named certificate-renewal dry-run result is still missing. Existing DNS/IPv6 deferral stays explicit; no new dual-stack promise. Stop the ordered release push until the material owner verification arrives rather than skip its gate, publish later staged versions or repeat unchanged CI. Operations hosting/test-alert choice is also requested for the following1.78 milestone. Reuse exact unchanged focused receipts; ordinary mandatory CI/Luna monitoring and post-deploy exact public checks remain required after a legitimate push."
+  },
   "nativeProxyFollowUp": {
     "check": "TestCanonicalNginxProxyPreservesHTTPAndWebsocketContracts executes the committed canonical backend block in a real foreground single-process nginx. Only temporary loopback listen/upstream addresses are substituted; no installed configuration or system service is loaded.",
     "result": "Native proxy plus all27 pure TLS guards and six actual WebSocket Origin handshake cases pass with race detection: eidolon-server1.306s. HTTP request path/encoded release query, canonical Host, HTTP1.1 and forwarding headers are exact. Production upgrader rejects a foreign Origin with403 and accepts canonical play Origin;64KiB binary echo and normal1000 close handshake remain intact through actual nginx. The owned process is terminated and joined; no live service or player data changed.",

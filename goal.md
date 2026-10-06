@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 ordered-release gate revalidation08:33UTC:** Fresh master remains
+69cc97d9 and is already an ancestor of clean1.77 candidatefbd48371. Review all19
+outgoing files: only hosting guards/tests/docs and synchronized1.77 release
+identity/notes; no website/assets/src/game/database changes or later staged
+features. Both live publicIPv4 identities still match healthy1.76, database ready.
+The unchanged owner certificate dry-run gate has recurred across goal turns;
+there is no remaining code gap in this next candidate that substitutes for that
+verification. Request the exact named command result and following1.78 hosting/
+single-test-alert choice again. Stop the ordered release until owner input rather
+than skipping gates or repeating CI. Preserve the full1.11–1.99 objective and
+later staged work; no completed-goal, beta, renewal, IPv6 or deployment claim.
+See the hosting receipt's current ordered-release review.
+
 **October6 prepared1.77 release identity:** Source/package/login/server/container/
 workflow/isolated-QA identities now agree on Alpha1.77.0 in this unpublished
 worktree. Cumulative notes describe actual hosting guards and proxy checks,
