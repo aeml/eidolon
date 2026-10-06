@@ -4,6 +4,12 @@
   "baseCommit": "7ebf3a7f",
   "status": "isolated-preparation-not-published-or-complete",
   "inheritedSourceVersion": "Alpha1.76.0 unpublished candidate",
+  "currentIntegrationFollowUp": {
+    "master": "5757232598c353fe6bc76ca7fd65283019d62693 merged normally; includes accepted1.75 receipt and1.76 named-index CI correction. No own1.77 release claim.",
+    "documentation": "Canonical fresh certificate request/dry-run now names only play.eidolonrealms.com lineage, with existing-name inspection rather than renaming. Document explicit Compose project/port/private env/Mongo/log-journal separation, no production provider/account copying, unchanged strict browser origins and unless-stopped/manual-stop restart boundaries.",
+    "publicIPv4Websocket": "One anonymous bounded HTTP1.1 upgrade to https://server.eidolonrealms.com/ws with canonical play Origin returned101 and received5748 bytes before deliberate3-second curl deadline closed it. No authentication, account creation or game command. Exit28 is the imposed open-socket observation deadline, not an HTTP failure. Does not prove long idle sessions, authenticated gameplay, IPv6 or1.77 acceptance.",
+    "publicReadiness": "Independent bounded IPv4 /healthz reports56d9fda91a964890d8777bbce91a1c67869fd9c3, Alpha1.75.0, statusok/databaseready. Corrected1.76 CI37403492653 is in progress, not accepted."
+  },
   "existingTargetFollowUp": {
     "change": "Fresh custom-host setup now refuses existing configuration/enabled targets, including dangling symlinks, before filesystem/certificate/reload actions. Missing Certbot is checked before HTTP bootstrap writes. Obtain and dry-run commands explicitly scope the supplied hostname's certificate; interrupted setup requires manual inspection, not deletion or bypassing the guard.",
     "verification": "Race TestTLSSetup passes1.162s:18 argument cases,8 existing-target cases plus empty fresh targets. Existing file bytes, directory entries, link destinations and unrelated sentinel remain unchanged; no second target is created. Tests source only pure validators and assert target/dependency guards precede effects. Shell syntax and whitespace checks pass; no actual installer action.",

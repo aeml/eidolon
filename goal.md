@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 hosting environment/proxy follow-up:** Latest master57572325 is
+normally merged into this unpublished1.77 worktree. Canonical certificate
+instructions scope the existing named lineage instead of all hosted sites.
+Staging requirements now explicitly separate Compose project, port, credentials,
+Mongo volume and private save/activity journals; a Git worktree is not isolation.
+Restart/manual-stop and strict browser-origin boundaries are documented. One
+bounded anonymous publicIPv4 WebSocket upgrade returns101, then closes at the
+deliberate3s observation deadline; no account or gameplay command. Public health
+still matches exact accepted1.75 with database ready. Owner certificate challenge,
+supported address-family decision and own ordered release acceptance remain open.
+
 **October6 isolated1.77 hosting preparation:** Canonical two-host installer
 argument guard and current operator instructions are integrated separately from
 the1.76 candidate. Eighteen validation-only race cases pass without installer

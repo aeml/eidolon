@@ -421,16 +421,19 @@ sudo install -m 644 deploy/nginx/eidolonrealms-http.conf /etc/nginx/sites-availa
 sudo ln -s /etc/nginx/sites-available/eidolonrealms.conf /etc/nginx/sites-enabled/eidolonrealms.conf && \
 sudo nginx -t && \
 sudo systemctl reload nginx && \
-sudo certbot --nginx --redirect -d play.eidolonrealms.com -d server.eidolonrealms.com && \
+sudo certbot --nginx --redirect --cert-name play.eidolonrealms.com -d play.eidolonrealms.com -d server.eidolonrealms.com && \
 sudo nginx -t && \
 sudo systemctl reload nginx && \
-sudo certbot renew --dry-run
+sudo certbot renew --dry-run --cert-name play.eidolonrealms.com
 ```
 
 These commands deliberately stop if either target already exists. For the
 current installed service, **do not reinstall or run that chain**. Inspect its
 existing configuration and use `sudo nginx -t`, `systemctl status certbot.timer`
-and an operator-approved `sudo certbot renew --dry-run` instead. A waiting
+and an operator-approved
+`sudo certbot renew --dry-run --cert-name play.eidolonrealms.com` instead. Verify
+the installed certificate name first; do not rename an existing lineage merely
+to match this example. A waiting
 enabled timer, or a successful no-op renewal service, does not prove a future
 ACME challenge will succeed. HTTP challenge reachability and DNS/proxy behavior
 still need validation; stop on authentication failure rather than repeatedly
@@ -445,6 +448,37 @@ systemd-resolved on127.0.0.53; adapt it deliberately for another server. Its
 AAAA records. Both public address families must reach this Nginx server before
 claiming dual-stack support. The owner's deferred IPv6/DDNS work is not fixed
 by these instructions or a successful IPv4 smoke.
+
+### Environment separation and restart boundaries
+
+The committed Compose file names its default stack `eidolon`. A separate Git
+worktree alone does **not** isolate that stack. A staging installation must have
+an explicit different Compose project name, a different loopback host port,
+its own private `.env`, Mongo volume and `server/logs/` directory (including
+character-save/activity outboxes). Never point staging at production Mongo or
+copy production journals, mail tokens, accounts or admin bootstrap values into
+a load fixture. Compose project naming can be overridden with
+`COMPOSE_PROJECT_NAME`, which must remain consistent for every command and
+deployment helper. An example name is `eidolon-staging`, not a production alias.
+Confirm the effective project, volume names, bind mounts and loopback port with
+an operator before starting it; do not paste `docker compose config` output into
+chat or public logs because expanded credentials can appear there.
+
+No permanent staging stack is installed by these instructions. Existing native
+QA instead uses explicitly labelled disposable Mongo, unique loopback ports,
+synthetic accounts and separate temporary journals. Do not use a new project
+name as permission to restore player data or delete volumes. Custom staging
+browser origins also require a deliberate server allowlist change; the current
+canonical hosts and localhost are not a wildcard-origin policy.
+
+Docker services use `restart: unless-stopped`; API shutdown has a60-second grace
+period. This is process restart configuration, not guaranteed recovery during a
+host outage. A manually stopped container remains stopped after a host reboot.
+Docker and nginx must be enabled, Mongo must become healthy, schema preflight
+and journal recovery must succeed, and the exact public release/ready checks
+must pass. Keep the current private `logs/` and Mongo volume across updates;
+never repair startup by clearing receipts/outboxes or running `down -v`.
+Disruptive reboot/recovery rehearsals require their own maintenance approval.
 
 ## 5) Final verification checklist
 
