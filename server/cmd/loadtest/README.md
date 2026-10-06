@@ -380,13 +380,22 @@ positive impact. Global transport/admission/fresh-state checks include all clien
 not only the busiest roles. Town/social allocation and state coverage do **not**
 prove chat/read action acknowledgements or accepted walking distance.
 
-`TestLoadCombinedActualConcurrentWorkloadsAndSaves` passes one bounded20-client,
-120s production-style server/driver run on an owned disposable Mongo: concurrent
+The earlier source's `TestLoadCombinedActualConcurrentWorkloadsAndSaves` passed
+one bounded20-client,120s server/driver run on an owned disposable Mongo: concurrent
 party impacts/healing and paid poker/blackjack/baccarat/roulette/slot results,
 followed by fresh normal saves for all twenty, exact gear/bag/EP preservation and
-saved XP for each party member. It reuses the preceding prepared class gear and
-build setup; no whole-campaign or repeat of accepted individual workloads.
-Use the opt-in isolated environment flags above. The default mixed/nightly100
+saved XP for each party member. That historical result does not certify this
+newer account-bound/schema25 integration or a100-client cohort. Current-source
+results belong in a dated receipt with exact executable identities and limits.
+It reuses the preceding prepared class gear and build setup; no whole-campaign
+or repeat of accepted individual workloads. Use the opt-in isolated environment
+flags above. This fixture's readiness guard requires the server's embedded
+`main.buildCommit` to equal its binary basename. Build it with the exact source
+commit as both identity and basename (or the deliberate synthetic marker used by
+the other native fixtures); a default `dev` identity correctly refuses before
+the driver runs. `EIDOLON_COMBINED_CLIENTS` selects20–100 in blocks of twenty;
+all cohorts retain the600 fresh-own updates and108000ms active-window gates.
+The default mixed/nightly100
 profile remains unchanged. Final funded casino rounds can remain in normal
 durable recovery; this is not full final settlement, raid/event participation,
 renderer/Internet latency, runtime/DB headroom or100-player capacity acceptance.

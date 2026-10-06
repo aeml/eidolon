@@ -2,7 +2,7 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
-  "status": "current-integration-focused-checks-pass-capacity-not-yet-accepted",
+  "status": "current-100-client-comparison-terminal-fail-role-impact-gate-fixture-removed",
   "inheritedVersion": "Alpha1.76.0 source candidate; own1.79 version not published",
   "changes": [
     "Select prepared workload drivers and native capacity fixtures into the current1.78 integration, retaining account-bound identity, schema25 ordered ground/casino heads and existing privacy/admin behavior. Do not import historical future-version acceptance claims.",
@@ -23,8 +23,45 @@
     "sourceCommit": "7dcd2cfbff2fd0f0ad8c119ea253bd83ffd58c96",
     "result": "FAIL234.69s:100 admit and town/social responses complete, but minimum572 fresh own updates is below600,32 casino timeouts, three paid minima0 and party minimum impact0; independent all-account save gate not reached. Owned fixture removed. No failure reclassified as pass or unchanged retry."
   },
+  "currentNativeComparison": {
+    "sourceCommit": "9b4fd34d991edada5c6c8f9aef7cf4e3431c19d7",
+    "result": "FAIL213.11s/exit1: state, paid casino and delivered social gates clear, but party minimum impact0; independent all-account reload assertions not reached. No unchanged100 retry.",
+    "buildSetupCorrection": "Initial85.22s attempt stopped at exact build-identity readiness before any driver activity. Default dev metadata did not match binary basename server. Owned server shut down normally and its disposable container a510f063953390f5d1d6f6fb14e81699102cb33e4800728bdef983319150ec1d was removed. Rebuilt server with exact source commit as embedded identity and basename, then used a fresh owned database. No readiness guard was weakened.",
+    "artifactDirectory": "/tmp/eidolon-179-current-capacity-P6LPFY",
+    "serverSHA256": "e060e1b1e05584fe614ef2884810ffaee28c7d50852985d5e503552f5726bee0",
+    "driverSHA256": "dd9df825244f618ffe3149c6fa508e04866ab1cc1482bb5bb46586ad58262d48",
+    "raceHarnessSHA256": "f8a9497db0ce6c074f1122d816bc6f3e97bf3a106adf90c00b357986031eb0bb",
+    "scope": "Normal source-built server/driver with GOMAXPROCS2, race root harness,100 clients in five20-role blocks,120s active window, five-second admission, Gold100 bets and party anchor400,600. Mongo7 on explicit loopback32964 with2CPU/2GiB limits and512MiB temporary db. Shared host already running an unrelated24h100-client nightly soak; this is not isolated production headroom or CPU percentile proof.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 145827,
+      "minimumFrames": 1384, "minimumFreshOwnUpdates": 1384,
+      "minimumActiveMilliseconds": 119499, "maximumStateGapMilliseconds": 613,
+      "receivedPayloadBytes": 1535698724,
+      "maximumLoginMilliseconds": 391, "maximumJoinMilliseconds": 419,
+      "admissionFailures": 0, "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "all20TownSocialOutcomesComplete": true,
+      "casinoMinimumPaidResults": {"slots": 23, "blackjack": 1, "baccaratRoulette": 2, "poker": 1},
+      "casinoTimeouts": 0,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20,
+      "partyDamageEvents": 131, "partyHealEvents": 5,
+      "partyAcceptedCasts": 382, "partyDeniedCasts": 0,
+      "partyXPUpdates": 96,
+      "roles": {
+        "Fighter": {"participants": 5, "minimumImpacts": 0, "damage": 7, "heals": 0, "acceptedCasts": 103},
+        "Cleric": {"participants": 5, "minimumImpacts": 20, "damage": 112, "heals": 5, "acceptedCasts": 61},
+        "Rogue": {"participants": 5, "minimumImpacts": 0, "damage": 8, "heals": 0, "acceptedCasts": 112},
+        "Wizard": {"participants": 5, "minimumImpacts": 0, "damage": 4, "heals": 0, "acceptedCasts": 106}
+      }
+    },
+    "phaseMeasurements": {
+      "scope": "Elapsed lifetime cumulative counters at two loopback probes, not CPU or interval percentiles. One broadcast remains in flight at final probe.",
+      "updateCompleted": 1590, "updateFailed": 0, "updateTotalMicroseconds": 81007242, "updateMaximumMicroseconds": 519264,
+      "broadcastCompleted": 1589, "broadcastFailed": 0, "broadcastTotalMicroseconds": 47773916, "broadcastMaximumMicroseconds": 111808
+    },
+    "cleanup": "Normal owned server shutdown completed during harness cleanup. Exact labelled disposable Mongo container9c55ff7b0ede54ba5e5fa49a48fb404e565bc18da69411ec3627e11a129a9248 stopped/removed with its synthetic volumes. Retained aggregate logs/binaries; production and existing nightly soak untouched."
+  },
   "remaining": [
-    "One changed-source native comparison with fresh server/driver/harness, disposable loopback Mongo, declared cohort/resource limits and phase/role measurements. Preserve600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves; do not relax failed gates.",
+    "Diagnose the per-member real-impact gap in a focused role encounter before another100-player comparison. All roles have accepted casts without denials; do not equate casting with damage or assume the cause is proven. Preserve600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves.",
     "Representative process/database/network headroom, settlement/reopen and actual encounter/party coverage require their own evidence; a frame microbenchmark or small cohort is not100-player acceptance.",
     "Ordered1.75–1.78 release and owner operating decisions, then own version/cumulative notes, fresh remote integration, CI/deployment and exact public acceptance. Full1.99 goal remains active."
   ],

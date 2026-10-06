@@ -8,8 +8,17 @@ Complete load-driver race tests pass18.133s, focused server/game checks pass,
 and legal naturally rolled four-class starting gear checks pass2.817s. Four
 fixed class summaries retain zero-impact members without relaxing any gate.
 The frame microbenchmark improves allocations, not proven player capacity.
-Previous100-player failures remain failures; no native comparison has yet been
-run on this source. Own version, capacity and deployment acceptance stay open.
+The changed-source100-player comparison fails213.11s solely at the role-impact
+gate: all100 admit, minimum1384 fresh updates, every casino paid minimum and
+all20 town/social outcomes pass without transport errors or casino timeouts.
+Five parties form/heal, but some Fighters/Rogues/Wizards have zero matched
+damage despite accepted casts. Independent final save assertions are not reached.
+Update/broadcast measurements have long outliers on this shared host, where an
+existing24h nightly soak remains active; no headroom claim. An initial build-
+metadata mismatch refused before load and was corrected without weakening its
+guard. Both owned temporary Mongo fixtures were removed; logs retained.
+Previous failures remain failures. Diagnose the role gap before any full retry;
+own version, capacity and deployment acceptance stay open.
 See [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
 
 **October6 isolated1.78 operations integration:** Prepared monitoring now runs
