@@ -32,7 +32,11 @@ report-form expectations: use the current details label and traverse the added
 export summary before focus wraps. All three actual Chrome report cases now
 pass30.6s, retaining draft/consent/phone/keyboard assertions. Superseded test-only
 CI37395247813 will be replaced by this correction; no production stop is needed.
-Corrected source still needs CI/live acceptance.
+Run37396521234 then exposed one server failure: a token revoked by password
+rotation while queued for the account lock was safely rejected with the wrong
+error category. Invalid-token and changed-account errors are now distinguished;
+locking, generation checks and original tests are unchanged. Focused password/
+identity/resume race tests pass1.539s. Corrected source still needs CI/live acceptance.
 
 **October6 Alpha1.75.0 publication candidate:** The approved milestone policy is
 administrator-reviewed export/removal requests, unchanged retention and no
