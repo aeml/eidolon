@@ -16,6 +16,8 @@ const (
 	boundaryCharacterRecovery
 	boundaryCasinoGold
 	boundaryCasinoEP
+	boundaryRealtimeUpdate
+	boundaryStateBroadcast
 )
 
 var operationalResults = struct {
@@ -26,7 +28,7 @@ var operationalResults = struct {
 // A tiny fixed-size lock protects a coherent snapshot. No IO, player identities,
 // dynamic labels or callbacks run while held; instrumentation cannot alter an
 // operation's saved outcome or turn a lost acknowledgement into compensation.
-// Caller holds operationalResults. Only these six fixed labels are observed.
+// Caller holds operationalResults. Only these eight fixed labels are observed.
 func operationalBoundaryCounts(boundary operationalBoundary) *operations.OutcomeCounts {
 	switch boundary {
 	case boundaryCharacterJournal:
@@ -41,6 +43,10 @@ func operationalBoundaryCounts(boundary operationalBoundary) *operations.Outcome
 		return &operationalResults.metrics.CasinoGold
 	case boundaryCasinoEP:
 		return &operationalResults.metrics.CasinoEP
+	case boundaryRealtimeUpdate:
+		return &operationalResults.metrics.RealtimeUpdate
+	case boundaryStateBroadcast:
+		return &operationalResults.metrics.StateBroadcast
 	default:
 		return nil
 	}
@@ -104,8 +110,19 @@ func operationalMetricsSnapshot() operations.OperationalMetrics {
 	defer operationalResults.Unlock()
 	snapshot := operationalResults.metrics
 	for _, counts := range []*operations.OutcomeCounts{&snapshot.CharacterJournal, &snapshot.CharacterCommit,
-		&snapshot.CharacterCleanup, &snapshot.CharacterRecovery, &snapshot.CasinoGold, &snapshot.CasinoEP} {
+		&snapshot.CharacterCleanup, &snapshot.CharacterRecovery, &snapshot.CasinoGold, &snapshot.CasinoEP,
+		&snapshot.RealtimeUpdate, &snapshot.StateBroadcast} {
 		counts.InFlightKnown = true
 	}
 	return snapshot
+}
+
+// Preserve the existing sequential 33ms frame and fixed simulation delta. These
+// measurements separate simulation from snapshot delivery; they are elapsed
+// wall time, not CPU time, percentiles, scheduler delay or a capacity verdict.
+func runRealtimeFrame(now time.Time) {
+	finished := beginOperationalCall(boundaryRealtimeUpdate)
+	world.UpdateRealtime(0.033, now)
+	finished(nil)
+	broadcastState()
 }

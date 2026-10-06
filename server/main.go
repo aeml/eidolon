@@ -953,8 +953,7 @@ func main() {
 
 	// Game Loop
 	loops.Every(33*time.Millisecond, func() {
-		world.UpdateRealtime(0.033, time.Now())
-		broadcastState()
+		runRealtimeFrame(time.Now())
 	})
 
 	// Party Update Loop (Every 1 second)

@@ -27,6 +27,8 @@ type OperationalMetrics struct {
 	CharacterRecovery OutcomeCounts `json:"characterRecovery"`
 	CasinoGold        OutcomeCounts `json:"casinoGold"`
 	CasinoEP          OutcomeCounts `json:"casinoEP"`
+	RealtimeUpdate    OutcomeCounts `json:"realtimeUpdate"`
+	StateBroadcast    OutcomeCounts `json:"stateBroadcast"`
 }
 
 type outcomeInput struct {
@@ -38,6 +40,7 @@ type outcomeInput struct {
 
 type operationalInput struct {
 	CharacterJournal, CharacterCommit, CharacterCleanup, CharacterRecovery, CasinoGold, CasinoEP *outcomeInput
+	RealtimeUpdate, StateBroadcast                                                               *outcomeInput
 }
 
 func (input *operationalInput) metrics() (*OperationalMetrics, bool) {
@@ -52,6 +55,17 @@ func (input *operationalInput) metrics() (*OperationalMetrics, bool) {
 	}
 	result := &OperationalMetrics{}
 	outputs := []*OutcomeCounts{&result.CharacterJournal, &result.CharacterCommit, &result.CharacterCleanup, &result.CharacterRecovery, &result.CasinoGold, &result.CasinoEP}
+	// Older servers lack both frame phases. Keep their gauges/timing unavailable,
+	// rather than treating them as observed idle. A partial new pair is invalid.
+	if input.RealtimeUpdate != nil || input.StateBroadcast != nil {
+		for _, phase := range []*outcomeInput{input.RealtimeUpdate, input.StateBroadcast} {
+			if phase == nil || phase.Completed == nil || phase.Failed == nil {
+				return nil, false
+			}
+		}
+		inputs = append(inputs, input.RealtimeUpdate, input.StateBroadcast)
+		outputs = append(outputs, &result.RealtimeUpdate, &result.StateBroadcast)
+	}
 	for index, counts := range inputs {
 		if *counts.Failed > *counts.Completed {
 			return nil, false

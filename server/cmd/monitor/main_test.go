@@ -131,3 +131,81 @@ func TestMonitorCommandPostmarkRequiresExplicitOptIn(t *testing.T) {
 		t.Fatal("valid explicit configuration or cancellation failed", err)
 	}
 }
+
+func TestMonitorCommandActualQueuePressureRecovery(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		queued := 0
+		if requests.Add(1) <= 2 {
+			queued = 8
+		}
+		fmt.Fprintf(w, `{"status":"ok","database":"ready","commit":"abcdef0","version":"Alpha 1.78.0","goroutines":10,"heapAllocBytes":100,"heapObjects":1,"broadcastQueues":{"queued":%d,"capacity":10,"encounterQueued":0,"encounterCapacity":10,"dropped":0,"encounterDropped":0,"invalidDropped":0},"private":"synthetic-private-peer-text"}`, queued)
+	}))
+	defer server.Close()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	writes := 0
+	output := &captureWriter{onWrite: func() {
+		writes++
+		if writes == 2 {
+			cancel()
+		}
+	}}
+	args := append(arguments(server.URL+"/healthz"), "-queue-alert-percent", "80")
+	if err := run(ctx, args, output); err != nil {
+		t.Fatal(err)
+	}
+	lines := strings.Split(strings.TrimSpace(output.text.String()), "\n")
+	if len(lines) != 2 || requests.Load() != 4 || strings.Contains(output.text.String(), "synthetic-private") {
+		t.Fatal("pressure monitoring lost debounce/recovery/privacy")
+	}
+	for index, want := range []struct{ kind, cause string }{{"outage", "queue_budget"}, {"recovered", "ready"}} {
+		var event struct{ Notice struct{ Kind, Cause string } }
+		if json.Unmarshal([]byte(lines[index]), &event) != nil || event.Notice.Kind != want.kind || event.Notice.Cause != want.cause {
+			t.Fatal("unexpected pressure notification")
+		}
+	}
+}
+
+func TestMonitorCommandPressureConfigurationAndDefaults(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	for _, flags := range [][]string{
+		{"-max-probe-latency", "-1ns"}, {"-max-probe-latency", "101ms"},
+		{"-max-heap-bytes", "-1"}, {"-max-goroutines", "-1"}, {"-queue-alert-percent", "101"},
+		{"-queue-alert-percent", "-1"}, {"-max-inflight-calls", "18446744073709551616"},
+	} {
+		var output strings.Builder
+		if err := run(ctx, append(arguments("http://127.0.0.1/healthz"), flags...), &output); err == nil || output.Len() != 0 {
+			t.Fatal("unsafe pressure arguments accepted")
+		}
+	}
+	var output strings.Builder
+	args := append(arguments("http://127.0.0.1/healthz"), "-max-probe-latency", "100ms", "-max-heap-bytes", "100",
+		"-max-goroutines", "10", "-queue-alert-percent", "100", "-max-inflight-calls", "18446744073709551615")
+	if err := run(ctx, args, &output); err != nil || output.Len() != 0 {
+		t.Fatal("valid optional budgets or shutdown failed", err)
+	}
+}
+
+func TestMonitorCommandStorageConfigurationAndCancelledOptIn(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	for _, extra := range [][]string{
+		{"-storage-path", "synthetic-private-relative", "-storage-timeout", "1s"},
+		{"-storage-path", "/synthetic-private"}, {"-storage-timeout", "1s"},
+		{"-min-storage-free-bytes", "1"}, {"-min-storage-free-percent", "20"},
+		{"-storage-path", "/synthetic-private", "-storage-timeout", "11s"},
+		{"-storage-path", "/synthetic-private", "-storage-timeout", "1s", "-min-storage-free-percent", "101"},
+		{"-min-storage-free-bytes", "-1"}, {"-min-storage-free-bytes", "18446744073709551616"},
+	} {
+		var output strings.Builder
+		if err := run(ctx, append(arguments("http://127.0.0.1/healthz"), extra...), &output); err == nil || strings.Contains(err.Error(), "synthetic-private") || output.Len() != 0 {
+			t.Fatal("unsafe storage arguments or diagnostic path leak")
+		}
+	}
+	var output strings.Builder
+	if err := run(ctx, append(arguments("http://127.0.0.1/healthz"), "-storage-path", "/synthetic-private-absent", "-storage-timeout", "1s", "-min-storage-free-percent", "20"), &output); err != nil || output.Len() != 0 {
+		t.Fatal("explicit storage settings or cancelled no-IO configuration failed", err)
+	}
+}

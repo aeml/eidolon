@@ -25,6 +25,7 @@ type Sample struct {
 	LatencyMS   int64               `json:"latencyMs"`
 	Runtime     *RuntimeMetrics     `json:"runtime,omitempty"`
 	Operational *OperationalMetrics `json:"operational,omitempty"`
+	Storage     *StorageMetrics     `json:"storage,omitempty"`
 }
 
 // Fixed aggregate fields only: no account labels or arbitrary metric names.
@@ -61,12 +62,20 @@ func (q *queueInput) metrics() *QueueMetrics {
 type Probe struct {
 	endpoint, expectedCommit string
 	client                   *http.Client
+	limits                   PressureLimits
+	storage                  *StorageProbe
 }
 
 // Permit ordinary loopback HTTP and authenticated HTTPS, never URL credentials,
 // forwarding redirects, arbitrary paths or unbounded response/timeout settings.
 // expectedCommit is optional; when set, a healthy older release still refuses.
 func NewProbe(endpoint, expectedCommit string, timeout time.Duration) (*Probe, error) {
+	return NewProbeWithLimits(endpoint, expectedCommit, timeout, PressureLimits{})
+}
+
+// NewProbeWithLimits adds optional operator-selected pressure budgets. The
+// ordinary probe keeps its existing readiness behavior when all limits are zero.
+func NewProbeWithLimits(endpoint, expectedCommit string, timeout time.Duration, limits PressureLimits) (*Probe, error) {
 	u, err := url.Parse(endpoint)
 	if err != nil || u.Host == "" || u.User != nil || u.Path != "/healthz" || u.RawQuery != "" || u.Fragment != "" ||
 		(timeout <= 0 || timeout > 10*time.Second) || (expectedCommit != "" && !releaseCommit.MatchString(expectedCommit)) {
@@ -77,13 +86,45 @@ func NewProbe(endpoint, expectedCommit string, timeout time.Duration) (*Probe, e
 	if u.Scheme != "https" && !(u.Scheme == "http" && loopback) {
 		return nil, errors.New("readiness probes require HTTPS or loopback HTTP")
 	}
-	return &Probe{endpoint: endpoint, expectedCommit: expectedCommit, client: &http.Client{Timeout: timeout,
+	if err := limits.validate(timeout); err != nil {
+		return nil, err
+	}
+	return &Probe{endpoint: endpoint, expectedCommit: expectedCommit, limits: limits, client: &http.Client{Timeout: timeout,
 		CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
+}
+
+// Storage is measured locally by the independent monitor, not exposed through
+// the game health endpoint. Zero configuration leaves ordinary probes unchanged.
+func NewProbeWithStorage(endpoint, expectedCommit string, timeout time.Duration, limits PressureLimits, storage StorageConfig) (*Probe, error) {
+	p, err := NewProbeWithLimits(endpoint, expectedCommit, timeout, limits)
+	if err != nil {
+		return nil, err
+	}
+	p.storage, err = NewStorageProbe(storage)
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
 }
 
 func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	start := time.Now()
-	defer func() { sample.LatencyMS = time.Since(start).Milliseconds() }()
+	defer func() {
+		elapsed := time.Since(start)
+		sample.LatencyMS = elapsed.Milliseconds()
+		if sample.Ready {
+			if cause := p.limits.cause(sample, elapsed); cause != "" {
+				sample.Ready, sample.Cause = false, cause
+			}
+		}
+		if p.storage != nil {
+			metrics, cause := p.storage.check(ctx)
+			sample.Storage = metrics
+			if cause == "cancelled" || sample.Ready && cause != "" {
+				sample.Ready, sample.Cause = false, cause
+			}
+		}
+	}()
 	request, err := http.NewRequestWithContext(ctx, http.MethodGet, p.endpoint, nil)
 	if err != nil {
 		sample.Cause = "probe_failed"
@@ -209,7 +250,9 @@ func (d *Detector) Observe(sample Sample, now time.Time) *Notice {
 	d.incident, d.lastNotice = true, now
 	cause := "probe_failed"
 	switch sample.Cause {
-	case "probe_failed", "probe_timeout", "http_unavailable", "invalid_response", "not_ready", "invalid_identity", "release_mismatch":
+	case "probe_failed", "probe_timeout", "http_unavailable", "invalid_response", "not_ready", "invalid_identity", "release_mismatch",
+		"latency_budget", "heap_budget", "goroutine_budget", "queue_budget", "inflight_budget", "metrics_unavailable",
+		"storage_budget", "storage_timeout", "storage_unavailable":
 		cause = sample.Cause
 	}
 	return &Notice{Kind: kind, Cause: cause}

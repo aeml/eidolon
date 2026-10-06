@@ -734,6 +734,8 @@ func hasEntityChanged(current *game.Entity, last *EntitySnapshot) bool {
 }
 
 func broadcastState() {
+	finished := beginOperationalCall(boundaryStateBroadcast)
+	defer finished(nil)
 	// 1. Copy active sessions to minimize lock time
 	sessionsMu.Lock()
 	clients := make([]*Client, 0, len(activeSessions))
