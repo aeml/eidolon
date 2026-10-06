@@ -58,6 +58,9 @@
     "sharp": "0.35.5"
   },
   "overrides": {
-    "test-exclude": "^7.0.0"
+    "test-exclude": "^7.0.0",
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "4.3.2"
+    }
   }
 }
