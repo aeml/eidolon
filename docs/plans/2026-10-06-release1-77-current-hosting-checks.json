@@ -10,6 +10,12 @@
     "limits": "This isolated HTTP backend fixture does not prove TLS renewal, frontend Pages upstream, long idle sessions, public IPv6 or100-player capacity. Native test explicitly skips if nginx is absent; its actual local run did not skip. Own1.77 publication/acceptance remains open."
   },
   "inheritedSourceVersion": "Alpha1.76.0 accepted predecessor; own1.77 unpublished",
+  "preparedRelease": {
+    "version": "Alpha1.77.0 prepared only; live remains accepted1.76",
+    "changes": "Synchronize package/lockfile, login, manifest, backend, Docker/Compose, deployment/workflow and isolated-QA defaults. Add cumulative1.77 hosting notes while retaining all prior notes. Notes explicitly avoid renewal, public IPv6, long-idle or capacity claims and preserve unchanged schema25, data, retention and economy.",
+    "verification": "VersionPresentation and PagesRuntimeVersioning:369 tests/two suites PASS3.916s. Focused lint, shell syntax and git diff --check pass. Initial Jest invocation could not find dependencies and ran no tests; reuse unchanged predecessor dependencies through an ignored local symlink, then the cited real suites pass. No dependency versions changed.",
+    "publication": "Not pushed. Await owner certificate dry-run and resolve or explicitly document address-family scope, then inspect complete outgoing changes, fresh remote integration, CI/deployment and exact public acceptance."
+  },
   "currentIntegrationFollowUp": {
     "master": "69cc97d9580e1a9e0e5e576f1a475a50b43c6639 merged normally, followed by the accepted1.76 evidence checkpoint. Preserve hosting preparation and corrected persistent QA. No own1.77 release claim.",
     "documentation": "Canonical fresh certificate request/dry-run now names only play.eidolonrealms.com lineage, with existing-name inspection rather than renaming. Document explicit Compose project/port/private env/Mongo/log-journal separation, no production provider/account copying, unchanged strict browser origins and unless-stopped/manual-stop restart boundaries.",

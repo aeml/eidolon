@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 prepared1.77 release identity:** Source/package/login/server/container/
+workflow/isolated-QA identities now agree on Alpha1.77.0 in this unpublished
+worktree. Cumulative notes describe actual hosting guards and proxy checks,
+retaining the entire history and explicit renewal/IPv6/long-idle/capacity limits.
+369 version/runtime-publisher tests pass3.916s; lint/shell syntax/whitespace pass.
+Initial missing dependency setup ran no tests and was corrected without changing
+dependency versions. Live remains accepted1.76; no push or milestone completion.
+
 **October6 native1.77 proxy evidence:** The actual committed canonical backend
 block now runs in a disposable single-process loopback Nginx regression. Complete
 HTTP paths/query/header forwarding, production Origin refusal/admission,64KiB
