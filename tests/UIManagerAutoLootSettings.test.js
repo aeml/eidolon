@@ -159,6 +159,19 @@ describe('UIManager settings', () => {
         localStorage.clear();
     });
 
+    test.each(['low', 'medium', 'high', 'invalid'])('saved graphics quality restores a valid control value: %s', quality => {
+        buildDom();
+        document.getElementById('graphics-quality').innerHTML = '<option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option>';
+        localStorage.setItem('eidolon.graphicsQuality', quality);
+        const ui = new UIManager(false);
+        try {
+            const expected = quality === 'invalid' ? 'high' : quality;
+            expect(ui.getGraphicsQuality()).toBe(expected);
+            expect(ui.graphicsQualitySelect.value).toBe(expected);
+            expect(localStorage.getItem('eidolon.graphicsQuality')).toBe(quality);
+        } finally { ui.dispose(); }
+    });
+
     test.each([false, true])('HUD and session settings work when storage is unavailable (mobile=%s)', mobile => {
         buildDom();
         const reads = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new DOMException('Blocked', 'SecurityError'); });

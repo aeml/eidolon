@@ -1,5 +1,24 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 prepared1.87 graphics startup:** Current renderer ignores saved Low/
+Medium until UI binding and creates temporary High postprocessing; invalid saved
+quality leaves UI selection blank. Three RED regressions reproduce this; preserve
+the five already-passing controls. Restore validated quality before lighting and
+let the existing setter alone initialize postprocessing; blocked/missing/invalid
+storage retains High without rewriting preferences. Both affected suites PASS41
+cases; broader eleven-suite resource/scene/camera/phone/settings/asset checks
+PASS112 distinct cases77.25s. Existing integrated native desktop/phone-policy
+route PASS2 checks38.6s on AMD RADV RENOIR: immediate Medium/Low UI/renderer
+agreement, Low zero compositor setup, town/road/prepared dungeon/quality/warnings/
+party UI/casino/return preserved. Phone Low warning capture inspected. Constructor
+wall observations are not paired speedup/FPS/headroom proof; no real-device,
+earned progression or settlement claim. No gameplay/data/server/dependency change;
+loopback4187 closes after terminal pass. Full consolidation of separately staged
+server performance, exact ordered release/publication and beta/readiness remain
+open; this is not live1.87. See the
+[performance receipt](docs/plans/2026-10-06-release1-87-current-performance-checks.json).
+Full roadmap goal stays active.
+
 **October6 additional1.86 authoring/visual checks:** Current source inspection
 corrects the prior inaccurate missing-icon note: all eight Chronicle drops already
 have distinct motifs, including the four Dark Realm collections. Strengthened

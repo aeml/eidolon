@@ -237,7 +237,8 @@ export class UIManager {
             'dungeon-models': 'cached',
             'environment-textures': 'cached'
         };
-        this.graphicsQuality = readPreference('eidolon.graphicsQuality') || 'high';
+        const savedGraphicsQuality = readPreference('eidolon.graphicsQuality');
+        this.graphicsQuality = ['low', 'medium', 'high'].includes(savedGraphicsQuality) ? savedGraphicsQuality : 'high';
         if (this.graphicsQualitySelect) {
             this.graphicsQualitySelect.value = this.graphicsQuality;
             ownedEvent(this, this.graphicsQualitySelect, 'change', () => {

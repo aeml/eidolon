@@ -18,6 +18,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
         const { actorRenderingIsOwned } = await import('/tests/e2e/actor-render-ownership.js');
         const THREE = await import('three');
         const { GameEngine } = await import('/src/core/GameEngine.js');
+        const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { Fighter } = await import('/src/entities/Fighter.js');
         const { Cleric } = await import('/src/entities/Cleric.js');
         const { Rogue } = await import('/src/entities/Rogue.js');
@@ -28,7 +29,21 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
         const { worldAmbienceKey } = await import('/src/audio/WorldAmbience.js');
         document.getElementById('start-screen').style.display = 'none';
         const socket = { readyState: WebSocket.OPEN, send() {}, close() { throw Error('Borrowed socket closed'); } };
-        const engine = new GameEngine('Fighter', phone, true, '', '', socket);
+        const savedQuality = phone ? 'low' : 'medium';
+        localStorage.setItem('eidolon.graphicsQuality', savedQuality);
+        const originalSetup = RenderSystem.prototype.setupPostProcessing;
+        let setupCalls = 0, engine;
+        RenderSystem.prototype.setupPostProcessing = function () { setupCalls++; return originalSetup.call(this); };
+        const constructionStarted = performance.now();
+        try { engine = new GameEngine('Fighter', phone, true, '', '', socket); }
+        finally { RenderSystem.prototype.setupPostProcessing = originalSetup; }
+        const gl = engine.renderSystem.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+        const startup = { savedQuality, rendererQuality: engine.renderSystem.graphicsQuality,
+            uiQuality: engine.uiManager.getGraphicsQuality(), controlQuality: engine.uiManager.graphicsQualitySelect.value,
+            setupCalls, composer: Boolean(engine.renderSystem.composer),
+            shadowSize: engine.renderSystem.keyLight.shadow.mapSize.width,
+            renderer: gl.getParameter(debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER),
+            constructionMs: performance.now() - constructionStarted };
         window.game = engine;
         const classes = { Fighter, Cleric, Rogue, Wizard };
         const primaryStats = { Fighter: 'strength', Cleric: 'wisdom', Rogue: 'dexterity', Wizard: 'intelligence' };
@@ -60,7 +75,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
         engine.uiBindings.bindSessionCallbacks();
         ui.showHUD(); ui.toggleChat(true);
         ui.updateHotbar(engine.player);
-        ui.setGraphicsQuality('high'); ui.setBrightnessLevel(65); ui.setUiScale(125);
+        ui.setGraphicsQuality(savedQuality); ui.setBrightnessLevel(65); ui.setUiScale(125);
         ui.setAudioEnabled(false); ui.setMotionPreference('reduced'); ui.setCameraShakeEnabled(false);
         const render = engine.renderSystem, reports = [];
         const frame = () => {
@@ -85,7 +100,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
             reports.push(row); return row;
         };
         window.__presentation = {
-            engine, reports, snapshot,
+            engine, reports, snapshot, startup,
             async visit(label) {
                 if (label === 'town' || label === 'return') await engine.enterInstance('', 'overworld', null, null, { x: -1.25, y: .5, z: 200 });
                 if (label === 'road') await engine.enterInstance('', 'overworld', null, null, { x: 120, y: .5, z: 200 });
@@ -133,6 +148,15 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
         };
     }, { phone, layout, tables });
     try {
+        const startup = await page.evaluate(() => window.__presentation.startup);
+        expect(startup.rendererQuality).toBe(phone ? 'low' : 'medium');
+        expect(startup.uiQuality).toBe(startup.rendererQuality);
+        expect(startup.controlQuality).toBe(startup.rendererQuality);
+        expect(startup.setupCalls).toBe(phone ? 0 : 1);
+        expect(startup.composer).toBe(!phone);
+        expect(startup.shadowSize).toBe(phone ? 512 : 2048);
+        expect(startup.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+        await writeFile(testInfo.outputPath('graphics-startup.json'), JSON.stringify(startup, null, 2));
         for (const label of ['town', 'road', 'encounter']) {
             await page.evaluate(label => window.__presentation.visit(label), label);
             await page.screenshot({ path: testInfo.outputPath(`${label}.png`) });

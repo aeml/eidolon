@@ -45,6 +45,11 @@ export class RenderSystem {
         
         // Optimization: Mobile Settings
         this.isMobile = isMobile;
+        this.graphicsQuality = 'high';
+        try {
+            const savedQuality = localStorage.getItem('eidolon.graphicsQuality');
+            if (['low', 'medium', 'high'].includes(savedQuality)) this.graphicsQuality = savedQuality;
+        } catch { /* Storage is optional; retain the existing default. */ }
 
         // Camera Setup (Isometric Orthographic)
         this.currentZoom = CONSTANTS.CAMERA.ZOOM;
@@ -103,7 +108,6 @@ export class RenderSystem {
         this.outputPass = null;
         this.usePostProcessing = false;
         this.postProcessingInitFailed = false;
-        this.graphicsQuality = 'high';
         this.bloomQualityScale = 1.0;
         this.effectQualityScale = 1.0;
         this.brightnessLevel = 50;
@@ -182,8 +186,9 @@ export class RenderSystem {
         // Lighting
         this.setupLights();
         this.applyLightingPreset('earth', true);
-        this.setupPostProcessing();
-        this.setGraphicsQuality('high');
+        // The quality setter owns postprocessing initialization. In particular,
+        // Low must never allocate a temporary High composer during startup.
+        this.setGraphicsQuality(this.graphicsQuality);
         this.setBrightnessLevel(50);
 
         // Water/Ground are created via `preloadEnvironment()` so the loading screen
