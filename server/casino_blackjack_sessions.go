@@ -244,6 +244,19 @@ func recoverAccountBlackjackLocked(username string) error {
 	return nil
 }
 
+// Distinguish a changed hand from an invalid stake without exposing private
+// table state. Both remain refusals; this does not retry or alter a wager.
+func blackjackBetAdmissionError(state *blackjackTableState, roundID, currency string, bet int) error {
+	if state == nil || state.RoundID != roundID || state.Phase != "betting" {
+		return errors.New("blackjack round changed; review the table")
+	}
+	if !game.ValidCasinoBet("blackjack", currency, bet) {
+		minimum, maximum, step := game.CasinoBetLimits("blackjack", currency)
+		return fmt.Errorf("review the current round and choose %d–%d %s in steps of %d", minimum, maximum, currency, step)
+	}
+	return nil
+}
+
 func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now time.Time) error {
 	blackjackMu.Lock()
 	defer blackjackMu.Unlock()
@@ -263,9 +276,8 @@ func handleBlackjackBet(client *Client, sessionID, roundID string, bet int, now 
 	if err != nil {
 		return err
 	}
-	if state.RoundID != roundID || state.Phase != "betting" || !game.ValidCasinoBet("blackjack", currency, bet) {
-		minimum, maximum, step := game.CasinoBetLimits("blackjack", currency)
-		return fmt.Errorf("review the current round and choose %d–%d %s in steps of %d", minimum, maximum, currency, step)
+	if err := blackjackBetAdmissionError(state, roundID, currency, bet); err != nil {
+		return err
 	}
 	for _, p := range state.Players {
 		if p.PlayerID == client.playerID && p.Bet == bet {

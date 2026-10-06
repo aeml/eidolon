@@ -15,6 +15,7 @@ func TestCasinoRejectionKeepsFixedCauseAndNeverRetries(t *testing.T) {
 		{"table funds are being saved; please wait", casinoFailureBusy},
 		{"poker funds are being saved; please wait", casinoFailureBusy},
 		{"round changed; review the table", casinoFailureStale},
+		{"blackjack round changed; review the table", casinoFailureStale},
 		{"blackjack round changed; refresh the table", casinoFailureStale},
 		{"wait for your blackjack turn", casinoFailureStale},
 		{"blackjack turn expired", casinoFailureStale},

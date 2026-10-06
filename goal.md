@@ -1,5 +1,24 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 blackjack rejection clarity:** Actual admission now distinguishes
+a changed/non-betting hand from a bad stake instead of telling both players to
+change their bet. Fixed public errors omit private state. Root admission cases
+for Gold/EP bounds, steps and closed phases pass race1.414s; driver fixed-error,
+timeout and ordering checks pass1.127s. All refusals still fail the workload;
+wallet/timer/retry/pass rules are unchanged. This follow-up was not in the57ee
+native binary and does not resolve its observed rejection. Remains unpublished.
+
+**October6 changed-server100-client comparison:** Exact57ee0660, containing the
+NPC-roster and enemy-scan lock fixes, was rebuilt and tested against the unchanged
+driver/workload/gates. Actual100 admissions/fresh views, all20 party-member
+impacts, healing and20 social outcomes pass; transport errors and casino timeouts
+are zero. Overall FAIL226.01s: one blackjack round-or-stake rejection leaves one
+paid minimum0. All independent final save assertions were not reached. No
+acceptance or unchanged retry. Exact owned synthetic Mongo892fe88b was identity/
+label-validated then removed; label/process checks are empty. Production/nightly
+soak untouched. Retain full fixed aggregates, source/binary hashes and diagnostic
+limits in [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
+
 **October6 enemy target-scan lock reduction:** Current AI now acquires one world
 read lock per candidate scan, not per player. Live actor locks/membership/scene/
 stealth/sanctuary/pursuit/threat rules remain; no cached targets or allocations.

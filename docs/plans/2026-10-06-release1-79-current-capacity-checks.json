@@ -2,8 +2,45 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
-  "status": "public-cache-diagnostic-100-client-comparison-terminal-fail-role-and-casino-gates-fixture-removed",
+  "status": "locking-fixes-100-client-comparison-terminal-fail-one-blackjack-round-gate-fixture-removed",
+  "lockingFixes100ClientComparison": {
+    "sourceCommit": "57ee066027b5690e7a0b1eda8260eedada1a7431",
+    "result": "FAIL226.01s/120s active. Actual source-built normal server includes non-player casino roster avoidance and per-scan enemy world locking. Reuse unchanged source87 driver; current race harness. All100 admissions, sustained fresh views, every20-party-member impact, healing and20 delivered social outcomes pass. All casino timeout counters are zero. One blackjack client has a round_or_bet rejection and no paid result; overall monetary gate fails. Independent all-account final save assertions are NOT REACHED. No100-player acceptance and no unchanged retry.",
+    "artifactDirectory": "/tmp/eidolon-179-locks100-kS1Dgd",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-229271002",
+    "serverSHA256": "20ccec8dac115e1e8f4bb0e8495be280a379df419751469dde65d74fb72fd22d",
+    "driverSHA256": "afaa74b996c456b039bc458b1f94727629d80009b98a8b9a0ff13ca3d0b85ff1",
+    "raceHarnessSHA256": "b12b55417bebe2cc1e17685ff31165dbc42278b390a91ce9a7e1e151a880303a",
+    "predeclaration": "100 clients, original fixed twenty-role blocks,120s active, original legal Uncommon/Rare class gear, funding/stakes,400/600 shared anchor,30-unit target radius, five-second admission/action deadlines, every paid/role/social outcome,600 fresh-own updates,108000ms active delivery and all independent saves unchanged. Owned Mongo7.0.14, loopback32958,2CPU/2GiB/512MiB tmpfs. Shared host, not isolated production headroom proof.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 129027,
+      "readWriteDecodeErrors": 0, "minimumFreshOwnUpdates": 1235,
+      "minimumActiveMilliseconds": 119176, "maximumStateGapMilliseconds": 769,
+      "payloadBytes": 1148469444, "maximumLoginMilliseconds": 700,
+      "maximumJoinMilliseconds": 772, "socialComplete": 20, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 17, "blackjack": 0, "house": 2, "poker": 1},
+      "casinoTimeouts": 0, "blackjackRoundOrBetRejections": 1,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20,
+      "partyMinimumImpacts": 1, "partyDamageEvents": 48, "partyHealEvents": 5,
+      "partyAcceptedCasts": 58, "partyDeniedCasts": 0, "partyXPUpdates": 48,
+      "partyObservedDeaths": 11,
+      "roles": {
+        "Fighter": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 0, "cohortWaitSteps": 37, "noTargetSteps": 2989, "pursuitSteps": 56},
+        "Cleric": {"minimumImpacts": 2, "pendingCastSteps": 0, "regroupSteps": 54, "cohortWaitSteps": 0, "noTargetSteps": 2984, "pursuitSteps": 48},
+        "Rogue": {"minimumImpacts": 1, "pendingCastSteps": 1, "regroupSteps": 41, "cohortWaitSteps": 0, "noTargetSteps": 2986, "pursuitSteps": 55},
+        "Wizard": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 33, "cohortWaitSteps": 0, "noTargetSteps": 2997, "pursuitSteps": 36}
+      }
+    },
+    "phaseMeasurements": {"updateCompleted": 1402, "updateFailed": 0, "updateTotalMicroseconds": 84218818, "updateMaximumMicroseconds": 641378, "broadcastCompleted": 1401, "broadcastFailed": 0, "broadcastTotalMicroseconds": 45390677, "broadcastMaximumMicroseconds": 129978, "scope": "Elapsed lifetime counters, not CPU or interval percentiles. One broadcast remains in flight at the final probe."},
+    "interpretation": "No transport failures or casino timeouts this time, and all party roles contribute. Differences from previous randomized-world/shared-host runs do not prove which locking fix caused them or establish headroom. Existing round_or_bet category combines changed hand/phase with invalid stake; investigate directly, never count a rejected wager as paid or rerun unchanged until green.",
+    "cleanup": "Terminal native harness joined its owned server without a forced-shutdown report. Exact Mongo ID892fe88bb46d5c2190fb27168284dee2a5c4edf9492f70e74cce854038b50fc4/name/fixture label matched before removal with synthetic volumes. Independent matching-label query is empty; owned server/harness process check is empty. Aggregate artifacts/binaries retained. Production and unrelated nightly soak untouched."
+  },
   "inheritedVersion": "Alpha1.76.0 source candidate; own1.79 version not published",
+  "blackjackAdmissionDiagnosticFollowUp": {
+    "change": "The actual wager admission now separates changed round/non-betting phase from invalid stake. A changed hand returns the already supported fixed blackjack-round-changed instruction; invalid stakes retain the original bounds/step instruction. Wallet admission, rejected/paid gates, timers, accepted-wager replay and action-error correlation are unchanged. No player/round/deck detail is added to the message.",
+    "verification": "Focused root wager admission/pending-account gate tests pass race1.414s; driver rejection/timeout/table-order scopes pass race1.127s. Both Gold and EP valid boundaries/steps pass, invalid amounts refuse, and every changed/closed phase refuses without mutating state. The fixed stale rejection still fails the workload and never retries or earns payment credit.",
+    "limits": "This clarifies player-facing errors and future fixed diagnostic categories; it does not diagnose or repair the observed100-client timing failure. It was added after source57ee0660's native comparison and is not included in that binary. No new native population or deployment is claimed."
+  },
   "partyInactivityDiagnostics": {
     "change": "Each test-client class now retains only five fixed aggregate counters for pending cast, regroup, waiting on an unready cohort, no eligible target and pursuit decisions. The combined integration retains only a whitelisted fixed-class/count line. No IDs, coordinates, account names, action history or extra acceptance credit.",
     "verification": "Focused cmd/loadtest race checks pass2.123s, including all five inactivity paths, aggregate merging, unchanged zero-impact gates, written-hit ownership, distinct legal target selection and claim concurrency. Initial invocation used invalid -p2 shorthand and ran no requested tests; corrected -p 2 invocation is the cited pass.",
@@ -65,13 +102,13 @@
     "change": "Enemy AI takes one World.Mu read lock around its candidate scan instead of reacquiring it for every player. Each candidate's state is still read live under Entity.Mu; active membership, replacement/disconnect/dead/stealth checks, scene filtering, sanctuary/pursuit/range and threat-selection rules are unchanged. No across-frame target cache, candidate omission, new player snapshot allocation, enemy/stat/gear change or network/timer/gate change. Scoped deferred unlock also protects worker panic unwinding.",
     "verification": "Focused actual AI/target/scene-change/stealth/sanctuary/pursuit/threat/dungeon-movement scopes pass race16.067s. New eight-scenario comparison preserves exact live snapshot fields for active, stealth, expired, disconnected, dead, replaced, removed and nil candidates. Existing concurrent world-owned cast and scene/membership tests are retained.",
     "benchmark": "Synthetic100-player target scan,100ms Go benchmark: per-candidate world locking5341ns/op versus shared per-scan locking2964ns/op; both0B/op and0allocations. PASS0.281s on the shared host. This measures uncontended target-snapshot scanning only, not full AI, frame/tick performance, writer wait, percentiles or production100-player headroom.",
-    "scope": "Current code changes after the failed87cda8c7 population comparison remain unpublished. No new native population run; small-cohort results from earlier source do not verify these later changes. Shared-anchor target supply/party impact and monetary-action timing still need direct diagnosis before100-player acceptance."
+    "scope": "Changes remain unpublished. The later exact57ee0660 native100 comparison is recorded separately: every role contributed and transport/timeouts cleared, but blackjack rejection prevented full acceptance. This does not establish causation/headroom. Shared-anchor target supply remains limited; no unchanged retry or blanket capacity claim."
   },
   "nonPlayerRosterLockFollowUp": {
     "change": "Both roster/readiness scans now skip non-player actors before taking their mutex. Type is immutable under world membership; this matches existing casino pruning/presence rules. No cached roster, lock-order change, seat/session/readiness/timeout rule or wallet change.",
     "regression": "A held Enemy/NPC actor mutex previously blocked CasinoPresenceFor under the exclusive world lock: new focused regression fails0.318s before the production fix. It passes with the fix and verifies only the legitimate seated player contributes to occupants, unchanged roster revision, private own-seat session, connected/ready counts and ready phase. The test worker is joined after releasing fixture locks.",
     "verification": "All ^TestCasino game tests pass race1.224s; root own-view, physical-action and audience notification tests pass race1.322s. gofmt and git diff --check pass. An initial test compilation used string instead of EntityType and was corrected before the cited regression run.",
-    "scope": "Source inspection proves two unnecessary world-wide actor-lock scans and a deterministic test proves unrelated AI locks can delay a casino response. It does not prove this caused the100-client failure, resolve same-game table mutex/storage latency, clear100-player gates or demonstrate production CPU headroom. No new population run or deployment."
+    "scope": "Source inspection and deterministic regression prove unrelated AI locks unnecessarily delayed casino readiness. The later57ee0660 native100 comparison includes this fix; zero timeouts there do not prove causation, resolve same-game table latency or demonstrate production headroom. Overall capacity still fails its blackjack gate. No deployment."
   },
   "diagnostic100ClientComparison": {
     "sourceCommit": "87cda8c73c9ce05192c710906c925ece8778ba41",
@@ -230,9 +267,9 @@
     "cleanup": "Normal owned server stopped; exact labelled disposable Mongo fc79ff5d29408ae6336772a81aea94fd8f9d98b03ffcf0a1d9775cc8ce4da62b stopped/removed with only synthetic volumes. Retained aggregate logs/binaries; production and nightly soak untouched."
   },
   "remaining": [
-    "Diagnose the per-member real-impact gap in a focused role encounter before another100-player comparison. All roles have accepted casts without denials; do not equate casting with damage or assume the cause is proven. Preserve600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves.",
+    "Diagnose the remaining blackjack rejection in a focused real-table check before another100-player comparison. Latest changed-server run has actual every-member party impacts and no timeouts, but one rejected wager prevents final saves. Keep historical role failures as failures, and preserve600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves.",
     "Representative process/database/network headroom, settlement/reopen and actual encounter/party coverage require their own evidence; a frame microbenchmark or small cohort is not100-player acceptance.",
-    "Ordered1.75–1.78 release and owner operating decisions, then own version/cumulative notes, fresh remote integration, CI/deployment and exact public acceptance. Full1.99 goal remains active."
+    "Accepted1.75/1.76 evidence remains scoped to their exact published sources. Ordered1.77/1.78 release and owner operating decisions, then own version/cumulative notes, fresh remote integration, CI/deployment and exact public acceptance. Full1.99 goal remains active."
   ],
   "authorityLimits": "No production account/database/load, provider mail/settings, root/service/DNS changes, erasure, retention change or future milestone deployment. Owner worktree remains untouched."
 }
