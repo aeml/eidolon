@@ -2,7 +2,49 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
-  "status": "five-player-earth-raid-pass-natural-root-event-fail-mixed100-baseline-retained-full-capacity-gates-open",
+  "status": "scene-filter-mixed100-pass-earth-raid-pass-natural-root-event-fail-full-capacity-gates-open",
+  "sceneFilter100Comparison": {
+    "result": "PASS220.46s overall/120s active; driver-to-save elapsed2m13.507s. One changed-runtime100-client mixed comparison using exact bbab4c51 normal server and c0164aac driver/race harness. All100 fresh admissions/own updates, every paid casino/member-impact/social outcome,100 independent disconnect saves and normal five-second-guard shutdown pass. Not an unchanged source retry, raid/event clear or production headroom acceptance.",
+    "serverSourceCommit": "bbab4c51a984700e261793ac227a443e489964de",
+    "driverAndHarnessSourceCommit": "c0164aac",
+    "artifactDirectory": "/tmp/eidolon-179-scene100-iXyYfi",
+    "serverSHA256": "eefd97bfecb25cfb5e5ba4f5a9dae97277877ea0a4794e7e48cca080418c739c",
+    "driverSHA256": "880fa0fa08af2849c65493a7ff464fd6b2a653e0ecce717884c8dedcf86eac94",
+    "raceHarnessSHA256": "0fafd25012771338de4b7fd29f0e99f72fbc77c2f7aae05beda8895ab0095e18",
+    "predeclaration": "Original100 clients/five20-role blocks,120s active, legal Uncommon/Rare class gear/builds/funding, Gold100 wagers, shared400/600 camp/radius30,5s admission/action/graceful-stop guards. Every fresh-state/payment/social/member-impact/independent-save gate unchanged. Retain maximum state gap even on a functional PASS; no new latency/headroom threshold or a mean CPU benchmark substituted for native evidence.",
+    "environment": "Normal server GOMAXPROCS2, inherited Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32967,2CPU/2GiB/512MiB tmpfs. Shared host/unrelated services: no matched performance or production headroom guarantee. No concurrent owned benchmark/encounter run.",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-3940672508",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 173661, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 1669, "minimumActiveMilliseconds": 119468,
+      "maximumStateGapMilliseconds": 918, "payloadBytes": 1272275556,
+      "maximumLoginMilliseconds": 290, "maximumJoinMilliseconds": 483,
+      "slots": {"clients": 10, "wagers": 271, "paid": 271, "minimumPaid": 17, "bonuses": 15, "failed": 0},
+      "blackjack": {"clients": 20, "wagers": 54, "paid": 36, "minimumPaid": 1, "actions": 35, "failed": 0},
+      "house": {"clients": 20, "wagers": 60, "paid": 40, "minimumPaid": 2, "failed": 0},
+      "poker": {"clients": 10, "wagers": 29, "paid": 19, "minimumPaid": 1, "actions": 92, "failed": 0},
+      "casinoRejectionsAndTimeouts": 0,
+      "socialClients": 20, "socialComplete": 20, "socialFailed": 0,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20, "partyMinimumImpacts": 1,
+      "partyDamageEvents": 71, "partyHealEvents": 5, "partyAcceptedCasts": 79,
+      "partyDeniedCasts": 0, "partyXPUpdates": 68, "partyObservedDeaths": 17,
+      "roles": {
+        "Fighter": {"minimumImpacts": 1, "damage": 16, "casts": 18, "unmatchedDamage": 7},
+        "Cleric": {"minimumImpacts": 1, "damage": 5, "heals": 5, "casts": 5, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 2, "damage": 37, "casts": 35, "unmatchedDamage": 3},
+        "Wizard": {"minimumImpacts": 1, "damage": 13, "casts": 21, "unmatchedDamage": 3}
+      }
+    },
+    "phaseObservations": {
+      "calculation": "Exact after-driver minus before-driver completed timing sums/sample counts; rounded elapsed means, not CPU, percentiles, per-frame conservation, unique payouts or controlled causal attribution. Endpoint maxima remain process-lifetime maxima and do not become interval maxima. Update is in flight at the final sample, so the interval does not include its unfinished work.",
+      "candidate": {"updateSamples": 1860, "meanUpdateMicros": 43018, "meanBroadcastMicros": 26458, "lifetimeUpdateMaxMicros": 843872, "lifetimeBroadcastMaxMicros": 106537},
+      "priorPeriodicFixBaseline": {"updateSamples": 1239, "meanUpdateMicros": 67649, "meanBroadcastMicros": 37086, "lifetimeUpdateMaxMicros": 1873188, "lifetimeBroadcastMaxMicros": 137964},
+      "remaining": "Observed update and broadcast means together exceed the intended33ms sequential frame budget. The retained918ms state gap and substantial simulation/broadcast elapsed cost remain responsiveness work; these functional passes do not establish100-player smoothness/headroom. Randomized combat supply and shared-host variation prevent attributing all differences to the scene filter."
+    },
+    "savedAndShutdownEvidence": "All100 final independent fresh normal Mongo disconnect-save checks reached and passed; original class/EP/equipped gear/protected bag preserved, party earned progression, casino Gold checkpoints and unchanged town/social Gold. All eight ordinary shutdown phase labels and drain completion present, no forced shutdown/race/panic; original five-second guard unchanged. Full final casino settlement/reopen/restart ledgers are not covered.",
+    "monitoring": "Root consumed terminal PASS from session70885. Harness PID2599806 and owned server PID2610816 exited; no capacity monitoring delegation or observation-timeout restart.",
+    "fixture": "After terminal PASS, exact Mongo6e2f3b04bb2a46befe0b8716132a51f7415a039c3fea752cd17e45ee0d7693b1/name eidolon-179-scene100-20261006/label eidolon.fixture=scene100-179-20261006 revalidated, then owned synthetic DB/volumes removed. Independent label/process queries empty; artifacts retained. Production/unrelated services untouched."
+  },
   "eventFirstFailureClassification": {
     "source": "01a8d4b1 plus accompanying load-driver classification changes; not in the completed bbab4c51 encounter binaries.",
     "diagnosis": "The actual Root failure retains three completions, minimum three own wave views and one receive refusal, but the driver's bare failed flag and dungeon/raid-only failure output omitted the causal branch. The same decode counter includes semantic refusals. Exact historical cause remains unproven.",

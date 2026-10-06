@@ -1,5 +1,22 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 scene-filter native100 PASS220.46s:** Exact bbab4c51 normal
+server/c0164aac driver and race harness passed the original100-client/five20-role
+mixed120s workload once after the changed runtime dependency. All legal gear/
+funding/camp,5s admission/action/graceful-stop and positive activity/save gates
+unchanged. Shared host, no parallel owned benchmark/encounter, no headroom or
+latency acceptance inferred from the prior idle microbenchmark. Artifact/hash/
+owned Mongo32967 identity recorded in the capacity receipt. Every paid casino/
+social/party impact and100 final independent normal disconnect saves passed;
+all eight ordinary shutdown stages/drain completed under the unchanged5s guard.
+Root consumed terminal session70885; exact Mongo identity/label validated before
+synthetic DB/volume removal and empty label/process follow-up. No Luna capacity
+monitoring delegation. Worst state gap918ms versus prior1982ms is promising,
+not smoothness acceptance or matched causal attribution. Retained endpoint
+timing deltas observe43.018ms mean update/26.458ms mean broadcast, together above
+the intended33ms sequential frame budget; substantial responsiveness work stays
+open, along with actual event coverage, headroom and ordered release gates.
+
 **October6 event first-cause repair:** Event refusals now preserve eight fixed
 categories instead of an unclassified flag; all party summaries emit the first
 failure once. RED18 existing invalid/historical cases plus partial completion/
