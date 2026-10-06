@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 isolated1.78 operations integration:** Prepared monitoring now runs
+against the current account-bound persistence source without replacing identity
+checks or current privacy/admin filters. Separate simulation/broadcast timing
+preserves the33ms loop and appears in18 fixed Administration rows. Full small
+monitor/operations race suites pass6.492s/7.036s; focused root checks5.382s,
+30 client checks1.607s, lint and three actual Chrome layout cases38.8s pass.
+The initial browser attempt lacked generated vendor files; ordinary preparation
+fixed that fixture setup, with no relaxed assertions. Local TLS failure/recovery
+notifications pass; no actual mail, service installation or budget chosen.
+Owner notification/budget decisions requested. Current1.75 correction56d9fda9
+is pushed and CI37399132936 has passed audit/lint; Luna monitors remaining gates.
+This future branch keeps inherited1.76 labels and stays unpublished/incomplete
+until ordered predecessors and operating decisions are accepted. See
+[current operations evidence](docs/plans/2026-10-06-release1-78-current-operations-checks.json).
+
 **October6 isolated1.77 hosting preparation:** Canonical two-host installer
 argument guard and current operator instructions are integrated separately from
 the1.76 candidate. Eighteen validation-only race cases pass without installer

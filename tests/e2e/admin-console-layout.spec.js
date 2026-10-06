@@ -50,7 +50,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                         status: 'ok', database: 'ready', version: 'Alpha 1.78.0', commit: 'abcdef1'.padEnd(40, '0'),
                         goroutines: 48, heapAllocBytes: 104857600, heapObjects: 700000,
                         broadcastQueues: { queued: 2, capacity: 1024, encounterQueued: 1, encounterCapacity: 128, dropped: 0, encounterDropped: 0, invalidDropped: 0 },
-                        operational: Object.fromEntries(['characterJournal', 'characterCommit', 'characterCleanup', 'characterRecovery', 'casinoGold', 'casinoEP']
+                        operational: Object.fromEntries(['characterJournal', 'characterCommit', 'characterCleanup', 'characterRecovery', 'casinoGold', 'casinoEP', 'realtimeUpdate', 'stateBroadcast']
                             .map(name => [name, { completed: 100, failed: 1 }])), private: 'private-config-marker'
                     } } } : {}),
                     ...(type === 'admin_reports' ? { reports: { reports: Array.from({ length: 10 }, (_, index) => ({
@@ -84,7 +84,9 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await dialog.getByRole('button', { name: 'Refresh players' }).scrollIntoViewIfNeeded();
         await page.screenshot({ path: testInfo.outputPath('administration.png') });
         await dialog.getByRole('button', { name: 'Service diagnostics', exact: true }).click();
-        await expect(dialog.getByRole('list', { name: 'Service diagnostics' }).locator('li')).toHaveCount(16);
+        await expect(dialog.getByRole('list', { name: 'Service diagnostics' }).locator('li')).toHaveCount(18);
+        await expect(dialog).toContainText('Realtime simulation frames');
+        await expect(dialog).toContainText('State broadcast frames');
         await expect(dialog).toContainText('100.00 MiB');
         await expect(dialog).not.toContainText('private-config-marker');
         await expect(dialog.locator('[data-next]')).toBeHidden();

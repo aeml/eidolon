@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "milestone": "1.78 observability and operating budgets",
+  "sourceCommit": "3004c125105082ae6b36192b4268239a6b9b1a7a",
+  "status": "isolated-current-integration-verified-not-published-or-complete",
+  "inheritedVersion": "Alpha1.76.0 source candidate; no1.77 or1.78 release identity claimed",
+  "predecessorCandidate": "56d9fda91a964890d8777bbce91a1c67869fd9c3",
+  "changes": [
+    "Integrate the prepared independent readiness monitor, sanitized fixed runtime/save/wallet signals, optional pressure budgets, bounded local filesystem-headroom reads and explicitly opt-in Postmark alerts. Historical roadmap/version receipts are not imported as current acceptance evidence.",
+    "Retain the current account-ID-bound journal and commit paths when integrating instrumentation. Missing bound-commit capability and forbidden legacy identity still refuse; counts surround the actual selected bound or permitted fixture commit, never substitute an unbound write.",
+    "Audited authenticated Administration service reads retain current privacy export/removal actions, real-player filters and UTC-day summaries. Canonical protocol constants include the new service action; request size/rate, durable role/session and completion audit gates remain.",
+    "Separate elapsed simulation and broadcast timings preserve the sequential33ms game loop. Administration now shows both phases in fixed rows, with unavailable values for older servers, not fabricated idle or capacity proof. This is not CPU timing or percentile measurement.",
+    "Merge the current1.75 queued-resume and strict dependency-audit corrections. Future code remains isolated until ordered predecessor acceptance; existing production services, data, notifications and provider settings are untouched."
+  ],
+  "verification": {
+    "focusedRace": "Go1.27.1 GOMAXPROCS2/p2: selected operations/monitor/root checks pass6.307s/7.037s/5.382s. Root scope includes health, administrator reads/service, operational/realtime signals and character-bound/journal checks; opt-in external/native fixtures are not represented as executed.",
+    "completeSmallPackages": "Full internal/operations and cmd/monitor race suites pass6.492s and7.036s. Includes actual loopback HTTP outage/pressure recovery, local TLS notification acceptance/rejection, output failure, cancellation, bounded/sanitized responses, explicit disabled-by-default provider configuration and local storage worker/timeout/overflow behavior. No real provider or inbox request.",
+    "client": "AdminServiceDiagnostics/AdminUI/ProtocolContract:30 tests in3 suites pass1.607s; full lint passes. The first phase-row update correctly failed the old16-row AdminUI expectation; updated it to18 and explicitly assert both phase labels, preserving privacy/disconnect/no-pagination tests.",
+    "browser": "Actual System Chrome administration layout:3 cases pass38.8s at1280x720,390x844 and844x390, including18 diagnostic rows, no private marker, explicit keyboard refresh, scroll/viewport bounds, retained day totals/report/moderation/operations controls. Synthetic transport only, with main game bootstrap replaced by an empty route. First fresh-checkout attempt failed dynamic imports because vendor libraries were not generated; ran the normal prepare:client step and reran only these3 cases without weakening assertions.",
+    "releaseCI": "Exact1.75 candidate run37399132936 has passed dependency audit/lint and remains in progress. Prior37398329976 passed ordinary Go coverage before cancellation; its race/browser jobs were cancelled, not accepted as passes. Neither run establishes1.78 release acceptance."
+  },
+  "operatorDecisions": {
+    "notificationDelivery": "Owner asked whether existing ADMIN_NOTIFICATION_EMAILS may receive exactly one labelled Postmark test alert. No response or actual mail yet; production alerts remain disabled. Local TLS adapter proof is not provider/inbox delivery.",
+    "budget": "Owner asked whether to preserve current self-hosting with no new paid service, or supply a monthly operating budget. No paid infrastructure, SLA or pressure thresholds inferred or enabled.",
+    "retention": "Existing player/provider retention remains unchanged. Process counters and monitor debounce state are RAM-only; service/output retention and off-machine coverage still require operator configuration."
+  },
+  "remaining": [
+    "Ordered1.75/1.76/1.77 release acceptance, then own1.78 version/cumulative patch notes, fresh master integration, CI/deployment and exact public checks.",
+    "Agreed alert ownership/budget, explicit monitor service/threshold/output configuration and provider/inbox delivery evidence before claiming operating readiness.",
+    "Representative multiplayer capacity and final security/restore/support/release qualification remain later roadmap work. Full1.99 objective is active."
+  ]
+}
