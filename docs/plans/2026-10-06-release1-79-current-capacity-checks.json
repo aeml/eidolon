@@ -2,12 +2,48 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
-  "status": "ordering-fix-100-client-comparison-terminal-fail-blackjack-and-every-member-impact-fixture-removed",
+  "status": "corrected-100-client-gameplay-and-save-checks-pass-terminal-fail-five-second-shutdown-fixture-removed",
+  "recoveryAndWorkerCorrected100Comparison": {
+    "sourceCommit": "4096c19c9352b8e4ac6d31a4b79ddc0a5e6945ca",
+    "result": "FAIL218.36s/120s active: exact source-built normal server, driver and race harness. All100 admissions/fresh views, every paid casino outcome, all20 social outcomes, all20 party members' positive own impacts/healing and all100 independent disconnect-save checks pass. Overall test still fails: the owned server required forced shutdown after the existing five-second stop guard. Not capacity/release acceptance.",
+    "artifactDirectory": "/tmp/eidolon-179-recovery100-aFhHiE",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-506955602",
+    "serverSHA256": "e8b7d4d3b9b23842c242cb6f718f0ab02fed3a9c4828005c28d8166543bd7a84",
+    "driverSHA256": "d212c1d0e810c25482c89a577678d848a327d57bcbbbab9dbe6757e07c28bfdc",
+    "raceHarnessSHA256": "698b14136965e37f63a11f83bf5726e4386b23ef131d0dec1c46f551ad2b7125",
+    "predeclaration": "100 clients in the original five20-role blocks,120s active, legal Uncommon/Rare class gear/builds and original funding/Gold100 stakes, shared400/600 anchor/radius30 and5s deadlines. Every fresh-state/payment/social/member-impact/normal-save gate unchanged. Normal server GOMAXPROCS2, current Alpha1.76.0 labels/schema25, no production deployment. Owned Mongo7.0.14 loopback32961,2CPU/2GiB/512MiB tmpfs. Shared host, not controlled production headroom evidence.",
+    "changedDependencies": "Since the prior cea4f481 comparison: driver honors public blackjack expiry, uses actual advertised class primaries and Cleric cone range, and heals eligible own allies between fights without suppressing available offense during healing cooldown. Normal World.Update respects its current CPU worker budget. No player stat/build/gear/spawn, camp anchor/radius, timeout, stake or acceptance change.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 147531, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 1413, "minimumActiveMilliseconds": 119395,
+      "maximumStateGapMilliseconds": 1143, "payloadBytes": 1262186102,
+      "maximumLoginMilliseconds": 374, "maximumJoinMilliseconds": 954,
+      "slots": {"clients": 10, "wagers": 251, "paid": 251, "minimumPaid": 18, "bonuses": 19, "failed": 0},
+      "blackjack": {"clients": 20, "wagers": 52, "paid": 34, "minimumPaid": 1, "actions": 33, "failed": 0},
+      "house": {"clients": 20, "wagers": 60, "paid": 40, "minimumPaid": 2, "failed": 0},
+      "poker": {"clients": 10, "wagers": 28, "paid": 18, "minimumPaid": 1, "actions": 82, "failed": 0},
+      "casinoRejectionsAndTimeouts": 0,
+      "socialClients": 20, "socialComplete": 20, "socialFailed": 0,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20, "partyMinimumImpacts": 1,
+      "partyDamageEvents": 215, "partyHealEvents": 5, "partyAcceptedCasts": 221,
+      "partyDeniedCasts": 0, "partyXPUpdates": 224, "partyObservedDeaths": 54,
+      "roles": {
+        "Fighter": {"minimumImpacts": 6, "damage": 50, "casts": 50, "unmatchedDamage": 28},
+        "Cleric": {"minimumImpacts": 1, "damage": 7, "heals": 5, "casts": 5, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 10, "damage": 104, "casts": 107, "unmatchedDamage": 19},
+        "Wizard": {"minimumImpacts": 6, "damage": 54, "casts": 59, "unmatchedDamage": 9}
+      }
+    },
+    "savedEvidence": "All100 independent normal Mongo character checks were reached and passed: fresh LastLogout, class/EP/equipment/bag preservation, positive XP/level progress for each party member, durable casino checkpoints for every assigned casino client and unchanged Gold for town/social. This does not prove the final graceful shutdown drain completed or its last snapshots were durable; the five-second guard killed that exact child.",
+    "shutdownInvestigation": "Retained server log records Shutting down server but no Character shutdown drain complete before forced termination. No exact drain phase/cause proven. Production Compose declares60s stop_grace_period while the generic compatibility helper imposes5s. Diagnose the actual drain and its durability before changing any gate; do not assume a deadlock or relax the stop guard to manufacture a pass.",
+    "limits": "Earlier failures remain historical failures; randomized enemy supply and shared-host variation prevent causal attribution to any one fix. Gameplay/payment/save outcomes are useful evidence but overall test is FAIL. Worst state gap1143ms retained, not a smoothness/headroom promise; lifetime phase counters are not CPU/percentile/conservation proof. Active raid/event workload, complete final casino settlement/recovery, graceful shutdown and full release gates remain open. No unchanged population retry or deployment.",
+    "cleanup": "After terminal failed harness/server completion, exact owned Mongo55081de1d3b4413e0c07e0b6e3a92f6add44b0ed23899bad76a4ada52c8dddc0/name/label revalidated then removed with synthetic volumes. Independent label/process queries empty; aggregate artifacts retained. Production and unrelated processes/data untouched."
+  },
   "betweenFightHealingFidelity": {
     "confirmedDefect": "Focused controller regression fails before repair: a formed Cleric with unlocked ready Healing Light ignores an injured nearby own-party ally when no enemy exists. A healing cooldown also suppresses the advertised ready Radiant Strike and falls back to an ordinary attack.",
     "repair": "Select an eligible ready heal before the empty-enemy wait. A heal on cooldown leaves the offensive target/skill available. Calculate range from the chosen target. Existing party formation/regroup, pending-cast, advertised-unlock, same-scene/living-ally,14-unit healing range, path, target ownership and actual impact gates remain unchanged.",
     "verification": "Focused party/combined/dungeon/raid/event driver race scopes PASS3.553s. New cases cover no-enemy healing, cooldown with/without enemy, locked healing, dead ally, different scene, out-of-range ally, no repeat while pending and no manufactured cast/heal/damage credit. Gofmt and whitespace checks pass.",
-    "limits": "Controller fidelity only, not measured capacity or balance. Historical native failures remain failures; no production stat/gear/build/spawn, anchor/radius, action timeout or acceptance changes. Corrected native100 comparison is planned separately, not yet claimed."
+    "limits": "Controller fidelity only, not measured capacity or balance. Historical native failures remain failures; no production stat/gear/build/spawn, anchor/radius, action timeout or acceptance changes. Subsequent exact native100 comparison is recorded separately and fails its graceful shutdown guard despite passing gameplay/payment/save checks."
   },
   "worldUpdateWorkerBudget": {
     "confirmedDefect": "World.Update creates runtime.NumCPU workers per frame rather than respecting the runtime CPU budget. A real damage-callback regression exceeds both one- and two-worker GOMAXPROCS limits before repair. It releases and joins only its owned update; no population run or production action.",

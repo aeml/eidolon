@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 corrected native100 comparison:** Exact4096c19c normal server/driver
+and race harness fail218.36s/120s active. All100 admissions/fresh own views,
+paid casino outcomes with zero rejections/timeouts,20 social outcomes,20 members'
+positive party impacts/healing and100 independent disconnect-save checks pass.
+The overall run remains FAIL: the server exceeded the unchanged five-second
+graceful-stop guard and was forcibly stopped. Saved character checks are not
+proof of completed final shutdown durability. Log records shutdown start, not
+drain completion; exact blocking phase remains unknown. Compose's60s stop policy
+is context, not permission to relax the test to get green. Investigate the drain
+before another population run. Worst fresh-state gap1143ms retained, not headroom
+or smoothness approval. Exact owned Mongo identity/label verified then fixture
+and synthetic volumes removed; independent label/process queries empty. Fixed
+aggregates/hashes/logs retained in the existing receipt; no publication or full
+capacity acceptance. Latest remote remains69cc97d9.
+
 **October6 between-fight Cleric fidelity:** Two focused controller regressions
 fail before repair: an injured own ally is ignored without an enemy, and a
 healing cooldown suppresses the ready advertised Radiant Strike. Select a ready
@@ -7,8 +22,8 @@ heal before the empty-enemy wait, retaining normal party/range/scene/path and
 pending-cast guards. Focused party/combined/dungeon/raid/event driver race scopes
 pass3.553s; waiting and submissions still grant no impact/cast credit. No stats,
 gear, spawns, target claims/radius/anchor, deadlines or acceptance changes.
-Historical native failures remain; a corrected native100 comparison is planned
-separately, not yet run or accepted. Full release goal remains active.
+Historical native failures remain; subsequent corrected native100 evidence is
+recorded separately above, not accepted. Full release goal remains active.
 
 **October6 runtime CPU-budget correction:** A targeted real damage-callback
 regression proves World.Update exceeds both one/two-worker runtime budgets.
