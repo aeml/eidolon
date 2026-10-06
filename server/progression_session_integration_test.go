@@ -251,11 +251,13 @@ func compatStartServerWithCrash(t *testing.T, binary, uri string, phase int, int
 	done := make(chan error, 1)
 	go func() { done <- command.Wait() }()
 	stopped := false
+	finishResources := func() {}
 	stop := func() {
 		if stopped {
 			return
 		}
 		stopped = true
+		finishResources()
 		if intentionalCrash {
 			command.Process.Kill()
 		} else {
@@ -304,6 +306,9 @@ func compatStartServerWithCrash(t *testing.T, binary, uri string, phase int, int
 			decodeErr := json.NewDecoder(response.Body).Decode(&health)
 			response.Body.Close()
 			if decodeErr == nil && response.StatusCode == 200 && health.Status == "ok" && health.Database == "ready" && health.Commit == filepath.Base(binary) {
+				if phase == 179 {
+					finishResources = observeOwnedLoadProcess(t, command.Process, evidence)
+				}
 				return address, stop
 			}
 		}

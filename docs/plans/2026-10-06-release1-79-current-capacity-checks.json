@@ -3,6 +3,12 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "9b20136a plus accompanying structured spatial-cell keys; exact historical controls retain their separate source commits/hashes below",
   "status": "current-spatial-static-frame-integration-verified-native-and-headroom-gates-open",
+  "ownedProcessObservationPreparation": {
+    "change": "Add an explicitly opt-in Linux sampler to the existing phase179 native fixture, observing only its already-owned child after readiness and joining before shutdown. Read fixed process stat fields once/sec; validate start-time identity and tick/page arithmetic. No new runtime endpoint, player telemetry, bot powers, timer, pass gate, long workload or production mutation.",
+    "output": "A private fixed six-field process-observations.json plus sanitized aggregate test line records valid/failed samples, elapsed seconds, mean/maximum sampled CPU core percent and sampled peak RSS.100% means one busy core; maximum excludes sub0.5s intervals to avoid tick quantization spikes. Uses actual getconf CLK_TCK and page size, not guessed clock units. No PID, command, environment or raw proc fields are emitted.",
+    "verification": "Go1.27.1/GOMAXPROCS2 root race selected parser and actual owned harmless-child cancellation/private-evidence tests PASS1.099s. Tests cover spaced/parenthesized comm, missing/negative/overflow/zero-identity fields, disabled observer doing no IO, joined observation, fixed numeric output and mode600. No native100 run yet; sample values are not population evidence.",
+    "limits": "Observations span readiness through pre-shutdown and include admission/disconnect. One-second sampling can miss shorter peaks; no percentiles, Mongo/client CPU, hard container quota, network/client-GPU or isolated-host guarantee. No CPU/RSS threshold is silently invented. Next changed-source native run still must meet unchanged paid/member/social/save and sustained-state gates. Existing unrelated nightly workload/CI means measurements require explicit shared-host scope."
+  },
   "orderedIntegrationAndStaticWork": {
     "sourceCommit": "2015fa8e85396a937cbb00b5c32884bd78a1cb57",
     "integration": "Normally merge pushed1.78 candidatec7c2c526 at926a56f9, preserving accepted1.77 hosting/QA changes and approved independent monitor. Resolve goal history by retaining both branches and removing nested documentation merge markers. Own1.79 remains unpublished and inherits1.78 labels until predecessor acceptance.",

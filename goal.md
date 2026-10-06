@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 owned-process measurement preparation:** Extend only the existing
+phase179 native harness with an opt-in one-second Linux CPU/RSS observation of
+its already-owned server child. Join before normal shutdown; private fixed
+six-field evidence omits identities/arguments/env/raw text. Unit/race parser
+and real harmless-child cancellation/evidence checks PASS1.099s. No new runtime
+endpoint, powers, timer, workload or capacity threshold. Actual100-player/
+headroom evidence remains required; no long run repeated while1.78 CI is busy.
+
 **October6 combined1.79 frame integration:** Normally merge pushed1.78 candidate
 c7c2c526 and retain both branches' evidence/history, removing nested documentation
 merge markers. Select only the measured static-fence frame improvement from1.87

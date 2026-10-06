@@ -6,6 +6,21 @@ target. Default-generated account credentials stay in memory; optional supplied
 credentials are read-only. The driver creates accounts and changes synthetic
 characters through normal commands, so it is not a read-only production probe.
 
+The existing native phase179 fixtures can optionally record lightweight Linux
+process observations with `EIDOLON_LOAD_PROCESS_OBSERVATIONS=1`. From API
+readiness until normal shutdown begins, the harness reads only its already-owned
+child's `/proc/PID/stat` once per second and verifies its start-time identity.
+It records a fixed private `process-observations.json` alongside the owned server
+log: sample/failure counts, elapsed seconds, mean/maximum sampled CPU core percent
+and sampled peak resident bytes.100% CPU means one busy core, not an entire host;
+the maximum excludes intervals shorter than0.5s to avoid clock-tick artifacts.
+Sampling can miss shorter memory/CPU peaks and includes admission/disconnect, not
+just the active window. This is not percentile, Mongo/container/client-GPU,
+isolated-host or production-capacity proof. Incomplete observations fail when
+explicitly selected. The sampler stops and joins before terminating the child;
+it exposes no PID, arguments, environment, account data or raw proc text in its
+summary. Default tests/server behavior remain unchanged.
+
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
 `casino-blackjack`, `casino-house`, `casino-poker`, `party-combat`, `party-dungeon`,
 `party-raid`, `party-event` and `combined`. Mixed
