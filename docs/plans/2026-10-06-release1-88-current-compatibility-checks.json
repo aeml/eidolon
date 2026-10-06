@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "milestone": "1.88 fresh and returning player compatibility",
+  "status": "bag-slot-reconnect-gap-fixed-locally-integrated-native-journey-and-ordered-release-open",
+  "baseCommit": "23977e1462738c1ab209892261892d12125339ec consolidated local1.87 candidate; production remains1.76.0/69cc97d9",
+  "diagnosis": "characterSnapshot and multiple offline inventory writers compact every empty bag slot. Login reads saved array indexes as slots, so an item at slot8 returns at slot0. The existing snapshot and auction failure tests explicitly expected this movement. This is an observed serialization/reconnect gap, not item loss or duplication. Already-compacted older saves contain no original slot indexes; those historical arrangements cannot be reconstructed.",
+  "implementation": [
+    "Serialize inventory by position, preserving interior holes and trimming only unused trailing slots. Login pads to the existing25-slot capacity, accepts old compact saves in their current order, and keeps empty slots canonical rather than fabricating stack/version metadata.",
+    "Use the same positional writer for ground-item, direct-trade, auction-item, administrator-item, weekly-raid and dungeon-room recovery. Boss-victory confirmation compares positional bags after ignoring unused trailing padding, including empty-versus-nil bags, and still saves a newer independent live award before acknowledging it.",
+    "Extract only the existing inventory login mapping into a tested helper. Preserve Heart/Shard names/icons/stack migrations, one-time item stat normalization, gems and Forge basis. Other containers, loadout references, class restrictions, resource restoration, quest terms, wallets, receipt fences, timers and authority remain unchanged.",
+    "No new stored field, schema migration, dependency, client protocol or bag capacity. Schema remains25. Older compatible binaries can read the indexed array but may compact it again when saving; this does not certify rollback layout persistence or justify a database downgrade."
+  ],
+  "verification": {
+    "red": "Five new occupied-slot cases on original code FAIL3/PASS2; bag positions3,0+5 and4+24 compact to smaller arrays. PackageFAIL0.075s. No assertion or runtime budget weakened.",
+    "focused": "New slot snapshot, bound-journal reopen/repeated actual login-mapping, compact legacy/migration and existing full snapshot checks PASS with race detector1.140s. Repeated mapping keeps equipment potency/gems and a quest-material payload at their original bag positions, plus Gold/EP; journal account identity retained. Filesystem/BSON evidence, not Mongo or native login acceptance.",
+    "recoveryScope": "Selected inventory/vendor/mystery/ground/trade/auction/admin/dungeon/boss/weekly race scope initially FAIL36.814s:231 passes including subcases,1 assertion failure,24 explicitly gated native/Mongo skips. Failure was the auction preflight test expecting the slot8 item at saved index0. Update that assertion to require index8 and an empty index0, preserving all escrow, deposit, unpublished-decision and replay checks. Keep this failed run recorded; skips do not certify real storage or sockets.",
+    "correctedScope": "Affected auction case, new offline direct-trade sparse-slot/replay case, new bag mapping cases and full snapshot check PASS with race detector1.642s. Offline incoming custody fills slot0 while unrelated old-scale item remains at slot7 unchanged; six interior holes persist, Gold/EP and unrelated resources/quests/gear/receipts retain terms, replay performs no new write/grant. Modeled durable store plus real filesystem journal, not real Mongo.",
+    "crossFeature": "Focused root compatibility checks PASS6.876s: expanded-story terms/rest/resources, progression fractions/future story records, loadout references/hotbar, cosmetic EP/unlock pending saves, authoritative dungeon/checkpoint landing and bound-identity snapshots/replay. Schema/catalog rules PASS1.029s; actual future-Mongo and migration integration cases are disabled/skipped. Party rejoin/registry restoration/idempotence/expiry checks PASS2.221s. These are scoped fixtures and message construction, not an earned connected-player campaign or100-player acceptance.",
+    "forge": "Add an explicit Forge basis to the bound sparse-slot fixture; that three-reopen mapping case plus existing99 continued-upgrade BSON and equipment-protobuf Forge basis checks PASS with race detector1.588s. Current metadata mapping remains stable; no client-rendering or native equipment-fit claim.",
+    "hygiene": "Scoped tests use real temporary filesystem journals and modeled stores; no disposable Mongo or native server fixture was created this turn. All owned commands terminal. Go formatting, whitespace and receipt JSON validation pass. Fresh origin/master remains69cc97d9580e1a9e0e5e576f1a475a50b43c6639. Dedicated1.88 worktree based on23977e14; no service, provider mail, DNS, root, production DB or main user worktree mutation."
+  },
+  "plannedPatchNotes": {
+    "version": "Alpha1.88.0 draft, not published",
+    "changes": [
+      "Bag items keep their slot positions across saves and relogging instead of sliding into earlier empty slots.",
+      "Offline item and reward recovery preserves unrelated bag arrangements and earned item metadata without paying or delivering twice.",
+      "Older compact bags continue to load, and legacy material/gear migrations retain their existing behavior."
+    ]
+  },
+  "remaining": [
+    "Complete an exact-candidate fresh/returning-player connected journey with isolated real storage/restart, including saved bag gaps alongside story, builds, party membership, wallets, cosmetics and dungeon policy. Reuse unchanged compatible receipts with exact workload/binary limits rather than rerunning long campaigns.",
+    "Full game-package timeout, measured native server stalls and approved population/headroom remain open under1.87. These scoped compatibility checks do not replace that acceptance.",
+    "Earlier1.77 TLS renewal and1.78 operating/alert choices, exact version/cumulative patch notes, normal remote integration and deployment/public verification remain open. This work is local, not a live1.88 release.",
+    "Whole-campaign pacing and real-phone party/dungeon playtest remain owner-deferred; near-complete beta and full release require the unchanged1.90/1.99 scope and owner decisions."
+  ]
+}

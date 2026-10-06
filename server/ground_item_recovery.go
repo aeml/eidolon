@@ -223,7 +223,7 @@ func applyAndSaveGroundItemCharacterLocked(op database.GroundItemOperation) erro
 	if err != nil || !changed {
 		return err // Actual stored receipt replay, not item-presence inference.
 	}
-	character.Inventory = databaseItems(entity.Inventory, true)
+	character.Inventory = databaseInventory(entity.Inventory)
 	character.ItemDeliveryReceipts = cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)
 	character.GroundAccountOrdinal, character.GroundAccountOperationID, character.GroundAccountFingerprint = entity.GroundAccountOrdinal, entity.GroundAccountOperationID, entity.GroundAccountFingerprint
 	if op.Kind == database.GroundItemPickup {

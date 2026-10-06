@@ -59,7 +59,7 @@ func deliverAuctionItemLocked(op database.AuctionBidOperation) error {
 	}
 	character.Gold = entity.Gold
 	character.GoldCreditReceipts = cloneGoldCreditReceipts(entity.GoldCreditReceipts)
-	character.Inventory = databaseItems(entity.Inventory, true)
+	character.Inventory = databaseInventory(entity.Inventory)
 	character.Stash = databaseItems(entity.Stash, false)
 	character.ItemDeliveryReceipts = cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)
 	return persistCharacterSnapshot(username, character)

@@ -156,11 +156,15 @@ func deliverBossVictoryRecipientLocked(op database.BossVictoryOperation, usernam
 			// live bag which may contain a newer still-unconfirmed award.
 			bag, err := bossVictorySavedInventory(saved)
 			if live != nil {
-				// DB bags compact empty slots. Preserve the live slot layout
-				// only when its owned contents match confirmed storage. If a
-				// newer award arrived during IO, save that complete capture first.
+				// Preserve the live slot layout only when its owned contents
+				// and positions match confirmed storage. If a newer award arrived
+				// during IO, save that complete capture first.
 				bag, err = json.Marshal(live.Inventory)
-				if err == nil && !reflect.DeepEqual(databaseItems(live.Inventory, true), saved.Inventory) {
+				savedBag := saved.Inventory
+				for len(savedBag) > 0 && savedBag[len(savedBag)-1].ID == "" {
+					savedBag = savedBag[:len(savedBag)-1]
+				}
+				if err == nil && !slices.EqualFunc(databaseInventory(live.Inventory), savedBag, func(a, b database.Item) bool { return reflect.DeepEqual(a, b) }) {
 					latest := characterSnapshotForSave(username, live)
 					if _, err = projectBossVictorySnapshot(latest, op); err == nil {
 						err = persistCharacterSnapshot(username, latest)

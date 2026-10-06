@@ -154,7 +154,7 @@ func claimAndSaveDirectTradeDeliveryLocked(username string, operations directTra
 	if err != nil || !changed {
 		return false, err
 	}
-	character.Gold, character.Inventory, character.DirectTradeState = entity.Gold, databaseItems(entity.Inventory, true), database.CloneDirectTradeState(entity.DirectTradeState)
+	character.Gold, character.Inventory, character.DirectTradeState = entity.Gold, databaseInventory(entity.Inventory), database.CloneDirectTradeState(entity.DirectTradeState)
 	if err := persistCharacterSnapshot(username, character); err != nil {
 		return false, err
 	}

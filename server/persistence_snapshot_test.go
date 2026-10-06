@@ -70,11 +70,11 @@ func TestCharacterSnapshotPreservesPersistentGameplayState(t *testing.T) {
 	if character.Name != "snapshot-user" || character.Class != "Fighter" || !character.LastLogout.Equal(savedAt) {
 		t.Fatalf("identity snapshot mismatch: %+v", character)
 	}
-	if len(character.Inventory) != 1 || len(character.Stash) != 1 || len(character.Buyback) != 1 || len(character.Equipment) != 1 {
+	if len(character.Inventory) != 2 || character.Inventory[0].ID != "" || len(character.Stash) != 1 || len(character.Buyback) != 1 || len(character.Equipment) != 1 {
 		t.Fatalf("item containers were not preserved: inventory=%d stash=%d buyback=%d equipment=%d", len(character.Inventory), len(character.Stash), len(character.Buyback), len(character.Equipment))
 	}
-	if character.Inventory[0].Gems[0].Type != "Ruby" || character.Inventory[0].UniqueEffect != "echoing_strike" {
-		t.Fatalf("item metadata was not preserved: %+v", character.Inventory[0])
+	if character.Inventory[1].Gems[0].Type != "Ruby" || character.Inventory[1].UniqueEffect != "echoing_strike" {
+		t.Fatalf("item metadata was not preserved: %+v", character.Inventory[1])
 	}
 	if !reflect.DeepEqual(character.SkillRunes, entity.SkillRunes) || !reflect.DeepEqual(character.UnlockedSkills, entity.UnlockedSkills) {
 		t.Fatalf("build state was not preserved: skills=%v runes=%v", character.UnlockedSkills, character.SkillRunes)

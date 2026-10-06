@@ -124,7 +124,7 @@ func applyAndSaveAdminGrantLocked(op database.AdminOperation, grant game.AdminGr
 	}
 	character.Gold = entity.Gold
 	if grant.Action == MsgAdminGrantItem {
-		character.Inventory = databaseItems(entity.Inventory, true)
+		character.Inventory = databaseInventory(entity.Inventory)
 		character.ItemDeliveryReceipts = cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)
 	}
 	character.AdminOperationReceipts = cloneItemDeliveryReceipts(entity.AdminOperationReceipts)

@@ -369,7 +369,7 @@ func projectOfflineRewardCharacter(character *database.Character, entity *game.E
 	character.ResonanceLevel, character.ResonanceXP, character.ResonancePoints = entity.ResonanceLevel, entity.ResonanceXP, entity.ResonancePoints
 	character.Stats = database.Stats{Strength: entity.BaseStats.Strength, Dexterity: entity.BaseStats.Dexterity, Intelligence: entity.BaseStats.Intelligence, Wisdom: entity.BaseStats.Wisdom, Vitality: entity.BaseStats.Vitality}
 	character.UnlockedSkills = slices.Clone(entity.UnlockedSkills)
-	character.Inventory, character.ItemDeliveryReceipts = databaseItems(entity.Inventory, true), cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)
+	character.Inventory, character.ItemDeliveryReceipts = databaseInventory(entity.Inventory), cloneItemDeliveryReceipts(entity.ItemDeliveryReceipts)
 	// Level growth may refill a living player's HP. No shrine/offline regen,
 	// no new resource format for a legacy character that lacked a snapshot.
 	if character.Resources != nil && entity.Level != initialLevel {

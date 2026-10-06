@@ -323,7 +323,7 @@ func characterSnapshot(username string, entity *game.Entity, savedAt time.Time) 
 		PartyID: entity.PartyID,
 	}
 
-	char.Inventory = databaseItems(entity.Inventory, true)
+	char.Inventory = databaseInventory(entity.Inventory)
 	char.Stash = databaseItems(entity.Stash, false)
 	char.Buyback = databaseItems(entity.Buyback, false)
 	char.Equipment = make(map[string]database.Item, len(entity.Equipment))
@@ -374,6 +374,55 @@ func databaseItems(items []game.Item, omitEmpty bool) []database.Item {
 		result = append(result, databaseItem(item))
 	}
 	return result
+}
+
+// Array position is the inventory slot in both old and current saves. Keep
+// interior empty slots; trailing empty slots need not be stored because login
+// pads the bag to MaxInventorySize. This also reads old compact bags unchanged.
+func databaseInventory(items []game.Item) []database.Item {
+	end := len(items)
+	for end > 0 && items[end-1].ID == "" {
+		end--
+	}
+	result := make([]database.Item, end)
+	for index, item := range items[:end] {
+		if item.ID != "" {
+			result[index] = databaseItem(item)
+		}
+	}
+	return result
+}
+
+// Ordinary login keeps its historic item migrations, but never turns a saved
+// empty slot into an item with a fabricated stack/version. Recovery uses the
+// separate exact conversion so unrelated old item terms are not rescaled.
+func restoreCharacterInventory(items []database.Item) []game.Item {
+	bag := make([]game.Item, game.MaxInventorySize)
+	for index, item := range items {
+		if index >= len(bag) {
+			break // Retain the existing supported bag-size policy.
+		}
+		if item.ID == "" {
+			continue
+		}
+		switch item.Name {
+		case "Heart", "Eidolon Heart":
+			item.Name, item.Icon = "Eidolon Heart", "procedural:item:eidolon-heart"
+			if item.MaxStack == 0 {
+				item.MaxStack = 1000
+			}
+		case "Shard", "Eidolon Shard":
+			item.Name, item.Icon = "Eidolon Shard", "procedural:item:eidolon-shard"
+			if item.MaxStack == 0 {
+				item.MaxStack = 1000
+			}
+		}
+		if item.Stack == 0 {
+			item.Stack = 1
+		}
+		bag[index] = gameItemFromDatabase(item)
+	}
+	return bag
 }
 
 func databaseItem(item game.Item) database.Item {

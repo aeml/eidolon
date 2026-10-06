@@ -140,7 +140,7 @@ func deliverWeeklyRaidReward(entry database.WeeklyRaidLockout) (game.WeeklyRaidR
 		}
 		character.Gold = entity.Gold
 		character.ResonanceLevel, character.ResonanceXP, character.ResonancePoints = entity.ResonanceLevel, entity.ResonanceXP, entity.ResonancePoints
-		character.Inventory = databaseItems(entity.Inventory, true)
+		character.Inventory = databaseInventory(entity.Inventory)
 		character.WeeklyRaidRewardReceipts = maps.Clone(entity.WeeklyRaidRewardReceipts)
 	}
 	if granted {

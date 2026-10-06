@@ -36,7 +36,7 @@ func TestAuctionListingSaveFailureRetainsEscrowAndUnpublishedDecision(t *testing
 	if err := completePendingAuctionBidLocked(*op); err == nil {
 		t.Fatal("uncommitted escrow published listing")
 	}
-	if p.Gold != 1209 || p.Inventory[8].ID != "" || committer.saved.Gold != 1234 || committer.saved.Inventory[0].ID != "earned-item" || len(world.Trading.Auctions) != 0 || len(world.Trading.PendingBidOperations(p.ID)) != 1 {
+	if p.Gold != 1209 || p.Inventory[8].ID != "" || committer.saved.Gold != 1234 || len(committer.saved.Inventory) != 9 || committer.saved.Inventory[8].ID != "earned-item" || committer.saved.Inventory[0].ID != "" || len(world.Trading.Auctions) != 0 || len(world.Trading.PendingBidOperations(p.ID)) != 1 {
 		t.Fatal("failed escrow lost owner/listing state")
 	}
 	pending, err := characterSaveJournal.Read(p.Name)

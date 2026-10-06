@@ -439,69 +439,7 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.username, entity.Level, entity.SelectedBranch, entity.UnlockedSkills)
 
 		// Convert DB Inventory to Game Inventory
-		entity.Inventory = make([]game.Item, game.MaxInventorySize)
-		if len(char.Inventory) > 0 {
-			log.Printf("Loading inventory for %s: %d items", c.username, len(char.Inventory))
-			// Fill slots sequentially for now (since DB doesn't store slot index)
-			for i, dbItem := range char.Inventory {
-				if i >= game.MaxInventorySize {
-					break
-				}
-				// Fix for old items (Shards/Hearts missing MaxStack)
-				maxStack := dbItem.MaxStack
-				if (dbItem.Name == "Shard" || dbItem.Name == "Eidolon Shard" || dbItem.Name == "Heart" || dbItem.Name == "Eidolon Heart") && maxStack == 0 {
-					maxStack = 1000
-				}
-
-				// Migration: Rename "Heart" to "Eidolon Heart"
-				name := dbItem.Name
-				if name == "Heart" {
-					name = "Eidolon Heart"
-				}
-				if name == "Eidolon Heart" {
-					dbItem.Icon = "procedural:item:eidolon-heart"
-				}
-				// Migration: Rename "Shard" to "Eidolon Shard"
-				if name == "Shard" {
-					name = "Eidolon Shard"
-				}
-				if name == "Eidolon Shard" {
-					dbItem.Icon = "procedural:item:eidolon-shard"
-				}
-
-				// Fix for old items (Missing Stack count)
-				stack := dbItem.Stack
-				if stack == 0 {
-					stack = 1
-				}
-
-				loadedItem := game.Item{
-					ID:               dbItem.ID,
-					Name:             name,
-					Type:             game.ItemType(dbItem.Type),
-					Rarity:           game.ItemRarity(dbItem.Rarity),
-					Slot:             dbItem.Slot,
-					Level:            dbItem.Level,
-					Value:            dbItem.Value,
-					Icon:             dbItem.Icon,
-					Description:      dbItem.Description,
-					Stats:            dbItem.Stats,
-					Stack:            stack,
-					MaxStack:         maxStack,
-					Potency:          dbItem.Potency,
-					Sockets:          dbItem.Sockets,
-					Gems:             socketedGemsFromDatabase(dbItem.Gems),
-					SetID:            dbItem.SetID,
-					UniqueEffect:     dbItem.UniqueEffect,
-					GemType:          game.GemType(dbItem.GemType),
-					GemQuality:       game.GemQuality(dbItem.GemQuality),
-					StatScaleVersion: dbItem.StatScaleVersion,
-				}
-				game.NormalizeItemStatScale(&loadedItem)
-				loadedItem.ForgeBasis = dbItem.ForgeBasis.Clone()
-				entity.Inventory[i] = loadedItem
-			}
-		}
+		entity.Inventory = restoreCharacterInventory(char.Inventory)
 
 		// Convert DB Stash to Game Stash
 		entity.Stash = make([]game.Item, 0)

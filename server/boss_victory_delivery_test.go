@@ -339,7 +339,7 @@ func TestBossVictoryDeliveryAcknowledgesOnlyCapturedSavedBagAndQuests(t *testing
 	if err := json.Unmarshal(messages[0].Payload, &items); err != nil {
 		t.Fatal(err)
 	}
-	// Saved bags compact empty slots; owner replies preserve their UI slots.
+	// Saved bags and owner replies preserve their occupied UI slots.
 	savedContainsLater := false
 	for _, item := range store.characters[player.Name].Inventory {
 		savedContainsLater = savedContainsLater || item.ID == "later-unsaved-roll"
@@ -385,6 +385,6 @@ func TestBossVictoryDeliveryRecoveredReplyPreservesLiveSlotPositions(t *testing.
 		t.Fatal(err)
 	}
 	if len(items) != game.MaxInventorySize || items[0].ID != "" || items[5].ID != "original-blade-0" {
-		t.Fatal("compacted DB bag shifted live item slots in recovered reply")
+		t.Fatal("saved bag shifted live item slots in recovered reply")
 	}
 }

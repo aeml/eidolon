@@ -1,5 +1,29 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 prepared1.88 bag compatibility:** Source inspection and three RED
+cases prove saves compact interior bag gaps: item slot8 returns at slot0. Keep
+positional arrays with only trailing empties trimmed; actual login mapping pads
+the existing25 slots and retains old compact order/material/stat/gem/Forge
+migrations without fabricating empty items. Apply the same writer to offline
+ground/trade/auction/admin/weekly/dungeon recovery; boss-victory comparison keeps
+slot identity and ignores trailing padding while preserving newest-award fences.
+No new field/schema/client protocol/capacity or economy change. Initial focused
+mapping/journal checks PASS1.140s. Recovery scope preserves its FAIL36.814s result
+with231 passes/1 old compact-index assertion failure/24 native skips; corrected
+auction assertion plus new actual offline-claim sparse-slot/replay and mapping
+cases PASS1.642s. Cross-feature root story/rest/resources/progression/loadout/
+hotbar/cosmetic/dungeon landing/identity checks PASS6.876s, schema/catalog rules
+PASS1.029s and party restoration/expiry PASS2.221s. These are scoped data/message
+fixtures, not real-Mongo/native login or whole-campaign acceptance; skipped
+integration cases are not passes. Already-compacted historical positions cannot
+be reconstructed and older writers may recompact on save. Final explicit Forge
+basis sparse-slot/reopen plus continued99-upgrade/BSON/protobuf checks PASS1.588s.
+Draft patch notes and
+[compatibility receipt](docs/plans/2026-10-06-release1-88-current-compatibility-checks.json)
+retain remaining connected journey, ordered release/performance and full beta/
+release gates. Main user worktree, production and provider settings untouched;
+full roadmap goal stays active, not a live1.88 release.
+
 **October6 scoped timeout investigation:** Current combined branch is clean at
 0b5431ac before a test-only real-world constructor benchmark. Preserve full world
 population,6050 fence identities, existing assertions and package deadline.
