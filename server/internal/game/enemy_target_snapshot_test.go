@@ -2,10 +2,78 @@ package game
 
 import (
 	"fmt"
+	"math"
 	"sync"
 	"testing"
 	"time"
 )
+
+func TestEnemyTargetScanRangePreservesLiveAuthorityAndDistantThreat(t *testing.T) {
+	w := &World{Entities: map[string]*Entity{}}
+	p := &Entity{ID: "scan-live", Type: TypePlayer, State: "IDLE", X: 3, Z: 4}
+	w.Entities[p.ID] = p
+	for _, scenario := range []string{"near", "boundary", "outside", "far-threat", "tiny-threat", "negative-threat", "wrong-scene", "disconnected", "dead", "hidden", "expired-stealth", "replaced", "removed", "nil", "nan-position"} {
+		t.Run(scenario, func(t *testing.T) {
+			p.X, p.Z, p.InstanceID, p.State = 3, 4, "", "IDLE"
+			p.Disconnected, p.StealthActive = false, false
+			w.Entities[p.ID] = p
+			candidate := p
+			threat := map[string]float64{}
+			outside := false
+			switch scenario {
+			case "outside", "far-threat", "tiny-threat", "negative-threat":
+				p.X, p.Z = 6, 0
+				outside = true
+				if scenario == "far-threat" {
+					threat[p.ID] = 10
+				}
+				if scenario == "tiny-threat" {
+					threat[p.ID] = .000001
+				}
+				if scenario == "negative-threat" {
+					threat[p.ID] = -1
+				}
+			case "near":
+				p.X, p.Z = 1, 1
+			case "wrong-scene":
+				p.InstanceID = CasinoInstanceID
+			case "disconnected":
+				p.Disconnected = true
+			case "dead":
+				p.State = "DEAD"
+			case "hidden", "expired-stealth":
+				p.StealthActive, p.StealthEndTime = true, time.Now().Add(time.Minute)
+				if scenario == "expired-stealth" {
+					p.StealthEndTime = time.Now().Add(-time.Minute)
+				}
+			case "replaced":
+				w.Entities[p.ID] = &Entity{ID: p.ID, Type: TypePlayer}
+			case "removed":
+				delete(w.Entities, p.ID)
+			case "nil":
+				candidate = nil
+			case "nan-position":
+				p.X = math.NaN()
+			}
+			w.Mu.RLock()
+			want := w.snapshotEnemyTargetLocked(candidate, "")
+			got := w.snapshotEnemyTargetForScanLocked(candidate, "", 0, 0, 5, threat)
+			w.Mu.RUnlock()
+			if outside && threat[p.ID] <= 0 {
+				want = enemyTargetSnapshot{}
+			}
+			// NaN is deliberately not promoted to a finite attack position; use
+			// individual fields because NaN is not equal to itself.
+			if scenario == "nan-position" {
+				if !math.IsNaN(got.x) || got.active != want.active || got.hidden != want.hidden || got.id != want.id {
+					t.Fatal("nonfinite live snapshot changed")
+				}
+			} else if got != want {
+				t.Fatal("scan shortcut changed live eligibility or threat priority", got, want)
+			}
+		})
+	}
+}
 
 func TestEnemyTargetSharedLockSnapshotKeepsLiveValidation(t *testing.T) {
 	w := &World{Entities: map[string]*Entity{}}
@@ -42,6 +110,30 @@ func TestEnemyTargetSharedLockSnapshotKeepsLiveValidation(t *testing.T) {
 				t.Fatal("shared-lock scan changed live target authority", got, want)
 			}
 		})
+	}
+}
+
+func TestEnemyTargetScanKeepsDistantThreatPriorityAtActualConsumer(t *testing.T) {
+	w := newTestWorld()
+	t.Cleanup(w.StopBackground)
+	near, far := newTestPlayer("scan-consumer-near", "Fighter"), newTestPlayer("scan-consumer-far", "Fighter")
+	near.X, near.Z, far.X, far.Z = 201, 600, 1000, 600
+	enemy := &Entity{ID: "scan-consumer-enemy", Type: TypeEnemy, SubType: "Skeleton", Level: 30,
+		X: 200, Z: 600, SpawnX: 200, SpawnZ: 600, Health: 100, MaxHealth: 100, Damage: 50,
+		State: "IDLE", AttackCooldown: time.Second, Threat: map[string]float64{far.ID: 100, near.ID: 1}}
+	w.AddEntity(near)
+	w.AddEntity(far)
+	w.AddEntity(enemy)
+	w.updateEntity(enemy, .033, []*Entity{near, far}, &deferredActions{})
+	if near.Health != near.MaxHealth || far.Health != far.MaxHealth {
+		t.Fatal("range shortcut dropped distant threat priority and attacked a nearer actor")
+	}
+	// Once the distant threat genuinely disappears, the same normal AI must
+	// attack the in-range target. No extended sight, timer or power is granted.
+	delete(enemy.Threat, far.ID)
+	w.updateEntity(enemy, .033, []*Entity{near, far}, &deferredActions{})
+	if near.Health >= near.MaxHealth || far.Health != far.MaxHealth {
+		t.Fatal("ordinary in-range enemy attack stopped working")
 	}
 }
 
