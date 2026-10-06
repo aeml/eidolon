@@ -31,7 +31,7 @@ services:
       args:
         GO_VERSION: 1.27.1
         BUILD_COMMIT: ${EIDOLON_BUILD_COMMIT:-development}
-        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 1.76.0}
+        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 1.78.0}
     restart: unless-stopped
     env_file:
       - .env
@@ -55,6 +55,42 @@ services:
       - 127.0.0.1:${APP_HOST_PORT:-18082}:8080
     volumes:
       - ./logs:/app/logs
+
+  # Explicit operator opt-in only. Independent of API readiness/start order.
+  # Linux host networking observes the actual loopback game upstream without
+  # exposing a listener or requiring an insecure non-loopback HTTP probe.
+  monitor:
+    profiles: [operations]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: monitor
+      args:
+        GO_VERSION: 1.27.1
+    restart: unless-stopped
+    network_mode: host
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      POSTMARK_SERVER_TOKEN: ${POSTMARK_SERVER_TOKEN:-}
+      POSTMARK_FROM_EMAIL: ${POSTMARK_FROM_EMAIL:-}
+      POSTMARK_MESSAGE_STREAM: ${POSTMARK_MESSAGE_STREAM:-}
+      ADMIN_NOTIFICATION_EMAILS: ${ADMIN_NOTIFICATION_EMAILS:-}
+    command:
+      - --health-url=http://127.0.0.1:${APP_HOST_PORT:-18082}/healthz
+      - --request-timeout=5s
+      - --poll-interval=30s
+      - --failure-threshold=3
+      - --recovery-threshold=2
+      - --notice-cooldown=30m
+      - --postmark-alerts
+      - --mail-timeout=10s
+      - --mail-min-interval=1m
+    logging:
+      driver: journald
+      options:
+        tag: eidolon-monitor
 
 volumes:
   mongo_data:

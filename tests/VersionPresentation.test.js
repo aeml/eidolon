@@ -3,7 +3,35 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.76.0';
+const currentVersion = '1.78.0';
+
+test('1.78.0 explains independent alerts and diagnostics without promising capacity or changing retention', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.78.0"'), previous = html.indexOf('data-version="1.77.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Service diagnostics', 'Eighteen fixed rows', 'audited reads',
+        '30-second probes', 'three failures', 'two healthy probes', '30 minutes',
+        'one-minute minimum interval', 'without network or email requests',
+        'existing host journal', 'off-machine coverage', 'stay disabled',
+        'reset on restart', '100-player capacity', 'inbox receipt confirmed',
+        'No account wipe', 'schema migration', 'retention change', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
+
+test('1.77.0 documents safe hosting without claiming renewal, IPv6 or launch capacity', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.77.0"'), previous = html.indexOf('data-version="1.76.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['hostnames and ports', 'dangling links', 'Missing Certbot',
+        'play.eidolonrealms.com', 'server.eidolonrealms.com', 'additive two-host',
+        'selected certificate', 'not proof', 'native isolated Nginx', 'Origin rules',
+        'private journals', 'Git worktree', 'public IPv6', 'remain unverified',
+        'DNS remains unchanged', 'dual-stack launch support is not claimed',
+        'No account wipe', 'schema migration', 'Gold, EP', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.76.0 explains bounded persistence and preserves historical data without claiming capacity', () => {
     const html = fs.readFileSync('index.html', 'utf8');

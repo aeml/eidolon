@@ -405,6 +405,29 @@ share one30-unit search area; contention/attribution are possible causes, not
 proven by a separately randomized control. No gameplay stats, target enemies,
 pass gates or default allocation changed. The owned control fixture is removed.
 See [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
+**October6 Alpha1.78 ordered preparation:** Normally merged accepted1.77 and
+its public-evidence checkpoint. Owner approved ongoing independent outage alerts
+to existing admin recipients using current hosting/Postmark,30s probes,3 failures,
+2 recoveries and30m reminders. Separate non-root Docker monitor uses the loopback
+API and existing persistent host journal, with no shared retention/provider change.
+Exact silent/no-network configuration validation precedes API replacement;
+monitor starts after readiness. Private server env is explicitly opted in, but
+actual service/public acceptance still awaits deployment. No extra real test mail.
+Merged root race2.037s, small operations/monitor6.522s/7.029s, added deployment/
+configuration race1.025s/7.582s,400 client/version checks5.497s, lint/syntax/Compose
+and native monitor image configuration all pass. Alpha1.78 identities/notes are
+prepared; no pressure budgets, capacity, whole-host/network coverage or1.99 claim.
+Historical entries follow.
+
+**October6 owner-approved notification test:** Sent exactly one clearly labelled
+Postmark administrator test email; the provider accepted it with MessageID
+`a6602d46-8fbb-4cf0-94e9-6028c8a61503`. Owner confirmed actual inbox receipt.
+No ongoing alerts, monitor service, thresholds or paid hosting were enabled.
+Restricted the exact owner-owned production server `.env` from775 to600,
+without editing its contents or restarting services. Owner's named two-host
+certificate renewal simulation succeeded; ordered1.77 source4ed7a3dd is pushed
+and CI37507575802 succeeded with independent public acceptance recorded below.
+No full roadmap completion is claimed. The following entries are historical.
 
 **October6 isolated1.78 operations integration:** Prepared monitoring now runs
 against the current account-bound persistence source without replacing identity
@@ -420,6 +443,71 @@ is pushed and CI37399132936 has passed audit/lint; Luna monitors remaining gates
 This future branch keeps inherited1.76 labels and stays unpublished/incomplete
 until ordered predecessors and operating decisions are accepted. See
 [current operations evidence](docs/plans/2026-10-06-release1-78-current-operations-checks.json).
+**October6 Alpha1.77 accepted live:** Exact4ed7a3dd CI37507575802 finished
+successfully, including both deploys and live persistent-character/town recovery
+QA. Independent public IPv4 frontend/backend identities and database readiness
+match Alpha1.77.0; index/main bytes match publisher-transformed source. Explicit
+animation/GPU/full-character skipped scopes are not claimed. Owner's named
+certificate renewal simulation passed; publicIPv6 remains deferred/unverified.
+Owner also confirmed receipt of the separately approved single Postmark test;
+no ongoing alerts are enabled. This completes this release gate, not1.99.
+Historical preparation entries follow.
+
+**October6 owner renewal gate resolved17:52UTC:** Owner nginx syntax/test passes,
+then the named play.eidolonrealms.com renewal dry-run explicitly succeeds for
+both canonical hosts. Non-fatal existing protocol warnings are not changed.
+Record simulation success, not a newly issued certificate, future guarantee or
+dual-stack proof. Fresh master remains69cc97d9 and included; proceed with the
+ordered1.77 candidate, ordinary CI/Luna deployment monitoring and exact public/
+live acceptance. No later staged game changes are folded into this release.
+Owner also approves exactly one labelled administrator test email for1.78; no
+ongoing alert service, thresholds or paid hosting change inferred. Preserve
+IPv6 deferral, all saves/receipts and the full unfinished roadmap objective.
+
+**October6 ordered-release gate revalidation08:33UTC:** Fresh master remains
+69cc97d9 and is already an ancestor of clean1.77 candidatefbd48371. Review all19
+outgoing files: only hosting guards/tests/docs and synchronized1.77 release
+identity/notes; no website/assets/src/game/database changes or later staged
+features. Both live publicIPv4 identities still match healthy1.76, database ready.
+The unchanged owner certificate dry-run gate has recurred across goal turns;
+there is no remaining code gap in this next candidate that substitutes for that
+verification. Request the exact named command result and following1.78 hosting/
+single-test-alert choice again. Stop the ordered release until owner input rather
+than skipping gates or repeating CI. Preserve the full1.11–1.99 objective and
+later staged work; no completed-goal, beta, renewal, IPv6 or deployment claim.
+See the hosting receipt's current ordered-release review.
+
+**October6 prepared1.77 release identity:** Source/package/login/server/container/
+workflow/isolated-QA identities now agree on Alpha1.77.0 in this unpublished
+worktree. Cumulative notes describe actual hosting guards and proxy checks,
+retaining the entire history and explicit renewal/IPv6/long-idle/capacity limits.
+369 version/runtime-publisher tests pass3.916s; lint/shell syntax/whitespace pass.
+Initial missing dependency setup ran no tests and was corrected without changing
+dependency versions. Live remains accepted1.76; no push or milestone completion.
+
+**October6 native1.77 proxy evidence:** The actual committed canonical backend
+block now runs in a disposable single-process loopback Nginx regression. Complete
+HTTP paths/query/header forwarding, production Origin refusal/admission,64KiB
+binary frames and normal close handshakes pass, alongside27 pure installer guards
+and six direct Origin cases, with race detection1.306s. Its own process is joined;
+installed nginx/services/Certbot and player data are untouched. Certificate timer
+success still does not prove renewal. Owner challenge/address-family evidence and
+own ordered1.77 release remain open; no TLS/IPv6/capacity claim from this fixture.
+
+**October6 ordered1.77 integration:** Latest remote69cc97d9 and the accepted
+1.76 evidence checkpoint are normally merged, preserving hosting preparation.
+1.76 is now accepted; own1.77 publication and owner renewal evidence remain open.
+
+**October6 hosting environment/proxy follow-up:** Latest master57572325 is
+normally merged into this unpublished1.77 worktree. Canonical certificate
+instructions scope the existing named lineage instead of all hosted sites.
+Staging requirements now explicitly separate Compose project, port, credentials,
+Mongo volume and private save/activity journals; a Git worktree is not isolation.
+Restart/manual-stop and strict browser-origin boundaries are documented. One
+bounded anonymous publicIPv4 WebSocket upgrade returns101, then closes at the
+deliberate3s observation deadline; no account or gameplay command. Public health
+still matches exact accepted1.75 with database ready. Owner certificate challenge,
+supported address-family decision and own ordered release acceptance remain open.
 
 **October6 isolated1.77 hosting preparation:** Canonical two-host installer
 argument guard and current operator instructions are integrated separately from
@@ -437,6 +525,46 @@ the exact scoped certificate dry-run command; no privileged action was performed
 Own milestone remains unpublished/incomplete pending ordered predecessors and
 actual challenge/supported-address-family evidence. See
 [current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
+
+**October6 Alpha1.76 accepted:** Corrected source69cc97d9 run37406964398
+completed successfully across all ten jobs, including live persistent-character
+and town healing/Well Rested QA. Independent post-terminal IPv4 frontend/backend
+identity, database readiness and exact publisher-transformed index/main bytes
+pass at03:40UTC. Predeploy animation/GPU/full-character and live four-class remote
+animation scopes were explicitly skipped, not passed. Earlier failed candidates
+remain failures. Continue ordered1.77 preparation; wider capacity, recovery and
+full roadmap gates remain open. Analytics inventory is complete and unchanged.
+See [accepted public checks](docs/plans/2026-10-06-release1-76-public-checks.json).
+
+**October6 corrected1.76 public identity:** Exact69cc97d9 run37406964398 passed
+ordinary CI/all browser shards/focused predeploy and both deployments. Live
+anonymous/persistent-character QA is actually running, monitored by Luna;
+three optional predeploy art/GPU/full-character scopes are skipped, not passed.
+Independent public IPv4 frontend/backend identities, ready database and exact
+publisher-rewritten index/main bytes match69cc97d9/Alpha1.76.0. Receipt retains
+the previous575 candidate's terminal failure. No final acceptance yet; live
+completion and a post-terminal identity/readiness recheck remain required.
+Later staged changes stay unpublished and the full roadmap goal remains active.
+
+**October6 Alpha1.76 live-QA setup correction:** Run37403492653 ended failure,
+not acceptance. Both deploys and earlier checks passed;7 live tests passed but
+the loot/persistence case and retry refused a full QA bag with no safe vendor
+spare. Keep that sale policy: add an explicitly selected ordinary town/stash
+route to preserve one unequipped gear item instead. Require exact storage,
+previous stash/Gold/equipment/other items and fresh-login retained gear plus the
+new pickup. No protected sale, quest-item move, account grant or database edit.
+43 focused tests pass0.862s; lint/whitespace pass. Native corrected CI/live QA
+remain required, including town recovery skipped after the earlier failure.
+
+**October6 Alpha1.76 deployed, final acceptance pending:** Exact57572325
+CI37403492653 passed hosted tests, predeploy/input checks and both deployments.
+Independent public IPv4 release/readiness plus publisher-transformed index/main
+bytes match Alpha1.76.0; login and cumulative notes are correct. Live job
+112083237466 is confirmed running at anonymous/persistent-character QA. Luna
+monitors it; no restart or acceptance claim. Later capacity diagnostic87cda8c7
+and runner boundary9e3bb9c8 changes stay isolated/unpublished. See
+[current public checks](docs/plans/2026-10-06-release1-76-public-checks.json).
+
 **October6 Alpha1.76 CI correction:** Candidateca5de951 run37402624753 failed
 the ground custody/reopen test's stale six-index count. The new ordered account
 fence creates seven including Mongo's primary index. The test now requires each

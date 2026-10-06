@@ -60,6 +60,14 @@ func run(ctx context.Context, args []string, output io.Writer) error {
 	} else if *mailTimeout != 0 || *mailMinInterval != 0 {
 		return fmt.Errorf("mail settings require explicit postmark-alerts opt-in")
 	}
+	// Deployment checks the exact service command and environment before
+	// replacing the API. Construction is local only: no probe or email request.
+	if mode := os.Getenv("EIDOLON_MONITOR_CHECK_CONFIG"); mode != "" {
+		if mode != "true" {
+			return fmt.Errorf("invalid monitor configuration-check mode")
+		}
+		return nil
+	}
 	return operations.MonitorWithNotifier(ctx, probe, detector, *interval, output, notifier)
 }
 

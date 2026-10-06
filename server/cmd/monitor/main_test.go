@@ -29,6 +29,30 @@ func arguments(endpoint string) []string {
 	return []string{"-health-url", endpoint, "-request-timeout", "100ms", "-poll-interval", "1s", "-failure-threshold", "2", "-recovery-threshold", "2", "-notice-cooldown", "1m"}
 }
 
+func TestMonitorCommandDeploymentValidationDoesNotProbeOrSend(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { requests.Add(1) }))
+	defer server.Close()
+	t.Setenv("EIDOLON_MONITOR_CHECK_CONFIG", "true")
+	t.Setenv("POSTMARK_SERVER_TOKEN", "synthetic-operator-token")
+	t.Setenv("POSTMARK_FROM_EMAIL", "monitor@example.invalid")
+	t.Setenv("POSTMARK_MESSAGE_STREAM", "outbound")
+	t.Setenv("ADMIN_NOTIFICATION_EMAILS", "owner@example.invalid")
+	args := append(arguments(server.URL+"/healthz"), "-postmark-alerts", "-mail-timeout", "1s", "-mail-min-interval", "1m")
+	var output strings.Builder
+	if err := run(context.Background(), args, &output); err != nil || requests.Load() != 0 || output.Len() != 0 {
+		t.Fatalf("validation should be local/silent: %v requests=%d", err, requests.Load())
+	}
+	t.Setenv("POSTMARK_SERVER_TOKEN", "")
+	if err := run(context.Background(), args, &output); err == nil {
+		t.Fatal("validation bypassed notifier configuration")
+	}
+	t.Setenv("EIDOLON_MONITOR_CHECK_CONFIG", "synthetic-private-invalid")
+	if err := run(context.Background(), arguments(server.URL+"/healthz"), &output); err == nil || strings.Contains(err.Error(), "synthetic-private") {
+		t.Fatal("invalid validation mode was accepted or leaked", err)
+	}
+}
+
 func TestMonitorCommandActualOutageRecovery(t *testing.T) {
 	var requests atomic.Int32
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {

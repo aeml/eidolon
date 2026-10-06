@@ -420,8 +420,18 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.76.0`, prepared in an isolated worktree and
-  not deployed. Selected and first-character queries retain trusted account
+- Current source version: `Alpha 1.78.0`, prepared in an isolated worktree and
+  not deployed. Audited service diagnostics, aggregate save/wallet/frame signals
+  and an independent opt-in outage monitor are prepared. Owner-approved settings
+  use existing hosting and admin Postmark recipients; one test email reached its
+  inbox. Monitoring installation and own CI/public acceptance remain required.
+  See [current operations evidence](docs/plans/2026-10-06-release1-78-current-operations-checks.json).
+  Predecessor1.77 is accepted live at4ed7a3dd with CI37507575802 and independently
+  checked public identities/readiness and publisher-transformed runtime bytes.
+  The owner's named certificate-renewal simulation passed for both hosts
+  on October6. Public IPv6 remains deferred/unverified.
+  See [current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
+  Inherited selected and first-character queries retain trusted account
   identity; journal lock shards, compact ground/casino checkpoints and paged
   market/slot startup preserve existing receipts and balances. Schema24/25
   follow the account-bound marker23; old writers refuse the newer schema.
@@ -429,9 +439,10 @@ Notes:
   without repeatedly cloning owned items and receipts; full saves stay intact.
   Focused race, actual Mongo growth/recovery, native session and whole-account
   upgrade checks pass. See [current persistence evidence](docs/plans/2026-10-06-release1-76-current-persistence-checks.json).
-  Predecessor1.75 is accepted live at56d9fda9 with CI37399132936 and exact public
-  checks. Own1.76 fresh remote integration, CI/deployment and public acceptance
-  remain. Capacity is not certified.
+  Predecessor1.76 is accepted live at69cc97d9 with CI37406964398 and exact public
+  checks, including persistent-character and town recovery/Well Rested QA.
+  Skipped art/full-character scopes are not passes. Own1.78 fresh remote
+  integration, CI/deployment and public acceptance remain. Capacity is not certified.
   The1.75 private account-help export/removal
   requests, separate reversible staff export approval and nineteen bounded
   current-owner sections with manual proof/Save/paging are included. Coverage

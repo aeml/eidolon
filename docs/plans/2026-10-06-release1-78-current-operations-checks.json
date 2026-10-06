@@ -2,7 +2,30 @@
   "schema": 1,
   "milestone": "1.78 observability and operating budgets",
   "sourceCommit": "3004c125105082ae6b36192b4268239a6b9b1a7a",
-  "status": "isolated-current-integration-verified-not-published-or-complete",
+  "status": "owner-approved-monitor-prepared-for-ordered1-78-ci-and-deployment",
+  "currentReleasePreparation": {
+    "base": "Accepted1.77 source4ed7a3dd and its independent public-acceptance checkpoint18662ddf merged normally atbff7cc77. Concurrent master is preserved; refresh again before pushing.",
+    "identity": "Package/lock, login, release manifest, backend, Docker/Compose, deploy workflow and isolated QA defaults agree on Alpha1.78.0. Cumulative patch notes preserve1.77 and all older entries.",
+    "authorization": "Owner explicitly selected Approve these settings and enable ongoing alerts: existing ADMIN_NOTIFICATION_EMAILS responsible, current self-hosting/Postmark with no new paid service,30s probes/3 failures/2 recoveries/30m reminders. Finite5s health and10s mail timeouts plus1m global mail-attempt spacing bound delivery; no pressure/storage budgets selected.",
+    "service": "Prepared separate non-root/read-only/capability-free Docker monitor with unless-stopped restart, Linux loopback API probe, no release pin and journald tageidolon-monitor. Exact configuration/no-network validation precedes live API replacement; monitor start/update follows successful API readiness. Existing private production env now opts in; no monitor is running yet.",
+    "retentionAndCoverage": "Host has a persistent /var/log/journal and Docker supports journald. Incident output follows existing host policy across container replacement; no host policy, player audit/provider retention or paid infrastructure change. No days guarantee or off-machine/public frontend/DNS/TLS/whole-host coverage claim.",
+    "verification": "Merged focused health/admin/save/frame race scope PASS2.037s. Full operations/monitor race packages PASS6.522s/7.029s. Added exact no-network configuration test and real deployment-script opt-in/build/check/start failure/order tests; focused command/deployment race PASS1.025s/7.582s. Client/protocol/version/runtime-publisher400 tests/five suites PASS5.497s; focused lint, shell syntax, Compose validation and whitespace checks pass.",
+    "fixtureCorrection": "Initial shell/Compose validation used an incorrect relative shell path and lacked the Compose env_file fixture; no tests ran there. Corrected working-directory path and added an ignored symlink to the public example env, then real validation passes. No credentials copied and no assertions weakened.",
+    "nativeMonitorImage": "Actual monitor target builds successfully. Owned proof image sha256:b47a49c0dbe2b461f0423c7f59bff6f6110332f147fcf67ef3e1ad0b1433a321 runs as65532 with host networking/read-only/cap-drop/no-new-privileges and journald. A one-shot config check with synthetic mail settings exits0 silently without probes/email; its --rm container is removed. No real additional mail sent.",
+    "limits": "CI/deployment, live signal/rendered-byte identity and actual monitor running/restart/log configuration remain required. Earlier entries below retain historical preparation evidence; do not treat historical pending1.75/1.76/1.77 statements as current release status. No complete1.99/capacity/art/campaign claim."
+  },
+  "ownerApprovedMailTest": {
+    "date": "2026-10-06",
+    "authorization": "Owner approved sending a test email. Exactly one explicitly labelled administrator test was sent using the existing configured Postmark sender, stream and ADMIN_NOTIFICATION_EMAILS; no ongoing alerts or new service installation were enabled.",
+    "method": "One temporary Node script made one verified HTTPS POST to Postmark /email, with a ten-second deadline, redirects refused, no retry, tracking disabled and a bounded response. Configuration values, credentials, recipient addresses and raw provider responses were not printed. This is a manual delivery test, not proof of the installed monitor's complete event path.",
+    "scriptSha256": "56b3e1ad93df975dcc9c26d3f8b0afaa48fc858c3fd89ce3ed6e1e71f711921e",
+    "result": "provider_accepted",
+    "messageId": "a6602d46-8fbb-4cf0-94e9-6028c8a61503",
+    "recipientCount": 1,
+    "subject": "Eidolon: TEST administrator notification (owner-approved)",
+    "acceptanceScope": "Postmark HTTP200/ErrorCode0 with a valid MessageID. Owner subsequently confirmed: test email worked. This establishes provider acceptance and actual inbox receipt for this single labelled test; do not resend automatically or claim ongoing monitoring readiness.",
+    "privateEnvironmentPermissions": "The owner-owned regular production server .env was mode775. Restricted that exact file to mode600 and verified owner/type/mode. Metadata-only change; no content edit, service restart, provider-setting change or retention change. The owner can reverse the permission change if required."
+  },
   "inheritedVersion": "Alpha1.76.0 source candidate; no1.77 or1.78 release identity claimed",
   "predecessorCandidate": "56d9fda91a964890d8777bbce91a1c67869fd9c3",
   "changes": [
@@ -20,13 +43,13 @@
     "releaseCI": "Exact1.75 candidate run37399132936 has passed dependency audit/lint and remains in progress. Prior37398329976 passed ordinary Go coverage before cancellation; its race/browser jobs were cancelled, not accepted as passes. Neither run establishes1.78 release acceptance."
   },
   "operatorDecisions": {
-    "notificationDelivery": "Owner asked whether existing ADMIN_NOTIFICATION_EMAILS may receive exactly one labelled Postmark test alert. No response or actual mail yet; production alerts remain disabled. Local TLS adapter proof is not provider/inbox delivery.",
-    "budget": "Owner asked whether to preserve current self-hosting with no new paid service, or supply a monthly operating budget. No paid infrastructure, SLA or pressure thresholds inferred or enabled.",
-    "retention": "Existing player/provider retention remains unchanged. Process counters and monitor debounce state are RAM-only; service/output retention and off-machine coverage still require operator configuration."
+    "notificationDelivery": "Owner approved the separate ongoing-alert proposal and existing ADMIN_NOTIFICATION_EMAILS ownership after confirming the one labelled test's inbox receipt. Production flag is opted in; actual independent monitor setup occurs with ordered1.78 deployment, not already claimed live.",
+    "budget": "Owner approved current self-hosting/Postmark and no new paid service. No dollar ceiling, SLA, staffing guarantee or pressure/storage thresholds inferred.",
+    "retention": "Existing player/provider retention remains unchanged. Process counters and monitor debounce state are RAM-only; incidents use current host journal policy, without days guarantee. Off-machine coverage remains later work."
   },
   "remaining": [
-    "Ordered1.75/1.76/1.77 release acceptance, then own1.78 version/cumulative patch notes, fresh master integration, CI/deployment and exact public checks.",
-    "Agreed alert ownership/budget, explicit monitor service/threshold/output configuration and provider/inbox delivery evidence before claiming operating readiness.",
+    "Ordered1.75/1.76/1.77 acceptance is complete. Own1.78 version/cumulative notes are prepared; require fresh master integration, CI/deployment and exact public checks.",
+    "Owner-approved service/settings/budget and single provider/inbox delivery are verified. Require actual installed monitor running/restart/log configuration evidence; do not disrupt production or fabricate an outage for another real email.",
     "Representative multiplayer capacity and final security/restore/support/release qualification remain later roadmap work. Full1.99 objective is active."
   ]
 }

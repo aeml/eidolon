@@ -17,7 +17,7 @@ fi
 if [ -z "${EIDOLON_BUILD_COMMIT:-}" ] && [ -n "${REPO_ROOT:-}" ]; then
   EIDOLON_BUILD_COMMIT="$(git -C "${REPO_ROOT}" rev-parse HEAD)"
 fi
-EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.76.0}"
+EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.78.0}"
 export EIDOLON_BUILD_COMMIT EIDOLON_BUILD_VERSION
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -38,6 +38,11 @@ fi
 set -a
 source .env
 set +a
+
+case "${EIDOLON_MONITOR_ENABLED:-false}" in
+  true|false) ;;
+  *) echo "EIDOLON_MONITOR_ENABLED must be true or false." >&2; exit 1 ;;
+esac
 
 required_vars=(
   MONGO_INITDB_ROOT_USERNAME
@@ -82,6 +87,13 @@ bash ./deploy/pin_previous_image.sh
 
 echo "Building api image..."
 docker compose build api
+
+if [ "${EIDOLON_MONITOR_ENABLED:-false}" = true ]; then
+  echo "Building and locally validating the approved independent monitor..."
+  docker compose --profile operations build monitor
+  docker compose --profile operations run --rm --no-deps -T \
+    -e EIDOLON_MONITOR_CHECK_CONFIG=true monitor
+fi
 
 # Leave an existing database container and the live API untouched during preflight.
 # On a fresh installation this starts only Mongo and waits for its health check.
@@ -179,5 +191,10 @@ for attempt in $(seq 1 30); do
   sleep 2
 done
 echo "Verified server health: ${health_json}"
+
+if [ "${EIDOLON_MONITOR_ENABLED:-false}" = true ]; then
+  echo "Starting the approved independent monitor..."
+  docker compose --profile operations up -d --no-deps monitor
+fi
 
 echo "Deployment complete. Server release identity and database readiness verified."

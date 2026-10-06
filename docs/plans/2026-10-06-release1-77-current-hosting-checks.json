@@ -2,8 +2,53 @@
   "schema": 1,
   "milestone": "1.77 hosting and network reliability",
   "baseCommit": "7ebf3a7f",
-  "status": "isolated-preparation-not-published-or-complete",
-  "inheritedSourceVersion": "Alpha1.76.0 unpublished candidate",
+  "status": "ordered-release-ci-and-public-ipv4-accepted",
+  "publicAcceptance": {
+    "checkedAt": "2026-10-06T18:40:53Z",
+    "sourceCommit": "4ed7a3dd833c1aa366e192c81954bbb7fbe91458",
+    "run": "https://github.com/aeml/eidolon/actions/runs/37507575802",
+    "ci": "Luna reports terminal success for the exact source: all jobs passed, including both deployments, live anonymous/persistent-character QA and live town recovery/Well Rested QA.",
+    "skippedScopes": "Predeploy deterministic High/Low animation gallery, Well Rested rendering/GPU lifecycle QA, disposable full-character gameplay and live four-class/remote-animation QA were explicitly skipped; no passes claimed for them.",
+    "independentPublicChecks": "Fresh bounded verified IPv4 HTTPS requests return frontend release.json and backend healthz at the exact source/Alpha 1.77.0, statusok/database ready. index.html and src/main.js match local source after the actual publisher's release-query rewriting. No production account creation, admin mutation or mail resend.",
+    "limits": "Public IPv6 remains owner-deferred/unverified. No capacity, complete campaign, full art, ongoing alert installation or complete1.99 claim. Entries below preserve historical preparation state, not current publication status."
+  },
+  "ownerRenewalAcceptance": {
+    "reportedAt": "2026-10-06T17:52:01Z",
+    "commands": "Owner ran sudo nginx -t followed by sudo certbot renew --dry-run --cert-name play.eidolonrealms.com.",
+    "nginx": "Configuration syntax/test successful. Existing protocol-options-redefined warnings remain non-fatal and unchanged; the agent did not edit shared configuration or reload a service.",
+    "renewal": "Named play.eidolonrealms.com lineage simulated renewal for both play.eidolonrealms.com and server.eidolonrealms.com. Certbot explicitly reports all simulated renewals succeeded and the named fullchain.pem success. This closes the missing actual challenge-test gate; it is not issuance of a new production certificate or a guarantee of future renewals.",
+    "notesVerification": "Updated owner-proof/notes keep all synchronized identities and cumulative history: VersionPresentation/PagesRuntimeVersioning PASS369 tests/two suites3.656s; JSON and whitespace checks pass. No changed runtime or dependency versions.",
+    "addressFamilyScope": "Existing owner-deferred IPv6/DDNS work remains deferred; release notes claim observed public IPv4 only, not dual-stack support. No DNS change. Public address-family/launch qualification remains a later explicit gate.",
+    "next": "Fresh master still69cc97d9 and already included. Record owner proof, keep version/notes synchronized, commit/push ordered1.77, delegate CI/deployment to Luna, then verify exact public identities/readiness and required live checks. One labelled administrator test email is now separately owner-approved for1.78; no ongoing monitor, threshold, paid-service or new hosting authorization inferred."
+  },
+  "orderedReleaseReview": {
+    "checkedAt": "2026-10-06T08:33:43Z",
+    "candidate": "fbd483717a97e82c0e4084785305cde787f521c4",
+    "freshMaster": "69cc97d9580e1a9e0e5e576f1a475a50b43c6639",
+    "integration": "Fresh fetch succeeds; master is already an ancestor of the clean1.77 candidate. No pull/merge is needed now. Recheck immediately before any release push; preserve concurrent website changes if master advances.",
+    "outgoingReview": "Inspect all19 outgoing files: TLS installer guards and Linux instructions, pure validators/real isolated proxy test, accepted1.76 and staged1.77 receipts/history, synchronized1.77 identities/defaults and cumulative patch notes. No outgoing website, assets, src, game or database changes; main.go only changes its default version. Later1.78–1.88 prepared features and fence performance changes are not part of this ordered1.77 candidate. No dependency, schema, currency, retention, account or deployed Nginx mutation.",
+    "liveReadOnly": "Bounded verified HTTPS/IPv4 frontend release and backend health independently still match69cc97d9/Alpha1.76.0, statusok/database ready. No login, player data, provider mail or service action. These are predecessor health checks, not1.77 deployment/renewal acceptance.",
+    "nextAction": "Owner's named certificate-renewal dry-run result is still missing. Existing DNS/IPv6 deferral stays explicit; no new dual-stack promise. Stop the ordered release push until the material owner verification arrives rather than skip its gate, publish later staged versions or repeat unchanged CI. Operations hosting/test-alert choice is also requested for the following1.78 milestone. Reuse exact unchanged focused receipts; ordinary mandatory CI/Luna monitoring and post-deploy exact public checks remain required after a legitimate push."
+  },
+  "nativeProxyFollowUp": {
+    "check": "TestCanonicalNginxProxyPreservesHTTPAndWebsocketContracts executes the committed canonical backend block in a real foreground single-process nginx. Only temporary loopback listen/upstream addresses are substituted; no installed configuration or system service is loaded.",
+    "result": "Native proxy plus all27 pure TLS guards and six actual WebSocket Origin handshake cases pass with race detection: eidolon-server1.306s. HTTP request path/encoded release query, canonical Host, HTTP1.1 and forwarding headers are exact. Production upgrader rejects a foreign Origin with403 and accepts canonical play Origin;64KiB binary echo and normal1000 close handshake remain intact through actual nginx. The owned process is terminated and joined; no live service or player data changed.",
+    "timerObservation": "Read-only systemd inspection again shows certbot.timer active/waiting, last trigger2026-10-06T00:20:57UTC, next18:10:08UTC, serviceResultsuccess/exit0. Journal entries show invocation completion, not an actual accepted certificate challenge. Existing owner dry-run request remains pending; no privileged action ran.",
+    "limits": "This isolated HTTP backend fixture does not prove TLS renewal, frontend Pages upstream, long idle sessions, public IPv6 or100-player capacity. Native test explicitly skips if nginx is absent; its actual local run did not skip. Own1.77 publication/acceptance remains open."
+  },
+  "inheritedSourceVersion": "Alpha1.76.0 accepted predecessor; own1.77 unpublished",
+  "preparedRelease": {
+    "version": "Alpha1.77.0 prepared only; live remains accepted1.76",
+    "changes": "Synchronize package/lockfile, login, manifest, backend, Docker/Compose, deployment/workflow and isolated-QA defaults. Add cumulative1.77 hosting notes while retaining all prior notes. Notes explicitly avoid renewal, public IPv6, long-idle or capacity claims and preserve unchanged schema25, data, retention and economy.",
+    "verification": "VersionPresentation and PagesRuntimeVersioning:369 tests/two suites PASS3.916s. Focused lint, shell syntax and git diff --check pass. Initial Jest invocation could not find dependencies and ran no tests; reuse unchanged predecessor dependencies through an ignored local symlink, then the cited real suites pass. No dependency versions changed.",
+    "publication": "Not pushed yet. Owner named renewal simulation now succeeds; existing IPv6 deferral/unverified scope is explicit. Complete outgoing review and fresh master ancestry are confirmed. Ordinary CI/deployment and exact public acceptance remain required."
+  },
+  "currentIntegrationFollowUp": {
+    "master": "69cc97d9580e1a9e0e5e576f1a475a50b43c6639 merged normally, followed by the accepted1.76 evidence checkpoint. Preserve hosting preparation and corrected persistent QA. No own1.77 release claim.",
+    "documentation": "Canonical fresh certificate request/dry-run now names only play.eidolonrealms.com lineage, with existing-name inspection rather than renaming. Document explicit Compose project/port/private env/Mongo/log-journal separation, no production provider/account copying, unchanged strict browser origins and unless-stopped/manual-stop restart boundaries.",
+    "publicIPv4Websocket": "One anonymous bounded HTTP1.1 upgrade to https://server.eidolonrealms.com/ws with canonical play Origin returned101 and received5748 bytes before deliberate3-second curl deadline closed it. A second bounded foreign.example.invalid Origin upgrade correctly returned403. No authentication, account creation or game command. Exit28 on the accepted socket is the imposed open-socket observation deadline, not an HTTP failure. Does not prove long idle sessions, authenticated gameplay, IPv6 or1.77 acceptance.",
+    "publicReadiness": "Independent post-terminal bounded IPv4 frontend/backend and exact publisher-transformed index/main bytes match69cc97d9580e1a9e0e5e576f1a475a50b43c6639, Alpha1.76.0, statusok/databaseready at2026-10-06T03:40:47.706Z. Run37406964398 completed successfully including native persistent-character and town recovery/Well Rested QA. Explicit art/full-character skipped scopes are recorded in the accepted1.76 public receipt; not1.77 acceptance."
+  },
   "existingTargetFollowUp": {
     "change": "Fresh custom-host setup now refuses existing configuration/enabled targets, including dangling symlinks, before filesystem/certificate/reload actions. Missing Certbot is checked before HTTP bootstrap writes. Obtain and dry-run commands explicitly scope the supplied hostname's certificate; interrupted setup requires manual inspection, not deletion or bypassing the guard.",
     "verification": "Race TestTLSSetup passes1.162s:18 argument cases,8 existing-target cases plus empty fresh targets. Existing file bytes, directory entries, link destinations and unrelated sentinel remain unchanged; no second target is created. Tests source only pure validators and assert target/dependency guards precede effects. Shell syntax and whitespace checks pass; no actual installer action.",
@@ -22,8 +67,8 @@
     "addressFamilies": "Backend DNS followseserver.ddnsfree.com toIPv447.203.222.61 and AAAA2600:1006:b0bd:84e5:60d1:a304:d809:beff. This host has no defaultIPv6 route; its bounded publicIPv6 request cannot connect. That observation does not establish external-client reachability or prove the AAAA is stale. Owner previously deferred DDNS/IPv6 changes; settings remain untouched."
   },
   "remaining": [
-    "Ordered1.75/1.76 exact-source release acceptance, then own1.77 labels/notes/CI/live gate; not a published milestone.",
-    "Owner-approved actual certificate challenge/renewal evidence and supported public-address-family decision before launch. Do not infer challenge success from timer success or externalIPv6 failure from a host with noIPv6 route.",
+    "1.75 and corrected1.76 exact-source live acceptance are complete. Own1.77 labels/notes/CI/live gate remain. This is not a published1.77 milestone.",
+    "Actual owner-approved named renewal simulation passes. Supported public address-family launch decision remains later; current IPv6 deferral is explicit. Do not infer dual-stack reachability or a future guarantee from this simulation.",
     "Keep restart/environment-separation scopes explicit; no disruptive reboot, shared nginx reload, production restore, external DNS/provider mutation or claimed100-player capacity. Full roadmap remains active."
   ]
 }
