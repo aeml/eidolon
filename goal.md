@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.76 CI correction:** Candidateca5de951 run37402624753 failed
+the ground custody/reopen test's stale six-index count. The new ordered account
+fence creates seven including Mongo's primary index. The test now requires each
+named custody/recovery index and uniqueness for all four fences, while retaining
+the blanket TTL refusal. Production code and custody guards are unchanged.
+The exact failed CI database scope passes11.432s with race detection and actual
+owned disposable Mongo7. Temporary synthetic storage was removed; production and
+the existing nightly soak were untouched. Fresh CI/deployment/public acceptance
+remain required. All owner analytics settings, including reset-on-new-activity,
+are recorded and unchanged; no further dashboard values are needed.
+
 **October6 Alpha1.75 accepted live:** Exact56d9fda9 CI37399132936 completed
 successfully; all ten jobs passed, including both deploys and live persistent
 character/town recovery/Well Rested QA. Independent public IPv4 identities and

@@ -7,6 +7,15 @@
   "inheritedVersion": "Alpha 1.76.0 source candidate; not yet deployed",
   "acceptedPredecessor": {"commit": "56d9fda91a964890d8777bbce91a1c67869fd9c3", "ci": 37399132936, "conclusion": "success", "publicEvidence": "2026-10-06-release1-75-public-checks.json"},
   "schemaVersion": 25,
+  "ciCorrection": {
+    "failedCandidate": "ca5de951dffac6a94b0bbcc67ac2d079209285c7",
+    "run": 37402624753,
+    "job": 112072968221,
+    "cause": "Ground custody/reopen integration still expected six Mongo indexes; the new unique account ordinal index makes seven including _id_. Actual index creation succeeded. No production runtime or custody failure established by this assertion.",
+    "change": "Replace obsolete total count with explicit required index names and uniqueness assertions for all four custody fences. Continue refusing every TTL index. Production index definitions and replay/custody guards unchanged.",
+    "verification": "Exact failed CI database scope, with race detector and actual owned disposable loopback Mongo7, passed11.432s. Includes ground custody/reopen, ordered checkpoint, character repository and persistence cases. New source still requires fresh CI and live acceptance.",
+    "cleanup": "Only owned synthetic tmpfs Mongo container2f76e49c2b882175f7c6279220730a0483cc018dd6a360592572dd2c1f90d272 removed after terminal test completion. Production and nightly-soak containers untouched."
+  },
   "frameReadFollowUp": {
     "selection": "Bring the measured bounded frame context into the1.76 performance release from isolated1.79 commit15d0b5b0, without importing workload drivers, operations features or historical capacity claims.",
     "change": "Under the unchanged world-before-actor locks, live replication reads only detached position, scene and normalized owner Resonance progress. It no longer clones bags, stash, gear or durable operation receipts for this frame context. Complete account-bound save snapshots remain unchanged, as do dungeon room progress/summary delivery and owner privacy.",
