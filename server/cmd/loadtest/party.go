@@ -517,15 +517,10 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			}
 		}
 	}
-	if p.target.ID == "" {
-		m.activity.noTarget++
-		if targetLeader {
-			move(p.anchorX, p.anchorZ)
-		}
-		return
-	}
-	target, skill, distance := p.target, "", math.Hypot(me.X-p.target.X, me.Z-p.target.Z)
-	if index%4 == 1 {
+	target, skill := p.target, ""
+	// Recovery does not require a live enemy. A heal still on cooldown must
+	// not suppress the Cleric's available offensive skill or target.
+	if index%4 == 1 && !now.Before(m.readyAt["Healing Light"]) {
 		for _, unlocked := range me.UnlockedSkills {
 			if unlocked != "Healing Light" {
 				continue
@@ -539,6 +534,14 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			}
 		}
 	}
+	if target.ID == "" {
+		m.activity.noTarget++
+		if targetLeader {
+			move(p.anchorX, p.anchorZ)
+		}
+		return
+	}
+	distance := math.Hypot(me.X-target.X, me.Z-target.Z)
 	if skill == "" {
 		preferred := [4]string{"Charge", "Radiant Strike", "Piercing Throw", "Fireball"}[index%4]
 		for _, unlocked := range me.UnlockedSkills {

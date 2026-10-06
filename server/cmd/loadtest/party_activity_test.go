@@ -108,3 +108,63 @@ func TestPartyCombatUsesOnlyAdvertisedBuildSkillsAndClericStrikeRange(t *testing
 		t.Fatal("cleric failed to approach or waiting granted impact")
 	}
 }
+
+func TestPartyClericHealsWithoutEnemyAndRespectsHealingCooldown(t *testing.T) {
+	for _, scenario := range []string{"no-enemy", "cooldown-no-enemy", "cooldown-enemy", "locked-heal", "dead-ally", "other-scene", "out-of-range"} {
+		t.Run(scenario, func(t *testing.T) {
+			p, _ := partyFixture()
+			now := time.Unix(100, 0)
+			for index := range p.members {
+				p.receive(index, partyRoster(p, 4), now)
+			}
+			p.members[0].state.Health = 50
+			me := p.members[1].state
+			me.UnlockedSkills = []string{"Radiant Strike", "Healing Light"}
+			wantKind, wantSkill, wantTarget := "", "", ""
+			switch scenario {
+			case "no-enemy":
+				wantKind, wantSkill, wantTarget = "ability", "Healing Light", p.members[0].id
+			case "cooldown-no-enemy", "cooldown-enemy":
+				p.members[1].readyAt["Healing Light"] = now.Add(time.Second)
+				if scenario == "cooldown-enemy" {
+					p.target = Entity{ID: "observed-enemy", Type: "Enemy", Health: 100, X: 2}
+					wantKind, wantSkill, wantTarget = "ability", "Radiant Strike", p.target.ID
+				}
+			case "locked-heal":
+				me.UnlockedSkills = []string{"Radiant Strike"}
+			case "dead-ally":
+				p.members[0].state.Health = 0
+			case "other-scene":
+				p.members[0].state.InstanceID = "different-dungeon"
+			case "out-of-range":
+				// Stay within the existing leader-regroup distance, but move
+				// the injured Rogue beyond the healing range.
+				p.members[0].state.Health = 100
+				p.members[2].state.Health, p.members[2].state.X = 50, 15
+			}
+			requests := 0
+			request := func(kind string, payload interface{}) error {
+				requests++
+				if kind != wantKind || kind != "ability" {
+					t.Fatalf("unexpected request %q; wanted %q", kind, wantKind)
+				}
+				ability := payload.(map[string]interface{})
+				if ability["skillName"] != wantSkill || ability["targetId"] != wantTarget {
+					t.Fatalf("ability=%v; wanted %s on %s", ability, wantSkill, wantTarget)
+				}
+				return nil
+			}
+			move := func(float64, float64) { t.Fatal("Cleric moved instead of healing, attacking or waiting") }
+			p.step(1, me, nil, now, time.Second, request, move)
+			wantRequests := 0
+			if wantKind != "" {
+				wantRequests = 1
+				p.step(1, me, nil, now.Add(time.Millisecond), time.Second, request, move)
+			}
+			counts := p.counts()
+			if requests != wantRequests || counts.failed || counts.casts != 0 || counts.heals != 0 || counts.damage != 0 || counts.minImpacts != 0 {
+				t.Fatalf("requests=%d want=%d; submission/wait manufactured evidence: %+v", requests, wantRequests, counts)
+			}
+		})
+	}
+}

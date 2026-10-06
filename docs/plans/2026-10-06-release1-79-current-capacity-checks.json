@@ -3,6 +3,12 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "ordering-fix-100-client-comparison-terminal-fail-blackjack-and-every-member-impact-fixture-removed",
+  "betweenFightHealingFidelity": {
+    "confirmedDefect": "Focused controller regression fails before repair: a formed Cleric with unlocked ready Healing Light ignores an injured nearby own-party ally when no enemy exists. A healing cooldown also suppresses the advertised ready Radiant Strike and falls back to an ordinary attack.",
+    "repair": "Select an eligible ready heal before the empty-enemy wait. A heal on cooldown leaves the offensive target/skill available. Calculate range from the chosen target. Existing party formation/regroup, pending-cast, advertised-unlock, same-scene/living-ally,14-unit healing range, path, target ownership and actual impact gates remain unchanged.",
+    "verification": "Focused party/combined/dungeon/raid/event driver race scopes PASS3.553s. New cases cover no-enemy healing, cooldown with/without enemy, locked healing, dead ally, different scene, out-of-range ally, no repeat while pending and no manufactured cast/heal/damage credit. Gofmt and whitespace checks pass.",
+    "limits": "Controller fidelity only, not measured capacity or balance. Historical native failures remain failures; no production stat/gear/build/spawn, anchor/radius, action timeout or acceptance changes. Corrected native100 comparison is planned separately, not yet claimed."
+  },
   "worldUpdateWorkerBudget": {
     "confirmedDefect": "World.Update creates runtime.NumCPU workers per frame rather than respecting the runtime CPU budget. A real damage-callback regression exceeds both one- and two-worker GOMAXPROCS limits before repair. It releases and joins only its owned update; no population run or production action.",
     "repair": "One bounded worker-count change: min(runtime.GOMAXPROCS(0),len(allEntities)). Read the current runtime/container budget without changing it; empty entity batches launch no workers but preserve global frame bookkeeping. Snapshot contents, queue, deferred work,33ms loop/dt, entity timers, targets, gameplay and save gates are unchanged.",

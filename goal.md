@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 between-fight Cleric fidelity:** Two focused controller regressions
+fail before repair: an injured own ally is ignored without an enemy, and a
+healing cooldown suppresses the ready advertised Radiant Strike. Select a ready
+heal before the empty-enemy wait, retaining normal party/range/scene/path and
+pending-cast guards. Focused party/combined/dungeon/raid/event driver race scopes
+pass3.553s; waiting and submissions still grant no impact/cast credit. No stats,
+gear, spawns, target claims/radius/anchor, deadlines or acceptance changes.
+Historical native failures remain; a corrected native100 comparison is planned
+separately, not yet run or accepted. Full release goal remains active.
+
 **October6 runtime CPU-budget correction:** A targeted real damage-callback
 regression proves World.Update exceeds both one/two-worker runtime budgets.
 Worker count now uses min(current GOMAXPROCS, snapshot length); an empty entity
