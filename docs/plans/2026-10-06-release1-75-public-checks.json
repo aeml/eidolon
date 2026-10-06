@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "milestone": "Alpha1.75.0 publication",
+  "status": "accepted-live-approved-1.75-scope-not-full-roadmap-completion",
+  "checkedAt": "2026-10-06T01:59:37.745Z",
+  "commit": "56d9fda91a964890d8777bbce91a1c67869fd9c3",
+  "version": "Alpha 1.75.0",
+  "ci": {
+    "run": 37399132936,
+    "status": "completed",
+    "conclusion": "success",
+    "terminalLiveJobCompletedAt": "2026-10-06T02:05:07Z",
+    "observation": "Root independently confirms exact-source terminal success and all ten jobs successful, including all five main test jobs, predeploy character QA, production QA input validation, both deployments and live anonymous/persistent-character plus town recovery/Well Rested QA. Luna also reports terminal success.",
+    "skippedScopes": ["Predeploy deterministic High/Low animation gallery", "Predeploy Well Rested rendering/GPU lifecycle QA", "Predeploy disposable full-character gameplay", "Live four-class/remote-animation QA"]
+  },
+  "public": {
+    "frontendExactIdentity": true,
+    "backendExactIdentity": true,
+    "backendStatus": "ok",
+    "database": "ready",
+    "postTerminalIdentityReadinessRecheck": true,
+    "runtime": [
+      {"path": "index.html", "sha256": "36fb6dceae543148d9c1d9535af351086617a26fb45c2383dcc919fb59beb11f"},
+      {"path": "src/ui/OwnerExportDownload.js", "sha256": "9279d54a6d0c447b3d5aa2d479b7e04e4734650b23c220a783a47c70792a3cbc"},
+      {"path": "src/ui/ReportUI.js", "sha256": "85df98ed6e413353f9f93e35629eb7db587f0aa4e01f9124384aa185a8f33af7"},
+      {"path": "src/ui/LoginModerationUI.js", "sha256": "9ea807095474f7dd68029b368c351e81040bd1c2318b4182cfda6b5c955e0708"},
+      {"path": "src/analytics/GoogleAnalytics.js", "sha256": "2f390d854989fb1476d3188025572289cdcad995c40b9b6e263bf00a47c79671"},
+      {"path": "src/core/RecoveryLinkBoot.js", "sha256": "c7198db4612e46812597c91c4d30b3d79001669f069d3b98b6ce7a0b8bf30993"},
+      {"path": "src/main.js", "sha256": "84e4b76bd99883f24ec63c844e5c8a624fb1880de879f8c010e51aba3454fc4f"}
+    ],
+    "verification": "Independent root IPv4 HTTPS GETs with no-cache,2s connection/5s total limits. Entire index and six runtime modules match exact source bytes transformed by the existing publisher's release-version rewriter. No production credentials/account/provider requests or raw logs queried."
+  },
+  "ownerPolicy": "Administrator-reviewed exports/removal requests, nineteen bounded current-owner sections, unchanged retention and no automatic deletion/physical erasure. Owner confirms Postmark45 days/not editable and GA4 event2months/user14months/history/forms/outbound/reset enabled; settings unchanged.",
+  "remaining": "1.76 may now be promoted after fresh remote integration and its own release gates. This acceptance covers the approved1.75 policy, not complete account archives, enabled erasure, provider automatic-event/inbox behavior, new GPU/model acceptance, physical-phone party testing, campaign pacing, IPv6/TLS renewal remediation or100-player capacity. Those remain separately scoped roadmap/release gates. No full-goal completion."
+}
