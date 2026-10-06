@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "milestone": "1.86 content/update pipeline",
+  "status": "read-only-content-gate-and-contributor-guidance-prepared-ordered-release-open",
+  "baseCommit": "1320cec622a643250a0a88833731acbcf605ed78 prepared1.85; inherited1.76 runtime identity",
+  "implementation": [
+    "Add one fixed local check:content entry for eleven existing generators: geography, locations, elevation, investigations, hunts, Dark Realm story, outcrops, population footprints, cosmetics, authored equipment and animation inventory. Fail on the first mismatch; do not regenerate during checking.",
+    "Cosmetic, authored-equipment and animation generators now separate explicit generation from --check; missing/stale outputs fail without writes. Reject unknown flags. Retain delivered model hash validation and existing output serialization.",
+    "npm installation prepares ignored locked vendor runtimes only; it no longer silently regenerates tracked cosmetic content. Client CI checks committed content after dependency installation and before lint.",
+    "Regenerate the existing animation documentation as the small representative content change: reflect all four delivered class rigs, per-actor Jump declarations, dressed Ilyra and current status composition. Required coverage labels and generated inventories are not passing test receipts.",
+    "Existing README documents canonical inputs, explicit regeneration, stable identities versus player-facing text, focused quest/item/visual checks, authoritative event/season rules and license provenance. Correct obsolete class-enablement instructions in README and the original class-base delivery notes; no new CMS, localization framework, dependencies or gameplay rules."
+  ],
+  "verification": {
+    "red": "Original cosmetic/equipment generators fail seven of eight new cases because --check still rewrites outputs and install preparation regenerates tracked cosmetics; the existing tampered-hash refusal passes. Initial aggregate check later fails on stale animation documentation after the other ten groups pass. Both failures precede repair rather than being counted as acceptance.",
+    "content": "Node24.18.0 aggregate PASS for all eleven groups; final repeat also PASS without generated changes. Inventory: five regions, four shared locations, eleven terrain forms/eight preserved landings, eight investigations/sixteen discoveries, eight hunts, twenty-four Dark Realm chapters/thirty-eight discoveries/four collection items, eighteen candidate outcrop polygons/139 JS parity vectors, 520 spawn exclusions/eight readings, cosmetic/season catalogues, four classes/thirty-six base item models/264 distinct verified asset hashes and fifty-two ability entries/fifty-eight actor declarations. These counts are inventory, not gameplay or visual acceptance.",
+    "client": "Node24.18.0 ten focused suites PASS135 distinct tests5.765s: GeneratedContentChecks, ToolingBaseline, AuthoredAssetCatalog, CosmeticVendor, ProceduralIcons, ActorAnimationManifest, ChronicleInvestigationContent, ChronicleHunts, DarkRealmChronicle and DeploymentCheckout. Final GeneratedContentChecks plus LocalFontAssets PASS13 tests1.375s, adding two distinct font/notice checks rather than counting reruns as new tests. New generator cases verify byte and mtime preservation, stale/missing/unknown-flag refusal, tampered hashes, install/CI separation and honest non-mutating animation inventory checks. Hash-only fixture bytes are not validated GLBs.",
+    "hygiene": "Focused ESLint and git diff --check PASS. Existing ignored dependencies/vendor reused with the declared Node24 executable, no dependency version change. Fresh origin/master fetch remains69cc97d9580e1a9e0e5e576f1a475a50b43c6639. All test processes terminate normally and owned mkdtemp fixtures are removed by tests. No server/Mongo/browser/provider/service or production mutation; no long campaign/soak rerun for this tooling/document patch."
+  },
+  "localNoticeInventory": [
+    "All four assets/archetypes class folders retain PROVENANCE.md and LICENSE-MAKEHUMAN-CC0.txt. Their declarations identify MPFB data revision437dd513888a92399d1d3200d2e80859fae55abc and class-specific MakeHuman system assets. Local notices distinguish asset CC0 from application GPL and do not separately relicense project-specific Blender additions; this is not an independent upstream rights audit.",
+    "assets/npcs/ilyra/README.md carries Wizard source/notice links and describes project-authored clothing, staff and texture work. Equipment delivery documents describe original geometry and inherited class rig provenance; do not infer a separate project license.",
+    "assets/fonts/SOURCE.txt and OFL.txt retain Cinzel source revision3dd78844021e948ceb633d1dcee3f7885561b5d9, author/copyright and SIL OFL1.1. Current font tests verify exact pinned bytes and notice/source text.",
+    "Installed locked Three.js MIT and protobufjs BSD-style notices are copied by existing preparation into ignored vendor directories. This records those shipped runtime notices, not every transitive dependency or historical artwork.",
+    "No tracked root LICENSE, LICENSE.md, LICENSE.txt, COPYING or NOTICE is present in this candidate. Do not invent owner rights or a project-wide grant; owner license decision and final artifact/legacy dependency notice review remain open."
+  ],
+  "ownerAnalyticsInventory": "Postmark45 days/not editable; GA4 event retention2 months, user retention14 months, history-based page views/Form interactions/Outbound clicks/reset on new activity enabled. All values are already recorded owner observations, not independent dashboard or network proof. No settings changed or further dashboard values requested.",
+  "plannedPatchNotes": [
+    "Committed world/story/cosmetic/equipment/animation content now has a single read-only local and CI check; stale outputs fail instead of being silently regenerated during installation.",
+    "Contributor guidance identifies canonical content sources, deliberate regeneration and focused quest/item/visual validation with stable save identities.",
+    "Animation documentation reflects current class assets and dressed Ilyra while clearly separating required coverage from actual test acceptance."
+  ],
+  "remaining": [
+    "Integrate accepted ordered predecessor changes and reconcile against the actual candidate before synchronizing1.86 version/cumulative patch notes and publishing. Current work is not live; ordered1.77 operator/release prerequisites remain open.",
+    "Four Dark Realm collection items currently receive the generic quest icon. Intentional distinct icon coverage, broader item/visual completeness and authoritative gameplay validation remain separate work; the eight-elemental-item icon test is not all quest-item visual acceptance.",
+    "Structured text and stable identifiers support future localization authoring, but translated UI/locale behavior is not implemented or certified by this patch.",
+    "Final shipped-artifact notices, legacy asset/transitive dependency audit, owner project-license decision and supported ongoing content/season operations stay open. No schedule/reward/locale framework is speculatively replaced.",
+    "Modern-art, exact integrated browser/gameplay, representative hardware/capacity, real-phone and beta/release gates remain in the full active roadmap."
+  ]
+}

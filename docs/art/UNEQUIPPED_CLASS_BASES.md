@@ -21,7 +21,8 @@ Dagger, Staff, Mace and Unarmed motion banks, calibrated grips and review scenes
 are described in [the equipment delivery](EQUIPMENT_ASSETS.md). Character mesh,
 weights, morphs, inverse bind matrices and textures are preserved.
 
-Editable packed Blender sources and review renders are local working artifacts:
+Editable packed Blender sources are tracked with Git LFS; review renders are
+delivery evidence. Fetch LFS sources before opening the following files:
 
 - `output/models/wizard-production/wizard.blend`
 - `output/models/cleric-production/cleric.blend`
@@ -36,8 +37,10 @@ skin boundaries against the garment's outer surface and a capped envelope to
 avoid treating concave folds or open hems as automatic penetrations. These are
 bounded checks, not a claim that every possible blended pose was verified.
 
-Only the explicit asset-tree allowlist is extended. Fighter's runtime references
-remain the sole authored class references in application code. Integrating these
-new classes still requires loader/animation mapping, character-specific equipment
-fitting and in-game lighting/performance checks. The source GLBs should not become
-boot dependencies; use the appropriate runtime derivative when integrating.
+This records the original base-model delivery, not the current integration state.
+All four authored class adapters and fitted equipment are now connected through
+the catalog; see [the current integration contract](../../README.md#connect-the-assets-to-gameplay).
+New revisions still need character-specific rig, fit, animation, lighting and
+performance checks. Preserve the explicit migration allowlist and procedural
+fallback. Full-detail source GLBs must not become boot dependencies; load the
+appropriate runtime derivative on demand.

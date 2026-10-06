@@ -1,5 +1,24 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 prepared1.86 read-only content checks:** Eleven existing generators
+share a local/CI verification entry. Cosmetic/equipment/animation checks now
+refuse stale or missing outputs without writing, and installation prepares only
+ignored vendor runtimes. Seven RED cases demonstrate the original write-through
+defect; current135 focused client checks and all eleven actual content groups
+PASS with Node24. Final generator/font checks PASS13 cases1.375s, including two
+additional pinned font/notice checks. Regenerate the stale animation inventory
+from current manifests; four delivered classes, per-actor Jump and dressed Ilyra
+are accurately listed without certifying browser/gameplay acceptance. Existing
+contributor docs explain canonical inputs, explicit regeneration, stable IDs and
+structured text, focused validation, server-owned event/season rules and local
+license declarations. No new tooling framework, gameplay balance, source asset,
+account/provider setting or production change. Owner analytics inventory is
+complete and unchanged, including reset on new activity. Full license/artifact
+review, distinct Dark Realm quest-item icons, ordered integration/publication and
+broader beta/release acceptance remain open. See the
+[prepared receipt](docs/plans/2026-10-06-release1-86-current-content-checks.json).
+Full goal remains active; this is not a live1.86 release.
+
 **October6 prepared1.85 Player Guide:** Expand existing in-game Help with six
 native collapsed chapters: class/equipment/bag, party/safety, story/dungeon/portal,
 Forge, Gold/EP/casino and settings/known limits. Source-check armor and weapon

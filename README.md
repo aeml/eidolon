@@ -234,8 +234,8 @@ ordinary Git files and do not require LFS at runtime.
    and Unarmed for an empty main hand. The viewer's `resolvedClip` also demonstrates
    the supported left arm for dagger plus offhand; `setMotion` uses 180 ms fades.
    Preserve attack contact at **14/30 seconds**, mapped to the existing gameplay
-   impact timing in [`Actor`](src/entities/Actor.js). Register class ability clips
-   and moving-cast leg masks before enabling the other authored class adapters.
+   impact timing in [`Actor`](src/entities/Actor.js). Preserve class ability clip
+   routing and moving-cast leg masks when updating the authored class adapters.
 7. **Version, render and validate.** Add content-hash cache versions in
    [`assetManifest.js`](src/assets/assetManifest.js), keep model loading lazy and
    pool-safe, and support the supplied WebP textures and emissive-strength material
@@ -254,8 +254,66 @@ npm test -- --runInBand --roots tests --runTestsByPath tests/AuthoredFighter.tes
 npx playwright test tests/e2e/authored-fighter-pilot.spec.js
 ```
 
-These instructions describe the remaining integration work; publishing the asset
-files alone does not switch the other classes or equipment renderer over.
+All four class adapters and the fitted equipment route are integrated. These
+instructions describe their current contract, not unfinished class enablement.
+Delivering new files alone does not validate their rig, equipment fit, animation,
+cache version or gameplay behavior; retain the fallback until that revision passes
+the applicable checks.
+
+### Authoring and validating content
+
+Use the Node 24 version declared in `package.json`. `npm ci` prepares ignored
+vendor runtimes; it does not regenerate tracked content. Run
+`npm run check:content` to compare committed outputs to their canonical inputs
+without repairing them. Missing/stale output or a delivered model hash mismatch
+fails locally and in CI. Generate deliberately, review the diff, and commit both
+the source and its outputs before checking again.
+
+Run these generators from the repository root (append `--check` for verification):
+
+| Canonical input | Explicit generation command |
+| --- | --- |
+| `server/internal/game/content/world-geography.json` and `world-locations.json` | `node scripts/generate-world-geography.mjs`; `node scripts/generate-world-locations.mjs` |
+| `world-elevation-recipe.json`, shared geography and location placements | `node scripts/generate-world-elevation.mjs` |
+| `docs/plans/2026-09-07-investigation-story-content.md` and `src/data/chronicleInvestigationSites.json` | `node scripts/generate-chronicle-investigations.mjs` |
+| Server `content/chronicle-hunts.json` and existing story anchors | `node scripts/generate-chronicle-hunts.mjs` |
+| Server `content/dark-realm-chronicle.json` | `node scripts/generate-dark-realm-chronicle.mjs` |
+| `src/data/earthOutcrops.js`, shared collision code, procedural location/foliage footprints and world readings | `node scripts/generate-earth-outcrops.mjs`; `node scripts/generate-world-population.mjs` |
+| Server `content/cosmetics.json` and `season-cosmetics.json` | `npm run generate:cosmetics` |
+| `assets/equipment/authored/` manifests, grips, motions and class runtime manifests/model bytes | `npm run generate:equipment` |
+| Actor, ability and attached-status visual manifests | `npm run docs:animations` |
+
+Keep quest/site/class/base-item IDs, slot keys and authoritative enemy identifiers
+stable. Player-facing titles, acceptance/completion dialogue, summaries and lore
+belong in their structured text fields, not in save identities or translated
+enemy keys. This separation supports future localization; it is not a claim that
+translated UI or locale switching is implemented. Investigation authoring checks
+include placement/order; hunts check existing story anchors; Dark Realm chapters
+check objectives/discoveries. Deliberate additions must update affected count,
+budget, icon, visual and gameplay tests rather than weakening those checks.
+
+After changing items, check `ProceduralIcons` and the authored asset/slot tests;
+after changing story content, check the relevant Chronicle suite and authoritative
+quest rules. A generic icon or a manifest entry is not proof of an intentional
+visual or a playable quest. Equipment hash agreement does not prove deformation
+or animation fit. The generated animation inventory describes required coverage,
+not successful browser or live acceptance. Reuse compatible evidence and rerun
+changed dependencies or missing checks, not every long campaign for a text edit.
+
+Recurring public-event sites/scheduling remain authoritative in
+`server/internal/game/public_events.go`; season rules remain server-owned.
+Change those rules and their client descriptions together with focused boundary,
+reward and replay checks. Do not introduce test clock overrides, alter gates or
+reward economics implicitly, or assume updating cosmetic JSON changes a season.
+Generating candidate terrain/collision data likewise does not enable it in play.
+
+Asset deliveries must retain source, license and applicable notice files. Current
+class provenance is beside each model under `assets/archetypes/`; Ilyra's outfit
+is described in [its delivery notes](assets/npcs/ilyra/README.md), and Cinzel's
+source/license in `assets/fonts/SOURCE.txt` and `OFL.txt`. Installation copies the
+locked Three.js and protobuf runtime licenses into their vendor directories.
+These local declarations are not a complete legacy-asset/dependency rights audit
+or a license grant for original project work; do not invent a project-wide license.
 
 ## Testing/Building
 
@@ -263,10 +321,10 @@ Client validation from the repo root:
 
 ```bash
 npm ci
+npm run check:content
 npm test
 npm run lint
 npm audit --audit-level=low
-npm run docs:animations
 npm run test:e2e:anonymous
 ```
 
