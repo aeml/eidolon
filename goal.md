@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.75 accepted live:** Exact56d9fda9 CI37399132936 completed
+successfully; all ten jobs passed, including both deploys and live persistent
+character/town recovery/Well Rested QA. Independent public IPv4 identities and
+database readiness match, with login/cumulative notes and six changed runtime
+modules checked against publisher-rewritten bytes. Post-terminal identity and
+readiness recheck passes. Skipped fresh animation/GPU/full-character scopes are
+not claimed. Approved reviewed export/removal requests, nineteen bounded owner
+sections, unchanged retention and no erasure are live; no complete archive,
+provider/IPv6/capacity/pacing or full1.99 acceptance.1.76 may now proceed after
+fresh normal remote integration and its own release checks. See
+[public acceptance](docs/plans/2026-10-06-release1-75-public-checks.json).
+
 **October6 bounded frame-read selection for1.76:** The measured lightweight
 frame context is selected from the isolated capacity work so this performance
 improvement can ship with1.76 rather than waiting for wider capacity acceptance.

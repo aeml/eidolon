@@ -429,8 +429,9 @@ Notes:
   without repeatedly cloning owned items and receipts; full saves stay intact.
   Focused race, actual Mongo growth/recovery, native session and whole-account
   upgrade checks pass. See [current persistence evidence](docs/plans/2026-10-06-release1-76-current-persistence-checks.json).
-  Publication awaits corrected1.75 CI/live acceptance, then fresh remote
-  integration and1.76's own release checks. Capacity is not certified.
+  Predecessor1.75 is accepted live at56d9fda9 with CI37399132936 and exact public
+  checks. Own1.76 fresh remote integration, CI/deployment and public acceptance
+  remain. Capacity is not certified.
   The1.75 private account-help export/removal
   requests, separate reversible staff export approval and nineteen bounded
   current-owner sections with manual proof/Save/paging are included. Coverage

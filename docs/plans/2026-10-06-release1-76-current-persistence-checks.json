@@ -3,8 +3,9 @@
   "milestone": "1.76 database and persistence scale",
   "sourceCommit": "57f01b3ee252b7bb48f33b9c580921c35c9a5c0c",
   "predecessorCandidate": "ae085d053666521acd02accf97546a8e2b629501",
-  "status": "isolated-current-integration-verified-unpublished-awaiting-1.75-acceptance",
-  "inheritedVersion": "Alpha 1.75.0; not a promoted 1.76 release",
+  "status": "1.76-candidate-ready-for-promotion-predecessor-accepted-own-release-pending",
+  "inheritedVersion": "Alpha 1.76.0 source candidate; not yet deployed",
+  "acceptedPredecessor": {"commit": "56d9fda91a964890d8777bbce91a1c67869fd9c3", "ci": 37399132936, "conclusion": "success", "publicEvidence": "2026-10-06-release1-75-public-checks.json"},
   "schemaVersion": 25,
   "frameReadFollowUp": {
     "selection": "Bring the measured bounded frame context into the1.76 performance release from isolated1.79 commit15d0b5b0, without importing workload drivers, operations features or historical capacity claims.",
@@ -17,7 +18,7 @@
     "sourceCommit": "e2ded55e",
     "status": "Alpha1.76.0 source candidate only; unpublished until1.75 acceptance",
     "result": "Client/package/lock/manifest/login/server/container/deploy/isolated-QA/CI version labels align. New cumulative patch notes preserve the complete prior history and disclose schema24/25, preserved legacy receipts, rollback restrictions and no capacity claim. VersionPresentation, ToolingBaseline and ProtocolContract369 checks pass2.273s. Workflow YAML, both deployment/QA shell syntax and whitespace checks pass.",
-    "predecessorCorrection": "Current1.75 candidate5568630e browser corrections are merged after the prepared version commit. Corrected run37396521234 still requires CI and exact public acceptance before1.76 publication."
+    "predecessorCorrection": "All current1.75 corrections through56d9fda9 are merged. Exact CI37399132936 completed successfully with all ten jobs, followed by post-terminal public frontend/backend identity/database readiness checks. Older cancelled candidate runs remain historical, not accepted tests."
   },
   "changes": [
     "Selected-character loads fetch only the complete requested character and trusted account ID. Login/join fetch only the original first character, public name and account ID; nil/empty legacy initialization stays intact. Current AuthenticateAccount ID/hash re-proof, immutable session binding and join/reconnect generation checks remain unchanged. Legacy Authenticate reads only its hash. Social label reads no longer fetch full saves.",
@@ -40,7 +41,7 @@
   },
   "cleanup": "Owned tmpfs Mongo containers7c9de757020a906c8c3863518324b5c9518ad98aa51486564adafb8f344d9b4b andf4bd7cc0989f546f37cae6f278a1ee989f5d145571d22bf964412964f8efcee4 stopped/removed after all actual checks. Native writer processes drained and exited. Production database, services, logs, providers and player accounts untouched.",
   "remaining": [
-    "1.75 corrected candidate must first pass CI/deployment and exact public acceptance;1.76 stays isolated and unpublished until then.",
+    "1.75 acceptance is complete. Promote1.76 only after a fresh normal remote merge, then wait for its own CI/deployment and exact public acceptance; no force push.",
     "Fresh remote integration,1.76 version/cumulative patch notes, final changed-scope checks, CI/deployment and exact live acceptance remain. Prepared historical receipts are not accepted as evidence for this new integration.",
     "Historic receipts are preserved and can still grow; no TTL, account erasure, currency change or claimed100-player capacity. Capacity/operations/restore milestones and full roadmap through1.99 remain separate."
   ]
