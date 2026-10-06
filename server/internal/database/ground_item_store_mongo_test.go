@@ -210,12 +210,30 @@ func TestGroundItemStoreActualMongoCustodyAndRepositoryReopen(t *testing.T) {
 	}
 	defer indexes.Close(t.Context())
 	var definitions []bson.M
-	if err := indexes.All(t.Context(), &definitions); err != nil || len(definitions) != 6 {
+	if err := indexes.All(t.Context(), &definitions); err != nil {
 		t.Fatal("missing custody/recovery indexes", definitions, err)
+	}
+	requiredIndexes := map[string]bool{
+		"unique_ground_account_ordinal":       true,
+		"one_pending_ground_item_per_account": true,
+		"one_pending_ground_item_per_loot":    true,
+		"ground_item_generations":             true,
+		"ground_item_recovery":                false,
+		"ground_item_active_projection":       false,
 	}
 	for _, definition := range definitions {
 		if _, expires := definition["expireAfterSeconds"]; expires {
 			t.Fatal("TTL would erase retained completed identities", definition)
 		}
+		name, _ := definition["name"].(string)
+		if unique, required := requiredIndexes[name]; required {
+			if unique && definition["unique"] != true {
+				t.Fatal("custody index lost uniqueness", definition)
+			}
+			delete(requiredIndexes, name)
+		}
+	}
+	if len(requiredIndexes) != 0 {
+		t.Fatal("missing custody/recovery indexes", requiredIndexes)
 	}
 }
