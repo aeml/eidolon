@@ -502,10 +502,14 @@ Mongo export/removal workflow. No provider cleanup was attempted.
 Owner read-only confirmation on October5: Postmark shows45-day retention with
 no editable setting on the current account/plan; GA4's page changes based on
 browser-history events is checked. These are owner-reported observations, not
-independent dashboard or automatic-event network verification. GA4 user/event
-retention and Form interactions/Outbound clicks are still unconfirmed. Preserve
-all settings; do not collect credentials or change provider policy as part of
-this review. See [provider checks](2026-10-05-release1-75-provider-checks.json).
+independent dashboard or automatic-event network verification. On October6 the
+owner additionally reports event-data retention2 months, user-data retention14
+months, and Form interactions/Outbound clicks enabled. Record these values as
+reported, not independently verified. Reset user data on new activity remains
+an optional read-only confirmation, not a code-work blocker. Preserve all
+settings; do not collect credentials or change provider policy as part of this
+review. Automatic-event/private-page network checks remain separate acceptance
+work. See [provider checks](2026-10-05-release1-75-provider-checks.json).
 
 ## Account-bound journal replay: staged, not a complete removal fence
 
