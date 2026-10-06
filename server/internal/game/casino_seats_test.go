@@ -19,6 +19,53 @@ func casinoSeatWorld() (*World, *Entity, *Entity, CasinoTable) {
 	return w, a, b, table
 }
 
+func TestCasinoPresenceDoesNotWaitForNonPlayerActorLocks(t *testing.T) {
+	w, a, _, table := casinoSeatWorld()
+	now := time.Now()
+	seat, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	revision := w.CasinoPresenceFor(a.ID, now).Preparation[table.ID].Revision
+	if err := w.ChangeCasinoSeat(a.ID, seat.SessionID, "ready", true, now, revision); err != nil {
+		t.Fatal(err)
+	}
+	// Even an invalid non-player seat must not join the player roster. Hold the
+	// unrelated actor locks to reproduce AI work overlapping a casino response.
+	var locked []*Entity
+	for _, kind := range []EntityType{TypeEnemy, TypeNPC} {
+		actor := &Entity{ID: "unrelated-" + string(kind), Type: kind,
+			CasinoSeat: &CasinoSeatSession{TableID: table.ID, Seat: 1, SessionID: "not-a-player-seat"}}
+		w.Entities[actor.ID] = actor
+		actor.Mu.Lock()
+		locked = append(locked, actor)
+	}
+	done := make(chan CasinoPresence, 1)
+	finished := make(chan struct{})
+	go func() {
+		defer close(finished)
+		done <- w.CasinoPresenceFor(a.ID, now)
+	}()
+	defer func() {
+		for _, actor := range locked {
+			actor.Mu.Unlock()
+		}
+		<-finished
+	}()
+	select {
+	case presence := <-done:
+		preparation := presence.Preparation[table.ID]
+		if len(presence.Occupants) != 1 || presence.Occupants[0].PlayerID != a.ID ||
+			presence.YourSeat == nil || presence.YourSeat.SessionID != seat.SessionID ||
+			!presence.YourSeat.Ready || preparation.Revision != revision ||
+			preparation.Connected != 1 || preparation.Ready != 1 || preparation.Phase != "ready" {
+			t.Error("unrelated actor changed the private seat or player-only ready roster")
+		}
+	case <-time.After(250 * time.Millisecond):
+		t.Error("casino presence waited for an unrelated non-player actor lock")
+	}
+}
+
 func TestCasinoSeatAtomicOwnershipAndPrivateSessions(t *testing.T) {
 	w, a, b, table := casinoSeatWorld()
 	now := time.Now()

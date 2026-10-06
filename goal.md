@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 casino roster contention correction:** Two preparation scans locked
+every actor while owning World.Mu, including unrelated NPC/enemy AI. A new
+held-actor regression reproduces the wait before the fix; both scans now skip
+non-players before locking, matching existing presence/pruning authority.
+All Casino game race checks pass1.224s and root notification scopes1.322s;
+own-session, roster revision, readiness and player-only occupants retained.
+No wallet, timer, roster cache or load-gate change. This proves a real unnecessary
+lock dependency, not the cause/resolution of100-client failures. No new population
+run or live publication; further targeted contention diagnosis remains required.
+
 **October6 current100-client comparison:** Exact87cda8c7 binaries reused after
 passing20/40-client controls. FAIL222.16s; all100 admitted, min1020 fresh own
 updates and all20 social outcomes completed without transport errors. Casino

@@ -219,6 +219,11 @@ func (w *World) casinoPreparationLocked() map[string]CasinoPreparation {
 	}
 	rosters := map[string][]member{}
 	for _, player := range w.Entities {
+		// Actor type is fixed while it belongs to the world. Non-player AI
+		// locks cannot contribute to a seat roster and must not delay it.
+		if player.Type != TypePlayer {
+			continue
+		}
 		player.Mu.RLock()
 		if s := player.CasinoSeat; s != nil {
 			rosters[s.TableID] = append(rosters[s.TableID], member{s.Seat, s.SessionID, s.connectionEpoch, !player.Disconnected})
@@ -246,6 +251,9 @@ func (w *World) casinoPreparationLocked() map[string]CasinoPreparation {
 		result[table.ID] = p
 	}
 	for _, player := range w.Entities {
+		if player.Type != TypePlayer {
+			continue
+		}
 		player.Mu.Lock()
 		if s := player.CasinoSeat; s != nil {
 			p := result[s.TableID]
