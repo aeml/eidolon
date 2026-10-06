@@ -1,8 +1,27 @@
 {
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
-  "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
+  "sourceCommit": "33f1719a plus accompanying broadcast delta-frame implementation; exact historical controls retain their separate source commits/hashes below",
   "status": "scene-filter-mixed100-pass-earth-raid-pass-natural-root-event-fail-full-capacity-gates-open",
+  "broadcastDeltaFrameOptimization": {
+    "diagnosis": "Actual current generated-world broadcast idle profile with100 declared recipients identifies hasEntityChanged as40.62% of sampled cumulative CPU: overlapping observers recompute detached actor fields/timers against equivalent histories. This is broadcast dependency evidence, not a measured cause of the prior918ms native gap.",
+    "repair": "One broadcast-local cache keyed by detached actor pointer and each recipient's exact last-queued immutable EntitySnapshot pointer. Share one immutable next history snapshot per actor, and one result per distinct prior baseline. New/stale/reset recipients retain their own decisions; owners remain always included. Existing comparison thresholds, actor/scene/radius filtering, protobuf privacy, queue rejection/reset, per-client locking, simulation, timers, stats, save gates and wire schema remain unchanged. Nothing is retained across broadcasts.",
+    "regression": "Actual broadcast integration fails before repair because each observer rebuilds separate history for the same detached actor. After repair, full sync, shared immutable history, new HP update, old history preservation, a stale recipient, reset/full-sync recipient and caught-up/no-extra-delta recipient pass. Concurrent32-reader unit verifies false/true results remain distinct, exactly two prior baselines, one actor history and fresh next-frame reads.",
+    "verification": "Focused broadcast/equipment/status/protection/area/replication race scopes PASS3.860s. Explicit cache concurrency, actual delta baseline, owner/observer privacy and rejected-queue/full-resync scopes PASS race1.800s. One-iteration benchmark setup/real protobuf delivery check also passes; every recipient gets one actual queued state frame. Gofmt/whitespace checks pass.",
+    "profileDeclaration": "BenchmarkBroadcastStateCurrentPopulation100Idle: normal NewWorld(nil) generated population,60 declared idle casino actors/40 town actors, actual snapshot/delta/protobuf/queue path, warm full sync then ordinary next frames. GOMAXPROCS2,3s CPU profiles on same shared host, before/after sequential with no concurrent owned native run, benchmark or race invocation. Static actors and immediately drained queues intentionally exclude simulation, sockets, Mongo, combat and client decode; never capacity/headroom acceptance.",
+    "artifacts": {
+      "baselineDirectory": "/tmp/eidolon-179-broadcast-profile-ZtXLMw",
+      "candidateDirectory": "/tmp/eidolon-179-delta-profile-gGhIXK",
+      "baselineBinarySHA256": "c2f6e43face4da4aba16069b0432697eb3f9eb4982e3a2c9f7cb65d6258ae5ff",
+      "candidateBinarySHA256": "3dd96316a74d2b66112433f4a5cfb6e25e6f503dca128cfb651762adcddbfd4d",
+      "files": "Immutable normal root.test binaries, run.log and cpu.pprof retained in both directories. Baseline source33f1719a plus idle benchmark; candidate same source plus accompanying delta-frame code. Candidate profile compiled before the later concurrency-only unit addition; production cache code unchanged."
+    },
+    "observedMetrics": {
+      "baseline": {"iterations": 250, "nanosecondsPerBroadcast": 13218626, "wireBytesPerFrame": 12165, "bytesPerBroadcast": 3872446, "allocationsPerBroadcast": 20581},
+      "candidate": {"iterations": 412, "nanosecondsPerBroadcast": 8994134, "wireBytesPerFrame": 12165, "bytesPerBroadcast": 4015182, "allocationsPerBroadcast": 21661}
+    },
+    "limits": "One short idle/shared-host comparison observes about32% lower broadcast mean and identical wire size, but about3.7% more allocated bytes/5.2% more allocations per iteration. Not statistical confidence, p95/p99, client performance, resolved918ms stalls, production headroom or full1.79 acceptance. Cached comparisons evaluate a shared detached frame, not independently advancing wall-clock views for each observer. Prior native100/Earth raid checks ran bbab4c51 without this cache; they do not accept this changed candidate. No new population run or deployment."
+  },
   "sceneFilter100Comparison": {
     "result": "PASS220.46s overall/120s active; driver-to-save elapsed2m13.507s. One changed-runtime100-client mixed comparison using exact bbab4c51 normal server and c0164aac driver/race harness. All100 fresh admissions/own updates, every paid casino/member-impact/social outcome,100 independent disconnect saves and normal five-second-guard shutdown pass. Not an unchanged source retry, raid/event clear or production headroom acceptance.",
     "serverSourceCommit": "bbab4c51a984700e261793ac227a443e489964de",

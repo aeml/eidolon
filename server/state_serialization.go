@@ -754,6 +754,7 @@ func broadcastState() {
 	// encoding and per-client change tracking below do not mutate those copies.
 	states := world.GetStatesForPlayers(playerIDs, stateBroadcastRadius)
 	publicEncoding := &publicFrameEncoding{}
+	deltaFrame := &stateDeltaFrame{}
 
 	// 2. Process in parallel
 	var wg sync.WaitGroup
@@ -820,7 +821,7 @@ func broadcastState() {
 				// quests, and other private/self-only fields are not.
 				if id == c.playerID {
 					changedState[id] = entity
-					c.lastState[id] = entityToSnapshot(entity)
+					c.lastState[id] = deltaFrame.snapshot(entity)
 					c.seenIDs[id] = true
 					continue
 				}
@@ -829,12 +830,12 @@ func broadcastState() {
 				if !existed {
 					// New entity - always send full state
 					changedState[id] = entity
-					c.lastState[id] = entityToSnapshot(entity)
+					c.lastState[id] = deltaFrame.snapshot(entity)
 					c.seenIDs[id] = true
-				} else if hasEntityChanged(entity, lastSnap) {
+				} else if deltaFrame.changed(entity, lastSnap) {
 					// Changed entity - send updated state
 					changedState[id] = entity
-					c.lastState[id] = entityToSnapshot(entity)
+					c.lastState[id] = deltaFrame.snapshot(entity)
 				}
 				// else: unchanged, skip sending
 			}

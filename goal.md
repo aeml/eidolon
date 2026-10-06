@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 broadcast delta-frame optimization:** A short actual generated-world
+broadcast profile locates repeated observer change comparisons (40.62% sampled
+cumulative CPU). Share immutable delta history and comparison results only inside
+one detached broadcast, keyed by the actor and exact previous client baseline.
+Owners always receive self state; different histories, resets, rejected queues,
+private fields, scene/radius filtering and existing thresholds remain intact.
+Actual shared-history regression fails before repair, passes afterward; scoped
+replication race3.860s and explicit concurrent-cache/privacy/full-resync race1.800s.
+Sequential3s idle100-recipient profiles observe13.219ms→8.994ms mean broadcast,
+about32%, with identical12165B/frame. Allocated bytes rise3.7%, allocations5.2%:
+this is not a memory improvement, percentile/headroom/smoothness signoff or a
+resolution of native918ms stalls. Exact artifacts/hashes in receipt. Previous
+bbab native100/raid checks lack this cache; current candidate/release gates stay
+open. No new population run, database fixture, external write or live deployment.
+
 **October6 scene-filter native100 PASS220.46s:** Exact bbab4c51 normal
 server/c0164aac driver and race harness passed the original100-client/five20-role
 mixed120s workload once after the changed runtime dependency. All legal gear/
