@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.76 accepted:** Corrected source69cc97d9 run37406964398
+completed successfully across all ten jobs, including live persistent-character
+and town healing/Well Rested QA. Independent post-terminal IPv4 frontend/backend
+identity, database readiness and exact publisher-transformed index/main bytes
+pass at03:40UTC. Predeploy animation/GPU/full-character and live four-class remote
+animation scopes were explicitly skipped, not passed. Earlier failed candidates
+remain failures. Continue ordered1.77 preparation; wider capacity, recovery and
+full roadmap gates remain open. Analytics inventory is complete and unchanged.
+See [accepted public checks](docs/plans/2026-10-06-release1-76-public-checks.json).
+
 **October6 corrected1.76 public identity:** Exact69cc97d9 run37406964398 passed
 ordinary CI/all browser shards/focused predeploy and both deployments. Live
 anonymous/persistent-character QA is actually running, monitored by Luna;
