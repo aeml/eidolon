@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 blackjack driver deadline repair:** A focused regression proves the
+bot submits stand at/after the advertised turn expiry while the actual UI already
+blocks it. Driver now reads that public deadline and waits/refreshes instead;
+no waiting credit, server rule/timer change or monetary retry. Fixed first-failure
+action categories distinguish pending bets/plays without raw IDs or errors;
+unknown/cleared actions stay unknown and later failures cannot replace the cause.
+Focused driver race scopes pass4.388s and root combined/evidence guards1.129s.
+This is not a diagnosis or resolution of cea4f481's native failure; every
+existing role/payment/save gate remains. No population retry or publication.
+Latest remote remains69cc97d9; prepared1.77 still needs owner renewal evidence.
+
 **October6 ordering-corrected native100 comparison:** Exact cea4f481 normal
 server/corrected driver/current race harness fails222.95s/120s active. All100
 admissions/fresh views and20 social outcomes pass; transport/casino timeouts zero.

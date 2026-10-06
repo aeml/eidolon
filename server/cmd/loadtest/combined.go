@@ -70,6 +70,7 @@ type combinedCasinoCoverage struct {
 	observedActions, bonuses uint64
 	failures                 [casinoFailureKinds]uint64
 	timeouts                 [casinoTimeoutKinds]uint64
+	rejectedActions          [casinoTimeoutKinds]uint64
 }
 
 // Include every assigned client, including zero results, not just aggregate
@@ -112,6 +113,12 @@ func summarizeCombinedCasino(assignments []botAssignment, observations []loadObs
 						action = casinoTimeoutUnknown
 					}
 					c.timeouts[action]++
+				} else {
+					action := observation.rejectedAction
+					if action >= casinoTimeoutKinds {
+						action = casinoTimeoutUnknown
+					}
+					c.rejectedActions[action]++
 				}
 			}
 		}

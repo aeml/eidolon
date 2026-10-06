@@ -92,3 +92,40 @@ func TestCasinoTimeoutKeepsClosedActionAndNeverRetries(t *testing.T) {
 		t.Fatal("timeout aggregation counted rejection or lost invalid/unknown action")
 	}
 }
+
+func TestCasinoRejectedActionIsClosedAndFirstFailureIsPreserved(t *testing.T) {
+	for _, sample := range []struct {
+		kind, pending, action string
+		want                  casinoTimeoutAction
+	}{
+		{"error", "bet", "", casinoTimeoutBlackjackBet},
+		{"error", "play", "", casinoTimeoutBlackjackPlay},
+		{"error", "", "", casinoTimeoutUnknown},
+		{"casino_action_error", "", "play", casinoTimeoutBlackjackPlay},
+		{"casino_action_error", "bet", "play", casinoTimeoutBlackjackPlay},
+		{"casino_action_error", "play", "private/session/name", casinoTimeoutUnknown},
+	} {
+		b := newCasinoLoad(0)
+		b.pending = sample.pending
+		payload, _ := json.Marshal("blackjack round changed; review the table")
+		if sample.kind == "casino_action_error" {
+			payload, _ = json.Marshal(map[string]string{"action": sample.action, "error": "blackjack round changed; review the table", "sessionId": "private-session"})
+		}
+		b.rejectServer(Message{Type: sample.kind, Payload: payload})
+		b.rejectServer(partyMessage("casino_action_error", map[string]string{"action": "slot_spin", "error": "private-provider-message"}))
+		got := b.counts()
+		if !got.failed || got.failureStage != casinoFailureStale || got.rejectedAction != sample.want || got.actions != 0 || got.paidSpins != 0 {
+			t.Fatal("first rejection action replaced, leaked or credited", sample.kind, sample.pending)
+		}
+	}
+	assignments := []botAssignment{{scenario: "casino-blackjack"}, {scenario: "casino-blackjack"}, {scenario: "casino-blackjack"}}
+	observations := []loadObservation{
+		{casino: casinoLoadCounts{failed: true, failureStage: casinoFailureStale, rejectedAction: casinoTimeoutBlackjackPlay}},
+		{casino: casinoLoadCounts{failed: true, failureStage: casinoFailureRejected, rejectedAction: casinoTimeoutKinds}},
+		{casino: casinoLoadCounts{failed: true, failureStage: casinoFailureTimeout, rejectedAction: casinoTimeoutBlackjackBet}},
+	}
+	results, valid := summarizeCombinedCasino(assignments, observations)
+	if valid || results[1].failed != 3 || results[1].rejectedActions[casinoTimeoutBlackjackPlay] != 1 || results[1].rejectedActions[casinoTimeoutUnknown] != 1 || results[1].rejectedActions[casinoTimeoutBlackjackBet] != 0 {
+		t.Fatal("rejection aggregation counted timeout or lost closed actions")
+	}
+}

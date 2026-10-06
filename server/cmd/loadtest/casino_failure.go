@@ -9,7 +9,7 @@ import (
 
 type casinoFailureStage uint8
 
-// Timeout diagnostics retain only a closed action category, not session,
+// Action diagnostics retain only a closed action category, not session,
 // round, account or error text. Unknown input never becomes a log label.
 type casinoTimeoutAction uint8
 
@@ -116,6 +116,19 @@ func (b *casinoLoad) rejectServer(message Message) {
 	defer b.signal()
 	if !b.failed {
 		b.failureStage = classifyCasinoRejection(message)
+		// The server sends a generic error before its structured acknowledgement.
+		// Attribute only a currently pending action, or the bounded structured
+		// action when it arrives first. Already-cleared/unknown actions stay unknown;
+		// later failures must never rewrite the first cause or earn outcome credit.
+		b.rejectedAction = casinoTimeoutActionFor(b.pending)
+		if message.Type == "casino_action_error" && len(message.Payload) <= 4096 {
+			var body struct {
+				Action string `json:"action"`
+			}
+			if json.Unmarshal(message.Payload, &body) == nil {
+				b.rejectedAction = casinoTimeoutActionFor(body.Action)
+			}
+		}
 	}
 	b.failed = true
 }

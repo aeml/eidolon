@@ -20,8 +20,9 @@ type blackjackLoadView struct {
 	Round *struct {
 		ID, Phase    string
 		Revision     uint64
-		TurnPlayerID string `json:"turnPlayerId"`
-		TurnHand     int    `json:"turnHand"`
+		Deadline     time.Time `json:"deadline"`
+		TurnPlayerID string    `json:"turnPlayerId"`
+		TurnHand     int       `json:"turnHand"`
 		Actions      []string
 		Players      []struct {
 			PlayerID string `json:"playerId"`
@@ -193,6 +194,11 @@ func (j *blackjackLoad) step(b *casinoLoad, now time.Time, bet int, request func
 		return
 	}
 	if v.Phase == "playing" && v.Round != nil && v.Round.TurnPlayerID == j.playerID {
+		// Like the real table UI, never act on an already expired advertised
+		// turn. Waiting/refreshing is not an action or paid-result acknowledgement.
+		if !v.Round.Deadline.IsZero() && !now.Before(v.Round.Deadline) {
+			return
+		}
 		for _, action := range v.Round.Actions {
 			if action != "stand" {
 				continue

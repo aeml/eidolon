@@ -162,9 +162,15 @@ the real table; no NPC substitutes, rigged decks, wallet grants or VIP/EP access
 
 Bots submit one wager for the exact current round and private seat, wait for
 their own funded participant entry, then stand only when that player's advertised
-turn offers `stand`, using the current shared revision. Another player's wager,
-turn or revision advance cannot count as the bot's own accepted bet or finished
-hand. Observed stands require own-hand completion plus revision progress; the
+turn offers `stand`, using the current shared revision.
+Expired advertised turn deadlines block new plays, as they do in the actual
+table UI; waiting only permits read-only refresh and earns no outcome credit.
+First rejections retain a fixed action category from the structured response or
+the still-pending action. Already-cleared or unknown actions remain unknown;
+later messages cannot overwrite that cause. No raw identifiers or error text
+are retained in aggregate action diagnostics.
+Another player's wager, turn or revision advance cannot count as the bot's own
+accepted bet or finished hand. Observed stands require own-hand completion plus revision progress; the
 counter is deliberately not causal acceptance proof, because a server timeout
 can also finish a hand. Any explicit late rejection still fails the workload.
 

@@ -3,6 +3,12 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "ordering-fix-100-client-comparison-terminal-fail-blackjack-and-every-member-impact-fixture-removed",
+  "blackjackDriverDeadlineFollowUp": {
+    "confirmedDefect": "Focused real controller regression fails before the fix: stand is submitted at and after the advertised deadline. The actual production table UI already blocks expired turns; the driver ignored the public round deadline.",
+    "repair": "Read the existing deadline and refuse a new expired-turn play. Ordinary read-only refresh remains; no waiting earns action/payment credit and actual rejections still fail. Retain only a fixed first rejected-action category from a structured response or still-pending action. Unknown/cleared actions stay unknown; later errors cannot replace the first cause. No raw session/account/round IDs or diagnostic text in aggregates.",
+    "verification": "Driver blackjack/controller, casino first-rejection/timeout/ordering and combined scopes PASS race4.388s. Root combined client-count/fresh-view and bounded phase evidence guards PASS race1.129s. Gofmt and whitespace checks pass. Expired/equal/future deadlines and no invented acknowledgement are asserted; closed action categories, unknowns and first-failure preservation are tested.",
+    "limits": "No new native population run, live deployment or causal attribution of the cea4f481 rejection. Normal server timers and all original paid/every-member/social/fresh-state/save gates remain unchanged. Shared-camp supply/role attribution and representative workload/headroom remain unresolved."
+  },
   "orderingFix100ClientComparison": {
     "sourceCommit": "cea4f481d73794681895bed9a40b1debc1c19896",
     "result": "FAIL222.95s/120s active. Normal source-built server, corrected ordering driver and current race harness. All100 admissions/fresh views and20 social outcomes pass, transport and casino timeout counters zero. One blackjack stale-action rejection and zero-impact party members fail unchanged gates. Independent all-account final saves are NOT REACHED. No capacity acceptance or unchanged retry.",

@@ -188,6 +188,47 @@ func TestBlackjackLoadWaitsForOwnBetTurnAndPaidCompletion(t *testing.T) {
 	}
 }
 
+func TestBlackjackLoadDoesNotPlayAnExpiredAdvertisedTurn(t *testing.T) {
+	now := time.Unix(100, 0)
+	for _, offset := range []time.Duration{-time.Second, 0, time.Second} {
+		t.Run(offset.String(), func(t *testing.T) {
+			b := newBlackjackLoad(0, "player-synthetic-blackjack")
+			var view map[string]interface{}
+			if err := json.Unmarshal(blackjackFixtureView(b, "playing", b.blackjack.playerID, 8, true, false, false), &view); err != nil {
+				t.Fatal(err)
+			}
+			view["blackjack"].(map[string]interface{})["round"].(map[string]interface{})["deadline"] = now.Add(offset)
+			payload, err := json.Marshal(view)
+			if err != nil || !b.receive(payload) {
+				t.Fatal("deadline fixture refused", err)
+			}
+			plays := 0
+			b.step(Entity{InstanceID: game.CasinoInstanceID, Health: 100}, now, 20, time.Second,
+				func(request map[string]interface{}) error {
+					switch request["action"] {
+					case "get": // Read-only refresh still allowed; no invented action/result.
+					case "play":
+						plays++
+					default:
+						t.Fatal("unexpected casino action")
+					}
+					return nil
+				}, func(float64, float64) { t.Fatal("seated player moved") })
+			want := 0
+			if offset > 0 {
+				want = 1
+			}
+			if plays != want || b.counts().actions != 0 || b.counts().rounds != 0 || b.counts().failed {
+				t.Fatal("expired turn played or waiting manufactured completion", plays)
+			}
+			b.rejectServer(partyMessage("error", "blackjack turn expired"))
+			if !b.counts().failed || b.counts().failureStage != casinoFailureStale {
+				t.Fatal("deadline guard hid an actual rejection")
+			}
+		})
+	}
+}
+
 func TestBlackjackLoadDelayedLobbyCannotReplayFundedWager(t *testing.T) {
 	b := newBlackjackLoad(0, "player-synthetic-blackjack")
 	now := time.Unix(100, 0)

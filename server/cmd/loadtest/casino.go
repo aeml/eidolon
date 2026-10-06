@@ -30,6 +30,7 @@ type casinoLoad struct {
 	failed             bool
 	failureStage       casinoFailureStage
 	timeoutAction      casinoTimeoutAction
+	rejectedAction     casinoTimeoutAction
 	changed            chan struct{}
 }
 
@@ -68,6 +69,7 @@ type casinoLoadCounts struct {
 	wagers, rounds, actions uint64
 	failureStage            casinoFailureStage
 	timeoutAction           casinoTimeoutAction
+	rejectedAction          casinoTimeoutAction
 }
 
 // Observe the server's real betting window instead of submitting a new money
@@ -92,7 +94,7 @@ func newCasinoLoad(index int) *casinoLoad {
 func (b *casinoLoad) counts() casinoLoadCounts {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	counts := casinoLoadCounts{spins: b.spins, bonuses: b.bonuses, paidSpins: b.paidSpins, failed: b.failed, failureStage: b.failureStage, timeoutAction: b.timeoutAction}
+	counts := casinoLoadCounts{spins: b.spins, bonuses: b.bonuses, paidSpins: b.paidSpins, failed: b.failed, failureStage: b.failureStage, timeoutAction: b.timeoutAction, rejectedAction: b.rejectedAction}
 	if b.blackjack != nil {
 		counts.wagers, counts.rounds, counts.actions = b.blackjack.wagers, b.blackjack.rounds, b.blackjack.actions
 	}
