@@ -19,6 +19,7 @@ function supplemental(manifest) {
         { name: 'nameplates', shard: 1, files: scriptFiles(manifest, 'nameplates') },
         { name: 'resource-hud', shard: 1, files: scriptFiles(manifest, 'resource-hud') },
         { name: 'crystal-art', shard: 2, files: scriptFiles(manifest, 'crystal-art') },
+        { name: 'privacy', shard: 3, files: scriptFiles(manifest, 'privacy') },
         { name: 'interface', partitionFiles: true, files: scriptFiles(manifest, 'interface') }
     ];
 }

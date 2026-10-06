@@ -505,13 +505,23 @@ browser-history events is checked. These are owner-reported observations, not
 independent dashboard or automatic-event network verification. On October6 the
 owner additionally reports event-data retention2 months, user-data retention14
 months, and Form interactions/Outbound clicks enabled. Record these values as
-reported, not independently verified. Reset user data on new activity remains
-an optional read-only confirmation, not a code-work blocker. Preserve all
+reported, not independently verified. The owner separately confirms Reset user
+data on new activity enabled; no further dashboard confirmation is requested. Preserve all
 settings; do not collect credentials or change provider policy as part of this
 review. Automatic-event/private-page network checks remain separate acceptance
 work. See [provider checks](2026-10-05-release1-75-provider-checks.json).
 
 ## Account-bound journal replay: staged, not a complete removal fence
+
+Native Chrome acceptance on October6 passes four focused application-level
+cases, including a390x844 viewport and actual temporary JSON downloads. Resolved
+case status alone cannot enable preparation; separate approval/current proof,
+manual Save, manual next page, late-reply dismissal, disconnect disposal and fresh
+private-page tag suppression pass. The transport/provider are synthetic and all
+assets are served from loopback under the allowlisted game hostname; this is not
+an actual Google payload, real-device or full server/Mongo acceptance claim. The
+new short privacy stage is included once in existing browser shard3. See
+[native download checks](2026-10-06-release1-75-native-download-checks.json).
 
 New `WriteForAccount` writes a version2 character journal with the existing Mongo
 account ObjectID. Restart reads preserve that identity and reject mixed identity/

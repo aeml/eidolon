@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "milestone": "1.75",
+  "baseCommit": "600db17d",
+  "status": "native-browser-private-download-verified-locally-unpublished",
+  "environment": {
+    "browser": "System Google Chrome at /usr/bin/google-chrome, headless",
+    "node": "24.18.0",
+    "transport": "Synthetic routed WebSocket; actual index/main/LoginModerationUI/ReportUI/OwnerExportDownload lifecycle",
+    "http": "Production-allowlisted hostname mirrored exclusively to loopback repository static server; third-party requests intercepted with empty fixtures",
+    "viewports": ["1280x800", "390x844"],
+    "artifacts": "Automatic screenshots, traces and video disabled. Native downloads contain only synthetic data and are removed with Playwright contexts. No production account/provider access."
+  },
+  "checks": [
+    {
+      "scope": "Native application and download acceptance",
+      "result": "Four Playwright cases pass16.7s: fresh private query scrubbed before analytics bootstrap, no tag attempt at allowed production hostname; resolved case alone cannot enable Prepare; separately approved exact owner request, current proof cleared on submit, no automatic download; native explicit Save yields expected JSON and filenames; next cursor remains disabled until Save and manual continuation repeats proof; two real downloads; coverage explicitly incomplete; no account/report/proof/cursor values in local/session storage or displayed exported report body; phone dialog stays within viewport without horizontal overflow and Save is44px minimum. Escape rejects late pending reply, disconnect disposes pending/prepared data. Ordinary tagged document exposes no export password input and requires fresh query navigation, then private bootstrap suppresses tag."
+    },
+    {
+      "scope": "Focused client regressions and release wiring",
+      "result": "Five Jest suites99 tests pass6.448s: owner-download formats/bounds/cursors/proof/lifecycle, sensitive bootstrap, login account support, browser plan and actual orchestration. New privacy stage is required once on existing browser shard3; discovery-only union verifies282 exact cases with no omissions/duplicates. Affected ESLint passes. No unchanged full-browser/gameplay/capacity/raid rerun."
+    },
+    {
+      "scope": "Initial setup correction",
+      "result": "Initial four cases stopped before login due absent generated vendor/protobuf and vendor/three runtime files in this worktree. Existing npm run prepare:client generated the dependencies; app-ready attribute now checked before interaction. Desktop rerun passes5.0s total, followed by all four native checks. No production bug or server change inferred from the unprepared fixture."
+    },
+    {
+      "scope": "Production read-only observation",
+      "result": "Frontend release.json and backend /healthz identify Alpha1.74.7 commit7af0b2798f0cb0b2ed245736df0c95aacedff586; backend database ready. An initial /api/health guess returned404; source-confirmed /healthz passes. No1.75 publication or deployment occurred."
+    }
+  ],
+  "ownerSettings": "Owner reports GA4 event data2 months, user data14 months, history page views/forms/outbound clicks/reset-on-new-activity enabled; Postmark45 days and not editable. Recorded as owner observations, not independent dashboard verification. All settings preserved; no further owner dashboard information requested.",
+  "limitations": [
+    "Browser transport and provider are synthetic. This proves actual UI/native download/bootstrap behavior, not actual Mongo approval/password checks or real Google's automatic event payloads; separate existing server/Mongo evidence covers the server boundary.",
+    "Phone-sized desktop Chrome is not a real-device check; no real player data, credentials, email or Google collection was used.",
+    "Exports are nineteen bounded current-owner sections with explicit omissions, not a complete account archive or restore image. Removal remains administrator-reviewed requests/read-only dependency review; no erasure action enabled or performed.",
+    "Actual schema23 release transition, compatible legacy-journal drain/consistent backup, release notes/version/master integration/CI and exact live acceptance remain. Full roadmap goal stays active."
+  ]
+}

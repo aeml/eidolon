@@ -12,10 +12,10 @@
     "ga4UserDataRetentionMonths": 14,
     "ga4FormInteractions": true,
     "ga4OutboundClicks": true,
-    "ga4ResetUserDataOnNewActivity": "unconfirmed",
+    "ga4ResetUserDataOnNewActivity": true,
     "history": [
       {"date": "2026-10-05", "observations": "Postmark retention45 days, not editable on the current account; GA4 history-based page views enabled."},
-      {"date": "2026-10-06", "observations": "Owner reports event data2 months, user data14 months, Form interactions and Outbound clicks enabled. Values recorded as reported, without independent dashboard verification."}
+      {"date": "2026-10-06", "observations": "Owner reports event data2 months, user data14 months, Form interactions and Outbound clicks enabled; separately confirms Reset user data on new activity enabled. Values recorded as reported, without independent dashboard verification."}
     ]
   },
   "status": "provider-code-documentation-reviewed-analytics-boundary-locally-verified-unpublished",
@@ -41,7 +41,7 @@
     {"scope": "Static/isolation", "result": "Affected ESLint and whitespace checks pass; two JSON records parse and all113 referenced source paths exist. Fresh fetch shows no remote commits beyond the current base7af0b279. No production/player/provider writes, schema/TTL changes, actual-device/provider network acceptance, deployment or unchanged long campaign/capacity/raid replay."}
   ],
   "remaining": [
-    "Owner confirms Postmark45 days/not editable, GA4 history-based page views, Form interactions and Outbound clicks enabled, event data2 months and user data14 months. Reset user data on new activity remains an optional read-only confirmation; independent automatic-event/private-navigation network checks remain open. No credentials requested or settings changed.",
+    "Owner confirms Postmark45 days/not editable, GA4 history-based page views, Form interactions, Outbound clicks and reset-on-new-activity enabled, event data2 months and user data14 months. No further owner dashboard confirmation requested; independent automatic-event/private-navigation network checks remain open. No credentials requested or settings changed.",
     "Mechanical coordinated removal/writer/journal/archive safeguards before any erasure operation, provider clarification/qualified review as needed, and full1.75 notes/version/merge/CI/exact live acceptance.",
     "Full1.99 roadmap objective remains active; this is not complete account export/removal or beta/full-release acceptance."
   ]

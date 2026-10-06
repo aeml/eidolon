@@ -43,7 +43,7 @@ test('file families partition the unchanged local anonymous command exactly once
 
 test('each supplemental file stays in exactly one required job', () => {
     const extras = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard).slice(3));
-    expect(extras.map(stage => stage.name)).toEqual(['nameplates', 'resource-hud', 'interface', 'crystal-art', 'interface', 'interface']);
+    expect(extras.map(stage => stage.name)).toEqual(['nameplates', 'resource-hud', 'interface', 'crystal-art', 'interface', 'privacy', 'interface']);
     const supplementalFiles = extras.flatMap(stage => stage.files);
     expect(new Set(supplementalFiles).size).toBe(supplementalFiles.length);
     for (const stage of extras) expect(stage.args.some(arg => arg.startsWith('--shard='))).toBe(false);
@@ -79,7 +79,7 @@ test('integrated desktop presentation checks run once in the existing interface 
 });
 
 test('baseline preserves the complete current release workflow command union', () => {
-    const files = ['anonymous', 'nameplates', 'resource-hud', 'crystal-art', 'interface']
+    const files = ['anonymous', 'nameplates', 'resource-hud', 'crystal-art', 'privacy', 'interface']
         .flatMap(name => manifest.scripts[`test:e2e:${name}`].split(/\s+/).slice(2));
     expect(browserSmokeBaselineFiles(manifest).slice().sort()).toEqual(files.slice().sort());
     expect(new Set(files).size).toBe(files.length);
@@ -94,6 +94,14 @@ test('interface additions follow the manifest into the sole required interface s
     expect(browserSmokeBaselineFiles(changed)).toContain(added);
     delete changed.scripts['test:e2e:interface'];
     expect(() => buildBrowserSmokePlan(changed, 1)).toThrow('interface');
+});
+
+test('native private downloads run once, without test sharding or duplicated fixture setup', () => {
+    const plans = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard));
+    const stages = plans.filter(stage => stage.files.includes('tests/e2e/owner-export-download.spec.js'));
+    expect(stages.map(stage => stage.name)).toEqual(['privacy']);
+    expect(stages[0].args.some(arg => arg.startsWith('--shard='))).toBe(false);
+    expect(browserSmokeBaselineFiles(manifest)).toContain('tests/e2e/owner-export-download.spec.js');
 });
 
 test('expanded story crystal art remains mandatory once in the integrated browser gate', () => {
