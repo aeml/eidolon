@@ -75,6 +75,14 @@ not relax the every-player impact gate or establish encounter/capacity success.
 another target. It never contributes to the selected-target pass criterion; use
 it to distinguish missing impacts from target-selection/area-damage attribution.
 
+Combined cohorts now coordinate one current observed enemy target per party,
+so independent parties do not all select the same closest enemy. Claims are
+bounded by the configured party count (at most five), released when the target
+dies/disappears or the party fails, and never count as damage or healing. The
+normal search radius, combat anchor, real enemy population, gear and impact
+requirements stay unchanged. Standalone party/dungeon/raid/event profiles do not
+use this coordination. Unit/race coverage is not a native capacity pass.
+
 The existing isolated nightly runner now requires exactly one complete summary
 and each coverage line, no read/write/decode/admission failures, all100 clients
 authenticated and covered, and
