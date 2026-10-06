@@ -697,7 +697,7 @@
 
         <!-- Help Screen -->
         <div id="help-screen" class="window support-window support-window--help" style="display: none;">
-            <div class="window-header"><span>CONTROLS</span><button id="btn-close-help-header" class="close-btn" type="button" aria-label="Close help">×</button></div>
+            <div class="window-header"><span>PLAYER GUIDE</span><button id="btn-close-help-header" class="close-btn" type="button" aria-label="Close help">×</button></div>
             <div class="support-window__body support-window__body--help">
                 <details id="help-alpha-status" class="help-guide help-alpha-status">
                     <summary>Open alpha · Known limits &amp; reporting</summary>
@@ -739,14 +739,14 @@
                         <div><strong class="help-guide__key">Movement:</strong> Left Click to move, Click and Hold to keep moving, Shift + Left Click to move without interacting, WASD to pan camera</div>
                         <div><strong class="help-guide__key">Combat:</strong> Left Click for melee/basic attack, Right Click to use your selected ability, 1-4 for hotbar abilities</div>
                         <div><strong class="help-guide__key">Navigation:</strong> M opens World Map, J opens Journal, I opens Inventory, C opens Character Sheet</div>
-                        <div><strong class="help-guide__key">Camera:</strong> Scroll zooms, Spacebar toggles camera lock, Ctrl-click triggers the jump-style movement read</div>
+                        <div><strong class="help-guide__key">Camera:</strong> Scroll zooms; the default Spacebar binding toggles camera lock. Ctrl-click (Command-click on Mac) jumps toward the cursor; normal landing restrictions apply, and the casino is walking-only.</div>
                     </div>
                 </div>
                 <div id="help-first-hour-guide" class="help-guide help-guide--separated">
                     <div class="help-guide__title">Starting Your Journey</div>
                     <div><strong>Need help?</strong> Use Menu → Report Bug / Feature → Account / Progress Help for lost progress, a stuck character or failed world entry. After signing in, Account help also works before entering the world. Include the approximate time and keep the saved reference to check status. For sign-in problems, use Forgot your password? / Recovery link when you have a verified recovery email. Never share passwords or recovery links. No guaranteed response time or automatic restoration; payments are not enabled.</div>
                     <div class="phone-menu-action"><strong>Touch combat:</strong> Move with the joystick. Tap an enemy to select it, then press Attack, Skill or a hotbar ability. Tap overlapping enemies again to cycle the selection. Tap empty ground or the target's × button to cancel pursuit. Without a selected enemy, directional skills cast ahead of your hero. Tap a lore object or press Use nearby to read it. Pinch the world to zoom; Menu → Reset Camera restores the default view.</div>
-                    <div><strong class="help-guide__key">1.</strong> Meet <strong>Archmage Ilyra</strong> in town to accept your <strong>Fourfold Chronicle</strong> beneath her gold quest marker. Visit the <strong>Quest Giver</strong> outside the <strong>Forge</strong> for blue-marked daily contracts. Return to the appropriate giver and click <strong>Complete Quest</strong> to receive your rewards.</div>
+                    <div><strong class="help-guide__key">1.</strong> Meet <strong>Archmage Ilyra</strong> in town to accept your <strong>Fourfold Chronicle</strong> beneath the gold quest marker. Visit the <strong>Quest Giver</strong> outside the <strong>Forge</strong> for blue-marked daily contracts. Return to the appropriate giver and click <strong>Complete Quest</strong> to receive your rewards.</div>
                     <div><strong class="help-guide__key">2.</strong> Open <strong>Inventory (I)</strong> to compare and equip useful drops. Favor <strong>Strength</strong> for Fighters, <strong>Dexterity</strong> for Rogues, <strong>Intelligence</strong> for Wizards and <strong>Wisdom</strong> for Clerics; <strong>Vitality</strong> helps every class survive. Use <strong>Vendor / Repair</strong> for obvious junk, <strong>Stash</strong> for anything you may keep, and <strong>Forge</strong> for Shards, Hearts, and Gems.</div>
                     <div><strong class="help-guide__key">Train:</strong> Open <strong>Skill Tree (K)</strong>, spend earned training points, and place learned abilities on your hotbar. On phones, use <strong>Menu → Skills &amp; Runes</strong> and the bag button instead of keyboard shortcuts.</div>
                     <div><strong class="help-guide__key">Recover:</strong> Anywhere inside Lanternhold restores <strong>10% of health and mana each second</strong>. Time in town builds <strong>Well Rested</strong>, up to two hours: <strong>10% more stats</strong> and <strong>25% more enemy-kill XP</strong>. Its timer runs only outside safe zones. Roadside camps are not safe zones.</div>
@@ -764,6 +764,66 @@
                     <div><strong class="help-guide__key">A season to improve:</strong> Arena and guild dungeon seasons follow calendar quarters, beginning <strong>January, April, July and October at 00:00 UTC on the first day</strong>. Check the arena for qualification, rewards and your season record. Earned Honor remains yours; seasonal rankings are not a character or story wipe.</div>
                     <div><strong class="help-guide__key">Together, or a quieter evening:</strong> Party members share kill credit throughout the same dungeon; in the overworld, stay within roughly two screens of the fight. Everyone turns in their own quests. Find companions, work on a build, trade at the <strong>Trading House</strong>, or visit the casino for optional entertainment—not guaranteed income. You do not need to finish every activity each day.</div>
                 </div>
+                <details id="help-equipment-guide" class="help-guide help-guide--separated help-reference">
+                    <summary>Classes, equipment and your bag</summary>
+                    <p>Compare the item type, required level and stat changes before equipping. A red type warning means your class cannot use that armor or weapon. These are the current armor families:</p>
+                    <dl class="help-guide__grid">
+                        <div data-guide-class="Fighter" data-guide-armor="cloth leather plate"><dt>Fighter · Strength</dt><dd>Cloth, leather and plate. Build for the role of your chosen specialization; Vitality helps you stay alive.</dd></div>
+                        <div data-guide-class="Cleric" data-guide-armor="cloth leather plate"><dt>Cleric · Wisdom</dt><dd>Cloth, leather and plate. Check your healing target and learned abilities before the group starts.</dd></div>
+                        <div data-guide-class="Rogue" data-guide-armor="cloth leather"><dt>Rogue · Dexterity</dt><dd>Cloth and leather. Your offhand must be a weapon; equipping two legal weapons reduces your basic-attack interval to two-thirds of its single-weapon value.</dd></div>
+                        <div data-guide-class="Wizard" data-guide-armor="cloth"><dt>Wizard · Intelligence</dt><dd>Cloth only. Check your selected ability and mana before a pull; armor appearance does not change eligibility.</dd></div>
+                    </dl>
+                    <p>Rogues cannot use staves, shields or tomes; their offhand is weapon-only. Fighters and Clerics can use every current weapon family. Other gear must still fit its slot and required level. Unknown legacy gear may have a generic type label; the server checks each equip request.</p>
+                    <p>Open Skills &amp; Runes to spend earned points, read your specialization's abilities and assign learned skills to the hotbar. Check the Talent Master’s current reset quote before changing a build; this guide does not promise a free reset.</p>
+                    <p>Keep quest items for your objectives. For ordinary bag items, desktop drag-to-ground uses the world canvas, not another menu; on touch, open item details and review Confirm drop. Dropped ground loot expires after one minute. Use the Stash for items you want to keep, and check Vendor / Repair’s selling selection before selling.</p>
+                </details>
+                <details id="help-party-guide" class="help-guide help-guide--separated help-reference">
+                    <summary>Parties, raids and player safety</summary>
+                    <p>Use Group Finder to advertise an activity and roles, or arrange it with your guild. Joining a listing does not bypass anyone’s level or story requirements. For dungeons, plan a tank, a healer and damage dealers; solo Normal entry is possible, but does not mean every encounter is balanced for one player.</p>
+                    <p>Raids need a formed 5–10-player raid and a launch ready check in the Party panel. Every traveler must qualify personally and be alive, connected and in the required launch location. The leader starts a new run; each member uses Continue when returning to an existing run.</p>
+                    <p>Party kill credit is shared inside the same dungeon. In the overworld, stay within roughly two screens of the fight for shared XP and credit. Accept objectives before attempting them, and claim your own ready quests; a leader’s turn-in does not claim everyone’s rewards.</p>
+                    <p>Social and Player safety provide contact and chat controls. A player report or moderation appeal requests private review, not an automatic penalty or reversal. Arena participation and earned Honor are separate from story progress; check the current arena’s rules and rewards before joining.</p>
+                </details>
+                <details id="help-instance-guide" class="help-guide help-guide--separated help-reference">
+                    <summary>Story, dungeon gates and the Dark Realm portal</summary>
+                    <p>Follow the Journal’s current route and visit Ilyra for saved Chronicle investigations and turn-ins. Finishing an objective makes it ready, not claimed. Optional roadside lore does not replace an accepted investigation.</p>
+                    <ul>
+                        <li data-guide-dungeon="verdant_bastion_catacombs" data-guide-min-level="30">Verdant Bastion Catacombs · Earth · level 30 minimum.</li>
+                        <li data-guide-dungeon="abyssal_well" data-guide-min-level="60">Abyssal Well · Water · level 60 minimum.</li>
+                        <li data-guide-dungeon="molten_core" data-guide-min-level="70">Molten Core · Fire · level 70 minimum.</li>
+                        <li data-guide-dungeon="tempest_spire" data-guide-min-level="70">Tempest Spire · Air · level 70 minimum.</li>
+                        <li data-guide-dungeon="umbral_nexus" data-guide-min-level="100">Umbral Nexus · Dark Realm · level 100 minimum and personal story eligibility.</li>
+                    </ul>
+                    <p>The realm dungeon finishes that area’s chapter and gives access to its crystal raid after your personal turn-in. Clear the full raid and guardian, then defend Artificer Maelin through all three repair waves. Each wave also has a ritual task; read the Guide’s Guardian, Vigil and personal rewards briefing. Killing the guardian alone does not restore the crystal. Return to Ilyra and claim each ready repair quest.</p>
+                    <p>Find the Fourfold Resonance Portal in Lanternhold’s southeast plaza, east of the Dungeon Guide and south of Ilyra. Each traveler needs level 100 and all four claimed crystal restorations; the leader cannot unlock it for you. Eligible veteran passage remains preserved. The Dungeon Guide also offers passage.</p>
+                    <p>The portal reaches the shared Dark Realm’s safe Resonant Foothold. Speak with Ilyra’s projection and continue the expedition. The Umbral Nexus is a separate party-owned dungeon; finish its route and personally claim the ready Fifth Note before preparing the Dark King raid. Reaching level 100 alone does not skip this story.</p>
+                    <p>Use Return to Lanternhold from the game menu to recover. Continue returns you to the latest cleared boss checkpoint, or the entrance before the first boss. A completely empty live run expires after 5 minutes; saved dungeon logout restoration has a separate 15-minute window. Watch the Guide’s timer. Reset is a new run: everyone must leave first, and only the leader can reset.</p>
+                    <p>Heroic and Mythic require level 100. The live Guide’s eligibility, available run levels and encounter warnings are authoritative; old saved runs can retain their original scaling. Clearing or resetting an instance does not reset the weekly reward limit.</p>
+                </details>
+                <details id="help-crafting-guide" class="help-guide help-guide--separated help-reference">
+                    <summary>Forge, repairs and long-term gear</summary>
+                    <p>Visit Vendor / Repair for equipment repairs, and the Forge for item progression. Shards support item levels; Hearts support potency and sockets; Gems are used at the Forge. Read the selected tab’s current material cost, required level, stat preview and affordability before spending.</p>
+                    <p>The Forge shows server-confirmed item and material updates. A preview is not proof that an upgrade was saved. If a request is unavailable or unconfirmed, keep the item and report the issue rather than repeatedly spending or expecting an automatic compensation.</p>
+                    <p>Check the resulting item’s level requirement and whether it fits your class. Potency +20 is a long-term endgame goal, not a promised campaign requirement. Moderate potency and appropriately leveled Uncommon/Rare gear are useful starting preparations, not guaranteed raid success.</p>
+                    <p>Store meaningful alternatives in the Stash. Review a saved equipment loadout in town before applying it; changing appearance or cosmetics does not grant combat stats.</p>
+                </details>
+                <details id="help-economy-guide" class="help-guide help-guide--separated help-reference">
+                    <summary>Gold, EP, trading and Lanternhold Casino</summary>
+                    <p>Gold is the ordinary currency for vendors, trade and the public casino. Compare a Trading House listing’s item, price and current state before committing; pending claims and settlements are not a reason to submit a second transaction.</p>
+                    <p>EP means Eidolon Points. In town, Character → Eidolon Points · EP offers the one-way exchange of 1,000,000 Gold for 1 EP. You cannot exchange EP back into Gold or transfer it to another player. EP is for cosmetics and EP casino play, never equipment power or an auction-house shortcut. Owning EP does not grant VIP access. Veyra’s VIP Outfitter beside the casino entrance sells cosmetic appearances.</p>
+                    <p>Click Lanternhold Casino’s door, choose Enter casino, then walk to a table or machine and interact to sit. Leaving returns world controls and camera behavior. The public floor uses Gold; speak to the VIP Guard for upstairs access. The VIP floor uses EP, and EP wagers return only EP.</p>
+                    <p>Blackjack supports solo play against the dealer or a shared table, shows each hand’s count, and pays 3:2 profit for a qualifying natural blackjack, plus the original stake; a dealer natural can push. Hold’em needs enough real players and does not fill seats with house bots. Watch the shared round and your turn timer; choose a legal bet between rounds, not during a locked round.</p>
+                    <p>Current Gold wager or poker buy-in limits reach 100,000; EP limits reach 100. Minimums and steps differ by game—use that table’s controls. Slots animate results and can queue auto spins; Stop Auto stops unstarted paid spins. Confirmed wagers continue under their server rules if you leave; leaving is not a refund. Earned slot features remain saved.</p>
+                    <p>VIP includes a recorded monthly allowance of 100 EP; administrators receive VIP access and the same monthly allowance. Payment integration is not available. Membership records do not authorize EP-to-Gold conversion or gameplay-power rewards.</p>
+                    <p>Casino play is optional and can lose currency. The voluntary play-time limit and Take a break controls apply to this browser visit only, not an account lock. A break stops new opening wagers, not decisions in an already funded hand. Leaving the casino clears that visit timer. Winnings are not guaranteed income, and this guide is not a promise about future commerce.</p>
+                </details>
+                <details id="help-settings-guide" class="help-guide help-guide--separated help-reference">
+                    <summary>Controls, settings, accessibility and known limits</summary>
+                    <p>Keyboard shortcuts in journey examples are defaults. Settings → Keyboard shows your current bindings and lets you change them; the main control labels update to match. On touch, use Menu, the bag button and skill controls rather than relying on keyboard shortcuts.</p>
+                    <p>Try Low graphics if play feels uneven; adjust camera zoom and use Reset Camera when needed. Settings include audio and readable-effect controls. Ground warnings, target feedback and quest text matter more than decorative effects—report anything that becomes unreadable with reduced effects.</p>
+                    <p>Phone-sized Chrome layouts have targeted checks, not a guarantee for every device. Real-phone sustained dungeon/party play and crowded multiplayer headroom remain under review. Campaign pacing is a playtest target, not a guarantee; public IPv4 checks do not establish IPv6 reachability.</p>
+                    <p>Use Account / Progress Help for lost progress or failed entry, and ordinary bug reports for repeatable UI/gameplay problems. Keep the saved report reference. Optional playtest summaries stay local unless you explicitly choose to share them; never attach credentials, recovery links or private chat dumps.</p>
+                </details>
             </div>
             <div class="support-window__footer">
                 <button id="btn-close-help" class="menu-btn">Close</button>

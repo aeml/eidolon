@@ -42,6 +42,20 @@ for (const width of [1280, 390]) test(`class and journey guidance remain readabl
         await entry.scrollIntoViewIfNeeded();
         expect(await entry.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
     }
+    for (const id of ['equipment', 'party', 'instance', 'crafting', 'economy', 'settings']) {
+        const chapter = help.locator(`#help-${id}-guide`), summary = chapter.locator(':scope > summary');
+        await expect(chapter).not.toHaveAttribute('open', '');
+        await summary.scrollIntoViewIfNeeded();
+        expect((await summary.boundingBox()).height).toBeGreaterThanOrEqual(44);
+        await summary.focus(); await page.keyboard.press('Enter');
+        await expect(chapter).toHaveAttribute('open', '');
+        expect(await chapter.evaluate(node => node.scrollWidth <= node.clientWidth + 1)).toBe(true);
+        const overflow = await chapter.locator('p, li, dd').evaluateAll(nodes => nodes.some(node => node.scrollWidth > node.clientWidth + 1));
+        expect(overflow).toBe(false);
+        if (id === 'equipment') await page.screenshot({ path: testInfo.outputPath('class-equipment-reference.png') });
+        await summary.focus(); await page.keyboard.press('Enter');
+        await expect(chapter).not.toHaveAttribute('open', '');
+    }
     await page.locator('#btn-close-help-header').click(); await expect(help).toBeHidden();
     expect(failures, failures.join('\n')).toEqual([]);
 });

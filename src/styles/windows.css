@@ -514,6 +514,20 @@
     color: #ffd700;
 }
 
+.help-reference > summary {
+    box-sizing: border-box;
+    min-height: 44px;
+    padding-block: 10px;
+    color: #e7c77f;
+    cursor: pointer;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+.help-reference > summary:focus-visible { outline: 2px solid #e7c77f; outline-offset: -2px; }
+.help-reference p, .help-reference li, .help-reference dd { line-height: 1.5; overflow-wrap: anywhere; }
+.help-reference dt { font-weight: 600; color: #e7c77f; }
+.help-reference dd { margin: 4px 0 12px; }
+
 .help-guide__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

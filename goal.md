@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 prepared1.85 Player Guide:** Expand existing in-game Help with six
+native collapsed chapters: class/equipment/bag, party/safety, story/dungeon/portal,
+Forge, Gold/EP/casino and settings/known limits. Source-check armor and weapon
+rules, personal turn-ins, exact town portal directions, current entry floors and
+separate5m empty/15m logout timers. Correct the unsupported casino spending-limit
+claim to actual browser-visit time controls, not an account lock; preserve all
+no-power/no-payment and unverified device/pacing/headroom boundaries. Missing
+chapters produce five RED regressions; five focused client suites PASS104 distinct
+checks and seven authoritative server-rule race tests pass. Two-size actual
+UIManager/System Chrome reference checks PASS34.3s; final copy phone check
+PASS16.6s and guide recheck PASS5 cases4.68s in the dedicated receipt. No gameplay,
+balance, account data or live release
+change. Draft notes prepared; ordered integration/publication and owner reader/
+pacing review stay open. Full goal remains active.
+
 **October6 prepared1.84 account/progress support:** Signed-in players who cannot
 enter the world can now submit a private Account / Progress Help case through
 Account help; the same category is in the ordinary in-game form and strict staff
