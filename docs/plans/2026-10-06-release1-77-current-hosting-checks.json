@@ -7,7 +7,7 @@
   "currentIntegrationFollowUp": {
     "master": "5757232598c353fe6bc76ca7fd65283019d62693 merged normally; includes accepted1.75 receipt and1.76 named-index CI correction. No own1.77 release claim.",
     "documentation": "Canonical fresh certificate request/dry-run now names only play.eidolonrealms.com lineage, with existing-name inspection rather than renaming. Document explicit Compose project/port/private env/Mongo/log-journal separation, no production provider/account copying, unchanged strict browser origins and unless-stopped/manual-stop restart boundaries.",
-    "publicIPv4Websocket": "One anonymous bounded HTTP1.1 upgrade to https://server.eidolonrealms.com/ws with canonical play Origin returned101 and received5748 bytes before deliberate3-second curl deadline closed it. No authentication, account creation or game command. Exit28 is the imposed open-socket observation deadline, not an HTTP failure. Does not prove long idle sessions, authenticated gameplay, IPv6 or1.77 acceptance.",
+    "publicIPv4Websocket": "One anonymous bounded HTTP1.1 upgrade to https://server.eidolonrealms.com/ws with canonical play Origin returned101 and received5748 bytes before deliberate3-second curl deadline closed it. A second bounded foreign.example.invalid Origin upgrade correctly returned403. No authentication, account creation or game command. Exit28 on the accepted socket is the imposed open-socket observation deadline, not an HTTP failure. Does not prove long idle sessions, authenticated gameplay, IPv6 or1.77 acceptance.",
     "publicReadiness": "Independent bounded IPv4 /healthz reports56d9fda91a964890d8777bbce91a1c67869fd9c3, Alpha1.75.0, statusok/databaseready. Corrected1.76 CI37403492653 is in progress, not accepted."
   },
   "existingTargetFollowUp": {
@@ -28,7 +28,7 @@
     "addressFamilies": "Backend DNS followseserver.ddnsfree.com toIPv447.203.222.61 and AAAA2600:1006:b0bd:84e5:60d1:a304:d809:beff. This host has no defaultIPv6 route; its bounded publicIPv6 request cannot connect. That observation does not establish external-client reachability or prove the AAAA is stale. Owner previously deferred DDNS/IPv6 changes; settings remain untouched."
   },
   "remaining": [
-    "Ordered1.75/1.76 exact-source release acceptance, then own1.77 labels/notes/CI/live gate; not a published milestone.",
+    "1.75 exact-source live acceptance is complete; corrected1.76 release still needs own exact-source acceptance, then own1.77 labels/notes/CI/live gate. This is not a published1.77 milestone.",
     "Owner-approved actual certificate challenge/renewal evidence and supported public-address-family decision before launch. Do not infer challenge success from timer success or externalIPv6 failure from a host with noIPv6 route.",
     "Keep restart/environment-separation scopes explicit; no disruptive reboot, shared nginx reload, production restore, external DNS/provider mutation or claimed100-player capacity. Full roadmap remains active."
   ]
