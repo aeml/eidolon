@@ -3,7 +3,22 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.75.0';
+const currentVersion = '1.76.0';
+
+test('1.76.0 explains bounded persistence and preserves historical data without claiming capacity', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.76.0"'), previous = html.indexOf('data-version="1.75.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['selected save', 'Original first-character selection', 'account identity',
+        'per-account lock shards', 'ownership checks', 'compact durable checkpoints',
+        'Existing receipts', 'Gold and EP', 'do not duplicate', 'startup batches',
+        'Outstanding claims', 'funded payouts', 'Schema24', 'Schema25', 'backups',
+        'older writers', 'not a safe downgrade', 'No account wipe', 'receipt pruning',
+        'retention change', 'payout-rule change', 'Historical receipts can still grow',
+        'not 100-player capacity certification', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.75.0 documents reviewed private exports without claiming erasure or full account coverage', () => {
     const html = fs.readFileSync('index.html', 'utf8');
