@@ -56,6 +56,9 @@ func TestLoadPartyActualCombatAndSavedGear(t *testing.T) {
 		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Party coverage): [a-z_0-9= ]+$`).FindString(line); match != "" {
 			t.Log(match)
 		}
+		if match := combinedRoleEvidencePattern.FindString(line); match != "" {
+			t.Log(match)
+		}
 	}
 	if runErr != nil {
 		t.Fatal("actual party driver failed; raw synthetic socket logs omitted")

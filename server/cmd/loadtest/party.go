@@ -20,6 +20,7 @@ type partyLoadMember struct {
 	readyAt                                  map[string]time.Time
 	changed                                  chan struct{}
 	damage, heals, casts, denials, xpUpdates uint64
+	unmatchedDamage                          uint64
 	offenseTargetID, offenseScene            string
 }
 
@@ -65,6 +66,7 @@ type partyLoadCounts struct {
 // that failed the existing every-member combat gate.
 type partyRoleCounts struct {
 	participants, confirmed, minImpacts, damage, heals, casts, denials uint64
+	unmatchedDamage                                                    uint64
 }
 
 func (c *partyRoleCounts) merge(other partyRoleCounts) {
@@ -80,6 +82,7 @@ func (c *partyRoleCounts) merge(other partyRoleCounts) {
 	c.heals += other.heals
 	c.casts += other.casts
 	c.denials += other.denials
+	c.unmatchedDamage += other.unmatchedDamage
 }
 
 func newPartyLoad(credentials []BotCredentials, x, z float64) *partyLoad {
@@ -287,6 +290,10 @@ func (p *partyLoad) receive(index int, message Message, now time.Time) bool {
 		ownWrittenTarget := m.offenseTargetID != "" && event.TargetID == m.offenseTargetID && event.InstanceID == m.offenseScene
 		if message.Type == "damage" && (currentTarget || ownWrittenTarget) {
 			m.damage++
+		} else if message.Type == "damage" && event.TargetID != "" {
+			// Diagnostic only. An own positive same-scene event against another
+			// target never bypasses the existing selected-target impact gate.
+			m.unmatchedDamage++
 		}
 		if message.Type == "heal" {
 			for _, member := range p.members {
@@ -330,6 +337,7 @@ func (p *partyLoad) counts() partyLoadCounts {
 		c.roles[i%len(c.roles)].merge(partyRoleCounts{
 			participants: 1, confirmed: confirmed, minImpacts: impacts,
 			damage: m.damage, heals: m.heals, casts: m.casts, denials: m.denials,
+			unmatchedDamage: m.unmatchedDamage,
 		})
 		if i == 0 || impacts < c.minImpacts {
 			c.minImpacts = impacts

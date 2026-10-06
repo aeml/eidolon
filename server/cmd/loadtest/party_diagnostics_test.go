@@ -1,6 +1,39 @@
 package main
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
+
+func TestPartyRoleDiagnosticsDistinguishUnmatchedDamageWithoutCountingImpact(t *testing.T) {
+	p, _ := partyFixture()
+	now := time.Unix(100, 0)
+	for _, test := range []struct {
+		source, target, scene string
+		amount                int
+	}{
+		{p.members[0].id, "unmatched-enemy", "", 12},
+		{"foreign-source", "unmatched-enemy", "", 12},
+		{p.members[0].id, "unmatched-enemy", "other-scene", 12},
+		{p.members[0].id, "unmatched-enemy", "", 0},
+		{p.members[0].id, "", "", 12},
+	} {
+		p.receive(0, partyMessage("damage", map[string]interface{}{
+			"sourceId": test.source, "targetId": test.target,
+			"instanceId": test.scene, "amount": test.amount,
+		}), now)
+	}
+	got := p.counts()
+	if got.roles[0].unmatchedDamage != 1 || got.damage != 0 || got.minImpacts != 0 {
+		t.Fatalf("unmatched diagnostic changed combat acceptance: %+v", got)
+	}
+	var total partyRoleCounts
+	total.merge(got.roles[0])
+	total.merge(got.roles[0])
+	if total.unmatchedDamage != 2 || total.minImpacts != 0 {
+		t.Fatal("unmatched diagnostic lost across groups or relaxed the zero gate")
+	}
+}
 
 func TestPartyRoleDiagnosticsKeepZeroImpactAndSeparateClasses(t *testing.T) {
 	p, _ := partyFixture()
