@@ -101,6 +101,7 @@ volumes:
 		return run(nil, "compose", "exec", "-T", service, "sh", "-c", shell+"'"+code+"'")
 	}
 	resume := roomPreparedResume("dungeon_retained")
+	resume.Layout.Rooms[1].Type, resume.Layout.Rooms[1].Hook = "boss", ""
 	resume.PartyID, resume.CurrentRoomIndexValue = "retained-party", 2
 	resume.Rooms[0] = database.DungeonRoomProgress{Explored: true, Cleared: true}
 	resume.Rooms[1] = database.DungeonRoomProgress{Explored: true, Cleared: true, Rewarded: true}
@@ -172,6 +173,7 @@ d.users.createIndex({username:1},{name:"username_1",unique:true});`, strconv.Quo
 	if err := game.ValidateDungeonLayout(dungeonResumeFromDatabase(restoredCharacter.DungeonProgress).Layout); err != nil {
 		t.Fatal("restored canonical dungeon geometry is invalid", err)
 	}
+	verifyArchiveDungeonRuntime(t, restoredCharacter.DungeonProgress)
 	js("mongo", `const d=db.getSiblingDB("eidolon"); d.users.updateOne({_id:"owner"},{$set:{"characters.0.gold":999}}); d.later_operation_ledger.insertOne({_id:"newer-pending",state:"pending"});`)
 	before := js("mongo", snapshot)
 	if output, err := restore(archive, false); err == nil || !bytes.Contains(output, []byte("target is not empty")) {
@@ -205,5 +207,77 @@ d.users.createIndex({username:1},{name:"username_1",unique:true});`, strconv.Quo
 		t.Fatal("explicit replacement retained later ledger or changed original private state/indexes")
 	}
 	js("mongo", `if(db.getSiblingDB("unrelated_fixture").sentinel.countDocuments({_id:"keep",value:43})!==1) quit(1);`)
-	t.Log("fresh restore and scoped replacement preserve current schema marker, exact wallet/guild/rested/saved-instance metadata and indexes; refusal/preflight leave destination unchanged; unrelated database retained. Archive fidelity only, not actual game hydration or dungeon expiry/checkpoint acceptance")
+	t.Log("fresh restore and scoped replacement preserve current schema marker, exact wallet/guild/rested/saved-instance metadata and indexes; restored BSON recreates one remaining boss, preserves cleared/rewarded rooms and enters at the cleared boss checkpoint without changing resources. Refusal/preflight preserve destination and unrelated database. Not authenticated login/expiry, normal game-process restart or settlement acceptance")
+}
+
+// This consumes the actual restored BSON resume through the game's runtime
+// restoration/entry paths. It is not authenticated login or expiry validation;
+// those policies must still run before a character is allowed to resume.
+func verifyArchiveDungeonRuntime(t *testing.T, saved *database.CharacterDungeonResume) {
+	t.Helper()
+	w := game.NewWorld(nil)
+	defer w.StopBackground()
+	resume := dungeonResumeFromDatabase(saved)
+	if err := w.RestoreDungeon(resume); err != nil {
+		t.Fatal("restored archive cannot recreate its dungeon", err)
+	}
+	actual, ok := w.GetDungeonResumeSnapshot(resume.ID)
+	if !ok || !reflect.DeepEqual(actual, resume) {
+		t.Fatal("runtime restoration changed saved layout, rooms or run identity")
+	}
+	encounters := func() map[string]string {
+		w.Mu.RLock()
+		defer w.Mu.RUnlock()
+		result := map[string]string{}
+		for id, e := range w.Entities {
+			if e.Type != game.TypeEnemy {
+				continue
+			}
+			e.Mu.RLock()
+			inRun, alive := e.InstanceID == resume.ID, e.Health > 0
+			x, z, kind := e.SpawnX, e.SpawnZ, e.SubType
+			e.Mu.RUnlock()
+			if inRun {
+				room := resume.Layout.Rooms[2]
+				if !alive || x != room.X || z != room.Z {
+					t.Fatal("cleared encounters revived or remaining boss is not alive in its saved room")
+				}
+				result[id] = kind
+			}
+		}
+		return result
+	}
+	before := encounters()
+	if len(before) != 1 {
+		t.Fatal("restored run must spawn only its one uncleared boss")
+	}
+	if err := w.RestoreDungeon(resume); err != nil || !reflect.DeepEqual(before, encounters()) {
+		t.Fatal("repeat restoration duplicated or replaced the remaining encounter", err)
+	}
+	player := &game.Entity{ID: "player-archive-runtime", Type: game.TypePlayer,
+		Health: 17, MaxHealth: 100, Mana: 0, MaxMana: 50, Gold: 1184, EP: 83,
+		X: 0, Z: 200, State: "IDLE", PartyID: resume.PartyID}
+	w.AddEntity(player)
+	if err := w.EnterInstance(player.ID, resume.ID); err != nil {
+		t.Fatal("restored run cannot accept the game scene-entry path", err)
+	}
+	checkpoint := resume.Layout.Rooms[1]
+	if player.InstanceID != resume.ID || player.X != checkpoint.X || player.Z != checkpoint.Z ||
+		player.TargetX != checkpoint.X || player.TargetZ != checkpoint.Z || player.Health != 17 ||
+		player.Mana != 0 || player.Gold != 1184 || player.EP != 83 {
+		t.Fatal("restored checkpoint entry changed resources or landed at the wrong room")
+	}
+	entered, ok := w.GetDungeonResumeSnapshot(resume.ID)
+	if !ok || !reflect.DeepEqual(entered.Rooms, resume.Rooms) || !reflect.DeepEqual(before, encounters()) {
+		t.Fatal("checkpoint entry changed clear/reward state or respawned encounters")
+	}
+}
+
+func TestArchiveDungeonRuntimeUsesSavedBossCheckpoint(t *testing.T) {
+	resume := roomPreparedResume("dungeon_archive_runtime")
+	resume.Layout.Rooms[1].Type, resume.Layout.Rooms[1].Hook = "boss", ""
+	resume.Rooms[0] = database.DungeonRoomProgress{Explored: true, Cleared: true}
+	resume.Rooms[1] = database.DungeonRoomProgress{Explored: true, Cleared: true, Rewarded: true}
+	resume.CurrentRoomIndexValue = 2
+	verifyArchiveDungeonRuntime(t, resume)
 }

@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 actual restored-dungeon runtime check:** Strengthened isolated archive
+test passes race41.52s/package42.639s. BSON read from the restored Mongo archive
+now recreates the current game dungeon, exactly one live remaining boss, and
+unchanged saved run/party/layout/clear/reward state. Repeated restore creates no
+duplicate encounter. Low-level scene entry uses the latest cleared boss checkpoint
+and retains health17/mana0/Gold1184/EP83; focused runtime control passes1.462s.
+Existing whole-archive/index/refusal/replacement/unrelated-database checks remain.
+Owned network-none fixture cleaned and independently verified absent. This is
+not authenticated login/party admission, fifteen-minute expiry, process restart
+or live encounter clear; opaque guild/casino preservation markers do not prove
+settlement recovery. Off-machine/owner policy and ordered release gates remain.
+
 **October6 current recovery archive coverage:** Extend actual isolated restore
 to schema25, guild membership/bank/audit/pending transfer, Well Rested and a valid
 canonical saved-dungeon snapshot from the existing prepared helper. PASS32.69s/
