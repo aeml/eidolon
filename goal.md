@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 runtime CPU-budget correction:** A targeted real damage-callback
+regression proves World.Update exceeds both one/two-worker runtime budgets.
+Worker count now uses min(current GOMAXPROCS, snapshot length); an empty entity
+batch starts no workers while global bookkeeping continues. Queue/snapshot/dt/
+timer/target/save rules stay unchanged. Focused worker/empty-frame/enemy-target/
+rest/resource/status race scopes pass14.590s; every actor's single damage tick
+is retained and owned test updates join normally. No native100 retry, measured
+headroom, historical-failure causal attribution or live publication. Full capacity
+and ordered release gates remain open; fixed evidence stays in the existing receipt.
+
 **October6 corrected-build native four-party control:** Changed driver d5d28ded
 with reused exact cea4f481 normal server/race harness passes49.71s/45s active.
 All four admit, contribute and independently save positive XP while retaining

@@ -3,6 +3,12 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "ordering-fix-100-client-comparison-terminal-fail-blackjack-and-every-member-impact-fixture-removed",
+  "worldUpdateWorkerBudget": {
+    "confirmedDefect": "World.Update creates runtime.NumCPU workers per frame rather than respecting the runtime CPU budget. A real damage-callback regression exceeds both one- and two-worker GOMAXPROCS limits before repair. It releases and joins only its owned update; no population run or production action.",
+    "repair": "One bounded worker-count change: min(runtime.GOMAXPROCS(0),len(allEntities)). Read the current runtime/container budget without changing it; empty entity batches launch no workers but preserve global frame bookkeeping. Snapshot contents, queue, deferred work,33ms loop/dt, entity timers, targets, gameplay and save gates are unchanged.",
+    "verification": "Actual worker-callback tests and focused enemy-target, Well Rested, disconnected-resource, enemy status and bleed/poison/renewal race scopes PASS14.590s. Both CPU budgets are respected; all six actors receive exactly one ordinary damage tick and empty frames retain regeneration/elite bookkeeping. Gofmt and whitespace checks pass.",
+    "limits": "A proven excess-worker dependency, not measured whole-frame speed, CPU headroom or a diagnosis/resolution of the historical100-client failures. Normal native workload, all positive member/payment/save outcomes, representative raids/events and release gates remain open. No unchanged population retry or live publication."
+  },
   "correctedBuildFourPartyControl": {
     "driverSourceCommit": "d5d28ded8957d53d3166d6db7dd93d5a3bd0372d",
     "serverAndHarnessSourceCommit": "cea4f481d73794681895bed9a40b1debc1c19896",
