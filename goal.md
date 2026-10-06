@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 current100-client comparison:** Exact87cda8c7 binaries reused after
+passing20/40-client controls. FAIL222.16s; all100 admitted, min1020 fresh own
+updates and all20 social outcomes completed without transport errors. Casino
+timeouts/rejections and zero-impact Wizard fail unchanged gates; independent
+final saves were not reached. No-target decisions dominate class counters,
+not proof of a cause. Public encoding cache does not resolve100-player capacity.
+Native cleanup required forced owned-server shutdown. Exact labelled synthetic
+Mongo removed after terminal completion; production/nightly soak unchanged.
+Retain aggregate evidence; diagnose contention and action transitions before
+another comparison. No unchanged retry or capacity/deployment acceptance.
+
 **October6 current40-client/two-party comparison:** Reused exact87cda8c7 binaries,
 same workload/gear/radius/anchor/timers/gates on fresh owned Mongo. PASS160.47s/
 120s active; every40 save check passed. Both parties/all8 members contributed

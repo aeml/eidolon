@@ -2,7 +2,7 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
-  "status": "coordinated-100-client-comparison-terminal-fail-role-and-casino-gates-fixture-removed",
+  "status": "public-cache-diagnostic-100-client-comparison-terminal-fail-role-and-casino-gates-fixture-removed",
   "inheritedVersion": "Alpha1.76.0 source candidate; own1.79 version not published",
   "partyInactivityDiagnostics": {
     "change": "Each test-client class now retains only five fixed aggregate counters for pending cast, regroup, waiting on an unready cohort, no eligible target and pursuit decisions. The combined integration retains only a whitelisted fixed-class/count line. No IDs, coordinates, account names, action history or extra acceptance credit.",
@@ -60,6 +60,34 @@
     },
     "observation": "Two parties produced every-member impact and real healing. Shared-spot decisions are dominated by no eligible target, not pending casts. These are aggregate decision counts, not elapsed-time shares or proof of the cause of historical100-client failures. Current public frame cache is included; earlier failed100 sources did not contain it. Representative100-player acceptance, raids/events, all final settlements and production CPU headroom remain open.",
     "cleanup": "After terminal native completion and normal server cleanup, exact name/fixture label matched before removing only synthetic tmpfs Mongo adac243cbffdad10abd3c85a48f6cd6f80b31e071b8ffe87256e49a03e94adb4 with volumes. Label query empty. Production/nightly soak unchanged."
+  },
+  "diagnostic100ClientComparison": {
+    "sourceCommit": "87cda8c73c9ce05192c710906c925ece8778ba41",
+    "result": "FAIL222.16s/120s active: reused exact binaries validated by the20/40-client controls. All100 clients admitted and all20 social outcomes completed without transport/decode errors. Casino gates and one Wizard's positive-impact requirement fail. Independent final save assertions were not reached. No capacity acceptance or unchanged retry.",
+    "artifactDirectory": "/tmp/eidolon-179-diagnostic100-lT24aG",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 107142,
+      "readWriteDecodeErrors": 0, "minimumFreshOwnUpdates": 1020,
+      "minimumActiveMilliseconds": 119000, "maximumStateGapMilliseconds": 1047,
+      "payloadBytes": 1165097324, "maximumLoginMilliseconds": 573,
+      "maximumJoinMilliseconds": 773, "socialComplete": 20, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 1, "blackjack": 0, "house": 0, "poker": 0},
+      "casinoTimeouts": {"slotSpin": 5, "blackjackBet": 2, "pokerBuyIn": 2},
+      "casinoRejections": {"blackjackRoundOrBet": 1, "houseStale": 2},
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20,
+      "partyMinimumImpacts": 0, "partyDamageEvents": 174, "partyHealEvents": 5,
+      "partyAcceptedCasts": 221, "partyDeniedCasts": 1,
+      "partyXPUpdates": 200, "observedEnemyDeaths": 49,
+      "roles": {
+        "Fighter": {"minimumImpacts": 2, "pendingCastSteps": 12, "regroupSteps": 0, "cohortWaitSteps": 106, "noTargetSteps": 2512, "pursuitSteps": 371},
+        "Cleric": {"minimumImpacts": 1, "pendingCastSteps": 12, "regroupSteps": 142, "cohortWaitSteps": 0, "noTargetSteps": 2474, "pursuitSteps": 354},
+        "Rogue": {"minimumImpacts": 1, "pendingCastSteps": 18, "regroupSteps": 150, "cohortWaitSteps": 0, "noTargetSteps": 2484, "pursuitSteps": 336},
+        "Wizard": {"minimumImpacts": 0, "pendingCastSteps": 19, "regroupSteps": 103, "cohortWaitSteps": 0, "noTargetSteps": 2524, "pursuitSteps": 251}
+      }
+    },
+    "phaseMeasurements": "1184 completed updates total85321852us/max918547us, one in flight;1184 completed broadcasts total44239230us/max159784us. These are elapsed lifetime counters, not CPU percentiles or isolated production headroom.",
+    "interpretation": "Public encoding cache does not clear the connected100-player gates. No-target decisions dominate class aggregates, but decision counts alone cannot establish target scarcity or explain casino timeouts. Existing shared-host workload and unchanged timers/gear/anchor/gates prevent claiming isolated capacity. Diagnose actual contention and action transitions before another comparison.",
+    "cleanup": "Native harness terminal failure required forced shutdown of its owned server. After terminal completion, exact container name and fixture label were checked before removing only synthetic tmpfs Mongo377f5e431ab3abca440ff508640180ada23661a65970884f3e6f4822e7febb21 with volumes. Label query empty; aggregate artifacts retained. Production and existing nightly soak untouched."
   },
   "publicEncodingFollowUp": {
     "change": "One broadcast-local cache encodes each detached immutable public actor once across recipients. Owner-private player messages always use their own encoding, never the public cache. Cache holds only actor snapshots touched by this broadcast and is discarded after its workers finish; no retained cross-frame cache, player history or timing/network/pass-gate change.",
