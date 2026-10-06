@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 current40-client/two-party comparison:** Reused exact87cda8c7 binaries,
+same workload/gear/radius/anchor/timers/gates on fresh owned Mongo. PASS160.47s/
+120s active; every40 save check passed. Both parties/all8 members contributed
+(min1), real healing and all casino minima/social outcomes passed without errors.
+Own updates min3237/maxgap274ms. No-target decisions dominate aggregate waits;
+no pending-cast waits. These counts do not prove historical100-client cause or
+production headroom. Current public frame cache was absent from failed100 sources.
+Exact labelled synthetic storage removed after terminal/native cleanup; no
+production/soak changes. Full100/raid/event/final-settlement gates remain open.
+
 **October6 current20-client diagnostic control:** Source87cda8c7 normal server/
 driver, race harness and owned Mongo7 passed139.76s/120s active. Every20-client
 save check reached: gear/bag/EP preserved, party progression retained. All four

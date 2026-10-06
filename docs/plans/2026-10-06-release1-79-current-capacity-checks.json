@@ -36,6 +36,31 @@
     "scope": "All four roles actually contributed; healing, paid games and preserved equipment/bag/EP plus party progression passed. Waiting/pursuit diagnostics are decision counts, not time fractions. Unmatched own damage remains excluded from acceptance. Earlier100-client failure causes are not established by this smaller randomized-world comparison. No raid/event clear, all final casino settlements or production100-player headroom claim.",
     "cleanup": "After terminal native harness completion and normal server cleanup, validated exact name/fixture label and removed only synthetic tmpfs Mongo c41b73102becd539bd8a5b3d0737fd4b9735b2eb027f1cdd848d600ce0344f6d with its volumes. Label query is empty; production and existing nightly soak untouched."
   },
+  "diagnostic40ClientComparison": {
+    "sourceCommit": "87cda8c73c9ce05192c710906c925ece8778ba41",
+    "result": "PASS160.47s/120s active: two simultaneous four-class parties plus paid games and social activity. Reuse exact normal server/driver/race-harness binaries from the20-client control; no rebuild, funding/stat/radius/anchor/timer/pass-gate change. All40 independent save assertions reached and passed.",
+    "artifactDirectory": "/tmp/eidolon-179-diagnostic40-abH8W0",
+    "metrics": {
+      "connected": 40, "joined": 40, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 3237, "minimumActiveMilliseconds": 119918,
+      "maximumStateGapMilliseconds": 274, "payloadBytes": 549093066,
+      "maximumLoginMilliseconds": 162, "maximumJoinMilliseconds": 113,
+      "socialComplete": 8, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 22, "blackjack": 2, "house": 2, "poker": 2},
+      "casinoFailuresRejectionsTimeouts": 0,
+      "partyGroupsFormed": 2, "partyMembersConfirmed": 8,
+      "partyMinimumImpacts": 1, "partyDamageEvents": 60, "partyHealEvents": 2,
+      "partyAcceptedCasts": 67, "partyDeniedCasts": 0, "partyXPUpdates": 96,
+      "roles": {
+        "Fighter": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 0, "cohortWaitSteps": 22, "noTargetSteps": 1120, "pursuitSteps": 55},
+        "Cleric": {"minimumImpacts": 3, "pendingCastSteps": 0, "regroupSteps": 48, "cohortWaitSteps": 0, "noTargetSteps": 1094, "pursuitSteps": 55},
+        "Rogue": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 43, "cohortWaitSteps": 0, "noTargetSteps": 1099, "pursuitSteps": 50},
+        "Wizard": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 20, "cohortWaitSteps": 0, "noTargetSteps": 1123, "pursuitSteps": 23}
+      }
+    },
+    "observation": "Two parties produced every-member impact and real healing. Shared-spot decisions are dominated by no eligible target, not pending casts. These are aggregate decision counts, not elapsed-time shares or proof of the cause of historical100-client failures. Current public frame cache is included; earlier failed100 sources did not contain it. Representative100-player acceptance, raids/events, all final settlements and production CPU headroom remain open.",
+    "cleanup": "After terminal native completion and normal server cleanup, exact name/fixture label matched before removing only synthetic tmpfs Mongo adac243cbffdad10abd3c85a48f6cd6f80b31e071b8ffe87256e49a03e94adb4 with volumes. Label query empty. Production/nightly soak unchanged."
+  },
   "publicEncodingFollowUp": {
     "change": "One broadcast-local cache encodes each detached immutable public actor once across recipients. Owner-private player messages always use their own encoding, never the public cache. Cache holds only actor snapshots touched by this broadcast and is discarded after its workers finish; no retained cross-frame cache, player history or timing/network/pass-gate change.",
     "verification": "Focused PublicFrameEncoding, StateRecipient, StateBroadcast and matched replication/interest scopes pass race1.931s. Concurrent20-recipient owner/peer equality and marshaling verify private progression exclusion, visible equipment/combat/loot preservation, one public encoding and detached fresh next-frame state. Existing full/delta owner privacy tests retain their assertions.",
