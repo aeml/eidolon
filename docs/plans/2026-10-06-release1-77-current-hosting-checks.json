@@ -3,6 +3,12 @@
   "milestone": "1.77 hosting and network reliability",
   "baseCommit": "7ebf3a7f",
   "status": "isolated-preparation-not-published-or-complete",
+  "nativeProxyFollowUp": {
+    "check": "TestCanonicalNginxProxyPreservesHTTPAndWebsocketContracts executes the committed canonical backend block in a real foreground single-process nginx. Only temporary loopback listen/upstream addresses are substituted; no installed configuration or system service is loaded.",
+    "result": "Native proxy plus all27 pure TLS guards and six actual WebSocket Origin handshake cases pass with race detection: eidolon-server1.306s. HTTP request path/encoded release query, canonical Host, HTTP1.1 and forwarding headers are exact. Production upgrader rejects a foreign Origin with403 and accepts canonical play Origin;64KiB binary echo and normal1000 close handshake remain intact through actual nginx. The owned process is terminated and joined; no live service or player data changed.",
+    "timerObservation": "Read-only systemd inspection again shows certbot.timer active/waiting, last trigger2026-10-06T00:20:57UTC, next18:10:08UTC, serviceResultsuccess/exit0. Journal entries show invocation completion, not an actual accepted certificate challenge. Existing owner dry-run request remains pending; no privileged action ran.",
+    "limits": "This isolated HTTP backend fixture does not prove TLS renewal, frontend Pages upstream, long idle sessions, public IPv6 or100-player capacity. Native test explicitly skips if nginx is absent; its actual local run did not skip. Own1.77 publication/acceptance remains open."
+  },
   "inheritedSourceVersion": "Alpha1.76.0 accepted predecessor; own1.77 unpublished",
   "currentIntegrationFollowUp": {
     "master": "69cc97d9580e1a9e0e5e576f1a475a50b43c6639 merged normally, followed by the accepted1.76 evidence checkpoint. Preserve hosting preparation and corrected persistent QA. No own1.77 release claim.",

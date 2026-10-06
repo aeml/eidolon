@@ -480,6 +480,26 @@ must pass. Keep the current private `logs/` and Mongo volume across updates;
 never repair startup by clearing receipts/outboxes or running `down -v`.
 Disruptive reboot/recovery rehearsals require their own maintenance approval.
 
+### Isolated proxy regression check
+
+From `server/`, with the `nginx` executable available:
+
+```bash
+GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p 2 -race . \
+  -run '^Test(TLSSetup|CanonicalNginxProxy|MigrationOrigins)' -count=1 -timeout=35s
+```
+
+The native proxy check starts only its own foreground, single-process Nginx on
+a temporary loopback port. It loads the committed canonical backend block with
+only listen/upstream addresses substituted, not `/etc/nginx/nginx.conf`. It
+verifies complete HTTP paths/release queries, forwarding headers, actual
+production WebSocket Origin admission/refusal, exact binary frames and normal
+close handshakes. It terminates and joins its own process afterward. No root,
+installed configuration, system service, public listener or Certbot is involved.
+If Nginx is absent the test explicitly skips; that is not proxy evidence.
+This short HTTP fixture does not prove HTTPS renewal, the frontend Pages
+upstream, hour-long idle connections, public IPv6 or production capacity.
+
 ## 5) Final verification checklist
 
 ```bash

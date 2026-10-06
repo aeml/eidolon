@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 native1.77 proxy evidence:** The actual committed canonical backend
+block now runs in a disposable single-process loopback Nginx regression. Complete
+HTTP paths/query/header forwarding, production Origin refusal/admission,64KiB
+binary frames and normal close handshakes pass, alongside27 pure installer guards
+and six direct Origin cases, with race detection1.306s. Its own process is joined;
+installed nginx/services/Certbot and player data are untouched. Certificate timer
+success still does not prove renewal. Owner challenge/address-family evidence and
+own ordered1.77 release remain open; no TLS/IPv6/capacity claim from this fixture.
+
 **October6 ordered1.77 integration:** Latest remote69cc97d9 and the accepted
 1.76 evidence checkpoint are normally merged, preserving hosting preparation.
 1.76 is now accepted; own1.77 publication and owner renewal evidence remain open.
