@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 ordering-corrected native100 comparison:** Exact cea4f481 normal
+server/corrected driver/current race harness fails222.95s/120s active. All100
+admissions/fresh views and20 social outcomes pass; transport/casino timeouts zero.
+One blackjack stale-action refusal and zero-impact party members fail unchanged
+gates. All independent final saves are NOT REACHED. Native failure remains a
+failure; the reproduced UI fix does not prove these causes. Exact owned Mongo
+identity/label validated then removed; label/process queries empty. Production
+and unrelated nightly soak untouched. Full fixed aggregates/source/binary hashes
+in the existing capacity receipt. Focused action/target diagnosis precedes any
+new population comparison; no acceptance, unchanged rerun or release claim.
+
 **October6 bounded existing save/wallet observations:** The existing combined
 loopback probes now retain six already-instrumented character/value phases as
 well as update/broadcast. Eight whitelisted numeric counters only; no new runtime

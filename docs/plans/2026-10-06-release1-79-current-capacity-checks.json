@@ -2,7 +2,56 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
-  "status": "locking-fixes-100-client-comparison-terminal-fail-one-blackjack-round-gate-fixture-removed",
+  "status": "ordering-fix-100-client-comparison-terminal-fail-blackjack-and-every-member-impact-fixture-removed",
+  "orderingFix100ClientComparison": {
+    "sourceCommit": "cea4f481d73794681895bed9a40b1debc1c19896",
+    "result": "FAIL222.95s/120s active. Normal source-built server, corrected ordering driver and current race harness. All100 admissions/fresh views and20 social outcomes pass, transport and casino timeout counters zero. One blackjack stale-action rejection and zero-impact party members fail unchanged gates. Independent all-account final saves are NOT REACHED. No capacity acceptance or unchanged retry.",
+    "artifactDirectory": "/tmp/eidolon-179-ordering100-CFvqhU",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-911490850",
+    "serverSHA256": "c3a2d7b97cffd98b54592da40b2ce3bf25a8d7a27cde9e7a66bfd2c877a7cb99",
+    "driverSHA256": "18396ad025212962046a653b1f587604d3cba91e3cf2592818fa25ad6bb0bc2f",
+    "raceHarnessSHA256": "75be3ab84db86de0c96d7aedf2998ca90de77718315f3e8e37271595d25518e1",
+    "predeclaration": "100 clients in original five20-role blocks,120s active, legal Uncommon/Rare class gear and original funding/Gold100 stakes, shared400/600 anchor/radius30,5s deadlines. All fresh-state/paid/social/every-member/save gates unchanged. Owned Mongo7.0.14,loopback32959,2CPU/2GiB/512MiB tmpfs; shared host, not production headroom evidence.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 137965,
+      "readWriteDecodeErrors": 0, "minimumFreshOwnUpdates": 1321,
+      "minimumActiveMilliseconds": 119597, "maximumStateGapMilliseconds": 636,
+      "payloadBytes": 1169247829, "maximumLoginMilliseconds": 377,
+      "maximumJoinMilliseconds": 515, "socialComplete": 20, "socialFailed": 0,
+      "casino": {
+        "slots": {"clients": 10, "wagers": 279, "paid": 279, "minimumPaid": 13, "bonuses": 11, "failed": 0},
+        "blackjack": {"clients": 20, "wagers": 48, "paid": 31, "minimumPaid": 0, "actions": 29, "failed": 1, "staleRejections": 1},
+        "house": {"clients": 20, "wagers": 60, "paid": 40, "minimumPaid": 2, "failed": 0},
+        "poker": {"clients": 10, "wagers": 28, "paid": 18, "minimumPaid": 1, "actions": 72, "failed": 0}
+      },
+      "casinoTimeouts": 0, "partyGroupsFormed": 5, "partyMembersConfirmed": 20,
+      "partyMinimumImpacts": 0, "partyDamageEvents": 49, "partyHealEvents": 4,
+      "partyAcceptedCasts": 57, "partyDeniedCasts": 1, "partyXPUpdates": 40,
+      "partyObservedDeaths": 10,
+      "roles": {
+        "Fighter": {"minimumImpacts": 0, "damage": 6, "casts": 10, "denied": 1, "unmatchedDamage": 0, "pendingCastSteps": 0, "regroupSteps": 0, "cohortWaitSteps": 35, "noTargetSteps": 2994, "pursuitSteps": 63},
+        "Cleric": {"minimumImpacts": 0, "damage": 17, "heals": 4, "casts": 14, "denied": 0, "unmatchedDamage": 0, "pendingCastSteps": 1, "regroupSteps": 38, "cohortWaitSteps": 0, "noTargetSteps": 2990, "pursuitSteps": 43},
+        "Rogue": {"minimumImpacts": 0, "damage": 16, "casts": 20, "denied": 0, "unmatchedDamage": 4, "pendingCastSteps": 1, "regroupSteps": 35, "cohortWaitSteps": 0, "noTargetSteps": 2992, "pursuitSteps": 48},
+        "Wizard": {"minimumImpacts": 0, "damage": 10, "casts": 13, "denied": 0, "unmatchedDamage": 0, "pendingCastSteps": 3, "regroupSteps": 25, "cohortWaitSteps": 0, "noTargetSteps": 2998, "pursuitSteps": 36}
+      }
+    },
+    "phaseMeasurements": {
+      "before": {"characterRecovery": {"completed": 1, "totalMicros": 59, "maxMicros": 59}, "realtimeUpdate": {"completed": 1, "totalMicros": 14164, "maxMicros": 14164}, "stateBroadcast": {"completed": 1, "totalMicros": 8, "maxMicros": 8}},
+      "after": {
+        "characterJournal": {"completed": 1405, "totalMicros": 36435044, "maxMicros": 229448, "inFlight": 0},
+        "characterCommit": {"completed": 1402, "totalMicros": 9551848, "maxMicros": 49015, "inFlight": 2},
+        "characterCleanup": {"completed": 1402, "totalMicros": 9521210, "maxMicros": 46673, "inFlight": 0},
+        "characterRecovery": {"completed": 3, "totalMicros": 161, "maxMicros": 59, "inFlight": 0},
+        "casinoGold": {"completed": 601, "totalMicros": 59343688, "maxMicros": 546863, "inFlight": 0},
+        "casinoEP": {"completed": 0, "totalMicros": 0, "maxMicros": 0, "inFlight": 0},
+        "realtimeUpdate": {"completed": 1494, "totalMicros": 82841011, "maxMicros": 519531, "inFlight": 1},
+        "stateBroadcast": {"completed": 1494, "totalMicros": 46884054, "maxMicros": 107996, "inFlight": 0}
+      },
+      "scope": "All phases report failed0, timedSamples equal completed, inFlightKnown true. Unlisted before values are zero. Full fixed aggregate evidence remains in run.log. Elapsed lifetime call timing/in-flight gauges are not CPU, queue depth, percentiles, unique payments or conservation proof."
+    },
+    "interpretation": "The reproduced UI ordering fix did not clear all native failures. Existing stale category cannot distinguish bet from play, expired/wrong turn or changed round. No-target counts do not distinguish no live target from claimed targets. Neither cause is proven; diagnose without weakening acceptance or silently changing the declared workload.",
+    "cleanup": "Native harness/server terminal without forced-shutdown report. Exact owned Mongo0a68ce258b633ef735a43b6f30a367961ff8b9b1301b2ede32fe6d8dc3c39444/name/fixture label validated before synthetic-volume removal. Independent label/process queries empty. Aggregate artifacts retained; production and unrelated nightly soak untouched."
+  },
   "lockingFixes100ClientComparison": {
     "sourceCommit": "57ee066027b5690e7a0b1eda8260eedada1a7431",
     "result": "FAIL226.01s/120s active. Actual source-built normal server includes non-player casino roster avoidance and per-scan enemy world locking. Reuse unchanged source87 driver; current race harness. All100 admissions, sustained fresh views, every20-party-member impact, healing and20 delivered social outcomes pass. All casino timeout counters are zero. One blackjack client has a round_or_bet rejection and no paid result; overall monetary gate fails. Independent all-account final save assertions are NOT REACHED. No100-player acceptance and no unchanged retry.",
