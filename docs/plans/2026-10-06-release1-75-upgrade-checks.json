@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "1.75.0",
+  "baseCommit": "ee2d23b5",
+  "status": "upgrade-and-release-candidate-locally-verified-not-deployed",
+  "changes": [
+    "Read-only --check-save-journal exits before logging, Mongo access, migrations or admission, accepts a missing fresh-install directory without creating it, validates bound records, and refuses legacy/corrupt/linked/non-directory input without changing files. Output is a bounded exact release receipt, not account data.",
+    "For schema upgrades targeting23 or newer, deployment captures the exact previous container/state, gracefully stops and backs up through the existing helper, then checks the drained journal in a read-only mounted log volume. Rejected/missing/noisy/foreign/unsupported receipt prevents target startup and restarts only a previously running unchanged container. Backups and pending saves remain; no legacy identity lookup, rewrite or deletion.",
+    "Alpha1.75.0 version labels, package/lock, executable/container/deploy/isolated-QA defaults and cumulative login patch notes align. Notes distinguish nineteen manual owner sections from a complete archive and reviewed removal requests from enabled erasure. Current provider/retention settings stay unchanged."
+  ],
+  "checks": [
+    {"scope": "Focused race tests", "result": "Root selected deployment schema/journal/real stalled-health tests pass7.211s; database read-only path/retained-byte cases pass1.138s. Existing deployment preflight sequencing remains covered."},
+    {"scope": "Actual executable", "result": "Eight actual CLI cases pass0.16s, package1.190s, with deliberately invalid Mongo URI: missing/bound succeed; legacy/corrupt/symlink/file/empty-path/mixed-flags refuse. Working directories remain empty, missing journal stays absent and retained bytes unchanged. No database or server admission occurs."},
+    {"scope": "Actual isolated schema22 ->23", "result": "Dedicated tmpfs Mongo on loopback32953 contains only synthetic schema22/account fixture. Current target preflight reports22/23; exact production image sha256:34b2b5686a42aaf0ffe7bae71ff722a1c2609c319cb205ee181731e35d3ae992 reports22/22 before transition. Actual target startup applies marker23, reports database ready and leaves whole fixture account BSON unchanged. Exact old image refuses read-only preflight on23; following graceful target shutdown it also refuses startup. Account and marker remain unchanged. This is a prepared synthetic account, not earned-play or production migration proof."},
+    {"scope": "Version and notes", "result": "VersionPresentation360 tests pass1.947s, including new1.75.0 notes/coverage/removal limitations and all version defaults; whitespace and deployment shell syntax checks pass."}
+  ],
+  "cleanup": "Owned API stopped gracefully, isolated tmpfs Mongo726e693c9efb1708b0cc6d335ced5a581c57fceba9f7b1bc837ed0f5075fdaa2 stopped/removed. Temporary native binary/runtime journal removed after checks. Production API/database/logs/settings untouched.",
+  "remaining": [
+    "Fresh master integration, push, CI/deployment and exact live frontend/backend/database/login/notes/private-account acceptance are still required; source version is not live acceptance.",
+    "No actual erasure action is enabled. Individually authorized erasure would require additional shared-custody/writer/archive/provider handling; current1.75 owner policy is reviewed requests and unchanged retention, not automatic deletion.",
+    "Later prepared storage markers23/24 must be renumbered after current23 before their ordinary integration. Full roadmap through1.99 remains active."
+  ]
+}

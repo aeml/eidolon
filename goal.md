@@ -1,5 +1,24 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.75.0 publication candidate:** The approved milestone policy is
+administrator-reviewed export/removal requests, unchanged retention and no
+automatic deletion. Nineteen explicit owner sections, separate audited approval,
+manual current proof/Save/paging, notices and dependency review are prepared;
+complete archives and physical erasure are not claimed or enabled. Native Chrome
+checks pass four cases including390x844 and actual temporary JSON downloads,
+plus99 focused client tests. Owner confirms GA4 event retention2 months/user
+retention14 months and history/form/outbound/reset-on-new-activity enabled;
+Postmark45 days/not editable. No further dashboard values requested or changed.
+The release now checks drained journals read-only after graceful backup and
+restarts the unchanged old writer on refusal before migration. Focused race and
+eight actual CLI cases pass. Isolated22 ->23 startup preserves whole synthetic
+account BSON, and the exact live schema22 image refuses23 at preflight/startup.
+Version1.75.0 and cumulative patch notes align;360 version tests pass. Fresh
+master integration, push/CI/deployment/exact public acceptance remain next. The
+full1.99 objective stays active. Later prepared23/24 markers require renumbering.
+See [native downloads](docs/plans/2026-10-06-release1-75-native-download-checks.json)
+and [upgrade checks](docs/plans/2026-10-06-release1-75-upgrade-checks.json).
+
 **October6 session-generation checkpoint:** Password login captures and re-proves
 the credential account ID/hash before installing a private immutable connection
 binding; join/reconnect validate current DB/live identity and tokens capture the

@@ -1,9 +1,18 @@
-# Alpha1.75 privacy handling — implementing, not released
+# Alpha1.75.0 privacy handling — publication candidate, not live acceptance
 
 Owner decision, October5: use administrator-reviewed account-data exports and
 removal requests, preserve current retention settings, and add no automatic
 deletion. This decision does not authorize individual account erasure, release
 raw records, enable payments, or certify legal compliance.
+
+The publication candidate implements that reviewed-request policy, nineteen
+bounded manual owner sections and supporting notices/approval/dependency review.
+Physical erasure and complete account archives are not enabled or claimed.
+Additional custody/writer/archive fences described below are prerequisites for
+any future individually authorized erasure, not permission to perform it during
+release. Native UI and isolated schema22 ->23 checks pass; publication and exact
+live acceptance remain pending. See
+[upgrade checks](2026-10-06-release1-75-upgrade-checks.json).
 
 ## Request and review workflow
 

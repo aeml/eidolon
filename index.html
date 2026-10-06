@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.74.7</span>
+                    <span class="start-version-row__label">Alpha 1.75.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -780,6 +780,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.75.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.75.0 (private account support and reviewed data exports)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Account help before world entry and the in-game report form accept Account Data Export and Account Removal Request cases. Privacy requests attach no automatic diagnostics. Check your own saved reference for review status; case resolution does not mean data was delivered or removed.</li>
+                        <li>Administrators review private cases and separately confirm reversible owner-export approval. Approved owners open fresh private account support, sign in, check their request and provide their current password to prepare a section. Save section locally is a separate click; paging is manual and every page requires fresh proof. Closing or disconnecting discards prepared files and passwords.</li>
+                        <li>Nineteen bounded owner-facing sections cover profile, character gameplay, submitted reports, retained sessions, social relationships, marketplace, guilds, competitive and raid records, and applicable trade, reward, item, administration and casino records. Every file explains its coverage and omissions: this is not a complete account archive or restore image. Other players' private data, credentials, hidden casino decks and staff-only notes are excluded.</li>
+                        <li>Data-handling notices appear before login, in Settings and account support. Removal remains an administrator-reviewed request, not an enabled erasure action. Read-only dependency review cannot authorize deletion. No automatic deletion or retention changes; provider and device copies require separate handling.</li>
+                        <li>Character saves and reconnects are bound to the original account identity, preventing a replacement account with the same name from inheriting an old live session or pending save. Schema23 adds a writer-compatibility marker, not an account wipe. Upgrade preserves a consistent backup, rejects unresolved legacy journals before migration and restarts the unchanged old server on that refusal. A schema22 server cannot write schema23.</li>
+                        <li>The private account-download page suppresses game analytics loading; custom analytics forward only coarse allowlisted fields and safe page context. Existing provider settings remain unchanged, and browser extensions, earlier collection and external provider retention are outside that page's protection. Recovery messages explicitly disable open/link tracking.</li>
+                        <li>No payment feature, reward or balance change. Later 1.76–1.99 work, real-player progression validation and 100-player capacity remain separate gates. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.74.7">
                     <h3 class="patch-note-entry__title">Alpha 1.74.7 (town service layout, faster jumps and durable activity)</h3>
                     <ul class="patch-note-entry__list">

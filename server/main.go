@@ -54,6 +54,7 @@ var addr = flag.String("addr", ":8080", "http service address")
 var mongoURI = flag.String("mongo-uri", "mongodb://localhost:27017", "MongoDB connection URI")
 var characterJournalDir = flag.String("save-journal-dir", "logs/character-saves", "Persistent private pending-character journal directory")
 var checkSchema = flag.Bool("check-schema", false, "Read-only database compatibility check; exit without logging files, migrations or admission")
+var checkSaveJournal = flag.Bool("check-save-journal", false, "Read-only account-bound character journal check; exit without database access, files or admission")
 var credentialConcurrencyFlag = flag.Int("auth-max-concurrent", defaultCredentialConcurrency, "Maximum simultaneous credential queries/hashes (1-32); excess requests receive retry feedback")
 var websocketConnectionsFlag = flag.Int("ws-max-connections", defaultWebsocketConnections, "Maximum simultaneous WebSocket upgrades/transports (1-4096); excess upgrades receive HTTP503")
 var httpConnectionsFlag = flag.Int("http-max-connections", defaultHTTPConnections, "Combined HTTP/TLS/WebSocket connection cap (1-8192); saturated accepts wait in the kernel backlog; allow headroom above the WebSocket cap")
@@ -73,7 +74,7 @@ var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Ge
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.74.7"
+	buildVersion = "Alpha 1.75.0"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -410,6 +411,18 @@ func setupLogging() ([]io.Closer, error) {
 
 func main() {
 	flag.Parse()
+	if *checkSaveJournal {
+		if *checkSchema {
+			fmt.Fprintln(os.Stderr, "Choose one read-only preflight at a time")
+			os.Exit(2)
+		}
+		if err := database.CheckAccountBoundCharacterSaveJournal(*characterJournalDir); err != nil {
+			fmt.Fprintln(os.Stderr, "Character journal preflight failed; preserve files and reconcile using the original compatible writer")
+			os.Exit(1)
+		}
+		fmt.Printf("Character journal preflight passed: supported=2 commit=%s\n", buildCommit)
+		return
+	}
 	if *checkSchema {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		version, err := database.CheckSchemaCompatibility(ctx, *mongoURI)

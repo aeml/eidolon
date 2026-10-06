@@ -111,6 +111,7 @@ jobs:
         run: |
           duel_binary_dir="$(mktemp -d "$RUNNER_TEMP/eidolon-duel-XXXXXX")"
           go build -race -ldflags='-X main.buildCommit=server' -o "$duel_binary_dir/server" .
+          EIDOLON_SCHEMA_BINARY="$duel_binary_dir/server" go test -race ./internal/database -run '^TestCharacterJournalPreflightActualBinary$' -count=1 -timeout=30s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCharacterBoundActualStartupLegacyRefusal$' -count=1 -timeout=30s
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestCredentialActualFreshConnectionsAndTakeover$' -count=1
           EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run '^TestSessionIdentityActualSocketsRejectReplacementAccount$' -count=1 -timeout=30s
@@ -592,7 +593,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.74.7" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.75.0" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

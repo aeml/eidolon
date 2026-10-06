@@ -266,6 +266,14 @@ bridge alone does not deliver the resource-persistence feature.
   graceful shutdown, and preserve the coordinated Mongo/journal/image backup.
   Stop an upgrade if legacy refusal persists; do not erase files to get online.
   Once schema23 is recorded, a schema22 image cannot safely roll back this writer.
+  During an upgrade to schema23 or newer, deployment additionally runs the
+  target's `--check-save-journal` against a read-only mounted log directory after
+  the old API's graceful stop and consistent backup, but before migration or
+  target startup. A missing journal is valid for a fresh installation; legacy,
+  corrupt or linked records are refused without replay, rebinding or deletion.
+  Only the exact target's bounded success receipt permits replacement. On
+  refusal, a previously running old container is restarted unchanged; an
+  already-stopped old service is not started. Backups and pending files remain.
   No account erasure or retention change is enabled. Prepared later storage
   migrations must be renumbered after23 before integration.
 - Before a save-format upgrade, stop admission and allow the old API to shut down

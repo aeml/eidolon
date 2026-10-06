@@ -17,7 +17,7 @@ fi
 if [ -z "${EIDOLON_BUILD_COMMIT:-}" ] && [ -n "${REPO_ROOT:-}" ]; then
   EIDOLON_BUILD_COMMIT="$(git -C "${REPO_ROOT}" rev-parse HEAD)"
 fi
-EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.74.7}"
+EIDOLON_BUILD_VERSION="${EIDOLON_BUILD_VERSION:-Alpha 1.75.0}"
 export EIDOLON_BUILD_COMMIT EIDOLON_BUILD_VERSION
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -110,8 +110,39 @@ if (( database_schema > target_schema )); then
   exit 1
 fi
 if (( database_schema < target_schema )); then
+  # Schema23 requires account-bound pending saves. Keep the exact old container
+  # available until its drained, read-only journal check succeeds. Never infer
+  # ownership from today's username lookup or delete a rejected legacy record.
+  journal_previous_api=""
+  journal_previous_running=false
+  if (( target_schema >= 23 )); then
+    journal_previous_api="$(docker compose ps -a -q api)"
+    if [ -n "${journal_previous_api}" ]; then
+      if [[ ! "${journal_previous_api}" =~ ^[a-f0-9]{12,64}$ ]]; then
+        echo "Cannot resolve one previous API for the journal transition; leaving it unchanged." >&2
+        exit 1
+      fi
+      journal_previous_running="$(docker inspect --format '{{.State.Running}}' "${journal_previous_api}")"
+      if [ "${journal_previous_running}" != true ] && [ "${journal_previous_running}" != false ]; then
+        echo "Cannot determine previous API state; leaving it unchanged." >&2
+        exit 1
+      fi
+    fi
+  fi
   echo "Save-format upgrade ${database_schema} -> ${target_schema}: preserving a consistent recovery point..."
   bash ./deploy/backup_before_upgrade.sh
+  if (( target_schema >= 23 )); then
+    echo "Checking drained account-bound character journals before target startup..."
+    if ! journal_preflight="$(docker compose run --rm --no-deps -T -v "${SERVER_DIR}/logs:/app/logs:ro" api --check-save-journal --save-journal-dir=/app/logs/character-saves)" || \
+       [ "${journal_preflight}" != "Character journal preflight passed: supported=2 commit=${EIDOLON_BUILD_COMMIT}" ]; then
+      echo "Journal transition refused before migration; backup and pending files preserved." >&2
+      if [ "${journal_previous_running}" = true ]; then
+        docker start "${journal_previous_api}" >/dev/null || echo "Previous API restart failed; operator recovery is required." >&2
+      fi
+      exit 1
+    fi
+    printf '%s\n' "${journal_preflight}"
+  fi
 fi
 
 echo "Starting stack..."

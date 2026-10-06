@@ -3,7 +3,21 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.74.7';
+const currentVersion = '1.75.0';
+
+test('1.75.0 documents reviewed private exports without claiming erasure or full account coverage', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.75.0"'), previous = html.indexOf('data-version="1.74.7"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Account Data Export', 'Account Removal Request', 'no automatic diagnostics',
+        'reversible owner-export approval', 'current password', 'Save section locally', 'paging is manual',
+        'Nineteen', 'not a complete account archive', 'staff-only notes', 'Read-only dependency review',
+        'No automatic deletion or retention changes', 'original account identity', 'Schema23', 'backup',
+        'legacy journals', 'schema22', 'suppresses game analytics', 'provider settings remain unchanged',
+        'No payment feature', '1.76–1.99', '100-player capacity', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.74.7 documents aligned town services, bounded real-time jumps and retained activity', () => {
     const html = fs.readFileSync('index.html', 'utf8');

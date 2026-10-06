@@ -420,15 +420,20 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.74.7`. Stash moves between the west-side
-  quest-giver smithy and forge, facing east; the western planter moves clear of
-  the approach and smithy collisions follow walls rather than roof/sign bounds.
-  Long jumps cap at three seconds with elapsed-time live flight; short hops and
-  server landing/input constraints remain. Deployment explicitly preserves
-  logs/environment, pins the pending activity journal to its persistent mount
-  and retains the existing MongoDB history/90-day default retention.
-  This maintenance candidate still needs its own CI/public acceptance; no wipe,
-  schema migration or future1.75–1.79 preparation is included.
+- Current source version: `Alpha 1.75.0`. Private account-help export/removal
+  requests, separate reversible staff export approval and nineteen bounded
+  current-owner sections with manual proof/Save/paging are included. Coverage
+  manifests explicitly distinguish sections from a complete account archive.
+  Removal remains reviewed requests/read-only dependency observations, not an
+  enabled erasure action; existing retention and provider settings are unchanged.
+  Character journals and authenticated sessions now preserve the original account
+  identity. Marker-only schema23 fences old writers; upgrade keeps consistent
+  backups and checks drained journals before startup, restarting an unchanged
+  previously running server on rejection. No account wipe or payment feature.
+  Source preparation is not deployment acceptance; this candidate still needs
+  its own CI and exact live checks. See the [privacy workflow](docs/plans/2026-10-05-release1-75-privacy-handling.md).
+  Prior1.74.7 is accepted live at7af0b279 after CI37264989129; town layout,
+  bounded jumps and durable retained activity remain included.
   Prior1.74.6 is accepted live at1c47e16a after CI37256836401 all ten jobs and
   exact independent public identity/readiness/login/notes/runtime checks pass.
   Narrow persistent table ordering prevents
