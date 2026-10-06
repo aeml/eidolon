@@ -83,6 +83,14 @@ normal search radius, combat anchor, real enemy population, gear and impact
 requirements stay unchanged. Standalone party/dungeon/raid/event profiles do not
 use this coordination. Unit/race coverage is not a native capacity pass.
 
+The October6 coordinated100-client comparison still failed party/casino gates;
+do not describe coordination as a capacity fix. A separate server change now
+shares public protobuf actor encodings within each broadcast's detached snapshot
+only, with owner-private data encoded separately and no cross-frame cache. Its
+concurrent race/privacy checks and allocation benchmark pass, but connected
+capacity acceptance remains open. Failed receipts are retained in the current
+1.79 capacity evidence rather than overwritten by the microbenchmark.
+
 The existing isolated nightly runner now requires exactly one complete summary
 and each coverage line, no read/write/decode/admission failures, all100 clients
 authenticated and covered, and

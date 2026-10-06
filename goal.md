@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 public frame-encoding improvement:** Public actor protobuf encoding
+is now shared only within one broadcast of detached immutable actor snapshots.
+Owner-private player messages always encode separately; no retained cross-frame
+state, cadence/gate change or peer progression exposure. Focused concurrency,
+privacy/full-delta/replication checks pass race1.931s. Synthetic100-recipient
+encoding benchmark improves300113ns/230416B/1301allocations to4958ns/2512B/16;
+this is not a connected capacity pass or proof of earlier failures' causes.
+Staged1.79 remains unpublished; no immediate unchanged population retry.
+
 **October6 coordinated100-client comparison:** Latest master57572325 is normally
 merged. Combined bot parties now hold one observed live target claim per group,
 bounded to five; no gameplay/gear/enemy/anchor/radius/gate change. Full driver

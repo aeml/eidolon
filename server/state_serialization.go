@@ -753,6 +753,7 @@ func broadcastState() {
 	// Recipient maps share immutable actor copies for this broadcast only. Wire
 	// encoding and per-client change tracking below do not mutate those copies.
 	states := world.GetStatesForPlayers(playerIDs, stateBroadcastRadius)
+	publicEncoding := &publicFrameEncoding{}
 
 	// 2. Process in parallel
 	var wg sync.WaitGroup
@@ -857,7 +858,7 @@ func broadcastState() {
 			if isFirstSync {
 				full := &statepb.StateFull{Entities: make([]*statepb.Entity, 0, len(currentState))}
 				for _, e := range currentState {
-					full.Entities = append(full.Entities, entityToProtoForRecipient(e, c.playerID))
+					full.Entities = append(full.Entities, publicEncoding.forRecipient(e, c.playerID))
 				}
 				env.Payload = &statepb.StateEnvelope_Full{Full: full}
 
@@ -868,7 +869,7 @@ func broadcastState() {
 			} else {
 				delta := &statepb.StateDelta{Entities: make([]*statepb.Entity, 0, len(changedState)), RemovedIds: removed}
 				for _, e := range changedState {
-					delta.Entities = append(delta.Entities, entityToProtoForRecipient(e, c.playerID))
+					delta.Entities = append(delta.Entities, publicEncoding.forRecipient(e, c.playerID))
 				}
 				env.Payload = &statepb.StateEnvelope_Delta{Delta: delta}
 			}

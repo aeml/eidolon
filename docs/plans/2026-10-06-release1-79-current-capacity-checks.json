@@ -4,6 +4,12 @@
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "coordinated-100-client-comparison-terminal-fail-role-and-casino-gates-fixture-removed",
   "inheritedVersion": "Alpha1.76.0 source candidate; own1.79 version not published",
+  "publicEncodingFollowUp": {
+    "change": "One broadcast-local cache encodes each detached immutable public actor once across recipients. Owner-private player messages always use their own encoding, never the public cache. Cache holds only actor snapshots touched by this broadcast and is discarded after its workers finish; no retained cross-frame cache, player history or timing/network/pass-gate change.",
+    "verification": "Focused PublicFrameEncoding, StateRecipient, StateBroadcast and matched replication/interest scopes pass race1.931s. Concurrent20-recipient owner/peer equality and marshaling verify private progression exclusion, visible equipment/combat/loot preservation, one public encoding and detached fresh next-frame state. Existing full/delta owner privacy tests retain their assertions.",
+    "benchmark": "100 recipients/one actor,100ms Go benchmark: uncached300113ns/230416B/1301allocations per frame; cached4958ns/2512B/16allocations. Benchmark passes0.578s. This is encoding/allocation micro-evidence, not production CPU headroom,120s connected capacity or a resolution of failed party/casino gates.",
+    "remaining": "New source requires native changed-scope/ordered release verification. No immediate full100 retry and no claim that this allocation change fixes targeting or monetary action timing."
+  },
   "targetCoordinationFollowUp": {
     "change": "Test-client combined parties coordinate one observed current target per group, bounded to five groups. Claims release on dead/missing target or party failure; contention waits for the next normal step. Standalone/dungeon/raid/event profiles, real enemies, search radius30, anchor400/600, gear and pass gates unchanged. No server gameplay edit or claim of synthetic credit.",
     "unitVerification": "Full cmd/loadtest race suite passes18.268s. Distinct nearest legal targets, invalid/dead/foreign/out-of-range target refusal, one atomic winner, bounded replacement/release, zero-impact preservation and existing controller tests retained.",
