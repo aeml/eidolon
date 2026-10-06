@@ -29,9 +29,11 @@ func combinedAssignments(n int, credentials []BotCredentials, x, z float64) ([]b
 	}
 	assignments := make([]botAssignment, n)
 	parties := make([]*partyLoad, 0, n/20)
+	claims := &partyTargetClaims{targets: make([]string, n/20)}
 	for block := 0; block < n/20; block++ {
 		start := block * 20
 		party := newPartyLoad(credentials[start:start+4], x, z)
+		party.targetClaims, party.targetGroup = claims, block
 		parties = append(parties, party)
 		for local := 0; local < 20; local++ {
 			assignment := botAssignment{preserveGear: true}

@@ -46,6 +46,8 @@ type partyLoad struct {
 	inviteIndex      int
 	inviteAt         time.Time
 	target           Entity
+	targetClaims     *partyTargetClaims
+	targetGroup      int
 	deaths           uint64
 	failed           bool
 	failureStage     loadFailureStage
@@ -115,6 +117,7 @@ func (p *partyLoad) reject() {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.failed = true
+	p.targetClaims.release(p.targetGroup)
 	for i := range p.members {
 		p.signal(i)
 	}
@@ -355,6 +358,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	if p.failed {
+		p.targetClaims.release(p.targetGroup)
 		return
 	}
 	m := &p.members[index]
@@ -454,6 +458,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			fresh, found := state[p.target.ID]
 			if !found || fresh.Type != "Enemy" || fresh.InstanceID != me.InstanceID || fresh.Health <= 0 || fresh.State == "DEAD" {
 				p.target = Entity{}
+				p.targetClaims.release(p.targetGroup)
 			} else {
 				p.target = fresh
 			}
@@ -471,10 +476,18 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 				if enemy.Type != "Enemy" || enemy.Health <= 0 || enemy.State == "DEAD" || enemy.InstanceID != me.InstanceID || enemy.ID == "" || p.event != nil && !strings.HasPrefix(enemy.ID, p.event.enemyPrefix) {
 					continue
 				}
+				if !p.targetClaims.available(p.targetGroup, enemy.ID) {
+					continue
+				}
 				distance := math.Hypot(enemy.X-p.anchorX, enemy.Z-p.anchorZ)
 				if distance < nearest || distance == nearest && enemy.ID < p.target.ID {
 					nearest, p.target = distance, enemy
 				}
+			}
+			if p.target.ID != "" && !p.targetClaims.claim(p.targetGroup, p.target.ID) {
+				// Another leader claimed it after the view scan. Wait for the
+				// next normal step; never manufacture or cast at a spare enemy.
+				p.target = Entity{}
 			}
 		}
 		for _, member := range p.members {
