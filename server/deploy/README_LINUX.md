@@ -511,6 +511,18 @@ curl -fsS https://<your-domain>/healthz
 
 The deploy script injects `EIDOLON_BUILD_COMMIT` into the binary and fails unless `/healthz` reports that exact commit with `database: ready`. A root-path 404 is not a readiness signal.
 
+Alpha1.78 adds an explicitly opt-in independent monitor. The owner approved
+existing self-hosting/admin Postmark recipients and 30s polling, three failures,
+two recoveries and 30m outage reminders. Set `EIDOLON_MONITOR_ENABLED=true` only
+after approving those settings. The deployment script builds and locally validates
+its exact command before API replacement, then starts/updates it after readiness.
+It uses Linux host-loopback networking and the host's existing persistent journal;
+it does not observe whole-host/public-network failure or alter shared log policy.
+To disable an already running monitor, set the flag false **and** explicitly stop
+only `monitor`; a flag change alone is not a stop command. See the
+[monitor operator guide](../cmd/monitor/README.md) for scope, inspection and
+reversible pause commands. Never print private Compose/environment configuration.
+
 Optional reboot resilience check:
 
 ```bash

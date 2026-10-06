@@ -124,8 +124,53 @@ is synchronous and bounded by the chosen timeout, so polls may be delayed by it.
 The attempt clock and incident state are RAM-only and reset on restart; supervisor
 restart policy and off-machine monitoring matter for reliable/cost-bounded operation.
 
-No production alerts or service are installed by this code. Alert ownership,
-actual provider/inbox verification, retention, restart policy and budget agreement
-remain required before completing the operations milestone. A blocked output
-pipe can still require termination; configure a supervisor and output policy
-when installing the independent monitor.
+The command itself does not install a service. A blocked output pipe can still
+require termination; configure a supervisor and output policy when installing it.
+
+## Approved Linux Compose service
+
+The separate `monitor` image/service uses the `operations` profile. It has no
+API dependency or listener, runs non-root with a read-only root filesystem and
+no capabilities, and observes the configured host-loopback API upstream. It is
+independent of the game container, not of Docker, the host or its network.
+It intentionally does not pin a release commit, so a normal release transition
+does not itself become an outage. It monitors local API/database readiness,
+not public DNS, TLS, frontend availability or off-machine network reachability.
+
+On October6 the owner approved existing `ADMIN_NOTIFICATION_EMAILS` ownership,
+current self-hosting/Postmark and these explicit settings: 30s polling, 5s
+requests, three failures, two recoveries, 30m reminder cooldown, 10s mail timeout
+and a shared 1m minimum between mail attempts. A single separately labelled
+manual mail test reached the owner's inbox. Pressure/storage limits remain off;
+there is no new paid service or player/provider retention change.
+
+To opt in, set `EIDOLON_MONITOR_ENABLED=true` in the private server `.env`.
+The normal deployment script builds the monitor and runs its exact configured
+command with `EIDOLON_MONITOR_CHECK_CONFIG=true` before replacing the API. That
+mode performs all local configuration/notifier validation, then exits silently
+without making any probe or email request. An invalid check-mode value refuses.
+The script starts/updates the independent monitor after API readiness succeeds.
+Missing mail configuration or an unavailable logging driver prevents its setup;
+do not dump Compose configuration or container environments into shared logs.
+
+`restart: unless-stopped` survives normal process exits and daemon restart, but
+a manually stopped monitor remains stopped until explicitly started. Incidents
+go to the existing host journald driver with tag `eidolon-monitor`, preserving
+records across container recreation subject to the host's existing journal
+rotation/retention policy. This is not a guaranteed number of days, infinite
+storage, backup or player audit history. No shared journal policy is changed.
+Healthy probes do not produce log lines or email; restart resets debounce/rate
+state. Inspect only the monitor using:
+
+```sh
+docker compose --profile operations ps monitor
+docker compose --profile operations logs --tail=30 monitor
+journalctl -t eidolon-monitor --since today --no-pager
+```
+
+To pause alerts reversibly, set `EIDOLON_MONITOR_ENABLED=false`, then explicitly
+stop only that service with `docker compose --profile operations stop monitor`.
+Changing the flag alone does not stop an already running independent monitor.
+Do not stop the API/Mongo or delete their logs. Re-enable by setting the flag to
+true and using the normal deployment flow (or the profile's explicit monitor
+build, configuration-check and `up -d --no-deps monitor` commands).

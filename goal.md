@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.78 ordered preparation:** Normally merged accepted1.77 and
+its public-evidence checkpoint. Owner approved ongoing independent outage alerts
+to existing admin recipients using current hosting/Postmark,30s probes,3 failures,
+2 recoveries and30m reminders. Separate non-root Docker monitor uses the loopback
+API and existing persistent host journal, with no shared retention/provider change.
+Exact silent/no-network configuration validation precedes API replacement;
+monitor starts after readiness. Private server env is explicitly opted in, but
+actual service/public acceptance still awaits deployment. No extra real test mail.
+Merged root race2.037s, small operations/monitor6.522s/7.029s, added deployment/
+configuration race1.025s/7.582s,400 client/version checks5.497s, lint/syntax/Compose
+and native monitor image configuration all pass. Alpha1.78 identities/notes are
+prepared; no pressure budgets, capacity, whole-host/network coverage or1.99 claim.
+Historical entries follow.
+
 **October6 owner-approved notification test:** Sent exactly one clearly labelled
 Postmark administrator test email; the provider accepted it with MessageID
 `a6602d46-8fbb-4cf0-94e9-6028c8a61503`. Owner confirmed actual inbox receipt.

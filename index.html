@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.77.0</span>
+                    <span class="start-version-row__label">Alpha 1.78.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -780,6 +780,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.78.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.78.0 (service diagnostics and independent outage alerts)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Administration now includes an explicitly refreshed Service diagnostics view: readiness, release, memory, broadcast queues, character-save/recovery and Gold/EP transfer counts, plus separate simulation and broadcast timings. Eighteen fixed rows retain unavailable measurements rather than inventing zeros; durable role checks and audited reads remain required.</li>
+                        <li>A separate opt-in monitor detects sustained outages and recovery even if the game process stops. The owner approved existing admin email recipients and current hosting/Postmark: 30-second probes, three failures before an alert, two healthy probes before recovery, and outage reminders no more than every 30 minutes. Email attempts have a shared one-minute minimum interval, finite timeout, no ambiguous retries and no tracking.</li>
+                        <li>The independent Docker service validates its exact configuration without network or email requests before deployment, restarts unless explicitly stopped, and writes sanitized incident records to the existing host journal. Healthy polling is silent. Journal retention follows existing host policy; this does not guarantee time-based retention or off-machine coverage during a complete host/network outage.</li>
+                        <li>Optional latency, memory, queue, active-call and local storage budgets stay disabled until measured and explicitly configured. Process counters reset on restart and include retries/rejections; they are not balances, unique payouts, financial compensation or 100-player capacity certification. Tokens, recipients, raw errors and player records never appear in the diagnostics or incident output.</li>
+                        <li>The single owner-approved Postmark test was accepted and its inbox receipt confirmed; ongoing notification readiness is verified separately. No account wipe, schema migration, currency/reward rule, player audit retention or provider retention change. Full prior patch history remains below; the remaining roadmap and launch qualification are not declared complete.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.77.0">
                     <h3 class="patch-note-entry__title">Alpha 1.77.0 (safer hosting and verified proxy contracts)</h3>
                     <ul class="patch-note-entry__list">
