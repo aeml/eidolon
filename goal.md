@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 enemy target-scan lock reduction:** Current AI now acquires one world
+read lock per candidate scan, not per player. Live actor locks/membership/scene/
+stealth/sanctuary/pursuit/threat rules remain; no cached targets or allocations.
+Actual focused AI/concurrency/cast/scene/sanctuary/pursuit/threat/dungeon-movement
+race scopes pass16.067s. Eight-scenario snapshot comparison retains live authority.
+Synthetic100-player scan benchmark improves5341ns to2964ns, both zero allocations;
+not full frame performance, writer latency or100-player acceptance. No population
+retry or live publication. Shared-anchor target supply/role contribution and
+casino monetary-action timing remain unresolved; full goal stays active.
+
 **October6 casino roster contention correction:** Two preparation scans locked
 every actor while owning World.Mu, including unrelated NPC/enemy AI. A new
 held-actor regression reproduces the wait before the fix; both scans now skip

@@ -1612,46 +1612,53 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		var threatPlayer *Entity
 		var threatX, threatZ float64
 
-		for _, p := range players {
-			candidate := w.snapshotEnemyTarget(p)
-			if !candidate.active || candidate.instanceID != enemyInstanceID {
-				continue
-			}
-			if pursuitRadius > 0 && math.Hypot(candidate.x-spawnX, candidate.z-spawnZ) > pursuitRadius {
-				continue
-			}
-			// Check Safe Zone
-			if w.SafeZoneAt(candidate.instanceID, candidate.x, candidate.z) != "" {
-				continue
-			}
-			// Check Stealth
-			if candidate.hidden {
-				continue
-			}
-			dx := candidate.x - ex
-			dz := candidate.z - ez
-			pid := candidate.id
+		// World membership/cast state stays consistent through this bounded scan.
+		// One world read lock replaces one per candidate; actor state is still
+		// read live under each player's lock, with all target rules unchanged.
+		func() {
+			w.Mu.RLock()
+			defer w.Mu.RUnlock()
+			for _, p := range players {
+				candidate := w.snapshotEnemyTargetLocked(p)
+				if !candidate.active || candidate.instanceID != enemyInstanceID {
+					continue
+				}
+				if pursuitRadius > 0 && math.Hypot(candidate.x-spawnX, candidate.z-spawnZ) > pursuitRadius {
+					continue
+				}
+				// Check Safe Zone
+				if w.SafeZoneAt(candidate.instanceID, candidate.x, candidate.z) != "" {
+					continue
+				}
+				// Check Stealth
+				if candidate.hidden {
+					continue
+				}
+				dx := candidate.x - ex
+				dz := candidate.z - ez
+				pid := candidate.id
 
-			dist := math.Sqrt(dx*dx + dz*dz)
-			if dist < nearestDist {
-				nearestDist = dist
-				nearestPlayer = p
-				nearestX, nearestZ = candidate.x, candidate.z
-			}
+				dist := math.Sqrt(dx*dx + dz*dz)
+				if dist < nearestDist {
+					nearestDist = dist
+					nearestPlayer = p
+					nearestX, nearestZ = candidate.x, candidate.z
+				}
 
-			thr := 0.0
-			if threatSnapshot != nil {
-				thr = threatSnapshot[pid]
-			}
-			if thr > 0 {
-				if thr > maxThreat || (thr == maxThreat && dist < threatDist) {
-					maxThreat = thr
-					threatDist = dist
-					threatPlayer = p
-					threatX, threatZ = candidate.x, candidate.z
+				thr := 0.0
+				if threatSnapshot != nil {
+					thr = threatSnapshot[pid]
+				}
+				if thr > 0 {
+					if thr > maxThreat || (thr == maxThreat && dist < threatDist) {
+						maxThreat = thr
+						threatDist = dist
+						threatPlayer = p
+						threatX, threatZ = candidate.x, candidate.z
+					}
 				}
 			}
-		}
+		}()
 
 		var targetX, targetZ float64
 		if threatPlayer != nil {
