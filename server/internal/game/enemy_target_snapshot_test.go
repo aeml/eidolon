@@ -132,8 +132,29 @@ func TestEnemyTargetScanKeepsDistantThreatPriorityAtActualConsumer(t *testing.T)
 	// attack the in-range target. No extended sight, timer or power is granted.
 	delete(enemy.Threat, far.ID)
 	w.updateEntity(enemy, .033, []*Entity{near, far}, &deferredActions{})
-	if near.Health >= near.MaxHealth || far.Health != far.MaxHealth {
-		t.Fatal("ordinary in-range enemy attack stopped working")
+	enemy.Mu.RLock()
+	accepted := enemy.State == "ATTACKING" && !enemy.LastAttackTime.IsZero()
+	enemy.Mu.RUnlock()
+	if !accepted {
+		t.Fatal("ordinary in-range enemy attack was not accepted")
+	}
+	// Normal melee has a wind-up (35% of cooldown). Observe its real queued
+	// impact instead of expecting synchronous damage or shortening that timer.
+	deadline := time.Now().Add(2 * time.Second)
+	for {
+		near.Mu.RLock()
+		landed := near.Health < near.MaxHealth
+		near.Mu.RUnlock()
+		if landed {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("ordinary in-range enemy attack did not land after its wind-up")
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	if far.Health != far.MaxHealth {
+		t.Fatal("distant player received an out-of-range impact")
 	}
 }
 
