@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 staged incident communication implementation:** Administration now
+has reviewed/explicitly confirmed public maintenance, incident and recovery
+notices. Durable current authority/audit are required and rechecked after IO;
+closed bounds/UTC/rate guards and global System chat omit administrator identity.
+Existing audit retention/journal persists exact public copy/timing; no automatic
+resend, restart, maintenance mode, mail, player change or offline replay. Focused
+root race scopes4.380s/2.663s plus admission guards2.952s/database1.123s pass;
+41 client tests2.838s and final focused notice checks pass. System Chrome desktop/
+phone cases pass31.2s after correcting a label locator and undersized buttons,
+retaining44px/overflow/review/acknowledgement guards. Port42983 closes normally.
+This is unpublished future1.83 work, not native Mongo/restart/real-player delivery
+or full tabletop proof. External status/alternate operator and ordered1.77–1.82
+acceptance remain open. No live notice or production mutation. See the existing
+[incident receipt](docs/plans/2026-10-06-release1-83-current-incident-checks.json).
+
 **October6 staged1.83 incident procedure:** Existing Linux deployment guide now
 has six incident rows, bounded read-only triage, explicit stop/escalation and
 recovery checks, UTC maintenance/outage/recovery notice templates. Operator

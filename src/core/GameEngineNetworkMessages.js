@@ -480,6 +480,7 @@ class GameEngineNetworkMessageMethods {
             this.uiManager?.report?.notice?.handleResult(msg.payload);
         } else if (['admin_status_result', 'admin_players_result', 'admin_history_result', 'admin_reports_result',
             'admin_report_review_result',
+            'admin_announcement_result',
             'admin_privacy_export_approval_result',
             'admin_removal_review_result',
             'admin_chat_moderation_result', 'admin_chat_moderation_target_result',

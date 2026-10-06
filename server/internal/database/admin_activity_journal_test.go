@@ -46,6 +46,31 @@ func TestAdminActivityJournalDurableReplayAndPrivateExpiration(t *testing.T) {
 	}
 }
 
+func TestAdminAnnouncementAuditJournalRetainsPublicCopyAndUnchangedExpiry(t *testing.T) {
+	dir := t.TempDir()
+	journal, err := OpenAdminActivityJournal(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	event, err := NewAdminActivity("operator", "", "admin_announcement", "notice-request-000001", "success",
+		"Announcement requested: Service restored.", time.Now(), 90)
+	if err != nil {
+		t.Fatal(err)
+	}
+	event.Reason = "Kind: recovery; next update UTC: ; admission only"
+	if err := journal.Write(event); err != nil {
+		t.Fatal(err)
+	}
+	reopened, err := OpenAdminActivityJournal(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pending, err := reopened.Pending(50)
+	if err != nil || len(pending) != 1 || pending[0].Summary != event.Summary || pending[0].Reason != event.Reason || pending[0].Action != event.Action || !pending[0].ExpiresAt.Equal(event.ExpiresAt) {
+		t.Fatal("announcement admission evidence changed across reopen", err)
+	}
+}
+
 func TestAdminActivityJournalCorruptionAndBatchBounds(t *testing.T) {
 	dir := t.TempDir()
 	journal, _ := OpenAdminActivityJournal(dir)

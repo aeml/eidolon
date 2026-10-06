@@ -30,18 +30,18 @@
 .administration-players summary:focus-visible { outline: 2px solid #e7c77f; outline-offset: 2px; }
 .administration-report-json { white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; max-width: 100%; padding: 10px; box-sizing: border-box; background: #111820; border: 1px solid #665638; border-radius: 4px; font-size: 12px; line-height: 1.5; user-select: text; }
 .administration-window [data-admin-role] { color: #e7c77f; }
-.administration-operations { border-top: 1px solid #665638; padding-top: 12px; }
-.administration-operations summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; color: #e7c77f; }
-.administration-operations fieldset { min-width: 0; margin: 8px 0; padding: 12px; border: 1px solid #665638; }
-.administration-operations label { display: grid; gap: 6px; margin-block: 10px; min-width: 0; }
-.administration-operations input, .administration-operations select, .administration-operations textarea {
+:is(.administration-operations, .administration-announcements) { border-top: 1px solid #665638; padding-top: 12px; }
+:is(.administration-operations, .administration-announcements) summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; color: #e7c77f; }
+:is(.administration-operations, .administration-announcements) fieldset { min-width: 0; margin: 8px 0; padding: 12px; border: 1px solid #665638; }
+:is(.administration-operations, .administration-announcements) label { display: grid; gap: 6px; margin-block: 10px; min-width: 0; }
+:is(.administration-operations, .administration-announcements) :is(input, select, textarea) {
     width: 100%; min-width: 0; min-height: 44px; box-sizing: border-box; font: inherit;
     color: #f0dfb8; background: #18212b; border: 1px solid #857047; border-radius: 4px; padding: 8px;
 }
-.administration-operations [data-review] { padding: 12px; border: 1px solid #e7c77f; background: #302b22; }
-.administration-operations [data-summary], .administration-operations [data-result] { overflow-wrap: anywhere; }
+:is(.administration-operations, .administration-announcements) [data-review] { padding: 12px; border: 1px solid #e7c77f; background: #302b22; }
+:is(.administration-operations, .administration-announcements) :is([data-summary], [data-result], [data-copy]) { overflow-wrap: anywhere; }
 .administration-players button { justify-self: start; min-height: 44px; padding: 8px 12px; color: #f0dfb8; background: #242c38; border: 1px solid #857047; border-radius: 4px; font: inherit; }
-.administration-operations :focus-visible, .administration-players button:focus-visible { outline: 2px solid #e7c77f; outline-offset: 2px; }
+:is(.administration-operations, .administration-announcements) :focus-visible, .administration-players button:focus-visible { outline: 2px solid #e7c77f; outline-offset: 2px; }
 .administration-review { border-top: 1px solid var(--border-default); padding-top: 8px; min-width: 0; }
 .administration-review summary { cursor: pointer; min-height: 44px; padding: 12px 0; color: var(--color-gold); }
 .administration-review label { display: grid; gap: 6px; }

@@ -96,9 +96,25 @@ Recovery notice follows verification: "[Affected service] is available again
 on [version/commit]. [Known limitations]. Please report continuing issues using
 the in-game report tool when available."
 
+The staged in-game route is **Administration → Maintenance and incident notices**.
+Choose maintenance, incident update or recovery; enter plain public text (up to
+220 UTF-8 bytes) and a future UTC next-update time within 24 hours. Recovery may
+omit the next-update time. Review the exact copy, then explicitly send it.
+Current durable administrator authority and acknowledged activity storage are
+required, with authority checked again after the audit write. The exact public
+copy/kind/time are recorded using existing activity retention; no account identity
+is included in public server chat. No maintenance mode, restart, email or player
+mutation is performed. A three-token burst budget refilling over one minute per
+authenticated connection bounds the route; review does not submit a request.
+
+Queue acknowledgement is not delivery to every player, and history's success row
+explicitly records **admission only**. If acknowledgement is missing, check server
+chat and Activity history before preparing another notice; the UI does not retry
+automatically. The transient notice is not replayed to players logging in later.
 Do not claim that a disconnected player saw an in-game notice. An always-reachable
-external status/contact destination and audited administrator announcement UI
-still need implementation/owner selection; this checklist is not their substitute.
+external status/contact destination still needs owner selection; the in-game tool
+cannot reach players during an origin outage. This staged route is not live or
+a substitute for operator coverage, tabletop exercises and ordered acceptance.
 No public email, account message or announcement is sent by these instructions.
 
 Reopening requires the exact expected server/client identities and ready
