@@ -71,6 +71,22 @@ describe('persistent QA bag rotation with earned deliveries', () => {
         await freePersistentQALootSlot(page);
         expect(sales).toEqual([]);
     });
+    test('explicit reversible storage fallback rechecks capacity and returns retained gear for fresh-login proof', async () => {
+        const bag = Array.from({ length: 25 }, (_, index) => ({ ...spare(`invested-${index}`), potency: 7 }));
+        const { page, sales } = harness(bag);
+        const stash = [];
+        const storeSpare = jest.fn(async () => {
+            const item = bag.find(entry => entry?.id);
+            bag[bag.indexOf(item)] = null;
+            stash.push(item);
+            return item;
+        });
+        expect(await freePersistentQALootSlot(page, { storeSpare })).toEqual(stash);
+        expect(sales).toEqual([]);
+        expect(storeSpare).toHaveBeenCalledTimes(1);
+        expect(bag.filter(item => item?.id)).toHaveLength(24);
+        expect(stash[0].potency).toBe(7);
+    });
     test('unbounded deferred loot cannot cause unbounded vendor actions', async () => {
         const { page, sales } = harness(Array.from({ length: 25 }, (_, index) => spare(`spare-${index}`)),
             Array.from({ length: 26 }, (_, index) => ({ ...spare(`earned-${index}`), potency: 7 })));

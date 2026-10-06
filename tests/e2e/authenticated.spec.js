@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { profileGameplayScene } from './scene-performance.js';
+import { storePersistentQALootSpare } from './persistent-qa-stash.js';
 import {
     collectBrowserFailures,
     credentialsFromEnvironment,
@@ -132,7 +133,7 @@ test.describe('dedicated QA character', () => {
         await loginAndEnterWorld(page, credentials);
         await ensureDungeonReadyLevel(page);
         await exerciseAreaHazards(page);
-        const lootReceipt = await exerciseCombatAndLoot(page);
+        const lootReceipt = await exerciseCombatAndLoot(page, { storeSpare: storePersistentQALootSpare });
         await enterAndExitDungeon(page);
         await exerciseReconnect(page);
         await verifyPersistenceAfterFreshLogin(page, credentials, lootReceipt);
