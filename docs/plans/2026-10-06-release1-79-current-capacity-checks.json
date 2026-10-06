@@ -3,6 +3,35 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "ordering-fix-100-client-comparison-terminal-fail-blackjack-and-every-member-impact-fixture-removed",
+  "correctedBuildFourPartyControl": {
+    "driverSourceCommit": "d5d28ded8957d53d3166d6db7dd93d5a3bd0372d",
+    "serverAndHarnessSourceCommit": "cea4f481d73794681895bed9a40b1debc1c19896",
+    "result": "PASS49.71s/45s active. Reuse exact normal server and race harness; compile only changed driver. Actual four normal authenticated characters/party and all four independent final disconnect saves pass. This is not100-client or dungeon/raid acceptance.",
+    "artifactDirectory": "/tmp/eidolon-179-classkit4-8inLDJ",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-3618203281",
+    "serverSHA256": "c3a2d7b97cffd98b54592da40b2ce3bf25a8d7a27cde9e7a66bfd2c877a7cb99",
+    "driverSHA256": "e9dbe0404a319562343c6681af6b8d7a2da4075323b57c2e241460fb79de51e6",
+    "raceHarnessSHA256": "75be3ab84db86de0c96d7aedf2998ca90de77718315f3e8e37271595d25518e1",
+    "predeclaration": "Original four-client/45s party control, legal Uncommon/Rare class gear/build/funding, shared400/600 anchor/radius30 and5s deadlines unchanged. Actual regular randomized-world enemies, no added targets or production grants. Owned Mongo7.0.14 loopback32960,2CPU/2GiB/512MiB tmpfs; shared host, not headroom measurement.",
+    "metrics": {
+      "connected": 4, "joined": 4, "stateFrames": 5474, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 1364, "minimumActiveMilliseconds": 44974,
+      "maximumStateGapMilliseconds": 63, "payloadBytes": 49826031,
+      "maximumLoginMilliseconds": 97, "maximumJoinMilliseconds": 60,
+      "partyGroupsFormed": 1, "partyMembersConfirmed": 4, "partyMinimumImpacts": 1,
+      "partyDamageEvents": 78, "partyHealEvents": 1, "partyAcceptedCasts": 69,
+      "partyDeniedCasts": 0, "partyXPUpdates": 76, "partyObservedDeaths": 19,
+      "roles": {
+        "Fighter": {"minimumImpacts": 23, "damage": 23, "casts": 13, "denied": 0, "unmatchedDamage": 0},
+        "Cleric": {"minimumImpacts": 1, "damage": 0, "heals": 1, "casts": 1, "denied": 0, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 34, "damage": 34, "casts": 36, "denied": 0, "unmatchedDamage": 7},
+        "Wizard": {"minimumImpacts": 21, "damage": 21, "casts": 19, "denied": 0, "unmatchedDamage": 0}
+      }
+    },
+    "savedEvidence": "All four freshly written LastLogout values, class/EP/equipment/inventory preservation and positive XP/level progression asserted from normal Mongo saves after server stop. No synthetic impact or accepted-cast credit; unmatched damage remains excluded.",
+    "limits": "Cleric's only credited impact is one heal; not proof of offense/full-kit/healer balance. Does not establish the cause/resolution of the historic100-client failures, raid/event capability, unique kill attribution or production headroom. Earlier failures and full capacity gates remain open.",
+    "cleanup": "After terminal native harness/server cleanup, exact owned Mongo3d19243e2fa19cc1ec9b53c49faf60be49e90c68bf7f0f6b74ce6d8014ad830a/name/fixture label validated then removed with synthetic volumes. Independent label/process queries empty. Aggregate artifacts retained; production and unrelated nightly soak untouched."
+  },
   "preparedBuildCombatFidelity": {
     "defect": "Normal prepared Cleric A saves advertise Radiant Strike/Healing Light/Guardian Embrace/Purifying Wave, but the driver hardcoded Spirit Guardians. Every role also attempted its primary without verifying the actor's advertised unlocks. A focused locked-primary test fails before repair; production range source confirms Radiant Strike's three-unit base cone.",
     "repair": "Use only advertised unlocked Charge/Radiant Strike/Piercing Throw/Fireball for the prepared role, otherwise ordinary attacks. Approach within the Cleric cone before casting. No saved build, actor power, gear, enemy spawn, target radius/anchor, cooldown, healing selection or acceptance-gate change.",

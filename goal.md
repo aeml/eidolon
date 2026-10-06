@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 corrected-build native four-party control:** Changed driver d5d28ded
+with reused exact cea4f481 normal server/race harness passes49.71s/45s active.
+All four admit, contribute and independently save positive XP while retaining
+class/gear/bag/EP. Actual healing1, owned damage78, accepted casts69/denied0;
+transport errors0. Cleric's sole impact is healing, not proof of offense/full-kit
+or healer balance. Original four-client workload/gear/anchor/radius/gates remain.
+Exact owned Mongo identity/label matched then synthetic fixture/volumes removed;
+label/process queries empty. Production/nightly soak untouched. Artifacts and
+binary hashes retained in the existing receipt; no100-client or release claim.
+
 **October6 prepared-build combat fidelity:** The Cleric A save unlocks Radiant
 Strike but the driver selected Spirit Guardians; all roles also cast primaries
 without checking advertised unlocks. A focused locked-skill regression fails
