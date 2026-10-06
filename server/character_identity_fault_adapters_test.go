@@ -70,3 +70,7 @@ func (c *tradeRecoveryStore) CommitBoundCharacterSave(a primitive.ObjectID, u st
 func (c *bankHandlerFaultStore) CommitBoundCharacterSave(a primitive.ObjectID, u string, p *database.Character, r string) error {
 	return forwardBoundTestSave(c, a, u, p, r)
 }
+
+func (c *slotStartupCheckingCommitter) CommitBoundCharacterSave(a primitive.ObjectID, u string, p *database.Character, r string) error {
+	return forwardBoundTestSave(c, a, u, p, r)
+}

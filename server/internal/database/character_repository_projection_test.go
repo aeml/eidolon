@@ -163,7 +163,11 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 	mu.Lock()
 	entryReply := append(bson.Raw(nil), findReply...)
 	mu.Unlock()
-	var entryResponse struct { Cursor struct { FirstBatch []bson.M `bson:"firstBatch"` } `bson:"cursor"` }
+	var entryResponse struct {
+		Cursor struct {
+			FirstBatch []bson.M `bson:"firstBatch"`
+		} `bson:"cursor"`
+	}
 	if err := bson.Unmarshal(entryReply, &entryResponse); err != nil || len(entryResponse.Cursor.FirstBatch) != 1 || len(entryResponse.Cursor.FirstBatch[0]) != 2 {
 		t.Fatal("first-character entry fetched credentials or unrelated account fields", err)
 	}
