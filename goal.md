@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 native1.88 compatibility follow-up:** Exact race-instrumented58e69c0b
+server and new loopback/tmpfs Mongo pass real saved-player logins, bag drag/save,
+fresh-process restart, four connected classes/party leadership, accepted story,
+build/hotbar/preset, wardrobe, Gold/EP and wallet receipts:21.53s/package22.604s.
+Old compact Heart migration and an ordinary fresh starter/reload also pass.
+Retain initial decoder/fresh-hotbar fixture failures; correct test assumptions,
+not runtime or acceptance bounds. Existing living-Wizard dungeon restart/Recall
+case passes7.93s/package9.029s, including ordinary paid Fireball and exact layout/
+resources; prepared cleared room is not an earned clear. Exact logs/hash and
+limits in the compatibility receipt below. Joined all native children, removed
+only owned synthetic Mongo, kept evidence; port32970 empty. No production/main
+worktree/provider/deployment changes. Origin still69cc97d9. Ordered1.77/1.78
+release gates, performance/capacity and full beta/release remain open; goal active.
+
 **October6 prepared1.88 bag compatibility:** Source inspection and three RED
 cases prove saves compact interior bag gaps: item slot8 returns at slot0. Keep
 positional arrays with only trailing empties trimmed; actual login mapping pads

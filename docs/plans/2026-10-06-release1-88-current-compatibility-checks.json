@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "1.88 fresh and returning player compatibility",
-  "status": "bag-slot-reconnect-gap-fixed-locally-integrated-native-journey-and-ordered-release-open",
+  "status": "bag-slot-gap-fixed-native-saved-player-restart-and-scoped-dungeon-recovery-pass-ordered-release-open",
   "baseCommit": "23977e1462738c1ab209892261892d12125339ec consolidated local1.87 candidate; production remains1.76.0/69cc97d9",
   "diagnosis": "characterSnapshot and multiple offline inventory writers compact every empty bag slot. Login reads saved array indexes as slots, so an item at slot8 returns at slot0. The existing snapshot and auction failure tests explicitly expected this movement. This is an observed serialization/reconnect gap, not item loss or duplication. Already-compacted older saves contain no original slot indexes; those historical arrangements cannot be reconstructed.",
   "implementation": [
@@ -17,7 +17,24 @@
     "correctedScope": "Affected auction case, new offline direct-trade sparse-slot/replay case, new bag mapping cases and full snapshot check PASS with race detector1.642s. Offline incoming custody fills slot0 while unrelated old-scale item remains at slot7 unchanged; six interior holes persist, Gold/EP and unrelated resources/quests/gear/receipts retain terms, replay performs no new write/grant. Modeled durable store plus real filesystem journal, not real Mongo.",
     "crossFeature": "Focused root compatibility checks PASS6.876s: expanded-story terms/rest/resources, progression fractions/future story records, loadout references/hotbar, cosmetic EP/unlock pending saves, authoritative dungeon/checkpoint landing and bound-identity snapshots/replay. Schema/catalog rules PASS1.029s; actual future-Mongo and migration integration cases are disabled/skipped. Party rejoin/registry restoration/idempotence/expiry checks PASS2.221s. These are scoped fixtures and message construction, not an earned connected-player campaign or100-player acceptance.",
     "forge": "Add an explicit Forge basis to the bound sparse-slot fixture; that three-reopen mapping case plus existing99 continued-upgrade BSON and equipment-protobuf Forge basis checks PASS with race detector1.588s. Current metadata mapping remains stable; no client-rendering or native equipment-fit claim.",
-    "hygiene": "Scoped tests use real temporary filesystem journals and modeled stores; no disposable Mongo or native server fixture was created this turn. All owned commands terminal. Go formatting, whitespace and receipt JSON validation pass. Fresh origin/master remains69cc97d9580e1a9e0e5e576f1a475a50b43c6639. Dedicated1.88 worktree based on23977e14; no service, provider mail, DNS, root, production DB or main user worktree mutation."
+    "hygiene": "Earlier unit-only stage used real temporary filesystem journals and modeled stores; no Mongo/native fixture was created at that stage. Its commands were terminal and formatting/whitespace/JSON passed. Current native follow-up is recorded separately below. Dedicated1.88 worktree based on23977e14; no service, provider mail, DNS, root, production DB or main user worktree mutation.",
+    "nativeFollowUp": {
+      "runtimeCommit": "58e69c0bd8bc9b4866b711f5fc376542781d8965",
+      "binary": "/tmp/eidolon-188-native-Hh57O5/58e69c0bd8bc9b4866b711f5fc376542781d8965",
+      "binarySHA256": "58bb42a02c94c3a4e1d42f271b931798694c67babea5fe6484c27c7bdfbd3521",
+      "build": "Race-instrumented actual server, Go1.27.1/GOMAXPROCS2; buildCommit matches binary basename and readiness checks. Follow-up source changes are test/docs only; runtime unchanged.",
+      "storage": "New explicitly labelled temporary Mongo7.0.16 imagec630c59342c1493d50345136df2af14a76b9e827dd5316bfabee07a0880a5f3a, loopback32970, tmpfs only,2CPU/1GB limits. No production connection, mail credentials, QA allowance or admin bootstrap. Six synthetic accounts per compatibility attempt, random unprinted passwords and example.invalid emails; not earned progression or currency settlements.",
+      "initialFailures": "Native compatibility attempt FAIL7.64s at bag move; diagnostic rerun FAIL7.59s reveals Go JSON decoding into an existing slice retained omitted old-slot fields. Reset the replacement slice before decoding, matching the browser's full replacement. Next attempt FAIL14.18s at fresh starter: a new account has no saved hotbar and intentionally returns Restored=false. Require successful initial snapshot for every account and Restored=true only for saved-build fixtures; preserve all exact saved-build assertions. No server/runtime or resource/authority budget change to pass these failures.",
+      "compatibility": "TestInventoryActualSavedLoginDragAndRestart PASS21.53s/package22.604s with race detector, real sockets and independent fresh Mongo reads. Four level30 saved classes stay connected together; authoritative menu recognizes original leader and three nonleaders before and after fresh process restart. Ordinary bag move8-to6, interior gaps, last slot24, potency/gems/Forge basis, accepted story reward terms/investigation progress, saved branch/preset/hotbar, cosmetic collection/selection, Gold/EP and four wallet receipt maps preserved. Outside-town zero-Vitality/Wisdom resources stay20HP/0MP. Legacy compact/unversioned Heart migrates in place; ordinary account with no character creates starter and retains bag on second fresh-process login. Two joined normal shutdowns, no panic/race markers.",
+      "dungeon": "Existing TestResourceActualDungeonRestartAndTownRecovery/Wizard/dead=false PASS7.93s/package9.029s with same exact binary and isolated storage. Ordinary level30 dungeon entry and paid Fireball, bounded real town/rest/resource arithmetic, disconnect snapshot, fresh-process layout/seed/resources/room-state restore and normal Recall to town retain value/equipment. Cleared room is an explicitly prepared compatibility fixture, not an earned clear; not all classes/death variants,15-minute expiry, a raid clear or campaign/pacing acceptance.",
+      "logs": [
+        {"path": "/tmp/eidolon-compat-session-3696562745/server.log", "sha256": "d10a18e8a7dd042ee86eb186d60945da0efbae4c013211914674fe8c058e31bb"},
+        {"path": "/tmp/eidolon-compat-session-2956247145/server.log", "sha256": "90d3323c40fbba8b339f183d1582bcda9964dfa5d1123e1e858d7911d2514bc3"},
+        {"path": "/tmp/eidolon-compat-session-676791779/server.log", "sha256": "2c77cc2e24342f45a25928ccc6f2092523415a2d2d1bfb5a3078de6e22b62f80"},
+        {"path": "/tmp/eidolon-compat-session-779036789/server.log", "sha256": "55324d44d0f234f7f478d7ad202b1da0f340cc1a52f7e30546803e4b8065be8d"}
+      ],
+      "cleanup": "Owned native processes joined and exact binary process check empty. Validate containerce619b31f35077a77167794f9f252e109b5cc5e726e9813b93b013ff73cbfeaa/nameeidolon-188-compat-20261006/labelcompat-188-20261006, remove only this synthetic tmpfs database/container; label query and loopback32970 listener empty. Retain binary and logs. Fresh origin/master still69cc97d9580e1a9e0e5e576f1a475a50b43c6639; no external writes/deployment."
+    }
   },
   "plannedPatchNotes": {
     "version": "Alpha1.88.0 draft, not published",
@@ -28,7 +45,7 @@
     ]
   },
   "remaining": [
-    "Complete an exact-candidate fresh/returning-player connected journey with isolated real storage/restart, including saved bag gaps alongside story, builds, party membership, wallets, cosmetics and dungeon policy. Reuse unchanged compatible receipts with exact workload/binary limits rather than rerunning long campaigns.",
+    "Representative exact-candidate native saved/fresh/legacy journey and living-Wizard dungeon restart/recovery now pass. Supported historical progression/migration, party expiry, death and other dungeon cases retain their existing scoped receipts, not recertified as a single all-release integrated campaign. Reuse unchanged compatible proofs with exact workload/binary limits; changed or missing release acceptance remains explicit.",
     "Full game-package timeout, measured native server stalls and approved population/headroom remain open under1.87. These scoped compatibility checks do not replace that acceptance.",
     "Earlier1.77 TLS renewal and1.78 operating/alert choices, exact version/cumulative patch notes, normal remote integration and deployment/public verification remain open. This work is local, not a live1.88 release.",
     "Whole-campaign pacing and real-phone party/dungeon playtest remain owner-deferred; near-complete beta and full release require the unchanged1.90/1.99 scope and owner decisions."
