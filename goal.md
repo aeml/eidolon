@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 changed-source1.79 native comparison:** Exact prepared78d3bee2 normal
+API/driver with separate race harness,100 clients/five role blocks/120s active:
+FAIL215.81s. All100 admitted/fresh-own delivery and paid casino/social scopes
+succeed, but some class members have zero impacts; full save assertions never
+execute. Shutdown reaches final_characters then exceeds unchanged5s guard.
+590ms state gap and approximately31ms update+22ms broadcast remain slow.
+Owned CPU/RSS evidence retained; one3.663s idle-world profile identifies repeated
+live target/zone locking cost, not proof of every stall. Isolated Mongo fixture
+and owned processes cleaned; production and unrelated soak untouched. Diagnose
+role acquisition/final-save/target-scan work, preserve all authority/durability/
+outcome gates; do not blindly rerun or publish1.79 as accepted.
+
 **October6 Alpha1.78 accepted live:** Exact c7c2c526/CI37543824180 terminal
 success/all ten jobs, including final live QA, independently confirmed. Public
 IPv4 identities/database readiness, five actual publisher-runtime files and
