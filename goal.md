@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 current recovery archive coverage:** Extend actual isolated restore
+to schema25, guild membership/bank/audit/pending transfer, Well Rested and a valid
+canonical saved-dungeon snapshot from the existing prepared helper. PASS32.69s/
+package33.772s race, two authenticated network-none Mongo stores. Current BSON
+models decode restored instance/rest metadata and geometry validates; full
+archive/index equality, refused/invalid restore preservation, explicit scoped
+replacement and unrelated DB retention pass. Both unique owned fixture projects
+have no remaining containers/volumes. This is archive/metadata fidelity, not
+normal login, guild settlement,15-minute expiry/checkpoint or owner RPO/RTO/
+off-machine policy acceptance. No production restore, deletion or publication.
+
 **October6 recovery-path/native follow-up:** Restore preserves the selected
 directory path so the verifier can reject a directory symlink; premature
 canonicalization no longer bypasses that guard. Twenty-one verifier/six gate

@@ -9,8 +9,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
+	"strconv"
 	"testing"
 	"time"
+
+	"eidolon-server/internal/database"
+	"eidolon-server/internal/game"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Real archive tools and the production helper in an explicitly owned Compose
@@ -94,7 +100,18 @@ volumes:
 		t.Helper()
 		return run(nil, "compose", "exec", "-T", service, "sh", "-c", shell+"'"+code+"'")
 	}
-	js("source", `
+	resume := roomPreparedResume("dungeon_retained")
+	resume.PartyID, resume.CurrentRoomIndexValue = "retained-party", 2
+	resume.Rooms[0] = database.DungeonRoomProgress{Explored: true, Cleared: true}
+	resume.Rooms[1] = database.DungeonRoomProgress{Explored: true, Cleared: true, Rewarded: true}
+	if err := game.ValidateDungeonLayout(dungeonResumeFromDatabase(resume).Layout); err != nil {
+		t.Fatal("prepared archive must contain valid canonical dungeon geometry", err)
+	}
+	resumeJSON, err := bson.MarshalExtJSON(resume, false, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	js("source", fmt.Sprintf(`
 const d=db.getSiblingDB("eidolon");
 d.users.insertOne({_id:"owner",username:"owner",characters:[{name:"owner",gold:1184,ep:83,
   resources:{version:1,health:17,mana:0},ground_account_ordinal:NumberLong(2),
@@ -103,12 +120,21 @@ d.users.insertOne({_id:"owner",username:"owner",characters:[{name:"owner",gold:1
   item_delivery_receipts:{legacy:"retained"},gold_credit_receipts:{"listing:legacy":-25},
   vip_allowance_receipts:{"month-one":100},ep_exchange_receipts:{exchange:1},ep_casino_receipts:{"casino:legacy":-18},
   appearance_collection:{"earth-armor":{base_name:"Earth Armor",slot:"chest"}},
+  well_rested:{version:1,remaining_seconds:7200},instance_id:"dungeon_retained",party_id:"retained-party",
+  last_logout:new Date("2026-10-06T02:00:00Z"),
+  dungeon_progress:EJSON.parse(%s),
   unknown_future_metadata:{retain:true}}]});
-d.schema_migrations.insertOne({_id:"schema",version:24,name:"versioned_casino_wallet_checkpoints"});
+d.schema_migrations.insertOne({_id:"schema",version:%d,name:"versioned_casino_wallet_checkpoints"});
+d.guilds.insertOne({_id:"retained-guild",id:"retained-guild",name:"Retained Guild",name_key:"retained guild",tag:"KEEP",
+  leader_id:"player-owner",members:[{player_id:"player-owner",username:"owner",rank:"leader",joined_at:new Date("2026-09-01")}],
+  bank:{gold:456,items:[{id:"retained-guild-item",name:"Guild Shield",type:"ARMOR",slot:"offHand",stack:1,max_stack:1}]},
+  version:7,pending_bank_operation_id:"retained-bank-transfer",pending_bank_operation_fingerprint:"bank-fingerprint",
+  audit:[{operation_id:"retained-bank-receipt",action:"deposit",amount:456,actor_id:"player-owner"}]});
+d.guild_bank_operations.insertOne({_id:"retained-bank-transfer",state:"pending",fingerprint:"bank-fingerprint"});
 d.ground_item_operations.insertOne({_id:"ground-original",account_ordinal:NumberLong(2),state:"pending",fingerprint:"retained-ground-fingerprint"});
 d.casino_blackjack_tables.insertOne({_id:"vip-blackjack",version:NumberLong(3),state:BinData(0,"e30="),
   pending:{id:"casino-original",currency:"ep",amount:18,next_state:BinData(0,"e30=")}});
-d.users.createIndex({username:1},{name:"username_1",unique:true});`)
+d.users.createIndex({username:1},{name:"username_1",unique:true});`, strconv.Quote(string(resumeJSON)), database.CurrentSchemaVersion))
 	js("mongo", `db.getSiblingDB("unrelated_fixture").sentinel.insertOne({_id:"keep",value:43});`)
 	const snapshot = `const d=db.getSiblingDB("eidolon"); print(EJSON.stringify(d.getCollectionNames().sort().map(name=>({name,docs:d.getCollection(name).find().sort({_id:1}).toArray(),indexes:d.getCollection(name).getIndexes()})),{relaxed:false}));`
 	want := js("source", snapshot)
@@ -137,6 +163,14 @@ d.users.createIndex({username:1},{name:"username_1",unique:true});`)
 	}
 	if got := js("mongo", snapshot); !bytes.Equal(got, want) {
 		t.Fatal("fresh restore changed private fields, namespace set or indexes")
+	}
+	var restoredCharacter database.Character
+	if err := bson.UnmarshalExtJSON(js("mongo", `print(EJSON.stringify(db.getSiblingDB("eidolon").users.findOne({_id:"owner"}).characters[0],{relaxed:false}));`), false, &restoredCharacter); err != nil ||
+		!reflect.DeepEqual(restoredCharacter.DungeonProgress, resume) || restoredCharacter.WellRested == nil || restoredCharacter.WellRested.RemainingSeconds != 7200 {
+		t.Fatal("restored dungeon/rested metadata is not consumable by current BSON models", err)
+	}
+	if err := game.ValidateDungeonLayout(dungeonResumeFromDatabase(restoredCharacter.DungeonProgress).Layout); err != nil {
+		t.Fatal("restored canonical dungeon geometry is invalid", err)
 	}
 	js("mongo", `const d=db.getSiblingDB("eidolon"); d.users.updateOne({_id:"owner"},{$set:{"characters.0.gold":999}}); d.later_operation_ledger.insertOne({_id:"newer-pending",state:"pending"});`)
 	before := js("mongo", snapshot)
@@ -171,5 +205,5 @@ d.users.createIndex({username:1},{name:"username_1",unique:true});`)
 		t.Fatal("explicit replacement retained later ledger or changed original private state/indexes")
 	}
 	js("mongo", `if(db.getSiblingDB("unrelated_fixture").sentinel.countDocuments({_id:"keep",value:43})!==1) quit(1);`)
-	t.Log("fresh restore and explicitly scoped replacement preserve exact archive fields/indexes; refusal and invalid-archive preflight leave destination unchanged; later ledger removed; unrelated database retained")
+	t.Log("fresh restore and scoped replacement preserve current schema marker, exact wallet/guild/rested/saved-instance metadata and indexes; refusal/preflight leave destination unchanged; unrelated database retained. Archive fidelity only, not actual game hydration or dungeon expiry/checkpoint acceptance")
 }
