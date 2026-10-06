@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"maps"
 	"reflect"
 	"testing"
 	"time"
@@ -29,12 +30,17 @@ func cloneBankRecoveryCharacter(character *database.Character) *database.Charact
 	// AccountID deliberately never crosses the public JSON boundary, but a
 	// complete in-process snapshot must retain its trusted account generation.
 	copy.AccountID = character.AccountID
+	copy.GroundAccountOrdinal, copy.GroundAccountOperationID, copy.GroundAccountFingerprint =
+		character.GroundAccountOrdinal, character.GroundAccountOperationID, character.GroundAccountFingerprint
+	copy.CasinoWalletCheckpoints = maps.Clone(character.CasinoWalletCheckpoints)
 	return &copy
 }
 
 func TestGuildBankRecoveryClonePreservesPrivateAccountGeneration(t *testing.T) {
 	before := &database.Character{AccountID: primitive.NewObjectID(), Name: "synthetic-bank-owner",
-		Inventory: []database.Item{{ID: "synthetic-item", Stats: map[string]int{"strength": 7}}}}
+		GroundAccountOrdinal: 9, GroundAccountOperationID: "synthetic-ground-proof", GroundAccountFingerprint: "synthetic-ground-fingerprint",
+		CasinoWalletCheckpoints: map[string]database.CasinoWalletCheckpoint{"synthetic-table": {Version: 9, ID: "synthetic-casino-proof", Fingerprint: "synthetic-casino-fingerprint"}},
+		Inventory:               []database.Item{{ID: "synthetic-item", Stats: map[string]int{"strength": 7}}}}
 	copy := cloneBankRecoveryCharacter(before)
 	if !reflect.DeepEqual(before, copy) || copy.AccountID.IsZero() {
 		t.Fatal("complete recovery clone lost account generation or gameplay state")
@@ -42,6 +48,10 @@ func TestGuildBankRecoveryClonePreservesPrivateAccountGeneration(t *testing.T) {
 	copy.Inventory[0].Stats["strength"] = 8
 	if before.Inventory[0].Stats["strength"] != 7 {
 		t.Fatal("complete recovery clone aliases mutable item state")
+	}
+	delete(copy.CasinoWalletCheckpoints, "synthetic-table")
+	if len(before.CasinoWalletCheckpoints) != 1 {
+		t.Fatal("complete recovery clone aliases private checkpoint map")
 	}
 	var public map[string]json.RawMessage
 	encoded, err := json.Marshal(copy)

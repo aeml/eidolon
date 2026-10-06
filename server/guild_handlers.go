@@ -139,12 +139,12 @@ func handleMsgGuildInvite(client *Client, message Message) {
 		client.sendError("player not found")
 		return
 	}
-	targetUser, err := db.GetUser(account)
-	if err != nil || targetUser == nil {
+	label, err := db.OwnPublicName(account)
+	if err != nil || label == "" {
 		client.sendError("player not found")
 		return
 	}
-	if strings.EqualFold(targetUser.Username, client.username) || chatService.shouldFilter(targetUser.Username, client.username) || chatService.shouldFilter(client.username, targetUser.Username) {
+	if strings.EqualFold(account, client.username) || chatService.shouldFilter(account, client.username) || chatService.shouldFilter(client.username, account) {
 		client.sendError("player is not available for guild invites")
 		return
 	}
@@ -153,16 +153,12 @@ func handleMsgGuildInvite(client *Client, message Message) {
 		client.sendError("you are not in a guild")
 		return
 	}
-	if err := db.InviteToGuild(guild.ID, client.playerID, usernameToPlayerID(targetUser.Username)); err != nil {
+	if err := db.InviteToGuild(guild.ID, client.playerID, usernameToPlayerID(account)); err != nil {
 		client.sendError(err.Error())
 		return
 	}
-	label := targetUser.PublicName
-	if label == "" {
-		label = targetUser.Username
-	}
 	client.sendSystemChat("Guild invite sent to " + label + ".")
-	if target := activeClientByUsername(targetUser.Username); target != nil {
+	if target := activeClientByUsername(account); target != nil {
 		sendGuildState(target)
 	}
 }

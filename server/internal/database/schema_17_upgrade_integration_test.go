@@ -164,13 +164,14 @@ func TestSchema17UpgradePreservesAccountsAndFencesPreviousWriter(t *testing.T) {
 			t.Fatal("upgrade changed legacy documents/indexes", name)
 		}
 	}
-	wantNew := map[string]int{"direct_trade_operations": 3, "ground_item_operations": 6,
+	wantNew := map[string]int{"direct_trade_operations": 3, "ground_item_operations": 7,
 		"dungeon_room_rewards": 4, "boss_victories": 5} // includes each _id_ index
 	wantUnique := map[string]bson.M{
 		"one_pending_direct_trade_per_account": {"participants.username": int32(1)},
 		"one_pending_ground_item_per_account":  {"username": int32(1)},
 		"one_pending_ground_item_per_loot":     {"loot_id": int32(1)},
 		"ground_item_generations":              {"loot_id": int32(1), "generation": int32(-1)},
+		"unique_ground_account_ordinal":        {"username": int32(1), "account_ordinal": int32(1)},
 		"unique_room_reward":                   {"instance_id": int32(1), "room_index": int32(1)},
 		"unique_boss_victory":                  {"instance_id": int32(1), "boss_id": int32(1)},
 	}
@@ -196,6 +197,10 @@ func TestSchema17UpgradePreservesAccountsAndFencesPreviousWriter(t *testing.T) {
 				if strings.HasPrefix(indexName, "one_pending_") {
 					if !reflect.DeepEqual(partial, bson.M{"state": "pending"}) {
 						t.Fatal("pending reservations have incorrect partial predicate", name, indexName)
+					}
+				} else if indexName == "unique_ground_account_ordinal" {
+					if !reflect.DeepEqual(partial, bson.M{"account_ordinal": bson.M{"$gt": int32(0)}}) {
+						t.Fatal("ordered ground custody has incorrect partial predicate", name, indexName)
 					}
 				} else if isPartial {
 					t.Fatal("completed identity fence must not be partial", name, indexName)

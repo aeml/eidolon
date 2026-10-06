@@ -3,6 +3,7 @@ package database
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"maps"
 	"os"
@@ -153,6 +154,21 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 			t.Fatal(err)
 		}
 		t.Logf("character_projection durable=%t account_bson_bytes=%d projected_bson_bytes=%d requested_receipts=1000 unrelated_receipts=10000", durable, len(full), len(document))
+	}
+	entry, err := (&DB{users: users}).GetCharacterEntryAccount(owner.Username)
+	if err != nil || entry.ID != owner.ID || len(entry.Characters) != 1 || entry.Characters[0].Name != other.Name ||
+		entry.Characters[0].AccountID != owner.ID || !maps.Equal(entry.Characters[0].ItemDeliveryReceipts, other.ItemDeliveryReceipts) {
+		t.Fatal("first-character entry changed selection, complete save or trusted identity", err)
+	}
+	mu.Lock()
+	entryReply := append(bson.Raw(nil), findReply...)
+	mu.Unlock()
+	var entryResponse struct { Cursor struct { FirstBatch []bson.M `bson:"firstBatch"` } `bson:"cursor"` }
+	if err := bson.Unmarshal(entryReply, &entryResponse); err != nil || len(entryResponse.Cursor.FirstBatch) != 1 || len(entryResponse.Cursor.FirstBatch[0]) != 2 {
+		t.Fatal("first-character entry fetched credentials or unrelated account fields", err)
+	}
+	if encoded, err := json.Marshal(entry); err != nil || string(encoded) != "{}" {
+		t.Fatal("private first-character hydration exposed public JSON", err)
 	}
 	target.AccountID = owner.ID
 	foreign := *target

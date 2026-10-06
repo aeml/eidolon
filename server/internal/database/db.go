@@ -411,8 +411,11 @@ func (db *DB) Authenticate(username, password string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	var user User
-	err := db.users.FindOne(ctx, bson.M{"username": username}).Decode(&user)
+	var credential struct {
+		Hash string `bson:"password_hash" json:"-"`
+	}
+	err := db.users.FindOne(ctx, bson.M{"username": username},
+		options.FindOne().SetProjection(bson.M{"_id": 0, "password_hash": 1})).Decode(&credential)
 	if err == mongo.ErrNoDocuments {
 		return false, nil
 	}
@@ -420,7 +423,7 @@ func (db *DB) Authenticate(username, password string) (bool, error) {
 		return false, err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(credential.Hash), []byte(password))
 	if err != nil {
 		return false, nil
 	}

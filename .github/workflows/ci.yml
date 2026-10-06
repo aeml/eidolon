@@ -143,7 +143,16 @@ jobs:
         env:
           EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'
           EIDOLON_GROUND_TEST_MONGO_URI: mongodb://127.0.0.1:27017
-        run: go test -race ./internal/database -run '^TestGroundItemStoreActualMongo' -count=1 -timeout=45s
+          EIDOLON_PERSISTENCE_TEST_MONGO_URI: mongodb://127.0.0.1:27017
+        run: go test -race ./internal/database -run '^Test(GroundItemStoreActualMongo|GroundItemCheckpointActualMongo|CharacterRepositoryActualMongo|PersistenceActualMongo)' -count=1 -timeout=60s
+
+      - name: Verify paged market and slot recovery with casino wallet checkpoints
+        working-directory: server
+        env:
+          EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'
+          EIDOLON_PERSISTENCE_TEST_MONGO_URI: mongodb://127.0.0.1:27017
+          EIDOLON_CASINO_TEST_MONGO_URI: mongodb://127.0.0.1:27017
+        run: go test -race . -run '^Test(AuctionStartupActualMongo|SlotMongoPagedStartup|CasinoCheckpointActualMongo)' -count=1 -timeout=60s
 
       - name: Verify disposable room-reward cohorts and repository reopen
         working-directory: server

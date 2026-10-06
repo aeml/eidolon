@@ -84,7 +84,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.transportClosed.Load() || c.retired.Load() {
 			return
 		}
-		user, err := db.GetUser(payload.Username)
+		user, err := db.GetCharacterEntryAccount(payload.Username)
 		if err != nil || user.ID != authenticatedID || !clientAcceptsAccountID(c, authenticatedID) || !liveAccountIdentityMatches(payload.Username, authenticatedID) {
 			c.sendError("Account identity could not be restored. Please use a new connection or contact support.")
 			return
@@ -219,8 +219,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		log.Printf("Player joining: %s (Class: %s)", c.username, payload.Type)
 
-		// Load user from DB to check for existing character
-		user, err := db.GetUser(c.username)
+		// Hydrate the original first character and trusted account generation,
+		// without fetching credentials or unrelated character receipt maps.
+		user, err := db.GetCharacterEntryAccount(c.username)
 		if err != nil {
 			c.sendError("Failed to load user data")
 			return

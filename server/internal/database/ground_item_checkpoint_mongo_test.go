@@ -29,7 +29,7 @@ func TestGroundItemCheckpointActualMongoContiguousSaveRaceAndReopen(t *testing.T
 	}
 	t.Cleanup(func() { _ = repo.Close(context.Background()) })
 	if err := repo.RunMigrations(t.Context()); err != nil {
-		t.Fatal("schema23 repeat migration", err)
+		t.Fatal("current schema repeat migration", err)
 	}
 	if version, err := repo.SchemaVersion(t.Context()); err != nil || version != CurrentSchemaVersion {
 		t.Fatal("writer fence not installed", version, err)
@@ -158,5 +158,5 @@ func TestGroundItemCheckpointActualMongoContiguousSaveRaceAndReopen(t *testing.T
 	if !GroundItemCharacterReceiptMatches(saved, legacy) {
 		t.Fatal("legacy recovery proof lost after new checkpoints")
 	}
-	t.Logf("schema23; 8 contenders/1 winner; 100 retained ordered operations; saved character constant %d bytes; 99 serial prepare-save-completes %s; V1/reopen proofs retained", len(final), elapsed)
+	t.Logf("schema%d; 8 contenders/1 winner; 100 retained ordered operations; saved character constant %d bytes; 99 serial prepare-save-completes %s; V1/reopen proofs retained", CurrentSchemaVersion, len(final), elapsed)
 }
