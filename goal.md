@@ -27,6 +27,26 @@ the exact scoped certificate dry-run command; no privileged action was performed
 Own milestone remains unpublished/incomplete pending ordered predecessors and
 actual challenge/supported-address-family evidence. See
 [current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
+
+**October6 Alpha1.76 live-QA setup correction:** Run37403492653 ended failure,
+not acceptance. Both deploys and earlier checks passed;7 live tests passed but
+the loot/persistence case and retry refused a full QA bag with no safe vendor
+spare. Keep that sale policy: add an explicitly selected ordinary town/stash
+route to preserve one unequipped gear item instead. Require exact storage,
+previous stash/Gold/equipment/other items and fresh-login retained gear plus the
+new pickup. No protected sale, quest-item move, account grant or database edit.
+43 focused tests pass0.862s; lint/whitespace pass. Native corrected CI/live QA
+remain required, including town recovery skipped after the earlier failure.
+
+**October6 Alpha1.76 deployed, final acceptance pending:** Exact57572325
+CI37403492653 passed hosted tests, predeploy/input checks and both deployments.
+Independent public IPv4 release/readiness plus publisher-transformed index/main
+bytes match Alpha1.76.0; login and cumulative notes are correct. Live job
+112083237466 is confirmed running at anonymous/persistent-character QA. Luna
+monitors it; no restart or acceptance claim. Later capacity diagnostic87cda8c7
+and runner boundary9e3bb9c8 changes stay isolated/unpublished. See
+[current public checks](docs/plans/2026-10-06-release1-76-public-checks.json).
+
 **October6 Alpha1.76 CI correction:** Candidateca5de951 run37402624753 failed
 the ground custody/reopen test's stale six-index count. The new ordered account
 fence creates seven including Mongo's primary index. The test now requires each
