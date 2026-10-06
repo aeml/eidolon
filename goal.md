@@ -8,6 +8,10 @@ A valid absent champion view reproduces completed3/minimum3 wave views and still
 refuses completion as event_missing_wave. This is a possible path, not the proven
 cause of the prior native run. No raw identities/messages, changed timing/credit/
 save gates, new native acceptance or deployment; full1.79 gates remain open.
+Exact c0164aac driver/race harness built with hashes retained in the receipt;
+final event regression compile/check PASS0.016s. Prepared only: no live process,
+fixture, schedule override or waiting soak. Fresh fetch still finds origin/master
+69cc97d9; ordered1.77/1.78 owner/release prerequisites remain open.
 
 **October6 natural Root event control FAIL199.95s:** Exact bbab4c51 binaries
 ran the existing four-class level35 normal Root check, started05:20:24 UTC
