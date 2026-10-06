@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 isolated1.82 runner boundary correction:** Manual exhaustive QA
+previously admitted any ref onto the self-hosted browser host when its input was
+true. Prepared guards require canonical repository plus master/main and either
+push or explicit manual full run. Live host admission is explicit as well as
+dependent on both successful deploys. Twelve focused Jest tests pass1.779s,
+including actual guard evaluation across60 contexts per job and executable
+exact-commit checkout cases; YAML, lint and whitespace checks pass. No workflow
+dispatch, credential change or publication. SSH host pinning and repository/
+runner protection still need evidence; this is not full1.82 acceptance. See
+[deployment evidence](docs/plans/2026-10-06-release1-82-current-deployment-checks.json).
+
 **October6 Alpha1.76 CI correction:** Candidateca5de951 run37402624753 failed
 the ground custody/reopen test's stale six-index count. The new ordered account
 fence creates seven including Mongo's primary index. The test now requires each

@@ -7,6 +7,27 @@ This deploys:
 - Nginx on host (ports 80/443) reverse-proxying to API on localhost upstream port
 - TLS via Certbot Nginx flow
 
+## Release runner trust boundary (prepared 1.82)
+
+Ordinary pull-request and feature-branch checks stay on GitHub-hosted runners.
+The self-hosted character runner accepts only this repository's `master` or
+`main`: publishing pushes, or an explicitly requested `full_stabilization`
+manual run on one of those branches. Manual feature-branch runs must not reach
+the host even when that input is enabled. Live checks require a production-branch
+push and both successful deployments. The separate nightly runner likewise
+accepts this repository's scheduled runs or production-branch manual dispatches.
+
+These workflow guards do not replace repository administration: protect the
+release branches and workflow changes, restrict who can dispatch trusted jobs,
+and control runner registration/access. A user able to merge arbitrary code into
+a trusted branch can execute that code. Do not use `pull_request_target` to check
+out and execute contributor code with release credentials or on these runners.
+The existing SSH deployment still learns a host key through `ssh-keyscan`;
+that is not authenticated host-key pinning. A trusted, out-of-band host identity
+and corresponding deployment configuration remain required before calling the
+protected-credential part of 1.82 complete. No host key or credential is rotated
+by this prepared change.
+
 ## 1) Baseline and env wiring
 
 From server directory:

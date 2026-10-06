@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "milestone": "1.82 deployment and rollback reliability",
+  "baseCommit": "5757232598c353fe6bc76ca7fd65283019d62693",
+  "status": "isolated-preparation-not-published-or-complete",
+  "changes": [
+    "Manual full-stabilization predeploy jobs now require the canonical repository and master/main ref as well as the explicit workflow_dispatch input. Previously the input alone could admit a manual non-release ref onto the self-hosted browser runner.",
+    "Live self-hosted checks now explicitly require a canonical production-branch push in addition to their existing successful-deployment dependencies. Ordinary hosted PR checks and the separate trusted nightly queue are unchanged.",
+    "Operator documentation distinguishes workflow admission guards from repository branch/workflow protection, authorized dispatchers and runner administration. No credentials, service configuration, DNS, repository settings or SSH host identity changed."
+  ],
+  "verification": {
+    "focused": "12 Jest tests pass in1.779s across RunnerQueueSeparation and DeploymentCheckout. The actual source admission expressions are evaluated across60 repository/event/ref/input combinations for each of predeploy, live and nightly, plus the allowed scheduled nightly control. Negative cases include foreign repositories, PRs, manual feature refs and tags even with full_stabilization=true.",
+    "checkout": "Existing executable checkout tests use disposable local repositories and preserve tracked/untracked operator data, reject foreign commits and invalid branch/SHA inputs, and deploy the exact tested commit even after the remote advances.",
+    "static": "Both workflows parse as YAML; focused ESLint and git diff --check pass. No actual hosted/self-hosted workflow was dispatched for this unpublished change."
+  },
+  "remaining": [
+    "Ordered1.76–1.81 milestone acceptance and own1.82 release labels, cumulative notes, CI and public live checks are still required.",
+    "Existing deployment uses unauthenticated ssh-keyscan. Obtain a trusted out-of-band host identity and integrate authenticated pinning before protected-credential acceptance. Repository protection and runner access settings need their own evidence; source guards alone do not prove them.",
+    "Reconcile known-compatible schema/binary/data recovery, asset versioning and old-client behavior using current evidence; do not assume every migration is reversible or describe this runner correction as complete rollback readiness."
+  ]
+}
