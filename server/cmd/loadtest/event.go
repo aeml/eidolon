@@ -42,7 +42,7 @@ func newEventParty(credentials []BotCredentials, selection string) *partyLoad {
 	p := newPartyLoad(credentials, 0, 0)
 	p.event = &eventLoad{selection: selection}
 	if !validEventSelection(selection) {
-		p.failed = true
+		p.failAt(failureEventEnvelope)
 	}
 	return p
 }
@@ -113,7 +113,7 @@ func validEventView(v *game.PublicEventView) bool {
 func (e *eventLoad) receive(p *partyLoad, index int, message Message, now time.Time) bool {
 	var view *game.PublicEventView
 	if json.Unmarshal(message.Payload, &view) != nil || !validEventView(view) {
-		p.failed = true
+		p.failAt(failureEventEnvelope)
 		return false
 	}
 	// Discovery text/upcoming windows do not prove this cohort's participation.
@@ -127,11 +127,11 @@ func (e *eventLoad) receive(p *partyLoad, index int, message Message, now time.T
 	}
 	m := &e.members[index]
 	if e.id != "" && view.ID != e.id {
-		p.failed = true
+		p.failAt(failureEventIdentity)
 		return false
 	}
 	if m.view != nil && m.view.ID == view.ID && (view.Wave < m.view.Wave || m.complete && view.Phase != "complete" || view.Wave == m.view.Wave && view.Phase == "defending" && view.Charge < m.view.Charge) {
-		p.failed = true
+		p.failAt(failureEventOrder)
 		return false
 	}
 	m.view, m.updated = view, now
@@ -139,7 +139,7 @@ func (e *eventLoad) receive(p *partyLoad, index int, message Message, now time.T
 		return true
 	}
 	if view.Phase == "expired" {
-		p.failed = true
+		p.failAt(failureEventExpired)
 		return false
 	}
 	me := p.members[index].state
@@ -152,7 +152,7 @@ func (e *eventLoad) receive(p *partyLoad, index int, message Message, now time.T
 	}
 	if view.Phase == "complete" {
 		if m.waves != 15 {
-			p.failed = true
+			p.failAt(failureEventMissingWave)
 			return false
 		}
 		m.complete = true
@@ -180,7 +180,7 @@ func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, time
 	}
 	if m.view == nil || now.Sub(m.updated) >= timeout {
 		if now.Sub(p.members[index].admittedAt) >= timeout {
-			p.failed = true
+			p.failAt(failureEventViewTimeout)
 		}
 		return false
 	}
@@ -194,7 +194,7 @@ func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, time
 				return false
 			}
 			if p.members[i].state.Level < view.Site.Level {
-				p.failed = true
+				p.failAt(failureEventLevel)
 				return false
 			}
 		}
@@ -211,7 +211,7 @@ func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, time
 		if !m.exitRequested {
 			m.exitRequested = true
 			if request("recall", nil) != nil {
-				p.failed = true
+				p.failAt(failureEventRequest)
 			}
 		}
 		return false
@@ -226,13 +226,13 @@ func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, time
 		m.recovering = false
 	}
 	if me.InstanceID != "" {
-		p.failed = true
+		p.failAt(failureForeignInstance)
 		return false
 	}
 	if me.MaxHealth > 0 && float64(me.Health)/float64(me.MaxHealth) < .25 || me.MaxMana > 0 && float64(me.Mana)/float64(me.MaxMana) < .15 {
 		m.recovering = true
 		if request("recall", nil) != nil {
-			p.failed = true
+			p.failAt(failureEventRequest)
 		}
 		return false
 	}

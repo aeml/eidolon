@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"math"
 	"testing"
 	"time"
@@ -165,7 +166,92 @@ func TestEventLoadRefusesBadOrHistoricalEvidence(t *testing.T) {
 			if !p.failed || p.eventCounts().complete != 0 || p.eventCounts().exited != 0 {
 				t.Fatal("invalid/partial/historical proof accepted")
 			}
+			want := "event_envelope"
+			switch scenario {
+			case "premature-complete":
+				want = "event_missing_wave"
+			case "regressed-wave", "regressed-charge":
+				want = "event_order"
+			case "changed-occurrence":
+				want = "event_identity"
+			case "expired":
+				want = "event_expired"
+			case "under-level":
+				want = "event_level"
+			case "stale-view":
+				want = "event_view_timeout"
+			}
+			p.failAt(failureCastTimeout)
+			if p.failureCode() != want {
+				t.Fatal("missing immutable event failure classification", p.failureCode(), want)
+			}
 		})
+	}
+}
+
+func TestEventMissingOwnWaveMatchesPartialCompletionWithoutInventedCredit(t *testing.T) {
+	p, now := eventFixture(t, 0)
+	for wave := 1; wave <= 4; wave++ {
+		for i := range p.members {
+			me := p.members[i].state
+			if i == 3 {
+				me.X = p.event.site.X
+				if wave == 4 {
+					me.X += 66 // A valid global champion view while absent is not participation.
+				}
+				p.state(i, me, now)
+			}
+			if !p.receive(i, partyMessage("public_event", eventView(0, wave)), now) {
+				t.Fatal("valid wave view was refused")
+			}
+		}
+	}
+	me := p.members[3].state
+	me.X = p.event.site.X
+	p.state(3, me, now)
+	complete := eventView(0, 4)
+	complete.Phase, complete.Remaining, complete.CalmedUntil = "complete", 0, now.Add(3*time.Minute)
+	for i := range p.members {
+		if got := p.receive(i, partyMessage("public_event", complete), now); got != (i < 3) {
+			t.Fatal("own wave coverage was not enforced", i)
+		}
+	}
+	counts := p.eventCounts()
+	if counts.complete != 3 || counts.exited != 0 || counts.minWaveViews != 3 || p.failureCode() != "event_missing_wave" {
+		t.Fatal("partial completion was misclassified or gained absent-wave credit", counts, p.failureCode())
+	}
+	p.rejectServer([]byte(`"private later error"`))
+	if p.failureCode() != "event_missing_wave" {
+		t.Fatal("cleanup replaced first missing-wave cause")
+	}
+}
+
+func TestEventRequestFailureDoesNotRetryOrClaimTownExit(t *testing.T) {
+	for _, completing := range []bool{false, true} {
+		p, now := eventFixture(t, 0)
+		me := p.members[0].state
+		if completing {
+			for i := range p.event.members {
+				p.event.members[i].complete = true // Unit fixture, not earned production evidence.
+			}
+		} else {
+			me.Mana = 10
+			p.state(0, me, now)
+		}
+		requests := 0
+		request := func(kind string, _ interface{}) error {
+			requests++
+			if kind != "recall" {
+				t.Fatal("unexpected request", kind)
+			}
+			return errors.New("private transport detail")
+		}
+		for i := 0; i < 2; i++ {
+			p.step(0, me, nil, now, time.Second, request, func(float64, float64) { t.Fatal("failed recall moved actor") })
+		}
+		if requests != 1 || p.failureCode() != "event_request" || p.eventCounts().exited != 0 {
+			t.Fatal("failed recall retried or credited", requests, p.failureCode())
+		}
 	}
 }
 

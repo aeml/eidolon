@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 event first-cause repair:** Event refusals now preserve eight fixed
+categories instead of an unclassified flag; all party summaries emit the first
+failure once. RED18 existing invalid/historical cases plus partial completion/
+recall cases; GREEN driver race2.521s and root diagnostic/coverage race2.707s.
+A valid absent champion view reproduces completed3/minimum3 wave views and still
+refuses completion as event_missing_wave. This is a possible path, not the proven
+cause of the prior native run. No raw identities/messages, changed timing/credit/
+save gates, new native acceptance or deployment; full1.79 gates remain open.
+
 **October6 natural Root event control FAIL199.95s:** Exact bbab4c51 binaries
 ran the existing four-class level35 normal Root check, started05:20:24 UTC
 inside the real first40s window; no schedule skip or clock/power manipulation.

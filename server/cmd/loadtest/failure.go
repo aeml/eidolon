@@ -28,6 +28,14 @@ const (
 	failureWeeklyPhaseInactive
 	failureWeeklyPhaseIdentity
 	failureWeeklyPhaseOrder
+	failureEventEnvelope
+	failureEventIdentity
+	failureEventOrder
+	failureEventExpired
+	failureEventMissingWave
+	failureEventViewTimeout
+	failureEventLevel
+	failureEventRequest
 )
 
 func (p *partyLoad) failAt(stage loadFailureStage) {
@@ -84,6 +92,22 @@ func (p *partyLoad) failureCode() string {
 		return "weekly_phase_identity"
 	case failureWeeklyPhaseOrder:
 		return "weekly_phase_order"
+	case failureEventEnvelope:
+		return "event_envelope"
+	case failureEventIdentity:
+		return "event_identity"
+	case failureEventOrder:
+		return "event_order"
+	case failureEventExpired:
+		return "event_expired"
+	case failureEventMissingWave:
+		return "event_missing_wave"
+	case failureEventViewTimeout:
+		return "event_view_timeout"
+	case failureEventLevel:
+		return "event_level"
+	case failureEventRequest:
+		return "event_request"
 	default:
 		return "unclassified"
 	}

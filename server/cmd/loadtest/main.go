@@ -436,6 +436,11 @@ func main() {
 			expectedMembers /= 5
 		}
 		casinoFailed = casinoFailed || failures != 0 || formed != uint64(len(parties)) || members != uint64(expectedMembers) || minimum == 0
+		for index, party := range parties {
+			if code := party.failureCode(); code != "none" {
+				log.Printf("Failure coverage: group=%d stage=%s", index, code)
+			}
+		}
 	}
 	if selectedScenario == "party-dungeon" || selectedScenario == "party-raid" {
 		var entered, cleared, exited, rooms, bosses, reentries, checkpointReturns uint64
@@ -450,11 +455,6 @@ func main() {
 			checkpointReturns += counts.checkpointReturns
 		}
 		log.Printf("Dungeon coverage: groups=%d entered=%d cleared=%d exited=%d cleared_rooms=%d cleared_bosses=%d reentry_requests=%d checkpoint_returns=%d", len(parties), entered, cleared, exited, rooms, bosses, reentries, checkpointReturns)
-		for index, party := range parties {
-			if code := party.failureCode(); code != "none" {
-				log.Printf("Failure coverage: group=%d stage=%s", index, code)
-			}
-		}
 		casinoFailed = casinoFailed || entered != uint64(*count) || cleared != uint64(*count) || exited != uint64(*count) || reentries != checkpointReturns
 	}
 	if selectedScenario == "party-raid" {
