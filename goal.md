@@ -1,5 +1,36 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 delta-cache native100 PASS213.05s:** Exact2da4b9ee normal
+server and unchanged c0164aac driver/race harness passed the original100-client/
+five20-role120s mixed workload once after the changed cache dependency. Same
+legal gear/funding/camp and5s guards, all positive activity/save requirements;
+no concurrent owned encounter/benchmark/race run. Owned Mongo32969 exact identity/
+hashes/log in receipt. Every paid casino/social/party impact and100 independent
+normal fresh save checks passed, with all eight drain stages under unchanged5s
+stop guard. Root consumed terminal session73078, exact Mongo identity/label
+validated before synthetic DB/volume removal; label/process follow-up empty.
+Worst state gap803ms remains a stall; interval completed-phase means37.590ms
+update/24.957ms broadcast still pressure the intended33ms budget. Sample counts
+differ (broadcast in flight at endpoint), not per-frame conservation. Random
+combat/shared host prevent single-fix attribution. Not simultaneous100-player
+raid/event, full final settlement/restart or production headroom acceptance.
+Optional Luna capacity/event monitoring extension asked, no answer/delegation.
+
+**October6 Root diagnostic PASS250.12s:** Exact current2da4b9ee normal
+server (broadcast cache) and c0164aac driver/race harness started06:00:11 UTC
+within the real first40s Root precondition. No skip, clock/power override,
+concurrent owned benchmark/native run or changed four-member wave/presence/
+completion/town-exit/save gates. Original9m maximum/5s guards and legal level35
+class-focused Uncommon/Rare gear/builds unchanged. Owned Mongo32968 exact identity,
+hashes/artifacts in capacity receipt. All four living own-wave/champion/completion/
+town-exit and independent fresh saved XP/Gold/gear/bag/EP checks pass; every role
+contributed, recovery24/24, worst state gap58ms. Original stop guard/all eight
+drain stages pass. Root consumed terminal session74784; exact fixture/label
+validated before synthetic DB/volume removal and empty label/process follow-up.
+Earlier Root failure retained; its cause is not proved by this changed-source
+PASS, and random recovery/combat variation prevents cache causal attribution.
+No all-realms/100-player/headroom/pacing or live publication claim.
+
 **October6 broadcast delta-frame optimization:** A short actual generated-world
 broadcast profile locates repeated observer change comparisons (40.62% sampled
 cumulative CPU). Share immutable delta history and comparison results only inside
