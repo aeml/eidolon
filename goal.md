@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 changed-periodic native100 comparison:** Reused exact32831df3
+normal server/race harness and exact4096c19c driver pass217.76s/120s active.
+All100 admit/fresh own views, paid casino outcomes,20 social outcomes,20 party
+members' positive impacts/healing and100 independent normal disconnect-save
+checks pass. All fixed drain stages and completion recorded; graceful shutdown
+passes the unchanged five-second guard. Original workload/stakes/gear/camp/radius/
+timeouts and every positive-outcome gate retained. Historical failures remain;
+random supply/shared-host variation prevents one-fix causal attribution. Worst
+state gap1982ms stays a responsiveness concern, not headroom/smoothness approval.
+Exact owned Mongo identity/label validated then synthetic fixture/volumes removed;
+label/process queries empty. Artifacts/hashes/aggregates retained in the existing
+receipt. Full active raid/event/headroom/client performance and ordered release
+gates remain open; no immediate unchanged retry or deployment claim.
+
 **October6 normal eight-character shutdown/restart control:** Exact32831df3
 normal server/current race harness pass10.99s using the unchanged eight-live-
 character four-class alive/dead resource scenario. Normal SIGINT, real Wizard
