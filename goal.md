@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 isolated1.81 recovery integrity preparation:** Current master57572325
+is the separate source base; owner worktree/production services are untouched.
+An executable read-only verifier requires a completed coordinated recovery point,
+strictly named checksums, matching image artifact and gzip integrity; no unsafe
+paths/symlinks/duplicates or silently missing image pair. Coordinated Mongo-only
+restore now gates those artifacts before Docker/database access, while existing
+explicit standalone recovery stays separate. Twenty-one verifier/five gate cases
+plus original stopped-target guards pass race2.327s; shell/whitespace checks pass.
+Read-only verification of the actual October6 pre-upgrade point passes without
+printing contents or restoring anything. Integrity is not authenticity or a
+compatible current game restore. Owner location/access/retention/RPO/RTO choices,
+whole representative restore/instance evidence and ordered release gates remain.
+No1.81 version publication, auto-pruning or policy change. See
+[recovery preparation](docs/plans/2026-10-06-release1-81-current-recovery-checks.json).
+
 **October6 Alpha1.76 CI correction:** Candidateca5de951 run37402624753 failed
 the ground custody/reopen test's stale six-index count. The new ordered account
 fence creates seven including Mongo's primary index. The test now requires each

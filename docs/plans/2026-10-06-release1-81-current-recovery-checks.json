@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "milestone": "1.81 recovery readiness",
+  "baseCommit": "5757232598c353fe6bc76ca7fd65283019d62693",
+  "status": "isolated-read-only-integrity-preparation-not-published-or-complete",
+  "inheritedVersion": "Alpha1.76.0/schema25 source; no1.81 identity or release claim",
+  "changes": [
+    "Add verify_upgrade_backup.sh: exact selected directory, completion marker, required Mongo/log-journal/image-identity artifacts, strictly whitelisted SHA256 entries, previous-image archive when recorded, no duplicates/symlinks/traversal/absolute/escaped paths, checksum and gzip integrity. Fresh installation's explicit no-image marker remains supported.",
+    "The Mongo-only restore helper invokes integrity validation before gzip/env/Docker/database effects for a named save-upgrade point or a directory with completion/checksum markers. Refuse a different archive filename or symlink; removing one or both markers from a named point cannot downgrade it to a standalone dump. Existing explicitly approved standalone Mongo recovery remains separate.",
+    "Document checksums as accidental-corruption detection, not authenticity, restore proof, format compatibility, account-removal attestation or permission to reopen admission. No archive extraction, automatic backup selection/pruning, retention/RPO/RTO decision, live restore, service/DNS/provider mutation or player-data exposure."
+  ],
+  "checks": {
+    "focused": "Go1.27.1 GOMAXPROCS2/p2 race scope passes2.327s:21 direct verifier cases, five real-shell coordinated-restore gate cases and existing explicit stopped-target restore guard tests. Complete/fresh cases pass; malformed/missing/duplicate/path/symlink/corrupt/image-pair cases refuse and preserve backup bytes. Docker is only a synthetic sentinel in the five gate cases; bad points cannot reach it. No real database restore from these tests.",
+    "shellAndWhitespace": "Both changed shell scripts parse with bash -n; git diff --check passes. New helper has executable mode100755.",
+    "actualExistingPoint": "Read-only verifier succeeds on exact /home/aeml/eidolon/server/backups/save-upgrade-20261006T015420Z-SJiekp. Required checksum manifest and gzip integrity pass for Mongo999032bytes, private logs1157423bytes and previous API15849869bytes with image identity. No contents/credentials/raw logs printed, no Docker/database command, no extraction, overwrite, restore, deletion or service change. This checks integrity of an existing pre-upgrade recovery point, not present-day player recovery or compatible restore semantics."
+  },
+  "remaining": [
+    "Owner-selected backup location/access, off-machine protection, retention and recovery-point/recovery-time objectives remain open; current retention unchanged and no automatic deletion.",
+    "Representative isolated restoration must verify whole relevant characters/guilds/currencies/receipts/journals and instance policy on compatible source, reusing earlier proofs only where they cover the same behavior. Existing archive integrity alone does not establish that requirement.",
+    "Ordered1.76–1.80 release gates, current hosting/operations/capacity decisions, fresh normal remote integration, own1.81 labels/cumulative notes, CI/deployment and exact public acceptance. This staged branch is not a feature-freeze or release-readiness signoff. Full1.99 goal remains active."
+  ]
+}

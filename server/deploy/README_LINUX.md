@@ -313,6 +313,30 @@ checkpoints. A `COMPLETE` marker records backup completion, not current integrit
 verify its `SHA256SUMS` before recovery. Neither marker nor checksums authorize a
 restore or prove that an arbitrary image can read the saved format.
 
+For a completed upgrade point, use the read-only integrity helper first:
+
+```bash
+bash ./deploy/verify_upgrade_backup.sh /exact/completed-upgrade-backup-directory
+```
+
+It requires the completion marker, Mongo/log-journal/image-identity artifacts,
+checksums for every required file and the previous image archive when an image
+identity is recorded. Unexpected/traversal/duplicate checksum paths and symlinks
+are refused before hashing. Checksums and gzip integrity are checked without
+Docker calls, extraction, database access, restore, service changes or deletion.
+The original backup remains unchanged on success or refusal. A SHA256 manifest
+detects accidental corruption, not a malicious replacement of both archives and
+checksums. Keep recovery points private, access-controlled and off-machine under
+the owner-approved storage/retention policy; this helper does not choose that
+policy, prove restoration or authorize any loss of progress. Other archive
+formats/standalone Mongo dumps are not silently relabelled as complete coordinated
+upgrade points. Review them under their separate recovery procedure.
+The Mongo-only helper automatically applies this integrity gate before any
+Docker/database access when the selected directory is a `save-upgrade-*` point
+or contains a completion/checksum marker. Missing paired artifacts cannot be
+bypassed by deleting one marker; removing both does not bypass the named-point
+gate. Only the regular `mongo.archive.gz` file in that point may be selected.
+
 After explicit recovery approval, specify the exact archive and confirm the
 loss of subsequent progress. The default requires an empty `eidolon` database,
 such as an isolated restoration target. There is no automatic archive selection:
