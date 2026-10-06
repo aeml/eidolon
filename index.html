@@ -784,6 +784,7 @@
                     <h3 class="patch-note-entry__title">Alpha 1.76.0 (lighter saves and reliable recovery at scale)</h3>
                     <ul class="patch-note-entry__list">
                         <li>Login and character recovery fetch the selected save instead of unrelated characters and account metadata. Original first-character selection, account identity, equipment, progression and reconnect protections are preserved.</li>
+                        <li>Live updates read a lightweight position, scene and Resonance view without repeatedly copying bags, stash contents and saved receipts. Full character saves remain intact; dungeon room tracking and owner-only progress stay synchronized.</li>
                         <li>Save journals use per-account lock shards so one stalled account does not hold up unrelated shards. Each account's writes, confirmations and ownership checks remain serialized.</li>
                         <li>New ground-item deliveries and casino wallet effects keep compact durable checkpoints instead of growing a receipt entry for every new action. Existing receipts, earned items, Gold and EP remain preserved; retries and restarts do not duplicate rewards or wagers.</li>
                         <li>The Trading House and slot machines recover saved work in small startup batches. Invalid or incomplete recovery keeps the affected service unavailable rather than exposing partially recovered decisions. Outstanding claims, refunds and funded payouts are retained.</li>

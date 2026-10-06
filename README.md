@@ -425,6 +425,8 @@ Notes:
   identity; journal lock shards, compact ground/casino checkpoints and paged
   market/slot startup preserve existing receipts and balances. Schema24/25
   follow the account-bound marker23; old writers refuse the newer schema.
+  Lightweight live frame reads also preserve scene/Resonance synchronization
+  without repeatedly cloning owned items and receipts; full saves stay intact.
   Focused race, actual Mongo growth/recovery, native session and whole-account
   upgrade checks pass. See [current persistence evidence](docs/plans/2026-10-06-release1-76-current-persistence-checks.json).
   Publication awaits corrected1.75 CI/live acceptance, then fresh remote
