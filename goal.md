@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 coordinated100-client comparison:** Latest master57572325 is normally
+merged. Combined bot parties now hold one observed live target claim per group,
+bounded to five; no gameplay/gear/enemy/anchor/radius/gate change. Full driver
+race checks pass18.268s. Actual changed-sourcee395be65 comparison fails224.71s:
+all100 admit, minimum1132 fresh own updates over119472ms, all20 social outcomes
+complete with no transport/decode/admission failures. Combat still has zero-
+impact members; blackjack has one rejection/one timeout and house one timeout.
+Final independent save assertions are not reached. Target coordination alone
+does not establish a cause or resolve capacity. Owned synthetic Mongo removed;
+aggregate logs retained, production and existing nightly soak untouched. No
+unchanged100 rerun. Focused target/cohesion and casino-transition diagnosis remain
+before another population comparison. See the current capacity receipt.
+
 **October6 isolated1.79 capacity integration:** Current identity/schema25 and
 monitoring remain intact while prepared concurrent workloads are integrated.
 Frame broadcasting now takes a detached position/scene/Resonance view rather

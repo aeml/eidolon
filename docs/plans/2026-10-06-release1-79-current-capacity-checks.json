@@ -2,8 +2,42 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
-  "status": "current-100-client-comparison-terminal-fail-role-impact-gate-fixture-removed",
+  "status": "coordinated-100-client-comparison-terminal-fail-role-and-casino-gates-fixture-removed",
   "inheritedVersion": "Alpha1.76.0 source candidate; own1.79 version not published",
+  "targetCoordinationFollowUp": {
+    "change": "Test-client combined parties coordinate one observed current target per group, bounded to five groups. Claims release on dead/missing target or party failure; contention waits for the next normal step. Standalone/dungeon/raid/event profiles, real enemies, search radius30, anchor400/600, gear and pass gates unchanged. No server gameplay edit or claim of synthetic credit.",
+    "unitVerification": "Full cmd/loadtest race suite passes18.268s. Distinct nearest legal targets, invalid/dead/foreign/out-of-range target refusal, one atomic winner, bounded replacement/release, zero-impact preservation and existing controller tests retained.",
+    "sourceCommit": "e395be65cdd3a30a6608cec0926fd4aa5e22c3d3",
+    "result": "FAIL224.71s:100 admitted, sustained state and all20 delivered social outcomes pass; party minimum impact0 and blackjack/house outcomes fail. Coordination alone does not resolve the previous failure; no unchanged full retry or capacity claim.",
+    "artifactDirectory": "/tmp/eidolon-179-coordinated-capacity-HO7IOO",
+    "serverSHA256": "9a2537e7c76f78184a8f3a49ec31dd34c344279bf7e0eb6751bd757f78453d00",
+    "driverSHA256": "b764eaf60adf90daa1fd2b54b436d4d3854f89daee2270cb1e6ece61932be2ca",
+    "raceHarnessSHA256": "5d5e4cf17db59e835c4141701830bd3806bc87306cc647cd7407e8c24e81fca5",
+    "scope": "Normal current source-built server/driver GOMAXPROCS2 and race harness,100 clients/120s active window, five20-role blocks, unchanged5s admission and100Gold stakes. Own Mongo7 loopback32954,2CPU/2GiB/tmpfs512MiB. Existing unrelated24h nightly soak remains active on this shared host, so no isolated production headroom inference.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 118107,
+      "minimumFreshOwnUpdates": 1132, "minimumActiveMilliseconds": 119472,
+      "maximumStateGapMilliseconds": 905, "payloadBytes": 1092869515,
+      "admissionFailures": 0, "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "maximumLoginMilliseconds": 507, "maximumJoinMilliseconds": 882,
+      "socialComplete": 20, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 22, "blackjack": 0, "house": 1, "poker": 1},
+      "casinoTimeouts": {"blackjackBet": 1, "houseBet": 1}, "blackjackRoundOrBetRejections": 1,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20, "partyMinimumImpacts": 0,
+      "partyDamageEvents": 52, "partyHealEvents": 4, "partyAcceptedCasts": 63,
+      "partyDeniedCasts": 0, "partyXPUpdates": 48, "observedEnemyDeaths": 12,
+      "roles": {
+        "Fighter": {"minimumImpacts": 0, "damage": 10, "heals": 0, "acceptedCasts": 12, "unmatchedDamage": 0},
+        "Cleric": {"minimumImpacts": 0, "damage": 13, "heals": 4, "acceptedCasts": 16, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 0, "damage": 21, "heals": 0, "acceptedCasts": 23, "unmatchedDamage": 0},
+        "Wizard": {"minimumImpacts": 0, "damage": 8, "heals": 0, "acceptedCasts": 12, "unmatchedDamage": 0}
+      }
+    },
+    "phaseMeasurements": "After probe:1294 completed updates total86162107us/max756471us;1293 completed broadcasts total43548921us/max139673us with one in flight. Lifetime elapsed counters, not CPU/interval percentiles or tick headroom proof.",
+    "independentFinalSaves": "Not reached after driver failure. Normal cleanup shutdown is not proof that all100 preservation/XP/wallet assertions passed.",
+    "cleanup": "After terminal harness failure/owned normal server cleanup, validated exact name/fixture label and removed only tmpfs Mongo d0b1d2f68f0db26446637289b448b52eeecbba65a471982fa4818b31e18daa9b with synthetic volumes. Aggregate artifacts retained; production, owner worktree and nightly soak untouched.",
+    "next": "Use focused controller evidence to distinguish target scarcity/cohesion from gameplay impacts and exact casino round transitions before another full comparison. Do not increase stats/fund bot losses/invent enemies/relax5s or real-impact gates to get green."
+  },
   "changes": [
     "Select prepared workload drivers and native capacity fixtures into the current1.78 integration, retaining account-bound identity, schema25 ordered ground/casino heads and existing privacy/admin behavior. Do not import historical future-version acceptance claims.",
     "Normal broadcasting reads only detached live position, scene and normalized owner EndgameProgress under existing world-before-actor locks. It no longer clones bags, stash, equipment and durable operation receipts for this frame read. Character save/commit snapshots remain complete and account-bound.",
