@@ -16,6 +16,8 @@ func TestCombinedPhaseEvidenceIsBoundedPrivateAndRequiresObservedPhases(t *testi
 			metrics := operationalMetricsSnapshot()
 			counts := operations.OutcomeCounts{InFlightKnown: true, Completed: 2, TimedSamples: 2, TotalMicros: 50, MaxMicros: 30}
 			metrics.RealtimeUpdate, metrics.StateBroadcast = counts, counts
+			metrics.CharacterJournal, metrics.CharacterCommit, metrics.CharacterCleanup = counts, counts, counts
+			metrics.CharacterRecovery, metrics.CasinoGold, metrics.CasinoEP = counts, counts, counts
 			payload := map[string]any{"status": "ok", "database": "ready", "commit": "abcdef1", "version": "Alpha 1.74.7", "operational": metrics,
 				"private": "private-fixture-credentials-and-player-marker"}
 			if scenario == "legacy" {
@@ -53,6 +55,15 @@ func TestCombinedPhaseEvidenceIsBoundedPrivateAndRequiresObservedPhases(t *testi
 			if err != nil || json.Unmarshal(value, &result) != nil || result.Update != counts || result.Broadcast != counts ||
 				strings.Contains(string(value), "private") || strings.Contains(string(value), "commit") {
 				t.Fatal("fixed numeric evidence lost its observations or privacy boundary")
+			}
+			var fields map[string]operations.OutcomeCounts
+			if json.Unmarshal(value, &fields) != nil || len(fields) != 8 {
+				t.Fatal("diagnostic field set changed or includes unbounded data")
+			}
+			for _, key := range []string{"characterJournal", "characterCommit", "characterCleanup", "characterRecovery", "casinoGold", "casinoEP", "realtimeUpdate", "stateBroadcast"} {
+				if fields[key] != counts {
+					t.Fatal("fixed wallet/save/frame phase lost its observed counts", key)
+				}
 			}
 		})
 	}

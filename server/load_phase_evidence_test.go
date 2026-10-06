@@ -13,6 +13,12 @@ import (
 // Fixed numeric diagnostic only. Lifetime maxima are not interval maxima,
 // CPU usage, percentiles or proof of per-player network latency.
 type combinedPhaseEvidence struct {
+	Journal   operations.OutcomeCounts `json:"characterJournal"`
+	Commit    operations.OutcomeCounts `json:"characterCommit"`
+	Cleanup   operations.OutcomeCounts `json:"characterCleanup"`
+	Recovery  operations.OutcomeCounts `json:"characterRecovery"`
+	Gold      operations.OutcomeCounts `json:"casinoGold"`
+	EP        operations.OutcomeCounts `json:"casinoEP"`
 	Update    operations.OutcomeCounts `json:"realtimeUpdate"`
 	Broadcast operations.OutcomeCounts `json:"stateBroadcast"`
 }
@@ -31,5 +37,10 @@ func readCombinedPhaseEvidence(address string) ([]byte, error) {
 		return nil, errors.New("phase measurements unavailable")
 	}
 	// Never marshal the response, arbitrary fields or the full health sample.
-	return json.Marshal(combinedPhaseEvidence{sample.Operational.RealtimeUpdate, sample.Operational.StateBroadcast})
+	m := sample.Operational
+	return json.Marshal(combinedPhaseEvidence{
+		Journal: m.CharacterJournal, Commit: m.CharacterCommit, Cleanup: m.CharacterCleanup,
+		Recovery: m.CharacterRecovery, Gold: m.CasinoGold, EP: m.CasinoEP,
+		Update: m.RealtimeUpdate, Broadcast: m.StateBroadcast,
+	})
 }

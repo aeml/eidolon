@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 bounded existing save/wallet observations:** The existing combined
+loopback probes now retain six already-instrumented character/value phases as
+well as update/broadcast. Eight whitelisted numeric counters only; no new runtime
+endpoint, private health body, player history or payment-amount logging. Actual
+probe/privacy/bounds cases pass race1.103s. These elapsed lifetime counters do
+not certify CPU, latency percentiles, unique payments or conservation; normal
+native workload and every existing acceptance gate remain required.
+
 **October6 casino feedback ordering repair:** A reproduced production UI and
 driver defect lets lower ready lobbies reopen wagering after unavailable/saving
 feedback erases the last comparison version. Three UI classes fail before the
