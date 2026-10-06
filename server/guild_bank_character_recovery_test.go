@@ -9,6 +9,7 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type bankCharacterRecoveryRepository struct {
@@ -25,7 +26,33 @@ func cloneBankRecoveryCharacter(character *database.Character) *database.Charact
 	value, _ := json.Marshal(character)
 	var copy database.Character
 	_ = json.Unmarshal(value, &copy)
+	// AccountID deliberately never crosses the public JSON boundary, but a
+	// complete in-process snapshot must retain its trusted account generation.
+	copy.AccountID = character.AccountID
 	return &copy
+}
+
+func TestGuildBankRecoveryClonePreservesPrivateAccountGeneration(t *testing.T) {
+	before := &database.Character{AccountID: primitive.NewObjectID(), Name: "synthetic-bank-owner",
+		Inventory: []database.Item{{ID: "synthetic-item", Stats: map[string]int{"strength": 7}}}}
+	copy := cloneBankRecoveryCharacter(before)
+	if !reflect.DeepEqual(before, copy) || copy.AccountID.IsZero() {
+		t.Fatal("complete recovery clone lost account generation or gameplay state")
+	}
+	copy.Inventory[0].Stats["strength"] = 8
+	if before.Inventory[0].Stats["strength"] != 7 {
+		t.Fatal("complete recovery clone aliases mutable item state")
+	}
+	var public map[string]json.RawMessage
+	encoded, err := json.Marshal(copy)
+	if err != nil || json.Unmarshal(encoded, &public) != nil {
+		t.Fatal("cannot inspect public character representation", err)
+	}
+	for _, key := range []string{"AccountID", "accountId", "account_id"} {
+		if _, present := public[key]; present {
+			t.Fatal("trusted account generation leaked into public JSON")
+		}
+	}
 }
 
 func (store *bankCharacterRecoveryRepository) GetCharacter(username, name string) (*database.Character, error) {
