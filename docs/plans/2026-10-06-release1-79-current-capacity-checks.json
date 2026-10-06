@@ -1,8 +1,24 @@
 {
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
-  "sourceCommit": "33f1719a plus accompanying broadcast delta-frame implementation; exact historical controls retain their separate source commits/hashes below",
+  "sourceCommit": "9b20136a plus accompanying structured spatial-cell keys; exact historical controls retain their separate source commits/hashes below",
   "status": "current-root-event-and-delta-cache-mixed100-pass-prior-controls-retained-full-capacity-gates-open",
+  "structuredSpatialCells": {
+    "repair": "Runtime-only spatial map keys now hold the exact scene string and integer floor-derived coordinates directly. Nearby no longer formats a string for each candidate cell. Existing inclusive cell bounds, scene isolation, locks, live entity pointers and downstream precise targeting/visibility checks remain unchanged; no wire/save schema, gameplay radius, candidate omission or cross-frame cache.",
+    "regression": "Original empty81-cell query allocates246 times and fails the new one-result-allocation budget before repair; passes afterward. Original cell-bound reference covers positive/negative/fractional boundaries, four scenes including Unicode and missing scene. Cross-cell/same-cell movement, explicit scene transfer/removal and concurrent move/query identity checks pass.",
+    "verification": "Scoped spatial/state/rock/projectile/jump/target/dungeon race checks PASS11.360s. Affected ability/radius/cone/explosion/guardian and broadcast/privacy/delta/footprint race scopes PASS game37.732s/root2.314s. Gofmt applied. These are targeted correctness checks, not a native population rerun.",
+    "profile": {
+      "benchmark": "BenchmarkBroadcastStateCurrentPopulation100Idle, original static100-recipient generated-world broadcast path, GOMAXPROCS2, one3s sample on shared host; no concurrent owned native/race/benchmark load. Same limitations as delta-frame profile below.",
+      "baselineDirectory": "/tmp/eidolon-179-delta-profile-gGhIXK",
+      "baselineBinarySHA256": "3dd96316a74d2b66112433f4a5cfb6e25e6f503dca128cfb651762adcddbfd4d",
+      "candidateDirectory": "/tmp/eidolon-179-cell-profile-wuS4ir",
+      "candidateBinarySHA256": "69b1724d057c8b16ed9f29b7077ba2a0147c3b1264bd6cb6b90fd1d812432bd5",
+      "candidateSource": "9b20136a plus accompanying world.go/spatial_cells_test.go changes; immutable root.test/run.log/cpu.pprof retained.",
+      "baseline": {"iterations": 412, "nanosecondsPerBroadcast": 8994134, "wireBytesPerFrame": 12165, "bytesPerBroadcast": 4015182, "allocationsPerBroadcast": 21661},
+      "candidate": {"iterations": 451, "nanosecondsPerBroadcast": 7468737, "wireBytesPerFrame": 12165, "bytesPerBroadcast": 3729519, "allocationsPerBroadcast": 4337},
+      "limits": "Observed idle mean about17% lower, allocated bytes about7% lower and allocations about80% lower with identical wire size. One short shared-host sample, not statistical confidence, client latency, production headroom, resolved803ms native stalls or full1.79 acceptance. Existing Root/mixed100 PASS binaries precede this change; no current native population acceptance, new Mongo fixture or deployment claimed."
+    }
+  },
   "deltaCache100Comparison": {
     "result": "PASS213.05s overall/120s active; driver-to-save elapsed2m13.365s. One changed-runtime100-client mixed comparison after the separate natural Root control terminated. Exact normal2da4b9ee server and unchanged c0164aac driver/race harness. All100 fresh admissions/own updates, every paid casino/member-impact/social outcome,100 independent normal disconnect saves and five-second-guard shutdown pass. Not an unchanged source retry, simultaneous event/raid load or production headroom acceptance.",
     "serverSourceCommit": "2da4b9ee35f1581bd2707f9292d5524e3c90189f",

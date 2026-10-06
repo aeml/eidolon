@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 structured spatial-cell keys:** Replace formatted candidate-cell strings
+with exact scene/integer coordinate keys; retain bounds, locks and precise downstream
+targeting/visibility. Empty81-cell regression RED246 allocations, GREEN within one
+result allocation; boundary/scene/movement/concurrency checks pass. Scoped race
+PASS11.360s and affected ability/replication scopes game37.732s/root2.314s. One3s
+idle100-recipient profile observes8.994ms→7.469ms, allocations21661→4337 and
+bytes4015182→3729519, identical12165B/frame. Exact artifacts/hashes in capacity
+receipt. Diagnostic only: no native803ms stall resolution/headroom signoff, new
+population run, Mongo fixture or deployment. Prior native PASS binaries lack this
+change; full1.79 and ordered1.77/1.78 release prerequisites remain open.
+
 **October6 delta-cache native100 PASS213.05s:** Exact2da4b9ee normal
 server and unchanged c0164aac driver/race harness passed the original100-client/
 five20-role120s mixed workload once after the changed cache dependency. Same
