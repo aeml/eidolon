@@ -129,7 +129,7 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await page.evaluate(() => { window.__reportFixture.toggleHelp(); window.__reportFixture.toggleReport(); });
         await expect(help).toBeHidden();
         const dialog = page.getByRole('dialog', { name: 'SUBMIT REPORT' });
-        const text = page.getByLabel('What happened, what you expected, and steps to reproduce');
+        const text = dialog.getByRole('textbox', { name: 'Issue or request details', exact: true });
         await expect(dialog).toBeVisible(); await expect(text).toBeFocused();
         await text.fill('The casino doorway is blocked when approaching from the east.');
         await page.getByLabel('Report type').selectOption('Moderation Appeal');
@@ -226,6 +226,8 @@ for (const [width, height] of [[1280, 800], [390, 844], [844, 390]]) {
         await expect(dialog.getByText('Check a report I submitted', {exact: true})).toBeFocused();
         await page.keyboard.press('Tab');
         await expect(dialog.getByText('My moderation notices and appeals', {exact: true})).toBeFocused();
+        await page.keyboard.press('Tab');
+        await expect(dialog.getByText('My approved data export — private download', {exact: true})).toBeFocused();
         await page.keyboard.press('Tab');
         await expect(page.getByRole('button', { name: 'Close report form' })).toBeFocused();
         await page.keyboard.press('Escape'); await expect(dialog).toBeHidden();
