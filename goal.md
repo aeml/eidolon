@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.76 live-QA setup correction:** Run37403492653 ended failure,
+not acceptance. Both deploys and earlier checks passed;7 live tests passed but
+the loot/persistence case and retry refused a full QA bag with no safe vendor
+spare. Keep that sale policy: add an explicitly selected ordinary town/stash
+route to preserve one unequipped gear item instead. Require exact storage,
+previous stash/Gold/equipment/other items and fresh-login retained gear plus the
+new pickup. No protected sale, quest-item move, account grant or database edit.
+43 focused tests pass0.862s; lint/whitespace pass. Native corrected CI/live QA
+remain required, including town recovery skipped after the earlier failure.
+
 **October6 Alpha1.76 deployed, final acceptance pending:** Exact57572325
 CI37403492653 passed hosted tests, predeploy/input checks and both deployments.
 Independent public IPv4 release/readiness plus publisher-transformed index/main

@@ -1496,12 +1496,13 @@ async function readCombatDiagnostic(page, targetId) {
     }, targetId);
 }
 
-export async function freePersistentQALootSlot(page) {
+export async function freePersistentQALootSlot(page, { storeSpare } = {}) {
+    const storedItems = [];
     // Already-earned deliveries can legitimately occupy a sold item's slot.
     // Verify each exact sale, then re-read the bag; never delete pending loot,
     // bypass persistence or repeatedly submit the same obsolete index.
     for (let rotation = 0; rotation < 25; rotation += 1) {
-        if ((await readPlayerState(page)).inventoryCount < 25) return;
+        if ((await readPlayerState(page)).inventoryCount < 25) return storedItems;
         const soldItemId = await page.evaluate(() => {
             const game = window.game;
             const equipmentSlots = new Set([
@@ -1524,6 +1525,10 @@ export async function freePersistentQALootSlot(page) {
             game.uiManager.inventory.onSellItem(index);
             return item.id;
         });
+        if (soldItemId === null && typeof storeSpare === 'function') {
+            storedItems.push(await storeSpare(page));
+            continue;
+        }
         expect(soldItemId, 'Full QA bag needs ordinary spare gear; protected/invested items are not discarded').not.toBeNull();
         await expect.poll(() => page.evaluate(id =>
             (window.game?.player?.inventory || []).some(item => item?.id === id), soldItemId), {
@@ -1533,16 +1538,17 @@ export async function freePersistentQALootSlot(page) {
     await expect.poll(async () => (await readPlayerState(page)).inventoryCount, {
         timeout: 15_000, message: 'Bounded QA vendor rotation must leave room after earned deliveries'
     }).toBeLessThan(25);
+    return storedItems;
 }
 
-export async function exerciseCombatAndLoot(page) {
+export async function exerciseCombatAndLoot(page, { storeSpare } = {}) {
     // Persistent production QA characters can reconnect where a previous run
     // was killed after its final assertion. Clear that legitimate gameplay
     // state through the visible respawn action before opening Settings; the
     // death overlay intentionally intercepts every menu click while active.
     await recoverThroughDeathScreen(page);
     await disableAutoLootThroughSettings(page);
-    await freePersistentQALootSlot(page);
+    const storedItems = await freePersistentQALootSlot(page, { storeSpare });
 
     let abilityWasUsed = false;
 
@@ -1678,7 +1684,7 @@ export async function exerciseCombatAndLoot(page) {
             console.log(`[loot-pickup] ${JSON.stringify({ earlierManualRequest: true,
                 stackable: loot.receipt.item.maxStack > 1,
                 before: loot.receipt.previousQuantity, after: loot.receipt.quantity })}`);
-            return loot.receipt;
+            return { ...loot.receipt, storedItems };
         }
 
         // The ground projection can be below the actual loot hitbox, or under
@@ -1742,7 +1748,7 @@ export async function exerciseCombatAndLoot(page) {
         console.log(`[loot-pickup] ${JSON.stringify({ earlierManualRequest: false, overlappingDrop: pickedLootId !== loot.id,
             stackable: receipt.item.maxStack > 1, before: receipt.previousQuantity, after: receipt.quantity,
             sameLootPile: click.sameLootPile, selectedPending: click.selectedPending })}`);
-        return receipt;
+        return { ...receipt, storedItems };
     }
 
     throw new Error('Five overworld kills produced no loot that could be added to the QA inventory');
@@ -2085,6 +2091,12 @@ export async function verifyPersistenceAfterFreshLogin(page, credentials, receip
     const restored = await readPlayerState(page);
     expect(restored.level).toBeGreaterThanOrEqual(100);
     await waitForPersistedPickup(page, receipt);
+    for (const stored of receipt.storedItems || []) {
+        await expect.poll(() => page.evaluate(id =>
+            (window.game.player.stash || []).find(item => item?.id === id), stored.id), {
+            timeout: 10_000, message: 'Gear stored to make loot space must retain exact metadata after fresh login'
+        }).toEqual(stored);
+    }
 }
 
 export async function waitForPersistedPickup(page, receipt) {
