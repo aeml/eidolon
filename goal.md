@@ -24,7 +24,12 @@ than losing it through public JSON serialization. A new regression checks exact
 identity/state, independent mutable items and private JSON exclusion; the
 unchanged full guild-bank disposable Mongo race suite passes32.351s. The focused
 client protocol audit passes1.172s. Provider settings remain as confirmed above;
-no retention change or deletion. Corrected source still needs CI/live acceptance.
+no retention change or deletion. The full prior browser run exposed three stale
+report-form expectations: use the current details label and traverse the added
+export summary before focus wraps. All three actual Chrome report cases now
+pass30.6s, retaining draft/consent/phone/keyboard assertions. Superseded test-only
+CI37395247813 will be replaced by this correction; no production stop is needed.
+Corrected source still needs CI/live acceptance.
 
 **October6 Alpha1.75.0 publication candidate:** The approved milestone policy is
 administrator-reviewed export/removal requests, unchanged retention and no
