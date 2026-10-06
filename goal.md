@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 corrected1.76 public identity:** Exact69cc97d9 run37406964398 passed
+ordinary CI/all browser shards/focused predeploy and both deployments. Live
+anonymous/persistent-character QA is actually running, monitored by Luna;
+three optional predeploy art/GPU/full-character scopes are skipped, not passed.
+Independent public IPv4 frontend/backend identities, ready database and exact
+publisher-rewritten index/main bytes match69cc97d9/Alpha1.76.0. Receipt retains
+the previous575 candidate's terminal failure. No final acceptance yet; live
+completion and a post-terminal identity/readiness recheck remain required.
+Later staged changes stay unpublished and the full roadmap goal remains active.
+
 **October6 Alpha1.76 live-QA setup correction:** Run37403492653 ended failure,
 not acceptance. Both deploys and earlier checks passed;7 live tests passed but
 the loot/persistence case and retry refused a full QA bag with no safe vendor

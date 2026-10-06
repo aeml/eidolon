@@ -1,17 +1,18 @@
 {
   "schema": 1,
   "milestone": "Alpha1.76.0 publication",
-  "status": "deployed-public-identity-verified-live-qa-failed-corrected-candidate-required-not-accepted",
-  "checkedAt": "2026-10-06T02:51:01.169Z",
-  "commit": "5757232598c353fe6bc76ca7fd65283019d62693",
+  "status": "corrected-candidate-deployed-public-identity-verified-live-qa-in-progress-not-accepted",
+  "checkedAt": "2026-10-06T03:30:57.830Z",
+  "commit": "69cc97d9580e1a9e0e5e576f1a475a50b43c6639",
   "version": "Alpha 1.76.0",
   "schemaVersion": 25,
   "ci": {
-    "run": 37403492653,
-    "status": "completed",
-    "conclusion": "failure",
-    "observation": "Both deployments and earlier test/predeploy/input jobs succeeded. Live job112083237466 failed the full-bag setup for authenticated.spec.js:128 and its retry: no eligible ordinary spare gear to sell. Seven other live cases passed. This is not complete acceptance; Luna confirms terminal failure.",
-    "skippedScopes": ["Predeploy deterministic High/Low animation gallery", "Predeploy Well Rested rendering/GPU lifecycle QA", "Predeploy disposable full-character gameplay", "Live four-class/remote-animation QA", "Live town recovery/Well Rested QA skipped after preceding failure"]
+    "run": 37406964398,
+    "status": "in_progress",
+    "conclusion": "",
+    "observation": "Server/client tests, all three browser shards, focused predeploy and QA-input validation succeeded. Both SSH/server and Pages deployments succeeded. Luna confirms the actual live anonymous/persistent-character QA step is running. Terminal live acceptance is not yet proven.",
+    "skippedScopes": ["Predeploy deterministic High/Low animation gallery", "Predeploy Well Rested rendering/GPU lifecycle QA", "Predeploy disposable full-character gameplay"],
+    "previousFailedCandidate": {"commit": "5757232598c353fe6bc76ca7fd65283019d62693", "run": 37403492653, "conclusion": "failure", "cause": "Full-bag live setup had no safe ordinary spare gear to sell. Seven other live cases passed; animation and subsequent town-recovery scopes were skipped. Retain failure; corrected candidate must earn its own full native gate."}
   },
   "public": {
     "frontendExactIdentity": true,
@@ -19,11 +20,11 @@
     "backendStatus": "ok",
     "database": "ready",
     "runtime": [
-      {"path": "index.html", "sha256": "8e1cdc1ffb68787b7e41796b9e49f16072a76f50eac068617f5910ebe81f75f4"},
-      {"path": "src/main.js", "sha256": "5d60364efa3c5efa0613de8601e55c4a17b3e91ab7b97ef5889dc8fa20c1e9cb"}
+      {"path": "index.html", "sha256": "f804a4f6cbbb5d3a0c561411effa5f226936c52dc93fcb783f1ef4b689cc58d5"},
+      {"path": "src/main.js", "sha256": "9f2cc4201708cf7cd213b5402f2293ab673e4736946e7d29de21a3aef6dc1bc7"}
     ],
     "verification": "Independent IPv4 HTTPS requests with no-cache,2-second connect and5-second total limits. Exact index/main bytes match source transformed by the existing publisher. Login shows Alpha1.76.0, with new1.76 and preserved1.75 patch history. No credentials or production data queried. These checks do not replace ongoing authenticated QA."
   },
   "correction": "Retain the conservative ordinary-spare sale policy. If none exists, the authenticated test may explicitly use ordinary town walking, the real stash UI and one right-click deposit of unequipped non-stackable gear. Verify exact item/previous stash metadata, Gold/equipment/other carried items, then require the stored gear after fresh login alongside the new exact pickup. Story items stay carried; no grants, deletion, database edits, capacity or gameplay changes.43 focused Jest tests pass0.862s; focused lint/whitespace pass. These mocked/policy tests do not substitute for the corrected candidate's native live QA.",
-  "remaining": "Fresh remote integration and corrected candidate CI/deployment/live success, explicit skipped-live scopes and post-terminal identity/readiness checks. Later isolated1.79 diagnostic commit87cda8c7 and1.82 runner boundary commit9e3bb9c8 are unpublished; not included in this1.76 release. Full roadmap remains active."
+  "remaining": "Terminal corrected-candidate CI/live success, explicit skipped-live scopes and post-terminal identity/readiness checks. Later1.79 casino-roster correction,1.81 runtime-restore checks,1.82 SSH pin/runner guards and1.83 incident procedure remain isolated/unpublished; not included in this1.76 release. Full roadmap remains active."
 }
