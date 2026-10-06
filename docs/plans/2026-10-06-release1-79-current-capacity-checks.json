@@ -3,6 +3,12 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "corrected-100-client-gameplay-and-save-checks-pass-terminal-fail-five-second-shutdown-fixture-removed",
+  "periodicSaveShutdownFollowUp": {
+    "confirmedDefect": "Actual periodic controller regression fails before repair: shutdown begins during the first accepted bound write, but the pass continues committing all four accounts. A second regression shows a pass invoked after shutdown still replays a retained offline record. This is redundant work during drain, not yet the demonstrated cause of the prior native timeout.",
+    "repair": "The periodic pass checks the existing stopping flag at entry, between accounts and before offline retries. Already-admitted writes finish; final journal-all snapshots remain authoritative, including late earned changes/disconnected players. Offline pending records stay intact for startup. Add eight fixed phase-only shutdown log labels without account/session identifiers, new endpoints or altered drain order/timeouts.",
+    "verification": "Focused shutdown, account-bound saves, character persistence/work and connection-work race scopes PASS3.639s. Regression verifies one admitted write/acknowledgement, every final updated Gold/account binding and retained offline recovery identity. Existing journal-all-before-database, storage failure and late reward tests pass. Gofmt and whitespace checks pass.",
+    "limits": "No reduced durability, timeout extension, return-before-earned-work or accepted100-client shutdown claim. The historical FAIL remains. Focused eight-live-character normal shutdown/restart verification is planned separately before another full population comparison. No production action."
+  },
   "recoveryAndWorkerCorrected100Comparison": {
     "sourceCommit": "4096c19c9352b8e4ac6d31a4b79ddc0a5e6945ca",
     "result": "FAIL218.36s/120s active: exact source-built normal server, driver and race harness. All100 admissions/fresh views, every paid casino outcome, all20 social outcomes, all20 party members' positive own impacts/healing and all100 independent disconnect-save checks pass. Overall test still fails: the owned server required forced shutdown after the existing five-second stop guard. Not capacity/release acceptance.",

@@ -32,6 +32,9 @@ func broadcastTime() {
 }
 
 func saveAllPlayers() {
+	if serverStopping.Load() {
+		return
+	}
 	// Create a snapshot of active sessions to avoid holding the lock during DB operations
 	var clientsToSave []*Client
 	sessionsMu.Lock()
@@ -41,7 +44,16 @@ func saveAllPlayers() {
 	sessionsMu.Unlock()
 
 	for _, client := range clientsToSave {
+		// Finish the current write, but do not start another periodic save
+		// during drain. The final journal-all pass captures every player,
+		// including late rewards and disconnected characters.
+		if serverStopping.Load() {
+			return
+		}
 		savePlayerNow(client)
+	}
+	if serverStopping.Load() {
+		return // Retained offline records remain recoverable at startup.
 	}
 	if err := retryPendingCharacterSaves(); err != nil {
 		log.Printf("Character save retry remains pending: %v", err)

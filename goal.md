@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 periodic-save drain correction:** Two targeted regressions prove a
+periodic pass continues new account saves/offline replays after shutdown begins.
+Check the existing stopping flag at entry/between accounts/before retries; finish
+the admitted write and retain the independent final journal-all pass. Tests
+preserve late earned Gold/account binding for every character and offline pending
+recovery. Eight fixed shutdown phase labels identify future stalls without player
+IDs or new APIs; drain order/timeouts unchanged. Focused shutdown/persistence/
+identity/connection/work race scopes pass3.639s. This is not proven attribution
+or resolution of the historic five-second native100 timeout. Focused normal
+eight-character shutdown/restart control is planned next; full gates stay open.
+
 **October6 corrected native100 comparison:** Exact4096c19c normal server/driver
 and race harness fail218.36s/120s active. All100 admissions/fresh own views,
 paid casino outcomes with zero rejections/timeouts,20 social outcomes,20 members'
