@@ -1,8 +1,21 @@
 {
   "schema": 1,
   "milestone": "1.78 observability and operating budgets",
-  "sourceCommit": "3004c125105082ae6b36192b4268239a6b9b1a7a",
-  "status": "owner-approved-monitor-prepared-for-ordered1-78-ci-and-deployment",
+  "sourceCommit": "c7c2c5260dd0ba806e34d81cdeec305dd2ccb3ae",
+  "historicalPreparationSource": "3004c125105082ae6b36192b4268239a6b9b1a7a",
+  "status": "accepted-live-exact-source-ci-public-and-independent-monitor-verification",
+  "productionInstallation": {
+    "publicVerifiedAt": "2026-10-06T23:27:28.332Z",
+    "ciRun": 37543824180,
+    "ciScope": "Root independently confirmed run37543824180 terminal success at exact c7c2c5260dd0ba806e34d81cdeec305dd2ccb3ae: all ten jobs completed successfully, including native predeploy, QA inputs, both deployments and Live Release and Character QA. Luna watched the job. Exact public checks and monitor metadata independently verify this installed source.",
+    "skippedScopes": ["Predeploy deterministic High/Low animation gallery", "Predeploy Well Rested rendering and GPU lifecycle QA", "Predeploy disposable full-character gameplay", "Live four-class and remote-animation QA"],
+    "public": "Independent bounded verified IPv4 HTTPS returns exact c7c2c526/Alpha1.78.0 frontend and backend, statusok/database ready. index.html, src/main.js, AdminUI.js, AdminServiceDiagnostics.js and GameEngineNetworkMessages.js match their full actual publisher transformations. All eight fixed operational groups have typed coherent counters/gauges, without private labels. No account creation, grant, financial operation or mail request.",
+    "publicReceipt": "/tmp/eidolon-178-public-Bm1PTn/receipt.json",
+    "publicReceiptSha256": "55d3abf06c2da0e41da5e080b16d4cd18b40ccd77e10660202ce980db68233a0",
+    "monitor": "Actual eidolon-monitor-1 started2026-10-06T23:26:57.288569096Z. Repeated selected-metadata inspection confirms Runningtrue/restartCount0, user65532, unless-stopped restart, read-only root, host network, all capabilities dropped, no-new-privileges and journald tageidolon-monitor. Its exact command has30s polling/5s probe,3 failures,2 recoveries,30m notices, Postmark enabled with10s mail and1m attempt spacing. Healthy logs are silent; no production outage was fabricated and no additional test email sent.",
+    "environment": "Exact private production .env remains an owner-owned regular mode600 file. Config values and provider recipients/tokens were not printed.",
+    "limits": "Monitor observes local API/database readiness, not DNS/TLS/frontend/off-machine/whole-host failure. Existing host journal policy and player/provider retention are unchanged. Manual inbox proof remains separately scoped; no induced production event-path test, new paid service, pressure/storage budget or capacity/full-stabilization claim. The explicitly skipped stabilization scopes are not passes. Historical preparation/pending paragraphs below are superseded only within this acceptance scope."
+  },
   "currentReleasePreparation": {
     "base": "Accepted1.77 source4ed7a3dd and its independent public-acceptance checkpoint18662ddf merged normally atbff7cc77. Concurrent master is preserved; refresh again before pushing.",
     "identity": "Package/lock, login, release manifest, backend, Docker/Compose, deploy workflow and isolated QA defaults agree on Alpha1.78.0. Cumulative patch notes preserve1.77 and all older entries.",

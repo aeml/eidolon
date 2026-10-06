@@ -1,12 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October6 ordered-release reconciliation: Alpha1.77.0 is accepted live at4ed7a3dd,
-CI37507575802, with independent public IPv4 identities/readiness and rewritten
-runtime-byte checks. The named certificate renewal simulation succeeded for both
-hosts; public IPv6 remains deferred/unverified. Alpha1.78.0 c7c2c526 is pushed,
-CI37543824180 active, with owner-approved existing hosting/admin Postmark outage
-alerts and confirmed single-test inbox delivery; actual service/public acceptance
-is pending. No complete capacity, final-art, pacing, feature-freeze, beta or1.99
+October6 ordered-release reconciliation: Alpha1.78.0 is accepted live atc7c2c526,
+CI37543824180 terminal success/all ten jobs, with independent public IPv4
+identities/readiness, five exact publisher-runtime files and actual running
+independent monitor verification. Owner-approved existing hosting/admin Postmark
+outage alerts are enabled; single-test inbox delivery is separately confirmed.
+See [exact scope and skipped checks](2026-10-06-release1-78-current-operations-checks.json).
+The named certificate renewal simulation succeeded for both hosts; public IPv6
+remains deferred/unverified. No complete capacity, final-art, pacing, feature-freeze, beta or1.99
 claim. Older dated status paragraphs below remain historical.
 
 October6 current acceptance: Alpha1.75.0 is live at56d9fda9, with all ten jobs
@@ -915,7 +916,7 @@ release that subsequently shipped.
 | Implemented foundation | Four classes; procedural presentation; manual 55-chapter Chronicle; elemental investigations and repair raids; level-100 Dark Realm expedition; Nexus and four-phase Malachar; parties, guilds, economy, PvP, events, administration and casino. Verify integration and improve quality; do not recreate these systems. |
 | Accepted scoped evidence | Geared-party dungeon/raid clears, repair defenses, individual manual rewards, reconnect receipts, connected social/casino/admin routes, bounded concurrency and backup/restore checks. Reuse where the tested behavior has not changed. Prepared characters do not prove earned campaign pacing. |
 | Delivered physical passage | The originally requested Fourfold Resonance Portal at (28,235) shipped in1.12, with personal eligibility, plaza, Ilyra directions and map location. Current world spawning/entry still use the canonical location. Guide fallback is not a substitute for it. Retain [exact accepted scope](2026-09-28-release1-12.md); final modern-art review remains separate. |
-| Current staged work |1.78 operations is in CI.1.79 multiplayer performance/capacity and later operations/compatibility candidates remain isolated, with exact-source limits. Earlier hidden-floor/casino work is historical, not the current unpublished release boundary. |
+| Current staged work |1.78 operations/approved alerts is accepted live.1.79 multiplayer performance/capacity and later operations/compatibility candidates remain isolated, with exact-source limits. Earlier hidden-floor/casino work is historical, not the current unpublished release boundary. |
 | User-owned playtest | Uninterrupted earned campaign, real-player progression/economy and pacing. No replacement long automated campaign is authorized by this plan. Instrument and collect actual playtest reports instead. |
 | Deferred external evidence | Physical-phone dungeon/party feedback and IPv6/DDNS configuration. Neither is passed. Keep them nonblocking for ongoing code and the current release; address support/exposure decisions at the later gates below. |
 

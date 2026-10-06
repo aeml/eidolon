@@ -3,7 +3,7 @@
   "milestone": "1.80 launch feature freeze",
   "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
   "reviewBase": "d3fb3bef in isolated1.79 worktree; normal1.78 integration plus staged spatial/static-frame improvements and owned-process test observation",
-  "orderedDependency": "Accepted1.77 source4ed7a3dd remains latest verified live.1.78 c7c2c526 CI37543824180 is active; own1.79 native/headroom/release acceptance remains open. Do not skip either prerequisite or relabel this snapshot as a frozen1.80 build.",
+  "orderedDependency": "Accepted1.78 c7c2c526/CI37543824180 is latest verified live: all ten jobs successful, exact public identities/runtime/readiness and actual independent monitor checked. Own1.79 native/headroom/release acceptance remains open. Do not skip that prerequisite or relabel this snapshot as a frozen1.80 build.",
   "resolvedStaleClaims": [
     "Roadmap starting-position row still called the physical Dark Realm portal missing. Current world_locations.go/world.go spawn the canonical portal; exact accepted1.12 receipt14290d22 records (28,235), personal gates/plaza/map and Guide fallback. Correct the row without claiming new portal work or final modern-art acceptance.",
     "Promise V02 still requested the first actor pilot. Delivery and accepted1.58.2 public receiptff303dc2 show four rigged class bodies,252 equipment models/four motion banks with exact-source checks. Update to delivered integration while preserving final art/whole-catalog licensing gates; no repeated pilot request or model rewrite.",
@@ -23,6 +23,15 @@
     "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
     "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
     "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f"
+  },
+  "changedAuthorityBoundaryReview": {
+    "scope": "Read-only current1.78 monitor/diagnostic changes retained in isolated1.79; source review supplements retained focused race evidence, not a new penetration test or complete F2 approval.",
+    "administratorDiagnostics": "admin_console_handlers.go routes MsgAdminService through closed-field decoding, authenticated current-character connection and durable HasAdminRole. Privileged results require the durable audit path and recheck role/session after query/audit IO. The handler only reads typed health; no grant, movement or configuration mutation. admin_service_test.go retains denied/revoked/no-private-data/foreign-field coverage and authenticated1024-byte/burst5 policy assertions.",
+    "publicAggregateData": "main.go healthResponse and internal/operations/signals.go expose fixed process-level numeric/bool aggregates, not account/player/currency amounts, raw errors, filenames or arbitrary labels. Eight groups were independently checked against exact live1.78 at23:27:28UTC. Public availability of these aggregates is deliberate; this is not proof of privacy across unrelated APIs.",
+    "probeBoundary": "internal/operations/readiness.go accepts only exact /healthz without userinfo/query/fragment, HTTPS or loopback HTTP, finite request deadline, redirects refused and32KiB response cap. Production command uses explicit host loopback. Optional storage/pressure limits remain off; probe configuration is operator-supplied, not a player input.",
+    "mailBoundary": "internal/operations/postmark.go uses a fixed verified-HTTPS Postmark endpoint with redirects refused,10s timeout, bounded8KiB receipt and a shared1m attempt interval. Alert encoding accepts fixed incident/cause enums and typed samples, ignores caller delivery text, and never includes provider tokens/recipient addresses/raw peer errors. Existing provider/inbox proof remains one separately approved test; no further send or production failure injection occurred.",
+    "serviceBoundary": "Actual independent nonroot65532/read-only/capability-free/no-new-privileges monitor, host loopback networking, journald retention and mode600 private environment are recorded in the1.78 installation receipt. Host networking intentionally permits local readiness access and does not provide off-machine/host-failure coverage. No new paid service, retention change or public listener.",
+    "remaining": "This review does not close all exploit/data-boundary promises. Final content/dependency inventory, cross-feature authority/recovery reconciliation, representative capacity and owner operational/commercial decisions remain separate gates. Do not infer F freeze or launch security certification."
   },
   "limits": "Read-only source/receipt review and documentation corrections only. No new test/benchmark, asset/model/dependency/runtime change, production mutation, access restriction, purchase feature, capacity/F/CB/1.99 completion or waiver of manual review. User whole-campaign/phone feedback remains deferred, not passed."
 }

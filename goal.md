@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.78 accepted live:** Exact c7c2c526/CI37543824180 terminal
+success/all ten jobs, including final live QA, independently confirmed. Public
+IPv4 identities/database readiness, five actual publisher-runtime files and
+eight fixed operational groups verified. Approved independent Postmark monitor
+runs nonroot/read-only/capability-free with host loopback, journald and zero
+restarts:30s checks/3 failures/2 recoveries/30m reminders. No extra mail or
+fabricated outage; manual inbox proof separate. Explicit skipped animation/GPU/
+full-character/four-class stabilization scopes remain unpassed. Proceed with
+the exact prepared changed-source1.79 native comparison; full roadmap goal active.
+
 **October6 owned-process measurement preparation:** Extend only the existing
 phase179 native harness with an opt-in one-second Linux CPU/RSS observation of
 its already-owned server child. Join before normal shutdown; private fixed
