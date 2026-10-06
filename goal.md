@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 combined1.79 frame integration:** Normally merge pushed1.78 candidate
+c7c2c526 and retain both branches' evidence/history, removing nested documentation
+merge markers. Select only the measured static-fence frame improvement from1.87
+into1.79: all6050 collision/spatial/replication fences remain; no dynamic actor,
+power, recovery, timer or bag change. Combined spatial/static/worker/bookkeeping/
+replication and operational/admin/health race scopes PASS game2.629s/root2.712s.
+No native workload repeated during busy predecessor CI. Exact1.78 run37543824180
+is confirmed in progress; own1.79 publication waits for predecessor acceptance.
+Old mixed100/raid/event passes keep their exact-source limits.803ms stalls,
+representative headroom and own native/version/live acceptance remain open.
+
 **October6 structured spatial-cell keys:** Replace formatted candidate-cell strings
 with exact scene/integer coordinate keys; retain bounds, locks and precise downstream
 targeting/visibility. Empty81-cell regression RED246 allocations, GREEN within one

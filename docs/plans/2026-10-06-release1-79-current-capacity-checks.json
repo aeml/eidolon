@@ -2,7 +2,15 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "9b20136a plus accompanying structured spatial-cell keys; exact historical controls retain their separate source commits/hashes below",
-  "status": "current-root-event-and-delta-cache-mixed100-pass-prior-controls-retained-full-capacity-gates-open",
+  "status": "current-spatial-static-frame-integration-verified-native-and-headroom-gates-open",
+  "orderedIntegrationAndStaticWork": {
+    "sourceCommit": "2015fa8e85396a937cbb00b5c32884bd78a1cb57",
+    "integration": "Normally merge pushed1.78 candidatec7c2c526 at926a56f9, preserving accepted1.77 hosting/QA changes and approved independent monitor. Resolve goal history by retaining both branches and removing nested documentation merge markers. Own1.79 remains unpublished and inherits1.78 labels until predecessor acceptance.",
+    "change": "Select the measured static-fence frame improvement from prepared1.87 runtime75cdfa64 into1.79, because the representative mixed load still observes an over-budget sequential frame. Skip only immutable TypeFence in global regeneration and simulation snapshot construction. All6050 fences remain in entity/spatial/replication/geography state; every dynamic actor, legal power/recovery and gameplay timer remain unchanged. No compatibility/bag changes or unrelated later features selected.",
+    "verification": "Go1.27.1/GOMAXPROCS2/p2 exact combined source: selected spatial/static/world worker/bookkeeping, broadcast/replication/delta and operational/realtime/admin/health race scopes PASS game2.629s/root2.712s. The static-lock/dynamic-NPC regression checks both ordinary and regeneration frames, including dynamic damage and healing while the irrelevant static lock is held; complete fence population is retained. Earlier benchmark/control evidence stays tied to its actual sources, not retroactively attributed to this candidate.",
+    "next": "After1.78 CI/public/monitor acceptance, use one proportionate changed-source native comparison and actual headroom measurements for the unresolved803ms mixed-load gaps. Do not repeat unchanged long campaign/raid/event checks or benchmark concurrently with native acceptance. No new native fixture or workload was started in this integration turn. Capacity remains unproven.",
+    "releaseDependency": "Exact1.78 CI37543824180 is confirmed in_progress for c7c2c526. Existing admin recipients/settings/current-hosting approval and successful manual mail delivery are recorded; no further owner alert-budget answer is missing. Do not publish1.79 before predecessor acceptance."
+  },
   "structuredSpatialCells": {
     "repair": "Runtime-only spatial map keys now hold the exact scene string and integer floor-derived coordinates directly. Nearby no longer formats a string for each candidate cell. Existing inclusive cell bounds, scene isolation, locks, live entity pointers and downstream precise targeting/visibility checks remain unchanged; no wire/save schema, gameplay radius, candidate omission or cross-frame cache.",
     "regression": "Original empty81-cell query allocates246 times and fails the new one-result-allocation budget before repair; passes afterward. Original cell-bound reference covers positive/negative/fractional boundaries, four scenes including Unicode and missing scene. Cross-cell/same-cell movement, explicit scene transfer/removal and concurrent move/query identity checks pass.",
@@ -676,9 +684,9 @@
     "cleanup": "Normal owned server stopped; exact labelled disposable Mongo fc79ff5d29408ae6336772a81aea94fd8f9d98b03ffcf0a1d9775cc8ce4da62b stopped/removed with only synthetic volumes. Retained aggregate logs/binaries; production and nightly soak untouched."
   },
   "remaining": [
-    "Diagnose the remaining blackjack rejection in a focused real-table check before another100-player comparison. Latest changed-server run has actual every-member party impacts and no timeouts, but one rejected wager prevents final saves. Keep historical role failures as failures, and preserve600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves.",
+    "Latest retained delta-cache mixed100 control passes every casino/member/social/save gate; older blackjack/role failures remain historical failures, not current blockers. Verify the changed spatial/static-frame candidate proportionately, retaining600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves. Resolve observed803ms gaps rather than declaring a functional PASS smoothness acceptance.",
     "Representative process/database/network headroom, settlement/reopen and actual encounter/party coverage require their own evidence; a frame microbenchmark or small cohort is not100-player acceptance.",
-    "Accepted1.75/1.76 evidence remains scoped to their exact published sources. Ordered1.77/1.78 release and owner operating decisions, then own version/cumulative notes, fresh remote integration, CI/deployment and exact public acceptance. Full1.99 goal remains active."
+    "Accepted1.75/1.76/1.77 evidence remains scoped to their exact published sources. Require ordered1.78 CI/public/approved monitor acceptance, then own1.79 version/cumulative notes, fresh remote integration, CI/deployment and exact public acceptance. Full1.99 goal remains active."
   ],
   "authorityLimits": "No production account/database/load, provider mail/settings, root/service/DNS changes, erasure, retention change or future milestone deployment. Owner worktree remains untouched."
 }
