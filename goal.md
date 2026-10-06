@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 owner-approved notification test:** Sent exactly one clearly labelled
+Postmark administrator test email; the provider accepted it with MessageID
+`a6602d46-8fbb-4cf0-94e9-6028c8a61503`. Inbox receipt remains unconfirmed.
+No ongoing alerts, monitor service, thresholds or paid hosting were enabled.
+Restricted the exact owner-owned production server `.env` from775 to600,
+without editing its contents or restarting services. Owner's named two-host
+certificate renewal simulation succeeded; ordered1.77 source4ed7a3dd is pushed
+and CI37507575802 is in progress with Luna monitoring. No1.77 public acceptance
+or full roadmap completion is claimed. The following entries are historical.
+
 **October6 isolated1.78 operations integration:** Prepared monitoring now runs
 against the current account-bound persistence source without replacing identity
 checks or current privacy/admin filters. Separate simulation/broadcast timing
