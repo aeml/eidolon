@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 native public-cache casino verification:** Normal b6dd2b20 server
+with isolated Mongo7 passes the two-player blackjack socket/replay/payout/restart
+scope42.76s. Both clients see identical public cards/dealer, retain private seat
+and deck boundaries, pay once on an accepted wager replay, independently reload
+settlement and restart without duplicate Gold. Owned synthetic Mongo removed;
+aggregate artifacts retained. This does not clear the combined bot timing or
+100-client gates. Existing2s wagering guard/5s uncertainty limit stay unchanged;
+source inspection does not establish their change as a valid fix.
+
 **October6 public frame-encoding improvement:** Public actor protobuf encoding
 is now shared only within one broadcast of detached immutable actor snapshots.
 Owner-private player messages always encode separately; no retained cross-frame

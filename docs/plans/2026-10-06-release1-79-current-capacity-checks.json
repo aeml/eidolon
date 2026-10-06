@@ -8,7 +8,15 @@
     "change": "One broadcast-local cache encodes each detached immutable public actor once across recipients. Owner-private player messages always use their own encoding, never the public cache. Cache holds only actor snapshots touched by this broadcast and is discarded after its workers finish; no retained cross-frame cache, player history or timing/network/pass-gate change.",
     "verification": "Focused PublicFrameEncoding, StateRecipient, StateBroadcast and matched replication/interest scopes pass race1.931s. Concurrent20-recipient owner/peer equality and marshaling verify private progression exclusion, visible equipment/combat/loot preservation, one public encoding and detached fresh next-frame state. Existing full/delta owner privacy tests retain their assertions.",
     "benchmark": "100 recipients/one actor,100ms Go benchmark: uncached300113ns/230416B/1301allocations per frame; cached4958ns/2512B/16allocations. Benchmark passes0.578s. This is encoding/allocation micro-evidence, not production CPU headroom,120s connected capacity or a resolution of failed party/casino gates.",
-    "remaining": "New source requires native changed-scope/ordered release verification. No immediate full100 retry and no claim that this allocation change fixes targeting or monetary action timing."
+    "nativeFollowUp": {
+      "sourceCommit": "b6dd2b2025cdddaa83b76c8c6b6ae096d34065b2",
+      "result": "TestBlackjackActualSocketsWagersRoundAndPayout passes42.76s on actual isolated Mongo7 and the normal source-built server with the public frame cache. Two synthetic players see the same cards/dealer, stake100Gold each, retry one accepted wager without another debit, stand through the ordinary timed round, independently reload payouts/seat exit and restart without duplicate settlement. Private sessions/deck remain excluded. This is not the combined casino bot timing profile or100-player capacity.",
+      "artifactDirectory": "/tmp/eidolon-179-public-frame-blackjack-sCsfxR",
+      "serverSHA256": "ee6468b75a4500c12800fed3800b1aa6f6f96c60636369a526587b3d49345f4d",
+      "raceHarnessSHA256": "9c0e5c9acecb31c8650afac53544a67467d4751e4ae458119ffcac610d4d94e3",
+      "cleanup": "After normal native shutdown/restart cleanup, exact labelled tmpfs Mongo71aff04bb233615a07b7d773beb984ede14e59d2a2ada1b940cfd6f458b3a2a5 removed with synthetic storage. Aggregate artifacts retained; production/nightly soak untouched."
+    },
+    "remaining": "Ordered release verification and representative connected capacity remain open. No immediate full100 retry and no claim that this allocation change fixes targeting or monetary action timing. Existing2-second wager-window guard and5-second uncertain-action timeout are unchanged; source inspection did not justify weakening either."
   },
   "targetCoordinationFollowUp": {
     "change": "Test-client combined parties coordinate one observed current target per group, bounded to five groups. Claims release on dead/missing target or party failure; contention waits for the next normal step. Standalone/dungeon/raid/event profiles, real enemies, search radius30, anchor400/600, gear and pass gates unchanged. No server gameplay edit or claim of synthetic credit.",
