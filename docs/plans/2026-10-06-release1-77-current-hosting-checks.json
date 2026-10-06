@@ -3,12 +3,12 @@
   "milestone": "1.77 hosting and network reliability",
   "baseCommit": "7ebf3a7f",
   "status": "isolated-preparation-not-published-or-complete",
-  "inheritedSourceVersion": "Alpha1.76.0 unpublished candidate",
+  "inheritedSourceVersion": "Alpha1.76.0 accepted predecessor; own1.77 unpublished",
   "currentIntegrationFollowUp": {
-    "master": "5757232598c353fe6bc76ca7fd65283019d62693 merged normally; includes accepted1.75 receipt and1.76 named-index CI correction. No own1.77 release claim.",
+    "master": "69cc97d9580e1a9e0e5e576f1a475a50b43c6639 merged normally, followed by the accepted1.76 evidence checkpoint. Preserve hosting preparation and corrected persistent QA. No own1.77 release claim.",
     "documentation": "Canonical fresh certificate request/dry-run now names only play.eidolonrealms.com lineage, with existing-name inspection rather than renaming. Document explicit Compose project/port/private env/Mongo/log-journal separation, no production provider/account copying, unchanged strict browser origins and unless-stopped/manual-stop restart boundaries.",
     "publicIPv4Websocket": "One anonymous bounded HTTP1.1 upgrade to https://server.eidolonrealms.com/ws with canonical play Origin returned101 and received5748 bytes before deliberate3-second curl deadline closed it. A second bounded foreign.example.invalid Origin upgrade correctly returned403. No authentication, account creation or game command. Exit28 on the accepted socket is the imposed open-socket observation deadline, not an HTTP failure. Does not prove long idle sessions, authenticated gameplay, IPv6 or1.77 acceptance.",
-    "publicReadiness": "Independent bounded IPv4 /healthz reports56d9fda91a964890d8777bbce91a1c67869fd9c3, Alpha1.75.0, statusok/databaseready. Corrected1.76 CI37403492653 is in progress, not accepted."
+    "publicReadiness": "Independent post-terminal bounded IPv4 frontend/backend and exact publisher-transformed index/main bytes match69cc97d9580e1a9e0e5e576f1a475a50b43c6639, Alpha1.76.0, statusok/databaseready at2026-10-06T03:40:47.706Z. Run37406964398 completed successfully including native persistent-character and town recovery/Well Rested QA. Explicit art/full-character skipped scopes are recorded in the accepted1.76 public receipt; not1.77 acceptance."
   },
   "existingTargetFollowUp": {
     "change": "Fresh custom-host setup now refuses existing configuration/enabled targets, including dangling symlinks, before filesystem/certificate/reload actions. Missing Certbot is checked before HTTP bootstrap writes. Obtain and dry-run commands explicitly scope the supplied hostname's certificate; interrupted setup requires manual inspection, not deletion or bypassing the guard.",
@@ -28,7 +28,7 @@
     "addressFamilies": "Backend DNS followseserver.ddnsfree.com toIPv447.203.222.61 and AAAA2600:1006:b0bd:84e5:60d1:a304:d809:beff. This host has no defaultIPv6 route; its bounded publicIPv6 request cannot connect. That observation does not establish external-client reachability or prove the AAAA is stale. Owner previously deferred DDNS/IPv6 changes; settings remain untouched."
   },
   "remaining": [
-    "1.75 exact-source live acceptance is complete; corrected1.76 release still needs own exact-source acceptance, then own1.77 labels/notes/CI/live gate. This is not a published1.77 milestone.",
+    "1.75 and corrected1.76 exact-source live acceptance are complete. Own1.77 labels/notes/CI/live gate remain. This is not a published1.77 milestone.",
     "Owner-approved actual certificate challenge/renewal evidence and supported public-address-family decision before launch. Do not infer challenge success from timer success or externalIPv6 failure from a host with noIPv6 route.",
     "Keep restart/environment-separation scopes explicit; no disruptive reboot, shared nginx reload, production restore, external DNS/provider mutation or claimed100-player capacity. Full roadmap remains active."
   ]

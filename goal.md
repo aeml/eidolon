@@ -1,5 +1,9 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 ordered1.77 integration:** Latest remote69cc97d9 and the accepted
+1.76 evidence checkpoint are normally merged, preserving hosting preparation.
+1.76 is now accepted; own1.77 publication and owner renewal evidence remain open.
+
 **October6 hosting environment/proxy follow-up:** Latest master57572325 is
 normally merged into this unpublished1.77 worktree. Canonical certificate
 instructions scope the existing named lineage instead of all hosted sites.
@@ -27,6 +31,26 @@ the exact scoped certificate dry-run command; no privileged action was performed
 Own milestone remains unpublished/incomplete pending ordered predecessors and
 actual challenge/supported-address-family evidence. See
 [current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
+
+**October6 Alpha1.76 accepted:** Corrected source69cc97d9 run37406964398
+completed successfully across all ten jobs, including live persistent-character
+and town healing/Well Rested QA. Independent post-terminal IPv4 frontend/backend
+identity, database readiness and exact publisher-transformed index/main bytes
+pass at03:40UTC. Predeploy animation/GPU/full-character and live four-class remote
+animation scopes were explicitly skipped, not passed. Earlier failed candidates
+remain failures. Continue ordered1.77 preparation; wider capacity, recovery and
+full roadmap gates remain open. Analytics inventory is complete and unchanged.
+See [accepted public checks](docs/plans/2026-10-06-release1-76-public-checks.json).
+
+**October6 corrected1.76 public identity:** Exact69cc97d9 run37406964398 passed
+ordinary CI/all browser shards/focused predeploy and both deployments. Live
+anonymous/persistent-character QA is actually running, monitored by Luna;
+three optional predeploy art/GPU/full-character scopes are skipped, not passed.
+Independent public IPv4 frontend/backend identities, ready database and exact
+publisher-rewritten index/main bytes match69cc97d9/Alpha1.76.0. Receipt retains
+the previous575 candidate's terminal failure. No final acceptance yet; live
+completion and a post-terminal identity/readiness recheck remain required.
+Later staged changes stay unpublished and the full roadmap goal remains active.
 
 **October6 Alpha1.76 live-QA setup correction:** Run37403492653 ended failure,
 not acceptance. Both deploys and earlier checks passed;7 live tests passed but
