@@ -9,6 +9,74 @@ import (
 	"eidolon-server/internal/game"
 )
 
+func TestCasinoOrderingFenceSurvivesUnavailableAndSavingFeedback(t *testing.T) {
+	for _, kind := range []string{"blackjack", "house", "poker"} {
+		for _, feedback := range []string{"unavailable", "missing-version", "older-saving", "newer-saving"} {
+			t.Run(kind+"/"+feedback, func(t *testing.T) {
+				var b *casinoLoad
+				var data json.RawMessage
+				switch kind {
+				case "blackjack":
+					b = newBlackjackLoad(0, "player-synthetic-order")
+					data = blackjackFixtureView(b, "betting", "", 0, false, false, false)
+				case "house":
+					b = newHouseLoad(0, "player-synthetic-order")
+					data = houseFixtureView(b, "betting", false, false)
+				case "poker":
+					b = newPokerLoad(0, "player-synthetic-order")
+					data = pokerFixtureView(b, "betting", false, false, nil)
+				}
+				frame := func(version string, available, processing bool) json.RawMessage {
+					var payload map[string]interface{}
+					if err := json.Unmarshal(data, &payload); err != nil {
+						t.Fatal(err)
+					}
+					state := payload[kind].(map[string]interface{})
+					state["tableId"], state["tableVersion"] = b.table.ID, version
+					state["available"], state["processing"] = available, processing
+					if version == "" {
+						delete(state, "tableVersion")
+						delete(state, "roundId")
+					}
+					encoded, err := json.Marshal(payload)
+					if err != nil {
+						t.Fatal(err)
+					}
+					return encoded
+				}
+				if !b.receive(frame("22", true, false)) {
+					t.Fatal("ready view rejected")
+				}
+				version, available, processing := "21", false, false
+				if feedback == "missing-version" {
+					version = ""
+				} else if strings.HasSuffix(feedback, "saving") {
+					available, processing = true, true
+					if feedback == "newer-saving" {
+						version = "23"
+					}
+				}
+				if !b.receive(frame(version, available, processing)) || b.failed {
+					t.Fatal("failure/save feedback must remain visible")
+				}
+				if !b.receive(frame("21", true, false)) || b.failed {
+					t.Fatal("delayed ready view malformed")
+				}
+				state := b.tableOrder(b.view)
+				if state.available && !state.processing {
+					t.Fatal("late old lobby cleared failure/save feedback")
+				}
+				if counts := b.counts(); counts.wagers != 0 || counts.rounds != 0 {
+					t.Fatal("ordering invented monetary evidence")
+				}
+				if !b.receive(frame("24", true, false)) || b.failed || b.tableOrder(b.view).version != "24" {
+					t.Fatal("fresh recovery view was not accepted")
+				}
+			})
+		}
+	}
+}
+
 func TestHouseLoadKeepsNewerTableLobbyAcrossRoundTransitions(t *testing.T) {
 	for _, index := range []int{0, 24} {
 		b := newHouseLoad(index, "player-synthetic-order")

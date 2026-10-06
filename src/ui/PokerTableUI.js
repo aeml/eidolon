@@ -1,6 +1,6 @@
 import { CasinoCelebration, goldText } from './CasinoCelebration.js';
 import { CardTableScene } from './CardTableScene.js';
-import { isOlderCasinoTableView } from './CasinoTableOrdering.js';
+import { CasinoTableOrdering } from './CasinoTableOrdering.js';
 
 const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 const suits = ['♣', '♦', '♥', '♠'];
@@ -10,6 +10,7 @@ const element = (tag, text = '', className = '') => {
 
 export class PokerTableUI {
     constructor(send) {
+        this.ordering = new CasinoTableOrdering();
         this.send = send; this.currency = 'Gold';
         this.root = element('div', '', 'poker-game'); this.root.hidden = true;
         this.summary = element('p'); this.summary.setAttribute('role', 'status');
@@ -54,7 +55,7 @@ export class PokerTableUI {
     }
 
     update(view, playerID, presence = {}) {
-        if (this.playerID === playerID && isOlderCasinoTableView(this.view, view, this.presence?.yourSeat, presence.yourSeat)) view = this.view;
+        if (!this.ordering.accept(view, playerID, presence.yourSeat)) view = this.view;
         // Keep the latest ready hand when another sender delivers an older
         // revision; never hide new ownership or unavailable/saving feedback.
         if (this.playerID === playerID && view?.available && !view.processing && this.view?.roundId &&

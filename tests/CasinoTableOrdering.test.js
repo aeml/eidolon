@@ -13,6 +13,51 @@ const betting = {
     serverNow: new Date().toISOString(), dealAt: new Date(Date.now() + 30000).toISOString()
 };
 
+test.each([BlackjackTableUI, PokerTableUI, HouseTableUI])('%p retains its ordering fence across unavailable and saving feedback', UI => {
+    for (const kind of ['unavailable', 'unavailable without version', 'older saving', 'newer saving']) {
+        const send = jest.fn(), ui = new UI(send);
+        try {
+            ui.update({ ...betting, tableVersion: '9007199254740994', phase: 'settling', roundId: 'current-hand' }, 'hero', presence);
+            const feedback = { ...betting, available: kind.startsWith('unavailable') ? false : true,
+                processing: kind.includes('saving'), tableVersion: kind === 'newer saving' ? '9007199254740995' : betting.tableVersion };
+            if (kind === 'unavailable without version') delete feedback.tableVersion;
+            ui.update(feedback, 'hero', presence);
+            expect(ui.view).toBe(feedback); // Never hide an outage or pending save.
+            ui.update(betting, 'hero', presence);
+            expect(ui.view).toBe(feedback); // A late old lobby cannot clear it.
+            expect(send).not.toHaveBeenCalled();
+            const fresh = { ...betting, tableVersion: '9007199254740996', roundId: 'fresh-hand' };
+            ui.update(fresh, 'hero', presence);
+            expect(ui.view).toBe(fresh);
+        } finally { ui.dispose(); }
+    }
+});
+
+test.each([BlackjackTableUI, PokerTableUI, HouseTableUI])('%p retires its saved ordering fence on changed ownership or table context', UI => {
+    for (const change of ['player', 'session', 'seat', 'table', 'currency', 'game', 'closed']) {
+        const ui = new UI(jest.fn());
+        try {
+            ui.update({ ...betting, tableVersion: '9007199254740994' }, 'hero', presence);
+            ui.update({ ...betting, available: false }, 'hero', presence);
+            const incoming = { ...betting }, next = { ...presence, yourSeat: { ...presence.yourSeat } };
+            let player = 'hero';
+            if (change === 'player') player = 'other-owner';
+            if (change === 'session') next.yourSeat.sessionId = 'new-session';
+            if (change === 'seat') next.yourSeat.seat = 1;
+            if (change === 'table') incoming.tableId = next.yourSeat.tableId = 'other-table';
+            if (change === 'currency') incoming.currency = 'ep';
+            if (change === 'game') incoming.game = 'baccarat';
+            if (change === 'closed') {
+                ui.update(null, 'hero');
+                expect(ui.ordering.highest).toBeNull();
+                expect(ui.ordering.seat).toBeNull();
+            }
+            ui.update(incoming, player, next);
+            expect(ui.view).toBe(incoming);
+        } finally { ui.dispose(); }
+    }
+});
+
 test.each([BlackjackTableUI, PokerTableUI, HouseTableUI])('%p cannot reopen an older lobby across hand transitions or integer precision boundaries', UI => {
     const ui = new UI(jest.fn());
     try {

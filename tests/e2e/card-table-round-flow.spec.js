@@ -1,5 +1,45 @@
 import { expect, test } from '@playwright/test';
 
+for (const width of [390, 1440]) test(`card table failure feedback cannot reopen stale wagers at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async () => {
+        const { BlackjackTableUI } = await import('/src/ui/BlackjackTableUI.js');
+        const { PokerTableUI } = await import('/src/ui/PokerTableUI.js');
+        const { HouseTableUI } = await import('/src/ui/HouseTableUI.js');
+        const presence = { yourSeat: { tableId: 'synthetic-table', seat: 0, sessionId: 'synthetic-seat' }, occupants: [] };
+        let cases = 0, sent = 0;
+        for (const UI of [BlackjackTableUI, PokerTableUI, HouseTableUI]) {
+            for (const kind of ['unavailable', 'missing-version', 'older-saving', 'newer-saving']) {
+                const ui = new UI(() => { sent++; }); document.body.append(ui.root);
+                try {
+                    const old = { available: true, processing: false, tableId: 'synthetic-table', tableVersion: '9007199254740993',
+                        currency: 'gold', game: 'roulette', phase: 'betting', roundId: 'old', balance: 1000, players: [], spots: [{ id: 'red', label: 'Red', multiplier: 2 }],
+                        serverNow: new Date().toISOString(), dealAt: new Date(Date.now() + 30000).toISOString() };
+                    ui.update({ ...old, tableVersion: '9007199254740994', phase: 'settling', roundId: 'current' }, 'hero', presence);
+                    const feedback = { ...old, available: kind.includes('saving'), processing: kind.includes('saving'),
+                        tableVersion: kind === 'newer-saving' ? '9007199254740995' : old.tableVersion };
+                    if (kind === 'missing-version') delete feedback.tableVersion;
+                    ui.update(feedback, 'hero', presence);
+                    if (ui.view !== feedback) throw new Error('Failure feedback hidden');
+                    ui.update(old, 'hero', presence);
+                    if (ui.view !== feedback) throw new Error('Old ready snapshot reopened wagering');
+                    if (ui instanceof HouseTableUI) ui.choose('red');
+                    else (ui.bet || ui.buy).click();
+                    if (sent) throw new Error('Stale monetary request sent');
+                    const recovered = { ...old, tableVersion: '9007199254740996', roundId: 'recovered' };
+                    ui.update(recovered, 'hero', presence);
+                    if (ui.view !== recovered) throw new Error('Fresh recovery snapshot refused');
+                    cases++;
+                } finally { ui.dispose(); }
+            }
+        }
+        return { cases, sent };
+    });
+    expect(result).toEqual({ cases: 12, sent: 0 });
+});
+
 for (const width of [390, 1440]) test(`persistent six-seat card tables and clocks at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

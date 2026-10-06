@@ -20,6 +20,7 @@ type casinoLoad struct {
 	house              *houseLoad
 	poker              *pokerLoad
 	view               casinoLoadView
+	orderFence         casinoTableFence
 	pending            string
 	pendingSession     string
 	pendingRevision    uint64

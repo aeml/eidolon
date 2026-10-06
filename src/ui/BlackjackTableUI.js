@@ -1,6 +1,6 @@
 import { CasinoCelebration, blackjackCount, goldText } from './CasinoCelebration.js';
 import { CardTableScene } from './CardTableScene.js';
-import { isOlderCasinoTableView } from './CasinoTableOrdering.js';
+import { CasinoTableOrdering } from './CasinoTableOrdering.js';
 
 const labels = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 const suits = ['♣', '♦', '♥', '♠'];
@@ -14,6 +14,7 @@ function node(tag, text, className) {
 
 export class BlackjackTableUI {
     constructor(send) {
+        this.ordering = new CasinoTableOrdering();
         this.send = send; this.currency = 'Gold';
         this.root = node('div', '', 'blackjack-game'); this.root.hidden = true;
         this.summary = node('p'); this.summary.setAttribute('role', 'status');
@@ -49,7 +50,7 @@ export class BlackjackTableUI {
     button(text, handler) { const button = node('button', text); button.type = 'button'; button.onclick = handler; return button; }
 
     update(view, playerID, presence = {}) {
-        if (this.playerID === playerID && isOlderCasinoTableView(this.view, view, this.presence?.yourSeat, presence.yourSeat)) view = this.view;
+        if (!this.ordering.accept(view, playerID, presence.yourSeat)) view = this.view;
         // A delayed ready snapshot cannot restore an already-passed turn.
         // New owners/seats/hands and unavailable/saving states still apply.
         if (this.playerID === playerID && view?.available && !view.processing && this.view?.roundId &&

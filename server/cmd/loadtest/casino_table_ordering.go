@@ -7,6 +7,13 @@ type casinoTableOrder struct {
 	available, processing bool
 }
 
+// Fixed metadata for this one physical seat; never keep hands or wallet history.
+type casinoTableFence struct {
+	session, table string
+	seat           int
+	version        int64
+}
+
 // Table identity/currency/basic phase validation is required before trusting
 // an ordering counter. Unknown/malformed/legacy views still use the existing
 // validation and own action/result fences; this never acknowledges a wager.
@@ -51,16 +58,24 @@ func casinoTableVersion(s string) (int64, bool) {
 // order. A persistent table version orders lobbies and transitions as well as
 // hands, unlike a hand revision alone. Never hide ownership or save failures.
 func (b *casinoLoad) olderReadyTableView(incoming casinoLoadView) bool {
-	previousSeat, seat := b.view.YourSeat, incoming.YourSeat
-	if previousSeat == nil || seat == nil || previousSeat.SessionID != seat.SessionID ||
-		previousSeat.TableID != seat.TableID || previousSeat.Seat != seat.Seat {
+	seat := incoming.YourSeat
+	if seat == nil || seat.SessionID == "" {
+		b.orderFence = casinoTableFence{}
 		return false
 	}
-	previous, next := b.tableOrder(b.view), b.tableOrder(incoming)
-	if !previous.available || !next.available || next.processing || previous.id != b.table.ID || next.id != b.table.ID {
+	if b.orderFence.session != seat.SessionID || b.orderFence.table != seat.TableID || b.orderFence.seat != seat.Seat {
+		b.orderFence = casinoTableFence{session: seat.SessionID, table: seat.TableID, seat: seat.Seat}
+	}
+	next := b.tableOrder(incoming)
+	version, valid := casinoTableVersion(next.version)
+	if !next.available || !valid || next.id != b.table.ID || seat.TableID != b.table.ID {
 		return false
 	}
-	a, validA := casinoTableVersion(previous.version)
-	z, validZ := casinoTableVersion(next.version)
-	return validA && validZ && z < a
+	if !next.processing && version < b.orderFence.version {
+		return true
+	}
+	if version > b.orderFence.version {
+		b.orderFence.version = version
+	}
+	return false // Never hide saving feedback, even if its snapshot is older.
 }

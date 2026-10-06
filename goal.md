@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 casino feedback ordering repair:** A reproduced production UI and
+driver defect lets lower ready lobbies reopen wagering after unavailable/saving
+feedback erases the last comparison version. Three UI classes fail before the
+fix; nine driver feedback cases fail. A constant-size one-seat validated counter
+now survives feedback without hiding failures or retaining cards/wallet history;
+new ownership/context/close resets it.96 UI checks pass2.150s and focused driver
+scopes pass race14.796s. Two actual System Chrome checks pass6.3s at390/1440px,
+covering24 feedback cases, blocked actual wager controls and fresh recovery.
+No live wager or population run. The57ee native failure remains a failure and
+its cause is not proven by this regression. Exact normal-server verification,
+all save/capacity gates and ordered release prerequisites remain open.
+
 **October6 blackjack rejection clarity:** Actual admission now distinguishes
 a changed/non-betting hand from a bad stake instead of telling both players to
 change their bet. Fixed public errors omit private state. Root admission cases
