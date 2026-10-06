@@ -17,6 +17,17 @@ Own milestone remains unpublished/incomplete pending ordered predecessors and
 actual challenge/supported-address-family evidence. See
 [current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
 
+**October6 bounded frame-read selection for1.76:** The measured lightweight
+frame context is selected from the isolated capacity work so this performance
+improvement can ship with1.76 rather than waiting for wider capacity acceptance.
+It preserves full save snapshots, owner-only Resonance and dungeon room progress
+while avoiding item/receipt clones for live frame reads. Current1.76 focused
+root/game race checks pass7.885s/10.315s;373 release/tooling/protocol tests pass
+3.138s after correcting only the stale generated dependency symlink. Cumulative
+1.76 notes reflect this change. Broader capacity remains a separate open gate.
+Exact1.75 CI has passed tests/predeploy and both deploy jobs; final live QA is
+pending with Luna monitoring. No1.76 push before predecessor acceptance.
+
 **October6 isolated1.76 persistence preparation:** Current1.75 identity guards
 and its CI corrections are integrated into a separate unpublished worktree.
 Selected/first-character queries retain trusted account generation;64 journal

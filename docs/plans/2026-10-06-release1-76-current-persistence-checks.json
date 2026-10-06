@@ -6,6 +6,13 @@
   "status": "isolated-current-integration-verified-unpublished-awaiting-1.75-acceptance",
   "inheritedVersion": "Alpha 1.75.0; not a promoted 1.76 release",
   "schemaVersion": 25,
+  "frameReadFollowUp": {
+    "selection": "Bring the measured bounded frame context into the1.76 performance release from isolated1.79 commit15d0b5b0, without importing workload drivers, operations features or historical capacity claims.",
+    "change": "Under the unchanged world-before-actor locks, live replication reads only detached position, scene and normalized owner Resonance progress. It no longer clones bags, stash, gear or durable operation receipts for this frame context. Complete account-bound save snapshots remain unchanged, as do dungeon room progress/summary delivery and owner privacy.",
+    "currentSourceChecks": "Focused actual1.76 root/game race scopes pass7.885s/10.315s, including context detachment/coherence/storage-allocation bounds, normal Resonance synchronization, broadcast/recipient/replication privacy and dungeon room behavior. Four release/tooling/protocol suites373 tests pass3.138s.",
+    "localDependencyCorrection": "First client run used the inherited old future-branch node_modules symlink:372 tests passed but resolved YAML3.15.2 instead of the committed override4.3.2. Retargeted only that generated symlink to the existing clean current1.75 installation; old target retained unchanged. Same373 tests then passed; no source assertion or audit threshold weakened.",
+    "measurementLimits": "The preceding isolated1.79 frame microbenchmark and partial100-client comparison motivated this selection, not a1.76 capacity or full100-player acceptance claim. Own release CI/deployment/live acceptance still required."
+  },
   "packagingFollowUp": {
     "sourceCommit": "e2ded55e",
     "status": "Alpha1.76.0 source candidate only; unpublished until1.75 acceptance",
