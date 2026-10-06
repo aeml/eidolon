@@ -1,18 +1,56 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Pure argument validation is also sourced by tests; no installer runs on source.
+validate_tls_setup_arguments() {
+  if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    echo "Usage: setup_nginx_tls.sh <domain> [upstream_port]" >&2
+    return 1
+  fi
+  local tls_domain="${1,,}" tls_port="${2:-18082}"
+  tls_domain="${tls_domain%.}"
+  if [ "${#tls_domain}" -gt 253 ] ||
+    [[ ! "$tls_domain" =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$ ]]; then
+    echo "Invalid DNS hostname; supply a domain without a URL, path or options." >&2
+    return 1
+  fi
+  if [ "$tls_domain" = play.eidolonrealms.com ] || [ "$tls_domain" = server.eidolonrealms.com ]; then
+    echo "These hosts require the additive dual-host setup in deploy/README_LINUX.md, section 4. Do not replace them with a single API proxy." >&2
+    return 1
+  fi
+  if [[ ! "$tls_port" =~ ^[0-9]{1,5}$ ]] || (( 10#$tls_port < 1 || 10#$tls_port > 65535 )); then
+    echo "Invalid upstream port; expected an integer from 1 to 65535." >&2
+    return 1
+  fi
+  printf '%s %s\n' "$tls_domain" "$((10#$tls_port))"
+}
+
+validate_tls_setup_targets() {
+  if [ "$#" -ne 2 ] || [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Expected explicit nginx configuration and enabled-link targets." >&2
+    return 1
+  fi
+  local tls_target
+  for tls_target in "$@"; do
+    if [ -e "$tls_target" ] || [ -L "$tls_target" ]; then
+      echo "Existing nginx target: fresh installation only; inspect the current configuration rather than overwrite it." >&2
+      return 1
+    fi
+  done
+}
+
+if [ "${BASH_SOURCE[0]}" != "$0" ]; then
+  return 0
+fi
+
+tls_arguments="$(validate_tls_setup_arguments "$@")" || exit 1
+read -r DOMAIN UPSTREAM_PORT <<< "$tls_arguments"
+
 if [ "${EUID}" -ne 0 ]; then
   echo "Run as root (sudo)." >&2
   exit 1
 fi
 
-if [ $# -lt 1 ]; then
-  echo "Usage: $0 <domain> [upstream_port]" >&2
-  exit 1
-fi
-
-DOMAIN="$1"
-UPSTREAM_PORT="${2:-18082}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVER_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 TEMPLATE="${SERVER_DIR}/deploy/nginx/eidolon.conf.template"
@@ -21,8 +59,15 @@ ENABLED_LINK="/etc/nginx/sites-enabled/eidolon.conf"
 CERT_FULLCHAIN="/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"
 CERT_PRIVKEY="/etc/letsencrypt/live/${DOMAIN}/privkey.pem"
 
+validate_tls_setup_targets "${NGINX_CONF}" "${ENABLED_LINK}" || exit 1
+
 if [ ! -f "${TEMPLATE}" ]; then
   echo "Template missing: ${TEMPLATE}" >&2
+  exit 1
+fi
+
+if ! command -v certbot >/dev/null 2>&1; then
+  echo "certbot is not installed. Install it before running this fresh-install script." >&2
   exit 1
 fi
 
@@ -71,13 +116,8 @@ EOF
   systemctl reload nginx
 fi
 
-if ! command -v certbot >/dev/null 2>&1; then
-  echo "certbot is not installed. Install it then rerun this script." >&2
-  exit 1
-fi
-
 echo "Requesting/renewing TLS certificate via certbot nginx plugin..."
-certbot --nginx -d "${DOMAIN}"
+certbot --nginx --cert-name "${DOMAIN}" -d "${DOMAIN}"
 
 sed -e "s/__DOMAIN__/${DOMAIN}/g" -e "s/127.0.0.1:18082/127.0.0.1:${UPSTREAM_PORT}/g" "${TEMPLATE}" > "${NGINX_CONF}"
 ln -sf "${NGINX_CONF}" "${ENABLED_LINK}"
@@ -85,6 +125,6 @@ nginx -t
 systemctl reload nginx
 
 echo "Validating certificate auto-renewal..."
-certbot renew --dry-run
+certbot renew --dry-run --cert-name "${DOMAIN}"
 
 echo "Nginx + TLS setup complete."

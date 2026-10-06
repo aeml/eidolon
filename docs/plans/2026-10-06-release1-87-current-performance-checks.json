@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
-  "status": "saved-quality-startup-gap-fixed-locally-full-consolidation-and-ordered-release-open",
+  "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
   "baseCommit": "ce7a0a1d prepared1.86; inherited1.76 runtime identity",
   "diagnosis": "RenderSystem always constructs at High and explicitly initializes postprocessing before the normal quality setter, ignoring saved Low/Medium until later UI binding. Low therefore creates temporary compositor resources that it then disposes. UIManager separately accepts an invalid saved quality verbatim, leaving the control without a selected option while the renderer normalizes it to High. This is a demonstrated startup/resource/settings gap, not an inferred cause of measured server state gaps or a claimed FPS deficit.",
   "implementation": [
@@ -21,15 +21,36 @@
   },
   "retainedEvidence": [
     "Existing1.48 skeleton/actor batching, cull/shadow/resource and reference-scene profiles retain their original hardware, exact-source and workload limits. Unchanged long scene/campaign profiles are not restarted for this constructor fix.",
-    "Separate staged1.79 server branchd50a9e52 contains measured spatial-key, broadcast comparison/encoding, scene-filter and worker/save improvements with historical native party/event/mixed100 checks. Those changes are not merged into this client candidate and their older passes cannot certify it. Latest mixed100 functional pass still records803ms worst gap and lacks approved production headroom."
+    "Staged1.79 server branchd50a9e52 is now merged locally into the client candidate. Historical native party/event/mixed100 checks retain their original exact binaries; they do not certify this combined tree. Latest historical mixed100 functional pass still records803ms worst gap and lacks approved production headroom."
   ],
+  "combinedIntegration": {
+    "parents": ["946d18610c00d7dabdaf0b03edbc9dc97414cf17", "d50a9e520bc868a98b8a0c7fe3a8ca9cb688afcf"],
+    "resolution": "Normal local merge. Two conflicts, goal.md and AdminUI.js, preserve both histories and both current incident-notice tools and incoming service diagnostics. Retain Account / Progress Help, account-bound persistence/schema25, trusted runner/SSH pin, Player Guide, generated-content checks and saved renderer quality. Main user worktree untouched; no service, DNS, provider mail, production database or deployment mutation.",
+    "implementation": [
+      "Typed scene/cell spatial keys remove formatted query allocations while preserving exact scene, bounds and movement membership. Target scans use one world read lock with live per-actor validation, early scene rejection and unchanged replacement, stealth, safety, pursuit and threat checks.",
+      "Broadcast-local immutable public encoding and delta-history comparison caches retain owner-private projection, per-recipient state, full-sync/reset and queue behavior. No cross-frame cache. World update workers respect GOMAXPROCS and entity count.",
+      "Periodic saving stops between writes during shutdown; final journal-all ordering remains. Bounded drain labels and 18 read-only audited service diagnostic rows expose current-process observations, not persistent unique payouts or capacity guarantees.",
+      "Casino changed-round and stake errors stay distinct. Unavailable/saving feedback preserves the table snapshot high-watermark so stale ready state cannot reopen wagers. Seat ownership, consent and exact timeout behavior remain authoritative.",
+      "Existing staged load/monitor and strict TLS installer tooling is consolidated but not activated. Independent operator alerts, real mail, privileged renewal and native population acceptance remain separately gated."
+    ],
+    "verification": {
+      "client": "Twelve focused suites PASS153 tests6.96s. Five additional content/guide/report/assets/deployment-checkout suites PASS74 tests12.932s; the combined command also named nonexistent DeploymentRunnerTrust.test.js and therefore FAILED overall. Correct discovered DeploymentHostKey and RunnerQueueSeparation suites PASS8 tests0.99s; preserve that invocation failure. Actual eleven-group check:content PASS. New coupled AdminUI/notice current-request-gate regression passes: affected two-suite rerun PASS22 tests2.328s, only one new distinct test relative to the prior153, not22 additional checks.",
+      "serverBroad": "Broad go test -race -p2 ./... FAILED. internal/game reached the default10-minute package deadline600.162s while Wizard paid-cast fixtures were constructing a world. This does not establish an individual hang or the exact cause; truncated output cannot certify every earlier case. Root package PASS163.924s, loadtest PASS18.355s, monitor PASS7.041s, arena PASS1.017s, database PASS23.555s, forging PASS1.026s, lifecycle PASS1.034s and operations PASS6.659s. External Mongo/native fixtures were not enabled; skips are not acceptance. No unchanged full-suite restart or weaker budget.",
+      "serverFocused": "Changed spatial, worker, target and casino-seat paths plus the full WizardDamageContract paid-cast matrix PASS with race detector9.085s. The Wizard case present at the broad deadline therefore completes normally in isolation; full-suite acceptance remains open. Three additional exact casino presence-lock, session-timeout and real-player preparation/consent tests PASS with race detector1.132s.",
+      "browser": "Current combined AdminUI and casino feedback presentation PASS5 native System Chrome checks1.3m: admin1280x720/390x844/844x390, bounded diagnostics and retained tools; casino390/1440, each12 failure/recovery combinations across card tables, zero stale monetary sends. Phone admin screenshot visually reviewed. Synthetic responses do not certify real roles/backend audit, multiplayer settlements or device performance. Terminal run closes loopback4187.",
+      "unchangedRenderer": "Renderer source is unchanged from first parent946d1861. Retain the earlier constructor/resource and two-size integrated venue evidence with its original limits; do not rerun those unchanged scopes or relabel historical native100 workloads as combined acceptance.",
+      "queuedBroadcastSmoke": "One-iteration BenchmarkBroadcastStateCurrentPopulation100Idle PASS on combined tree: every declared static recipient receives exactly one actual queued EDPB state frame after warm full sync. Observed8678759ns/op,12165wire-B/frame,3719488B/op,4420allocs/op. Only one iteration; not a controlled timing comparison, native100 connected-player test, stall resolution or headroom acceptance. World background stops through benchmark cleanup."
+    }
+  },
   "plannedPatchNotes": [
     "Graphics startup honors saved Low/Medium/High immediately, avoiding temporary High postprocessing setup for Low-quality players.",
     "Invalid or unavailable graphics preferences use the existing safe default and show a valid setting without overwriting browser storage.",
-    "Quality changes and essential warnings retain current behavior across town, dungeon presentation and casino floors."
+    "Quality changes and essential warnings retain current behavior across town, dungeon presentation and casino floors.",
+    "Reduce repeated server spatial, target and broadcast work while preserving scene visibility and private state; bound world workers to available execution capacity.",
+    "Keep card-table wager controls unavailable after stale saving/error replies, and provide explicit read-only service diagnostics alongside existing administrator tools."
   ],
   "remaining": [
-    "Consolidate accepted ordered server/client performance changes into the actual release candidate; use measured dependencies, preserve workload/gates and verify changed paths only. Current patch is part of1.87, not complete performance consolidation.",
+    "Complete proportional combined gameplay verification after the full package timeout, without repeated unchanged long suites or weakening assertions. Local consolidation is complete; broad suite acceptance is not. Current patch is part of1.87, not a completed performance milestone.",
     "Resolve remaining observed server stalls and obtain representative approved population/headroom and supported-hardware evidence. Do not infer capacity/smoothness from this startup fix or functional native passes.",
     "Reconcile exact candidate settings/assets, version/cumulative patch notes and ordered deployment/live acceptance after earlier1.77/1.78 owner/release prerequisites. Source remains staged, not live1.87.",
     "Real-phone/whole-campaign pacing, final modern-art and1.90/1.99 beta/release gates remain open under the full active goal."

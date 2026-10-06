@@ -1,5 +1,5 @@
 import { CardTableScene } from './CardTableScene.js';
-import { isOlderCasinoTableView } from './CasinoTableOrdering.js';
+import { CasinoTableOrdering } from './CasinoTableOrdering.js';
 import { CasinoCelebration, goldText } from './CasinoCelebration.js';
 
 const node = (tag, text = '', className = '') => {
@@ -11,6 +11,7 @@ const wheelOrder = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,
 
 export class HouseTableUI {
     constructor(send) {
+        this.ordering = new CasinoTableOrdering();
         this.send = send; this.currency = 'Gold'; this.draft = new Map();
         this.root = node('div', '', 'house-game'); this.root.hidden = true;
         this.table = new CardTableScene('roulette');
@@ -45,7 +46,7 @@ export class HouseTableUI {
 
     update(view, playerID, presence = {}) {
         if (this.disposed) return;
-        if (this.playerID === playerID && isOlderCasinoTableView(this.view, view, this.presence?.yourSeat, presence.yourSeat)) view = this.view;
+        if (!this.ordering.accept(view, playerID, presence.yourSeat)) view = this.view;
         this.view = view; this.playerID = playerID; this.root.hidden = !view;
         if (!view) {
             this.pending = false; this.roundId = null; this.boardKey = null; this.boardEpoch = null;

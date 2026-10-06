@@ -110,18 +110,25 @@ func saveFinalCharacters() error {
 func drainServer(loops *serverLoops) {
 	serverStopping.Store(true)
 	world.Trading.StopRefundDelivery()
+	log.Print("Shutdown drain: phase=admission")
 	serverAdmission.CloseAndWait()
+	log.Print("Shutdown drain: phase=periodic_loops")
 	loops.Stop()
+	log.Print("Shutdown drain: phase=world_work")
 	world.StopBackground()
 	// A maintenance stop is not a player forfeit. Preserve already-decided
 	// results; cancel unfinished matches using the existing exit recovery.
+	log.Print("Shutdown drain: phase=pvp")
 	world.FinishPvPForShutdown()
+	log.Print("Shutdown drain: phase=connections")
 	response := make(chan []*Client)
 	hubQuiesce <- response
 	for _, client := range <-response {
 		scheduleClientCleanup(client)
 	}
+	log.Print("Shutdown drain: phase=character_work")
 	backgroundCharacterWork.SealWhenIdle()
+	log.Print("Shutdown drain: phase=session_activity")
 	for {
 		if err := persistUnjournaledActivity(); err == nil {
 			break
@@ -129,6 +136,7 @@ func drainServer(loops *serverLoops) {
 		log.Print("Shutdown waiting for durable session activity storage")
 		time.Sleep(time.Second)
 	}
+	log.Print("Shutdown drain: phase=final_characters")
 	for {
 		if err := saveFinalCharacters(); err == nil {
 			break

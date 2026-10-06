@@ -1,0 +1,684 @@
+{
+  "schema": 1,
+  "milestone": "1.79 representative multiplayer capacity",
+  "sourceCommit": "9b20136a plus accompanying structured spatial-cell keys; exact historical controls retain their separate source commits/hashes below",
+  "status": "current-root-event-and-delta-cache-mixed100-pass-prior-controls-retained-full-capacity-gates-open",
+  "structuredSpatialCells": {
+    "repair": "Runtime-only spatial map keys now hold the exact scene string and integer floor-derived coordinates directly. Nearby no longer formats a string for each candidate cell. Existing inclusive cell bounds, scene isolation, locks, live entity pointers and downstream precise targeting/visibility checks remain unchanged; no wire/save schema, gameplay radius, candidate omission or cross-frame cache.",
+    "regression": "Original empty81-cell query allocates246 times and fails the new one-result-allocation budget before repair; passes afterward. Original cell-bound reference covers positive/negative/fractional boundaries, four scenes including Unicode and missing scene. Cross-cell/same-cell movement, explicit scene transfer/removal and concurrent move/query identity checks pass.",
+    "verification": "Scoped spatial/state/rock/projectile/jump/target/dungeon race checks PASS11.360s. Affected ability/radius/cone/explosion/guardian and broadcast/privacy/delta/footprint race scopes PASS game37.732s/root2.314s. Gofmt applied. These are targeted correctness checks, not a native population rerun.",
+    "profile": {
+      "benchmark": "BenchmarkBroadcastStateCurrentPopulation100Idle, original static100-recipient generated-world broadcast path, GOMAXPROCS2, one3s sample on shared host; no concurrent owned native/race/benchmark load. Same limitations as delta-frame profile below.",
+      "baselineDirectory": "/tmp/eidolon-179-delta-profile-gGhIXK",
+      "baselineBinarySHA256": "3dd96316a74d2b66112433f4a5cfb6e25e6f503dca128cfb651762adcddbfd4d",
+      "candidateDirectory": "/tmp/eidolon-179-cell-profile-wuS4ir",
+      "candidateBinarySHA256": "69b1724d057c8b16ed9f29b7077ba2a0147c3b1264bd6cb6b90fd1d812432bd5",
+      "candidateSource": "9b20136a plus accompanying world.go/spatial_cells_test.go changes; immutable root.test/run.log/cpu.pprof retained.",
+      "baseline": {"iterations": 412, "nanosecondsPerBroadcast": 8994134, "wireBytesPerFrame": 12165, "bytesPerBroadcast": 4015182, "allocationsPerBroadcast": 21661},
+      "candidate": {"iterations": 451, "nanosecondsPerBroadcast": 7468737, "wireBytesPerFrame": 12165, "bytesPerBroadcast": 3729519, "allocationsPerBroadcast": 4337},
+      "limits": "Observed idle mean about17% lower, allocated bytes about7% lower and allocations about80% lower with identical wire size. One short shared-host sample, not statistical confidence, client latency, production headroom, resolved803ms native stalls or full1.79 acceptance. Existing Root/mixed100 PASS binaries precede this change; no current native population acceptance, new Mongo fixture or deployment claimed."
+    }
+  },
+  "deltaCache100Comparison": {
+    "result": "PASS213.05s overall/120s active; driver-to-save elapsed2m13.365s. One changed-runtime100-client mixed comparison after the separate natural Root control terminated. Exact normal2da4b9ee server and unchanged c0164aac driver/race harness. All100 fresh admissions/own updates, every paid casino/member-impact/social outcome,100 independent normal disconnect saves and five-second-guard shutdown pass. Not an unchanged source retry, simultaneous event/raid load or production headroom acceptance.",
+    "serverSourceCommit": "2da4b9ee35f1581bd2707f9292d5524e3c90189f",
+    "driverAndHarnessSourceCommit": "c0164aac",
+    "artifactDirectory": "/tmp/eidolon-179-current-native-vLCbld",
+    "logFile": "mixed100.log",
+    "serverSHA256": "54754e354bd766a15e4c98d1a24e46204439f2b1a2ecf73d62de3ed23cce3127",
+    "driverSHA256": "880fa0fa08af2849c65493a7ff464fd6b2a653e0ecce717884c8dedcf86eac94",
+    "raceHarnessSHA256": "0fafd25012771338de4b7fd29f0e99f72fbc77c2f7aae05beda8895ab0095e18",
+    "predeclaration": "Original100 clients/five20-role blocks,120s active, legal Uncommon/Rare class gear/builds/funding, Gold100 wagers, shared400/600 camp/radius30,5s admission/action/graceful-stop guards. Every delivered fresh-state/payment/social/member-impact/independent-save gate unchanged. Record worst state gap and frame-phase timings even on a functional PASS; no relaxed thresholds or idle benchmark substituted for native coverage.",
+    "environment": "Normal server GOMAXPROCS2, inherited Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32969,2CPU/2GiB/512MiB tmpfs. Shared host/unrelated services; no concurrent owned benchmark, race or native encounter. Current production API has no Docker CPU/memory caps according to read-only inspection; this test is not evidence of an approved production resource budget/headroom.",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-7962240",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 193703, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 1865, "minimumActiveMilliseconds": 119573,
+      "maximumStateGapMilliseconds": 803, "payloadBytes": 1490345503,
+      "maximumLoginMilliseconds": 300, "maximumJoinMilliseconds": 496,
+      "slots": {"clients": 10, "wagers": 282, "paid": 282, "minimumPaid": 22, "bonuses": 12, "failed": 0},
+      "blackjack": {"clients": 20, "wagers": 55, "paid": 37, "minimumPaid": 1, "actions": 36, "failed": 0},
+      "house": {"clients": 20, "wagers": 60, "paid": 40, "minimumPaid": 2, "failed": 0},
+      "poker": {"clients": 10, "wagers": 30, "paid": 20, "minimumPaid": 2, "actions": 80, "failed": 0},
+      "casinoRejectionsAndTimeouts": 0,
+      "socialClients": 20, "socialComplete": 20, "socialFailed": 0,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20, "partyMinimumImpacts": 1,
+      "partyDamageEvents": 437, "partyHealEvents": 7, "partyAcceptedCasts": 393,
+      "partyDeniedCasts": 12, "partyXPUpdates": 408, "partyObservedDeaths": 104,
+      "roles": {
+        "Fighter": {"minimumImpacts": 8, "damage": 110, "casts": 93, "denied": 0, "unmatchedDamage": 43},
+        "Cleric": {"minimumImpacts": 1, "damage": 25, "heals": 7, "casts": 7, "denied": 0, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 10, "damage": 181, "casts": 170, "denied": 12, "unmatchedDamage": 17},
+        "Wizard": {"minimumImpacts": 9, "damage": 121, "casts": 123, "denied": 0, "unmatchedDamage": 21}
+      }
+    },
+    "phaseObservations": {
+      "calculation": "Exact after-driver minus before-driver completed timing sums/sample counts; rounded elapsed means, not CPU, percentiles or unique payouts. State broadcast is in flight at the final snapshot, giving2066 update samples versus2065 broadcast samples: do not claim paired-frame conservation or treat endpoint lifetime maxima as interval maxima.",
+      "updateSamples": 2066, "meanUpdateMicros": 37590, "lifetimeUpdateMaxMicros": 726387,
+      "broadcastSamples": 2065, "meanBroadcastMicros": 24957, "lifetimeBroadcastMaxMicros": 94355,
+      "remaining": "State gap803ms remains a stall; update/broadcast means show substantial pressure against the intended33ms sequential frame budget. Earlier scene-filter-only run had918ms maximum gap and43.018ms/26.458ms respective means, but random combat supply/shared-host variation prevents attributing differences solely to caching. Native functional PASS is not smoothness/headroom approval."
+    },
+    "savedAndShutdownEvidence": "All100 final independent fresh normal Mongo disconnect-save assertions reached and passed: original class/EP/equipped gear/protected bag preserved, positive party progression, casino Gold checkpoints and unchanged town/social Gold. All eight ordinary drain phase labels and drain completion present, no forced stop/race/panic; original five-second guard unchanged. Full final casino settlement/reopen/restart is not covered.",
+    "monitoring": "Root consumed terminal PASS from session73078. Harness PID2857089 and owned server PID2869150 exited; no observation-timeout restart. Optional request to extend Luna monitoring to capacity/world-event tests remains unanswered, so no such delegation performed.",
+    "fixture": "After terminal PASS, exact Mongo841b2177dcf81801ff312603e5146761e39abb34a4f84fdb316757ff361c314c/name eidolon-179-delta100-20261006/label eidolon.fixture=delta100-179-20261006 revalidated, then owned synthetic DB/volumes removed. Independent label/process queries empty; immutable artifacts retained. Production/unrelated services untouched."
+  },
+  "currentRootEventDiagnosticControl": {
+    "result": "PASS250.12s overall; driver-to-save elapsed4m6.464s. Real Root first40s precondition true at06:00:11 UTC. Exact normal2da4b9ee server with broadcast cache and exact c0164aac driver/race harness with closed diagnostics. All four members earned every wave/champion/completion/town-exit and independent fresh saved progression/Gold/equipment/bag/EP checks. No skip, clock override or concurrent owned performance/native run.",
+    "serverSourceCommit": "2da4b9ee35f1581bd2707f9292d5524e3c90189f",
+    "driverAndHarnessSourceCommit": "c0164aac",
+    "artifactDirectory": "/tmp/eidolon-179-current-native-vLCbld",
+    "logFile": "root-event.log",
+    "serverSHA256": "54754e354bd766a15e4c98d1a24e46204439f2b1a2ecf73d62de3ed23cce3127",
+    "driverSHA256": "880fa0fa08af2849c65493a7ff464fd6b2a653e0ecce717884c8dedcf86eac94",
+    "raceHarnessSHA256": "0fafd25012771338de4b7fd29f0e99f72fbc77c2f7aae05beda8895ab0095e18",
+    "predeclaration": "Original four normal level35 class roles, legal Uncommon/Rare gear/builds, normal login-clamped full preparation and Root starting location.9m driver maximum,5s action/admission/graceful-stop guards. Every-member living/in-scene/near-site four-wave/champion/completion/normal town-exit gate and independent fresh saved XP/Gold/equipment/bag/EP verification unchanged. No credit for global views alone, absent/dead members, premature completion or forced restoration; no synthetic enemies or clock/power changes.",
+    "environment": "Normal server GOMAXPROCS2, inherited Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32968,2CPU/2GiB/512MiB tmpfs. Shared host: diagnostic control, not measured production headroom or all-realms capacity acceptance.",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-3547257182",
+    "metrics": "connected4 joined4 frames29820 transport/decode0 min_frames/own_updates7449 min_active245778ms max_gap58ms wire211646185B login80ms join34ms; recovery24 requested/24 completed/0 pending/0 failed; party1 formed/4 members min_impacts16 damage111 heals20 casts78 denied0 XPupdates74 deaths16 failed0; event selected1 present4 completed4 exited4 min_wave_views4.",
+    "roles": {
+      "Fighter": {"minimumImpacts": 27, "damage": 27, "casts": 12, "unmatchedDamage": 72},
+      "Cleric": {"minimumImpacts": 37, "damage": 17, "heals": 20, "casts": 20, "unmatchedDamage": 0},
+      "Rogue": {"minimumImpacts": 51, "damage": 51, "casts": 36, "unmatchedDamage": 56},
+      "Wizard": {"minimumImpacts": 16, "damage": 16, "casts": 10, "unmatchedDamage": 84}
+    },
+    "limits": "Earlier bbab4c51 Root FAIL remains a historical failure with an unproven exact cause; random combat/recovery variation prevents attributing this PASS to the cache. Unmatched positive damage is retained as diagnostic only, not owned impact credit. Not all-realms,100-player simultaneous encounters, unique kill attribution, headroom or human pacing evidence. All eight ordinary shutdown stages/drain completed, no forced stop/race/panic; original five-second guard unchanged.",
+    "monitoring": "Root consumed terminal PASS from session74784. Harness PID2806893 and owned server PID2807560 exited; no observation-timeout restart or broadened Luna delegation.",
+    "fixture": "After terminal PASS, exact Mongoc89dc10af30a934235c4b4d038950f02a7f18533f1d9810a679af45f7d244fb1/name eidolon-179-rootdiag-20261006/label eidolon.fixture=rootdiag-179-20261006 revalidated, then owned synthetic DB/volumes removed. Independent label/process queries empty; immutable artifacts retained; production/unrelated services untouched."
+  },
+  "broadcastDeltaFrameOptimization": {
+    "diagnosis": "Actual current generated-world broadcast idle profile with100 declared recipients identifies hasEntityChanged as40.62% of sampled cumulative CPU: overlapping observers recompute detached actor fields/timers against equivalent histories. This is broadcast dependency evidence, not a measured cause of the prior918ms native gap.",
+    "repair": "One broadcast-local cache keyed by detached actor pointer and each recipient's exact last-queued immutable EntitySnapshot pointer. Share one immutable next history snapshot per actor, and one result per distinct prior baseline. New/stale/reset recipients retain their own decisions; owners remain always included. Existing comparison thresholds, actor/scene/radius filtering, protobuf privacy, queue rejection/reset, per-client locking, simulation, timers, stats, save gates and wire schema remain unchanged. Nothing is retained across broadcasts.",
+    "regression": "Actual broadcast integration fails before repair because each observer rebuilds separate history for the same detached actor. After repair, full sync, shared immutable history, new HP update, old history preservation, a stale recipient, reset/full-sync recipient and caught-up/no-extra-delta recipient pass. Concurrent32-reader unit verifies false/true results remain distinct, exactly two prior baselines, one actor history and fresh next-frame reads.",
+    "verification": "Focused broadcast/equipment/status/protection/area/replication race scopes PASS3.860s. Explicit cache concurrency, actual delta baseline, owner/observer privacy and rejected-queue/full-resync scopes PASS race1.800s. One-iteration benchmark setup/real protobuf delivery check also passes; every recipient gets one actual queued state frame. Gofmt/whitespace checks pass.",
+    "profileDeclaration": "BenchmarkBroadcastStateCurrentPopulation100Idle: normal NewWorld(nil) generated population,60 declared idle casino actors/40 town actors, actual snapshot/delta/protobuf/queue path, warm full sync then ordinary next frames. GOMAXPROCS2,3s CPU profiles on same shared host, before/after sequential with no concurrent owned native run, benchmark or race invocation. Static actors and immediately drained queues intentionally exclude simulation, sockets, Mongo, combat and client decode; never capacity/headroom acceptance.",
+    "artifacts": {
+      "baselineDirectory": "/tmp/eidolon-179-broadcast-profile-ZtXLMw",
+      "candidateDirectory": "/tmp/eidolon-179-delta-profile-gGhIXK",
+      "baselineBinarySHA256": "c2f6e43face4da4aba16069b0432697eb3f9eb4982e3a2c9f7cb65d6258ae5ff",
+      "candidateBinarySHA256": "3dd96316a74d2b66112433f4a5cfb6e25e6f503dca128cfb651762adcddbfd4d",
+      "files": "Immutable normal root.test binaries, run.log and cpu.pprof retained in both directories. Baseline source33f1719a plus idle benchmark; candidate same source plus accompanying delta-frame code. Candidate profile compiled before the later concurrency-only unit addition; production cache code unchanged."
+    },
+    "observedMetrics": {
+      "baseline": {"iterations": 250, "nanosecondsPerBroadcast": 13218626, "wireBytesPerFrame": 12165, "bytesPerBroadcast": 3872446, "allocationsPerBroadcast": 20581},
+      "candidate": {"iterations": 412, "nanosecondsPerBroadcast": 8994134, "wireBytesPerFrame": 12165, "bytesPerBroadcast": 4015182, "allocationsPerBroadcast": 21661}
+    },
+    "limits": "One short idle/shared-host comparison observes about32% lower broadcast mean and identical wire size, but about3.7% more allocated bytes/5.2% more allocations per iteration. Not statistical confidence, p95/p99, client performance, resolved918ms stalls, production headroom or full1.79 acceptance. Cached comparisons evaluate a shared detached frame, not independently advancing wall-clock views for each observer. Prior native100/Earth raid checks ran bbab4c51 without this cache; they do not accept this changed candidate. No new population run or deployment."
+  },
+  "sceneFilter100Comparison": {
+    "result": "PASS220.46s overall/120s active; driver-to-save elapsed2m13.507s. One changed-runtime100-client mixed comparison using exact bbab4c51 normal server and c0164aac driver/race harness. All100 fresh admissions/own updates, every paid casino/member-impact/social outcome,100 independent disconnect saves and normal five-second-guard shutdown pass. Not an unchanged source retry, raid/event clear or production headroom acceptance.",
+    "serverSourceCommit": "bbab4c51a984700e261793ac227a443e489964de",
+    "driverAndHarnessSourceCommit": "c0164aac",
+    "artifactDirectory": "/tmp/eidolon-179-scene100-iXyYfi",
+    "serverSHA256": "eefd97bfecb25cfb5e5ba4f5a9dae97277877ea0a4794e7e48cca080418c739c",
+    "driverSHA256": "880fa0fa08af2849c65493a7ff464fd6b2a653e0ecce717884c8dedcf86eac94",
+    "raceHarnessSHA256": "0fafd25012771338de4b7fd29f0e99f72fbc77c2f7aae05beda8895ab0095e18",
+    "predeclaration": "Original100 clients/five20-role blocks,120s active, legal Uncommon/Rare class gear/builds/funding, Gold100 wagers, shared400/600 camp/radius30,5s admission/action/graceful-stop guards. Every fresh-state/payment/social/member-impact/independent-save gate unchanged. Retain maximum state gap even on a functional PASS; no new latency/headroom threshold or a mean CPU benchmark substituted for native evidence.",
+    "environment": "Normal server GOMAXPROCS2, inherited Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32967,2CPU/2GiB/512MiB tmpfs. Shared host/unrelated services: no matched performance or production headroom guarantee. No concurrent owned benchmark/encounter run.",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-3940672508",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 173661, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 1669, "minimumActiveMilliseconds": 119468,
+      "maximumStateGapMilliseconds": 918, "payloadBytes": 1272275556,
+      "maximumLoginMilliseconds": 290, "maximumJoinMilliseconds": 483,
+      "slots": {"clients": 10, "wagers": 271, "paid": 271, "minimumPaid": 17, "bonuses": 15, "failed": 0},
+      "blackjack": {"clients": 20, "wagers": 54, "paid": 36, "minimumPaid": 1, "actions": 35, "failed": 0},
+      "house": {"clients": 20, "wagers": 60, "paid": 40, "minimumPaid": 2, "failed": 0},
+      "poker": {"clients": 10, "wagers": 29, "paid": 19, "minimumPaid": 1, "actions": 92, "failed": 0},
+      "casinoRejectionsAndTimeouts": 0,
+      "socialClients": 20, "socialComplete": 20, "socialFailed": 0,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20, "partyMinimumImpacts": 1,
+      "partyDamageEvents": 71, "partyHealEvents": 5, "partyAcceptedCasts": 79,
+      "partyDeniedCasts": 0, "partyXPUpdates": 68, "partyObservedDeaths": 17,
+      "roles": {
+        "Fighter": {"minimumImpacts": 1, "damage": 16, "casts": 18, "unmatchedDamage": 7},
+        "Cleric": {"minimumImpacts": 1, "damage": 5, "heals": 5, "casts": 5, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 2, "damage": 37, "casts": 35, "unmatchedDamage": 3},
+        "Wizard": {"minimumImpacts": 1, "damage": 13, "casts": 21, "unmatchedDamage": 3}
+      }
+    },
+    "phaseObservations": {
+      "calculation": "Exact after-driver minus before-driver completed timing sums/sample counts; rounded elapsed means, not CPU, percentiles, per-frame conservation, unique payouts or controlled causal attribution. Endpoint maxima remain process-lifetime maxima and do not become interval maxima. Update is in flight at the final sample, so the interval does not include its unfinished work.",
+      "candidate": {"updateSamples": 1860, "meanUpdateMicros": 43018, "meanBroadcastMicros": 26458, "lifetimeUpdateMaxMicros": 843872, "lifetimeBroadcastMaxMicros": 106537},
+      "priorPeriodicFixBaseline": {"updateSamples": 1239, "meanUpdateMicros": 67649, "meanBroadcastMicros": 37086, "lifetimeUpdateMaxMicros": 1873188, "lifetimeBroadcastMaxMicros": 137964},
+      "remaining": "Observed update and broadcast means together exceed the intended33ms sequential frame budget. The retained918ms state gap and substantial simulation/broadcast elapsed cost remain responsiveness work; these functional passes do not establish100-player smoothness/headroom. Randomized combat supply and shared-host variation prevent attributing all differences to the scene filter."
+    },
+    "savedAndShutdownEvidence": "All100 final independent fresh normal Mongo disconnect-save checks reached and passed; original class/EP/equipped gear/protected bag preserved, party earned progression, casino Gold checkpoints and unchanged town/social Gold. All eight ordinary shutdown phase labels and drain completion present, no forced shutdown/race/panic; original five-second guard unchanged. Full final casino settlement/reopen/restart ledgers are not covered.",
+    "monitoring": "Root consumed terminal PASS from session70885. Harness PID2599806 and owned server PID2610816 exited; no capacity monitoring delegation or observation-timeout restart.",
+    "fixture": "After terminal PASS, exact Mongo6e2f3b04bb2a46befe0b8716132a51f7415a039c3fea752cd17e45ee0d7693b1/name eidolon-179-scene100-20261006/label eidolon.fixture=scene100-179-20261006 revalidated, then owned synthetic DB/volumes removed. Independent label/process queries empty; artifacts retained. Production/unrelated services untouched."
+  },
+  "eventFirstFailureClassification": {
+    "source": "01a8d4b1 plus accompanying load-driver classification changes; not in the completed bbab4c51 encounter binaries.",
+    "diagnosis": "The actual Root failure retains three completions, minimum three own wave views and one receive refusal, but the driver's bare failed flag and dungeon/raid-only failure output omitted the causal branch. The same decode counter includes semantic refusals. Exact historical cause remains unproven.",
+    "change": "Existing event refusal paths now preserve the first closed category: envelope, occurrence identity, order, expiration, missing own wave, stale view, entry level or recall request. All party scenario summaries emit the existing failure line once. Encounter wrappers permit only these fixed categories; never raw provider/socket/account details. All deadlines, living/in-scene/near-site participation and four-wave/completion/exit/save gates are unchanged.",
+    "regression": "Before classification, all18 existing bad/historical-event cases, a valid-but-absent champion view with three other completions, and a failed recall case report unclassified and fail the new checks. After repair the partial completion still refuses, matches completed3/exited0/min_wave_views3, emits event_missing_wave and cannot be overwritten by later cleanup. This demonstrates a possible failure path, not proof of the prior run's cause.",
+    "verification": "Focused controller/event/first-failure/party/combined/dungeon/raid scopes PASS race2.521s; fixed diagnostic and root coverage-unit scopes PASS race2.707s. Final compile and focused event regressions also PASS0.016s. Native opt-in database/dungeon/raid checks skip without their explicit environment, not new encounter acceptance. No new native run or live deployment.",
+    "preparedSourceCommit": "c0164aac",
+    "preparedArtifactDirectory": "/tmp/eidolon-179-event-diagnostics-8GomWD",
+    "preparedDriverSHA256": "880fa0fa08af2849c65493a7ff464fd6b2a653e0ecce717884c8dedcf86eac94",
+    "preparedRaceHarnessSHA256": "0fafd25012771338de4b7fd29f0e99f72fbc77c2f7aae05beda8895ab0095e18",
+    "nextControl": "Prepared binaries only, no live process or Mongo fixture. Reuse the exact bbab4c51 normal server (unchanged gameplay) for one separately recorded naturally scheduled Root diagnostic control when its first40s precondition is actually true. Do not advance clocks, wait through all realm windows, repeat the old unchanged binaries, relax four-member participation or infer that preparation is acceptance."
+  },
+  "encounterDiagnosticRetention": {
+    "change": "Dungeon, raid and event integration wrappers retain the driver's existing fixed class-role/activity counters and closed failure categories. Timestamp prefixes are discarded; raw socket messages, identities and arbitrary error suffixes are not retained. No gameplay or acceptance gate changes.",
+    "verification": "Focused EncounterDiagnostics and CombinedRoleEvidence race tests PASS1.092s, including fixed-field retention and rejection of private trailers, unknown classes/stages and invalid counters. These changes are not in the bbab4c51 binaries used by the two encounter controls below; their old aggregate logs cannot establish an exact event failure cause."
+  },
+  "currentFourPlayerNaturalRootEventControl": {
+    "sourceCommit": "bbab4c51a984700e261793ac227a443e489964de",
+    "result": "FAIL199.95s. Reused exact normal server/driver/race-harness binaries from the concurrent isolated Earth raid control. Started05:20:24 UTC inside the real first40s Root precondition; actual server/event ran, not skipped. Three of four completed, minimum three wave views, no normal town exits; one driver semantic/decode refusal. Independent final save assertions were not reached. No clock override/advance or fabricated event.",
+    "artifactDirectory": "/tmp/eidolon-179-rootevent-9IhOge",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-2893656131",
+    "predeclaration": "Four normal authenticated level35 class roles with existing legal Uncommon/Rare class-focused gear/builds, full preparation clamped by normal login and natural Root site positions. Original9m driver maximum,5s admission/action/stop guards. Earn all four wave views/champion/completion and every-client normal town exit; independent fresh saved XP/Gold and preserved gear/bag sentinel/EP. No forced injury/monster, clock advance, restoration or reduced gates.",
+    "environment": "Exact bbab4c51 binaries/hashes listed in the Earth raid entry; normal server GOMAXPROCS2, Alpha1.76.0/schema25. Separate owned Mongo7.0.14 loopback32966,2CPU/2GiB/512MiB tmpfs. Concurrent local raid shares the host, so these are encounter controls, not matched performance/headroom evidence.",
+    "metrics": "connected4 joined4 frames23732 transport0 decode_errors1 min_frames/own_updates5927 min_active195599ms max_gap72ms wire176506695B login83ms join28ms; recovery14 requested/14 completed/0 pending/0 failed; party1 formed/4 members min_impacts5 damage145 heals18 casts94 denied0 XPupdates52 deaths18 failed1; event selected1 present4 completed3 exited0 min_wave_views3.",
+    "limits": "decode_errors also increments for semantic party.receive refusals, not only malformed JSON. Missing champion-wave participation during recovery is a hypothesis, not established by retained aggregates. No failure gate reduced, final-save acceptance, unchanged retry, headroom or production deployment. Normal server completed all eight shutdown stages and drain, without forced stop/race/panic.",
+    "monitoring": "Root directly consumed terminal FAIL from session4510; harness PID2461001 exited. Luna's current delegation covers raids/dungeons only.",
+    "fixture": "Owned Mongo42d1feda32d044f6fe0c4f470bf43803e41e4cb87fe70bec2b31a1a1c8c61e12/name eidolon-179-rootevent-20261006/label eidolon.fixture=rootevent-179-20261006 removed with its synthetic volumes only after exact identity/label validation and terminal harness completion; follow-up label/process queries empty."
+  },
+  "currentFivePlayerEarthRaidControl": {
+    "sourceCommit": "bbab4c51a984700e261793ac227a443e489964de",
+    "result": "PASS385.64s overall; driver-to-save elapsed6m20.312s. Exact source-built normal server/driver and race harness. Full Earth assault (three rooms/one boss), three-wave repair, every-client restoration/normal town exit and independent original shared boss rewards, positive XP, accepted Count1 uncompleted/unrewarded repair readiness and preserved gear/bag/EP all pass. Not a reduced activity sample or raid capacity acceptance.",
+    "artifactDirectory": "/tmp/eidolon-179-earthraid-XySmgf",
+    "serverSHA256": "eefd97bfecb25cfb5e5ba4f5a9dae97277877ea0a4794e7e48cca080418c739c",
+    "driverSHA256": "c288798a5ada6aa8f8f1de2d959f4b9c9463c20b5d53525076ba81ed0ddac59e",
+    "raceHarnessSHA256": "ad80b642fd9ec40425b2286a3d5ff51f32548b4f96066ed2af0999164122b7f8",
+    "predeclaration": "Five normal authenticated level30 actors: Fighter, Cleric, Rogue, Wizard, Fighter with existing legal class-focused Uncommon/Rare gear/builds and declared prepared access. Original20m maximum driver duration,5s admission/action/stop guards. Earn every-client normal conversion/consent, all assault rooms/one boss, all three Vigil wave views/restoration and town exit; independently verify shared durable original boss rewards, positive XP, unclaimed/unrewarded repair readiness and preserved gear/bag/EP. No generated monsters, forced clock, combat-power grants, checkpoint/health reset or weakened acceptance.",
+    "environment": "Normal server GOMAXPROCS2, inherited Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32965,2CPU/2GiB/512MiB tmpfs. Shared host; not production headroom, all-realms/Dark King or human pacing proof.",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-1310827115",
+    "metrics": "connected5 joined5 frames57538 transport/decode0 min_frames/own_updates11504 min_active379591ms max_gap82ms wire308796466B login147ms join55ms; recovery17 requested/17 completed/0 pending/0 failed; party1 formed/5 members min_impacts128 damage985 heals42 casts565 denied0 XPupdates215 deaths37 failed0; dungeon entered5 cleared5 exited5 rooms3 bosses1 reentries12 checkpoint_returns12; raid converted/prepared true ready5 restored5 min_wave_views3.",
+    "shutdown": "All eight ordinary shutdown stages and drain complete; no forced stop/race/panic. Original five-second stop guard unchanged.",
+    "monitoring": "User-authorized Luna /root/watch_earthraid179_1006 reported terminal PASS; root independently consumed session72424 and verified the log. Harness PID2445971 exited; nothing restarted.",
+    "fixture": "Owned Mongoea25e03494802cfca4e74639b7a8632deee3d95e7276453be2ae14545723a437/name eidolon-179-earthraid-20261006/label eidolon.fixture=earthraid-179-20261006 removed with its synthetic volumes only after exact identity/label validation and terminal harness completion; follow-up label/process queries empty."
+  },
+  "liveSceneTargetScanOptimization": {
+    "source": "b00b71f5 plus accompanying scene-filter/benchmark changes; these changes are not in the prior32831df3 native100 binaries.",
+    "diagnosis": "Short full-current-population CPU profile with100 declared idle actors shows enemy target scanning dominates sampled CPU. Out-of-scene actors currently reach membership and cast-state reads even though the caller subsequently discards them. This is CPU dependency evidence, not attribution of the historical1982ms multiplayer state gap.",
+    "repair": "An optional exact-scene guard in snapshotEnemyTargetLocked reads the actor's current InstanceID under the existing player lock before world-membership/cast reads. Production enemy scans supply their live enemy scene. Matching actors keep the exact existing snapshot and live world/actor lock checks; no per-frame/cross-frame actor cache, spatial approximation, AI throttle, timer/radius/stealth/target/party/reward or save change.",
+    "verification": "Focused enemy target/membership/scene/stealth, worker, safe-zone enemy, dungeon roaming and Dark King race scopes PASS9.912s. New scene regression fails before the early guard and covers casino/overworld scene changes, current hidden state, disconnected/dead/replaced/removed actors and identical matching-scene snapshots. Gofmt and whitespace checks pass.",
+    "benchmarkDeclaration": "BenchmarkWorldUpdateCurrentPopulation100Idle uses normal NewWorld(nil)'s entire generated population and100 actors,60 in the existing casino safe scene/40 in town. Safe-scene placement prevents deaths from reducing scan work. Actual World.Update(0.033), GOMAXPROCS2,3s benchmark, same host. No socket/DB/render/combat capacity or actor-power proof.",
+    "artifacts": {
+      "baselineDirectory": "/tmp/eidolon-179-frame-profile-QjINtt",
+      "candidateDirectory": "/tmp/eidolon-179-scene-profile-7U6Zh4",
+      "baselineBinarySHA256": "8d60f21664e28abb3f93e676cef07b7cd7b75a7b3ccb7466f06776b020ca78a4",
+      "candidateBinarySHA256": "41171fe841d97aba53cd48ea49460dda8fae3479a2d0a3bc5106cc8c06c78706",
+      "comparisonFiles": "Both exact compiled game.test binaries rerun sequentially after the race test finished; sequential.log and sequential-cpu.pprof retained in each directory. Initial candidate CPU profile overlapped the race invocation and is not used for the comparison."
+    },
+    "sequentialObservedMetrics": {
+      "baseline": {"iterations": 123, "nanosecondsPerUpdate": 28909316, "bytesPerUpdate": 346994, "allocationsPerUpdate": 19857},
+      "candidate": {"iterations": 139, "nanosecondsPerUpdate": 25323840, "bytesPerUpdate": 346041, "allocationsPerUpdate": 19879}
+    },
+    "limits": "Single short synthetic idle/shared-host observations: about12.4% lower observed mean update time, not statistical confidence, p95/p99, production headroom, allocation reduction or a resolved two-second stall. Generated roaming populations/order remain variable. Full-world CPU and lock contention remain substantial; native combat/raid/event integration and candidate release evidence stay open. Prior100 PASS remains exact old-source evidence, not acceptance of this candidate. No population retry, live deployment or new external process."
+  },
+  "periodicFix100Comparison": {
+    "serverAndHarnessSourceCommit": "32831df37a6b2dd295b02c8f1152fd9325985f96",
+    "driverSourceCommit": "4096c19c9352b8e4ac6d31a4b79ddc0a5e6945ca",
+    "result": "PASS217.76s/120s active: reuse exact normal server/race harness from the eight-live-character shutdown control and exact unchanged corrected driver from the prior100 comparison. All100 admission/fresh-view checks, paid casino outcomes,20 social outcomes,20 party members' positive impacts/healing and100 independent disconnect-save checks pass. Normal graceful shutdown completes under the unchanged five-second guard. This is the declared mixed baseline, not all representative capacity/release acceptance.",
+    "artifactDirectory": "/tmp/eidolon-179-periodic100-dcEbiw",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-1324236348",
+    "serverSHA256": "32807c115e961bd25d15709409253e880dcc1c09b549935451e71f60f51d434f",
+    "driverSHA256": "d212c1d0e810c25482c89a577678d848a327d57bcbbbab9dbe6757e07c28bfdc",
+    "raceHarnessSHA256": "277e2367f5e26804b40a44f7780e93c930ee19f0132de5a1547539b6cbb1c0d4",
+    "predeclaration": "100 clients, original five20-role blocks,120s active, legal Uncommon/Rare class gear/build/funding, Gold100 wagers, shared400/600 camp/radius30,5s admission/action AND unchanged5s graceful-stop guard. Every delivered fresh-state/payment/social/member-impact/normal-save gate preserved. Normal server GOMAXPROCS2, inherited Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32963,2CPU/2GiB/512MiB tmpfs; shared host, not controlled headroom proof.",
+    "changedDependency": "Periodic save checks stopping at entry/between accounts/before offline retries, while finishing the admitted write and preserving final journal-all durability; eight fixed shutdown phase log labels. No drain order, timeout, stats, gear, enemies, camp, funding or test gate change. Prior FAIL retained.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 113135, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 1079, "minimumActiveMilliseconds": 119358,
+      "maximumStateGapMilliseconds": 1982, "payloadBytes": 1139015337,
+      "maximumLoginMilliseconds": 386, "maximumJoinMilliseconds": 976,
+      "slots": {"clients": 10, "wagers": 257, "paid": 257, "minimumPaid": 12, "bonuses": 14, "failed": 0},
+      "blackjack": {"clients": 20, "wagers": 48, "paid": 30, "minimumPaid": 1, "actions": 32, "failed": 0},
+      "house": {"clients": 20, "wagers": 60, "paid": 40, "minimumPaid": 2, "failed": 0},
+      "poker": {"clients": 10, "wagers": 28, "paid": 18, "minimumPaid": 1, "actions": 78, "failed": 0},
+      "casinoRejectionsAndTimeouts": 0,
+      "socialClients": 20, "socialComplete": 20, "socialFailed": 0,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20, "partyMinimumImpacts": 1,
+      "partyDamageEvents": 125, "partyHealEvents": 5, "partyAcceptedCasts": 163,
+      "partyDeniedCasts": 1, "partyXPUpdates": 136, "partyObservedDeaths": 34,
+      "roles": {
+        "Fighter": {"minimumImpacts": 2, "damage": 19, "casts": 34, "denied": 1, "unmatchedDamage": 20},
+        "Cleric": {"minimumImpacts": 1, "damage": 8, "heals": 5, "casts": 5, "denied": 0, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 11, "damage": 66, "casts": 79, "denied": 0, "unmatchedDamage": 7},
+        "Wizard": {"minimumImpacts": 4, "damage": 32, "casts": 45, "denied": 0, "unmatchedDamage": 7}
+      }
+    },
+    "savedAndShutdownEvidence": "All100 fresh normal Mongo disconnect-save checks reached and passed: class/EP/equipment/inventory preserved, positive party XP/level progression, casino checkpoints and town/social Gold unchanged. Owned log progresses through all eight drain phase labels and Character shutdown drain complete; no forced shutdown, durable-storage wait, panic/race or final-save-retained warning. Full final casino settlement and replay/restart ledgers are not covered by this baseline.",
+    "limits": "Earlier native failures remain failures. This changed-code run passes graceful shutdown but randomized supply/shared-host variation prevents single-fix causal attribution. Worst state gap1982ms is retained as a responsiveness investigation, not a smoothness/headroom approval. Eight lifetime elapsed phase counters remain in the aggregate log, not CPU/percentile/conservation evidence. Active raid/event workloads, predeclared headroom/server-client performance, later release integration and ordered predecessor gates remain open. No unchanged rerun or production deployment.",
+    "cleanup": "After terminal native PASS, exact owned Mongo423617761e7895d8189c584980c6ecb45eccdbc5daf516ae7a5c8bc2cefaeac8/name eidolon-179-periodic100-20261006/label eidolon.fixture=periodic100-179-20261006 revalidated then fixture and synthetic volumes removed. Independent label/process queries empty; aggregate artifacts retained. Production and unrelated processes untouched."
+  },
+  "periodicFixEightLiveCharacterShutdownControl": {
+    "sourceCommit": "32831df37a6b2dd295b02c8f1152fd9325985f96",
+    "result": "PASS10.99s: exact source-built normal server and current race harness, existing eight live four-class alive/dead character shutdown test. Normal SIGINT stops without extending the five-second guard. Real Wizard cast, final exact Mongo HP/MP/rest state, empty acknowledged character journal, fresh process and ordinary re-login resource checks pass.",
+    "artifactDirectory": "/tmp/eidolon-179-shutdown8-XtNU11",
+    "ownedServerEvidence": ["/tmp/eidolon-compat-session-3959836340", "/tmp/eidolon-compat-session-1858999374"],
+    "serverSHA256": "32807c115e961bd25d15709409253e880dcc1c09b549935451e71f60f51d434f",
+    "raceHarnessSHA256": "277e2367f5e26804b40a44f7780e93c930ee19f0132de5a1547539b6cbb1c0d4",
+    "predeclaration": "Reuse the existing eight normal authenticated live-character resource/shutdown/restart scenario without relaxing health/mana/formula/storage/identity assertions or stop timeout. Normal server GOMAXPROCS2, Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32962,2CPU/2GiB/512MiB tmpfs; no production characters/provider/action.",
+    "shutdownEvidence": "Both exact owned server logs progress through all eight fixed phase labels and Character shutdown drain complete; no forced shutdown, panic or race marker. This establishes the tested eight-character control, not100-client drain performance or a causal explanation of the older timeout.",
+    "limits": "Prior100-client terminal FAIL remains unresolved. No active paid tables/raids/events, production headroom, full recovery ledger or accepted1.79 release claim. Changed periodic cancellation dependency permits a later bounded100 comparison; no unchanged retry performed here.",
+    "cleanup": "After terminal native PASS, exact owned Mongo3c357f868c10e06a3a81d2e057645280a0b22ea81d183e66afecd4612a13d805/name eidolon-179-shutdown8-20261006/label eidolon.fixture=shutdown8-179-20261006 validated then fixture and synthetic volumes removed. Independent label/process queries empty. Aggregate evidence retained; production and unrelated processes untouched."
+  },
+  "periodicSaveShutdownFollowUp": {
+    "confirmedDefect": "Actual periodic controller regression fails before repair: shutdown begins during the first accepted bound write, but the pass continues committing all four accounts. A second regression shows a pass invoked after shutdown still replays a retained offline record. This is redundant work during drain, not yet the demonstrated cause of the prior native timeout.",
+    "repair": "The periodic pass checks the existing stopping flag at entry, between accounts and before offline retries. Already-admitted writes finish; final journal-all snapshots remain authoritative, including late earned changes/disconnected players. Offline pending records stay intact for startup. Add eight fixed phase-only shutdown log labels without account/session identifiers, new endpoints or altered drain order/timeouts.",
+    "verification": "Focused shutdown, account-bound saves, character persistence/work and connection-work race scopes PASS3.639s. Regression verifies one admitted write/acknowledgement, every final updated Gold/account binding and retained offline recovery identity. Existing journal-all-before-database, storage failure and late reward tests pass. Gofmt and whitespace checks pass.",
+    "limits": "No reduced durability, timeout extension, return-before-earned-work or accepted100-client shutdown claim. The historical FAIL remains. Subsequent exact eight-live-character normal shutdown/restart PASS is recorded separately; it does not replace100-client evidence. No production action."
+  },
+  "recoveryAndWorkerCorrected100Comparison": {
+    "sourceCommit": "4096c19c9352b8e4ac6d31a4b79ddc0a5e6945ca",
+    "result": "FAIL218.36s/120s active: exact source-built normal server, driver and race harness. All100 admissions/fresh views, every paid casino outcome, all20 social outcomes, all20 party members' positive own impacts/healing and all100 independent disconnect-save checks pass. Overall test still fails: the owned server required forced shutdown after the existing five-second stop guard. Not capacity/release acceptance.",
+    "artifactDirectory": "/tmp/eidolon-179-recovery100-aFhHiE",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-506955602",
+    "serverSHA256": "e8b7d4d3b9b23842c242cb6f718f0ab02fed3a9c4828005c28d8166543bd7a84",
+    "driverSHA256": "d212c1d0e810c25482c89a577678d848a327d57bcbbbab9dbe6757e07c28bfdc",
+    "raceHarnessSHA256": "698b14136965e37f63a11f83bf5726e4386b23ef131d0dec1c46f551ad2b7125",
+    "predeclaration": "100 clients in the original five20-role blocks,120s active, legal Uncommon/Rare class gear/builds and original funding/Gold100 stakes, shared400/600 anchor/radius30 and5s deadlines. Every fresh-state/payment/social/member-impact/normal-save gate unchanged. Normal server GOMAXPROCS2, current Alpha1.76.0 labels/schema25, no production deployment. Owned Mongo7.0.14 loopback32961,2CPU/2GiB/512MiB tmpfs. Shared host, not controlled production headroom evidence.",
+    "changedDependencies": "Since the prior cea4f481 comparison: driver honors public blackjack expiry, uses actual advertised class primaries and Cleric cone range, and heals eligible own allies between fights without suppressing available offense during healing cooldown. Normal World.Update respects its current CPU worker budget. No player stat/build/gear/spawn, camp anchor/radius, timeout, stake or acceptance change.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 147531, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 1413, "minimumActiveMilliseconds": 119395,
+      "maximumStateGapMilliseconds": 1143, "payloadBytes": 1262186102,
+      "maximumLoginMilliseconds": 374, "maximumJoinMilliseconds": 954,
+      "slots": {"clients": 10, "wagers": 251, "paid": 251, "minimumPaid": 18, "bonuses": 19, "failed": 0},
+      "blackjack": {"clients": 20, "wagers": 52, "paid": 34, "minimumPaid": 1, "actions": 33, "failed": 0},
+      "house": {"clients": 20, "wagers": 60, "paid": 40, "minimumPaid": 2, "failed": 0},
+      "poker": {"clients": 10, "wagers": 28, "paid": 18, "minimumPaid": 1, "actions": 82, "failed": 0},
+      "casinoRejectionsAndTimeouts": 0,
+      "socialClients": 20, "socialComplete": 20, "socialFailed": 0,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20, "partyMinimumImpacts": 1,
+      "partyDamageEvents": 215, "partyHealEvents": 5, "partyAcceptedCasts": 221,
+      "partyDeniedCasts": 0, "partyXPUpdates": 224, "partyObservedDeaths": 54,
+      "roles": {
+        "Fighter": {"minimumImpacts": 6, "damage": 50, "casts": 50, "unmatchedDamage": 28},
+        "Cleric": {"minimumImpacts": 1, "damage": 7, "heals": 5, "casts": 5, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 10, "damage": 104, "casts": 107, "unmatchedDamage": 19},
+        "Wizard": {"minimumImpacts": 6, "damage": 54, "casts": 59, "unmatchedDamage": 9}
+      }
+    },
+    "savedEvidence": "All100 independent normal Mongo character checks were reached and passed: fresh LastLogout, class/EP/equipment/bag preservation, positive XP/level progress for each party member, durable casino checkpoints for every assigned casino client and unchanged Gold for town/social. This does not prove the final graceful shutdown drain completed or its last snapshots were durable; the five-second guard killed that exact child.",
+    "shutdownInvestigation": "Retained server log records Shutting down server but no Character shutdown drain complete before forced termination. No exact drain phase/cause proven. Production Compose declares60s stop_grace_period while the generic compatibility helper imposes5s. Diagnose the actual drain and its durability before changing any gate; do not assume a deadlock or relax the stop guard to manufacture a pass.",
+    "limits": "Earlier failures remain historical failures; randomized enemy supply and shared-host variation prevent causal attribution to any one fix. Gameplay/payment/save outcomes are useful evidence but overall test is FAIL. Worst state gap1143ms retained, not a smoothness/headroom promise; lifetime phase counters are not CPU/percentile/conservation proof. Active raid/event workload, complete final casino settlement/recovery, graceful shutdown and full release gates remain open. No unchanged population retry or deployment.",
+    "cleanup": "After terminal failed harness/server completion, exact owned Mongo55081de1d3b4413e0c07e0b6e3a92f6add44b0ed23899bad76a4ada52c8dddc0/name/label revalidated then removed with synthetic volumes. Independent label/process queries empty; aggregate artifacts retained. Production and unrelated processes/data untouched."
+  },
+  "betweenFightHealingFidelity": {
+    "confirmedDefect": "Focused controller regression fails before repair: a formed Cleric with unlocked ready Healing Light ignores an injured nearby own-party ally when no enemy exists. A healing cooldown also suppresses the advertised ready Radiant Strike and falls back to an ordinary attack.",
+    "repair": "Select an eligible ready heal before the empty-enemy wait. A heal on cooldown leaves the offensive target/skill available. Calculate range from the chosen target. Existing party formation/regroup, pending-cast, advertised-unlock, same-scene/living-ally,14-unit healing range, path, target ownership and actual impact gates remain unchanged.",
+    "verification": "Focused party/combined/dungeon/raid/event driver race scopes PASS3.553s. New cases cover no-enemy healing, cooldown with/without enemy, locked healing, dead ally, different scene, out-of-range ally, no repeat while pending and no manufactured cast/heal/damage credit. Gofmt and whitespace checks pass.",
+    "limits": "Controller fidelity only, not measured capacity or balance. Historical native failures remain failures; no production stat/gear/build/spawn, anchor/radius, action timeout or acceptance changes. Subsequent exact native100 comparison is recorded separately and fails its graceful shutdown guard despite passing gameplay/payment/save checks."
+  },
+  "worldUpdateWorkerBudget": {
+    "confirmedDefect": "World.Update creates runtime.NumCPU workers per frame rather than respecting the runtime CPU budget. A real damage-callback regression exceeds both one- and two-worker GOMAXPROCS limits before repair. It releases and joins only its owned update; no population run or production action.",
+    "repair": "One bounded worker-count change: min(runtime.GOMAXPROCS(0),len(allEntities)). Read the current runtime/container budget without changing it; empty entity batches launch no workers but preserve global frame bookkeeping. Snapshot contents, queue, deferred work,33ms loop/dt, entity timers, targets, gameplay and save gates are unchanged.",
+    "verification": "Actual worker-callback tests and focused enemy-target, Well Rested, disconnected-resource, enemy status and bleed/poison/renewal race scopes PASS14.590s. Both CPU budgets are respected; all six actors receive exactly one ordinary damage tick and empty frames retain regeneration/elite bookkeeping. Gofmt and whitespace checks pass.",
+    "limits": "A proven excess-worker dependency, not measured whole-frame speed, CPU headroom or a diagnosis/resolution of the historical100-client failures. Normal native workload, all positive member/payment/save outcomes, representative raids/events and release gates remain open. No unchanged population retry or live publication."
+  },
+  "correctedBuildFourPartyControl": {
+    "driverSourceCommit": "d5d28ded8957d53d3166d6db7dd93d5a3bd0372d",
+    "serverAndHarnessSourceCommit": "cea4f481d73794681895bed9a40b1debc1c19896",
+    "result": "PASS49.71s/45s active. Reuse exact normal server and race harness; compile only changed driver. Actual four normal authenticated characters/party and all four independent final disconnect saves pass. This is not100-client or dungeon/raid acceptance.",
+    "artifactDirectory": "/tmp/eidolon-179-classkit4-8inLDJ",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-3618203281",
+    "serverSHA256": "c3a2d7b97cffd98b54592da40b2ce3bf25a8d7a27cde9e7a66bfd2c877a7cb99",
+    "driverSHA256": "e9dbe0404a319562343c6681af6b8d7a2da4075323b57c2e241460fb79de51e6",
+    "raceHarnessSHA256": "75be3ab84db86de0c96d7aedf2998ca90de77718315f3e8e37271595d25518e1",
+    "predeclaration": "Original four-client/45s party control, legal Uncommon/Rare class gear/build/funding, shared400/600 anchor/radius30 and5s deadlines unchanged. Actual regular randomized-world enemies, no added targets or production grants. Owned Mongo7.0.14 loopback32960,2CPU/2GiB/512MiB tmpfs; shared host, not headroom measurement.",
+    "metrics": {
+      "connected": 4, "joined": 4, "stateFrames": 5474, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 1364, "minimumActiveMilliseconds": 44974,
+      "maximumStateGapMilliseconds": 63, "payloadBytes": 49826031,
+      "maximumLoginMilliseconds": 97, "maximumJoinMilliseconds": 60,
+      "partyGroupsFormed": 1, "partyMembersConfirmed": 4, "partyMinimumImpacts": 1,
+      "partyDamageEvents": 78, "partyHealEvents": 1, "partyAcceptedCasts": 69,
+      "partyDeniedCasts": 0, "partyXPUpdates": 76, "partyObservedDeaths": 19,
+      "roles": {
+        "Fighter": {"minimumImpacts": 23, "damage": 23, "casts": 13, "denied": 0, "unmatchedDamage": 0},
+        "Cleric": {"minimumImpacts": 1, "damage": 0, "heals": 1, "casts": 1, "denied": 0, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 34, "damage": 34, "casts": 36, "denied": 0, "unmatchedDamage": 7},
+        "Wizard": {"minimumImpacts": 21, "damage": 21, "casts": 19, "denied": 0, "unmatchedDamage": 0}
+      }
+    },
+    "savedEvidence": "All four freshly written LastLogout values, class/EP/equipment/inventory preservation and positive XP/level progression asserted from normal Mongo saves after server stop. No synthetic impact or accepted-cast credit; unmatched damage remains excluded.",
+    "limits": "Cleric's only credited impact is one heal; not proof of offense/full-kit/healer balance. Does not establish the cause/resolution of the historic100-client failures, raid/event capability, unique kill attribution or production headroom. Earlier failures and full capacity gates remain open.",
+    "cleanup": "After terminal native harness/server cleanup, exact owned Mongo3d19243e2fa19cc1ec9b53c49faf60be49e90c68bf7f0f6b74ce6d8014ad830a/name/fixture label validated then removed with synthetic volumes. Independent label/process queries empty. Aggregate artifacts retained; production and unrelated nightly soak untouched."
+  },
+  "preparedBuildCombatFidelity": {
+    "defect": "Normal prepared Cleric A saves advertise Radiant Strike/Healing Light/Guardian Embrace/Purifying Wave, but the driver hardcoded Spirit Guardians. Every role also attempted its primary without verifying the actor's advertised unlocks. A focused locked-primary test fails before repair; production range source confirms Radiant Strike's three-unit base cone.",
+    "repair": "Use only advertised unlocked Charge/Radiant Strike/Piercing Throw/Fireball for the prepared role, otherwise ordinary attacks. Approach within the Cleric cone before casting. No saved build, actor power, gear, enemy spawn, target radius/anchor, cooldown, healing selection or acceptance-gate change.",
+    "verification": "Focused driver party/combined/dungeon/raid/event race scopes PASS3.627s. Assertions cover all four unlocked/locked primaries, Cleric outside range, no manufactured impact/cast credit and existing healing/target ownership/role guards. Initial broader scope failed because a distinct-target fixture omitted the Charge unlock it expected to cast; fixture now explicitly advertises that ordinary prepared primary and retains every old target/impact assertion. Gofmt and whitespace checks pass.",
+    "limits": "Not a causal diagnosis of the historical zero-impact parties or a100-player capacity pass. Focused normal four-account saved-wallet/progression control is the next bounded verification; no native run or deployment claimed at this checkpoint."
+  },
+  "blackjackDriverDeadlineFollowUp": {
+    "confirmedDefect": "Focused real controller regression fails before the fix: stand is submitted at and after the advertised deadline. The actual production table UI already blocks expired turns; the driver ignored the public round deadline.",
+    "repair": "Read the existing deadline and refuse a new expired-turn play. Ordinary read-only refresh remains; no waiting earns action/payment credit and actual rejections still fail. Retain only a fixed first rejected-action category from a structured response or still-pending action. Unknown/cleared actions stay unknown; later errors cannot replace the first cause. No raw session/account/round IDs or diagnostic text in aggregates.",
+    "verification": "Driver blackjack/controller, casino first-rejection/timeout/ordering and combined scopes PASS race4.388s. Root combined client-count/fresh-view and bounded phase evidence guards PASS race1.129s. Gofmt and whitespace checks pass. Expired/equal/future deadlines and no invented acknowledgement are asserted; closed action categories, unknowns and first-failure preservation are tested.",
+    "limits": "No new native population run, live deployment or causal attribution of the cea4f481 rejection. Normal server timers and all original paid/every-member/social/fresh-state/save gates remain unchanged. Shared-camp supply/role attribution and representative workload/headroom remain unresolved."
+  },
+  "orderingFix100ClientComparison": {
+    "sourceCommit": "cea4f481d73794681895bed9a40b1debc1c19896",
+    "result": "FAIL222.95s/120s active. Normal source-built server, corrected ordering driver and current race harness. All100 admissions/fresh views and20 social outcomes pass, transport and casino timeout counters zero. One blackjack stale-action rejection and zero-impact party members fail unchanged gates. Independent all-account final saves are NOT REACHED. No capacity acceptance or unchanged retry.",
+    "artifactDirectory": "/tmp/eidolon-179-ordering100-CFvqhU",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-911490850",
+    "serverSHA256": "c3a2d7b97cffd98b54592da40b2ce3bf25a8d7a27cde9e7a66bfd2c877a7cb99",
+    "driverSHA256": "18396ad025212962046a653b1f587604d3cba91e3cf2592818fa25ad6bb0bc2f",
+    "raceHarnessSHA256": "75be3ab84db86de0c96d7aedf2998ca90de77718315f3e8e37271595d25518e1",
+    "predeclaration": "100 clients in original five20-role blocks,120s active, legal Uncommon/Rare class gear and original funding/Gold100 stakes, shared400/600 anchor/radius30,5s deadlines. All fresh-state/paid/social/every-member/save gates unchanged. Owned Mongo7.0.14,loopback32959,2CPU/2GiB/512MiB tmpfs; shared host, not production headroom evidence.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 137965,
+      "readWriteDecodeErrors": 0, "minimumFreshOwnUpdates": 1321,
+      "minimumActiveMilliseconds": 119597, "maximumStateGapMilliseconds": 636,
+      "payloadBytes": 1169247829, "maximumLoginMilliseconds": 377,
+      "maximumJoinMilliseconds": 515, "socialComplete": 20, "socialFailed": 0,
+      "casino": {
+        "slots": {"clients": 10, "wagers": 279, "paid": 279, "minimumPaid": 13, "bonuses": 11, "failed": 0},
+        "blackjack": {"clients": 20, "wagers": 48, "paid": 31, "minimumPaid": 0, "actions": 29, "failed": 1, "staleRejections": 1},
+        "house": {"clients": 20, "wagers": 60, "paid": 40, "minimumPaid": 2, "failed": 0},
+        "poker": {"clients": 10, "wagers": 28, "paid": 18, "minimumPaid": 1, "actions": 72, "failed": 0}
+      },
+      "casinoTimeouts": 0, "partyGroupsFormed": 5, "partyMembersConfirmed": 20,
+      "partyMinimumImpacts": 0, "partyDamageEvents": 49, "partyHealEvents": 4,
+      "partyAcceptedCasts": 57, "partyDeniedCasts": 1, "partyXPUpdates": 40,
+      "partyObservedDeaths": 10,
+      "roles": {
+        "Fighter": {"minimumImpacts": 0, "damage": 6, "casts": 10, "denied": 1, "unmatchedDamage": 0, "pendingCastSteps": 0, "regroupSteps": 0, "cohortWaitSteps": 35, "noTargetSteps": 2994, "pursuitSteps": 63},
+        "Cleric": {"minimumImpacts": 0, "damage": 17, "heals": 4, "casts": 14, "denied": 0, "unmatchedDamage": 0, "pendingCastSteps": 1, "regroupSteps": 38, "cohortWaitSteps": 0, "noTargetSteps": 2990, "pursuitSteps": 43},
+        "Rogue": {"minimumImpacts": 0, "damage": 16, "casts": 20, "denied": 0, "unmatchedDamage": 4, "pendingCastSteps": 1, "regroupSteps": 35, "cohortWaitSteps": 0, "noTargetSteps": 2992, "pursuitSteps": 48},
+        "Wizard": {"minimumImpacts": 0, "damage": 10, "casts": 13, "denied": 0, "unmatchedDamage": 0, "pendingCastSteps": 3, "regroupSteps": 25, "cohortWaitSteps": 0, "noTargetSteps": 2998, "pursuitSteps": 36}
+      }
+    },
+    "phaseMeasurements": {
+      "before": {"characterRecovery": {"completed": 1, "totalMicros": 59, "maxMicros": 59}, "realtimeUpdate": {"completed": 1, "totalMicros": 14164, "maxMicros": 14164}, "stateBroadcast": {"completed": 1, "totalMicros": 8, "maxMicros": 8}},
+      "after": {
+        "characterJournal": {"completed": 1405, "totalMicros": 36435044, "maxMicros": 229448, "inFlight": 0},
+        "characterCommit": {"completed": 1402, "totalMicros": 9551848, "maxMicros": 49015, "inFlight": 2},
+        "characterCleanup": {"completed": 1402, "totalMicros": 9521210, "maxMicros": 46673, "inFlight": 0},
+        "characterRecovery": {"completed": 3, "totalMicros": 161, "maxMicros": 59, "inFlight": 0},
+        "casinoGold": {"completed": 601, "totalMicros": 59343688, "maxMicros": 546863, "inFlight": 0},
+        "casinoEP": {"completed": 0, "totalMicros": 0, "maxMicros": 0, "inFlight": 0},
+        "realtimeUpdate": {"completed": 1494, "totalMicros": 82841011, "maxMicros": 519531, "inFlight": 1},
+        "stateBroadcast": {"completed": 1494, "totalMicros": 46884054, "maxMicros": 107996, "inFlight": 0}
+      },
+      "scope": "All phases report failed0, timedSamples equal completed, inFlightKnown true. Unlisted before values are zero. Full fixed aggregate evidence remains in run.log. Elapsed lifetime call timing/in-flight gauges are not CPU, queue depth, percentiles, unique payments or conservation proof."
+    },
+    "interpretation": "The reproduced UI ordering fix did not clear all native failures. Existing stale category cannot distinguish bet from play, expired/wrong turn or changed round. No-target counts do not distinguish no live target from claimed targets. Neither cause is proven; diagnose without weakening acceptance or silently changing the declared workload.",
+    "cleanup": "Native harness/server terminal without forced-shutdown report. Exact owned Mongo0a68ce258b633ef735a43b6f30a367961ff8b9b1301b2ede32fe6d8dc3c39444/name/fixture label validated before synthetic-volume removal. Independent label/process queries empty. Aggregate artifacts retained; production and unrelated nightly soak untouched."
+  },
+  "lockingFixes100ClientComparison": {
+    "sourceCommit": "57ee066027b5690e7a0b1eda8260eedada1a7431",
+    "result": "FAIL226.01s/120s active. Actual source-built normal server includes non-player casino roster avoidance and per-scan enemy world locking. Reuse unchanged source87 driver; current race harness. All100 admissions, sustained fresh views, every20-party-member impact, healing and20 delivered social outcomes pass. All casino timeout counters are zero. One blackjack client has a round_or_bet rejection and no paid result; overall monetary gate fails. Independent all-account final save assertions are NOT REACHED. No100-player acceptance and no unchanged retry.",
+    "artifactDirectory": "/tmp/eidolon-179-locks100-kS1Dgd",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-229271002",
+    "serverSHA256": "20ccec8dac115e1e8f4bb0e8495be280a379df419751469dde65d74fb72fd22d",
+    "driverSHA256": "afaa74b996c456b039bc458b1f94727629d80009b98a8b9a0ff13ca3d0b85ff1",
+    "raceHarnessSHA256": "b12b55417bebe2cc1e17685ff31165dbc42278b390a91ce9a7e1e151a880303a",
+    "predeclaration": "100 clients, original fixed twenty-role blocks,120s active, original legal Uncommon/Rare class gear, funding/stakes,400/600 shared anchor,30-unit target radius, five-second admission/action deadlines, every paid/role/social outcome,600 fresh-own updates,108000ms active delivery and all independent saves unchanged. Owned Mongo7.0.14, loopback32958,2CPU/2GiB/512MiB tmpfs. Shared host, not isolated production headroom proof.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 129027,
+      "readWriteDecodeErrors": 0, "minimumFreshOwnUpdates": 1235,
+      "minimumActiveMilliseconds": 119176, "maximumStateGapMilliseconds": 769,
+      "payloadBytes": 1148469444, "maximumLoginMilliseconds": 700,
+      "maximumJoinMilliseconds": 772, "socialComplete": 20, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 17, "blackjack": 0, "house": 2, "poker": 1},
+      "casinoTimeouts": 0, "blackjackRoundOrBetRejections": 1,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20,
+      "partyMinimumImpacts": 1, "partyDamageEvents": 48, "partyHealEvents": 5,
+      "partyAcceptedCasts": 58, "partyDeniedCasts": 0, "partyXPUpdates": 48,
+      "partyObservedDeaths": 11,
+      "roles": {
+        "Fighter": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 0, "cohortWaitSteps": 37, "noTargetSteps": 2989, "pursuitSteps": 56},
+        "Cleric": {"minimumImpacts": 2, "pendingCastSteps": 0, "regroupSteps": 54, "cohortWaitSteps": 0, "noTargetSteps": 2984, "pursuitSteps": 48},
+        "Rogue": {"minimumImpacts": 1, "pendingCastSteps": 1, "regroupSteps": 41, "cohortWaitSteps": 0, "noTargetSteps": 2986, "pursuitSteps": 55},
+        "Wizard": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 33, "cohortWaitSteps": 0, "noTargetSteps": 2997, "pursuitSteps": 36}
+      }
+    },
+    "phaseMeasurements": {"updateCompleted": 1402, "updateFailed": 0, "updateTotalMicroseconds": 84218818, "updateMaximumMicroseconds": 641378, "broadcastCompleted": 1401, "broadcastFailed": 0, "broadcastTotalMicroseconds": 45390677, "broadcastMaximumMicroseconds": 129978, "scope": "Elapsed lifetime counters, not CPU or interval percentiles. One broadcast remains in flight at the final probe."},
+    "interpretation": "No transport failures or casino timeouts this time, and all party roles contribute. Differences from previous randomized-world/shared-host runs do not prove which locking fix caused them or establish headroom. Existing round_or_bet category combines changed hand/phase with invalid stake; investigate directly, never count a rejected wager as paid or rerun unchanged until green.",
+    "cleanup": "Terminal native harness joined its owned server without a forced-shutdown report. Exact Mongo ID892fe88bb46d5c2190fb27168284dee2a5c4edf9492f70e74cce854038b50fc4/name/fixture label matched before removal with synthetic volumes. Independent matching-label query is empty; owned server/harness process check is empty. Aggregate artifacts/binaries retained. Production and unrelated nightly soak untouched."
+  },
+  "inheritedVersion": "Alpha1.76.0 source candidate; own1.79 version not published",
+  "fixedSaveWalletPhaseEvidence": {
+    "change": "The existing two loopback health probes now retain the existing six character-journal/commit/cleanup/recovery and Gold/EP operation counters alongside update/broadcast. Exactly eight fixed numeric field sets; no new endpoint, runtime instrumentation, per-client history, amount, error text or private health body.",
+    "verification": "Actual loopback probe/parser/privacy cases PASS race1.103s. Every observed field must equal its fixture counts; redirected, oversized, unobserved/partial/invalid frame evidence and non-loopback addresses remain refused. Raw private health marker and commit are omitted.",
+    "limits": "Elapsed lifetime completed-call timing and in-flight gauges are not CPU, queue depth, interval percentiles, unique payments or wallet conservation proof. Native population evidence still requires all existing gates."
+  },
+  "orderingFenceFeedbackRegression": {
+    "confirmedDefect": "A ready table at version22 followed by lower-version saving/unavailable feedback and then a delayed ready lobby at21 reopened betting. Previous ordering compared only the currently displayed view, so failure feedback erased or lowered the reference. Actual Blackjack/Poker/House UI regression fails in all three classes before the fix; driver fails nine unavailable/missing-version/older-saving cases. This is reproducible independently of the100-client run; that run's causal attribution is not established.",
+    "repair": "Retain only one highest validated table counter and current player/physical-seat context, separately from displayed feedback. Unavailable and saving views still display and block actions. Lower ready views cannot clear that feedback. Higher/equal fresh recovery works; owner/session/seat/table/currency/game changes and close/disposal retire the UI marker. Driver mirrors the one-seat fence without action retry or manufactured wager/impact/payment evidence. No hand, cards, wallet history, across-frame game snapshot or persistent database field is added.",
+    "verification": "96 tests/four actual UI Jest suites PASS2.150s, including all feedback permutations and seven context-retirement paths per UI. Focused driver casino/blackjack/house/poker/combined scopes PASS race14.796s, including synthetic socket controls, exact int64 ordering, own-action/payment and refusal/timeout guards. System Chrome targeted browser checks PASS2 tests6.3s at390/1440px: twelve feedback cases per viewport across three real UI classes, actual wager controls issue no request from delayed old lobbies, and newer recovery resumes the view. Local fixture blocks WebSockets; no live server/player/casino operation.",
+    "hygiene": "Focused ESLint, gofmt and git diff --check pass. Browser-owned local server/processes terminate normally. No new population run or deployment; previous exact57ee0660 native failure stays a failure.",
+    "remaining": "Exercise the corrected normal server/driver under the declared workload, retaining every paid/role/social/save gate and explicit production-headroom/raid/event limits. Do not infer that a proven UI ordering bug caused every prior native rejection or turn focused browser proofs into real-wallet capacity acceptance. Ordered1.77/1.78 prerequisites remain open."
+  },
+  "blackjackAdmissionDiagnosticFollowUp": {
+    "change": "The actual wager admission now separates changed round/non-betting phase from invalid stake. A changed hand returns the already supported fixed blackjack-round-changed instruction; invalid stakes retain the original bounds/step instruction. Wallet admission, rejected/paid gates, timers, accepted-wager replay and action-error correlation are unchanged. No player/round/deck detail is added to the message.",
+    "verification": "Focused root wager admission/pending-account gate tests pass race1.414s; driver rejection/timeout/table-order scopes pass race1.127s. Both Gold and EP valid boundaries/steps pass, invalid amounts refuse, and every changed/closed phase refuses without mutating state. The fixed stale rejection still fails the workload and never retries or earns payment credit.",
+    "limits": "This clarifies player-facing errors and future fixed diagnostic categories; it does not diagnose or repair the observed100-client timing failure. It was added after source57ee0660's native comparison and is not included in that binary. No new native population or deployment is claimed."
+  },
+  "partyInactivityDiagnostics": {
+    "change": "Each test-client class now retains only five fixed aggregate counters for pending cast, regroup, waiting on an unready cohort, no eligible target and pursuit decisions. The combined integration retains only a whitelisted fixed-class/count line. No IDs, coordinates, account names, action history or extra acceptance credit.",
+    "verification": "Focused cmd/loadtest race checks pass2.123s, including all five inactivity paths, aggregate merging, unchanged zero-impact gates, written-hit ownership, distinct legal target selection and claim concurrency. Initial invocation used invalid -p2 shorthand and ran no requested tests; corrected -p 2 invocation is the cited pass.",
+    "limits": "These counters do not establish the cause of previous100-client failures. Anchor400/600, radius30, gear, ordinary commands, admission/action timeouts, casino stakes and every-member impact requirements remain unchanged. No unchanged100-client retry."
+  },
+  "diagnostic20ClientControl": {
+    "sourceCommit": "87cda8c73c9ce05192c710906c925ece8778ba41",
+    "result": "PASS139.76s: actual normal source-built server/driver plus race harness,20 fixed-role clients,120s active window, actual owned loopback Mongo7. Unchanged workload gates; all20 independent disconnect-save checks reached and passed. Inherits Alpha1.76.0 source label, not a published1.79 release.",
+    "artifactDirectory": "/tmp/eidolon-179-diagnostic20-qphAAI",
+    "serverSHA256": "bd0a3253f669259025393de2a8bce6cfbb7d1b711599ec2edbcd7fee13750236",
+    "driverSHA256": "afaa74b996c456b039bc458b1f94727629d80009b98a8b9a0ff13ca3d0b85ff1",
+    "raceHarnessSHA256": "e70784e8fe07111b3d5a39ba3b00d2c80dffffcf8374f58dbacb750400c8e421",
+    "metrics": {
+      "connected": 20, "joined": 20, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 3625, "minimumActiveMilliseconds": 119989,
+      "maximumStateGapMilliseconds": 103, "payloadBytes": 263822462,
+      "maximumLoginMilliseconds": 86, "maximumJoinMilliseconds": 42,
+      "socialComplete": 4, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 17, "blackjack": 2, "house": 2, "poker": 2},
+      "casinoFailuresRejectionsTimeouts": 0,
+      "partyMinimumImpacts": 28, "partyDamageEvents": 187, "partyHealEvents": 1,
+      "partyAcceptedCasts": 153, "partyDeniedCasts": 3, "partyXPUpdates": 200,
+      "roles": {
+        "Fighter": {"minimumImpacts": 28, "pendingCastSteps": 0, "regroupSteps": 0, "cohortWaitSteps": 44, "noTargetSteps": 278, "pursuitSteps": 190},
+        "Cleric": {"minimumImpacts": 74, "pendingCastSteps": 0, "regroupSteps": 90, "cohortWaitSteps": 0, "noTargetSteps": 244, "pursuitSteps": 200},
+        "Rogue": {"minimumImpacts": 42, "pendingCastSteps": 0, "regroupSteps": 93, "cohortWaitSteps": 0, "noTargetSteps": 243, "pursuitSteps": 188},
+        "Wizard": {"minimumImpacts": 44, "pendingCastSteps": 0, "regroupSteps": 59, "cohortWaitSteps": 0, "noTargetSteps": 272, "pursuitSteps": 121}
+      }
+    },
+    "scope": "All four roles actually contributed; healing, paid games and preserved equipment/bag/EP plus party progression passed. Waiting/pursuit diagnostics are decision counts, not time fractions. Unmatched own damage remains excluded from acceptance. Earlier100-client failure causes are not established by this smaller randomized-world comparison. No raid/event clear, all final casino settlements or production100-player headroom claim.",
+    "cleanup": "After terminal native harness completion and normal server cleanup, validated exact name/fixture label and removed only synthetic tmpfs Mongo c41b73102becd539bd8a5b3d0737fd4b9735b2eb027f1cdd848d600ce0344f6d with its volumes. Label query is empty; production and existing nightly soak untouched."
+  },
+  "diagnostic40ClientComparison": {
+    "sourceCommit": "87cda8c73c9ce05192c710906c925ece8778ba41",
+    "result": "PASS160.47s/120s active: two simultaneous four-class parties plus paid games and social activity. Reuse exact normal server/driver/race-harness binaries from the20-client control; no rebuild, funding/stat/radius/anchor/timer/pass-gate change. All40 independent save assertions reached and passed.",
+    "artifactDirectory": "/tmp/eidolon-179-diagnostic40-abH8W0",
+    "metrics": {
+      "connected": 40, "joined": 40, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 3237, "minimumActiveMilliseconds": 119918,
+      "maximumStateGapMilliseconds": 274, "payloadBytes": 549093066,
+      "maximumLoginMilliseconds": 162, "maximumJoinMilliseconds": 113,
+      "socialComplete": 8, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 22, "blackjack": 2, "house": 2, "poker": 2},
+      "casinoFailuresRejectionsTimeouts": 0,
+      "partyGroupsFormed": 2, "partyMembersConfirmed": 8,
+      "partyMinimumImpacts": 1, "partyDamageEvents": 60, "partyHealEvents": 2,
+      "partyAcceptedCasts": 67, "partyDeniedCasts": 0, "partyXPUpdates": 96,
+      "roles": {
+        "Fighter": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 0, "cohortWaitSteps": 22, "noTargetSteps": 1120, "pursuitSteps": 55},
+        "Cleric": {"minimumImpacts": 3, "pendingCastSteps": 0, "regroupSteps": 48, "cohortWaitSteps": 0, "noTargetSteps": 1094, "pursuitSteps": 55},
+        "Rogue": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 43, "cohortWaitSteps": 0, "noTargetSteps": 1099, "pursuitSteps": 50},
+        "Wizard": {"minimumImpacts": 1, "pendingCastSteps": 0, "regroupSteps": 20, "cohortWaitSteps": 0, "noTargetSteps": 1123, "pursuitSteps": 23}
+      }
+    },
+    "observation": "Two parties produced every-member impact and real healing. Shared-spot decisions are dominated by no eligible target, not pending casts. These are aggregate decision counts, not elapsed-time shares or proof of the cause of historical100-client failures. Current public frame cache is included; earlier failed100 sources did not contain it. Representative100-player acceptance, raids/events, all final settlements and production CPU headroom remain open.",
+    "cleanup": "After terminal native completion and normal server cleanup, exact name/fixture label matched before removing only synthetic tmpfs Mongo adac243cbffdad10abd3c85a48f6cd6f80b31e071b8ffe87256e49a03e94adb4 with volumes. Label query empty. Production/nightly soak unchanged."
+  },
+  "enemyTargetScanLockFollowUp": {
+    "change": "Enemy AI takes one World.Mu read lock around its candidate scan instead of reacquiring it for every player. Each candidate's state is still read live under Entity.Mu; active membership, replacement/disconnect/dead/stealth checks, scene filtering, sanctuary/pursuit/range and threat-selection rules are unchanged. No across-frame target cache, candidate omission, new player snapshot allocation, enemy/stat/gear change or network/timer/gate change. Scoped deferred unlock also protects worker panic unwinding.",
+    "verification": "Focused actual AI/target/scene-change/stealth/sanctuary/pursuit/threat/dungeon-movement scopes pass race16.067s. New eight-scenario comparison preserves exact live snapshot fields for active, stealth, expired, disconnected, dead, replaced, removed and nil candidates. Existing concurrent world-owned cast and scene/membership tests are retained.",
+    "benchmark": "Synthetic100-player target scan,100ms Go benchmark: per-candidate world locking5341ns/op versus shared per-scan locking2964ns/op; both0B/op and0allocations. PASS0.281s on the shared host. This measures uncontended target-snapshot scanning only, not full AI, frame/tick performance, writer wait, percentiles or production100-player headroom.",
+    "scope": "Changes remain unpublished. The later exact57ee0660 native100 comparison is recorded separately: every role contributed and transport/timeouts cleared, but blackjack rejection prevented full acceptance. This does not establish causation/headroom. Shared-anchor target supply remains limited; no unchanged retry or blanket capacity claim."
+  },
+  "nonPlayerRosterLockFollowUp": {
+    "change": "Both roster/readiness scans now skip non-player actors before taking their mutex. Type is immutable under world membership; this matches existing casino pruning/presence rules. No cached roster, lock-order change, seat/session/readiness/timeout rule or wallet change.",
+    "regression": "A held Enemy/NPC actor mutex previously blocked CasinoPresenceFor under the exclusive world lock: new focused regression fails0.318s before the production fix. It passes with the fix and verifies only the legitimate seated player contributes to occupants, unchanged roster revision, private own-seat session, connected/ready counts and ready phase. The test worker is joined after releasing fixture locks.",
+    "verification": "All ^TestCasino game tests pass race1.224s; root own-view, physical-action and audience notification tests pass race1.322s. gofmt and git diff --check pass. An initial test compilation used string instead of EntityType and was corrected before the cited regression run.",
+    "scope": "Source inspection and deterministic regression prove unrelated AI locks unnecessarily delayed casino readiness. The later57ee0660 native100 comparison includes this fix; zero timeouts there do not prove causation, resolve same-game table latency or demonstrate production headroom. Overall capacity still fails its blackjack gate. No deployment."
+  },
+  "diagnostic100ClientComparison": {
+    "sourceCommit": "87cda8c73c9ce05192c710906c925ece8778ba41",
+    "result": "FAIL222.16s/120s active: reused exact binaries validated by the20/40-client controls. All100 clients admitted and all20 social outcomes completed without transport/decode errors. Casino gates and one Wizard's positive-impact requirement fail. Independent final save assertions were not reached. No capacity acceptance or unchanged retry.",
+    "artifactDirectory": "/tmp/eidolon-179-diagnostic100-lT24aG",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 107142,
+      "readWriteDecodeErrors": 0, "minimumFreshOwnUpdates": 1020,
+      "minimumActiveMilliseconds": 119000, "maximumStateGapMilliseconds": 1047,
+      "payloadBytes": 1165097324, "maximumLoginMilliseconds": 573,
+      "maximumJoinMilliseconds": 773, "socialComplete": 20, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 1, "blackjack": 0, "house": 0, "poker": 0},
+      "casinoTimeouts": {"slotSpin": 5, "blackjackBet": 2, "pokerBuyIn": 2},
+      "casinoRejections": {"blackjackRoundOrBet": 1, "houseStale": 2},
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20,
+      "partyMinimumImpacts": 0, "partyDamageEvents": 174, "partyHealEvents": 5,
+      "partyAcceptedCasts": 221, "partyDeniedCasts": 1,
+      "partyXPUpdates": 200, "observedEnemyDeaths": 49,
+      "roles": {
+        "Fighter": {"minimumImpacts": 2, "pendingCastSteps": 12, "regroupSteps": 0, "cohortWaitSteps": 106, "noTargetSteps": 2512, "pursuitSteps": 371},
+        "Cleric": {"minimumImpacts": 1, "pendingCastSteps": 12, "regroupSteps": 142, "cohortWaitSteps": 0, "noTargetSteps": 2474, "pursuitSteps": 354},
+        "Rogue": {"minimumImpacts": 1, "pendingCastSteps": 18, "regroupSteps": 150, "cohortWaitSteps": 0, "noTargetSteps": 2484, "pursuitSteps": 336},
+        "Wizard": {"minimumImpacts": 0, "pendingCastSteps": 19, "regroupSteps": 103, "cohortWaitSteps": 0, "noTargetSteps": 2524, "pursuitSteps": 251}
+      }
+    },
+    "phaseMeasurements": "1184 completed updates total85321852us/max918547us, one in flight;1184 completed broadcasts total44239230us/max159784us. These are elapsed lifetime counters, not CPU percentiles or isolated production headroom.",
+    "interpretation": "Public encoding cache does not clear the connected100-player gates. No-target decisions dominate class aggregates, but decision counts alone cannot establish target scarcity or explain casino timeouts. Existing shared-host workload and unchanged timers/gear/anchor/gates prevent claiming isolated capacity. Diagnose actual contention and action transitions before another comparison.",
+    "cleanup": "Native harness terminal failure required forced shutdown of its owned server. After terminal completion, exact container name and fixture label were checked before removing only synthetic tmpfs Mongo377f5e431ab3abca440ff508640180ada23661a65970884f3e6f4822e7febb21 with volumes. Label query empty; aggregate artifacts retained. Production and existing nightly soak untouched."
+  },
+  "publicEncodingFollowUp": {
+    "change": "One broadcast-local cache encodes each detached immutable public actor once across recipients. Owner-private player messages always use their own encoding, never the public cache. Cache holds only actor snapshots touched by this broadcast and is discarded after its workers finish; no retained cross-frame cache, player history or timing/network/pass-gate change.",
+    "verification": "Focused PublicFrameEncoding, StateRecipient, StateBroadcast and matched replication/interest scopes pass race1.931s. Concurrent20-recipient owner/peer equality and marshaling verify private progression exclusion, visible equipment/combat/loot preservation, one public encoding and detached fresh next-frame state. Existing full/delta owner privacy tests retain their assertions.",
+    "benchmark": "100 recipients/one actor,100ms Go benchmark: uncached300113ns/230416B/1301allocations per frame; cached4958ns/2512B/16allocations. Benchmark passes0.578s. This is encoding/allocation micro-evidence, not production CPU headroom,120s connected capacity or a resolution of failed party/casino gates.",
+    "nativeFollowUp": {
+      "sourceCommit": "b6dd2b2025cdddaa83b76c8c6b6ae096d34065b2",
+      "result": "TestBlackjackActualSocketsWagersRoundAndPayout passes42.76s on actual isolated Mongo7 and the normal source-built server with the public frame cache. Two synthetic players see the same cards/dealer, stake100Gold each, retry one accepted wager without another debit, stand through the ordinary timed round, independently reload payouts/seat exit and restart without duplicate settlement. Private sessions/deck remain excluded. This is not the combined casino bot timing profile or100-player capacity.",
+      "artifactDirectory": "/tmp/eidolon-179-public-frame-blackjack-sCsfxR",
+      "serverSHA256": "ee6468b75a4500c12800fed3800b1aa6f6f96c60636369a526587b3d49345f4d",
+      "raceHarnessSHA256": "9c0e5c9acecb31c8650afac53544a67467d4751e4ae458119ffcac610d4d94e3",
+      "cleanup": "After normal native shutdown/restart cleanup, exact labelled tmpfs Mongo71aff04bb233615a07b7d773beb984ede14e59d2a2ada1b940cfd6f458b3a2a5 removed with synthetic storage. Aggregate artifacts retained; production/nightly soak untouched."
+    },
+    "remaining": "Ordered release verification and representative connected capacity remain open. No immediate full100 retry and no claim that this allocation change fixes targeting or monetary action timing. Existing2-second wager-window guard and5-second uncertain-action timeout are unchanged; source inspection did not justify weakening either."
+  },
+  "targetCoordinationFollowUp": {
+    "change": "Test-client combined parties coordinate one observed current target per group, bounded to five groups. Claims release on dead/missing target or party failure; contention waits for the next normal step. Standalone/dungeon/raid/event profiles, real enemies, search radius30, anchor400/600, gear and pass gates unchanged. No server gameplay edit or claim of synthetic credit.",
+    "unitVerification": "Full cmd/loadtest race suite passes18.268s. Distinct nearest legal targets, invalid/dead/foreign/out-of-range target refusal, one atomic winner, bounded replacement/release, zero-impact preservation and existing controller tests retained.",
+    "sourceCommit": "e395be65cdd3a30a6608cec0926fd4aa5e22c3d3",
+    "result": "FAIL224.71s:100 admitted, sustained state and all20 delivered social outcomes pass; party minimum impact0 and blackjack/house outcomes fail. Coordination alone does not resolve the previous failure; no unchanged full retry or capacity claim.",
+    "artifactDirectory": "/tmp/eidolon-179-coordinated-capacity-HO7IOO",
+    "serverSHA256": "9a2537e7c76f78184a8f3a49ec31dd34c344279bf7e0eb6751bd757f78453d00",
+    "driverSHA256": "b764eaf60adf90daa1fd2b54b436d4d3854f89daee2270cb1e6ece61932be2ca",
+    "raceHarnessSHA256": "5d5e4cf17db59e835c4141701830bd3806bc87306cc647cd7407e8c24e81fca5",
+    "scope": "Normal current source-built server/driver GOMAXPROCS2 and race harness,100 clients/120s active window, five20-role blocks, unchanged5s admission and100Gold stakes. Own Mongo7 loopback32954,2CPU/2GiB/tmpfs512MiB. Existing unrelated24h nightly soak remains active on this shared host, so no isolated production headroom inference.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 118107,
+      "minimumFreshOwnUpdates": 1132, "minimumActiveMilliseconds": 119472,
+      "maximumStateGapMilliseconds": 905, "payloadBytes": 1092869515,
+      "admissionFailures": 0, "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "maximumLoginMilliseconds": 507, "maximumJoinMilliseconds": 882,
+      "socialComplete": 20, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 22, "blackjack": 0, "house": 1, "poker": 1},
+      "casinoTimeouts": {"blackjackBet": 1, "houseBet": 1}, "blackjackRoundOrBetRejections": 1,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20, "partyMinimumImpacts": 0,
+      "partyDamageEvents": 52, "partyHealEvents": 4, "partyAcceptedCasts": 63,
+      "partyDeniedCasts": 0, "partyXPUpdates": 48, "observedEnemyDeaths": 12,
+      "roles": {
+        "Fighter": {"minimumImpacts": 0, "damage": 10, "heals": 0, "acceptedCasts": 12, "unmatchedDamage": 0},
+        "Cleric": {"minimumImpacts": 0, "damage": 13, "heals": 4, "acceptedCasts": 16, "unmatchedDamage": 0},
+        "Rogue": {"minimumImpacts": 0, "damage": 21, "heals": 0, "acceptedCasts": 23, "unmatchedDamage": 0},
+        "Wizard": {"minimumImpacts": 0, "damage": 8, "heals": 0, "acceptedCasts": 12, "unmatchedDamage": 0}
+      }
+    },
+    "phaseMeasurements": "After probe:1294 completed updates total86162107us/max756471us;1293 completed broadcasts total43548921us/max139673us with one in flight. Lifetime elapsed counters, not CPU/interval percentiles or tick headroom proof.",
+    "independentFinalSaves": "Not reached after driver failure. Normal cleanup shutdown is not proof that all100 preservation/XP/wallet assertions passed.",
+    "cleanup": "After terminal harness failure/owned normal server cleanup, validated exact name/fixture label and removed only tmpfs Mongo d0b1d2f68f0db26446637289b448b52eeecbba65a471982fa4818b31e18daa9b with synthetic volumes. Aggregate artifacts retained; production, owner worktree and nightly soak untouched.",
+    "next": "Use focused controller evidence to distinguish target scarcity/cohesion from gameplay impacts and exact casino round transitions before another full comparison. Do not increase stats/fund bot losses/invent enemies/relax5s or real-impact gates to get green."
+  },
+  "changes": [
+    "Select prepared workload drivers and native capacity fixtures into the current1.78 integration, retaining account-bound identity, schema25 ordered ground/casino heads and existing privacy/admin behavior. Do not import historical future-version acceptance claims.",
+    "Normal broadcasting reads only detached live position, scene and normalized owner EndgameProgress under existing world-before-actor locks. It no longer clones bags, stash, equipment and durable operation receipts for this frame read. Character save/commit snapshots remain complete and account-bound.",
+    "Fixed four-class party diagnostics preserve zero-impact participants and distinguish accepted/denied casts from actual positive damage/healing. Existing per-member impact, real healing, fresh-own updates, paid outcomes and independently reloaded save requirements remain unchanged.",
+    "Disposable equipment preparation uses naturally generated legal uncommon/rare items with class-appropriate primary stats and offhands, no stat scaling or rewritten item budgets. Each test-created world now stops its background loops during cleanup."
+  ],
+  "verification": {
+    "driver": "Complete cmd/loadtest race suite passes17.611s before diagnostics and18.133s with diagnostics, including admission, real synthetic sockets, fresh-own state, casino acknowledgements/timeouts, party targets/heals and new zero-minimum/repeated-role aggregation tests.",
+    "focusedServer": "Root2.059s and game3.447s race checks cover frame context, normalization, Resonance/realtime/replication and combined configuration. Native opt-in fixtures skip unless explicitly configured; these commands do not establish a Mongo population run.",
+    "roleEquipment": "Exact TestPreparedRoleEquipment race scope passes2.817s across four classes and levels30/60/100, legal equip/primary stats/natural rarity, unique IDs, potency0 and bounded/refused inputs. Diagnostic schema/privacy test passes1.062s.",
+    "client": "SoakIsolation and ProtocolContract:7 tests/two suites pass0.653s; full lint passes.",
+    "benchmark": "Synthetic frame-read comparison: full-character192970ns/op,329216B/op,1013allocations; bounded frame context286.7ns/op,256B/op,2allocations.100ms benchmark passes0.512s, using100 bag items/400 stash items/1024 receipts. This is neither a live100-player capacity result nor proof of the previous failure's cause.",
+    "predecessorCI": "Exact1.75 run37399132936 is confirmed in progress; client/ordinary Go coverage green. Later watcher reports Go race and disposable upgrade/restore passed. Browser/deployment/live acceptance still pending at this checkpoint."
+  },
+  "historicalCapacityFailure": {
+    "receipt": "Retained separately at /tmp/eidolon-1-79-release-TRvSBA/docs/plans/2026-10-05-capacity-role-social-checks.json",
+    "sourceCommit": "7dcd2cfbff2fd0f0ad8c119ea253bd83ffd58c96",
+    "result": "FAIL234.69s:100 admit and town/social responses complete, but minimum572 fresh own updates is below600,32 casino timeouts, three paid minima0 and party minimum impact0; independent all-account save gate not reached. Owned fixture removed. No failure reclassified as pass or unchanged retry."
+  },
+  "currentNativeComparison": {
+    "sourceCommit": "9b4fd34d991edada5c6c8f9aef7cf4e3431c19d7",
+    "result": "FAIL213.11s/exit1: state, paid casino and delivered social gates clear, but party minimum impact0; independent all-account reload assertions not reached. No unchanged100 retry.",
+    "buildSetupCorrection": "Initial85.22s attempt stopped at exact build-identity readiness before any driver activity. Default dev metadata did not match binary basename server. Owned server shut down normally and its disposable container a510f063953390f5d1d6f6fb14e81699102cb33e4800728bdef983319150ec1d was removed. Rebuilt server with exact source commit as embedded identity and basename, then used a fresh owned database. No readiness guard was weakened.",
+    "artifactDirectory": "/tmp/eidolon-179-current-capacity-P6LPFY",
+    "serverSHA256": "e060e1b1e05584fe614ef2884810ffaee28c7d50852985d5e503552f5726bee0",
+    "driverSHA256": "dd9df825244f618ffe3149c6fa508e04866ab1cc1482bb5bb46586ad58262d48",
+    "raceHarnessSHA256": "f8a9497db0ce6c074f1122d816bc6f3e97bf3a106adf90c00b357986031eb0bb",
+    "scope": "Normal source-built server/driver with GOMAXPROCS2, race root harness,100 clients in five20-role blocks,120s active window, five-second admission, Gold100 bets and party anchor400,600. Mongo7 on explicit loopback32964 with2CPU/2GiB limits and512MiB temporary db. Shared host already running an unrelated24h100-client nightly soak; this is not isolated production headroom or CPU percentile proof.",
+    "metrics": {
+      "connected": 100, "joined": 100, "stateFrames": 145827,
+      "minimumFrames": 1384, "minimumFreshOwnUpdates": 1384,
+      "minimumActiveMilliseconds": 119499, "maximumStateGapMilliseconds": 613,
+      "receivedPayloadBytes": 1535698724,
+      "maximumLoginMilliseconds": 391, "maximumJoinMilliseconds": 419,
+      "admissionFailures": 0, "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "all20TownSocialOutcomesComplete": true,
+      "casinoMinimumPaidResults": {"slots": 23, "blackjack": 1, "baccaratRoulette": 2, "poker": 1},
+      "casinoTimeouts": 0,
+      "partyGroupsFormed": 5, "partyMembersConfirmed": 20,
+      "partyDamageEvents": 131, "partyHealEvents": 5,
+      "partyAcceptedCasts": 382, "partyDeniedCasts": 0,
+      "partyXPUpdates": 96,
+      "roles": {
+        "Fighter": {"participants": 5, "minimumImpacts": 0, "damage": 7, "heals": 0, "acceptedCasts": 103},
+        "Cleric": {"participants": 5, "minimumImpacts": 20, "damage": 112, "heals": 5, "acceptedCasts": 61},
+        "Rogue": {"participants": 5, "minimumImpacts": 0, "damage": 8, "heals": 0, "acceptedCasts": 112},
+        "Wizard": {"participants": 5, "minimumImpacts": 0, "damage": 4, "heals": 0, "acceptedCasts": 106}
+      }
+    },
+    "phaseMeasurements": {
+      "scope": "Elapsed lifetime cumulative counters at two loopback probes, not CPU or interval percentiles. One broadcast remains in flight at final probe.",
+      "updateCompleted": 1590, "updateFailed": 0, "updateTotalMicroseconds": 81007242, "updateMaximumMicroseconds": 519264,
+      "broadcastCompleted": 1589, "broadcastFailed": 0, "broadcastTotalMicroseconds": 47773916, "broadcastMaximumMicroseconds": 111808
+    },
+    "cleanup": "Normal owned server shutdown completed during harness cleanup. Exact labelled disposable Mongo container9c55ff7b0ede54ba5e5fa49a48fb404e565bc18da69411ec3627e11a129a9248 stopped/removed with its synthetic volumes. Retained aggregate logs/binaries; production and existing nightly soak untouched."
+  },
+  "focusedFourPlayerControl": {
+    "sourceCommit": "1ee199db672d527b57191aadec78f4281278fb0e",
+    "result": "PASS49.59s:45s normal server/driver fight with four class-focused naturally rolled uncommon/rare equipped level30 characters. Every member has positive matched impact and independently reloaded saved XP; equipment, bag and EP preserved exactly. This is not a dungeon/raid clear, full100-client pass or proof of the crowding hypothesis.",
+    "artifactDirectory": "/tmp/eidolon-179-current-party-F9stEn",
+    "serverSHA256": "da1eed102b807cd9b95db464bfb61a624926d8fb4a4eb9c39285d5c11d92e075",
+    "driverSHA256": "19c663c744fa4a1baf25ff2a2ece869f4221b0889cb057e5c2d4b08a51a1796d",
+    "raceHarnessSHA256": "5d5e4cf17db59e835c4141701830bd3806bc87306cc647cd7407e8c24e81fca5",
+    "diagnosticRegression": "Focused party/controller/root schema/privacy race suites pass2.122s/2.701s. Foreign-source, wrong-scene, zero-amount and empty-target events cannot raise the unmatched counter; that counter never raises damage/minimum impacts. Fixed schemas omit names/IDs/raw histories.",
+    "metrics": {
+      "connected": 4, "joined": 4, "minimumFreshOwnUpdates": 1364,
+      "minimumActiveMilliseconds": 44978, "maximumStateGapMilliseconds": 82,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "minimumImpacts": 12, "damageEvents": 102, "healEvents": 1,
+      "acceptedCasts": 79, "deniedCasts": 0, "xpUpdates": 112,
+      "roles": {
+        "Fighter": {"minimumImpacts": 12, "damage": 12, "unmatchedDamage": 3},
+        "Cleric": {"minimumImpacts": 46, "damage": 45, "heals": 1, "unmatchedDamage": 11},
+        "Rogue": {"minimumImpacts": 24, "damage": 24, "unmatchedDamage": 7},
+        "Wizard": {"minimumImpacts": 21, "damage": 21, "unmatchedDamage": 4}
+      }
+    },
+    "nextInterpretation": "All four kits work in this normal party control. Combined allocation assigns five independent parties the exact same anchor/30-unit target search area; contention/target attribution are candidates, not established causes. No stats, enemies, pass gates or default workload allocation changed, and no full100 retry.",
+    "cleanup": "Normal owned server stopped; exact labelled disposable Mongo fc79ff5d29408ae6336772a81aea94fd8f9d98b03ffcf0a1d9775cc8ce4da62b stopped/removed with only synthetic volumes. Retained aggregate logs/binaries; production and nightly soak untouched."
+  },
+  "remaining": [
+    "Diagnose the remaining blackjack rejection in a focused real-table check before another100-player comparison. Latest changed-server run has actual every-member party impacts and no timeouts, but one rejected wager prevents final saves. Keep historical role failures as failures, and preserve600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves.",
+    "Representative process/database/network headroom, settlement/reopen and actual encounter/party coverage require their own evidence; a frame microbenchmark or small cohort is not100-player acceptance.",
+    "Accepted1.75/1.76 evidence remains scoped to their exact published sources. Ordered1.77/1.78 release and owner operating decisions, then own version/cumulative notes, fresh remote integration, CI/deployment and exact public acceptance. Full1.99 goal remains active."
+  ],
+  "authorityLimits": "No production account/database/load, provider mail/settings, root/service/DNS changes, erasure, retention change or future milestone deployment. Owner worktree remains untouched."
+}

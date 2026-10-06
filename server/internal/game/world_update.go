@@ -88,7 +88,8 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 	close(entityChan)
 
 	var wg sync.WaitGroup
-	numWorkers := runtime.NumCPU()
+	// Respect the runtime/container CPU budget; an empty frame needs no workers.
+	numWorkers := min(runtime.GOMAXPROCS(0), len(allEntities))
 	wg.Add(numWorkers)
 
 	for i := 0; i < numWorkers; i++ {

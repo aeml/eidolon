@@ -20,23 +20,31 @@ func hashAngle(key string) float64 {
 	return (float64(h.Sum32()) / float64(math.MaxUint32)) * (2.0 * math.Pi)
 }
 
+// A cell is identified by its exact scene and integer coordinates. Keep this
+// runtime-only key structured: Nearby must not format/allocate a string for
+// every candidate cell on every actor/recipient query.
+type spatialCellKey struct {
+	instanceID string
+	x, z       int
+}
+
 type SpatialMap struct {
 	cellSize float64
-	cells    map[string]map[string]*Entity
+	cells    map[spatialCellKey]map[string]*Entity
 	Mu       sync.RWMutex
 }
 
 func NewSpatialMap(cellSize float64) *SpatialMap {
 	return &SpatialMap{
 		cellSize: cellSize,
-		cells:    make(map[string]map[string]*Entity),
+		cells:    make(map[spatialCellKey]map[string]*Entity),
 	}
 }
 
-func (sm *SpatialMap) key(x, z float64, instanceID string) string {
+func (sm *SpatialMap) key(x, z float64, instanceID string) spatialCellKey {
 	cx := int(math.Floor(x / sm.cellSize))
 	cz := int(math.Floor(z / sm.cellSize))
-	return fmt.Sprintf("%s:%d:%d", instanceID, cx, cz)
+	return spatialCellKey{instanceID: instanceID, x: cx, z: cz}
 }
 func (sm *SpatialMap) Add(e *Entity) {
 	sm.Mu.Lock()
@@ -94,15 +102,9 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 	minZ := int(math.Floor((z - radius) / sm.cellSize))
 	maxZ := int(math.Floor((z + radius) / sm.cellSize))
 
-	// Use strings.Builder to reduce string allocations in hot path
-	var keyBuilder strings.Builder
-	keyBuilder.Grow(32) // Pre-allocate for typical key size
-
 	for cx := minX; cx <= maxX; cx++ {
 		for cz := minZ; cz <= maxZ; cz++ {
-			keyBuilder.Reset()
-			fmt.Fprintf(&keyBuilder, "%s:%d:%d", instanceID, cx, cz)
-			k := keyBuilder.String()
+			k := spatialCellKey{instanceID: instanceID, x: cx, z: cz}
 			if cell := sm.cells[k]; cell != nil {
 				for _, e := range cell {
 					result = append(result, e)

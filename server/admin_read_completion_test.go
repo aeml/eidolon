@@ -35,7 +35,7 @@ func (s *adminCompletionActivityStore) AppendAdminActivity(event database.AdminA
 }
 
 func TestAdminReadCompletionRechecksRoleAndConnectionAfterIO(t *testing.T) {
-	for _, kind := range []string{MsgAdminStatus, MsgAdminPlayers, MsgAdminHistory, MsgAdminReports} {
+	for _, kind := range []string{MsgAdminStatus, MsgAdminPlayers, MsgAdminHistory, MsgAdminReports, MsgAdminService} {
 		for _, stage := range []string{"query-revocation", "audit-revocation", "audit-role-outage", "audit-replacement"} {
 			if stage == "query-revocation" && kind != MsgAdminHistory {
 				continue
@@ -73,7 +73,7 @@ func TestAdminReadCompletionRechecksRoleAndConnectionAfterIO(t *testing.T) {
 					store.afterAppend = hook
 				}
 				result := adminRead(t, client, kind, "")
-				if result.Success || result.Authorized || result.ModerationEnabled || result.History != nil || result.Reports != nil || len(result.Players) != 0 || len(result.Items) != 0 || result.Account != "" || result.Next != "" {
+				if result.Success || result.Authorized || result.ModerationEnabled || result.History != nil || result.Reports != nil || result.Service != nil || len(result.Players) != 0 || len(result.Items) != 0 || result.Account != "" || result.Next != "" {
 					t.Fatal("late read exposed privileged data after ownership/role change", result)
 				}
 				if result.ID != "read-request-000001" || strings.Contains(result.Message, "private authority") {

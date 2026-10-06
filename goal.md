@@ -1,5 +1,32 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 local1.87 server/client consolidation:** Merge prepared server branch
+d50a9e52 into current client946d1861, preserving newer account/progress support,
+incident notices, schema25 identity fencing, trusted deployment guards, guide,
+content checks and saved graphics quality. Resolve only AdminUI and goal-history
+conflicts with both sides retained. Typed spatial keys, broadcast-local encoding/
+comparison caches, live target validation, bounded workers/save drain, audited
+service diagnostics and casino stale-feedback guards are integrated locally.
+Twelve client suites PASS153; additional five PASS74 and corrected two trust
+suites PASS8. Preserve the initial nonexistent-test-file invocation failure.
+New coupled diagnostics/notice regression passes; its two-suite22-case rerun
+adds only one distinct test. Eleven generated-content groups pass. Broad Go race
+run FAILS internal/game at the10-minute package deadline; other tested packages
+pass. This is not broad gameplay acceptance or proof of a stuck individual case.
+Focused changed gameplay plus the full Wizard paid-cast matrix PASS9.085s;
+three exact casino lock/session/consent tests PASS1.132s. No unchanged whole-suite
+restart or weaker budget. Five native admin/card-feedback presentation checks
+PASS1.3m, phone admin capture inspected and loopback4187 closed; synthetic replies
+are not durable backend audit, settlements or real-phone acceptance. Historical
+native100/event/raid receipts keep their exact older binaries and remaining803ms
+gap; no combined capacity/headroom claim. Monitoring/load tooling remains inactive.
+Owner analytics inventory is complete, including reset on new activity; all
+settings unchanged. Ordered1.77 TLS renewal and1.78 operating choices, efficient
+full-game verification, measured stalls and exact release acceptance remain open.
+No deployment, provider mail, production data/service or main worktree change.
+Full roadmap goal remains active. See the
+[combined performance receipt](docs/plans/2026-10-06-release1-87-current-performance-checks.json).
+
 **October6 prepared1.87 graphics startup:** Current renderer ignores saved Low/
 Medium until UI binding and creates temporary High postprocessing; invalid saved
 quality leaves UI selection blank. Three RED regressions reproduce this; preserve
@@ -133,6 +160,443 @@ dispatch, credential change or publication. SSH host pinning and repository/
 runner protection still need evidence; this is not full1.82 acceptance. See
 [deployment evidence](docs/plans/2026-10-06-release1-82-current-deployment-checks.json).
 
+**October6 structured spatial-cell keys:** Replace formatted candidate-cell strings
+with exact scene/integer coordinate keys; retain bounds, locks and precise downstream
+targeting/visibility. Empty81-cell regression RED246 allocations, GREEN within one
+result allocation; boundary/scene/movement/concurrency checks pass. Scoped race
+PASS11.360s and affected ability/replication scopes game37.732s/root2.314s. One3s
+idle100-recipient profile observes8.994ms→7.469ms, allocations21661→4337 and
+bytes4015182→3729519, identical12165B/frame. Exact artifacts/hashes in capacity
+receipt. Diagnostic only: no native803ms stall resolution/headroom signoff, new
+population run, Mongo fixture or deployment. Prior native PASS binaries lack this
+change; full1.79 and ordered1.77/1.78 release prerequisites remain open.
+
+**October6 delta-cache native100 PASS213.05s:** Exact2da4b9ee normal
+server and unchanged c0164aac driver/race harness passed the original100-client/
+five20-role120s mixed workload once after the changed cache dependency. Same
+legal gear/funding/camp and5s guards, all positive activity/save requirements;
+no concurrent owned encounter/benchmark/race run. Owned Mongo32969 exact identity/
+hashes/log in receipt. Every paid casino/social/party impact and100 independent
+normal fresh save checks passed, with all eight drain stages under unchanged5s
+stop guard. Root consumed terminal session73078, exact Mongo identity/label
+validated before synthetic DB/volume removal; label/process follow-up empty.
+Worst state gap803ms remains a stall; interval completed-phase means37.590ms
+update/24.957ms broadcast still pressure the intended33ms budget. Sample counts
+differ (broadcast in flight at endpoint), not per-frame conservation. Random
+combat/shared host prevent single-fix attribution. Not simultaneous100-player
+raid/event, full final settlement/restart or production headroom acceptance.
+Optional Luna capacity/event monitoring extension asked, no answer/delegation.
+
+**October6 Root diagnostic PASS250.12s:** Exact current2da4b9ee normal
+server (broadcast cache) and c0164aac driver/race harness started06:00:11 UTC
+within the real first40s Root precondition. No skip, clock/power override,
+concurrent owned benchmark/native run or changed four-member wave/presence/
+completion/town-exit/save gates. Original9m maximum/5s guards and legal level35
+class-focused Uncommon/Rare gear/builds unchanged. Owned Mongo32968 exact identity,
+hashes/artifacts in capacity receipt. All four living own-wave/champion/completion/
+town-exit and independent fresh saved XP/Gold/gear/bag/EP checks pass; every role
+contributed, recovery24/24, worst state gap58ms. Original stop guard/all eight
+drain stages pass. Root consumed terminal session74784; exact fixture/label
+validated before synthetic DB/volume removal and empty label/process follow-up.
+Earlier Root failure retained; its cause is not proved by this changed-source
+PASS, and random recovery/combat variation prevents cache causal attribution.
+No all-realms/100-player/headroom/pacing or live publication claim.
+
+**October6 broadcast delta-frame optimization:** A short actual generated-world
+broadcast profile locates repeated observer change comparisons (40.62% sampled
+cumulative CPU). Share immutable delta history and comparison results only inside
+one detached broadcast, keyed by the actor and exact previous client baseline.
+Owners always receive self state; different histories, resets, rejected queues,
+private fields, scene/radius filtering and existing thresholds remain intact.
+Actual shared-history regression fails before repair, passes afterward; scoped
+replication race3.860s and explicit concurrent-cache/privacy/full-resync race1.800s.
+Sequential3s idle100-recipient profiles observe13.219ms→8.994ms mean broadcast,
+about32%, with identical12165B/frame. Allocated bytes rise3.7%, allocations5.2%:
+this is not a memory improvement, percentile/headroom/smoothness signoff or a
+resolution of native918ms stalls. Exact artifacts/hashes in receipt. Previous
+bbab native100/raid checks lack this cache; current candidate/release gates stay
+open. No new population run, database fixture, external write or live deployment.
+
+**October6 scene-filter native100 PASS220.46s:** Exact bbab4c51 normal
+server/c0164aac driver and race harness passed the original100-client/five20-role
+mixed120s workload once after the changed runtime dependency. All legal gear/
+funding/camp,5s admission/action/graceful-stop and positive activity/save gates
+unchanged. Shared host, no parallel owned benchmark/encounter, no headroom or
+latency acceptance inferred from the prior idle microbenchmark. Artifact/hash/
+owned Mongo32967 identity recorded in the capacity receipt. Every paid casino/
+social/party impact and100 final independent normal disconnect saves passed;
+all eight ordinary shutdown stages/drain completed under the unchanged5s guard.
+Root consumed terminal session70885; exact Mongo identity/label validated before
+synthetic DB/volume removal and empty label/process follow-up. No Luna capacity
+monitoring delegation. Worst state gap918ms versus prior1982ms is promising,
+not smoothness acceptance or matched causal attribution. Retained endpoint
+timing deltas observe43.018ms mean update/26.458ms mean broadcast, together above
+the intended33ms sequential frame budget; substantial responsiveness work stays
+open, along with actual event coverage, headroom and ordered release gates.
+
+**October6 event first-cause repair:** Event refusals now preserve eight fixed
+categories instead of an unclassified flag; all party summaries emit the first
+failure once. RED18 existing invalid/historical cases plus partial completion/
+recall cases; GREEN driver race2.521s and root diagnostic/coverage race2.707s.
+A valid absent champion view reproduces completed3/minimum3 wave views and still
+refuses completion as event_missing_wave. This is a possible path, not the proven
+cause of the prior native run. No raw identities/messages, changed timing/credit/
+save gates, new native acceptance or deployment; full1.79 gates remain open.
+Exact c0164aac driver/race harness built with hashes retained in the receipt;
+final event regression compile/check PASS0.016s. Prepared only: no live process,
+fixture, schedule override or waiting soak. Fresh fetch still finds origin/master
+69cc97d9; ordered1.77/1.78 owner/release prerequisites remain open.
+
+**October6 natural Root event control FAIL199.95s:** Exact bbab4c51 binaries
+ran the existing four-class level35 normal Root check, started05:20:24 UTC
+inside the real first40s window; no schedule skip or clock/power manipulation.
+Three players completed, minimum three wave views, zero town exits, one semantic/
+decode refusal. Final independent save assertions were not reached. Recovery
+completed14 trips; missing champion participation is a hypothesis, not a cause
+proved by the old aggregate log. No reduced gates or unchanged retry. Root
+consumed terminal session4510 directly; normal server drain completed. Exact
+owned Mongo32966 identity/label validated, synthetic DB/volumes removed, follow-up
+label/process queries empty. Concurrent raid means no matched headroom inference.
+
+**October6 current-source Earth raid PASS385.64s:** Exact bbab4c51 normal
+server/driver and race harness passed the original five-player full Earth assault,
+three rooms/one boss, three-wave repair, every-client restoration/town exit and
+independent shared original boss rewards/XP/unclaimed repair readiness/save checks.
+Legal level30 class-focused Uncommon/Rare gear/builds and declared chapter access;
+20m maximum,5s admission/action/stop guards, no power/clock/monster manipulation
+or reduced gates. Owned loopback Mongo32965/name/ID/label, exact binary hashes,
+artifact log and terminal handle/PID retained in the capacity receipt. Authorized
+Luna reported PASS; root independently consumed session72424 and checked the log.
+All eight ordinary shutdown stages/drain completed within unchanged guards.
+Exact owned Mongo32965 identity/label validated, synthetic DB/volumes removed,
+follow-up label/process queries empty. Not population/headroom acceptance,
+all-realms/Dark King or production release. Mixed100 old-source PASS remains.
+
+**October6 encounter evidence retention:** Dungeon/raid/event wrappers now retain
+already-emitted fixed four-class role/activity counters and closed failure stages,
+never raw socket/identity/error suffixes. Focused diagnostic race PASS1.092s;
+private/unknown/invalid fields refused. Not included in the completed bbab binaries,
+and not a retroactive explanation of their event failure. No outcome gate changed.
+
+**October6 profiled live-scene target scan:** Full current generated-world CPU
+profile with100 idle actors identifies enemy target scanning as the dominant
+sampled path. Skip out-of-scene membership/cast reads only after reading the
+actor's live scene under its existing lock; matching snapshots/authority remain
+identical. No actor snapshot cache, AI frequency/radius/timer or gameplay/save
+change. Focused target/worker/safe-zone/dungeon-roam/Dark King race scopes pass
+9.912s; scene regression fails before repair. Sequential exact before/after
+benchmark binaries (after race completion) observe28.909ms→25.324ms mean update
+time, about12.4% in the declared100-idle town/casino scenario. Initial overlapping
+profile is not the comparison; immutable binaries/logs/CPU profiles retained in
+the existing receipt. Single short shared-host/random-population observation,
+not percentiles, headroom, allocation reduction or resolution of1982ms stalls.
+These changes were not in native32831df3; its prior100 PASS remains exact old-
+source proof. No new population run/publication; full capacity/release gates open.
+
+**October6 changed-periodic native100 comparison:** Reused exact32831df3
+normal server/race harness and exact4096c19c driver pass217.76s/120s active.
+All100 admit/fresh own views, paid casino outcomes,20 social outcomes,20 party
+members' positive impacts/healing and100 independent normal disconnect-save
+checks pass. All fixed drain stages and completion recorded; graceful shutdown
+passes the unchanged five-second guard. Original workload/stakes/gear/camp/radius/
+timeouts and every positive-outcome gate retained. Historical failures remain;
+random supply/shared-host variation prevents one-fix causal attribution. Worst
+state gap1982ms stays a responsiveness concern, not headroom/smoothness approval.
+Exact owned Mongo identity/label validated then synthetic fixture/volumes removed;
+label/process queries empty. Artifacts/hashes/aggregates retained in the existing
+receipt. Full active raid/event/headroom/client performance and ordered release
+gates remain open; no immediate unchanged retry or deployment claim.
+
+**October6 normal eight-character shutdown/restart control:** Exact32831df3
+normal server/current race harness pass10.99s using the unchanged eight-live-
+character four-class alive/dead resource scenario. Normal SIGINT, real Wizard
+cast, exact final Mongo resources/rest state, empty acknowledged journal, fresh
+process and ordinary logins pass; both owned logs show every fixed drain phase
+and completion. Five-second stop guard/other assertions unchanged. Exact owned
+Mongo identity/label validated then synthetic fixture/volumes removed; label/
+process queries empty. Artifacts/hashes retained in the current capacity receipt.
+No100-client timeout resolution, casino/raid/event acceptance, production action
+or full milestone claim. The changed periodic-save dependency is ready for one
+later bounded100 comparison; older failures and full release gates remain open.
+
+**October6 periodic-save drain correction:** Two targeted regressions prove a
+periodic pass continues new account saves/offline replays after shutdown begins.
+Check the existing stopping flag at entry/between accounts/before retries; finish
+the admitted write and retain the independent final journal-all pass. Tests
+preserve late earned Gold/account binding for every character and offline pending
+recovery. Eight fixed shutdown phase labels identify future stalls without player
+IDs or new APIs; drain order/timeouts unchanged. Focused shutdown/persistence/
+identity/connection/work race scopes pass3.639s. This is not proven attribution
+or resolution of the historic five-second native100 timeout. Subsequent normal
+eight-character control is recorded above; full gates stay open.
+
+**October6 corrected native100 comparison:** Exact4096c19c normal server/driver
+and race harness fail218.36s/120s active. All100 admissions/fresh own views,
+paid casino outcomes with zero rejections/timeouts,20 social outcomes,20 members'
+positive party impacts/healing and100 independent disconnect-save checks pass.
+The overall run remains FAIL: the server exceeded the unchanged five-second
+graceful-stop guard and was forcibly stopped. Saved character checks are not
+proof of completed final shutdown durability. Log records shutdown start, not
+drain completion; exact blocking phase remains unknown. Compose's60s stop policy
+is context, not permission to relax the test to get green. Investigate the drain
+before another population run. Worst fresh-state gap1143ms retained, not headroom
+or smoothness approval. Exact owned Mongo identity/label verified then fixture
+and synthetic volumes removed; independent label/process queries empty. Fixed
+aggregates/hashes/logs retained in the existing receipt; no publication or full
+capacity acceptance. Latest remote remains69cc97d9.
+
+**October6 between-fight Cleric fidelity:** Two focused controller regressions
+fail before repair: an injured own ally is ignored without an enemy, and a
+healing cooldown suppresses the ready advertised Radiant Strike. Select a ready
+heal before the empty-enemy wait, retaining normal party/range/scene/path and
+pending-cast guards. Focused party/combined/dungeon/raid/event driver race scopes
+pass3.553s; waiting and submissions still grant no impact/cast credit. No stats,
+gear, spawns, target claims/radius/anchor, deadlines or acceptance changes.
+Historical native failures remain; subsequent corrected native100 evidence is
+recorded separately above, not accepted. Full release goal remains active.
+
+**October6 runtime CPU-budget correction:** A targeted real damage-callback
+regression proves World.Update exceeds both one/two-worker runtime budgets.
+Worker count now uses min(current GOMAXPROCS, snapshot length); an empty entity
+batch starts no workers while global bookkeeping continues. Queue/snapshot/dt/
+timer/target/save rules stay unchanged. Focused worker/empty-frame/enemy-target/
+rest/resource/status race scopes pass14.590s; every actor's single damage tick
+is retained and owned test updates join normally. No native100 retry, measured
+headroom, historical-failure causal attribution or live publication. Full capacity
+and ordered release gates remain open; fixed evidence stays in the existing receipt.
+
+**October6 corrected-build native four-party control:** Changed driver d5d28ded
+with reused exact cea4f481 normal server/race harness passes49.71s/45s active.
+All four admit, contribute and independently save positive XP while retaining
+class/gear/bag/EP. Actual healing1, owned damage78, accepted casts69/denied0;
+transport errors0. Cleric's sole impact is healing, not proof of offense/full-kit
+or healer balance. Original four-client workload/gear/anchor/radius/gates remain.
+Exact owned Mongo identity/label matched then synthetic fixture/volumes removed;
+label/process queries empty. Production/nightly soak untouched. Artifacts and
+binary hashes retained in the existing receipt; no100-client or release claim.
+
+**October6 prepared-build combat fidelity:** The Cleric A save unlocks Radiant
+Strike but the driver selected Spirit Guardians; all roles also cast primaries
+without checking advertised unlocks. A focused locked-skill regression fails
+before the repair. Driver now uses the actual unlocked prepared primary or an
+ordinary attack; Cleric approaches its three-unit cone. Healing selection,
+pending-cast/impact/cooldown/party/target claims and all acceptance gates remain.
+Focused party/combined/dungeon/raid/event race scopes pass3.627s. Initial broader
+run revealed a target-selection fixture lacking its asserted Charge unlock;
+give the fixture its declared primary, retaining all target and zero-impact
+assertions. No player save/stat/unlock changes or100-client acceptance.
+
+**October6 blackjack driver deadline repair:** A focused regression proves the
+bot submits stand at/after the advertised turn expiry while the actual UI already
+blocks it. Driver now reads that public deadline and waits/refreshes instead;
+no waiting credit, server rule/timer change or monetary retry. Fixed first-failure
+action categories distinguish pending bets/plays without raw IDs or errors;
+unknown/cleared actions stay unknown and later failures cannot replace the cause.
+Focused driver race scopes pass4.388s and root combined/evidence guards1.129s.
+This is not a diagnosis or resolution of cea4f481's native failure; every
+existing role/payment/save gate remains. No population retry or publication.
+Latest remote remains69cc97d9; prepared1.77 still needs owner renewal evidence.
+
+**October6 ordering-corrected native100 comparison:** Exact cea4f481 normal
+server/corrected driver/current race harness fails222.95s/120s active. All100
+admissions/fresh views and20 social outcomes pass; transport/casino timeouts zero.
+One blackjack stale-action refusal and zero-impact party members fail unchanged
+gates. All independent final saves are NOT REACHED. Native failure remains a
+failure; the reproduced UI fix does not prove these causes. Exact owned Mongo
+identity/label validated then removed; label/process queries empty. Production
+and unrelated nightly soak untouched. Full fixed aggregates/source/binary hashes
+in the existing capacity receipt. Focused action/target diagnosis precedes any
+new population comparison; no acceptance, unchanged rerun or release claim.
+
+**October6 bounded existing save/wallet observations:** The existing combined
+loopback probes now retain six already-instrumented character/value phases as
+well as update/broadcast. Eight whitelisted numeric counters only; no new runtime
+endpoint, private health body, player history or payment-amount logging. Actual
+probe/privacy/bounds cases pass race1.103s. These elapsed lifetime counters do
+not certify CPU, latency percentiles, unique payments or conservation; normal
+native workload and every existing acceptance gate remain required.
+
+**October6 casino feedback ordering repair:** A reproduced production UI and
+driver defect lets lower ready lobbies reopen wagering after unavailable/saving
+feedback erases the last comparison version. Three UI classes fail before the
+fix; nine driver feedback cases fail. A constant-size one-seat validated counter
+now survives feedback without hiding failures or retaining cards/wallet history;
+new ownership/context/close resets it.96 UI checks pass2.150s and focused driver
+scopes pass race14.796s. Two actual System Chrome checks pass6.3s at390/1440px,
+covering24 feedback cases, blocked actual wager controls and fresh recovery.
+No live wager or population run. The57ee native failure remains a failure and
+its cause is not proven by this regression. Exact normal-server verification,
+all save/capacity gates and ordered release prerequisites remain open.
+
+**October6 blackjack rejection clarity:** Actual admission now distinguishes
+a changed/non-betting hand from a bad stake instead of telling both players to
+change their bet. Fixed public errors omit private state. Root admission cases
+for Gold/EP bounds, steps and closed phases pass race1.414s; driver fixed-error,
+timeout and ordering checks pass1.127s. All refusals still fail the workload;
+wallet/timer/retry/pass rules are unchanged. This follow-up was not in the57ee
+native binary and does not resolve its observed rejection. Remains unpublished.
+
+**October6 changed-server100-client comparison:** Exact57ee0660, containing the
+NPC-roster and enemy-scan lock fixes, was rebuilt and tested against the unchanged
+driver/workload/gates. Actual100 admissions/fresh views, all20 party-member
+impacts, healing and20 social outcomes pass; transport errors and casino timeouts
+are zero. Overall FAIL226.01s: one blackjack round-or-stake rejection leaves one
+paid minimum0. All independent final save assertions were not reached. No
+acceptance or unchanged retry. Exact owned synthetic Mongo892fe88b was identity/
+label-validated then removed; label/process checks are empty. Production/nightly
+soak untouched. Retain full fixed aggregates, source/binary hashes and diagnostic
+limits in [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
+
+**October6 enemy target-scan lock reduction:** Current AI now acquires one world
+read lock per candidate scan, not per player. Live actor locks/membership/scene/
+stealth/sanctuary/pursuit/threat rules remain; no cached targets or allocations.
+Actual focused AI/concurrency/cast/scene/sanctuary/pursuit/threat/dungeon-movement
+race scopes pass16.067s. Eight-scenario snapshot comparison retains live authority.
+Synthetic100-player scan benchmark improves5341ns to2964ns, both zero allocations;
+not full frame performance, writer latency or100-player acceptance. No population
+retry or live publication. Shared-anchor target supply/role contribution and
+casino monetary-action timing remain unresolved; full goal stays active.
+
+**October6 casino roster contention correction:** Two preparation scans locked
+every actor while owning World.Mu, including unrelated NPC/enemy AI. A new
+held-actor regression reproduces the wait before the fix; both scans now skip
+non-players before locking, matching existing presence/pruning authority.
+All Casino game race checks pass1.224s and root notification scopes1.322s;
+own-session, roster revision, readiness and player-only occupants retained.
+No wallet, timer, roster cache or load-gate change. This proves a real unnecessary
+lock dependency, not the cause/resolution of100-client failures. No new population
+run or live publication; further targeted contention diagnosis remains required.
+
+**October6 current100-client comparison:** Exact87cda8c7 binaries reused after
+passing20/40-client controls. FAIL222.16s; all100 admitted, min1020 fresh own
+updates and all20 social outcomes completed without transport errors. Casino
+timeouts/rejections and zero-impact Wizard fail unchanged gates; independent
+final saves were not reached. No-target decisions dominate class counters,
+not proof of a cause. Public encoding cache does not resolve100-player capacity.
+Native cleanup required forced owned-server shutdown. Exact labelled synthetic
+Mongo removed after terminal completion; production/nightly soak unchanged.
+Retain aggregate evidence; diagnose contention and action transitions before
+another comparison. No unchanged retry or capacity/deployment acceptance.
+
+**October6 current40-client/two-party comparison:** Reused exact87cda8c7 binaries,
+same workload/gear/radius/anchor/timers/gates on fresh owned Mongo. PASS160.47s/
+120s active; every40 save check passed. Both parties/all8 members contributed
+(min1), real healing and all casino minima/social outcomes passed without errors.
+Own updates min3237/maxgap274ms. No-target decisions dominate aggregate waits;
+no pending-cast waits. These counts do not prove historical100-client cause or
+production headroom. Current public frame cache was absent from failed100 sources.
+Exact labelled synthetic storage removed after terminal/native cleanup; no
+production/soak changes. Full100/raid/event/final-settlement gates remain open.
+
+**October6 current20-client diagnostic control:** Source87cda8c7 normal server/
+driver, race harness and owned Mongo7 passed139.76s/120s active. Every20-client
+save check reached: gear/bag/EP preserved, party progression retained. All four
+roles contributed(min28), real healing and every paid casino minimum passed;
+no connection/action/casino errors. Fresh own updates min3625/maxgap103ms.
+Fixed wait counters retained, not time fractions or a diagnosis of100 failures.
+Only exact labelled synthetic Mongo removed after terminal/native cleanup;
+production and nightly soak untouched. This is not100-player, raid/event or
+complete final-settlement acceptance; no unchanged100 retry. See current receipt.
+
+**October6 bounded capacity-driver diagnostics:** Add five fixed class-level
+inactivity counters so the next focused probe can distinguish target scarcity,
+regroup/cohort waits, pending casts and pursuit. No actor identities/history,
+gameplay change or acceptance credit. Focused controller race tests pass2.123s,
+including each wait path and aggregate merging; corrected an invalid local Go
+flag before the actual cited run. Prior100-client failures remain failures;
+anchor, radius, gear, timeouts and positive owned-impact gates are unchanged.
+No new native comparison or unchanged soak was run. Evidence remains in
+[capacity receipt](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
+
+**October6 native public-cache casino verification:** Normal b6dd2b20 server
+with isolated Mongo7 passes the two-player blackjack socket/replay/payout/restart
+scope42.76s. Both clients see identical public cards/dealer, retain private seat
+and deck boundaries, pay once on an accepted wager replay, independently reload
+settlement and restart without duplicate Gold. Owned synthetic Mongo removed;
+aggregate artifacts retained. This does not clear the combined bot timing or
+100-client gates. Existing2s wagering guard/5s uncertainty limit stay unchanged;
+source inspection does not establish their change as a valid fix.
+
+**October6 public frame-encoding improvement:** Public actor protobuf encoding
+is now shared only within one broadcast of detached immutable actor snapshots.
+Owner-private player messages always encode separately; no retained cross-frame
+state, cadence/gate change or peer progression exposure. Focused concurrency,
+privacy/full-delta/replication checks pass race1.931s. Synthetic100-recipient
+encoding benchmark improves300113ns/230416B/1301allocations to4958ns/2512B/16;
+this is not a connected capacity pass or proof of earlier failures' causes.
+Staged1.79 remains unpublished; no immediate unchanged population retry.
+
+**October6 coordinated100-client comparison:** Latest master57572325 is normally
+merged. Combined bot parties now hold one observed live target claim per group,
+bounded to five; no gameplay/gear/enemy/anchor/radius/gate change. Full driver
+race checks pass18.268s. Actual changed-sourcee395be65 comparison fails224.71s:
+all100 admit, minimum1132 fresh own updates over119472ms, all20 social outcomes
+complete with no transport/decode/admission failures. Combat still has zero-
+impact members; blackjack has one rejection/one timeout and house one timeout.
+Final independent save assertions are not reached. Target coordination alone
+does not establish a cause or resolve capacity. Owned synthetic Mongo removed;
+aggregate logs retained, production and existing nightly soak untouched. No
+unchanged100 rerun. Focused target/cohesion and casino-transition diagnosis remain
+before another population comparison. See the current capacity receipt.
+
+**October6 isolated1.79 capacity integration:** Current identity/schema25 and
+monitoring remain intact while prepared concurrent workloads are integrated.
+Frame broadcasting now takes a detached position/scene/Resonance view rather
+than cloning all owned item/receipt state; full save snapshots remain unchanged.
+Complete load-driver race tests pass18.133s, focused server/game checks pass,
+and legal naturally rolled four-class starting gear checks pass2.817s. Four
+fixed class summaries retain zero-impact members without relaxing any gate.
+The frame microbenchmark improves allocations, not proven player capacity.
+The changed-source100-player comparison fails213.11s solely at the role-impact
+gate: all100 admit, minimum1384 fresh updates, every casino paid minimum and
+all20 town/social outcomes pass without transport errors or casino timeouts.
+Five parties form/heal, but some Fighters/Rogues/Wizards have zero matched
+damage despite accepted casts. Independent final save assertions are not reached.
+Update/broadcast measurements have long outliers on this shared host, where an
+existing24h nightly soak remains active; no headroom claim. An initial build-
+metadata mismatch refused before load and was corrected without weakening its
+guard. Both owned temporary Mongo fixtures were removed; logs retained.
+Previous failures remain failures. Diagnose the role gap before any full retry;
+own version, capacity and deployment acceptance stay open.
+The focused45s four-player control now passes49.59s: every class impacts (minimum
+12), Cleric heals, every normal Mongo save gains XP and retains gear/bag/EP.
+New unmatched-own-damage counters remain diagnostic only. Five combined parties
+share one30-unit search area; contention/attribution are possible causes, not
+proven by a separately randomized control. No gameplay stats, target enemies,
+pass gates or default allocation changed. The owned control fixture is removed.
+See [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
+
+**October6 isolated1.78 operations integration:** Prepared monitoring now runs
+against the current account-bound persistence source without replacing identity
+checks or current privacy/admin filters. Separate simulation/broadcast timing
+preserves the33ms loop and appears in18 fixed Administration rows. Full small
+monitor/operations race suites pass6.492s/7.036s; focused root checks5.382s,
+30 client checks1.607s, lint and three actual Chrome layout cases38.8s pass.
+The initial browser attempt lacked generated vendor files; ordinary preparation
+fixed that fixture setup, with no relaxed assertions. Local TLS failure/recovery
+notifications pass; no actual mail, service installation or budget chosen.
+Owner notification/budget decisions requested. Current1.75 correction56d9fda9
+is pushed and CI37399132936 has passed audit/lint; Luna monitors remaining gates.
+This future branch keeps inherited1.76 labels and stays unpublished/incomplete
+until ordered predecessors and operating decisions are accepted. See
+[current operations evidence](docs/plans/2026-10-06-release1-78-current-operations-checks.json).
+
+**October6 isolated1.77 hosting preparation:** Canonical two-host installer
+argument guard and current operator instructions are integrated separately from
+the1.76 candidate. Eighteen validation-only race cases pass without installer
+effects. Current publicIPv4 frontend/backend still independently report accepted
+1.74.7; both origin TLS hostname checks pass, and certificate/timer metadata is
+recorded without claiming actual renewal. This host lacks a defaultIPv6 route,
+so its failedIPv6 probe cannot establish public-client reachability; owner-deferred
+DNS settings remain unchanged. No root/install/reload/renew/reboot/provider action.
+Fresh custom-host setup now also refuses existing targets or missing Certbot
+before effects and scopes certificate actions to that host. All27 pure validation
+cases pass1.162s; existing bytes/links stay intact. API/Mongo restart policies and
+enabled nginx/Docker units are observed, not a reboot guarantee. The owner has
+the exact scoped certificate dry-run command; no privileged action was performed.
+Own milestone remains unpublished/incomplete pending ordered predecessors and
+actual challenge/supported-address-family evidence. See
+[current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
 **October6 Alpha1.76 CI correction:** Candidateca5de951 run37402624753 failed
 the ground custody/reopen test's stale six-index count. The new ordered account
 fence creates seven including Mongo's primary index. The test now requires each

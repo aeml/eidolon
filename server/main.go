@@ -25,6 +25,7 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	"eidolon-server/internal/operations"
 
 	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -125,14 +126,50 @@ func isQAUsername(username string) bool {
 }
 
 type healthResponse struct {
-	Status          string                `json:"status"`
-	Database        string                `json:"database"`
-	Commit          string                `json:"commit"`
-	Version         string                `json:"version"`
-	Goroutines      int                   `json:"goroutines"`
-	HeapAllocBytes  uint64                `json:"heapAllocBytes"`
-	HeapObjects     uint64                `json:"heapObjects"`
-	BroadcastQueues broadcastQueueMetrics `json:"broadcastQueues"`
+	Status          string                        `json:"status"`
+	Database        string                        `json:"database"`
+	Commit          string                        `json:"commit"`
+	Version         string                        `json:"version"`
+	Goroutines      int                           `json:"goroutines"`
+	HeapAllocBytes  uint64                        `json:"heapAllocBytes"`
+	HeapObjects     uint64                        `json:"heapObjects"`
+	BroadcastQueues broadcastQueueMetrics         `json:"broadcastQueues"`
+	Operational     operations.OperationalMetrics `json:"operational"`
+}
+
+func collectHealthResponse(ctx context.Context, pingDatabase func(context.Context) error) (healthResponse, int) {
+	var memory runtime.MemStats
+	runtime.ReadMemStats(&memory)
+	response := healthResponse{
+		Status:     "ok",
+		Database:   "ready",
+		Commit:     buildCommit,
+		Version:    buildVersion,
+		Goroutines: runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
+		HeapObjects:     memory.HeapObjects,
+		BroadcastQueues: transientBroadcastMetrics(),
+		Operational:     operationalMetricsSnapshot(),
+	}
+	statusCode := http.StatusOK
+	if pingDatabase == nil || pingDatabase(ctx) != nil {
+		response.Status = "unavailable"
+		response.Database = "unavailable"
+		statusCode = http.StatusServiceUnavailable
+	}
+	return response, statusCode
+}
+
+func pingServiceDatabase(ctx context.Context) error {
+	if !sessionActivityJournalHealthy() {
+		return errors.New("session activity awaits durable storage")
+	}
+	if serverStopping.Load() {
+		return errors.New("server is shutting down")
+	}
+	if db == nil {
+		return errors.New("database is not initialized")
+	}
+	return db.Ping(ctx)
 }
 
 func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
@@ -142,26 +179,9 @@ func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
-
-		var memory runtime.MemStats
-		runtime.ReadMemStats(&memory)
-		response := healthResponse{
-			Status:     "ok",
-			Database:   "ready",
-			Commit:     buildCommit,
-			Version:    buildVersion,
-			Goroutines: runtime.NumGoroutine(), HeapAllocBytes: memory.HeapAlloc,
-			HeapObjects:     memory.HeapObjects,
-			BroadcastQueues: transientBroadcastMetrics(),
-		}
-		statusCode := http.StatusOK
 		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 		defer cancel()
-		if pingDatabase == nil || pingDatabase(ctx) != nil {
-			response.Status = "unavailable"
-			response.Database = "unavailable"
-			statusCode = http.StatusServiceUnavailable
-		}
+		response, statusCode := collectHealthResponse(ctx, pingDatabase)
 
 		w.Header().Set("Cache-Control", "no-store")
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -933,8 +953,7 @@ func main() {
 
 	// Game Loop
 	loops.Every(33*time.Millisecond, func() {
-		world.UpdateRealtime(0.033, time.Now())
-		broadcastState()
+		runRealtimeFrame(time.Now())
 	})
 
 	// Party Update Loop (Every 1 second)
@@ -1042,18 +1061,7 @@ func main() {
 	})
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/healthz", healthHandler(func(ctx context.Context) error {
-		if !sessionActivityJournalHealthy() {
-			return errors.New("session activity awaits durable storage")
-		}
-		if serverStopping.Load() {
-			return errors.New("server is shutting down")
-		}
-		if db == nil {
-			return fmt.Errorf("database is not initialized")
-		}
-		return db.Ping(ctx)
-	}))
+	mux.HandleFunc("/healthz", healthHandler(pingServiceDatabase))
 	mux.HandleFunc("/ws", serveWs)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Anything that isn't the game's websocket endpoint is almost always noise on a public IP.

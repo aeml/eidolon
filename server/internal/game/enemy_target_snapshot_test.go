@@ -1,10 +1,112 @@
 package game
 
 import (
+	"fmt"
 	"sync"
 	"testing"
 	"time"
 )
+
+func TestEnemyTargetSharedLockSnapshotKeepsLiveValidation(t *testing.T) {
+	w := &World{Entities: map[string]*Entity{}}
+	p := &Entity{ID: "target-shared", Type: TypePlayer, X: 42, Z: 73, InstanceID: "air", State: "IDLE"}
+	w.Entities[p.ID] = p
+	for _, scenario := range []string{"active", "stealth", "expired", "disconnected", "dead", "replaced", "removed", "nil"} {
+		t.Run(scenario, func(t *testing.T) {
+			p.State, p.Disconnected, p.StealthActive = "IDLE", false, false
+			w.Entities[p.ID] = p
+			candidate := p
+			switch scenario {
+			case "stealth", "expired":
+				p.StealthActive = true
+				p.StealthEndTime = time.Now().Add(time.Minute)
+				if scenario == "expired" {
+					p.StealthEndTime = time.Now().Add(-time.Minute)
+				}
+			case "disconnected":
+				p.Disconnected = true
+			case "dead":
+				p.State = "DEAD"
+			case "replaced":
+				w.Entities[p.ID] = &Entity{ID: p.ID, Type: TypePlayer}
+			case "removed":
+				delete(w.Entities, p.ID)
+			case "nil":
+				candidate = nil
+			}
+			want := w.snapshotEnemyTarget(candidate)
+			w.Mu.RLock()
+			got := w.snapshotEnemyTargetLocked(candidate)
+			w.Mu.RUnlock()
+			if got != want {
+				t.Fatal("shared-lock scan changed live target authority", got, want)
+			}
+		})
+	}
+}
+
+func TestEnemyTargetSceneFilterKeepsLiveAuthority(t *testing.T) {
+	w := &World{Entities: map[string]*Entity{}}
+	p := &Entity{ID: "target-scene", Type: TypePlayer, State: "IDLE", InstanceID: CasinoInstanceID}
+	w.Entities[p.ID] = p
+	check := func(scene string, wantActive bool) {
+		t.Helper()
+		w.Mu.RLock()
+		got := w.snapshotEnemyTargetLocked(p, scene)
+		unfiltered := w.snapshotEnemyTargetLocked(p)
+		w.Mu.RUnlock()
+		if got.active != wantActive || p.InstanceID == scene && got != unfiltered {
+			t.Fatal("scene filter changed live target authority", got, unfiltered)
+		}
+	}
+	check("", false)
+	check(CasinoInstanceID, true)
+	p.InstanceID = ""
+	check(CasinoInstanceID, false)
+	check("", true)
+	p.StealthActive, p.StealthEndTime = true, time.Now().Add(time.Minute)
+	check("", true) // Hidden state must still match the live unfiltered view.
+	p.Disconnected = true
+	check("", false)
+	p.Disconnected, p.State = false, "DEAD"
+	check("", false)
+	p.State = "IDLE"
+	w.Entities[p.ID] = &Entity{ID: p.ID, Type: TypePlayer}
+	check("", false)
+	delete(w.Entities, p.ID)
+	check("", false)
+}
+
+func BenchmarkEnemyTargetScanWorldLock(b *testing.B) {
+	w := &World{Entities: map[string]*Entity{}}
+	players := make([]*Entity, 100)
+	for i := range players {
+		p := &Entity{ID: fmt.Sprintf("synthetic-scan-%d", i), Type: TypePlayer, State: "IDLE", X: float64(i), Z: 600}
+		w.Entities[p.ID], players[i] = p, p
+	}
+	for _, shared := range []bool{false, true} {
+		b.Run(map[bool]string{false: "per-candidate", true: "per-scan"}[shared], func(b *testing.B) {
+			b.ReportAllocs()
+			for b.Loop() {
+				if shared {
+					w.Mu.RLock()
+					for _, p := range players {
+						if !w.snapshotEnemyTargetLocked(p).active {
+							b.Fatal("missing active benchmark target")
+						}
+					}
+					w.Mu.RUnlock()
+				} else {
+					for _, p := range players {
+						if !w.snapshotEnemyTarget(p).active {
+							b.Fatal("missing active benchmark target")
+						}
+					}
+				}
+			}
+		})
+	}
+}
 
 func TestEnemyTargetSnapshotMembershipAndStealth(t *testing.T) {
 	w := newTestWorld()

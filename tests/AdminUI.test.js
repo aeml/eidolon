@@ -97,6 +97,49 @@ test('report view fails closed after revocation or storage error', () => {
     expect(ui.status.textContent).toContain('unavailable');
 });
 
+test('service diagnostics are explicitly refreshed, unpaginated and cleared on disconnect', () => {
+    ui.connectionState('connected'); reply(); ui.launcher.click(); reply({ players: [], next: 'old-player-cursor' });
+    ui.root.querySelector('[data-view="service"]').click();
+    expect(send).toHaveBeenLastCalledWith('admin_service', { id: ui.pending.id });
+    expect(ui.next.hidden).toBe(true); expect(ui.filters.hidden).toBe(true); expect(ui.reportFilters.hidden).toBe(true);
+    reply({ service: { sampledAt: '2026-10-04T07:00:00Z', health: { status: 'ok', database: 'ready', version: 'Alpha 1.78.0', commit: 'abcdef1',
+        goroutines: 12, heapAllocBytes: 1048576, heapObjects: 100, private: 'private-config-marker',
+        operational: { characterJournal: { completed: 5, failed: 1 } } } } });
+    expect(ui.list.children).toHaveLength(18); expect(ui.next.hidden).toBe(true);
+    expect(ui.list.children[16].textContent).toContain('Realtime simulation frames');
+    expect(ui.list.children[17].textContent).toContain('State broadcast frames');
+    expect(ui.list.textContent).toContain('1.00 MiB'); expect(ui.list.textContent).toContain('Completed calls: 5');
+    expect(ui.list.textContent).not.toContain('private-config-marker'); expect(ui.note.textContent).toContain('not unique payouts');
+    const calls = send.mock.calls.length;
+    jest.advanceTimersByTime(30_000);
+    expect(send).toHaveBeenCalledTimes(calls);
+    ui.refresh.click(); expect(send).toHaveBeenLastCalledWith('admin_service', { id: ui.pending.id });
+    const staleID = ui.pending.id;
+    ui.connectionState('disconnected');
+    ui.handleResult('admin_service_result', { id: staleID, success: true, authorized: true, service: { health: { status: 'ok' } } });
+    expect(ui.list.children).toHaveLength(0); expect(ui.launcher.hidden).toBe(true);
+});
+
+test('merged service diagnostics preserve notice tools and their current-request gate', () => {
+    ui.connectionState('connected'); reply(); ui.launcher.click(); reply({ players: [] });
+    const notices = ui.announcements;
+    expect(notices.fields.disabled).toBe(false);
+    notices.form.elements.kind.value = 'recovery';
+    notices.form.elements.message.value = 'Synthetic service restored.';
+    ui.root.querySelector('[data-view="service"]').click();
+    expect(notices.fields.disabled).toBe(true);
+    notices.prepare(); expect(notices.draft).toBeFalsy();
+    reply({ service: { health: { status: 'ok', database: 'ready' } } });
+    expect(notices.fields.disabled).toBe(false);
+    notices.prepare(); expect(notices.draft.message).toBe('Synthetic service restored.');
+    const calls = send.mock.calls.length;
+    ui.connectionState('disconnected');
+    notices.confirm.click();
+    expect(send).toHaveBeenCalledTimes(calls);
+    expect(notices.fields.disabled).toBe(true);
+    expect(ui.root.querySelector('[data-report-type] option[value="Account / Progress Help"]')).not.toBeNull();
+});
+
 test('category triage resets cursors, combines status and retires access on disconnect', () => {
     ui.connectionState('connected'); reply(); ui.launcher.click(); reply({ players: [] });
     ui.root.querySelector('[data-view="reports"]').click();
