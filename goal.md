@@ -1,5 +1,23 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 prepared1.84 account/progress support:** Signed-in players who cannot
+enter the world can now submit a private Account / Progress Help case through
+Account help; the same category is in the ordinary in-game form and strict staff
+queue filter. Reuse durable confirmation, retained drafts, reference/status and
+audited review rather than adding a second support system. No automatic context,
+diagnostics, grants, restoration or reversal. Guidance covers time/area/expected
+result, verified-email recovery and honest review expectations; no invented SLA.
+Database/login regressions fail before repair, targeted race scopes pass and one
+actual isolated Mongo case/replay/owner-status check passes1.568s. Final93 focused
+client checks pass3.747s; final desktop/phone Chrome checks pass17.8s. A prior
+interrupted rerun/stale default expectation is retained in the support
+receipt. Exact owned synthetic fixture removed after terminal pass, label query
+empty; production/main worktree untouched. Draft notes are prepared, not live.
+Prepared operator procedure covers private triage and separate audited recovery;
+staff confirmation states review cannot grant/restore/teleport. Support staffing/
+escalation, integrated audited recovery, exact ordered release
+and deployment acceptance remain open. Full goal unchanged and active.
+
 **October6 staged incident communication implementation:** Administration now
 has reviewed/explicitly confirmed public maintenance, incident and recovery
 notices. Durable current authority/audit are required and rechecked after IO;

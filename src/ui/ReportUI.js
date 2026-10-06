@@ -2,7 +2,7 @@ import { ownedEvent, disposeOwnedEvents } from './OwnedEvents.js';
 import { ReportLookupUI } from './ReportLookupUI.js';
 import { ModerationNoticeUI } from './ModerationNoticeUI.js';
 import { getOverworldRegion, WORLD_REGIONS } from '../data/worldGeography.js';
-import { REPORT_TYPES, PRIVACY_REPORT_TYPES } from './reportTypes.js';
+import { REPORT_TYPES, PRIVACY_REPORT_TYPES, NO_CONTEXT_REPORT_TYPES } from './reportTypes.js';
 import { OwnerExportDownload } from './OwnerExportDownload.js';
 import { mountDataPrivacyNotices } from './DataPrivacyNotice.js';
 
@@ -103,8 +103,13 @@ export class ReportUI {
     updateGuidance() {
         if (this.disposed || !this.guidance) return;
         const privacy = PRIVACY_REPORT_TYPES.has(this.type.value);
-        this.optIn.disabled = Boolean(this.pending) || privacy;
-        if (privacy) this.optIn.checked = false;
+        const noContext = NO_CONTEXT_REPORT_TYPES.has(this.type.value);
+        this.optIn.disabled = Boolean(this.pending) || noContext;
+        if (noContext) this.optIn.checked = false;
+        if (this.type.value === 'Account / Progress Help') {
+            this.guidance.textContent = 'For lost progress, a stuck character or failed world entry: describe what happened, the approximate time and area if known, and what you expected. Sign-in problems: use Forgot password on the login screen if you have a verified recovery email. Keep your saved report reference and use Check status for follow-up. No guaranteed response time; resolution means review finished, not a promised restoration. Do not include passwords, recovery links, tokens, identity documents or payment details. No automatic diagnostics are attached.';
+            return;
+        }
         if (privacy) {
             this.guidance.textContent = this.type.value === 'Account Data Export'
                 ? 'Request an export of your own account data. An administrator will verify ownership, scope and a safe delivery method before preparing it. Submission does not generate or send an export. Do not include passwords, tokens or identity documents. No automatic diagnostics are attached.'
@@ -159,9 +164,9 @@ export class ReportUI {
 
     refreshContext() {
         if (this.disposed || this.pending) return;
-        if (PRIVACY_REPORT_TYPES.has(this.type.value)) {
+        if (NO_CONTEXT_REPORT_TYPES.has(this.type.value)) {
             this.context = '';
-            this.preview.textContent = 'Privacy request: no automatic context or diagnostics attached.';
+            this.preview.textContent = 'Private account request: no automatic context or diagnostics attached.';
             return;
         }
         this.context = formatReportContext(this.ui.getReportContext?.(this.optIn.checked));
@@ -172,7 +177,7 @@ export class ReportUI {
         this.button.disabled = pending;
         this.text.readOnly = pending;
         this.type.disabled = pending;
-        this.optIn.disabled = pending || PRIVACY_REPORT_TYPES.has(this.type.value);
+        this.optIn.disabled = pending || NO_CONTEXT_REPORT_TYPES.has(this.type.value);
         this.button.textContent = pending ? 'Saving…' : 'Submit';
     }
 
@@ -184,7 +189,7 @@ export class ReportUI {
             this.text.focus();
             return;
         }
-        if (this.context === undefined || PRIVACY_REPORT_TYPES.has(this.type.value)) this.refreshContext();
+        if (this.context === undefined || NO_CONTEXT_REPORT_TYPES.has(this.type.value)) this.refreshContext();
         const requestId = crypto.randomUUID();
         const body = this.context ? `${text}\n\nClient-reported context:\n${this.context}` : text;
         const pending = { requestId, draft: this.text.value, type: this.type.value };
