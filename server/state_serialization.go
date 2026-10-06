@@ -777,12 +777,12 @@ func broadcastState() {
 				// Session changed characters after the recipient list was captured.
 				return
 			}
-			playerEntity := world.GetEntityCopy(c.playerID)
-			if playerEntity != nil {
-				c.sendEndgameProgressLocked(playerEntity.EndgameProgress(), false)
+			playerContext, hasPlayerContext := world.GetPlayerBroadcastContext(c.playerID)
+			if hasPlayerContext {
+				c.sendEndgameProgressLocked(playerContext.Progress, false)
 			}
-			if playerEntity != nil && playerEntity.InstanceID != "" {
-				world.UpdateDungeonRoomProgress(c.playerID, playerEntity.X, playerEntity.Z)
+			if hasPlayerContext && playerContext.InstanceID != "" {
+				world.UpdateDungeonRoomProgress(c.playerID, playerContext.X, playerContext.Z)
 			}
 
 			// Initialize lastState if nil (shouldn't happen, but safety check)
@@ -893,8 +893,8 @@ func broadcastState() {
 				c.seenScene = self.InstanceID
 			}
 
-			if playerEntity != nil && playerEntity.InstanceID != "" {
-				if roomState, ok := world.GetDungeonRoomSummary(playerEntity.InstanceID, c.playerID); ok {
+			if hasPlayerContext && playerContext.InstanceID != "" {
+				if roomState, ok := world.GetDungeonRoomSummary(playerContext.InstanceID, c.playerID); ok {
 					payloadBytes, _ := json.Marshal(roomState)
 					roomStateMsg := Message{Type: MsgDungeonRoomState, Payload: payloadBytes}
 					if roomStateData, err := json.Marshal(roomStateMsg); err == nil {

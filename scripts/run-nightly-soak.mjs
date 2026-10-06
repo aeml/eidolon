@@ -18,6 +18,11 @@ const units = { ms: .001, s: 1, m: 60, h: 3600 };
 const seconds = [...duration.matchAll(/(\d+(?:\.\d+)?)(ms|s|m|h)/g)]
     .reduce((sum, match) => sum + Number(match[1]) * units[match[2]], 0);
 assert(seconds >= 60 && seconds <= 86400, 'Soak duration must be between one minute and 24 hours');
+// Retain the accepted five-state-frames/client-second baseline as the declared
+// default, but now require it for every client rather than just the aggregate.
+const minimumClientStateRate = Number(process.env.SOAK_MIN_CLIENT_STATE_RATE ?? 5);
+assert(Number.isFinite(minimumClientStateRate) && minimumClientStateRate > 0 && minimumClientStateRate <= 60,
+    'Minimum client state rate must be positive and at most60');
 const evidence = fs.mkdtempSync(path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'eidolon-soak-'));
 if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `evidence-dir=${evidence}\n`);
 console.log(`Soak evidence: ${evidence}`);
@@ -104,8 +109,9 @@ try {
         await sample();
     }
     assert.equal((await client.result).code, 0, 'Load harness failed; inspect soak-client.log');
-    const report = validateSoakEvidence(fs.readFileSync(path.join(evidence, 'soak-client.log'), 'utf8'), samples);
-    console.log(JSON.stringify({ duration, address, expectedCommit, ...report }));
+    const report = validateSoakEvidence(fs.readFileSync(path.join(evidence, 'soak-client.log'), 'utf8'), samples,
+        { durationSeconds: seconds, minimumClientStateRate });
+    console.log(JSON.stringify({ duration, minimumClientStateRate, address, expectedCommit, ...report }));
 } finally {
     await stopOwnedChildren();
 }
