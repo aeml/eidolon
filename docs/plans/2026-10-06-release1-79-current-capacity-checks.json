@@ -3,11 +3,23 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "corrected-100-client-gameplay-and-save-checks-pass-terminal-fail-five-second-shutdown-fixture-removed",
+  "periodicFixEightLiveCharacterShutdownControl": {
+    "sourceCommit": "32831df37a6b2dd295b02c8f1152fd9325985f96",
+    "result": "PASS10.99s: exact source-built normal server and current race harness, existing eight live four-class alive/dead character shutdown test. Normal SIGINT stops without extending the five-second guard. Real Wizard cast, final exact Mongo HP/MP/rest state, empty acknowledged character journal, fresh process and ordinary re-login resource checks pass.",
+    "artifactDirectory": "/tmp/eidolon-179-shutdown8-XtNU11",
+    "ownedServerEvidence": ["/tmp/eidolon-compat-session-3959836340", "/tmp/eidolon-compat-session-1858999374"],
+    "serverSHA256": "32807c115e961bd25d15709409253e880dcc1c09b549935451e71f60f51d434f",
+    "raceHarnessSHA256": "277e2367f5e26804b40a44f7780e93c930ee19f0132de5a1547539b6cbb1c0d4",
+    "predeclaration": "Reuse the existing eight normal authenticated live-character resource/shutdown/restart scenario without relaxing health/mana/formula/storage/identity assertions or stop timeout. Normal server GOMAXPROCS2, Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32962,2CPU/2GiB/512MiB tmpfs; no production characters/provider/action.",
+    "shutdownEvidence": "Both exact owned server logs progress through all eight fixed phase labels and Character shutdown drain complete; no forced shutdown, panic or race marker. This establishes the tested eight-character control, not100-client drain performance or a causal explanation of the older timeout.",
+    "limits": "Prior100-client terminal FAIL remains unresolved. No active paid tables/raids/events, production headroom, full recovery ledger or accepted1.79 release claim. Changed periodic cancellation dependency permits a later bounded100 comparison; no unchanged retry performed here.",
+    "cleanup": "After terminal native PASS, exact owned Mongo3c357f868c10e06a3a81d2e057645280a0b22ea81d183e66afecd4612a13d805/name eidolon-179-shutdown8-20261006/label eidolon.fixture=shutdown8-179-20261006 validated then fixture and synthetic volumes removed. Independent label/process queries empty. Aggregate evidence retained; production and unrelated processes untouched."
+  },
   "periodicSaveShutdownFollowUp": {
     "confirmedDefect": "Actual periodic controller regression fails before repair: shutdown begins during the first accepted bound write, but the pass continues committing all four accounts. A second regression shows a pass invoked after shutdown still replays a retained offline record. This is redundant work during drain, not yet the demonstrated cause of the prior native timeout.",
     "repair": "The periodic pass checks the existing stopping flag at entry, between accounts and before offline retries. Already-admitted writes finish; final journal-all snapshots remain authoritative, including late earned changes/disconnected players. Offline pending records stay intact for startup. Add eight fixed phase-only shutdown log labels without account/session identifiers, new endpoints or altered drain order/timeouts.",
     "verification": "Focused shutdown, account-bound saves, character persistence/work and connection-work race scopes PASS3.639s. Regression verifies one admitted write/acknowledgement, every final updated Gold/account binding and retained offline recovery identity. Existing journal-all-before-database, storage failure and late reward tests pass. Gofmt and whitespace checks pass.",
-    "limits": "No reduced durability, timeout extension, return-before-earned-work or accepted100-client shutdown claim. The historical FAIL remains. Focused eight-live-character normal shutdown/restart verification is planned separately before another full population comparison. No production action."
+    "limits": "No reduced durability, timeout extension, return-before-earned-work or accepted100-client shutdown claim. The historical FAIL remains. Subsequent exact eight-live-character normal shutdown/restart PASS is recorded separately; it does not replace100-client evidence. No production action."
   },
   "recoveryAndWorkerCorrected100Comparison": {
     "sourceCommit": "4096c19c9352b8e4ac6d31a4b79ddc0a5e6945ca",

@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 normal eight-character shutdown/restart control:** Exact32831df3
+normal server/current race harness pass10.99s using the unchanged eight-live-
+character four-class alive/dead resource scenario. Normal SIGINT, real Wizard
+cast, exact final Mongo resources/rest state, empty acknowledged journal, fresh
+process and ordinary logins pass; both owned logs show every fixed drain phase
+and completion. Five-second stop guard/other assertions unchanged. Exact owned
+Mongo identity/label validated then synthetic fixture/volumes removed; label/
+process queries empty. Artifacts/hashes retained in the current capacity receipt.
+No100-client timeout resolution, casino/raid/event acceptance, production action
+or full milestone claim. The changed periodic-save dependency is ready for one
+later bounded100 comparison; older failures and full release gates remain open.
+
 **October6 periodic-save drain correction:** Two targeted regressions prove a
 periodic pass continues new account saves/offline replays after shutdown begins.
 Check the existing stopping flag at entry/between accounts/before retries; finish
@@ -8,8 +20,8 @@ preserve late earned Gold/account binding for every character and offline pendin
 recovery. Eight fixed shutdown phase labels identify future stalls without player
 IDs or new APIs; drain order/timeouts unchanged. Focused shutdown/persistence/
 identity/connection/work race scopes pass3.639s. This is not proven attribution
-or resolution of the historic five-second native100 timeout. Focused normal
-eight-character shutdown/restart control is planned next; full gates stay open.
+or resolution of the historic five-second native100 timeout. Subsequent normal
+eight-character control is recorded above; full gates stay open.
 
 **October6 corrected native100 comparison:** Exact4096c19c normal server/driver
 and race harness fail218.36s/120s active. All100 admissions/fresh own views,
