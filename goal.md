@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 staged1.83 incident procedure:** Existing Linux deployment guide now
+has six incident rows, bounded read-only triage, explicit stop/escalation and
+recovery checks, UTC maintenance/outage/recovery notice templates. Operator
+coordinates privileged/destructive decisions; no storage/receipt deletion,
+incompatible writer or speculative compensation is authorized. Procedures
+are not an automatic maintenance switch or a tested incident exercise.
+Actual audited announcement delivery/external destination/alternate coverage,
+tabletop and safe fixtures, ordered predecessors and own release remain open.
+No production changes or messages; owner worktree preserved. See
+[staged incident receipt](docs/plans/2026-10-06-release1-83-current-incident-checks.json).
+
 **October6 isolated1.82 authenticated SSH pin:** Public ED25519 key from trusted
 local r7-server file matches the bounded advertised ssh.mendola.tech key.
 Replace network trust-on-first-contact with the reviewed public pin and explicit

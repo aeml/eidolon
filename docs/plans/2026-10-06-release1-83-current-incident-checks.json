@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "milestone": "1.83 incident and maintenance playbook",
+  "status": "operator-procedure-prepared-not-accepted-or-published",
+  "baseCommit": "2879d399 prepared1.82 verified SSH identity pin; inherits1.76 source identity",
+  "artifact": "server/deploy/README_LINUX.md: Incident and maintenance playbook (prepared1.83)",
+  "coverage": [
+    "Degraded database: bounded readiness inspection, preserve private pending work, stop unsafe deploys, no durability bypass or duplicate rewards.",
+    "Unavailable origin: distinguish public frontend/backend from loopback, exact identities and TLS/WebSocket/login recovery; IPv4 is not proof of IPv6.",
+    "Abuse burst: bounded aggregate observations, retain limits, operator-approved edge action, no automatic account/proxy bans.",
+    "Stuck settlement: observe aggregate pending work, original operation retry only, no compensating grants or receipt deletion, independent wallet and replay validation.",
+    "Storage exhaustion: byte/inode inspection, preserve journals/complete and incomplete backups, exact approved disposable targets or added storage, fail closed until recovery.",
+    "Planned maintenance and failed upgrade: coordinating operator, fail-closed lock/preflight/backup/SSH/health gates, no incompatible old-writer restart or unapproved data-loss restore."
+  ],
+  "communications": "Initial/outage/recovery notice templates use UTC and a next-update time, verified scope and known limitations. Actual audited in-game announcement route and a reachable external destination remain missing; documentation is not a substitute. No message was sent.",
+  "verification": "Reviewed against actual current deployment/preflight/backup/restore procedures and available operational safeguards; git diff --check passes. No tabletop, production incident or new failure-injection exercise is claimed by this documentation-only preparation.",
+  "remaining": [
+    "Integrate accepted ordered1.76–1.82 changes and reconcile the procedure with the exact release candidate.",
+    "Implement audited administrator maintenance announcements and select/confirm the external communication route and alternate operator coverage.",
+    "Retain scenario-by-scenario tabletop outcomes and safe disposable failure/recovery evidence without destructive production experiments.",
+    "Own version, cumulative patch notes, fresh remote integration, CI, deployment and public acceptance."
+  ],
+  "authorityLimits": "No production service/database/DNS/provider/root changes, load, erasure, retention changes, mail or public notices. Owner's dirty worktree untouched. Full Alpha1.99 goal remains active."
+}
