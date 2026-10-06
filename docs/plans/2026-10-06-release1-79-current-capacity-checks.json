@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "milestone": "1.79 representative multiplayer capacity",
+  "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
+  "status": "current-integration-focused-checks-pass-capacity-not-yet-accepted",
+  "inheritedVersion": "Alpha1.76.0 source candidate; own1.79 version not published",
+  "changes": [
+    "Select prepared workload drivers and native capacity fixtures into the current1.78 integration, retaining account-bound identity, schema25 ordered ground/casino heads and existing privacy/admin behavior. Do not import historical future-version acceptance claims.",
+    "Normal broadcasting reads only detached live position, scene and normalized owner EndgameProgress under existing world-before-actor locks. It no longer clones bags, stash, equipment and durable operation receipts for this frame read. Character save/commit snapshots remain complete and account-bound.",
+    "Fixed four-class party diagnostics preserve zero-impact participants and distinguish accepted/denied casts from actual positive damage/healing. Existing per-member impact, real healing, fresh-own updates, paid outcomes and independently reloaded save requirements remain unchanged.",
+    "Disposable equipment preparation uses naturally generated legal uncommon/rare items with class-appropriate primary stats and offhands, no stat scaling or rewritten item budgets. Each test-created world now stops its background loops during cleanup."
+  ],
+  "verification": {
+    "driver": "Complete cmd/loadtest race suite passes17.611s before diagnostics and18.133s with diagnostics, including admission, real synthetic sockets, fresh-own state, casino acknowledgements/timeouts, party targets/heals and new zero-minimum/repeated-role aggregation tests.",
+    "focusedServer": "Root2.059s and game3.447s race checks cover frame context, normalization, Resonance/realtime/replication and combined configuration. Native opt-in fixtures skip unless explicitly configured; these commands do not establish a Mongo population run.",
+    "roleEquipment": "Exact TestPreparedRoleEquipment race scope passes2.817s across four classes and levels30/60/100, legal equip/primary stats/natural rarity, unique IDs, potency0 and bounded/refused inputs. Diagnostic schema/privacy test passes1.062s.",
+    "client": "SoakIsolation and ProtocolContract:7 tests/two suites pass0.653s; full lint passes.",
+    "benchmark": "Synthetic frame-read comparison: full-character192970ns/op,329216B/op,1013allocations; bounded frame context286.7ns/op,256B/op,2allocations.100ms benchmark passes0.512s, using100 bag items/400 stash items/1024 receipts. This is neither a live100-player capacity result nor proof of the previous failure's cause.",
+    "predecessorCI": "Exact1.75 run37399132936 is confirmed in progress; client/ordinary Go coverage green. Later watcher reports Go race and disposable upgrade/restore passed. Browser/deployment/live acceptance still pending at this checkpoint."
+  },
+  "historicalCapacityFailure": {
+    "receipt": "Retained separately at /tmp/eidolon-1-79-release-TRvSBA/docs/plans/2026-10-05-capacity-role-social-checks.json",
+    "sourceCommit": "7dcd2cfbff2fd0f0ad8c119ea253bd83ffd58c96",
+    "result": "FAIL234.69s:100 admit and town/social responses complete, but minimum572 fresh own updates is below600,32 casino timeouts, three paid minima0 and party minimum impact0; independent all-account save gate not reached. Owned fixture removed. No failure reclassified as pass or unchanged retry."
+  },
+  "remaining": [
+    "One changed-source native comparison with fresh server/driver/harness, disposable loopback Mongo, declared cohort/resource limits and phase/role measurements. Preserve600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves; do not relax failed gates.",
+    "Representative process/database/network headroom, settlement/reopen and actual encounter/party coverage require their own evidence; a frame microbenchmark or small cohort is not100-player acceptance.",
+    "Ordered1.75–1.78 release and owner operating decisions, then own version/cumulative notes, fresh remote integration, CI/deployment and exact public acceptance. Full1.99 goal remains active."
+  ],
+  "authorityLimits": "No production account/database/load, provider mail/settings, root/service/DNS changes, erasure, retention change or future milestone deployment. Owner worktree remains untouched."
+}

@@ -132,6 +132,9 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Read failure coverage|Party coverage|Social coverage|Combined casino coverage|Combined casino rejection coverage|Combined casino timeout coverage|Combined workload): [a-z_0-9= -]+$`).FindString(line); match != "" {
 			t.Log(match) // Aggregate fields only; never raw credential/socket logs.
 		}
+		if match := combinedRoleEvidencePattern.FindString(line); match != "" {
+			t.Log(match)
+		}
 	}
 	if runErr != nil {
 		t.Fatal("actual combined driver failed; raw synthetic socket logs omitted")

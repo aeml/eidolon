@@ -401,8 +401,12 @@ func main() {
 	}
 	if selectedScenario == "party-combat" || selectedScenario == "combined" || selectedScenario == "party-dungeon" || selectedScenario == "party-raid" || selectedScenario == "party-event" {
 		var formed, members, damage, heals, casts, denials, xp, deaths, minimum, failures uint64
+		var roles [4]partyRoleCounts
 		for index, party := range parties {
 			counts := party.counts()
+			for role := range roles {
+				roles[role].merge(counts.roles[role])
+			}
 			if counts.formed {
 				formed++
 			}
@@ -421,6 +425,9 @@ func main() {
 			}
 		}
 		log.Printf("Party coverage: groups=%d formed=%d members=%d min_impacts=%d damage_events=%d heal_events=%d accepted_casts=%d denied_casts=%d xp_progress_updates=%d observed_deaths=%d failed=%d", len(parties), formed, members, minimum, damage, heals, casts, denials, xp, deaths, failures)
+		for role, counts := range roles {
+			log.Printf("Party role coverage: class=%s participants=%d confirmed=%d min_impacts=%d damage_events=%d heal_events=%d accepted_casts=%d denied_casts=%d", partyLoadClasses[role], counts.participants, counts.confirmed, counts.minImpacts, counts.damage, counts.heals, counts.casts, counts.denials)
+		}
 		expectedMembers := *count
 		if selectedScenario == "combined" {
 			expectedMembers /= 5

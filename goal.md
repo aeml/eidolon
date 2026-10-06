@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 isolated1.79 capacity integration:** Current identity/schema25 and
+monitoring remain intact while prepared concurrent workloads are integrated.
+Frame broadcasting now takes a detached position/scene/Resonance view rather
+than cloning all owned item/receipt state; full save snapshots remain unchanged.
+Complete load-driver race tests pass18.133s, focused server/game checks pass,
+and legal naturally rolled four-class starting gear checks pass2.817s. Four
+fixed class summaries retain zero-impact members without relaxing any gate.
+The frame microbenchmark improves allocations, not proven player capacity.
+Previous100-player failures remain failures; no native comparison has yet been
+run on this source. Own version, capacity and deployment acceptance stay open.
+See [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
+
 **October6 isolated1.78 operations integration:** Prepared monitoring now runs
 against the current account-bound persistence source without replacing identity
 checks or current privacy/admin filters. Separate simulation/broadcast timing

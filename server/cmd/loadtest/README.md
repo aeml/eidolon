@@ -66,6 +66,12 @@ It counts explicit own entities in protobuf full/delta or legacy full snapshots,
 not cached entities or removals. Every client requires at least one fresh update;
 there is no invented own-update rate for unchanged idle players.
 
+Party scenarios also emit four fixed `Party role coverage` rows, one for each
+class. They report participants, confirmed membership, minimum actual impacts,
+damage/heal events and accepted/denied casts. Zero-impact participants remain in
+the minimum; accepted casts alone do not count as impact. These diagnostics do
+not relax the every-player impact gate or establish encounter/capacity success.
+
 The existing isolated nightly runner now requires exactly one complete summary
 and each coverage line, no read/write/decode/admission failures, all100 clients
 authenticated and covered, and

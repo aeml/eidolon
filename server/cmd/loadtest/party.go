@@ -57,6 +57,29 @@ type partyLoadCounts struct {
 	formed                                                                bool
 	failed                                                                bool
 	members, minImpacts, damage, heals, casts, denials, xpUpdates, deaths uint64
+	roles                                                                 [4]partyRoleCounts
+}
+
+// Fixed class totals only: never include account names, actor IDs or histories.
+// Include zero-impact participants so diagnostic totals cannot conceal a role
+// that failed the existing every-member combat gate.
+type partyRoleCounts struct {
+	participants, confirmed, minImpacts, damage, heals, casts, denials uint64
+}
+
+func (c *partyRoleCounts) merge(other partyRoleCounts) {
+	if other.participants == 0 {
+		return
+	}
+	if c.participants == 0 || other.minImpacts < c.minImpacts {
+		c.minImpacts = other.minImpacts
+	}
+	c.participants += other.participants
+	c.confirmed += other.confirmed
+	c.damage += other.damage
+	c.heals += other.heals
+	c.casts += other.casts
+	c.denials += other.denials
 }
 
 func newPartyLoad(credentials []BotCredentials, x, z float64) *partyLoad {
@@ -300,6 +323,14 @@ func (p *partyLoad) counts() partyLoadCounts {
 			c.members++
 		}
 		impacts := m.damage + m.heals
+		confirmed := uint64(0)
+		if m.confirmed {
+			confirmed = 1
+		}
+		c.roles[i%len(c.roles)].merge(partyRoleCounts{
+			participants: 1, confirmed: confirmed, minImpacts: impacts,
+			damage: m.damage, heals: m.heals, casts: m.casts, denials: m.denials,
+		})
 		if i == 0 || impacts < c.minImpacts {
 			c.minImpacts = impacts
 		}
