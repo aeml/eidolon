@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.75.0 CI correction:** Publication candidate0e42a457 was
+blocked by the canonical protocol-constant audit and guild-bank Mongo recovery
+checks; it was not accepted or deployed. The existing owner-export action is
+now declared in the audited protocol catalog, with its admission policy intact.
+The test-only complete-character clone now preserves private AccountID rather
+than losing it through public JSON serialization. A new regression checks exact
+identity/state, independent mutable items and private JSON exclusion; the
+unchanged full guild-bank disposable Mongo race suite passes32.351s. The focused
+client protocol audit passes1.172s. Provider settings remain as confirmed above;
+no retention change or deletion. Corrected source still needs CI/live acceptance.
+
 **October6 Alpha1.75.0 publication candidate:** The approved milestone policy is
 administrator-reviewed export/removal requests, unchanged retention and no
 automatic deletion. Nineteen explicit owner sections, separate audited approval,

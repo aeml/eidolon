@@ -13,6 +13,8 @@ import (
 )
 
 // Cosmetic vendor requests are separate from ordinary Gold item commerce.
+const MsgOwnerExportSection = "owner_export_section"
+
 const (
 	MsgGetCosmeticVendor    = "get_cosmetic_vendor"
 	MsgBuyCosmetic          = "buy_cosmetic"

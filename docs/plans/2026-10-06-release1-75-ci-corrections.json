@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "milestone": "1.75.0",
+  "baseCommit": "0e42a457acb5c46f01168fe2d44625e4d647d822",
+  "blockedRun": "https://github.com/aeml/eidolon/actions/runs/37394265525",
+  "status": "focused-corrections-locally-verified-awaiting-ci-and-live-acceptance",
+  "causes": [
+    "The owner_export_section action already had its handler and authenticated admission policy, but its constant was outside protocol_types.go, the canonical file scanned by the unchanged client/server contract audit. Move the declaration into that catalog; keep the wire value and policy unchanged.",
+    "Guild-bank tests deep-cloned complete snapshots through public JSON. New trusted AccountID is deliberately excluded from JSON, so that test helper stripped the identity from comparison copies while actual Mongo reads retained it. Preserve AccountID explicitly in the test-only clone; do not change production saves or weaken full-state comparisons."
+  ],
+  "verification": [
+    {"scope": "Client protocol contract", "command": "npm test -- --runInBand tests/ProtocolContract.test.js", "result": "1 suite / 1 test passed in 1.172s; original audit unchanged."},
+    {"scope": "Guild-bank actual Mongo recovery", "command": "GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 MONGO_URI=mongodb://127.0.0.1:32957/eidolon EIDOLON_GUILD_DISPOSABLE_DATABASE=1 go test -p 2 -race . -run '^TestGuildBank' -count=1", "result": "Passed in 32.351s against a newly created isolated tmpfs Mongo fixture, including the unchanged recovery/settlement/normal-handler comparisons and the added clone identity/deep-copy/private-JSON regression."}
+  ],
+  "safety": "No production database, retained player records, provider settings or gameplay balance changed. Test data is synthetic. Live release remains unaccepted until the corrected commit passes deployment gates and exact live checks."
+}

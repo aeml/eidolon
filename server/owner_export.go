@@ -13,7 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-const MsgOwnerExportSection = "owner_export_section"
 const maximumOwnerSectionBytes = 512 << 10
 
 type ownerExportPayload struct {
