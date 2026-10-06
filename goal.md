@@ -1,5 +1,36 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 natural Root event control FAIL199.95s:** Exact bbab4c51 binaries
+ran the existing four-class level35 normal Root check, started05:20:24 UTC
+inside the real first40s window; no schedule skip or clock/power manipulation.
+Three players completed, minimum three wave views, zero town exits, one semantic/
+decode refusal. Final independent save assertions were not reached. Recovery
+completed14 trips; missing champion participation is a hypothesis, not a cause
+proved by the old aggregate log. No reduced gates or unchanged retry. Root
+consumed terminal session4510 directly; normal server drain completed. Exact
+owned Mongo32966 identity/label validated, synthetic DB/volumes removed, follow-up
+label/process queries empty. Concurrent raid means no matched headroom inference.
+
+**October6 current-source Earth raid PASS385.64s:** Exact bbab4c51 normal
+server/driver and race harness passed the original five-player full Earth assault,
+three rooms/one boss, three-wave repair, every-client restoration/town exit and
+independent shared original boss rewards/XP/unclaimed repair readiness/save checks.
+Legal level30 class-focused Uncommon/Rare gear/builds and declared chapter access;
+20m maximum,5s admission/action/stop guards, no power/clock/monster manipulation
+or reduced gates. Owned loopback Mongo32965/name/ID/label, exact binary hashes,
+artifact log and terminal handle/PID retained in the capacity receipt. Authorized
+Luna reported PASS; root independently consumed session72424 and checked the log.
+All eight ordinary shutdown stages/drain completed within unchanged guards.
+Exact owned Mongo32965 identity/label validated, synthetic DB/volumes removed,
+follow-up label/process queries empty. Not population/headroom acceptance,
+all-realms/Dark King or production release. Mixed100 old-source PASS remains.
+
+**October6 encounter evidence retention:** Dungeon/raid/event wrappers now retain
+already-emitted fixed four-class role/activity counters and closed failure stages,
+never raw socket/identity/error suffixes. Focused diagnostic race PASS1.092s;
+private/unknown/invalid fields refused. Not included in the completed bbab binaries,
+and not a retroactive explanation of their event failure. No outcome gate changed.
+
 **October6 profiled live-scene target scan:** Full current generated-world CPU
 profile with100 idle actors identifies enemy target scanning as the dominant
 sampled path. Skip out-of-scene membership/cast reads only after reading the

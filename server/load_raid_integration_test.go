@@ -55,6 +55,9 @@ func TestLoadRaidActualFiveClassRolesRepairExitAndSaves(t *testing.T) {
 	started := time.Now()
 	output, runErr := command.CombinedOutput()
 	for _, line := range strings.Split(string(output), "\n") {
+		for _, evidence := range encounterLoadDiagnostics(line) {
+			t.Log(evidence)
+		}
 		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Recovery coverage|Party coverage|Dungeon coverage|Raid coverage): [a-z_0-9= ]+$`).FindString(line); match != "" {
 			t.Log(match)
 		}

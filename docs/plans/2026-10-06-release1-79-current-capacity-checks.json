@@ -2,7 +2,38 @@
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
-  "status": "periodic-save-fix-100-client-baseline-pass-fixture-removed-full-representative-capacity-gates-open",
+  "status": "five-player-earth-raid-pass-natural-root-event-fail-mixed100-baseline-retained-full-capacity-gates-open",
+  "encounterDiagnosticRetention": {
+    "change": "Dungeon, raid and event integration wrappers retain the driver's existing fixed class-role/activity counters and closed failure categories. Timestamp prefixes are discarded; raw socket messages, identities and arbitrary error suffixes are not retained. No gameplay or acceptance gate changes.",
+    "verification": "Focused EncounterDiagnostics and CombinedRoleEvidence race tests PASS1.092s, including fixed-field retention and rejection of private trailers, unknown classes/stages and invalid counters. These changes are not in the bbab4c51 binaries used by the two encounter controls below; their old aggregate logs cannot establish an exact event failure cause."
+  },
+  "currentFourPlayerNaturalRootEventControl": {
+    "sourceCommit": "bbab4c51a984700e261793ac227a443e489964de",
+    "result": "FAIL199.95s. Reused exact normal server/driver/race-harness binaries from the concurrent isolated Earth raid control. Started05:20:24 UTC inside the real first40s Root precondition; actual server/event ran, not skipped. Three of four completed, minimum three wave views, no normal town exits; one driver semantic/decode refusal. Independent final save assertions were not reached. No clock override/advance or fabricated event.",
+    "artifactDirectory": "/tmp/eidolon-179-rootevent-9IhOge",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-2893656131",
+    "predeclaration": "Four normal authenticated level35 class roles with existing legal Uncommon/Rare class-focused gear/builds, full preparation clamped by normal login and natural Root site positions. Original9m driver maximum,5s admission/action/stop guards. Earn all four wave views/champion/completion and every-client normal town exit; independent fresh saved XP/Gold and preserved gear/bag sentinel/EP. No forced injury/monster, clock advance, restoration or reduced gates.",
+    "environment": "Exact bbab4c51 binaries/hashes listed in the Earth raid entry; normal server GOMAXPROCS2, Alpha1.76.0/schema25. Separate owned Mongo7.0.14 loopback32966,2CPU/2GiB/512MiB tmpfs. Concurrent local raid shares the host, so these are encounter controls, not matched performance/headroom evidence.",
+    "metrics": "connected4 joined4 frames23732 transport0 decode_errors1 min_frames/own_updates5927 min_active195599ms max_gap72ms wire176506695B login83ms join28ms; recovery14 requested/14 completed/0 pending/0 failed; party1 formed/4 members min_impacts5 damage145 heals18 casts94 denied0 XPupdates52 deaths18 failed1; event selected1 present4 completed3 exited0 min_wave_views3.",
+    "limits": "decode_errors also increments for semantic party.receive refusals, not only malformed JSON. Missing champion-wave participation during recovery is a hypothesis, not established by retained aggregates. No failure gate reduced, final-save acceptance, unchanged retry, headroom or production deployment. Normal server completed all eight shutdown stages and drain, without forced stop/race/panic.",
+    "monitoring": "Root directly consumed terminal FAIL from session4510; harness PID2461001 exited. Luna's current delegation covers raids/dungeons only.",
+    "fixture": "Owned Mongo42d1feda32d044f6fe0c4f470bf43803e41e4cb87fe70bec2b31a1a1c8c61e12/name eidolon-179-rootevent-20261006/label eidolon.fixture=rootevent-179-20261006 removed with its synthetic volumes only after exact identity/label validation and terminal harness completion; follow-up label/process queries empty."
+  },
+  "currentFivePlayerEarthRaidControl": {
+    "sourceCommit": "bbab4c51a984700e261793ac227a443e489964de",
+    "result": "PASS385.64s overall; driver-to-save elapsed6m20.312s. Exact source-built normal server/driver and race harness. Full Earth assault (three rooms/one boss), three-wave repair, every-client restoration/normal town exit and independent original shared boss rewards, positive XP, accepted Count1 uncompleted/unrewarded repair readiness and preserved gear/bag/EP all pass. Not a reduced activity sample or raid capacity acceptance.",
+    "artifactDirectory": "/tmp/eidolon-179-earthraid-XySmgf",
+    "serverSHA256": "eefd97bfecb25cfb5e5ba4f5a9dae97277877ea0a4794e7e48cca080418c739c",
+    "driverSHA256": "c288798a5ada6aa8f8f1de2d959f4b9c9463c20b5d53525076ba81ed0ddac59e",
+    "raceHarnessSHA256": "ad80b642fd9ec40425b2286a3d5ff51f32548b4f96066ed2af0999164122b7f8",
+    "predeclaration": "Five normal authenticated level30 actors: Fighter, Cleric, Rogue, Wizard, Fighter with existing legal class-focused Uncommon/Rare gear/builds and declared prepared access. Original20m maximum driver duration,5s admission/action/stop guards. Earn every-client normal conversion/consent, all assault rooms/one boss, all three Vigil wave views/restoration and town exit; independently verify shared durable original boss rewards, positive XP, unclaimed/unrewarded repair readiness and preserved gear/bag/EP. No generated monsters, forced clock, combat-power grants, checkpoint/health reset or weakened acceptance.",
+    "environment": "Normal server GOMAXPROCS2, inherited Alpha1.76.0/schema25 labels. Owned Mongo7.0.14 loopback32965,2CPU/2GiB/512MiB tmpfs. Shared host; not production headroom, all-realms/Dark King or human pacing proof.",
+    "ownedServerEvidence": "/tmp/eidolon-compat-session-1310827115",
+    "metrics": "connected5 joined5 frames57538 transport/decode0 min_frames/own_updates11504 min_active379591ms max_gap82ms wire308796466B login147ms join55ms; recovery17 requested/17 completed/0 pending/0 failed; party1 formed/5 members min_impacts128 damage985 heals42 casts565 denied0 XPupdates215 deaths37 failed0; dungeon entered5 cleared5 exited5 rooms3 bosses1 reentries12 checkpoint_returns12; raid converted/prepared true ready5 restored5 min_wave_views3.",
+    "shutdown": "All eight ordinary shutdown stages and drain complete; no forced stop/race/panic. Original five-second stop guard unchanged.",
+    "monitoring": "User-authorized Luna /root/watch_earthraid179_1006 reported terminal PASS; root independently consumed session72424 and verified the log. Harness PID2445971 exited; nothing restarted.",
+    "fixture": "Owned Mongoea25e03494802cfca4e74639b7a8632deee3d95e7276453be2ae14545723a437/name eidolon-179-earthraid-20261006/label eidolon.fixture=earthraid-179-20261006 removed with its synthetic volumes only after exact identity/label validation and terminal harness completion; follow-up label/process queries empty."
+  },
   "liveSceneTargetScanOptimization": {
     "source": "b00b71f5 plus accompanying scene-filter/benchmark changes; these changes are not in the prior32831df3 native100 binaries.",
     "diagnosis": "Short full-current-population CPU profile with100 declared idle actors shows enemy target scanning dominates sampled CPU. Out-of-scene actors currently reach membership and cast-state reads even though the caller subsequently discards them. This is CPU dependency evidence, not attribution of the historical1982ms multiplayer state gap.",
