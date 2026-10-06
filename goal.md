@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 current20-client diagnostic control:** Source87cda8c7 normal server/
+driver, race harness and owned Mongo7 passed139.76s/120s active. Every20-client
+save check reached: gear/bag/EP preserved, party progression retained. All four
+roles contributed(min28), real healing and every paid casino minimum passed;
+no connection/action/casino errors. Fresh own updates min3625/maxgap103ms.
+Fixed wait counters retained, not time fractions or a diagnosis of100 failures.
+Only exact labelled synthetic Mongo removed after terminal/native cleanup;
+production and nightly soak untouched. This is not100-player, raid/event or
+complete final-settlement acceptance; no unchanged100 retry. See current receipt.
+
 **October6 bounded capacity-driver diagnostics:** Add five fixed class-level
 inactivity counters so the next focused probe can distinguish target scarcity,
 regroup/cohort waits, pending casts and pursuit. No actor identities/history,

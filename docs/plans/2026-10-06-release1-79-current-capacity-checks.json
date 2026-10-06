@@ -7,7 +7,34 @@
   "partyInactivityDiagnostics": {
     "change": "Each test-client class now retains only five fixed aggregate counters for pending cast, regroup, waiting on an unready cohort, no eligible target and pursuit decisions. The combined integration retains only a whitelisted fixed-class/count line. No IDs, coordinates, account names, action history or extra acceptance credit.",
     "verification": "Focused cmd/loadtest race checks pass2.123s, including all five inactivity paths, aggregate merging, unchanged zero-impact gates, written-hit ownership, distinct legal target selection and claim concurrency. Initial invocation used invalid -p2 shorthand and ran no requested tests; corrected -p 2 invocation is the cited pass.",
-    "limits": "No fresh connected comparison has used these counters yet. They do not establish the cause of previous failures. Anchor400/600, radius30, gear, ordinary commands, admission/action timeouts, casino stakes and every-member impact requirements remain unchanged. No unchanged100-client retry."
+    "limits": "These counters do not establish the cause of previous100-client failures. Anchor400/600, radius30, gear, ordinary commands, admission/action timeouts, casino stakes and every-member impact requirements remain unchanged. No unchanged100-client retry."
+  },
+  "diagnostic20ClientControl": {
+    "sourceCommit": "87cda8c73c9ce05192c710906c925ece8778ba41",
+    "result": "PASS139.76s: actual normal source-built server/driver plus race harness,20 fixed-role clients,120s active window, actual owned loopback Mongo7. Unchanged workload gates; all20 independent disconnect-save checks reached and passed. Inherits Alpha1.76.0 source label, not a published1.79 release.",
+    "artifactDirectory": "/tmp/eidolon-179-diagnostic20-qphAAI",
+    "serverSHA256": "bd0a3253f669259025393de2a8bce6cfbb7d1b711599ec2edbcd7fee13750236",
+    "driverSHA256": "afaa74b996c456b039bc458b1f94727629d80009b98a8b9a0ff13ca3d0b85ff1",
+    "raceHarnessSHA256": "e70784e8fe07111b3d5a39ba3b00d2c80dffffcf8374f58dbacb750400c8e421",
+    "metrics": {
+      "connected": 20, "joined": 20, "readWriteDecodeErrors": 0,
+      "minimumFreshOwnUpdates": 3625, "minimumActiveMilliseconds": 119989,
+      "maximumStateGapMilliseconds": 103, "payloadBytes": 263822462,
+      "maximumLoginMilliseconds": 86, "maximumJoinMilliseconds": 42,
+      "socialComplete": 4, "socialFailed": 0,
+      "casinoMinimumPaidResults": {"slots": 17, "blackjack": 2, "house": 2, "poker": 2},
+      "casinoFailuresRejectionsTimeouts": 0,
+      "partyMinimumImpacts": 28, "partyDamageEvents": 187, "partyHealEvents": 1,
+      "partyAcceptedCasts": 153, "partyDeniedCasts": 3, "partyXPUpdates": 200,
+      "roles": {
+        "Fighter": {"minimumImpacts": 28, "pendingCastSteps": 0, "regroupSteps": 0, "cohortWaitSteps": 44, "noTargetSteps": 278, "pursuitSteps": 190},
+        "Cleric": {"minimumImpacts": 74, "pendingCastSteps": 0, "regroupSteps": 90, "cohortWaitSteps": 0, "noTargetSteps": 244, "pursuitSteps": 200},
+        "Rogue": {"minimumImpacts": 42, "pendingCastSteps": 0, "regroupSteps": 93, "cohortWaitSteps": 0, "noTargetSteps": 243, "pursuitSteps": 188},
+        "Wizard": {"minimumImpacts": 44, "pendingCastSteps": 0, "regroupSteps": 59, "cohortWaitSteps": 0, "noTargetSteps": 272, "pursuitSteps": 121}
+      }
+    },
+    "scope": "All four roles actually contributed; healing, paid games and preserved equipment/bag/EP plus party progression passed. Waiting/pursuit diagnostics are decision counts, not time fractions. Unmatched own damage remains excluded from acceptance. Earlier100-client failure causes are not established by this smaller randomized-world comparison. No raid/event clear, all final casino settlements or production100-player headroom claim.",
+    "cleanup": "After terminal native harness completion and normal server cleanup, validated exact name/fixture label and removed only synthetic tmpfs Mongo c41b73102becd539bd8a5b3d0737fd4b9735b2eb027f1cdd848d600ce0344f6d with its volumes. Label query is empty; production and existing nightly soak untouched."
   },
   "publicEncodingFollowUp": {
     "change": "One broadcast-local cache encodes each detached immutable public actor once across recipients. Owner-private player messages always use their own encoding, never the public cache. Cache holds only actor snapshots touched by this broadcast and is discarded after its workers finish; no retained cross-frame cache, player history or timing/network/pass-gate change.",
