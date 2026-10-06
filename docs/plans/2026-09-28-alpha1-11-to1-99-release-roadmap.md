@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October6 ordered-release reconciliation: Alpha1.77.0 is accepted live at4ed7a3dd,
+CI37507575802, with independent public IPv4 identities/readiness and rewritten
+runtime-byte checks. The named certificate renewal simulation succeeded for both
+hosts; public IPv6 remains deferred/unverified. Alpha1.78.0 c7c2c526 is pushed,
+CI37543824180 active, with owner-approved existing hosting/admin Postmark outage
+alerts and confirmed single-test inbox delivery; actual service/public acceptance
+is pending. No complete capacity, final-art, pacing, feature-freeze, beta or1.99
+claim. Older dated status paragraphs below remain historical.
+
 October6 current acceptance: Alpha1.75.0 is live at56d9fda9, with all ten jobs
 in CI37399132936 successful and independent public source/identity/readiness
 checks. See [accepted scope and skipped checks](2026-10-06-release1-75-public-checks.json).
@@ -905,8 +914,8 @@ release that subsequently shipped.
 | --- | --- |
 | Implemented foundation | Four classes; procedural presentation; manual 55-chapter Chronicle; elemental investigations and repair raids; level-100 Dark Realm expedition; Nexus and four-phase Malachar; parties, guilds, economy, PvP, events, administration and casino. Verify integration and improve quality; do not recreate these systems. |
 | Accepted scoped evidence | Geared-party dungeon/raid clears, repair defenses, individual manual rewards, reconnect receipts, connected social/casino/admin routes, bounded concurrency and backup/restore checks. Reuse where the tested behavior has not changed. Prepared characters do not prove earned campaign pacing. |
-| Confirmed missing presentation | Dark Realm entry currently uses the town Dungeon Guide menu. Deliver the originally requested physical four-crystal resonance portal, with authoritative eligibility and discoverable location; do not call the menu the finished portal. |
-| Local, unshipped code | Hidden-floor casino status animation and actor-traversal optimizations. Functional regressions pass; hardware timing acceptance remains open. Finish or correct this candidate, then publish with notes. |
+| Delivered physical passage | The originally requested Fourfold Resonance Portal at (28,235) shipped in1.12, with personal eligibility, plaza, Ilyra directions and map location. Current world spawning/entry still use the canonical location. Guide fallback is not a substitute for it. Retain [exact accepted scope](2026-09-28-release1-12.md); final modern-art review remains separate. |
+| Current staged work |1.78 operations is in CI.1.79 multiplayer performance/capacity and later operations/compatibility candidates remain isolated, with exact-source limits. Earlier hidden-floor/casino work is historical, not the current unpublished release boundary. |
 | User-owned playtest | Uninterrupted earned campaign, real-player progression/economy and pacing. No replacement long automated campaign is authorized by this plan. Instrument and collect actual playtest reports instead. |
 | Deferred external evidence | Physical-phone dungeon/party feedback and IPv6/DDNS configuration. Neither is passed. Keep them nonblocking for ongoing code and the current release; address support/exposure decisions at the later gates below. |
 
@@ -1281,7 +1290,7 @@ with a questionnaire. Existing user deferrals remain in force until revisited.
 | --- | --- | --- |
 | Closed-beta transition/channel and final full-release version | 1.19 policy;1.90 admission;1.98 release | Owner chose near-completion beta, retained current accounts and invited new players. Keep open-alpha access until explicit CB go/no-go. |
 | Character continuity | Approved policy | Existing accounts/characters retain access/progress; no wipe. |
-| Cohort/concurrency, hosting budget and operator | 1.19 baseline;1.79/1.90/1.94 evidence | Owner plans up to100 beta players. Measure capacity/headroom before promising simultaneous sessions; hosting budget/operator still need confirmation. |
+| Cohort/concurrency, hosting budget and operator | 1.19 baseline;1.79/1.90/1.94 evidence | Owner plans up to100 beta players and approved current self-hosting/Postmark, no new paid service, and existing admin recipients for outage ownership on October6. No numeric dollar ceiling, SLA, staffing or concurrent-capacity guarantee inferred. Measure capacity/headroom before promising sessions. |
 | Browser/device/OS scope, accessibility commitments and additional languages | 1.18/1.40; 1.95 final | Publish tested/experimental distinctions. Phone feedback remains deferred; no fabricated acceptance. |
 | Public network/address-family exposure and DDNS ownership | 1.77 | IPv6 issue remains documented; no unsanctioned DNS changes or false claim that a browser always forces IPv4. |
 | Support/moderation staffing, retention and recovery objectives | 1.19/1.59/1.75/1.81 | Owner chose in-game reports and admin JSON viewing; implement in1.19. Staffing, retention and recovery objectives remain later explicit decisions; no new unrelated sensitive data. |

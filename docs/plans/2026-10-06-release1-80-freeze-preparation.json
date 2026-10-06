@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "1.80 launch feature freeze",
+  "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
+  "reviewBase": "d3fb3bef in isolated1.79 worktree; normal1.78 integration plus staged spatial/static-frame improvements and owned-process test observation",
+  "orderedDependency": "Accepted1.77 source4ed7a3dd remains latest verified live.1.78 c7c2c526 CI37543824180 is active; own1.79 native/headroom/release acceptance remains open. Do not skip either prerequisite or relabel this snapshot as a frozen1.80 build.",
+  "resolvedStaleClaims": [
+    "Roadmap starting-position row still called the physical Dark Realm portal missing. Current world_locations.go/world.go spawn the canonical portal; exact accepted1.12 receipt14290d22 records (28,235), personal gates/plaza/map and Guide fallback. Correct the row without claiming new portal work or final modern-art acceptance.",
+    "Promise V02 still requested the first actor pilot. Delivery and accepted1.58.2 public receiptff303dc2 show four rigged class bodies,252 equipment models/four motion banks with exact-source checks. Update to delivered integration while preserving final art/whole-catalog licensing gates; no repeated pilot request or model rewrite.",
+    "Roadmap/beta handoff still called hosting/alert ownership unanswered. Record owner's actual approval of current self-hosting/Postmark/no new paid service/existing admin recipients and explicit outage settings. Actual1.78 service acceptance, numeric budget/SLA/staffing and off-machine coverage are not inferred."
+  ],
+  "gateReview": [
+    {"id": "F1", "requirement": "Mandatory features reviewed against promise register; remaining work stabilization/identified launch evidence, not missing foundations", "status": "incomplete", "evidence": "Correct the two demonstrated obsolete portal/actor-pilot claims. Retain full Q/D/V/C/G promise inventory and modern-art contract; this is only initial reconciliation, not all-row acceptance. Later staged compatibility/operations changes and final integrated art/pacing still require their own scope."},
+    {"id": "F2", "requirement": "Threat model, serious exploits and authority/data boundaries reviewed", "status": "retained-targeted-evidence-not-final-freeze-review", "evidence": "Current account-bound/schema25 source and accepted1.71–1.76 security/privacy/valuable-operation receipts remain exact-source scoped. Changed-source final review remains; no broad no-exploit certification."},
+    {"id": "F3", "requirement": "Population, hosting/service budget and alert owners chosen with named capacity workload/limits", "status": "partially-resolved", "evidence": "Owner plans up to100 beta players, approved existing hosting/Postmark/admin outage recipients/settings. Earlier native mixed100 passes show803ms stall and lack production headroom; current changed-source artifacts are prepared, not run. Monitor/live acceptance and service objectives remain open."},
+    {"id": "F4", "requirement": "Privacy/retention/admin/moderation/recovery have owners and implementation paths", "status": "implementation-paths-retained-final-operations-review-open", "evidence": "Reviewed exports/removal requests retain current settings; Postmark recovery and durable role/audit/moderation paths remain. No erasure, player grant, retention/provider setting change or unsupported compliance promise. Final support staffing/retention/restore objectives remain explicit later decisions."},
+    {"id": "F5", "requirement": "Launch content/dependency set frozen with documented exception policy", "status": "not-frozen", "evidence": "Record inventory hashes below only as current source snapshot. No lock, feature exclusion, dependency upgrade or owner release/beta go/no-go inferred. Remaining catalog/license review and stabilization candidates must be reconciled before actual freeze."}
+  ],
+  "inventorySnapshotNotFreeze": {
+    "package-lock.json": "4471f91ecaaf2b5e4bd8bb8a5d79af340be48954e66d00787cc7d62b5974a6f9",
+    "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
+    "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
+    "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f"
+  },
+  "limits": "Read-only source/receipt review and documentation corrections only. No new test/benchmark, asset/model/dependency/runtime change, production mutation, access restriction, purchase feature, capacity/F/CB/1.99 completion or waiver of manual review. User whole-campaign/phone feedback remains deferred, not passed."
+}

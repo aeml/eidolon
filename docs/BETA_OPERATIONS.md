@@ -11,10 +11,17 @@ payment integration or new infrastructure purchase.
 | --- | --- |
 | Existing alpha accounts, new invitations and cohort date | Retain existing accounts; invite new beta players only once the game is nearly complete.1.90 is the planned readiness review, not an automatic opening. |
 | Character continuity | Preserve existing characters/progress; no wipe. |
-| Cohort/concurrency target and hosting budget | Up to100 beta players planned. Concurrent capacity/headroom must be measured; budget remains unapproved. |
+| Cohort/concurrency target and hosting budget | Up to100 beta players planned. Owner approved existing self-hosting/Postmark and no new paid service on October6. Concurrent capacity/headroom still must be measured; no numeric spending ceiling or service guarantee inferred. |
 | Support/moderation channel and coverage | In-game reports, with JSON viewable in-game by admins. Staff coverage and response-time commitments remain unassigned. |
 | Report retention, backup retention and recovery objectives | Await explicit decisions. Existing technical defaults are not a published policy. |
 | Beta channel label and announcement | Keep open Alpha until the near-completion CB go/no-go. |
+
+The owner approved existing `ADMIN_NOTIFICATION_EMAILS` recipients as outage
+owners with30s health probes,3 failures,2 recoveries and30m reminders. The single
+labelled Postmark test reached its inbox. Ordered1.78 CI/deployment and actual
+independent monitor/public acceptance remain pending; approved settings are not
+proof of installed or off-machine coverage. Staffing/response commitments and
+the eventual beta transition remain separate decisions.
 
 ## Live 1.71 password change and emailed recovery
 
