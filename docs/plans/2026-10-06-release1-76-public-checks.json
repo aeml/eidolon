@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "milestone": "Alpha1.76.0 publication",
+  "status": "deployed-public-identity-verified-final-live-qa-still-running-not-accepted",
+  "checkedAt": "2026-10-06T02:51:01.169Z",
+  "commit": "5757232598c353fe6bc76ca7fd65283019d62693",
+  "version": "Alpha 1.76.0",
+  "schemaVersion": 25,
+  "ci": {
+    "run": 37403492653,
+    "status": "in_progress",
+    "observation": "Root confirms all five hosted test jobs, predeploy character QA, production QA input validation and both deployment jobs succeeded. Exact live job112083237466 remains in_progress at Run live anonymous and persistent-character QA. Luna monitors this same run. No acceptance before terminal success and a post-terminal public recheck.",
+    "skippedScopes": ["Predeploy deterministic High/Low animation gallery", "Predeploy Well Rested rendering/GPU lifecycle QA", "Predeploy disposable full-character gameplay"]
+  },
+  "public": {
+    "frontendExactIdentity": true,
+    "backendExactIdentity": true,
+    "backendStatus": "ok",
+    "database": "ready",
+    "runtime": [
+      {"path": "index.html", "sha256": "8e1cdc1ffb68787b7e41796b9e49f16072a76f50eac068617f5910ebe81f75f4"},
+      {"path": "src/main.js", "sha256": "5d60364efa3c5efa0613de8601e55c4a17b3e91ab7b97ef5889dc8fa20c1e9cb"}
+    ],
+    "verification": "Independent IPv4 HTTPS requests with no-cache,2-second connect and5-second total limits. Exact index/main bytes match source transformed by the existing publisher. Login shows Alpha1.76.0, with new1.76 and preserved1.75 patch history. No credentials or production data queried. These checks do not replace ongoing authenticated QA."
+  },
+  "remaining": "Terminal exact-source CI/live success, explicit skipped-live scopes and post-terminal identity/readiness checks. Later isolated1.79 diagnostic commit87cda8c7 and1.82 runner boundary commit9e3bb9c8 are unpublished; not included in this1.76 release. Full roadmap remains active."
+}
