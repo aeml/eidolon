@@ -292,6 +292,14 @@ include placement/order; hunts check existing story anchors; Dark Realm chapters
 check objectives/discoveries. Deliberate additions must update affected count,
 budget, icon, visual and gameplay tests rather than weakening those checks.
 
+Cosmetic generation validates both EP-shop and earned-season offers before
+writing or checking. IDs and names must be unique across both catalogues, bases
+must resolve to equippable items, colors must be RGB integers, EP prices must be
+positive safe integers, and earned medals must be valid and unique. Closed offer
+fields reject gameplay stats and prevent priced earned rewards. Update that
+contract deliberately if introducing a new kind of cosmetic; this authoring gate
+does not replace server-owned eligibility, entitlement or payment enforcement.
+
 After changing items, check `ProceduralIcons` and the authored asset/slot tests;
 after changing story content, check the relevant Chronicle suite and authoritative
 quest rules. A generic icon or a manifest entry is not proof of an intentional

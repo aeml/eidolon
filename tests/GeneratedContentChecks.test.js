@@ -21,7 +21,9 @@ function prepare(kind) {
     mkdirSync(path.join(fixture, 'scripts'));
     copyFileSync(path.join(root, 'scripts', script), path.join(fixture, 'scripts', script));
     if (kind === 'cosmetics') {
-        put('server/internal/game/content/cosmetics.json', [{id: 'fixture-look', name: 'Fixture Look', base: 'Robes', description: 'Synthetic cosmetic.'}]);
+        put('src/core/ItemSystem.js', readFileSync(path.join(root, 'src/core/ItemSystem.js'), 'utf8'));
+        put('src/core/EquipmentSlots.js', readFileSync(path.join(root, 'src/core/EquipmentSlots.js'), 'utf8'));
+        put('server/internal/game/content/cosmetics.json', [{id: 'fixture-look', name: 'Fixture Look', realm: 'fire', base: 'Robes', priceEP: 25, primary: 0x894a32, secondary: 0xe5aa45, description: 'Synthetic cosmetic.'}]);
         put('server/internal/game/content/season-cosmetics.json', []);
         mkdirSync(path.join(fixture, 'src/data'), {recursive: true});
         return {script, output: 'src/data/cosmetics.generated.js'};
@@ -65,6 +67,53 @@ describe.each(['cosmetics', 'authored-equipment'])('%s generation/check separati
         expect(run(script, '--dry-run').status).not.toBe(0);
         expect(existsSync(path.join(fixture, output))).toBe(false);
     });
+});
+
+test.each([
+    ['unknown equipment', offers => { offers[0].base = 'Missing robe'; }],
+    ['non-equipment', offers => { offers[0].base = 'Eidolon Heart'; }],
+    ['duplicate identity', offers => { offers.push({...offers[0], name: 'Another look'}); }],
+    ['duplicate display name', offers => { offers.push({...offers[0], id: 'another-look'}); }],
+    ['non-positive price', offers => { offers[0].priceEP = 0; }],
+    ['fractional price', offers => { offers[0].priceEP = 1.5; }],
+    ['invalid color', offers => { offers[0].primary = 0x1000000; }],
+    ['unknown realm', offers => { offers[0].realm = 'invalid'; }],
+    ['gameplay-power field', offers => { offers[0].stats = {strength: 100}; }],
+    ['invalid medal', (_, earned) => { earned[0].medal = 'Diamond'; }],
+    ['paid earned reward', (_, earned) => { earned[0].priceEP = 100; }],
+    ['duplicate medal', (_, earned) => { earned.push({...earned[0], id: 'other-medal', name: 'Other medal'}); }],
+    ['shop/earned name overlap', (offers, earned) => { earned[0].name = offers[0].name; }],
+    ['shop/earned ID overlap', (offers, earned) => { earned[0].id = offers[0].id; }]
+])('cosmetic authoring rejects %s before generating or checking', (_, corrupt) => {
+    const {script, output} = prepare('cosmetics');
+    const source = 'server/internal/game/content/cosmetics.json';
+    const earnedSource = 'server/internal/game/content/season-cosmetics.json';
+    const offers = JSON.parse(readFileSync(path.join(fixture, source), 'utf8'));
+    const earned = [{id: 'fixture-medal', name: 'Fixture Medal', medal: 'Bronze', base: 'Pendant', primary: 0x998877, secondary: 0xeeddaa}];
+    corrupt(offers, earned); put(source, offers); put(earnedSource, earned);
+    for (const args of [[], ['--check']]) {
+        const result = run(script, ...args);
+        expect(result.status).not.toBe(0);
+        expect(result.stderr).toContain('Invalid cosmetics');
+        expect(existsSync(path.join(fixture, output))).toBe(false);
+    }
+});
+
+test('valid earned styles generate, but later invalid input cannot overwrite the committed catalogue', () => {
+    const {script, output} = prepare('cosmetics');
+    put('server/internal/game/content/season-cosmetics.json', [{id: 'fixture-medal', name: 'Fixture Medal', medal: 'Bronze', base: 'Pendant', primary: 0x998877, secondary: 0xeeddaa}]);
+    expect(run(script).status).toBe(0);
+    expect(run(script, '--check').status).toBe(0);
+    const target = path.join(fixture, output), original = readFileSync(target, 'utf8');
+    const old = new Date('2000-01-01T00:00:00Z'); utimesSync(target, old, old);
+    const source = 'server/internal/game/content/cosmetics.json';
+    const offers = JSON.parse(readFileSync(path.join(fixture, source), 'utf8'));
+    offers[0].stats = {strength: 100}; put(source, offers);
+    for (const args of [[], ['--check']]) {
+        expect(run(script, ...args).status).not.toBe(0);
+        expect(readFileSync(target, 'utf8')).toBe(original);
+        expect(statSync(target).mtimeMs).toBe(old.getTime());
+    }
 });
 
 test('authored checks refuse tampered delivered bytes without replacing the catalog', () => {

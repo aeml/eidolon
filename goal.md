@@ -1,5 +1,21 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 additional1.86 authoring/visual checks:** Current source inspection
+corrects the prior inaccurate missing-icon note: all eight Chronicle drops already
+have distinct motifs, including the four Dark Realm collections. Strengthened
+tests cross-check actual elemental objectives, Dark Realm authored collections,
+drop sources, distinct artwork and valid SVG. Native System Chrome checks pass at
+1440px and390px in9.4s; reviewed phone screenshot shows eight readable, distinct
+icons with no overflow. This is scoped browser presentation, not real-phone or
+full authenticated inventory acceptance. Add cosmetic authoring validation before
+both check/generation: equippable bases, unique IDs/names across shop and earned
+catalogues, valid RGB/realm/EP price, unique valid earned medals and closed fields
+excluding stats or priced earned rewards. Fourteen RED fixture cases prove the
+old generator admitted invalid data; final three-suite checks PASS60 cases4.009s
+and all eleven actual generated-content groups pass. Invalid input
+cannot rewrite prior generated output. No runtime/economy/entitlement change or
+deployment; ordered release and full roadmap gates remain open.
+
 **October6 prepared1.86 read-only content checks:** Eleven existing generators
 share a local/CI verification entry. Cosmetic/equipment/animation checks now
 refuse stale or missing outputs without writing, and installation prepares only
@@ -14,7 +30,7 @@ structured text, focused validation, server-owned event/season rules and local
 license declarations. No new tooling framework, gameplay balance, source asset,
 account/provider setting or production change. Owner analytics inventory is
 complete and unchanged, including reset on new activity. Full license/artifact
-review, distinct Dark Realm quest-item icons, ordered integration/publication and
+review, exact quest-item visual validation, ordered integration/publication and
 broader beta/release acceptance remain open. See the
 [prepared receipt](docs/plans/2026-10-06-release1-86-current-content-checks.json).
 Full goal remains active; this is not a live1.86 release.
