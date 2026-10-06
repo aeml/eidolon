@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 isolated1.82 authenticated SSH pin:** Public ED25519 key from trusted
+local r7-server file matches the bounded advertised ssh.mendola.tech key.
+Replace network trust-on-first-contact with the reviewed public pin and explicit
+StrictHostKeyChecking=yes; document reviewed rotation/refusal. No private key,
+secret, host configuration or repository setting accessed/changed.14 focused
+Jest tests pass1.802s, including public fingerprint, checkout and runner guards;
+lint/whitespace pass. Source remains unpublished; actual pinned deployment and
+repository/runner protection evidence remain open. Full roadmap is not complete.
+
 **October6 isolated1.82 runner boundary correction:** Manual exhaustive QA
 previously admitted any ref onto the self-hosted browser host when its input was
 true. Prepared guards require canonical repository plus master/main and either

@@ -536,11 +536,15 @@ jobs:
       - name: Configure SSH key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Public host identity verified against r7-server's local public key.
+          # Rotation requires out-of-band verification, never a network scan.
+          SSH_KNOWN_HOSTS: 'ssh.mendola.tech ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGiPjpRvGPRwDs4CoG7cAk412OIiNsrlllMFoCuMM5w8'
         run: |
           install -m 700 -d ~/.ssh
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ssh.mendola.tech >> ~/.ssh/known_hosts
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
 
       - name: Deploy via SSH
         env:
@@ -557,7 +561,7 @@ jobs:
             qa_usernames="${qa_usernames},${QA_USERNAME_SECONDARY}"
           fi
           qa_usernames_b64="$(printf '%s' "${qa_usernames}" | base64 -w0)"
-          ssh -o BatchMode=yes aeml@ssh.mendola.tech \
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes aeml@ssh.mendola.tech \
             "REF_NAME='${REF_NAME}' COMMIT_SHA='${COMMIT_SHA}' QA_USERNAMES_B64='${qa_usernames_b64}' bash -se" <<'EOF'
           set -euo pipefail
           cd /home/aeml/eidolon

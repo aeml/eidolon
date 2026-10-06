@@ -22,11 +22,19 @@ release branches and workflow changes, restrict who can dispatch trusted jobs,
 and control runner registration/access. A user able to merge arbitrary code into
 a trusted branch can execute that code. Do not use `pull_request_target` to check
 out and execute contributor code with release credentials or on these runners.
-The existing SSH deployment still learns a host key through `ssh-keyscan`;
-that is not authenticated host-key pinning. A trusted, out-of-band host identity
-and corresponding deployment configuration remain required before calling the
-protected-credential part of 1.82 complete. No host key or credential is rotated
-by this prepared change.
+The prepared SSH deployment pins the public ED25519 host identity and explicitly
+requires `StrictHostKeyChecking=yes`. The pin was verified against this server's
+local `/etc/ssh/ssh_host_ed25519_key.pub`, not trusted solely because a network
+scan returned it. Its fingerprint is
+`SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE`.
+A changed or unknown key must stop deployment before authentication/commands;
+do not bypass the failure with a new scan or disabled checking. For intentional
+host-key rotation, verify the replacement through trusted server-console/local
+public-key access, review the workflow pin update, and rerun release checks.
+Do not publish or copy `/etc/ssh/ssh_host_ed25519_key` (the private key).
+No host key or credential is rotated by this prepared change. Repository/runner
+access protection and an actual release through the new pin remain distinct
+acceptance evidence.
 
 ## 1) Baseline and env wiring
 
