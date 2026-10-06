@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 profiled1.79 target-scan improvement:** Current e8dd1bbe preserves
+live target authority while rejecting only out-of-sight/nonpositive-threat
+candidates before irrelevant membership/stealth/safe-zone work. Positive distant
+or tiny threat retains original priority. Focused race scope PASS7.844s includes
+actual enemy selection and normal delayed impact; initial consumer test wrongly
+expected synchronous damage, corrected to observe the unchanged35% wind-up.
+One3s idle100 sample drops20.20ms to13.77ms, about32%, not native/production
+headroom. Old78d3 native artifacts are now historical, not current-source builds.
+Resolve retained native member-coverage and final-save drain problems before a
+fresh changed-source comparison; do not claim the older100 failure resolved.
+
 **October6 changed-source1.79 native comparison:** Exact prepared78d3bee2 normal
 API/driver with separate race harness,100 clients/five role blocks/120s active:
 FAIL215.81s. All100 admitted/fresh-own delivery and paid casino/social scopes

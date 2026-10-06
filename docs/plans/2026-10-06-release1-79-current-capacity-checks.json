@@ -1,8 +1,17 @@
 {
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
-  "sourceCommit": "78d3bee20ca5ccd693c39bdf9a55dbf48778f97a",
-  "status": "changed-source-native100-failed-role-and-shutdown-gates-performance-and-headroom-open",
+  "sourceCommit": "e8dd1bbe63baee41dbffad7de9baef685bfef592",
+  "status": "profiled-target-scan-improvement-verified-locally-native-role-drain-and-headroom-gates-open",
+  "profiledTargetRangeShortcut": {
+    "runtimeSource": "af99624c",
+    "verifiedSource": "e8dd1bbe63baee41dbffad7de9baef685bfef592",
+    "change": "Read each candidate's current position/scene under its existing actor lock, then reject only nonpositive-threat players beyond the enemy's existing unprovoked sight range before live membership/stealth/zone work. Every positive threat, even tiny or distant, retains full original validation and priority. Near candidates share the same membership/disconnection/dead/stealth helper as the original path. No actor/scene/safe-zone cache, new radius, power, timer, stale-hit permission or reduced population.",
+    "regressions": "Existing/new enemy-target, safe-zone, starter-pursuit, sight, threat, attack and stealth race scope PASS7.844s. Fifteen near/boundary/far/tiny/negative-threat/scene/disconnected/dead/stealth/expired/replaced/removed/nil/NaN cases retain live authority. Actual World.updateEntity consumer preserves distant high-threat priority, then accepts and lands an ordinary near melee hit once that threat disappears.",
+    "fixtureCorrection": "The added consumer check initially expected synchronous damage and failed although the enemy correctly entered ATTACKING. Source confirms ordinary queued melee wind-up is35% of cooldown. Corrected the test to assert admission and await the original real delayed impact under actor locks with a bounded2s observation. No attack timer, damage or native5s shutdown/outcome guard was changed. Initial failing test commits are not claimed green.",
+    "shortComparison": {"beforeNanosecondsPerIdleWorldFrame":20200632,"afterNanosecondsPerIdleWorldFrame":13768633,"beforeBytes":136145,"afterBytes":135219,"beforeAllocations":25,"afterAllocations":24,"afterSeconds":3.589},
+    "limits": "One short3s before/after idle100 sample on the shared host, approximately32% lower frame time, not statistical confidence or actual combat/network/DB/client/production headroom. The retained full100 failure belongs to prior78d3bee2, not this source. Current native role acquisition and final-save guard problems still require diagnosis/fix. Prepared78d3 API/driver/harness are historical used artifacts; build exact fresh artifacts only after necessary runtime/controller fixes, then run one changed-source comparison. No same-source full retry or1.79 publication yet."
+  },
   "changedSourceNative100": {
     "source": "Exact prepared normal API/driver and separately race-instrumented harness from78d3bee2; later ff62cced commits change documentation only (git diff for server empty). Binary hashes remain those in ownedProcessObservationPreparation.",
     "workload": "Unchanged100 clients/five20-role blocks/120s active, legal class-appropriate Uncommon/Rare gear, normal Gold100 wagers, combat anchor(400,600)/30-unit acquisition, original5s actions/shutdown and600 fresh-own/108000ms delivery guards. GOMAXPROCS2 normal API; loopback Mongo7.0.14 with2CPU/2GiB/512MiB data tmpfs. No fake actors, stat scaling, grant during play, timer extension or reduced outcome requirements.",
