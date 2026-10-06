@@ -89,11 +89,14 @@ Redact usernames and personal details before sharing a reproduction publicly.
 Use the confirmed report-review controls for resolution; see the
 [operations handoff](BETA_OPERATIONS.md) for migration and privacy cautions.
 
-### Prepared 1.78 service diagnostics — not live in 1.71
+### Prepared 1.78 service diagnostics — not yet published
 
 **Service diagnostics** is an explicitly refreshed, read-only observation of
 the connected game process: release and sample time, readiness, goroutines/heap,
 broadcast queue/drop counts and aggregate character-save/Gold/EP call outcomes.
+Distinct simulation-frame and state-broadcast rows show their elapsed timing
+without changing the sequential33ms game loop. Older servers leave those rows
+unavailable; the measurements are not CPU time, percentiles or a capacity proof.
 Each of the six existing operation groups also shows completed-call mean,
 slowest elapsed time and timed sample count. Failed calls and retries are
 included. These are process-lifetime call measurements, not player latency,

@@ -36,7 +36,8 @@ export function renderAdminServiceDiagnostics(list, service) {
     for (const [key, label] of [
         ['characterJournal', 'Character journal writes'], ['characterCommit', 'Character database commits'],
         ['characterCleanup', 'Character journal cleanup'], ['characterRecovery', 'Character recovery passes'],
-        ['casinoGold', 'Casino Gold transfer calls'], ['casinoEP', 'Casino EP transfer calls']
+        ['casinoGold', 'Casino Gold transfer calls'], ['casinoEP', 'Casino EP transfer calls'],
+        ['realtimeUpdate', 'Realtime simulation frames'], ['stateBroadcast', 'State broadcast frames']
     ]) {
         const outcome = health.operational?.[key];
         const inFlight = outcome?.inFlightKnown === true ? count(outcome?.inFlight) : 'Unavailable';

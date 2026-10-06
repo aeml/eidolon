@@ -12,7 +12,7 @@ test.each([
     renderAdminServiceDiagnostics(list, { health: { operational: {
         characterJournal: { completed: 2, failed: 1, inFlightKnown: known, inFlight: value }
     } } });
-    expect(list.children).toHaveLength(16);
+    expect(list.children).toHaveLength(18);
     expect(list.children[10].textContent).toContain(`In flight: ${expected} · Completed calls: 2 · Returned errors: 1`);
     expect(list.textContent).not.toContain('<img');
     expect(list.querySelector('img')).toBeNull();
@@ -38,7 +38,7 @@ test('an impossible mean cannot appear above its reported maximum', () => {
         renderAdminServiceDiagnostics(list, { health: { operational: {
             casinoEP: { completed: 2, failed: 0, timedSamples: 2, totalMicros, maxMicros }
         } } });
-        expect(list.lastElementChild.textContent).toContain('Call timing: Unavailable');
+        expect(list.children[15].textContent).toContain('Call timing: Unavailable');
     }
 });
 
@@ -49,7 +49,7 @@ test('fixed diagnostic rows distinguish missing values, zero counters and unsafe
         heapAllocBytes: 0, heapObjects: Number.MAX_SAFE_INTEGER + 1,
         operational: { casinoGold: { completed: 0, failed: 0 } }, private: '<script>secret()</script>' } });
     const rows = [...list.children];
-    expect(rows).toHaveLength(16);
+    expect(rows).toHaveLength(18);
     expect(rows[0].textContent).toContain('Unavailable'); expect(rows[5].textContent).toContain('0.00 MiB');
     expect(rows[6].textContent).toContain('Unavailable'); expect(rows[14].textContent).toContain('Completed calls: 0');
     expect(rows[15].textContent).toContain('Unavailable');
@@ -81,4 +81,24 @@ test('timing shows measured zero and slow calls but never missing or inconsisten
     expect(rows[10].textContent).toContain('Mean call: 3.00 ms · Slowest call: 5.00 ms · Timed samples: 2');
     expect(rows[11].textContent).toContain('Mean call: 0.00 ms');
     for (const row of rows.slice(12)) expect(row.textContent).toContain('Call timing: Unavailable');
+});
+
+test('simulation and broadcast phases have distinct measured rows, with legacy phases unavailable', () => {
+    const list = document.createElement('ul');
+    renderAdminServiceDiagnostics(list, { health: { operational: {
+        realtimeUpdate: { completed: 2, failed: 0, inFlightKnown: true, inFlight: 0,
+            timedSamples: 2, totalMicros: 6000, maxMicros: 4000 },
+        stateBroadcast: { completed: 2, failed: 0, inFlightKnown: true, inFlight: 1,
+            timedSamples: 2, totalMicros: 2000, maxMicros: 2000 }
+    } } });
+    expect(list.children[16].textContent).toContain('Realtime simulation frames');
+    expect(list.children[16].textContent).toContain('Mean call: 3.00 ms');
+    expect(list.children[17].textContent).toContain('State broadcast frames');
+    expect(list.children[17].textContent).toContain('In flight: 1');
+    expect(list.children[17].textContent).toContain('Mean call: 1.00 ms');
+    renderAdminServiceDiagnostics(list, { health: { operational: {} } });
+    for (const row of [...list.children].slice(16)) {
+        expect(row.textContent).toContain('In flight: Unavailable');
+        expect(row.textContent).toContain('Call timing: Unavailable');
+    }
 });

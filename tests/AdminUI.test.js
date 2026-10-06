@@ -105,7 +105,9 @@ test('service diagnostics are explicitly refreshed, unpaginated and cleared on d
     reply({ service: { sampledAt: '2026-10-04T07:00:00Z', health: { status: 'ok', database: 'ready', version: 'Alpha 1.78.0', commit: 'abcdef1',
         goroutines: 12, heapAllocBytes: 1048576, heapObjects: 100, private: 'private-config-marker',
         operational: { characterJournal: { completed: 5, failed: 1 } } } } });
-    expect(ui.list.children).toHaveLength(16); expect(ui.next.hidden).toBe(true);
+    expect(ui.list.children).toHaveLength(18); expect(ui.next.hidden).toBe(true);
+    expect(ui.list.children[16].textContent).toContain('Realtime simulation frames');
+    expect(ui.list.children[17].textContent).toContain('State broadcast frames');
     expect(ui.list.textContent).toContain('1.00 MiB'); expect(ui.list.textContent).toContain('Completed calls: 5');
     expect(ui.list.textContent).not.toContain('private-config-marker'); expect(ui.note.textContent).toContain('not unique payouts');
     const calls = send.mock.calls.length;
