@@ -2,7 +2,7 @@
 
 **October6 owner-approved notification test:** Sent exactly one clearly labelled
 Postmark administrator test email; the provider accepted it with MessageID
-`a6602d46-8fbb-4cf0-94e9-6028c8a61503`. Inbox receipt remains unconfirmed.
+`a6602d46-8fbb-4cf0-94e9-6028c8a61503`. Owner confirmed actual inbox receipt.
 No ongoing alerts, monitor service, thresholds or paid hosting were enabled.
 Restricted the exact owner-owned production server `.env` from775 to600,
 without editing its contents or restarting services. Owner's named two-host

@@ -12,7 +12,7 @@
     "messageId": "a6602d46-8fbb-4cf0-94e9-6028c8a61503",
     "recipientCount": 1,
     "subject": "Eidolon: TEST administrator notification (owner-approved)",
-    "acceptanceScope": "Postmark HTTP200/ErrorCode0 with a valid MessageID. Actual inbox receipt remains unconfirmed; do not resend automatically or claim ongoing monitoring readiness.",
+    "acceptanceScope": "Postmark HTTP200/ErrorCode0 with a valid MessageID. Owner subsequently confirmed: test email worked. This establishes provider acceptance and actual inbox receipt for this single labelled test; do not resend automatically or claim ongoing monitoring readiness.",
     "privateEnvironmentPermissions": "The owner-owned regular production server .env was mode775. Restricted that exact file to mode600 and verified owner/type/mode. Metadata-only change; no content edit, service restart, provider-setting change or retention change. The owner can reverse the permission change if required."
   },
   "inheritedVersion": "Alpha1.76.0 source candidate; no1.77 or1.78 release identity claimed",
@@ -32,13 +32,13 @@
     "releaseCI": "Exact1.75 candidate run37399132936 has passed dependency audit/lint and remains in progress. Prior37398329976 passed ordinary Go coverage before cancellation; its race/browser jobs were cancelled, not accepted as passes. Neither run establishes1.78 release acceptance."
   },
   "operatorDecisions": {
-    "notificationDelivery": "Owner approved one labelled test email; Postmark accepted the single request recorded above. Inbox receipt is unconfirmed. Production alerts remain disabled; monitor service installation, thresholds, ongoing delivery and alert ownership are not authorized by this test alone.",
+    "notificationDelivery": "Owner approved one labelled test email; Postmark accepted the single request recorded above and the owner confirmed inbox receipt. Production alerts remain disabled; monitor service installation, thresholds, ongoing delivery and alert ownership are not authorized by this test alone.",
     "budget": "Owner asked whether to preserve current self-hosting with no new paid service, or supply a monthly operating budget. No paid infrastructure, SLA or pressure thresholds inferred or enabled.",
     "retention": "Existing player/provider retention remains unchanged. Process counters and monitor debounce state are RAM-only; service/output retention and off-machine coverage still require operator configuration."
   },
   "remaining": [
     "Ordered1.75/1.76 acceptance is complete. Exact1.77 source4ed7a3dd is pushed and CI37507575802 is in progress after the owner supplied the successful named certificate renewal dry-run. Require1.77 public acceptance, then own1.78 version/cumulative patch notes, fresh master integration, CI/deployment and exact public checks.",
-    "Agreed alert ownership/budget, explicit monitor service/threshold/output configuration and provider/inbox delivery evidence before claiming operating readiness.",
+    "Agreed alert ownership/budget and explicit monitor service/threshold/output configuration before claiming operating readiness. Single manual provider/inbox delivery is verified; the installed ongoing monitor path remains unverified.",
     "Representative multiplayer capacity and final security/restore/support/release qualification remain later roadmap work. Full1.99 objective is active."
   ]
 }
