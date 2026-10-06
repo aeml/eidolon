@@ -71,7 +71,7 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.transportClosed.Load() || c.retired.Load() {
 			return
 		}
-		success, err := db.Authenticate(payload.Username, payload.Password)
+		authenticatedID, success, err := db.AuthenticateAccount(payload.Username, payload.Password)
 		done() // Hydration, activity storage and takeover do not occupy hash slots.
 		if err != nil {
 			c.sendError("Login error")
@@ -82,6 +82,11 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		if c.transportClosed.Load() || c.retired.Load() {
+			return
+		}
+		user, err := db.GetUser(payload.Username)
+		if err != nil || user.ID != authenticatedID || !clientAcceptsAccountID(c, authenticatedID) || !liveAccountIdentityMatches(payload.Username, authenticatedID) {
+			c.sendError("Account identity could not be restored. Please use a new connection or contact support.")
 			return
 		}
 		if err := recordClientSessionActivity(c, payload.Username, "login"); err != nil {
@@ -98,6 +103,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		if err := recoverAccountGuildBankOperationsLocked(payload.Username); err != nil {
 			c.sendError("Your guild bank transfer is awaiting recovery. Please retry shortly.")
+			return
+		}
+		if !sessionAccountIdentityCurrent(c, payload.Username, authenticatedID) || !pinClientAccountID(c, authenticatedID) {
+			c.sendError("Account identity changed. Please use a new connection.")
 			return
 		}
 		if c.username == "" {
@@ -118,20 +127,17 @@ func (c *Client) dispatchMessage(msg Message) {
 		sessionsMu.Unlock()
 
 		// Check for characters
-		user, err := db.GetUser(c.username)
 		hasCharacter := false
 		characterType := ""
-		if err == nil && len(user.Characters) > 0 {
+		if len(user.Characters) > 0 && user.Characters[0] != nil {
 			hasCharacter = true
 			characterType = user.Characters[0].Class
 		}
-		if err == nil {
-			name := user.PublicName
-			if name == "" {
-				name = c.username
-			}
-			setClientPublicName(c, name)
+		name := user.PublicName
+		if name == "" {
+			name = c.username
 		}
+		setClientPublicName(c, name)
 
 		// Issue session-resume token
 		resumeToken, err := issueResumeToken(c.username, c)
@@ -166,6 +172,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		var payload JoinPayload
 		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
 			log.Printf("MsgJoin failed: Invalid payload from %s", c.username)
+			return
+		}
+		if !sessionAccountIdentityCurrent(c, c.username, clientAccountID(c)) {
+			c.sendError("Account identity changed or is unavailable. Please log in again.")
 			return
 		}
 		if err := hydrateClientPublicName(c); err != nil {
@@ -217,6 +227,10 @@ func (c *Client) dispatchMessage(msg Message) {
 		}
 		if requireBoundCharacterSaves && user.ID.IsZero() {
 			c.sendError("Account identity could not be restored. Please contact support.")
+			return
+		}
+		if requireBoundCharacterSaves && user.ID != clientAccountID(c) {
+			c.sendError("Account identity changed. Please log in again using a new connection.")
 			return
 		}
 
@@ -882,6 +896,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		if c.transportClosed.Load() || c.retired.Load() {
 			return
 		}
+		resumeID, identityOK := resumeTokenIdentity(payload.Token, username)
+		if !identityOK || !sessionAccountIdentityCurrent(c, username, resumeID) {
+			c.sendError("Session identity changed or is unavailable. Please log in again.")
+			return
+		}
 		if _, ok := validateAndConsumeResumeToken(payload.Token, c.username); !ok {
 			c.sendError("Session token invalid or expired. Please log in again.")
 			return
@@ -922,6 +941,11 @@ func (c *Client) dispatchMessage(msg Message) {
 		// Token validation authenticates the account, not an alternate display
 		// name. Restore its current label before reconnecting the live entity.
 		previousUsername, previousLabel := c.username, c.publicName.Load()
+		previousIdentity := c.accountIdentity.Load()
+		if !pinClientAccountID(c, resumeID) {
+			c.sendError("Session identity changed. Please use a new connection.")
+			return
+		}
 		resumeAccepted := false
 		defer func() {
 			if !resumeAccepted {
@@ -929,6 +953,7 @@ func (c *Client) dispatchMessage(msg Message) {
 				// authenticated resume on this transport.
 				c.username = previousUsername
 				c.publicName.Store(previousLabel)
+				c.accountIdentity.Store(previousIdentity)
 			}
 		}()
 		if c.username == "" {
@@ -939,6 +964,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		if !worldAdmissionAllowed(c) {
+			return
+		}
+		if !sessionAccountIdentityCurrent(c, username, resumeID) {
+			c.sendError("Session identity changed or is unavailable. Please log in again.")
 			return
 		}
 		// Public character copies intentionally omit connection metadata.

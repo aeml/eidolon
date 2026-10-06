@@ -558,8 +558,8 @@ independently approved coordinated operation, not automatic undo.
 Focused strict-mode, producer/clone/privacy, legacy preflight, shutdown and actual
 Mongo live/offline/reopened-journal checks are retained in
 [adoption checks](2026-10-05-release1-75-identity-adoption-checks.json). Real
-deployment transition/recovery acceptance remains open. Session/resume admission,
-other shared-custody intents/replay journals and independently restored removal
+deployment transition/recovery acceptance remains open. Other shared-custody
+intents/replay journals and independently restored removal
 decisions still require coordination before any erasure can be enabled. Character
 binding alone does not drain old live writers, prevent archive resurrection or
 authorize deletion. No retention change or erasure is enabled;1.75 is unpublished.
@@ -568,3 +568,34 @@ The prepared, unpublished1.76+ branch already assigned its own23/24 storage
 markers. Before integrating it, renumber those later migrations after this
 schema23 fence and update their evidence; do not deploy that older branch or
 reuse a marker number for a different contract.
+
+## Session account-generation admission
+
+The production password-login path now reads only the credential account ID/hash
+for verification, rejects invalid or excessively expensive stored bcrypt hashes,
+and proves that exact ID, username and hash are still current after comparison
+using primary/majority reads. Full roster hydration must match the captured ID.
+Before recovery/session installation, captured identity must match the live
+character; after blocking recovery work it is checked again against the current
+account and live state. Connection binding is private and immutable once pinned.
+
+Resume-token metadata captures that generation at issue. Join checks current
+identity before recovery/hydration. Resume checks DB/live/client generation before
+consuming the token or executing recovery, then checks again before attaching the
+character. An unavailable or replacement account refuses instead of retargeting
+the token. Existing closure, rotation, one-use and expiry rules remain; no account
+ID is returned in token/login/character payloads or added to analytics. No lookup
+per simulation tick or ordinary movement packet is added. Failed resume restores
+the recipient's previous authentication context; after-consume failures retain
+the existing one-use rule rather than resurrecting a bearer.
+
+Focused identity/protocol/lifecycle tests and two real-binary socket checks pass:
+ordinary registration/legacy-password login, takeover and one-use reconnect;
+fixture-only same-name replacement rejects new attachment to old live data and
+rejects the original token while preserving the replacement's whole BSON image.
+See [session checks](2026-10-06-release1-75-session-identity-checks.json). This is
+not coordinated account removal or complete shared-operation generation fencing:
+an eventual individually approved removal must drain existing sessions/writers,
+reconcile shared obligations and handle independently retained archives before
+any erasure is enabled. No deletion API, automatic purge, retention/provider
+change or real-player account replacement is introduced here.

@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 session-generation checkpoint:** Password login captures and re-proves
+the credential account ID/hash before installing a private immutable connection
+binding; join/reconnect validate current DB/live identity and tokens capture the
+original generation. Focused identity/protocol/closure/one-use tests and actual
+fresh credential/takeover/reconnect plus same-name replacement socket checks pass.
+Replacement whole-account checksum remains unchanged on refusal. The first native
+attempt used the wrong build tag for the fixture; source started cleanly, tag
+corrected without weakening readiness. HTTPS fetch verified the unchanged public
+remote after SSH authentication failed. No erasure, retention changes or deployment.
+Other shared-operation/archive coordination before removal and1.75 publication
+remain. See [session evidence](docs/plans/2026-10-06-release1-75-session-identity-checks.json).
+
 **October5 bound-producer adoption checkpoint:** Trusted account identity now
 survives roster/offline loading, live clones, save projections and journal replay
 without client/embedded-character exposure. Production producers require it;

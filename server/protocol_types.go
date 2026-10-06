@@ -9,6 +9,7 @@ import (
 	"eidolon-server/internal/game"
 
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Cosmetic vendor requests are separate from ordinary Gold item commerce.
@@ -117,6 +118,7 @@ type EntitySnapshot struct {
 
 // Client represents a connected player
 type Client struct {
+	accountIdentity      atomic.Pointer[primitive.ObjectID] // Immutable credential generation once pinned.
 	publicName           atomic.Pointer[string]
 	retired              atomic.Bool
 	transportClosed      atomic.Bool

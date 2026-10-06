@@ -71,6 +71,9 @@ func currentCharacterConnection(client *Client) bool {
 	if client == nil || client.retired.Load() {
 		return false
 	}
+	if requireBoundCharacterSaves && clientAccountID(client).IsZero() {
+		return false
+	}
 	sessionsMu.Lock()
 	owner := activeSessions[client.username]
 	sessionsMu.Unlock()

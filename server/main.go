@@ -27,6 +27,7 @@ import (
 	"eidolon-server/internal/game"
 
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const (
@@ -197,8 +198,9 @@ var unregister = make(chan *Client)
 
 // Session-resume token store (in-memory; one token per username).
 type resumeTokenEntry struct {
-	username string
-	owner    *Client // immutable binding; transport closure uses atomic state
+	accountID primitive.ObjectID
+	username  string
+	owner     *Client // immutable binding; transport closure uses atomic state
 }
 
 var (
@@ -228,6 +230,9 @@ func issueResumeToken(username string, owner *Client) (string, error) {
 	if owner == nil || username == "" || owner.username != username {
 		return "", errors.New("resume token requires its authenticated connection")
 	}
+	if requireBoundCharacterSaves && clientAccountID(owner).IsZero() {
+		return "", errors.New("resume token account identity required")
+	}
 	token, err := generateResumeToken()
 	if err != nil {
 		return "", err
@@ -246,8 +251,9 @@ func installResumeToken(username string, owner *Client, token string) {
 		delete(resumeTokens, old)
 	}
 	entry := &resumeTokenEntry{
-		username: username,
-		owner:    owner,
+		accountID: clientAccountID(owner),
+		username:  username,
+		owner:     owner,
 	}
 	resumeTokens[token] = entry
 	resumeByUser[username] = token
@@ -456,6 +462,7 @@ func main() {
 		log.Fatal(err)
 	}
 	adminRoles = db
+	sessionAccountIdentities = db
 	worldEntryModeration = newWorldModerationGate(db, time.Now)
 	chatService.authorizeSend = newTemporaryChatMuteGuard(db, time.Now)
 	adminActivities = db

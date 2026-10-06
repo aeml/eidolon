@@ -142,9 +142,11 @@
       "kind": "server-memory-session-authority",
       "sources": [
         "server/main.go",
-        "server/client_dispatch.go"
+        "server/client_dispatch.go",
+        "server/session_account_identity.go",
+        "server/internal/database/account_identity.go"
       ],
-      "data": "Authenticated connection/account bindings and CSPRNG single-use resume tokens. Tokens rotate/revoke and the existing resume window is five minutes after transport closure; server restart loses this memory. Dungeon long-logout behavior separately retains the 15-minute rule.",
+      "data": "Authenticated connection/account bindings and CSPRNG single-use resume tokens. Unpublished1.75 captures the credential-bearing Mongo account ID with exact hash/ID post-bcrypt proof, pins it privately to the connection and captures it in token metadata. Join/reconnect check current DB/live identity without per-frame reads; missing/reused accounts or late failures refuse. No account ID is added to browser/token payloads or public state. Tokens rotate/revoke and the existing resume window is five minutes after transport closure; server restart loses this memory. Dungeon long-logout behavior separately retains the 15-minute rule.",
       "boundary": "Never put bearer tokens in public events, reports, logs or support exports. Browser persistence does not make a token valid indefinitely."
     },
     {
