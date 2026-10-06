@@ -423,7 +423,9 @@ Notes:
 - Current source version: `Alpha 1.77.0`, prepared in an isolated worktree and
   not deployed. Fresh TLS installer guards, named-certificate instructions,
   isolated native proxy checks and explicit environment/restart boundaries are
-  ready; owner renewal/address-family evidence and own release gates remain open.
+  ready; the owner's named certificate-renewal simulation passed for both hosts
+  on October6. Public IPv6 remains deferred/unverified; own CI/deployment and
+  exact public acceptance remain open.
   See [current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
   Inherited selected and first-character queries retain trusted account
   identity; journal lock shards, compact ground/casino checkpoints and paged

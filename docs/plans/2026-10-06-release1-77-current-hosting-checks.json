@@ -2,7 +2,16 @@
   "schema": 1,
   "milestone": "1.77 hosting and network reliability",
   "baseCommit": "7ebf3a7f",
-  "status": "isolated-preparation-not-published-or-complete",
+  "status": "owner-renewal-gate-passed-ready-for-ordered-ci-deployment-not-yet-published",
+  "ownerRenewalAcceptance": {
+    "reportedAt": "2026-10-06T17:52:01Z",
+    "commands": "Owner ran sudo nginx -t followed by sudo certbot renew --dry-run --cert-name play.eidolonrealms.com.",
+    "nginx": "Configuration syntax/test successful. Existing protocol-options-redefined warnings remain non-fatal and unchanged; the agent did not edit shared configuration or reload a service.",
+    "renewal": "Named play.eidolonrealms.com lineage simulated renewal for both play.eidolonrealms.com and server.eidolonrealms.com. Certbot explicitly reports all simulated renewals succeeded and the named fullchain.pem success. This closes the missing actual challenge-test gate; it is not issuance of a new production certificate or a guarantee of future renewals.",
+    "notesVerification": "Updated owner-proof/notes keep all synchronized identities and cumulative history: VersionPresentation/PagesRuntimeVersioning PASS369 tests/two suites3.656s; JSON and whitespace checks pass. No changed runtime or dependency versions.",
+    "addressFamilyScope": "Existing owner-deferred IPv6/DDNS work remains deferred; release notes claim observed public IPv4 only, not dual-stack support. No DNS change. Public address-family/launch qualification remains a later explicit gate.",
+    "next": "Fresh master still69cc97d9 and already included. Record owner proof, keep version/notes synchronized, commit/push ordered1.77, delegate CI/deployment to Luna, then verify exact public identities/readiness and required live checks. One labelled administrator test email is now separately owner-approved for1.78; no ongoing monitor, threshold, paid-service or new hosting authorization inferred."
+  },
   "orderedReleaseReview": {
     "checkedAt": "2026-10-06T08:33:43Z",
     "candidate": "fbd483717a97e82c0e4084785305cde787f521c4",
@@ -23,7 +32,7 @@
     "version": "Alpha1.77.0 prepared only; live remains accepted1.76",
     "changes": "Synchronize package/lockfile, login, manifest, backend, Docker/Compose, deployment/workflow and isolated-QA defaults. Add cumulative1.77 hosting notes while retaining all prior notes. Notes explicitly avoid renewal, public IPv6, long-idle or capacity claims and preserve unchanged schema25, data, retention and economy.",
     "verification": "VersionPresentation and PagesRuntimeVersioning:369 tests/two suites PASS3.916s. Focused lint, shell syntax and git diff --check pass. Initial Jest invocation could not find dependencies and ran no tests; reuse unchanged predecessor dependencies through an ignored local symlink, then the cited real suites pass. No dependency versions changed.",
-    "publication": "Not pushed. Await owner certificate dry-run and resolve or explicitly document address-family scope, then inspect complete outgoing changes, fresh remote integration, CI/deployment and exact public acceptance."
+    "publication": "Not pushed yet. Owner named renewal simulation now succeeds; existing IPv6 deferral/unverified scope is explicit. Complete outgoing review and fresh master ancestry are confirmed. Ordinary CI/deployment and exact public acceptance remain required."
   },
   "currentIntegrationFollowUp": {
     "master": "69cc97d9580e1a9e0e5e576f1a475a50b43c6639 merged normally, followed by the accepted1.76 evidence checkpoint. Preserve hosting preparation and corrected persistent QA. No own1.77 release claim.",
@@ -50,7 +59,7 @@
   },
   "remaining": [
     "1.75 and corrected1.76 exact-source live acceptance are complete. Own1.77 labels/notes/CI/live gate remain. This is not a published1.77 milestone.",
-    "Owner-approved actual certificate challenge/renewal evidence and supported public-address-family decision before launch. Do not infer challenge success from timer success or externalIPv6 failure from a host with noIPv6 route.",
+    "Actual owner-approved named renewal simulation passes. Supported public address-family launch decision remains later; current IPv6 deferral is explicit. Do not infer dual-stack reachability or a future guarantee from this simulation.",
     "Keep restart/environment-separation scopes explicit; no disruptive reboot, shared nginx reload, production restore, external DNS/provider mutation or claimed100-player capacity. Full roadmap remains active."
   ]
 }

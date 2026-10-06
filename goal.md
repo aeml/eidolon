@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 owner renewal gate resolved17:52UTC:** Owner nginx syntax/test passes,
+then the named play.eidolonrealms.com renewal dry-run explicitly succeeds for
+both canonical hosts. Non-fatal existing protocol warnings are not changed.
+Record simulation success, not a newly issued certificate, future guarantee or
+dual-stack proof. Fresh master remains69cc97d9 and included; proceed with the
+ordered1.77 candidate, ordinary CI/Luna deployment monitoring and exact public/
+live acceptance. No later staged game changes are folded into this release.
+Owner also approves exactly one labelled administrator test email for1.78; no
+ongoing alert service, thresholds or paid hosting change inferred. Preserve
+IPv6 deferral, all saves/receipts and the full unfinished roadmap objective.
+
 **October6 ordered-release gate revalidation08:33UTC:** Fresh master remains
 69cc97d9 and is already an ancestor of clean1.77 candidatefbd48371. Review all19
 outgoing files: only hosting guards/tests/docs and synchronized1.77 release
