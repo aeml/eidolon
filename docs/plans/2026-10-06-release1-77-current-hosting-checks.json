@@ -2,7 +2,16 @@
   "schema": 1,
   "milestone": "1.77 hosting and network reliability",
   "baseCommit": "7ebf3a7f",
-  "status": "owner-renewal-gate-passed-ready-for-ordered-ci-deployment-not-yet-published",
+  "status": "ordered-release-ci-and-public-ipv4-accepted",
+  "publicAcceptance": {
+    "checkedAt": "2026-10-06T18:40:53Z",
+    "sourceCommit": "4ed7a3dd833c1aa366e192c81954bbb7fbe91458",
+    "run": "https://github.com/aeml/eidolon/actions/runs/37507575802",
+    "ci": "Luna reports terminal success for the exact source: all jobs passed, including both deployments, live anonymous/persistent-character QA and live town recovery/Well Rested QA.",
+    "skippedScopes": "Predeploy deterministic High/Low animation gallery, Well Rested rendering/GPU lifecycle QA, disposable full-character gameplay and live four-class/remote-animation QA were explicitly skipped; no passes claimed for them.",
+    "independentPublicChecks": "Fresh bounded verified IPv4 HTTPS requests return frontend release.json and backend healthz at the exact source/Alpha 1.77.0, statusok/database ready. index.html and src/main.js match local source after the actual publisher's release-query rewriting. No production account creation, admin mutation or mail resend.",
+    "limits": "Public IPv6 remains owner-deferred/unverified. No capacity, complete campaign, full art, ongoing alert installation or complete1.99 claim. Entries below preserve historical preparation state, not current publication status."
+  },
   "ownerRenewalAcceptance": {
     "reportedAt": "2026-10-06T17:52:01Z",
     "commands": "Owner ran sudo nginx -t followed by sudo certbot renew --dry-run --cert-name play.eidolonrealms.com.",

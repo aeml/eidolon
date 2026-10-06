@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 Alpha1.77 accepted live:** Exact4ed7a3dd CI37507575802 finished
+successfully, including both deploys and live persistent-character/town recovery
+QA. Independent public IPv4 frontend/backend identities and database readiness
+match Alpha1.77.0; index/main bytes match publisher-transformed source. Explicit
+animation/GPU/full-character skipped scopes are not claimed. Owner's named
+certificate renewal simulation passed; publicIPv6 remains deferred/unverified.
+Owner also confirmed receipt of the separately approved single Postmark test;
+no ongoing alerts are enabled. This completes this release gate, not1.99.
+Historical preparation entries follow.
+
 **October6 owner renewal gate resolved17:52UTC:** Owner nginx syntax/test passes,
 then the named play.eidolonrealms.com renewal dry-run explicitly succeeds for
 both canonical hosts. Non-fatal existing protocol warnings are not changed.
