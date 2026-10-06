@@ -897,7 +897,13 @@ func (c *Client) dispatchMessage(msg Message) {
 			return
 		}
 		resumeID, identityOK := resumeTokenIdentity(payload.Token, username)
-		if !identityOK || !sessionAccountIdentityCurrent(c, username, resumeID) {
+		if !identityOK {
+			// Password rotation can revoke a token while its resume waits for
+			// the account lock. This is an invalid token, not a changed account.
+			c.sendError("Session token invalid or expired. Please log in again.")
+			return
+		}
+		if !sessionAccountIdentityCurrent(c, username, resumeID) {
 			c.sendError("Session identity changed or is unavailable. Please log in again.")
 			return
 		}
