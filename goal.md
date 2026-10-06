@@ -18,7 +18,14 @@ Run37396521234 then exposed one server failure: a token revoked by password
 rotation while queued for the account lock was safely rejected with the wrong
 error category. Invalid-token and changed-account errors are now distinguished;
 locking, generation checks and original tests are unchanged. Focused password/
-identity/resume race tests pass1.539s. Corrected source still needs CI/live acceptance.
+identity/resume race tests pass1.539s. Run37398329976 then exposed the newly
+reviewed sprintf-js advisory in test tooling. A scoped NYC-loader YAML4.3.2
+override removes that dependency without downgrading Jest or weakening audit.
+Clean install/audit report0 vulnerabilities;12 tooling/YAML/CLI/protocol tests
+pass42.998s. The single combined local race+coverage run passes root/database
+but times out after600s in game-world initialization; it is not a complete pass
+or a reason to repeat campaign soaks. CI keeps its separate coverage/race gates.
+Corrected source still needs CI/live acceptance.
 
 **October6 Alpha1.75.0 publication candidate:** The approved milestone policy is
 administrator-reviewed export/removal requests, unchanged retention and no
