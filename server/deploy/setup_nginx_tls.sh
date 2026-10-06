@@ -25,6 +25,20 @@ validate_tls_setup_arguments() {
   printf '%s %s\n' "$tls_domain" "$((10#$tls_port))"
 }
 
+validate_tls_setup_targets() {
+  if [ "$#" -ne 2 ] || [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Expected explicit nginx configuration and enabled-link targets." >&2
+    return 1
+  fi
+  local tls_target
+  for tls_target in "$@"; do
+    if [ -e "$tls_target" ] || [ -L "$tls_target" ]; then
+      echo "Existing nginx target: fresh installation only; inspect the current configuration rather than overwrite it." >&2
+      return 1
+    fi
+  done
+}
+
 if [ "${BASH_SOURCE[0]}" != "$0" ]; then
   return 0
 fi
@@ -45,8 +59,15 @@ ENABLED_LINK="/etc/nginx/sites-enabled/eidolon.conf"
 CERT_FULLCHAIN="/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"
 CERT_PRIVKEY="/etc/letsencrypt/live/${DOMAIN}/privkey.pem"
 
+validate_tls_setup_targets "${NGINX_CONF}" "${ENABLED_LINK}" || exit 1
+
 if [ ! -f "${TEMPLATE}" ]; then
   echo "Template missing: ${TEMPLATE}" >&2
+  exit 1
+fi
+
+if ! command -v certbot >/dev/null 2>&1; then
+  echo "certbot is not installed. Install it before running this fresh-install script." >&2
   exit 1
 fi
 
@@ -95,13 +116,8 @@ EOF
   systemctl reload nginx
 fi
 
-if ! command -v certbot >/dev/null 2>&1; then
-  echo "certbot is not installed. Install it then rerun this script." >&2
-  exit 1
-fi
-
 echo "Requesting/renewing TLS certificate via certbot nginx plugin..."
-certbot --nginx -d "${DOMAIN}"
+certbot --nginx --cert-name "${DOMAIN}" -d "${DOMAIN}"
 
 sed -e "s/__DOMAIN__/${DOMAIN}/g" -e "s/127.0.0.1:18082/127.0.0.1:${UPSTREAM_PORT}/g" "${TEMPLATE}" > "${NGINX_CONF}"
 ln -sf "${NGINX_CONF}" "${ENABLED_LINK}"
@@ -109,6 +125,6 @@ nginx -t
 systemctl reload nginx
 
 echo "Validating certificate auto-renewal..."
-certbot renew --dry-run
+certbot renew --dry-run --cert-name "${DOMAIN}"
 
 echo "Nginx + TLS setup complete."

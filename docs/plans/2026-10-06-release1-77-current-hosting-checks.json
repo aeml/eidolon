@@ -4,6 +4,12 @@
   "baseCommit": "7ebf3a7f",
   "status": "isolated-preparation-not-published-or-complete",
   "inheritedSourceVersion": "Alpha1.76.0 unpublished candidate",
+  "existingTargetFollowUp": {
+    "change": "Fresh custom-host setup now refuses existing configuration/enabled targets, including dangling symlinks, before filesystem/certificate/reload actions. Missing Certbot is checked before HTTP bootstrap writes. Obtain and dry-run commands explicitly scope the supplied hostname's certificate; interrupted setup requires manual inspection, not deletion or bypassing the guard.",
+    "verification": "Race TestTLSSetup passes1.162s:18 argument cases,8 existing-target cases plus empty fresh targets. Existing file bytes, directory entries, link destinations and unrelated sentinel remain unchanged; no second target is created. Tests source only pure validators and assert target/dependency guards precede effects. Shell syntax and whitespace checks pass; no actual installer action.",
+    "startupObservation": "Read-only actual container inspection: API and Mongo running with unless-stopped restart policies; nginx and Docker services active/enabled. This confirms current configuration, not a disruptive reboot test or guaranteed startup under all failures.",
+    "ownerAction": "Optional request sent for sudo nginx -t followed by certbot renew --dry-run --cert-name play.eidolonrealms.com. Local installed Certbot help confirms the flags, staging test, temporary webserver reloads and possible renewal hooks. No privileged command ran; challenge acceptance remains unproven until the owner provides a result."
+  },
   "changes": [
     "Prepared TLS installer guard fromd33b017d is integrated without historical root README/roadmap state. Pure argument validation rejects either canonical game hostname, normalized variants, invalid DNS labels and invalid/injected ports before root admission or file effects. Canonical hosts require their existing additive dual-host configuration, not a single API proxy.",
     "Operator instructions distinguish fresh installation from existing shared configuration, preserve Pages upstream SNI/Host and backend WebSocket behavior, and explain that outbound resolver ipv6=off does not force public clients ontoIPv4. No installer, root action, reload, renewal or DNS change was performed."

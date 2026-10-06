@@ -379,6 +379,15 @@ sudo apt-get install -y nginx certbot python3-certbot-nginx
 For a **new, custom single-host API installation only**, apply Nginx config
 and TLS. This generic installer writes `sites-available/eidolon.conf`; do not
 use it to replace an existing shared/multi-host configuration.
+It refuses any existing configuration or enabled-link target, including a
+dangling symlink, before filesystem, certificate or reload actions. Install
+Certbot first; a missing executable is refused before the HTTP bootstrap writes.
+Certificate requests and renewal dry-runs are scoped to the supplied custom
+hostname's certificate, not unrelated certificates on the shared machine.
+If a fresh installation stops after writing its bootstrap configuration,
+preserve those files and inspect the failure before an operator completes the
+setup manually. Do not bypass the existing-target guard or delete working
+configuration merely to make the installer run again.
 
 ```bash
 sudo ./deploy/setup_nginx_tls.sh <your-domain> ${APP_HOST_PORT:-18082}
@@ -388,8 +397,8 @@ This runs:
 
 - `nginx -t`
 - `systemctl reload nginx`
-- `certbot --nginx -d <your-domain>`
-- `certbot renew --dry-run`
+- `certbot --nginx --cert-name <your-domain> -d <your-domain>`
+- `certbot renew --dry-run --cert-name <your-domain>`
 
 ### Canonical two-host installation
 

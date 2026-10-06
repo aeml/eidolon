@@ -8,6 +8,11 @@ effects. Current publicIPv4 frontend/backend still independently report accepted
 recorded without claiming actual renewal. This host lacks a defaultIPv6 route,
 so its failedIPv6 probe cannot establish public-client reachability; owner-deferred
 DNS settings remain unchanged. No root/install/reload/renew/reboot/provider action.
+Fresh custom-host setup now also refuses existing targets or missing Certbot
+before effects and scopes certificate actions to that host. All27 pure validation
+cases pass1.162s; existing bytes/links stay intact. API/Mongo restart policies and
+enabled nginx/Docker units are observed, not a reboot guarantee. The owner has
+the exact scoped certificate dry-run command; no privileged action was performed.
 Own milestone remains unpublished/incomplete pending ordered predecessors and
 actual challenge/supported-address-family evidence. See
 [current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
