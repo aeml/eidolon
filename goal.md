@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 isolated1.76 persistence preparation:** Current1.75 identity guards
+and its CI corrections are integrated into a separate unpublished worktree.
+Selected/first-character queries retain trusted account generation;64 journal
+shards preserve per-account ownership; ordered ground and casino heads are
+renumbered24/25 after account-bound marker23. Paged market/slot startup stays
+fail-closed. Focused race and actual Mongo query/history/checkpoint/paging checks
+pass; old receipts and balances remain. Actual normal login/takeover/resume and
+same-name replacement rejection pass. A native23 ->25 transition preserves the
+whole synthetic account; previous1.75 source refuses25 before writes. Temporary
+fixtures stopped/removed; production unchanged. This is preparation, not a1.76
+promotion or deployment. Corrected1.75 CI is queued behind the preceding run;
+Luna monitors it. Await predecessor acceptance, then version/notes/fresh remote
+integration and ordered release. See
+[current evidence](docs/plans/2026-10-06-release1-76-current-persistence-checks.json).
+
 **October6 Alpha1.75.0 CI correction:** Publication candidate0e42a457 was
 blocked by the canonical protocol-constant audit and guild-bank Mongo recovery
 checks; it was not accepted or deployed. The existing owner-export action is

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "milestone": "1.76 database and persistence scale",
+  "sourceCommit": "57f01b3ee252b7bb48f33b9c580921c35c9a5c0c",
+  "predecessorCandidate": "ae085d053666521acd02accf97546a8e2b629501",
+  "status": "isolated-current-integration-verified-unpublished-awaiting-1.75-acceptance",
+  "inheritedVersion": "Alpha 1.75.0; not a promoted 1.76 release",
+  "schemaVersion": 25,
+  "changes": [
+    "Selected-character loads fetch only the complete requested character and trusted account ID. Login/join fetch only the original first character, public name and account ID; nil/empty legacy initialization stays intact. Current AuthenticateAccount ID/hash re-proof, immutable session binding and join/reconnect generation checks remain unchanged. Legacy Authenticate reads only its hash. Social label reads no longer fetch full saves.",
+    "Character journals use 64 filename-consistent account lock shards. Same-account write/read/ack and owner-bound validation remain serialized; unrelated shards need not wait for a stalled account. The approved private pending-save observation uses that same lock.",
+    "New ground-item operations use ordered saved heads, and new casino wallet effects use one saved head per durable table record. Existing legacy receipts and operation history are preserved, not pruned or timed out. Schemas24/25 follow the existing1.75 account-bound marker23; the original prepared23/24 numbering was not reused.",
+    "Trading House recovery loads complete auctions and pending decisions in 50-record keyset pages, installs working maps only after successful validation and denies readiness on incomplete recovery. Slot recovery uses capped sorted pages and retains only held-seat presentation, not historical machine state.",
+    "CI explicitly enables the new actual Mongo query/checkpoint/history/market/slot fixtures against its existing disposable service. Upgrade assertions cover the exact seventh ground-operation index and its positive-ordinal uniqueness predicate. Test-only snapshot copies retain private identity and checkpoint state without exposing public JSON."
+  ],
+  "checks": {
+    "toolchain": "Go1.27.1, race detector, GOMAXPROCS2, package parallelism2",
+    "focused": "Current character/journal/entry/authentication/ground/checkpoint/cache/paging/schema/owner-export/clone/chat/credential/session groups passed: root19.104s, database3.925s, game35.965s, other packages passed or had no matching tests. Environment-gated actual cases are not claimed by that run.",
+    "selectedCharacter": "Actual ordinary and majority Mongo reads retained exact selected state and original account generation. A1090198-byte synthetic account yielded a99616-byte selected document; foreign-generation save was refused and unrelated fields/character stayed intact. First-character entry retained the original first character and all its historical receipts while excluding credentials/account metadata; private hydration JSON is empty. Test0.48s.",
+    "ground": "Actual8 contenders produced1 winner;100 retained ordered operations and constant852-byte saved character proof;99 serial prepare/save/complete operations1.047s; gap/reuse refusal, legacy compatibility and reopen checks passed. Test1.19s.",
+    "casino": "Actual8 contenders produced1 frozen winner;200 signed wallet effects across2 table records, reopen and old pending replay preserved constant1045-byte saved character.199 serial settlements5.037s. Test6.16s; no odds or payout-rule change.",
+    "market": "151 auctions and152 decisions loaded across50-record pages, including late decisions. Repeated startups40.883ms/28.203ms; a late invalid intent blocked readiness without publishing partial decisions. Test0.38s.",
+    "slots": "131 actual records in6 sorted25-capped pages;3 late funded payouts recovered exactly once after128 closed records. Maximum page26985bytes; peak pending1/cache0; startup143.120ms. Test3.85s/package4.919s. The initial observer wrapper lacked the new bound-save interface; added the existing identity-preserving test adapter and reran only this failed case. Production admission was not weakened.",
+    "growth": "10000 expired/100 active synthetic records: two50-record pages examined100/50 documents and keys.100 sequential saves with1000 receipts took966ms. Exact legacy0/1000/10000-receipt round trips retained every entry; the10000 case1460446bytes/146.665ms exposes remaining historical growth, not a bound or player-capacity claim. Test8.85s.",
+    "nativeSessions": "Current race-built normal server on owned loopback Mongo passed ordinary legacy login, new registration, fresh-socket credential budgets, takeover/token privacy and one-use resume12.92s; same-name replacement rejection5.30s. Combined package19.303s. No campaigns, raids, real accounts or mail.",
+    "schemaTransition": "Exact predecessor candidate source built as schema23 native binary first started and drained on a fresh owned fixture. Current native target preflight23/25 then startup upgraded to25 and /healthz reported database ready. Entire synthetic account Extended JSON, including unknown future fields, legacy receipt and Gold/EP/item values, stayed identical. After graceful target shutdown, predecessor refused both preflight and normal startup before writes; exact account and25 markers remained unchanged. Native target keeps inherited Alpha1.75.0 label/buildCommit=server for the test harness, not a released1.76 identity."
+  },
+  "cleanup": "Owned tmpfs Mongo containers7c9de757020a906c8c3863518324b5c9518ad98aa51486564adafb8f344d9b4b andf4bd7cc0989f546f37cae6f278a1ee989f5d145571d22bf964412964f8efcee4 stopped/removed after all actual checks. Native writer processes drained and exited. Production database, services, logs, providers and player accounts untouched.",
+  "remaining": [
+    "1.75 corrected candidate must first pass CI/deployment and exact public acceptance;1.76 stays isolated and unpublished until then.",
+    "Fresh remote integration,1.76 version/cumulative patch notes, final changed-scope checks, CI/deployment and exact live acceptance remain. Prepared historical receipts are not accepted as evidence for this new integration.",
+    "Historic receipts are preserved and can still grow; no TTL, account erasure, currency change or claimed100-player capacity. Capacity/operations/restore milestones and full roadmap through1.99 remain separate."
+  ]
+}
