@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 prepared-build combat fidelity:** The Cleric A save unlocks Radiant
+Strike but the driver selected Spirit Guardians; all roles also cast primaries
+without checking advertised unlocks. A focused locked-skill regression fails
+before the repair. Driver now uses the actual unlocked prepared primary or an
+ordinary attack; Cleric approaches its three-unit cone. Healing selection,
+pending-cast/impact/cooldown/party/target claims and all acceptance gates remain.
+Focused party/combined/dungeon/raid/event race scopes pass3.627s. Initial broader
+run revealed a target-selection fixture lacking its asserted Charge unlock;
+give the fixture its declared primary, retaining all target and zero-impact
+assertions. No player save/stat/unlock changes or100-client acceptance.
+
 **October6 blackjack driver deadline repair:** A focused regression proves the
 bot submits stand at/after the advertised turn expiry while the actual UI already
 blocks it. Driver now reads that public deadline and waits/refreshes instead;

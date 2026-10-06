@@ -56,3 +56,55 @@ func TestPartyActivityCountersExplainWaitsWithoutGrantingImpact(t *testing.T) {
 		})
 	}
 }
+
+func TestPartyCombatUsesOnlyAdvertisedBuildSkillsAndClericStrikeRange(t *testing.T) {
+	for role, skill := range [4]string{"Charge", "Radiant Strike", "Piercing Throw", "Fireball"} {
+		for _, unlocked := range []bool{false, true} {
+			p, _ := partyFixture()
+			now := time.Unix(100, 0)
+			for index := range p.members {
+				p.receive(index, partyRoster(p, 4), now)
+			}
+			p.target = Entity{ID: "observed-enemy", Type: "Enemy", Health: 100, X: 2}
+			me := p.members[role].state
+			me.UnlockedSkills = nil
+			if unlocked {
+				me.UnlockedSkills = []string{skill}
+			}
+			requests := 0
+			p.step(role, me, map[string]Entity{p.target.ID: p.target}, now, time.Second,
+				func(kind string, payload interface{}) error {
+					requests++
+					if !unlocked {
+						if kind != "attack" {
+							t.Fatal("locked skill submitted instead of an ordinary attack", role)
+						}
+					} else if kind != "ability" || payload.(map[string]interface{})["skillName"] != skill {
+						t.Fatal("advertised build skill not used", role)
+					}
+					return nil
+				}, func(float64, float64) { t.Fatal("nearby target ignored") })
+			if requests != 1 || p.counts().minImpacts != 0 || p.counts().casts != 0 || p.counts().damage != 0 {
+				t.Fatal("request missing or manufactured combat evidence")
+			}
+		}
+	}
+	p, _ := partyFixture()
+	now := time.Unix(100, 0)
+	for index := range p.members {
+		p.receive(index, partyRoster(p, 4), now)
+	}
+	p.target = Entity{ID: "observed-enemy", Type: "Enemy", Health: 100, X: 6}
+	me := p.members[1].state
+	me.UnlockedSkills = []string{"Radiant Strike"}
+	moved := false
+	p.step(1, me, nil, now, time.Second,
+		func(string, interface{}) error {
+			t.Fatal("cleric cone cast outside its actual base radius")
+			return nil
+		},
+		func(x, z float64) { moved = x == p.target.X && z == p.target.Z })
+	if !moved || p.counts().minImpacts != 0 {
+		t.Fatal("cleric failed to approach or waiting granted impact")
+	}
+}

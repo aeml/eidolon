@@ -23,7 +23,8 @@ func partyFixture() (*partyLoad, []BotCredentials) {
 	}
 	p := newPartyLoad(creds, 2, 0)
 	for i := range p.members {
-		p.state(i, Entity{ID: p.members[i].id, Name: "Public " + partyLoadClasses[i], SubType: partyLoadClasses[i], Type: "Player", Health: 100, MaxHealth: 100, Level: 30, Speed: 5}, time.Unix(100, 0))
+		p.state(i, Entity{ID: p.members[i].id, Name: "Public " + partyLoadClasses[i], SubType: partyLoadClasses[i], Type: "Player", Health: 100, MaxHealth: 100, Level: 30, Speed: 5,
+			UnlockedSkills: []string{[4]string{"Charge", "Radiant Strike", "Piercing Throw", "Fireball"}[i]}}, time.Unix(100, 0))
 	}
 	return p, creds
 }

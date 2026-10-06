@@ -277,6 +277,10 @@ profiles now also bypass the legacy combat bot's inventory mutations.
 The Fighter invites the other three through normal nonce-bound consent; every
 client must receive its own full four-member roster. Followers stay near the
 Fighter, and the Cleric uses unlocked Healing Light on wounded nearby allies.
+Offensive casts use only an advertised unlocked primary: Charge, Radiant Strike,
+Piercing Throw or Fireball for the prepared four-class builds. The Cleric
+approaches within Radiant Strike's three-unit base cone; a missing primary uses
+ordinary attacks, never a cross-specialization skill or synthetic unlock.
 Each member uses normal class attacks/abilities, one outstanding ability request
 at a time, with actual acceptance/denial and reported cooldowns. No forced hits,
 heals, kills, unlocks or bypassed cooldowns. Normal death/respawn behavior remains;

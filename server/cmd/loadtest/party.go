@@ -540,13 +540,23 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		}
 	}
 	if skill == "" {
-		skill = [4]string{"Charge", "Spirit Guardians", "Piercing Throw", "Fireball"}[index%4]
+		preferred := [4]string{"Charge", "Radiant Strike", "Piercing Throw", "Fireball"}[index%4]
+		for _, unlocked := range me.UnlockedSkills {
+			if unlocked == preferred {
+				skill = preferred
+				break
+			}
+		}
 	}
 	if p.dungeon != nil && !p.dungeon.route.direct(dungeonPoint{me.X, me.Z}, dungeonPoint{target.X, target.Z}) {
 		move(target.X, target.Z)
 		return // Neither enemy attacks nor targeted heals cut a missing floor.
 	}
-	if !now.Before(m.readyAt[skill]) && (skill == "Healing Light" || distance <= 12) {
+	castRange := 12.0
+	if skill == "Radiant Strike" {
+		castRange = 3 // The prepared Cleric A build's actual base cone radius.
+	}
+	if skill != "" && !now.Before(m.readyAt[skill]) && (skill == "Healing Light" || distance <= castRange) {
 		m.pendingSkill, m.abilitySent = skill, now
 		if issue("ability", map[string]interface{}{"skillName": skill, "targetId": target.ID, "targetX": target.X, "targetZ": target.Z}) {
 			m.rememberOffense(me, target)

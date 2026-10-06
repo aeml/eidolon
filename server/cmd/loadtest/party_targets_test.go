@@ -16,7 +16,8 @@ func TestCombinedPartiesChooseDistinctLiveEnemiesWithoutChangingImpactGates(t *t
 	for _, party := range parties {
 		for i := range party.members {
 			member := &party.members[i]
-			party.state(i, Entity{ID: member.id, Name: member.username, SubType: partyLoadClasses[i], Type: "Player", X: 400, Z: 600, Health: 100, MaxHealth: 100, Speed: 5, Level: 30}, now)
+			party.state(i, Entity{ID: member.id, Name: member.username, SubType: partyLoadClasses[i], Type: "Player", X: 400, Z: 600, Health: 100, MaxHealth: 100, Speed: 5, Level: 30,
+				UnlockedSkills: []string{[4]string{"Charge", "Radiant Strike", "Piercing Throw", "Fireball"}[i]}}, now)
 			party.receive(i, partyRoster(party, 4), now)
 		}
 	}

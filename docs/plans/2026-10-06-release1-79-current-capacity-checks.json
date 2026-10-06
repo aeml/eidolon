@@ -3,6 +3,12 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "ordering-fix-100-client-comparison-terminal-fail-blackjack-and-every-member-impact-fixture-removed",
+  "preparedBuildCombatFidelity": {
+    "defect": "Normal prepared Cleric A saves advertise Radiant Strike/Healing Light/Guardian Embrace/Purifying Wave, but the driver hardcoded Spirit Guardians. Every role also attempted its primary without verifying the actor's advertised unlocks. A focused locked-primary test fails before repair; production range source confirms Radiant Strike's three-unit base cone.",
+    "repair": "Use only advertised unlocked Charge/Radiant Strike/Piercing Throw/Fireball for the prepared role, otherwise ordinary attacks. Approach within the Cleric cone before casting. No saved build, actor power, gear, enemy spawn, target radius/anchor, cooldown, healing selection or acceptance-gate change.",
+    "verification": "Focused driver party/combined/dungeon/raid/event race scopes PASS3.627s. Assertions cover all four unlocked/locked primaries, Cleric outside range, no manufactured impact/cast credit and existing healing/target ownership/role guards. Initial broader scope failed because a distinct-target fixture omitted the Charge unlock it expected to cast; fixture now explicitly advertises that ordinary prepared primary and retains every old target/impact assertion. Gofmt and whitespace checks pass.",
+    "limits": "Not a causal diagnosis of the historical zero-impact parties or a100-player capacity pass. Focused normal four-account saved-wallet/progression control is the next bounded verification; no native run or deployment claimed at this checkpoint."
+  },
   "blackjackDriverDeadlineFollowUp": {
     "confirmedDefect": "Focused real controller regression fails before the fix: stand is submitted at and after the advertised deadline. The actual production table UI already blocks expired turns; the driver ignored the public round deadline.",
     "repair": "Read the existing deadline and refuse a new expired-turn play. Ordinary read-only refresh remains; no waiting earns action/payment credit and actual rejections still fail. Retain only a fixed first rejected-action category from a structured response or still-pending action. Unknown/cleared actions stay unknown; later errors cannot replace the first cause. No raw session/account/round IDs or diagnostic text in aggregates.",
