@@ -4,6 +4,11 @@
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "coordinated-100-client-comparison-terminal-fail-role-and-casino-gates-fixture-removed",
   "inheritedVersion": "Alpha1.76.0 source candidate; own1.79 version not published",
+  "partyInactivityDiagnostics": {
+    "change": "Each test-client class now retains only five fixed aggregate counters for pending cast, regroup, waiting on an unready cohort, no eligible target and pursuit decisions. The combined integration retains only a whitelisted fixed-class/count line. No IDs, coordinates, account names, action history or extra acceptance credit.",
+    "verification": "Focused cmd/loadtest race checks pass2.123s, including all five inactivity paths, aggregate merging, unchanged zero-impact gates, written-hit ownership, distinct legal target selection and claim concurrency. Initial invocation used invalid -p2 shorthand and ran no requested tests; corrected -p 2 invocation is the cited pass.",
+    "limits": "No fresh connected comparison has used these counters yet. They do not establish the cause of previous failures. Anchor400/600, radius30, gear, ordinary commands, admission/action timeouts, casino stakes and every-member impact requirements remain unchanged. No unchanged100-client retry."
+  },
   "publicEncodingFollowUp": {
     "change": "One broadcast-local cache encodes each detached immutable public actor once across recipients. Owner-private player messages always use their own encoding, never the public cache. Cache holds only actor snapshots touched by this broadcast and is discarded after its workers finish; no retained cross-frame cache, player history or timing/network/pass-gate change.",
     "verification": "Focused PublicFrameEncoding, StateRecipient, StateBroadcast and matched replication/interest scopes pass race1.931s. Concurrent20-recipient owner/peer equality and marshaling verify private progression exclusion, visible equipment/combat/loot preservation, one public encoding and detached fresh next-frame state. Existing full/delta owner privacy tests retain their assertions.",

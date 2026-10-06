@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 bounded capacity-driver diagnostics:** Add five fixed class-level
+inactivity counters so the next focused probe can distinguish target scarcity,
+regroup/cohort waits, pending casts and pursuit. No actor identities/history,
+gameplay change or acceptance credit. Focused controller race tests pass2.123s,
+including each wait path and aggregate merging; corrected an invalid local Go
+flag before the actual cited run. Prior100-client failures remain failures;
+anchor, radius, gear, timeouts and positive owned-impact gates are unchanged.
+No new native comparison or unchanged soak was run. Evidence remains in
+[capacity receipt](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
+
 **October6 native public-cache casino verification:** Normal b6dd2b20 server
 with isolated Mongo7 passes the two-player blackjack socket/replay/payout/restart
 scope42.76s. Both clients see identical public cards/dealer, retain private seat

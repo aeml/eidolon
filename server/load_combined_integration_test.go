@@ -135,6 +135,9 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 		if match := combinedRoleEvidencePattern.FindString(line); match != "" {
 			t.Log(match)
 		}
+		if match := regexp.MustCompile(`Party activity coverage: class=(?:Fighter|Cleric|Rogue|Wizard) pending_cast_steps=\d+ regroup_steps=\d+ cohort_wait_steps=\d+ no_target_steps=\d+ pursuit_steps=\d+$`).FindString(line); match != "" {
+			t.Log(match) // Diagnostic only; never a replacement for owned impacts.
+		}
 	}
 	if runErr != nil {
 		t.Fatal("actual combined driver failed; raw synthetic socket logs omitted")

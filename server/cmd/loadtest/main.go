@@ -427,6 +427,8 @@ func main() {
 		log.Printf("Party coverage: groups=%d formed=%d members=%d min_impacts=%d damage_events=%d heal_events=%d accepted_casts=%d denied_casts=%d xp_progress_updates=%d observed_deaths=%d failed=%d", len(parties), formed, members, minimum, damage, heals, casts, denials, xp, deaths, failures)
 		for role, counts := range roles {
 			log.Printf("Party role coverage: class=%s participants=%d confirmed=%d min_impacts=%d damage_events=%d heal_events=%d accepted_casts=%d denied_casts=%d unmatched_damage_events=%d", partyLoadClasses[role], counts.participants, counts.confirmed, counts.minImpacts, counts.damage, counts.heals, counts.casts, counts.denials, counts.unmatchedDamage)
+			activity := counts.activity
+			log.Printf("Party activity coverage: class=%s pending_cast_steps=%d regroup_steps=%d cohort_wait_steps=%d no_target_steps=%d pursuit_steps=%d", partyLoadClasses[role], activity.pendingCast, activity.regroup, activity.cohortWait, activity.noTarget, activity.pursuit)
 		}
 		expectedMembers := *count
 		if selectedScenario == "combined" {

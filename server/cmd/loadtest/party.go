@@ -22,6 +22,7 @@ type partyLoadMember struct {
 	damage, heals, casts, denials, xpUpdates uint64
 	unmatchedDamage                          uint64
 	offenseTargetID, offenseScene            string
+	activity                                 partyActivityCounts
 }
 
 // One latest successfully written offensive target per member, not a history.
@@ -69,6 +70,21 @@ type partyLoadCounts struct {
 type partyRoleCounts struct {
 	participants, confirmed, minImpacts, damage, heals, casts, denials uint64
 	unmatchedDamage                                                    uint64
+	activity                                                           partyActivityCounts
+}
+
+// Fixed counters explain inactivity without identities, positions or histories.
+// These are driver decisions, never combat impact or acceptance evidence.
+type partyActivityCounts struct {
+	pendingCast, regroup, cohortWait, noTarget, pursuit uint64
+}
+
+func (c *partyActivityCounts) merge(other partyActivityCounts) {
+	c.pendingCast += other.pendingCast
+	c.regroup += other.regroup
+	c.cohortWait += other.cohortWait
+	c.noTarget += other.noTarget
+	c.pursuit += other.pursuit
 }
 
 func (c *partyRoleCounts) merge(other partyRoleCounts) {
@@ -85,6 +101,7 @@ func (c *partyRoleCounts) merge(other partyRoleCounts) {
 	c.casts += other.casts
 	c.denials += other.denials
 	c.unmatchedDamage += other.unmatchedDamage
+	c.activity.merge(other.activity)
 }
 
 func newPartyLoad(credentials []BotCredentials, x, z float64) *partyLoad {
@@ -341,6 +358,7 @@ func (p *partyLoad) counts() partyLoadCounts {
 			participants: 1, confirmed: confirmed, minImpacts: impacts,
 			damage: m.damage, heals: m.heals, casts: m.casts, denials: m.denials,
 			unmatchedDamage: m.unmatchedDamage,
+			activity:        m.activity,
 		})
 		if i == 0 || impacts < c.minImpacts {
 			c.minImpacts = impacts
@@ -406,6 +424,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		return // Preparation alone never claims raid combat or crystal restoration.
 	}
 	if m.pendingSkill != "" {
+		m.activity.pendingCast++
 		if now.Sub(m.abilitySent) >= timeout {
 			p.failAt(failureCastTimeout)
 		}
@@ -443,6 +462,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		return
 	}
 	if !vigil && index != 0 && math.Hypot(me.X-leader.X, me.Z-leader.Z) > 12 {
+		m.activity.regroup++
 		move(leader.X, leader.Z)
 		return
 	}
@@ -492,11 +512,13 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		}
 		for _, member := range p.members {
 			if p.event == nil && member.state.Health <= 0 || !vigil && math.Hypot(member.state.X-me.X, member.state.Z-me.Z) > 15 {
+				m.activity.cohortWait++
 				return
 			}
 		}
 	}
 	if p.target.ID == "" {
+		m.activity.noTarget++
 		if targetLeader {
 			move(p.anchorX, p.anchorZ)
 		}
@@ -540,6 +562,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			m.rememberOffense(me, p.target)
 		}
 	} else {
+		m.activity.pursuit++
 		move(p.target.X, p.target.Z)
 	}
 }
