@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -35,13 +36,14 @@ func (repository *mongoCharacterRepository) LoadCharacter(username, characterNam
 	// metadata or unrelated characters' growing receipt maps. Keep the exact
 	// account/name filter and callers' read concerns unchanged.
 	var user struct {
-		Characters []*Character `bson:"characters"`
+		ID         primitive.ObjectID `bson:"_id"`
+		Characters []*Character       `bson:"characters"`
 	}
 	err := repository.users.FindOne(ctx, bson.M{
 		"username":        username,
 		"characters.name": characterName,
 	}, options.FindOne().SetProjection(bson.M{
-		"_id":        0,
+		"_id":        1,
 		"characters": bson.M{"$elemMatch": bson.M{"name": characterName}},
 	})).Decode(&user)
 	if err != nil {

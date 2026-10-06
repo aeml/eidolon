@@ -7,16 +7,26 @@ import (
 	"maps"
 	"os"
 	"regexp"
+	"strings"
 	"sync"
 	"testing"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/integration/mtest"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+func projectionReceiptMap(count int) map[string]string {
+	receipts := make(map[string]string, count)
+	for i := 0; i < count; i++ {
+		receipts[fmt.Sprintf("synthetic-operation-%08d", i)] = strings.Repeat("a", 64)
+	}
+	return receipts
+}
 
 func TestCharacterRepositoryQueriesOnlyRequestedCharacter(t *testing.T) {
 	mt := mtest.New(t, mtest.NewOptions().ClientType(mtest.Mock))
@@ -33,14 +43,15 @@ func TestCharacterRepositoryQueriesOnlyRequestedCharacter(t *testing.T) {
 			want := &Character{Name: "second-character", Class: "Wizard", Gold: 99, EP: 43,
 				DirectTradeState: privateState, PendingBossLoot: []string{"retained-private-roll"},
 				ItemDeliveryReceipts: map[string]string{"original-operation": "original-fingerprint"}}
-			mt.AddMockResponses(tradeResponse(mt, directTradeDocument(mt.T, User{Characters: []*Character{want}})))
+			accountID := primitive.NewObjectID()
+			mt.AddMockResponses(tradeResponse(mt, directTradeDocument(mt.T, User{ID: accountID, Characters: []*Character{want}})))
 			var got *Character
 			if durable {
 				got, err = (&DB{users: mt.Coll}).GetDirectTradeCharacter("account", want.Name)
 			} else {
 				got, err = newMongoCharacterRepository(mt.Coll).LoadCharacter("account", want.Name)
 			}
-			if err != nil || got == nil || got.Name != want.Name || got.Gold != want.Gold || got.EP != want.EP || !maps.Equal(got.ItemDeliveryReceipts, want.ItemDeliveryReceipts) || !bytes.Equal(got.DirectTradeState, want.DirectTradeState) || len(got.PendingBossLoot) != 1 {
+			if err != nil || got == nil || got.AccountID != accountID || got.Name != want.Name || got.Gold != want.Gold || got.EP != want.EP || !maps.Equal(got.ItemDeliveryReceipts, want.ItemDeliveryReceipts) || !bytes.Equal(got.DirectTradeState, want.DirectTradeState) || len(got.PendingBossLoot) != 1 {
 				mt.Fatal("projection lost requested character/private recovery state", got, err)
 			}
 			command := mt.GetStartedEvent().Command
@@ -54,7 +65,7 @@ func TestCharacterRepositoryQueriesOnlyRequestedCharacter(t *testing.T) {
 			}
 			projection := value.Document()
 			elements, elemErr := projection.Elements()
-			if elemErr != nil || len(elements) != 2 || projection.Lookup("_id").Int32() != 0 || projection.Lookup("characters").Document().Lookup("$elemMatch").Document().Lookup("name").StringValue() != want.Name {
+			if elemErr != nil || len(elements) != 2 || projection.Lookup("_id").Int32() != 1 || projection.Lookup("characters").Document().Lookup("$elemMatch").Document().Lookup("name").StringValue() != want.Name {
 				mt.Fatal("character load did not isolate requested array member", command)
 			}
 			if durable && command.Lookup("readConcern").Document().Lookup("level").StringValue() != "majority" {
@@ -99,10 +110,10 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	other := &Character{Name: "unrelated-character", Class: "Fighter", Gold: 777, ItemDeliveryReceipts: persistenceReceiptMap(10000)}
-	target := &Character{Name: "requested-character", Class: "Wizard", Gold: 99, EP: 43, ItemDeliveryReceipts: persistenceReceiptMap(1000),
+	other := &Character{Name: "unrelated-character", Class: "Fighter", Gold: 777, ItemDeliveryReceipts: projectionReceiptMap(10000)}
+	target := &Character{Name: "requested-character", Class: "Wizard", Gold: 99, EP: 43, ItemDeliveryReceipts: projectionReceiptMap(1000),
 		DirectTradeState: privateState, PendingBossLoot: []string{"retained-private-roll"}}
-	owner := User{Username: "projection-owner", Email: "synthetic-private@example.invalid", PasswordHash: "synthetic-private-hash",
+	owner := User{ID: primitive.NewObjectID(), Username: "projection-owner", Email: "synthetic-private@example.invalid", PasswordHash: "synthetic-private-hash",
 		Characters: []*Character{other, target}}
 	if _, err := users.InsertOne(t.Context(), owner); err != nil {
 		t.Fatal(err)
@@ -115,7 +126,7 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 		} else {
 			got, err = repository.LoadCharacter(owner.Username, target.Name)
 		}
-		if err != nil || got == nil || got.Gold != target.Gold || got.EP != target.EP || !maps.Equal(got.ItemDeliveryReceipts, target.ItemDeliveryReceipts) || !bytes.Equal(got.DirectTradeState, target.DirectTradeState) || len(got.PendingBossLoot) != 1 {
+		if err != nil || got == nil || got.AccountID != owner.ID || got.Gold != target.Gold || got.EP != target.EP || !maps.Equal(got.ItemDeliveryReceipts, target.ItemDeliveryReceipts) || !bytes.Equal(got.DirectTradeState, target.DirectTradeState) || len(got.PendingBossLoot) != 1 {
 			t.Fatal("projected read lost complete requested recovery state", durable, err)
 		}
 		mu.Lock()
@@ -126,7 +137,7 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 				FirstBatch []bson.M `bson:"firstBatch"`
 			} `bson:"cursor"`
 		}
-		if err := bson.Unmarshal(encoded, &reply); err != nil || len(reply.Cursor.FirstBatch) != 1 || len(reply.Cursor.FirstBatch[0]) != 1 {
+		if err := bson.Unmarshal(encoded, &reply); err != nil || len(reply.Cursor.FirstBatch) != 1 || len(reply.Cursor.FirstBatch[0]) != 2 || reply.Cursor.FirstBatch[0]["_id"] != owner.ID {
 			t.Fatal("actual Mongo reply included account/credential fields", durable, err)
 		}
 		document, err := bson.Marshal(reply.Cursor.FirstBatch[0])
@@ -134,7 +145,7 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 			t.Fatal(err)
 		}
 		var projected User
-		if err := bson.Unmarshal(document, &projected); err != nil || len(projected.Characters) != 1 || projected.Characters[0].Name != target.Name {
+		if err := bson.Unmarshal(document, &projected); err != nil || projected.ID != owner.ID || len(projected.Characters) != 1 || projected.Characters[0].Name != target.Name {
 			t.Fatal("actual Mongo reply included unrelated character", durable, err)
 		}
 		full, err := bson.Marshal(owner)
@@ -142,6 +153,12 @@ func TestCharacterRepositoryActualMongoProjectionAndSaveIsolation(t *testing.T) 
 			t.Fatal(err)
 		}
 		t.Logf("character_projection durable=%t account_bson_bytes=%d projected_bson_bytes=%d requested_receipts=1000 unrelated_receipts=10000", durable, len(full), len(document))
+	}
+	target.AccountID = owner.ID
+	foreign := *target
+	foreign.AccountID = primitive.NewObjectID()
+	if err := repository.SaveCharacter(owner.Username, &foreign); err == nil {
+		t.Fatal("selected save ignored its loaded account generation")
 	}
 	target.Gold++
 	if err := repository.SaveCharacter(owner.Username, target); err != nil {
