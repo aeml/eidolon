@@ -1,18 +1,42 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Pure argument validation is also sourced by tests; no installer runs on source.
+validate_tls_setup_arguments() {
+  if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    echo "Usage: setup_nginx_tls.sh <domain> [upstream_port]" >&2
+    return 1
+  fi
+  local tls_domain="${1,,}" tls_port="${2:-18082}"
+  tls_domain="${tls_domain%.}"
+  if [ "${#tls_domain}" -gt 253 ] ||
+    [[ ! "$tls_domain" =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$ ]]; then
+    echo "Invalid DNS hostname; supply a domain without a URL, path or options." >&2
+    return 1
+  fi
+  if [ "$tls_domain" = play.eidolonrealms.com ] || [ "$tls_domain" = server.eidolonrealms.com ]; then
+    echo "These hosts require the additive dual-host setup in deploy/README_LINUX.md, section 4. Do not replace them with a single API proxy." >&2
+    return 1
+  fi
+  if [[ ! "$tls_port" =~ ^[0-9]{1,5}$ ]] || (( 10#$tls_port < 1 || 10#$tls_port > 65535 )); then
+    echo "Invalid upstream port; expected an integer from 1 to 65535." >&2
+    return 1
+  fi
+  printf '%s %s\n' "$tls_domain" "$((10#$tls_port))"
+}
+
+if [ "${BASH_SOURCE[0]}" != "$0" ]; then
+  return 0
+fi
+
+tls_arguments="$(validate_tls_setup_arguments "$@")" || exit 1
+read -r DOMAIN UPSTREAM_PORT <<< "$tls_arguments"
+
 if [ "${EUID}" -ne 0 ]; then
   echo "Run as root (sudo)." >&2
   exit 1
 fi
 
-if [ $# -lt 1 ]; then
-  echo "Usage: $0 <domain> [upstream_port]" >&2
-  exit 1
-fi
-
-DOMAIN="$1"
-UPSTREAM_PORT="${2:-18082}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVER_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 TEMPLATE="${SERVER_DIR}/deploy/nginx/eidolon.conf.template"

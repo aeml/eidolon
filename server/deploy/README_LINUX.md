@@ -376,7 +376,9 @@ sudo apt-get update
 sudo apt-get install -y nginx certbot python3-certbot-nginx
 ```
 
-Apply Nginx config and TLS:
+For a **new, custom single-host API installation only**, apply Nginx config
+and TLS. This generic installer writes `sites-available/eidolon.conf`; do not
+use it to replace an existing shared/multi-host configuration.
 
 ```bash
 sudo ./deploy/setup_nginx_tls.sh <your-domain> ${APP_HOST_PORT:-18082}
@@ -388,6 +390,52 @@ This runs:
 - `systemctl reload nginx`
 - `certbot --nginx -d <your-domain>`
 - `certbot renew --dry-run`
+
+### Canonical two-host installation
+
+`play.eidolonrealms.com` serves the browser client through GitHub Pages;
+`server.eidolonrealms.com` proxies the API/WebSocket server on loopback18082.
+The generic installer rejects both names (including case/trailing-dot variants)
+before any privileged or filesystem work: pointing the frontend at the API
+would return a404 rather than load the game. Use the additive dual-host file,
+not the single-host template. Never overwrite an installed
+`eidolonrealms.conf` or remove the older `eidolon.conf` as a migration shortcut.
+
+On a **fresh canonical installation only**, from `server/`:
+
+```bash
+sudo test ! -e /etc/nginx/sites-available/eidolonrealms.conf && \
+sudo test ! -L /etc/nginx/sites-available/eidolonrealms.conf && \
+sudo test ! -e /etc/nginx/sites-enabled/eidolonrealms.conf && \
+sudo test ! -L /etc/nginx/sites-enabled/eidolonrealms.conf && \
+sudo install -m 644 deploy/nginx/eidolonrealms-http.conf /etc/nginx/sites-available/eidolonrealms.conf && \
+sudo ln -s /etc/nginx/sites-available/eidolonrealms.conf /etc/nginx/sites-enabled/eidolonrealms.conf && \
+sudo nginx -t && \
+sudo systemctl reload nginx && \
+sudo certbot --nginx --redirect -d play.eidolonrealms.com -d server.eidolonrealms.com && \
+sudo nginx -t && \
+sudo systemctl reload nginx && \
+sudo certbot renew --dry-run
+```
+
+These commands deliberately stop if either target already exists. For the
+current installed service, **do not reinstall or run that chain**. Inspect its
+existing configuration and use `sudo nginx -t`, `systemctl status certbot.timer`
+and an operator-approved `sudo certbot renew --dry-run` instead. A waiting
+enabled timer, or a successful no-op renewal service, does not prove a future
+ACME challenge will succeed. HTTP challenge reachability and DNS/proxy behavior
+still need validation; stop on authentication failure rather than repeatedly
+replacing working Nginx configuration.
+
+Keep the frontend upstream TLS name `aeml.github.io` and HTTP Host
+`play.eidolonrealms.com`, matching the Pages custom domain. Preserve complete
+paths/release queries, backend HTTP1.1 Upgrade/Connection headers and its idle
+WebSocket timeout. The supplied frontend resolver is specific to a host using
+systemd-resolved on127.0.0.53; adapt it deliberately for another server. Its
+`ipv6=off` affects only that outbound Pages lookup, **not** browsers or public
+AAAA records. Both public address families must reach this Nginx server before
+claiming dual-stack support. The owner's deferred IPv6/DDNS work is not fixed
+by these instructions or a successful IPv4 smoke.
 
 ## 5) Final verification checklist
 

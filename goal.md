@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 isolated1.77 hosting preparation:** Canonical two-host installer
+argument guard and current operator instructions are integrated separately from
+the1.76 candidate. Eighteen validation-only race cases pass without installer
+effects. Current publicIPv4 frontend/backend still independently report accepted
+1.74.7; both origin TLS hostname checks pass, and certificate/timer metadata is
+recorded without claiming actual renewal. This host lacks a defaultIPv6 route,
+so its failedIPv6 probe cannot establish public-client reachability; owner-deferred
+DNS settings remain unchanged. No root/install/reload/renew/reboot/provider action.
+Own milestone remains unpublished/incomplete pending ordered predecessors and
+actual challenge/supported-address-family evidence. See
+[current hosting evidence](docs/plans/2026-10-06-release1-77-current-hosting-checks.json).
+
 **October6 isolated1.76 persistence preparation:** Current1.75 identity guards
 and its CI corrections are integrated into a separate unpublished worktree.
 Selected/first-character queries retain trusted account generation;64 journal

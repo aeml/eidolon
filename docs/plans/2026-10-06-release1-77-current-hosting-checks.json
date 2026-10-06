@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "milestone": "1.77 hosting and network reliability",
+  "baseCommit": "7ebf3a7f",
+  "status": "isolated-preparation-not-published-or-complete",
+  "inheritedSourceVersion": "Alpha1.76.0 unpublished candidate",
+  "changes": [
+    "Prepared TLS installer guard fromd33b017d is integrated without historical root README/roadmap state. Pure argument validation rejects either canonical game hostname, normalized variants, invalid DNS labels and invalid/injected ports before root admission or file effects. Canonical hosts require their existing additive dual-host configuration, not a single API proxy.",
+    "Operator instructions distinguish fresh installation from existing shared configuration, preserve Pages upstream SNI/Host and backend WebSocket behavior, and explain that outbound resolver ipv6=off does not force public clients ontoIPv4. No installer, root action, reload, renewal or DNS change was performed."
+  ],
+  "verification": {
+    "focused": "Go1.27.1 GOMAXPROCS2/p2 race TestTLSSetupArgumentSafety passes1.130s; validation-only18-case matrix performs no installer or privileged action. Shell syntax and whitespace checks pass.",
+    "publicIPv4": "Bounded2-second connect/5-second-total GETs independently returned frontend release.json and backend /healthz at exact accepted7af0b2798f0cb0b2ed245736df0c95aacedff586/Alpha1.74.7; backend statusok/database ready. These are current live path checks, not1.75/1.76/1.77 acceptance.",
+    "originTLS": "Bounded loopback443 SNI handshakes for both canonical names report TLS1.3/VerificationOK with hostname validation. Public certificate SANs include both domains, valid2026-09-11T03:32:28Z through2026-12-10T03:32:27Z. No private key read.",
+    "services": "nginx and docker active; certbot.timer enabled/active/waiting with next18:10:08UTC October6. certbot.service reports success/exit0. Timer metadata is not proof of an actual renewal or ACME challenge.",
+    "addressFamilies": "Backend DNS followseserver.ddnsfree.com toIPv447.203.222.61 and AAAA2600:1006:b0bd:84e5:60d1:a304:d809:beff. This host has no defaultIPv6 route; its bounded publicIPv6 request cannot connect. That observation does not establish external-client reachability or prove the AAAA is stale. Owner previously deferred DDNS/IPv6 changes; settings remain untouched."
+  },
+  "remaining": [
+    "Ordered1.75/1.76 exact-source release acceptance, then own1.77 labels/notes/CI/live gate; not a published milestone.",
+    "Owner-approved actual certificate challenge/renewal evidence and supported public-address-family decision before launch. Do not infer challenge success from timer success or externalIPv6 failure from a host with noIPv6 route.",
+    "Keep restart/environment-separation scopes explicit; no disruptive reboot, shared nginx reload, production restore, external DNS/provider mutation or claimed100-player capacity. Full roadmap remains active."
+  ]
+}
