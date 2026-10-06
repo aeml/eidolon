@@ -45,6 +45,9 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 		w.RegenTimer -= 1.0
 		regenNow := time.Now()
 		for _, e := range w.Entities {
+			if e.Type == TypeFence {
+				continue // Static geometry has no resources or regeneration work.
+			}
 			e.Mu.Lock()
 			if e.Type != TypePlayer {
 				e.regenerateLocked(regenNow)
@@ -58,6 +61,12 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 	allEntities := make([]*Entity, 0, len(w.Entities))
 
 	for _, e := range w.Entities {
+		// Fences remain authoritative world/spatial/replication entities, but
+		// updateEntity has no fence behavior. Avoid thousands of no-op locks,
+		// queue entries and worker visits each frame; keep every dynamic type.
+		if e.Type == TypeFence {
+			continue
+		}
 		allEntities = append(allEntities, e)
 		e.Mu.Lock()
 		if e.Type == TypePlayer {
