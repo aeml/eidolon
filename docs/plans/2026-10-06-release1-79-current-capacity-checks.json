@@ -4,9 +4,18 @@
   "sourceCommit": "9b20136a plus accompanying structured spatial-cell keys; exact historical controls retain their separate source commits/hashes below",
   "status": "current-spatial-static-frame-integration-verified-native-and-headroom-gates-open",
   "ownedProcessObservationPreparation": {
+    "sourceCommit": "78d3bee20ca5ccd693c39bdf9a55dbf48778f97a",
     "change": "Add an explicitly opt-in Linux sampler to the existing phase179 native fixture, observing only its already-owned child after readiness and joining before shutdown. Read fixed process stat fields once/sec; validate start-time identity and tick/page arithmetic. No new runtime endpoint, player telemetry, bot powers, timer, pass gate, long workload or production mutation.",
     "output": "A private fixed six-field process-observations.json plus sanitized aggregate test line records valid/failed samples, elapsed seconds, mean/maximum sampled CPU core percent and sampled peak RSS.100% means one busy core; maximum excludes sub0.5s intervals to avoid tick quantization spikes. Uses actual getconf CLK_TCK and page size, not guessed clock units. No PID, command, environment or raw proc fields are emitted.",
-    "verification": "Go1.27.1/GOMAXPROCS2 root race selected parser and actual owned harmless-child cancellation/private-evidence tests PASS1.099s. Tests cover spaced/parenthesized comm, missing/negative/overflow/zero-identity fields, disabled observer doing no IO, joined observation, fixed numeric output and mode600. No native100 run yet; sample values are not population evidence.",
+    "verification": "Go1.27.1/GOMAXPROCS2 root race selected parser and actual owned harmless-child cancellation/private-evidence tests PASS1.099s, then PASS1.121s with the sub0.5s maximum exclusion included. Tests cover spaced/parenthesized comm, missing/negative/overflow/zero-identity fields, disabled observer doing no IO, joined observation, fixed numeric output and mode600. No native100 run yet; sample values are not population evidence.",
+    "preparedNativeArtifacts": {
+      "directory": "/tmp/eidolon-179-frame-native-sTbUZa",
+      "server": {"file": "78d3bee20ca5ccd693c39bdf9a55dbf48778f97a", "sha256": "e9195e14b5ea9aeb6a3ea94d545f2831360c8114cebcfb8d5c85d2d9ac9302bc"},
+      "driver": {"file": "load-driver", "sha256": "67002a97e909e44377d50494ba34e41548e903dbb90170969b6c03fcb8b5e594"},
+      "raceHarness": {"file": "native-harness", "sha256": "709b311b9dc16d7e54e2ccea1fbe93b0c46dd4180b320297dd78f095c89dfa5e"},
+      "scope": "Successfully compile exact-source normal server/driver and race harness with Go1.27.1/p2. Server embeds the exact source commit as its basename/readiness identity and inherits1.78 labels; no own1.79 release claim. No disposable Mongo/native workload or benchmark started during busy predecessor CI.",
+      "predeclaration": "Next comparison retains the original100 clients in five20-role blocks,120s active window, legal class-focused Uncommon/Rare gear and normal Gold100 wagers,5s admission/action/stop guards,600 fresh-own updates/108000ms active coverage and every paid/member/social/independent-save gate. Enable only the new owned-process observation; no changed power, timers, target area or outcome thresholds. Record actual shared-host/DB limits and worst state gaps as well as CPU/RSS and phase counters. Functional success is not enough to declare frame responsiveness/headroom complete."
+    },
     "limits": "Observations span readiness through pre-shutdown and include admission/disconnect. One-second sampling can miss shorter peaks; no percentiles, Mongo/client CPU, hard container quota, network/client-GPU or isolated-host guarantee. No CPU/RSS threshold is silently invented. Next changed-source native run still must meet unchanged paid/member/social/save and sustained-state gates. Existing unrelated nightly workload/CI means measurements require explicit shared-host scope."
   },
   "orderedIntegrationAndStaticWork": {
