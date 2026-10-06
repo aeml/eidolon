@@ -220,8 +220,9 @@ func (journal *CharacterSaveJournal) HasPendingAccountSave(username string) (boo
 	if journal == nil || username == "" {
 		return false, errors.New("pending save observation unavailable")
 	}
-	journal.mu.Lock()
-	defer journal.mu.Unlock()
+	lock := journal.accountMutex(username)
+	lock.Lock()
+	defer lock.Unlock()
 	if info, err := os.Stat(journal.dir); err != nil || !info.IsDir() {
 		return false, errors.New("pending save directory unavailable")
 	}
