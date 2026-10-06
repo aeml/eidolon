@@ -8,7 +8,8 @@ import (
 
 // --- helpers ---
 
-// newTestWorld creates a minimal World suitable for ability handler tests.
+// newTestWorld creates the full populated production World, not a minimal
+// ability fixture. Keep its scene/safety/system semantics in these tests.
 func newTestWorld() *World {
 	return NewWorld(nil)
 }

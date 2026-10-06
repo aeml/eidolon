@@ -5,6 +5,20 @@ import (
 	"testing"
 )
 
+// Profile the real constructor used by gameplay fixtures, with the complete
+// generated population and normal cleanup. Do not replace it with a reduced
+// world or reuse mutable actors across tests to hide setup cost.
+func BenchmarkWorldConstruction(b *testing.B) {
+	b.ReportAllocs()
+	for b.Loop() {
+		w := NewWorld(nil)
+		if len(w.Entities) == 0 || w.Grid == nil {
+			b.Fatal("constructor omitted its population or spatial index")
+		}
+		w.StopBackground()
+	}
+}
+
 func BenchmarkGetStateForPlayer(b *testing.B) {
 	world := NewWorld(nil)
 	player := &Entity{ID: "player-benchmark", Type: TypePlayer, X: 0, Z: 0, Health: 100, MaxHealth: 100}

@@ -49,6 +49,18 @@
     "Reduce repeated server spatial, target and broadcast work while preserving scene visibility and private state; bound world workers to available execution capacity.",
     "Keep card-table wager controls unavailable after stale saving/error replies, and provide explicit read-only service diagnostics alongside existing administrator tools."
   ],
+  "timeoutFollowup": {
+    "source": "0b5431ac combined integration plus the test-only BenchmarkWorldConstruction addition; production source unchanged",
+    "scope": "Short profile of the actual full NewWorld(nil) constructor with StopBackground cleanup. No smaller fixture, shared mutable world, removed scenery, reduced matrix, raised timeout or assertion change. Correct the helper's misleading minimal-world comment: it constructs the entire populated world. Source has6050 stable fence entities and581 full-world constructor/helper references across tests; references are not runtime invocation counts.",
+    "measurement": "Race-instrumented constructor benchmark PASS7 iterations,153855575ns/op,48603278B/op,54646allocs/op; package2.190s. CPU sample duration1.09s/total samples1.19s: spawnFence cumulative21.85%, substantial allocation, garbage collection and race-instrumentation work. Only a short diagnostic sample, not a stable percentile or normal-server timing result.",
+    "artifacts": {
+      "directory": "/tmp/eidolon-187-constructor-profile-FNe4pI",
+      "binarySHA256": "7357e1fdd46b82ce73c679fcf3be7e05363032a4887420359bf16ec5c826faa7",
+      "cpuSHA256": "3fa64f0e2561d477000c1a076f3d4839134b4654daccb3bd6d9138709a2f2536"
+    },
+    "focusedWorldChecks": "go test -race -p2 -run '^Test(World|DarkRealmPopulation)' ./internal/game PASS8.240s. Covers current geography/fence digest, population exclusion/placement, world elevation/grounding/rocks, update workers and background shutdown cases selected by that exact prefix. This is not full game-package acceptance. All owned commands terminal; no database/provider/service or main-worktree changes.",
+    "conclusion": "Full-world allocation/setup is a demonstrated repeated test cost and a plausible contributor to the package deadline, not proven as its sole cause. Wizard-specific focused pass already rules out a reproducible isolated hang in that case. Do not restart the unchanged broad run or tune production based on race-only constructor observations; retain full gameplay coverage and seek per-scope timing before any fixture optimization. Full package acceptance, native server stalls and release/headroom gates remain open."
+  },
   "remaining": [
     "Complete proportional combined gameplay verification after the full package timeout, without repeated unchanged long suites or weakening assertions. Local consolidation is complete; broad suite acceptance is not. Current patch is part of1.87, not a completed performance milestone.",
     "Resolve remaining observed server stalls and obtain representative approved population/headroom and supported-hardware evidence. Do not infer capacity/smoothness from this startup fix or functional native passes.",

@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 scoped timeout investigation:** Current combined branch is clean at
+0b5431ac before a test-only real-world constructor benchmark. Preserve full world
+population,6050 fence identities, existing assertions and package deadline.
+Short race profile PASS7 constructions/2.190s:153.86ms and48.60MB allocated per
+construction,54646 allocations. Fence creation is21.85% cumulative in this short
+CPU sample; allocation/GC/race costs are visible. This establishes expensive
+repeated fixture setup, not the sole cause of the broad timeout, a production
+speedup, server stall resolution or supported capacity. No unchanged long run
+restarted, no reduced/shared world or runtime change. Focused world/population
+race checks PASS8.240s, retaining actual fence/geography/placement/terrain and
+worker/background assertions; not the full package. Correct the fixture comment,
+and add profile exact hashes and limits to the existing performance receipt.
+Full goal remains active; ordered release and broad acceptance remain open.
+
 **October6 local1.87 server/client consolidation:** Merge prepared server branch
 d50a9e52 into current client946d1861, preserving newer account/progress support,
 incident notices, schema25 identity fencing, trusted deployment guards, guide,
