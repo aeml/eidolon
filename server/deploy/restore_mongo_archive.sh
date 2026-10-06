@@ -23,7 +23,7 @@ if [ ! -f "${archive_file}" ] || [ ! -r "${archive_file}" ]; then
   echo "Explicit restore archive is missing or unreadable." >&2
   exit 1
 fi
-archive_dir="$(cd -- "$(dirname -- "${archive_file}")" && pwd -P)"
+archive_dir="$(dirname -- "${archive_file}")"
 # Coordinated upgrade points must retain every matching artifact. A standalone
 # dump remains a distinct, explicitly approved Mongo-only recovery format.
 if [[ "$(basename -- "${archive_dir}")" == save-upgrade-* ]] ||

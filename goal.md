@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 recovery-path/native follow-up:** Restore preserves the selected
+directory path so the verifier can reject a directory symlink; premature
+canonicalization no longer bypasses that guard. Twenty-one verifier/six gate
+cases and original stopped-target guards pass race2.504s. The existing actual
+network-none backup/restore fixture, now invoking the verifier on both generated
+image-paired and no-prior-image points, passes26.31s/package27.398s. Actual Mongo
+restores retained resources, Gold/EP/membership/cosmetics/receipts/pending work,
+fixture schema/indexes and private journal UID/bytes; failed dump restarts the
+exact writer stand-in, successful backup leaves it stopped. This is not a current
+game/guild/instance-policy restoration or full1.81 acceptance. Exact owned test
+containers/volumes/image are gone; production/current backups/soak untouched.
+
 **October6 isolated1.81 recovery integrity preparation:** Current master57572325
 is the separate source base; owner worktree/production services are untouched.
 An executable read-only verifier requires a completed coordinated recovery point,

@@ -138,7 +138,7 @@ func TestUpgradeBackupVerificationReadOnlyAndRefusesUnsafeManifests(t *testing.T
 }
 
 func TestRestoreCoordinatedPointIntegrityBeforeDockerAccess(t *testing.T) {
-	for _, scenario := range []string{"valid", "corrupt", "missing-markers", "alternate-archive", "linked-archive"} {
+	for _, scenario := range []string{"valid", "corrupt", "missing-markers", "alternate-archive", "linked-archive", "linked-directory"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			point := filepath.Join(root, "save-upgrade-fixture")
@@ -198,6 +198,12 @@ func TestRestoreCoordinatedPointIntegrityBeforeDockerAccess(t *testing.T) {
 				if err := os.Symlink("original.archive.gz", archive); err != nil {
 					t.Fatal(err)
 				}
+			case "linked-directory":
+				link := filepath.Join(root, "linked-point")
+				if err := os.Symlink(point, link); err != nil {
+					t.Fatal(err)
+				}
+				archive = filepath.Join(link, "mongo.archive.gz")
 			}
 			probe := filepath.Join(root, "docker-attempted")
 			if err := os.WriteFile(filepath.Join(root, ".env"), []byte("# synthetic fixture only\n"), 0600); err != nil {
