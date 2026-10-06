@@ -9,10 +9,13 @@ fail-closed. Focused race and actual Mongo query/history/checkpoint/paging check
 pass; old receipts and balances remain. Actual normal login/takeover/resume and
 same-name replacement rejection pass. A native23 ->25 transition preserves the
 whole synthetic account; previous1.75 source refuses25 before writes. Temporary
-fixtures stopped/removed; production unchanged. This is preparation, not a1.76
-promotion or deployment. Corrected1.75 CI is queued behind the preceding run;
-Luna monitors it. Await predecessor acceptance, then version/notes/fresh remote
-integration and ordered release. See
+fixtures stopped/removed; production unchanged. Source1.76.0 labels and cumulative
+notes are now prepared;369 release/tooling/protocol checks, YAML and shell syntax
+pass. This is not deployment acceptance. Latest1.75 browser corrections are
+merged; corrected run37396521234 replaces obsolete test-only37395247813, whose
+cancellation root requested after inspecting its exact test-only state. Luna
+monitors the new candidate. Await predecessor acceptance, then fresh remote
+integration and ordered1.76 release. See
 [current evidence](docs/plans/2026-10-06-release1-76-current-persistence-checks.json).
 
 **October6 Alpha1.75.0 CI correction:** Publication candidate0e42a457 was

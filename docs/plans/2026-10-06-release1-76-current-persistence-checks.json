@@ -6,6 +6,12 @@
   "status": "isolated-current-integration-verified-unpublished-awaiting-1.75-acceptance",
   "inheritedVersion": "Alpha 1.75.0; not a promoted 1.76 release",
   "schemaVersion": 25,
+  "packagingFollowUp": {
+    "sourceCommit": "e2ded55e",
+    "status": "Alpha1.76.0 source candidate only; unpublished until1.75 acceptance",
+    "result": "Client/package/lock/manifest/login/server/container/deploy/isolated-QA/CI version labels align. New cumulative patch notes preserve the complete prior history and disclose schema24/25, preserved legacy receipts, rollback restrictions and no capacity claim. VersionPresentation, ToolingBaseline and ProtocolContract369 checks pass2.273s. Workflow YAML, both deployment/QA shell syntax and whitespace checks pass.",
+    "predecessorCorrection": "Current1.75 candidate5568630e browser corrections are merged after the prepared version commit. Corrected run37396521234 still requires CI and exact public acceptance before1.76 publication."
+  },
   "changes": [
     "Selected-character loads fetch only the complete requested character and trusted account ID. Login/join fetch only the original first character, public name and account ID; nil/empty legacy initialization stays intact. Current AuthenticateAccount ID/hash re-proof, immutable session binding and join/reconnect generation checks remain unchanged. Legacy Authenticate reads only its hash. Social label reads no longer fetch full saves.",
     "Character journals use 64 filename-consistent account lock shards. Same-account write/read/ack and owner-bound validation remain serialized; unrelated shards need not wait for a stalled account. The approved private pending-save observation uses that same lock.",
