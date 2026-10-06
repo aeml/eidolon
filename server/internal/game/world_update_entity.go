@@ -1619,7 +1619,7 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 			w.Mu.RLock()
 			defer w.Mu.RUnlock()
 			for _, p := range players {
-				candidate := w.snapshotEnemyTargetLocked(p)
+				candidate := w.snapshotEnemyTargetLocked(p, enemyInstanceID)
 				if !candidate.active || candidate.instanceID != enemyInstanceID {
 					continue
 				}

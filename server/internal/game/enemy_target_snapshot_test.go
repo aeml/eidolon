@@ -45,6 +45,38 @@ func TestEnemyTargetSharedLockSnapshotKeepsLiveValidation(t *testing.T) {
 	}
 }
 
+func TestEnemyTargetSceneFilterKeepsLiveAuthority(t *testing.T) {
+	w := &World{Entities: map[string]*Entity{}}
+	p := &Entity{ID: "target-scene", Type: TypePlayer, State: "IDLE", InstanceID: CasinoInstanceID}
+	w.Entities[p.ID] = p
+	check := func(scene string, wantActive bool) {
+		t.Helper()
+		w.Mu.RLock()
+		got := w.snapshotEnemyTargetLocked(p, scene)
+		unfiltered := w.snapshotEnemyTargetLocked(p)
+		w.Mu.RUnlock()
+		if got.active != wantActive || p.InstanceID == scene && got != unfiltered {
+			t.Fatal("scene filter changed live target authority", got, unfiltered)
+		}
+	}
+	check("", false)
+	check(CasinoInstanceID, true)
+	p.InstanceID = ""
+	check(CasinoInstanceID, false)
+	check("", true)
+	p.StealthActive, p.StealthEndTime = true, time.Now().Add(time.Minute)
+	check("", true) // Hidden state must still match the live unfiltered view.
+	p.Disconnected = true
+	check("", false)
+	p.Disconnected, p.State = false, "DEAD"
+	check("", false)
+	p.State = "IDLE"
+	w.Entities[p.ID] = &Entity{ID: p.ID, Type: TypePlayer}
+	check("", false)
+	delete(w.Entities, p.ID)
+	check("", false)
+}
+
 func BenchmarkEnemyTargetScanWorldLock(b *testing.B) {
 	w := &World{Entities: map[string]*Entity{}}
 	players := make([]*Entity, 100)

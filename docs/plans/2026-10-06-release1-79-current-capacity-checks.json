@@ -3,6 +3,25 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "15d0b5b054a5520009a5d1dbd57527cc62b696f5 plus accompanying fixed-role diagnostic changes",
   "status": "periodic-save-fix-100-client-baseline-pass-fixture-removed-full-representative-capacity-gates-open",
+  "liveSceneTargetScanOptimization": {
+    "source": "b00b71f5 plus accompanying scene-filter/benchmark changes; these changes are not in the prior32831df3 native100 binaries.",
+    "diagnosis": "Short full-current-population CPU profile with100 declared idle actors shows enemy target scanning dominates sampled CPU. Out-of-scene actors currently reach membership and cast-state reads even though the caller subsequently discards them. This is CPU dependency evidence, not attribution of the historical1982ms multiplayer state gap.",
+    "repair": "An optional exact-scene guard in snapshotEnemyTargetLocked reads the actor's current InstanceID under the existing player lock before world-membership/cast reads. Production enemy scans supply their live enemy scene. Matching actors keep the exact existing snapshot and live world/actor lock checks; no per-frame/cross-frame actor cache, spatial approximation, AI throttle, timer/radius/stealth/target/party/reward or save change.",
+    "verification": "Focused enemy target/membership/scene/stealth, worker, safe-zone enemy, dungeon roaming and Dark King race scopes PASS9.912s. New scene regression fails before the early guard and covers casino/overworld scene changes, current hidden state, disconnected/dead/replaced/removed actors and identical matching-scene snapshots. Gofmt and whitespace checks pass.",
+    "benchmarkDeclaration": "BenchmarkWorldUpdateCurrentPopulation100Idle uses normal NewWorld(nil)'s entire generated population and100 actors,60 in the existing casino safe scene/40 in town. Safe-scene placement prevents deaths from reducing scan work. Actual World.Update(0.033), GOMAXPROCS2,3s benchmark, same host. No socket/DB/render/combat capacity or actor-power proof.",
+    "artifacts": {
+      "baselineDirectory": "/tmp/eidolon-179-frame-profile-QjINtt",
+      "candidateDirectory": "/tmp/eidolon-179-scene-profile-7U6Zh4",
+      "baselineBinarySHA256": "8d60f21664e28abb3f93e676cef07b7cd7b75a7b3ccb7466f06776b020ca78a4",
+      "candidateBinarySHA256": "41171fe841d97aba53cd48ea49460dda8fae3479a2d0a3bc5106cc8c06c78706",
+      "comparisonFiles": "Both exact compiled game.test binaries rerun sequentially after the race test finished; sequential.log and sequential-cpu.pprof retained in each directory. Initial candidate CPU profile overlapped the race invocation and is not used for the comparison."
+    },
+    "sequentialObservedMetrics": {
+      "baseline": {"iterations": 123, "nanosecondsPerUpdate": 28909316, "bytesPerUpdate": 346994, "allocationsPerUpdate": 19857},
+      "candidate": {"iterations": 139, "nanosecondsPerUpdate": 25323840, "bytesPerUpdate": 346041, "allocationsPerUpdate": 19879}
+    },
+    "limits": "Single short synthetic idle/shared-host observations: about12.4% lower observed mean update time, not statistical confidence, p95/p99, production headroom, allocation reduction or a resolved two-second stall. Generated roaming populations/order remain variable. Full-world CPU and lock contention remain substantial; native combat/raid/event integration and candidate release evidence stay open. Prior100 PASS remains exact old-source evidence, not acceptance of this candidate. No population retry, live deployment or new external process."
+  },
   "periodicFix100Comparison": {
     "serverAndHarnessSourceCommit": "32831df37a6b2dd295b02c8f1152fd9325985f96",
     "driverSourceCommit": "4096c19c9352b8e4ac6d31a4b79ddc0a5e6945ca",

@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 profiled live-scene target scan:** Full current generated-world CPU
+profile with100 idle actors identifies enemy target scanning as the dominant
+sampled path. Skip out-of-scene membership/cast reads only after reading the
+actor's live scene under its existing lock; matching snapshots/authority remain
+identical. No actor snapshot cache, AI frequency/radius/timer or gameplay/save
+change. Focused target/worker/safe-zone/dungeon-roam/Dark King race scopes pass
+9.912s; scene regression fails before repair. Sequential exact before/after
+benchmark binaries (after race completion) observe28.909ms→25.324ms mean update
+time, about12.4% in the declared100-idle town/casino scenario. Initial overlapping
+profile is not the comparison; immutable binaries/logs/CPU profiles retained in
+the existing receipt. Single short shared-host/random-population observation,
+not percentiles, headroom, allocation reduction or resolution of1982ms stalls.
+These changes were not in native32831df3; its prior100 PASS remains exact old-
+source proof. No new population run/publication; full capacity/release gates open.
+
 **October6 changed-periodic native100 comparison:** Reused exact32831df3
 normal server/race harness and exact4096c19c driver pass217.76s/120s active.
 All100 admit/fresh own views, paid casino outcomes,20 social outcomes,20 party
