@@ -47,6 +47,7 @@
     "Invalid or unavailable graphics preferences use the existing safe default and show a valid setting without overwriting browser storage.",
     "Quality changes and essential warnings retain current behavior across town, dungeon presentation and casino floors.",
     "Reduce repeated server spatial, target and broadcast work while preserving scene visibility and private state; bound world workers to available execution capacity.",
+    "Static fences keep their world/spatial/client identities but no longer enter no-op regeneration locks and simulation worker queues every frame.",
     "Keep card-table wager controls unavailable after stale saving/error replies, and provide explicit read-only service diagnostics alongside existing administrator tools."
   ],
   "timeoutFollowup": {
@@ -60,6 +61,35 @@
     },
     "focusedWorldChecks": "go test -race -p2 -run '^Test(World|DarkRealmPopulation)' ./internal/game PASS8.240s. Covers current geography/fence digest, population exclusion/placement, world elevation/grounding/rocks, update workers and background shutdown cases selected by that exact prefix. This is not full game-package acceptance. All owned commands terminal; no database/provider/service or main-worktree changes.",
     "conclusion": "Full-world allocation/setup is a demonstrated repeated test cost and a plausible contributor to the package deadline, not proven as its sole cause. Wizard-specific focused pass already rules out a reproducible isolated hang in that case. Do not restart the unchanged broad run or tune production based on race-only constructor observations; retain full gameplay coverage and seek per-scope timing before any fixture optimization. Full package acceptance, native server stalls and release/headroom gates remain open."
+  },
+  "staticFrameFollowUp": {
+    "baselineSource": "4873b994e30e2c0df0319ed4c386a153356a8885",
+    "candidateSource": "75cdfa645f6df70b8c299ee089c27408f9065187",
+    "diagnosis": "Source inspection finds6050 static fences entering entity locks/simulation worker queues each frame, although updateEntity contains no fence behavior and authored fences have no resources. The constructor profile establishes setup cost only; this separate frame change is supported by actual frame measurements and a no-op lock regression, not an inferred constructor cause of native stalls.",
+    "change": "Skip only TypeFence in global regeneration and simulation snapshot construction. Keep every fence in World.Entities and the spatial map, with unchanged IDs, positions, grounding, visibility/replication and geography gates. All other types retain ordinary regeneration, rest, lifecycle, player skills, projectile and enemy/NPC updates. No reduced population, cached/shared test world, identity/schema/protocol/rate/timer or worker-bound change.",
+    "red": "New static-lock/dynamic-NPC regression FAIL4.081s on baseline: both quarter-second and regeneration-tick cases wait behind the no-op fence lock. Release and join owned frame on failure; no leaked update. Existing actor bookkeeping assertions remain unchanged.",
+    "focused": "Static-lock/dynamic damage+regeneration and complete6050-fence retention checks, existing worker-budget/every-NPC visitation, empty-frame bookkeeping and geography/fence digest PASS with race detector1.567s. Wider selected world/geography/population, passive regeneration, Well Rested/safe zones, enemy acquisition/roaming/slam, paid projectile/shield/party/reflect paths, projectiles/realm travel, WizardDamageContract and jump checks PASS19.785s. Not a full game-package rerun or broad acceptance.",
+    "benchmark": {
+      "command": "GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p2 -run '^$' -bench '^BenchmarkWorldUpdateCurrentPopulation100Idle$' -benchtime=300ms -count=3 -benchmem ./internal/game",
+      "environment": "Same AMD Ryzen7 5700G host, normal non-race benchmark; complete generated world with100 declared idle actors60casino/40town, normal cleanup. All6050 fences retained. Synthetic state, not100 connected players, combat/headroom or supported-device acceptance.",
+      "baselineNsPerOp": [21178891, 22647580, 22154847],
+      "baselineBytesPerOp": [184651, 184125, 184083],
+      "baselineAllocsPerOp": [33, 31, 32],
+      "candidateNsPerOp": [20069652, 19449804, 20700303],
+      "candidateBytesPerOp": [148947, 135096, 140993],
+      "candidateAllocsPerOp": [36, 32, 31],
+      "limits": "Three short before/after samples with randomized world placement/different iteration counts; observations21.18–22.65ms and19.45–20.70ms, not stable percentiles, guaranteed FPS/speedup or proof of resolving803ms native gaps. Allocation count is not shown to improve. Baseline package1.185s/candidate1.211s; constructor/setup costs are not repaired by this change."
+    },
+    "native": {
+      "binary": "/tmp/eidolon-187-frame-3irJb7/75cdfa645f6df70b8c299ee089c27408f9065187",
+      "sha256": "a17752fe52baa6558db8ceeeee8a2503490a6605d30dd650d8874c78ceb4435d",
+      "check": "Exact race-instrumented candidate with new loopback/tmpfs Mongo7.0.16 on32971: existing living-Wizard actual dungeon entry/paid Fireball/resources/normal stop/fresh-process layout+room-state restoration/Recall case PASS7.87s/package9.128s. Cleared room is a prepared compatibility fixture, not earned clear. No weakened mana, rest, authority or deadline; no panic/race markers. This proves a focused dynamic route on the new frame code, not recertification of the preceding58e69c0b six-account compatibility test or other native workloads.",
+      "logs": [
+        {"path": "/tmp/eidolon-compat-session-2497888480/server.log", "sha256": "eb8c244cacd45564a9dd4da095701538f98a0ed02c042d327bf0700a5199a00c"},
+        {"path": "/tmp/eidolon-compat-session-2645480935/server.log", "sha256": "b5820042ee26eda32475b093f9d9b2dca1d27de18a2da87f3b5642bee07914ea"}
+      ],
+      "cleanup": "Joined native children, exact candidate process check empty. Validate own container397d7c31ae4c2b612dd3dbdb31db0359c3d965709ec3dd043f0bd79bb85c8da3/nameeidolon-187-frame-20261006/labelframe-187-20261006; remove only its disposable synthetic tmpfs database. Label and32971 listener checks empty; binary/logs retained. Production, main user worktree, DNS, provider mail and root/service settings unchanged."
+    }
   },
   "remaining": [
     "Complete proportional combined gameplay verification after the full package timeout, without repeated unchanged long suites or weakening assertions. Local consolidation is complete; broad suite acceptance is not. Current patch is part of1.87, not a completed performance milestone.",

@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October6 static-frame performance follow-up:** Source75cdfa64 excludes only
+static fences from no-op regeneration/simulation work, retaining all6050 world,
+spatial and client identities. Two lock regression cases fail on the baseline;
+fix plus full-fence/worker/bookkeeping/geography checks PASSrace1.567s. Wider
+changed-frame world/combat/projectile/rest/regen/jump scope PASS19.785s. Three
+short complete-world100-idle benchmarks observe21.18–22.65ms before versus
+19.45–20.70ms after, with fewer bytes allocated; allocation counts do not improve.
+Randomized short samples are not native capacity, stable percentile, constructor
+timeout resolution or803ms stall acceptance. Exact new race-binary living-Wizard
+dungeon/cast/restart/Recall route PASS9.128s; retain prepared-room limitation and
+older compatibility receipt's exact58e69c0b scope. Owned Mongo/processes removed,
+logs/binary kept, port32971 empty. Draft notes and performance receipt updated;
+not deployed. Ordered owner gates and full beta/release goal remain active.
+
 **October6 native1.88 compatibility follow-up:** Exact race-instrumented58e69c0b
 server and new loopback/tmpfs Mongo pass real saved-player logins, bag drag/save,
 fresh-process restart, four connected classes/party leadership, accepted story,
