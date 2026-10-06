@@ -60,6 +60,30 @@
     },
     "cleanup": "Normal owned server shutdown completed during harness cleanup. Exact labelled disposable Mongo container9c55ff7b0ede54ba5e5fa49a48fb404e565bc18da69411ec3627e11a129a9248 stopped/removed with its synthetic volumes. Retained aggregate logs/binaries; production and existing nightly soak untouched."
   },
+  "focusedFourPlayerControl": {
+    "sourceCommit": "1ee199db672d527b57191aadec78f4281278fb0e",
+    "result": "PASS49.59s:45s normal server/driver fight with four class-focused naturally rolled uncommon/rare equipped level30 characters. Every member has positive matched impact and independently reloaded saved XP; equipment, bag and EP preserved exactly. This is not a dungeon/raid clear, full100-client pass or proof of the crowding hypothesis.",
+    "artifactDirectory": "/tmp/eidolon-179-current-party-F9stEn",
+    "serverSHA256": "da1eed102b807cd9b95db464bfb61a624926d8fb4a4eb9c39285d5c11d92e075",
+    "driverSHA256": "19c663c744fa4a1baf25ff2a2ece869f4221b0889cb057e5c2d4b08a51a1796d",
+    "raceHarnessSHA256": "5d5e4cf17db59e835c4141701830bd3806bc87306cc647cd7407e8c24e81fca5",
+    "diagnosticRegression": "Focused party/controller/root schema/privacy race suites pass2.122s/2.701s. Foreign-source, wrong-scene, zero-amount and empty-target events cannot raise the unmatched counter; that counter never raises damage/minimum impacts. Fixed schemas omit names/IDs/raw histories.",
+    "metrics": {
+      "connected": 4, "joined": 4, "minimumFreshOwnUpdates": 1364,
+      "minimumActiveMilliseconds": 44978, "maximumStateGapMilliseconds": 82,
+      "readErrors": 0, "writeErrors": 0, "decodeErrors": 0,
+      "minimumImpacts": 12, "damageEvents": 102, "healEvents": 1,
+      "acceptedCasts": 79, "deniedCasts": 0, "xpUpdates": 112,
+      "roles": {
+        "Fighter": {"minimumImpacts": 12, "damage": 12, "unmatchedDamage": 3},
+        "Cleric": {"minimumImpacts": 46, "damage": 45, "heals": 1, "unmatchedDamage": 11},
+        "Rogue": {"minimumImpacts": 24, "damage": 24, "unmatchedDamage": 7},
+        "Wizard": {"minimumImpacts": 21, "damage": 21, "unmatchedDamage": 4}
+      }
+    },
+    "nextInterpretation": "All four kits work in this normal party control. Combined allocation assigns five independent parties the exact same anchor/30-unit target search area; contention/target attribution are candidates, not established causes. No stats, enemies, pass gates or default workload allocation changed, and no full100 retry.",
+    "cleanup": "Normal owned server stopped; exact labelled disposable Mongo fc79ff5d29408ae6336772a81aea94fd8f9d98b03ffcf0a1d9775cc8ce4da62b stopped/removed with only synthetic volumes. Retained aggregate logs/binaries; production and nightly soak untouched."
+  },
   "remaining": [
     "Diagnose the per-member real-impact gap in a focused role encounter before another100-player comparison. All roles have accepted casts without denials; do not equate casting with damage or assume the cause is proven. Preserve600 fresh-own updates,108000ms active delivery, every paid/role/social outcome and all independent saves.",
     "Representative process/database/network headroom, settlement/reopen and actual encounter/party coverage require their own evidence; a frame microbenchmark or small cohort is not100-player acceptance.",

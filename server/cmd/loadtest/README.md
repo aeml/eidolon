@@ -71,6 +71,9 @@ class. They report participants, confirmed membership, minimum actual impacts,
 damage/heal events and accepted/denied casts. Zero-impact participants remain in
 the minimum; accepted casts alone do not count as impact. These diagnostics do
 not relax the every-player impact gate or establish encounter/capacity success.
+`unmatched_damage_events` separately counts positive own same-scene damage to
+another target. It never contributes to the selected-target pass criterion; use
+it to distinguish missing impacts from target-selection/area-damage attribution.
 
 The existing isolated nightly runner now requires exactly one complete summary
 and each coverage line, no read/write/decode/admission failures, all100 clients
@@ -275,7 +278,7 @@ game-server combat, Mongo persistence, dungeon/raid clears or multiplayer capaci
 Actual combat/save evidence follows; dungeon/raid and declared capacity remain open.
 
 The separate opt-in `TestLoadPartyActualCombatAndSavedGear` now verifies the
-current profile against the normal race-built server and disposable Mongo:
+current profile against a normal source-built server and disposable Mongo:
 four equipped level30 characters fight ordinary randomized enemies for45s,
 receive actual class impacts and Cleric healing, then save positive XP for every
 member while preserving equipment, bag and EP exactly. Enable only with

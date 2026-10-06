@@ -19,6 +19,12 @@ metadata mismatch refused before load and was corrected without weakening its
 guard. Both owned temporary Mongo fixtures were removed; logs retained.
 Previous failures remain failures. Diagnose the role gap before any full retry;
 own version, capacity and deployment acceptance stay open.
+The focused45s four-player control now passes49.59s: every class impacts (minimum
+12), Cleric heals, every normal Mongo save gains XP and retains gear/bag/EP.
+New unmatched-own-damage counters remain diagnostic only. Five combined parties
+share one30-unit search area; contention/attribution are possible causes, not
+proven by a separately randomized control. No gameplay stats, target enemies,
+pass gates or default allocation changed. The owned control fixture is removed.
 See [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
 
 **October6 isolated1.78 operations integration:** Prepared monitoring now runs
