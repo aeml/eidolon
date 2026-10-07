@@ -12,6 +12,7 @@ import { ActorContactShadows } from './ActorContactShadows.js';
 import { ActorInstanceBatches } from '../art/ActorInstanceBatches.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
+import { FoliageShadowInfluence } from './FoliageShadowInfluence.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundMesh } from '../art/RealmGroundMesh.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
@@ -133,6 +134,15 @@ export class RenderSystem {
         this.scene.add(this.environmentGroup);
         this.scene.add(this.entityGroup);
         this.scene.add(this.effectGroup);
+        // Three updates scene/camera matrices before this hook and submits
+        // shadow draws afterwards. Install before actor batching so its normal
+        // hook composition and enable/disable lifecycle remain unchanged.
+        this.foliageShadowInfluence = new FoliageShadowInfluence();
+        this.scene.onBeforeRender = (renderer, scene, camera) => {
+            const light = renderer.shadowMap?.enabled && this.keyLight?.castShadow ? this.keyLight : null;
+            this.foliageShadowInfluence.beginFrame(scene, camera, light);
+        };
+        this.scene.onAfterRender = () => this.foliageShadowInfluence.endFrame();
         this.actorInstances = null;
         this.setActorInstancesEnabled(true);
         this.sceneryVisibility = new SceneryVisibility();
@@ -1196,6 +1206,7 @@ export class RenderSystem {
             // Scene.onAfterRender is not called if a renderer/pass throws.
             // Never let frame-only batching hide actors from subsequent input.
             this.actorInstances?.endFrame();
+            this.foliageShadowInfluence?.endFrame();
             info.autoReset = autoReset;
         }
         this.updatePerfOverlay();
@@ -1248,6 +1259,7 @@ export class RenderSystem {
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
         this.actorInstances?.dispose(); this.actorInstances = null;
+        this.foliageShadowInfluence?.endFrame();
         this.actorContactShadows?.dispose();
         this.actorContactShadows = null;
         this.disposePostProcessing();

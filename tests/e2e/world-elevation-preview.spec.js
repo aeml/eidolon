@@ -319,6 +319,39 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 originals.forEach(({ mesh, color, shadow }) => { mesh.onBeforeRender = color; mesh.onBeforeShadow = shadow; });
             }
         };
+        window.__reviewFoliageShadows = () => {
+            const controller = render.foliageShadowInfluence, enabledBefore = controller.enabled;
+            const target = new THREE.WebGLRenderTarget(640, 422), pixels = [], costs = [];
+            const previousTarget = render.renderer.getRenderTarget();
+            const autoReset = render.renderer.info.autoReset;
+            const wind = understory.children[0].material, updateWind = wind.onBeforeRender;
+            wind.onBeforeRender = () => {};
+            try {
+                // Three's automatic reset happens after shadow submission;
+                // accumulate the complete shadow+color frame for this comparison.
+                render.renderer.info.autoReset = false;
+                render.renderer.setRenderTarget(target);
+                for (const enabled of [false, true]) {
+                    controller.enabled = enabled;
+                    render.renderer.info.reset();
+                    render.renderer.render(render.scene, render.camera);
+                    const image = new Uint8Array(640 * 422 * 4);
+                    render.renderer.readRenderTargetPixels(target, 0, 0, 640, 422, image);
+                    pixels.push(image); costs.push({ ...render.renderer.info.render });
+                    if (controller.omitted.size) throw new Error('Shadow flags retained after render');
+                }
+                let changed = 0;
+                for (let i = 0; i < pixels[0].length; i += 4) {
+                    if ([0, 1, 2].some(channel => Math.abs(pixels[0][i + channel] - pixels[1][i + channel]) > 2)) changed++;
+                }
+                return { changed, total: 640 * 422, costs };
+            } finally {
+                controller.endFrame(); controller.enabled = enabledBefore;
+                render.renderer.info.autoReset = autoReset;
+                wind.onBeforeRender = updateWind;
+                render.renderer.setRenderTarget(previousTarget); target.dispose();
+            }
+        };
         window.__reviewSurfaceCulling = () => {
             const baseline = new THREE.Mesh(createRealmGroundGeometry(WORLD_REGIONS.earth, .75, field), render.groundEarth.children[0].material);
             baseline.position.copy(render.groundEarth.position); baseline.quaternion.copy(render.groundEarth.quaternion);
@@ -376,6 +409,12 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         const view = await page.evaluate(([x, z]) => window.__reviewEarthShoulder(x, z), [x, z]);
         await testInfo.attach(`bastion-${name}`, { body: JSON.stringify(view), contentType: 'application/json' });
         console.log(`[bastion ${quality} ${name}] ${JSON.stringify(view)}`);
+        const shadows = await page.evaluate(() => window.__reviewFoliageShadows());
+        await testInfo.attach(`bastion-${name}-shadow-equivalence`, { body: JSON.stringify(shadows), contentType: 'application/json' });
+        console.log(`[foliage shadows ${quality} ${name}] ${JSON.stringify(shadows)}`);
+        expect(shadows.changed / shadows.total).toBeLessThan(.001);
+        expect(shadows.costs[1].triangles).toBeLessThanOrEqual(shadows.costs[0].triangles);
+        expect(shadows.costs[1].calls).toBeLessThanOrEqual(shadows.costs[0].calls);
         await page.screenshot({ path: testInfo.outputPath(`bastion-${name}.png`) });
         if (process.env.EIDOLON_E2E_RAISED_TERRAIN_DIAGNOSE === '1') {
             const draws = await page.evaluate(() => window.__diagnoseEarthTerrain());
