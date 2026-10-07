@@ -753,8 +753,7 @@ func broadcastState() {
 	// Recipient maps share immutable actor copies for this broadcast only. Wire
 	// encoding and per-client change tracking below do not mutate those copies.
 	states := world.GetStatesForPlayers(playerIDs, stateBroadcastRadius)
-	publicEncoding := &publicFrameEncoding{}
-	deltaFrame := &stateDeltaFrame{}
+	publicEncoding, deltaFrame := newBroadcastFrameCaches(states)
 
 	// 2. Process in parallel
 	var wg sync.WaitGroup

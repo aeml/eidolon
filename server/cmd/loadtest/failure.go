@@ -36,6 +36,8 @@ const (
 	failureEventViewTimeout
 	failureEventLevel
 	failureEventRequest
+	failureServerRecoveryContext
+	failureServerRespawnRequired
 )
 
 func (p *partyLoad) failAt(stage loadFailureStage) {
@@ -82,6 +84,10 @@ func (p *partyLoad) failureCode() string {
 		return "server_rate_limit_recall"
 	case failureServerRespawnRateLimit:
 		return "server_rate_limit_respawn"
+	case failureServerRecoveryContext:
+		return "server_recovery_context"
+	case failureServerRespawnRequired:
+		return "server_respawn_required"
 	case failureWeeklyPhaseEnvelope:
 		return "weekly_phase_envelope"
 	case failureWeeklyPhaseScene:
@@ -135,6 +141,10 @@ func (p *partyLoad) rejectServer(payload json.RawMessage) {
 			stage = failureServerRecallRateLimit
 		case "message rate limit exceeded: respawn":
 			stage = failureServerRespawnRateLimit
+		case "request a fresh recovery context":
+			stage = failureServerRecoveryContext
+		case "use Respawn to recover in Lanternhold before recalling":
+			stage = failureServerRespawnRequired
 		}
 	}
 	p.failAt(stage)

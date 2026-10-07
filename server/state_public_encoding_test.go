@@ -43,7 +43,7 @@ func TestPublicFrameEncodingConcurrentOwnerPrivacyAndLifetime(t *testing.T) {
 		}()
 	}
 	wg.Wait()
-	if len(frame.entities) != 1 || frame.entities[actor] != peers[0] {
+	if len(frame.entries) != 1 || frame.entries[actor].encoded != peers[0] {
 		t.Fatal("cache retained anything other than one public actor")
 	}
 	for _, peer := range peers {

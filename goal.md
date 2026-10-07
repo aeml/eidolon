@@ -1,5 +1,25 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 server-only FAIL / targeted broadcast fix:** Previous turn started
+one missing-scope no-browser integrated measurement: progress/verified wait.
+Root consumed22454 terminalFAIL316.01s after Luna anchored-process/log notice.
+Mixed/town pass, event recovery20requested/19completed/1failed after3waves;
+raid/final independent100 saves NOT reached. Retain prior actual100 PASS, but
+never call this failed experiment acceptance. Server phase15.04+26.76=41.79ms
+still exceeds33ms without task GPU contention. Hashes/guarded drain proof kept;
+only validated synthetic32978 DB+two anonymous volumes stopped/removed after
+terminal. No production/cache/soak mutation. Exact rejection cause unknown.
+Closed recovery error diagnostics now distinguish canonical context/respawn
+refusals while preserving fatal guards and privacy; scoped race PASS1.065s.
+Frame-global delta cache dominates sampled mutex waiter delay. Actor-local
+work locks plus prepared immutable membership maps remove that hot lock;
+scoped broadcast/privacy/history race PASS2.188s. Current100 idle benchmark
+8.05→5.45ms with same12165wire bytes; allocation count rises about7.4%, observed
+aggregate waiter delay falls sharply. Initial lazy candidate still contended,
+retained as evidence. Short shared-host diagnostics are not production/native
+headroom acceptance. Next exact changed-API artifacts and one naturally timed
+100 check; client targets stay passed and are not replayed. Own1.79 unpublished.
+
 **October7 server-only integrated measurement started:** Previous goal turn
 implemented/committed exact rig and seated-matrix work, passed original casino
 targets/current raid rendering and prepared own1.79 notes/identity: progress.
