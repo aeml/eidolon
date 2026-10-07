@@ -66,6 +66,37 @@ func TestCasinoPresenceDoesNotWaitForNonPlayerActorLocks(t *testing.T) {
 	}
 }
 
+func TestCasinoPresenceRecollectsMembershipAfterPlayerReplacement(t *testing.T) {
+	w, a, _, table := casinoSeatWorld()
+	now := time.Now()
+	oldSeat, err := w.TakeCasinoSeat(a.ID, table.ID, 0, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	w.RemoveEntity(a.ID)
+	if p := w.CasinoPresenceFor(a.ID, now); p.YourSeat != nil || len(p.Occupants) != 0 {
+		t.Fatal("removed player retained in presence")
+	}
+	position := table.Seats[0]
+	replacement := &Entity{ID: a.ID, Name: "Replacement", Type: TypePlayer,
+		InstanceID: CasinoInstanceID, State: "IDLE", Health: 100, MaxHealth: 100,
+		X: position.ExitX, Z: position.ExitZ}
+	w.AddEntity(replacement)
+	if p := w.CasinoPresenceFor(a.ID, now); p.YourSeat != nil || len(p.Occupants) != 0 {
+		t.Fatal("replacement borrowed the removed character's seat")
+	}
+	newSeat, err := w.TakeCasinoSeat(replacement.ID, table.ID, 0, now)
+	if err != nil || newSeat.SessionID == oldSeat.SessionID {
+		t.Fatal("replacement did not get a fresh normal seat")
+	}
+	p := w.CasinoPresenceFor(replacement.ID, now)
+	if p.YourSeat == nil || p.YourSeat.SessionID != newSeat.SessionID ||
+		len(p.Occupants) != 1 || p.Occupants[0].Name != replacement.Name ||
+		p.Preparation[table.ID].Connected != 1 || p.Preparation[table.ID].Ready != 0 {
+		t.Fatal("presence did not use current membership and live seat readiness")
+	}
+}
+
 func TestCasinoSeatAtomicOwnershipAndPrivateSessions(t *testing.T) {
 	w, a, b, table := casinoSeatWorld()
 	now := time.Now()

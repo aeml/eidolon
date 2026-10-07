@@ -211,6 +211,23 @@ type CasinoPreparation struct {
 // Caller holds World.Mu, but no entity locks. Hashing the private seat identities
 // gives clients an opaque roster revision without disclosing anyone else's token.
 func (w *World) casinoPreparationLocked() map[string]CasinoPreparation {
+	return w.casinoPreparationForPlayersLocked(w.casinoPlayersLocked())
+}
+
+// Caller owns World.Mu. Reuse only within this operation: membership/type is
+// authoritative, while seat, connection and readiness still use live actor
+// locks. Include players in every scene so invalid seats are still pruned.
+func (w *World) casinoPlayersLocked() []*Entity {
+	players := make([]*Entity, 0, 100)
+	for _, actor := range w.Entities {
+		if actor.Type == TypePlayer {
+			players = append(players, actor)
+		}
+	}
+	return players
+}
+
+func (w *World) casinoPreparationForPlayersLocked(players []*Entity) map[string]CasinoPreparation {
 	type member struct {
 		Seat      int
 		Session   string
@@ -218,12 +235,7 @@ func (w *World) casinoPreparationLocked() map[string]CasinoPreparation {
 		Connected bool
 	}
 	rosters := map[string][]member{}
-	for _, player := range w.Entities {
-		// Actor type is fixed while it belongs to the world. Non-player AI
-		// locks cannot contribute to a seat roster and must not delay it.
-		if player.Type != TypePlayer {
-			continue
-		}
+	for _, player := range players {
 		player.Mu.RLock()
 		if s := player.CasinoSeat; s != nil {
 			rosters[s.TableID] = append(rosters[s.TableID], member{s.Seat, s.SessionID, s.connectionEpoch, !player.Disconnected})
@@ -250,10 +262,7 @@ func (w *World) casinoPreparationLocked() map[string]CasinoPreparation {
 		}
 		result[table.ID] = p
 	}
-	for _, player := range w.Entities {
-		if player.Type != TypePlayer {
-			continue
-		}
+	for _, player := range players {
 		player.Mu.Lock()
 		if s := player.CasinoSeat; s != nil {
 			p := result[s.TableID]
@@ -300,10 +309,11 @@ func (w *World) releaseCasinoSeatLocked(player *Entity) {
 }
 
 func (w *World) pruneCasinoSeatsLocked(now time.Time) {
-	for _, player := range w.Entities {
-		if player.Type != TypePlayer {
-			continue
-		}
+	w.pruneCasinoSeatsForPlayersLocked(w.casinoPlayersLocked(), now)
+}
+
+func (w *World) pruneCasinoSeatsForPlayersLocked(players []*Entity, now time.Time) {
+	for _, player := range players {
 		player.Mu.Lock()
 		if player.CasinoSeat != nil && (player.InstanceID != CasinoInstanceID || player.Health <= 0 || player.State == "DEAD" ||
 			(player.Disconnected && !now.Before(player.DisconnectedAt.Add(CasinoReconnectGrace)))) {
@@ -448,12 +458,10 @@ func (w *World) ChangeCasinoSeat(playerID, sessionID, action string, ready bool,
 func (w *World) CasinoPresenceFor(playerID string, now time.Time) CasinoPresence {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
-	w.pruneCasinoSeatsLocked(now)
-	presence := CasinoPresence{Tables: CasinoTables(), Occupants: []CasinoOccupant{}, Preparation: w.casinoPreparationLocked()}
-	for _, player := range w.Entities {
-		if player.Type != TypePlayer {
-			continue
-		}
+	players := w.casinoPlayersLocked()
+	w.pruneCasinoSeatsForPlayersLocked(players, now)
+	presence := CasinoPresence{Tables: CasinoTables(), Occupants: []CasinoOccupant{}, Preparation: w.casinoPreparationForPlayersLocked(players)}
+	for _, player := range players {
 		player.Mu.RLock()
 		if seat := player.CasinoSeat; seat != nil {
 			occupant := CasinoOccupant{PlayerID: player.ID, Name: player.DisplayName(), TableID: seat.TableID, Seat: seat.Seat, Connected: !player.Disconnected, Ready: seat.Ready}
