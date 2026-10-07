@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 same live wait / later deployment-trust evidence:** Previous turn
+confirmed same66380 live: verified wait, not a new run. This turn revalidates
+exact572460, still pending03:17. Prepared1.82 already has a local-trust SSH pin;
+independently compare current local public file, prepared workflow key blob and
+one bounded public endpoint scan: all match SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE.
+Do not ask again for an already verified key or claim the pin installed. Actual
+ordered CI/deployment and branch/runner policy remain open. Included sshd
+fragment unreadable; no elevation or daemon-wide claim. Review deployment build/
+schema-upgrade backup path with about1.27GB free; no safe peak-storage claim,
+build/dump/production change or unapproved shared-cache cleanup. No speculative
+telegraph/constructor fix adopted from the isolated preparation review. Luna
+watches same exact native terminal; full1.99/own1.79 remain active and unshipped.
+
 **October7 focused guide regression and promise review:** Revalidated same
 native66380/supervisor572460 live, still awaiting natural-window start; previous
 turn corrected an actual stale packaged-notice claim: progress. Current guide
