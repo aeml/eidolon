@@ -41,6 +41,7 @@ func TestMain(m *testing.M) {
 	}
 	if !ownedProfileConfigurationAllowed(*ownedCPUProfilePath, *addr, *mongoURI,
 		os.Getenv("EIDOLON_RESOURCE_DISPOSABLE_DATABASE") == "1") ||
+		buildCommit == "development" || buildCommit != filepath.Base(os.Args[0]) ||
 		*checkSchema || *checkSaveJournal || *certFile != "" || *keyFile != "" {
 		fmt.Fprintln(os.Stderr, "Owned CPU profile configuration refused")
 		os.Exit(2)
@@ -108,5 +109,17 @@ func TestOwnedProfileRefusesUnownedOrRemoteTargets(t *testing.T) {
 		if ownedProfileConfigurationAllowed(test.path, test.address, test.mongo, test.disposable) {
 			t.Fatal("unowned or non-loopback profiling configuration accepted")
 		}
+	}
+}
+
+// Check test-package linker metadata without launching a database or server.
+// A go test -c binary uses eidolon-server.buildCommit, not main.buildCommit.
+func TestOwnedProfileBuildIdentity(t *testing.T) {
+	expected := os.Getenv("EIDOLON_EXPECTED_PROFILE_COMMIT")
+	if expected == "" {
+		t.Skip("explicit compiled profile identity probe only")
+	}
+	if buildCommit != expected || filepath.Base(os.Args[0]) != expected {
+		t.Fatal("compiled profile API does not match its declared build identity")
 	}
 }
