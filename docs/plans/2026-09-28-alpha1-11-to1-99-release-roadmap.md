@@ -19,7 +19,13 @@ changed full100 trial FAILS361.33s on one unacknowledged recovery (13 requested,
 12 completed). Event/raid/common100/fresh-save gates remain unreached; partial
 phase18.8189ms is not acceptance. Exact owned fixture cleaned, evidence retained.
 Focused diagnostics now distinguish missing nonce echo from missing fresh town
-state before another justified trial. Game rules, original5s deadlines,
+state and fresh dead-town/scene/position blockers. Focused four-class Root
+diagnostic passes all waves/exits/saves and40/40 recoveries on captured ca64;
+it does not explain the prior full100 failure. Current8c also fixes a proven
+living-unstuck instant health refill while retaining normal town healing and
+death recovery; expanded actual socket checks pass all eight class/death cases.
+Changed current full100 qualification is genuinely scheduled for natural Root
+08:00UTC, with no outcome yet. Game rules, original5s deadlines,
 every-member gates and the33ms budget stay unchanged; no current acceptance.
 Headroom/publication and wider1.99
 scope remain open. Production stays accepted1.78; no beta/access transition.
