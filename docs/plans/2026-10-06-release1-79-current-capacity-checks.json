@@ -5,6 +5,12 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "casino-roster-and-fresh-poker-candidate-qualification-open",
+  "october7RecoveryCIWiring": {
+    "gap": "Existing mandatory socket step did not select TestResourceActualTokenResumeAndDeathRecovery. Broad package tests lack its required absolute prepared binary and disposable-resource flags, so a broad pass/skip is not actual socket coverage. Added workflow-selection regression FAIL1/0.456s before correction.",
+    "change": "Add one45s race test invocation to the existing ordinary item/social/duel/admin socket step. Reuse its already built server and job-owned loopback Mongo/explicit disposable opt-in. No new runner/job/build/live accounts or changes to original5s native guards, cohort source or gameplay.",
+    "verification": "All15 LiveRecoveryQA checks PASS1.293s, focused ESLint/whitespace pass before07:57 setup. All server source still identical to9a harness; API8c/driver80a unchanged. Actual hosted race-socket execution awaits ordinary ordered CI and is not claimed by static workflow checks or earlier normal nativePASS.",
+    "backupDecision": "Upcoming1.81 off-machine destination and maximum progress-loss/restore-time targets requested asynchronously once; no backup transfer, policy choice or extra service enabled. Does not block current1.79 qualification."
+  },
   "october7CurrentFull100Declaration": {
     "handle": "Root7320 owns supervisor2887477, actual argv bash /tmp/eidolon-179-current-full100-evidence-45fEnb/run.sh independently live at2026-10-07T07:39:16Z. Started07:39:14Z; actual schedule setup07:57/root08:00UTC from unchanged four10-minute event cycle. Existing authorized Luna watches terminal only. Root owns terminal consumption, original gates/budget audit and exact fixture cleanup.",
     "apiSource": "8c6a4ac07edde7e80dbbadfb2ed8ba3f296d3a88",

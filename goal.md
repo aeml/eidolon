@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 permanent recovery regression wiring:** The expanded resource socket
+matrix was not actually selected by CI's disposable socket step; the broad
+suite cannot substitute because its required binary/disposable flags are absent.
+One new wiring regression initially FAIL1/0.456s; add exactly one invocation
+in the existing step, reusing its built race server/loopback Mongo with45s
+package guard. Entire affected LiveRecoveryQA suite PASS15/1.293s, focused lint/
+whitespace pass before07:57 setup. No new job, artifact build, live fixture or
+unchanged native replay. Actual hosted race matrix execution remains pending
+normal ordered CI; prior current normal8c socketPASS retains its exact scope.
+All server source still matches9a harness; scheduled100 API/driver untouched.
+Asked once for upcoming off-machine backup destination and acceptable rollback/
+restore targets; no transfer, policy choice or extra paid service inferred.
+
 **October7 staged environment correctness while natural-clock trial waits:**
 Separate1.87 commita53bb11f fixes a proven camera/light coordinate mismatch:
 fit shadows against actual snapped ground light, not elevated hero. New height

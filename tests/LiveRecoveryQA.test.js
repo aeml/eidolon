@@ -26,6 +26,17 @@ const invoke = (overrides = {}) => spawnSync('bash', ['-c', `
 });
 const runs = result => result.stdout.split('\n').filter(line => line.startsWith('RUN '));
 
+test('ordinary resource socket matrix runs in the existing disposable CI step', () => {
+    const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
+    const step = workflow.split('- name: Verify ordinary item, social, duel and administration sockets')[1]
+        ?.split('\n      - name:')[0];
+    expect(step).toBeDefined();
+    expect(step).toContain("EIDOLON_RESOURCE_DISPOSABLE_DATABASE: '1'");
+    expect(step).toContain('EIDOLON_RESOURCE_MONGO_URI: mongodb://127.0.0.1:27017');
+    expect(step).toContain('EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run \'^TestResourceActualTokenResumeAndDeathRecovery$\' -count=1 -timeout=45s');
+    expect(step).not.toMatch(/continue-on-error:|if:/);
+});
+
 test('live recovery runs all three native routes with fresh ordinary users and retained evidence', () => {
     const result = invoke();
     expect(result.status).toBe(0);
