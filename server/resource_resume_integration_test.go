@@ -143,6 +143,22 @@ func TestResourceActualTokenResumeAndDeathRecovery(t *testing.T) {
 					expected.Resources = &database.CharacterResources{Version: 1, Health: 145, Mana: 245}
 				}
 				townFixtureProbe(t, third, &expected)
+				if !dead {
+					beforeUnstuck := townFixtureRead(t, third, &expected, 0)
+					if beforeUnstuck.Health >= beforeUnstuck.MaxHealth || beforeUnstuck.Mana >= beforeUnstuck.MaxMana {
+						t.Fatal("living recovery regression requires uncapped bars; slow fixture timing cannot hide an instant refill")
+					}
+					resourceSend(t, third, MsgRespawn, TownRecoveryPayload{MovementContext: "living-unstuck-current"})
+					var acknowledgement TownRecoveryPayload
+					resourceReadMessage(t, third, MsgMovementContext, &acknowledgement)
+					if acknowledgement.MovementContext != "living-unstuck-current" {
+						t.Fatal("living unstuck failed to acknowledge its fresh recovery context")
+					}
+					// This oracle reads fresh post-acknowledgement frames and derives
+					// exact bars from elapsed server rest, not a requested refill or
+					// production regeneration implementation. Preserve Recall above.
+					townFixtureProbe(t, third, &expected)
+				}
 				final := resourceCloseAndWait(t, repo, third, name)
 				assertTownFixtureSave(t, &expected, final, 0)
 			})
