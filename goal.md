@@ -1,5 +1,32 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 spatial native100 FAIL210.41s:** Exact6c79d56d normal API/driver/
+separate race harness, unchanged bounded-patrol controller and original100/
+120s/every-member/paid/social/5s gates.100 admitted/sustained-own, casino and
+social positive; Fighter/Rogue/Wizard minimum impacts0 fails driver before
+independent final-save assertions. All eight drain stages complete, journals
+100/100 in385ms and commits100/100 in595ms, original shutdown guard unchanged.
+Update14.14ms+broadcast19.55ms mean and362ms state gap improve observed timing
+but remain pressure/stall, NOT capacity acceptance. Lower combat throughput,
+random world/shared host prevent causal attribution. Root consumed terminal84427;
+owned logs/process evidence retained and only validated synthetic Mongo32974
+removed, label/port/process checks empty. No production/unrelated soak change.
+Diagnose actual acquisition/cohort movement; no assumed cause or unchanged
+native retry. Fresh remote remains c7c2c526/accepted1.78; full1.79 gates open.
+
+**October7 spatial player-targeting preparation:** Runtime6c79d56d keeps a
+player-only cell index in the same spatial mutation lock as general geometry,
+then selects current nearby frame-roster players plus EVERY positive distant/
+tiny threat. Original roster order/live eligibility/attack wind-up retained;
+no position/scene/stealth cache, power, radius, timers or reduced population.
+Final game race PASS11.861s/root replication7.502s/wire-removal1.296s.
+Rejected intermediate dense-general-cell query17.40ms is not a speedup.
+Final3s idle samples world12.95→8.67ms, broadcast6.29→5.88ms, broadcast bytes
+3.68MB→2.94MB with same12165B wire; diagnostic only, world allocations increase.
+Prepare one changed-runtime100-client comparison using unchanged bounded-patrol
+driver/outcome gates, not an unchanged-source retry. Production remains1.78;
+responsiveness/headroom, simultaneous raid/event/renderer and1.79 release open.
+
 **October7 changed-source patrol native100 PASS209.36s:** Exact e3380c51
 normal API/driver plus separate race harness, original100/five-role-block120s
 workload with explicitly declared bounded patrol. Every party member contributes;
