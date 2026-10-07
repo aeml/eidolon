@@ -17,6 +17,15 @@
     "driverSha256": "fa7ee079a6ceacdf77525a1de3bf9cdf52fce86a73e19a1fb02e130dd6b4bd42",
     "artifactDirectory": "/dev/shm/eidolon-179-roster-poker-native-iIJyPR",
     "aggregateLog": "/tmp/eidolon-179-roster-poker-evidence-h2NHu5/run.log",
+    "actualFixture": {
+      "verifiedAt": "2026-10-07T05:57:53Z",
+      "id": "16fbd5a392ba64e4fc605a917888f19b9b9990c96038125f51c0be4520ba89f0",
+      "name": "eidolon-179-roster-poker-native-20261007",
+      "label": "roster-poker-native179-20261007",
+      "configVolume": "5ed7421293d387225d98bd60233888b37c950d67093c99af7e722d584a1659cf",
+      "dataVolume": "dcf30024173b8d85e8add86b03eab3725ffe3072a1a37def51e6a2498ff08389",
+      "scope": "Actual named test RUN and supervisor1950639 alive; owned Mongo healthy, disk-backed memory2147483648/NanoCpus0. Original two anonymous mounts captured for post-terminal exact cleanup; no current result or early cleanup."
+    },
     "schedule": "Root exec76697 owns live supervisorPID1950639, actual log started05:46:31UTC; independently inspected exact argv/starttime at05:49:40UTC. Source-calculated setup05:57UTC/natural Root06:00UTC/cycle2400s. Not a completed trial or fixture yet. Existing authorized Luna reused for terminal-only monitoring; root owns original33ms audit, session consumption and exact fixture cleanup.",
     "guards": "Normal identified API and fresh current race harness/driver built before measurement. Original100=80mixed+5Earthraid+4naturalRoot+11town, common108s/paid-party-social/raid-checkpoint-manual-repair/event/fresh-save gates and original5s deadlines retained. Source/event clock, three exact artifact hashes, unused targets,1GiB fixture disk floor, health/missed-window/SKIP guards. No task builds/browser during measurement; native CPU uncapped. No current acceptance claimed."
   },
