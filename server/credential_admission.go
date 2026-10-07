@@ -11,6 +11,8 @@ const (
 	defaultCredentialConcurrency = 4
 	maxCredentialConcurrency     = 32
 	maxCredentialAccounts        = 4096
+	maxPendingLogins             = 16
+	loginAdmissionWait           = 250 * time.Millisecond
 )
 
 var (
@@ -33,6 +35,7 @@ type credentialWorkGate struct {
 	nextPrune time.Time
 	maxKeys   int
 	slots     chan struct{}
+	logins    chan struct{} // Bounded brief wait, not additional hash workers.
 }
 
 func newCredentialWorkGate(concurrency int) *credentialWorkGate {
@@ -40,6 +43,7 @@ func newCredentialWorkGate(concurrency int) *credentialWorkGate {
 		accounts: make(map[credentialAccountKey]*messageRateBucket),
 		maxKeys:  maxCredentialAccounts,
 		slots:    make(chan struct{}, concurrency),
+		logins:   make(chan struct{}, maxPendingLogins),
 	}
 }
 
@@ -56,6 +60,38 @@ func (g *credentialWorkGate) begin(kind, username string, now time.Time) (func()
 	default:
 		return nil, errCredentialsBusy
 	}
+	return g.beginAcquired(kind, username, now)
+}
+
+// Login bursts may briefly wait for an existing worker instead of failing on
+// millisecond-scale contention. No credential work/retry has started yet.
+// Only16 waiters and250ms are allowed; sustained overload still fails closed.
+// Other credential operations keep their immediate, shared-worker admission.
+func (g *credentialWorkGate) beginLogin(username string, now time.Time) (func(), error) {
+	select {
+	case g.slots <- struct{}{}:
+		return g.beginAcquired(MsgLogin, username, now)
+	default:
+	}
+	select {
+	case g.logins <- struct{}{}:
+		defer func() { <-g.logins }()
+	default:
+		return nil, errCredentialsBusy
+	}
+	timer := time.NewTimer(loginAdmissionWait)
+	defer timer.Stop()
+	select {
+	case g.slots <- struct{}{}:
+		return g.beginAcquired(MsgLogin, username, now)
+	case <-timer.C:
+		return nil, errCredentialsBusy
+	}
+}
+
+// Caller has acquired exactly one shared worker slot. Account budgets are
+// spent only here, never by a queued, overflowed or timed-out request.
+func (g *credentialWorkGate) beginAcquired(kind, username string, now time.Time) (func(), error) {
 	var once sync.Once
 	done := func() { once.Do(func() { <-g.slots }) }
 	g.mu.Lock()

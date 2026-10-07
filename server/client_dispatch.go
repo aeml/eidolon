@@ -54,7 +54,15 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Use a new connection to switch accounts.")
 			return
 		}
-		done, err := credentialAdmission.begin(msg.Type, payload.Username, time.Now())
+		done, err := credentialAdmission.beginLogin(payload.Username, time.Now())
+		// A queued login may outlive its transport or be replaced meanwhile.
+		// Release capacity and suppress even a delayed rejection before storage.
+		if c.transportClosed.Load() || c.retired.Load() {
+			if done != nil {
+				done()
+			}
+			return
+		}
 		if err != nil {
 			c.sendError(err.Error())
 			return

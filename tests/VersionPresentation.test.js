@@ -13,7 +13,8 @@ test('1.79.0 explains current multiplayer and equipped-render work without claim
         'actor identity to avoid repeatedly hashing IDs', 'owner-only character data', 'Same-cell movement', 'do not omit actors', 'inverse matrices must match exactly',
         'body/equipment ownership', 'original quality', 'ancestor transforms', '40 fully equipped',
         '100 simultaneous clients', 'An earlier integrated trial passed all 100 independent save checks',
-        'remains pending following an admission failure', 'Water, Fire and Air foliage', 'Failed experiments',
+        'remains pending following an admission failure', 'Water, Fire and Air foliage',
+        'up to 250 ms', 'at most 16 waiting requests', 'per-account limits do not increase', 'Failed experiments',
         'not 100-player capacity certification', 'No account wipe', 'new schema migration',
         'beta-access restriction', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
 });

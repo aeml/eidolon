@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 original100 startup diagnosis / bounded-login candidate:** Previous
+turn made measured broadcast/16-admission progress. New short diagnostic reuses
+the exact original100 saves/classes/gear/spawn sites and80/5/4/11 startup sizes:
+actual FAIL20.33s,99/100 admitted, one fixed admission_busy, zero transport/
+decode errors. This establishes a reproducible cause class, not a guessed cause
+for older lost output. Normal identified clean4b API/unchanged driver; executables
+in private host RAM to avoid root-disk build peak, DB/evidence still disk-backed.
+Root consumes73235, hashes logs, removes only revalidated3609063f DB/two volumes.
+Add login-only16-waiter/250ms bounded slot wait; keep4 hash workers,5/min account
+limits and other credential admission unchanged. Queue/auth race scope PASS
+2.104s, including release/overflow/timeout/closed/retired authority and no leaks.
+Original full natural-clock100 workload and33ms/save/encounter gates unchanged;
+changed-source native acceptance and publication still pending. Full1.99 active.
+
 **October7 focused admission/broadcast progress:** Previous turn made concrete
 all-realm rendering, terminal failure/audit and sanitized diagnostic progress.
 Actual short four-group admission isolation PASS5.47s:16/16 ordinary logins and

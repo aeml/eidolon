@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -10,6 +11,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"eidolon-server/internal/game"
 )
 
 // A short, explicitly disposable startup diagnostic. Four simultaneous driver
@@ -18,17 +21,37 @@ import (
 // qualification or permit retries, relaxed guards or production auth changes.
 func TestLoadActualFourGroupAdmissionDiagnostic(t *testing.T) {
 	repo, uri, binary := resourceJournalIntegration(t)
+	groups := make([][]map[string]string, 4)
+	for group := range groups {
+		groups[group] = make([]map[string]string, 4)
+		for index := range groups[group] {
+			fixture, password := resourceJournalFixture(t, repo)
+			groups[group][index] = map[string]string{"username": fixture.Name, "password": password}
+		}
+	}
+	runLoadAdmissionGroups(t, uri, binary, groups)
+}
+
+// Exactly100 original cohort saves and80/5/4/11 group sizes. Only startup is
+// exercised; no paid/combat/event outcome,108s common-reader or save credit.
+func TestLoadActualCohort100AdmissionDiagnostic(t *testing.T) {
+	if os.Getenv("EIDOLON_ADMISSION_COHORT100") != "1" {
+		t.Skip("explicit short100-character startup diagnostic only")
+	}
+	repo, uri, binary := resourceJournalIntegration(t)
+	definition, _ := game.ElementalRaidDefinitionForType("earth_crystal_raid")
+	_, credentials := loadPreparedCohortFixtures(t, repo, definition, game.PublicEventSites()[0])
+	runLoadAdmissionGroups(t, uri, binary, [][]map[string]string{credentials[:80], credentials[80:85], credentials[85:89], credentials[89:]})
+}
+
+func runLoadAdmissionGroups(t *testing.T, uri, binary string, groups [][]map[string]string) {
+	t.Helper()
 	driver := os.Getenv("EIDOLON_LOADTEST_BINARY")
 	if !filepath.IsAbs(driver) {
 		t.Fatal("requires absolute prepared load-driver path")
 	}
-	paths := make([]string, 4)
-	for group := range paths {
-		credentials := make([]map[string]string, 4)
-		for index := range credentials {
-			fixture, password := resourceJournalFixture(t, repo)
-			credentials[index] = map[string]string{"username": fixture.Name, "password": password}
-		}
+	paths := make([]string, len(groups))
+	for group, credentials := range groups {
 		encoded, err := json.Marshal(credentials)
 		if err != nil {
 			t.Fatal("could not encode disposable credentials")
@@ -48,7 +71,7 @@ func TestLoadActualFourGroupAdmissionDiagnostic(t *testing.T) {
 	}
 	done := make(chan result, len(paths))
 	for group, path := range paths {
-		command := exec.CommandContext(ctx, driver, "-addr", address, "-scheme", "ws", "-scenario", "town", "-n", "4",
+		command := exec.CommandContext(ctx, driver, "-addr", address, "-scheme", "ws", "-scenario", "town", "-n", fmt.Sprint(len(groups[group])),
 			"-credentials-file", path, "-duration", "2s", "-admission-timeout", "5s")
 		go func() {
 			output, err := command.CombinedOutput()
@@ -69,9 +92,10 @@ func TestLoadActualFourGroupAdmissionDiagnostic(t *testing.T) {
 				t.Logf("Admission diagnostic group=%d %s", run.group, evidence)
 			}
 		}
-		if run.err != nil || !strings.Contains(output, "Load summary: connected=4 joined=4") ||
-			!strings.Contains(output, "Admission coverage: authenticated=4 failed=0") {
-			t.Errorf("admission diagnostic group=%d lacks all four ordinary admissions; raw output omitted", run.group)
+		count := len(groups[run.group])
+		if run.err != nil || !strings.Contains(output, fmt.Sprintf("Load summary: connected=%d joined=%d", count, count)) ||
+			!strings.Contains(output, fmt.Sprintf("Admission coverage: authenticated=%d failed=0", count)) {
+			t.Errorf("admission diagnostic group=%d lacks all%d ordinary admissions; raw output omitted", run.group, count)
 		}
 	}
 	stop()

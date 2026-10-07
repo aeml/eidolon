@@ -50,29 +50,10 @@ func TestCohortIntervalRejectsMissingDuplicateAndNonSustainedEvidence(t *testing
 	}
 }
 
-// This is one normal API/database and100 distinct prepared accounts:80 existing
-// combined-role clients,5 Earth raiders,4 Root defenders and11 town clients.
-// No controller/power/population changes. Run only near an actual Root window.
-func TestLoadCohortActual100MixedRaidEventAndSaves(t *testing.T) {
-	if os.Getenv("EIDOLON_LOAD_COHORT_FULL") != "1" {
-		t.Skip("explicit natural-clock integrated100-player load only")
-	}
-	period := int64(game.PublicEventPeriod / time.Second)
-	now := time.Now()
-	root := time.Unix((now.Unix()/(4*period))*4*period, 0)
-	if now.Sub(root) > 40*time.Second {
-		root = root.Add(4 * game.PublicEventPeriod)
-	}
-	if root.Sub(now) > 3*time.Minute {
-		t.Skip("requires nearby natural Root window; no long wait or clock override")
-	}
-	repo, uri, binary := resourceJournalIntegration(t)
-	driver := os.Getenv("EIDOLON_LOADTEST_BINARY")
-	if !filepath.IsAbs(driver) {
-		t.Fatal("requires absolute prepared load-driver binary")
-	}
-	definition, _ := game.ElementalRaidDefinitionForType("earth_crystal_raid")
-	site := game.PublicEventSites()[0]
+// Both startup isolation and full qualification use this exact original save
+// population. Isolation cannot silently replace gear, classes or spawn sites.
+func loadPreparedCohortFixtures(t *testing.T, repo *database.DB, definition game.ElementalRaidDefinition, site game.PublicEventSite) ([]*database.Character, []map[string]string) {
+	t.Helper()
 	fixtures := make([]*database.Character, 100)
 	credentials := make([]map[string]string, 100)
 	for index := range fixtures {
@@ -106,6 +87,33 @@ func TestLoadCohortActual100MixedRaidEventAndSaves(t *testing.T) {
 		}
 		fixtures[index], credentials[index] = fixture, map[string]string{"username": fixture.Name, "password": password}
 	}
+	return fixtures, credentials
+}
+
+// This is one normal API/database and100 distinct prepared accounts:80 existing
+// combined-role clients,5 Earth raiders,4 Root defenders and11 town clients.
+// No controller/power/population changes. Run only near an actual Root window.
+func TestLoadCohortActual100MixedRaidEventAndSaves(t *testing.T) {
+	if os.Getenv("EIDOLON_LOAD_COHORT_FULL") != "1" {
+		t.Skip("explicit natural-clock integrated100-player load only")
+	}
+	period := int64(game.PublicEventPeriod / time.Second)
+	now := time.Now()
+	root := time.Unix((now.Unix()/(4*period))*4*period, 0)
+	if now.Sub(root) > 40*time.Second {
+		root = root.Add(4 * game.PublicEventPeriod)
+	}
+	if root.Sub(now) > 3*time.Minute {
+		t.Skip("requires nearby natural Root window; no long wait or clock override")
+	}
+	repo, uri, binary := resourceJournalIntegration(t)
+	driver := os.Getenv("EIDOLON_LOADTEST_BINARY")
+	if !filepath.IsAbs(driver) {
+		t.Fatal("requires absolute prepared load-driver binary")
+	}
+	definition, _ := game.ElementalRaidDefinitionForType("earth_crystal_raid")
+	site := game.PublicEventSites()[0]
+	fixtures, credentials := loadPreparedCohortFixtures(t, repo, definition, site)
 	if delay := time.Until(root); delay > 0 {
 		if delay > 3*time.Minute {
 			t.Fatal("unexpected natural-clock delay")
