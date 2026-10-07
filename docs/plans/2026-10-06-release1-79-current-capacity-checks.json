@@ -5,6 +5,12 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "casino-roster-and-fresh-poker-candidate-qualification-open",
+  "october7ReadOnlyPublicationPreflight": {
+    "observedAt": "2026-10-07T06:30:14Z",
+    "source": "Fresh origin/master fetch remains accepted c7c2c526; current branch ahead105/behind0, production checkout has no tracked/untracked status changes. Database implementation has no diff from origin/master; candidate CurrentSchemaVersion25 matches the actual production schema_migrations maximum version25, read using only a metadata projection with existing credentials expanded inside Mongo and not printed.",
+    "deployment": "Actual deploy_linux.sh only invokes consistent DB/journal/image upgrade backup when database_schema<target_schema. For the currently observed unchanged25→25 release, that migration/backup branch is not required. Target image's exact-source read-only schema preflight still runs after build and must independently agree before replacement; no migration, backup, build, API restart or deployment done here.",
+    "space": "Root available bytes3248369664 at06:32:45UTC; shared-host usage varies. Existing193459869-byte backups,18820KiB actual journal/log directory, live API image62644516 bytes and516272KiB actual Mongo data directory are observed sizes, not a proven build peak. Earlier3.9–4GiB readings are historical; recheck before build/publication. No broad shared cache/volume cleanup authorized or performed."
+  },
   "october7EventRegroupNativeDeclaration": {
     "api": "Reuse exact identified normal ca64c6d18f5c30cc746664517c9b599171528aee/4034afe0b533dd648f145e9de0f4625e34f061ca354687a22c6689a30111a0b5 and172802a7852bfe4e2d24d721932f61db70f144c8e896979f3c75ff8cab470da5 race harness. Independently confirmed no server diff outside cmd/loadtest since API source; no unnecessary unchanged API/harness build or old-result substitution. All root fixture/parser/save gates are identical.",
     "driver": {"source":"649e43219d9206e5d97a6e7e4611c0af0c7d3039","path":"/dev/shm/eidolon-179-event-regroup-driver-oPdfzR/load-driver","sha256":"377e234ab12a47b37a045871494cbbd0b72d5d4360878bf1a24b78bcf2fdae37","identity":"NormalGo1.27.1/p2 build terminal exit0; independently inspected vcs649e4321/vcs.modifiedfalse. Runtime retains fresh-poker guards and new proven ward-regroup tactics; no natural clock/stat/gear/outcome/population/budget changes."},
