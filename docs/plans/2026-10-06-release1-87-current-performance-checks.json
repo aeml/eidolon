@@ -2,6 +2,24 @@
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
   "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
+  "october7RegisteredGroundLayers": {
+    "implementation": "Reuse existing two packed composition/detail maps and unchanged texture dimensions, lighting, shader pass and geometry. Character-scale clods supply soil relief; derivative-filtered height-sensitive transitions separate moss from soil without changing zero/one authored coverage. Existing leaf coverage consistently controls warmer nonemissive reflectance, roughness and shallow relief. Shader cache revision8. No added map, draw, per-frame callback, displacement, terrain/collision/placement or gameplay change.",
+    "red": "Existing cache assertion plus two new High/Low layer-contract cases fail on previous v7 shader; three selected failures in9.906s. The new checks cover actual injected shader, unchanged uniforms/map sizes, linear registered fields, shared coverage across physical channels and no geometry displacement; they are not independent visual-quality or GPU-execution proof.",
+    "unit": "Both affected EarthGroundComposition/EarthGroundCover suites PASS16 checks23.158s; scoped lint and whitespace pass. Final refinement changes only numeric palette constants, not operations, fields, geometry or tested ownership. No repeated unchanged unit suites after that refinement.",
+    "firstNative": "Root98808 terminal exit1: actual AMD/Vulkan High/Low profile1PASS/1FAIL37.7s. All six120-frame median/P95 and draw gates pass with unchanged counts; sole existing High woodland278135-versus250000 triangle failure remains. All shadow and surface comparisons0/270080. Visually inspected initial High woodland/shoulder and Low woodland: moss palette contrast exposed too much repeated mottling, so do not accept that first palette as final art.",
+    "refinement": "Reduce moss palette/face contrast and dry-loam reflectance without changing spatial fields or operations. Root26362 terminal exit0: affected High/Low functional preview2PASS18.8s. All current movement/jump/picking/aim/effects/grounding assertions remain. All six full shadow comparisons and both surface comparisons0/270080; draw/triangle counts unchanged. Final pass did not repeat120-frame timings, so retain initial changed-operation profiling as scoped evidence, not an exact final timing qualification.",
+    "visualReview": "Inspected final High woodland screenshot against the retained v7 same-camera capture: leaf litter reads more clearly, soil/moss are more distinct and the exaggerated first-palette mottling is softened. The scene still needs richer composition and final modern-ARPG art review; this is not Diablo/PoE-quality, equipped-player, all-family or real-device acceptance.",
+    "evidence": {
+      "initialDirectory": "/tmp/eidolon-187-ground-layers-ZtUFmG/results",
+      "initialHighTraceSha256": "98875874abb209ce3f685a159221868276daaf7599a77442c943abeead9c5cf7",
+      "finalDirectory": "/tmp/eidolon-187-ground-layers-ZtUFmG/refined",
+      "finalHighWoodlandImageSha256": "4e8b89d84550d22e26ed3f96dec23604b5eecadae42fd3531d5e2098200e45de",
+      "finalLowWoodlandImageSha256": "ab7882a8b6798e9fe381b145b3a30cbcae5b972dba577c5926f2f23e0247c1d4",
+      "sourceSha256": "a16b5bd61e3b95b8fe3155dcdb552435522af56dfcf1be9adefcf6154999df33"
+    },
+    "integration": "Exact comparison against accepted origin/master shows this material/test patch has no earlier future-branch dependency. Selective1.79.1 stabilization integration may carry only these two files with the current-origin fix; do not wholesale merge future authority, production raised-terrain selection or unfinished performance changes. Its own current-source CI/public acceptance remains required.",
+    "limits": "Owned browser handles terminal and4190 closed. Existing High woodland budget and full1.87/public raised-world/art gates remain open. No Mongo, mail, production writes, lowered budget, quality/model downgrade or repeated100/campaign run."
+  },
   "october7RejectedProjectionCornerTrial": {
     "hypothesis": "Additional projection axes could reject directional shadow volumes that cross separate camera intervals but miss a corner. The affected four unit suites passed51 checks in1.619s, but mathematical correctness alone did not establish a useful optimization.",
     "native": "Root53520 terminal exit1: affected High preview FAIL19.4s solely on original woodland278135 triangles against250000, unchanged from the retained implementation. West242779 versus244827 saves2048 triangles in an already-passing view; outer235898 unchanged. Three paired captures change0/270080 pixels; original frame and draw gates pass. Low and unchanged full100 workloads not repeated.",
@@ -188,6 +206,7 @@
     }
   },
   "plannedPatchNotes": [
+    "Improve registered Earth soil/moss layering and visible leaf litter without additional textures, draw calls or changes to terrain/collision.",
     "Use the shared raised Earth terrain and rock-cover profile during ordinary server startup, with unchanged town/instance floors and an explicit flat-profile operator rollback.",
     "Keep directional shadow coverage aligned with the actual ground-anchored light when the camera follows elevated terrain, retaining tall receivers and off-screen casters.",
     "Graphics startup honors saved Low/Medium/High immediately, avoiding temporary High postprocessing setup for Low-quality players.",
