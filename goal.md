@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 isolated1.87 environment progress:** Future worktree now retains
+7f28d7d8 convex directional foliage-shadow culling, receipt70b746b0. Actual
+High whole-frame submissions drop18.02%/9.33%/21.69% across the three roads;
+six paired High/Low views change0/270080 pixels. Four affected unit suites
+PASS44/1.417s; actual native1PASS/2FAIL48.6s still exceeds all three original
+High250000 limits and Low west85000 by467. Original gates remain open.
+Both owned native commands terminal and4190 closed. No geometry/quality,
+production, player data or ordered-release change. Selectively integrate later,
+never replace current1.79 authority with the older future branch wholesale.
+1.80 service policy remains an unanswered optional owner choice, not assumed.
+
 **October7 1.80 concrete successor work:** Real handshake regressions reproduced
 host-only Origin parsing admitting malformed tuples and duplicate headers.
 Corrected server tuple/cardinality validation while preserving current hosts,
