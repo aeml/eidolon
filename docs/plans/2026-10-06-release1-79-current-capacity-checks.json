@@ -5,6 +5,17 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "current-full100-functional-and-original-phase-budget-passed-ci-public-open",
+  "october7FirstPublicationCI": {
+    "run":37596856794,
+    "commit":"efd9574f779e57ead5ba66b8ca242bd41835c4fe",
+    "state":"Client job112711497871 terminal failure: one stale GameEngineInstanceLifetime fixture expects an unseen off-floor patron to receive the deferred seated pose. Other jobs remain running at09:05UTC; no deployment accepted.",
+    "clientOutcome":"640 suites/9546 checks pass; one check fails expected1.12/actual1.9. Existing controller hidden-patron tests explicitly require no pose application on unseen floor. This is conflicting fixture preparation, not proven gameplay regression.",
+    "correction":"Parameterize full retirement/reuse check for previously-visible and never-visible patrons. Establish the actual seated pose before hiding the first; assert untouched baseline on unseen second. Both still require restored pose/visibility before disposal, unchanged replacement-model transforms and empty pose/cutaway references.",
+    "verification":"All three affected instance lifetime/controller/casino integration suites PASS65/4.575s; ESLint/whitespace pass. No runtime/server/native workload change, so retained exact100 qualification remains valid without another long test.",
+    "log":"/tmp/eidolon-179-client-job-112711497871.log",
+    "logSha256":"ef67eeb051f6e27be5e84ad91fab23c06cfd23fffd6a86a115d199684e2829f1",
+    "next":"Wait for remaining original jobs to finish and collect any additional failures before one corrected push; authorized Luna terminal-only monitor retained. Live1.78 unchanged."
+  },
   "october7CurrentQualification": {
     "result": "Root57874 consumed exit0; original TestLoadCohortActual100MixedRaidEventAndSaves PASS584.92s, terminal2026-10-07T08:46:50Z. Current c323 driver/unchanged8c API/9a harness exactly as declared below; no clock, gameplay, workload, deadline or gate relaxation.",
     "clients": 100,

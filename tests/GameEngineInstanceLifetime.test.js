@@ -96,14 +96,22 @@ test('late instance entry cannot recreate a destroyed scene', async () => {
     expect(engine.clearCombatIntentState).not.toHaveBeenCalled();
 });
 
-test('instance retirement clears seated-pose references before an old model can be reused', async () => {
+test.each([true, false])('instance retirement clears seated-pose references before reuse (previously visible: %s)', async previouslyVisible => {
     const engine = harness(); engine.currentInstanceId = 'lanternhold-casino';
     engine.network = { socket: {}, send: jest.fn() };
     engine.casino = new CasinoController(engine);
     const old = new Entity('old-patron'), model = new THREE.Group(), hips = new THREE.Group();
     hips.name = 'Rig_Hips'; hips.position.y = 1.9; model.add(hips); old.mesh = model; old.state = 'SEATED';
-    dormant(engine, old); old.position.y = 8;
-    engine.casino.render([old]); expect(hips.position.y).toBe(1.12); expect(model.visible).toBe(false);
+    dormant(engine, old);
+    // Establish a real seated pose on the visible floor before hiding it.
+    // Hidden-floor matrix work is intentionally deferred; it must not be
+    // required to pose an actor that has never appeared on this floor.
+    if (previouslyVisible) {
+        engine.casino.render([old]); expect(hips.position.y).toBe(1.12); expect(model.visible).toBe(true);
+    }
+    old.position.y = 8;
+    engine.casino.render([old]);
+    expect(hips.position.y).toBe(previouslyVisible ? 1.12 : 1.9); expect(model.visible).toBe(false);
     let restoredBeforeDisposal;
     const dispose = old.dispose.bind(old);
     old.dispose = () => { restoredBeforeDisposal = hips.position.y === 1.9 && model.visible; dispose(); };

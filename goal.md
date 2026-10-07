@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 first1.79 publication CI correction prepared:** efd9574f pushed;
+run37596856794 client job fails one stale off-floor seated-pose fixture, while
+640 suites/9546 checks pass. Actual hidden-floor optimization intentionally
+defers unseen rig work; update fixture to establish a visible pose before
+hiding, and also check never-visible baseline. Both variants retain full
+retirement/reset/replacement ownership assertions. Affected suites PASS65/
+4.575s plus lint/whitespace; runtime/server untouched, no100 replay needed.
+Remaining original server/browser jobs still running09:05; Luna terminal-only
+monitor. Hold corrected push for terminal/additional failures; live1.78 remains.
+Future1.87 eba90eae tightens one-time exact vertex bounds without altering art;
+unitPASS26 and four native realm pixel comparisons pass, but original raised
+road budgets still FAIL High3/Low1. Low bank improves408 to85467, still467over.
+Native evidence preserved; no modern-art/profile acceptance or future deployment.
+
 **October7 current full100 qualification passed:** Root consumed session57874
 exit0 and independently verified the original test PASS584.92s, common100
 112958ms and100 independent fresh saves. Current c323 driver/unchanged8c API/
