@@ -28,9 +28,9 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
     if (profile && process.env.EIDOLON_CASINO_SOFTWARE_REVIEW === '1') throw new Error('Casino performance requires hardware rendering');
     if (baselineCommit) {
         if (!profile || !/^[0-9a-f]{40}$/.test(baselineCommit)) throw new Error('Casino baseline requires profile mode and an exact Git SHA');
-        // Same current art/workload/browser on both sides; replace only the two
+        // Same current art/workload/browser on both sides; replace only the
         // optimized runtime modules with their immutable baseline source.
-        for (const file of ['src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js']) {
+        for (const file of ['src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js', 'src/art/FittedEquipment.js']) {
             const body = execFileSync('git', ['show', `${baselineCommit}:${file}`], { encoding: 'utf8' });
             await page.route(`**/${file}*`, route => {
                 baselineModulesServed.add(file);
@@ -145,9 +145,14 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                         return controller.poses.get(model)?.authored && Math.abs(height - 1.12) < 1e-5 && thigh.quaternion.angleTo(model.standingThigh) > 1;
                     });
                 seated.forEach(model => seatingVerified.add(model));
+                let skinnedMeshes = 0;
+                const skeletons = new Set();
+                models.filter(model => model.mesh.visible).forEach(model => model.mesh.traverseVisible(part => {
+                    if (part.isSkinnedMesh) { skinnedMeshes++; skeletons.add(part.skeleton); }
+                }));
                 return { visible: models.filter(model => model.mesh.visible).length,
                     auras: auras.filter(aura => aura.group.visible).length,
-                    seated: seated.length, allSeated: seatingVerified.size,
+                    seated: seated.length, allSeated: seatingVerified.size, skinnedMeshes, skeletons: skeletons.size,
                     floors: { public: interior.userData.floors.public.visible, vip: interior.userData.floors.vip.visible } };
             },
             dispose() {
@@ -162,7 +167,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
     }, tables);
     expect(setup).toEqual({ tables: 92, seats: 232, models: 40 });
     if (baselineCommit) expect([...baselineModulesServed].sort()).toEqual([
-        'src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js'
+        'src/art/FittedEquipment.js', 'src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js'
     ]);
     const profiles = [];
     try {
@@ -226,7 +231,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                     await cpuSession.detach();
                 }
                 const cpuAfter = hostCpuSnapshot();
-                profiles.push({ quality, floor, ...sample, baselineCommit: baselineCommit || null,
+                profiles.push({ quality, floor, ...sample, skinnedMeshes: view.skinnedMeshes, skeletons: view.skeletons, baselineCommit: baselineCommit || null,
                     host: { idlePercent: 100 * (cpuAfter.idle - cpuBefore.idle) / (cpuAfter.total - cpuBefore.total),
                         loadBefore, loadAfter: loadavg() } });
                 console.log('[casino-frame-profile]', JSON.stringify(profiles.at(-1)));

@@ -111,7 +111,22 @@ function instanceMaterials(part, item, look) {
     ownedMaterials.set(part, [...owned.values()]);
 }
 
-function bindParts(state, gltf, slot, item, catalog, look) {
+function fittedSkeleton(joints, inverses, cache) {
+    const bones = joints.map(joint => joint.bone);
+    const key = bones.map(bone => bone.uuid).join('|');
+    const finite = inverses.every(matrix => matrix.elements.every(Number.isFinite));
+    const candidates = cache.get(key) || [];
+    if (finite) {
+        const existing = candidates.find(skeleton => skeleton.bones.every((bone, index) => bone === bones[index]) && skeleton.boneInverses.length === inverses.length &&
+            skeleton.boneInverses.every((matrix, index) => matrix.equals(inverses[index])));
+        if (existing) return existing;
+    }
+    const skeleton = new THREE.Skeleton(bones, inverses.map(matrix => matrix.clone()));
+    if (finite) { candidates.push(skeleton); cache.set(key, candidates); }
+    return skeleton;
+}
+
+function bindParts(state, gltf, slot, item, catalog, look, skeletons) {
     const root = gltf.scene.clone(true), parts = [];
     if (slot === 'mainHand' || slot === 'offHand') {
         const grip = AUTHORED_ASSETS.grips[state.actorClass][slot];
@@ -126,8 +141,11 @@ function bindParts(state, gltf, slot, item, catalog, look) {
             const mirror = slot === 'ring2' || slot === 'trinket2';
             const joints = mesh.skeleton.bones.map(bone => targets.get(mirror ? swapSide(bone.name) : bone.name));
             if (joints.some(joint => !joint)) throw new Error(`Missing fitted ${slot} joint`);
-            const skeleton = new THREE.Skeleton(joints.map(joint => joint.bone), mirror
-                ? joints.map(joint => joint.inverse.clone()) : mesh.skeleton.boneInverses.map(matrix => matrix.clone()));
+            // Scope sharing to this actor's staged equip generation. Matching
+            // ordered live bones and exact inverse matrices preserve skinning;
+            // each mesh retains its own bind matrix and original vertex data.
+            const skeleton = fittedSkeleton(joints, mirror
+                ? joints.map(joint => joint.inverse) : mesh.skeleton.boneInverses, skeletons);
             if (mirror) {
                 mesh.geometry = mesh.geometry.clone(); mesh.userData.fittedOwnedGeometry = true;
                 const geometry = mesh.geometry;
@@ -183,11 +201,11 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
     })).then(results => {
         if (state.epoch !== epoch) return; // Released/reused actor or superseded equip.
         let staged = [];
-        const selection = {}, missing = [];
+        const selection = {}, missing = [], skeletons = new Map();
         try {
             for (const result of results) {
                 if (result.error) { missing.push(result.slot); continue; }
-                staged.push(...bindParts(state, result.gltf, result.slot, result.item, result.catalog, result.look));
+                staged.push(...bindParts(state, result.gltf, result.slot, result.item, result.catalog, result.look, skeletons));
                 selection[result.slot] = result.catalog.id;
             }
             for (const part of staged) {

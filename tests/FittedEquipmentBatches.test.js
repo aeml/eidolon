@@ -38,6 +38,64 @@ function surface(mesh) {
     });
 }
 
+function skeletonSharingFixture(differentInverse = false) {
+    const {root: scene, parts, bones} = fixture();
+    bones[0].name = 'pelvis'; bones[1].name = 'spine_01';
+    parts[0].name = 'Fighter_Body'; parts[0].userData = {}; parts[1].userData = {};
+    const sourceScene = new THREE.Group(), second = parts[1].clone(false);
+    if (differentInverse) {
+        const inverses = second.skeleton.boneInverses.map(matrix => matrix.clone());
+        inverses[1].elements[12] += .25;
+        second.skeleton = new THREE.Skeleton(second.skeleton.bones, inverses);
+    }
+    sourceScene.add(parts[1], second);
+    for (const name of ['upperarm_l', 'lowerarm_l', 'upperarm_r', 'lowerarm_r', 'neck_01']) {
+        const bone = new THREE.Bone(); bone.name = name; bone.position.y = name.startsWith('lower') ? 2 : 1; scene.add(bone);
+    }
+    const root = new THREE.Group(); root.userData.authoredClass = 'Fighter'; root.userData.fittedEquipmentBatching = false; root.add(scene);
+    prepareFittedEquipment(root, scene, async () => ({scene: sourceScene}));
+    const equipment = {chest: {id: 'mail', name: 'Plate Mail', baseName: 'Plate Mail', slot: 'chest', type: 'ARMOR', rarity: 'Rare'}};
+    const gear = () => { const meshes = []; root.traverse(mesh => { if (mesh.userData.authoredEquipment && mesh.isSkinnedMesh) meshes.push(mesh); }); return meshes; };
+    return {root, bones, equipment, gear, source: parts[1].skeleton, body: parts[0].skeleton};
+}
+
+test('fitted pieces share only matching equip-owned skeletons and retain exact animated surfaces', async () => {
+    const first = skeletonSharingFixture(), second = skeletonSharingFixture();
+    for (const fixture of [first, second]) { applyFittedEquipment(fixture.root, fixture.equipment); await fixture.root.userData.equipmentReady; }
+    const gear = first.gear(), other = second.gear();
+    expect(gear).toHaveLength(2); expect(gear[0].skeleton).toBe(gear[1].skeleton);
+    expect(gear[0].skeleton).not.toBe(first.body); expect(gear[0].skeleton).not.toBe(first.source);
+    expect(gear[0].skeleton).not.toBe(other[0].skeleton);
+    const reference = gear.map(mesh => {
+        const copy = mesh.clone(false);
+        copy.bind(new THREE.Skeleton(mesh.skeleton.bones, mesh.skeleton.boneInverses.map(matrix => matrix.clone())), mesh.bindMatrix.clone());
+        first.root.getObjectByName('Fighter_Body').parent.add(copy); return copy;
+    });
+    for (const angle of [0, .4, -.7]) {
+        first.bones[1].rotation.z = angle; first.root.position.set(2, 0, -3); first.root.updateMatrixWorld(true);
+        gear.forEach((mesh, index) => expect(surface(mesh)).toEqual(surface(reference[index])));
+    }
+    reference.forEach(mesh => { mesh.removeFromParent(); mesh.skeleton.dispose(); });
+    const owned = jest.spyOn(gear[0].skeleton, 'dispose'), foreign = jest.spyOn(other[0].skeleton, 'dispose');
+    const source = jest.spyOn(first.source, 'dispose'), body = jest.spyOn(first.body, 'dispose');
+    clearFittedEquipment(first.root); clearFittedEquipment(first.root);
+    expect(owned).toHaveBeenCalledTimes(1); expect(foreign).not.toHaveBeenCalled();
+    expect(source).not.toHaveBeenCalled(); expect(body).not.toHaveBeenCalled();
+    applyFittedEquipment(first.root, first.equipment); await first.root.userData.equipmentReady;
+    expect(first.gear()[0].skeleton).not.toBe(gear[0].skeleton);
+    clearFittedEquipment(first.root); clearFittedEquipment(second.root);
+    jest.restoreAllMocks();
+});
+
+test('different inverse matrices remain separately owned skeletons', async () => {
+    const fixture = skeletonSharingFixture(true);
+    applyFittedEquipment(fixture.root, fixture.equipment); await fixture.root.userData.equipmentReady;
+    const gear = fixture.gear(); expect(gear).toHaveLength(2);
+    expect(gear[0].skeleton).not.toBe(gear[1].skeleton);
+    expect(gear[0].skeleton.boneInverses[1].elements[12]).not.toBe(gear[1].skeleton.boneInverses[1].elements[12]);
+    clearFittedEquipment(fixture.root);
+});
+
 test('merges identical opaque surfaces without changing source buffers, bones or animated triangle positions', () => {
     const {root, parts, bones} = fixture();
     const indices = parts.map(part => [...part.geometry.index.array]);

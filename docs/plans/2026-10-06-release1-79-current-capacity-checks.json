@@ -5,6 +5,14 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "78e1a217",
   "status": "integrated100-functional-pass-render-median-targets-failing-release-gates-open",
+  "october7CurrentCasinoCPUAttribution": {
+    "scope":"One diagnostic run of corrected current40-actor/20-visible-floor/legal14piece authored equipment/realLow-detail/per-frame seating fixture. CDP samples ONLY Low public; profiler overhead is explicit, not green FPS acceptance. Original median gates still fail. Runtime remains exact78e1a217 after unused texture candidate restoration, root receiptse4c46502. No new native100 test.",
+    "profile":{"nodes":486,"samples":4784,"observedMilliseconds":6654.226,"selfPercent":{"matrixMultiply":11.22,"objectWorldMatrices":7.99,"sceneProjection":6.66,"WebGLObjectsUpdate":6.39,"textureSubImageUpload":4.58,"renderBufferDirect":3.87,"uniformRefresh":3.7,"programSetup":3.6,"skinnedMeshWorldMatrices":3.47}},
+    "evidence":{"report":"/tmp/eidolon-179-cohort-native-hK5OIy/casino-cpu-report.json","sha256":"ed908470035e7843c5fd71c4be4692563f9e35dea12bc3612d3ea07310b5999f"},
+    "inference":"Measured matrix/object/texture costs justify inspecting fittedSkeleton creation. Code creates a fresh Skeleton for every fitted skinned piece despite mapping them to the same live character bones; WebGL updates/uploads each distinct skeleton. Sharing is useful ONLY when ordered actual bone references and every inverse-matrix value match; different bind matrices remain per-mesh and unchanged.",
+    "candidate":"Generation-local equipment skeleton cache, no source/body/cross-character reuse. Finite exact matrices and ordered live bone identities required; no rounding/tolerance, pose approximation, geometry/UV/material/texture/animation change or reduced crowd. Disposal already deduplicates equipment skeletons.82 affected unit cases/four suites PASS2.985s, scoped lint passes; initial new test-fixture clone failed circular userdata and was corrected before any actual native rendering claim. New tests independently compare animated indexed surfaces, different inverses, source/body/foreign ownership, once-only disposal and fresh re-equip.",
+    "next":"One exact changed-source hardware trial with same visible crowd/art/pose/timing gates, plus actual skinned-mesh and unique-skeleton counts. No result or release acceptance yet."
+  },
   "october7RejectedTextureBatchCandidate": {
     "sourceCommit":"821f9ff43c382ecedd35cf1081ca5121ed49bb46",
     "verification":"48 affected material/deformation/stealth/authored-body tests PASS1.763s, scoped lint passed. Earlier invocation included a nonexistent FittedEquipment.test.js and therefore was NOT a passed command; corrected actual-file selection ran all48. Candidate extends opaque fitting only for exact shared texture UUIDs without image readback and retains other shader/geometry/bone/privacy/ownership boundaries.",

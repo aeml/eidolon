@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 current casino attribution / exact-skeleton candidate:** Previous
+turn completed actual100 simultaneous encounter/save coverage and rejected an
+unused texture candidate: progress. One CDP diagnostic of corrected current
+authored casino identifies matrix/object work and texture uploads; raw profile
+retained/hashed, not a FPS pass. Fitted code allocates one skeleton per piece.
+Candidate shares only exact ordered live bones+finite inverse matrices within
+one actor/equip generation, leaving vertex/material/bind/animation data unchanged.
+82focused cases PASS2.985s/scoped lint, including animated-surface equality and
+independent ownership/disposal/re-equip. Initial new fixture circular clone
+failure corrected, not called pass. Next current-asset hardware measurement
+retains20visible/40total/legal14pieces/realLow/per-frame pose and original targets;
+adds actual skinned-mesh/skeleton counts. No100 replay or own1.79 release yet.
+
 **October7 evidence-led candidate rejection:**821f9ff4 shared-texture fitting
 passed48 affected unit cases/scoped lint but actual authored-casino draw counts
 and triangle counts were unchanged, and all original median targets still fail.
