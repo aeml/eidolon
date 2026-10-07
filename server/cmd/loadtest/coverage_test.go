@@ -15,6 +15,29 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
+func TestCommonStateWindowRequiresEveryReaderAndActualOverlap(t *testing.T) {
+	start := time.Unix(100, 0)
+	observations := []loadObservation{
+		{frames: 100, ownUpdates: 50, firstStateAt: start, lastStateAt: start.Add(120 * time.Second)},
+		{frames: 90, ownUpdates: 40, firstStateAt: start.Add(8 * time.Second), lastStateAt: start.Add(115 * time.Second)},
+	}
+	first, last := commonStateWindow(observations)
+	if !first.Equal(start.Add(8*time.Second)) || !last.Equal(start.Add(115*time.Second)) {
+		t.Fatal("common interval is not the intersection of all readers")
+	}
+	for _, invalid := range []loadObservation{{}, {frames: 1, ownUpdates: 0, firstStateAt: start, lastStateAt: start.Add(time.Second)},
+		{frames: 1, ownUpdates: 1, firstStateAt: start.Add(130 * time.Second), lastStateAt: start.Add(140 * time.Second)}} {
+		copy := append(append([]loadObservation{}, observations...), invalid)
+		first, last := commonStateWindow(copy)
+		if !first.IsZero() || !last.IsZero() {
+			t.Fatal("missing, stale-own or non-overlapping reader established concurrency")
+		}
+	}
+	if first, last := commonStateWindow(nil); !first.IsZero() || !last.IsZero() {
+		t.Fatal("empty readers established concurrency")
+	}
+}
+
 func TestStateCoverageRequiresOwnSnapshotsAndIncludesEveryClient(t *testing.T) {
 	start := time.Unix(100, 0)
 	observations := make([]loadObservation, 2)

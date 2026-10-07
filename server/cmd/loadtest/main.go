@@ -314,6 +314,12 @@ func main() {
 	log.Printf("State coverage: clients=%d min_frames=%d min_active_ms=%d max_gap_ms=%d wire_bytes=%d",
 		coverage.clients, coverage.minFrames, coverage.minActive.Milliseconds(), coverage.maxGap.Milliseconds(), coverage.wireBytes)
 	log.Printf("Own state coverage: clients=%d min_updates=%d", coverage.ownClients, coverage.minOwnUpdates)
+	first, last := commonStateWindow(observations)
+	if !first.IsZero() {
+		log.Printf("Cohort interval coverage: clients=%d latest_first_ms=%d earliest_last_ms=%d common_active_ms=%d", *count, first.UnixMilli(), last.UnixMilli(), last.UnixMilli()-first.UnixMilli())
+	} else {
+		log.Printf("Cohort interval coverage: clients=%d latest_first_ms=0 earliest_last_ms=0 common_active_ms=0", *count)
+	}
 	log.Printf("Admission coverage: authenticated=%d failed=%d max_registration_ms=%d max_login_ms=%d max_join_ms=%d",
 		metrics.authenticated.Load(), metrics.admissionErrors.Load(), coverage.maxRegistration.Milliseconds(), coverage.maxLogin.Milliseconds(), coverage.maxJoin.Milliseconds())
 	reads := summarizeReadFailures(observations)

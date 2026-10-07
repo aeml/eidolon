@@ -38,6 +38,27 @@ type stateCoverage struct {
 	maxRegistration, maxLogin, maxJoin time.Duration
 }
 
+// A common interval requires an actual own-player view from every reader.
+// Epoch times allow independently launched cohorts on this host to prove their
+// overlap; sums of separate runs or scheduled process lifetimes cannot do so.
+func commonStateWindow(observations []loadObservation) (latestFirst, earliestLast time.Time) {
+	for index, observation := range observations {
+		if observation.frames == 0 || observation.ownUpdates == 0 || observation.firstStateAt.IsZero() || observation.lastStateAt.Before(observation.firstStateAt) {
+			return time.Time{}, time.Time{}
+		}
+		if index == 0 || observation.firstStateAt.After(latestFirst) {
+			latestFirst = observation.firstStateAt
+		}
+		if index == 0 || observation.lastStateAt.Before(earliestLast) {
+			earliestLast = observation.lastStateAt
+		}
+	}
+	if !earliestLast.After(latestFirst) {
+		return time.Time{}, time.Time{}
+	}
+	return latestFirst, earliestLast
+}
+
 func summarizeStateCoverage(observations []loadObservation) stateCoverage {
 	var result stateCoverage
 	for index, observation := range observations {
