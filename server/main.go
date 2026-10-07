@@ -18,6 +18,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -98,8 +99,21 @@ func isAllowedWebsocketOrigin(origin string) bool {
 		return true
 	}
 	parsed, err := url.Parse(origin)
-	if err != nil {
+	if err != nil || (parsed.Scheme != "http" && parsed.Scheme != "https") ||
+		parsed.User != nil || parsed.Opaque != "" || parsed.Path != "" ||
+		strings.ContainsAny(origin, "?#") {
 		return false
+	}
+	// Origin is a scheme/host/optional-port tuple, not a URL to a resource.
+	// Keep local development ports, but reject empty/out-of-range ports.
+	if strings.HasSuffix(parsed.Host, ":") {
+		return false
+	}
+	if port := parsed.Port(); port != "" {
+		number, err := strconv.Atoi(port)
+		if err != nil || number < 1 || number > 65535 {
+			return false
+		}
 	}
 	hostname := strings.ToLower(strings.TrimSpace(parsed.Hostname()))
 	if hostname == "" {
@@ -198,7 +212,13 @@ func healthHandler(pingDatabase func(context.Context) error) http.HandlerFunc {
 var upgrader = websocket.Upgrader{
 	HandshakeTimeout: websocketUpgradeWait,
 	CheckOrigin: func(r *http.Request) bool {
-		return isAllowedWebsocketOrigin(r.Header.Get("Origin"))
+		origins := r.Header.Values("Origin")
+		// Native clients may omit Origin; it never authenticates an account.
+		// Browser origins must be one nonempty tuple, not the first of several.
+		if len(origins) == 0 {
+			return true
+		}
+		return len(origins) == 1 && strings.TrimSpace(origins[0]) != "" && isAllowedWebsocketOrigin(origins[0])
 	},
 	// EnableCompression: true, // Disabled, using manual GZIP
 }
