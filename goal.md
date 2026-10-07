@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 live changed-API trial / timing evidence:** Revalidated exact
+supervisor272773/native48713 as live, with no restart. Natural Root group now
+completes four waves/all four exits; raid and independent100 saved checks
+remain pending. Fixed10s/110s measurements record2299 completed samples per
+phase:21.05ms update+20.69ms broadcast=41.74ms, over the unchanged33ms budget.
+This is separate-phase elapsed evidence, not paired-frame/CPU/headroom proof.
+No task browser/build overlaps. Retain final functional result independently;
+do not publish or repeat unchanged100 for green. Next after terminal: exact
+artifact/result audit and synthetic fixture cleanup, then profile the remaining
+current bottleneck. Client checks stay current; full1.99 goal remains active.
+
 **October7 ordered freeze preparation reconciled while timer waits:** Previous
 turn fixed/profiled broadcast contention, built exact490 artifacts and started
 supervisor48713: progress. Same48713 revalidated alive, still awaiting real

@@ -5,6 +5,20 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "prior-integrated100-pass-latest-server-only-failure-actor-cache-candidate-open",
+  "october7PreparedFrameTimingObservation": {
+    "sourceCommit": "49011e16cbf90cf97f3dfda633b583579a7d0b42",
+    "observedAt": "2026-10-07T02:44:56Z",
+    "supervisor": "Exact PID272773/session48713 remains live; no restart or terminal result. Event group completes all four waves and exits with four participants; raid/common100 interval/independent saved-state assertions remain pending.",
+    "completedUpdateSamples": 2299,
+    "completedBroadcastSamples": 2299,
+    "updateTotalMicrosDelta": 48388022,
+    "broadcastTotalMicrosDelta": 47568125,
+    "updateMeanMilliseconds": 21.04742148760331,
+    "broadcastMeanMilliseconds": 20.69078947368421,
+    "sumOfPhaseMeansMilliseconds": 41.73821096128752,
+    "intendedSequentialBudgetMilliseconds": 33,
+    "interpretation": "Original10s/110s completed-phase deltas remain over budget. Separate phase means are not paired-frame percentiles, CPU timing or whole-host headroom. No task browser/build overlaps this measurement; other shared-host work remains. Event success does not waive the timing or final-save gates. Retain changed-source trial to terminal before profiling another candidate; no unchanged full100 replay or production claim."
+  },
   "october7PreparedFrameNativeDeclaration": {
     "sourceCommit": "49011e16cbf90cf97f3dfda633b583579a7d0b42",
     "artifacts": {"directory":"/tmp/eidolon-179-prepared-frame-native-0PwnMa","apiSha256":"071d0927d008c72d3a1cf151bbdf0fcab4656a778c92d43c8d3e31c445e135f0","driverSha256":"d8a96797c3a6cb0a9ce98de61cb0fb94f052d555e81a7c39b7204cf750b294a2","raceHarnessSha256":"62607b7659a21accd253987045e5fb6b7e332d51effc5549aeb528a4d018db12"},
