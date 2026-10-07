@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 changed-driver full100 actual setup confirmed:** At08:37:41UTC
+root independently observes named original test RUN, live3240801 supervisor
+and healthy exacte514f838 fixture. Original599af4cb/15aaa409 mounts captured
+in capacity receipt for later terminal-only cleanup; disk-backed2GiB/no CPU cap.
+Current server source stillc323 and unchanged API/harness hashes guarded.
+No outcome, early cleanup or1.79 push. Luna terminal-only monitor remains;
+root owns57874 consumption, original33ms/outcome audit and exact cleanup.
+README/F3 now distinguish pending current qualification from older exact-source
+passes; no older pass or partial means promoted to current acceptance.
+
 **October7 staged normal terrain delivery prepared during verified wait:**
 Separate1.87 ca374ffe replaces QA-only normal startup with negotiated raised
 Earth/rock profile; explicit flat-v1 CLI/Compose rollback, unknown-profile

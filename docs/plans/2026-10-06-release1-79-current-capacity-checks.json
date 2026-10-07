@@ -13,9 +13,19 @@
     "driverIdentity": "Actual Go1.27.1 normal p2 build root10474 terminal exit0; independently inspected vcsc3232dfe/modifiedfalse. Only the proven test-controller regroup fault changed, no gameplay/clock or outcome requirements.",
     "unchangedArtifacts": "Reuse independently hashed normal8c API553f80a7 and9a race-harnessd586079f. Exact git diff9a server excluding cmd/loadtest is empty; API implementation diff8c excluding loadtest/root tests is empty. Harness invokes the external driver, not linked driver code. No unnecessary unchanged rebuild.",
     "aggregateLog": "/tmp/eidolon-179-contested-full100-evidence-nlxwsB/run.log",
+    "actualFixture": {
+      "observedAt": "2026-10-07T08:37:41Z",
+      "id": "e514f838f7abe0deaa7fe75910504bfff7fba518e480fc79cb23209f5826b8d6",
+      "name": "eidolon-179-contested-full100-20261007",
+      "label": "contested-full100179-20261007",
+      "port": 32996,
+      "configVolume": "599af4cb8e57441ff8a90bcd3995f841a95d8572f9ef4835824a2cd22b522d42",
+      "dataVolume": "15aaa4099d44a217e94d39bbeff1fa9e35484c0462b6ce311ab7b91b4934f003",
+      "scope": "Actual named TestLoadCohortActual100MixedRaidEventAndSaves RUN and supervisor3240801 independently live. Exact Docker ID/name/label/healthy state/original mounts/memory2147483648/NanoCpus0 inspected. Preserve this disk-backed fixture until terminal; no result or cleanup yet. Source/artifact guards unchanged; normal08:40 natural Root schedule."
+    },
     "futureFixture": "eidolon-179-contested-full100-20261007/eidolon.fixture=contested-full100179-20261007/loopback32996. Guarded unused exact target, disk-backed Mongo7.0.14 memory2GiB/no CPU cap/minimum1GiB root space/bounded health. No fixture exists yet; actual ID/mounts must be recorded after startup, never guessed for cleanup.",
     "guards": "Source matches c323 server, harness matches9a excluding external driver; actual artifact byte hashes checked before startup; no missed natural setup window/named SKIP. Native unsetsGOMAXPROCS and no task browser/build overlap during measurement. Original80mixed/5raid/4event/11town/common108s/all-member paid and impacts/manual restoration/all own event waves/exits/100 independent normal saved outcomes/original5s and33ms gates unchanged.",
-    "state": "Genuinely live scheduled supervisor, not a native outcome or release acceptance. Previous655.30s expiry remains failed. Current1.79 and broader1.99 scope remain open; fetch remote before publication."
+    "state": "Actual named test RUN/healthy disposable fixture and exact supervisor independently confirmed08:37:41. Original08:40 natural Root schedule retained; no current outcome or release acceptance. Previous655.30s expiry remains failed. Current1.79 and broader1.99 scope remain open; fetch remote before publication."
   },
   "october7CurrentFull100TerminalAndContestedWardRepair": {
     "result": "TestLoadCohortActual100MixedRaidEventAndSaves FAIL655.30s, supervisor terminal2026-10-07T08:08:00Z; root7320 consumed exit1. Current normal8c API/9a harness/80a driver exactly as declared below. Fixed first failure event_expired. Event valid expiry notices are rejected by receive and increment the shared decodeErrors counter; decode_errors4 is not evidence of malformed network data. Read/write errors0.",
