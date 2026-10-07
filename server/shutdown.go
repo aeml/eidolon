@@ -69,41 +69,72 @@ func saveFinalCharacters() error {
 	}
 	world.Mu.RUnlock()
 	sort.Strings(users)
-	var failures []error
-	pending := make(map[string]*database.PendingCharacterSave, len(users))
-	for _, user := range users {
-		unlock := lockCharacterWork(user)
-		entity := world.GetEntityCopy("player-" + user)
-		if entity != nil {
-			save, err := journalCharacterSnapshot(user, characterSnapshotForSave(user, entity))
-			noteCharacterSaveFailure(user, err != nil)
-			if err != nil {
-				failures = append(failures, err)
-			} else {
-				pending[user] = save
+	// Independent account journals may overlap their local fsyncs. Keep the
+	// account work lock, fixed four-worker bound and a full join before ANY
+	// database commit. No final snapshot or durable acknowledgement is skipped.
+	failures := make([]error, len(users))
+	pending := make([]*database.PendingCharacterSave, len(users))
+	jobs := make(chan int, len(users))
+	workers := min(4, len(users))
+	started := time.Now()
+	log.Printf("Final character persistence: phase=journal started accounts=%d workers=%d", len(users), workers)
+	var writers sync.WaitGroup
+	writers.Add(workers)
+	for range workers {
+		go func() {
+			defer writers.Done()
+			for index := range jobs {
+				user := users[index]
+				unlock := lockCharacterWork(user)
+				entity := world.GetEntityCopy("player-" + user)
+				if entity != nil {
+					pending[index], failures[index] = journalCharacterSnapshot(user, characterSnapshotForSave(user, entity))
+					noteCharacterSaveFailure(user, failures[index] != nil)
+				}
+				unlock()
 			}
-		}
-		unlock()
+		}()
 	}
-	if len(failures) > 0 {
-		return errors.Join(failures...)
+	for index := range users {
+		jobs <- index
+	}
+	close(jobs)
+	writers.Wait()
+	prepared, journalFailures := 0, 0
+	for index := range users {
+		if pending[index] != nil {
+			prepared++
+		}
+		if failures[index] != nil {
+			journalFailures++
+		}
+	}
+	log.Printf("Final character persistence: phase=journal completed accounts=%d prepared=%d failed=%d elapsed_ms=%d", len(users), prepared, journalFailures, time.Since(started).Milliseconds())
+	if err := errors.Join(failures...); err != nil {
+		return err
 	}
 	// Every final character is durable now. Stop after the first Mongo failure
 	// rather than repeating its timeout for every user; replay remaining files
 	// at the next startup before opening admission.
-	for _, user := range users {
-		if pending[user] == nil {
+	started = time.Now()
+	log.Printf("Final character persistence: phase=commit started accounts=%d", len(users))
+	attempted, committed := 0, 0
+	for index, user := range users {
+		if pending[index] == nil {
 			continue
 		}
 		unlock := lockCharacterWork(user)
-		err := commitPendingCharacterSave(pending[user])
+		attempted++
+		err := commitPendingCharacterSave(pending[index])
 		noteCharacterSaveFailure(user, err != nil)
 		unlock()
 		if err != nil {
 			log.Printf("Final character saves retained for startup recovery: %v", err)
 			break
 		}
+		committed++
 	}
+	log.Printf("Final character persistence: phase=commit completed attempted=%d committed=%d retained=%t elapsed_ms=%d", attempted, committed, attempted > committed, time.Since(started).Milliseconds())
 	return nil
 }
 

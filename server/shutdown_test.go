@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -128,6 +129,65 @@ func TestShutdownFinalSaveRequiresDurableCopy(t *testing.T) {
 type shutdownJournalOrderCommitter struct {
 	t     *testing.T
 	calls int
+}
+
+type shutdownIndependentJournalCommitter struct{ calls atomic.Int32 }
+
+func (c *shutdownIndependentJournalCommitter) CommitCharacterSave(string, *database.Character, string) error {
+	c.calls.Add(1)
+	return errors.New("fixture database unavailable")
+}
+
+func TestShutdownFinalJournalsMakeIndependentProgressBeforeCommit(t *testing.T) {
+	setupCharacterJournalTest(t)
+	committer := &shutdownIndependentJournalCommitter{}
+	characterSaveCommitter = committer
+	world = game.NewWorld(nil)
+	t.Cleanup(world.StopBackground)
+	for _, user := range []string{"a", "b", "c"} {
+		world.AddEntity(&game.Entity{ID: "player-" + user, Type: game.TypePlayer, SubType: "Wizard", Level: 30, Health: 17, Mana: 0})
+	}
+	// The first sorted account is intentionally occupied. Independent final
+	// snapshots should still become durable, but NO database commit may start.
+	unlock := lockCharacterWork("a")
+	var releaseOnce sync.Once
+	release := func() { releaseOnce.Do(unlock) }
+	defer release()
+	done := make(chan error, 1)
+	go func() { done <- saveFinalCharacters() }()
+	independent := false
+	deadline := time.Now().Add(time.Second)
+	for time.Now().Before(deadline) {
+		pending, err := characterSaveJournal.Read("b")
+		if err != nil {
+			t.Error("independent journal read failed", err)
+			break
+		}
+		if pending != nil {
+			independent = true
+			break
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	if committer.calls.Load() != 0 {
+		t.Error("database commit started while a final snapshot was not durable")
+	}
+	release()
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Error("final journaling failed", err)
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("final journaling did not join after account release")
+	}
+	if !independent {
+		t.Error("occupied first account blocked every independent final journal")
+	}
+	users, err := characterSaveJournal.PendingUsers()
+	if err != nil || len(users) != 3 || committer.calls.Load() != 1 {
+		t.Fatal("final durability barrier or first-database-failure bound changed")
+	}
 }
 
 func (committer *shutdownJournalOrderCommitter) CommitCharacterSave(string, *database.Character, string) error {
