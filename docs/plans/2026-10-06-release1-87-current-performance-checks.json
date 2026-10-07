@@ -2,6 +2,19 @@
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
   "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
+  "october7RejectedProjectionCornerTrial": {
+    "hypothesis": "Additional projection axes could reject directional shadow volumes that cross separate camera intervals but miss a corner. The affected four unit suites passed51 checks in1.619s, but mathematical correctness alone did not establish a useful optimization.",
+    "native": "Root53520 terminal exit1: affected High preview FAIL19.4s solely on original woodland278135 triangles against250000, unchanged from the retained implementation. West242779 versus244827 saves2048 triangles in an already-passing view; outer235898 unchanged. Three paired captures change0/270080 pixels; original frame and draw gates pass. Low and unchanged full100 workloads not repeated.",
+    "decision": "Reject added per-mesh projection-axis complexity because it does not improve the remaining failing view. Restore only the two owned uncommitted controller/test changes via apply_patch. Both files now have empty diff against3c9badcd and controller SHA256 exactly matches the retained2e135 implementation. No unchanged unit/native replay after exact restoration; original250000 budget remains open.",
+    "diagnosis": "One preceding High diagnostic preview passed12.2s with profiling disabled, so it is functional evidence, not performance qualification. Actual woodland draw attribution: authored Fighter128312 triangles including64162 color and64150 shadow; pine46570; grass/ferns41839 color; birch41340; willow17608. No confirmed accidental duplicate body. Inspect existing authored-model quality/detail controls before any further optimization, without silently downgrading High assets or relaxing art requirements.",
+    "evidence": {
+      "nativeDirectory": "/tmp/eidolon-187-shadow-corners-mPFu71/results",
+      "nativeHighTraceSha256": "951824a7787d6f2e11bb40ef7e0d2f7c902d89210633a2ceb9c511a9dbaee0b7",
+      "diagnosticDirectory": "/tmp/eidolon-187-woodland-draws-0AYni3/results",
+      "restoredControllerSha256": "2e299730b821503f4999cb9a46d0cf3ec140df3be632074f583f0a0436e24088"
+    },
+    "limits": "No runtime change retained from this trial, no production/player/provider writes or deployment. Future1.87 remains isolated and unpublished; modern-art, connected-world and remaining High-budget acceptance stay open."
+  },
   "october7FilterAndWindBoundQualification": {
     "runtimeCommit": "2e1351e4b6dc1ec82d8a9979e98982c4f63d5821",
     "filterCommit": "7af5254fda149e50c3692c1a95ca299eecff5424",
