@@ -204,7 +204,9 @@ func TestLoadCohortActual100MixedRaidEventAndSaves(t *testing.T) {
 				}
 				for scenario, count := range map[string]int{"casino-slots": 8, "casino-blackjack": 16, "casino-house": 16, "casino-poker": 8} {
 					pattern := fmt.Sprintf(`Combined casino coverage: scenario=%s clients=%d accepted_wagers=[1-9][0-9]* paid_results=[1-9][0-9]* min_paid_results=[1-9][0-9]* observed_actions=[0-9]+ completed_bonuses=[0-9]+ failed=0`, scenario, count)
-					if !regexp.MustCompile(pattern).MatchString(output) { t.Fatal("casino cohort lacks every-member paid outcomes") }
+					if !regexp.MustCompile(pattern).MatchString(output) {
+						t.Fatal("casino cohort lacks every-member paid outcomes")
+					}
 				}
 			case "raid":
 				if !strings.Contains(output, "Raid coverage: groups=1 converted=true prepared=true ready_members=5 restored=5 min_wave_views=3") || !strings.Contains(output, "Dungeon coverage: groups=1 entered=5 cleared=5 exited=5 cleared_rooms=3 cleared_bosses=1") {
