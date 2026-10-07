@@ -785,6 +785,7 @@
                     <ul class="patch-note-entry__list">
                         <li>Gloamwood ground gains clearer soil and moss layering, warmer fallen leaves and coordinated shallow relief and roughness. Registered fields stay in place across High and Low quality; no additional textures or draw calls, terrain displacement or collision changes.</li>
                         <li>Browser WebSocket admission rejects malformed Origin URLs, invalid ports, blank or duplicate Origin headers. Existing trusted domains and local development ports remain; native clients without an Origin still require normal authentication.</li>
+                        <li>Deployment checks free space on the checkout and actual Docker storage filesystems before cleanup, image builds or service replacement. The default 2 GiB minimum refuses low or unknown storage without automatic deletion; it is not a guarantee of peak build or backup capacity.</li>
                         <li>This is a scoped polish/security patch, not the 1.80 feature freeze. Raised-Earth production delivery, the remaining High woodland performance limit and final modern-art review remain open; the unfinished future terrain/performance branch is not included.</li>
                         <li>No account wipe, schema migration, balance, Gold/EP, equipment, animation, access or alert-setting change. Full prior patch history remains below.</li>
                     </ul>

@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 concrete deployment-storage safety:** Current candidate now checks
+source and actual DockerRootDir free space before cleanup/pinning/build/preflight/
+replacement. Default2048MiB minimum; malformed/unavailable/config-invalid/low
+readings fail closed, no automatic deletion or alert-setting change. New real
+script13-case regression first FAIL0.612s; four affected fixture suites PASS race
+3.333s, separate actual loopback health deadline PASS race6.143s. Fixtures use
+deterministic fake storage rather than host capacity; journal/schema/monitor
+ordering remains. Actual read-only1686256KiB each is below2097152KiB; no real
+deploy/env/service operation. Candidate notes/operator guide updated; owner
+image-cleanup choice remains outstanding. Full goal active, no broad reruns.
+
 **October7 Alpha1.79.1 prepared, not published:** Selectively bring only the
 qualified Earth ground-layer/material test into current1.79 authority, alongside
 the earlier origin tuple/cardinality fix. No wholesale future-branch merge or

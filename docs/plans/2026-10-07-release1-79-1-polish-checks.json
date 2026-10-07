@@ -2,6 +2,13 @@
   "schema": 1,
   "milestone": "Alpha1.79.1 stabilization before feature freeze",
   "status": "scoped-local-candidate-checked-awaiting-storage-and-ci-publication",
+  "storageGuard": {
+    "gap": "Actual deployment built images before checking free space. New13-case executable-script regression failed all13 selected scenarios on the original script0.612s: low/unavailable/malformed storage and invalid floor settings proceeded, and valid cases never measured either filesystem.",
+    "implementation": "Resolve DockerRootDir through the configured Docker daemon and check both its actual filesystem and the checkout using GNU df with deterministic units/locale. Default2048MiB, canonical positive configured decimal1..999999. Failed, malformed, extra-row or unresolvable measurements refuse before source cleanup, previous-image pinning, API/monitor builds, Mongo preflight or service replacement. Retain the existing deploy lock and journal/env cleanup exclusions. No automatic deletion or monitor pressure-budget change; this is minimum headroom, not peak-size certification.",
+    "verification": "Four affected real-script fixture suites PASS race3.333s:13 storage scenarios plus existing schema/recovery, journal and monitor ordering. Existing fixture commands now use deterministic fake storage rather than actual shared-host free space; no assertion or sequencing requirement reduced. Separately affected actual loopback stalled-health test PASS race6.143s with original deadlines/retry assertions, proving new storage fixture does not mask network behavior. Bash syntax and whitespace pass. No unchanged renderer/load/provider tests repeated.",
+    "currentReadOnlyObservation": "Docker daemon reports /var/lib/docker. Actual GNU df for checkout and Docker returns1686256KiB available on each, below default2097152KiB. This is an observation, not a production deployment attempt; no real .env was sourced, build started, old image removed or service restarted.",
+    "remaining": "Owner scoped rollback-image cleanup approval or separately freed adequate space is still needed before publication. Continue original policy/freeze/full-art work without claiming1.80 completion or general deployment-storage sizing."
+  },
   "acceptedBase": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
   "implementation": {
     "origin": "Retain local013c46ae tuple/cardinality correction: one HTTP(S) Origin with no credentials/resource/query/fragment and a valid optional port. Existing allowed host/local-port catalog and absent-Origin native authentication remain unchanged.",

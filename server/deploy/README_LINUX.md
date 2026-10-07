@@ -171,6 +171,18 @@ chmod +x deploy/deploy_linux.sh deploy/restore_mongo_archive.sh deploy/setup_ngi
 ./deploy/deploy_linux.sh
 ```
 
+The prepared1.79.1 deployment checks available space on both the server-checkout
+filesystem and Docker's actual `DockerRootDir`, before source cleanup, image
+tagging/builds, database preparation or service replacement. The default floor
+is2048MiB. `EIDOLON_DEPLOY_MIN_FREE_MIB` accepts a positive decimal1–999999;
+missing or blank uses the default. Unknown storage, failed/malformed readings,
+invalid settings or insufficient space refuse deployment without replacing the
+current services. Paths with spaces are supported. The guard does not delete
+anything, change alert thresholds or prove peak build/backup requirements.
+Check storage and obtain explicit scoped cleanup approval when needed; do not
+lower the floor just to bypass a nearly full disk. Database/image backups and
+other projects remain outside automatic cleanup.
+
 Read-only checks after deployment:
 
 ```bash

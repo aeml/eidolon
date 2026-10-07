@@ -72,6 +72,7 @@ esac
 					t.Fatal(err)
 				}
 			}
+			installDeploymentStorageFixture(t, root)
 			commandsPath := filepath.Join(root, "commands")
 			command := exec.Command("bash", filepath.Join(root, "deploy/deploy_linux.sh"))
 			command.Env = append(os.Environ(), "PATH="+filepath.Join(root, "bin")+":"+os.Getenv("PATH"),

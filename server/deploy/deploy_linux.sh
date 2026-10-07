@@ -63,6 +63,12 @@ if [[ ! "${MONGO_URI}" =~ ^mongodb://([^/@]*@)?mongo:27017(/[^?]*)?(\?.*)?$ ]]; 
   exit 1
 fi
 
+deploy_min_free_mib="${EIDOLON_DEPLOY_MIN_FREE_MIB:-2048}"
+if [[ ! "${deploy_min_free_mib}" =~ ^[1-9][0-9]{0,5}$ ]]; then
+  echo "EIDOLON_DEPLOY_MIN_FREE_MIB must be a positive decimal integer from 1 to 999999." >&2
+  exit 1
+fi
+
 mkdir -p logs
 
 if ! command -v flock >/dev/null 2>&1; then
@@ -72,15 +78,41 @@ fi
 exec 9>logs/deploy.lock
 flock -n 9 || { echo "Another deployment is active; refusing overlap." >&2; exit 1; }
 
+if ! docker info >/dev/null 2>&1; then
+  echo "docker daemon is not reachable for the current user" >&2
+  exit 1
+fi
+
+# Check both actual filesystems before tree cleanup, image tagging/building,
+# database preparation or service replacement. This is a minimum headroom
+# guard, not a prediction of image/backup peak space or automatic cleanup.
+if ! docker_storage_root="$(docker info --format '{{.DockerRootDir}}' 2>/dev/null)" ||
+   [[ "${docker_storage_root}" != /* || ! -d "${docker_storage_root}" ]]; then
+  echo "Cannot resolve the Docker storage filesystem; previous services remain unchanged." >&2
+  exit 1
+fi
+for storage_kind in source docker; do
+  storage_path="${SERVER_DIR}"
+  if [ "${storage_kind}" = docker ]; then storage_path="${docker_storage_root}"; fi
+  if ! storage_report="$(LC_ALL=C df --output=avail --block-size=1024 -- "${storage_path}" 2>/dev/null)"; then
+    echo "Cannot measure ${storage_kind} storage; previous services remain unchanged." >&2
+    exit 1
+  fi
+  available_kib="$(printf '%s\n' "${storage_report}" | awk 'NR == 2 && NF == 1 { value = $1 } END { if (NR == 2) print value }')"
+  if [[ ! "${available_kib}" =~ ^(0|[1-9][0-9]{0,17})$ ]]; then
+    echo "Invalid ${storage_kind} storage measurement; previous services remain unchanged." >&2
+    exit 1
+  fi
+  if (( available_kib < deploy_min_free_mib * 1024 )); then
+    echo "Insufficient ${storage_kind} storage: $((available_kib / 1024)) MiB available; ${deploy_min_free_mib} MiB minimum. No build or service replacement performed." >&2
+    exit 1
+  fi
+done
+
 if [ "${CLEAN_SERVER_TREE:-false}" = "true" ] && git rev-parse --show-toplevel >/dev/null 2>&1; then
   echo "Cleaning untracked files under server/ before build..."
   # Preserve the durable activity/character outboxes even if ignore rules change.
   git -C "${SERVER_DIR}" clean -fd -e logs/ -e .env
-fi
-
-if ! docker info >/dev/null 2>&1; then
-  echo "docker daemon is not reachable for the current user" >&2
-  exit 1
 fi
 
 bash ./deploy/pin_previous_image.sh

@@ -61,6 +61,7 @@ exit 0
 			t.Fatal(err)
 		}
 	}
+	installDeploymentStorageFixture(t, root)
 	ctx, stop := context.WithTimeout(t.Context(), 20*time.Second)
 	defer stop()
 	cmd := exec.CommandContext(ctx, "bash", filepath.Join(root, "deploy/deploy_linux.sh"))

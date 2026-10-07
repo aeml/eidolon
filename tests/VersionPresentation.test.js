@@ -13,7 +13,8 @@ test('1.79.1 records scoped ground polish and browser-origin hardening without c
         'no additional textures or draw calls', 'collision changes', 'malformed Origin',
         'blank or duplicate Origin headers', 'native clients', 'normal authentication',
         'not the 1.80 feature freeze', 'unfinished future', 'No account wipe',
-        'schema migration', 'alert-setting change', 'Full prior patch history']) {
+        'schema migration', 'alert-setting change', 'actual Docker storage', 'default 2 GiB',
+        'without automatic deletion', 'not a guarantee', 'Full prior patch history']) {
         expect(html.slice(start, previous)).toContain(text);
     }
 });
