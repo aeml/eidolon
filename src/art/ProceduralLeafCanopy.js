@@ -3,7 +3,8 @@ import { BufferGeometry, Float32BufferAttribute, Vector3 } from 'three';
 // One cached, opaque mesh per crown: folded leaves supply actual silhouette and
 // shadows without alpha cards, transparent sorting or a draw call per leaf.
 export function createLeafCanopyGeometry(quality = 'high') {
-    const positions = [], colors = [];
+    const positions = [], colors = [], uvs = [];
+    const bladeUV = [[.5, 1], [1, .65], [.875, .275], [.5, 0], [.125, .275], [0, .65]];
     let seed = 7419;
     const random = () => {
         seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
@@ -52,6 +53,7 @@ export function createLeafCanopyGeometry(quality = 'high') {
                 const point = points[index];
                 positions.push(point.x, point.y, point.z);
                 colors.push(shade * .91, shade, shade * .82);
+                uvs.push(...bladeUV[index]);
             }
         }
     }
@@ -59,6 +61,7 @@ export function createLeafCanopyGeometry(quality = 'high') {
     geometry.userData.woodlandCrown = 'leaf';
     geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
     geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
+    geometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
     geometry.computeVertexNormals();
     geometry.computeBoundingBox(); geometry.computeBoundingSphere();
     return geometry;

@@ -5,6 +5,7 @@ import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
+import { applyWoodlandLeafDetail } from './WoodlandLeafMaterial.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -33,6 +34,7 @@ const material = (key, color, options = {}) => {
             side: options.side ?? THREE.FrontSide
         }));
         if (options.surface) applyWorldSurfaceDetail(MATERIALS.get(key), options.surface);
+        if (options.leafDetail) applyWoodlandLeafDetail(MATERIALS.get(key));
     }
     return MATERIALS.get(key);
 };
@@ -94,7 +96,7 @@ function createOssuaryBirch() {
     const p = palette('earth');
     const bark = material('foliage-birch-bark', 0x8d8977, { surface: 'timber', flatShading: false });
     const scar = material('foliage-birch-scar', p.shadow);
-    const leaf = material('foliage-gloam-leaf', 0x465738, { side: THREE.DoubleSide, vertexColors: true });
+    const leaf = material('foliage-gloam-leaf', 0x465738, { side: THREE.DoubleSide, vertexColors: true, leafDetail: true });
     const glow = material('foliage-grave-lantern', p.accent, { emissive: p.accent, emissiveIntensity: 0.72, roughness: 0.5 });
     return matureWoodland([
         part('pale scarred trunk', birchStem, bark, { position: [0, 3.1, 0], rotation: [0, 0, -0.06] }),
@@ -122,7 +124,7 @@ function createGravePine() {
 function createMourningWillow() {
     const p = palette('earth');
     const bark = material('foliage-willow-bark', 0x403a31, { surface: 'timber', flatShading: false });
-    const leaf = material('foliage-willow-leaf', 0x4a593e, { side: THREE.DoubleSide, vertexColors: true });
+    const leaf = material('foliage-willow-leaf', 0x4a593e, { side: THREE.DoubleSide, vertexColors: true, leafDetail: true });
     const glow = material('foliage-willow-votive', p.spirit, { emissive: p.spirit, emissiveIntensity: 0.5 });
     return matureWoodland([
         part('crooked mourning trunk', willowStem, bark, { position: [0.2, 2.5, 0], rotation: [0, 0, -0.16], scale: [0.92, 0.94, 0.92] }),
