@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 corrected publication running / expanded owner inventory:** Corrected
+b5c3981e pushed after fresh3-ahead/0-remote-only review; exact CI37600167508
+independently observed running, Luna terminal-only monitor reused. Existing
+approved monitor actual command still30s/3 failures/2 recoveries/30m reminders.
+Add twelve later-owner rows to the original53 register so F1 also preserves
+full kits, delivered motions/class rules/tooltips, dressed Ilyra, Forge order,
+bulk-sale errors, filtered durable history, latest stash/jump, mail recovery,
+reviewed privacy and approved alerts. Current F3 no longer describes the passed
+100 trial as pending/failed. This is scoped source/receipt reconciliation, not
+freeze or launch approval. In separate staged1.87 e1656286, actual folded leaves
+gain shadow-aware thin-leaf lighting and filtered veins without geometry loss;
+unit/bounded native evidence retained, original raised-world budgets still fail.
+Own1.79 public acceptance remains next; no unchanged long load replay.
+
 **October7 first publication run terminal / corrected promotion next:** Original
 37596856794 now terminal failure; independently inspected all ten job statuses
 and Luna agrees. Only stale seating fixture failed; Server Go/all3 browser
