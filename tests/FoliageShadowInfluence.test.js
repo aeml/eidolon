@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FoliageShadowInfluence, getDirectionalShadowInfluenceBounds, shadowInfluenceIntersectsFrustum } from '../src/core/FoliageShadowInfluence.js';
+import { FoliageShadowInfluence, getDirectionalShadowInfluenceBounds, getShadowFilterWorldPadding, shadowInfluenceIntersectsFrustum } from '../src/core/FoliageShadowInfluence.js';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from '../src/core/ShadowViewCoverage.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
@@ -17,6 +17,37 @@ function fixture() {
     mesh.castShadow = mesh.receiveShadow = true; group.add(mesh);
     return { scene, group, mesh, camera, light, controller: new FoliageShadowInfluence() };
 }
+
+test('filter padding includes complete texel footprint, depth and normal bias without changing the shadow map', () => {
+    const shadow = new THREE.DirectionalLight().shadow;
+    Object.assign(shadow.camera, { left: -100, right: 100, bottom: -200, top: 200, near: 1, far: 1001 });
+    shadow.mapSize.set(1000, 2000); shadow.radius = 4.5; shadow.bias = -.0001; shadow.normalBias = .05;
+    for (const type of [THREE.BasicShadowMap, THREE.PCFShadowMap, THREE.PCFSoftShadowMap]) {
+        expect(getShadowFilterWorldPadding(shadow, type)).toBeCloseTo(Math.hypot(.2, .2) * 5.5 + .1 + .05 + .0001, 10);
+    }
+    expect(shadow.mapSize.toArray()).toEqual([1000, 2000]); expect(shadow.radius).toBe(4.5);
+});
+
+test('clamped hardware and existing smaller render targets increase the retained filter margin', () => {
+    const shadow = new THREE.DirectionalLight().shadow;
+    shadow.mapSize.set(4096, 4096);
+    const requested = getShadowFilterWorldPadding(shadow);
+    const clamped = getShadowFilterWorldPadding(shadow, THREE.PCFSoftShadowMap, 1024);
+    expect(clamped).toBeGreaterThan(requested);
+    shadow.map = { width: 512, height: 512 };
+    expect(getShadowFilterWorldPadding(shadow, THREE.PCFSoftShadowMap, 1024)).toBeGreaterThan(clamped);
+});
+
+test('unknown filters, invalid maps and non-orthographic lights conservatively retain their casters', () => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    expect(getShadowFilterWorldPadding(s.light.shadow, THREE.VSMShadowMap)).toBeNull();
+    s.controller.beginFrame(s.scene, s.camera, s.light, THREE.VSMShadowMap); expect(s.mesh.castShadow).toBe(true);
+    s.light.shadow.mapSize.x = 0;
+    expect(getShadowFilterWorldPadding(s.light.shadow)).toBeNull();
+    s.controller.beginFrame(s.scene, s.camera, s.light); expect(s.mesh.castShadow).toBe(true);
+    s.light.shadow.mapSize.x = 512; s.light.shadow.camera = new THREE.PerspectiveCamera();
+    expect(getShadowFilterWorldPadding(s.light.shadow)).toBeNull();
+});
 
 test.each([new THREE.Vector3(1, 2, 1), new THREE.Vector3(-1, 2, -1)])('swept bounds contain every sampled caster ray, not just its ground footprint', sun => {
     const caster = new THREE.Box3(new THREE.Vector3(-3, 2, -7), new THREE.Vector3(5, 31, 4));

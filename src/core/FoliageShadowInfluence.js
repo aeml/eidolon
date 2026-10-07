@@ -1,5 +1,23 @@
-import { Box3, Frustum, Matrix4, Vector3 } from 'three';
-import { SHADOW_RECEIVER_MIN_HEIGHT, SHADOW_VIEW_PADDING } from './ShadowViewCoverage.js';
+import { BasicShadowMap, Box3, Frustum, Matrix4, PCFShadowMap, PCFSoftShadowMap, Vector3 } from 'three';
+import { SHADOW_RECEIVER_MIN_HEIGHT } from './ShadowViewCoverage.js';
+
+// Bound the actual shader lookup footprint in world units. PCF offsets reach
+// radius texels; PCFSoft reaches two texels and ignores radius. An extra texel
+// includes nearest-sample rounding. Bias offsets add their full world reach.
+// Unknown filters/projections stay unoptimized rather than guessing a margin.
+export function getShadowFilterWorldPadding(shadow, type = PCFSoftShadowMap, maxTextureSize = Infinity) {
+    if (![BasicShadowMap, PCFShadowMap, PCFSoftShadowMap].includes(type) || !shadow?.camera?.isOrthographicCamera) return null;
+    const camera = shadow.camera;
+    const width = Math.min(shadow.mapSize.width, maxTextureSize, shadow.map?.width ?? Infinity);
+    const height = Math.min(shadow.mapSize.height, maxTextureSize, shadow.map?.height ?? Infinity);
+    const spanX = (camera.right - camera.left) / camera.zoom, spanY = (camera.top - camera.bottom) / camera.zoom;
+    const depth = camera.far - camera.near;
+    if (![width, height, spanX, spanY, depth, shadow.radius, shadow.bias, shadow.normalBias].every(Number.isFinite) ||
+        width <= 0 || height <= 0 || spanX <= 0 || spanY <= 0 || depth <= 0) return null;
+    const kernel = Math.max(2, Math.abs(shadow.radius)) + 1;
+    return Math.hypot(spanX / width, spanY / height) * kernel +
+        Math.abs(shadow.bias) * depth + Math.abs(shadow.normalBias) + .0001;
+}
 
 // Bound the complete swept caster volume down to the existing lowest receiver,
 // including shadows on raised ground, roofs and actors along the ray. Merely
@@ -55,17 +73,20 @@ export class FoliageShadowInfluence {
         };
     }
 
-    beginFrame(scene, camera, light) {
+    beginFrame(scene, camera, light, shadowType = PCFSoftShadowMap, maxTextureSize = Infinity) {
         this.endFrame();
         if (!this.enabled || !camera || !light?.target) return;
         light.getWorldPosition(this.sun); light.target.getWorldPosition(this.target);
         this.sun.sub(this.target).normalize();
         if (!Number.isFinite(this.sun.y) || this.sun.y < .1) return;
+        const padding = getShadowFilterWorldPadding(light.shadow, shadowType, maxTextureSize);
+        if (padding === null) return;
         this.projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
         this.frustum.setFromProjectionMatrix(this.projection);
-        // Same conservative allowance as the existing fitted map: retain rays
-        // just beyond the view for PCF filtering, snapping and camera punch.
-        for (const plane of this.frustum.planes) plane.constant += SHADOW_VIEW_PADDING;
+        // This is the actual updated camera, including motion/punch. The fitted
+        // map retains its original12-unit snapping margin; this separate test
+        // needs the complete real filter/bias footprint, not unseen map padding.
+        for (const plane of this.frustum.planes) plane.constant += padding;
         scene.traverseVisible(this.visit);
     }
 
