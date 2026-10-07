@@ -173,6 +173,9 @@ func TestLoadCohortActual100MixedRaidEventAndSaves(t *testing.T) {
 		case run := <-done:
 			remaining--
 			output := string(run.output)
+			for _, evidence := range loadAdmissionDiagnostics(output) {
+				t.Logf("Cohort group=%s %s", run.label, evidence)
+			}
 			for _, line := range strings.Split(output, "\n") {
 				for _, evidence := range encounterLoadDiagnostics(line) {
 					t.Logf("Cohort group=%s %s", run.label, evidence)

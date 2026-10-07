@@ -29,12 +29,14 @@ export const PROCEDURAL_FOLIAGE_RECIPES = Object.freeze([
     // Only Gloamwood retains tree collision because it is the one realm whose
     // authored trees already shaped navigation. New regional dressing stays
     // visual-only so this art migration cannot silently change combat paths.
-    Object.freeze({ id: 'rime_pine', region: 'water', theme: 'moonfrost rime pine', count: 100, bounds: [-950, 950, -2150, -650], scale: [0.88, 1.25], collision: null }),
-    Object.freeze({ id: 'drowned_willow', region: 'water', theme: 'drowned silver willow', count: 80, bounds: [-950, 950, -2150, -650], scale: [0.86, 1.18], collision: null }),
-    Object.freeze({ id: 'ember_snag', region: 'fire', theme: 'ember-lit corpsewood', count: 90, bounds: [-2950, -1050, -550, 950], scale: [0.9, 1.28], collision: null }),
-    Object.freeze({ id: 'basalt_briar', region: 'fire', theme: 'magma-hearted basalt briar', count: 75, bounds: [-2950, -1050, -550, 950], scale: [0.8, 1.18], collision: null }),
-    Object.freeze({ id: 'gale_cypress', region: 'air', theme: 'wind-bent gale cypress', count: 90, bounds: [1050, 2950, -550, 950], scale: [0.9, 1.26], collision: null }),
-    Object.freeze({ id: 'storm_crystal', region: 'air', theme: 'captive storm crystal', count: 75, bounds: [1050, 2950, -550, 950], scale: [0.8, 1.18], collision: null })
+    // Same instances and art; bounded cells prevent a realm-wide sphere from
+    // submitting remote trees in unrelated realm views and shadow passes.
+    Object.freeze({ id: 'rime_pine', region: 'water', theme: 'moonfrost rime pine', count: 100, bounds: [-950, 950, -2150, -650], scale: [0.88, 1.25], collision: null, renderCellSize: 64 }),
+    Object.freeze({ id: 'drowned_willow', region: 'water', theme: 'drowned silver willow', count: 80, bounds: [-950, 950, -2150, -650], scale: [0.86, 1.18], collision: null, renderCellSize: 64 }),
+    Object.freeze({ id: 'ember_snag', region: 'fire', theme: 'ember-lit corpsewood', count: 90, bounds: [-2950, -1050, -550, 950], scale: [0.9, 1.28], collision: null, renderCellSize: 64 }),
+    Object.freeze({ id: 'basalt_briar', region: 'fire', theme: 'magma-hearted basalt briar', count: 75, bounds: [-2950, -1050, -550, 950], scale: [0.8, 1.18], collision: null, renderCellSize: 64 }),
+    Object.freeze({ id: 'gale_cypress', region: 'air', theme: 'wind-bent gale cypress', count: 90, bounds: [1050, 2950, -550, 950], scale: [0.9, 1.26], collision: null, renderCellSize: 64 }),
+    Object.freeze({ id: 'storm_crystal', region: 'air', theme: 'captive storm crystal', count: 75, bounds: [1050, 2950, -550, 950], scale: [0.8, 1.18], collision: null, renderCellSize: 64 })
 ]);
 
 // Mirrors the authoritative permanent hazard anchors. Dressing stays outside

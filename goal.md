@@ -1,5 +1,21 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 current outcome:** Actual source-scheduled63584 cohort FAIL198.34s
+at04:00:24UTC: event admission3/4, no accepted common100/raid/event/independent
+save or headroom outcome. Normal97-character drain succeeds; root consumes
+terminal and removes only revalidated da498caa disposable DB/two volumes,
+confirming absence. Retain hashed evidence. Reuse sanitized closed admission
+cause counts in cohort so a future failure is actionable; focused test passes.
+No retry/limit/workload relaxation or another unchanged expensive run.
+Extend render-only Water/Fire/Air foliage cells, preserving every tree and
+collider. Existing48 geometry/bounds tests and four native browser image/shadow
+comparisons pass. Diagnose initial Fire copied Earth/3 failure using actual
+regional draw hooks: unchanged81959 background, foliage12210→104. Preserve
+original Earth gate and failed artifacts; no whole-world/FPS/art acceptance.
+Owner's ongoing alerts approval already fulfilled by installed1.78 monitor;
+no second test mail, provider setting or production change. Own1.79 remains
+unshipped, later terrain/public rollout and full1.99 goal remain active.
+
 **October7 identified startup failure; alert approval confirmed:** Root consumed
 66380 exit1/actual FAIL180.96s. API started normally, but the build omitted
 main.buildCommit linker metadata, so the unchanged health identity guard

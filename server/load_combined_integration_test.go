@@ -122,11 +122,8 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 	logPhases("after-driver")
 	// The driver already emits fixed startup failure codes. Preserve aggregate
 	// causes without printing bot IDs, credentials or arbitrary socket output.
-	for _, reason := range []string{"admission_busy", "admission_rejected", "admission_timeout", "admission_connection_closed", "invalid_admission_response", "unexpected_admission_response", "admission_write_failed", "prepared_workload_requires_character", "party_requires_prepared_class"} {
-		pattern := regexp.MustCompile(`Bot [0-9]+ startup admission failed \(` + reason + `\)\.`)
-		if total := len(pattern.FindAll(output, -1)); total > 0 {
-			t.Logf("Admission failure coverage: stage=%s count=%d", reason, total)
-		}
+	for _, evidence := range loadAdmissionDiagnostics(string(output)) {
+		t.Log(evidence)
 	}
 	for _, line := range strings.Split(string(output), "\n") {
 		if match := regexp.MustCompile(`(?:Load summary|State coverage|Own state coverage|Admission coverage|Read failure coverage|Recovery coverage|Party coverage|Party incomplete role|Social coverage|Combined casino coverage|Combined casino rejection coverage|Combined casino timeout coverage|Combined casino rejected action coverage|Combined workload): [a-z_0-9= -]+$`).FindString(line); match != "" {

@@ -3,16 +3,19 @@ import { collectBrowserFailures } from './helpers.js';
 
 // Bounded geometry-cost comparison, NOT a shared-host FPS acceptance run.
 // Same placements/materials/camera; only realm-wide versus spatial batch bounds.
-test('production woodland retains its appearance while distant leaf batches are culled', async ({ page, baseURL }, testInfo) => {
+for (const realm of ['earth', 'water', 'fire', 'air']) {
+test(`production ${realm} foliage retains its appearance while distant leaf batches are culled`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto('/repro.html?gallery=1&instances=1', { waitUntil: 'networkidle' });
     await page.waitForFunction(() => window.__eidolonAnimationGallery?.ready);
-    const setup = await page.evaluate(async () => {
+    const setup = await page.evaluate(async realm => {
         const THREE = await import('three');
         const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
         const { getFoliageRenderBatches } = await import('/src/art/FoliageRenderBatches.js');
         const { createProceduralTerrainMaterial } = await import('/src/art/ProceduralRealmTerrain.js');
+        const { PROCEDURAL_FOLIAGE_RECIPES } = await import('/src/data/worldFoliage.js');
+        const { WORLD_REGIONS } = await import('/src/data/worldGeography.js');
         const gallery = window.__eidolonAnimationGalleryController, render = gallery.renderSystem;
         render.staticEnvironmentGroup.visible = false;
         [gallery.actor, gallery.remoteActor, gallery.targetActor].forEach(actor => { actor.mesh.visible = false; });
@@ -22,8 +25,8 @@ test('production woodland retains its appearance while distant leaf batches are 
         const spatial = new THREE.Group(); render.scene.add(spatial);
         const baseline = new THREE.Group();
         let trees = 0, first;
-        for (const id of ['ossuary_birch', 'grave_pine', 'mourning_willow']) {
-            const group = render.scene.getObjectByName(`foliage:earth:${id}`);
+        for (const { id } of PROCEDURAL_FOLIAGE_RECIPES.filter(recipe => recipe.region === realm)) {
+            const group = render.scene.getObjectByName(`foliage:${realm}:${id}`);
             const placements = group.userData.placements;
             spatial.add(group); trees += placements.length; first ??= placements[0];
             for (const part of getFoliageRenderBatches(id, generator.graphicsQuality)) {
@@ -40,18 +43,21 @@ test('production woodland retains its appearance while distant leaf batches are 
         render.scene.getObjectByName('Gloamwood heath and fern beds').visible = false;
         render.scene.add(baseline); spatial.visible = false;
         const focus = new THREE.Vector3(first.x, 2, first.z);
-        render.applyLightingPreset('earth', true); render.setZoom(28);
+        render.applyLightingPreset(realm, true); render.setZoom(28);
         render.updateShadowFocus(focus);
         render.camera.position.copy(focus).add(new THREE.Vector3(75, 95, 115));
         gallery.controls.target.copy(focus); gallery.controls.update();
-        const ground = new THREE.Mesh(new THREE.PlaneGeometry(1998.5, 1598.5), createProceduralTerrainMaterial('earth'));
-        ground.rotation.x = -Math.PI / 2; ground.position.set(0, -.02, 200); ground.receiveShadow = true;
+        const region = WORLD_REGIONS[realm];
+        const ground = new THREE.Mesh(new THREE.PlaneGeometry(region.maxX-region.minX-1.5, region.maxZ-region.minZ-1.5), createProceduralTerrainMaterial(realm));
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.set((region.minX+region.maxX)/2, -.02, (region.minZ+region.maxZ)/2); ground.receiveShadow = true;
         render.scene.add(ground);
         document.querySelectorAll('#repro-hud, #animation-gallery, #perf-overlay').forEach(el => { el.style.display = 'none'; });
         window.__foliageComparison = { baseline, spatial, render };
         return { trees, batches: spatial.children.reduce((n, g) => n + g.children.length, 0), baselineBatches: baseline.children.length };
-    });
-    expect(setup.trees).toBe(391); expect(setup.batches).toBeGreaterThan(setup.baselineBatches);
+    }, realm);
+    expect(setup.trees).toBe({ earth: 391, water: 180, fire: 165, air: 165 }[realm]);
+    expect(setup.batches).toBeGreaterThan(setup.baselineBatches);
     for (const quality of ['high', 'low']) {
         const metrics = {};
         for (const mode of ['baseline', 'spatial']) {
@@ -64,13 +70,47 @@ test('production woodland retains its appearance while distant leaf batches are 
                     const tick = () => { if (--frames) requestAnimationFrame(tick); else resolve(); };
                     requestAnimationFrame(tick);
                 });
-                return { triangles: render.renderer.info.render.triangles, calls: render.renderer.info.render.calls };
+                // Count only the compared realm's actual color/shadow draws
+                // separately from the unchanged background. Fire's background
+                // alone exceeds the old Earth whole-scene /3 comparison.
+                const foliage = { triangles: 0, color: 0, shadow: 0 }, originals = [];
+                (mode === 'baseline' ? baseline : spatial).traverse(mesh => {
+                    if (!mesh.isMesh) return;
+                    const color = mesh.onBeforeRender, shadow = mesh.onBeforeShadow;
+                    const record = (pass, geometry, group) => {
+                        const count = group?.count ?? Math.min(geometry.drawRange.count,
+                            geometry.index?.count ?? geometry.attributes.position.count);
+                        foliage[pass]++;
+                        foliage.triangles += count / 3 * mesh.count;
+                    };
+                    originals.push({ mesh, color, shadow });
+                    mesh.onBeforeRender = function(...args) {
+                        record('color', args[3], args[5]); return color.apply(this, args);
+                    };
+                    mesh.onBeforeShadow = function(...args) {
+                        record('shadow', args[4], args[6]); return shadow.apply(this, args);
+                    };
+                });
+                try {
+                    render.render();
+                    return { triangles: render.renderer.info.render.triangles,
+                        calls: render.renderer.info.render.calls, foliage };
+                } finally {
+                    originals.forEach(({ mesh, color, shadow }) => {
+                        mesh.onBeforeRender = color; mesh.onBeforeShadow = shadow;
+                    });
+                }
             }, { mode, quality });
             await page.screenshot({ path: testInfo.outputPath(`${quality}-${mode}.png`) });
         }
         console.log(`Foliage draw comparison: ${JSON.stringify({ quality, ...setup, ...metrics })}`);
-        expect(metrics.spatial.triangles).toBeLessThan(metrics.baseline.triangles / 3);
         await testInfo.attach(`${quality}-draw-cost`, { body: JSON.stringify({ setup, metrics }), contentType: 'application/json' });
+        // Preserve the established Earth full-frame contract. Other realms
+        // must still reduce the full frame AND the selected foliage by /3;
+        // unchanged background geometry cannot establish or defeat that gain.
+        expect.soft(metrics.spatial.triangles).toBeLessThan(metrics.baseline.triangles / (realm === 'earth' ? 3 : 1));
+        expect.soft(metrics.spatial.foliage.triangles).toBeGreaterThan(0);
+        expect.soft(metrics.spatial.foliage.triangles).toBeLessThan(metrics.baseline.foliage.triangles / 3);
         const appearance = await page.evaluate(async () => {
             const THREE = await import('three');
             const { baseline, spatial, render } = window.__foliageComparison;
@@ -102,3 +142,4 @@ test('production woodland retains its appearance while distant leaf batches are 
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
+}

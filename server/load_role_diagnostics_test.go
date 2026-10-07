@@ -1,9 +1,46 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 )
+
+// Retain fixed startup failure counts from each driver without exposing bot
+// IDs or raw payloads. The cohort formerly lost these causes on early failure.
+func loadAdmissionDiagnostics(output string) []string {
+	var evidence []string
+	for _, reason := range []string{"admission_busy", "admission_rejected", "admission_timeout", "admission_connection_closed", "invalid_admission_response", "unexpected_admission_response", "admission_write_failed", "prepared_workload_requires_character", "party_requires_prepared_class"} {
+		pattern := regexp.MustCompile(`(?m)Bot [0-9]+ startup admission failed \(` + reason + `\)\.$`)
+		if count := len(pattern.FindAllString(output, -1)); count > 0 {
+			evidence = append(evidence, fmt.Sprintf("Admission failure coverage: stage=%s count=%d", reason, count))
+		}
+	}
+	return evidence
+}
+
+func TestLoadAdmissionDiagnosticsOnlyKeepClosedAggregateCauses(t *testing.T) {
+	output := strings.Join([]string{
+		"2026/10/07 04:00:00 Bot 91 startup admission failed (admission_busy).",
+		"2026/10/07 04:00:00 Bot 17 startup admission failed (admission_busy).",
+		"Bot 0 startup admission failed (admission_timeout).",
+		"Bot private-account startup admission failed (admission_busy).",
+		"Bot 2 startup admission failed (private-account).",
+		"Bot 3 startup admission failed (admission_rejected). account=private-account",
+		"raw socket payload private-account",
+	}, "\n")
+	got := loadAdmissionDiagnostics(output)
+	if len(got) != 2 || got[0] != "Admission failure coverage: stage=admission_busy count=2" || got[1] != "Admission failure coverage: stage=admission_timeout count=1" {
+		t.Fatal("closed aggregate admission evidence missing or private text retained", got)
+	}
+	for _, reason := range []string{"admission_rejected", "admission_connection_closed", "invalid_admission_response", "unexpected_admission_response", "admission_write_failed", "prepared_workload_requires_character", "party_requires_prepared_class"} {
+		got := loadAdmissionDiagnostics("Bot 0 startup admission failed (" + reason + ").")
+		if len(got) != 1 || got[0] != "Admission failure coverage: stage="+reason+" count=1" {
+			t.Fatal("known admission cause omitted", reason)
+		}
+	}
+}
 
 // Allow only the fixed diagnostic schema, never an arbitrary class/name suffix.
 var combinedRoleEvidencePattern = regexp.MustCompile(`Party role coverage: class=(?:Fighter|Cleric|Rogue|Wizard) participants=[0-9]+ confirmed=[0-9]+ min_impacts=[0-9]+ damage_events=[0-9]+ heal_events=[0-9]+ accepted_casts=[0-9]+ denied_casts=[0-9]+ unmatched_damage_events=[0-9]+$`)
