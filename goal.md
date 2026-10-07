@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 native event failure / proven regroup repair:** Actual ca64 full100
+FAIL416.14s on event_missing_wave; root consumes76697 exit1. Combined80 party/
+social/all48 paid casino members pass, including all8 poker members with two
+paid hands minimum. Partial original phase sum21.1546ms; failed full outcome is
+not accepted capacity/raid/all100 saves. Logs retained; exact16fbd5a3 fixture/
+two original volumes removed after terminal/identity checks. Two regressions
+FAIL before change prove bots charge the next ward while allies are away.
+Driver-only regroup repair stages outside ward, still defends, requires own
+fresh physically present wave and never borrows credit. Full driver race
+PASS17.863s; normal game rules/clocks/gear/bars/gates unchanged. Qualify changed
+driver before publication;1.79 unpublished/full1.99 active.
+
 **October7 changed native qualification scheduled:** Exact ca64c6d1 normal API,
 current race harness and fresh-offer driver built before measurement. Actual
 supervisor1950639/root76697 confirmed live05:49:40UTC; log schedules setup05:57

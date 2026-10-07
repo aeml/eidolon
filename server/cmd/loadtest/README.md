@@ -35,6 +35,13 @@ against33ms without rounding or assuming identical boundary counts. Exit1
 means missing/invalid evidence or an exceeded budget—even when Go reports PASS.
 It does not rerun gameplay or qualify graphics, CPU percentiles or launch.
 
+The event controller regroups outside the active ward before advancing a wave
+when a member is still recovering or lacks their own current-wave presence.
+Live attackers outside the ward still receive normal defense. Returning to the
+site is not participation credit: the member must receive a fresh physically
+present wave view. Natural clocks, stats, recovery, all-four-wave and completion
+requirements remain unchanged; a missing wave still fails the cohort.
+
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
 `casino-blackjack`, `casino-house`, `casino-poker`, `party-combat`, `party-dungeon`,
 `party-raid`, `party-event` and `combined`. Mixed

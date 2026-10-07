@@ -438,8 +438,8 @@ func TestEventWardRequiresOwnCombatAndDefendsAlone(t *testing.T) {
 	view := eventView(0, 1)
 	view.Remaining = 0
 	p.receive(3, partyMessage("public_event", view), now)
-	if !p.event.wardMove(p, 3, p.members[3].state, now, move) {
-		t.Fatal("cleared ward could not charge while allies returned")
+	if p.event.wardMove(p, 3, p.members[3].state, now, move) {
+		t.Fatal("cleared ward advanced while allies were still returning")
 	}
 	if p.eventCounts().complete != 0 || p.eventCounts().minWaveViews != 1 {
 		t.Fatal("role recovery fabricated later participation/completion")

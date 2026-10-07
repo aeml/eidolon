@@ -173,6 +173,27 @@ func (e *eventLoad) observe(index int, me Entity) {
 	}
 }
 
+// Regroup through ordinary movement before deliberately charging the next wave.
+// A returning member must still receive their own live, physically present view;
+// another member's mask or a later completion never substitutes for that view.
+func (e *eventLoad) waveReady(p *partyLoad, view *game.PublicEventView) bool {
+	if view == nil || view.Phase != "defending" || view.Wave < 1 || view.Wave > 3 || e.id == "" || !p.formed() {
+		return false
+	}
+	for i, member := range e.members {
+		me := p.members[i].state
+		if member.view == nil || member.view.ID != e.id || member.view.Wave != view.Wave ||
+			member.waves&(1<<uint(view.Wave-1)) == 0 || member.recovering ||
+			me.InstanceID != "" || me.Health <= 0 || me.State == "DEAD" ||
+			math.Hypot(me.X-e.site.X, me.Z-e.site.Z) > 65 ||
+			me.MaxHealth > 0 && float64(me.Health)/float64(me.MaxHealth) < .25 ||
+			me.MaxMana > 0 && float64(me.Mana)/float64(me.MaxMana) < .15 {
+			return false
+		}
+	}
+	return true
+}
+
 func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, timeout time.Duration, request func(string, interface{}) error, move func(float64, float64)) bool {
 	m := &e.members[index]
 	if m.exited {
@@ -240,6 +261,16 @@ func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, time
 		move(e.site.X, e.site.Z)
 		return false
 	}
+	view := m.view
+	distance := math.Hypot(me.X-view.RuneX, me.Z-view.RuneZ)
+	if view.Phase == "defending" && !e.waveReady(p, view) &&
+		(view.Remaining == 0 || distance <= view.Radius && distance >= view.InnerRadius) {
+		// Without this, even the tank's ordinary no-target regroup at the site
+		// center charges a cleared ward while an ally is away. Stay close enough
+		// to defend; active enemies outside the ward still get normal combat.
+		move(view.RuneX+view.Radius+6, view.RuneZ)
+		return false
+	}
 	// Keep live members fighting/healing while an ally returns from town.
 	// Each member's own participation/completion gates remain unchanged.
 	return true
@@ -257,7 +288,7 @@ func (e *eventLoad) combatLeader(p *partyLoad, index int) bool {
 
 func (e *eventLoad) wardMove(p *partyLoad, index int, me Entity, now time.Time, move func(float64, float64)) bool {
 	view := e.members[index].view
-	if index != 3 || view == nil || view.Phase != "defending" || e.members[index].complete {
+	if index != 3 || view == nil || view.Phase != "defending" || e.members[index].complete || !e.waveReady(p, view) {
 		return false
 	}
 	if p.members[index].damage+p.members[index].heals == 0 || view.Remaining > 0 && e.combatLeader(p, index) {
