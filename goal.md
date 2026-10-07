@@ -29,6 +29,17 @@ rulesets, default-read Actions token, no PR-review approval and master-only
 Pages environment policy. Record real1.82/F2 policy gap without changing owner
 or other agent workflows. Ask once for1.81 loss/recovery targets and existing
 off-machine destination, not credentials or a new paid service.
+Current turn: previous turn made concrete readiness/schedule/patch-note progress.
+Same63584 polled live. Source review establishes raisedEarth still QA-only;
+old flat-world performance receipts cannot accept it. Add optional existing-route
+120RAF measurements with original budgets: actual2-case FAIL on all six road
+triangle limits (High353101–364280;Low93223–101235), despite16.7ms medians.
+One additional High draw diagnosis PASS15.0s identifies128312 triangles for
+the authoredFighter plus substantial tree shadows; no causal culling claim or
+speculative runtime change. Preserve hashed failures/captures and explicit
+mandatory1.87 public terrain rollout/quality gates. Browser work ends before
+03:57 native measurement; no production/build/fixture change. Full1.99 remains
+active, current1.79 unshipped, and no art/freeze/headroom acceptance inferred.
 
 **October7 same live wait / later deployment-trust evidence:** Previous turn
 confirmed same66380 live: verified wait, not a new run. This turn revalidates

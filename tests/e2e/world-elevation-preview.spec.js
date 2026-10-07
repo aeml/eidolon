@@ -262,6 +262,59 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             return { height: actor.position.y, calls: render.renderer.info.render.calls,
                 triangles: render.renderer.info.render.triangles };
         };
+        // Optional missing raised-terrain evidence, not part of every CI run.
+        // RAF intervals include real renderer work; do not use uncapped draws,
+        // GPU finish, a fake clock or the flat-world performance receipt.
+        window.__profileEarthTerrain = async () => {
+            const frames = [];
+            let previous, calls = 0, triangles = 0;
+            for (let frame = 0; frame < 150; frame++) {
+                const now = await new Promise(resolve => requestAnimationFrame(resolve));
+                render.updateEnvironmentLighting(actor.position, 0);
+                render.render();
+                if (frame >= 30) {
+                    frames.push(now - previous);
+                    calls = Math.max(calls, render.renderer.info.render.calls);
+                    triangles = Math.max(triangles, render.renderer.info.render.triangles);
+                }
+                previous = now;
+            }
+            frames.sort((a, b) => a - b);
+            const gl = render.renderer.getContext(), info = gl.getExtension('WEBGL_debug_renderer_info');
+            return { quality, frames: frames.length, median: frames[Math.floor(frames.length * .5)],
+                p95: frames[Math.floor(frames.length * .95)], calls, triangles,
+                renderer: info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : 'unavailable' };
+        };
+        // Reuse the populated-world draw-hook diagnostic outside timed samples.
+        window.__diagnoseEarthTerrain = () => {
+            const counts = new Map(), originals = [];
+            const boundaries = [render.scene, render.staticEnvironmentGroup, render.entityGroup, scenery];
+            render.scene.traverse(mesh => {
+                if (!mesh.isMesh) return;
+                let root = mesh;
+                while (root.parent && !boundaries.includes(root.parent)) root = root.parent;
+                const name = root.userData.tiledRealmGround ? 'Canonical terrain tiles' : root.name || root.type;
+                if (!counts.has(name)) counts.set(name, { name, color: 0, shadow: 0, triangles: 0 });
+                const entry = counts.get(name), color = mesh.onBeforeRender, shadow = mesh.onBeforeShadow;
+                const record = (pass, geometry, group) => {
+                    entry[pass]++;
+                    const count = group?.count ?? Math.min(geometry.drawRange.count,
+                        geometry.index?.count ?? geometry.attributes.position.count);
+                    const instances = mesh.isInstancedMesh ? mesh.count : geometry.isInstancedBufferGeometry ? geometry.instanceCount : 1;
+                    entry.triangles += count / 3 * instances;
+                };
+                originals.push({ mesh, color, shadow });
+                mesh.onBeforeRender = function(...args) { record('color', args[3], args[5]); return color.apply(this, args); };
+                mesh.onBeforeShadow = function(...args) { record('shadow', args[4], args[6]); return shadow.apply(this, args); };
+            });
+            try {
+                render.render();
+                return [...counts.values()].filter(entry => entry.color + entry.shadow)
+                    .sort((a, b) => b.triangles - a.triangles);
+            } finally {
+                originals.forEach(({ mesh, color, shadow }) => { mesh.onBeforeRender = color; mesh.onBeforeShadow = shadow; });
+            }
+        };
         window.__reviewSurfaceCulling = () => {
             const baseline = new THREE.Mesh(createRealmGroundGeometry(WORLD_REGIONS.earth, .75, field), render.groundEarth.children[0].material);
             baseline.position.copy(render.groundEarth.position); baseline.quaternion.copy(render.groundEarth.quaternion);
@@ -320,6 +373,26 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         await testInfo.attach(`bastion-${name}`, { body: JSON.stringify(view), contentType: 'application/json' });
         console.log(`[bastion ${quality} ${name}] ${JSON.stringify(view)}`);
         await page.screenshot({ path: testInfo.outputPath(`bastion-${name}.png`) });
+        if (process.env.EIDOLON_E2E_RAISED_TERRAIN_DIAGNOSE === '1') {
+            const draws = await page.evaluate(() => window.__diagnoseEarthTerrain());
+            await testInfo.attach(`raised-terrain-${name}-draws`, { body: JSON.stringify(draws), contentType: 'application/json' });
+            console.log(`[raised terrain draws ${quality} ${name}] ${JSON.stringify(draws.slice(0, 10))}`);
+        }
+        if (process.env.EIDOLON_E2E_RAISED_TERRAIN_PROFILE === '1') {
+            const profile = await page.evaluate(() => window.__profileEarthTerrain());
+            await testInfo.attach(`raised-terrain-${name}-profile`, {
+                body: JSON.stringify(profile), contentType: 'application/json'
+            });
+            console.log(`[raised terrain ${quality} ${name}] ${JSON.stringify(profile)}`);
+            expect(profile.frames).toBe(120);
+            expect(profile.renderer).not.toBe('unavailable');
+            expect(profile.renderer).not.toMatch(/SwiftShader|llvmpipe/i);
+            // Retain the original populated-world budgets at both qualities.
+            expect.soft(profile.median, `${name} median`).toBeLessThanOrEqual(quality === 'high' ? 20 : 33.4);
+            expect.soft(profile.p95, `${name} p95`).toBeLessThanOrEqual(quality === 'high' ? 33.4 : 50);
+            expect.soft(profile.calls, `${name} calls`).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);
+            expect.soft(profile.triangles, `${name} triangles`).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
+        }
     }
     const culling = await page.evaluate(() => window.__reviewSurfaceCulling());
     await testInfo.attach('surface-culling-equivalence', { body: JSON.stringify(culling), contentType: 'application/json' });
