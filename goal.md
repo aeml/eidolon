@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 production-CPU native100 PASS212.47s:** Exact unchanged6c API/740
+driver/race harness, no GOMAXPROCS override and fresh disk-backed uncapped-CPU
+Mongo7.0.14, disposable2GiB memory cap. All100 participants' normal independent
+saves and every functional outcome gate pass:1166 damage/29 heals, minimum15
+member impacts, every paid casino/social participant,0transport/recovery errors.
+Completed-phase mean13.18ms update+19.18ms broadcast approximately32.37ms is close
+to33ms, not spare headroom;285ms maximum delivered gap remains. Owned API sample
+mean1.54cores/peak2.45cores/RSS166.5MB, not whole-host/GPU/DB reservations. Logs/
+JSON hashed; exact owned32976 Mongo and its synthetic anonymous volumes removed,
+no matching task processes. Free disk2.62GB remains operationally tight.
+Next fill simultaneous raid/event and browser-rendering scope; no1.79 release yet.
+
 **October7 disk safety / alert approval verification:** Existing running monitor
 has the approved30s/3failure/2recovery/30m Postmark settings, configured recipients,
 persistent opt-in and passing local backend health. No repeat test mail sent.
