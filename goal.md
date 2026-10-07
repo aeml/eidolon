@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 raised-world gates advancing, not complete:** Isolated1.87 now retains
+2e1351e4 real shadow-filter/bias world margin and wind-padded noncasting grass
+AABB culling. Actual native1PASS/1FAIL38.5s: all three Low and two High triangle
+gates pass with six0/270080 pixel comparisons. High woodland278135 still exceeds
+original250000 by28135; no target/geometry/density/quality reduction. Six focused
+unit suites PASS56/7.661s plus final narrow15 frame-cleanup checks PASS0.634s.
+Owned4190 closed, main1.79/1.80 source/production unchanged. Continue measured
+remaining cost and modern art work, not unchanged native/cohort repetition.
+
 **October7 isolated1.87 environment progress:** Future worktree now retains
 7f28d7d8 convex directional foliage-shadow culling, receipt70b746b0. Actual
 High whole-frame submissions drop18.02%/9.33%/21.69% across the three roads;
