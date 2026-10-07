@@ -2,6 +2,40 @@
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
   "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
+  "october7DirectionalShadowInfluence": {
+    "runtimeCommit": "7f28d7d8e9358a02fa4f22ff758a339ec5b87f2d",
+    "sourceSha256": "b4b4d572060c309752c07267d33eb90e4710d92d4e48c8d33ac859e67cd9b777",
+    "change": "Only known static Earth instanced foliage may omit a shadow draw when its entire swept directional shadow volume cannot intersect the actual camera view. Keep off-screen tall casters whose rays reach visible receivers, original minimum receiver-8 and padding12, all geometry/materials/placements/collisions/body detail/shadow-map bounds. Convex plane support tightens empty corners without a distance cap. Other realms, actors, moving/unknown bounds and originally noncasting objects are untouched.",
+    "lifecycle": "Install scene hook before actor batching; Three updates world/camera matrices before the hook and shadow submission after it. Restore all temporarily altered castShadow flags at normal scene completion, production render finally, disposal and next-frame entry. No visibility/input/physics change or retained per-frame caster ownership. Native comparisons can disable only this optimization to render the identical baseline.",
+    "unit": "New suite first failed on missing implementation0.756s. Initial affected four suites PASS43/1.423s including sampled ray containment, incoming off-screen shadows, unchanged geometry/instances, unknown/moving/foreign-region exclusion and throwing-render cleanup. Convex refinement adds separating-plane sampled-ray coverage; final four suites PASS44/1.417s. Scoped ESLint and whitespace pass.",
+    "initialNative": "Root23862 consumed exit1:1PASS/2FAIL48.8s. Earth foliage appearance case passes; original raised High triangle budgets still fail284183/293347/274044; Low west85467 still fails85000. Six paired views report0/270080 changed pixels each. Initial comparison counters used Three autoReset and therefore reported color-only counts, not full-frame cost; fix the diagnostic to retain shadow+color, never treat those equal initial counters as proof of shadow savings. Actual whole-frame profile included shadow and color already.",
+    "finalNative": "Root68894 consumed exit1:1PASS/2FAIL48.6s. Earth foliage appearance case passes; both raised cases fail only original triangle limits. All six120-frame realRAF AMD/Vulkan measurements pass original median/P95/draw limits. All six baseline-versus-optimized paired views have0/270080 changed pixels, now with full shadow+color counters. Existing movement/picking/jump/effects/surface-culling assertions remain intact. Not overall performance or modern-art acceptance.",
+    "highWholeFrames": [
+      {"view": "west-bank", "baselineTriangles": 338165, "triangles": 277223, "baselineCalls": 216, "calls": 166, "medianMs": 16.7, "p95Ms": 16.7},
+      {"view": "woodland-cut", "baselineTriangles": 320761, "triangles": 290827, "baselineCalls": 202, "calls": 185, "medianMs": 16.7, "p95Ms": 16.8},
+      {"view": "outer-fold", "baselineTriangles": 331040, "triangles": 259236, "baselineCalls": 209, "calls": 159, "medianMs": 16.7, "p95Ms": 16.8}
+    ],
+    "lowWholeFrames": [
+      {"view": "west-bank", "triangles": 85467, "calls": 92, "medianMs": 16.7, "p95Ms": 16.7},
+      {"view": "woodland-cut", "triangles": 75013, "calls": 79, "medianMs": 16.7, "p95Ms": 16.7},
+      {"view": "outer-fold", "triangles": 75782, "calls": 83, "medianMs": 16.7, "p95Ms": 16.7}
+    ],
+    "fullRawTargetComparisons": [
+      {"view": "west-bank", "baselineTriangles": 338150, "optimizedTriangles": 277208, "baselineCalls": 201, "optimizedCalls": 151},
+      {"view": "woodland-cut", "baselineTriangles": 320746, "optimizedTriangles": 290812, "baselineCalls": 187, "optimizedCalls": 170},
+      {"view": "outer-fold", "baselineTriangles": 331025, "optimizedTriangles": 259221, "baselineCalls": 194, "optimizedCalls": 144}
+    ],
+    "evidence": {
+      "initialDirectory": "/tmp/eidolon-187-shadow-influence-MnAYkm/results",
+      "initialHighTraceSha256": "a39fe0af1eba503a5960c9b3af1bc20955a619105f63738951ccdb61660b23ed",
+      "initialLowTraceSha256": "a0cc2eb3e3cddd112aa028d12b5e217dfdc43143fe8d644761d4c356f4b5df86",
+      "finalDirectory": "/tmp/eidolon-187-shadow-plane-HJmMQA/results",
+      "finalHighTraceSha256": "28e851b71997c57fc268cc3aa464fcfb6727d6e050415f50fe8e865dd36d3536",
+      "finalLowTraceSha256": "c2b9994fa12c1b9897f5811cea49c28e3f3d22b8e83fad533a1218d0f3235309"
+    },
+    "remaining": "High still exceeds250000 in all three views; Low west exceeds85000 by467. Do not reduce visual quality or original limits to manufacture completion. Preserve this actual roughly9–22percent High submission improvement, not a hardware-wide speedup/quality claim.1.87 remains isolated and unpublished; selective integration into the ordered successor must preserve current accepted1.79/1.80 authority and saves.",
+    "cleanup": "Both native commands terminal/exit1; owned4190 independently closed. No Mongo, public rollout, production/player writes, provider sends or unchanged full100/campaign rerun. Art and shader geometry retained, full roadmap goal active."
+  },
   "october7RejectedIndependentSprayTrial": {
     "hypothesis": "Detailed same-material crowns combine all leaf sprays into a coarse draw. Separating each original spray could avoid submitting hidden leaves without changing density, geometry, transforms, materials or shadows. Two new independent-spray checks initially FAIL0.712s; changed three-suite unit run PASS32/2.15s including original transformed surface parity and High/Low lifecycle. Draw-count structural assertion was temporarily updated for the explicit tradeoff; original native350/200 calls and250000/85000 triangle limits stayed unchanged.",
     "actual": "Root84438 consumed exit1: Earth foliage color/shadow equivalence PASS, two raised-Earth cases fail only original triangle budgets;1PASS/2FAIL50.0s. Six120-frame AMD/Vulkan samples remain median16.7/p9516.7–16.8ms, surface comparison0/270080 changed pixels. High road counts305/271/290 calls and333781/313489/327496 triangles versus prior216/202/209 and338165/320761/331040. Low114/87/93 calls and85887/73753/74758 triangles versus prior92/79/83 and85467/75013/75782. West-bank Low becomes420 triangles worse; no claim of overall performance improvement.",
