@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 render gates passed / own1.79 prepared:**41dbf020 changed-source
+casino trial PASS44.3s: original High25ms/Low20ms medians and50/33.3ms P95
+targets all pass with same40total/20visible/legal14piece crowd. No relaxed
+targets, reduced art or unchanged retry. Current raid gallery PASS36.3s:
+ten equipped heroes/Malachar/four fields; High busy18.4/18.3ms, Low-lighting
+High-body16.7/16.6ms, zero measured>50ms hitches and stable repeat resources.
+Raw JSON reports hashed; root inspected High screenshot. Controlled galleries
+are not human-device/full-world/launch approval.85 affected unit checks and
+364 version checks pass; scoped lint/shell syntax/whitespace pass. Own1.79
+identities/login/cumulative notes and README are prepared; initial stale README
+version failure corrected and retained as failure. Fresh remote remainsc7c2c526.
+No push/deployment yet: shared-host server headroom limitations and roughly2GB
+free disk remain; shared-cache cleanup proposal awaits owner approval. Full
+goal active, production1.78 unchanged, no100 native workload repeated this turn.
+
 **October7 seated matrix follow-up:**0a866c47 actual equipped casino reduces
 visible skeletons to60 per floor, with unchanged562/572 meshes and draw/triangle
 counts. High public23.2/VIP22.7 and Low VIP18.6ms meet median targets; Low public

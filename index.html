@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.78.0</span>
+                    <span class="start-version-row__label">Alpha 1.79.0</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -780,6 +780,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.79.0">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.0 (multiplayer performance and lighter equipped characters)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Enemy targeting and nearby-player lookup reuse bounded live snapshots and a spatial player index. Simulation and replication share coherent current-frame data instead of repeatedly rebuilding player lists or copying character inventories. Player visibility, threat, attack ranges, party credit and authoritative combat rules remain unchanged.</li>
+                        <li>Equipped class models now share identical skeleton data only within one character or one equipment generation. Cached source assets, other players and body/equipment ownership stay independent; joint order and inverse matrices must match exactly. Geometry, textures, morphs, item fit and animations retain their original quality.</li>
+                        <li>Casino floor cutaways skip hidden rig work. Sitting updates only necessary ancestor transforms before publishing the complete pose, avoiding redundant whole-character traversal. Both floors pass the original controlled High/Low frame-time targets with 40 fully equipped authored characters, 20 visible per floor; this is not a promise for every device or network scene.</li>
+                        <li>Representative testing covers 100 simultaneous clients on one server: combat parties, paid casino play, social activity, town, an Earth raid with earned boss-checkpoint returns and repair waves, and a naturally scheduled Root event. All 100 independent save checks pass. Failed experiments remain recorded; shared-host timing, observed stalls and limited headroom mean this is not 100-player capacity certification or launch signoff.</li>
+                        <li>Card-table ordering rejects stale state; blackjack distinguishes a changed round from an invalid stake without retrying a wager. Bounded save/shutdown coverage preserves normal progress and wallet ownership. No account wipe, new schema migration, currency conversion, reward change or beta-access restriction. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.78.0">
                     <h3 class="patch-note-entry__title">Alpha 1.78.0 (service diagnostics and independent outage alerts)</h3>
                     <ul class="patch-note-entry__list">

@@ -3,8 +3,22 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "6c79d56d8025fe51ef7d8c531135c17dc946b2f9",
   "driverCommit": "0ce7c39d",
-  "clientRuntimeCommit": "0a866c47 plus targeted seated ancestor matrix candidate",
-  "status": "integrated100-functional-pass-render-median-targets-failing-release-gates-open",
+  "clientRuntimeCommit": "41dbf020",
+  "status": "integrated100-functional-and-controlled-casino-render-pass-headroom-publication-open",
+  "october7CurrentRaidAndReleasePreparation": {
+    "runtimeSource": "41dbf020; later dirty changes are only own1.79 version/presentation/receipts, not actor runtime or Go gameplay",
+    "raidResult": "Terminal session52906 exit0/PASS36.3s. Ten authored legal fully equipped heroes, Malachar and four overlapping fields,180frames per busy/clear/repeat sample. High busy18.4/18.3ms medians,P9523.1/23.8ms; Low lighting with High bodies16.7/16.6ms,P9518.7/19.8ms. Zero measured>50ms hitches. Same1064/598 draws and2908127/1457406 triangles. Repeated busy geometry/textures stable360/115 High and359/101 Low. Root inspected current High screenshot: authored silhouettes/equipment and fields remain rendered; this controlled gallery is not full-zone, network raid, phone or final art acceptance.",
+    "evidence": {"report": "/tmp/eidolon-179-cohort-native-hK5OIy/raid-skeleton-report.json", "sha256": "bbe70d61ea5ba4341445d2ed0a3ca8715b55d11f74789c791a83790761de38bc"},
+    "identity": "Prepared Alpha1.79.0 package/lock/login/release/backend/Docker/Compose/deployment/workflow/isolated-QA defaults and cumulative player notes. README distinguishes production1.78 acceptance from unpublished1.79 and retains capacity limits.364 version/presentation checks PASS2.304s, scoped lint/shell syntax/whitespace pass. Initial version test failed stale README source identity; corrected, not reported as an initial pass.",
+    "releaseLimits": "No1.79 push/CI/deployment or exact-public acceptance yet. Fresh fetch remainsc7c2c526. Shared-host/overlapping100 phase evidence42.67ms and independent plain10032.37ms close to33ms retain headroom uncertainty. Root disk about2GB available and proposed unused-build-cache cleanup approval unanswered; no broad cache/image/volume cleanup or production mutation."
+  },
+  "october7SeatMatrixResult": {
+    "sourceCommit": "41dbf020",
+    "result": "Terminal session15409 exit0/PASS44.3s. All four original median and P95 targets pass. High public24.2ms/P9529.2ms, VIP23.4ms/P9530.6ms; Low public19.2ms/P9524.1ms, VIP18.2ms/P9522.8ms. Hardware AMD/Vulkan renderer,180 measured frames each, same40total/20visible/legal14piece/realLow/per-frame seated fixture. No timing relaxation, crowd reduction, unchanged retry or native100 replay.",
+    "deterministicWork": "Same60 visible unique skeletons and562/572 visible meshes per floor, unchanged990/1001/873/841 draw counts and3125413/3400069/2621300/2623752 triangles. Seated unit test observes one rather than two whole-rig traversals, retaining current parent compensation and bind matrices. Shared-host idle13.75-17.13%/load22-23 means timing samples are current-gate evidence, not a controlled causal FPS claim or every-device certification.",
+    "evidence": {"report": "/tmp/eidolon-179-cohort-native-hK5OIy/casino-seat-matrix-report.json", "sha256": "f094a790f205172f5dee7eb8e2c54838afaf883b06ba83ea73cd873bac35c119"},
+    "next": "Current-source raid rendering check, synchronized own1.79 identity/cumulative patch notes, final affected checks and safe publication preparation. Disk remains operationally tight and cleanup approval unanswered. Server shared-host/headroom limits remain open; no launch capacity signoff."
+  },
   "october7BodySkeletonResult": {
     "sourceCommit": "0a866c47",
     "result": "Terminal session90825 exit1. Both High samples and Low VIP now meet original median/P95 targets. Low public median20.5ms still exceeds20ms: FAIL retained, no unchanged retry. High public23.2/P9527.9ms, High VIP22.7/P9528.3ms; Low public20.5/P9526.8ms, Low VIP18.6/P9523.4ms. All legal-kit/seated/floor/hardware/180frame checks pass.",
@@ -935,8 +949,8 @@
   },
   "remaining": [
     "Current API6c/driver0ce integrated100 passes actual simultaneous mixed/raid/event/town outcomes,112986ms common interval and all100 independent saved checks. Earlier78d3 and spatial/controller failures remain historical evidence, not current status. Retain600 fresh-own/108000ms/every-member/paid/social/normal5s-save guards; no blind retry or functional-pass-as-smoothness claim.",
-    "Current corrected authored-casino renderer median targets FAIL, and full100 overlapped phase mean42.67ms exceeds intended33ms budget on shared host with a simultaneous browser trial. Finish targeted render work and retain measured server/network/DB/client limitations; no100-player production smoothness/headroom certification. Settlement/reopen and full launch qualification remain separate broader gates.",
-    "Alpha1.78 CI/public/approved running alerts are accepted. Own1.79 version/cumulative notes, current remote integration, CI/deployment and exact public acceptance remain. Remote fetched October7 stillc7c2c526; owner worktree untouched. Full1.99 goal remains active."
+    "Current corrected authored-casino original median/P95 targets now PASS44.3s, and current-source controlled raid rendering PASS36.3s. Full100 overlapped phase mean42.67ms exceeds intended33ms budget on shared host with a simultaneous browser trial; independent plain100 mean32.37ms is close to33ms. Retain measured server/network/DB/client limitations and finish headroom acceptance; no100-player production smoothness certification. Settlement/reopen and full launch qualification remain separate broader gates.",
+    "Alpha1.78 CI/public/approved running alerts are accepted. Own1.79 version/cumulative notes and synchronized defaults are prepared; safe deployment disk space, current remote integration, CI/deployment and exact public acceptance remain. Remote fetched October7 stillc7c2c526; owner worktree untouched. Full1.99 goal remains active."
   ],
   "authorityLimits": "No production account/database/load, provider mail/settings, root/service/DNS changes, erasure, retention change or future milestone deployment. Owner worktree remains untouched."
 }

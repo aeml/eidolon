@@ -420,11 +420,18 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.78.0`, prepared in an isolated worktree and
-  not deployed. Audited service diagnostics, aggregate save/wallet/frame signals
-  and an independent opt-in outage monitor are prepared. Owner-approved settings
-  use existing hosting and admin Postmark recipients; one test email reached its
-  inbox. Monitoring installation and own CI/public acceptance remain required.
+- Current source version: `Alpha 1.79.0`, prepared in an isolated worktree and
+  not deployed. Representative100 simultaneous mixed/raid/event/town coverage
+  and all100 independent saved outcomes pass. Exact actor/equipment skeleton
+  sharing and reduced seated matrix work retain all authored art and pass the
+  original controlled casino High/Low targets with40 fully equipped characters.
+  Shared-host server timing and limited headroom remain recorded limitations,
+  not100-player launch-capacity certification. Own1.79 CI/public acceptance is open.
+  See [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
+  Production1.78 is accepted live atc7c2c526/CI37543824180, with exact public
+  identity/readiness and independent monitor metadata checked. Owner-approved
+  alerts use existing hosting/admin Postmark recipients; the separate test email
+  reached its inbox. No repeat mail or production outage was fabricated.
   See [current operations evidence](docs/plans/2026-10-06-release1-78-current-operations-checks.json).
   Predecessor1.77 is accepted live at4ed7a3dd with CI37507575802 and independently
   checked public identities/readiness and publisher-transformed runtime bytes.
@@ -441,8 +448,8 @@ Notes:
   upgrade checks pass. See [current persistence evidence](docs/plans/2026-10-06-release1-76-current-persistence-checks.json).
   Predecessor1.76 is accepted live at69cc97d9 with CI37406964398 and exact public
   checks, including persistent-character and town recovery/Well Rested QA.
-  Skipped art/full-character scopes are not passes. Own1.78 fresh remote
-  integration, CI/deployment and public acceptance remain. Capacity is not certified.
+  Skipped art/full-character scopes are not passes. These persistence checks are
+  inherited evidence, not capacity certification or whole-campaign acceptance.
   The1.75 private account-help export/removal
   requests, separate reversible staff export approval and nineteen bounded
   current-owner sections with manual proof/Save/paging are included. Coverage
