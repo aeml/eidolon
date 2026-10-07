@@ -11,6 +11,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     const result = await page.evaluate(async quality => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
+        const { getShadowViewBounds } = await import('/src/core/ShadowViewCoverage.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { Actor } = await import('/src/entities/Actor.js');
         const { Projectile } = await import('/src/entities/Projectile.js');
@@ -74,6 +75,10 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         });
         render.setZoom(18); render.setCameraTarget(focus); render.applyLightingPreset('earth', true);
         render.updateEnvironmentLighting(focus, 0); render.render(); render.render();
+        const expectedShadowBounds = getShadowViewBounds(render.camera, render.cameraOffset,
+            render.shadowFollowOffset, render.cameraTarget.clone().sub(render.keyLight.target.position));
+        const shadowAnchorError = Math.max(...Object.keys(expectedShadowBounds).map(
+            edge => Math.abs(expectedShadowBounds[edge] - render.shadowViewBounds[edge])));
         let movementError = 0, jumpError = 0;
         actor.stats.speed = 12;
         actor.move(focus.clone().add(new THREE.Vector3(18, 999, -15)));
@@ -293,6 +298,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             }
         };
         return { treeCount, treeDraws, pathDraws, raisedPathTriangles, groundHeight: focus.y, pickedError: picked.distanceTo(focus),
+            shadowAnchorError,
             attachedDraws, understoryCost, outcropDraws,
             beamDraws, beamParts: beamParts.length,
             impactDraws, impactSurfaceError,
@@ -342,6 +348,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     expect(result.raisedPathTriangles).toBeGreaterThan(0);
     expect(result.raisedPathTriangles).toBeLessThan(15000);
     expect(result.groundHeight).toBeGreaterThan(1);
+    expect(result.shadowAnchorError).toBe(0);
     expect(result.pickedError).toBeLessThan(.0001);
     expect(result.surfaceError).toBeLessThan(.0002);
     expect(result.aimVertexError).toBeLessThan(.00001);

@@ -142,11 +142,15 @@ Existing tests remain valuable for regressions but do not judge visual appeal.
 
 ## Optional authored-model pilot and artist handoff
 
-Owner update: the first Fighter model is not available yet. The owner plans to
-provide one neutral-pose GLB body with source/licensing information, rig and UVs
-when ready. Do not repeat the request or ask for the whole actor catalog now.
-Continue code-owned environment and equipment improvements meanwhile. This
-defers the handoff, not the eventual model-integration or visual-approval checks.
+The original pilot request is historical: four class bodies,252 equipment
+models and four motion banks have since been delivered and integrated in1.58.2.
+See the [source/fit checks](../plans/2026-10-01-authored-equipment-checks.json)
+and [exact accepted public receipt](../plans/2026-10-01-release1-58-2-public.json).
+Do not request an already delivered Fighter pilot or reframe the actor catalog
+as absent. Preserve the supplied assets/provenance and continue code-owned
+environment work, fitted equipment, animation and complete visual review.
+Technical delivery is not final modern-art approval or complete license signoff;
+remaining monster/boss/NPC handoffs require their own explicit evidence.
 
 The user may supply models made in Meshy or another tool. This is an option to
 evaluate, not a claim that an external generator produces game-ready assets or
