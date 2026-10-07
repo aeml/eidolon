@@ -52,6 +52,126 @@ func TestPokerLoadDistinctSeatsAndNoStrandedSinglePlayer(t *testing.T) {
 	}
 }
 
+func freshPokerBettingFixture(t *testing.T, b *casinoLoad, now time.Time) json.RawMessage {
+	t.Helper()
+	var payload map[string]any
+	if err := json.Unmarshal(pokerFixtureView(b, "betting", false, false, nil), &payload); err != nil {
+		t.Fatal(err)
+	}
+	v := payload["poker"].(map[string]any)
+	v["tableId"], v["tableVersion"] = b.table.ID, "1"
+	v["serverNow"], v["dealAt"] = now, now.Add(30*time.Second)
+	encoded, err := json.Marshal(payload)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return encoded
+}
+
+func TestPokerFreshBettingOfferDoesNotWaitForReadRefreshCooldown(t *testing.T) {
+	for _, previousHand := range []bool{false, true} {
+		b := newPokerLoad(0, "player-synthetic-fresh-offer")
+		now := time.Unix(100, 0)
+		if previousHand {
+			b.poker.fundedRound = strings.Repeat("b", 32)
+			b.poker.fundedSession = "synthetic-poker-seat"
+		}
+		b.nextAction = now.Add(3 * time.Second)
+		b.receive(freshPokerBettingFixture(t, b, now))
+		requests := 0
+		request := func(payload map[string]interface{}) error {
+			requests++
+			if payload["action"] != "poker_buy_in" || payload["bet"] != 100 {
+				t.Fatal("fresh ordinary offer replaced by polling or wrong stake")
+			}
+			return nil
+		}
+		me := Entity{InstanceID: game.CasinoInstanceID, Health: 100}
+		b.step(me, now.Add(time.Millisecond), 100, 5*time.Second, request, func(float64, float64) { t.Fatal("seated bot moved") })
+		if requests != 1 || b.pending != "poker_buy_in" || b.counts().wagers != 0 || b.counts().rounds != 0 {
+			t.Fatal("fresh legal betting offer stalled behind artificial read cooldown or earned unobserved credit")
+		}
+		b.receive(freshPokerBettingFixture(t, b, now))
+		b.step(me, now.Add(2*time.Millisecond), 100, 5*time.Second, request, func(float64, float64) { t.Fatal("seated bot moved") })
+		if requests != 1 {
+			t.Fatal("fresh view repeated an uncertain buy-in")
+		}
+	}
+}
+
+func TestPokerImmediateOfferKeepsFreshnessOwnershipAndMoneyFences(t *testing.T) {
+	now := time.Unix(100, 0)
+	for name, change := range map[string]func(*casinoLoad){
+		"pending":          func(b *casinoLoad) { b.pending, b.sentAt = "poker_buy_in", now },
+		"saving":           func(b *casinoLoad) { b.view.Poker.Processing = true },
+		"unavailable":      func(b *casinoLoad) { b.view.Poker.Available = false },
+		"playing":          func(b *casinoLoad) { b.view.Poker.Phase = "playing" },
+		"wrong-currency":   func(b *casinoLoad) { b.view.Poker.Currency = "ep" },
+		"wrong-table":      func(b *casinoLoad) { b.view.Poker.TableID = "other-table" },
+		"missing-version":  func(b *casinoLoad) { b.view.Poker.TableVersion = "" },
+		"invalid-version":  func(b *casinoLoad) { b.view.Poker.TableVersion = "01" },
+		"invalid-round":    func(b *casinoLoad) { b.view.Poker.RoundID = "invalid" },
+		"no-seat":          func(b *casinoLoad) { b.view.YourSeat = nil },
+		"wrong-seat":       func(b *casinoLoad) { b.view.YourSeat.Seat++ },
+		"wrong-seat-table": func(b *casinoLoad) { b.view.YourSeat.TableID = "other-table" },
+		"no-session":       func(b *casinoLoad) { b.view.YourSeat.SessionID = "" },
+		"changed-session": func(b *casinoLoad) {
+			b.poker.fundedRound, b.poker.fundedSession = strings.Repeat("b", 32), "old-session"
+		},
+		"low-balance": func(b *casinoLoad) { b.view.Poker.Balance = 99 },
+		"peer-funded-seat": func(b *casinoLoad) {
+			if err := json.Unmarshal([]byte(`[{"playerId":"player-peer","seat":0,"buyIn":100,"paid":false}]`), &b.view.Poker.Players); err != nil {
+				t.Fatal(err)
+			}
+		},
+		"full-table": func(b *casinoLoad) {
+			if err := json.Unmarshal([]byte(`[{"seat":0},{"seat":1},{"seat":2},{"seat":3},{"seat":4},{"seat":5}]`), &b.view.Poker.Players); err != nil {
+				t.Fatal(err)
+			}
+		},
+		"no-timestamp": func(b *casinoLoad) { b.view.Poker.ServerNow = time.Time{} },
+		"old-view":     func(b *casinoLoad) { b.view.Poker.ServerNow = now.Add(-2 * time.Second) },
+		"future-view":  func(b *casinoLoad) { b.view.Poker.ServerNow = now.Add(time.Millisecond) },
+		"no-deadline":  func(b *casinoLoad) { b.view.Poker.DealAt = time.Time{} },
+		"closing":      func(b *casinoLoad) { b.view.Poker.DealAt = now.Add(2 * time.Second) },
+		"expired":      func(b *casinoLoad) { b.view.Poker.DealAt = now.Add(-time.Second) },
+		"already-funded": func(b *casinoLoad) {
+			// Decode the ordinary advertised own funding instead of inventing
+			// a payout, acknowledgement or private session field.
+			b.receive(pokerFixtureView(b, "betting", true, false, nil))
+			b.view.Poker.TableID, b.view.Poker.TableVersion = b.table.ID, "1"
+			b.view.Poker.ServerNow, b.view.Poker.DealAt = now, now.Add(30*time.Second)
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			b := newPokerLoad(0, "player-synthetic-offer-guards")
+			b.receive(freshPokerBettingFixture(t, b, now))
+			b.nextAction = now.Add(3 * time.Second)
+			change(b)
+			if b.poker.canBuyIn(b, now, 100) {
+				t.Fatal("invalid offer bypassed the read cooldown")
+			}
+			requests := 0
+			b.step(Entity{InstanceID: game.CasinoInstanceID, Health: 100}, now, 100, 5*time.Second,
+				func(map[string]interface{}) error { requests++; return nil },
+				func(float64, float64) { t.Fatal("seated bot moved") })
+			if requests != 0 || b.counts().wagers != 0 || b.counts().rounds != 0 {
+				t.Fatal("invalid immediate offer sent or earned money credit")
+			}
+		})
+	}
+	b := newPokerLoad(0, "player-synthetic-stake-guards")
+	b.receive(freshPokerBettingFixture(t, b, now))
+	if err := json.Unmarshal([]byte(`[{"playerId":"player-peer","seat":1,"buyIn":100,"paid":false}]`), &b.view.Poker.Players); err != nil || !b.poker.canBuyIn(b, now, 100) {
+		t.Fatal("a different legitimately funded seat blocked the current offer")
+	}
+	for _, stake := range []int{-100, 0, 1, 150, game.PokerMaxBuyIn + 100} {
+		if b.poker.canBuyIn(b, now, stake) {
+			t.Fatal("invalid stake bypassed the cooldown")
+		}
+	}
+}
+
 func TestPokerOwnTurnDoesNotWaitForReadRefreshCooldown(t *testing.T) {
 	for _, count := range []int{2, 6} {
 		t.Run(strconv.Itoa(count), func(t *testing.T) {

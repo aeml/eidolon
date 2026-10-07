@@ -11,6 +11,7 @@ type pokerLoadView struct {
 	TableID, TableVersion    string
 	Currency, RoundID, Phase string
 	DealAt                   time.Time `json:"dealAt"`
+	ServerNow                time.Time `json:"serverNow"`
 	Balance                  int
 	Available, Processing    bool
 	Players                  []struct {
@@ -38,6 +39,36 @@ type pokerLoad struct {
 	wagers, rounds, actions                                           uint64
 	lastDecisionRound                                                 string
 	lastDecisionRevision                                              uint64
+}
+
+// A fresh advertised offer is actionable immediately, like a fresh own turn.
+// Only bypass the read-poll cooldown, never uncertain money actions, ownership,
+// stake checks or the existing two-second betting-deadline safety margin.
+// Legacy/missing timestamps keep the ordinary polling behavior.
+func (p *pokerLoad) canBuyIn(b *casinoLoad, now time.Time, buyIn int) bool {
+	v := b.view.Poker
+	if b.pending != "" || v == nil || !v.Available || v.Processing || v.Currency != "gold" ||
+		v.Phase != "betting" || len(v.RoundID) != 32 || v.Round != nil || len(v.Players) >= len(b.table.Seats) ||
+		v.TableID != b.table.ID || b.view.YourSeat == nil ||
+		b.view.YourSeat.TableID != b.table.ID || b.view.YourSeat.Seat != b.seat ||
+		b.view.YourSeat.SessionID == "" || !game.ValidPokerBuyIn(buyIn) || v.Balance < buyIn ||
+		v.ServerNow.IsZero() || v.DealAt.IsZero() || !casinoWagerWindowOpen(v.DealAt, now) {
+		return false
+	}
+	if _, valid := casinoTableVersion(v.TableVersion); !valid {
+		return false
+	}
+	age := now.Sub(v.ServerNow)
+	if age < 0 || age >= 2*time.Second ||
+		p.fundedRound != "" && b.view.YourSeat.SessionID != p.fundedSession {
+		return false
+	}
+	for _, participant := range v.Players {
+		if participant.PlayerID == p.playerID || participant.Seat == b.seat {
+			return false
+		}
+	}
+	return true
 }
 
 // Read polling has a three-second cadence, but a fresh legal own turn should

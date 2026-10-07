@@ -325,6 +325,19 @@ func requirePokerSeat(client *Client, sessionID string) (*game.Entity, error) {
 	return p, nil
 }
 
+// Keep a changed/closed hand distinct from an invalid stake. Both refuse the
+// request without changing admission, transfers or the hand's betting window.
+func pokerBuyInAdmissionError(s *pokerTableState, roundID, currency string, amount int) error {
+	if s.Phase != "betting" || s.RoundID != roundID {
+		return errors.New("poker hand changed; review the table")
+	}
+	if !game.ValidCasinoBet("poker", currency, amount) {
+		minimum, maximum, step := game.CasinoBetLimits("poker", currency)
+		return fmt.Errorf("review the hand and choose %d–%d %s in steps of %d", minimum, maximum, currency, step)
+	}
+	return nil
+}
+
 func handlePokerBuyIn(client *Client, sessionID, roundID string, amount int, now time.Time) error {
 	player, err := requirePokerSeat(client, sessionID)
 	if err != nil {
@@ -345,9 +358,8 @@ func handlePokerBuyIn(client *Client, sessionID, roundID string, amount int, now
 	if err != nil {
 		return err
 	}
-	if s.Phase != "betting" || s.RoundID != roundID || !game.ValidCasinoBet("poker", currency, amount) {
-		minimum, maximum, step := game.CasinoBetLimits("poker", currency)
-		return fmt.Errorf("review the hand and choose %d–%d %s in steps of %d", minimum, maximum, currency, step)
+	if err := pokerBuyInAdmissionError(s, roundID, currency, amount); err != nil {
+		return err
 	}
 	for _, p := range s.Players {
 		if p.PlayerID == client.playerID && p.BuyIn == amount && p.SessionID == sessionID {
