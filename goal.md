@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 event-regroup full qualification queued:** New clean649e driver
+377e234a built/identified; APIca64/harness172802 reused only after verifying no
+server change outside cmd/loadtest. Actual supervisor2190522/root73372 confirmed
+live, schedules06:37 setup/06:40 natural Root. Original full100/33ms/fresh-save
+gates unchanged; Luna terminal-only/root audit+cleanup. No fixture/result yet.
+Current changed-foliage raised-world browser check still FAILS all three High
+triangle budgets and one Low view; two Low views now pass, no budget waived.
+Fresh draw attribution: body128312 and tree shadows dominate, terrain tiles768
+per view. Do not speculate on terrain retessellation or clip/hide shadows/art.
+Public raised terrain/final modern environment quality remain mandatory1.87.
+
 **October7 native event failure / proven regroup repair:** Actual ca64 full100
 FAIL416.14s on event_missing_wave; root consumes76697 exit1. Combined80 party/
 social/all48 paid casino members pass, including all8 poker members with two
