@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 changed-driver native qualification scheduled:** Root57874 owns
+supervisor3240801, independently live by exact argv/log at08:21UTC. Actual
+setup08:37/natural Root08:40; no accelerated clock. Clean c3232dfe driver
+583e19b0 identified/hashed; unchanged8c API and9a race harness reused after
+exact source/hash checks. All original100 workload/outcome/save/5s/33ms gates
+retained. Luna terminal-only watches; root audits terminal result and exact
+fixture cleanup. No fixture, native result or1.79 publication yet.
+
 **October7 current full100 terminal failure / contested-ward controller repair:**
 Actual normal8c/current80a full100 FAIL655.30s, terminal08:08:00UTC; root7320
 consumed exit1. Event expired after two minimum own waves,39/39 completed
