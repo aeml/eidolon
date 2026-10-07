@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 focused guide regression and promise review:** Revalidated same
+native66380/supervisor572460 live, still awaiting natural-window start; previous
+turn corrected an actual stale packaged-notice claim: progress. Current guide
+and server agree Earth30/Water60/Fire70/Air70/Nexus100. Add eight narrow menu
+regressions for family filters, underlevel refusal/no-send, server override and
+qualified legacy band; two affected suites PASS26 tests4.011s. No runtime/3D/
+native-source change or policy expansion. Reconcile stale D06/V01 statements
+against source and accepted1.58.2 delivery; final map/Diablo/PoE-art judgments
+remain open. Ask owner once for code/project-art license preference, without
+granting rights or changing third-party notices. Fresh remote remainsc7c2c526.
+Own1.79/F freeze/full1.99 not accepted; no doc-only push or native restart.
+
 **October7 ordered source-notice preparation during real timer wait:** Previous
 turn produced native PASS/retained frame-budget failure, implemented/measured
 same-cell candidate and launched66380: progress. Revalidated exact572460 live

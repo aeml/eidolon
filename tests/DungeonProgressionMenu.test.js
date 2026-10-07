@@ -214,6 +214,70 @@ describe('dungeon progression menu', () => {
         expect(document.getElementById('dungeon-reward-ladder-box').textContent).toContain('Accept dungeon dailies at the Quest Giver');
     });
 
+    test.each([
+        ['abyssal_well', 60], ['molten_core', 70], ['tempest_spire', 70]
+    ])('fresh %s runs omit bands below the entry floor %s', (dungeonType, minimum) => {
+        const ui = new UIManager(false);
+        const bands = [30, 40, 50, 60, 70, 80, 90, 100];
+        ui.showDungeonMenu({ hasInstance: false, isLeader: true, playerLevel: 100, availableRunLevels: bands });
+        const dungeon = document.getElementById('dungeon-type-select');
+        dungeon.value = dungeonType;
+        dungeon.dispatchEvent(new Event('change'));
+        const levels = document.getElementById('dungeon-run-level-select');
+        expect(Array.from(levels.options, option => Number(option.value))).toEqual(bands.filter(level => level >= minimum));
+        expect(levels.disabled).toBe(false);
+        expect(document.getElementById('btn-enter-dungeon').disabled).toBe(false);
+        document.getElementById('btn-enter-dungeon').click();
+        expect(window.game.socket.send).toHaveBeenCalledWith(JSON.stringify({
+            type: 'enter_dungeon', payload: { dungeonType, difficulty: 'normal', runLevel: minimum }
+        }));
+    });
+
+    test.each([
+        ['abyssal_well', 60], ['molten_core', 70], ['tempest_spire', 70]
+    ])('underlevel %s explains %s instead of offering a lower fresh run', (dungeonType, minimum) => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({ hasInstance: false, isLeader: true, playerLevel: minimum - 1,
+            availableRunLevels: [30, 40, 50, 60, 70, 80, 90, 100] });
+        const dungeon = document.getElementById('dungeon-type-select');
+        dungeon.value = dungeonType;
+        dungeon.dispatchEvent(new Event('change'));
+        const levels = document.getElementById('dungeon-run-level-select');
+        expect(Array.from(levels.options, option => option.value)).toEqual(['']);
+        expect(levels.textContent).toContain(`Unlocks at level ${minimum}`);
+        expect(levels.disabled).toBe(true);
+        const enter = document.getElementById('btn-enter-dungeon');
+        expect(enter.disabled).toBe(true);
+        enter.click();
+        expect(window.game.socket.send).not.toHaveBeenCalled();
+        expect(window.game.network.send).not.toHaveBeenCalled();
+    });
+
+    test('fresh run bands follow a newer server entry floor rather than the rolling default', () => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({ hasInstance: false, isLeader: true, playerLevel: 100,
+            availableRunLevels: [30, 40, 50, 60, 70, 80, 90, 100], dungeonEntryLevels: { molten_core: 80 } });
+        const dungeon = document.getElementById('dungeon-type-select');
+        dungeon.value = 'molten_core';
+        dungeon.dispatchEvent(new Event('change'));
+        expect(Array.from(document.getElementById('dungeon-run-level-select').options, option => option.value))
+            .toEqual(['80', '90', '100']);
+    });
+
+    test('a legacy saved run keeps its original lower band without creating a new low-level run', () => {
+        const ui = new UIManager(false);
+        ui.showDungeonMenu({ hasInstance: true, isLeader: false, playerLevel: 100,
+            activeRun: { instanceId: 'legacy-fire', dungeonType: 'molten_core', difficulty: 'normal', runLevel: 40 } });
+        const levels = document.getElementById('dungeon-run-level-select');
+        expect(Array.from(levels.options, option => option.value)).toEqual(['40']);
+        expect(levels.disabled).toBe(true);
+        expect(document.getElementById('dungeon-type-select').disabled).toBe(true);
+        document.getElementById('btn-enter-dungeon').click();
+        expect(window.game.socket.send).toHaveBeenCalledWith(JSON.stringify({
+            type: 'enter_dungeon', payload: { dungeonType: 'molten_core', difficulty: 'normal', runLevel: 40 }
+        }));
+    });
+
     test('shows the daily dungeon reward ladder for the selected dungeon and difficulty', () => {
         const ui = new UIManager(false);
 
