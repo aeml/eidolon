@@ -8,6 +8,95 @@ import (
 	"time"
 )
 
+func TestCombinedPatrolExploresObservedEnemyBeyondOldRouteWithoutCredit(t *testing.T) {
+	_, parties, err := combinedAssignments(100, combinedFixtureCredentials(100), 400, 600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := parties[0]
+	now := time.Unix(100, 0)
+	for index := range p.members {
+		member := &p.members[index]
+		p.state(index, Entity{ID: member.id, Name: member.username, SubType: partyLoadClasses[index], Type: "Player", X: 400, Z: 600, Health: 100, MaxHealth: 100, Speed: 5, Level: 30}, now)
+		p.receive(index, partyRoster(p, 4), now)
+	}
+	enemy := Entity{ID: "visible-unclaimed", Type: "Enemy", X: 475, Z: 675, Health: 100, State: "IDLE"}
+	for _, point := range p.patrol {
+		if math.Hypot(enemy.X-point[0], enemy.Z-point[1]) <= 30 {
+			t.Fatal("regression enemy must be outside every old patrol acquisition circle")
+		}
+	}
+	writes, moves := 0, 0
+	request := func(string, interface{}) error { writes++; return nil }
+	move := func(x, z float64) {
+		moves++
+		if x != enemy.X || z != enemy.Z || math.Hypot(x-400, z-600) > 120 {
+			t.Fatal("ignored actual visible opportunity or left declared exploration bound")
+		}
+	}
+	view := map[string]Entity{enemy.ID: enemy}
+	p.step(0, p.members[0].state, view, now, time.Second, request, move)
+	if moves != 1 || writes != 0 || p.target.ID != "" || !p.targetClaims.available(1, enemy.ID) {
+		t.Fatal("movement planning acquired/claimed/cast instead of exploring normally")
+	}
+	// The original acquisition step may now find the observed target around
+	// the new anchor, but the actor is still far away: no remote cast/hit.
+	p.step(0, p.members[0].state, view, now.Add(200*time.Millisecond), time.Second, request, move)
+	if moves != 2 || writes != 0 || p.target.ID != enemy.ID || p.counts().damage != 0 || p.counts().minImpacts != 0 {
+		t.Fatal("lookahead invented impact credit or bypassed actual cast/attack range")
+	}
+}
+
+func TestObservedPatrolDestinationRejectsForeignDeadClaimedAndUnboundedActors(t *testing.T) {
+	_, parties, err := combinedAssignments(40, combinedFixtureCredentials(40), 400, 600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := parties[0]
+	me := Entity{X: 400, Z: 600}
+	if !p.targetClaims.claim(1, "claimed") {
+		t.Fatal("fixture target claim missing")
+	}
+	view := map[string]Entity{
+		"legal-b": {ID: "legal-b", Type: "Enemy", X: 472, Z: 696, Health: 100}, // Exactly120 units.
+		"legal-a": {ID: "legal-a", Type: "Enemy", X: 328, Z: 504, Health: 100},
+		"far":     {ID: "far", Type: "Enemy", X: 521, Z: 600, Health: 100},
+		"foreign": {ID: "foreign", Type: "Enemy", X: 401, Z: 600, Health: 100, InstanceID: "another-scene"},
+		"dead":    {ID: "dead", Type: "Enemy", X: 401, Z: 600, Health: 100, State: "DEAD"},
+		"zero":    {ID: "zero", Type: "Enemy", X: 401, Z: 600, Health: 0},
+		"claimed": {ID: "claimed", Type: "Enemy", X: 401, Z: 600, Health: 100},
+		"npc":     {ID: "npc", Type: "NPC", X: 401, Z: 600, Health: 100},
+		"nan":     {ID: "nan", Type: "Enemy", X: math.NaN(), Z: 600, Health: 100},
+		"inf":     {ID: "inf", Type: "Enemy", X: math.Inf(1), Z: 600, Health: 100},
+	}
+	point, found := p.observedPatrolDestination(me, view)
+	if !found || point != [2]float64{328, 504} {
+		t.Fatal("lookahead changed deterministic tie or selected an invalid observation", point, found)
+	}
+	delete(view, "legal-a")
+	delete(view, "legal-b")
+	if _, found := p.observedPatrolDestination(me, view); found {
+		t.Fatal("lookahead selected a dead/foreign/claimed/invalid/out-of-bound actor")
+	}
+	view["legal-a"] = Entity{ID: "legal-a", Type: "Enemy", X: 475, Z: 675, Health: 100}
+	for _, profile := range []string{"dungeon", "raid", "event", "no-patrol"} {
+		p.dungeon, p.raid, p.event = nil, nil, nil
+		switch profile {
+		case "dungeon":
+			p.dungeon = &dungeonLoad{}
+		case "raid":
+			p.raid = &raidLoad{}
+		case "event":
+			p.event = &eventLoad{}
+		case "no-patrol":
+			p.patrol = nil
+		}
+		if _, found := p.observedPatrolDestination(me, view); found {
+			t.Fatal("combined lookahead escaped into another profile", profile)
+		}
+	}
+}
+
 func TestCombinedPartiesExploreBoundedAreaWhenTargetsRunOutWithoutCredit(t *testing.T) {
 	_, parties, err := combinedAssignments(100, combinedFixtureCredentials(100), 400, 600)
 	if err != nil {

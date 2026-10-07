@@ -405,6 +405,12 @@ func main() {
 		var roles [4]partyRoleCounts
 		for index, party := range parties {
 			counts := party.counts()
+			if selectedScenario == "combined" && counts.minImpacts == 0 {
+				for role, evidence := range counts.roles {
+					activity := evidence.activity
+					log.Printf("Party incomplete role: group=%d role=%d min_impacts=%d damage_events=%d heal_events=%d accepted_casts=%d unmatched_damage_events=%d regroup_steps=%d cohort_wait_steps=%d no_target_steps=%d pursuit_steps=%d", index, role, evidence.minImpacts, evidence.damage, evidence.heals, evidence.casts, evidence.unmatchedDamage, activity.regroup, activity.cohortWait, activity.noTarget, activity.pursuit)
+				}
+			}
 			for role := range roles {
 				roles[role].merge(counts.roles[role])
 			}

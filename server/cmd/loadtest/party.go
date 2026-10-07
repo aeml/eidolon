@@ -545,8 +545,11 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 			// Never change a dungeon, raid or event's authoritative route.
 			if p.dungeon == nil && p.raid == nil && p.event == nil && len(p.patrol) > 0 &&
 				math.Hypot(me.X-p.anchorX, me.Z-p.anchorZ) <= 3 {
-				point := p.patrol[p.patrolNext]
-				p.patrolNext = (p.patrolNext + 1) % len(p.patrol)
+				point, found := p.observedPatrolDestination(me, state)
+				if !found {
+					point = p.patrol[p.patrolNext]
+					p.patrolNext = (p.patrolNext + 1) % len(p.patrol)
+				}
 				p.anchorX, p.anchorZ = point[0], point[1]
 			}
 			move(p.anchorX, p.anchorZ)
@@ -590,6 +593,33 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		m.activity.pursuit++
 		move(p.target.X, p.target.Z)
 	}
+}
+
+// Movement planning only for the combined overworld patrol. A live unclaimed
+// enemy outside the old60-unit route can otherwise remain visible but ignored
+// forever. Explore toward such an observation within120 units of the declared
+// camp; this does not acquire a target, cast, teleport, spawn or award credit.
+// The next ordinary step still uses30-unit acquisition around its current
+// anchor, current scene/life, shared claims and all delivered-impact checks.
+func (p *partyLoad) observedPatrolDestination(me Entity, state map[string]Entity) ([2]float64, bool) {
+	if len(p.patrol) == 0 || p.dungeon != nil || p.raid != nil || p.event != nil {
+		return [2]float64{}, false
+	}
+	camp := p.patrol[0]
+	var selected Entity
+	distance := math.MaxFloat64
+	for _, enemy := range state {
+		if enemy.ID == "" || enemy.Type != "Enemy" || enemy.InstanceID != me.InstanceID || enemy.Health <= 0 || enemy.State == "DEAD" ||
+			math.IsNaN(enemy.X) || math.IsNaN(enemy.Z) || math.IsInf(enemy.X, 0) || math.IsInf(enemy.Z, 0) ||
+			math.Hypot(enemy.X-camp[0], enemy.Z-camp[1]) > 120 || !p.targetClaims.available(p.targetGroup, enemy.ID) {
+			continue
+		}
+		candidateDistance := math.Hypot(enemy.X-me.X, enemy.Z-me.Z)
+		if candidateDistance < distance || candidateDistance == distance && enemy.ID < selected.ID {
+			selected, distance = enemy, candidateDistance
+		}
+	}
+	return [2]float64{selected.X, selected.Z}, selected.ID != ""
 }
 
 // Caller holds p.mu. The encounter still waits for every member; a living
