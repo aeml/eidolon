@@ -4,6 +4,11 @@
   "sourceCommit": "c7c2c5260dd0ba806e34d81cdeec305dd2ccb3ae",
   "historicalPreparationSource": "3004c125105082ae6b36192b4268239a6b9b1a7a",
   "status": "accepted-live-exact-source-ci-public-and-independent-monitor-verification",
+  "ownerApprovalReconfirmation": {
+    "verifiedAt": "2026-10-07T05:49:40Z",
+    "result": "Repeated owner approval does not require a duplicate installation or test email. Read-only inspection confirms eidolon-monitor-1 running, unless-stopped, read-only, user65532, journald; exact command enables Postmark with30s probes,3 failures,2 recoveries,30m notice cooldown,5s health timeout and10s mail timeout. Local health reports statusok/database ready/exact accepted c7c2c526 Alpha1.78.0. Existing configured administrator recipients and provider settings remain unchanged; no email or outage induced.",
+    "scope": "Local API/database readiness only, not public frontend/DNS/TLS/off-machine/whole-host outage coverage."
+  },
   "productionInstallation": {
     "publicVerifiedAt": "2026-10-06T23:27:28.332Z",
     "ciRun": 37543824180,

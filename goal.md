@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 changed native qualification scheduled:** Exact ca64c6d1 normal API,
+current race harness and fresh-offer driver built before measurement. Actual
+supervisor1950639/root76697 confirmed live05:49:40UTC; log schedules setup05:57
+and natural Root06:00UTC. Original full100 and33ms gates unchanged. Authorized
+Luna watches terminal only; root owns consumption, acceptance and exact cleanup.
+No current result or1.79 deployment claimed. Reconfirmed already-live approved
+outage monitor/settings without another mail or service change.
+
 **October7 fresh poker offer and safe storage progress:** Candidate abe03a4f
 removes a proven test-client three-second delay only for fresh valid betting
 offers; preserves pending/ownership/deadline/paid gates and never retries a

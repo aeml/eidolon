@@ -5,6 +5,16 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "casino-roster-and-fresh-poker-candidate-qualification-open",
+  "october7RosterPokerNativeDeclaration": {
+    "source": "ca64c6d18f5c30cc746664517c9b599171528aee",
+    "apiSha256": "4034afe0b533dd648f145e9de0f4625e34f061ca354687a22c6689a30111a0b5",
+    "harnessSha256": "172802a7852bfe4e2d24d721932f61db70f144c8e896979f3c75ff8cab470da5",
+    "driverSha256": "fa7ee079a6ceacdf77525a1de3bf9cdf52fce86a73e19a1fb02e130dd6b4bd42",
+    "artifactDirectory": "/dev/shm/eidolon-179-roster-poker-native-iIJyPR",
+    "aggregateLog": "/tmp/eidolon-179-roster-poker-evidence-h2NHu5/run.log",
+    "schedule": "Root exec76697 owns live supervisorPID1950639, actual log started05:46:31UTC; independently inspected exact argv/starttime at05:49:40UTC. Source-calculated setup05:57UTC/natural Root06:00UTC/cycle2400s. Not a completed trial or fixture yet. Existing authorized Luna reused for terminal-only monitoring; root owns original33ms audit, session consumption and exact fixture cleanup.",
+    "guards": "Normal identified API and fresh current race harness/driver built before measurement. Original100=80mixed+5Earthraid+4naturalRoot+11town, common108s/paid-party-social/raid-checkpoint-manual-repair/event/fresh-save gates and original5s deadlines retained. Source/event clock, three exact artifact hashes, unused targets,1GiB fixture disk floor, health/missed-window/SKIP guards. No task builds/browser during measurement; native CPU uncapped. No current acceptance claimed."
+  },
   "october7FreshPokerOfferAndSafeArtifactArchive": {
     "source":"Candidate abe03a4f adds test-driver fresh-offer reaction and normal-server fixed stale-hand feedback after f561 request-local casino roster optimization. No integrated acceptance of these changes yet.",
     "provenDependency":"New TestPokerFreshBettingOfferDoesNotWaitForReadRefreshCooldown actually FAILS0.012s before the change: a fresh valid betting offer is blocked by three-second read polling. Afterward fresh first/next-hand offers act immediately; uncertain buy-in is never repeated, and sending/receiving an unfunded view earns no wager/payout credit. This proves an artificial client delay, not the exact cause of the earlier213.87s failure.",
