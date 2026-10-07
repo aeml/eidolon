@@ -54,20 +54,33 @@ export class FoliageShadowInfluence {
     constructor() {
         this.enabled = true;
         this.omitted = new Set();
+        this.hidden = new Set();
+        this.viewFrustum = new Frustum();
         this.frustum = new Frustum(); this.projection = new Matrix4();
         this.caster = new Box3();
         this.sun = new Vector3(); this.target = new Vector3();
         this.visit = object => {
-            if (!object.isInstancedMesh || !object.castShadow || !object.boundingBox ||
-                !object.parent?.userData.proceduralFoliage || object.parent.userData.region !== 'earth') return;
+            if (!object.isInstancedMesh || !object.boundingBox || object.frustumCulled === false) return;
+            const groundCover = object.parent?.userData.earthUnderstory && !object.castShadow && object.userData.windBoundsIncluded;
+            const shadowCaster = this.shadowActive && object.castShadow && object.parent?.userData.proceduralFoliage &&
+                object.parent.userData.region === 'earth';
+            if (!groundCover && !shadowCaster) return;
             const materials = Array.isArray(object.material) ? object.material : [object.material];
-            // These are known static production trees. Shader-bent understory,
-            // skinning, actors, lights, other realms and unknown bounds stay out.
-            if (materials.some(material => material.userData.woodlandWind)) return;
+            // Static trees exclude shader deformation. Ground cover has its
+            // own explicitly qualified wind-padded bounds; actors stay out.
+            if (shadowCaster && materials.some(material => material.userData.woodlandWind)) return;
+            if (groundCover && (object.children.length || materials.some(material => !material.userData.woodlandWind))) return;
             this.caster.copy(object.boundingBox).applyMatrix4(object.matrixWorld);
             if (this.caster.isEmpty() || ![this.caster.min.x, this.caster.min.y, this.caster.min.z,
                 this.caster.max.x, this.caster.max.y, this.caster.max.z].every(Number.isFinite)) return;
-            if (!shadowInfluenceIntersectsFrustum(this.caster, this.sun, this.frustum)) {
+            if (groundCover) {
+                // Production grass/fern boxes include their complete shader
+                // wind envelope. These never cast shadows; hiding a proven
+                // out-of-view box cannot remove an incoming off-screen shadow.
+                if (!this.viewFrustum.intersectsBox(this.caster)) {
+                    this.hidden.add(object); object.visible = false;
+                }
+            } else if (!shadowInfluenceIntersectsFrustum(this.caster, this.sun, this.frustum)) {
                 this.omitted.add(object); object.castShadow = false;
             }
         };
@@ -75,23 +88,34 @@ export class FoliageShadowInfluence {
 
     beginFrame(scene, camera, light, shadowType = PCFSoftShadowMap, maxTextureSize = Infinity) {
         this.endFrame();
-        if (!this.enabled || !camera || !light?.target) return;
-        light.getWorldPosition(this.sun); light.target.getWorldPosition(this.target);
-        this.sun.sub(this.target).normalize();
-        if (!Number.isFinite(this.sun.y) || this.sun.y < .1) return;
-        const padding = getShadowFilterWorldPadding(light.shadow, shadowType, maxTextureSize);
-        if (padding === null) return;
+        if (!this.enabled || !camera) return;
         this.projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-        this.frustum.setFromProjectionMatrix(this.projection);
+        this.viewFrustum.setFromProjectionMatrix(this.projection);
+        for (const plane of this.viewFrustum.planes) plane.constant += .00001;
+        this.shadowActive = false;
+        let padding = null;
+        if (light?.target) {
+            light.getWorldPosition(this.sun); light.target.getWorldPosition(this.target);
+            this.sun.sub(this.target).normalize();
+            if (Number.isFinite(this.sun.y) && this.sun.y >= .1) {
+                padding = getShadowFilterWorldPadding(light.shadow, shadowType, maxTextureSize);
+            }
+        }
         // This is the actual updated camera, including motion/punch. The fitted
         // map retains its original12-unit snapping margin; this separate test
         // needs the complete real filter/bias footprint, not unseen map padding.
-        for (const plane of this.frustum.planes) plane.constant += padding;
+        if (padding !== null) {
+            this.frustum.copy(this.viewFrustum);
+            for (const plane of this.frustum.planes) plane.constant += padding;
+            this.shadowActive = true;
+        }
         scene.traverseVisible(this.visit);
     }
 
     endFrame() {
         for (const object of this.omitted) object.castShadow = true;
         this.omitted.clear();
+        for (const object of this.hidden) object.visible = true;
+        this.hidden.clear();
     }
 }

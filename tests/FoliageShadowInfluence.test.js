@@ -136,8 +136,12 @@ test('a new frame restores an interrupted frame before considering current visib
     expect(s.controller.omitted.size).toBe(0); s.controller.endFrame();
 });
 
-test('the production render finally restores caster flags even when drawing throws', () => {
+test.each([false, true])('production render finally restores scene flags even when drawing throws (ground cover: %s)', groundCover => {
     const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    if (groundCover) {
+        s.group.userData = { earthUnderstory: true }; s.mesh.castShadow = false;
+        s.mesh.userData.windBoundsIncluded = true; s.mesh.material.userData.woodlandWind = true;
+    }
     const render = Object.create(RenderSystem.prototype);
     render.scene = s.scene; render.camera = s.camera; render.foliageShadowInfluence = s.controller;
     render.renderer = {
@@ -145,6 +149,31 @@ test('the production render finally restores caster flags even when drawing thro
         render() { s.controller.beginFrame(s.scene, s.camera, s.light); throw new Error('fixture-draw-failure'); }
     };
     expect(() => render.render()).toThrow('fixture-draw-failure');
-    expect(s.mesh.castShadow).toBe(true); expect(s.controller.omitted.size).toBe(0);
+    expect(s.mesh.castShadow).toBe(!groundCover); expect(s.mesh.visible).toBe(true);
+    expect(s.controller.omitted.size).toBe(0); expect(s.controller.hidden.size).toBe(0);
     expect(render.renderer.info.autoReset).toBe(true);
+});
+
+test('noncasting ground cover uses complete wind bounds even when shadows are disabled and restores visibility', () => {
+    const s = fixture(); s.group.userData = { earthUnderstory: true };
+    s.mesh.userData.windBoundsIncluded = true; s.mesh.castShadow = false;
+    s.mesh.material.userData.woodlandWind = true;
+    s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, null);
+    expect(s.mesh.visible).toBe(false); expect(s.mesh.castShadow).toBe(false);
+    expect(s.controller.hidden.size).toBe(1);
+    s.controller.endFrame(); expect(s.mesh.visible).toBe(true); expect(s.mesh.castShadow).toBe(false);
+    expect(s.controller.hidden.size).toBe(0);
+    s.mesh.position.set(0, 5, 0); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, null); expect(s.mesh.visible).toBe(true);
+    s.controller.endFrame();
+});
+
+test('unqualified wind bounds and explicitly disabled frustum culling stay untouched', () => {
+    const s = fixture(); s.group.userData = { earthUnderstory: true }; s.mesh.castShadow = false;
+    s.mesh.material.userData.woodlandWind = true; s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, null); expect(s.mesh.visible).toBe(true);
+    s.mesh.userData.windBoundsIncluded = true; s.mesh.frustumCulled = false;
+    s.controller.beginFrame(s.scene, s.camera, null); expect(s.mesh.visible).toBe(true);
+    expect(s.controller.hidden.size).toBe(0); s.controller.endFrame();
 });

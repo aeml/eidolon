@@ -82,6 +82,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
         // Repeated sphere unions drift wider than these compact cells. The
         // aggregate AABB already includes every transformed plant vertex.
         mesh.boundingSphere = mesh.boundingBox.getBoundingSphere(new THREE.Sphere());
+        mesh.userData.windBoundsIncluded = true;
         root.add(mesh);
     }
     return root;

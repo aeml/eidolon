@@ -338,7 +338,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                     const image = new Uint8Array(640 * 422 * 4);
                     render.renderer.readRenderTargetPixels(target, 0, 0, 640, 422, image);
                     pixels.push(image); costs.push({ ...render.renderer.info.render });
-                    if (controller.omitted.size) throw new Error('Shadow flags retained after render');
+                    if (controller.omitted.size || controller.hidden.size) throw new Error('Scenery flags retained after render');
                 }
                 let changed = 0;
                 for (let i = 0; i < pixels[0].length; i += 4) {
