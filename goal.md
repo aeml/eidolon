@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 owner alert approval verified / rejected trial closed:** Existing
+non-root read-only Postmark monitor is running with zero restarts,30s polls,
+3-failure alerts,2-success recovery and30m reminder cooldown. Current local
+API/database readiness is healthy; no duplicate test email, forced outage or
+paid-service change. Coverage remains local API/database, not whole-host/public
+DNS/TLS/frontend. Separate future1.87 extra shadow-projection axes did not
+reduce the remaining woodland278135-versus250000 excess, so reject complexity
+and restore only owned controller/test edits exactly to committed source.
+Preserve original native evidence; no unchanged test replay. Inspect existing
+authored-model detail controls next while retaining all modern-art requirements.
+
 **October7 raised-world gates advancing, not complete:** Isolated1.87 now retains
 2e1351e4 real shadow-filter/bias world margin and wind-padded noncasting grass
 AABB culling. Actual native1PASS/1FAIL38.5s: all three Low and two High triangle
