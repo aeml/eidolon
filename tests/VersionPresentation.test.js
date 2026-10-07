@@ -3,7 +3,20 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.0';
+const currentVersion = '1.79.1';
+
+test('1.79.1 records scoped ground polish and browser-origin hardening without claiming feature freeze', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.1"'), previous = html.indexOf('data-version="1.79.0"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['soil and moss layering', 'warmer fallen leaves', 'High and Low',
+        'no additional textures or draw calls', 'collision changes', 'malformed Origin',
+        'blank or duplicate Origin headers', 'native clients', 'normal authentication',
+        'not the 1.80 feature freeze', 'unfinished future', 'No account wipe',
+        'schema migration', 'alert-setting change', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.0 explains current multiplayer and equipped-render work without claiming launch capacity', () => {
     const html = fs.readFileSync('index.html', 'utf8');

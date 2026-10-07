@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 Alpha1.79.1 prepared, not published:** Selectively bring only the
+qualified Earth ground-layer/material test into current1.79 authority, alongside
+the earlier origin tuple/cardinality fix. No wholesale future-branch merge or
+raised-terrain production switch. Refined current-source High/Low functional
+Chrome checks PASS2/17.7s; current origin-handshake race PASS1.080s. Original
+raised-world budget/modern-art requirements remain open. Login/package/runtime/
+workflow version and new cumulative notes set1.79.1; two initial presentation
+failures corrected in actual README/workflow, affected three checks PASS0.488s.
+Root has only1.6–1.8GiB free and149 API rollback images. Requested scoped unused
+older-image cleanup approval once; nothing deleted/built/pushed. Preserve latest
+five/container-referenced/recovery images plus all data/volumes/backups/caches.
+Fresh fetch had no newer remote work; reconcile again before publication.
+Exact [candidate receipt](docs/plans/2026-10-07-release1-79-1-polish-checks.json).
+Continue real roadmap scope;1.80 freeze and full goal are not complete.
+
 **October7 owner alert approval verified / rejected trial closed:** Existing
 non-root read-only Postmark monitor is running with zero restarts,30s polls,
 3-failure alerts,2-success recovery and30m reminder cooldown. Current local

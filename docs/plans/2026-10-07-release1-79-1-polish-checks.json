@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "milestone": "Alpha1.79.1 stabilization before feature freeze",
+  "status": "scoped-local-candidate-checked-awaiting-storage-and-ci-publication",
+  "acceptedBase": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+  "implementation": {
+    "origin": "Retain local013c46ae tuple/cardinality correction: one HTTP(S) Origin with no credentials/resource/query/fragment and a valid optional port. Existing allowed host/local-port catalog and absent-Origin native authentication remain unchanged.",
+    "art": "Selectively apply only EarthGroundComposition.js and its test from isolateddd1d4221. Exact origin/master comparison demonstrates no older future-branch dependency in these files. Character-scale clods, derivative-filtered soil/moss transitions and warmer registered leaf litter retain the existing texture dimensions, maps, shader pass, lighting, all geometry/collisions and resource lifecycle.",
+    "sourceSha256": "a16b5bd61e3b95b8fe3155dcdb552435522af56dfcf1be9adefcf6154999df33",
+    "preserved": "No import of future raised-terrain startup, shadow optimization, altered authority, dependency upgrade, player save/schema/balance/currency/equipment/animation/access or alert setting. Current1.79 remains the accepted live release until exact new CI/public acceptance."
+  },
+  "verification": {
+    "artDevelopment": "Initial v7 cache plus two new High/Low layer cases fail before implementation. Affected material/ground-cover suites PASS16 checks23.158s. Initial full six-view hardware profile retained frame/draw gates and unchanged geometry but still failed the existing High woodland triangle limit. Initial moss palette was visually too strongly mottled, then refined using numeric palette constants only. Isolated final High/Low functional preview PASS2/18.8s; those future-tree results are not current-release acceptance.",
+    "currentBrowser": "Root67019 consumed exit0: exact current main candidate High/Low raised-surface functional preview PASS2/17.7s on SystemChrome. Actual production scenery construction, shader compilation, movement/jump/picking/aim/effects/grounding and surface-culling comparison remain; both color comparisons0/270080. Actual draw/triangle counts remain prior current-renderer High338165/320761/331040 and Low85875/75013/75782. Performance profiling intentionally disabled in this integration check; passing functional cases does not pass those original raised-profile budgets or deliver raised terrain publicly.",
+    "visualReview": "Current candidate High/Low woodland screenshots inspected: clearer leaf litter, more distinct soil/moss and moderated repeating contrast. Composition, richer foliage/actors and full modern-ARPG art remain incomplete; naked preview actor is not equipped-player approval or actual-phone proof.",
+    "originCurrent": "Current versioned root two actual-handshake suites PASS with race1.080s. Earlier baseline red and1.122s admission/protocol proof remain in1.80 preparation; do not add counts or infer whole-server security certification.",
+    "versions": "Initial full VersionPresentation run FAIL2/PASS363 in2.198s because README and workflow retained old defaults. Correct both real inputs; exact affected three cases PASS0.488s,362 unselected. Login/package/lock/manifest/server/container/deploy/isolated-QA versions are1.79.1; prior notes retained. No unchanged363-case local replay; CI still required.",
+    "hygiene": "Scoped material/presentation lint and git diff --check PASS. Owned browser commands terminal and4190 closed. No production/container/database/provider/configuration mutation, duplicate mail, unchanged100/campaign replay or automatic cleanup."
+  },
+  "evidence": {
+    "directory": "/tmp/eidolon-1791-current-art-b56dVI/results",
+    "highWoodlandImageSha256": "abb89523abd9e8f9f89c0c12e5de537b7f38cf1378b1a30758dcac02e4f7c520",
+    "lowWoodlandImageSha256": "f07a54f05c66ade92c482605c5c4916d3dff94b5c9a6eef7f0830201ef8260cd",
+    "developmentReceipt": "/tmp/eidolon-1-87-current-20261006/docs/plans/2026-10-06-release1-87-current-performance-checks.json"
+  },
+  "publication": {
+    "remoteReview": "Fresh git fetch origin master before preparation remains acceptedb5c3981e with no incoming-only commits. Revalidate/reconcile again before any push because other website work may arrive.",
+    "storage": "Read-only root check about1.6–1.8GiB available on the shared host. Docker catalog has149 Eidolon API rollback tags and151 distinct API images. Owner asked once to approve removing only unused older rollback images while keeping five newest, every container-referenced image and all recovery-tagged images. No image, cache, database, volume or backup has been deleted. No API build or release push yet.",
+    "next": "After adequate storage or explicit scoped cleanup, fresh remote reconciliation and ordinary CI/publish/live acceptance. Reuse authorized Luna for terminal-only CI monitoring, then independently verify exact frontend/backend identities/readiness and changed publisher bytes. Do not claim release acceptance or feature freeze while these remain open."
+  },
+  "remaining": "Full F1–F5 policy/content/dependency reconciliation, staged raised-world/original performance gates, final modern art and later beta/release/human evidence remain under the unchanged full goal. This patch does not complete or skip1.80."
+}

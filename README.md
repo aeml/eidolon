@@ -420,7 +420,9 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.0`, accepted live atb5c3981e after
+- Current source version: `Alpha 1.79.1`, a prepared ground-polish/browser-origin
+  stabilization patch; it is not yet deployed and does not declare1.80 frozen.
+  Latest accepted live release is `Alpha 1.79.0`, atb5c3981e after
   CI37600167508 passed all ten jobs and independent public checks matched both
   identities/readiness, login/notes and eleven runtime files. [Acceptance receipt](docs/plans/2026-10-07-release1-79-public-checks.json)
   preserves skipped QA scopes. Current identified API/driver qualification passed representative

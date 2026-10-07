@@ -110,9 +110,35 @@ test('owns and releases only the two added maps once; leaves ground depth behavi
     // Ordinary soil has relief even when canopy, mineral and meadow masks
     // are zero; keep it distinct from the optional forest/rock contributions.
     expect(shader.fragmentShader).toContain('(earthClod * .022 + earthPore * .006) * (1. - earthRock)');
-    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v7');
+    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v8');
     expect(shader.fragmentShader).not.toContain('earthBroad.a * .085');
     expect(shader.vertexShader).not.toContain('transformed.y +=');
     material.dispose(); material.dispose();
     expect(counts).toEqual([1, 1, 0]); shared.dispose();
+});
+
+test.each(['high', 'low'])('ground layers retain registered relief and filtered material boundaries without another map (%s)', quality => {
+    const material = new THREE.MeshStandardMaterial();
+    applyEarthGroundComposition(material, quality);
+    const shader = { uniforms: {}, vertexShader: '#include <common>\n#include <worldpos_vertex>',
+        fragmentShader: '#include <common>\n#include <map_fragment>\n#include <roughnessmap_fragment>\n#include <normal_fragment_maps>' };
+    material.onBeforeCompile(shader);
+    expect(Object.keys(shader.uniforms).sort()).toEqual(['earthBounds', 'earthComposition', 'earthDetail']);
+    expect(shader.fragmentShader).toContain('earthGrain.r * .72 + earthGrit * .28');
+    expect(shader.fragmentShader).toContain('fwidth(earthMossHeight)');
+    expect(shader.fragmentShader).toContain('earthWear.a * (1. - earthWear.a)');
+    expect(shader.fragmentShader).toContain('earthMossCoverage');
+    expect(shader.fragmentShader).toContain('earthLeafCoverage');
+    // The same coverage owns color, roughness and relief. A painted brighter
+    // leaf must not remain a flat soil normal or borrow a separate random mask.
+    expect(shader.fragmentShader.match(/earthLeafCoverage/g).length).toBeGreaterThanOrEqual(4);
+    expect(shader.fragmentShader).toContain('earthMossCoverage * earthMoss * .012');
+    expect(shader.vertexShader).not.toContain('transformed.y +=');
+    const { mask, detail } = material.userData.earthGroundComposition;
+    expect(mask.image.width).toBe(quality === 'low' ? 256 : 512);
+    expect(detail.image.width).toBe(quality === 'low' ? 128 : 256);
+    expect(material.transparent).toBe(false);
+    expect(material.emissiveIntensity).toBe(1); // Default black emissive, not added light.
+    expect(material.emissive.getHex()).toBe(0);
+    material.dispose();
 });

@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.0</span>
+                    <span class="start-version-row__label">Alpha 1.79.1</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -780,6 +780,15 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.79.1">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.1 (woodland ground polish and stricter browser origins)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Gloamwood ground gains clearer soil and moss layering, warmer fallen leaves and coordinated shallow relief and roughness. Registered fields stay in place across High and Low quality; no additional textures or draw calls, terrain displacement or collision changes.</li>
+                        <li>Browser WebSocket admission rejects malformed Origin URLs, invalid ports, blank or duplicate Origin headers. Existing trusted domains and local development ports remain; native clients without an Origin still require normal authentication.</li>
+                        <li>This is a scoped polish/security patch, not the 1.80 feature freeze. Raised-Earth production delivery, the remaining High woodland performance limit and final modern-art review remain open; the unfinished future terrain/performance branch is not included.</li>
+                        <li>No account wipe, schema migration, balance, Gold/EP, equipment, animation, access or alert-setting change. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.0">
                     <h3 class="patch-note-entry__title">Alpha 1.79.0 (multiplayer performance and lighter equipped characters)</h3>
                     <ul class="patch-note-entry__list">

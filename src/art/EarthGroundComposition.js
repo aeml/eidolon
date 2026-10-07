@@ -172,7 +172,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v7';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v8';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -217,21 +217,32 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // Exposed shoulders retain soil between mineral fragments. A
             // full replacement turned whole hillsides into pale cracked paving.
             earthRock = smoothstep(.14, .8, earthRock) * .72;
-            float earthClod = smoothstep(.25, .69, earthGrit);
+            // Character-scale aggregates survive gameplay minification. The
+            // smaller grit fills their faces rather than owning every clod.
+            float earthClod = smoothstep(.25, .69, earthGrain.r * .72 + earthGrit * .28);
             float earthPore = smoothstep(.22, .65, earthFineGrit);
             float earthMoss = smoothstep(.25, .66, earthGrain.r + (earthGrit - .5) * .24);
-            // Distinct dry clod faces, dark recesses and low moss cushions
-            // replace a uniform muddy tint. World-registered fields keep the
-            // composition stable under camera movement and quality changes.
-            vec3 earthSoil = diffuseColor.rgb * mix(.82, 1.17, earthClod);
+            // Height-sensitive blending exposes dry clod faces between moss
+            // cushions instead of painting a translucent green wash. Restrict
+            // breakup to the transition: zero/one authored coverage stays
+            // zero/one, so worn roads and planted beds keep their meaning.
+            float earthMossHeight = earthWear.a + (earthMoss - earthClod) * .34 *
+                4. * earthWear.a * (1. - earthWear.a);
+            float earthLayerFilter = min(.16, fwidth(earthMossHeight));
+            float earthMossCoverage = smoothstep(.28 - earthLayerFilter, .72 + earthLayerFilter, earthMossHeight);
+            float earthLeafCoverage = earthGrain.g * earthWear.r;
+            // These are linear reflectances, lit by the existing physical
+            // lights/shadows, never emissive colors or baked fake highlights.
+            vec3 earthSoil = mix(diffuseColor.rgb * .88, vec3(.073, .058, .038), earthClod * .65);
             earthSoil *= mix(.92, 1.06, earthPore);
-            vec3 forestBed = diffuseColor.rgb * vec3(.67, .75, .68);
-            vec3 fallenLeaf = diffuseColor.rgb * vec3(1.15, .95, .64) * mix(.7, 1.1, earthScatter);
-            vec3 heathBed = mix(vec3(.035, .058, .028), vec3(.085, .112, .051), earthScatter);
-            heathBed *= mix(.9, 1.1, earthMoss) * mix(.9, 1.08, earthClod);
-            diffuseColor.rgb = mix(earthSoil, heathBed, earthWear.a * (.74 + earthMoss * .12));
-            forestBed = mix(forestBed, fallenLeaf, earthGrain.g * .72);
+            vec3 forestBed = earthSoil * vec3(.53, .55, .46);
+            vec3 fallenLeaf = mix(vec3(.065, .038, .016), vec3(.17, .115, .052), earthScatter);
+            fallenLeaf *= .9 + earthGrain.b * .1;
+            vec3 heathBed = mix(vec3(.036, .06, .025), vec3(.058, .083, .032), earthMoss);
+            heathBed *= mix(.97, 1.03, earthMoss) * mix(.96, 1.04, earthClod);
+            diffuseColor.rgb = mix(earthSoil, heathBed, earthMossCoverage);
             diffuseColor.rgb = mix(diffuseColor.rgb, forestBed, earthWear.r);
+            diffuseColor.rgb = mix(diffuseColor.rgb, fallenLeaf, earthLeafCoverage);
             diffuseColor.rgb = mix(diffuseColor.rgb, fallenLeaf,
                 earthGrain.g * earthWear.a * (1. - earthWear.r) * .22);
             // Cool slate separates exposed stone from warmer soil and heath;
@@ -246,10 +257,11 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             roughnessFactor = mix(roughnessFactor, .81 + earthStone.a * .15, earthRock);
             roughnessFactor = mix(roughnessFactor, .87 + earthPore * .12,
                 (1. - earthWear.r) * (1. - earthRock));
+            roughnessFactor = mix(roughnessFactor, .88 + earthPore * .08, earthLeafCoverage * (1. - earthRock));
         `).replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
             float earthRelief = (earthClod * .022 + earthPore * .006) * (1. - earthRock)
-                + earthMoss * earthWear.a * .012
-                + (earthGrain.g * .018 + earthGrain.b * .01) * earthWear.r
+                + earthMossCoverage * earthMoss * .012
+                + earthLeafCoverage * (.018 + earthGrain.b * .01)
                 + (earthStone.a * .028 + earthBroad.r * .012) * earthRock;
             vec3 earthDx = dFdx(-vViewPosition), earthDy = dFdy(-vViewPosition);
             vec3 earthR1 = cross(earthDy, normal), earthR2 = cross(normal, earthDx);
