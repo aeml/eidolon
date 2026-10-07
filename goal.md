@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 integrated-cohort gap implementation:**775f1868/0ce7c39d add a
+single-API100-account scenario:80 existing mixed roles+5 Earth raiders+4 natural
+Root defenders+11 town. New driver-only first/last own-view evidence requires
+all100 overlapping at least108s, every-client600 fresh updates and ordinary
+functional/saved outcomes; no runtime power/controller/clock changes or reduced
+total cohort. Full driver race17.928s and initial root guards1.072s pass; final
+native build/guard run and exact hashes precede the naturally timed experiment.
+Current API6c reused unchanged. Controlled hardware-browser authored raid profile
+is running separately before API workload, not evidence of100 network renderers.
+The next actual Root announcement is01:20UTC, normal40-minute rotation;
+no event clock acceleration, result or release acceptance claimed.
+
 **October7 production-CPU native100 PASS212.47s:** Exact unchanged6c API/740
 driver/race harness, no GOMAXPROCS override and fresh disk-backed uncapped-CPU
 Mongo7.0.14, disposable2GiB memory cap. All100 participants' normal independent
