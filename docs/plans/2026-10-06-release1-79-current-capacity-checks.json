@@ -1,8 +1,51 @@
 {
   "schema": 1,
   "milestone": "1.79 representative multiplayer capacity",
-  "sourceCommit": "e8dd1bbe63baee41dbffad7de9baef685bfef592",
-  "status": "profiled-target-scan-improvement-verified-locally-native-role-drain-and-headroom-gates-open",
+  "sourceCommit": "e3380c511220994d284ace8ef185d63657741f06",
+  "status": "changed-source-patrol-native100-functional-pass-responsiveness-and-release-gates-open",
+  "october7PatrolNative100": {
+    "sourceCommit": "e3380c511220994d284ace8ef185d63657741f06",
+    "result": "PASS209.36s overall, driver-to-save2m13.156s. Root consumed terminal session98197/exit0. Exact predeclared normal API/driver and separate race harness from october7OrderedRepairs,100 clients/five20-role blocks/120s active. Explicit bounded60-unit patrol/30-unit acquisition controller differs from earlier parked profile; no claim of pure causal before-after comparison.",
+    "guards": "All original5s action/admission/shutdown,600 fresh-own updates/108000ms activity, every paid-member-social outcome and100 independent fresh normal saves remain unchanged. Same legal Uncommon/Rare role gear, initial bankroll and Gold100 wagers. No synthetic combat credit, stat scaling, changed enemy population, privileged movement or relaxed save assertion.",
+    "state": {"connected":100,"joined":100,"stateFrames":282902,"transportReadWriteDecodeErrors":0,"minimumFrames":2733,"minimumOwnUpdates":2733,"minimumActiveMilliseconds":119594,"maximumGapMilliseconds":619,"wireBytes":1869748930,"maximumLoginMilliseconds":285,"maximumJoinMilliseconds":389},
+    "casino": {
+      "slots":{"clients":10,"acceptedWagers":308,"paidResults":308,"minimumPaid":24,"bonuses":9},
+      "blackjack":{"clients":20,"acceptedWagers":59,"paidResults":39,"minimumPaid":1,"actions":31},
+      "house":{"clients":20,"acceptedWagers":60,"paidResults":40,"minimumPaid":2},
+      "poker":{"clients":10,"acceptedWagers":30,"paidResults":20,"minimumPaid":2,"actions":96},
+      "allFailuresRejectionsTimeouts":0
+    },
+    "social": {"clients":20,"complete":20,"failed":0,"ownChat":20,"ownPresence":10,"friends":10,"guild":10,"pvp":10,"leaderboard":10},
+    "parties": {"groups":5,"formed":5,"members":20,"minimumImpacts":2,"damageEvents":387,"healEvents":6,"acceptedCasts":334,"deniedCasts":1,"xpProgressUpdates":380,"observedTargetDeaths":94,"failed":0},
+    "roles": {
+      "Fighter":{"participants":5,"confirmed":5,"minimumImpacts":11,"damage":124,"acceptedCasts":82,"deniedCasts":0,"unmatchedDamage":14,"noTargetSteps":1566,"pursuitSteps":604},
+      "Cleric":{"participants":5,"confirmed":5,"minimumImpacts":2,"damage":16,"heals":6,"acceptedCasts":6,"deniedCasts":0,"unmatchedDamage":0,"noTargetSteps":901,"pursuitSteps":577},
+      "Rogue":{"participants":5,"confirmed":5,"minimumImpacts":20,"damage":143,"acceptedCasts":149,"deniedCasts":1,"unmatchedDamage":20,"noTargetSteps":909,"pursuitSteps":597},
+      "Wizard":{"participants":5,"confirmed":5,"minimumImpacts":13,"damage":104,"acceptedCasts":97,"deniedCasts":0,"unmatchedDamage":11,"noTargetSteps":902,"pursuitSteps":416}
+    },
+    "phaseObservations": {
+      "method": "After-driver minus before-driver completed timing sums/sample counts: realtime update2971 samples and broadcast2970, with broadcast in flight at endpoint. These are elapsed phase means, not CPU/percentiles or paired unique-frame conservation; lifetime maxima may include admission.",
+      "meanUpdateMicros":21425.471,"meanBroadcastMicros":21418.528,"lifetimeUpdateMaxMicros":516048,"lifetimeBroadcastMaxMicros":80228,
+      "remaining": "Approximately42.84ms sequential mean update plus broadcast still exceeds intended33ms frame budget;619ms delivered-state gap remains a stall. Functional PASS does not approve smoothness, production capacity or headroom. Random world, changed patrol footprint and shared host prevent causal attribution."
+    },
+    "ownedProcessObservations": {"samples":131,"failed":0,"elapsedSeconds":130.268228808,"cpuCorePercentMean":141.16258559946505,"cpuCorePercentMax":168.20865526746982,"peakSampledResidentBytes":160886784},
+    "processScope": "One-second observation of only the already-owned normal API child;100 percent denotes one core. Includes admission/disconnect, excludes Mongo/load-driver/renderers/other host services and may miss peaks. GOMAXPROCS2 is not a hard CPU quota or a production resource budget.",
+    "savedAndShutdown": "All100 normal fresh save assertions reached and passed: class/EP/equipped gear/protected bag preserved, each party member has persisted combat progression, every casino client has durable wallet checkpoint and town/social bankroll unchanged. All eight drain phases and Character shutdown drain complete observed within unchanged5s guard. Final journal100/100 prepared,0failed,4workers,424ms; serial commit100attempted/100committed,retainedfalse,620ms. No claim of full final casino settlement/reopen/restart.",
+    "evidence": {"directory":"/tmp/eidolon-compat-session-749455976","serverLogSha256":"abd7a68f2d5973dcdcea4e642431ce1a4cc66d270008d302a6c6a1e680e79e3f","processObservationsSha256":"489af298b54155396a1fccbf8ed1c261f43d1369a3f7cca659398fc7177af76f"},
+    "cleanup": "After terminal PASS, exact containerf485aa5c9d061de25558709c439d8fe71d1db13517c220429305606de6f66d8e/name eidolon-179-patrol-20261007/label eidolon.fixture=patrol-179-20261007/loopback32973 revalidated with tmpfs-only data and0mounts, then only owned synthetic DB removed. Label,port and exact owned artifact process checks empty; evidence/artifacts retained. Production and unrelated soak untouched.",
+    "releaseLimits": "Production remains accepted Alpha1.78/c7c2c526. Own1.79 version/cumulative notes/publication, representative simultaneous raid/event load, dense renderer metrics and performance/headroom acceptance remain open. No unchanged-source retry or new deployment triggered by this receipt."
+  },
+  "october7OrderedRepairs": {
+    "finalJournals": "Runtime e208907f overlaps at most four independent account journals, retains each account work lock, joins every writer before any Mongo commit, and preserves sorted serial commits/stop-after-first-Mongo-failure plus all newest disconnected/reward snapshots. Fixed numeric stage logs distinguish prepared/failed journals and attempted/committed/retained commits without account labels. No skipped fsync/receipt or timeout extension.",
+    "finalJournalProof": "New held-first-account test fails old serial source1.285s, then proves an independent account becomes durable while the first is blocked and NO Mongo commit begins until all join. Existing eight-character all-journals-before-DB, local failure, bound identity, replay and shutdown scopes pass race root2.405s/database2.293s. Final log-field subset passes1.581s. This is scoped correctness/parallel progress, not yet a100-character shutdown-time guarantee.",
+    "fieldWorkloadDiagnosis": "spawnEnemies uses300 random DemonOrcs over the400x1600 Earth strip. Five cohorts acquiring only within the same30-unit anchor can be starved; prior fixed aggregate no-target evidence establishes inactivity, not a particular server hit bug. Existing controllers returned to the identical center forever when no live target remained.",
+    "controllerSource": "e3380c511220994d284ace8ef185d63657741f06",
+    "controllerChange": "Combined cohorts alone now move normally along five predeclared center/cardinal points at most60 units from (400,600), with different starting route indexes. Only a leader with no acquired live target advances after arriving within3 units. Acquisition remains30 units around the current point (overall potential90-unit footprint); existing target claims, every-member impact, pending-cast, consent/cohort/scene and server cast/attack ranges remain. Dungeon/raid/event controllers are explicitly excluded. No spawn, inventory/stat/wallet grant, fabricated credit or relaxed failure gate.",
+    "controllerProof": "New empty-observed-world patrol/finite-bound/no-invented-cast/no-credit check fails old source0.055s, then full cmd/loadtest race package passes17.680s, including distinct live claims, held/pending casts, original party/dungeon/raid/event controllers and casino/social outcome checks. Fixture movement callbacks are not proof of delivered gameplay impacts.",
+    "nextNativeDeclaration": "One fresh changed-source comparison at e3380c51:100 clients/five20-role blocks/120s active, same legal Uncommon/Rare gear, normal100Gold, original5s actions/shutdown,600 fresh-own/108000ms active/every paid-member-social outcome/all100 independent saves. Explicit new controller profile is60-unit patrol with30-unit acquisition, not the prior parked footprint. Normal API/driver separate from race harness, GOMAXPROCS2/one-second owned CPU-RSS, disposable loopback Mongo7.0.14/2CPU/2GiB/512MiB tmpfs. Random source/host/patrol differences prevent pure causal before-after attribution; no unchanged campaign/raid/event/full soak rerun.",
+    "nativeArtifacts": {"directory":"/tmp/eidolon-179-patrol-native-ynWoCw","apiSha256":"1f836bcc8fb99bb1dc26f115217450e55b9af2839e3fce6fad6458ac9dadd22f","driverSha256":"23f4d695703e43dbf1065a4e8191854763c8a0b6573a1b35159978437d47cb60","raceHarnessSha256":"c3744990f50e92b0f686093918f90d4e397cbad1beac50cacad86a7a164230da"},
+    "limits": "Exact fresh normal API/driver and separately race-instrumented native harness successfully compiled at /tmp/eidolon-179-patrol-native-ynWoCw. No next native outcome or own1.79 release/headroom/complete raid-event-renderer capacity claimed. Earlier78d3 artifacts/failed results remain historical evidence, not current binaries. Alpha1.78/c7c2c526 stays production."
+  },
   "profiledTargetRangeShortcut": {
     "runtimeSource": "af99624c",
     "verifiedSource": "e8dd1bbe63baee41dbffad7de9baef685bfef592",

@@ -1,5 +1,32 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 changed-source patrol native100 PASS209.36s:** Exact e3380c51
+normal API/driver plus separate race harness, original100/five-role-block120s
+workload with explicitly declared bounded patrol. Every party member contributes;
+all paid casino/social outcomes and100 independent fresh normal saves pass.
+Final journals100/100 in424ms, serial commits100/100 in620ms; all eight drain
+phases complete under unchanged5s guard. Root consumed terminal98197, preserved
+private log/process hashes, validated then removed only synthetic Mongo32973;
+owned label/port/process checks empty. No production or unrelated soak changes.
+619ms state gap and21.43ms update+21.42ms broadcast still exceed the intended
+33ms sequential budget: functional PASS is not smoothness/headroom certification.
+Shared host/random world/new patrol prevent causal comparison. Alpha1.78 remains
+live; own1.79 release and representative raid/event/renderer capacity gates open.
+
+**October7 bounded1.79 drain/controller repairs:** e208907f journals at most four
+independent accounts, retains per-account work locks and joins ALL local durable
+snapshots before sorted/first-failure-bounded Mongo commits. New blocked-first-
+account regression fails serial source, passes repaired race scope; existing
+shutdown/account-bound journal scopes pass root2.405s/database2.293s, exact log
+subset1.581s. e3380c51 combined bots now use normal bounded60-unit patrol when
+live targets run out, with unchanged30-unit acquisition, every-member outcomes
+and no extra mobs/power/credit; dungeon/raid/event controllers excluded. New
+parked-world regression fails old source; full driver race PASS17.680s. Prepare
+one exact changed-source100-client run, retaining5s actions/shutdown and all
+paid/social/sustained-state/independent-save guards. New patrol footprint is
+declared, not a pure before-after benchmark. Production remains accepted1.78;
+native responsiveness/headroom and own1.79 release acceptance remain open.
+
 **October6 profiled1.79 target-scan improvement:** Current e8dd1bbe preserves
 live target authority while rejecting only out-of-sight/nonpositive-threat
 candidates before irrelevant membership/stealth/safe-zone work. Positive distant
