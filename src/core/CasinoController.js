@@ -452,6 +452,11 @@ export class CasinoController {
                 this.poses.set(entity, pose);
             }
             if (seated && pose) {
+                // Off-floor actors are cut out of scene traversal. Do not undo
+                // that saving by rebuilding their entire authored rig here.
+                // Keep the prior pose for exit cleanup; returning to this
+                // floor reapplies seating after the current animation state.
+                if (!entity.mesh.visible) continue;
                 pose.authored?.apply();
                 for (const { bone } of pose.bones) {
                     if (bone.name === 'Rig_Hips') bone.position.y = 1.12;

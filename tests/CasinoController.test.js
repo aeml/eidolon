@@ -26,6 +26,25 @@ test('authored seating is reapplied after animation and restored on exit or mesh
     expect(controller.poses.size).toBe(0); controller.dispose();
 });
 
+test('hidden authored patrons skip rig work and resume seating or restore on exit', () => {
+    const { engine, controller } = setup();
+    const mesh = new THREE.Group(), pose = { apply: jest.fn(), restore: jest.fn() };
+    mesh.userData.createSeatedPose = () => pose;
+    const actor = { mesh, state: 'SEATED', position: new THREE.Vector3(0, 8, 137) };
+    engine.renderSystem.scene.add(mesh);
+    controller.render([actor]); controller.render([actor]);
+    expect(mesh.visible).toBe(false); expect(pose.apply).not.toHaveBeenCalled();
+    expect(pose.restore).not.toHaveBeenCalled(); expect(controller.poses.has(actor)).toBe(true);
+    controller.floor = 'vip'; controller.render([actor]);
+    expect(mesh.visible).toBe(true); expect(mesh.parent).toBe(engine.renderSystem.scene);
+    expect(pose.apply).toHaveBeenCalledTimes(1);
+    controller.floor = 'public'; controller.render([actor]);
+    expect(pose.apply).toHaveBeenCalledTimes(1);
+    actor.state = 'IDLE'; controller.render([actor]);
+    expect(pose.restore).toHaveBeenCalledTimes(1); expect(controller.poses.has(actor)).toBe(false);
+    controller.dispose(); expect(pose.restore).toHaveBeenCalledTimes(1);
+});
+
 function setup() {
     const camera = new THREE.OrthographicCamera(-15, 15, 15, -15, .1, 500);
     camera.position.set(10, 15, 190);

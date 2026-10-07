@@ -73,7 +73,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         controller.engine.casino = controller;
         controller.updateState({ tables, floor: 'public' });
         render.scene.add(controller.furniture);
-        const models = [];
+        const models = [], seatingVerified = new Set();
         // Keep the review bounded at 40 equipped actors, 20 per floor. Render
         // the full 92-station catalog without inventing 176 network clients.
         const floorModels = { public: 0, vip: 0 };
@@ -94,15 +94,32 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             mesh.position.set(seat.x, seat.y || 0, seat.z);
             mesh.rotation.y = seat.rotation;
             render.scene.add(mesh);
-            models.push({ type, mesh, position: mesh.position, state: 'SEATED', floor: table.floor, gameEngine: controller.engine,
+            models.push({ type, mesh, equipment, position: mesh.position, state: 'SEATED', floor: table.floor, gameEngine: controller.engine,
                 standingThigh: mesh.getObjectByName('thigh_l').quaternion.clone() });
         }
         controller.render(models);
         let auras = [];
-        const updateAuras = { update(dt) { auras.forEach(aura => aura.update(dt)); } };
+        const updateAuras = { update(dt) { auras.forEach(aura => aura.update(dt)); controller.render(models); } };
         gallery.persistentEntities.push(updateAuras);
         window.__casinoCrowd = {
-            view(quality, floor) {
+            async view(quality, floor) {
+                if (models[0].mesh.userData.authoredQuality !== quality) {
+                    // Match new actors loaded with this setting, rather than
+                    // benchmarking High-detail bodies under Low lighting.
+                    controller.render([]); controller.restoreCutawayActors([]);
+                    for (const model of models) {
+                        const old = model.mesh, mesh = await MeshFactory.createMeshForType(model.type, { quality });
+                        if (mesh.userData.authoredQuality !== quality) throw new Error(`Wrong ${model.type} casino detail`);
+                        applyEquipmentVisuals(mesh, model.equipment); await mesh.userData.equipmentReady;
+                        if (mesh.userData.equipmentVisualItemCount !== 14 || mesh.userData.equipmentVisualMissing?.length) throw new Error(`Incomplete ${quality} equipment`);
+                        mesh.position.copy(old.position); mesh.rotation.copy(old.rotation);
+                        old.removeFromParent(); MeshFactory.releaseMesh(model.type, old);
+                        model.mesh = mesh; model.position = mesh.position;
+                        model.standingThigh = mesh.getObjectByName('thigh_l').quaternion.clone();
+                        render.scene.add(mesh);
+                    }
+                    seatingVerified.clear();
+                }
                 render.setGraphicsQuality(quality);
                 const upstairs = floor === 'vip';
                 controller.floor = floor;
@@ -121,13 +138,16 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 render.camera.position.copy(focus).add(new THREE.Vector3(20, 90, 85));
                 gallery.controls.target.copy(focus);
                 gallery.controls.update();
-                return { visible: models.filter(model => model.mesh.visible).length,
-                    auras: auras.filter(aura => aura.group.visible).length,
-                    seated: models.filter(model => {
+                const seated = models.filter(model => {
+                        if (!model.mesh.visible) return false;
                         const pelvis = model.mesh.getObjectByName('pelvis'), thigh = model.mesh.getObjectByName('thigh_l');
                         const height = pelvis.getWorldPosition(new THREE.Vector3()).y - model.mesh.getWorldPosition(new THREE.Vector3()).y;
                         return controller.poses.get(model)?.authored && Math.abs(height - 1.12) < 1e-5 && thigh.quaternion.angleTo(model.standingThigh) > 1;
-                    }).length,
+                    });
+                seated.forEach(model => seatingVerified.add(model));
+                return { visible: models.filter(model => model.mesh.visible).length,
+                    auras: auras.filter(aura => aura.group.visible).length,
+                    seated: seated.length, allSeated: seatingVerified.size,
                     floors: { public: interior.userData.floors.public.visible, vip: interior.userData.floors.vip.visible } };
             },
             dispose() {
@@ -148,7 +168,8 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
     try {
         for (const quality of ['high', 'low']) for (const floor of ['public', 'vip']) {
             const view = await page.evaluate(({ quality, floor }) => window.__casinoCrowd.view(quality, floor), { quality, floor });
-            expect(view.seated).toBe(40);
+            expect(view.seated).toBe(20);
+            if (floor === 'vip') expect(view.allSeated).toBe(40);
             expect(view.visible).toBe(20);
             expect(view.auras).toBe(view.visible);
             expect(view.floors).toEqual({ public: floor === 'public', vip: floor === 'vip' });
