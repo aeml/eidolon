@@ -294,14 +294,18 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 let root = mesh;
                 while (root.parent && !boundaries.includes(root.parent)) root = root.parent;
                 const name = root.userData.tiledRealmGround ? 'Canonical terrain tiles' : root.name || root.type;
-                if (!counts.has(name)) counts.set(name, { name, color: 0, shadow: 0, triangles: 0 });
+                if (!counts.has(name)) counts.set(name, {
+                    name, color: 0, shadow: 0, triangles: 0, colorTriangles: 0, shadowTriangles: 0
+                });
                 const entry = counts.get(name), color = mesh.onBeforeRender, shadow = mesh.onBeforeShadow;
                 const record = (pass, geometry, group) => {
                     entry[pass]++;
                     const count = group?.count ?? Math.min(geometry.drawRange.count,
                         geometry.index?.count ?? geometry.attributes.position.count);
                     const instances = mesh.isInstancedMesh ? mesh.count : geometry.isInstancedBufferGeometry ? geometry.instanceCount : 1;
-                    entry.triangles += count / 3 * instances;
+                    const triangles = count / 3 * instances;
+                    entry.triangles += triangles;
+                    entry[`${pass}Triangles`] += triangles;
                 };
                 originals.push({ mesh, color, shadow });
                 mesh.onBeforeRender = function(...args) { record('color', args[3], args[5]); return color.apply(this, args); };
@@ -375,6 +379,11 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         await page.screenshot({ path: testInfo.outputPath(`bastion-${name}.png`) });
         if (process.env.EIDOLON_E2E_RAISED_TERRAIN_DIAGNOSE === '1') {
             const draws = await page.evaluate(() => window.__diagnoseEarthTerrain());
+            for (const draw of draws) {
+                expect(draw.triangles).toBe(draw.colorTriangles + draw.shadowTriangles);
+                expect(draw.colorTriangles).toBeGreaterThanOrEqual(0);
+                expect(draw.shadowTriangles).toBeGreaterThanOrEqual(0);
+            }
             await testInfo.attach(`raised-terrain-${name}-draws`, { body: JSON.stringify(draws), contentType: 'application/json' });
             console.log(`[raised terrain draws ${quality} ${name}] ${JSON.stringify(draws.slice(0, 10))}`);
         }
