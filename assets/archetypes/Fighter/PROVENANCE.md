@@ -8,6 +8,9 @@
 - Upstream licensing documentation: https://github.com/makehumancommunity/makehuman/blob/master/LICENSE.md and https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html
 - The upstream asset license is reproduced in `LICENSE-MAKEHUMAN-CC0.txt`; it applies to those source components. This is distinct from the GPL license of the MakeHuman/MPFB application code, which is not embedded in the character.
 - Fighter reference images supplied/generated for this project informed the visual direction and build. The September 30 revision replaces the projected reference painting with the CC0 anatomical skin diffuse map, tinted and combined with procedural skin microstructure. Cloth, scalp microstructure, roughness and iris-fiber patterns are authored in Blender and UV-baked. The project-specific result is not separately relicensed by this notice.
-- Viewer runtime: Three.js 0.181.2, MIT license, reproduced in `LICENSE-THREE.txt` and the bundled runtime's legal notices.
+- The game's separate browser runtime uses Three.js 0.181.2. The normal
+  `scripts/prepare-client.mjs` build copies its upstream license unchanged to
+  `vendor/three/LICENSE`, which is included in the published vendor directory.
+  No viewer runtime or `LICENSE-THREE.txt` is delivered in this character folder.
 
 This asset is a new anatomical reconstruction. The previous v4 mesh and all intermediate Blender checkpoints are preserved separately in the workspace.

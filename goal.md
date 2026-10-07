@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 ordered source-notice preparation during real timer wait:** Previous
+turn produced native PASS/retained frame-budget failure, implemented/measured
+same-cell candidate and launched66380: progress. Revalidated exact572460 live
+and polled same66380, still genuinely waiting for03:17; no observation restart.
+Found Fighter provenance naming a missing viewer notice/runtime. Correct only
+that stale claim to actual separate browser-runtime vendor/three/LICENSE.
+Pinned package version, build copy, matching local notice hashes and complete
+vendor publication path independently inspected. No asset/code relicense or
+whole-catalog/legal/freeze approval. No task heavy test/browser at measurement;
+root keeps native terminal/fixture ownership and Luna's terminal-only watcher.
+Own1.79/F1/F5/full1.99 remain open; no doc-only deployment.
+
 **October7 next changed-runtime trial genuinely waiting:** Current turn yields
 actual490 native PASS, preserves41.74ms timing failure, cleans only owned DB,
 profiles/implements same-cell grid fast path and proves scoped race/diagnostic:

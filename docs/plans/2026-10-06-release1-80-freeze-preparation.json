@@ -24,6 +24,12 @@
     "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
     "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f"
   },
+  "october7PackagedNoticeReconciliation": {
+    "scope": "Source/package verification only, while native66380/supervisor572460 genuinely waits for03:17. No native restart, heavy test/browser, upstream browsing, license choice or runtime change.",
+    "correction": "Fighter PROVENANCE referred to an absent LICENSE-THREE.txt/viewer runtime. Its delivered directory has only character exports and MakeHuman source notices. Correct the stale statement to the actual separate browser-runtime notice, without changing asset sources or relicensing project-specific additions.",
+    "evidence": "package.json pins Three0.181.2; prepare-client.mjs copies node_modules/three/LICENSE unchanged to vendor/three/LICENSE. Both actual local files SHA256bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601 match. Current ci.yml line413 publishes the complete vendor directory, including that notice.",
+    "limits": "This proves one supplied notice's build/publication path, not upstream-source legal validation, full dependency/asset catalog coverage, owner licensing signoff, final art or F1/F5 completion. Existing four class CC0/provenance files remain; no new license text or commercial rights invented. No doc-only release push."
+  },
   "october7PreparedReplicationBoundaryReview": {
     "source": "49011e16 candidate remains unpublished and not accepted by prior6c native results. Source review covers state_serialization.go, state_delta_frame.go, state_public_encoding.go and new state_frame_contention_test.go; it supplements retained focused race2.188s, not a penetration test or fullF2 approval.",
     "membership": "World-produced detached recipient maps are assembled before worker launch. Prepared caches key by actual detached actor pointer, not playerID; membership is never changed by workers or foreign lookups. Actor-local mutexes protect lazy snapshot/comparison/encoding values. Cache lifetime is one joined broadcast; immutable client history may survive intentionally, but encoded public messages do not become a cross-frame actor cache.",
