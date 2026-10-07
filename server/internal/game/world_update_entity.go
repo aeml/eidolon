@@ -1618,7 +1618,11 @@ func (w *World) updateEntity(e *Entity, dt float64, players []*Entity, deferred 
 		func() {
 			w.Mu.RLock()
 			defer w.Mu.RUnlock()
-			for _, p := range players {
+			candidates := players
+			if deferred.enemyTargets != nil && w.Grid != nil && finiteCoordinate(ex) && finiteCoordinate(ez) && finiteCoordinate(sightRange) && sightRange >= 0 {
+				candidates = deferred.enemyTargets.candidatesLocked(w.Grid, ex, ez, sightRange, enemyInstanceID, threatSnapshot)
+			}
+			for _, p := range candidates {
 				candidate := w.snapshotEnemyTargetForScanLocked(p, enemyInstanceID, ex, ez, sightRange, threatSnapshot)
 				if !candidate.active || candidate.instanceID != enemyInstanceID {
 					continue

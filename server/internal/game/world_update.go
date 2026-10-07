@@ -87,7 +87,7 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 	worldLocked = false
 
 	// 2. Update Entities (Parallel)
-	deferred := &deferredActions{}
+	deferred := &deferredActions{enemyTargets: newEnemyTargetRoster(players)}
 
 	// Create a channel for entities to update
 	entityChan := make(chan *Entity, len(allEntities))

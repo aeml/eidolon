@@ -114,47 +114,55 @@ func TestEnemyTargetSharedLockSnapshotKeepsLiveValidation(t *testing.T) {
 }
 
 func TestEnemyTargetScanKeepsDistantThreatPriorityAtActualConsumer(t *testing.T) {
-	w := newTestWorld()
-	t.Cleanup(w.StopBackground)
-	near, far := newTestPlayer("scan-consumer-near", "Fighter"), newTestPlayer("scan-consumer-far", "Fighter")
-	near.X, near.Z, far.X, far.Z = 201, 600, 1000, 600
-	enemy := &Entity{ID: "scan-consumer-enemy", Type: TypeEnemy, SubType: "Skeleton", Level: 30,
-		X: 200, Z: 600, SpawnX: 200, SpawnZ: 600, Health: 100, MaxHealth: 100, Damage: 50,
-		State: "IDLE", AttackCooldown: time.Second, Threat: map[string]float64{far.ID: 100, near.ID: 1}}
-	w.AddEntity(near)
-	w.AddEntity(far)
-	w.AddEntity(enemy)
-	w.updateEntity(enemy, .033, []*Entity{near, far}, &deferredActions{})
-	if near.Health != near.MaxHealth || far.Health != far.MaxHealth {
-		t.Fatal("range shortcut dropped distant threat priority and attacked a nearer actor")
-	}
-	// Once the distant threat genuinely disappears, the same normal AI must
-	// attack the in-range target. No extended sight, timer or power is granted.
-	delete(enemy.Threat, far.ID)
-	w.updateEntity(enemy, .033, []*Entity{near, far}, &deferredActions{})
-	enemy.Mu.RLock()
-	accepted := enemy.State == "ATTACKING" && !enemy.LastAttackTime.IsZero()
-	enemy.Mu.RUnlock()
-	if !accepted {
-		t.Fatal("ordinary in-range enemy attack was not accepted")
-	}
-	// Normal melee has a wind-up (35% of cooldown). Observe its real queued
-	// impact instead of expecting synchronous damage or shortening that timer.
-	deadline := time.Now().Add(2 * time.Second)
-	for {
-		near.Mu.RLock()
-		landed := near.Health < near.MaxHealth
-		near.Mu.RUnlock()
-		if landed {
-			break
-		}
-		if time.Now().After(deadline) {
-			t.Fatal("ordinary in-range enemy attack did not land after its wind-up")
-		}
-		time.Sleep(10 * time.Millisecond)
-	}
-	if far.Health != far.MaxHealth {
-		t.Fatal("distant player received an out-of-range impact")
+	for _, indexed := range []bool{false, true} {
+		t.Run(fmt.Sprintf("spatial=%t", indexed), func(t *testing.T) {
+			w := newTestWorld()
+			t.Cleanup(w.StopBackground)
+			near, far := newTestPlayer("scan-consumer-near", "Fighter"), newTestPlayer("scan-consumer-far", "Fighter")
+			near.X, near.Z, far.X, far.Z = 201, 600, 1000, 600
+			enemy := &Entity{ID: "scan-consumer-enemy", Type: TypeEnemy, SubType: "Skeleton", Level: 30,
+				X: 200, Z: 600, SpawnX: 200, SpawnZ: 600, Health: 100, MaxHealth: 100, Damage: 50,
+				State: "IDLE", AttackCooldown: time.Second, Threat: map[string]float64{far.ID: 100, near.ID: 1}}
+			w.AddEntity(near)
+			w.AddEntity(far)
+			w.AddEntity(enemy)
+			deferred := &deferredActions{}
+			if indexed {
+				deferred.enemyTargets = newEnemyTargetRoster([]*Entity{near, far})
+			}
+			w.updateEntity(enemy, .033, []*Entity{near, far}, deferred)
+			if near.Health != near.MaxHealth || far.Health != far.MaxHealth {
+				t.Fatal("range shortcut dropped distant threat priority and attacked a nearer actor")
+			}
+			// Once the distant threat genuinely disappears, the same normal AI must
+			// attack the in-range target. No extended sight, timer or power is granted.
+			delete(enemy.Threat, far.ID)
+			w.updateEntity(enemy, .033, []*Entity{near, far}, deferred)
+			enemy.Mu.RLock()
+			accepted := enemy.State == "ATTACKING" && !enemy.LastAttackTime.IsZero()
+			enemy.Mu.RUnlock()
+			if !accepted {
+				t.Fatal("ordinary in-range enemy attack was not accepted")
+			}
+			// Normal melee has a wind-up (35% of cooldown). Observe its real queued
+			// impact instead of expecting synchronous damage or shortening that timer.
+			deadline := time.Now().Add(2 * time.Second)
+			for {
+				near.Mu.RLock()
+				landed := near.Health < near.MaxHealth
+				near.Mu.RUnlock()
+				if landed {
+					break
+				}
+				if time.Now().After(deadline) {
+					t.Fatal("ordinary in-range enemy attack did not land after its wind-up")
+				}
+				time.Sleep(10 * time.Millisecond)
+			}
+			if far.Health != far.MaxHealth {
+				t.Fatal("distant player received an out-of-range impact")
+			}
+		})
 	}
 }
 

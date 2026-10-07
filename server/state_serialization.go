@@ -795,16 +795,12 @@ func broadcastState() {
 				c.seenIDs = make(map[string]bool)
 			}
 
-			// Track current IDs to detect removals
-			currentIDs := make(map[string]bool, len(currentState))
-			for id := range currentState {
-				currentIDs[id] = true
-			}
-
 			// Find removed entities (were in seenIDs but not in currentState)
 			removed := make([]string, 0)
 			for id := range c.seenIDs {
-				if !currentIDs[id] {
+				// The recipient map already is the exact ID set. Avoid copying
+				// every visible actor into another map for each recipient/frame.
+				if _, present := currentState[id]; !present {
 					removed = append(removed, id)
 					delete(c.lastState, id)
 					delete(c.seenIDs, id)

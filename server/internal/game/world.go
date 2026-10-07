@@ -29,15 +29,17 @@ type spatialCellKey struct {
 }
 
 type SpatialMap struct {
-	cellSize float64
-	cells    map[spatialCellKey]map[string]*Entity
-	Mu       sync.RWMutex
+	cellSize    float64
+	cells       map[spatialCellKey]map[string]*Entity
+	playerCells map[spatialCellKey]map[string]*Entity // Same-lock player-only membership index.
+	Mu          sync.RWMutex
 }
 
 func NewSpatialMap(cellSize float64) *SpatialMap {
 	return &SpatialMap{
-		cellSize: cellSize,
-		cells:    make(map[spatialCellKey]map[string]*Entity),
+		cellSize:    cellSize,
+		cells:       make(map[spatialCellKey]map[string]*Entity),
+		playerCells: make(map[spatialCellKey]map[string]*Entity),
 	}
 }
 
@@ -50,21 +52,19 @@ func (sm *SpatialMap) Add(e *Entity) {
 	sm.Mu.Lock()
 	defer sm.Mu.Unlock()
 	k := sm.key(e.X, e.Z, e.InstanceID)
-	if sm.cells[k] == nil {
-		sm.cells[k] = make(map[string]*Entity)
+	addSpatialMember(sm.cells, k, e)
+	if e.Type == TypePlayer {
+		addSpatialMember(sm.playerCells, k, e)
 	}
-	sm.cells[k][e.ID] = e
 }
 
 func (sm *SpatialMap) Remove(e *Entity) {
 	sm.Mu.Lock()
 	defer sm.Mu.Unlock()
 	k := sm.key(e.X, e.Z, e.InstanceID)
-	if sm.cells[k] != nil {
-		delete(sm.cells[k], e.ID)
-		if len(sm.cells[k]) == 0 {
-			delete(sm.cells, k)
-		}
+	removeSpatialMember(sm.cells, k, e.ID)
+	if e.Type == TypePlayer {
+		removeSpatialMember(sm.playerCells, k, e.ID)
 	}
 }
 
@@ -78,24 +78,52 @@ func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
 	if oldKey == newKey {
 		return
 	}
-	if sm.cells[oldKey] != nil {
-		delete(sm.cells[oldKey], e.ID)
-		if len(sm.cells[oldKey]) == 0 {
-			delete(sm.cells, oldKey)
+	removeSpatialMember(sm.cells, oldKey, e.ID)
+	addSpatialMember(sm.cells, newKey, e)
+	if e.Type == TypePlayer {
+		removeSpatialMember(sm.playerCells, oldKey, e.ID)
+		addSpatialMember(sm.playerCells, newKey, e)
+	}
+}
+
+// Caller owns Grid.Mu. Both indexes change within one Add/Remove/Update, so
+// the player index cannot publish an earlier/later scene or cell membership.
+func addSpatialMember(cells map[spatialCellKey]map[string]*Entity, key spatialCellKey, actor *Entity) {
+	if cells[key] == nil {
+		cells[key] = make(map[string]*Entity)
+	}
+	cells[key][actor.ID] = actor
+}
+
+func removeSpatialMember(cells map[spatialCellKey]map[string]*Entity, key spatialCellKey, id string) {
+	if cell := cells[key]; cell != nil {
+		delete(cell, id)
+		if len(cell) == 0 {
+			delete(cells, key)
 		}
 	}
-	if sm.cells[newKey] == nil {
-		sm.cells[newKey] = make(map[string]*Entity)
-	}
-	sm.cells[newKey][e.ID] = e
 }
 
 func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity {
+	return sm.nearbyType(x, z, radius, instanceID, "")
+}
+
+// Player type is immutable after world publication. Filter under the same
+// spatial lock, without taking actor locks while owning Grid.Mu. Coordinates,
+// scene, life, stealth and membership still require live consumer validation.
+func (sm *SpatialMap) nearbyType(x, z, radius float64, instanceID string, kind EntityType) []*Entity {
 	sm.Mu.RLock()
 	defer sm.Mu.RUnlock()
 
 	// Pre-allocate with estimated capacity to reduce allocations
-	result := make([]*Entity, 0, 32)
+	var result []*Entity
+	if kind == "" {
+		result = make([]*Entity, 0, 32)
+	}
+	cells := sm.cells
+	if kind == TypePlayer {
+		cells = sm.playerCells
+	}
 
 	minX := int(math.Floor((x - radius) / sm.cellSize))
 	maxX := int(math.Floor((x + radius) / sm.cellSize))
@@ -105,9 +133,11 @@ func (sm *SpatialMap) Nearby(x, z, radius float64, instanceID string) []*Entity 
 	for cx := minX; cx <= maxX; cx++ {
 		for cz := minZ; cz <= maxZ; cz++ {
 			k := spatialCellKey{instanceID: instanceID, x: cx, z: cz}
-			if cell := sm.cells[k]; cell != nil {
+			if cell := cells[k]; cell != nil {
 				for _, e := range cell {
-					result = append(result, e)
+					if kind == "" || e.Type == kind {
+						result = append(result, e)
+					}
 				}
 			}
 		}
@@ -1140,6 +1170,9 @@ type deferredActions struct {
 	mu        sync.Mutex
 	removals  []string
 	additions []*Entity
+	// Immutable roster for this frame only; no actor state or spatial query
+	// results are cached. Independent updates/tests may leave it nil.
+	enemyTargets *enemyTargetRoster
 }
 
 func (d *deferredActions) addRemoval(id string) {
