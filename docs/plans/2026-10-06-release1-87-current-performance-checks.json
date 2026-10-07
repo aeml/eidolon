@@ -2,6 +2,34 @@
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
   "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
+  "october7FilterAndWindBoundQualification": {
+    "runtimeCommit": "2e1351e4b6dc1ec82d8a9979e98982c4f63d5821",
+    "filterCommit": "7af5254fda149e50c3692c1a95ca299eecff5424",
+    "filterDerivation": "Read pinned Three0.181.2 shadowmap shader and WebGLShadowMap source. Bound full PCF radius/PCFSoft two-texel taps plus nearest rounding in world units, include depth/normal bias, actual orthographic span/zoom, requested or existing smaller map and hardware maximum. Unknown filter/projection/invalid values retain casters. Actual camera already includes motion; original fitted shadow-map12-unit margin, all settings and geometry stay unchanged.",
+    "groundCover": "Only production noncasting Earth grass/fern cells with explicit full-wind-bounds marker, wind material and no children use camera-versus-AABB culling. Respect frustumCulled=false; use actual transformed, already wind-padded bounds. Never reduce density or motion. Restore visible flags at normal completion, throwing-render finally, disposal and next-frame entry; actor/collision/input ownership unchanged. One scene traversal handles both existing shadows and qualified ground cover, not a second full-scene pass.",
+    "unit": "Filter four affected suites PASS47/1.457s. Ground changes six affected suites PASS56/7.661s including original plant geometry/placement checks. Final narrow15 controller tests PASS0.634s add both caster and ground-cover throwing-render cleanup; no repeat of unchanged full six suites. Scoped lint/whitespace pass.",
+    "filterNative": "Root41001 consumed exit1: Earth foliage appearance PASS, High raised case fails west251439 and woodland281059 only; outer243212 passes original250000.1PASS/1FAIL31.5s; all three pixel comparisons0/270080. Low not rerun for this shadow-only change.",
+    "finalNative": "Root50271 consumed exit1: Low raised case PASS in14.6s, High fails only woodland278135 against original250000. Aggregate1PASS/1FAIL38.5s. All six120-frame realRAF AMD/Vulkan median/P95/draw limits pass. All six paired complete shadow+color captures change0/270080 pixels; surface comparisons also0/270080. Five of six original triangle limits now pass, not all performance gates or modern-art acceptance.",
+    "highWholeFrames": [
+      {"view": "west-bank", "triangles": 244827, "calls": 145, "medianMs": 16.7, "p95Ms": 16.8, "originalTriangleLimit": 250000, "triangleGate": "pass"},
+      {"view": "woodland-cut", "triangles": 278135, "calls": 173, "medianMs": 16.7, "p95Ms": 16.8, "originalTriangleLimit": 250000, "triangleGate": "fail"},
+      {"view": "outer-fold", "triangles": 235898, "calls": 135, "medianMs": 16.7, "p95Ms": 16.8, "originalTriangleLimit": 250000, "triangleGate": "pass"}
+    ],
+    "lowWholeFrames": [
+      {"view": "west-bank", "triangles": 83067, "calls": 89, "medianMs": 16.7, "p95Ms": 16.7, "originalTriangleLimit": 85000, "triangleGate": "pass"},
+      {"view": "woodland-cut", "triangles": 73093, "calls": 77, "medianMs": 16.7, "p95Ms": 16.8, "originalTriangleLimit": 85000, "triangleGate": "pass"},
+      {"view": "outer-fold", "triangles": 74440, "calls": 81, "medianMs": 16.7, "p95Ms": 16.8, "originalTriangleLimit": 85000, "triangleGate": "pass"}
+    ],
+    "evidence": {
+      "filterDirectory": "/tmp/eidolon-187-shadow-filter-bxmN7R/results",
+      "filterHighTraceSha256": "2e84034dd33f9d2af0d352fe824042b95daf59721f03a81a5d14d8bfda0332b2",
+      "finalDirectory": "/tmp/eidolon-187-wind-box-n8tRVL/results",
+      "finalHighTraceSha256": "a57c6f9262a43f05ed0f9514d88870d3c1a0032af7eb98d27f0f38350115b44c",
+      "controllerSha256": "2e299730b821503f4999cb9a46d0cf3ec140df3be632074f583f0a0436e24088",
+      "groundCoverSourceSha256": "3dd23467fd6092906c57501ae623eaf9f619ffff791809b32627e2dc974e458d"
+    },
+    "limits": "Remaining High woodland excess28135 is not waived. Full supported-device/connected-world/final visual qualification and ordinary raised-world/public rollout remain. Low actual hardware preview is not owner phone gameplay. Both owned native handles terminal and4190 independently closed; no production, Mongo, mail, density/quality downgrade or full100/campaign repetition. Future1.87 stays isolated/unpublished."
+  },
   "october7DirectionalShadowInfluence": {
     "runtimeCommit": "7f28d7d8e9358a02fa4f22ff758a339ec5b87f2d",
     "sourceSha256": "b4b4d572060c309752c07267d33eb90e4710d92d4e48c8d33ac859e67cd9b777",
