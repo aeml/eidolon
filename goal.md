@@ -1,6 +1,29 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October7 current full100 actual startup:** At07:58:00UTC root independently
+**October7 current full100 terminal failure / contested-ward controller repair:**
+Actual normal8c/current80a full100 FAIL655.30s, terminal08:08:00UTC; root7320
+consumed exit1. Event expired after two minimum own waves,39/39 completed
+recoveries,29 damage/21 heals/5 enemy deaths; all four valid expiry notices
+are counted as semantic decode errors by the driver, not proof of bad wire data.
+Combined80 paid/party/social and full five-player Earth assault/manual repair/
+checkpoint returns pass their own gates. Common100/100 independent final saves
+are unreached. Partial phase means20.635338ms are not capacity acceptance;
+original budget verifier refuses the failed log. All original gates retained.
+Four new elemental regressions initially FAIL0.012s: inside a live contested
+ward the regroup controller suppresses normal attacks/healing while an ally
+recovers. Pass this member's current state to the event step; only a live enemy
+from this event/current wave inside the actual ward can release combat there.
+All four ordinary Fighter attacks/Cleric heals now pass; ten uncontested/invalid
+enemy cases still stage outside, including Fire's inner hole. Existing own-wave/
+cleared-ward/normal recovery/zero-error gates unchanged. Focused Event race
+PASS1.444s; full affected driver race PASS17.758s. This proves the coordination
+fault, not the sole cause of the expired native run; changed native qualification
+remains required before1.79 publication. API/harness implementation unchanged.
+Exact bd548206 fixture/two original anonymous volumes removed after terminal/
+process/identity/mount checks; independent absence/32995 closed verified.
+Evidence hashes retained in1.79 receipt; production/player data untouched.
+
+**October7 current full100 actual startup (historical):** At07:58:00UTC root independently
 confirms named TestLoadCohortActual100MixedRaidEventAndSaves RUN, harness3040364
 and supervisor2887477 live by exact argv. Actual bd548206 disposable Mongo is
 healthy, memory2GiB/no CPU cap; exact ID/name/label/original f9f9e880/887b3bcf

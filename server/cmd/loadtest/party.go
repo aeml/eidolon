@@ -456,7 +456,7 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 		p.failed = true
 		return // The original overworld profile does not silently enter instances.
 	}
-	if p.event != nil && (!p.event.step(p, index, me, now, timeout, request, move) || p.failed) {
+	if p.event != nil && (!p.event.step(p, index, me, state, now, timeout, request, move) || p.failed) {
 		return
 	}
 	leader := p.members[0].state

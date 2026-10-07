@@ -24,8 +24,14 @@ diagnostic passes all waves/exits/saves and40/40 recoveries on captured ca64;
 it does not explain the prior full100 failure. Current8c also fixes a proven
 living-unstuck instant health refill while retaining normal town healing and
 death recovery; expanded actual socket checks pass all eight class/death cases.
-Changed current full100 qualification is genuinely scheduled for natural Root
-08:00UTC, with no outcome yet. Game rules, original5s deadlines,
+Changed current8c full100 qualification FAILS655.30s on event_expired, with
+39/39 recoveries but only two minimum own waves. Full five-player Earth raid
+and mixed80 gates pass; common100/final100 saves are unreached. Partial phase
+means20.6353ms are not acceptance. Four failing elemental regressions prove
+the bot regroup controller suppresses defense/healing inside a live contested
+ward. Driver-only repair and ten negative cases pass full race17.758s; a changed
+native qualification is still required. Exact disposable fixture cleaned,
+hashed failure evidence retained. Game rules, original5s deadlines,
 every-member gates and the33ms budget stay unchanged; no current acceptance.
 Headroom/publication and wider1.99
 scope remain open. Production stays accepted1.78; no beta/access transition.

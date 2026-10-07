@@ -194,7 +194,26 @@ func (e *eventLoad) waveReady(p *partyLoad, view *game.PublicEventView) bool {
 	return true
 }
 
-func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, timeout time.Duration, request func(string, interface{}) error, move func(float64, float64)) bool {
+// Only this member's current state can establish that the ward is contested.
+// Remaining alone includes enemies outside it, where charging is still possible.
+func (e *eventLoad) wardContested(view *game.PublicEventView, state map[string]Entity) bool {
+	if view.Remaining == 0 {
+		return false
+	}
+	prefix := fmt.Sprintf("%s%d-", e.enemyPrefix, view.Wave)
+	for _, enemy := range state {
+		if enemy.Type != "Enemy" || enemy.InstanceID != "" || enemy.Health <= 0 || enemy.State == "DEAD" || !strings.HasPrefix(enemy.ID, prefix) {
+			continue
+		}
+		distance := math.Hypot(enemy.X-view.RuneX, enemy.Z-view.RuneZ)
+		if distance <= view.Radius && distance >= view.InnerRadius {
+			return true
+		}
+	}
+	return false
+}
+
+func (e *eventLoad) step(p *partyLoad, index int, me Entity, state map[string]Entity, now time.Time, timeout time.Duration, request func(string, interface{}) error, move func(float64, float64)) bool {
 	m := &e.members[index]
 	if m.exited {
 		return false
@@ -264,10 +283,11 @@ func (e *eventLoad) step(p *partyLoad, index int, me Entity, now time.Time, time
 	view := m.view
 	distance := math.Hypot(me.X-view.RuneX, me.Z-view.RuneZ)
 	if view.Phase == "defending" && !e.waveReady(p, view) &&
-		(view.Remaining == 0 || distance <= view.Radius && distance >= view.InnerRadius) {
+		(view.Remaining == 0 || distance <= view.Radius && distance >= view.InnerRadius && !e.wardContested(view, state)) {
 		// Without this, even the tank's ordinary no-target regroup at the site
 		// center charges a cleared ward while an ally is away. Stay close enough
-		// to defend; active enemies outside the ward still get normal combat.
+		// to defend. A current live enemy inside the ward already prevents
+		// charging, so present actors can keep attacking/healing there too.
 		move(view.RuneX+view.Radius+6, view.RuneZ)
 		return false
 	}

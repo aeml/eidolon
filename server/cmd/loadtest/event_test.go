@@ -45,7 +45,7 @@ func eventFixture(t *testing.T, siteIndex int) (*partyLoad, time.Time) {
 			t.Fatal("valid announcement refused")
 		}
 	}
-	if !p.event.step(p, 0, p.members[0].state, now, time.Second, func(string, interface{}) error { t.Fatal("selection authored event action"); return nil }, func(float64, float64) { t.Fatal("nearby selection teleported") }) || p.failed {
+	if !p.event.step(p, 0, p.members[0].state, nil, now, time.Second, func(string, interface{}) error { t.Fatal("selection authored event action"); return nil }, func(float64, float64) { t.Fatal("nearby selection teleported") }) || p.failed {
 		t.Fatal("ready cohort did not select normal occurrence")
 	}
 	return p, now
@@ -81,7 +81,7 @@ func TestEventLoadNeedsEveryOwnPresentWaveAndCompletion(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		p.receive(i, partyMessage("public_event", complete), now)
 	}
-	p.event.step(p, 0, p.members[0].state, now, time.Second, func(string, interface{}) error { t.Fatal("missing fourth own completion allowed exit"); return nil }, func(float64, float64) {})
+	p.event.step(p, 0, p.members[0].state, nil, now, time.Second, func(string, interface{}) error { t.Fatal("missing fourth own completion allowed exit"); return nil }, func(float64, float64) {})
 	if p.failed || p.eventCounts().complete != 3 {
 		t.Fatal("partial completion gates incorrect")
 	}
@@ -95,8 +95,8 @@ func TestEventLoadNeedsEveryOwnPresentWaveAndCompletion(t *testing.T) {
 			}
 			return nil
 		}
-		p.event.step(p, i, p.members[i].state, now, time.Second, request, func(float64, float64) { t.Fatal("walked after completion") })
-		p.event.step(p, i, p.members[i].state, now, time.Second, request, func(float64, float64) {})
+		p.event.step(p, i, p.members[i].state, nil, now, time.Second, request, func(float64, float64) { t.Fatal("walked after completion") })
+		p.event.step(p, i, p.members[i].state, nil, now, time.Second, request, func(float64, float64) {})
 		if requests != 1 {
 			t.Fatal("uncertain exit retried")
 		}
@@ -122,9 +122,9 @@ func TestEventLoadRefusesBadOrHistoricalEvidence(t *testing.T) {
 				me := p.members[3].state
 				me.Level--
 				p.state(3, me, now)
-				p.event.step(p, 0, p.members[0].state, now, time.Second, func(string, interface{}) error { return nil }, func(float64, float64) {})
+				p.event.step(p, 0, p.members[0].state, nil, now, time.Second, func(string, interface{}) error { return nil }, func(float64, float64) {})
 			case "stale-view":
-				p.event.step(p, 0, p.members[0].state, now.Add(time.Second), time.Second, func(string, interface{}) error { return nil }, func(float64, float64) {})
+				p.event.step(p, 0, p.members[0].state, nil, now.Add(time.Second), time.Second, func(string, interface{}) error { return nil }, func(float64, float64) {})
 			default:
 				switch scenario {
 				case "wrong-id":
@@ -273,7 +273,7 @@ func TestEventLoadDoesNotAdoptAlreadyCompletedOrLateOccurrences(t *testing.T) {
 					t.Fatal("valid non-selected occurrence refused")
 				}
 			}
-			p.event.step(p, 0, p.members[0].state, now, time.Second, func(string, interface{}) error { t.Fatal("historical/late event authored action"); return nil }, func(float64, float64) { t.Fatal("adopted late event") })
+			p.event.step(p, 0, p.members[0].state, nil, now, time.Second, func(string, interface{}) error { t.Fatal("historical/late event authored action"); return nil }, func(float64, float64) { t.Fatal("adopted late event") })
 			if p.failed || p.eventCounts().selected || p.eventCounts().complete != 0 {
 				t.Fatal("already-completed/late occurrence adopted as fresh")
 			}
@@ -353,18 +353,18 @@ func TestEventRecoveryPreservesBarsAndWaitsForTown(t *testing.T) {
 		}
 		return nil
 	}
-	p.event.step(p, 0, me, now, time.Second, request, func(float64, float64) { t.Fatal("moved before recovery") })
-	p.event.step(p, 0, me, now, time.Second, request, func(float64, float64) { t.Fatal("left before actual town confirmation") })
+	p.event.step(p, 0, me, nil, now, time.Second, request, func(float64, float64) { t.Fatal("moved before recovery") })
+	p.event.step(p, 0, me, nil, now, time.Second, request, func(float64, float64) { t.Fatal("left before actual town confirmation") })
 	if requests != 1 || p.members[0].state.Mana != 10 {
 		t.Fatal("recovery retried or granted mana")
 	}
 	me.X, me.Z = -1.25, 200
 	p.state(0, me, now)
-	p.event.step(p, 0, me, now, time.Second, request, func(float64, float64) { t.Fatal("left town before actual regeneration") })
+	p.event.step(p, 0, me, nil, now, time.Second, request, func(float64, float64) { t.Fatal("left town before actual regeneration") })
 	me.Mana = 90
 	p.state(0, me, now)
 	moves := 0
-	p.event.step(p, 0, me, now, time.Second, request, func(float64, float64) { moves++ })
+	p.event.step(p, 0, me, nil, now, time.Second, request, func(float64, float64) { moves++ })
 	if p.failed || moves != 1 || requests != 1 {
 		t.Fatal("normal healed return unavailable")
 	}
