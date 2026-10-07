@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 server-only integrated measurement started:** Previous goal turn
+implemented/committed exact rig and seated-matrix work, passed original casino
+targets/current raid rendering and prepared own1.79 notes/identity: progress.
+One missing-scope measurement reuses exact API6c/driver+harness0ce with100 original
+roles/outcomes/save guards and natural02:00 Root. No concurrent task browser or
+build; unrelated host load remains a limit. Fresh owned healthy disk-backed
+Mongo b94260ab/labelheadroom179-20261007, loopback32978,2GiB memory/uncapped CPU.
+Root native session22454/harness PID127710 is confirmed running, not a result.
+Owned aggregate log /tmp/eidolon-179-headroom-native-ZOh69K/run.log; Luna existing
+watch_earthraid179_1006 monitors anchored PID/log terminal only, without trying
+parent-local exec handles or mutating fixtures. Root must consume same22454
+terminal, validate actual—not skipped—test and all100 common-reader/saved gates,
+record33ms phase/headroom failure if present, then clean only exact synthetic DB.
+No blind restart, runtime relabel, production mutation, broad pruning or release.
+
 **October7 render gates passed / own1.79 prepared:**41dbf020 changed-source
 casino trial PASS44.3s: original High25ms/Low20ms medians and50/33.3ms P95
 targets all pass with same40total/20visible/legal14piece crowd. No relaxed
