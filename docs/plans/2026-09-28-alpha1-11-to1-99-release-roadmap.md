@@ -10,8 +10,13 @@ Overlapping server phase means total36.4112ms, exceeding33ms on the busy shared
 host. See [exact current evidence and retained failures](2026-10-06-release1-79-current-capacity-checks.json).
 Exact actor/equipment rig sharing retains all art;1.79 versions/notes are prepared,
 with scoped authored-raid rendering also passed. Changed request-local casino
-roster/fresh-poker candidate ca64c6d1 now has an actual supervised full100 trial
-scheduled for natural06:00UTC Root; this is not current-source acceptance.
+roster/fresh-poker candidate ca64c6d1 completes all80 mixed-client party/social/
+paid outcomes, but the full test FAILS on a participant's missing event wave.
+Partial phase means total21.15ms; full100 overlap/raid/fresh-save acceptance is
+unreached. Two failing regressions prove premature ward charging during party
+recovery; driver-only649e regroup repair passes its full race suite and now has
+a supervised full100 trial scheduled for natural06:40UTC Root. Game rules,
+every-member gates and the33ms budget stay unchanged; no current acceptance.
 Headroom/publication and wider1.99
 scope remain open. Production stays accepted1.78; no beta/access transition.
 
