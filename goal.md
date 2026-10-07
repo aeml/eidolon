@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 changed-login100 startup PASS / original full trial live:** Exact
+clean86c normal API accepts all100 original saves/classes/gear/spawn sites in
+80/5/4/11 startup groups: actual PASS19.90s, zero admission/transport/decode
+errors, no retries or new hash workers. Root consumes14011, hashes evidence,
+removes only revalidated bbd0f08e DB/two volumes; normal100 drain succeeds,
+not independent-save/full encounter/headroom qualification. Current86c race
+harness built/hashed before measurement, unchanged driver retained. Root59892/
+PID1400629 starts source-calculated04:37/root04:40 full natural-clock100;
+actual ===RUN/718194c7 fixture/same live supervisor confirmed04:37:12. All
+original roles/outcomes/600fresh/common108s/independent saves/5s/33ms retained.
+Existing Luna monitors terminal only; no task build/browser at measurement.
+Root owns terminal/gate audit/only exact fixture cleanup. No full result or1.79
+publication yet; full1.99 remains active, no production/shared-cache mutation.
+
 **October7 original100 startup diagnosis / bounded-login candidate:** Previous
 turn made measured broadcast/16-admission progress. New short diagnostic reuses
 the exact original100 saves/classes/gear/spawn sites and80/5/4/11 startup sizes:
