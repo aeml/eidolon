@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 focused admission/broadcast progress:** Previous turn made concrete
+all-realm rendering, terminal failure/audit and sanitized diagnostic progress.
+Actual short four-group admission isolation PASS5.47s:16/16 ordinary logins and
+joins, zero transport/admission errors, unchanged limits/deadlines/no retries.
+This does not resolve the prior100 failure. Root consumes51148 and removes
+only revalidated b65e331e disposable DB/two volumes, preserving hashed logs.
+Profile-guided broadcast-copy lookup now keys actor identity rather than IDs;
+original view/scene/private-copy guards unchanged. Existing sharing/isolation
+race scope PASS1.840s. Original100-idle broadcast diagnostic6.67→6.19ms,
+51 fewer allocations, exact12165wire bytes unchanged—not native33ms headroom.
+No task heavy overlap, production change or another full raid/event replay.
+Own1.79 and full1.99 remain active/unpublished/uncompleted.
+
 **October7 current outcome:** Actual source-scheduled63584 cohort FAIL198.34s
 at04:00:24UTC: event admission3/4, no accepted common100/raid/event/independent
 save or headroom outcome. Normal97-character drain succeeds; root consumes

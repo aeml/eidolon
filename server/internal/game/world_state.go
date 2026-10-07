@@ -136,13 +136,15 @@ func (w *World) GetStateForPlayer(playerID string, viewDistance float64) map[str
 func (w *World) GetStatesForPlayers(playerIDs []string, viewDistance float64) map[string]map[string]*Entity {
 	w.Mu.RLock()
 	defer w.Mu.RUnlock()
-	copies := make(map[string]*Entity)
+	// Membership stays locked for this broadcast; use actor identity rather
+	// than hashing long public IDs again for every overlapping recipient.
+	copies := make(map[*Entity]*Entity)
 	copyOnce := func(entity *Entity) *Entity {
-		if snapshot, ok := copies[entity.ID]; ok {
+		if snapshot, ok := copies[entity]; ok {
 			return snapshot
 		}
 		snapshot := w.copyEntity(entity)
-		copies[entity.ID] = snapshot
+		copies[entity] = snapshot
 		return snapshot
 	}
 	states := make(map[string]map[string]*Entity, len(playerIDs))
