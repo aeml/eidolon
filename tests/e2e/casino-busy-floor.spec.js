@@ -30,7 +30,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         if (!profile || !/^[0-9a-f]{40}$/.test(baselineCommit)) throw new Error('Casino baseline requires profile mode and an exact Git SHA');
         // Same current art/workload/browser on both sides; replace only the
         // optimized runtime modules with their immutable baseline source.
-        for (const file of ['src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js', 'src/art/FittedEquipment.js']) {
+        for (const file of ['src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js', 'src/art/FittedEquipment.js', 'src/art/AuthoredFighter.js']) {
             const body = execFileSync('git', ['show', `${baselineCommit}:${file}`], { encoding: 'utf8' });
             await page.route(`**/${file}*`, route => {
                 baselineModulesServed.add(file);
@@ -167,7 +167,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
     }, tables);
     expect(setup).toEqual({ tables: 92, seats: 232, models: 40 });
     if (baselineCommit) expect([...baselineModulesServed].sort()).toEqual([
-        'src/art/FittedEquipment.js', 'src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js'
+        'src/art/AuthoredFighter.js', 'src/art/FittedEquipment.js', 'src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js'
     ]);
     const profiles = [];
     try {

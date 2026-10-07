@@ -71,6 +71,59 @@ describe('delivered Fighter runtime candidates', () => {
         expect(source.scene.getObjectByName('Root').rotation.x).toBeCloseTo(0, 12);
     });
 
+    test('shares exact body rigs within one actor without changing skinning or ownership', () => {
+        const source = fixture(), original = source.scene.getObjectByName('Fighter_Body');
+        const shell = original.clone(false); shell.name = 'BodyShell';
+        shell.skeleton = original.skeleton.clone();
+        shell.bindMatrix.makeTranslation(.2, 0, 0);
+        shell.bindMatrixInverse.copy(shell.bindMatrix).invert();
+        shell.bindMode = 'detached';
+        source.scene.add(shell);
+        const actor = createAuthoredFighterInstance(source), sibling = createAuthoredFighterInstance(source);
+        const body = actor.getObjectByName('Fighter_Body'), fitted = actor.getObjectByName('BodyShell');
+        expect(body.skeleton).toBe(fitted.skeleton);
+        expect(body.skeleton).not.toBe(original.skeleton);
+        expect(body.skeleton).not.toBe(shell.skeleton);
+        expect(body.skeleton).not.toBe(sibling.getObjectByName('Fighter_Body').skeleton);
+        expect(fitted.bindMatrix.equals(shell.bindMatrix)).toBe(true);
+        expect(fitted.bindMode).toBe('detached');
+        const independent = new Map([body, fitted].map(mesh => [mesh, mesh.skeleton.clone()]));
+        for (const angle of [0, .4, -.7]) {
+            actor.getObjectByName('Root').rotation.z = angle;
+            actor.position.set(angle * 3, 1, -2); actor.updateMatrixWorld(true);
+            body.skeleton.update();
+            for (const mesh of [body, fitted]) {
+                const shared = mesh.skeleton, reference = independent.get(mesh); reference.update();
+                for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+                    const point = new THREE.Vector3().fromBufferAttribute(mesh.geometry.attributes.position, i);
+                    const actual = mesh.applyBoneTransform(i, point.clone());
+                    mesh.skeleton = reference;
+                    const expected = mesh.applyBoneTransform(i, point.clone());
+                    mesh.skeleton = shared;
+                    expect(actual.distanceTo(expected)).toBeLessThan(1e-12);
+                }
+            }
+        }
+        const own = jest.spyOn(body.skeleton, 'dispose'), other = jest.spyOn(sibling.getObjectByName('Fighter_Body').skeleton, 'dispose');
+        const cached = jest.spyOn(original.skeleton, 'dispose');
+        actor.userData.disposeInstance(); actor.userData.disposeInstance();
+        expect(own).toHaveBeenCalledTimes(1);
+        expect(other).not.toHaveBeenCalled(); expect(cached).not.toHaveBeenCalled();
+        expect(original.skeleton).not.toBe(shell.skeleton);
+    });
+
+    test('keeps different inverse matrices and joint ordering as separate body rigs', () => {
+        const source = fixture(), body = source.scene.getObjectByName('Fighter_Body');
+        const offset = body.clone(false); offset.name = 'OffsetSkin'; offset.skeleton = body.skeleton.clone();
+        offset.skeleton.boneInverses = offset.skeleton.boneInverses.map(matrix => matrix.clone());
+        offset.skeleton.boneInverses[1].elements[12] = .1;
+        const reordered = body.clone(false); reordered.name = 'ReorderedSkin'; reordered.skeleton = body.skeleton.clone();
+        [reordered.skeleton.bones[1], reordered.skeleton.bones[2]] = [reordered.skeleton.bones[2], reordered.skeleton.bones[1]];
+        source.scene.add(offset, reordered);
+        const actor = createAuthoredFighterInstance(source);
+        expect(new Set(['Fighter_Body', 'OffsetSkin', 'ReorderedSkin'].map(name => actor.getObjectByName(name).skeleton)).size).toBe(3);
+    });
+
     test('normalizes feet and height without scaling skeleton or authority root separately', () => {
         const source = fixture(), actor = createAuthoredFighterInstance(source, { quality: 'low' });
         const bounds = new THREE.Box3().setFromObject(actor, true);

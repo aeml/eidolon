@@ -30,6 +30,26 @@ export function fighterRuntimePath(quality = 'high') {
     return FIGHTER_RUNTIME_PATHS[quality === 'low' ? 'low' : 'high'];
 }
 
+// SkeletonUtils clones each skinned submesh's skeleton, even for one GLTF skin.
+// Reuse only exact rigs inside this freshly cloned actor. Each mesh keeps its
+// own bind matrices/mode; source rigs, equipment and other actors stay separate.
+function shareClonedBodySkeletons(scene) {
+    const rigs = new Map();
+    scene.traverse(part => {
+        if (!part.isSkinnedMesh) return;
+        const skeleton = part.skeleton;
+        if (!skeleton.boneInverses.every(matrix => matrix.elements.every(Number.isFinite))) return;
+        const key = skeleton.bones.map(bone => bone.uuid).join('|');
+        const candidates = rigs.get(key) || [];
+        const match = candidates.find(candidate =>
+            candidate.bones.every((bone, index) => bone === skeleton.bones[index]) &&
+            candidate.boneInverses.length === skeleton.boneInverses.length &&
+            candidate.boneInverses.every((matrix, index) => matrix.equals(skeleton.boneInverses[index])));
+        if (match) part.skeleton = match;
+        else { candidates.push(skeleton); rigs.set(key, candidates); }
+    });
+}
+
 export function createAuthoredFighterInstance(gltf, { quality = 'high', actorClass = 'Fighter', equipmentLoader, motionAnimations } = {}) {
     if (!gltf?.scene || !Array.isArray(gltf.animations)) throw new Error('Fighter scene and animation clips are required');
     const clips = new Set(gltf.animations.map(clip => clip.name));
@@ -52,6 +72,7 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high', actorCla
         }
     });
     if (!skinCount) throw new Error('Fighter has no skinned meshes');
+    shareClonedBodySkeletons(scene);
     scene.updateMatrixWorld(true);
     const bounds = new THREE.Box3().setFromObject(scene, true);
     const size = bounds.getSize(new THREE.Vector3());
@@ -103,8 +124,8 @@ export function createAuthoredFighterInstance(gltf, { quality = 'high', actorCla
         if (disposed) return;
         disposed = true;
         if (equipmentLoader) clearFittedEquipment(root); else clearAuthoredFighterEquipment(root);
-        // SkeletonUtils clones each skeleton; only geometry/material/texture
-        // resources are shared with other actors or the cached source.
+        // Exact body rigs may be shared within this clone, never with another
+        // actor or the cached source. Dispose each owned skeleton only once.
         const skeletons = new Set();
         scene.traverse(part => { if (part.isSkinnedMesh) skeletons.add(part.skeleton); });
         for (const skeleton of skeletons) skeleton.dispose();

@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 exact cloned-body skeleton work:** Equipment candidate d55 hardware
+trial measurably removes339/346 duplicate visible skeletons per floor with
+unchanged geometry/draw counts, but all original median gates still FAIL.
+Receipt retains full report hash; no frame-time acceptance claimed. Actual
+class GLBs have11-14 submeshes using one skin. Clone-local exact bone/inverse
+sharing now retains per-mesh bind matrices/mode, source and sibling ownership,
+and unchanged animated surfaces.84 affected tests PASS3.708s/scoped lint and
+whitespace pass. Next one changed-source hardware trial at original targets,
+not a100 backend replay. Production1.78/full1.79 publication remain unchanged.
+
 **October7 current casino attribution / exact-skeleton candidate:** Previous
 turn completed actual100 simultaneous encounter/save coverage and rejected an
 unused texture candidate: progress. One CDP diagnostic of corrected current

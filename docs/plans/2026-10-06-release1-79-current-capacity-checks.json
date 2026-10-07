@@ -3,8 +3,20 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "6c79d56d8025fe51ef7d8c531135c17dc946b2f9",
   "driverCommit": "0ce7c39d",
-  "clientRuntimeCommit": "78e1a217",
+  "clientRuntimeCommit": "d55e9ae5 plus exact cloned-body skeleton candidate",
   "status": "integrated100-functional-pass-render-median-targets-failing-release-gates-open",
+  "october7EquipmentSkeletonResult": {
+    "sourceCommit": "d55e9ae5",
+    "result": "Terminal session30509 exit1: all crowd/class/legal-kit/seating/floor/hardware/180frame checks pass; all four original median gates still FAIL. High public26ms/P9532.6ms, VIP28.4ms/P9536.2ms; Low public22.5ms/P9529.9ms, VIP20.6ms/P9524.4ms. Original High25/Low20ms median and High50/Low33.3ms P95 gates unchanged.",
+    "deterministicWork": "562/572 visible skinned meshes use223/226 unique skeletons instead of one per mesh:339/346 fewer skeleton uploads per floor. Draw counts990/1001/873/841 and triangle counts3125413/3400069/2621300/2623752 are unchanged. Renderer textures350/596/731/977 include prior-floor cached resources; reductions relative to78 are339 for public samples and685 cumulative by VIP samples, not346 isolated total-texture reductions.",
+    "limits": "Shared-host idle10-16% and load16.52-19.95 prevent causal FPS attribution. Keep the exact owned-equipment optimization for its measured skeleton/upload reduction, not a claimed frame-time acceptance. No new native100 run, weakened targets or1.79 release.",
+    "evidence": {"report": "/tmp/eidolon-179-cohort-native-hK5OIy/casino-skeleton-report.json", "sha256": "03461d20179e47db12defb556d085e06bcf4c49e57360794286451d717c701c1"}
+  },
+  "october7BodySkeletonDeclaration": {
+    "sourceInspection": "Each actual High GLB has one skin shared by11 Fighter/14 Rogue/14 Cleric/12 Wizard mesh nodes. SkeletonUtils clones a separate Skeleton for every mesh. Share only exact ordered cloned bone identities plus finite exact inverse matrices within a single new actor, retaining every mesh bind matrix/mode and all geometry/morph/material/animation data. Never share cached-source, other-actor or equipment-owned rigs.",
+    "verification": "84 tests/four affected suites PASS3.708s; scoped ESLint and whitespace pass. New tests prove exact animated per-vertex surfaces with different mesh bind matrices, once-only disposal, independent source/sibling ownership, and separate rigs for changed inverse matrices or joint ordering. Immutable baseline routing also includes the changed AuthoredFighter module.",
+    "next": "One changed-source hardware rendering check with the same40total/20visible authored legal14piece crowd, per-frame sitting, actual Low bodies and unchanged original timing gates. No result claimed yet; no unchanged backend replay."
+  },
   "october7CurrentCasinoCPUAttribution": {
     "scope":"One diagnostic run of corrected current40-actor/20-visible-floor/legal14piece authored equipment/realLow-detail/per-frame seating fixture. CDP samples ONLY Low public; profiler overhead is explicit, not green FPS acceptance. Original median gates still fail. Runtime remains exact78e1a217 after unused texture candidate restoration, root receiptse4c46502. No new native100 test.",
     "profile":{"nodes":486,"samples":4784,"observedMilliseconds":6654.226,"selfPercent":{"matrixMultiply":11.22,"objectWorldMatrices":7.99,"sceneProjection":6.66,"WebGLObjectsUpdate":6.39,"textureSubImageUpload":4.58,"renderBufferDirect":3.87,"uniformRefresh":3.7,"programSetup":3.6,"skinnedMeshWorldMatrices":3.47}},
