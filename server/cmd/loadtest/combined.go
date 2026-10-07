@@ -34,6 +34,11 @@ func combinedAssignments(n int, credentials []BotCredentials, x, z float64) ([]b
 		start := block * 20
 		party := newPartyLoad(credentials[start:start+4], x, z)
 		party.targetClaims, party.targetGroup = claims, block
+		// Source-declared60-unit patrol, reached only by ordinary movement
+		// after live targets run out. Each cohort starts at a different route
+		// point; no new enemies, raised stats, rewards or impact credit.
+		party.patrol = [][2]float64{{x, z}, {x + 60, z}, {x, z + 60}, {x - 60, z}, {x, z - 60}}
+		party.patrolNext = block % len(party.patrol)
 		parties = append(parties, party)
 		for local := 0; local < 20; local++ {
 			assignment := botAssignment{preserveGear: true}

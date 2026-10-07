@@ -44,6 +44,8 @@ type partyLoad struct {
 	joined           []bool
 	partyID          string
 	anchorX, anchorZ float64
+	patrol           [][2]float64
+	patrolNext       int
 	inviteIndex      int
 	inviteAt         time.Time
 	target           Entity
@@ -537,6 +539,16 @@ func (p *partyLoad) step(index int, me Entity, state map[string]Entity, now time
 	if target.ID == "" {
 		m.activity.noTarget++
 		if targetLeader {
+			// Combined open-world cohorts explore their fixed small route
+			// instead of farming one random spawn circle forever. Acquisition
+			// remains30 units around the current anchor; casts/hits are normal.
+			// Never change a dungeon, raid or event's authoritative route.
+			if p.dungeon == nil && p.raid == nil && p.event == nil && len(p.patrol) > 0 &&
+				math.Hypot(me.X-p.anchorX, me.Z-p.anchorZ) <= 3 {
+				point := p.patrol[p.patrolNext]
+				p.patrolNext = (p.patrolNext + 1) % len(p.patrol)
+				p.anchorX, p.anchorZ = point[0], point[1]
+			}
 			move(p.anchorX, p.anchorZ)
 		}
 		return

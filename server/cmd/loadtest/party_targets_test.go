@@ -1,11 +1,44 @@
 package main
 
 import (
+	"math"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
 )
+
+func TestCombinedPartiesExploreBoundedAreaWhenTargetsRunOutWithoutCredit(t *testing.T) {
+	_, parties, err := combinedAssignments(100, combinedFixtureCredentials(100), 400, 600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	now := time.Unix(100, 0)
+	for _, party := range parties {
+		for index := range party.members {
+			member := &party.members[index]
+			party.state(index, Entity{ID: member.id, Name: member.username, SubType: partyLoadClasses[index], Type: "Player", X: 400, Z: 600, Health: 100, MaxHealth: 100, Speed: 5, Level: 30}, now)
+			party.receive(index, partyRoster(party, 4), now)
+		}
+		explored := false
+		for step := 0; step < 3; step++ {
+			party.step(0, party.members[0].state, nil, now.Add(time.Duration(step)*100*time.Millisecond), time.Second, func(string, interface{}) error {
+				t.Fatal("empty observed world caused a cast or invented target")
+				return nil
+			}, func(x, z float64) {
+				distance := math.Hypot(x-400, z-600)
+				if math.IsNaN(distance) || math.IsInf(distance, 0) || distance > 60 {
+					t.Fatal("combined patrol left its predeclared bounded area")
+				}
+				explored = explored || distance > 0
+			})
+		}
+		counts := party.counts()
+		if !explored || counts.damage != 0 || counts.minImpacts != 0 || !counts.formed {
+			t.Fatal("combined cohort remains parked or manufactures combat credit")
+		}
+	}
+}
 
 func TestCombinedPartiesChooseDistinctLiveEnemiesWithoutChangingImpactGates(t *testing.T) {
 	_, parties, err := combinedAssignments(40, combinedFixtureCredentials(40), 400, 600)
