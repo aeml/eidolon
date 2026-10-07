@@ -2,6 +2,17 @@
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
   "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
+  "october7WeatheredRockLighting": {
+    "diagnosis":"Reviewed ordinary-gameplay rock capture exposes horizontal lighting bands across gentle shoulder joins. Every tier previously assigned independent flat quad normals, making eroded rocks read as stacked slabs. This is a visible code-owned environment gap, separate from raised-world budget failure.",
+    "change":"One-time crease-aware normals share lighting among adjacent gentle45-degree shoulder faces, retaining sharp cleaves and the crown independent. No added geometry, shader/postprocessing, per-frame work, asset import or collision/profile change.",
+    "red":"New shared gentle-joint regression FAIL with original normals dot0.8643006591166149 instead of continuous>0.998. Revised oracle reconstructs original quad normals from positions and separately retains sharp seams; no silhouette or performance requirement changed.",
+    "unit":"EarthOutcrops/WorldOutcropIntegration/WorldSurfaceDetail PASS14/17.634s; source cap/outward-normal/buried base/footprint/route-clearance checks retained. Focused lint/whitespace pass.",
+    "exactParity":"Independent read-only comparison imports prior eba90eae generator and compares all18 solids on flat and raised terrain:36/36 identical position/color/UV arrays, bounding boxes and spheres; only normals differ36/36. Server terrain recipe and collision byte inputs untouched.",
+    "native":"Root8167 consumed exit0; affected SystemChrome High elevation functional preview PASS1/12.0s. Existing picking, ordinary walk/jump, grounding, effect hierarchy and pixel-equivalent surface culling checks remain; native before/after rock captures inspected. Gentle shoulders now light more continuously; cleaves/crown/silhouette remain. Ground/plant repetition and overall modern-art quality still unfinished.",
+    "budgetScope":"Normals-only change retains exact road draw/triangle counts338165/320761/331040, still above250000 High. No redundant120-frame budget replay or claim that functional preview passes those failed budgets. Full normal-profile/combined/Low/art/ordered1.87 acceptance remains open.",
+    "evidence":{"directory":"/tmp/eidolon-187-weathered-rock-native-t1Ihgn","logSha256":"1985f61cfdd562509087bbe9567b5db12b6d927bd7b204c713947423cac0c7d8","sourceSha256":"434b5c0a8c7a61559ca9cea206f368ab96b6b162778534c2e251812587a2d4cd","beforeDirectory":"/tmp/eidolon-187-exact-foliage-native-9WmdRw/results"},
+    "cleanup":"Native command terminal/own4190 closed. No database, production or current1.79 source change. Keep future stage isolated until roadmap order/public qualification."
+  },
   "october7ExactFoliageBounds": {
     "change": "At construction/quality changes only, bound unchanged transformed foliage vertices instead of inflated transformed source spheres; affine shear remains contained. No leaf, mesh, material, placement, collision, shadow policy or LOD removed. Integrate existing1.79 all-realm64-unit cells and exact native comparison/profile instrumentation into this future stage only.",
     "red": "New actual transformed-radius regression FAIL: radius7.280521690569643 versus actual5.7611282283128995. Original geometry/matrices unchanged.",
