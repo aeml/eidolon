@@ -20,10 +20,19 @@
     "driverSha256": "52d657e05cce932ff70f94adeb4a733f75021f6a38250821e316de16e77e5cc6",
     "sourceProof": "All server source identical to clean harness build9a782ce4. Non-test normal implementation unchanged from independently identified clean8c API; driver source unchanged from clean80a. All actual byte hashes independently checked, supervisor guards all three. No unnecessary rebuild of unchanged implementation/artifacts.",
     "aggregateLog": "/tmp/eidolon-179-current-full100-evidence-45fEnb/run.log",
-    "futureFixture": "Not created yet: loopback32995/eidolon-179-current-full100-20261007/label current-full100179-20261007/Mongo7.0.14/disk-backed/memory2GiB/NanoCpus0. Record actual ID/original mounts after creation; no inferred cleanup target.",
+    "actualFixture": {
+      "observedAt": "2026-10-07T07:58:00Z",
+      "id": "bd548206dc62124d26a342e6ab91264a836f838baa2494d6bd814c7331b8fd0b",
+      "name": "eidolon-179-current-full100-20261007",
+      "label": "current-full100179-20261007",
+      "port": 32995,
+      "configVolume": "f9f9e880397cbca57f29ad39227dfcfec85dbaa576a2e4d205eb1b753110b197",
+      "dataVolume": "887b3bcf0fa597fc2e36b823d9b7cb87dd3c5055ac8cc56a382152d2894df831",
+      "state": "Actual named RUN; supervisor2887477 and harness3040364 independently live by exact argv. Docker ID/name/label/healthy state/original mounts/memory2147483648/NanoCpus0 independently inspected. Fixture is disk-backed, current natural-clock08:00 schedule unchanged; no result/API capacity/save acceptance or cleanup yet."
+    },
     "guards": "Source-clock and harness-source identity; all artifact hashes; minimum1GiB root availability; unused exact target; bounded Mongo health; no missed start window or named SKIP. Native unsetsGOMAXPROCS; no task browser/build overlap during measurement.",
     "scope": "Original80 mixed/5Earthraid/4naturally scheduled Root/11town; legal uncommon/rare role gear and normal rules/resources/rewards. Common108s minimum and every-member fresh views, party/social/all paid casino types, full3-room boss assault/checkpoint/three-wave manual crystal repair, all4 event waves/completion/exits and100 independent fresh normal saves. Original5s guards and separate10-to110s update+broadcast means sum33ms budget unchanged. Smaller focused passes/partial means cannot establish acceptance.",
-    "state": "Genuinely scheduled, no outcome/publication yet. Fresh remote c7c2c526/zero remote-only commits at07:41; fetch again before push. Later1.80–1.99 gates remain open."
+    "state": "Actual named test RUN/healthy fixture/harness confirmed07:58, waiting normal08:00 event start. No outcome/publication yet. Fresh remote c7c2c526/zero remote-only commits at07:41; fetch again before push. Later1.80–1.99 gates remain open."
   },
   "october7FocusedChecksCompleted": {
     "livingWire": {

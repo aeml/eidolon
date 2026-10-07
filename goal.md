@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 current full100 actual startup:** At07:58:00UTC root independently
+confirms named TestLoadCohortActual100MixedRaidEventAndSaves RUN, harness3040364
+and supervisor2887477 live by exact argv. Actual bd548206 disposable Mongo is
+healthy, memory2GiB/no CPU cap; exact ID/name/label/original f9f9e880/887b3bcf
+mounts recorded in1.79 receipt. No cleanup before terminal; logs/binaries retained.
+Unchanged natural08:00 clock, original workload/gates and Luna terminal-only
+monitor remain. No API/capacity/save result yet; root consumes7320 when terminal,
+audits actual original outcomes/33ms and exact owned cleanup before publication.
+
 **October7 permanent recovery regression wiring:** The expanded resource socket
 matrix was not actually selected by CI's disposable socket step; the broad
 suite cannot substitute because its required binary/disposable flags are absent.
