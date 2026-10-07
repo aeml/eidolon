@@ -17,10 +17,33 @@ function noise(x, y, cells, seed) {
     return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
 }
 
+function sampleWindWornSlate(x, y, seed) {
+    const turn = Math.PI * 2 / 256;
+    const broad = noise(x, y, 5, seed ^ 0x1491), grit = noise(x, y, 43, seed ^ 0x493f);
+    const weathering = noise(x, y, 7, seed ^ 0x7319);
+    // Warped, elongated mineral beds break into irregular ledges rather than
+    // parallel sinusoidal ripples or a cellular paving grid. Integer domain
+    // frequencies keep the same continuous geology across the tile boundary.
+    const bed = noise(x + Math.sin(y * turn) * 8, y * 3, 7, seed ^ 0x325a);
+    const strata = smooth(.4, .62, bed) * (1 - smooth(.28, .72, weathering));
+    const cover = smooth(.36, .7, broad);
+    const mineral = .22 + grit * .24 + strata * .28;
+    const dark = [58, 57, 64], light = [100, 98, 107], dust = [123, 120, 131];
+    const grain = hash(Math.floor(x), Math.floor(y), seed ^ 0xab3);
+    const color = dark.map((value, i) => {
+        const rock = value + (light[i] - value) * mineral;
+        return Math.round(rock + (dust[i] - rock) * cover * .36 + (grain - .5) * 2);
+    });
+    return { color, cover, strata,
+        height: .24 + strata * .068 + grit * .045 + cover * .024,
+        roughness: .72 + cover * .23 + grit * .025 };
+}
+
 export function sampleElementalTerrain(x, y, realm, seed) {
-    if (realm !== 'water' && realm !== 'fire') throw new TypeError(`Unsupported elemental surface: ${realm}`);
+    if (!['water', 'fire', 'air'].includes(realm)) throw new TypeError(`Unsupported elemental surface: ${realm}`);
     const frost = realm === 'water';
     x = wrap(x, 256); y = wrap(y, 256);
+    if (realm === 'air') return sampleWindWornSlate(x, y, seed);
     const turn = Math.PI * 2 / 256;
     // Anisotropic, warped fragments, rather than uniform hexagons. Domain warp
     // is periodic so the texture seam is no more visible than any other joint.
