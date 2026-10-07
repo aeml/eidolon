@@ -69,15 +69,18 @@ func (sm *SpatialMap) Remove(e *Entity) {
 }
 
 func (sm *SpatialMap) Update(e *Entity, oldX, oldZ float64) {
-	sm.Mu.Lock()
-	defer sm.Mu.Unlock()
 	// Note: We assume InstanceID doesn't change during a normal Update call.
 	// If it does (EnterInstance), we should use Remove() then Add() manually.
+	// The caller owns the actor's position, so a move inside its existing cell
+	// cannot change either membership index. Do not serialize all moving actors
+	// on Grid.Mu just to discover that this update has no spatial work.
 	oldKey := sm.key(oldX, oldZ, e.InstanceID)
 	newKey := sm.key(e.X, e.Z, e.InstanceID)
 	if oldKey == newKey {
 		return
 	}
+	sm.Mu.Lock()
+	defer sm.Mu.Unlock()
 	removeSpatialMember(sm.cells, oldKey, e.ID)
 	addSpatialMember(sm.cells, newKey, e)
 	if e.Type == TypePlayer {

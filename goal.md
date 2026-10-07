@@ -1,5 +1,30 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 profiled same-cell spatial-lock candidate:** After native terminal,
+current world profile attributes99.78% sampled mutex waiter delay to grid
+updates. They acquired the global write lock even for unchanged cell keys.
+Move only that exact same-key return before the lock; retain cross-cell locked
+dual-index transactions, all actors/timers/target rules and explicit transfers.
+Six held-lock/identity cases plus existing spatial/live-target/world-update race
+scope PASS2.935s. Short3s full-population100-idle diagnostic11.04→7.17ms,
+49 allocations unchanged; aggregate waiter delay34.07→5.97s over different
+iteration counts. Evidence retained, not native headroom proof. No speculative
+broadcast cache, client replay, scope/gate reduction or production mutation.
+Next exact changed-runtime artifacts/check; full goal and1.79 publication open.
+
+**October7 changed-API100 functional/save PASS / frame budget still open:**
+Root consumed native48713 exit0 and actual named PASS581.88s, not SKIP;
+Luna independently anchors terminal.100 clients overlap112882ms and all100
+independent normal fresh saves pass. Earth5 clears three rooms/boss/three-wave
+Vigil,12 earned checkpoint returns and17 completed recoveries; Root4 completes
+four waves/town exits and10 completed recoveries. No failed recovery or relaxed
+gate. Normal5s drain journals393ms/commits1172ms. Hashes/aggregate evidence
+retained. Only validated synthetic32979 Mongo and two original anonymous
+volumes removed after terminal; production/shared cache/soak unchanged.
+41.74ms original phase sum remains over33ms, so no performance acceptance or
+own1.79 push. Next short current-source CPU/mutex profiles—not another unchanged
+100 replay—to attribute remaining cost. Full1.99 objective remains active.
+
 **October7 live changed-API trial / timing evidence:** Revalidated exact
 supervisor272773/native48713 as live, with no restart. Natural Root group now
 completes four waves/all four exits; raid and independent100 saved checks

@@ -5,7 +5,50 @@ import (
 	"math"
 	"sync"
 	"testing"
+	"time"
 )
+
+func TestSpatialSameCellUpdateDoesNotWaitForMembershipLock(t *testing.T) {
+	for _, kind := range []EntityType{TypePlayer, TypeEnemy} {
+		for _, x := range []float64{-49, .01, 50.01} {
+			t.Run(fmt.Sprintf("%s/%g", kind, x), func(t *testing.T) {
+				grid := NewSpatialMap(50)
+				actor := &Entity{ID: "same-cell-live", Type: kind, InstanceID: "raid:spatial", X: x, Z: -49}
+				grid.Add(actor)
+				actor.Mu.Lock()
+				defer actor.Mu.Unlock()
+				oldX, oldZ := actor.X, actor.Z
+				actor.X, actor.Z = x+.25, -48
+				grid.Mu.Lock()
+				var release sync.Once
+				done := make(chan struct{})
+				go func() { grid.Update(actor, oldX, oldZ); close(done) }()
+				defer func() {
+					release.Do(grid.Mu.Unlock)
+					select {
+					case <-done:
+					case <-time.After(2 * time.Second):
+						t.Error("owned spatial update did not join")
+					}
+				}()
+				select {
+				case <-done:
+				case <-time.After(2 * time.Second):
+					t.Fatal("same-cell move waited for an unrelated membership lock")
+				}
+				release.Do(grid.Mu.Unlock)
+				got := grid.Nearby(actor.X, actor.Z, 0, actor.InstanceID)
+				if len(got) != 1 || got[0] != actor {
+					t.Fatal("same-cell move changed general membership or actor identity")
+				}
+				players := grid.nearbyType(actor.X, actor.Z, 0, actor.InstanceID, TypePlayer)
+				if kind == TypePlayer && (len(players) != 1 || players[0] != actor) || kind != TypePlayer && len(players) != 0 {
+					t.Fatal("same-cell move changed player-only membership")
+				}
+			})
+		}
+	}
+}
 
 func TestSpatialCellsNearbyMatchesOriginalSceneAndCellBounds(t *testing.T) {
 	grid := NewSpatialMap(50)
