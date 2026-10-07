@@ -421,11 +421,11 @@ Notes:
 ## Project Status
 
 - Current source version: `Alpha 1.79.0`, prepared in an isolated worktree and
-  not deployed. An earlier exact-source trial passed representative100 mixed/
-  raid/event/town gameplay and independent saves, but exceeded the33ms server
-  phase target. The latest API trial failed on event expiry; a proven bot-regroup
-  repair passes its affected tests and awaits changed-driver qualification.
-  Neither partial outcomes nor older passes certify the current candidate.
+  not deployed. Current identified API/driver qualification passed representative
+  100 mixed/raid/event/town clients,112958ms common activity and100 independent
+  fresh saves. Original server phase means total18.8475ms against33ms; all
+  member combat, paid casino, raid repair/checkpoint and event-wave gates pass.
+  Earlier failed experiments and source-specific limits remain recorded.
   Exact actor/equipment skeleton
   sharing and reduced seated matrix work retain all authored art and pass the
   original controlled casino High/Low targets with40 fully equipped characters.

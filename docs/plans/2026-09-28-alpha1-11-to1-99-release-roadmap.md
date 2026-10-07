@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October7 latest qualification supersedes the historical pending/failure states
+below: exact current c323 driver/8c API/9a harness full100 PASS584.92s, common
+112958ms and100 independent fresh saves. All four event members and five raid
+members completed their wave/repair/checkpoint/outcome gates. Original phase
+budget checker PASS18.847513ms against33ms; no weakened rules or workload.
+Exact evidence and disposable cleanup are retained in the1.79 capacity receipt.
+Ordered1.79 CI/live publication is next, not yet accepted. This does not close
+modern art, whole-campaign pacing, broader device support, operational objectives
+or beta/launch gates; older source-specific failures remain historical evidence.
+
 October7 current1.79 work: latest completed pre-roster86c normal API/database passes100 simultaneous
 mixed/raid/event/town clients with112735ms actual overlap and100 independent
 ordinary saved outcomes, including full Earth assault/three-wave crystal defense

@@ -4,7 +4,20 @@
   "sourceCommit": "6c79d56d8025fe51ef7d8c531135c17dc946b2f9",
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
-  "status": "casino-roster-and-fresh-poker-candidate-qualification-open",
+  "status": "current-full100-functional-and-original-phase-budget-passed-ci-public-open",
+  "october7CurrentQualification": {
+    "result": "Root57874 consumed exit0; original TestLoadCohortActual100MixedRaidEventAndSaves PASS584.92s, terminal2026-10-07T08:46:50Z. Current c323 driver/unchanged8c API/9a harness exactly as declared below; no clock, gameplay, workload, deadline or gate relaxation.",
+    "clients": 100,
+    "commonActiveMs": 112958,
+    "independentFreshSaves": 100,
+    "scopes": "Mixed80 paid casino/party/social all-member gates, town11, event4 all four own waves/completed/exited and9/9 recoveries, raid5 full3-room assault/one boss/three own repair waves/restored/exited and13 checkpoint returns; all read/write/decode errors0.",
+    "originalBudget": {"updateSamples":3012,"updateMicros":20464094,"updateMeanMs":6.794187915006639,"broadcastSamples":3011,"broadcastMicros":36292563,"broadcastMeanMs":12.053325473264696,"sumOfMeansMs":18.847513388271334,"limitMs":33,"passed":true,"scope":"Original10s-to110s elapsed phase means, unequal sample counts retained; independent unchanged verify-cohort-budget.mjs exit0. Not paired-frame percentiles, GPU or launch capacity certification."},
+    "process": {"samples":408,"failed":0,"elapsedSeconds":407.693028861,"cpuCorePercentMean":82.92268350638453,"cpuCorePercentMax":256.80005547680577,"peakSampledResidentBytes":175128576},
+    "shutdown": "All eight ordinary phases;100 journals prepared/failed0/394ms,100 commits/retainedfalse/1093ms. Independent100 saved outcomes additionally checked by original test.",
+    "evidence": {"aggregateLog":"/tmp/eidolon-179-contested-full100-evidence-nlxwsB/run.log","aggregateSha256":"6d378a5aaaa27c314630baf6c066491753631e6eedbced41de49ba6b4711afd3","serverLog":"/tmp/eidolon-compat-session-1184490156/server.log","serverSha256":"df9950b54c6c509ee420b1e8c040e1ff202ec7195f371f1c140e69db85628a9c","processObservations":"/tmp/eidolon-compat-session-1184490156/process-observations.json","processSha256":"0563ca585e64dc61867977ecfde6ee5f7c9196a1b7640ce08450389479568397"},
+    "cleanup": "Exact e514f838 fixture/name/eidolon.fixture label/original599af4cb config and15aaa409 data mounts verified after terminal and absence of supervisor/API/driver/harness. Stopped/removed only this disposable container and both original volumes; evidence/executables retained. Production/player data untouched.",
+    "limitations": "Own1.79 CI/public verification still open. Shared-host controlled workload is not general100-player capacity, whole campaign/device/art acceptance, SLA or beta/launch signoff. Historical failed experiments retained below."
+  },
   "october7ContestedWardNativeDeclaration": {
     "handle": "Root57874 owns supervisor3240801, independently live by exact argv bash /tmp/eidolon-179-contested-full100-evidence-nlxwsB/run.sh and log at08:21UTC. Actual started2026-10-07T08:21:18Z; setup08:37/natural Root08:40UTC. Existing authorized Luna terminal-only monitor reused; root owns session consumption/gate audit/exact terminal fixture cleanup.",
     "driverSource": "c3232dfee4a11836c43c30f7a1247aaf769ace54",

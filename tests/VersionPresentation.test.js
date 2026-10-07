@@ -16,8 +16,8 @@ test('1.79.0 explains current multiplayer and equipped-render work without claim
         'request-local current-player roster', 'no roster is cached between requests',
         'Poker buy-ins distinguish a changed hand from an invalid stake',
         'without repeating uncertain wagers or counting unobserved payouts',
-        'Performance qualification remains open', '36.41 ms against the original 33 ms target',
-        'latest candidate still needs integrated qualification', 'Water, Fire and Air foliage',
+        '18.85 ms against the original 33 ms target', '112.96 seconds of common activity',
+        'without relaxing the workload or deadlines', 'Water, Fire and Air foliage',
         'up to 250 ms', 'at most 16 waiting requests', 'per-account limits do not increase', 'Failed experiments',
         'not 100-player capacity certification', 'No account wipe', 'new schema migration',
         'beta-access restriction', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
