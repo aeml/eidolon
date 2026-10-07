@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 staged normal terrain delivery prepared during verified wait:**
+Separate1.87 ca374ffe replaces QA-only normal startup with negotiated raised
+Earth/rock profile; explicit flat-v1 CLI/Compose rollback, unknown-profile
+refusal and original QA allowlist remain. New default regression initiallyFAIL;
+five final root checks racePASS1.634s, affected terrain/rock/gameplay race
+PASS13.366s, NetworkManagerPASS59/0.797s with three same-profile resumes.
+Legacy partial resources/progress/coordinates and town/instance floors checked.
+Actual source/limits recorded in future1.87 receipt. No live env/DB change or
+current1.79 implementation drift; all builds/tests terminal before08:32 setup.
+Raised-world budgets/final modern art and native ordinary-profile qualification
+remain mandatory; future source must integrate later1.79 before publication.
+
 **October7 changed-driver native qualification scheduled:** Root57874 owns
 supervisor3240801, independently live by exact argv/log at08:21UTC. Actual
 setup08:37/natural Root08:40; no accelerated clock. Clean c3232dfe driver
