@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 1.80 concrete successor work:** Real handshake regressions reproduced
+host-only Origin parsing admitting malformed tuples and duplicate headers.
+Corrected server tuple/cardinality validation while preserving current hosts,
+local ports and authenticated native compatibility; scoped race checks PASS1.122s.
+Local only, not deployed. [Threat/exception ledger](docs/plans/2026-10-07-release1-80-threat-and-exception-ledger.md)
+maps twelve boundaries and nine open issues; exact accepted content/dependency
+Git snapshot retained in freeze preparation. Service-policy choice asked once
+as a nonblocking owner question. F1–F5 freeze and full goal remain open.
+
 **October7 accepted live checkpoint:** Alpha1.79.0 at b5c3981e, CI37600167508
 passed all ten jobs. Independent terminal public checks matched both identities,
 database readiness, login/notes and eleven exact runtime files. Approved ongoing

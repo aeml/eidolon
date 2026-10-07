@@ -2,6 +2,36 @@
   "schema": 1,
   "milestone": "1.80 launch feature freeze",
   "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
+  "october7CatalogCandidateNotFreeze": {
+    "sourceCommit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+    "method": "Read exact accepted Git trees/blob bytes, not mutable working-directory caches. Git object identities are SHA1; separate input byte hashes are SHA256. Counts include source assets and tests/non-shipped files, not a publisher allowlist or license approval.",
+    "trees": {
+      "assets": {"gitTree": "70d9114c9e6bb19a386d740c661e45cd97317f31", "trackedFiles": 580},
+      "src/art": {"gitTree": "76b686693c3550c25ee66da5ecd91a715b5b76d0", "trackedFiles": 111},
+      "src/data": {"gitTree": "17268396c2a5518236760d606e1a006633c0c47c", "trackedFiles": 28},
+      "src/ui": {"gitTree": "9ee5a7f1d8722722ccfc260da1d9c5b8ee771b95", "trackedFiles": 99},
+      "server/internal/game/content": {"gitTree": "c68d6a8e5f2721336d4e315ae77f0cd8fa9c71fb", "trackedFiles": 12},
+      "server/internal/game": {"gitTree": "45fb04acbb93444c9ff0ce92b8bcd8e75363cd24", "trackedFiles": 550},
+      "scripts": {"gitTree": "18a7a2bd5185c9312122d6680497df65fe55a836", "trackedFiles": 38}
+    },
+    "inputSha256": {
+      "package.json": "fe064ebf2d83247581b3126f8a642f86a07caf8e21d096f64aeecd94cfccfd8a",
+      "package-lock.json": "33fb3f2af672eff7d1e90a4dee5456c04f6efbcf162b25b70553382e3d4ea793",
+      "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
+      "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
+      "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f",
+      ".github/workflows/ci.yml": "ce2a95c5fa45364c9d16695f6c5fd7af81441af5af298d858c9270bf1e9d26f7"
+    },
+    "limits": "Preserve this accepted baseline for final catalog comparison. Local origin correction changes server/main.go; later qualified art/compatibility/trust candidates must appear as reviewed exceptions in the final freeze revision. No dependency update, catalog exclusion, unpublished1.87 import or content lock inferred."
+  },
+  "october7OriginAndThreatLedger": {
+    "baseline": "Accepted1.79 b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+    "reproduction": "Real WebSocket handshake regressions failed on accepted source: host-only parsing admitted non-web schemes, resource URLs, userinfo, invalid ports and first-of-multiple Origin headers. This is an admission parsing gap, not demonstrated account/role bypass; native clients may omit Origin and still require authentication.",
+    "correction": "Require one nonempty HTTP(S) scheme/host/optional-valid-port tuple when Origin is provided. Reject userinfo/path/query/fragment and empty/out-of-range ports. Retain exact existing allowed host catalog, local development ports and absent-Origin native compatibility. No credential, CORS/domain, role, item or saved-data policy changes.",
+    "verification": "Original two handshake suites failed before correction. Scoped race-enabled origin, WebSocket admission and inbound protocol/policy suite passed1.122s; no long100/native/provider rerun. Local only, not yet deployed.",
+    "ledger": "2026-10-07-release1-80-threat-and-exception-ledger.md",
+    "remaining": "Twelve adversarial boundaries reviewed with actual controls and retained limits; nine named remaining issues preserve deployment trust, operations/recovery decisions, modern art/raised terrain, rights and human evidence. This is not penetration certification or F1–F5 freeze acceptance."
+  },
   "october7OrderedPrerequisite": {
     "acceptedLiveVersion": "Alpha 1.79.0",
     "commit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
