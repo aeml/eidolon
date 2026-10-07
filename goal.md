@@ -1,5 +1,35 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 observed-patrol native100 PASS208.60s:** Normal API6c79d56d,
+fresh74082009 driver/harness, explicit120-unit observed exploration/original
+30-unit acquisition and all original100/120s/5s/every-member/paid/social/save
+gates. Every class member contributes (minimum6 overall),1031 damage/24 heals;
+all100 normal independent fresh saves pass. Recovery summary now retained:
+0requested/0pending/0failed. All eight drain stages complete;100journals96ms,
+100serial commits295ms. Root consumed terminal83387, retained evidence hashes,
+then removed only validated synthetic Mongo32975; label/port/process checks empty.
+Two-runtime-core diagnostic still observes15.24ms update+22.66ms broadcast and
+432ms gap; no smoothness/headroom or complete1.79 claim. Changed footprint,
+combat throughput/random host prevent causal comparison. Read-only inspection
+shows actual production has no CPU/memory quota, GOMAX unset, affinity0-15 and
+cgroup cpu.max=max100000—not a two-core configured deployment. Predeclare a
+production-matching disposable resource profile before more optimization;
+16available logical CPUs are not reserved headroom. Simultaneous raid/event/
+renderer evidence and own1.79 version/publication remain open; production1.78.
+
+**October7 observed-patrol preparation:** Controller74082009 addresses a
+reproduced geometric blind spot: all parties' shared60-unit route ignores a
+visible living unclaimed enemy at offset(75,75), outside every30-unit circle.
+After local targets run out, ordinary walking can now seek observed opportunities
+within120 of the original camp, retaining30-unit acquisition/actual cast range,
+all claims/cohort/every-member outcomes, and60-unit empty-view fallback.
+No spawn/stat/reward changes or dungeon/raid/event controller changes. Full
+driver race PASS17.693s/root count/view guards1.061s. Forward previously discarded
+existing recovery summary and incomplete-group numeric evidence, no private IDs.
+Last native cause NOT proved. API/game unchanged from6c79d56d; reuse its exact
+normal artifact and build fresh740 driver/harness for one changed-profile test.
+Expanded footprint explicit, not pure causal comparison.1.79 full gates open.
+
 **October7 spatial native100 FAIL210.41s:** Exact6c79d56d normal API/driver/
 separate race harness, unchanged bounded-patrol controller and original100/
 120s/every-member/paid/social/5s gates.100 admitted/sustained-own, casino and
