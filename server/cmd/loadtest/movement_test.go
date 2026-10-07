@@ -120,6 +120,46 @@ func TestBotRecoveryTimeoutKeepsFirstFixedFailureStage(t *testing.T) {
 	}
 }
 
+func TestBotRecoveryTimeoutRetainsOnlyFreshFixedTownBlocker(t *testing.T) {
+	now := time.Unix(100, 0)
+	for _, scenario := range []string{"dead", "zero-health", "away", "nan", "instance", "invalid", "before-echo"} {
+		t.Run(scenario, func(t *testing.T) {
+			movement := &botMovement{recovery: "private-nonce", awaitingTown: true, recoveryAt: now, requested: 1}
+			me := Entity{Type: "Player", X: -1.25, Z: 200, Health: 100}
+			want := failureRecoveryTownStateTimeout
+			switch scenario {
+			case "dead":
+				me.State, want = "DEAD", failureRecoveryTownDead
+			case "zero-health":
+				me.Health, want = 0, failureRecoveryTownDead
+			case "away":
+				me.X, want = 400, failureRecoveryOutsideTown
+			case "nan":
+				me.X, want = math.NaN(), failureRecoveryOutsideTown
+			case "instance":
+				me.InstanceID, want = "private-scene", failureRecoveryWrongScene
+			case "invalid":
+				me.Type = "Enemy"
+			}
+			if scenario == "before-echo" {
+				me.State = "DEAD"
+				movement.observePlayer(me)
+			}
+			movement.updateContext(json.RawMessage(`{"movementContext":"private-nonce"}`))
+			if scenario != "before-echo" {
+				movement.observePlayer(me)
+			}
+			if !movement.expire(now.Add(time.Second), time.Second) || movement.failure() != want || movement.counts().completed != 0 {
+				t.Fatal("timeout lost its fresh blocker or credited an invalid recovery")
+			}
+			movement.observePlayer(Entity{Type: "Player", X: -1.25, Z: 200, Health: 100})
+			if movement.failure() != want || movement.counts().completed != 0 {
+				t.Fatal("late town state replaced or waived original failure")
+			}
+		})
+	}
+}
+
 func TestBotMovementActualWirePassesGameAuthorityAndRotatesRecoveryContext(t *testing.T) {
 	upgrader := websocket.Upgrader{}
 	packets := make(chan Message, 8)

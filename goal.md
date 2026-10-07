@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 recovery gap and focused diagnosis preparation:** All eight added
+class/death-indicator regression cases fail before repair: living unstuck
+refills health. Keep both bars/fractions on living recovery; death refills and
+normal10%/s town regen/rest remain. Focused game race PASS3.517s and draft1.79
+notes updated, not live. Fixed diagnostic stages now identify fresh dead-town,
+away/scene blockers without private state; bot race PASS1.269s/root schema
+PASS0.021s. Retire only obsolete pre-start supervisor2563056 after exact argv/
+no-fixture verification; root71190 exit143. Prepare changed identified diagnostic
+artifacts for four-class natural Root, not another full100 test or current
+capacity acceptance. The captured ca64 API diagnoses the prior failure; newer
+living-resource fix still requires its own current qualification before deploy.
+
 **October7 event-regroup qualification failed / recovery diagnostics:** Changed
 649e driver/unchanged identified ca64 API actual full test FAIL361.33s; root73372
 consumed exit1, supervisor terminal06:43:06UTC. Event13 requested/12 completed

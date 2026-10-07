@@ -22,6 +22,7 @@ type botMovement struct {
 	requested, completed uint64
 	failed               bool
 	failureStage         loadFailureStage
+	townFailureStage     loadFailureStage
 }
 
 type recoveryCounts struct {
@@ -40,10 +41,27 @@ func (m *botMovement) counts() recoveryCounts {
 func (m *botMovement) observePlayer(me Entity) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if !m.failed && m.awaitingTown && m.known && me.Type == "Player" && me.Health > 0 && me.State != "DEAD" && me.InstanceID == "" && math.Hypot(me.X+1.25, me.Z-200) <= 2 {
-		m.awaitingTown = false
-		m.completed++
+	if m.failed || !m.awaitingTown || !m.known {
+		return
 	}
+	m.townFailureStage = failureRecoveryTownStateTimeout
+	if me.Type != "Player" {
+		return
+	}
+	if me.InstanceID != "" {
+		m.townFailureStage = failureRecoveryWrongScene
+		return
+	}
+	if !(math.Hypot(me.X+1.25, me.Z-200) <= 2) {
+		m.townFailureStage = failureRecoveryOutsideTown
+		return
+	}
+	if me.Health <= 0 || me.State == "DEAD" {
+		m.townFailureStage = failureRecoveryTownDead
+		return
+	}
+	m.awaitingTown = false
+	m.completed++
 }
 
 func (m *botMovement) expire(now time.Time, timeout time.Duration) bool {
@@ -54,6 +72,8 @@ func (m *botMovement) expire(now time.Time, timeout time.Duration) bool {
 		m.failureStage = failureRecoveryTownStateTimeout
 		if m.recovery != "" {
 			m.failureStage = failureRecoveryEchoTimeout
+		} else if m.townFailureStage != failureUnknown {
+			m.failureStage = m.townFailureStage
 		}
 	}
 	return m.failed
@@ -79,6 +99,7 @@ func (m *botMovement) updateContext(payload json.RawMessage) bool {
 	}
 	m.context, m.known = *update.Context, true // Empty initial context is valid, missing is not.
 	m.recovery = ""
+	m.townFailureStage = failureUnknown // Only a fresh post-echo observation explains town failure.
 	return true
 }
 
@@ -148,6 +169,7 @@ func (m *botMovement) recover(connection *websocket.Conn, kind string) bool {
 	}
 	m.recovery, m.known = context, false
 	m.awaitingTown, m.recoveryAt = true, time.Now()
+	m.townFailureStage = failureUnknown
 	m.requested++
 	return true
 }

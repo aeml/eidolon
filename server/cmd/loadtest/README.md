@@ -75,7 +75,10 @@ own-player state shows alive in Lanternhold. A stale echo, missing nonce/state
 acknowledgement or expiry at the declared admission timeout fails without retry.
 Recovery timeouts retain a fixed `recovery_echo_timeout` or
 `recovery_town_state_timeout` failure stage, distinguishing a missing nonce echo
-from a missing fresh own-player town state after the echo. Neither relaxes the
+from a missing fresh own-player town state after the echo. Fresh post-echo own
+states can additionally identify `recovery_town_dead`, `recovery_outside_town`
+or `recovery_wrong_scene`; a state from before the echo is not diagnostic proof.
+None relaxes the
 original deadline or retries the recovery; a late response cannot replace or
 waive the first failure. No nonce, actor identity or raw payload is logged.
 

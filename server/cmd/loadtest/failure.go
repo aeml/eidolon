@@ -40,6 +40,9 @@ const (
 	failureServerRespawnRequired
 	failureRecoveryEchoTimeout
 	failureRecoveryTownStateTimeout
+	failureRecoveryTownDead
+	failureRecoveryOutsideTown
+	failureRecoveryWrongScene
 )
 
 func (p *partyLoad) failAt(stage loadFailureStage) {
@@ -94,6 +97,12 @@ func (p *partyLoad) failureCode() string {
 		return "recovery_echo_timeout"
 	case failureRecoveryTownStateTimeout:
 		return "recovery_town_state_timeout"
+	case failureRecoveryTownDead:
+		return "recovery_town_dead"
+	case failureRecoveryOutsideTown:
+		return "recovery_outside_town"
+	case failureRecoveryWrongScene:
+		return "recovery_wrong_scene"
 	case failureWeeklyPhaseEnvelope:
 		return "weekly_phase_envelope"
 	case failureWeeklyPhaseScene:
