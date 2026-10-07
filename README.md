@@ -420,8 +420,10 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.0`, prepared in an isolated worktree and
-  not deployed. Current identified API/driver qualification passed representative
+- Current source version: `Alpha 1.79.0`, accepted live atb5c3981e after
+  CI37600167508 passed all ten jobs and independent public checks matched both
+  identities/readiness, login/notes and eleven runtime files. [Acceptance receipt](docs/plans/2026-10-07-release1-79-public-checks.json)
+  preserves skipped QA scopes. Current identified API/driver qualification passed representative
   100 mixed/raid/event/town clients,112958ms common activity and100 independent
   fresh saves. Original server phase means total18.8475ms against33ms; all
   member combat, paid casino, raid repair/checkpoint and event-wave gates pass.
@@ -430,9 +432,9 @@ Notes:
   sharing and reduced seated matrix work retain all authored art and pass the
   original controlled casino High/Low targets with40 fully equipped characters.
   Shared-host server timing and limited headroom remain recorded limitations,
-  not100-player launch-capacity certification. Own1.79 CI/public acceptance is open.
+  not100-player launch-capacity certification.1.80 freeze reconciliation remains open.
   See [current capacity evidence](docs/plans/2026-10-06-release1-79-current-capacity-checks.json).
-  Production1.78 is accepted live atc7c2c526/CI37543824180, with exact public
+  Predecessor1.78 was accepted live atc7c2c526/CI37543824180, with exact public
   identity/readiness and independent monitor metadata checked. Owner-approved
   alerts use existing hosting/admin Postmark recipients; the separate test email
   reached its inbox. No repeat mail or production outage was fabricated.

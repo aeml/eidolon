@@ -8,6 +8,14 @@ do not close the whole goal or restart historical queues.
 
 ## Current checkpoint October 7
 
+Latest accepted live release is **Alpha1.79.0**, exact
+`b5c3981e060d6dea3ef50c9c2b4abb37999856db`, CI37600167508: all ten jobs passed.
+Independent post-terminal public checks matched frontend/backend, database
+readiness, login/notes and eleven exact runtime files. [Acceptance receipt](2026-10-07-release1-79-public-checks.json)
+retains skipped QA scopes and original100-client qualification limits. Approved
+ongoing alerts verified running; local API/database only. This supersedes prior
+publication states below. Next1.80 freeze reconciliation remains open.
+
 Accepted live release is Alpha1.78.0, exactc7c2c5260dd0ba806e34d81cdeec305dd2ccb3ae,
 CI37543824180. Its [operations receipt](2026-10-06-release1-78-current-operations-checks.json)
 records public identities/readiness, independent installed monitor and the

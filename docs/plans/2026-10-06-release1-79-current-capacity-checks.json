@@ -4,7 +4,14 @@
   "sourceCommit": "6c79d56d8025fe51ef7d8c531135c17dc946b2f9",
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
-  "status": "current-full100-functional-and-original-phase-budget-passed-ci-public-open",
+  "status": "accepted-live-current-full100-functional-and-original-phase-budget-passed",
+  "october7PublicAcceptance": {
+    "commit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+    "ci": 37600167508,
+    "result": "All ten jobs succeeded. Independent post-terminal IPv4 HTTPS identity, readiness, login/notes and eleven exact runtime files passed at2026-10-07T10:02:50.414Z. Both terminal handles consumed exit0.",
+    "receipt": "2026-10-07-release1-79-public-checks.json",
+    "limits": "Retain original qualification and historical failures. Four named CI animation/GPU/gameplay scopes skipped; no rerun or blanket capacity/beta/launch acceptance inferred."
+  },
   "october7FirstCITerminal": {
     "run":37596856794,
     "result":"Original run terminal failure independently inspected and confirmed by authorized Luna. Only Client Tests/coverage failed the retained stale seating fixture. Server Go and all three browser smoke shards passed. All five downstream release-input/predeploy/deploy/live jobs skipped; no1.79 production acceptance.",

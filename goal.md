@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 accepted live checkpoint:** Alpha1.79.0 at b5c3981e, CI37600167508
+passed all ten jobs. Independent terminal public checks matched both identities,
+database readiness, login/notes and eleven exact runtime files. Approved ongoing
+Postmark alerts verified running at30s/3 failures/2 recoveries/30m reminders;
+local API/database coverage only. [Acceptance receipt](docs/plans/2026-10-07-release1-79-public-checks.json).
+This supersedes historical in-progress publication paragraphs below. Continue
+1.80 F1–F5 reconciliation; neither freeze nor full roadmap goal is complete.
+
 **October7 current trust-boundary review / rejected render tradeoff:** Actual
 qualified1.79 production diff reviewed against live1.78: bounded login queue,
 operation-local casino roster, exact scene/cell and live enemy eligibility,

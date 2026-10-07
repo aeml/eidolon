@@ -6,7 +6,11 @@ below: exact current c323 driver/8c API/9a harness full100 PASS584.92s, common
 members completed their wave/repair/checkpoint/outcome gates. Original phase
 budget checker PASS18.847513ms against33ms; no weakened rules or workload.
 Exact evidence and disposable cleanup are retained in the1.79 capacity receipt.
-Ordered1.79 CI/live publication is next, not yet accepted. This does not close
+Ordered1.79 CI/live publication passed: b5c3981e, CI37600167508 all ten jobs,
+independent matching public identities/readiness and eleven runtime files.
+See [accepted public receipt](2026-10-07-release1-79-public-checks.json) for skipped
+QA scopes and approved monitor coverage. Next is1.80 freeze reconciliation, not
+a frozen or beta-ready claim. This does not close
 modern art, whole-campaign pacing, broader device support, operational objectives
 or beta/launch gates; older source-specific failures remain historical evidence.
 

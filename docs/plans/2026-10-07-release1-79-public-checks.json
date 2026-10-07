@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.0",
+  "commit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+  "status": "accepted-live",
+  "checkedAt": "2026-10-07T10:02:50.414Z",
+  "ci": {
+    "run": 37600167508,
+    "conclusion": "success",
+    "jobsPassed": 10,
+    "verification": "Authorized Luna terminal report and independent root gh run view agree on exact commit, completed status and all ten successful jobs.",
+    "skippedScopes": [
+      "Run deterministic High/Low animation gallery",
+      "Run required Well Rested rendering and GPU lifecycle QA",
+      "Run disposable full-character gameplay",
+      "Run live four-class and remote-animation QA"
+    ],
+    "previousFailure": "Run37596856794 failed one stale hidden-patron seating fixture; five downstream jobs skipped. Corrected fixture retained lifecycle assertions without changing qualified runtime. Historical failure remains in capacity receipt."
+  },
+  "publicChecks": {
+    "transport": "Bounded IPv4 HTTPS with TLS validation and cache bypass; no credentials, production writes or forced outage.",
+    "frontendIdentity": "Exact version and commit matched",
+    "backendIdentity": "Exact version and commit matched",
+    "databaseReadiness": "ok",
+    "loginVersionAndNotes": "Alpha1.79.0 and cumulative1.79/1.78 notes matched",
+    "runtimeComparison": "All eleven files matched exact publisher-rewritten source bytes",
+    "sha256": {
+      "index.html": "357bda077578647fa02bd36954297d08601edcd05d611ef905f0cc8cb39302ce",
+      "src/main.js": "1ffe9d281b15162472c0bbe9cbd7162b1fb9d1ed2ad04f90566dde51afbaf03d",
+      "src/art/AuthoredFighter.js": "e95d94a1152706ea7d8231dec2d8f9b73cc28f9a7f40eb594d29adac21f6b54b",
+      "src/art/AuthoredFighterSeatedPose.js": "162e5472b544fc282c5421a15be3028efdd718dbb871cdc157705021f325d8e5",
+      "src/art/FittedEquipment.js": "69ae0bc26b17c16a41048116053909697323182abfce34199970da07b93c62bb",
+      "src/core/CasinoController.js": "64bfd308be4bdd623c3250102f18ecd995bbe3381c904ac5a448abffded7613f",
+      "src/data/worldFoliage.js": "f38b38d0ad09f4c638624614129fa8e313a5330e8bfe95b4614351579c66d9a7",
+      "src/ui/BlackjackTableUI.js": "437a355fbc6e848536f65e630c885c0a0d2258a3a648c75c7c9c6aceac1447e0",
+      "src/ui/CasinoTableOrdering.js": "69b03c7c667cdb309272004db1a6399aa6dcabf35c22fe4f2d2694efe57004fa",
+      "src/ui/HouseTableUI.js": "6e5ce1c790de0f32f45835ae89188c77f8fb58b1978fce3abc62184b0bc3f69a",
+      "src/ui/PokerTableUI.js": "47baad6c102ca97447918b31d3a4f2e331fc509a3cb4ca64560ff7caf1bef0e6"
+    }
+  },
+  "approvedMonitor": {
+    "service": "eidolon-monitor-1",
+    "verifiedState": "running",
+    "restartPolicy": "unless-stopped",
+    "user": "65532",
+    "readOnlyRoot": true,
+    "pollIntervalSeconds": 30,
+    "consecutiveFailures": 3,
+    "consecutiveRecoveries": 2,
+    "reminderCooldownMinutes": 30,
+    "delivery": "Existing ADMIN_NOTIFICATION_EMAILS through configured Postmark; owner-approved single test email previously confirmed received",
+    "scope": "Local API/database readiness only; not public DNS/TLS/frontend or complete host/network failure",
+    "safety": "No additional email test, induced outage, recipient disclosure or new paid service. Actual Docker command independently matched settings."
+  },
+  "qualification": "Exact100-client functional/save and original33ms phase-budget evidence retained without rerun; no runtime changes after qualification. See2026-10-06-release1-79-current-capacity-checks.json.",
+  "limits": "Not general100-player launch capacity, modern-art approval, uninterrupted human campaign pacing, physical-phone dungeon/party approval, operational SLA, feature freeze, beta transition or full-goal completion. Skipped CI scopes remain skipped."
+}

@@ -2,6 +2,13 @@
   "schema": 1,
   "milestone": "1.80 launch feature freeze",
   "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
+  "october7OrderedPrerequisite": {
+    "acceptedLiveVersion": "Alpha 1.79.0",
+    "commit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+    "ci": 37600167508,
+    "receipt": "2026-10-07-release1-79-public-checks.json",
+    "effect": "Ordered1.79 publication prerequisite now passed. Original100 qualification retained. This supersedes earlier in-progress publication text, not remaining F1–F5 freeze, art, operations, licensing or human acceptance gates."
+  },
   "october7CurrentRuntimeTrustReview": {
     "source": "Read actual production-runtime diff from accepted1.78 c7c2c5260dd0ba806e34d81cdeec305dd2ccb3ae to corrected1.79 b5c3981e060d6dea3ef50c9c2b4abb37999856db. Exclude load-driver/test-only changes from claims about production authority. No implementation patch or new long test follows this review.",
     "credentials": "Current login admission keeps the existing shared hash-work slots and account retry budget. Only sixteen login waiters may wait at most250ms; overflow/timeouts return busy before spending retries. Acquired work retains sync.Once release. Dispatch checks actual closed/retired transport after admission, releasing its slot and refusing delayed storage work. Other credential operations retain immediate admission. Client-side forged account identifiers/administrator claims do not become session authority.",
