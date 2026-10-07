@@ -5,6 +5,31 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "casino-roster-and-fresh-poker-candidate-qualification-open",
+  "october7FocusedChecksCompleted": {
+    "livingWire": {
+      "result": "TestResourceActualTokenResumeAndDeathRecovery PASS14.58s; all eight class/death subcases PASS. Root79397 consumed exit0; supervisor2830677 terminal2026-10-07T07:32:54Z. Normal clean8c API includes living HP/MP preservation; new9a-source race harness sha256 d586079f18b8295c4086abee28d662ed7cb14dfe4edd2d043dbcfc23e3fd9df0 built root17100 exit0 after focused event ended. API guarded by supervisor; harness independently hashed before launch, not guarded by that script.",
+      "scope": "Existing token rotation/resume/replay denial/Recall/death recovery/normal independent save checks retained. Four living classes additionally require uncapped bars and ordinary fresh-context unstuck with fresh post-ack frames/independent elapsed-rest oracle. No CPU/capacity/rendering/campaign claim; no process-observations.json exists for this resource test.",
+      "aggregateLog": "/tmp/eidolon-179-living-wire-evidence-uj5Tyw/run.log",
+      "aggregateSha256": "0be3d8fc2f4e08720b2dc20b1ecca41e4ca51d010f22ed65ff8ae182055f0956",
+      "serverLog": "/tmp/eidolon-compat-session-292303128/server.log",
+      "serverSha256": "b40e030c76f6a81f2f7c8b34cd6bbe0b4bfe3471bc4cd3b22a11ed4a77d50720",
+      "shutdown": "All eight normal drain phases;8 journals prepared/failed0 in32ms and8 commits/retained=false in99ms, unchanged5s guard.",
+      "cleanup": "After terminal and exact supervisor/API/harness absence, independently validated34d206d0a22a872aa840c45eec3c361623bee35a3f0929abb70d5d703007bf82/name eidolon-179-living-wire-20261007/label living-wire179-20261007 and original config40764b4d061774f2d073df7fec877c8c6222d4a3fa69059076127e3bdf64ffbd/dataf0de755fd868e341afc091ac6cee001f36433ee973d952412c51bb6d1c34374e mounts. Removed only this disposable test DB/two anonymous volumes; independently confirmed container/volumes absent and32994 closed. Root cleanup24920 consumed exit0. Evidence/binaries preserved; production/player data unchanged."
+    },
+    "classifiedEvent": {
+      "result": "TestLoadEventActualFourClassRootClearExitAndSaves PASS494.10s; root86739 consumed exit0; supervisor2660870 terminal2026-10-07T07:28:15Z. Captured ca64 API, not current8c qualification. All four classes/four own waves/completion/town exits/independent saved XP/Gold and preserved class/gear/bag sentinel/EP verified. Recovery40 requested/40 completed/pending0/failed0; no transport/decode failure.",
+      "aggregateLog": "/tmp/eidolon-179-recovery-classified-evidence-lHrRAB/run.log",
+      "aggregateSha256": "48413ef66e675a0c85c31ac6dca6d0af20ed219cf116dedb6834aaaa91db07ed",
+      "serverLog": "/tmp/eidolon-compat-session-2311970837/server.log",
+      "serverSha256": "dd448eb42b91e3883823e5a46d4bd7fa7a97c825371373ccdacd8fd92db9f994",
+      "processObservations": "/tmp/eidolon-compat-session-2311970837/process-observations.json",
+      "processSha256": "a0012018329d7d4f9c740db76ac172b171a1056353364fe457dad96f73fba945",
+      "process": {"samples":488,"failed":0,"elapsedSeconds":487.303352728,"cpuCorePercentMean":43.211276676262614,"cpuCorePercentMax":67.74697541212295,"peakSampledResidentBytes":136159232},
+      "cleanup": "After terminal/process/identity/original-mount checks, exact4aa42a3d test Mongo/two original volumes removed and absence/32993 closed verified; root25729 consumed exit0. Evidence and executable artifacts retained; production unchanged.",
+      "limitation": "Smaller focused pass does not explain previous full100 pending recovery failure, establish current8c event acceptance or qualify100-player headroom. Original full100/all-member/paid/social/raid/manual-repair/fresh-save/33ms gates remain open; no waiver or unchanged blind replay."
+    },
+    "next": "Qualify changed current8c API with classified52d driver and currentd586 harness on original whole100 workload/natural event clock. No new full run scheduled yet;1.79 unpublished. Earlier queued/in-flight descriptions are historical, superseded only within the exact scoped checks above."
+  },
   "october7CurrentLivingRecoveryBuildAndWirePreparation": {
     "api":{"source":"8c6a4ac07edde7e80dbbadfb2ed8ba3f296d3a88","path":"/dev/shm/eidolon-179-living-recovery-api-7lxkk7/8c6a4ac07edde7e80dbbadfb2ed8ba3f296d3a88","sha256":"553f80a76e6333df3d7ba4bd2b724c7eed49b91ac67afad7165529237a1d3850","identity":"Root68908 normalGo1.27.1/p2/GOMAX2 build consumed exit0 before07:16:34UTC. Independently inspected clean vcs8c6a4ac0/vcs.modifiedfalse and explicit main.buildCommit/main.buildVersion=Alpha1.79.0 linker flags. Private RAM executable/temp storage only; not a changed CPU/runtime simulation configuration or accepted native workload."},
     "testSource":"4b8b844d adds real-socket living unstuck to existing TestResourceActualTokenResumeAndDeathRecovery after normal Recall for each living class. Retains all eight original class/death-indicator cases, token resume/replay denial/death recovery/normal saves. Requires uncapped HP/MP so slow fixtures cannot mask an instant refill; checks matching fresh context and fresh post-acknowledgement frames against independent elapsed-rest arithmetic, not production regen code. No QA command, forced clock or suppression of ordinary town recovery.",

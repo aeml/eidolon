@@ -1,5 +1,28 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 completed focused checks / approved alerts reverified:** Current normal
+8c API real-socket TestResourceActualTokenResumeAndDeathRecovery PASS14.58s;
+root79397 consumed exit0, supervisor terminal07:32:54UTC. All eight class/death
+cases pass, including four living-unstuck checks against fresh resource frames
+and independent save/elapsed-rest oracles. Eight ordinary shutdown phases,
+eight journals32ms/commits99ms, no retained failures. No process-observation file
+was produced for this resource test; do not infer CPU/headroom observations.
+Exact34d206d0 disposable Mongo/two original anonymous volumes removed only after
+terminal/PID/identity/mount verification; both absent and32994 closed. Logs and
+executables preserved; production/player data untouched.
+Earlier focused Root diagnostic PASS494.10s on captured ca64 API: all four
+classes completed four waves, exited and independently saved;40/40 recoveries,
+no pending/failed recovery. Root86739 consumed exit0; exact4aa42a3d fixture/two
+volumes already verified removed. This smaller pass does not explain the prior
+full100 failure or qualify current capacity. Next: changed current8c API with
+classified driver/full100 original outcome and33ms gates; not yet scheduled.
+Owner alert approval is fulfilled: independently inspected running monitor's
+actual30s/3-failure/2-recovery/30m command, Postmark enabled, unless-stopped
+restart, current API/database ready. No extra mail, forced outage or service
+change. Scope is local API/database, not public DNS/TLS/frontend or host outage.
+Alpha1.79 remains unshipped; full1.99 goal active. Older preparation paragraphs
+below are historical and superseded by these scoped results.
+
 **October7 current API and real-wire coverage preparation:** Normal clean8c API
 553f80a7 built/identified, root68908 exit0 before07:16:34/no native overlap;
 includes living HP/MP preservation and unchanged death/town recovery.4b8b844d
