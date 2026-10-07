@@ -2,6 +2,12 @@
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
   "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
+  "october7ElevatedShadowAnchor": {
+    "gap": "RenderSystem fitted shadow bounds relative to the elevated hero, but its actual directional-light target stays at ground height and is texel-snapped. Three new height0/6/42 regressions initially FAIL2/PASS1 (two elevated cases,2.811s); at height42 the expected left/right edges differ by48/64 units. This is a demonstrated coordinate-frame mismatch, not attribution of all failed raised-profile triangle limits.",
+    "fix": "Compute the actual snapped light target first and use cameraTarget minus that target for the existing receiver fit. Light placement, full[-8,64] receiver heights, incoming off-screen casters, padding, filtering, shadow quality/bias and scenery/geometry remain. No lower quality, smaller arbitrary height cap, hidden caster or raised budget.",
+    "verification": "Both affected shadow suites PASS26 tests0.913s after extending the new three-height cases to project real camera corner rays onto receiver planes[-8,0,64] and incoming casters60 units toward the sun into the actual shadow camera. Initial post-fix equality-only run also PASS26/0.935s; these are the same cases, not52 distinct tests. Focused ESLint and whitespace pass. Completed before07:46, no overlap with scheduled1.79 measurement setup07:57.",
+    "limits": "Unit geometry/source evidence only. Native raised-world rendering/triangle/performance targets, exact combined current-source integration and ordered1.87 deployment remain open. This change stays solely in staged1.87; current1.79 server/client qualification source is untouched. Earlier1.87 preparations retain their original source/acceptance limits."
+  },
   "baseCommit": "ce7a0a1d prepared1.86; inherited1.76 runtime identity",
   "diagnosis": "RenderSystem always constructs at High and explicitly initializes postprocessing before the normal quality setter, ignoring saved Low/Medium until later UI binding. Low therefore creates temporary compositor resources that it then disposes. UIManager separately accepts an invalid saved quality verbatim, leaving the control without a selected option while the renderer normalizes it to High. This is a demonstrated startup/resource/settings gap, not an inferred cause of measured server state gaps or a claimed FPS deficit.",
   "implementation": [

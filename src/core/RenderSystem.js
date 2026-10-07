@@ -655,14 +655,17 @@ export class RenderSystem {
 
     updateShadowFocus(position = null) {
         if (!this.keyLight || !position) return;
+        // The light is ground-anchored and texel-snapped, even while the hero
+        // and camera move above it. Fit receiver rays in that actual frame;
+        // subtracting the elevated hero instead shifts/clips the shadow map.
+        const snappedTarget = this.getShadowSnappedTarget(position);
         const bounds = getShadowViewBounds(this.camera, this.cameraOffset, this.shadowFollowOffset,
-            this.cameraTarget.clone().sub(position));
+            this.cameraTarget.clone().sub(snappedTarget));
         if (Object.keys(bounds).some(edge => bounds[edge] !== this.shadowViewBounds?.[edge])) {
             this.shadowViewBounds = bounds;
             this.shadowCoverageRadius = Math.max(bounds.right - bounds.left, bounds.top - bounds.bottom) / 2;
             this.configureShadowFrustum(this.keyLight);
         }
-        const snappedTarget = this.getShadowSnappedTarget(position);
         this.shadowTarget.copy(snappedTarget);
         this.keyLight.target.position.copy(this.shadowTarget);
         this.keyLight.position.copy(this.shadowTarget).add(this.shadowFollowOffset);
