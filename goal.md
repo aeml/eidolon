@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 staged environment correctness while natural-clock trial waits:**
+Separate1.87 commita53bb11f fixes a proven camera/light coordinate mismatch:
+fit shadows against actual snapped ground light, not elevated hero. New height
+0/6/42 regression initially FAIL2/PASS1; affected suites PASS26/0.913s with full
+receiver/off-screen caster projections. Changed existing High native preview
+PASS1/13.2s (root57527 exit0), actual screenshots reviewed/log hashes retained
+in1.87 receipt. No current1.79 runtime/source/artifact change or measurement
+overlap; optional raised-world budget/final modern-art/public delivery remain
+mandatory, not accepted by this narrow lighting repair. Native own4187 closed.
+Art contract's obsolete not-yet-delivered Fighter-pilot statement reconciled
+with exact accepted1.58.2 four bodies/252 gear/four motions, preserving final
+art/license gates and remaining actor handoffs. No duplicate owner request.
+Same2887477 full100 supervisor still independently live07:49:32, original
+07:57/08:00 schedule unchanged; no rerun, result or new deployment claimed.
+
 **October7 current full100 qualification genuinely scheduled:** Root7320 owns
 live supervisor2887477, exact script/argv independently inspected07:39:16UTC.
 New /tmp/eidolon-179-current-full100-evidence-45fEnb/run.log records actual
