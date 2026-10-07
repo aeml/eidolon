@@ -14,12 +14,30 @@ export function getDirectionalShadowInfluenceBounds(caster, sun, target) {
     return target;
 }
 
+// Test the convex swept volume itself rather than its axis-aligned enclosing
+// box. For each view plane, the maximum occurs at a caster corner or a corner
+// projected along the light ray to the lowest receiver. A separating plane
+// proves the entire shadow is outside; no distance cap or reduced silhouette.
+export function shadowInfluenceIntersectsFrustum(caster, sun, frustum) {
+    for (const plane of frustum.planes) {
+        const { x, y, z } = plane.normal;
+        const horizontal = x * (x >= 0 ? caster.max.x : caster.min.x) +
+            z * (z >= 0 ? caster.max.z : caster.min.z);
+        const original = horizontal + y * (y >= 0 ? caster.max.y : caster.min.y);
+        const slope = -(x * sun.x + z * sun.z) / sun.y;
+        const receiver = horizontal + slope * (slope >= 0 ? caster.max.y : caster.min.y) +
+            (y - slope) * SHADOW_RECEIVER_MIN_HEIGHT;
+        if (Math.max(original, receiver) + plane.constant < -1e-7) return false;
+    }
+    return true;
+}
+
 export class FoliageShadowInfluence {
     constructor() {
         this.enabled = true;
         this.omitted = new Set();
         this.frustum = new Frustum(); this.projection = new Matrix4();
-        this.caster = new Box3(); this.influence = new Box3();
+        this.caster = new Box3();
         this.sun = new Vector3(); this.target = new Vector3();
         this.visit = object => {
             if (!object.isInstancedMesh || !object.castShadow || !object.boundingBox ||
@@ -31,8 +49,7 @@ export class FoliageShadowInfluence {
             this.caster.copy(object.boundingBox).applyMatrix4(object.matrixWorld);
             if (this.caster.isEmpty() || ![this.caster.min.x, this.caster.min.y, this.caster.min.z,
                 this.caster.max.x, this.caster.max.y, this.caster.max.z].every(Number.isFinite)) return;
-            getDirectionalShadowInfluenceBounds(this.caster, this.sun, this.influence);
-            if (!this.frustum.intersectsBox(this.influence)) {
+            if (!shadowInfluenceIntersectsFrustum(this.caster, this.sun, this.frustum)) {
                 this.omitted.add(object); object.castShadow = false;
             }
         };

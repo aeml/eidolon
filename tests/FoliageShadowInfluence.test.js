@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FoliageShadowInfluence, getDirectionalShadowInfluenceBounds } from '../src/core/FoliageShadowInfluence.js';
+import { FoliageShadowInfluence, getDirectionalShadowInfluenceBounds, shadowInfluenceIntersectsFrustum } from '../src/core/FoliageShadowInfluence.js';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from '../src/core/ShadowViewCoverage.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
@@ -38,6 +38,24 @@ test('an off-screen tall caster keeps shadows that travel into the visible view'
     s.controller.beginFrame(s.scene, s.camera, s.light);
     expect(s.mesh.castShadow).toBe(true);
     s.controller.endFrame();
+});
+
+test('the separating-plane test retains every sampled ray that reaches the actual view', () => {
+    const s = fixture();
+    const frustum = new THREE.Frustum().setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(s.camera.projectionMatrix, s.camera.matrixWorldInverse));
+    let visibleRays = 0, rejected = 0;
+    for (const sun of [new THREE.Vector3(-3, 5, 2), new THREE.Vector3(2, 5, -3)]) {
+        for (const x of [-60, -25, 0, 25, 60]) for (const z of [-60, -25, 0, 25, 60]) {
+            const box = new THREE.Box3(new THREE.Vector3(x - 2, 1, z - 2), new THREE.Vector3(x + 2, 35, z + 2));
+            const intersects = shadowInfluenceIntersectsFrustum(box, sun, frustum);
+            if (!intersects) rejected++;
+            for (const height of [1, 12, 35]) for (const fraction of [0, .25, .5, .75, 1]) {
+                const point = new THREE.Vector3(x, height, z).addScaledVector(sun, -(height - SHADOW_RECEIVER_MIN_HEIGHT) / sun.y * fraction);
+                if (frustum.containsPoint(point)) { visibleRays++; expect(intersects).toBe(true); }
+            }
+        }
+    }
+    expect(visibleRays).toBeGreaterThan(0); expect(rejected).toBeGreaterThan(0);
 });
 
 test('only irrelevant shadow submission is omitted and every flag is restored after the frame', () => {
