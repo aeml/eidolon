@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 first publication run terminal / corrected promotion next:** Original
+37596856794 now terminal failure; independently inspected all ten job statuses
+and Luna agrees. Only stale seating fixture failed; Server Go/all3 browser
+smoke shards pass. All downstream release-input/predeploy/publish/live jobs
+skipped, no deployment. Committed test correction retains65-pass scoped proof
+and exact100 gameplay/save/budget evidence because runtime/server unchanged.
+Fresh remote review and one corrected push next, then own CI/live acceptance.
+
 **October7 verified continuation / later visual work retained:** Current1.79
 correction1a80ca1d is committed/clean but not pushed; fresh remote has no
 newer-only commits. Same37596856794 remains genuinely in progress: browser
