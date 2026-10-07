@@ -1,16 +1,21 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October7 same native actually launched03:17:** Root66380/supervisor572460
-genuinely waited, then created healthy exact syntheticceedf27f/32980/
-labelsame-cell179-20261007 and started actual named test, observed03:17:21.
-Original two anonymous volume IDs recorded in capacity receipt. No restart,
-clock override, gate/source change or terminal result. Actual tested API still
-d38; later changes are docs and guide-only regressions. Root owns66380 terminal,
-33ms/all100 outcome/save audit and exact cleanup; Luna monitors same process/log.
-No task build/browser during measurement. Production1.78 unchanged; full1.99
-objective and own1.79 publication remain open. Current turn additionally
-revalidated later prepared SSH pin against trusted local/current endpoint public
-identity without installing it, changing keys/settings or requesting it again.
+**October7 identified startup failure; alert approval confirmed:** Root consumed
+66380 exit1/actual FAIL180.96s. API started normally, but the build omitted
+main.buildCommit linker metadata, so the unchanged health identity guard
+correctly rejected it. No cohort/timing/save result. Preserve hashed logs and
+binary; removed only independently validated syntheticceedf27f and its two
+anonymous volumes after terminal. Correct build identity before another trial;
+never relax readiness, the33ms budget or any original workload/save gate.
+Owner approved ongoing alerts; independently verified existing monitor running
+30s polls/3 failures/2 recovery successes/30m reminders using Postmark and
+existing admin recipients. No repeat test email, forced outage or provider
+settings change. Production1.78/full1.99/own1.79 remain unchanged and open.
+Corrected clean64af normal binary built exit0 and verified exact source/linker
+identity/hash; runtime still d38, other intervening changes docs/guide tests.
+Root12141/PID823289 genuinely waits until03:32/natural03:35; exact32981 fixture
+created only at target after guards. Same Luna watches terminal only. No current
+result, gate weakening or production acceptance; root owns audit/cleanup.
 
 **October7 same live wait / later deployment-trust evidence:** Previous turn
 confirmed same66380 live: verified wait, not a new run. This turn revalidates

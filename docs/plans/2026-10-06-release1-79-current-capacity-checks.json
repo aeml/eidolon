@@ -5,6 +5,21 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "prepared-frame-functional-save-pass-same-cell-headroom-candidate-open",
+  "october7IdentityCorrectedNativeDeclaration": {
+    "sourceCommit": "64af5870f2630e85ef9275f977466a13ca161d2b",
+    "runtime": "Same d38 spatial candidate; intervening source changes are documentation and guide-only tests. No gameplay/cohort/driver/harness runtime change.",
+    "api": {"path":"/tmp/eidolon-179-identity-fixed-native-r1ddTg/64af5870f2630e85ef9275f977466a13ca161d2b","sha256":"c746ed889456dd468d2c50fb7e0e01f8481387ad2359bc0c00e3d5d7d8e7fc6f","build":"NormalGo1.27.1/p2/GOMAXPROCS2 build exit0. Independently inspected go version -m: clean vcs64af, explicit -X main.buildCommit=64af... and main.buildVersion=Alpha1.79.0. Native run unsets GOMAXPROCS; no CPU cap."},
+    "supervisor": "Root12141/PID823289 started2026-10-07T03:24:36Z, genuinely waiting until03:32 before natural03:35Root. Bash syntax passes; revalidated exact process/aggregate startup. No fixture or test result yet. Existing authorized Luna terminal-only watcher reused; root retains terminal/audit/cleanup ownership.",
+    "fixture": "Unused loopback32981/nameeidolon-179-identity-fixed-20261007/labelidentity-fixed179-20261007. Disk-backed Mongo7.0.14/2GiB, exact binary/tool hash guards, >=1GiB available before fixture, bounded readiness, missed-window refusal. No production/shared-cache change. Original100 roles, legal gear, Gold100,600updates/common108s, raid/event/paid/social/all100 independent saves/5s guards and original10s/110s phases/33ms budget unchanged.",
+    "publication": "Not accepted or published. Retain earlier FAIL/readiness diagnosis and490 functional pass with over-budget timing; no current candidate capacity/save result inferred. No task build/browser during measurement."
+  },
+  "october7SameCellNativeStartupFailure": {
+    "result": "Actual named test FAIL180.96s; root consumed66380 exit1, supervisor terminal2026-10-07T03:20:06Z. No players/groups/common100 interval/phase/save evidence was produced; this is not a capacity or gameplay result.",
+    "cause": "The owned API started normally03:20:00, but its build has no -ldflags assignment for main.buildCommit. Source defaults to development; the unchanged readiness guard requires Commit equal to the binary's full source-hash basename. Thus it correctly refused an unidentified build. No crash, panic, fixture OOM or forced shutdown was observed. Fix build metadata, not health checks or workload gates.",
+    "evidence": {"aggregateLog":"/tmp/eidolon-179-same-cell-native-FJt8U6/run.log","aggregateSha256":"ba216d7fc7389a7d62db59915e47c7fe6fb8a548aaf10ddaf938de27798b3955","serverLog":"/tmp/eidolon-compat-session-1366480539/server.log","serverLogSha256":"3f6ed32a2e671fe70d81e85fe7def3da924cf2722109781a148964ba65e27e03","apiSha256":"13e124fd458d659abcac34c7e4dc7a24bca2597c336dbbd352e8e0583ab7c5b5"},
+    "cleanup": "After terminal and no exact owned API/harness/driver processes, revalidated the original ceedf27f ID, label and both anonymous mounts; stopped and removed only that synthetic fixture and its two volumes. Independent volume inspection confirms both absent, loopback32980 unused. Logs/binary retained; production, unrelated soak and shared caches unchanged.",
+    "next": "Build an exactly identified normal API from current clean source with explicit main.buildCommit/main.buildVersion, verify those flags before one corrected natural-window trial. All original33ms and functional/save gates remain open for this candidate."
+  },
   "october7SameCellNativeDeclaration": {
     "sourceCommit": "d38a31e905cd241ebe473f33efb584766a621699",
     "api": {"path":"/tmp/eidolon-179-same-cell-native-FJt8U6/d38a31e905cd241ebe473f33efb584766a621699","sha256":"13e124fd458d659abcac34c7e4dc7a24bca2597c336dbbd352e8e0583ab7c5b5","build":"Normal Go1.27.1/p2/GOMAXPROCS2 build terminalPASS; run unsets GOMAXPROCS and has no CPU cap."},
