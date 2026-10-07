@@ -2,6 +2,11 @@
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
   "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
+  "october7AuthoredTopologyDiagnostic": {
+    "scope": "Read all four current High runtime GLB JSON/BIN accessor payloads directly;51 mesh primitives total. Inspect actual index triplets, position identity, joint/weight identity and position-morph identity. Read-only Node command completes0.942s; no asset generation, Blender edit, renderer/native rerun, quality switch or production operation.",
+    "result": "All51 primitives contain zero exactly repeated index triplets and zero triangles with an equal-position vertex pair. Consequently no triangles with an equal-position/equal-skin/equal-position-morph pair qualify for this exact invisible-topology removal. Fighter underlying payload totals64150 triangles, matching the existing shadow attribution; its large submission is real retained model detail, not evidence of duplicate body rendering.",
+    "decision": "Do not add an ineffective runtime mesh-deduplication pass or alter the supplied High model. This rules out only the specific exact redundant/collapsed topology hypothesis; collinearity, arbitrary animated occlusion and scene-wide duplication are not proven absent. The original High woodland triangle gate and full modern-art requirements remain open."
+  },
   "october7RegisteredGroundLayers": {
     "implementation": "Reuse existing two packed composition/detail maps and unchanged texture dimensions, lighting, shader pass and geometry. Character-scale clods supply soil relief; derivative-filtered height-sensitive transitions separate moss from soil without changing zero/one authored coverage. Existing leaf coverage consistently controls warmer nonemissive reflectance, roughness and shallow relief. Shader cache revision8. No added map, draw, per-frame callback, displacement, terrain/collision/placement or gameplay change.",
     "red": "Existing cache assertion plus two new High/Low layer-contract cases fail on previous v7 shader; three selected failures in9.906s. The new checks cover actual injected shader, unchanged uniforms/map sizes, linear registered fields, shared coverage across physical channels and no geometry displacement; they are not independent visual-quality or GPU-execution proof.",
