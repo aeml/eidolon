@@ -9,7 +9,8 @@ test('1.79.0 explains current multiplayer and equipped-render work without claim
     const html = fs.readFileSync('index.html', 'utf8');
     const start = html.indexOf('data-version="1.79.0"'), previous = html.indexOf('data-version="1.78.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
-    for (const text of ['spatial player index', 'current-frame data', 'inverse matrices must match exactly',
+    for (const text of ['spatial player index', 'current-frame data', 'Snapshot caches are prepared',
+        'owner-only character data', 'Same-cell movement', 'do not omit actors', 'inverse matrices must match exactly',
         'body/equipment ownership', 'original quality', 'ancestor transforms', '40 fully equipped',
         '100 simultaneous clients', 'All 100 independent save checks pass', 'Failed experiments',
         'not 100-player capacity certification', 'No account wipe', 'new schema migration',

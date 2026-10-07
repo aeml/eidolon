@@ -17,8 +17,14 @@ Root12141/PID823289 genuinely waits until03:32/natural03:35; exact32981 fixture
 created only at target after guards. Same Luna watches terminal only. No current
 result, gate weakening or production acceptance; root owns audit/cleanup.
 Following goal turn: previous turn made concrete progress fixing identified
-build metadata and scheduling corrected trial. Same12141 re-polled live, not
-restarted. Read-only current GitHub APIs establish master unprotected/no
+build metadata and scheduling corrected trial. Root consumed12141 exit0 but
+actual named SKIP at03:32, not acceptance: manual03:35Root assumption was wrong.
+Source is four10-minute sites, Root every2400seconds. Short owned probe64102
+exit0 proves actual64af health identity/version/database ready and clean shutdown.
+Exactbaf11faf fixture/two anonymous volumes removed only after both terminals;
+absence/ports independently verified. New63584/PID897784 uses source-calculated
+setup03:57/root04:00 and refuses named SKIP. Same binary/gates; no result yet.
+Luna watches terminal only; root owns audit/cleanup. Read-only GitHub APIs establish master unprotected/no
 rulesets, default-read Actions token, no PR-review approval and master-only
 Pages environment policy. Record real1.82/F2 policy gap without changing owner
 or other agent workflows. Ask once for1.81 loss/recovery targets and existing

@@ -5,6 +5,18 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "prepared-frame-functional-save-pass-same-cell-headroom-candidate-open",
+  "october7WrongWindowAndVerifiedReadiness": {
+    "skippedTrial": "Root consumed12141 exit0, but actual named test SKIP0.00s at03:32:06, not PASS. My manually assumed03:35Root was incorrect. Current public_events.go PublicEventPeriod=10minutes/four sites and unchanged cohort rule imply2400seconds betweenRoot slots, epoch aligned; next actualRoot04:00. No group/common100/timing/save evidence or capacity conclusion.",
+    "skipEvidence": {"log":"/tmp/eidolon-179-identity-fixed-native-r1ddTg/run.log","sha256":"fa35203d0259f524df1fa474c72ebbda6a95cbe72669cc389dbd8ee770e58faf"},
+    "actualReadiness": "Before another wait, run the exact identified normal64af API against the owned empty Mongo fixture on isolated loopback32982. Actual health returns statusok/database ready/commit64af5870f2630e85ef9275f977466a13ca161d2b/versionAlpha1.79.0; probe64102 exit0 and server shuts down normally with zero accounts. This establishes corrected build readiness, not load acceptance.",
+    "readinessServerLog": {"path":"/tmp/eidolon-179-identity-fixed-native-r1ddTg/readiness-server.log","sha256":"0657d5751c829f1c54ad1ec43922430489b5a637fe989bf8af157fbe96a531a7"},
+    "cleanup": "After skipped harness and short readiness process both terminate, revalidate exact baf11faf ID/label and original cccc974d/5c44cf10 anonymous mounts, stop/remove only that disposable database and volumes. Independent volume inspections confirm both absent and32981/32982 listeners empty. Logs/binary/scripts retained; production/unrelated soak/shared cache unchanged."
+  },
+  "october7SourceCalculatedRootTrial": {
+    "api": "Reuse exactly verified clean64af normal binary c746ed889456dd468d2c50fb7e0e01f8481387ad2359bc0c00e3d5d7d8e7fc6f; unchanged driver/harness hashes from prior declarations. Runtime remainsd38, no gameplay or test-gate adjustment.",
+    "schedule": "Root63584/supervisorPID897784 started2026-10-07T03:34:11Z; owned next-root-run.log declares calculated setup03:57UTC/root04:00UTC/cycle2400. Same epoch-aligned four10-minute slot rule as actual test, with exact source-constant guard, not another assumed15-minute clock. Named SKIP is explicitly a supervisor refusal, never acceptance. Bash syntax passes; same existing Luna monitors terminal only, root owns outcome/cleanup. No actual fixture/result yet.",
+    "fixture": "Freshloopback32983/nameeidolon-179-root-window-20261007/labelroot-window179-20261007 only at target, with unchanged exact-artifact/unused-target/1GiBavailable/2GiBMongo/health/missed-window guards. All100 roles, gear, paid/social, common108s/600updates, Earthraid/Root/manualrepair/saves/5s shutdown and original33ms budget unchanged. No task GPU/build overlaps measurement or production mutation."
+  },
   "october7IdentityCorrectedNativeDeclaration": {
     "sourceCommit": "64af5870f2630e85ef9275f977466a13ca161d2b",
     "runtime": "Same d38 spatial candidate; intervening source changes are documentation and guide-only tests. No gameplay/cohort/driver/harness runtime change.",
