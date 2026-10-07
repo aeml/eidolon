@@ -2,11 +2,13 @@
 
 > Project by [Robert Mendola](https://mendola.tech)
 >
-> Current-status pointers refreshed: October 4, 2026
+> Current-status pointers refreshed: October 7, 2026
 
 This is the product-level roadmap and historical Alpha 1.0 closeout record. The authoritative forward plan is [Alpha 1.11–1.99: playable beta to release readiness](docs/plans/2026-09-28-alpha1-11-to1-99-release-roadmap.md). Per-patch history lives in `index.html`; implementation and release evidence lives under `docs/`.
 
 ## Current Snapshot
+
+- Latest accepted live release is `Alpha 1.78.0` (`c7c2c526`, CI37543824180), with independently verified public identity/readiness, approved Postmark inbox delivery and ongoing local API/database alerts. `Alpha 1.79.0` is pushed but not accepted live: its current100-client functional/save test and original33ms phase budget pass; first CI has one stale seating-fixture failure, corrected locally while remaining original jobs finish. The [current execution checkpoint](docs/plans/2026-09-05-roadmap-execution.md) and [capacity receipt](docs/plans/2026-10-06-release1-79-current-capacity-checks.json) supersede historical version-status bullets below without waiving modern art, manual pacing, operational objectives, beta or launch gates.
 
 - Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.
 - Accepted group clears cover all four elemental repair raids, Umbral Nexus and the Dark King, with the exact prepared-party/saved-continuation scopes in the release record. Earned Air/Tempest is also accepted. On September27 the user assigned uninterrupted campaign and pacing validation to their playtest; do not run another long automated campaign or mark those checks passed.

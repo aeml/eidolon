@@ -6,7 +6,28 @@ now owns future scope, gates and execution receipts through full-release
 readiness. This ledger preserves prior delivery evidence; individual hotfixes
 do not close the whole goal or restart historical queues.
 
-## Current checkpoint October 4
+## Current checkpoint October 7
+
+Accepted live release is Alpha1.78.0, exactc7c2c5260dd0ba806e34d81cdeec305dd2ccb3ae,
+CI37543824180. Its [operations receipt](2026-10-06-release1-78-current-operations-checks.json)
+records public identities/readiness, independent installed monitor and the
+owner-confirmed approved test email. Ongoing local API/database alerts are
+enabled at the approved30s/3-failure/2-recovery/30m settings; they do not monitor
+public DNS/TLS or host failure. Named certificate-renewal simulation passed;
+IPv6 remains owner-deferred/unverified.
+
+Alpha1.79.0 was pushed asefd9574f, CI37596856794. Current identified100-client
+native qualification PASS584.92s/common112958ms/100 independent fresh saves
+and original18.847513ms phase budget versus33ms. This is a controlled named
+workload, not general launch capacity or full-game/device/art approval. The
+first CI client job failed one stale hidden-floor seated-pose fixture; correction
+1a80ca1d passes65 affected checks and is held for the original remaining jobs.
+No1.79 deployment acceptance yet; [exact evidence and retained failures](2026-10-06-release1-79-current-capacity-checks.json).
+Later staged1.81–1.88 work remains isolated/unpublished; full1.99 scope and all
+unmet freeze/beta/launch gates stay open. This checkpoint supersedes the old
+status paragraphs below, not their exact historical acceptance evidence.
+
+## Historical checkpoint October 4
 
 Alpha1.73.0 is accepted live atad59bffbeb0f471d27da125f7bc5c0c1b3d95619,
 CI37201238962, with all ten jobs successful. Independent post-terminal IPv4

@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 verified continuation / later visual work retained:** Current1.79
+correction1a80ca1d is committed/clean but not pushed; fresh remote has no
+newer-only commits. Same37596856794 remains genuinely in progress: browser
+shards1/3 and3/3 pass; server and2/3 still run, client fixture failure retained.
+Luna owns terminal monitoring; wait for those original jobs before one corrected
+push. No cancellation/restart/deployment acceptance or repeat100 test.
+Future1.87 afa50948 also fixes visible flat lighting bands on weathered rock
+shoulders using crease-aware normals, leaving the crown/sharp cleaves intact.
+New regression firstFAIL; affected suites PASS14/17.634s, independent previous
+generator comparison36/36 identical positions/colors/UVs/bounds, only normals
+changed. Affected High native functional preview PASS1/12.0s/root8167 exit0;
+before/after captures inspected and own4190 closed. Original road triangle
+failures unchanged and not waived; modern full-world art is still unfinished.
+Exact staged source/evidence in1.87 receipt, not current release or live assets.
+
 **October7 first1.79 publication CI correction prepared:** efd9574f pushed;
 run37596856794 client job fails one stale off-floor seated-pose fixture, while
 640 suites/9546 checks pass. Actual hidden-floor optimization intentionally
