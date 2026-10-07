@@ -421,8 +421,12 @@ Notes:
 ## Project Status
 
 - Current source version: `Alpha 1.79.0`, prepared in an isolated worktree and
-  not deployed. Representative100 simultaneous mixed/raid/event/town coverage
-  and all100 independent saved outcomes pass. Exact actor/equipment skeleton
+  not deployed. An earlier exact-source trial passed representative100 mixed/
+  raid/event/town gameplay and independent saves, but exceeded the33ms server
+  phase target. The latest API trial failed on event expiry; a proven bot-regroup
+  repair passes its affected tests and awaits changed-driver qualification.
+  Neither partial outcomes nor older passes certify the current candidate.
+  Exact actor/equipment skeleton
   sharing and reduced seated matrix work retain all authored art and pass the
   original controlled casino High/Low targets with40 fully equipped characters.
   Shared-host server timing and limited headroom remain recorded limitations,
