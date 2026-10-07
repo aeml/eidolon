@@ -2,6 +2,18 @@
   "schema": 1,
   "milestone": "Alpha1.79.1 stabilization before feature freeze",
   "status": "scoped-local-candidate-checked-awaiting-storage-and-ci-publication",
+  "stormcrownSlate": {
+    "integration": "Compare85b38f77 current authority with staged575a80f2: exactly the new slate sampler, its two terrain-factory consumers and two affected tests differ across the four selected files. Apply only those hunks; no future render/startup/shadow/raised-world/server changes or dependency additions. Source sampler and factory SHA256 match the qualified staged bytes exactly.",
+    "implementation": "Existing three maps now describe one irregular wind-worn slate/scree field. Registered High/Low coordinates, dimensions and repeat remain; no geometry, collision, scene, authority, lighting, shader-pass or per-frame sampling change. Extra field work occurs during texture generation. First regular-ripple field rejected by visual inspection; refined interrupted mineral beds retained.",
+    "local": "Current three affected suites PASS18 in9.122s,379 cases unselected. Matcher also selected historical repair-note cases; this is not a full patch-history run. Scoped source/test lint and whitespace pass. Earlier staged baseline FAIL3/PASS1 in2.189s and final six air-only cases PASS9.083s remain exact scopes.",
+    "currentNative": "Root33132 terminal exit0: actual current1.79.1 SystemChrome isolated air-floor preview PASS1 in13.2s covering High and Low. Both median16.7ms;P95High16.7/Low16.8ms. Three channel maps262144/65536bytes, unchanged repeat68/54, floor2 triangles. Current fixture51/50 geometries and65/51 textures; do not compare resident totals to different future renderer. Startup generation69.8/24.5ms, not free work or scene-wide frame certification. Both captures inspected; owned4190 closed.",
+    "sourceSha256": "ee2167b2e7e20dc1bc4348a854ada70c27c0977162b69647514e7b92e85b1b78",
+    "terrainFactorySha256": "b64f2767d8da0e7237e74fa04f4ae94ebce5cc4c3d91124dbbfc8c88c12a4b14",
+    "evidenceDirectory": "/tmp/eidolon-187-air-slate-iKVElJ/current1791",
+    "highImageSha256": "58f1c1e6e232f3273d4617c2a4fa90ef1b978042bfbccbf79289ee2383f7a38d",
+    "lowImageSha256": "97d48020cd18c08a24f5ca572703547392c3116f93448371224c5c9e767ae2bc",
+    "limits": "New cumulative1.79.1 note documents the scoped surface. Isolated floor view is not full Stormcrown environment/actor/encounter/readability approval or final modern-ARPG art. Original raised-world woodland gate, ordered CI/publication,1.80 freeze and full roadmap remain open."
+  },
   "equipmentFailureOwnership": {
     "gap": "Two new regressions failed against the prior implementation: a later missing joint lost earlier completed owned parts, and a rejected older request could clear a newer generation's visual signature. Baseline FAIL2 in0.529s,23 unaffected cases unselected.",
     "implementation": "Register each completed bound part with its generation before another mesh can fail. Keep one shared generation-level disposal for equip-owned skeletons and material clones; cached source geometry/materials/body skeleton remain independent. Only the current epoch may invalidate its visual signature. Successful fit, batching, animations, restrictions and body coverage selection are unchanged.",

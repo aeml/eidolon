@@ -1,7 +1,7 @@
 import { sampleElementalTerrain } from '../src/art/ElementalTerrainSurface.js';
 import { PROCEDURAL_TERRAIN_DEFINITIONS, createProceduralTerrainMaterial } from '../src/art/ProceduralRealmTerrain.js';
 
-test.each(['water', 'fire'])('%s geology wraps exactly and keeps deposits physically coherent', realm => {
+test.each(['water', 'fire', 'air'])('%s geology wraps exactly and keeps deposits physically coherent', realm => {
     const seed = PROCEDURAL_TERRAIN_DEFINITIONS[realm].seed;
     let bare = 0, covered = 0, bareRoughness = 0, coveredRoughness = 0;
     for (let y = 0; y < 256; y += 7) for (let x = 0; x < 256; x += 7) {
@@ -18,7 +18,7 @@ test.each(['water', 'fire'])('%s geology wraps exactly and keeps deposits physic
     expect(coveredRoughness / covered - bareRoughness / bare).toBeGreaterThan(.1);
 });
 
-test.each(['water', 'fire'])('%s High/Low use the same relief without extra maps or emissive ground', realm => {
+test.each(['water', 'fire', 'air'])('%s High/Low use the same relief without extra maps or emissive ground', realm => {
     const high = createProceduralTerrainMaterial(realm), low = createProceduralTerrainMaterial(realm, { quality: 'low' });
     for (const key of ['map', 'normalMap', 'roughnessMap']) {
         const a = high[key].image, b = low[key].image;
@@ -38,4 +38,30 @@ test.each(['water', 'fire'])('%s High/Low use the same relief without extra maps
         expect(normalDisposals).toBe(1); expect(roughnessDisposals).toBe(1);
         material.map.dispose();
     }
+});
+
+test('air slate has directional, broken bedding rather than uncorrelated noise or continuous paving joints', () => {
+    const seed = PROCEDURAL_TERRAIN_DEFINITIONS.air.seed;
+    let along = 0, across = 0, exposed = 0, weathered = 0;
+    for (let y = 0; y < 256; y += 3) for (let x = 0; x < 256; x += 3) {
+        const surface = sampleElementalTerrain(x, y, 'air', seed);
+        along += Math.abs(surface.strata - sampleElementalTerrain(x + 1, y, 'air', seed).strata);
+        across += Math.abs(surface.strata - sampleElementalTerrain(x, y + 1, 'air', seed).strata);
+        if (surface.strata > .4) exposed++;
+        if (surface.strata < .03) weathered++;
+    }
+    expect(across).toBeGreaterThan(along * 2);
+    expect(exposed).toBeGreaterThan(100); expect(weathered).toBeGreaterThan(100);
+});
+
+test('air albedo and packed roughness sample the same slate and scree coverage', () => {
+    const material = createProceduralTerrainMaterial('air');
+    try {
+        for (const [x, y] of [[3, 19], [84, 117], [190, 230], [254, 1]]) {
+            const surface = sampleElementalTerrain(x, y, 'air', PROCEDURAL_TERRAIN_DEFINITIONS.air.seed);
+            const offset = (y * 256 + x) * 4;
+            expect(Array.from(material.map.image.data.slice(offset, offset + 3))).toEqual(surface.color);
+            expect(material.roughnessMap.image.data[offset + 1]).toBe(Math.round(surface.roughness * 255));
+        }
+    } finally { material.map.dispose(); material.dispose(); }
 });

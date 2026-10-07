@@ -16,7 +16,9 @@ test('1.79.1 records scoped ground polish and browser-origin hardening without c
         'schema migration', 'alert-setting change', 'actual Docker storage', 'default 2 GiB',
         'without automatic deletion', 'not a guarantee', 'Failed equipment-model binding',
         'previously equipped gear and body coverage', 'Older failed loading requests',
-        'successful item fit and animations remain unchanged', 'Full prior patch history']) {
+        'successful item fit and animations remain unchanged', 'broken wind-worn slate layers',
+        'matching color, shallow relief and roughness', 'during loading, not each frame',
+        'Full prior patch history']) {
         expect(html.slice(start, previous)).toContain(text);
     }
 });

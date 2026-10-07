@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 Stormcrown slate integrated into prepared1.79.1:** Irregular,
+wind-worn mineral beds and scree now share color/relief/roughness fields on both
+qualities, preserving three map sizes/repeat, geometry/collisions/lighting and
+no per-frame work. First regular-ripple version visually rejected; refined
+layering inspected. Selective four-file integration contains no future renderer
+or authority changes. Current source checks PASS18/9.122s; actual current native
+High/Low surface preview PASS1/13.2s. Added loading cost69.8/24.5ms retained
+honestly, not free performance or final realm/modern-art acceptance. Cumulative
+notes and candidate receipt updated; fresh origin still acceptedb5c3981e, no
+incoming remote work. No cleanup/push/deploy while storage approval remains
+outstanding; continue full ordered goal and all remaining art/freeze gates.
+
 **October7 equipment failure-path ownership corrected:** Two actual regressions
 first fail against the prior implementation: later missing-joint binding leaks
 completed local parts, and an older rejection can clear a newer generation's

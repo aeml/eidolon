@@ -31,7 +31,7 @@ export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     ),
     air: terrainDefinition(
         'stormcrown-slate', 'air', 'Stormcrown Reach',
-        'wind-scoured slate, fine pale scree, softened mineral strata, and weathered violet-grey stone', 0xc3841dd9,
+        'wind-scoured slate, broken warped bedding, pale scree deposits, and weathered violet-grey stone', 0xc3841dd9,
         { roughness: 0.93, metalness: 0.03, repeat: [68, 54], tint: 0xd1cdd8 }
     ),
     ocean: terrainDefinition(
@@ -170,13 +170,7 @@ function sampleFire(x, y, _size, definition) {
 }
 
 function sampleAir(x, y, _size, definition) {
-    const broad = periodicNoise(x, y, 11, definition.seed);
-    const grit = periodicNoise(x, y, 32, definition.seed ^ 0x717b);
-    const grain = hash2d(x, y, definition.seed ^ 0xa893);
-    const scree = Math.max(0, (broad - .4) * .5);
-    const rock = mixColor(0x49464f, 0x787380, .15 + grit * .34 + grain * .2);
-    const dust = colorChannels(0xa7a3ae);
-    return rock.map((value, index) => Math.round(value + (dust[index] - value) * scree));
+    return sampleElementalTerrain(x, y, 'air', definition.seed).color;
 }
 
 function sampleOcean(x, y, _size, definition, palette) {
@@ -279,14 +273,9 @@ function createTerrainSurfaceMaps(key, quality) {
                 const grit = periodicNoise(x, y, 32, definition.seed ^ 0x5184);
                 height[index] = .2 + broad * .16 + grit * .065;
                 roughness[index] = .86 + broad * .12;
-            } else if (key === 'water' || key === 'fire') {
+            } else {
                 const surface = sampleElementalTerrain(x, y, key, definition.seed);
                 height[index] = surface.height; roughness[index] = surface.roughness;
-            } else {
-                const broad = periodicNoise(x, y, 11, definition.seed);
-                const grit = periodicNoise(x, y, 32, definition.seed ^ 0x717b);
-                height[index] = .2 + broad * .17 + grit * .12;
-                roughness[index] = .85 + broad * .13;
             }
         }
     }
