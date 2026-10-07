@@ -1,5 +1,27 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 disk safety / alert approval verification:** Existing running monitor
+has the approved30s/3failure/2recovery/30m Postmark settings, configured recipients,
+persistent opt-in and passing local backend health. No repeat test mail sent.
+Root disk reports100% with2.15GB available; only six independently validated
+obsolete task binaries162559822 bytes removed, rebuildable from retained source.
+All receipts/logs/profiles/current artifacts retained, unrelated Docker caches,
+volumes, production and soak untouched. Disk pressure remains an operations risk.
+Prepared disk-backed Mongo32976 is exact-owned/healthy, about308048KiB data before
+the test; the bounded production-CPU comparison remains predeclared, no result.
+
+**October7 production-CPU comparison declaration:** Previous turn added740
+bot lookahead/diagnostics, passed exact100 functional/save scope and verified
+production's uncapped16-logical-CPU affinity; concrete progress. Next one
+same-workload experiment removes the two-runtime-core override to match current
+API/DB CPU configuration, with fresh disk-backed anonymous Mongo volumes rather
+than tmpfs and an explicitly bounded2GiB disposable DB memory limit. Exact6c
+API/740driver/harness artifacts reused with separate identities/hashes; no new
+source build, fabricated credit, reduced workload or relaxed5s/33ms/outcome guard.
+Shared host and different storage/random combat preclude CPU-only attribution;
+16available CPUs are not reserved headroom. Fixture32976 only, no production/
+unrelated soak changes. Result and full1.79 raid/event/rendering/publication open.
+
 **October7 observed-patrol native100 PASS208.60s:** Normal API6c79d56d,
 fresh74082009 driver/harness, explicit120-unit observed exploration/original
 30-unit acquisition and all original100/120s/5s/every-member/paid/social/save
