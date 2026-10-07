@@ -2,6 +2,12 @@
   "schema": 1,
   "milestone": "Alpha1.79.1 stabilization before feature freeze",
   "status": "scoped-local-candidate-checked-awaiting-storage-and-ci-publication",
+  "equipmentFailureOwnership": {
+    "gap": "Two new regressions failed against the prior implementation: a later missing joint lost earlier completed owned parts, and a rejected older request could clear a newer generation's visual signature. Baseline FAIL2 in0.529s,23 unaffected cases unselected.",
+    "implementation": "Register each completed bound part with its generation before another mesh can fail. Keep one shared generation-level disposal for equip-owned skeletons and material clones; cached source geometry/materials/body skeleton remain independent. Only the current epoch may invalidate its visual signature. Successful fit, batching, animations, restrictions and body coverage selection are unchanged.",
+    "verification": "Affected FittedEquipmentBatches suite PASS27 in0.611s: original23 cases plus partial binding cleanup, newer queued generation ownership, shared skeleton disposal once across several items, and previously equipped parts/materials/body coverage surviving a failed replacement. Initial three new cases previously PASS26 in0.618s. Scoped new patch-notes check PASS1 in0.473s,364 unselected; focused lint and whitespace pass.",
+    "limits": "These are renderer failure-path ownership checks, not final item-art acceptance, new asset coverage, native frame profiling or a whole-game capacity/campaign check. No production mutation or repeated unchanged long test."
+  },
   "storageGuard": {
     "gap": "Actual deployment built images before checking free space. New13-case executable-script regression failed all13 selected scenarios on the original script0.612s: low/unavailable/malformed storage and invalid floor settings proceeded, and valid cases never measured either filesystem.",
     "implementation": "Resolve DockerRootDir through the configured Docker daemon and check both its actual filesystem and the checkout using GNU df with deterministic units/locale. Default2048MiB, canonical positive configured decimal1..999999. Failed, malformed, extra-row or unresolvable measurements refuse before source cleanup, previous-image pinning, API/monitor builds, Mongo preflight or service replacement. Retain the existing deploy lock and journal/env cleanup exclusions. No automatic deletion or monitor pressure-budget change; this is minimum headroom, not peak-size certification.",

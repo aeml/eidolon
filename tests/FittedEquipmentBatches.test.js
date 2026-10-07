@@ -56,8 +56,114 @@ function skeletonSharingFixture(differentInverse = false) {
     prepareFittedEquipment(root, scene, async () => ({scene: sourceScene}));
     const equipment = {chest: {id: 'mail', name: 'Plate Mail', baseName: 'Plate Mail', slot: 'chest', type: 'ARMOR', rarity: 'Rare'}};
     const gear = () => { const meshes = []; root.traverse(mesh => { if (mesh.userData.authoredEquipment && mesh.isSkinnedMesh) meshes.push(mesh); }); return meshes; };
-    return {root, bones, equipment, gear, source: parts[1].skeleton, body: parts[0].skeleton};
+    return {root, scene, sourceScene, bones, equipment, gear, source: parts[1].skeleton, body: parts[0].skeleton};
 }
+
+test('failed fitted binding releases completed local parts without disposing cached assets or masking the body', async () => {
+    const current = skeletonSharingFixture();
+    const first = current.sourceScene.children[0], bad = current.sourceScene.children[1];
+    const unknown = new THREE.Bone(); unknown.name = 'missing-joint';
+    bad.skeleton = new THREE.Skeleton([unknown]);
+    const sharedMaterial = first.material, sharedGeometry = first.geometry;
+    const materialDispose = jest.spyOn(sharedMaterial, 'dispose'), geometryDispose = jest.spyOn(sharedGeometry, 'dispose');
+    const bodyDispose = jest.spyOn(current.body, 'dispose'), sourceDispose = jest.spyOn(current.source, 'dispose');
+    const originalClone = sharedMaterial.clone, owned = [];
+    jest.spyOn(sharedMaterial, 'clone').mockImplementation(function () {
+        const clone = originalClone.call(this); owned.push(jest.spyOn(clone, 'dispose')); return clone;
+    });
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+        const bodyGeometry = current.root.getObjectByName('Fighter_Body').geometry;
+        applyFittedEquipment(current.root, current.equipment); await current.root.userData.equipmentReady;
+        expect(warn).toHaveBeenCalledTimes(1); expect(owned).toHaveLength(1);
+        expect(owned[0]).toHaveBeenCalledTimes(1);
+        expect(current.gear()).toHaveLength(0);
+        expect(current.root.getObjectByName('Fighter_Body').geometry).toBe(bodyGeometry);
+        expect(current.root.userData.equipmentVisualSignature).toBe('');
+        expect(materialDispose).not.toHaveBeenCalled(); expect(geometryDispose).not.toHaveBeenCalled();
+        expect(bodyDispose).not.toHaveBeenCalled(); expect(sourceDispose).not.toHaveBeenCalled();
+    } finally { clearFittedEquipment(current.root); jest.restoreAllMocks(); }
+});
+
+test('a rejected replacement keeps previously equipped parts and body coverage intact', async () => {
+    const current = skeletonSharingFixture(), badScene = current.sourceScene.clone(true);
+    const unknown = new THREE.Bone(); unknown.name = 'missing-joint';
+    badScene.children[1].skeleton = new THREE.Skeleton([unknown]);
+    let failReplacement = false;
+    prepareFittedEquipment(current.root, current.scene, async () => ({scene: failReplacement ? badScene : current.sourceScene}));
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+        applyFittedEquipment(current.root, current.equipment); await current.root.userData.equipmentReady;
+        const equipped = current.gear(), coverage = current.root.getObjectByName('Fighter_Body').geometry;
+        const revision = current.root.userData.equipmentVisualRevision;
+        const disposals = equipped.map(part => jest.spyOn(part.material, 'dispose'));
+        failReplacement = true;
+        applyFittedEquipment(current.root, current.equipment, {force: true}); await current.root.userData.equipmentReady;
+        expect(warn).toHaveBeenCalledTimes(1); expect(current.gear()).toEqual(equipped);
+        expect(current.root.getObjectByName('Fighter_Body').geometry).toBe(coverage);
+        expect(current.root.userData.equipmentVisualRevision).toBe(revision);
+        disposals.forEach(disposal => expect(disposal).not.toHaveBeenCalled());
+        expect(current.root.userData.equipmentVisualSignature).toBe('');
+    } finally { clearFittedEquipment(current.root); jest.restoreAllMocks(); }
+});
+
+test('a rejected older equip task cannot clear the signature of a newer queued generation', async () => {
+    const current = skeletonSharingFixture();
+    const shared = current.sourceScene.children[0].material;
+    const unknown = new THREE.Bone(); unknown.name = 'missing-joint';
+    current.sourceScene.children[1].skeleton = new THREE.Skeleton([unknown]);
+    const originalClone = shared.clone;
+    let queuedSignature, latestReady;
+    jest.spyOn(shared, 'clone').mockImplementation(function () {
+        const clone = originalClone.call(this);
+        // A separately completed task runs after this binding rejects but
+        // before its chained catch. The newer load itself need not fail.
+        queueMicrotask(() => {
+            applyFittedEquipment(current.root, {mainHand: {id: 'sword', name: 'Iron Sword', baseName: 'Iron Sword',
+                slot: 'mainHand', type: 'WEAPON', rarity: 'Rare'}});
+            queuedSignature = current.root.userData.equipmentVisualSignature;
+            latestReady = current.root.userData.equipmentReady;
+        });
+        return clone;
+    });
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+        applyFittedEquipment(current.root, current.equipment);
+        const rejected = current.root.userData.equipmentReady;
+        await rejected;
+        expect(queuedSignature).toBeTruthy();
+        expect(current.root.userData.equipmentVisualSignature).toBe(queuedSignature);
+        // Retire the queued request before it can bind the synthetic weapon
+        // fixture; the test concerns generation ownership, not weapon fit.
+        clearFittedEquipment(current.root); await latestReady;
+        expect(current.root.userData.equipmentVisualSignature).toBe('');
+        expect(warn).toHaveBeenCalled();
+    } finally { clearFittedEquipment(current.root); jest.restoreAllMocks(); }
+});
+
+test('partial failure across several items disposes their shared equip-owned skeleton once', async () => {
+    const current = skeletonSharingFixture(), badScene = current.sourceScene.clone(true);
+    const unknown = new THREE.Bone(); unknown.name = 'missing-joint';
+    badScene.children[1].skeleton = new THREE.Skeleton([unknown]);
+    prepareFittedEquipment(current.root, current.scene, async path => ({scene: path.includes('iron-gauntlets') ? badScene : current.sourceScene}));
+    const material = current.sourceScene.children[0].material, originalClone = material.clone, owned = [];
+    jest.spyOn(material, 'clone').mockImplementation(function () {
+        const clone = originalClone.call(this); owned.push(jest.spyOn(clone, 'dispose')); return clone;
+    });
+    const skeletonDisposal = jest.spyOn(THREE.Skeleton.prototype, 'dispose');
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+        applyFittedEquipment(current.root, {...current.equipment, gloves: {id: 'gloves', name: 'Iron Gauntlets',
+            baseName: 'Iron Gauntlets', slot: 'gloves', type: 'ARMOR', rarity: 'Rare'}});
+        await current.root.userData.equipmentReady;
+        expect(warn).toHaveBeenCalledTimes(1); expect(owned).toHaveLength(3);
+        owned.forEach(disposal => expect(disposal).toHaveBeenCalledTimes(1));
+        expect(skeletonDisposal).toHaveBeenCalledTimes(1);
+        expect(skeletonDisposal.mock.contexts[0]).not.toBe(current.body);
+        expect(skeletonDisposal.mock.contexts[0]).not.toBe(current.source);
+        expect(current.gear()).toHaveLength(0);
+    } finally { clearFittedEquipment(current.root); jest.restoreAllMocks(); }
+});
 
 test('fitted pieces share only matching equip-owned skeletons and retain exact animated surfaces', async () => {
     const first = skeletonSharingFixture(), second = skeletonSharingFixture();

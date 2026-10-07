@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 equipment failure-path ownership corrected:** Two actual regressions
+first fail against the prior implementation: later missing-joint binding leaks
+completed local parts, and an older rejection can clear a newer generation's
+visual signature. Generation-owned staging and epoch checks now retain successful
+rendering and cached-source ownership. Affected suite PASS27/0.611s includes
+shared skeleton cleanup exactly once and existing gear/body coverage surviving
+a rejected replacement. New1.79.1 notes check PASS1/0.473s; scoped lint/whitespace
+pass. No full gameplay/native/load replay or final-art claim. Fresh remote fetch
+still accepted b5c3981e with no incoming work; actual free1626768KiB remains below
+2097152KiB deployment floor. No deletion/build/push; requested scoped storage
+approval remains outstanding. Continue full roadmap work, not feature-freeze
+or release completion.
+
 **October7 concrete deployment-storage safety:** Current candidate now checks
 source and actual DockerRootDir free space before cleanup/pinning/build/preflight/
 replacement. Default2048MiB minimum; malformed/unavailable/config-invalid/low

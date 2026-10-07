@@ -126,13 +126,13 @@ function fittedSkeleton(joints, inverses, cache) {
     return skeleton;
 }
 
-function bindParts(state, gltf, slot, item, catalog, look, skeletons) {
+function bindParts(state, gltf, slot, item, catalog, look, skeletons, staged) {
     const root = gltf.scene.clone(true), parts = [];
     if (slot === 'mainHand' || slot === 'offHand') {
         const grip = AUTHORED_ASSETS.grips[state.actorClass][slot];
         const socket = state.scene.getObjectByName(grip.socket);
         new THREE.Matrix4().fromArray(grip.localMatrix).decompose(root.position, root.quaternion, root.scale);
-        instanceMaterials(root, item, look); parts.push(root);
+        instanceMaterials(root, item, look); parts.push(root); staged.push(root);
         root.userData.fittedParent = socket;
     } else {
         const targets = new Map(state.body.skeleton.bones.map((bone, i) => [bone.name, { bone, inverse: state.body.skeleton.boneInverses[i] }]));
@@ -163,11 +163,10 @@ function bindParts(state, gltf, slot, item, catalog, look, skeletons) {
                 index.needsUpdate = true; geometry.computeBoundingBox(); geometry.computeBoundingSphere();
             }
             mesh.bind(skeleton, mesh.bindMatrix.clone()); mesh.removeFromParent();
-            instanceMaterials(mesh, item, look); mesh.userData.fittedParent = state.scene; parts.push(mesh);
+            instanceMaterials(mesh, item, look); mesh.userData.fittedParent = state.scene; parts.push(mesh); staged.push(mesh);
         }
     }
     for (const part of parts) Object.assign(part.userData, { authoredEquipment: true, fittedItem: catalog.id, slot });
-    return parts;
 }
 
 export function clearFittedEquipment(root) {
@@ -205,7 +204,10 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         try {
             for (const result of results) {
                 if (result.error) { missing.push(result.slot); continue; }
-                staged.push(...bindParts(state, result.gltf, result.slot, result.item, result.catalog, result.look, skeletons));
+                // Track each completed owned part before a later mesh in the
+                // same asset can reject. One generation-level cleanup also
+                // disposes shared equip-owned skeletons exactly once.
+                bindParts(state, result.gltf, result.slot, result.item, result.catalog, result.look, skeletons, staged);
                 selection[result.slot] = result.catalog.id;
             }
             for (const part of staged) {
@@ -215,7 +217,9 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
             // pieces. False retains the original path for diagnostic comparisons.
             if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged);
         } catch (error) {
-            disposeParts(staged); root.userData.equipmentVisualSignature = ''; throw error;
+            disposeParts(staged);
+            if (state.epoch === epoch) root.userData.equipmentVisualSignature = '';
+            throw error;
         }
         disposeParts(state.parts); restoreCoverage(state); state.parts = staged;
         for (const part of staged) {
@@ -228,6 +232,9 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         root.userData.equipmentVisualRevision = (root.userData.equipmentVisualRevision || 0) + 1;
         if (missing.length) root.userData.equipmentVisualSignature = ''; // Allow retry, never cache failure as success.
         root.updateMatrixWorld(true);
-    }).catch(error => { console.warn('Fitted equipment unavailable', error); root.userData.equipmentVisualSignature = ''; });
+    }).catch(error => {
+        console.warn('Fitted equipment unavailable', error);
+        if (state.epoch === epoch) root.userData.equipmentVisualSignature = '';
+    });
     return { supported: true, changed: true, pending: true };
 }
