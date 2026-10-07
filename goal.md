@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 current trust-boundary review / rejected render tradeoff:** Actual
+qualified1.79 production diff reviewed against live1.78: bounded login queue,
+operation-local casino roster, exact scene/cell and live enemy eligibility,
+frame owner/public cache isolation and journal-all-before-commit shutdown.
+No new runtime fix or repeat100 required from that review. F2 release trust/
+operations and full freeze remain open. Separate1.87 independent canopy-spray
+trial preserved art/pixel equivalence but saved few High triangles for many
+more draws and made Low bank420 triangles worse. Rejected/owned code restored
+exactly to e165; preserve native evidence instead of shipping an inefficient
+optimization or relaxing original budgets. Corrected1.79 CI37600167508 remains
+running; client and browser1/3 pass, Luna owns terminal notification.
+
 **October7 corrected publication running / expanded owner inventory:** Corrected
 b5c3981e pushed after fresh3-ahead/0-remote-only review; exact CI37600167508
 independently observed running, Luna terminal-only monitor reused. Existing
