@@ -51,7 +51,9 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
-        const { applyProceduralEquipment, EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        const { EQUIPMENT_RENDER_SLOTS } = await import('/src/art/ProceduralEquipment.js');
+        const { applyEquipmentVisuals } = await import('/src/art/EquipmentVisuals.js');
+        const { canEquipItem } = await import('/src/core/EquipmentSlots.js');
         const { CasinoController } = await import('/src/core/CasinoController.js');
         const { AttachedStatusEffect } = await import('/src/entities/AttachedStatusEffect.js');
         const { CollisionManager } = await import('/src/core/CollisionManager.js');
@@ -80,16 +82,20 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
             floorModels[table.floor]++;
             const type = ['Fighter', 'Rogue', 'Wizard', 'Cleric'][models.length % 4];
             const mesh = await MeshFactory.createMeshForType(type);
+            if (mesh.userData.authoredClass !== type) throw new Error(`Missing authored ${type} casino model`);
             const equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map((slot, index) => {
-                const candidates = BASE_ITEMS.filter(item => item.slot === slot.replace(/[12]$/, ''));
+                const candidates = BASE_ITEMS.filter(item => canEquipItem(type, item, slot));
+                if (!candidates.length) throw new Error(`No valid ${type} ${slot} casino fixture item`);
                 return [slot, gallery.createGalleryEquipmentItem(candidates[models.length % candidates.length], slot, index + 1)];
             }));
-            const fit = applyProceduralEquipment(mesh, equipment);
-            if (fit.items !== 14 || fit.missing.length) throw new Error(`Incomplete ${type} equipment`);
+            applyEquipmentVisuals(mesh, equipment);
+            await mesh.userData.equipmentReady;
+            if (mesh.userData.equipmentVisualItemCount !== 14 || mesh.userData.equipmentVisualMissing?.length) throw new Error(`Incomplete authored ${type} equipment`);
             mesh.position.set(seat.x, seat.y || 0, seat.z);
             mesh.rotation.y = seat.rotation;
             render.scene.add(mesh);
-            models.push({ type, mesh, position: mesh.position, state: 'SEATED', floor: table.floor, gameEngine: controller.engine });
+            models.push({ type, mesh, position: mesh.position, state: 'SEATED', floor: table.floor, gameEngine: controller.engine,
+                standingThigh: mesh.getObjectByName('thigh_l').quaternion.clone() });
         }
         controller.render(models);
         let auras = [];
@@ -117,7 +123,11 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 gallery.controls.update();
                 return { visible: models.filter(model => model.mesh.visible).length,
                     auras: auras.filter(aura => aura.group.visible).length,
-                    seated: models.filter(model => model.mesh.getObjectByName('Rig_Hips')?.position.y === 1.12).length,
+                    seated: models.filter(model => {
+                        const pelvis = model.mesh.getObjectByName('pelvis'), thigh = model.mesh.getObjectByName('thigh_l');
+                        const height = pelvis.getWorldPosition(new THREE.Vector3()).y - model.mesh.getWorldPosition(new THREE.Vector3()).y;
+                        return controller.poses.get(model)?.authored && Math.abs(height - 1.12) < 1e-5 && thigh.quaternion.angleTo(model.standingThigh) > 1;
+                    }).length,
                     floors: { public: interior.userData.floors.public.visible, vip: interior.userData.floors.vip.visible } };
             },
             dispose() {
