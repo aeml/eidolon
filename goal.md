@@ -1,5 +1,22 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 changed broadcast49011e16 / natural-window supervisor live:** Exact
+normal API/new closed-diagnostic driver/race harness builds pass and SHA hashes
+are recorded under /tmp/eidolon-179-prepared-frame-native-0PwnMa. Source49011e16
+is not accepted by older6c native coverage. Scheduled exactly one changed-API
+100 original-role/outcome/108s common reader/600fresh/all100 independent saved
+checks with normal5s guards at02:37UTC before natural02:40Root. No task browser,
+build or clock acceleration during measurement. Root supervisor session48713,
+PID272773/argvbash run-natural-window.sh confirmed alive waiting for target;
+owned run.log gives startup and later terminal receipt. Fresh fixture32979 is
+created only after1GiB available/target-unused guard, disk-backed Mongo7.0.14,
+2GiB memory/uncapped CPU. No result yet. Existing authorized Luna monitors exact
+supervisor/log terminal without parent-local session access or mutation. Root
+must consume48713 terminal, actual—not skipped—test/all original gates/33ms
+phase headroom, then validate/clean only synthetic fixture. Latest316s failed
+run remains retained; no unchanged replay or1.79 publication. Shared-cache
+cleanup approval remains unanswered; production1.78/full1.99 goal unchanged.
+
 **October7 server-only FAIL / targeted broadcast fix:** Previous turn started
 one missing-scope no-browser integrated measurement: progress/verified wait.
 Root consumed22454 terminalFAIL316.01s after Luna anchored-process/log notice.
