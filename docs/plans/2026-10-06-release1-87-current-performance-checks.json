@@ -2,6 +2,14 @@
   "schema": 1,
   "milestone": "1.87 candidate performance consolidation",
   "status": "client-and-server-changes-consolidated-locally-full-game-suite-timeout-and-ordered-release-open",
+  "october7RegisteredRockMineralField": {
+    "change":"Stratified-rock mineral/grain detail uses continuous fixed world-space fields, not dominant-face UV selection. Registered noise remains defined on all orientations across cleaves; derivative footprint filters microdetail. Rock-only program cache revision3; standard lighting, relief, weathering/strata and other materials preserved. No new texture/geometry/collision/data/dependency or frame-update system.",
+    "verification":"New hook/cache regression initially FAIL1/0.487s; affected WorldSurfaceDetail/EarthOutcrops PASS13/8.159s. Narrow new check after bounded-error-log assertion adjustment PASS1/0.544s. Focused ESLint/whitespace pass; native hardware shader compilation and rendering checked at High/Low.",
+    "native":"Root8813 consumed exit1: both raised-Earth tests still fail only original triangle limits, with no new shader/functional/frame/draw failure. Six120-frame AMD/Vulkan RAF samples median16.7ms/p9516.7–16.8ms. Counts remain High338165/320761/331040 andLow85467/75013/75782. Pixel-equivalent surface culling has0/270080 changed pixels at both qualities; movement/jump/picking/effect checks retained. No gate relaxed or overall performance pass claimed.",
+    "review":"Actual High before/after rock capture inspected: mineral breakup now varies across the surface without the prior hard face-projection switch; shoulder/crown structure remains. The environment still looks basic, with muddy broad ground and repeated vegetation. This small surface improvement is not final Diablo/PoE-quality or equipped-player/world acceptance.",
+    "evidence":{"directory":"/tmp/eidolon-187-registered-rock-native-cY919w","logSha256":"45f119d69c54ca2f4bd5da338e27a34f30742bf3f792a63e44c1fe528d51b2a8","sourceSha256":"9b87fe36a4e18f873bc7cf93fef4b7976515205ad69d44fadac9eacc86168b15"},
+    "cleanup":"Both commands terminal/own4190 closed. No Mongo/production/current1.79 source changes; future1.87 remains isolated/unpublished, original raised-world performance and final visual gates open."
+  },
   "october7WeatheredRockLighting": {
     "diagnosis":"Reviewed ordinary-gameplay rock capture exposes horizontal lighting bands across gentle shoulder joins. Every tier previously assigned independent flat quad normals, making eroded rocks read as stacked slabs. This is a visible code-owned environment gap, separate from raised-world budget failure.",
     "change":"One-time crease-aware normals share lighting among adjacent gentle45-degree shoulder faces, retaining sharp cleaves and the crown independent. No added geometry, shader/postprocessing, per-frame work, asset import or collision/profile change.",

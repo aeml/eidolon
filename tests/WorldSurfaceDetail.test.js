@@ -29,6 +29,17 @@ describe('world surface detail', () => {
         expect(new Set(keys).size).toBe(7);
     });
 
+    test('rock mineral detail stays registered across differently oriented faces', () => {
+        const material = applyWorldSurfaceDetail(new MeshStandardMaterial(), 'stratified-rock');
+        const shader = { ...ShaderLib.standard }; material.onBeforeCompile(shader);
+        for (const patch of ['float eidolonRockNoise(vec3 p)', 'eidolonRockNoise(p * 1.6', 'eidolonRockNoise(p * 5.)']) {
+            // A failure should identify the missing hook, not dump a complete
+            // generated GLSL program into every CI log.
+            expect({ patch, present: shader.fragmentShader.includes(patch) }).toEqual({ patch, present: true });
+        }
+        expect(material.customProgramCacheKey()).toBe('eidolon-world-surface-v3:stratified-rock');
+    });
+
     test('rejects invalid usage and protects existing shader customizations', () => {
         expect(() => applyWorldSurfaceDetail(new MeshBasicMaterial(), 'stone')).toThrow(TypeError);
         expect(() => applyWorldSurfaceDetail(new MeshStandardMaterial(), 'lava')).toThrow(TypeError);
