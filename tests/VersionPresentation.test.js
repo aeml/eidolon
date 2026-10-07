@@ -14,6 +14,8 @@ test('1.79.0 explains current multiplayer and equipped-render work without claim
         'body/equipment ownership', 'original quality', 'ancestor transforms', '40 fully equipped',
         '100 simultaneous clients', 'passed all 100 independent save checks and gameplay gates',
         'request-local current-player roster', 'no roster is cached between requests',
+        'Poker buy-ins distinguish a changed hand from an invalid stake',
+        'without repeating uncertain wagers or counting unobserved payouts',
         'Performance qualification remains open', '36.41 ms against the original 33 ms target',
         'latest candidate still needs integrated qualification', 'Water, Fire and Air foliage',
         'up to 250 ms', 'at most 16 waiting requests', 'per-account limits do not increase', 'Failed experiments',

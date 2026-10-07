@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 fresh poker offer and safe storage progress:** Candidate abe03a4f
+removes a proven test-client three-second delay only for fresh valid betting
+offers; preserves pending/ownership/deadline/paid gates and never retries a
+rejection. Regression fails before fix; full driver race PASS17.912s, normal
+server admission race PASS1.082s. Stale poker hands now have distinct fixed
+feedback without changing admission. Earlier native rejection remains retained,
+not attributed or waived. Archived14 exact completed QA directories to private
+local RAID after all content/mode/link hashes verified; canonical paths remain
+via symlinks, only duplicate originals removed. Root free473MiB→2.1GiB, shared
+cache/production/user workspace untouched. Changed ordinary API/full100
+natural-clock qualification is next; deployment peak still open.1.79 unpublished,
+full1.99 active.
+
 **October7 active cost attribution / casino roster candidate:** One fixed60s
 CPU sample of real100-client combined gameplay identifies casino presence and
 repeated full-world player filtering as material costs. Test-only normal API
