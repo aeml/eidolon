@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 current API and real-wire coverage preparation:** Normal clean8c API
+553f80a7 built/identified, root68908 exit0 before07:16:34/no native overlap;
+includes living HP/MP preservation and unchanged death/town recovery.4b8b844d
+extends original token-resume/Recall/death/replay/save socket scope with living
+unstuck for four classes, fresh context/post-ack frames/uncapped bars and
+independent elapsed-rest oracle. New wire scope NOT compiled/run/passed yet;
+wait until ongoing diagnostic is terminal before task builds/browser. Actual
+07:20:17 Root named RUN/supervisor2660870 confirmed; exact4aa42a3d fixture/two
+mounts captured in receipt for later cleanup. No outcome, API acceptance or1.79
+publication; full1.99 goal unchanged.
+
 **October7 focused event diagnostic queued:** Clean80a classified driver52d657e0/
 race harness945b9508 built, root97728 exit0; captured ca64 API deliberately
 diagnoses its prior failure, NOT the newer living-unstuck fix/current capacity.
