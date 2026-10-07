@@ -1,18 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October7 changed-login100 startup PASS / original full trial live:** Exact
-clean86c normal API accepts all100 original saves/classes/gear/spawn sites in
-80/5/4/11 startup groups: actual PASS19.90s, zero admission/transport/decode
-errors, no retries or new hash workers. Root consumes14011, hashes evidence,
-removes only revalidated bbd0f08e DB/two volumes; normal100 drain succeeds,
-not independent-save/full encounter/headroom qualification. Current86c race
-harness built/hashed before measurement, unchanged driver retained. Root59892/
-PID1400629 starts source-calculated04:37/root04:40 full natural-clock100;
-actual ===RUN/718194c7 fixture/same live supervisor confirmed04:37:12. All
-original roles/outcomes/600fresh/common108s/independent saves/5s/33ms retained.
-Existing Luna monitors terminal only; no task build/browser at measurement.
-Root owns terminal/gate audit/only exact fixture cleanup. No full result or1.79
-publication yet; full1.99 remains active, no production/shared-cache mutation.
+**October7 current full100 functional PASS / headroom still open:** Exact
+clean86c normal API/current race harness/unchanged driver completes the original
+80mixed/5Earthraid/4naturalRoot/11town workload: actual PASS564.89s, common100
+interval112735ms, all100 independent fresh saves, every paid/party/social gate,
+raid boss/checkpoint/three-wave manual unclaimed repair and four-wave event
+exits. Root consumes59892 exit0, hashes logs/process evidence, validates owned
+process absence and removes only718194c7 synthetic Mongo/two original volumes;
+both volumes absent/32987 closed. Normal100 journal398ms/commit1262ms and all
+eight shutdown phases complete under unchanged5s guard. Original10→110s
+interval update15.6498ms+broadcast20.7613ms=36.4112ms exceeds33ms: functional
+PASS is not performance acceptance. No task builds/browser during measurement;
+Luna watches terminal only. Attribute current active costs before a changed-code
+replay; no unchanged full rerun or budget/gameplay waiver.1.79 unpublished,
+full1.99 remains active; production/unrelated soak/shared caches untouched.
 
 **October7 original100 startup diagnosis / bounded-login candidate:** Previous
 turn made measured broadcast/16-admission progress. New short diagnostic reuses

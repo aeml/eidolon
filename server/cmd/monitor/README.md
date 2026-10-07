@@ -1,6 +1,7 @@
 # Independent readiness monitor
 
-Prepared for Alpha 1.78; not installed or enabled in production. Build with
+Delivered and enabled in production with Alpha 1.78 using the owner-approved
+settings recorded below; reverified running on October7. Build with
 `go build ./cmd/monitor`. Run outside the game process so a game crash remains
 observable. All timing/threshold settings must be chosen explicitly; these are
 configuration controls, not an approved SLA or hosting-capacity claim.
