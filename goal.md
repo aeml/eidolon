@@ -1,6 +1,25 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October7 current full100 functional PASS / headroom still open:** Exact
+**October7 active cost attribution / casino roster candidate:** One fixed60s
+CPU sample of real100-client combined gameplay identifies casino presence and
+repeated full-world player filtering as material costs. Test-only normal API
+6c470738 calls real main, guarded owned loopback/RAM Mongo; no production
+endpoint or CPU setting. Actual diagnostic FAIL213.87s on one poker buy-in
+round_or_bet rejection;100 admit/transport0/all party and social outcomes,
+but independent-save gate unreached. Preserve failure/profile evidence; no
+blind replay or borrowing earlier native acceptance. Candidate f5613a57
+collects player pointers once per locked operation, keeps live seat/readiness
+checks, no across-request cache/index or rule change. All Casino/StateBatch/
+PlayerBroadcastContext race PASS2.271s; new actor-ID replacement regression
+passes. Presence-only3s benchmark2.7405→0.9090ms,666alloc unchanged; random
+world counts11076/11067, not controlled production/frame-budget proof.
+Exact temporary fixtures cleaned after terminal/ownership checks; evidence
+retained, production/shared caches untouched. Root disk now about515MiB free;
+safe disk-backed qualification/deployment storage remains open. Investigate
+poker rejection and qualify the changed normal API when safe;1.79 unpublished,
+full1.99 goal remains active.
+
+**October7 pre-roster full100 functional PASS / headroom still open:** Exact
 clean86c normal API/current race harness/unchanged driver completes the original
 80mixed/5Earthraid/4naturalRoot/11town workload: actual PASS564.89s, common100
 interval112735ms, all100 independent fresh saves, every paid/party/social gate,
