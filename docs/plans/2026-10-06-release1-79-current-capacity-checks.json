@@ -4,7 +4,16 @@
   "sourceCommit": "6c79d56d8025fe51ef7d8c531135c17dc946b2f9",
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
-  "status": "prepared-frame-integrated100-functional-and-save-pass-server-frame-budget-open",
+  "status": "prepared-frame-functional-save-pass-same-cell-headroom-candidate-open",
+  "october7SameCellNativeDeclaration": {
+    "sourceCommit": "d38a31e905cd241ebe473f33efb584766a621699",
+    "api": {"path":"/tmp/eidolon-179-same-cell-native-FJt8U6/d38a31e905cd241ebe473f33efb584766a621699","sha256":"13e124fd458d659abcac34c7e4dc7a24bca2597c336dbbd352e8e0583ab7c5b5","build":"Normal Go1.27.1/p2/GOMAXPROCS2 build terminalPASS; run unsets GOMAXPROCS and has no CPU cap."},
+    "unchangedTools": "Rehash and reuse490's driver d8a96797c3a6cb0a9ce98de61cb0fb94f052d555e81a7c39b7204cf750b294a2 and race harness62607b7659a21accd253987045e5fb6b7e332d51effc5549aeb528a4d018db12; git diff confirms all driver/cohort/process/fixture sources unchanged. Only runtime world.go and spatial regression tests changed under server. The actual test executes the exact new normal API, not the harness's embedded older game runtime; no unnecessary driver/harness rebuild or stale-API acceptance.",
+    "workload": "Same100 roles80mixed/5Earthraid/4naturalRoot/11town, legal Uncommon/Rare gear/Gold100 wagers, every600fresh updates/108s common reader, all paid/social/party/3-room boss/3-wave Vigil/4-wave event/town exits/100 independent fresh saved state and normal5s guards. Original10s/110s phase observations/33ms budget, not adjusted for a pass. No clock, power, gear, capacity or radius change.",
+    "schedule": "Supervisor66380/PID572460 started02:52:10UTC and revalidated genuinely live. Waits to real03:17UTC before natural03:20Root. Owned aggregate /tmp/eidolon-179-same-cell-native-FJt8U6/run.log; existing Luna monitors anchored process/terminal only. Root owns session terminal, all original gates and exact fixture cleanup. No native result yet.",
+    "fixture": "Fresh loopback32980/nameeidolon-179-same-cell-20261007/labelsame-cell179-20261007 created only at target after unused-target,>=1GiB available, exact artifact hash and bounded health guards. Disk-backed Mongo7.0.14/2GiB memory/uncapped CPU. About1.29GB available after new API; no broad cache/image/volume deletion or production mutation. No task builds/browser during measured run; shared host remains a limitation.",
+    "publication": "Own1.79 remains unpublished. Older490 functional/save and unchanged41db client proofs stay scoped to their source; new spatial runtime acceptance cannot be inferred from them. Safe deployment space, refreshed remote/CI/exact public identity and full1.99 work remain open."
+  },
   "october7SameCellGridCandidate": {
     "diagnosis": "After native terminal, current generated-world100-idle profile records SpatialMap.Update99.78percent of sampled mutex waiter delay, including a global write lock acquired before discovering unchanged cell membership. Actor positions already belong to the calling actor update; the spatial mutex never protected those reads.",
     "change": "Compute exact original old/new scene-cell keys first and return only when they are identical. Cross-cell general/player indexes retain the same single locked transaction; explicit scene transfers still Remove/Add. No cached position, actor omission, throttle, target/radius/timer/gear/gameplay or replication change.",

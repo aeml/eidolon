@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 next changed-runtime trial genuinely waiting:** Current turn yields
+actual490 native PASS, preserves41.74ms timing failure, cleans only owned DB,
+profiles/implements same-cell grid fast path and proves scoped race/diagnostic:
+progress. Commitd38a31e9 normal API built/hashed; unchanged490 driver/harness
+rehash and reuse, with zero changed driver/fixture/test sources. ONE original100
+role/outcome/save/33ms comparison scheduled03:17UTC for natural03:20Root.
+Native66380/supervisor572460 confirmed live02:52:17; Luna monitors exact new
+aggregate/process terminal. Fresh synthetic32980 only at launch after space,
+target/hash/health guards. No result yet; root consumes66380 and audits all
+gates before exact cleanup. No task build/browser in measurement or repeated
+unchanged100/client checks. Production1.78/full1.99 objective remain unchanged.
+
 **October7 profiled same-cell spatial-lock candidate:** After native terminal,
 current world profile attributes99.78% sampled mutex waiter delay to grid
 updates. They acquired the global write lock even for unchanged cell keys.
