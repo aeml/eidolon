@@ -133,9 +133,13 @@ func newPartyCohort(credentials []BotCredentials, x, z float64, minimum, maximum
 }
 
 func (p *partyLoad) reject() {
+	p.rejectAt(failureUnknown)
+}
+
+func (p *partyLoad) rejectAt(stage loadFailureStage) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
-	p.failed = true
+	p.failAt(stage)
 	p.targetClaims.release(p.targetGroup)
 	for i := range p.members {
 		p.signal(i)

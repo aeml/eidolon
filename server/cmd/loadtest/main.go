@@ -944,7 +944,7 @@ func runAssignedBot(id int, urlStr string, cred BotCredentials, assignment botAs
 		case <-ticker.C:
 			if movement.expire(time.Now(), *admissionTimeout) {
 				if party != nil {
-					party.reject()
+					party.rejectAt(movement.failure())
 				}
 				if casino != nil {
 					casino.reject()

@@ -38,6 +38,8 @@ const (
 	failureEventRequest
 	failureServerRecoveryContext
 	failureServerRespawnRequired
+	failureRecoveryEchoTimeout
+	failureRecoveryTownStateTimeout
 )
 
 func (p *partyLoad) failAt(stage loadFailureStage) {
@@ -88,6 +90,10 @@ func (p *partyLoad) failureCode() string {
 		return "server_recovery_context"
 	case failureServerRespawnRequired:
 		return "server_respawn_required"
+	case failureRecoveryEchoTimeout:
+		return "recovery_echo_timeout"
+	case failureRecoveryTownStateTimeout:
+		return "recovery_town_state_timeout"
 	case failureWeeklyPhaseEnvelope:
 		return "weekly_phase_envelope"
 	case failureWeeklyPhaseScene:

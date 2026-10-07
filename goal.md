@@ -1,10 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October7 event-regroup full qualification queued:** New clean649e driver
-377e234a built/identified; APIca64/harness172802 reused only after verifying no
-server change outside cmd/loadtest. Actual supervisor2190522/root73372 confirmed
-live, schedules06:37 setup/06:40 natural Root. Original full100/33ms/fresh-save
-gates unchanged; Luna terminal-only/root audit+cleanup. No fixture/result yet.
+**October7 event-regroup qualification failed / recovery diagnostics:** Changed
+649e driver/unchanged identified ca64 API actual full test FAIL361.33s; root73372
+consumed exit1, supervisor terminal06:43:06UTC. Event13 requested/12 completed
+recoveries, one pending/failed; no event exits, raid/common100/fresh-save gates
+unreached. Partial phase18.8189ms is not accepted capacity; budget checker
+correctly refuses the failed log. Retain hashed evidence; exact f5c87cde test
+Mongo/two original volumes removed only after terminal/process/identity checks,
+both volumes absent/32991 closed. Production/player data untouched. Cause is
+not yet known: add fixed missing-echo versus missing-town-state diagnostics,
+preserving original5s deadline/no retries/first failure. No unchanged full replay.
+Focused race PASS1.277s/schema diagnostics PASS0.015s/full driver race PASS17.737s;
+diagnostics are observability, not a demonstrated fix or deployment acceptance.
 Current changed-foliage raised-world browser check still FAILS all three High
 triangle budgets and one Low view; two Low views now pass, no budget waived.
 Fresh draw attribution: body128312 and tree shadows dominate, terrain tiles768

@@ -14,8 +14,12 @@ roster/fresh-poker candidate ca64c6d1 completes all80 mixed-client party/social/
 paid outcomes, but the full test FAILS on a participant's missing event wave.
 Partial phase means total21.15ms; full100 overlap/raid/fresh-save acceptance is
 unreached. Two failing regressions prove premature ward charging during party
-recovery; driver-only649e regroup repair passes its full race suite and now has
-a supervised full100 trial scheduled for natural06:40UTC Root. Game rules,
+recovery; driver-only649e regroup repair passes its full race suite, but its
+changed full100 trial FAILS361.33s on one unacknowledged recovery (13 requested,
+12 completed). Event/raid/common100/fresh-save gates remain unreached; partial
+phase18.8189ms is not acceptance. Exact owned fixture cleaned, evidence retained.
+Focused diagnostics now distinguish missing nonce echo from missing fresh town
+state before another justified trial. Game rules, original5s deadlines,
 every-member gates and the33ms budget stay unchanged; no current acceptance.
 Headroom/publication and wider1.99
 scope remain open. Production stays accepted1.78; no beta/access transition.

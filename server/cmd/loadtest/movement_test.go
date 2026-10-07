@@ -84,6 +84,42 @@ func TestBotRecoveryRequiresEchoAndFreshTownStateWithinBound(t *testing.T) {
 	}
 }
 
+func TestBotRecoveryTimeoutKeepsFirstFixedFailureStage(t *testing.T) {
+	now := time.Unix(100, 0)
+	for _, echoed := range []bool{false, true} {
+		movement := &botMovement{recovery: "private-nonce", awaitingTown: true, recoveryAt: now, requested: 1}
+		want := failureRecoveryEchoTimeout
+		if echoed {
+			if !movement.updateContext(json.RawMessage(`{"movementContext":"private-nonce"}`)) {
+				t.Fatal("matching acknowledgement refused")
+			}
+			want = failureRecoveryTownStateTimeout
+		}
+		if movement.expire(now.Add(999*time.Millisecond), time.Second) || movement.failure() != failureUnknown {
+			t.Fatal("diagnostic invented a failure before the original deadline")
+		}
+		if !movement.expire(now.Add(time.Second), time.Second) || movement.failure() != want {
+			t.Fatal("recovery timeout lost the failed acknowledgement stage")
+		}
+		movement.updateContext(json.RawMessage(`{"movementContext":"private-nonce"}`))
+		movement.observePlayer(Entity{Type: "Player", Health: 100, X: -1.25, Z: 200})
+		movement.expire(now.Add(2*time.Second), time.Second)
+		if movement.failure() != want || movement.counts().completed != 0 || !movement.counts().failed {
+			t.Fatal("late acknowledgement replaced or waived the original failure")
+		}
+		p := &partyLoad{}
+		p.rejectAt(movement.failure())
+		p.reject() // Later generic cleanup must not replace the recorded cause.
+		code := "recovery_echo_timeout"
+		if echoed {
+			code = "recovery_town_state_timeout"
+		}
+		if p.failureCode() != code {
+			t.Fatal("party controller lost the fixed recovery stage")
+		}
+	}
+}
+
 func TestBotMovementActualWirePassesGameAuthorityAndRotatesRecoveryContext(t *testing.T) {
 	upgrader := websocket.Upgrader{}
 	packets := make(chan Message, 8)

@@ -21,6 +21,7 @@ type botMovement struct {
 	recoveryAt           time.Time
 	requested, completed uint64
 	failed               bool
+	failureStage         loadFailureStage
 }
 
 type recoveryCounts struct {
@@ -48,10 +49,20 @@ func (m *botMovement) observePlayer(me Entity) {
 func (m *botMovement) expire(now time.Time, timeout time.Duration) bool {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if (m.recovery != "" || m.awaitingTown) && now.Sub(m.recoveryAt) >= timeout {
+	if !m.failed && (m.recovery != "" || m.awaitingTown) && now.Sub(m.recoveryAt) >= timeout {
 		m.failed = true
+		m.failureStage = failureRecoveryTownStateTimeout
+		if m.recovery != "" {
+			m.failureStage = failureRecoveryEchoTimeout
+		}
 	}
 	return m.failed
+}
+
+func (m *botMovement) failure() loadFailureStage {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.failureStage
 }
 
 func (m *botMovement) updateContext(payload json.RawMessage) bool {

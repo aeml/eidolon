@@ -73,6 +73,12 @@ client, not the current movement context (which game authority rejects).
 Walking stays disabled until the server echoes that nonce and a subsequent fresh
 own-player state shows alive in Lanternhold. A stale echo, missing nonce/state
 acknowledgement or expiry at the declared admission timeout fails without retry.
+Recovery timeouts retain a fixed `recovery_echo_timeout` or
+`recovery_town_state_timeout` failure stage, distinguishing a missing nonce echo
+from a missing fresh own-player town state after the echo. Neither relaxes the
+original deadline or retries the recovery; a late response cannot replace or
+waive the first failure. No nonce, actor identity or raw payload is logged.
+
 `Recovery coverage` reports configured clients, requested/completed recoveries,
 pending clients and failed clients; final success requires no pending/failures
 and every requested recovery completed. The nightly validator requires that line
