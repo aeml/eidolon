@@ -16,6 +16,14 @@
     "driver": {"source":"649e43219d9206e5d97a6e7e4611c0af0c7d3039","path":"/dev/shm/eidolon-179-event-regroup-driver-oPdfzR/load-driver","sha256":"377e234ab12a47b37a045871494cbbd0b72d5d4360878bf1a24b78bcf2fdae37","identity":"NormalGo1.27.1/p2 build terminal exit0; independently inspected vcs649e4321/vcs.modifiedfalse. Runtime retains fresh-poker guards and new proven ward-regroup tactics; no natural clock/stat/gear/outcome/population/budget changes."},
     "schedule": "Root73372 owns actual supervisor2190522, started06:14:29UTC and independently verified exact argv/starttime/log06:14:48UTC. Source-calculated setup06:37UTC/natural Root06:40UTC/cycle2400. Authorized Luna reused for terminal-only monitoring. Same source/no-API-drift/hash/unused-target/1GiBdisk/health/missed-window/SKIP guards; root owns original full outcome/33ms audit and exact fixture cleanup. No actual fixture/current result yet.",
     "aggregateLog": "/tmp/eidolon-179-event-regroup-evidence-KuyiPL/run.log",
+    "actualFixture": {
+      "verifiedAt": "2026-10-07T06:38:24Z",
+      "id": "f5c87cdecedfffce3e066ab5eb6ca9309a3b9b6bb8149e2d7c734a157de5b7ef",
+      "label": "event-regroup-native179-20261007",
+      "configVolume": "77023bfe6d5f9d96a1f9d9b8b420c57eb6dd949689f2f68eb27d23b0fa4721c3",
+      "dataVolume": "8d1d9e769da49cc4432050f2208221e571027ee0cce5243dd8c5ae5449d975b3",
+      "scope": "Actual original named test RUN/supervisor2190522 live; healthy disk-backed Mongo7.0.14 memory2147483648/NanoCpus0, two original anonymous mounts captured. Root73372 still live; no current result or early cleanup."
+    },
     "futureFixture": "eidolon-179-event-regroup-native-20261007/label event-regroup-native179-20261007/loopback32991/disk-backed Mongo7.0.14 memory2GiB/NanoCpus0. No task builds/browser during measurement. Separate raised-world browser check ends before setup.1.79 not published."
   },
   "october7RosterPokerNativeFailureAndEventRegroup": {
