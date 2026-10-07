@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 same native actually launched03:17:** Root66380/supervisor572460
+genuinely waited, then created healthy exact syntheticceedf27f/32980/
+labelsame-cell179-20261007 and started actual named test, observed03:17:21.
+Original two anonymous volume IDs recorded in capacity receipt. No restart,
+clock override, gate/source change or terminal result. Actual tested API still
+d38; later changes are docs and guide-only regressions. Root owns66380 terminal,
+33ms/all100 outcome/save audit and exact cleanup; Luna monitors same process/log.
+No task build/browser during measurement. Production1.78 unchanged; full1.99
+objective and own1.79 publication remain open. Current turn additionally
+revalidated later prepared SSH pin against trusted local/current endpoint public
+identity without installing it, changing keys/settings or requesting it again.
+
 **October7 same live wait / later deployment-trust evidence:** Previous turn
 confirmed same66380 live: verified wait, not a new run. This turn revalidates
 exact572460, still pending03:17. Prepared1.82 already has a local-trust SSH pin;
