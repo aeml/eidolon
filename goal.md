@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 evidence-led candidate rejection:**821f9ff4 shared-texture fitting
+passed48 affected unit cases/scoped lint but actual authored-casino draw counts
+and triangle counts were unchanged, and all original median targets still fail.
+Restore only that unused source/test candidate to78e1a217; retain its commit,
+trace and measured failure. Keep hidden-floor rig optimization, authored/legal
+equipment, real Low-detail fixture, per-frame seating and integrated100 coverage.
+Do not spend another unchanged100 run or lower graphics targets. Next attribute
+the actual current renderer work before changing it; safe deployment disk cache
+cleanup awaits owner approval.1.79 remains unshipped and full1.99 goal active.
+
 **October7 integrated100 PASS539.81s:** ExactAPI6c/newdriver+harness0ce on one
 normal server,100 distinct clients actually overlap112986ms.80mixed clients pass
 every member/paid/social gate;5Earth raiders clear3rooms/1boss/3-wave Vigil with

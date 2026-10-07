@@ -26,30 +26,6 @@ function fixture() {
     return {root, bones, parts};
 }
 
-test('opaque gear with identical texture objects batches without changing UVs or reading image pixels', () => {
-    const {parts} = fixture(), map = new THREE.Texture(), normal = new THREE.Texture();
-    parts.forEach(part => { part.material.map = map; part.material.normalMap = normal; });
-    const mapJSON = jest.spyOn(map, 'toJSON'), normalJSON = jest.spyOn(normal, 'toJSON');
-    const expectedUVs = parts.flatMap(part => [...part.geometry.attributes.uv.array]);
-    const result = batchFittedEquipment(parts), batch = result.at(-1);
-    expect(result).toHaveLength(3); expect(batch.userData.fittedBatchSources).toHaveLength(2);
-    expect(batch.material.map).toBe(map); expect(batch.material.normalMap).toBe(normal);
-    expect([...batch.geometry.attributes.uv.array]).toEqual(expectedUVs);
-    for (const call of [...mapJSON.mock.calls, ...normalJSON.mock.calls]) {
-        expect(call[0].textures[map.uuid]).toEqual({uuid: map.uuid});
-        expect(call[0].textures[normal.uuid]).toEqual({uuid: normal.uuid});
-    }
-    jest.restoreAllMocks();
-});
-
-test.each(['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap'])('distinct %s texture objects never batch even with a shared image source', slot => {
-    const {parts} = fixture(), first = new THREE.Texture(), second = first.clone();
-    parts[0].material[slot] = first; parts[1].material[slot] = second;
-    expect(second.source).toBe(first.source);
-    expect(batchFittedEquipment(parts)).toEqual(parts);
-    expect(parts.every(part => part.visible)).toBe(true);
-});
-
 function surface(mesh) {
     mesh.skeleton.update();
     const position = new THREE.Vector3(), geometry = mesh.geometry;
