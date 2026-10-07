@@ -2,6 +2,12 @@
   "schema": 1,
   "milestone": "1.80 launch feature freeze",
   "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
+  "october7ActualRepositoryPolicyReview": {
+    "observedAt": "2026-10-07T03:27:02Z",
+    "readOnlyEvidence": "Authenticated GitHub repository APIs return master protected=false at c7c2c526 and rulesets=[]. Actions enabled/allowed_actions=all; default_workflow_permissions=read and can_approve_pull_request_reviews=false. github-pages environment has branch_policy only, custom policies enabled, exact allowed branchmaster. No repository/settings mutation or secret reads.",
+    "currentWorkflow": "Hosted PR checks remain separated from ordinary push-only native/public deployment jobs. Current predeploy-character also allows full_stabilization manual input without a branch guard; prepared1.82 explicitly restricts the repository, event and master/main refs. Postdeploy currently depends on push-only deployment jobs; prepared1.82 adds its explicit matching guard. Prepared fixes are not installed in current live1.78 or this1.79 candidate.",
+    "remaining": "F2/1.82 cannot claim protected release credentials and branches complete from workflow source alone. Owner-selected branch/ruleset and workflow-change review policy must accommodate authorized agents and operators; no automatic protection, required-review/check setting or access revocation. Default read tokens and a master-only Pages branch rule do not prove overall release trust. Revalidate actual settings at ordered1.82 acceptance."
+  },
   "reviewBase": "Current isolated1.79 worktree: unpublished49011e16 now has actual changed-API100 mixed/raid/event/town and independent-save PASS581.88s, with112882ms common interval. Server phases remain41.74ms over33ms; a subsequently changed same-cell grid-lock candidate is not covered by that PASS. Current41db client render proof remains. This preparation is not freeze/publication/headroom acceptance.",
   "orderedDependency": "Accepted1.78 c7c2c526/CI37543824180 is latest verified live: all ten jobs successful, exact public identities/runtime/readiness and actual independent monitor checked. Own1.79 native/headroom/release acceptance remains open. Do not skip that prerequisite or relabel this snapshot as a frozen1.80 build.",
   "resolvedStaleClaims": [

@@ -16,6 +16,13 @@ identity/hash; runtime still d38, other intervening changes docs/guide tests.
 Root12141/PID823289 genuinely waits until03:32/natural03:35; exact32981 fixture
 created only at target after guards. Same Luna watches terminal only. No current
 result, gate weakening or production acceptance; root owns audit/cleanup.
+Following goal turn: previous turn made concrete progress fixing identified
+build metadata and scheduling corrected trial. Same12141 re-polled live, not
+restarted. Read-only current GitHub APIs establish master unprotected/no
+rulesets, default-read Actions token, no PR-review approval and master-only
+Pages environment policy. Record real1.82/F2 policy gap without changing owner
+or other agent workflows. Ask once for1.81 loss/recovery targets and existing
+off-machine destination, not credentials or a new paid service.
 
 **October7 same live wait / later deployment-trust evidence:** Previous turn
 confirmed same66380 live: verified wait, not a new run. This turn revalidates
