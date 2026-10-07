@@ -104,7 +104,16 @@ func TestLoadCombinedActualConcurrentWorkloadsAndSaves(t *testing.T) {
 	if err := os.WriteFile(credentialPath, encoded, 0600); err != nil {
 		t.Fatal("could not store disposable credentials")
 	}
-	address, stop := compatStartServer(t, binary, uri, 179, "-save-journal-dir", t.TempDir())
+	serverArgs := []string{"-save-journal-dir", t.TempDir()}
+	if profile := os.Getenv("EIDOLON_COMBINED_CPU_PROFILE"); profile != "" {
+		if !filepath.IsAbs(profile) {
+			t.Fatal("owned profile requires an absolute private artifact path")
+		}
+		// Only a test-only profiling API accepts this flag. Default native
+		// qualification still uses the ordinary uninstrumented API binary.
+		serverArgs = append(serverArgs, "-qa-owned-cpu-profile", profile)
+	}
+	address, stop := compatStartServer(t, binary, uri, 179, serverArgs...)
 	logPhases := func(stage string) {
 		value, err := readCombinedPhaseEvidence(address)
 		if err != nil {
