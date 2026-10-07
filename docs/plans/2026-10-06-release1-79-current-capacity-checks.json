@@ -5,6 +5,11 @@
   "driverCommit": "0ce7c39d",
   "clientRuntimeCommit": "41dbf020",
   "status": "casino-roster-and-fresh-poker-candidate-qualification-open",
+  "cohortBudgetChecker": {
+    "command": "node scripts/verify-cohort-budget.mjs /path/to/full-cohort/run.log",
+    "scope": "Read-only original named full100 PASS plus108s actual intersection/100 fresh saves/two ordered10s-to110s phase samples. Exact integer-ratio comparison of separate elapsed update/broadcast means against33ms; unequal boundary counts retained. No rerun, gameplay/source API/harness change, rounded waiver, CPU/percentile/graphics or launch acceptance.",
+    "verification": "24 focused Jest checks PASS0.478s and scoped lint/whitespace pass. Tests include exact33ms equality/one-microsecond excess, prior measured36.411183262201064ms failure, unequal counts, terminal FAIL/SKIP/missing/duplicate evidence, malformed extra coverage, short overlap, missing saves, unknown/unsafe/nonmonotonic/failed counters. Actual retained86c full log produces functionalPassedtrue/phaseBudget.passedfalse and process exit1. Current trial is unchanged and still scheduled, not yet passed."
+  },
   "october7RosterPokerNativeDeclaration": {
     "source": "ca64c6d18f5c30cc746664517c9b599171528aee",
     "apiSha256": "4034afe0b533dd648f145e9de0f4625e34f061ca354687a22c6689a30111a0b5",

@@ -21,6 +21,20 @@ explicitly selected. The sampler stops and joins before terminating the child;
 it exposes no PID, arguments, environment, account data or raw proc text in its
 summary. Default tests/server behavior remain unchanged.
 
+After the original full100 mixed/raid/event/save test completes, run from the
+repository root:
+
+```sh
+node scripts/verify-cohort-budget.mjs /path/to/full-cohort/run.log
+```
+
+This read-only check requires the named full test to pass, the original108s
+common interval and100 independent saved outcomes, and exactly the original
+10s/110s phase samples. It compares the sum of separate elapsed phase means
+against33ms without rounding or assuming identical boundary counts. Exit1
+means missing/invalid evidence or an exceeded budget—even when Go reports PASS.
+It does not rerun gameplay or qualify graphics, CPU percentiles or launch.
+
 `-scenario` supports `combat`, `town`, `social`, `mixed`, `casino-slots` and
 `casino-blackjack`, `casino-house`, `casino-poker`, `party-combat`, `party-dungeon`,
 `party-raid`, `party-event` and `combined`. Mixed
