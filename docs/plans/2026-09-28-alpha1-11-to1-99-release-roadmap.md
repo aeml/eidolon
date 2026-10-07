@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October7 current1.79 work: one normal API/database passes100 simultaneous
+mixed/raid/event/town clients with112986ms actual overlap and100 independent
+ordinary saved outcomes, including full Earth assault/three-wave crystal defense
+and naturally scheduled Root event. This closes the missing integrated functional
+test scope, not performance or launch approval: authored-casino median targets
+still fail, and overlapping server phase timing exceeds33ms on the busy shared
+host. See [exact current evidence and retained failures](2026-10-06-release1-79-current-capacity-checks.json).
+Targeted rig/render work continues;1.79 versions/notes/publication and wider1.99
+scope remain open. Production stays accepted1.78; no beta/access transition.
+
 October6 ordered-release reconciliation: Alpha1.78.0 is accepted live atc7c2c526,
 CI37543824180 terminal success/all ten jobs, with independent public IPv4
 identities/readiness, five exact publisher-runtime files and actual running

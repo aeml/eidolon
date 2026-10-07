@@ -1,5 +1,24 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 integrated100 PASS539.81s:** ExactAPI6c/newdriver+harness0ce on one
+normal server,100 distinct clients actually overlap112986ms.80mixed clients pass
+every member/paid/social gate;5Earth raiders clear3rooms/1boss/3-wave Vigil with
+12earned checkpoint returns;4Root defenders finish naturally scheduled4waves.
+All100 independent normal saved gear/bag/EP/progression/wallet/town checks pass;
+raiders share original durable boss reward and manual unclaimed repair readiness.
+Owned DB32977+synthetic volumes removed after terminalPASS; logs/JSON hashes kept.
+Full-overlap mean14.92ms update+27.74ms broadcast remains above33ms, with shared
+host and coincident old casino-browser trial recorded, not a headroom claim.
+Raid hardware rendering PASS41.5s; corrected authored casino profiles stillFAIL
+original median targets despite correct40seats/floor isolation/legal equipment.
+Hidden-floor rig work fixed/49tests pass; Low fixture now uses actual Low bodies.
+Next exact-texture fitted batching candidate and changed-source renderer check,
+not unchanged native retries. Own1.79 version/notes/ordered deployment still open.
+Existing Luna raid watcher could not access parent-local exec handle, correctly
+reported ambiguity; parent consumed authoritative terminal. Use owned aggregate
+logs/process/terminal receipts for future cheap native watching. Disk cleanup
+approval requested for shared unused build cache; no broad pruning performed.
+
 **October7 integrated-cohort gap implementation:**775f1868/0ce7c39d add a
 single-API100-account scenario:80 existing mixed roles+5 Earth raiders+4 natural
 Root defenders+11 town. New driver-only first/last own-view evidence requires
