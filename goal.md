@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 seated matrix follow-up:**0a866c47 actual equipped casino reduces
+visible skeletons to60 per floor, with unchanged562/572 meshes and draw/triangle
+counts. High public23.2/VIP22.7 and Low VIP18.6ms meet median targets; Low public
+20.5ms still FAILS original20ms. Keep exact report/hash, no unchanged retry.
+Seating's first whole-rig traversal reads only scene/pelvis-parent matrices;
+replace with ancestor-only updates, retaining final complete publication.
+85 affected tests PASS2.943s/lint/whitespace, including animated/moved/scaled
+parents, exact seat/bind matrix and once-per-pose mesh/equipment updates.
+Next one changed-source hardware trial; no100 native repeat or publication yet.
+
 **October7 exact cloned-body skeleton work:** Equipment candidate d55 hardware
 trial measurably removes339/346 duplicate visible skeletons per floor with
 unchanged geometry/draw counts, but all original median gates still FAIL.

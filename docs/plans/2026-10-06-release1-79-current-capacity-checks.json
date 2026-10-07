@@ -3,8 +3,15 @@
   "milestone": "1.79 representative multiplayer capacity",
   "sourceCommit": "6c79d56d8025fe51ef7d8c531135c17dc946b2f9",
   "driverCommit": "0ce7c39d",
-  "clientRuntimeCommit": "d55e9ae5 plus exact cloned-body skeleton candidate",
+  "clientRuntimeCommit": "0a866c47 plus targeted seated ancestor matrix candidate",
   "status": "integrated100-functional-pass-render-median-targets-failing-release-gates-open",
+  "october7BodySkeletonResult": {
+    "sourceCommit": "0a866c47",
+    "result": "Terminal session90825 exit1. Both High samples and Low VIP now meet original median/P95 targets. Low public median20.5ms still exceeds20ms: FAIL retained, no unchanged retry. High public23.2/P9527.9ms, High VIP22.7/P9528.3ms; Low public20.5/P9526.8ms, Low VIP18.6/P9523.4ms. All legal-kit/seated/floor/hardware/180frame checks pass.",
+    "deterministicWork": "Visible unique skeletons drop223/226 to60 per floor, with562/572 visible skinned meshes and unchanged draw/triangle counts. Renderer textures148/228/200/280, previously350/596/731/977. Actor/equipment rig ownership stays separate. Shared-host idle15-18% and load19-23 limit causal timing claims.",
+    "evidence": {"report": "/tmp/eidolon-179-cohort-native-hK5OIy/casino-body-skeleton-report.json", "sha256": "948a96f230103ff9c0462cffc8244c0ed592aa5d75177f4fd10925483fd135ef"},
+    "nextCandidate": "Seated pose previously traverses all skin/socket/item matrices before and after applying bone changes. Before applying it needs only scene and pelvis-parent matrices: update those ancestor chains and retain the final whole-rig publication.85 affected tests PASS2.943s plus scoped lint/whitespace. New animated-parent/moved-scaled actor test checks fixed seat position, current bind inverse, one whole body traversal and one equipment update per pose. Immutable baseline also routes seated-pose module; original target comments corrected, not targets. One changed-source hardware trial follows."
+  },
   "october7EquipmentSkeletonResult": {
     "sourceCommit": "d55e9ae5",
     "result": "Terminal session30509 exit1: all crowd/class/legal-kit/seating/floor/hardware/180frame checks pass; all four original median gates still FAIL. High public26ms/P9532.6ms, VIP28.4ms/P9536.2ms; Low public22.5ms/P9529.9ms, VIP20.6ms/P9524.4ms. Original High25/Low20ms median and High50/Low33.3ms P95 gates unchanged.",

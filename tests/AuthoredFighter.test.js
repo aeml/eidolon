@@ -243,6 +243,31 @@ describe('delivered Fighter runtime candidates', () => {
         jest.restoreAllMocks();
     });
 
+    test('seating compensates animated ancestors with only one whole-rig matrix traversal', () => {
+        const actor = createAuthoredFighterInstance(fixture());
+        const pelvis = actor.getObjectByName('pelvis'), rig = actor.getObjectByName('Root');
+        const body = actor.getObjectByName('Fighter_Body'), pose = actor.userData.createSeatedPose();
+        pose.apply();
+        const localSeat = pelvis.getWorldPosition(new THREE.Vector3()).applyMatrix4(actor.matrixWorld.clone().invert());
+        const parent = new THREE.Group(); parent.add(actor);
+        const traversal = jest.spyOn(body, 'updateMatrixWorld');
+        actor.userData.updateEquipmentPose = jest.fn();
+        for (const angle of [0, .4, -.6]) {
+            parent.position.set(5, 2, -3); parent.rotation.y = angle; parent.scale.setScalar(1.2);
+            actor.position.set(-2, 1, 4); actor.rotation.y = -.3;
+            rig.position.set(.2, .6, -.1); rig.rotation.set(.1, angle, .2);
+            traversal.mockClear(); actor.userData.updateEquipmentPose.mockClear();
+            pose.apply();
+            expect(traversal).toHaveBeenCalledTimes(1);
+            expect(actor.userData.updateEquipmentPose).toHaveBeenCalledTimes(1);
+            const actual = pelvis.getWorldPosition(new THREE.Vector3());
+            expect(actual.distanceTo(localSeat.clone().applyMatrix4(actor.matrixWorld))).toBeLessThan(1e-10);
+            const identity = body.bindMatrixInverse.clone().multiply(body.matrixWorld).elements;
+            identity.forEach((value, index) => expect(value).toBeCloseTo(index % 5 === 0 ? 1 : 0, 10));
+        }
+        traversal.mockRestore();
+    });
+
     test('seating changes the rig, not authority, and restores the exact prior pose', () => {
         const source = fixture(), root = createAuthoredFighterInstance(source);
         const pelvis = root.getObjectByName('pelvis'), thigh = root.getObjectByName('thigh_l');

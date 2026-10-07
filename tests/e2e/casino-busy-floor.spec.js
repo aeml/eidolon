@@ -30,7 +30,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
         if (!profile || !/^[0-9a-f]{40}$/.test(baselineCommit)) throw new Error('Casino baseline requires profile mode and an exact Git SHA');
         // Same current art/workload/browser on both sides; replace only the
         // optimized runtime modules with their immutable baseline source.
-        for (const file of ['src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js', 'src/art/FittedEquipment.js', 'src/art/AuthoredFighter.js']) {
+        for (const file of ['src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js', 'src/art/FittedEquipment.js', 'src/art/AuthoredFighter.js', 'src/art/AuthoredFighterSeatedPose.js']) {
             const body = execFileSync('git', ['show', `${baselineCommit}:${file}`], { encoding: 'utf8' });
             await page.route(`**/${file}*`, route => {
                 baselineModulesServed.add(file);
@@ -167,7 +167,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
     }, tables);
     expect(setup).toEqual({ tables: 92, seats: 232, models: 40 });
     if (baselineCommit) expect([...baselineModulesServed].sort()).toEqual([
-        'src/art/AuthoredFighter.js', 'src/art/FittedEquipment.js', 'src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js'
+        'src/art/AuthoredFighter.js', 'src/art/AuthoredFighterSeatedPose.js', 'src/art/FittedEquipment.js', 'src/core/CasinoController.js', 'src/entities/AttachedStatusEffect.js'
     ]);
     const profiles = [];
     try {
@@ -240,7 +240,7 @@ test('equipped crowd remains readable on both casino floors at High and Low', as
                 expect(sample.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
                 expect(sample.calls).toBeGreaterThan(0);
                 expect(sample.medianMs).toBeGreaterThan(0);
-                // Same hardware-specific targets as the retained raid workload.
+                // Retain the original casino hardware-specific timing targets.
                 // These are not network, device-wide or sustained FPS claims.
                 expect.soft(sample.medianMs).toBeLessThanOrEqual(quality === 'high' ? 25 : 20);
                 expect.soft(sample.p95Ms).toBeLessThanOrEqual(quality === 'high' ? 50 : 33.3);

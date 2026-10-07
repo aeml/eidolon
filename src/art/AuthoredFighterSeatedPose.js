@@ -42,7 +42,14 @@ export function installAuthoredFighterSeatedPose(root, animations) {
         const point = new THREE.Vector3(), inverse = new THREE.Matrix4();
         return {
             apply() {
-                root.updateMatrixWorld(true);
+                // Only the scene and pelvis-parent transforms are read before
+                // applying this pose. Update their ancestor chains, not every
+                // skin/socket/item twice. The final traversal below publishes
+                // all changed bones and bind matrices before equipment/render.
+                scene.updateWorldMatrix(true, false);
+                for (const target of targets) {
+                    if (target.rawPosition) target.bone.parent.updateWorldMatrix(true, false);
+                }
                 for (const target of targets) {
                     if (target.rawPosition) {
                         // Recompute through the animated parent: Idle's root
