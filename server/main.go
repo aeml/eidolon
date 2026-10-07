@@ -71,6 +71,7 @@ var suspiciousLogFilePath = flag.String("suspicious-log-file", "logs/junk.log", 
 var economyMetricsFilePath = flag.String("economy-metrics-file", "logs/economy_metrics.jsonl", "Hourly gold source/sink metrics path (empty disables)")
 var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAMES"), "Comma-separated usernames allowed to use QA-only commands")
 var qaTerrainElevationFlag = flag.Bool("qa-terrain-elevation", false, "Enable the Earth terrain integration candidate on an explicitly configured QA server")
+var terrainProfileFlag = flag.String("terrain-profile", defaultTerrainProfile, "Authoritative terrain profile: earth-elevation-rocks-v1 or flat-v1 for rollback")
 var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Getenv("EIDOLON_ADMIN_BOOTSTRAP_USERNAMES"), "Comma-separated exact usernames allowed to bootstrap the durable admin role")
 
 var (
@@ -543,17 +544,9 @@ func main() {
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
 
-	if *qaTerrainElevationFlag {
-		if len(qaUsernames) == 0 {
-			log.Fatal("Terrain candidate requires an explicit QA username allowlist")
-		}
-		candidate, err := game.NewWorldWithElevationCandidate(db)
-		if err != nil {
-			log.Fatalf("Cannot initialize terrain candidate: %v", err)
-		}
-		world = candidate
-	} else {
-		world = game.NewWorld(db)
+	world, err = newServerWorld(db, *terrainProfileFlag, *qaTerrainElevationFlag, len(qaUsernames) > 0)
+	if err != nil {
+		log.Fatalf("Cannot initialize world terrain: %v", err)
 	}
 	if err := world.Trading.ReadinessError(); err != nil {
 		log.Fatalf("Cannot load durable auction state; refusing an empty market: %v", err)

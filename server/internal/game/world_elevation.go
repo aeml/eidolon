@@ -7,9 +7,9 @@ import (
 	"math"
 )
 
-// Candidate surface for the Earth elevation integration. Worlds keep the field
-// nil until movement, placement and effects share the contract. Do not enable
-// it by raising the client mesh alone.
+// Shared surface for the negotiated Earth elevation profile. Legacy flat worlds
+// keep a nil field. Movement, placement and effects share this contract; never
+// raise only the client mesh without selecting the matching server profile.
 //
 //go:embed content/world-elevation.json
 var worldElevationJSON []byte

@@ -6,7 +6,7 @@ const smooth = value => {
     return t * t * (3 - 2 * t);
 };
 
-// This is an integration candidate, not a visual offset applied to live actors.
+// This negotiated surface is not a visual-only offset applied to live actors.
 // Both runtimes sample the SAME triangulated surface, not a smooth function
 // under a coarser rendered mesh. Heights are quantized to millimeters once.
 export function createWorldElevationField(data) {

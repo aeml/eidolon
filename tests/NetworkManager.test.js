@@ -193,6 +193,20 @@ test.each(['flat-v1', 'earth-elevation-v1', 'earth-elevation-rocks-v1'])('sessio
     expect(network.messageQueue).toEqual([]);
 });
 
+test.each(['flat-v1', 'earth-elevation-v1', 'earth-elevation-rocks-v1'])('session resume accepts the same negotiated %s profile', terrainProfile => {
+    const socket = makeMockSocket(), network = new NetworkManager(socket);
+    network.expectedTerrainProfile = terrainProfile;
+    network.setupListeners();
+    network.onResumeSuccess = jest.fn();
+    network.onReconnectFailed = jest.fn();
+    socket.simulateMessage({ type: 'resume_session', payload: { resumeToken: 'replacement', terrainProfile } });
+    expect(network.onResumeSuccess).toHaveBeenCalledWith('replacement');
+    expect(network.onReconnectFailed).not.toHaveBeenCalled();
+    expect(network.socket).toBe(socket);
+    expect(network.messageQueue[0].payload.terrainProfile).toBe(terrainProfile);
+    network.dispose();
+});
+
 test.each([undefined, 'flat-v1'])('legacy/flat resume profile %s stays compatible', terrainProfile => {
     const socket = makeMockSocket(), network = new NetworkManager(socket);
     network.expectedTerrainProfile = 'flat-v1';

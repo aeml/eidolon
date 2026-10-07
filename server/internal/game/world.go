@@ -309,12 +309,14 @@ type TelegraphEvent struct {
 	Label      string  `json:"label,omitempty"`
 }
 
+// Legacy flat worlds remain available for explicit operator rollback and
+// supported fixtures. Server startup chooses its negotiated terrain profile.
 func NewWorld(db *database.DB) *World {
 	return newWorldWithElevation(db, nil)
 }
 
-// Explicit integration candidate. The ordinary constructor remains flat until
-// the connected gameplay and presentation acceptance gates are complete.
+// Shared raised-world construction. Retain the historical QA constructor name;
+// normal profile selection uses this same surface/collision implementation.
 func NewWorldWithElevationCandidate(db *database.DB) (*World, error) {
 	field, err := readWorldElevationCandidate()
 	if err != nil {
