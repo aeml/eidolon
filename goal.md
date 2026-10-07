@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October7 focused event diagnostic queued:** Clean80a classified driver52d657e0/
+race harness945b9508 built, root97728 exit0; captured ca64 API deliberately
+diagnoses its prior failure, NOT the newer living-unstuck fix/current capacity.
+Actual live supervisor2660870/root86739 confirmed by argv, schedules07:19:25
+setup/07:20 natural Root. Luna terminal-only; root consumption/cause audit/exact
+cleanup. Four classes/all-member normal waves/returns/fresh saves and5s deadlines
+unchanged; no accelerated clock/full100 replay/acceptance. No fixture/outcome yet.
+Current draft-version presentation checks PASS364/2.175s after correcting the
+test invocation to the repository's declared ESM flags.1.79 remains unpublished.
+
 **October7 recovery gap and focused diagnosis preparation:** All eight added
 class/death-indicator regression cases fail before repair: living unstuck
 refills health. Keep both bars/fractions on living recovery; death refills and
