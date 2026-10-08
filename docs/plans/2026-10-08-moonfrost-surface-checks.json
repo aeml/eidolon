@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "status": "isolated-current-source-material-candidate-not-published-or-final-art",
+  "baseCommit": "82c9f8fa",
+  "branch": "work/alpha-1-87-moonfrost-current-20261008",
+  "change": "Moonfrost exposed blue-grey ice, rougher deposited rime and short tapered recessed fissures share albedo/height/roughness fields in existing3maps. Replace water-only generic basalt field; fire output simplification retains original constants. No geometry/collision, lighting preset, shader pass, actor downgrade, authority or per-frame work.",
+  "review": "First draft's closed contour fractures looked artificial and was rejected after actual screenshots despite native pass10.9s. Refined short in-cell fissures and broken rime edges inspected on both qualities. This improves material identity but the isolated flat preview remains basic, not final Diablo/PoE quality or integrated realm/composition approval.",
+  "unit": "New exposed-ice/fracture feature test first FAIL0.401s against existing generic field; this demonstrates missing requested differentiation, not a newly discovered gameplay bug. Final water/Moonfrost scope PASS3/3.151s,6 unselected. Same-tile wrapping, coherent rime roughness, canonical High/Low3map samples, dimensions, no-emissive ground and disposal checks preserved. Scoped lint/whitespace pass.",
+  "native": {
+    "prerequisiteFailure": "Initial root89733 terminal timeout120s waiting for gallery ready. Trace records missing generated vendor/three module and OrbitControls404s; no water preview or frame result obtained. Reuse scripts/prepare-client.mjs after reading it; existing dependency outputs rebuilt only in owned worktree, no new install/lock or production change.",
+    "refinedTerminal": "Root24966 exits0, actual SystemChrome water-only preview PASS1/10.8s covering both qualities; root96149 earlier contour draft pass retained only as rejected visual experiment. No unchanged full-world120RAF profile, GPU lifetime or campaign replay.",
+    "high": {"generationMs":53.2,"medianMs":16.7,"p95Ms":16.8,"eachMapBytes":262144,"repeat":[64,52],"residentGeometries":51,"residentTextures":65,"floorTriangles":2},
+    "low": {"generationMs":29.4,"medianMs":16.7,"p95Ms":16.8,"eachMapBytes":65536,"repeat":[64,52],"residentGeometries":50,"residentTextures":51,"floorTriangles":2},
+    "limits": "Generation cost is loading-time work, not free performance. Isolated floor/preview actor sample does not certify populated realm budgets, full effects/gear, physical-phone support, ownership rights or subjective final quality. Test verifies map dimensions/channel color space and registration; frame numbers are observations, not broad target acceptance."
+  },
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-recovery-181-J6w06IzA/test-results/terrain-polish-water-groun-ea866-l-on-both-graphics-settings",
+    "sourceSha256": "dabc380f6ea25320ab087e88699a0b43fe06e7c18b1041ea194e8429c43586c1",
+    "highImageSha256": "6bd4edaa9889bde1efe3d68d8d784cd3e3290456aeb36d865bf08b8feea9d458",
+    "lowImageSha256": "fcc123faf0ee71d7b9a4bef16e5d99ac524497affbdda6c8c74694aec2fb6e3e"
+  },
+  "remaining": "Native command terminal and owned4190 closed. Actual1.80 policy/freeze/publication remains open; selected recovery1.81 code remains independently committed eea1183f. Current public1.79.1 unchanged. Integrate qualified surface only with appropriate ordered release/notes/current evidence; no future whole-branch authority replacement. Full all-family modern art, raised-world original budget/delivery and later beta/release/player feedback remain mandatory."
+}

@@ -39,11 +39,42 @@ function sampleWindWornSlate(x, y, seed) {
         roughness: .72 + cover * .23 + grit * .025 };
 }
 
+function sampleWeatheredIce(x, y, seed) {
+    const turn = Math.PI * 2 / 256;
+    const broad = noise(x, y, 5, seed ^ 0x1491);
+    const grit = noise(x, y, 43, seed ^ 0x493f);
+    const bed = noise(x + Math.sin(y * turn) * 12, y * 2, 9, seed ^ 0x612b);
+    const weathering = noise(x, y, 7, seed ^ 0x173f);
+    const cover = smooth(.36, .7, broad + (noise(x, y, 19, seed ^ 0x724b) - .5) * .12);
+    // Ice and wind-deposited rime share a field across all three maps. Broken
+    // pressure lines are recessed, not a regular outline around paving cells.
+    const ice = smooth(.24, .68, bed) * (1 - cover * .94);
+    const cx = Math.floor(x / 32), cy = Math.floor(y / 32);
+    const direction = hash(cx, cy, seed ^ 0x8391) * Math.PI * 2;
+    const dx = x % 32 - 16, dy = y % 32 - 16;
+    const along = dx * Math.cos(direction) + dy * Math.sin(direction);
+    const across = -dx * Math.sin(direction) + dy * Math.cos(direction);
+    // Each tapered fissure stays inside its cell; no seam-spanning network or
+    // closed noise contour. Offset branches and deposition break its continuity.
+    const bend = Math.max(0, along) * .14;
+    const fracture = (1 - smooth(.12, .8, Math.abs(across - bend)))
+        * smooth(0, .3, 1 - Math.abs(along) / 13)
+        * smooth(.3, .65, weathering) * (1 - cover * .92);
+    const rock = [48, 59, 65], sheet = [69, 87, 96], rime = [127, 139, 142];
+    const color = rock.map((value, i) => {
+        const base = (value + (sheet[i] - value) * ice + grit * 5) * (1 - fracture * .13);
+        return Math.round(base + (rime[i] - base) * cover * .66);
+    });
+    return { color, cover, ice, fracture,
+        height: .24 + grit * .022 + ice * .018 + cover * .065 - fracture * .025,
+        roughness: .7 - ice * .085 + cover * .25 + grit * .015 };
+}
+
 export function sampleElementalTerrain(x, y, realm, seed) {
     if (!['water', 'fire', 'air'].includes(realm)) throw new TypeError(`Unsupported elemental surface: ${realm}`);
-    const frost = realm === 'water';
     x = wrap(x, 256); y = wrap(y, 256);
     if (realm === 'air') return sampleWindWornSlate(x, y, seed);
+    if (realm === 'water') return sampleWeatheredIce(x, y, seed);
     const turn = Math.PI * 2 / 256;
     // Anisotropic, warped fragments, rather than uniform hexagons. Domain warp
     // is periodic so the texture seam is no more visible than any other joint.
@@ -61,20 +92,20 @@ export function sampleElementalTerrain(x, y, realm, seed) {
         } else if (distance < second) second = distance;
     }
     const broad = noise(x, y, 5, seed ^ 0x1491), grit = noise(x, y, 43, seed ^ 0x493f);
-    const cover = smooth(.36, .7, broad); // frost/ash accumulates in broad beds
+    const cover = smooth(.36, .7, broad); // ash accumulates in broad beds
     // Interrupt fractures with weathering. A full cellular outline reads as
     // laid paving, not weathered basalt, especially at ordinary gameplay zoom.
     const seam = (1 - smooth(.005, .11, second - nearest)) * (1 - cover * .9) * smooth(.38, .72, grit);
     const grain = hash(Math.floor(x), Math.floor(y), seed ^ 0xab3);
     const mineral = .3 + plate * .14 + grit * .18;
-    const dark = frost ? [49, 60, 68] : [43, 43, 42];
-    const light = frost ? [87, 100, 106] : [76, 71, 65];
-    const deposit = frost ? [126, 138, 140] : [96, 88, 76];
+    const dark = [43, 43, 42];
+    const light = [76, 71, 65];
+    const deposit = [96, 88, 76];
     const color = dark.map((value, i) => {
         const rock = (value + (light[i] - value) * mineral) * (1 - seam * .12);
         return Math.round(rock + (deposit[i] - rock) * cover * .66 + (grain - .5) * 3);
     });
     return { color, cover,
         height: .24 + grit * .045 - seam * .028 + cover * .06,
-        roughness: frost ? .62 + cover * .34 + grit * .025 : .8 + cover * .17 + grit * .025 };
+        roughness: .8 + cover * .17 + grit * .025 };
 }

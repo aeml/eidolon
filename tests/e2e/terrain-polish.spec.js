@@ -47,7 +47,7 @@ test('graphics changes resize real shadow targets and release unused postprocess
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
-for (const surface of ['town', 'earth', 'air']) {
+for (const surface of ['town', 'earth', 'air', 'water']) {
 test(`${surface} ground keeps gameplay-scale detail on both graphics settings`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

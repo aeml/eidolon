@@ -1,5 +1,23 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 Moonfrost surface candidate while1.80 policy pending:** Isolate planned
+environment work on work/alpha-1-87-moonfrost-current-20261008, rooted82c9f8fa,
+reusing /home/aeml/.local/share/eidolon-recovery-181-J6w06IzA. Completed1.81 work
+survives separately on its original branch at eea1183f; inspect branch before any
+next recovery edit. Water now samples coherent exposed ice/rime/short recessed
+fissures in existing3maps; High/Low footprints remain, no geometry/authority or
+per-frame change. New feature test first FAIL0.401s (not a runtime bug claim).
+Final water checks PASS3/3.151s; native High/Low PASS1/10.8s, screenshots inspected.
+First closed-noise-contour draft rejected visually. An initial native timeout
+was missing generated vendor dependencies: trace404s, not material performance;
+reuse prepare-client.mjs, then actual bounded preview completes. Final isolated
+median16.7/p9516.8 both; generation53.2/29.4ms, not free work or whole-world proof.
+Flat preview remains basic; integrated Moonfrost/art/device review still needed.
+No version labels, push, deployment, second campaign/cohort or policy assumption.
+1.80 service-objective choice was asked October8; do not repeatedly ask while
+unanswered. Current1.79.1 public and full roadmap/modern-art gates remain open.
+[Surface receipt](docs/plans/2026-10-08-moonfrost-surface-checks.json).
+
 **October8 native-runner trust boundary corrected in1.80 preparation:** Execute
 the actual source condition in a bounded isolated VM; current manual feature
 dispatch with full_stabilization=true returns true despite required refusal.
