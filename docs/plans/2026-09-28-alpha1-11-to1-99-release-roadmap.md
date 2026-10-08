@@ -1,13 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October8 current delivery boundary: Alpha1.79.2 is verified live at f9cbd41b.
-Alpha1.79.3 selectively integrates qualified town masonry, Fire/Moonfrost/Air
+October8 current delivery boundary: Alpha1.79.3 is verified live at b13dd3af
+within its [exact public receipt](2026-10-08-release1-79-3-public-checks.json).
+CI code/browser/predeploy/input/Pages pass; SSH promotion retains its external
+connection failure. Guarded local exact deployment, public runtime/readiness and
+anonymous-browser acceptance pass; skipped live-character/device scopes are not
+passed. Alpha1.79.3 selectively integrates town masonry, Fire/Moonfrost/Air
 surfaces, Tide Rib piers, static camp canvas, quality-aware elemental dungeon
 textures and distinct bounded dungeon wall architecture on that exact current
 master. This delivers component improvements for playtesting, not completion
 or bypass of the 1.80 freeze or 1.87 art/performance milestone. Individual staged
 receipts retain their exact historical scopes; current combined qualification
-and publication status are in the [candidate receipt](2026-10-08-release1-79-3-checks.json).
+are retained in the [candidate receipt](2026-10-08-release1-79-3-checks.json);
+the public receipt supersedes its historical publication-pending status.
 Hosted SSH routing remains unresolved. Normal CI, deployment guards and own
 public acceptance are still required; no bare pin or old pass proves a new build.
 Raised terrain remains disabled in live gameplay. Narrow rendering checks do

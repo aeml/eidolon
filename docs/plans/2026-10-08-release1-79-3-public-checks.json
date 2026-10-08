@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T06:30:58Z",
+  "version": "Alpha 1.79.3",
+  "commit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c",
+  "status": "guarded-local-deployment-and-scoped-public-checks-passed-ci-ssh-failure-retained",
+  "ci": {
+    "run": 37734583404,
+    "status": "completed",
+    "conclusion": "failure",
+    "passed": ["Client Tests (Jest)", "Server Tests (Go)", "Browser Smoke (Playwright 1/3)", "Browser Smoke (Playwright 2/3)", "Browser Smoke (Playwright 3/3)", "Predeploy Character QA (System Chrome)", "Validate Production QA Inputs", "Deploy to GitHub Pages"],
+    "failed": "Deploy Server (SSH), Deploy via SSH: ssh.mendola.tech:22 connection timed out, exit255. Root independently verifies exact head/job/step and filtered terminal logs; authorized Luna monitors terminal outcome. No retry, cancelled gate or invented green CI.",
+    "skipped": "Live Release and Character QA did not run because SSH promotion failed. Optional full-stabilization/gallery/rested/animation scopes are not claimed as passed."
+  },
+  "localFallback": {
+    "source": "/home/aeml/eidolon",
+    "guard": "Fresh origin/master equals exact tested b13; tracked checkout clean; detach exact source and reverify. Original dirty /home/aeml/Github/eidolon untouched. Existing deployment lock, actual source/Docker storage minimum, previous-image pin, silent monitor configuration check, schema25/journal compatibility and post-start identity/readiness guards retained. CLEAN_SERVER_TREE=false preserves untracked private data/configuration/logs; no broad cleanup or sudo.",
+    "result": "Original root session63491 terminal0. Luna observes actual supervisor2759375 ending and exact local readiness; root resumes the same original handle and independently records exit0, never relaunches after a wait timeout.",
+    "schemaReceipt": "Schema preflight passed: database=25 supported=25 commit=b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c",
+    "image": "sha256:b72ed27e4fd385de87b44725cb194e0ce54023d287bf3dbb705994d8860d5c89",
+    "rollbackImage": "eidolon-api:rollback-f5c258f52f4e74a637083dd0d6a9959b44dcd290146999a1a3459c5b79ad4362",
+    "rollbackVerified": "Exact prior running f5c258f5 image still present under the rollback tag. This is retention/identity verification, not a new production rollback drill.",
+    "privateEvidenceRoot": "/home/aeml/.local/share/eidolon-1793-deployment-evidence-20261008-3y4GzP25"
+  },
+  "public": {
+    "transport": "Ordinary DNS, forcedIPv4, verified HTTPS; bounded curl fail/connect3s/total10s/no-cache. No origin resolver override, authentication or TLS bypass in independent byte/readiness probes.",
+    "frontend": {"commit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c", "version": "Alpha 1.79.3"},
+    "backend": {"commit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c", "version": "Alpha 1.79.3", "status": "ok", "database": "ready"},
+    "byteComparison": "All16 files byte-match exact committed Git blobs after exported rewriteHtml/rewriteJavaScript from the actual publisher. Includes every selected runtime file, all three newly imported helpers, entry module and HTML; not manifest-presence-only proof.",
+    "files": ["index.html", "src/main.js", "src/art/ElementalTerrainSurface.js", "src/art/ProceduralRealmTerrain.js", "src/art/WorldSurfaceDetail.js", "src/art/LanternholdStreetFurniture.js", "src/art/ProceduralLanternholdArchitecture.js", "src/art/ProceduralLanternholdCourtyards.js", "src/art/WaterLandmarkGeometry.js", "src/art/ProceduralElementalLocations.js", "src/art/ElementalDungeonSurface.js", "src/art/ElementalDungeonWallGeometry.js", "src/art/ProceduralDungeonInteriors.js", "src/art/AirCanvasGeometry.js", "src/core/UIBindings.js", "src/world/WorldGenerator.js"],
+    "publishedHtmlSHA256": "1d506cb62c3ddf31fd7a2efb755301409aea1f952d45036f6c2e0d9ace7dd9ae"
+  },
+  "publicBrowser": {
+    "result": "Root83955 terminal0:2 PASS30.6s, actual anonymous System Chrome normal hardware policy.",
+    "scope": "Desktop/375px open-source credit keyboard focus, real login HTTP200, visible Alpha1.79.3 and first cumulative notes, vendor dependencies, Escape close, live verified-HTTPS WebSocket reachability, exact frontend/backend release identity and database readiness, no collected browser failures. No account/login credential or value grant.",
+    "networkLimit": "Backend Chrome hostname mapping uses current public DNS IPv4 47.204.197.91 and the existing QA-only LocalNetworkAccess launch exception, not an origin/private-IP or TLS override. It does not certify default IPv6/ordinary-device reachability; deferred owner networking/device scope remains open.",
+    "evidence": "public-browser/ under privateEvidenceRoot"
+  },
+  "monitor": "Independent approved monitor remains running,0 restarts, unchanged30s/3failures/2successes/30m Postmark flags. No new mail, induced outage, changed recipient/provider setting or expanded coverage. Local API/database only.",
+  "boundary": "Scoped Alpha1.79.3 delivery is accepted within these checks, not full1.80/1.87/1.99 completion. Raised terrain remains flat in production; the new current-source selector is separate private future work, not this build. Final all-family modern art, populated/equipped/device performance, public SSH routing, broader recovery/rights/operations and owner human campaign/physical-phone checks remain open. No account wipe, schema migration, balance, currency, class, animation, access, payment or retention change. Full original roadmap goal stays active."
+}

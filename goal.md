@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 Alpha1.79.3 accepted scoped live delivery:** Exact b13dd3af
+CI37734583404 passes client/Go/three browser shards/predeploy/input/Pages;
+hosted SSH still times out exit255 and live-character QA is skipped, not passed.
+Guarded exact local deployment original session63491 completes0, schema25
+unchanged, previous image pinned and private configuration/logs/data retained.
+Independent public IPv4 frontend/backend identities/readiness match; all16
+publisher-transformed runtime files match exact source. Public System Chrome
+anonymous2 PASS30.6s covers login/notes/dependencies/WebSocket and exact health;
+backend maps its current public IPv4 with the existing QA-only network launch
+exception, not proof of deferred IPv6 or physical devices. Approved local monitor
+unchanged/running/0restarts. Full1.80/1.87/1.99, final modern art and owner human
+evidence remain open. Separate current-source review/raised-selector branches
+c482b933/65112328 remain private and inactive; do not merge them wholesale.
+See [public delivery receipt](docs/plans/2026-10-08-release1-79-3-public-checks.json).
+
 **October8 current-master visual integration:** Selectively apply qualified
 town masonry, elemental terrain/canvas/piers and four-family dungeon
 surface/architecture changes onto fresh origin/master f9cbd41b. All14 runtime

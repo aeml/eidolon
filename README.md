@@ -420,15 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.3`, a scoped town/elemental landscape and
-  dungeon-architecture patch prepared on current `master` f9cbd41b. Publication
-  and independent live acceptance remain pending; 1.80 freeze and the full 1.87
-  modern-art/raised-world milestone remain open. Individual source-specific art
-  checks are retained; current integration checks are recorded in the
-  [candidate receipt](docs/plans/2026-10-08-release1-79-3-checks.json).
-  Latest verified live release is `Alpha 1.79.2`, at f9cbd41b; hosted SSH routing
-  remains unresolved and does not justify bypassing release guards. Raised
-  terrain stays disabled, saves and public alpha access remain unchanged.
+- Current source and verified live version: `Alpha 1.79.3`, exact `b13dd3af`,
+  a scoped town/elemental landscape and dungeon-architecture patch. CI code,
+  browser/predeploy/input and Pages gates pass; hosted SSH remains failed.
+  Guarded local exact-build deployment and independent public identity/runtime/
+  anonymous-browser checks pass within the [recorded scope](docs/plans/2026-10-08-release1-79-3-public-checks.json).
+  This does not close 1.80 freeze or the full 1.87 modern-art/raised-world
+  milestone. Raised terrain stays disabled; saves and public alpha access remain
+  unchanged. Broader human/device/art and operations gates remain mandatory.
   Current identified API/driver qualification passed representative
   100 mixed/raid/event/town clients,112958ms common activity and100 independent
   fresh saves. Original server phase means total18.8475ms against33ms; all
