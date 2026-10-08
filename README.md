@@ -420,6 +420,11 @@ Notes:
 
 ## Project Status
 
+Patch notes show the latest ten entries at startup. Older ten-entry pages load
+only through **Load more notes**. To add a release, insert its note at the top
+of the history in `index.html`, synchronize versions, and run
+`node scripts/paginate-patch-notes.mjs`. The script preserves the archive.
+
 - Current source version: `Alpha 1.79.11`, regional needle boughs, hanging
   Water willow foliage, connected Fire snags, rooted mineral formations and
   retained-population travel stands. Air landmarks gain visual-only leafy

@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Current requested login improvement:** Prepared1.79.11 now paginates notes:
+ten initial, ten more per click, all446 entries retained.817493to110263bytes.
+Login defers the game engine and handles an already-fired document-ready event.
+519distinct focused/history/smoke-planning checks and real Chrome pagination/
+failure/retry pass. Firefox local navigation remains failed/unverified; do not
+claim that issue fixed. [Evidence](docs/plans/2026-10-08-login-pagination-checks.json).
+No push/live acceptance; pending releases remain ordered and full goal active.
+
 **Current October8 preparation —1.79.11:** Select regional art/retained travel
 stands/Air heath and runtime cover settings on prepared1.79.10/cc340940.
 461distinct focused/version/resource checks and four current-base flat native

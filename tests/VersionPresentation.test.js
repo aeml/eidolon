@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { readIndexWithPatchHistory } from './readIndexWithPatchHistory.js';
 import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
@@ -6,7 +7,7 @@ const repoRoot = path.resolve(process.cwd());
 const currentVersion = '1.79.11';
 
 test('1.79.11 records integrated regional art without claiming full modern-art completion', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.11"'), previous = html.indexOf('data-version="1.79.10"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['layered needle boughs', 'folded leaves', 'connected crooked branches',
@@ -19,7 +20,7 @@ test('1.79.11 records integrated regional art without claiming full modern-art c
 });
 
 test('1.79.10 records the integrated floor/willow component without claiming raised-world or final-art completion', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.10"'), previous = html.indexOf('data-version="1.79.9"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['texture repetition', 'Moss detail is filtered', 'curved hanging shoots',
@@ -32,7 +33,7 @@ test('1.79.10 records the integrated floor/willow component without claiming rai
 });
 
 test('1.79.9 records distinct bark and retained-population woodland composition without claiming final art', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.9"'), previous = html.indexOf('data-version="1.79.8"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['birch, pine and willow', 'filtered relief', 'uneven stands',
@@ -44,7 +45,7 @@ test('1.79.9 records distinct bark and retained-population woodland composition 
 });
 
 test('1.79.8 records reviewed foliage and published single-style startup without claiming full graphics completion', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.8"'), previous = html.indexOf('data-version="1.79.7"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['hanging needle fans', 'gently twisted leaves', 'every plant and tree',
@@ -56,7 +57,7 @@ test('1.79.8 records reviewed foliage and published single-style startup without
 });
 
 test('1.79.7 documents only the surface component without claiming staged terrain, models or final art', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.7"'), previous = html.indexOf('data-version="1.79.6"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['coherent aggregate detail', 'Moss cushions', 'broken by weathering',
@@ -67,7 +68,7 @@ test('1.79.7 documents only the surface component without claiming staged terrai
 });
 
 test('1.79.6 documents selected party hotbar focus without loosening ordinary UI or gameplay gates', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.6"'), previous = html.indexOf('data-version="1.79.5"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['numbered or remapped hotbar keys', 'keyboard focus', 'Healing Light', 'Divine Intervention',
@@ -78,7 +79,7 @@ test('1.79.6 documents selected party hotbar focus without loosening ordinary UI
 });
 
 test('1.79.5 records administrator story-only passage and retained normal gates', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.5"'), previous = html.indexOf('data-version="1.79.4"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Verified administrators', 'Resonance Portal', 'Dungeon Guide', 'Level 100',
@@ -89,7 +90,7 @@ test('1.79.5 records administrator story-only passage and retained normal gates'
 });
 
 test('1.79.4 records save-height recovery and compatibility without claiming raised rollout', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.4"'), previous = html.indexOf('data-version="1.79.3"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Returning players', 'Horizontal position', 'dungeon/casino floors', 'active jump arcs',
@@ -101,7 +102,7 @@ test('1.79.4 records save-height recovery and compatibility without claiming rai
 });
 
 test('1.79.3 records scoped elemental and town art without claiming final art acceptance', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.3"'), previous = html.indexOf('data-version="1.79.2"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['weathered masonry', 'collisions remain unchanged', 'folded basalt',
@@ -116,7 +117,7 @@ test('1.79.3 records scoped elemental and town art without claiming final art ac
 });
 
 test('1.79.2 records scoped woodland, Moonfrost and release-trust fixes without claiming milestone freeze', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.2"'), previous = html.indexOf('data-version="1.79.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['every tree, leaf and plant', 'unchanged collisions', '249,406 triangles',
@@ -130,7 +131,7 @@ test('1.79.2 records scoped woodland, Moonfrost and release-trust fixes without 
 });
 
 test('1.79.1 records scoped ground polish and browser-origin hardening without claiming feature freeze', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.1"'), previous = html.indexOf('data-version="1.79.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['soil and moss layering', 'warmer fallen leaves', 'High and Low',
@@ -148,7 +149,7 @@ test('1.79.1 records scoped ground polish and browser-origin hardening without c
 });
 
 test('1.79.0 explains current multiplayer and equipped-render work without claiming launch capacity', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.79.0"'), previous = html.indexOf('data-version="1.78.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['spatial player index', 'current-frame data', 'Snapshot caches are prepared',
@@ -166,7 +167,7 @@ test('1.79.0 explains current multiplayer and equipped-render work without claim
 });
 
 test('1.78.0 explains independent alerts and diagnostics without promising capacity or changing retention', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.78.0"'), previous = html.indexOf('data-version="1.77.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Service diagnostics', 'Eighteen fixed rows', 'audited reads',
@@ -180,7 +181,7 @@ test('1.78.0 explains independent alerts and diagnostics without promising capac
 });
 
 test('1.77.0 documents safe hosting without claiming renewal, IPv6 or launch capacity', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.77.0"'), previous = html.indexOf('data-version="1.76.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['hostnames and ports', 'dangling links', 'Missing Certbot',
@@ -194,7 +195,7 @@ test('1.77.0 documents safe hosting without claiming renewal, IPv6 or launch cap
 });
 
 test('1.76.0 explains bounded persistence and preserves historical data without claiming capacity', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.76.0"'), previous = html.indexOf('data-version="1.75.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['selected save', 'Original first-character selection', 'account identity',
@@ -209,7 +210,7 @@ test('1.76.0 explains bounded persistence and preserves historical data without 
 });
 
 test('1.75.0 documents reviewed private exports without claiming erasure or full account coverage', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.75.0"'), previous = html.indexOf('data-version="1.74.7"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Account Data Export', 'Account Removal Request', 'no automatic diagnostics',
@@ -223,7 +224,7 @@ test('1.75.0 documents reviewed private exports without claiming erasure or full
 });
 
 test('1.74.7 documents aligned town services, bounded real-time jumps and retained activity', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.74.7"'), previous = html.indexOf('data-version="1.74.6"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['stash', 'quest-giver smithy', 'Forge', 'facing east', 'planter',
@@ -235,7 +236,7 @@ test('1.74.7 documents aligned town services, bounded real-time jumps and retain
 });
 
 test('1.74.6 explains cross-hand persistent table ordering without changing wagering', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.74.6"'), previous = html.indexOf('data-version="1.74.5"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Blackjack', "Hold'em", 'roulette', 'baccarat', 'persistent version',
@@ -247,7 +248,7 @@ test('1.74.6 explains cross-hand persistent table ordering without changing wage
 });
 
 test('1.74.5 explains due keepalive scheduling without changing connection guards', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.74.5"'), previous = html.indexOf('data-version="1.74.4"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['keepalives', 'queued control traffic', 'already-due ping',
@@ -260,7 +261,7 @@ test('1.74.5 explains due keepalive scheduling without changing connection guard
 });
 
 test('1.74.4 explains same-hand ready-view ordering without changing wager authority', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.74.4"'), previous = html.indexOf('data-version="1.74.3"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Blackjack', "Hold'em", 'lower-revision', 'same hand and seat',
@@ -270,7 +271,7 @@ test('1.74.4 explains same-hand ready-view ordering without changing wager autho
 });
 
 test('1.74.3 explains scoped casino performance without changing economic authority', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.74.3"'), previous = html.indexOf('data-version="1.74.2"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['acting player first', 'same table', 'shared seats', 'settlement locks',
@@ -279,7 +280,7 @@ test('1.74.3 explains scoped casino performance without changing economic author
 });
 
 test('1.74.2 explains real-player filtering and honest daily session totals', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.74.2"'), previous = html.indexOf('data-version="1.74.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Real players', 'Test accounts', 'UTC day', 'unique login accounts',
@@ -287,7 +288,7 @@ test('1.74.2 explains real-player filtering and honest daily session totals', ()
 });
 
 test('1.74.1 explains the bounded Sell All fix and nonblocking game errors', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.74.1"'), previous = html.indexOf('data-version="1.74.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['25-slot bag', '50-request burst', 'protected-item checks',
@@ -296,7 +297,7 @@ test('1.74.1 explains the bounded Sell All fix and nonblocking game errors', () 
 });
 
 test('1.74.0 publishes read-only moderation filters and honest administration boundaries', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.74.0"'), previous = html.indexOf('data-version="1.73.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Moderation decisions', 'Moderation target checks', 'read-only filters',
@@ -307,7 +308,7 @@ test('1.74.0 publishes read-only moderation filters and honest administration bo
 });
 
 test('1.73.0 explains durable valuable operations without resets or unsafe rollback promises', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.73.0"'), previous = html.indexOf('data-version="1.72.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['original items and Gold', 'before success feedback', 'full bag',
@@ -317,7 +318,7 @@ test('1.73.0 explains durable valuable operations without resets or unsafe rollb
 });
 
 test('1.72.0 documents authoritative gameplay and network bounds without later release claims', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.72.0"'), previous = html.indexOf('data-version="1.71.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['server-owned speed', 'distance-scaled airtime', '13.5 world units per second',
@@ -329,7 +330,7 @@ test('1.72.0 documents authoritative gameplay and network bounds without later r
 });
 
 test('1.71.1 explains the narrow equipment-shop guard and retains recovery history', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.71.1"'), previous = html.indexOf('data-version="1.71.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['equipment only', 'Forge shards or hearts', '35 Gold per level',
@@ -339,7 +340,7 @@ test('1.71.1 explains the narrow equipment-shop guard and retains recovery histo
 });
 
 test('1.71.0 documents explicit verified-email recovery without ownership shortcuts', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.71.0"'), previous = html.indexOf('data-version="1.70.2"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['unverified registration email never grants', '30 minutes', '15 minutes',
@@ -349,7 +350,7 @@ test('1.71.0 documents explicit verified-email recovery without ownership shortc
 });
 
 test('1.70.2 explains stable Forge presentation without publishing unfinished milestones', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.70.2"'), previous = html.indexOf('data-version="1.70.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['fixed order', 'extra stats alphabetically', 'no longer shuffle',
@@ -358,7 +359,7 @@ test('1.70.2 explains stable Forge presentation without publishing unfinished mi
 });
 
 test('1.70.1 documents atomic trade edits without claiming durable settlement or account recovery', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.70.1"'), previous = html.indexOf('data-version="1.70.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['exact escrow identity', 'empty bag slot', 'edit is rejected before changing',
@@ -368,7 +369,7 @@ test('1.70.1 documents atomic trade edits without claiming durable settlement or
 });
 
 test('1.70.0 distinguishes reliable venue controls from capacity and commercial approval', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.70.0"'), previous = html.indexOf('data-version="1.69.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['every casino action checks the connection', 'never automatically replays', '232 chairs',
@@ -379,14 +380,14 @@ test('1.70.0 distinguishes reliable venue controls from capacity and commercial 
 });
 
 test("1.69.0 documents casino-trust without new awards or automatic actions", () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.69.0"'), previous = html.indexOf('data-version="1.68.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ["voluntary browser controls","not an account lock","does not reset the timer","never restarts a queue","Saved free spins","first hand's total","not celebrated as a win","Payment integration remains excluded","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
 });
 
 test('1.68.1 records QA corrections without weakening movement or exact-item requirements', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.68.1"'), previous = html.indexOf('data-version="1.68.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['actual Idle animation', 'before clicking', 'never a retry', 'pre-input position',
@@ -395,35 +396,35 @@ test('1.68.1 records QA corrections without weakening movement or exact-item req
 });
 
 test("1.68.0 documents VIP-membership without new awards or automatic actions", () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.68.0"'), previous = html.indexOf('data-version="1.67.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ["Refresh VIP status","never replays","server snapshot","cannot renew membership","100 EP monthly allowance","do not stack","owned cosmetic looks intact","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
 });
 
 test("1.67.0 documents cosmetics without new awards or automatic actions", () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.67.0"'), previous = html.indexOf('data-version="1.66.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ["previews fitted looks","before you confirm","old purchase button","valid replies","Original gear","combat stats","does not travel","before updating your character","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
 });
 
 test("1.66.0 documents EP-wallet without new awards or automatic actions", () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.66.0"'), previous = html.indexOf('data-version="1.65.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ["1,000,000 Gold for 1 EP","never Gold or player power","identify their character","another character","saved request","Cosmetic ownership stays","purchase method","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
 });
 
 test("1.65.0 documents slots without new awards or automatic actions", () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.65.0"'), previous = html.indexOf('data-version="1.64.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ["reels animate","pauses for bonus choices","do not consume queued spins","Stop remains available","never silently restores","unchanged updates","100,000 Gold or 100 EP","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
 });
 
 test('1.64.1 retains truthful house wager details and records the unaccepted predecessor', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.64.1"'), previous = html.indexOf('data-version="1.64.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['wager details are unavailable', 'a confirmed wager or a win', 'Server-owned stakes',
@@ -431,14 +432,14 @@ test('1.64.1 retains truthful house wager details and records the unaccepted pre
 });
 
 test("1.64.0 documents house-table without new awards or automatic actions", () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.64.0"'), previous = html.indexOf('data-version="1.63.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ["shared rounds","server-owned countdowns","unconfirmed drafts","cannot submit old wagers","server owns accepted stakes","100,000 Gold or 100 EP","Full prior patch history"]) expect(html.slice(start, previous)).toContain(text);
 });
 
 test('1.63.0 explains shared Hold’em, private cards and saved current-chair cash-outs', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.63.0"'), previous = html.indexOf('data-version="1.62.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['real-player-only', 'current best hand', 'hidden opponent cards stay private',
@@ -447,7 +448,7 @@ test('1.63.0 explains shared Hold’em, private cards and saved current-chair ca
 });
 
 test('1.62.1 records bounded asset recovery without hiding persistent failures or changing gameplay', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.62.1"'), previous = html.indexOf('data-version="1.62.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['unavailable browser cache reads', 'one bounded retry', 'Persistent network failures',
@@ -456,7 +457,7 @@ test('1.62.1 records bounded asset recovery without hiding persistent failures o
 });
 
 test('1.62.0 explains draft wagers, current-seat timeouts and saved blackjack returns', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.62.0"'), previous = html.indexOf('data-version="1.61.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Next wager', 'never changes your confirmed stake', 'requires your click',
@@ -465,7 +466,7 @@ test('1.62.0 explains draft wagers, current-seat timeouts and saved blackjack re
 });
 
 test('1.61.0 preserves the casino world and explains explicit current-session door interactions', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.61.0"'), previous = html.indexOf('data-version="1.60.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['seamless Lanternhold Casino visit', 'confirm Enter Casino', 'automatic entry',
@@ -476,7 +477,7 @@ test('1.61.0 preserves the casino world and explains explicit current-session do
 });
 
 test('1.60.0 records connected recruitment and actual completion/reward receipts without automatic actions', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.60.0"'), previous = html.indexOf('data-version="1.59.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['companions, clear rewards and your next adventure', 'No listing', 'Listings last 20 minutes',
@@ -487,7 +488,7 @@ test('1.60.0 records connected recruitment and actual completion/reward receipts
 });
 
 test('1.59.0 explains reversible moderation, account help and stable public names', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.59.0"'), previous = html.indexOf('data-version="1.58.5"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['player safety and accountable moderation', 'Temporary chat mutes', 'required public name corrections',
@@ -496,7 +497,7 @@ test('1.59.0 explains reversible moderation, account help and stable public name
 });
 
 test('1.58.5 gives Ilyra permanent NPC clothing without changing player equipment or gameplay', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.58.5"'), previous = html.indexOf('data-version="1.58.4"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Ilyra returns in full regalia', 'indigo robes', 'four elemental stones', 'permanent NPC outfit',
@@ -505,7 +506,7 @@ test('1.58.5 gives Ilyra permanent NPC clothing without changing player equipmen
 });
 
 test('1.58.4 explains equipment type labels and class restrictions without changing gameplay', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.58.4"'), previous = html.indexOf('data-version="1.58.3"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['clear equipment types', 'Cloth, Leather or Plate', 'Sword, Dagger, Mace or Staff',
@@ -513,7 +514,7 @@ test('1.58.4 explains equipment type labels and class restrictions without chang
 });
 
 test('1.58.3 records source-preserving equipment batching and honest quality changes', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.58.3"'), previous = html.indexOf('data-version="1.58.2"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['lighter equipped heroes', 'independent skeletons', '18–20%', 'not a universal FPS promise',
@@ -522,7 +523,7 @@ test('1.58.3 records source-preserving equipment batching and honest quality cha
 });
 
 test('1.58.2 records the delivered character integration and class rules without granting power through cosmetics', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.58.2"'), previous = html.indexOf('data-version="1.58.1"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['fitted heroes and dual-wield Rogues', 'independent skeletons', '252-model collection', 'Wizards wear cloth',
@@ -532,7 +533,7 @@ test('1.58.2 records the delivered character integration and class rules without
 });
 
 test('1.58.1 records presentation polish without claiming unavailable model swaps or gameplay changes', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.58.1"'), previous = html.indexOf('data-version="1.58.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['brighter celebrations and sanctuary light', 'gold and elemental sparks',
@@ -543,7 +544,7 @@ test('1.58.1 records presentation polish without claiming unavailable model swap
 });
 
 test('1.58.0 records optional endgame direction without new reward grants or EP power', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.58.0"'), previous = html.indexOf('data-version="1.57.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['choose your next adventure', 'Endgame tab', 'optional choices', 'personally claimed Dark King quest',
@@ -555,7 +556,7 @@ test('1.58.0 records optional endgame direction without new reward grants or EP 
 });
 
 test('1.57.0 records event discovery without extra currencies or premature activation', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.57.0"'), previous = html.indexOf('data-version="1.56.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['discover the next world event', 'next three server-scheduled events', 'UTC windows',
@@ -567,7 +568,7 @@ test('1.57.0 records event discovery without extra currencies or premature activ
 });
 
 test('1.56.0 records cosmetic season claims without power or a new calendar', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.56.0"'), previous = html.indexOf('data-version="1.55.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['earned arena looks', 'Settled Bronze, Silver and Gold', 'Current projections cannot unlock',
@@ -579,7 +580,7 @@ test('1.56.0 records cosmetic season claims without power or a new calendar', ()
 });
 
 test('1.55.0 records arena quality without changing competition or progression', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.55.0"'), previous = html.indexOf('data-version="1.54.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['follow every arena round', 'without extra per-second network requests',
@@ -592,7 +593,7 @@ test('1.55.0 records arena quality without changing competition or progression',
 });
 
 test('1.54.0 records rigged Fighter integration and current duel consent without progression changes', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.54.0"'), previous = html.indexOf('data-version="1.53.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['a rigged Fighter and clearer duel consent', 'Independent skeletons', 'All 14 equipment slots',
@@ -625,7 +626,7 @@ test('item custody, party rewards, social consent and administration reuse one d
 });
 
 test('1.53.0 records group planning, current consent and unchanged progression', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.53.0"'), previous = html.indexOf('data-version="1.52.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['plan your next adventure', 'public Lanternhold meeting point', 'next 20 minutes',
@@ -637,7 +638,7 @@ test('1.53.0 records group planning, current consent and unchanged progression',
 });
 
 test('1.52.0 records durable guild operations without claiming beta or balance changes', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.52.0"'), previous = html.indexOf('data-version="1.51.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['guilds you can trust', 'Durable guild-bank transfers', 'lost replies recover',
@@ -659,7 +660,7 @@ test('guild settlement is mandatory once against the fresh job-owned disposable 
 });
 
 test('1.51.0 records friend and chat usability while retaining consent and history', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.51.0"'), previous = html.indexOf('data-version="1.50.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['friends and private conversations', 'false incoming request', 'Unknown usernames are rejected',
@@ -670,7 +671,7 @@ test('1.51.0 records friend and chat usability while retaining consent and histo
 });
 
 test('1.50.0 records integration and phone party roles without overstating approval', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.50.0"'), previous = html.indexOf('data-version="1.49.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['presentation that stays together', 'Party roles on phones', 'Consistent transitions',
@@ -681,7 +682,7 @@ test('1.50.0 records integration and phone party roles without overstating appro
 });
 
 test('1.49.0 records session ownership fixes and retains measured performance notes', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.49.0"'), previous = html.indexOf('data-version="1.48.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['sessions that leave cleanly', 'Fresh scene ownership', 'Menus retire once',
@@ -690,7 +691,7 @@ test('1.49.0 records session ownership fixes and retains measured performance no
 });
 
 test('1.48.0 records measured rendering changes and preserves prior history', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.48.0"'), previous = html.indexOf('data-version="1.47.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['less work, same world', 'Equipped crowds', 'distant dungeon positions',
@@ -701,7 +702,7 @@ test('1.48.0 records measured rendering changes and preserves prior history', ()
 });
 
 test('1.38.0 records party presence fixes without revoking downed kill credit', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.38.0"'), previous = html.indexOf('data-version="1.37.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['party presence and rewards', 'Disconnected characters',
@@ -713,7 +714,7 @@ test('1.38.0 records party presence fixes without revoking downed kill credit', 
 });
 
 test('1.37.0 records exact capped rewards and recoverable weekly caches', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.37.0"'), previous = html.indexOf('data-version="1.36.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['clearer level-cap rewards', 'actual grant', 'original completion week',
@@ -726,7 +727,7 @@ test('1.37.0 records exact capped rewards and recoverable weekly caches', () => 
 });
 
 test('1.36.0 records economy safety without resetting player balances', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.36.0"'), previous = html.indexOf('data-version="1.35.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['Gold economy safety', 'available visible bag slot',
@@ -742,7 +743,7 @@ test('town surface regression remains in automatic browser coverage', () => {
 });
 
 test('1.35.0 records Forge safety and unchanged progression costs', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.35.0"'), previous = html.indexOf('data-version="1.34.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['safe Forge upgrades and gem crafting', 'required character levels',
@@ -754,7 +755,7 @@ test('1.35.0 records Forge safety and unchanged progression costs', () => {
 });
 
 test('1.34.0 publishes safe drops without implying an economy reset', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.34.0"'), previous = html.indexOf('data-version="1.33.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['safer item drops', 'quantity has not changed', 'without removing items',
@@ -765,7 +766,7 @@ test('1.34.0 publishes safe drops without implying an economy reset', () => {
 });
 
 test('1.33.0 publishes the class-kit changes and preserves prior notes', () => {
-    const html = fs.readFileSync('index.html', 'utf8');
+    const html = readIndexWithPatchHistory();
     const start = html.indexOf('data-version="1.33.0"'), previous = html.indexOf('data-version="1.32.0"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['builds that work together', 'Single-specialization kits', 'Wizard:', 'Fighter:',
@@ -774,7 +775,7 @@ test('1.33.0 publishes the class-kit changes and preserves prior notes', () => {
         expect(html.slice(start, previous)).toContain(text);
     }
 });
-const indexHtml = fs.readFileSync(path.join(repoRoot, 'index.html'), 'utf8');
+const indexHtml = readIndexWithPatchHistory();
 const rootReadme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const alphaRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/plans/2026-04-18-alpha-1-0-roadmap-and-status.md'), 'utf8');
 const engineeringRoadmap = fs.readFileSync(path.join(repoRoot, 'docs/ROADMAP.md'), 'utf8');

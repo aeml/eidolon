@@ -1,4 +1,4 @@
-import { GameEngine } from './core/GameEngine.js';
+import { mountPatchNotesPagination } from './ui/PatchNotesPagination.js';
 import { AssetCacheManager } from './assets/AssetCacheManager.js';
 import { ensureGameStylesReady } from './assets/StylesheetBoot.js';
 import { resolveServerAddress } from './core/serverAddress.js';
@@ -103,7 +103,8 @@ window.addEventListener('unhandledrejection', function(event) {
     logToScreen(`Unhandled Rejection: ${event.reason}`, 'CRITICAL');
 });
 
-window.addEventListener('DOMContentLoaded', async () => {
+const bootLogin = async () => {
+    mountPatchNotesPagination(document);
     mountDataPrivacyNotices();
     if (!await ensureGameStylesReady()) return;
     void syncFullscreenPreference(false);
@@ -472,6 +473,8 @@ window.addEventListener('DOMContentLoaded', async () => {
                 window.game.destroy();
             }
             // Pass username and socket to GameEngine
+            // Login must not wait for the entire renderer/world/actor graph.
+            const { GameEngine } = await import('./core/GameEngine.js');
             window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket, serverTerrainProfile);
 
             // Wire session-resume / reconnect callbacks into the network layer.
@@ -598,4 +601,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     // module boot from a partially rendered document whose dependencies were
     // interrupted at the edge.
     document.documentElement.dataset.eidolonReady = 'true';
-});
+};
+
+// Module dependency evaluation can finish after DOMContentLoaded (notably
+// with cold caches). In that case, initialize now instead of missing boot.
+if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', bootLogin, { once: true });
+else void bootLogin();

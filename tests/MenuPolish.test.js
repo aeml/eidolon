@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { readIndexWithPatchHistory } from './readIndexWithPatchHistory.js';
 import { URL, fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
 import { UIManager } from '../src/ui/UIManager.js';
@@ -788,7 +789,7 @@ describe('menu polish regressions', () => {
     });
 
     test('legacy button markup uses close-btn chrome for remaining windows', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
 
         [
             'btn-close-abilities',
@@ -824,7 +825,7 @@ describe('menu polish regressions', () => {
     });
 
     test('skill tree empty state uses a shared placeholder class', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(skillTreeCssPath, 'utf8');
 
         expect(html).toContain('<div class="skill-tree-empty-state">');
@@ -834,7 +835,7 @@ describe('menu polish regressions', () => {
     });
 
     test('browser warning and party markup use reusable classes instead of inline close hacks', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
 
         expect(html).toContain('id="btn-close-browser-warning"');
         expect(html).not.toContain('onclick="this.parentElement.style.display=\'none\'"');
@@ -845,7 +846,7 @@ describe('menu polish regressions', () => {
     });
 
     test('shop forge and trading markup reuse shared tab and footer layout classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
 
         expect(html).toContain('class="window-tabs"');
         expect(html).toContain('class="menu-btn window-tab is-active"');
@@ -879,7 +880,7 @@ describe('menu polish regressions', () => {
     });
 
     test('forge trading quest and journal markup reuse shared body and form layout classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
 
         expect(html).toContain('class="window-body"');
         expect(html).toContain('class="window-panel"');
@@ -895,7 +896,7 @@ describe('menu polish regressions', () => {
     });
 
     test('forge gem markup reuses shared split/grid/detail layout classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
 
         expect(html).toContain('class="window-split-row window-split-row--tight"');
         expect(html).toContain('class="window-panel window-panel--centered"');
@@ -912,7 +913,7 @@ describe('menu polish regressions', () => {
     });
 
     test('forge combine and trading controls reuse shared compact control classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
 
         expect(html).toContain('class="window-inline-stack"');
         expect(html).toContain('class="combine-slot window-token-slot window-token-slot--empty"');
@@ -928,7 +929,7 @@ describe('menu polish regressions', () => {
     });
 
     test('forge window is large enough and scrolls internally so bottom tab actions stay reachable', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toMatch(/id="forge-screen"[^>]*class="window forge-window"[^>]*style="display: none;"/);
@@ -1082,7 +1083,7 @@ describe('menu polish regressions', () => {
     });
 
     test('older static window markup uses consistent close button chrome', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
 
         [
             'btn-close-help-header',
@@ -1104,7 +1105,7 @@ describe('menu polish regressions', () => {
     });
 
     test('pause menu uses reusable viewport-safe menu chrome', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toMatch(/id="esc-menu"[^>]*class="window pause-menu"[^>]*style="display: none;"/);
@@ -1121,7 +1122,7 @@ describe('menu polish regressions', () => {
     });
 
     test('settings window stays within the viewport and scrolls internally when content is tall', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toMatch(/id="settings-screen"[^>]*class="window support-window support-window--settings"[^>]*style="display: none;"/);
@@ -1132,7 +1133,7 @@ describe('menu polish regressions', () => {
     });
 
     test('static help report and patch notes windows stay within the viewport and scroll internally', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toMatch(/id="help-screen"[^>]*class="window support-window support-window--help"[^>]*style="display: none;"/);
@@ -1151,7 +1152,7 @@ describe('menu polish regressions', () => {
     });
 
     test('help guide content reuses shared title key and separator classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div class="help-guide">');
@@ -1177,7 +1178,7 @@ describe('menu polish regressions', () => {
     });
 
     test('patch notes history entries reuse shared title and list classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div class="patch-note-entry" data-version="0.31.7">');
@@ -1193,7 +1194,7 @@ describe('menu polish regressions', () => {
     });
 
     test('patch notes header helper text uses shared meta and link classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<span class="patch-notes-header__meta">');
@@ -1206,7 +1207,7 @@ describe('menu polish regressions', () => {
     });
 
     test('start screen version row uses shared label and patch notes link classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(startScreenCssPath, 'utf8');
         // VersionPresentation checks the exact release. This layout regression
         // should follow its label instead of retaining a second stale version.
@@ -1225,7 +1226,7 @@ describe('menu polish regressions', () => {
     });
 
     test('login quietly credits the open-source project with a safe GitHub link', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const template = document.createElement('template');
         template.innerHTML = html;
         const note = template.content.querySelector('#login-panel .auth-project-note');
@@ -1243,7 +1244,7 @@ describe('menu polish regressions', () => {
     });
 
     test('start flow panel uses shared shell body and copy classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div id="start-flow-panel" class="start-flow-panel">');
@@ -1264,7 +1265,7 @@ describe('menu polish regressions', () => {
     });
 
     test('auth entry controls use shared classes instead of inline chrome', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="auth-panel__title">Welcome, traveler</div>');
@@ -1328,7 +1329,7 @@ describe('menu polish regressions', () => {
     });
 
     test('class selection descriptions use shared title and class-color classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(startScreenCssPath, 'utf8');
 
         expect(html).toContain('<div class="class-selection__title">Create New Character</div>');
@@ -1353,7 +1354,7 @@ describe('menu polish regressions', () => {
     });
 
     test('loading overlay uses shared shell title progress and text classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(overlaysCssPath, 'utf8');
 
         expect(html).toContain('<div id="loading-screen" class="loading-screen">');
@@ -1373,7 +1374,7 @@ describe('menu polish regressions', () => {
     });
 
     test('ability tooltip text uses shared name description and cost classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(abilitiesCssPath, 'utf8');
 
         expect(html).toContain('<h4 id="ability-name" class="ability-tooltip__name">Ability</h4>');
@@ -1389,7 +1390,7 @@ describe('menu polish regressions', () => {
     });
 
     test('abilities menu shell and content use shared layout classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div id="abilities-menu" class="window abilities-menu content-aware-window" style="display: none;">');
@@ -1402,7 +1403,7 @@ describe('menu polish regressions', () => {
     });
 
     test('support menus reuse footer and action row classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div class="support-window__footer">');
@@ -1418,7 +1419,7 @@ describe('menu polish regressions', () => {
     });
 
     test('report form fields reuse support field controls', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<select id="report-type" class="support-field__control">');
@@ -1437,7 +1438,7 @@ describe('menu polish regressions', () => {
     });
 
     test('settings core fields reuse support field classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<label for="graphics-quality" class="support-field__label">Graphics Quality</label>');
@@ -1485,7 +1486,7 @@ describe('menu polish regressions', () => {
     });
 
     test('settings asset cache section uses reusable panel classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div class="asset-cache-panel">');
@@ -1516,7 +1517,7 @@ describe('menu polish regressions', () => {
     });
 
     test('service and quest windows stay within the viewport and scroll growing content internally', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toMatch(/id="shop-screen"[^>]*class="window shop-window"[^>]*style="display: none;"/);
@@ -1586,7 +1587,7 @@ describe('menu polish regressions', () => {
     });
 
     test('merchant shop shell content and grids use shared classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div id="shop-screen" class="window shop-window" style="display: none;">');
@@ -1614,7 +1615,7 @@ describe('menu polish regressions', () => {
     });
 
     test('merchant sell all rarity buttons use shared modifier classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('id="btn-sell-common" class="menu-btn shop-sell-button shop-sell-button--common"');
@@ -1631,7 +1632,7 @@ describe('menu polish regressions', () => {
     });
 
     test('stash window grid and guidance use shared classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div id="stash-screen" class="window stash-window" style="display: none;">');
@@ -1647,7 +1648,7 @@ describe('menu polish regressions', () => {
     });
 
     test('hud utility windows stay within the viewport and scroll growing content internally', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toMatch(/id="abilities-menu"[^>]*class="window abilities-menu content-aware-window"[^>]*style="display: none;"/);
@@ -1667,7 +1668,7 @@ describe('menu polish regressions', () => {
     });
 
     test('primary menu windows are content-aware and viewport capped', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
         const socialCss = readFileSync(socialCssPath, 'utf8');
         const skillTreeCss = readFileSync(skillTreeCssPath, 'utf8');
@@ -1683,7 +1684,7 @@ describe('menu polish regressions', () => {
     });
 
     test('chat markup provides resizable Chat and Game logs', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(chatCssPath, 'utf8');
 
         expect(html).toContain('data-chat-tab="chat"');
@@ -1696,7 +1697,7 @@ describe('menu polish regressions', () => {
     });
 
     test('inventory footer gold and guidance chrome use shared classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div class="inventory-footer">');
@@ -1715,7 +1716,7 @@ describe('menu polish regressions', () => {
     });
 
     test('split stack dialog chrome uses shared classes', () => {
-        const html = readFileSync(indexHtmlPath, 'utf8');
+        const html = readIndexWithPatchHistory();
         const css = readFileSync(windowsCssPath, 'utf8');
 
         expect(html).toContain('<div id="split-stack-window" class="window split-stack-window" style="display: none;">');

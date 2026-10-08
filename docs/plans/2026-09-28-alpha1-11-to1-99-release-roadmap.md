@@ -1,5 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Requested login pagination is staged on prepared1.79.11: ten initial notes,
+explicit ten-entry older pages, all446 preserved; initial HTML about86% smaller.
+Login defers the engine and tolerates a late document-ready event.519 focused/
+history/smoke-plan cases and real Chrome load/retry pass. Firefox local check
+still fails before usable navigation; it is not accepted or claimed fixed.
+[Scope and attempts](2026-10-08-login-pagination-checks.json). Delivery and the
+unchanged full roadmap gates remain open.
+
 Current October8 prepared1.79.11 on prepared1.79.10/cc340940: selective regional
 foliage/minerals/retained travel stands, new Air heath and actual quality switches.
 461distinct focused/version/resource checks and four current-base flat native

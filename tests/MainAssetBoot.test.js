@@ -28,6 +28,13 @@ jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
 }));
 
 describe('asset persistence boot wiring', () => {
+    // Each test builds a new document; production boot runs once per module.
+    beforeEach(() => {
+        // Retire the prior fixture's detached active screen before mounting
+        // a new page; its old window listener must not act as a second session.
+        document.getElementById('start-screen')?.classList.remove('hidden');
+        jest.resetModules();
+    });
     const buildStartDom = () => {
         document.getElementById('report-screen')?.__eidolonLoginSupport?.dispose();
         document.body.innerHTML = `
@@ -400,7 +407,7 @@ describe('asset persistence boot wiring', () => {
         });
 
         document.querySelector('.class-btn')?.click();
-        await Promise.resolve();
+        await new Promise(resolve => setTimeout(resolve, 0));
 
         expect(document.documentElement.requestFullscreen).toHaveBeenCalledTimes(1);
     });
@@ -441,7 +448,7 @@ describe('asset persistence boot wiring', () => {
         });
 
         document.querySelector('.class-btn')?.click();
-        await Promise.resolve();
+        await new Promise(resolve => setTimeout(resolve, 0));
 
         document.fullscreenElement = document.documentElement;
         document.dispatchEvent(new Event('fullscreenchange'));
@@ -487,7 +494,7 @@ describe('asset persistence boot wiring', () => {
         });
 
         document.querySelector('.class-btn')?.click();
-        await Promise.resolve();
+        await new Promise(resolve => setTimeout(resolve, 0));
         document.documentElement.requestFullscreen.mockClear();
         document.fullscreenElement = null;
 
@@ -533,7 +540,7 @@ describe('asset persistence boot wiring', () => {
         });
 
         document.querySelector('.class-btn')?.click();
-        await Promise.resolve();
+        await new Promise(resolve => setTimeout(resolve, 0));
         document.documentElement.requestFullscreen.mockClear();
         document.fullscreenElement = null;
 
