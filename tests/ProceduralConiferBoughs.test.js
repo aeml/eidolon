@@ -9,6 +9,9 @@ test.each(['high', 'low'])('%s needle sprays have fuller projected coverage with
         expect(position.array).toEqual(duplicate.attributes.position.array);
         expect(geometry.attributes.color.array).toEqual(duplicate.attributes.color.array);
         expect(normal.count).toBe(position.count);
+        expect(geometry.boundingBox.min.y).toBeGreaterThan(-1.8);
+        expect(geometry.boundingBox.max.y).toBeLessThan(1.7);
+        expect(geometry.boundingSphere.radius).toBeLessThan(2.6);
         let coverage = 0;
         for (let i = 0; i < position.count; i += 3) {
             const a = new Vector3().fromBufferAttribute(position, i);

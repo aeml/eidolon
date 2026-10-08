@@ -6,6 +6,10 @@ master7892224f, not the future branch. Plant counts, High/Low triangles,
 wind/shadows/collisions retained. Raised terrain, wearable derivatives and
 renderer optimizations not promoted. See [scope](2026-10-08-release1-79-8-checks.json).
 Own CI/public acceptance pending. Accepted public1.79.7/7892224f and
+First1.79.8 CI37781713097 fails existing pine minimum-height contract. Correct
+lower tiers, retain original limits, add both-quality regression assertions;
+focused4 and fresh flat-native2 checks pass. Corrected own publication pending.
+Accepted public1.79.7/7892224f and
 ordinary37773941500 supersede historical pending statements below: first
 stylesheet-network failure retained; one bounded failed-job retry succeeds,
 root independently confirms all10 required jobs and public identity. See

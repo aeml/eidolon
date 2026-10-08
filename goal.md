@@ -6,6 +6,10 @@ publication-only CSS bundling onto fresh accepted7892224f. Every plant, existing
 High/Low triangles, wind/shadows/collisions retained; no future branch,
 wearable derivatives, raised profile or renderer optimization promotion.
 See [current assembly](docs/plans/2026-10-08-release1-79-8-checks.json).
+First CI37781713097 catches a missed existing pine minimum-height assertion;
+correct lower tier positions, retain original limits, add High/Low regression
+coverage. Focused4 checks and fresh flat-native2 cases pass; corrected own
+publication/public acceptance still required, not an unchanged retry.
 Accepted live1.79.7 exact7892224f/CI37773941500 supersedes older pending entries:
 first stylesheet-network failure retained, one failed-job retry succeeds,
 root confirms all10 required jobs and matching public front/back/DB. See
