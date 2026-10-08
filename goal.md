@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Future1.90 actual admission qualification:** One bounded real-server/disposable
+Mongo socket case passes16.31s, covering invited signup, uniform invalid-proof
+denials, replay/concurrent duplicate safety, existing-character login/resume/
+earned saves, rotation and three process starts with same-artifact open-mode
+rollback. Four race-enabled database journal cases pass1.090s. [Scope](docs/plans/2026-10-08-beta-invitation-sockets-checks.json).
+Only disposable fixture accounts removed; evidence retained. Older-binary
+pending-audit compatibility, invitation lifecycle/operator review and full
+near-complete art/content/performance/operations/device/human/owner gates remain.
+Older pending actual-signup statements below are historical, not full beta
+completion. No public access/configuration/version/channel change.
+
 **Future1.90 invitation tools staged:** Current-role/session checks and successful
 secret-free audit precede private issuance; explicit review, masked copy and
 transient register-only entry are implemented.426focused client checks, ten

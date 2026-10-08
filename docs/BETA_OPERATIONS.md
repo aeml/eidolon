@@ -35,12 +35,34 @@ included in login requests, persisted, added to URLs or automatically replayed;
 successful registration/login clears the transient input. No automatic email or
 account is created by issuance, and nobody should post codes in chat or reports.
 
-Do not configure/enable this unfinished route yet. Actual invited signup/
-duplicate/restart and existing-account login/resume/save checks, invitation
-lifecycle/rollback review and operator handoff remain required. No blanket denial of existing
-accounts, player cap promise or beta-ready label is introduced.
+Do not configure/enable this staged route yet. Actual disposable-Mongo/ordinary
+socket signup, duplicate/concurrent creation, retained-account login/resume/save,
+key rotation, three process starts and configuration rollback now qualify.
+Admission audit survives restart without codes/email/key in its records.
+This is not a capacity claim, beta activation or permission to restrict access.
+
+Rollback here means restarting the **same qualified artifact** with registration
+mode `open` and the key disabled. It restores public signup without rewriting
+accounts or deleting audit records. It does not establish an older-binary
+rollback: an older audit reader may not recognize `admin_beta_invitation` in
+pending private journals. Binary rollback still requires the exact target's
+schema, character and pending-operation/audit compatibility checks. Never delete
+or edit a pending record to force startup; preserve the compatible writer.
+
+The proof is bounded to one exact identity, not stored as a separately consumed
+invitation record. The unique account index and credential admission prevent
+duplicate accounts; a retry after uncertain acknowledgement can still fail because
+the account already exists. Check ordinary login rather than automatically
+resubmitting. Outstanding proofs expire or are invalidated collectively by
+key rotation; there is no individual-revocation UI. Future approved removal/
+identity-reuse policy must account for an unexpired proof before deleting an
+invited identity. Mailbox ownership still requires the separate recovery flow.
+Operator handoff, lifecycle/older-binary rollback review and every near-complete
+content/art/performance/device/human/owner gate remain open. No player-cap promise
+or beta-ready label is introduced.
 See [exact backend evidence](plans/2026-10-08-beta-invitation-backend-checks.json).
 See [staged issuance/client checks](plans/2026-10-08-beta-invitation-tools-checks.json).
+See [actual socket/restart scope and rollback limits](plans/2026-10-08-beta-invitation-sockets-checks.json).
 
 ## Approved direction and decisions still required before transition
 

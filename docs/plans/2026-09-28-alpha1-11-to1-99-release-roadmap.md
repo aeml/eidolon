@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Future1.90 actual staged admission now qualifies with ordinary production-binary
+sockets/disposable Mongo:16.31s covers signup, invalid/replay/concurrent proofs,
+retained-character login/resume/earned saves, audit persistence, key rotation and
+three process starts with default-open configuration rollback. Four affected
+race-enabled journal cases pass1.090s. [Scope](2026-10-08-beta-invitation-sockets-checks.json).
+Older-binary pending-audit compatibility, lifecycle/operator review and all
+original near-complete art/content/performance/device/human/owner gates remain.
+Earlier pending socket wording is historical. No production admission, account,
+environment, version, label, payment or beta activation change; full scope stays.
+
 Future1.90 staged tools now include audited administrator issuance with explicit
 identity/expiry review, masked transient private code and register-only entry.
 426focused client checks, ten race-enabled server functions and two actual
