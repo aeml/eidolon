@@ -6,7 +6,7 @@ import { readPlayerStateInPage, readGroundPointerInPage, readGroundClickReceiptI
 import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
-import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile } from './loot-pointer-observation.js';
+import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile, acquirePointerWithBoundedCombat } from './loot-pointer-observation.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -961,13 +961,10 @@ export async function acquireLootPointer(page, id, timeout = 10_000, options = {
 // drop. Other pointer tests remain strictly observational. Never move/delete an
 // entity, change targeting priority, enable auto-loot or send pickup directly.
 export async function acquireCombatLootPointer(page, id, timeout = 10_000) {
-    for (let cleared = 0; ; cleared++) {
-        try {
-            return await acquireLootPointer(page, id, timeout, { allowOverlappingLoot: true });
-        } catch (error) {
-            const blocker = cleared < 2 && error.lootPoint?.visible
-                ? await readLootBlockingHostile(page, id) : null;
-            if (!blocker) throw error;
+    return acquirePointerWithBoundedCombat({
+        acquire: () => acquireLootPointer(page, id, timeout, { allowOverlappingLoot: true }),
+        readBlocker: error => error.lootPoint?.visible ? readLootBlockingHostile(page, id) : null,
+        defeat: async (blocker, error) => {
             await page.mouse.click(error.lootPoint.x, error.lootPoint.y);
             await expect.poll(async () => {
                 const entity = await readEntity(page, blocker);
@@ -976,7 +973,7 @@ export async function acquireCombatLootPointer(page, id, timeout = 10_000) {
                 message: 'The real hostile covering earned loot must be defeated through normal combat' }).toBe(true);
             console.log('[loot-pickup] cleared a ray-confirmed hostile with a real mouse click');
         }
-    }
+    });
 }
 
 // Inventory reads and other awaited preparation can move the camera after a

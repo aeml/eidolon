@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 corrected1.79.9 QA permits a bounded distinct hostile pack to be
+defeated through real combat before earned-loot pointer acquisition. Original
+runtime targeting/manual pickup/persistence gates retained;34 regressions and
+four-case real disposable smoke pass. Prior run37791738441 attempt2 failed and
+deploy/live gates skipped. Bring forward prepared15min browser-install timeout,
+unchanged commands. Own replacement CI/public acceptance and remote reconciliation
+remain required before next ordered milestones. Full scope unchanged.
+[Failure/correction evidence](2026-10-08-release1-79-9-loot-qa-checks.json).
+
 Accepted public1.79.8/bf145bda: corrected-source37783791245 all ten required
 jobs successful; root independently verifies terminal head, public identities/
 healthy DB, clean production and four selected actual publisher bytes. Optional
