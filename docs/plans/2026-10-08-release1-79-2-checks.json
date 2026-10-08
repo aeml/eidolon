@@ -25,6 +25,8 @@
   },
   "publication": {
     "status": "pending",
+    "firstRun": "CI37721554849 at2b7a641469be17cb12813cd788b0f5a6ef91afef:full client644 suites/9605 checks runs504.119s;643 suites/9604 checks pass and one BrowserSmokeSharding assertion fails because it requires the old unsafe manual-QA condition. Lint/dependency audit pass. No deployment acceptance; remaining jobs were still in progress when corrected.",
+    "correction": "Update only the stale sharding fixture to require canonical repository, master/main and trusted push/manual-full conditions while continuing to reject always() and unguarded manual input. Existing actual-condition60-context security coverage retained. Root74679 terminal0:four affected suites379PASS1.907s; scoped lint/whitespace pass. Rendering/authority/assets/gates unchanged. Superseded already-failed CI will be cancelled to avoid duplicate work; corrected source still requires ordinary full CI.",
     "policy": "Fetch/reconcile origin before push; ordinary CI gates retained. If public SSH remains unavailable, guarded local deployment requires exact tested source and retains hosted CI failure honestly. Independently verify both public release identities/readiness and changed publisher-rewritten runtime bytes afterward."
   },
   "remaining": "Full1.80 F1–F5, modern Diablo/PoE art across all families, raised-world production delivery, owner operations/rights decisions and later1.81–1.99 acceptance remain open. Human campaign pacing and physical-phone dungeon/party checks remain deferred, not passed."

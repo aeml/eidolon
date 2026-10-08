@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 publication fixture correction:** First1.79.2 CI37721554849 full
+Jest runs643 passing suites/9604 passing checks and one stale sharding assertion
+requiring the old unsafe QA condition. Update only that fixture to require the
+new canonical repository/release-ref/event guards; four affected suites
+PASS379/1.907s, lint/whitespace pass. No changed game code, weaker check or new
+version. Publish correction through ordinary CI; stop only the superseded
+already-failed run to avoid duplicate work, retaining its actual failure.
+Raised terrain remains flat/live1.79.1 until own1.79.2 deployment acceptance.
+
 **October8 Alpha1.79.2 prepared stabilization:** Selective rendering and
 deployment-trust integration on accepted live c8ff2cd6; no wholesale future
 milestone merge. All27 selected runtime/test files byte-match the qualified

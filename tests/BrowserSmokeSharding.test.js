@@ -37,8 +37,10 @@ test('independent hosted browser work does not queue behind Go or Jest', () => {
 
 test('production character QA still waits on Go, Jest and the complete browser matrix', () => {
     expect(predeploy).toContain('needs: [client-tests, server-tests, browser-smoke]');
-    expect(predeploy).toContain("if: (github.event_name == 'push'");
-    expect(predeploy).toContain('|| inputs.full_stabilization == true');
+    expect(predeploy).toContain("if: github.repository == 'aeml/eidolon' &&");
+    expect(predeploy).toContain("(github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&");
+    expect(predeploy).toContain("(github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.full_stabilization == true))");
+    expect(predeploy).not.toContain('|| inputs.full_stabilization == true');
     expect(predeploy).not.toContain('always()');
     const config = readFileSync('playwright.config.js', 'utf8');
     expect(config).toContain('fullyParallel: false');
