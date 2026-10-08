@@ -4,6 +4,7 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
+import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
 import { applyWoodlandLeafDetail } from './WoodlandLeafMaterial.js';
@@ -65,7 +66,7 @@ const broadCrown = geometry('foliage-broad-crown', () => new THREE.DodecahedronG
 const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
 const needleCrown = geometry('foliage-needle-boughs', createConiferBoughGeometry);
 const willowCurtain = geometry('foliage-willow-curtain', createWillowCurtainGeometry);
-const pineCrown = geometry('foliage-pine-crown', () => new THREE.ConeGeometry(1.7, 3.4, 7));
+const pineCrown = geometry('foliage-elemental-boughs', createElementalConiferGeometry);
 const curtain = geometry('foliage-curtain', () => new THREE.ConeGeometry(0.58, 3.5, 6, 1, true));
 const shard = geometry('foliage-shard', () => new THREE.ConeGeometry(0.34, 2.2, 5));
 const crystal = geometry('foliage-crystal', () => new THREE.OctahedronGeometry(0.7, 0));
@@ -143,8 +144,8 @@ function createMourningWillow() {
 function createRimePine() {
     const p = palette('water');
     const bark = material('foliage-rime-bark', 0x334853);
-    const ice = material('foliage-rime-needle', 0x7898a6, { metalness: 0.08, roughness: 0.7 });
-    const snow = material('foliage-rime-snow', 0xb8ccd2, { roughness: 0.82 });
+    const ice = material('foliage-rime-needle', 0x7898a6, { metalness: 0.08, roughness: 0.7, vertexColors: true, side: THREE.DoubleSide });
+    const snow = material('foliage-rime-snow', 0xb8ccd2, { roughness: 0.82, vertexColors: true, side: THREE.DoubleSide });
     const glow = material('foliage-rime-glow', p.accent, { emissive: p.accent, emissiveIntensity: 0.66 });
     return [
         part('drowned pine trunk', trunk, bark, { position: [0, 2.75, 0], scale: [0.76, 1.05, 0.76] }),
@@ -200,13 +201,15 @@ function createBasaltBriar() {
 function createGaleCypress() {
     const p = palette('air');
     const bark = material('foliage-gale-bark', 0x4e5966, { metalness: 0.12 });
-    const leaf = material('foliage-gale-leaf', 0x526b78, { side: THREE.DoubleSide });
+    const leaf = material('foliage-gale-leaf', 0x526b78, { side: THREE.DoubleSide, vertexColors: true });
     const charge = material('foliage-gale-charge', p.accent, { emissive: p.accent, emissiveIntensity: 0.76 });
     return [
         part('wind-bent silver trunk', narrowTrunk, bark, { position: [0.35, 3, 0], rotation: [0, 0, -0.16], scale: [1.15, 0.98, 1.15] }),
-        part('low leeward crown', pineCrown, leaf, { position: [-0.5, 3.7, 0], rotation: [0, 0, -0.16], scale: [0.72, 0.78, 0.72] }),
-        part('high leeward crown', pineCrown, leaf, { position: [-0.75, 5.42, 0], rotation: [0, 0, -0.18], scale: [0.55, 0.68, 0.55] }),
-        part('storm conductor', shard, charge, { position: [-1.08, 6.75, 0], rotation: [0, 0, -0.22], scale: [0.34, 0.48, 0.34], castShadow: false }),
+        // Follow the existing tilted trunk's actual centreline. The old
+        // opposite-side offsets left both crowns/conductor floating beside it.
+        part('low leeward crown', pineCrown, leaf, { position: [.46, 3.7, 0], rotation: [0, 0, -0.16], scale: [0.72, 0.78, 0.72] }),
+        part('high leeward crown', pineCrown, leaf, { position: [.74, 5.42, 0], rotation: [0, 0, -0.18], scale: [0.55, 0.68, 0.55] }),
+        part('storm conductor', shard, charge, { position: [.95, 6.75, 0], rotation: [0, 0, -0.22], scale: [0.34, 0.48, 0.34], castShadow: false }),
         part('windward root', root, bark, { position: [0.74, 0.3, 0.1], rotation: [0, 0, -Math.PI / 2], scale: [0.72, 0.62, 0.72] })
     ];
 }

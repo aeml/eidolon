@@ -35,6 +35,13 @@ Committed locally, not pushed/live: wait for1.79.9 acceptance and fresh-fetch
 before its own delivery. [Integration](2026-10-08-release1-79-10-checks.json)
 retains the initial missing-vendor fixture failure and exact final scope.
 
+Staged [Water/Air boughs](2026-10-08-elemental-boughs-checks.json) replace solid
+cones, repair Air crown attachment and retain existing instance/material batching.
+Final43 units and four populated native High/Low cases/24 timed views pass
+original limits. Actual tree-focused images reviewed; final regional quality
+guard has unit, not native hot-switch, proof. Not current-master integration or
+publication, full regional composition, modern-art approval or beta readiness.
+
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
 pre-section progress notes moved byte-for-byte to

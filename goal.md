@@ -65,6 +65,19 @@ Fighter pilot or remove approved authored models.
 
 ## Remaining scope and next work
 
+Staged elemental foliage now has branched Water/Air crowns instead of solid
+cones; actual Air crown/conductor attachment is corrected. Final43 units and
+four populated native cases/24 bounded views pass, with actual High/Low review.
+Runtime quality swaps now admit regional foliage; focused tests cover that
+final guard fix, native hot-switch qualification remains for integration.
+[Exact component scope](docs/plans/2026-10-08-elemental-boughs-checks.json)
+retains rejected green artifacts and failed fixture history. Not yet integrated
+onto current master or delivered; do not accidentally add it to the already
+qualified1.79.10. Regional emptiness and broader environmental art stay open.
+After the >1h hosted install delay, ask once asynchronously whether to cancel
+and retry unfinished CI jobs; leave run intact until an answer. Luna continues
+read-only monitoring; an observation timeout is not terminal.
+
 1. Accept or diagnose the exact 1.79.9 run, then integrate the next qualified
    work onto fresh current master. Never publish the entire future branch
    accidentally or overlap release pushes.

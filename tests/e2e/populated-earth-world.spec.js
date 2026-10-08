@@ -19,6 +19,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             const { WorldReading } = await import('/src/entities/WorldReading.js');
             const { EARTH_LOCATIONS, LANTERNHOLD_COURTYARDS, WORLD_READINGS } = await import('/src/data/worldPopulation.js');
             const { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS } = await import('/src/data/elementalPopulation.js');
+            const { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } = await import('/src/data/worldFoliage.js');
             const { getLanternholdWalkCollider } = await import('/src/art/ProceduralLanternholdArchitecture.js');
             const { createChronicleSiteModel } = await import('/src/art/ChronicleSiteModels.js');
             const { chronicleInvestigations } = await import('/src/data/chronicleInvestigations.generated.js');
@@ -67,7 +68,18 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             engine.chunkManager = { getActiveEntities: () => readings };
             engine.inputManager = new InputManager(render.camera, render.scene, render.renderer.domElement);
             engine.inputManager.subscribe('onInspect', () => requestNearbyChronicleInspection(engine));
-            const sites = elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [
+            const foliageSites = [];
+            if (elemental !== 'earth') {
+                const id = elemental === 'air' ? 'gale_cypress' : 'rime_pine';
+                const recipe = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id === id);
+                const tree = createProceduralFoliagePlacements(recipe)[0];
+                // Aim beside an actual production tree. Landmarks often keep
+                // generous vegetation clearances, so their screenshots alone
+                // cannot establish the changed crown's appearance.
+                foliageSites.push({ id: `${id}-bough-review`, x: tree.x + 6,
+                    z: tree.z + 8, region: recipe.region });
+            }
+            const sites = (elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [
                 ...LANTERNHOLD_COURTYARDS,
                 { id: 'lanternhold-service-court', x: 0, z: 199, region: 'town' },
                 { id: 'lanternhold-trading-roof', x: -17, z: 191, region: 'town' },
@@ -77,7 +89,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 { id: 'bastion-road-junction', x: 520, z: 200, region: 'earth' },
                 { id: 'bastion-road-turn', x: 720, z: 200, region: 'earth' },
                 ...EARTH_LOCATIONS
-            ];
+            ]).concat(foliageSites);
             const samples = [];
             const visit = id => {
                 const site = sites.find(s => s.id === id);
@@ -308,10 +320,10 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     }
                 }, async profile() {
                 const profiles = [];
-                const profileSites = elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
+                const profileSites = (elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
                     elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'tide-rib', 'kiln-span', 'communal-kiln', 'quenched-foundry'] :
                         ['lanternhold-common-well', 'lanternhold-menders-yard', 'lanternhold-trading-roof', 'foresters-yard', 'returning-scar', 'first-grove-arch',
-                            'bastion-road-woodland', 'bastion-road-junction', 'bastion-road-turn'];
+                            'bastion-road-woodland', 'bastion-road-junction', 'bastion-road-turn']).concat(foliageSites.map(site => site.id));
                 for (const id of profileSites) {
                     visit(id);
                     const frameTimes = [], cpuTimes = []; let previous;
