@@ -2,6 +2,13 @@
   "schema": 1,
   "milestone": "1.80 launch feature freeze",
   "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
+  "october8AcceptedVisualSuccessor": {
+    "sourceCommit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c",
+    "version": "Alpha 1.79.3",
+    "receipt": "2026-10-08-release1-79-3-public-checks.json",
+    "status": "guarded-local-deployment-and-independent-public-checks-passed-hosted-ssh-failure-retained",
+    "boundary": "Supersedes earlier pending publication below, not their historical scopes or F1-F5. No freeze, production terrain activation, final-art approval or new alert coverage. Current connected raised-profile component evidence is separately retained in2026-10-08-connected-terrain-checks.json."
+  },
   "october8PendingVisualSuccessor": {
     "sourceCommit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c",
     "version": "Alpha 1.79.3",

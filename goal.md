@@ -1,5 +1,31 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 connected raised-terrain preparation:** Current65112328 plus scoped
+harness/test changes now exercises explicit public earth-elevation-rocks-v1
+with legacy QA elevation false, disposable authenticated Mongo/API and ordinary
+System Chrome. First harness run fails before input; correct its shared flat
+projection with sampled terrain, preserving instance floors. Second walk passes
+but cast replication times out; final route explicitly waits for real hostile
+hover before right-click. Corrected route PASS12.9s/one test11.6s: actual raised
+walking and client/render/server grounding,3 authoritative Fireball samples,
+20 actual draws, targeted impact/positive authoritative damage and same-profile
+session resume. Three affected Jest suites45 PASS0.777s; scoped lint/shell/space
+checks pass. Earlier failures retained, no automatic retry or long campaign.
+This closes a narrow connected-evidence gap, not all classes, real returning
+save restore, party/device/performance/final-art approval or production terrain.
+Disposable services/images/data cleaned by their own harness; live flat1.79.3
+unchanged. Full ordered roadmap remains active. See
+[connected checks](docs/plans/2026-10-08-connected-terrain-checks.json).
+
+**October8 delivered1.79.3 acceptance retained:** Import unchanged1198722a
+public receipt, superseding historical pending statements below. CI37734583404
+is terminal failure solely at SSH promotion; own client/server/browser/predeploy
+and Pages gates passed. Guarded exact b13 local deployment terminal0 and own
+public byte/identity/readiness plus two native login/WS checks pass. Hosted live
+QA skipped, not passed; no repeated deployment or new version for this record.
+Fresh origin/master remains b13; original dirty checkout and website work safe.
+See [public receipt](docs/plans/2026-10-08-release1-79-3-public-checks.json).
+
 **October8 current-code raised-world selection preparation:** While authorized
 Luna watches pending1.79.3 CI, selectively integrate the8 previously qualified
 terrain startup/factory files on current b13 source, not the old future branch.

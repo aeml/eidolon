@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08",
+  "milestone": "1.87 raised-Earth compatible delivery preparation",
+  "status": "scoped-connected-proof-passed-private-branch-only",
+  "baseCommit": "651123280a9cf392538ab15df2cdaeda4f24dabd",
+  "source": "Base plus the recorded isolated harness, ground projection and native/unit test edits. Disposable server identifies65112328-dirty; no production build or new version inferred.",
+  "profile": "earth-elevation-rocks-v1 selected using --terrain-profile; legacy --qa-terrain-elevation=false. Existing explicit disposable QA allowlist still owns waypoint/level/disconnect commands, never granted by the public selector.",
+  "command": "PATH=<existing Node24 tool path>:$PATH EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome EIDOLON_E2E_WEB_PORT=4190 EIDOLON_ISOLATED_QA_ROUTE=terrain-profile EIDOLON_ISOLATED_QA_TERRAIN_PROFILE=earth-elevation-rocks-v1 EIDOLON_ISOLATED_QA_TERRAIN_ELEVATION=false sg render -c 'bash scripts/run-isolated-character-qa.sh'",
+  "checks": {
+    "native": "Original root42449 terminal0: one test PASS11.6s, total12.9s, no retries. Registers/logs in a disposable Wizard, prepares level30 via visible chat, uses existing raised encounter waypoint, Shift-click walks more than2 units with ordinary collisions, then actual hover and right-click casts Fireball. Client/render/server grounding on terrain above1m agrees within original stated tolerances. Negotiated complete profile and rock scene present.3 server Fireball samples and20 actual onBeforeRender draws above raised ground, target-specific impact and positive server damage. Server-originated QA disconnect resumes same character and matching profile, grounded again. No collected browser failures.",
+    "unit": "Three affected suites GroundInputProjection/GroundInputPreparation/IsolatedQADefaults PASS45, final0.777s, root14232. New real sampled-ray projection regression preserves airborne actor position and owned casino/dungeon floor8; existing flat/strict-path/visible-prefix/party-planning constraints retained. Earlier qualification also PASS45/0.842s.",
+    "static": "Scoped ESLint, bash -n and git diff --check PASS. No runtime, dependency, model, saved-data, schema, economy or production configuration change in this test component.",
+    "failedRunsRetained": "Root52223 terminal1: first run9.0s fails before any movement input at fixed positive-X clear-path selection; shared projection still flattened raised terrain. Correct projection and use normal move-only collision/sliding instead of assuming a clear fixed segment beside randomized mobs. Root26200 terminal1: walking/grounding passes but immediate mouse-move/right-click replicates no Fireball within10s. Correct input synchronization by requiring actual production hostile hover before click; no game cast/state mutation, repeated cast, lower movement threshold, concealed failure or automatic retry. Final run passes its original combat/grounding requirements."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-connected-terrain-evidence-20261008-B0a36qKA",
+  "artifacts": ["connected-terrain.log", "connected-terrain-corrected.log", "connected-terrain-hover.log"],
+  "privacyAndCleanup": "Directory0700; automatic trace/video/screenshots off, existing artifact credential scan passes. Only observation wrappers instrument messages/draws; player movement/cast/disconnect use ordinary visible inputs. Existing ownership-aware wrapper removes only its disposable API/Mongo/image/volumes; no matching QA containers remain. No production account, save, email, DNS/provider setting or other user's service altered.",
+  "remaining": "Narrow one-Wizard live-session proof, not four-class/equipped-party balance, whole campaign, actual Mongo returning-save migration, collision-route coverage, default-IPv6/public rollout, physical-phone acceptance or modern-art/performance approval. Original1.80 freeze/owner decisions and later ordered prerequisites remain; production stays flat Alpha1.79.3 b13. Full1.11-1.99 goal active."
+}

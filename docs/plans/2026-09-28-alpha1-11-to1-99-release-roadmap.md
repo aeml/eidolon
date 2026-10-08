@@ -1,20 +1,31 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October8 current delivery boundary: Alpha1.79.2 is verified live at f9cbd41b.
+October8 current delivery boundary: Alpha1.79.3 is verified live at b13dd3af.
 Alpha1.79.3 selectively integrates qualified town masonry, Fire/Moonfrost/Air
 surfaces, Tide Rib piers, static camp canvas, quality-aware elemental dungeon
 textures and distinct bounded dungeon wall architecture on that exact current
 master. This delivers component improvements for playtesting, not completion
 or bypass of the 1.80 freeze or 1.87 art/performance milestone. Individual staged
 receipts retain their exact historical scopes; current combined qualification
-and publication status are in the [candidate receipt](2026-10-08-release1-79-3-checks.json).
-Hosted SSH routing remains unresolved. Normal CI, deployment guards and own
-public acceptance are still required; no bare pin or old pass proves a new build.
+and publication status are in the [candidate receipt](2026-10-08-release1-79-3-checks.json)
+and [public receipt](2026-10-08-release1-79-3-public-checks.json). Hosted tests and
+frontend publication passed; SSH failed, followed by guarded exact-source local
+deployment and independent public checks. Hosted SSH routing remains unresolved;
+its failure and skipped hosted live QA remain recorded, not turned into green CI.
 Raised terrain remains disabled in live gameplay. Narrow rendering checks do
 not prove final modern art, physical-phone party play or whole-game performance.
 No freeze, beta, capacity promise, new alert coverage, balance or data change.
 Original1.80 F1–F5 and all later milestone gates remain mandatory; older dated
 states below are historical and not the latest publication status.
+
+Current-source raised-terrain preparation now includes one connected disposable
+Wizard check: explicit public-profile negotiation, nonzero-height walking,
+authoritative and actually drawn Fireball, hostile damage/impact and matching
+resume. The shared test projection now samples terrain while retaining instance
+floors. See [connected evidence](2026-10-08-connected-terrain-checks.json).
+This is not production activation, returning-save/whole-campaign qualification,
+equipped-party/device performance or final modern-art acceptance; those1.87
+requirements remain, along with the ordered1.80 gates.
 
 October7 latest qualification supersedes the historical pending/failure states
 below: exact current c323 driver/8c API/9a harness full100 PASS584.92s, common

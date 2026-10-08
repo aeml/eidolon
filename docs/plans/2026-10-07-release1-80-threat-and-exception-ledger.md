@@ -8,11 +8,14 @@ connectivity and repository protection remain unresolved. This review maps adver
 actual boundaries and retained evidence; it is not a penetration certificate,
 an assertion that no exploits exist, or approval to freeze/publish the game.
 
-Pending visual successor: Alpha1.79.3 `b13dd3af`, CI37734583404. Its selected
-rendering changes pass current integration checks; assets, UI, authoritative
-game and content trees remain byte-identical to the accepted baseline. Own CI
-and public deployment acceptance are still required. Component art delivery
-does not close X06 or freeze the content/dependency set.
+Delivered visual successor: Alpha1.79.3 `b13dd3af`, CI37734583404. Own hosted
+tests/frontend passed, SSH promotion failed, then guarded exact-source local
+deployment and independent public checks passed; skipped hosted live QA stays
+skipped. See [public receipt](2026-10-08-release1-79-3-public-checks.json).
+Assets, UI, authoritative game and content trees remain byte-identical to f9.
+Separate current-source connected raised-profile preparation passes walking,
+Fireball draws/damage and resume, not production activation or full save/device
+qualification. Component art delivery does not close X06 or freeze the catalog.
 
 ## Assets, actors and trust boundaries
 
