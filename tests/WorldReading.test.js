@@ -85,6 +85,11 @@ test('reading contains keyboard/pointer input, restores focus and releases owned
         const dialog = document.querySelector('dialog');
         dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
         expect(document.activeElement).toBe(dialog.querySelector('button'));
+        dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
+        expect(document.activeElement).toBe(dialog.querySelector('.world-reading-body'));
+        expect(document.activeElement.getAttribute('aria-labelledby')).toBe('world-reading-title');
+        dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true }));
+        expect(document.activeElement).toBe(dialog.querySelector('button'));
         dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
         expect(escaped).not.toHaveBeenCalled(); expect(document.activeElement).toBe(opener);
         entity.interact(engine); entity.dispose();

@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 staged1.86 authoring work qualified:** Existing equipment generator
+now has read-only validation/import, malformed-input guards and correct shared-
+model version IDs; accepted catalog/model bytes unchanged. Contributor/source-
+notice guides and one Bellkeeper lore edit use existing content paths. Actual
+phone scroll capture exposed close/text overlap; fixed header/scroll region
+retains keyboard/input/lifetime behavior. Seven focused suites47PASS4.708s and
+final native desktop/phone-sized2PASS12.7s; prior fixture failures preserved in
+[receipt](docs/plans/2026-10-08-content-authoring-checks.json). No campaign replay,
+license grant, version bump, push or deployment. Current live1.79.2 and ordered
+F1–F5 remain unchanged; full roadmap active, final rights/art/operations gates
+not waived by this representative content check.
+
 **October8 current1.80 source reconciliation:** Preserve all65 promises and
 current exact accepted f9 asset/content/UI/game/dependency/catalog identities;
 review actual post-b5 origin/storage/workflow/fitted-equipment runtime changes.

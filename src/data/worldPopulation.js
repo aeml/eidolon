@@ -50,7 +50,7 @@ export const EARTH_LOCATIONS = freeze([
             paragraphs: [
                 'Three strokes for a lost traveler. Five for a fire among the roots. One long toll when the grove itself asks for help. We were taught to answer the bell before asking whose hands had rung it.',
                 'Yesterday the sound came back from the trees without an echo. A voice beneath it asked us to name the deserving. Old Bera rang again until her palms bled. Shelter is not a prize, she said. Orun never made us earn the shade.',
-                'We have taken the children south to Lanternhold. If the bell speaks with a voice instead of a note, do not answer its question. Ring for whoever is still outside.'
+                'We have taken the children south to Lanternhold. If the bell speaks with a voice instead of a note, do not answer its question. Ring for whoever is still outside. Bera left the rope tied low enough for a child to reach it. Beside the knot she wrote: a crystal carries our promise; it does not decide who deserves it.'
             ] } },
     { id: 'unbound-milestone', name: 'The Unbound Milestone', role: 'lore', recipe: 'oath-stone',
         x: 520, z: 440, radius: 14, visibility: 'public', readingOffset: [8, -3],

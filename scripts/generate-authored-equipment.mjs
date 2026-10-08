@@ -1,38 +1,110 @@
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { BASE_ITEMS } from '../src/core/ItemSystem.js';
 
 // Read-only with respect to delivered models and Blender sources.
-const read = path => JSON.parse(fs.readFileSync(path, 'utf8'));
-const equipment = read('assets/equipment/authored/manifest.json');
-const motions = read('assets/equipment/authored/motion-profiles.json');
-const grips = read('assets/equipment/authored/grip-transforms.json');
-const versions = {}, characters = {};
-const record = (file, expected) => {
-    const hash = createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-    if (hash !== expected) throw new Error(`Delivered asset hash mismatch: ${file}`);
-    versions[`./${file}`] = hash.slice(0, 16);
-    return `./${file}`;
-};
-for (const [name, character] of Object.entries(equipment.characters)) {
-    const manifest = read(character.reference.replace(/\.[^.]+$/, '-runtime.manifest.json'));
-    characters[name] = Object.fromEntries(['high', 'low'].map(quality => [quality,
-        record(character.reference.replace(/\.[^.]+$/, `-runtime-${quality}`) + character.reference.slice(character.reference.lastIndexOf('.')), manifest.variants[quality].sha256)]));
-    characters[name].motionBank = record(motions.characters[name].file, motions.characters[name].sha256);
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const read = file => JSON.parse(fs.readFileSync(path.join(repoRoot, file), 'utf8'));
+const CLASSES = ['Fighter', 'Wizard', 'Cleric', 'Rogue'];
+const PROFILES = ['Sword', 'Dagger', 'Staff', 'Mace', 'Unarmed'];
+const STATES = ['Idle', 'CombatIdle', 'Walk', 'Run', 'Attack', 'Block'];
+const sameKeys = (value, keys) => Object.keys(value || {}).sort().join('|') === [...keys].sort().join('|');
+const validModelPath = file => typeof file === 'string' && file.startsWith('assets/') && file.endsWith('.glb') &&
+    !/[\\?#\0]/.test(file) && !file.split('/').some(part => ['', '.', '..'].includes(part));
+
+export function buildAuthoredEquipmentRuntime({ equipment, motions, grips,
+    baseItems = BASE_ITEMS.filter(item => !['MATERIAL', 'RELIC'].includes(item.type)),
+    readJSON = read, readBytes = file => fs.readFileSync(path.join(repoRoot, file)) }) {
+    if (equipment?.schemaVersion !== 2 || motions?.version !== 2 || grips?.schemaVersion !== 2) {
+        throw new Error('Unsupported authored equipment/motion/grip schema');
+    }
+    for (const input of [equipment, motions, grips]) {
+        if (!sameKeys(input.characters, CLASSES)) throw new Error('Authored assets must cover exactly four classes');
+    }
+    if (!Array.isArray(motions.profiles) || [...motions.profiles].sort().join('|') !== [...PROFILES].sort().join('|') ||
+        !Array.isArray(motions.states) || [...motions.states].sort().join('|') !== [...STATES].sort().join('|')) {
+        throw new Error('Incomplete authored weapon motion profiles/states');
+    }
+    const names = new Set(), ids = new Set(), bases = new Map(baseItems.map(item => [item.name, item]));
+    if (!Array.isArray(equipment.items)) throw new Error('Missing authored item coverage');
+    for (const item of equipment.items) {
+        if (names.has(item.name) || ids.has(item.id)) throw new Error(`Duplicate authored item name or ID: ${item.name}`);
+        if (typeof item.id !== 'string' || !/^[a-z][a-z0-9-]*$/.test(item.id)) throw new Error(`Invalid authored item ID: ${item.name}`);
+        if (!bases.has(item.name)) throw new Error(`Unexpected authored item coverage: ${item.name}`);
+        if (item.slot !== bases.get(item.name).slot) throw new Error(`Authored item slot mismatch: ${item.name}`);
+        if (!sameKeys(item.models, ['standard', 'legendary'])) throw new Error(`Missing authored model tiers: ${item.name}`);
+        for (const fits of Object.values(item.models)) {
+            if (!sameKeys(fits, ['mainHand', 'offHand'].includes(item.slot) ? ['universal'] : CLASSES)) {
+                throw new Error(`Incomplete authored class fits: ${item.name}`);
+            }
+        }
+        names.add(item.name); ids.add(item.id);
+    }
+    if (names.size !== bases.size) throw new Error('Incomplete authored base-item coverage');
+    for (const name of CLASSES) {
+        for (const hand of ['mainHand', 'offHand']) {
+            const grip = grips.characters[name][hand], m = grip?.localMatrix;
+            if (grip?.socket !== `socket_${hand}` || !Array.isArray(m) || m.length !== 16 || !m.every(Number.isFinite) ||
+                [m[3], m[7], m[11]].some(value => Math.abs(value) > 1e-6) || Math.abs(m[15] - 1) > 1e-6 ||
+                Math.abs(m[0] * (m[5] * m[10] - m[6] * m[9]) - m[4] * (m[1] * m[10] - m[2] * m[9]) +
+                    m[8] * (m[1] * m[6] - m[2] * m[5])) < 1e-10) throw new Error(`Invalid authored grip: ${name}/${hand}`);
+        }
+        const motion = motions.characters[name];
+        if (!PROFILES.includes(motion.defaultProfile) || !Array.isArray(motion.clips) ||
+            PROFILES.some(profile => STATES.some(state => !motion.clips.includes(`${profile}_${state}`)))) {
+            throw new Error(`Incomplete authored weapon motions: ${name}`);
+        }
+    }
+    const versions = {}, characters = {}, hashes = new Map();
+    const record = (file, expected) => {
+        if (!validModelPath(file)) throw new Error(`Invalid authored model path: ${file}`);
+        if (typeof expected !== 'string' || !/^[a-f0-9]{64}$/.test(expected)) throw new Error(`Invalid delivered asset hash: ${file}`);
+        if (!hashes.has(file)) hashes.set(file, createHash('sha256').update(readBytes(file)).digest('hex'));
+        if (hashes.get(file) !== expected) throw new Error(`Delivered asset hash mismatch: ${file}`);
+        versions[`./${file}`] = expected.slice(0, 16);
+        return `./${file}`;
+    };
+    for (const [name, character] of Object.entries(equipment.characters)) {
+        if (!validModelPath(character.reference) || !character.reference.startsWith(`assets/archetypes/${name}/`)) {
+            throw new Error(`Invalid authored character path: ${name}`);
+        }
+        const manifest = readJSON(character.reference.replace(/\.glb$/, '-runtime.manifest.json'));
+        if (!sameKeys(manifest?.variants, ['high', 'low'])) throw new Error(`Missing authored quality variants: ${name}`);
+        characters[name] = Object.fromEntries(['high', 'low'].map(quality => [quality,
+            record(character.reference.replace(/\.glb$/, `-runtime-${quality}.glb`), manifest.variants[quality].sha256)]));
+        characters[name].motionBank = record(motions.characters[name].file, motions.characters[name].sha256);
+    }
+    const items = Object.fromEntries(equipment.items.map(item => [item.name, {
+        id: item.id, slot: item.slot,
+        models: Object.fromEntries(Object.entries(item.models).map(([tier, fits]) => [tier,
+            Object.fromEntries(Object.entries(fits).map(([actorClass, model]) => [actorClass, record(model.file, model.sha256)]))]))
+    }]));
+    const catalog = { characters, items, grips: grips.characters, sets: equipment.sets };
+    // Align every catalog occurrence, including intentionally shared models,
+    // with its path's verified hash. Unique-path insertion order is insufficient.
+    const paths = [...Object.values(characters).flatMap(c => [c.high, c.low, c.motionBank]),
+        ...Object.values(items).flatMap(i => Object.values(i.models).flatMap(Object.values))];
+    const source = `// Generated by scripts/generate-authored-equipment.mjs; do not edit.\nexport const AUTHORED_ASSETS = ${JSON.stringify(catalog, null, 2)};\n` +
+        `const versions = ${JSON.stringify(paths.map(file => versions[file]))};\n` +
+        `const paths = [...Object.values(AUTHORED_ASSETS.characters).flatMap(c => [c.high, c.low, c.motionBank]), ...Object.values(AUTHORED_ASSETS.items).flatMap(i => Object.values(i.models).flatMap(Object.values))];\n` +
+        `export const AUTHORED_ASSET_VERSIONS = Object.fromEntries(paths.map((path, i) => [path, versions[i]]));\n`;
+    return { source, classes: Object.keys(characters).length, items: Object.keys(items).length, verifiedPaths: hashes.size };
 }
-const items = Object.fromEntries(equipment.items.map(item => [item.name, {
-    id: item.id, slot: item.slot,
-    models: Object.fromEntries(Object.entries(item.models).map(([tier, fits]) => [tier,
-        Object.fromEntries(Object.entries(fits).map(([actorClass, model]) => [actorClass, record(model.file, model.sha256)]))]))
-}]));
-// Each model path appears once; runtime versions derive from the delivered hash.
-const catalog = { characters, items, grips: grips.characters, sets: equipment.sets };
-const serialized = JSON.stringify(catalog, null, 2);
-const hashesByVersion = Object.fromEntries(Object.values(versions).map(version => [version, version]));
-// Assign version keys by walking catalog paths, avoiding a duplicate path table.
-const pathVersions = Object.entries(versions).map(([path, version]) => [path, version]);
-fs.writeFileSync('src/assets/authoredEquipment.generated.js',
-    `// Generated by scripts/generate-authored-equipment.mjs; do not edit.\nexport const AUTHORED_ASSETS = ${serialized};\n` +
-    `const versions = ${JSON.stringify(pathVersions.map(([, version]) => version))};\n` +
-    `const paths = [...Object.values(AUTHORED_ASSETS.characters).flatMap(c => [c.high, c.low, c.motionBank]), ...Object.values(AUTHORED_ASSETS.items).flatMap(i => Object.values(i.models).flatMap(Object.values))];\n` +
-    `export const AUTHORED_ASSET_VERSIONS = Object.fromEntries(paths.map((path, i) => [path, versions[i]]));\n`);
-console.log(`Generated ${Object.keys(characters).length} classes and ${Object.keys(items).length} item models (${Object.keys(hashesByVersion).length} verified hashes).`);
+
+if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
+    try {
+        const args = process.argv.slice(2);
+        if (args.length > 1 || args.length === 1 && args[0] !== '--check') throw new Error('Usage: node scripts/generate-authored-equipment.mjs [--check]');
+        const result = buildAuthoredEquipmentRuntime({ equipment: read('assets/equipment/authored/manifest.json'),
+            motions: read('assets/equipment/authored/motion-profiles.json'), grips: read('assets/equipment/authored/grip-transforms.json') });
+        const target = path.join(repoRoot, 'src/assets/authoredEquipment.generated.js');
+        if (args[0] === '--check') {
+            if (fs.readFileSync(target, 'utf8') !== result.source) throw new Error('Stale authored equipment runtime catalog; regenerate and review the diff');
+        } else fs.writeFileSync(target, result.source);
+        console.log(`${args[0] === '--check' ? 'Verified' : 'Generated'} ${result.classes} classes and ${result.items} items (${result.verifiedPaths} verified paths).`);
+    } catch (error) {
+        console.error(error.message); process.exitCode = 1;
+    }
+}
