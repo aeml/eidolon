@@ -4,6 +4,7 @@ import { batchFittedEquipment } from '../src/art/FittedEquipmentBatches.js';
 import { applyActorStealthAppearance, restoreActorStealthAppearance } from '../src/entities/ActorStealthAppearance.js';
 import { prepareFittedEquipment, applyFittedEquipment, clearFittedEquipment } from '../src/art/FittedEquipment.js';
 import { AUTHORED_ASSETS } from '../src/assets/authoredEquipment.generated.js';
+import { applyAuthoredEquipmentSurface } from '../src/art/AuthoredEquipmentSurfaces.js';
 
 function fixture() {
     const root = new THREE.Group(), bones = [new THREE.Bone(), new THREE.Bone()];
@@ -285,6 +286,48 @@ test.each([
     const result = batchFittedEquipment(parts);
     expect(result).toEqual(parts); expect(parts[0].visible).toBe(true);
     expect(parts[0].userData.fittedBatchSource).toBeUndefined();
+});
+
+test('exact shared generated surfaces retain fitted batching, but changed surface/map boundaries stay separate', () => {
+    for (const change of [null, part => { part.material.name = 'standard leather | main'; },
+        part => { part.material.name = 'legendary plate | main'; }]) {
+        const { parts } = fixture();
+        for (const part of parts) part.material.name = 'standard cloth | main';
+        if (change) change(parts[1]);
+        for (const part of parts) expect(applyAuthoredEquipmentSurface(part.material)).toBe(true);
+        const result = batchFittedEquipment(parts);
+        expect(result.length).toBe(change ? 2 : 3);
+        if (!change) {
+            const batch = result.at(-1);
+            expect(batch.material.map).toBe(parts[0].material.map);
+            expect(batch.material.bumpMap).toBe(parts[0].material.bumpMap);
+        } else expect(parts.every(part => part.visible)).toBe(true);
+    }
+    const { parts } = fixture();
+    for (const part of parts) {
+        part.material.name = 'standard cloth | main'; applyAuthoredEquipmentSurface(part.material);
+    }
+    parts[1].material.normalMap = new THREE.Texture();
+    expect(batchFittedEquipment(parts)).toEqual(parts);
+});
+
+test.each([true, false])('fitted materials apply shared surfaces only with usable UVs (%s), never mutating cached source materials', async validUV => {
+    const current = skeletonSharingFixture();
+    const source = current.sourceScene.children[0].material;
+    source.name = 'standard cloth | main';
+    if (!validUV) current.sourceScene.children.forEach(mesh => { mesh.geometry.deleteAttribute('uv'); });
+    applyFittedEquipment(current.root, current.equipment); await current.root.userData.equipmentReady;
+    const materials = current.gear().map(mesh => mesh.material);
+    expect(materials).toHaveLength(2);
+    for (const material of materials) {
+        expect(material).not.toBe(source);
+        expect(Boolean(material.map)).toBe(validUV);
+        expect(material.userData.authoredEquipmentSurface).toBe(validUV ? 'cloth' : undefined);
+    }
+    expect(source.map).toBeNull(); expect(source.bumpMap).toBeNull();
+    const textureDispose = validUV ? jest.spyOn(materials[0].map, 'dispose') : null;
+    clearFittedEquipment(current.root);
+    if (textureDispose) { expect(textureDispose).not.toHaveBeenCalled(); textureDispose.mockRestore(); }
 });
 
 test('stealth restores individual sorting surfaces and then the opaque batch, never hidden input duplicates', () => {

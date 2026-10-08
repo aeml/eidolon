@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { hasTrustedEquipmentSurfaceMaps } from './AuthoredEquipmentSurfaces.js';
 
 const identity = new THREE.Matrix4();
 
-function keyFor(mesh) {
+function keyFor(mesh, serialization) {
     const material = mesh.material, geometry = mesh.geometry;
-    // Only opaque, textureless standard PBR gear is eligible. Preserve other
+    // Only opaque stock PBR gear with no textures or exact shared generated
+    // equipment surfaces is eligible. Preserve other
     // shaders, transparency, morphs, draw ranges and transform boundaries.
     if (!mesh.isSkinnedMesh || !mesh.userData.authoredEquipment || mesh.children.length || !mesh.visible ||
         Array.isArray(material) || material?.type !== 'MeshStandardMaterial' ||
@@ -17,14 +19,16 @@ function keyFor(mesh) {
         mesh.onAfterRender !== THREE.Object3D.prototype.onAfterRender ||
         mesh.onBeforeShadow !== THREE.Object3D.prototype.onBeforeShadow ||
         mesh.onAfterShadow !== THREE.Object3D.prototype.onAfterShadow ||
-        material.clippingPlanes || Object.values(material).some(value => value?.isTexture) ||
+        material.clippingPlanes || Object.values(material).some(value => value?.isTexture) && !hasTrustedEquipmentSurfaceMaps(material) ||
         mesh.customDepthMaterial || mesh.customDistanceMaterial ||
         Object.keys(geometry.morphAttributes).length || geometry.groups.length ||
         geometry.drawRange.start !== 0 || geometry.drawRange.count !== Infinity ||
         !mesh.userData.fittedParent) return null;
     mesh.updateMatrix();
     if (!mesh.matrix.equals(identity)) return null;
-    const appearance = material.toJSON();
+    // Keep texture UUIDs in the appearance key without repeatedly embedding
+    // pixel arrays in every material key. The equip pass owns this serializer.
+    const appearance = material.toJSON(serialization);
     for (const field of ['uuid', 'name', 'metadata', 'userData']) delete appearance[field];
     const attributes = Object.entries(geometry.attributes).map(([name, attribute]) =>
         `${name}:${attribute.itemSize}:${attribute.normalized}:${attribute.array?.constructor.name}:${Boolean(attribute.isInterleavedBufferAttribute)}`)
@@ -40,8 +44,9 @@ function keyFor(mesh) {
 // and ownership cleanup. Derived buffers belong to this equip generation only.
 export function batchFittedEquipment(parts) {
     const buckets = new Map(), batches = [];
+    const serialization = { textures: {}, images: {} };
     for (const part of parts) {
-        const key = keyFor(part);
+        const key = keyFor(part, serialization);
         if (!key) continue;
         if (!buckets.has(key)) buckets.set(key, []);
         buckets.get(key).push(part);

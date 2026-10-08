@@ -4,6 +4,7 @@ import { resolveEquipmentVisualDescriptor, equipmentVisualSignature } from './Pr
 import { isActiveEquipment } from '../core/EquipmentSlots.js';
 import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 import { batchFittedEquipment } from './FittedEquipmentBatches.js';
+import { applyAuthoredEquipmentSurface } from './AuthoredEquipmentSurfaces.js';
 
 const owners = new WeakMap();
 const ownedMaterials = new WeakMap();
@@ -120,6 +121,13 @@ function instanceMaterials(part, item, look) {
     const rarity = typeof item.rarity === 'string' ? item.rarity : item.rarity?.name;
     const accent = rarity === 'Eidolic' ? '#9f66dc' : AUTHORED_ASSETS.sets[item.setId]?.accentColor;
     const owned = new Map();
+    const uvEligibility = new Map();
+    part.traverse(mesh => {
+        if (!mesh.isMesh) return;
+        const uv = mesh.geometry.getAttribute('uv');
+        const valid = uv?.itemSize === 2 && uv.count === mesh.geometry.getAttribute('position')?.count;
+        for (const material of [].concat(mesh.material)) uvEligibility.set(material, (uvEligibility.get(material) ?? true) && valid);
+    });
     part.traverse(mesh => {
         if (!mesh.isMesh) return;
         mesh.castShadow = true; mesh.receiveShadow = true;
@@ -129,6 +137,7 @@ function instanceMaterials(part, item, look) {
             if (accent && result.emissive?.getHex() > 0) { result.emissive.set(accent); result.color.set(accent); }
             if (look) result.color.set(result.emissive?.getHex() > 0 ? look.secondary : look.primary);
             if (Number(item.potency) > 0 && result.emissive?.getHex() > 0) result.emissiveIntensity *= 1 + Math.min(1, item.potency / 20);
+            if (uvEligibility.get(material)) applyAuthoredEquipmentSurface(result);
             return result;
         };
         mesh.material = Array.isArray(mesh.material) ? mesh.material.map(clone) : clone(mesh.material);

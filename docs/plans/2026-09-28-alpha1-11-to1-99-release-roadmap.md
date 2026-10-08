@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Staged supplied gear now has shared generated cloth/leather/wood/metal surfaces,
+preserving authored colors/textures/magic and compatible batching.104focused
+checks, paired actual eight-outfit reference/candidate with identical draws/
+triangles/geometries,+12shared textures/+2programs, and equipped High/Low Earth
+preview/eight timed views pass original limits. [Scope](2026-10-08-authored-equipment-surfaces-checks.json).
+Mostly close-up detail, not finished world art or party/device/raised-profile
+public qualification. Ordered delivery and all original full requirements stay
+open; do not turn this material component into milestone/modern-art acceptance.
+
 Staged authored robe/skirt layering fixes actually observed underwear/trouser
 hip protrusions, retaining exposed lower legs, shared source assets, other actors
 and reversible/disposed owned masks.64focused checks and one expanded actual

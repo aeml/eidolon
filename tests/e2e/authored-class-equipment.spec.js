@@ -3,6 +3,14 @@ import { collectBrowserFailures } from './helpers.js';
 
 test('all delivered classes use fitted gear, independent rigs and alternating Rogue strikes', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
+    const surfaceReference = process.env.EIDOLON_E2E_AUTHORED_SURFACES_REFERENCE === '1';
+    if (surfaceReference) {
+        // Explicit isolated A/B reference: identical gear/poses/batching but
+        // no new generated surfaces. No runtime diagnostic flag or source edit.
+        await page.route('**/src/art/AuthoredEquipmentSurfaces.js', route => route.fulfill({
+            contentType: 'text/javascript', body: 'export const applyAuthoredEquipmentSurface = () => false; export const hasTrustedEquipmentSurfaceMaps = () => false;'
+        }));
+    }
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/', { waitUntil: 'networkidle' });
     const evidence = await page.evaluate(async () => {
@@ -73,6 +81,17 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
             renderer.render(scene, camera); return bad;
         };
         sample('CombatIdle');
+        const costs = [];
+        for (const entry of actors) {
+            for (const other of actors) other.root.visible = other === entry;
+            renderer.render(scene, camera);
+            costs.push({ type: entry.type, quality: entry.quality,
+                calls: renderer.info.render.calls, triangles: renderer.info.render.triangles });
+        }
+        for (const entry of actors) entry.root.visible = true;
+        for (let i = 0; i < 3; i++) renderer.render(scene, camera);
+        const resources = { geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures,
+            programs: renderer.info.programs.length };
         const rogue = actors.find(actor => actor.type === 'Rogue' && actor.quality === 'high');
         rogue.root.userData.updateWeaponProfile(rogue.gear);
         const strikes = [];
@@ -82,10 +101,12 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
             if (strikes[i] !== rogue.actor.currentAction.getClip().name) throw new Error('Attack hand changed mid-strike');
         }
         window.__classGear = { actors, renderer, scene, camera, sample, MeshFactory };
-        return { classes: actors.map(({ type, quality, attached, wrongBones, items }) => ({ type, quality, attached, wrongBones, items })), strikes,
+        return { classes: actors.map(({ type, quality, attached, wrongBones, items }) => ({ type, quality, attached, wrongBones, items })), strikes, costs, resources,
             independent: actors.every(({ root }, i) => i % 2 === 0 || root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0] !== actors[i - 1].root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0]) };
     });
     expect(evidence.independent).toBe(true);
+    await testInfo.attach('equipped-surface-costs', { body: JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources }), contentType: 'application/json' });
+    console.log(`[equipped surface costs] ${JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources })}`);
     expect(evidence.classes).toHaveLength(8);
     for (const actor of evidence.classes) { expect(actor.attached).toBeGreaterThan(9); expect(actor.wrongBones).toBe(0); expect(actor.items).toBe(14); }
     expect(evidence.strikes).toEqual(['Dagger_Attack', 'Sword_Attack_Left', 'Dagger_Attack', 'Sword_Attack_Left']);

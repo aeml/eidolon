@@ -1,0 +1,54 @@
+{
+  "status": "implemented and locally qualified; staged only, not delivered or final modern-art approval",
+  "base": "e1512689",
+  "finding": "Delivered cloth/leather/plate/wood gear has UVs but chiefly flat-color PBR materials. The existing generated equipment surfaces were used only by procedural fallback equipment, not supplied fitted gear. Preserve all supplied source GLBs, fit data and provenance.",
+  "change": "Classify exact catalog material names and apply shared64px code-generated color/roughness/bump maps only to opaque stock untextured non-emissive materials with usable mesh UVs. Preserve supplied/appearance colors, roughness/metallic factors and all existing authored textures; leave crystals, jewels, vellum, magical inlays and unknown materials unchanged. No lighting/exposure, actor geometry, rigs, animation, gameplay/stat or collision change. Four fixed material families reuse the existing equipment texture library; no extra model/image download or per-frame generation.",
+  "batching": "Allow fitted batches only for textureless stock materials or exact shared library map references; later foreign/replaced/extra maps remain boundaries. Preserve original opaque/custom-hook/skin/bind/transform/attribute/shadow guards. Share one equip-pass material serializer so texture UUIDs appear in appearance keys without repeatedly embedding image data. Hidden originals, stealth sorting/restoration and owned geometry/material disposal remain unchanged; shared maps remain cached.",
+  "units": {
+    "result": "104 checks passed,6 suites,1.954s",
+    "suites": ["AuthoredEquipmentSurfaces", "FittedEquipmentCoverage", "FittedEquipmentBatches", "EquipmentSurfaceMaps", "AuthoredFighter", "CharacterPreview"],
+    "scope": "Exact names/PBR/color/map sharing; unknown/prototype-like names; authored map/normal/emission/transparency/custom shader preservation; trusted-map identity and replacement channels; batching material-family boundaries; fitted UV eligibility/cache isolation/disposal. Earlier rig, coverage, stealth, batching, preview and lifetime assertions retained. Scoped ESLint and diff checks pass."
+  },
+  "nativePairedReference": {
+    "browser": "actual System Chrome, existing hardware WebGL launch policy, local4192",
+    "reference": "Explicit isolated QA route replaces only the new surface helper with no-op exports. Identical real delivered rigs, current derived fits, pose, rendering, gear and batching remain. No shipped diagnostic flag or source/asset edit. Reference passed8.5s/10.2s total; ordinary unmodified candidate passed8.6s/10.2s total, no retries/skips.",
+    "scope": "Eight independent fully equipped actors: four classes in High/Legendary and Low/Rare, fourteen legal slots, existing ordinary/mixed back/side motion, alternating Rogue strikes, stealth, three independent previews, pool/unequip. Each actor rendered separately for exact reference/candidate draw/triangle counts; floor contributes two triangles and one call. Independent Node assertion proves all eight rows and geometry counts byte-equivalent, with exactly twelve extra shared textures.",
+    "perActorBoth": [
+      {"class":"Fighter","quality":"high","calls":38,"triangles":67561},
+      {"class":"Fighter","quality":"low","calls":30,"triangles":33019},
+      {"class":"Rogue","quality":"high","calls":39,"triangles":61131},
+      {"class":"Rogue","quality":"low","calls":30,"triangles":28485},
+      {"class":"Wizard","quality":"high","calls":43,"triangles":70597},
+      {"class":"Wizard","quality":"low","calls":33,"triangles":32342},
+      {"class":"Cleric","quality":"high","calls":45,"triangles":61372},
+      {"class":"Cleric","quality":"low","calls":34,"triangles":28686}
+    ],
+    "resources": {"reference":{"geometries":258,"textures":67,"programs":12},"candidate":{"geometries":258,"textures":79,"programs":14}},
+    "maps": "Twelve shared64x64 RGBA maps total196608 raw CPU pixel bytes, with mipmaps. This is not an observed GPU-byte allocation claim or whole-scene sustained resource certificate.",
+    "review": "Root inspected actual equipped Wizard/Cleric closeups and whole gallery. Subtle cloth/highlight variation and visible wood grain, unchanged silhouettes and magical accents; not a substantial anatomy/geometry redesign or modern-art approval.",
+    "artifacts": ["/home/aeml/.local/share/eidolon-authored-surfaces-first-20261008", "/home/aeml/.local/share/eidolon-authored-surfaces-reference-20261008", "/home/aeml/.local/share/eidolon-authored-surfaces-final-20261008"]
+  },
+  "nativeEquippedWorld": {
+    "result": "Two actual High1280/Low390 cases pass39.4s total, no retries/skips; original thresholds unchanged",
+    "scope": "Existing production renderer/world generator and staged raised terrain; one actual Fighter with fourteen legal Rare/Uncommon items. Ordinary camera, grounding, danger/aura hierarchy, exact shadow/culling comparisons and four timed viewpoints per quality,120 measured RAF intervals each. Actual High grove/woodland and Low grove images inspected. No real-server fight or multiplayer/device qualification.",
+    "limits": {"high":{"medianMs":20,"p95Ms":33.4,"calls":350,"triangles":250000},"low":{"medianMs":33.4,"p95Ms":50,"calls":200,"triangles":85000}},
+    "worstObserved": {"high":{"medianMs":16.69999999999891,"p95Ms":16.799999999999272,"calls":337,"triangles":246745},"low":{"medianMs":16.699999999999818,"p95Ms":16.799999999999272,"calls":132,"triangles":73350}},
+    "artifacts": "/home/aeml/.local/share/eidolon-authored-surfaces-world-20261008",
+    "visualLimits": "Actors/effects remain readable, but this fine material detail is principally a close-up improvement. Broad ground fields, repeated plant/prop shapes and complete town/realm/interior/light cohesion remain unfinished. High woodland triangle headroom is small. Do not infer equipped-party/device certification, final art or raised-profile production activation."
+  },
+  "proof": {
+    "src/art/AuthoredEquipmentSurfaces.js":"1e5817f1685745d614074e31fd098d7ff6fc845d48de8c7179b9b9b66f337869",
+    "src/art/FittedEquipment.js":"f7505633fc9cac0fe4ab072967aaf7028d13ea127159d16f323fd2a476ab1697",
+    "src/art/FittedEquipmentBatches.js":"16fcac7022502ed05d46e52e202d6804a5baf496f2d7b704cb4f77e44562e3ad",
+    "tests/AuthoredEquipmentSurfaces.test.js":"c437151a34bf08d2155ae1a1e813b7dc1a2e76d28508ebf550a2e0cc151d4f37",
+    "tests/FittedEquipmentBatches.test.js":"41c56ccb75b95f877df181e3a667e4926f4368c732189814b6312ebbe50d904e",
+    "tests/e2e/authored-class-equipment.spec.js":"89957d98e50d65b9adf29169b01c95af5b09d3e1b07b3236450b51e34bf28129",
+    "unitsLogSHA256":"e9e976017d01d07778a73a759517693ec02dbd488e1616f8e05323c2028dcf88",
+    "referenceLogSHA256":"abe49d40cb216ec35203e98c5b0983fb6dfc73d8dc1fdb67660903fe3c31f7dc",
+    "candidateLogSHA256":"d88722114e1d7d25af9a4f211b08b7e982e872f633f6275882a430997dd43a44",
+    "worldLogSHA256":"350dddcc1a2fcf77ae873e497a777a4e1b4faaa743e21572c1e7ae08115a4f32"
+  },
+  "delivery": "No version bump, new push or public asset activation. Select the small authored-surface and robe-layering changes only after prepared1.79.10/11/12 ordered own CI/public acceptance; do not publish the entire future graphics branch. Patch note must describe actual material/fit improvements, not finished modern art.",
+  "nextPatchNote": "Added shared cloth weave, leather grain, wood grain and worn-metal detail to supplied equipment, preserving authored magical accents and compatible fitted-gear batching.",
+  "remaining": "Complete original roadmap1.80F1-F5, ordinary party performance, full supplied-item/mixed/cosmetic/in-motion review and source rights, raised terrain compatibility/delivery, supported physical devices, environmental/lighting cohesion and1.81-1.99 operations/operator/owner/beta/launch requirements remain. Owner-deferred human campaign/pacing and phone dungeon/party checks are not passed."
+}

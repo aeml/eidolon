@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Staged supplied-equipment surfaces now reuse small generated cloth/leather/
+  wood/metal maps while preserving authored textures, colors and magic.104
+  focused checks and paired eight-outfit native reference/candidate pass with
+  exactly unchanged draws/triangles/geometries,+12shared textures/+2programs.
+  Two actual equipped High/Low Earth preview cases/eight timed views pass the
+  original limits; images reviewed. [Scope](docs/plans/2026-10-08-authored-equipment-surfaces-checks.json).
+  Mainly a close-up detail improvement, not complete modern art, whole-party/
+  device performance or raised-profile/public delivery. Select after existing
+  prepared releases with accurate patch notes; full original gates stay open.
+
 - Staged authored robe/skirt layering now fixes the actually observed Wizard
   underwear and Cleric trouser-hip protrusions.64focused checks and one expanded
   actual eight-rig High/Low native case pass; back/side/mixed-motion images
