@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 staged1.87 Moonfrost refinement:** Softer registered ice/rime fields
+reduce gallery floor repetition; layered bevelled Tide Rib piers replace cubes,
+with tide marks fitted to actual faces. Water collision JSON hash exact; existing
+three map sizes/repeat and batches retained,936 added static triangles explicit.
+Retained14 surface/7 canonical checks plus final affected7 geometry checks pass;
+equipped authored14-slot Wizard/HUD/populated High1280/Low390 views2PASS14.1s.
+Strict below-ground rounding failure fixed in geometry; network-change native
+failure retained and only failed case rechecked. See [receipt](docs/plans/2026-10-08-moonfrost-refinement-checks.json).
+No publication, raised-profile activation or final modern-art/performance claim.
+Full ordered roadmap and1.80 F gates remain open; select scoped files later.
+
 **October8 populated Lanternhold masonry refinement — staged1.87:** Dedicated
 weathered-masonry profile softens perfect black mortar grids, varies wall-course
 offsets/edges and adds filtered stone grain/physical relief. Only town building,

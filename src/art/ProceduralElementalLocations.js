@@ -5,7 +5,7 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { distanceToPath } from '../data/worldPopulation.js';
 import { createLocationGroundMaterials, addLocationGroundWear } from './LocationGroundWear.js';
 import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
-import { createTideRibStone, createWreckPlank, wreckHullHalfWidth, createWreckRib,
+import { createTideRibStone, createTideRibPier, createWreckPlank, wreckHullHalfWidth, createWreckRib,
     createTornWreckSail, weatherWreckWood } from './WaterLandmarkGeometry.js';
 import { createKilnArchBeam } from './FireLandmarkGeometry.js';
 import { createHorizonRing } from './AirLandmarkGeometry.js';
@@ -226,7 +226,14 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         case 'tide-rib':
         case 'kiln-span':
             for (const side of [-1, 1]) {
-                box('stone', water ? side * 10 : 0, 4, water ? 0 : side * 10, 3, 8, 3, true);
+                if (water) {
+                    const pier = createTideRibPier();
+                    for (let level = 1; level <= 7; level++) {
+                        box('iron', side * 10, level, pier.userData.tideMarkDepths[level - 1], level % 2 ? .9 : 1.65, .085, .04);
+                    }
+                    part(pier, 'rib', side * 10, 0, 0);
+                    footprint(side * 10, 4, 0, 3, 8, 3);
+                } else box('stone', 0, 4, side * 10, 3, 8, 3, true);
             }
             for (const shift of [-2.5, 2.5]) {
                 if (water) {
@@ -248,9 +255,6 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                     // Overhead capital carries both ribs; the narrow ground
                     // pier and its existing collision footprint stay intact.
                     box('stone', side * 10, 7.7, 0, 3, .6, 6.8);
-                    for (let level = 1; level <= 7; level++) {
-                        box('iron', side * 10, level, 1.51, level % 2 ? .9 : 1.65, .085, .04);
-                    }
                     beam([side * 10, 7.7, -2.5], [side * 10, 7.7, 2.5], .12, 'iron');
                 }
             } else {

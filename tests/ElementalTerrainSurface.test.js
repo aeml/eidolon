@@ -37,14 +37,26 @@ test('fire albedo and packed roughness use the same basalt/ash field', () => {
 });
 
 test.each([
-    ['water', '5210401db50fe01324a9462121da2265f1169e3fe608751d24c075db9c34190b'],
+    ['fire', '388a58036a4673025f578bd990172defe335f8dbe483fdfb2fd5fc719bf362f4'],
     ['air', '30a9e712023a0705e74f2e34724d68940130869dac8399b7f224d46496b8a786']
-])('Fire refinement retains qualified %s surface fields exactly', (realm, digest) => {
+])('Water refinement retains qualified %s surface fields exactly', (realm, digest) => {
     const samples = [];
     for (let y = 0; y < 256; y += 8) for (let x = 0; x < 256; x += 8) {
         samples.push(sampleElementalTerrain(x, y, realm, PROCEDURAL_TERRAIN_DEFINITIONS[realm].seed));
     }
     expect(createHash('sha256').update(JSON.stringify(samples)).digest('hex')).toBe(digest);
+});
+
+test('Moonfrost albedo and roughness share the registered ice/rime field', () => {
+    const material = createProceduralTerrainMaterial('water');
+    try {
+        for (const [x, y] of [[3, 19], [84, 117], [190, 230], [254, 1]]) {
+            const surface = sampleElementalTerrain(x, y, 'water', PROCEDURAL_TERRAIN_DEFINITIONS.water.seed);
+            const offset = (y * 256 + x) * 4;
+            expect(Array.from(material.map.image.data.slice(offset, offset + 3))).toEqual(surface.color);
+            expect(material.roughnessMap.image.data[offset + 1]).toBe(Math.round(surface.roughness * 255));
+        }
+    } finally { material.map.dispose(); material.dispose(); }
 });
 
 test('Moonfrost has exposed ice beds and interrupted stress fractures beneath rougher rime', () => {

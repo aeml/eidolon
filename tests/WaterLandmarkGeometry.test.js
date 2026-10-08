@@ -1,4 +1,4 @@
-import { createTideRibStone, createWreckPlank, wreckHullHalfWidth, createWreckRib,
+import { createTideRibStone, createTideRibPier, createWreckPlank, wreckHullHalfWidth, createWreckRib,
     createTornWreckSail } from '../src/art/WaterLandmarkGeometry.js';
 
 test.each(['high', 'low'])('%s wreck planks remain finite and inside the old hull solid', quality => {
@@ -14,6 +14,21 @@ test.each(['high', 'low'])('%s wreck planks remain finite and inside the old hul
         expect(geometry.index.count / 3).toBeLessThan(110);
         geometry.dispose();
     }
+});
+
+test('layered Tide Rib supports stay inside the original solid with bounded closed bevelled courses', () => {
+    const a = createTideRibPier(), b = createTideRibPier();
+    expect(a.attributes.position.array).toEqual(b.attributes.position.array);
+    for (const attribute of Object.values(a.attributes)) expect([...attribute.array].every(Number.isFinite)).toBe(true);
+    expect(a.boundingBox.min.x).toBeGreaterThanOrEqual(-1.5); expect(a.boundingBox.max.x).toBeLessThanOrEqual(1.5);
+    expect(a.boundingBox.min.z).toBeGreaterThanOrEqual(-1.5); expect(a.boundingBox.max.z).toBeLessThanOrEqual(1.5);
+    expect(a.boundingBox.min.y).toBeGreaterThanOrEqual(0); expect(a.boundingBox.max.y).toBeLessThanOrEqual(7.4);
+    expect(a.attributes.position.count / 3).toBeLessThan(650);
+    expect(new Set(Array.from(a.attributes.position.array).filter((_v, i) => i % 3 === 1).map(v => v.toFixed(2))).size).toBeGreaterThan(20);
+    expect(a.attributes.normal.count).toBe(a.attributes.position.count);
+    expect(a.attributes.uv.count).toBe(a.attributes.position.count);
+    expect(a.userData.tideMarkDepths).toEqual([1.3, 1.29, 1.25, 1.23, 1.21, 1.22, 1.45]);
+    a.dispose(); b.dispose();
 });
 
 test.each(['high', 'low'])('%s squared ship ribs fit the unchanged hull footprint', quality => {

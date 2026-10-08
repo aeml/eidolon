@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 export const wreckHullHalfWidth = z => 2.6 * Math.sqrt(Math.max(.04, 1 - (z / 6.6) ** 2));
 
@@ -85,6 +86,35 @@ export function createWreckPlank(side, band, start, end, quality = 'high') {
     geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     geometry.setIndex(indices); geometry.computeVertexNormals(); geometry.computeBoundingBox();
     return weatherWreckWood(geometry, band * 5 + side * 3 + start);
+}
+
+export function createTideRibPier() {
+    // Broad feet, narrower weathered courses and a carved shoulder make the
+    // supports read as construction, not unbroken cubes. All chamfers stay
+    // within the existing 3x8x3 solid; the separate overhead capital is retained.
+    const courses = [[0, .65, 2.9], [.68, 1.04, 2.58], [1.75, 1.02, 2.56],
+        [2.8, 1.02, 2.48], [3.85, 1.02, 2.44], [4.9, 1.02, 2.4],
+        [5.95, 1, 2.42], [6.98, .4, 2.88]];
+    const parts = courses.map(([y, height, width], index) => {
+        const half = width / 2 - .035, corner = .16 + index % 3 * .03;
+        const shape = new THREE.Shape([[-half + corner, -half], [half - corner, -half],
+            [half, -half + corner], [half, half - corner], [half - corner, half],
+            [-half + corner, half], [-half, half - corner], [-half, -half + corner]]
+            .map(point => new THREE.Vector2(...point)));
+        shape.closePath();
+        const part = new THREE.ExtrudeGeometry(shape, { depth: height - .07, bevelEnabled: true,
+            bevelSegments: 1, steps: 1, bevelSize: .035, bevelThickness: .035, curveSegments: 1 });
+        // A millimetre of clearance keeps Float32 bevel rounding above ground.
+        part.rotateX(-Math.PI / 2); part.translate(0, y + .036, 0);
+        return part;
+    });
+    const geometry = mergeGeometries(parts); parts.forEach(part => part.dispose());
+    geometry.computeBoundingBox();
+    geometry.userData.tideMarkDepths = Array.from({ length: 7 }, (_, index) => {
+        const level = index + 1, course = courses.find(([y, height]) => level >= y && level <= y + height);
+        return course[2] / 2 + .01;
+    });
+    return geometry;
 }
 
 // Carved flood-measuring ribs. All geometry stays overhead; the old 3x3 pier

@@ -41,33 +41,37 @@ function sampleWindWornSlate(x, y, seed) {
 
 function sampleWeatheredIce(x, y, seed) {
     const turn = Math.PI * 2 / 256;
-    const broad = noise(x, y, 5, seed ^ 0x1491);
     const grit = noise(x, y, 43, seed ^ 0x493f);
     const bed = noise(x + Math.sin(y * turn) * 12, y * 2, 9, seed ^ 0x612b);
     const weathering = noise(x, y, 7, seed ^ 0x173f);
-    const cover = smooth(.36, .7, broad + (noise(x, y, 19, seed ^ 0x724b) - .5) * .12);
+    // Wind lays rime in elongated, broken beds instead of high-contrast round
+    // clouds. Integer-frequency warps preserve the seamless canonical domain.
+    const drift = noise(x + Math.sin(y * turn * 2) * 9, y * 3, 3, seed ^ 0x1491);
+    const cover = smooth(.32, .72, drift + (noise(x, y, 11, seed ^ 0x724b) - .5) * .16);
     // Ice and wind-deposited rime share a field across all three maps. Broken
     // pressure lines are recessed, not a regular outline around paving cells.
     const ice = smooth(.24, .68, bed) * (1 - cover * .94);
     const cx = Math.floor(x / 32), cy = Math.floor(y / 32);
     const direction = hash(cx, cy, seed ^ 0x8391) * Math.PI * 2;
-    const dx = x % 32 - 16, dy = y % 32 - 16;
+    const dx = x % 32 - (8 + hash(cx, cy, seed ^ 0x493b) * 16);
+    const dy = y % 32 - (8 + hash(cx, cy, seed ^ 0x73a1) * 16);
     const along = dx * Math.cos(direction) + dy * Math.sin(direction);
     const across = -dx * Math.sin(direction) + dy * Math.cos(direction);
     // Each tapered fissure stays inside its cell; no seam-spanning network or
     // closed noise contour. Offset branches and deposition break its continuity.
     const bend = Math.max(0, along) * .14;
     const fracture = (1 - smooth(.12, .8, Math.abs(across - bend)))
-        * smooth(0, .3, 1 - Math.abs(along) / 13)
+        * smooth(0, .3, 1 - Math.abs(along) / 10)
+        * smooth(0, 3, Math.min(x % 32, y % 32, 32 - x % 32, 32 - y % 32))
         * smooth(.3, .65, weathering) * (1 - cover * .92);
-    const rock = [48, 59, 65], sheet = [69, 87, 96], rime = [127, 139, 142];
+    const rock = [63, 77, 87], sheet = [76, 92, 104], rime = [121, 133, 138];
     const color = rock.map((value, i) => {
         const base = (value + (sheet[i] - value) * ice + grit * 5) * (1 - fracture * .13);
-        return Math.round(base + (rime[i] - base) * cover * .66);
+        return Math.round(base + (rime[i] - base) * cover * .22);
     });
     return { color, cover, ice, fracture,
-        height: .24 + grit * .022 + ice * .018 + cover * .065 - fracture * .025,
-        roughness: .7 - ice * .085 + cover * .25 + grit * .015 };
+        height: .24 + grit * .018 + ice * .024 + cover * .036 - fracture * .025,
+        roughness: .69 - ice * .085 + cover * .25 + grit * .015 };
 }
 
 function sampleCooledBasalt(x, y, seed) {
