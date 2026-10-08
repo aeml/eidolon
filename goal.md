@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 rock silhouettes advance, staged:** Reject the first overly carved
+notch despite passing technical checks; narrow/weather upper shoulders with a
+gentle seeded fracture, retaining buried bases, eighteen original footprints,
+206triangles/body and six merged meshes. Final5 unit cases and equipped
+High/Low native2cases41.3s pass original limits; actual rock views inspected,
+still not final modern art. See
+[attempts and scope](docs/plans/2026-10-08-rock-shoulders-checks.json).
+Accepted public1.79.8/bf145bda independently verified; next1.79.9/293a9ccc pushed
+and authorized Luna monitors own CI. No next push until own public acceptance;
+raised profile/derivatives/core renderer gates remain separate and open.
+
 **October8 ground repetition refinement, staged:** Coherent world-space detail
 warp and filtered, restrained moss fibres preserve maps/fetches/masks, all
 geometry and walking surfaces. Reject first streaky/fracture-driven attempt

@@ -55,11 +55,23 @@ export function createEarthOutcropGeometry(solid, terrain = null) {
     const leanZ = (random(solid.seed + 607) - .5) * .72;
     const pitchX = (random(solid.seed + 809) - .5) * .34;
     const pitchZ = (random(solid.seed + 1013) - .5) * .34;
-    const layers = [[0, 1], [.22, .98], [.40, .94], [.60, .88], [.78, .78], [.93, .68], [1, .54]];
+    const fractureSide = Math.floor(random(solid.seed + 1297) * outline.length);
+    const layers = [[0, 1], [.22, .98], [.40, .94], [.60, .86], [.78, .70], [.93, .49], [1, .32]];
     const rings = layers.map(([level, width], tier) => contour.map(([x, z], side) => {
         const weathering = (random(solid.seed + side * 31) - .5) * .10;
         const cleave = Math.sin(side * .71 + solid.seed) * Math.sin(level * Math.PI) * .13;
-        const erosion = tier ? Math.min(.985, width + cleave + weathering) : 1;
+        // A single seeded cleft breaks the broad rectangular shoulder. It
+        // follows one edge through the upper rings, rather than putting the
+        // same sawtooth notch in every side. Keep the buried/base rings exact;
+        // the upper silhouette stays inside the original collision perimeter.
+        const edge = Math.floor(side / 2);
+        const splitCleft = side % 2 && edge === fractureSide
+            ? .05 * Math.max(0, (level - .22) / .78) : 0;
+        // Broad correlated crown weathering gives each formation its own
+        // shoulder widths. Do not add a centre spike or change the cap plane.
+        const shoulderWear = tier > 1 ? (random(solid.seed + edge * 97 + 1511) - .5) *
+            .13 * Math.sin(level * Math.PI / 2) : 0;
+        const erosion = tier ? Math.min(.985, width + cleave + weathering + shoulderWear - splitCleft) : 1;
         const px = x * erosion + leanX * (1 - erosion);
         const pz = z * erosion + leanZ * (1 - erosion);
         // Correlated shoulder fractures avoid uniform stacked contour bands.

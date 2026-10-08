@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 staged geological silhouette work: narrower weathered shoulders and
+gentle seeded fractures retain buried bases, all18 footprints/3708triangles and
+six merged formations. Reject first visibly carved prototype even though its
+checks pass. Final5 units and High/Low equipped native2cases41.3s pass original
+limits; actual views reviewed, not final modern art. See
+[evidence](2026-10-08-rock-shoulders-checks.json).
+Accepted public1.79.8/bf145bda and its
+[verification](2026-10-08-release1-79-8-public-checks.json) supersede older pending
+entries; own1.79.9/293a9ccc publication now pending under authorized Luna.
+Raised profile/derivatives/core renderer and full F1-F5/1.87/beta gates remain.
+
 October8 staged floor repetition refinement: reuse existing coherent/canonical
 fields to warp physical detail continuously and filter fine moss contrast.
 Reject streaky first attempt and exact High timing failure; corrected shader
