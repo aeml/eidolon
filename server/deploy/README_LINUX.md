@@ -36,6 +36,21 @@ browser checks. Public SSH reachability still needs separate repair.
 
 ## 1) Baseline and env wiring
 
+The prepared CI guards admit self-hosted browser QA only from the canonical
+`aeml/eidolon` repository's master/main production refs. Predeploy accepts a
+production push or an explicit full-stabilization manual run on those refs;
+live credentialed QA additionally requires a production push and successful
+deployments. Pull requests, foreign repositories, tags and manual feature refs
+cannot satisfy these guards. Hosted client/server/browser checks retain their
+existing PR/manual behavior, and the separate trusted nightly soak queue stays
+unchanged. Dispatch full stabilization from master/main, not a feature branch.
+
+Source guards are not repository/ruleset or runner-group protection. An actor
+allowed to change a trusted workflow can change the guards too. Owners still
+need explicit release/workflow review and runner access policy; this preparation
+does not mutate repository settings or establish security certification. Never
+use `pull_request_target` to run contributor code with production credentials.
+
 From server directory:
 
 ```bash

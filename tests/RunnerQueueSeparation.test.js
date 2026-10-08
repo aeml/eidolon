@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 
 const ci = readFileSync('.github/workflows/ci.yml', 'utf8');
 const soak = readFileSync('.github/workflows/nightly-soak.yml', 'utf8');
@@ -25,10 +26,45 @@ test('hosted rehearsals do not hold or replace the production Pages queue', () =
         expect(body).toContain(`if: ${production}`);
     }
     const native = ci.split('  predeploy-character:\n')[1].split('  release-inputs:')[0];
-    expect(native).toContain(`if: (${production}) || inputs.full_stabilization == true`);
+    expect(native).toContain("if: github.repository == 'aeml/eidolon' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.full_stabilization == true))");
     const postDeploy = ci.split('  post-deploy-browser:\n')[1];
     expect(postDeploy).toContain('needs: [deploy, deploy-server]');
     expect(postDeploy).not.toContain('if: ${{ always() }}\n    runs-on:');
+});
+
+test('actual self-hosted admission conditions reject foreign repositories, PRs and manual non-release refs', () => {
+    const jobCondition = (workflow, name) => {
+        const body = workflow.split(`  ${name}:\n`)[1]?.split(/\n {2}[a-z][a-z-]*:\n/)[0];
+        const condition = body?.match(/^ {4}if: (.+)$/m)?.[1];
+        expect(condition).toBeDefined();
+        // These job guards use only the common boolean/exact-literal subset
+        // of GitHub expressions. Evaluate the source condition, not a copy.
+        expect(condition).not.toMatch(/\$\{|[;{}]/);
+        return context => runInNewContext(condition, context, { timeout: 100 });
+    };
+    const predeploy = jobCondition(ci, 'predeploy-character');
+    expect(predeploy({
+        github: { repository: 'aeml/eidolon', event_name: 'workflow_dispatch', ref: 'refs/heads/feature' },
+        inputs: { full_stabilization: true }
+    })).toBe(false);
+    const live = jobCondition(ci, 'post-deploy-browser');
+    const nightly = jobCondition(soak, 'soak');
+    for (const repository of ['aeml/eidolon', 'contributor/eidolon']) {
+        for (const event_name of ['push', 'pull_request', 'workflow_dispatch']) {
+            for (const ref of ['refs/heads/master', 'refs/heads/main', 'refs/heads/feature', 'refs/pull/42/merge', 'refs/tags/v1.82.0']) {
+                for (const full_stabilization of [false, true]) {
+                    const context = { github: { repository, event_name, ref }, inputs: { full_stabilization } };
+                    const trusted = repository === 'aeml/eidolon'
+                        && ['refs/heads/master', 'refs/heads/main'].includes(ref);
+                    expect(predeploy(context)).toBe(trusted && (event_name === 'push'
+                        || (event_name === 'workflow_dispatch' && full_stabilization)));
+                    expect(live(context)).toBe(trusted && event_name === 'push');
+                    expect(nightly(context)).toBe(trusted && event_name === 'workflow_dispatch');
+                }
+            }
+        }
+    }
+    expect(nightly({ github: { repository: 'aeml/eidolon', event_name: 'schedule', ref: 'refs/heads/master' }, inputs: {} })).toBe(true);
 });
 
 test('the uninterrupted soak has a queue separate from deployment GPU QA', () => {

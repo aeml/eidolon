@@ -261,7 +261,8 @@ jobs:
     name: Predeploy Character QA (System Chrome)
     needs: [client-tests, server-tests, browser-smoke]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
-    if: (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')) || inputs.full_stabilization == true
+    # Manual full QA must not execute arbitrary branch code on the game host.
+    if: github.repository == 'aeml/eidolon' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.full_stabilization == true))
     env:
       EIDOLON_E2E_WEB_PORT: '41873'
       EIDOLON_ISOLATED_QA_PORT: '18085'
@@ -614,6 +615,8 @@ jobs:
     name: Live Release and Character QA
     needs: [deploy, deploy-server]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
+    # Require a canonical production push as well as successful deployments.
+    if: github.repository == 'aeml/eidolon' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     # Verify the migrated game domains. Variables allow explicit endpoint changes
     # without rewriting every live QA step; no health-only substitute for gameplay.
     env:

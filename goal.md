@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 native-runner trust boundary corrected in1.80 preparation:** Execute
+the actual source condition in a bounded isolated VM; current manual feature
+dispatch with full_stabilization=true returns true despite required refusal.
+Baseline two tests FAIL/fourPASS0.368s. Candidate now restricts native predeploy
+to canonical repository/master/main production push or explicit full manual QA;
+live credentialed job additionally requires a production push plus successful
+deployment dependencies. Existing hosted PR/manual checks, Pages queue and soak
+queue unchanged. Actual60 repository/event/ref/boolean contexts plus original
+scheduled-soak case, host pin and executable checkout checks PASS14/0.988s.
+Small selective9e3bb9c8 guard integration, no old authority/versions merged.
+Documentation retains source-guard limits: repository/ruleset/runner access and
+dispatcher policy require separate owner authority/evidence. No actual dispatch,
+setting mutation, push/deployment, cleanup, benchmark or campaign replay. Modern
+art and actual1.80 F1–F5 still open; prepared1.81 recovery remains separate.
+
 **October8 current1.80 trust candidate / release receipts reconciled:** Bring only
 the already console-verified ED25519 pin into current outgoing workflow, require
 strict host checking and bound unreachable/dead SSH waits10s/1attempt/15s/2count.
