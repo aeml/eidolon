@@ -420,18 +420,19 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.5`, a verified-administrator Dark Realm
-  story-gate bypass. Level100 and normal travel checks remain; quests, their
-  rewards and Nexus/raid gates are unchanged. Current durable roles govern both
-  travel and saved-location restoration. Own publication/public acceptance are
-  pending; 1.80 freeze and full 1.87 modern-art/raised-world gates remain open.
+- Current source version: `Alpha 1.79.6`, a narrow party-healing hotbar fix:
+  selecting an ally keeps accessible button focus without suppressing numbered
+  or remapped ability keys. Ordinary UI controls and server gameplay checks stay
+  protected. Publication/public acceptance are pending; 1.80 freeze and full
+  1.87 modern-art/raised-world gates remain open. See the
+  [scoped qualification](docs/plans/2026-10-08-release1-79-6-checks.json).
   Four-class actual saved-session proof and
   narrow connected movement/Fireball/resume checks retain their exact limits in
   the [save receipt](docs/plans/2026-10-08-terrain-saved-session-checks.json) and
   [connected receipt](docs/plans/2026-10-08-connected-terrain-checks.json).
-  Current identified live release is `Alpha 1.79.4`, at2b0fd839, with matching
-  public frontend/backend identity and database readiness. Its ordinary SSH and
-  Pages deployment jobs succeeded; final live QA is still pending at this edit.
+  Current accepted live release is `Alpha 1.79.5`, atde106428, after its ordinary
+  CI/SSH/Pages/Live QA run37748224367. Administrator Dark Realm passage bypasses
+  story requirements only: level100, normal travel and Nexus/raid gates remain.
   Prior1.79.3 fallback and its SSH failure remain in the
   [historical public receipt](docs/plans/2026-10-08-release1-79-3-public-checks.json).
   Raised terrain stays disabled, saves and public alpha access remain unchanged.

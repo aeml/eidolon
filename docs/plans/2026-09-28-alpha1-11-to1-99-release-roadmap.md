@@ -68,6 +68,17 @@ Separately staged1.87 Earth floor/outcrop refinement retains all original High/
 Low reference budgets; see [scope and retained failed trial](2026-10-08-earth-floor-art-checks.json).
 No final art/freeze/equipped-party/physical-phone/raised-rollout acceptance.
 
+October8 current delivery: Alpha1.79.5 de106428 is accepted live after its own
+CI37748224367 and independently matching public frontend/backend/database.
+Prepared1.79.6 fixes the actual selected-party-button hotbar focus bug found
+during four-class equipped testing, without publishing staged terrain or asset
+derivatives. Four fresh scoped release suites471 pass2.82s; own publication and
+live acceptance pending. See [exact scope](2026-10-08-release1-79-6-checks.json).
+Connected High/Low functional/save checks advance1.87 evidence, but shared-GPU
+performance samples do not qualify the complete party workload or final art.
+All original1.80 F1–F5, modern-art, devices and later beta/launch gates remain.
+Older dated pending-publication statements below are historical, not current.
+
 October8 delivery update: corrected Alpha1.79.4 at2b0fd839 has passed its
 mandatory CI tests, predeploy checks, ordinary SSH and Pages deployments.
 Root independently confirms matching public frontend/backend version/commit

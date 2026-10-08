@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.6",
+  "base": "de106428b8c5350ff40f9071ed2a86fbd938a6de",
+  "runtimeFix": "181542c8",
+  "status": "scoped-local-checks-passed-publication-pending",
+  "scope": "An enabled selected party-support-target button permits numbered or remapped hotbar actions while preserving its accessible focus. Ordinary, unselected and disabled buttons remain guarded; typing, modifiers, repeats and native Enter/Space behavior remain unchanged. No server ability, targeting, healing strength, range, cooldown, schema, wallet or progression changes. No staged terrain or wearable art is published by this patch.",
+  "checks": {
+    "reproduction": "Selected roster focus suppresses the real hotbar callback before correction: one failing and eighteen passing assertions. Connected four-class native run also had a selected ally within 6.19 units but no Healing Light cast or healing event. Failure retained; no focus-blur workaround or weakened healing rule.",
+    "focused": "Corrected InputManager, keyboard bindings and social focus suites: 101 assertions pass in 1.437s. Fresh public-release worktree adds version/history guards: four suites, 471 assertions pass in 2.82s.",
+    "connected": "Same InputManager byte hash in the separate staged-art worktree: four independent actual System Chrome clients, normal party consent, fourteen equipped slots each, raised-ground movement, actual Wizard Fireball hit/draw, and native hotbar Healing Light from the still-focused selected ally button. High passes 85.11s; Low passes 65.60s. Fresh disconnect saves preserve every actor's gear, bag and EP. These are staged combined-source functional checks, not a native test of the complete fresh public-release build.",
+    "performanceLimits": "Four simultaneous Chrome renderers share one GPU. High sample median50ms/p9566.7ms and its screenshot has a pause overlay: diagnostic only, not visual/performance approval. Corrected Low requires the menu hidden: median33.3ms/p9533.4ms/p9950ms, 63 of180 frames exceed33ms. No party budget invented or existing limit relaxed; final equipped-party performance remains open. Low desktop1280x844 is not a phone test.",
+    "retainedHarnessFailures": "Earlier actual party attempts first could not focus chat after consent, then failed targeted healing. Explicit chat focus and wound acknowledgement clarified the input bug. Final Low only sends Escape if chat retains focus, preventing a pause-menu overlay. All failed evidence remains; no rewards, damage or server rules adjusted."
+  },
+  "evidence": {
+    "freshUnitLog": "/home/aeml/.local/share/eidolon-release1796-unit-20261008.log",
+    "freshUnitSHA256": "036312b50505f8b653c7935827810084207dbe3a5967b985ddb486aad659f3a5",
+    "runtimeSHA256": "3b31b2e8a2f9e4b810a3463ec359933d9bccfaa405d37879afa24cb719f5f3cc",
+    "unitSourceSHA256": "fb2c5bd82a8aeb31164b5fec05b65380cb07af04ef1cb209c61ffade5e07b283",
+    "reproduction": "/home/aeml/.local/share/eidolon-party-hotbar-focus-red-20261008.log",
+    "high": "/home/aeml/.local/share/eidolon-terrain-save-evidence-yKVfmMUh/browser.log",
+    "low": "/home/aeml/.local/share/eidolon-terrain-save-evidence-piuFi1u4/browser.log",
+    "lowWrapperSHA256": "7b2e3a04701816b421b7941ec86c9de45808a7e9f418280d35b786ee63c1d2f2"
+  },
+  "publication": "Own ordinary CI/SSH/Pages/Live QA and independent matching frontend/backend identity remain required. Previously accepted live1.79.5 de106428: own CI37748224367 succeeded, public release and healthy database independently reconfirmed October8. No manual fallback deployment authorized by this preparation.",
+  "remaining": "Full roadmap active. 1.80 F1-F5 freeze, 1.87 equipped-party performance/modern-art/raised-profile and real-device gates remain open; later beta/launch obligations unchanged. Deferred human campaign/phone tests are not passed."
+}
