@@ -1,15 +1,19 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October8 party diagnostic:131frames/1,278,822foliage visits with zero view/light
-changes. Cache is working; per-cell overhead remains. See
-[diagnostic limits](2026-10-08-foliage-revision-observation-checks.json).
+October8 staged woodland material work: distinct periodic-UV birch/pine/willow
+bark, separate color/roughness/filtered normal relief, existing meshes/UVs and
+zero new textures. Focused54 and equipped High/Low native41.1s pass; inspected
+gameplay views are modest improvement, not final modern art. See
+[scope and inherited crown correction](2026-10-08-woodland-bark-checks.json).
+Exact revision cache works but per-cell overhead remains; see
+[party diagnostic](2026-10-08-foliage-revision-observation-checks.json).
 
 Current assembly: Alpha1.79.8 selects reviewed fuller pine fans/curved green
 sedge and ordered publication-only stylesheet bundling onto fresh accepted
 master7892224f, not the future branch. Plant counts, High/Low triangles,
 wind/shadows/collisions retained. Raised terrain, wearable derivatives and
 renderer optimizations not promoted. See [scope](2026-10-08-release1-79-8-checks.json).
-Own CI/public acceptance pending. Accepted public1.79.7/7892224f and
+Own CI/public acceptance pending.
 First1.79.8 CI37781713097 fails existing pine minimum-height contract. Correct
 lower tiers, retain original limits, add both-quality regression assertions;
 focused4 and fresh flat-native2 checks pass. Corrected own publication pending.

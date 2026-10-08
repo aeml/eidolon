@@ -1,9 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October8 party traversal diagnosis:** Exact view/light revisions remain
-unchanged during131frames, but1,278,822 foliage visits persist. New diagnostic
-passes fresh-save/connected checks; no renderer/performance acceptance claim.
-See [evidence](docs/plans/2026-10-08-foliage-revision-observation-checks.json).
+**October8 woodland material work advances, staged:** Existing Earth stems now
+have distinct periodic-UV birch, pine and willow bark with separate color,
+roughness and filtered normal relief. No new textures/meshes/collisions or
+gameplay changes. Focused54 checks and equipped High/Low native41.1s pass;
+High/Low woodland inspected, modest improvement rather than final modern art.
+See [scope](docs/plans/2026-10-08-woodland-bark-checks.json). Reconcile independent
+pine-height correctionbf145bda; final combined source remains to qualify before
+publication. Party traversal remains costly despite unchanged exact revisions;
+see [diagnostic](docs/plans/2026-10-08-foliage-revision-observation-checks.json).
 
 **October8 current-master woodland/startup patch assembled:** Alpha1.79.8
 selects reviewed fuller pine fans and curved green sedge, plus ordered
