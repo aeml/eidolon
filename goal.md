@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 Alpha1.79.1 deployed and public scoped checks passed:** Avoid blindly
+retrying unreachable public SSH. Existing clean production checkout fetched,
+ancestry/dirty checks passed, exactc8ff2cd6 selected; same normal guarded script
+completed locally (root69881 exit0). Keep private .env/QA allowlist, no untracked
+cleanup; rollback image retained, storage/monitor validation and schema25/25
+passed before replacement. Both public HTTPS identities nowc8ff/Alpha1.79.1,
+DBready; seven published runtime files byte-match actual publisher rewriting.
+Actual SystemChrome anonymous/login/patch-notes/dependency/WebSocket checks
+PASS2/56.2s. Original CI37709850553 remains failed SSH setup and live credentialed
+job skipped, not retroactively green. Monitor remains running zero restarts.
+Scoped release delivery complete; full modern art,1.80 freeze and goal open.
+[Public receipt](docs/plans/2026-10-08-release1-79-1-public-checks.json).
+
 **October8 approved alerts verified /1.79.1 partial rollout:** Running independent
 monitor matches30s/3failures/2recoveries/30m reminders; restart policy and private
 deployment opt-in remain enabled. Configuration-only validation PASS without

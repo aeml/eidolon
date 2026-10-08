@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 current public release is Alpha1.79.1/c8ff2cd6. Source checks and Pages
+passed in CI37709850553, but hosted SSH setup failed before deployment. The exact
+tested commit then completed the same guarded deployment locally, preserving
+private configuration, data and all preflight checks. Matching public frontend/
+backend identities, readiness and seven versioned runtime files plus actual
+Chrome anonymous/login/patch-note/WebSocket checks passed. The GitHub run remains
+failed and its credentialed live QA skipped; see [scoped public receipt](2026-10-08-release1-79-1-public-checks.json).
+This delivers scoped material/equipment/origin/storage fixes, not raised-world
+production, final modern art,1.80 freeze, beta access or full-roadmap completion.
+Continue actual1.80 reconciliation without another unchanged campaign/cohort run.
+
 October7 latest qualification supersedes the historical pending/failure states
 below: exact current c323 driver/8c API/9a harness full100 PASS584.92s, common
 112958ms and100 independent fresh saves. All four event members and five raid

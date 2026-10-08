@@ -25,8 +25,11 @@ configuration-only validation succeeds without a probe or email. Coverage is
 local API/database readiness, not public DNS/TLS/frontend or whole-host/network
 outages. Staffing/response commitments and the eventual beta transition remain
 separate decisions. The October8 [verification receipt](plans/2026-10-08-alerts-and-partial-release-checks.json)
-also records the incomplete1.79.1 backend deployment; alerts being active does
-not establish release acceptance.
+also records the initial incomplete1.79.1 backend deployment. The same tested
+commit subsequently deployed locally through the guarded script; see the
+[matching public identities/runtime and browser receipt](plans/2026-10-08-release1-79-1-public-checks.json).
+The original GitHub SSH job remains failed; alert activity does not establish
+whole-game or off-machine release acceptance.
 
 ## Live 1.71 password change and emailed recovery
 
