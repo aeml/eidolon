@@ -10,7 +10,7 @@ import { createTideRibStone, createTideRibPier, createWreckPlank, wreckHullHalfW
 import { createKilnArchBeam } from './FireLandmarkGeometry.js';
 import { createHorizonRing } from './AirLandmarkGeometry.js';
 import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
-import { createElementalGroundCover } from './ElementalGroundCover.js';
+import { createElementalGroundCover, createAirPassageGroundCover } from './ElementalGroundCover.js';
 import { createAirWindbreakSail } from './AirCanvasGeometry.js';
 
 // Original regional compositions; scene ownership and material batches match
@@ -368,6 +368,7 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         if (cover) group.add(cover);
         root.add(group);
     }
+    if (air) root.add(createAirPassageGroundCover(materials.cover, quality));
     root.userData.walkFootprints = footprints;
     return root;
 }

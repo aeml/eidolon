@@ -18,6 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Staged Air main-passage composition reserves existing cypress framing and
+  adds broken near-road heath/scree,2022High/1093Low in86matching cells using
+  the existing material. Reject the first tree-only green screenshots as still
+  bare. Revised37focused checks and two actual High/Low cases pass original
+  limits with eighteen timed views and twelve buffer/quality phases per case.
+  Other three realms' placement bytes and all navigation/solid budgets retained.
+  [Scope and visual limits](docs/plans/2026-10-08-air-passage-composition-checks.json).
+  Current views show modest roadside improvement, not modern-art completion;
+  broad ground, formation/material variety and full cohesion remain open.
+  Not delivered; select after already-prepared releases rather than merging
+  the future branch or adding another queued push.
+
 - Future1.90invitation backend is staged separately at
   `/home/aeml/.local/share/eidolon-beta-admission-qzHOCkS5`, current1037852c (backend6c00212f, tools2e679683). Signup-only opaque account-bound proofs,
   exact identity/expiry/rotation checks, default-open policy and fail-closed

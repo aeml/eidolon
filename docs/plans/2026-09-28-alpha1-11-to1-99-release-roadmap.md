@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Staged Air main-passage composition reserves existing cypresses and adds broken
+near-road heath/scree without changing other realm placements, any solid or
+existing structure/renderer budgets. Reject first green tree-only screenshots
+as still bare. Revised37focused checks/two actual High/Low cases/eighteen timed
+views and twelve resource/quality phases per case pass. [Scope](2026-10-08-air-passage-composition-checks.json).
+Modest roadside improvement, not uniformly filled Air routes or modern-art
+acceptance. Selective current-master delivery after prepared releases and full
+original art/equipped-party/raised/device/F1-F5/owner/human/beta/launch scope stay
+open; no new release/version/push or production access change.
+
 Future1.90 preparation now has audited admin issuance/private register-only
 entry at2e679683 and actual-server/disposable-Mongo qualification at1037852c.
 426focused client checks, ten server race functions and two desktop/narrow

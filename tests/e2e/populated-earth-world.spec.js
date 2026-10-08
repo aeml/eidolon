@@ -96,7 +96,9 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 // Actual ordinary travel positions beside the composed stands,
                 // not a hero moved next to an arbitrarily remote tree.
                 foliageSites.push(...(elemental === 'air'
-                    ? [{ id: 'air-travel-stands', x: 1718, z: 130, region: 'air' }]
+                    ? [{ id: 'air-travel-stands', x: 1718, z: 130, region: 'air' },
+                        { id: 'air-east-passage', x: 2130, z: 130, region: 'air' },
+                        { id: 'air-west-passage', x: 1650, z: 130, region: 'air' }]
                     : [{ id: 'water-travel-stands', x: 0, z: -862.5, region: 'water' },
                         { id: 'fire-travel-stands', x: -1845, z: 240, region: 'fire' }]));
             }
@@ -214,8 +216,10 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     const originalChildren = [...group.children];
                     const originals = originalChildren.map(mesh => ({ mesh, material: mesh.material,
                         buffer: mesh.instanceMatrix, transforms: mesh.instanceMatrix.array.slice(), count: mesh.count }));
-                    const covers = [];
+                    const covers = [], roadside = [];
                     render.instanceEnvironmentGroup.traverse(mesh => {
+                        if (mesh.userData.airPassageGroundCover) roadside.push({ mesh, material: mesh.material,
+                            parent: mesh.parent, position: mesh.position.clone() });
                         const cover = mesh.userData.elementalGroundCover;
                         if (cover && (elemental === 'air' ? cover.realm === 'air' : ['water', 'fire'].includes(cover.realm))) {
                             covers.push({ mesh, material: mesh.material, parent: mesh.parent,
@@ -223,6 +227,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                         }
                     });
                     if (covers.length !== (elemental === 'air' ? 8 : 16)) throw new Error('Missing production cover beds');
+                    if (elemental === 'air' && roadside.length !== 86) throw new Error('Missing cell-batched Air passage dressing');
                     const phases = [];
                     const resources = () => ({ geometries: render.renderer.info.memory.geometries,
                         textures: render.renderer.info.memory.textures, programs: render.renderer.info.programs.length });
@@ -262,8 +267,22 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                                 coverPlants += mesh.userData.plantCount; coverTriangles += triangles;
                             }
                             visit(`${id}-bough-review`);
+                            let passagePlants = 0;
+                            if (elemental === 'air') {
+                                for (const original of roadside) {
+                                    const mesh = original.mesh;
+                                    if (mesh.material !== original.material || mesh.parent !== original.parent ||
+                                        !mesh.position.equals(original.position) || mesh.userData.airPassageGroundCover.quality !== next ||
+                                        mesh.castShadow || !mesh.receiveShadow || !Number.isFinite(mesh.geometry.boundingSphere.radius)) {
+                                        throw new Error(`Roadside ownership/quality/bounds lost: ${mesh.name}/${next}`);
+                                    }
+                                    passagePlants += mesh.userData.plantCount;
+                                }
+                                for (const view of ['air-travel-stands', 'air-east-passage', 'air-west-passage']) visit(view);
+                                visit(`${id}-bough-review`);
+                            }
                             phases.push({ quality: next, triangles, calls: render.renderer.info.render.calls,
-                                renderedTriangles: render.renderer.info.render.triangles, coverPlants, coverTriangles });
+                                renderedTriangles: render.renderer.info.render.triangles, coverPlants, coverTriangles, passagePlants });
                         }
                     };
                     runCycle(); // Warm both actual GPU geometry/shader paths.
@@ -560,6 +579,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     expect(phase.coverTriangles).toBeGreaterThan(0);
                     if (elemental === 'air') {
                         expect(phase.coverPlants).toBe(phase.quality === 'low' ? 617 : 1111);
+                        expect(phase.passagePlants).toBe(phase.quality === 'low' ? 1093 : 2022);
                         expect(phase.coverTriangles).toBe(phase.coverPlants * (phase.quality === 'low' ? 60 : 120));
                     }
                 }

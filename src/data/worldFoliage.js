@@ -201,6 +201,35 @@ function createScatteredFoliagePlacements(recipe) {
 
 const ELEMENTAL_PLACEMENTS = new Map();
 
+// Reserve framing along the Air passage before random stands spend its tree
+// budget on side routes. Keep open site/portal approaches and both road aprons;
+// this changes only visual-only Air positions, never tree IDs or collision.
+function airPassageFraming() {
+    const random = randomGenerator(hashSeed('eidolon:air-passage-framing'));
+    const result = [], path = AIR_PATHS.find(path => path.id === 'air-passage');
+    for (let segment = 1; segment < path.points.length; segment++) {
+        const [ax, az] = path.points[segment - 1], [bx, bz] = path.points[segment];
+        const length = Math.hypot(bx - ax, bz - az);
+        if (length < 75) continue;
+        const intervals = Math.ceil(length / 90);
+        for (let station = 0; station < intervals; station++) for (const side of [-1, 1]) {
+            const along = (station + .5) / intervals + (random() - .5) * 10 / length;
+            const offset = side * (path.width / 2 + 19);
+            const cx = ax + (bx - ax) * along - (bz - az) / length * offset;
+            const cz = az + (bz - az) * along + (bx - ax) / length * offset;
+            for (let attempt = 0; attempt < 48; attempt++) {
+                const angle = random() * Math.PI * 2, radius = Math.sqrt(random()) * 6;
+                const x = cx + Math.cos(angle) * radius, z = cz + Math.sin(angle) * radius;
+                if (x < 1050 || x > 2950 || z < -550 || z > 950 ||
+                    !isProceduralFoliagePlacementClear('air', x, z) ||
+                    result.some(other => Math.hypot(other.x - x, other.z - z) < 7)) continue;
+                result.push({ x, z }); break;
+            }
+        }
+    }
+    return result;
+}
+
 function composeElementalWoodland(region) {
     const paths = region === 'water' ? WATER_PATHS : region === 'fire' ? FIRE_PATHS : AIR_PATHS;
     const stands = [];
@@ -221,7 +250,13 @@ function composeElementalWoodland(region) {
         const original = createScatteredFoliagePlacements(recipe), placements = [];
         const random = randomGenerator(hashSeed(`eidolon:travel-stands:${recipe.id}`));
         const [minX, maxX, minZ, maxZ] = recipe.bounds;
-        for (const tree of original) {
+        // Retain enough of the ninety cypresses for all side-route stands. The
+        // reserved prefix retains the same individual rotations and scales.
+        if (recipe.id === 'gale_cypress') for (const framing of airPassageFraming().slice(0, Math.floor(recipe.count / 3))) {
+            const placement = Object.freeze({ ...original[placements.length], ...framing });
+            placements.push(placement); occupied.push(placement);
+        }
+        for (const tree of original.slice(placements.length)) {
             let placement;
             const composed = random() < .85;
             for (let attempt = 0; attempt < 160; attempt++) {
