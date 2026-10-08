@@ -29,7 +29,10 @@ Fighter pilot or remove approved authored models.
   mandatory CI/exact public acceptance remain pending; latest accepted1.79.8.
   [Correction/evidence](docs/plans/2026-10-08-release1-79-9-loot-qa-checks.json).
 
-- Prepared1.79.14 committed89130299 in isolated character/dungeon release.
+- Prepared1.79.14 originally committed89130299, now reconciled c90805f7 in
+  isolated character/dungeon release after updated13/5a7ce64d merge. Every
+  qualified rendering/asset/index/native-test byte unchanged. Both complete
+  goal/roadmap records retained; original worktree/remote website untouched.
   Shared supplied-equipment surfaces/robe masks, filmic curve, constructed
   dungeon props/flagstones/compact seals select onto prepared1.79.13. Initial
   equipped-native triangle overruns retained; preserve original budgets/full
@@ -48,11 +51,18 @@ Fighter pilot or remove approved authored models.
   preserving every patch note/separate numbered roadmap milestones. No answer
   yet, so ordered publication remains the default. Full goal remains active.
 
-- Prepared1.79.13 optional public-monitor release is clean atbcc5827e in
+- Prepared1.79.12 reconciles updated11 at83976747. Prepared1.79.13 optional
+  public-monitor release now clean5a7ce64d in
   `/home/aeml/.local/share/eidolon-public-monitor-release-XpKvF87O`, based on
   prepared1.79.12 plus qualified public-probe/managed preflight source.387focused
   version/pagination/cache checks,15managed root race cases and both monitor
   race packages pass. All448notes retained/all447prior entry bytes unchanged.
+  Compiled monitor now additionally passes two sequential release mismatch/
+  recovery cycles with clean process restart9.365s against local HTTP and
+  ordinary verified fixture TLS.3/2thresholds and30mcooldown retained; only
+  fixture uses1spolls, actual managed policy30s. No provider/private-env/production
+  IO. This does not qualify actual managed rollout or whole-host/off-machine/
+  browser coverage; those remain open.
   [Receipt](docs/plans/2026-10-08-release1-79-13-checks.json). No private config,
   activation, mail, probe, version publication or push. Select after ordered
  1.79.9–12 acceptance and fresh fetch/reconciliation. Transition/recovery,
