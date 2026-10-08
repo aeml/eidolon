@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 Alpha1.79.4 publication fixture correction:** Own CI37742963800
+passes Client Jest and custom server verification, including actual saved-profile
+gate31.648s; coverage has one stale PvP pre-admission-height expectation. Exact
+local race reproduction fails0.277s. Correct fixture verifies grounded entry0
+and subsequent owned jump2, preserving nonzero detached-projection/resources/
+rest-bank assertions; three scoped regressions pass race1.514s. No runtime,
+version, art or gate change; prepare ordinary corrected CI publication. Full
+internal/game coverage in failed CI passed143.103s; later race/restore/build
+skipped, not passed. Current raised six-reference/checkpoint work separately
+preserved165c423f for ordered consolidation, not included as unqualified runtime.
+Latest accepted live remains1.79.3; full goal/F1-F5/art/device gates open.
+
 **October8 Alpha1.79.4 compatibility precursor preparation:** Fresh remote
 remains accepted b13dd3af; preserved prior future-work branch548e5381, then
 selectively integrate21 exact configuration/recovery/test/evidence files onto
