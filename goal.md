@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current-code raised-world selection preparation:** While authorized
+Luna watches pending1.79.3 CI, selectively integrate the8 previously qualified
+terrain startup/factory files on current b13 source, not the old future branch.
+Current release defaults preserved; profile remains flat, public services and
+private environment unchanged. Complete hills/18 rock solids must negotiate
+together; selection never grants QA authority and unknown/partial profiles fail
+before IO. Eleven startup cases PASS race1.054s; exact five configured/legacy
+world cases PASS race1.967s including four-class returning-position fixtures and
+retained currency/progression/items. Actual compiled invalid/unauthorized-QA
+schema startups both exit2 without creating logs/journals. This is preparation,
+not production activation, real-save restore, connected combat or1.87 approval.
+All original1.80/ordered/art/device gates and the full goal remain active.
+See [current selection evidence](docs/plans/2026-10-08-current-terrain-selection-checks.json).
+
 **October8 pending1.79.3 / next1.80 review:** Exact b13dd3af is pushed;
 CI37734583404 verified running and authorized Luna monitors terminal outcome.
 No duplicate campaign or capacity run. Reconcile older freeze/exception/gap

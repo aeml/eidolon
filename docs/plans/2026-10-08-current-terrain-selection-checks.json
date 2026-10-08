@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08",
+  "milestone": "1.87 compatible raised-Earth production preparation",
+  "status": "current-source-selection-qualified-private-branch-only",
+  "baseCommit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c",
+  "retainedComponent": "54497bbb",
+  "integration": "Selectively apply8 startup/world/config/test files on current visual successor, retaining current1.79.3 defaults and all unrelated contributor work. Other authoritative game files remain byte-identical to the qualified component; no older future-branch merge.",
+  "change": "Server-owned --terrain-profile/EIDOLON_TERRAIN_PROFILE, default flat-v1 or explicit earth-elevation-rocks-v1. Complete elevation and18 matching rock solids load together before world publication. Unknown/partial profiles fail closed before logging, journals, database or admission, including schema preflight. Legacy QA selection still requires its explicit username allowlist; public terrain selection does not grant QA access.",
+  "checks": {
+    "startup": "Root50482 terminal0:11-case startup selection regression PASS race1.054s; its first world invocation matches only2 configured tests and passes1.315s, not the intended five. Correct full current-world selection separately recorded below.",
+    "world": "Root66388 terminal0:exact5 configured-world/legacy-startup tests PASS race1.967s, count1. Covers complete factory, four classes admitted from old flat coordinates inside a new rock formation, local safe correction/stable repeat admission and unchanged HP/MP/Gold/EP/level/XP/inventory. Existing dungeon/casino coordinates remain instance-owned. These are entity fixtures, not real Mongo save/restore or connected-player evidence.",
+    "cli": "Root83048 build terminal0. Actual compiled main: invalid environment profile plus --check-schema exits2; legacy QA plus explicit empty allowlist and --check-schema exits2. Both run from an owned empty evidence directory, remain silent on stdout and create no logs/journals. Only the compiled binary exists afterward; no database/schema work, admission, mail or live service was invoked.",
+    "static": "gofmt and git diff --check PASS; no new client assets, dependencies or textures."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-current-terrain-selection-evidence-20261008-cZhBrcmh",
+  "production": "Unchanged: public Alpha1.79.2 is still the accepted baseline while1.79.3 CI is pending. This separate future-work branch is not pushed/deployed and no real .env setting is edited; flat remains default. No player/data/economy/access change.",
+  "remaining": "Original1.80 freeze and later ordered prerequisites remain open. This resolves a current-code selection gap, not1.87 completion: connected raised-world movement/combat/effects/save compatibility, populated/equipped device performance and final modern-art review still require scope-matched evidence and own public rollout. Do not infer activation from passed configuration fixtures or flat-world tests."
+}
