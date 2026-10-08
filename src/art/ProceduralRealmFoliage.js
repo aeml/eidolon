@@ -3,6 +3,7 @@ import { PROCEDURAL_FOLIAGE_RECIPES } from '../data/worldFoliage.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
+import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
 import { applyWoodlandLeafDetail } from './WoodlandLeafMaterial.js';
@@ -63,6 +64,7 @@ const branch = geometry('foliage-branch', () => new THREE.CylinderGeometry(0.08,
 const broadCrown = geometry('foliage-broad-crown', () => new THREE.DodecahedronGeometry(1.55, 0));
 const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
 const needleCrown = geometry('foliage-needle-boughs', createConiferBoughGeometry);
+const willowCurtain = geometry('foliage-willow-curtain', createWillowCurtainGeometry);
 const pineCrown = geometry('foliage-pine-crown', () => new THREE.ConeGeometry(1.7, 3.4, 7));
 const curtain = geometry('foliage-curtain', () => new THREE.ConeGeometry(0.58, 3.5, 6, 1, true));
 const shard = geometry('foliage-shard', () => new THREE.ConeGeometry(0.34, 2.2, 5));
@@ -131,9 +133,9 @@ function createMourningWillow() {
     return matureWoodland([
         part('crooked mourning trunk', willowStem, bark, { position: [0.2, 2.5, 0], rotation: [0, 0, -0.16], scale: [0.92, 0.94, 0.92] }),
         part('mourning crown', leafCrown, leaf, { position: [-0.3, 5.25, 0], scale: [2.3, .8, 1.85] }),
-        part('west leaf curtain', leafCrown, leaf, { position: [-1.55, 3.95, .1], rotation: [.05, 0, -.12], scale: [.62, 1.2, .65] }),
-        part('east leaf curtain', leafCrown, leaf, { position: [1.28, 3.82, -.12], rotation: [-.04, 0, .15], scale: [.6, 1.3, .58] }),
-        part('rear leaf curtain', leafCrown, leaf, { position: [-.1, 3.95, -1.4], rotation: [.12, 0, 0], scale: [.75, 1.25, .6] }),
+        part('west leaf curtain', willowCurtain, leaf, { position: [-1.55, 3.95, .1], rotation: [.05, 0, -.12], scale: [.62, 1.2, .65] }),
+        part('east leaf curtain', willowCurtain, leaf, { position: [1.28, 3.82, -.12], rotation: [-.04, 0, .15], scale: [.6, 1.3, .58] }),
+        part('rear leaf curtain', willowCurtain, leaf, { position: [-.1, 3.95, -1.4], rotation: [.12, 0, 0], scale: [.75, 1.25, .6] }),
         part('willow votive', lantern, glow, { position: [0.82, 2.62, 0.22], castShadow: false })
     ]);
 }

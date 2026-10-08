@@ -105,12 +105,12 @@ test('owns and releases only the two added maps once; leaves ground depth behavi
     expect(shader.fragmentShader).toContain('normalize(vEarthNormal)');
     expect(shader.fragmentShader).toContain('vEarthGround * .12');
     expect(shader.fragmentShader).toContain('earthStone.a * .028');
-    expect(shader.fragmentShader).toContain('vEarthGround * .74');
-    expect(shader.fragmentShader).toContain('vEarthGround * 1.73');
+    expect(shader.fragmentShader).toContain('earthGritDomain * .74');
+    expect(shader.fragmentShader).toContain('earthDomain.yx * 1.73');
     // Ordinary soil has relief even when canopy, mineral and meadow masks
     // are zero; keep it distinct from the optional forest/rock contributions.
     expect(shader.fragmentShader).toContain('(earthClod * .022 + earthPore * .006) * (1. - earthRock)');
-    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v10');
+    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v11');
     expect(shader.fragmentShader).not.toContain('earthBroad.a * .085');
     expect(shader.vertexShader).not.toContain('transformed.y +=');
     material.dispose(); material.dispose();
@@ -124,6 +124,14 @@ test.each(['high', 'low'])('ground layers retain registered relief and filtered 
         fragmentShader: '#include <common>\n#include <map_fragment>\n#include <roughnessmap_fragment>\n#include <normal_fragment_maps>' };
     material.onBeforeCompile(shader);
     expect(Object.keys(shader.uniforms).sort()).toEqual(['earthBounds', 'earthComposition', 'earthDetail']);
+    expect(shader.fragmentShader).toContain('(vEarthGround - earthBounds.xy) / earthBounds.zw');
+    expect(shader.fragmentShader).toContain('(earthBroad.rr - .5) * vec2(1.4, -1.2)');
+    expect(shader.fragmentShader).toContain('earthWear.ra * vec2(.8, -.9)');
+    expect(shader.fragmentShader).not.toContain('(earthBroad.ra - .5)');
+    expect(shader.fragmentShader.indexOf('vec4 earthBroad')).toBeLessThan(shader.fragmentShader.indexOf('vec2 earthDomain'));
+    expect(shader.fragmentShader).toContain('mat2(.8, -.6, .6, .8) * earthDomain');
+    expect(shader.fragmentShader).toContain('earthFiberDetail = 1. - smoothstep(.14, .65, earthFiberFootprint)');
+    expect(shader.fragmentShader).toContain('earthMossFiber = mix(.5,');
     expect(shader.fragmentShader).toContain('earthGrain.r * .72 + earthGrit * .28');
     expect(shader.fragmentShader).toContain('earthBroad.r * .68 + earthGrit * .32');
     expect(shader.fragmentShader).toContain('vec3(.058, .045, .029), vec3(.087, .067, .043), earthClod');

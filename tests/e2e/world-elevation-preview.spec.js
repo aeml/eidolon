@@ -476,6 +476,10 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     await page.screenshot({ path: testInfo.outputPath('grove-bedrock-shoulder.png') });
     await page.evaluate(() => window.__reviewEarthShoulder(-94, -313));
     await page.screenshot({ path: testInfo.outputPath('grove-rock-formation.png') });
+    // Existing production willow at ordinary gameplay zoom, not a model fixture.
+    await page.evaluate(() => window.__reviewEarthShoulder(-33, -235));
+    await page.screenshot({ path: testInfo.outputPath('grove-willow-curtains.png') });
+    await page.evaluate(() => window.__reviewEarthShoulder(-94, -313));
     for (const [name, x, z] of [['west-bank', 340, 200], ['woodland-cut', 470, 200], ['outer-fold', 600, 200]]) {
         const view = await page.evaluate(([x, z]) => window.__reviewEarthShoulder(x, z), [x, z]);
         await testInfo.attach(`bastion-${name}`, { body: JSON.stringify(view), contentType: 'application/json' });

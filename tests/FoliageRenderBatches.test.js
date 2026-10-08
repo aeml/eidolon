@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { computeFoliageCellBounds, getFoliageRenderBatches } from '../src/art/FoliageRenderBatches.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, getProceduralFoliageArchetype } from '../src/art/ProceduralRealmFoliage.js';
+import { createLeafCanopyGeometry } from '../src/art/ProceduralLeafCanopy.js';
+import { createConiferBoughGeometry } from '../src/art/ProceduralConiferBoughs.js';
+import { createWillowCurtainGeometry } from '../src/art/WillowCurtainGeometry.js';
 
 function surfaceSignature(parts) {
     const surfaces = new Map();
@@ -32,6 +35,20 @@ test.each(PROCEDURAL_FOLIAGE_RECIPES.map(recipe => recipe.id))('%s batching pres
 
 const triangles = parts => parts.reduce((sum, part) => sum + (part.geometry.index?.count || part.geometry.attributes.position.count) / 3, 0);
 
+test.each(['high', 'low'])('%s woodland instances do not submit unsupported shear normal transforms', quality => {
+    let shearedSource = 0;
+    const columns = matrix => [0, 1, 2].map(index => new THREE.Vector3().setFromMatrixColumn(matrix, index).normalize());
+    const shear = matrix => {
+        const [x, y, z] = columns(matrix);
+        return Math.max(Math.abs(x.dot(y)), Math.abs(x.dot(z)), Math.abs(y.dot(z)));
+    };
+    for (const id of ['ossuary_birch', 'grave_pine', 'mourning_willow']) {
+        for (const part of getProceduralFoliageArchetype(id)) if (shear(part.matrix) > 1e-7) shearedSource++;
+        for (const part of getFoliageRenderBatches(id, quality)) expect(shear(part.matrix)).toBeLessThan(1e-7);
+    }
+    expect(shearedSource).toBeGreaterThan(0);
+});
+
 test.each(['high', 'low'].flatMap(quality => ['ossuary_birch', 'grave_pine', 'mourning_willow'].map(id => [quality, id])))('%s %s crowns retain independent cullable geometry without losing a crown', (quality, id) => {
     const source = getProceduralFoliageArchetype(id);
     const leaves = source.filter(part => part.geometry.userData.woodlandCrown);
@@ -39,7 +56,18 @@ test.each(['high', 'low'].flatMap(quality => ['ossuary_birch', 'grave_pine', 'mo
     for (const leaf of leaves) {
         const candidate = batches.find(part => part.name === leaf.name);
         expect(candidate).toBeDefined();
-        expect(candidate.matrix).toEqual(leaf.matrix);
+        const sourceGeometry = quality === 'low' ? (leaf.geometry.userData.woodlandCrown === 'leaf'
+            ? createLeafCanopyGeometry('low') : leaf.geometry.userData.woodlandCrown === 'willow'
+                ? createWillowCurtainGeometry('low') : createConiferBoughGeometry('low')) : leaf.geometry;
+        const expected = sourceGeometry.clone().applyMatrix4(leaf.matrix);
+        const actual = candidate.geometry.clone();
+        if (!candidate.matrix.equals(new THREE.Matrix4())) actual.applyMatrix4(candidate.matrix);
+        expect(actual.attributes.position.array).toEqual(expected.attributes.position.array);
+        expect(actual.attributes.normal.array).toEqual(expected.attributes.normal.array);
+        expect(candidate.geometry.attributes.uv?.array).toEqual(sourceGeometry.attributes.uv?.array);
+        expect(candidate.geometry.attributes.color.array).toEqual(sourceGeometry.attributes.color.array);
+        expected.dispose(); actual.dispose();
+        if (quality === 'low') sourceGeometry.dispose();
         expect(candidate.material).toBe(leaf.material);
         expect(candidate.castShadow).toBe(leaf.castShadow);
         expect(candidate.geometry.userData.woodlandCrown).toBe(leaf.geometry.userData.woodlandCrown);

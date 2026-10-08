@@ -1,9 +1,71 @@
 import * as THREE from 'three';
+import { createHash } from 'node:crypto';
 import { EARTH_OUTCROP_SOLIDS, EARTH_OUTCROP_FORMATIONS, EARTH_OUTCROP_OUTLINE } from '../src/data/earthOutcrops.js';
 import { createEarthOutcropGeometry, createEarthOutcrops } from '../src/art/EarthOutcrops.js';
 import { EARTH_ELEVATION } from '../src/data/worldElevation.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
+
+test('upper rock clefts retain the buried recipe and use the existing bounded surfaces', () => {
+    const solid = EARTH_OUTCROP_SOLIDS[0];
+    const first = createEarthOutcropGeometry(solid, EARTH_ELEVATION);
+    const repeated = createEarthOutcropGeometry(solid, EARTH_ELEVATION);
+    const changed = createEarthOutcropGeometry({ ...solid, seed: solid.seed + 19 }, EARTH_ELEVATION);
+    try {
+        expect(first.attributes.position.array).toEqual(repeated.attributes.position.array);
+        expect(first.attributes.position.count / 3).toBe(206);
+        // Exact first96 buried/base vertices captured from b58ae673 before
+        // the upper-silhouette edit; no change to the existing solid's foot.
+        const base = first.attributes.position.array.subarray(0, 16 * 6 * 3);
+        expect(createHash('sha256').update(Buffer.from(base.buffer, base.byteOffset, base.byteLength)).digest('hex'))
+            .toBe('1c3bf6af567d162c1a2bc6855ca22530c698da6132f24a2d9493832fb8c12616');
+        // The upper boundary has an inward cleft, not only collinear points
+        // on a scaled octagon. Cap remains planar and upward; the general
+        // footprint/outward-face assertions below cover every formation.
+        const position = first.attributes.position;
+        const capStart = 192 * 3;
+        const top = new Map();
+        for (let i = capStart; i < position.count; i++) {
+            top.set(`${position.getX(i)},${position.getZ(i)}`, [position.getX(i), position.getZ(i)]);
+        }
+        expect(top.size).toBe(16);
+        const cap = [...top.values()].map(([x, z]) => [
+            (x - solid.x) / (solid.width / 2), (z - solid.z) / (solid.depth / 2)
+        ]).sort((a, b) => Math.atan2(a[1], a[0]) - Math.atan2(b[1], b[0]));
+        const clefts = cap.map(([x, z], i) => {
+            const [ax, az] = cap[(i + cap.length - 1) % cap.length];
+            const [bx, bz] = cap[(i + 1) % cap.length];
+            return ((bx - ax) * (z - az) - (bz - az) * (x - ax)) / Math.hypot(bx - ax, bz - az);
+        });
+        expect(Math.max(...clefts)).toBeGreaterThan(.02);
+        // A narrower broad crown breaks the box-like silhouette without a
+        // synthetic centre apex; both physical footprint dimensions retain
+        // all sixteen cap boundary vertices and existing triangulation.
+        for (const axis of [0, 1]) {
+            const extent = Math.max(...cap.map(p => p[axis])) - Math.min(...cap.map(p => p[axis]));
+            expect(extent / 2).toBeLessThan(.5);
+        }
+        expect(first.attributes.position.array).not.toEqual(changed.attributes.position.array);
+    } finally { first.dispose(); repeated.dispose(); changed.dispose(); }
+});
+
+test('seeded cleaved crowns vary their geological plane without adding surfaces', () => {
+    const solid = EARTH_OUTCROP_SOLIDS[0];
+    const geometries = [solid, { ...solid, seed: solid.seed + 19 }]
+        .map(recipe => createEarthOutcropGeometry(recipe, EARTH_ELEVATION));
+    try {
+        const crowns = geometries.map(geometry => {
+            const normal = geometry.attributes.normal, sum = new THREE.Vector3();
+            for (let i = 192 * 3; i < normal.count; i++) {
+                sum.add(new THREE.Vector3().fromBufferAttribute(normal, i));
+            }
+            return sum.normalize();
+        });
+        expect(crowns[0].dot(crowns[1])).toBeLessThan(.9995);
+        for (const geometry of geometries) expect(geometry.attributes.position.count / 3).toBe(206);
+        for (const crown of crowns) expect(crown.y).toBeGreaterThan(.9);
+    } finally { geometries.forEach(geometry => geometry.dispose()); }
+});
 
 test('weathered rock shoulders have continuous vertex lighting without rounding sharp cleaves', () => {
     const geometry = createEarthOutcropGeometry(EARTH_OUTCROP_SOLIDS[0], EARTH_ELEVATION);

@@ -48,19 +48,39 @@ export function createEarthOutcropGeometry(solid, terrain = null) {
         const split = .35 + random(solid.seed + side * 47) * .3;
         return [[x, z], [x + (next[0] - x) * split, z + (next[1] - z) * split]];
     });
-    const layers = [[0, 1], [.22, .99], [.40, .96], [.60, .90], [.78, .80], [.93, .64], [1, .43]];
+    // A formation leans toward its own cleave rather than repeating a centred
+    // rounded loaf. Every point is a convex blend of the original perimeter
+    // and an interior anchor, so the server-owned solid never grows outward.
+    const leanX = (random(solid.seed + 401) - .5) * .72;
+    const leanZ = (random(solid.seed + 607) - .5) * .72;
+    const pitchX = (random(solid.seed + 809) - .5) * .34;
+    const pitchZ = (random(solid.seed + 1013) - .5) * .34;
+    const fractureSide = Math.floor(random(solid.seed + 1297) * outline.length);
+    const layers = [[0, 1], [.22, .98], [.40, .94], [.60, .86], [.78, .70], [.93, .49], [1, .32]];
     const rings = layers.map(([level, width], tier) => contour.map(([x, z], side) => {
         const weathering = (random(solid.seed + side * 31) - .5) * .10;
-        const cleave = Math.sin(side * .71 + solid.seed) * Math.sin(level * Math.PI) * .085;
-        const erosion = tier ? Math.min(.985, width + cleave + weathering) : 1;
-        const tilt = ((x * .065 - z * .04) * erosion + Math.sin(side * 1.9 + solid.seed) * .025 * (1 - level)) * level * solid.height;
-        // Uneven shoulder heights break the contour bands. Keep the crown
-        // planar: side-index noise on skinny cap triangles produced spikes.
-        const bedding = Math.sin(side * .71 + solid.seed + tier * .6) * .065;
-        const crown = (x * .025 + z * .012) * erosion;
-        return [solid.x + x * solid.width / 2 * erosion,
-            tier ? ground + (level + (tier < 5 ? bedding : crown)) * solid.height + tilt : minimum - .8,
-            solid.z + z * solid.depth / 2 * erosion];
+        const cleave = Math.sin(side * .71 + solid.seed) * Math.sin(level * Math.PI) * .13;
+        // A single seeded cleft breaks the broad rectangular shoulder. It
+        // follows one edge through the upper rings, rather than putting the
+        // same sawtooth notch in every side. Keep the buried/base rings exact;
+        // the upper silhouette stays inside the original collision perimeter.
+        const edge = Math.floor(side / 2);
+        const splitCleft = side % 2 && edge === fractureSide
+            ? .05 * Math.max(0, (level - .22) / .78) : 0;
+        // Broad correlated crown weathering gives each formation its own
+        // shoulder widths. Do not add a centre spike or change the cap plane.
+        const shoulderWear = tier > 1 ? (random(solid.seed + edge * 97 + 1511) - .5) *
+            .13 * Math.sin(level * Math.PI / 2) : 0;
+        const erosion = tier ? Math.min(.985, width + cleave + weathering + shoulderWear - splitCleft) : 1;
+        const px = x * erosion + leanX * (1 - erosion);
+        const pz = z * erosion + leanZ * (1 - erosion);
+        // Correlated shoulder fractures avoid uniform stacked contour bands.
+        // The last two rings remain planar; no noisy central cap or spikes.
+        const bedding = tier < 5 ? Math.sin(side * .71 + solid.seed) * Math.sin(level * Math.PI) * .07 : 0;
+        const tilt = (px * pitchX + pz * pitchZ) * level;
+        return [solid.x + px * solid.width / 2,
+            tier ? ground + (level + bedding + tilt) * solid.height : minimum - .8,
+            solid.z + pz * solid.depth / 2];
     }));
     const faceNormal = (a, b, c) => new THREE.Vector3().subVectors(b, a).cross(new THREE.Vector3().subVectors(c, a)).normalize();
     const addFace = (a, b, c, normal = faceNormal(a, b, c)) => {

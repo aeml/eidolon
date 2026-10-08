@@ -3,7 +3,20 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.9';
+const currentVersion = '1.79.10';
+
+test('1.79.10 records the integrated floor/willow component without claiming raised-world or final-art completion', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.10"'), previous = html.indexOf('data-version="1.79.9"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['texture repetition', 'Moss detail is filtered', 'curved hanging shoots',
+        'All 256 leaves', 'High/Low triangle budgets', 'instanced normals',
+        'collision footprints', 'raised terrain remains disabled', 'remain staged',
+        '15-minute deadline', 'All release test gates remain required', 'Not the 1.80 feature freeze',
+        'full 1.87', 'No account wipe', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.9 records distinct bark and retained-population woodland composition without claiming final art', () => {
     const html = fs.readFileSync('index.html', 'utf8');

@@ -237,6 +237,8 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies and browser
+        # Bound stalled downloads/apt installs without skipping release gates.
+        timeout-minutes: 15
         run: |
           npm ci
           npx playwright install --with-deps chromium
@@ -610,7 +612,7 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.79.9" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.79.10" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:

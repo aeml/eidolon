@@ -420,13 +420,15 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.9`, distinct birch/pine/willow bark and
-  uneven grass/fern stands. All plants, Low subsets, wind and walking clearances
-  remain intact. Exact vertex bounds reuse the existing tree-cell helper and
-  include full wind reach, without changing the existing batching grid.
+- Current source version: `Alpha 1.79.10`, improved forest-floor sampling,
+  species-specific hanging willow leaves and corrected tilted-part lighting.
+  Existing leaf/triangle budgets, placements, wind and walking clearances remain.
+  Raised-preview rocks are refined but public raised terrain remains disabled;
+  wearable derivatives and broader renderer work remain staged. Future hosted
+  browser installations have a 15-minute failure deadline without skipping gates.
   Publication/public acceptance are pending; 1.80 freeze and full
   1.87 modern-art/raised-world gates remain open. See the
-  [scoped qualification](docs/plans/2026-10-08-release1-79-9-checks.json).
+  [scoped qualification](docs/plans/2026-10-08-release1-79-10-checks.json).
   Four-class actual saved-session proof and
   narrow connected movement/Fireball/resume checks retain their exact limits in
   the [save receipt](docs/plans/2026-10-08-terrain-saved-session-checks.json) and
