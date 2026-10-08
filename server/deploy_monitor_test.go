@@ -15,7 +15,7 @@ func TestDeployMonitorOptInAndValidationBeforeAPIReplacement(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"disabled", "enabled", "invalid-opt-in", "build-failed", "validation-failed", "start-failed"} {
+	for _, scenario := range []string{"disabled", "disabled-public-invalid", "enabled", "invalid-opt-in", "build-failed", "validation-failed", "start-failed"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			for _, dir := range []string{"bin", "deploy"} {
@@ -24,7 +24,7 @@ func TestDeployMonitorOptInAndValidationBeforeAPIReplacement(t *testing.T) {
 				}
 			}
 			optIn := "true"
-			if scenario == "disabled" {
+			if strings.HasPrefix(scenario, "disabled") {
 				optIn = "false"
 			}
 			if scenario == "invalid-opt-in" {
@@ -47,6 +47,9 @@ esac
 exit 0
 `,
 			}
+			if scenario == "disabled-public-invalid" {
+				files[".env"] += "EIDOLON_MONITOR_PUBLIC_FRONTEND_URL=synthetic-private-invalid\nEIDOLON_MONITOR_PUBLIC_BACKEND_URL=\n"
+			}
 			for name, content := range files {
 				if err := os.WriteFile(filepath.Join(root, name), []byte(content), 0700); err != nil {
 					t.Fatal(err)
@@ -64,7 +67,7 @@ exit 0
 			text := string(commands)
 			replaced := strings.Contains(text, "compose up -d\n")
 			started := strings.Contains(text, "compose --profile operations up -d --no-deps monitor\n")
-			if scenario == "enabled" || scenario == "disabled" {
+			if scenario == "enabled" || strings.HasPrefix(scenario, "disabled") {
 				if runErr != nil || !replaced {
 					t.Fatalf("valid deployment failed: %v\n%s", runErr, output)
 				}
@@ -76,7 +79,7 @@ exit 0
 					t.Fatal("failed monitor preflight changed live services")
 				}
 			}
-			if scenario == "disabled" && strings.Contains(text, "operations") {
+			if strings.HasPrefix(scenario, "disabled") && strings.Contains(text, "operations") {
 				t.Fatal("disabled monitoring had side effects")
 			}
 			if scenario == "enabled" || scenario == "start-failed" {

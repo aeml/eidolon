@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 managed public-monitor preparation:** Default-empty paired Compose
+configuration now maps to qualified public-probe CLI flags. Actual disposable
+Compose parser/compiled monitor8cases and isolated real deployment-script7cases
+pass race2.128s; validation remains before API replacement, disabled monitoring
+ignores unused invalid public settings. No private production configuration,
+activation, real email/probe or public version/push change. Matching-artifact,
+staggered-release/recovery and off-machine/whole-host gates remain open.
+[Evidence](docs/plans/2026-10-08-managed-public-monitor-checks.json). Full goal
+active; existing ordered1.79.9–1.79.12 publication still precedes integration.
+
 **October8 public outage-check preparation:** Optional HTTPS login-page,
 release-manifest and public-API observations share one bounded deadline and
 require agreement with the baseline API identity. Existing monitor defaults,

@@ -80,6 +80,8 @@ services:
       ADMIN_NOTIFICATION_EMAILS: ${ADMIN_NOTIFICATION_EMAILS:-}
     command:
       - --health-url=http://127.0.0.1:${APP_HOST_PORT:-18082}/healthz
+      - --public-frontend-url=${EIDOLON_MONITOR_PUBLIC_FRONTEND_URL:-}
+      - --public-backend-url=${EIDOLON_MONITOR_PUBLIC_BACKEND_URL:-}
       - --request-timeout=5s
       - --poll-interval=30s
       - --failure-threshold=3

@@ -632,6 +632,19 @@ only `monitor`; a flag change alone is not a stop command. See the
 [monitor operator guide](../cmd/monitor/README.md) for scope, inspection and
 reversible pause commands. Never print private Compose/environment configuration.
 
+Prepared optional public observations use paired
+`EIDOLON_MONITOR_PUBLIC_FRONTEND_URL=https://play.eidolonrealms.com/release.json`
+and `EIDOLON_MONITOR_PUBLIC_BACKEND_URL=https://server.eidolonrealms.com/healthz`.
+Both blank preserves local-only behavior. These exact HTTPS paths cannot include
+credentials, query strings or fragments. The existing local-only configuration
+preflight validates the exact mapped monitor command before API replacement;
+it makes no probe or email request. No public settings are enabled by this
+preparation. Match the accepted binary/Compose artifact, qualify deployment
+identity transitions, and obtain operator approval before enabling. Clearing
+both settings and recreating only the monitor reverses public observation; no
+API/Mongo stop or player/log retention change is required. This same-host probe
+is not browser execution or off-machine/whole-host coverage.
+
 Optional reboot resilience check:
 
 ```bash

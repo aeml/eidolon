@@ -8,6 +8,12 @@ retention, DNS or service settings changed. This is not browser execution,
 off-machine/whole-host coverage or1.83 acceptance. See
 [operator controls](../server/cmd/monitor/README.md) and
 [exact scope](plans/2026-10-08-public-monitor-checks.json).
+The follow-up managed-service path now maps paired default-empty configuration
+to the real monitor command and qualifies with an actual disposable Compose
+parser/compiled-binary check plus isolated deployment ordering scenarios.
+[Service evidence](plans/2026-10-08-managed-public-monitor-checks.json). Installed
+monitoring remains local-only; transition/recovery/activation and independent
+off-machine coverage remain separate gates, not beta/operations acceptance.
 
 Prepared for Alpha1.19. Owner-approved direction is near-completion closed beta,
 not beta at1.20. Current public Alpha access, labels and saves remain unchanged.

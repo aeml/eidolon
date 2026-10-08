@@ -26,7 +26,13 @@ The command can additionally accept both `-public-frontend-url` (an exact HTTPS
 required together, without credentials, queries or fragments; redirects are
 refused and ordinary TLS/DNS remain enabled. Empty defaults keep the currently
 installed local-only monitor unchanged. This code preparation does not change
-Compose, private environment values, recipient policy or production activation.
+private environment values, recipient policy or production activation. The
+prepared Compose command maps `EIDOLON_MONITOR_PUBLIC_FRONTEND_URL` and
+`EIDOLON_MONITOR_PUBLIC_BACKEND_URL` to those flags, with empty defaults. Set
+both only after approval; the normal exact-command configuration preflight
+rejects malformed/partial configuration before replacing the API. Disabled
+monitoring does not build/start the optional service or validate its unused
+public settings.
 
 After a healthy baseline API observation, the optional check reads the frontend
 origin's `/`, its release manifest and the public backend health endpoint. The
@@ -52,6 +58,18 @@ when the host itself fails. Owner-approved independent/off-machine coverage and
 safe deployment-transition/recovery exercises remain open. Exact source and
 read-only current-public checks are recorded in
 [the preparation receipt](../../../docs/plans/2026-10-08-public-monitor-checks.json).
+The managed Compose/compiled-command path is separately qualified in
+[the service receipt](../../../docs/plans/2026-10-08-managed-public-monitor-checks.json).
+
+Reversible configuration uses the existing normal deployment flow after this
+code is accepted: paired public settings enable the observations; clearing both
+and recreating **only the monitor** returns it to local-only observation without
+stopping API/Mongo. Editing `.env` alone does not reconfigure a running process.
+Do not install these settings into an older monitor binary that lacks the flags;
+use a qualified matching code/Compose artifact. Never print private Compose or
+environment output. During an ordinary frontend/backend staggered deployment,
+identity mismatches are failures under the unchanged debounce policy; qualify
+that transition before enabling, not by suppressing or inventing healthy probes.
 
 ## Optional pressure budgets
 
