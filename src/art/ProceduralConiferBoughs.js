@@ -11,7 +11,9 @@ export function createConiferBoughGeometry(quality = 'high') {
         }
     };
     for (let tier = 0; tier < 5; tier++) {
-        const y = -1.35 + tier * .62, length = 1.65 - tier * .27;
+        // Make room for the fuller hanging fans inside the original crown's
+        // vertical envelope. Lift lower tiers; keep the top tier unchanged.
+        const y = -1.27 + tier * .60, length = 1.65 - tier * .27;
         for (let branch = 0; branch < 7; branch++) {
             const angle = branch * Math.PI * 2 / 7 + tier * 1.17;
             const forward = new Vector3(Math.cos(angle), 0, Math.sin(angle));

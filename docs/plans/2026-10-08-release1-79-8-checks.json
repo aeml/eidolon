@@ -1,7 +1,10 @@
 {
   "schema": 1,
   "version": "Alpha 1.79.8",
-  "status": "current-master-local-qualified-publication-pending",
+  "status": "initial-ci-bound-regression-corrected-local-qualified-publication-pending",
+  "initialCI": "Run37781713097/headffb495c6 Client Jest fails: EarthWoodlandComposition's established minimum crown Y>-1.8 receives-1.8604553937911987. Other647suites/9676tests pass in that client job; original failed attempt retained. No failed-job retry or acceptance waiver. Run may remain nonterminal while independent jobs finish.",
+  "correction": "Lift lower tiers8cm tapering to zero lift at top, preserving fuller fans, projected area, all840/420triangles and original crown limits. High/Low minimumY=-1.780455470085144; maxY1.2310373783111572/1.1777173280715942, sphere2.467305627421861/2.4511265452972197. Add established vertical/radius limits to both new quality tests; do not loosen the older assertion. Focused4tests pass0.855s,3unchanged placement tests deliberately not run/skipped. Fresh flat-native High/Low eight views2pass16.8s, same338/249406High woodland and91/73416Low outer-fold; shadow/surface comparisons unchanged pixels. Root reviews corrected High woodland. No unchanged campaign/soak/bundle replay.",
+  "correctionLogs": ["/home/aeml/.local/share/eidolon-release1798-crown-bound-final-20261008.log", "/home/aeml/.local/share/eidolon-release1798-crown-flat-final-native-20261008.log"],
   "base": "7892224fc7cb3f9f68e93d9a81588b0fd4057f20",
   "assembly": "Fresh isolated current-master worktree, selectively copies only reviewed pine/sedge geometry and corresponding tests/receipts, publication-time ordered stylesheet bundle and tests/receipt, synchronized version/notes and accepted1.79.7 receipt. No future-branch merge, elevated terrain/profile, wearable derivatives, batching/culling optimizations, account/schema/gameplay/economy/privacy/payment/alert changes.",
   "woodland": "Fuller pine hanging needle fans retain840High/420Low triangles; curved varied green sedge retains80 triangles and untouched bracken. Every existing plant/tree, placement, material count, wind, lights, shadows and collision footprints retained. Earlier staged flat/equipped visual qualification and rejected leaf attempt retained in component receipts.",
