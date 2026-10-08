@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08",
+  "version": "Alpha 1.79.3",
+  "status": "current-master-integration-qualified-publication-pending",
+  "baseCommit": "f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",
+  "source": {
+    "qualifiedComponents": "eaf70ebfba759c6a6ec2e9b079a8ee3694fe2888",
+    "identity": "All14 selected runtime files byte-identical to the qualified component Git blobs. Selective apply_patch integration on fresh origin/master, not a whole older future-branch merge.",
+    "scope": "Town-only weathered masonry; Fire, Moonfrost and Stormcrown registered terrain surfaces; beveled Tide Rib piers and attached marks; static colored camp canvas; quality-aware four-family dungeon maps; bounded blind-arcade wall geometry and simple camera cutaways; quality mismatch reload prompt without resetting an active dungeon.",
+    "versions": "Login, cumulative patch notes, release/package/lockfile roots, README, workflow, server main/Docker/Compose/deploy and isolated-QA defaults synchronized at1.79.3.",
+    "nonChanges": "Original supplied actor/equipment/motion assets, website work, collision bounds, gameplay positions, layouts, progression, saves/schema25, balance, Gold/EP, class restrictions, access, payments, alerts, retention and production flat-world profile retained."
+  },
+  "qualification": {
+    "core": "Root96092 terminal0:8 affected suites,124 checks PASS73.626s on combined current-master source.",
+    "presentationAndCompatibility": "Root33379 terminal1:3 existing suites PASS380 checks12.468s; fourth requested path LayoutFloorUnion.test.js does not exist. This command failure is retained, not called a pass. Corrected actual DungeonSurfaceUnion plus town architecture/street-furniture/courtyards root10757 terminal0:4 suites20 checks PASS17.093s. Total15 actual passing suites524 checks across these source-specific invocations, not a fresh full-client-suite claim.",
+    "static": "Scoped28 JavaScript files ESLint max-warnings0 PASS; git diff --check and deploy/isolated-QA bash syntax PASS.",
+    "native": "Root51067 terminal0:8 PASS44.5s, actual System Chrome normal hardware launch,1280x900 High and390x844 Low, equipped14-slot Fighter/Wizard, real HUD and ordinary gameplay zoom. Town5 sites, Air3 sites, Water3 sites and four elemental dungeon families at center/wall. No live-account writes or connected combat; rendered JSON/screens retained. Owned4190 independently closed afterward.",
+    "login": "Root76280 terminal0:local System Chrome2 PASS7.4s; desktop/375px open-source credit keyboard focus, visible Alpha1.79.3 login/first cumulative notes, actual vendored dependencies and no collected browser failures. Public release identity, WebSocket and backend acceptance are not inferred from this local run.",
+    "visualReview": "Current desktop town well and Abyssal wall, phone-sized Air bivouac and Abyssal wall inspected. Material/architecture improvements are modest; ground still needs stronger composition and final modern-ARPG review. Passing tests are not an art-quality signoff.",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-1793-integration-evidence-20261008-5TdwOdmC"
+  },
+  "retainedComponentEvidence": [
+    "2026-10-08-fire-surface-checks.json",
+    "2026-10-08-town-masonry-checks.json",
+    "2026-10-08-moonfrost-refinement-checks.json",
+    "2026-10-08-elemental-dungeon-surface-checks.json",
+    "2026-10-08-elemental-dungeon-architecture-checks.json",
+    "2026-10-08-air-canvas-and-slate-checks.json"
+  ],
+  "publication": {
+    "status": "pending",
+    "policy": "Fetch/reconcile before push, retain normal CI and original assertions. Verify own exact public frontend/backend readiness and publisher-rewritten changed runtime bytes after deployment. Hosted SSH remains unresolved; any guarded local fallback must retain the actual CI outcome and avoid unrelated env/data cleanup."
+  },
+  "roadmapBoundary": "This component patch supersedes older component-receipt plans to wait until1.87 for delivery, not their evidence scopes or acceptance requirements. Full1.80 F1-F5 and1.87 art/performance/raised-world requirements remain open; no beta freeze/access transition or shortened goal. Owner human campaign/pacing and physical-phone dungeon/party feedback remain deferred, not passed. Continue the entire ordered1.11-1.99 roadmap."
+}

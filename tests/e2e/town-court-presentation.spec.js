@@ -14,6 +14,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             const { UIManager } = await import('/src/ui/UIManager.js');
             const { InputManager } = await import('/src/core/InputManager.js');
             const { Fighter } = await import('/src/entities/Fighter.js');
+            const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
             const { MeshFactory } = await import('/src/utils/MeshFactory.js');
             const { getLanternholdWalkCollider } = await import('/src/art/ProceduralLanternholdArchitecture.js');
             document.getElementById('start-screen').style.display = 'none';
@@ -26,6 +27,21 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             ui.showHUD(); ui.toggleChat(true);
             const hero = new Fighter('town-review');
             await hero.ensureMesh(); hero.position.set(0, 0, 200);
+            // Ordinary authored equipment in the actual populated scene, not
+            // an unequipped gallery body or an endgame balance fixture.
+            const loadout = { head: 'Iron Helm', shoulders: 'Steel Pauldrons', chest: 'Plate Mail',
+                gloves: 'Iron Gauntlets', belt: 'Plated Girdle', legs: 'Plate Greaves', feet: 'Iron Boots',
+                neck: 'Pendant', ring1: 'Ruby Ring', ring2: 'Gold Ring', trinket1: 'Amulet of Power',
+                trinket2: 'Talisman of Speed', mainHand: 'Iron Sword', offHand: 'Wooden Shield' };
+            const equipment = Object.fromEntries(Object.entries(loadout).map(([slot, name]) => {
+                const base = BASE_ITEMS.find(item => item.name === name);
+                if (!base) throw new Error(`Missing town-review equipment: ${name}`);
+                return [slot, { ...base, id: `town-review-${slot}`, baseName: name, name,
+                    level: 30, rarity: slot === 'mainHand' ? 'Rare' : 'Uncommon', stats: {},
+                    potency: 0, sockets: 0, gems: [], setId: '', uniqueEffect: '' }];
+            }));
+            hero.syncEquipmentVisuals(equipment, { force: true });
+            await hero.mesh.userData.equipmentReady;
             hero.mesh.position.copy(hero.position); render.entityGroup.add(hero.mesh);
             ui.updatePlayerStats(hero);
             const collision = new CollisionManager();
@@ -51,13 +67,16 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             const streets = render.instanceEnvironmentGroup.getObjectByName('Lanternhold planted street edges');
             const streetMeshes = []; streets.traverse(part => { if (part.isMesh) streetMeshes.push(part); });
             return { zoom: render.currentZoom, opaque: !render.groundTown.material.transparent,
+                authoredClass: hero.mesh.userData.authoredClass,
+                equipment: hero.mesh.userData.equipmentVisualItemCount,
                 courtSize: render.groundTown.material.userData.townGroundComposition.paving.color.image.width,
                 shadowFocused: render.shadowTarget.distanceTo(hero.position) < 1,
                 streetBatches: streetMeshes.length,
+                streetCells: streetMeshes.reduce((total, mesh) => total + mesh.userData.streetCells.length, 0),
                 streetSolids: streets.userData.walkFootprints.length };
         }, mobile);
         await page.screenshot({ path: testInfo.outputPath('town-court.png'), style: '#perf-overlay { visibility: hidden !important; }' });
-        for (const [label, x, z] of [['market', 22, 200], ['smithy', -20, 200], ['casino', 0, 183]]) {
+        for (const [label, x, z] of [['market', 22, 200], ['smithy', -20, 200], ['casino', 0, 183], ['well', 55, 248]]) {
             await page.evaluate(({ x, z }) => {
                 const { render, hero } = window.__courtReview;
                 hero.position.set(x, 0, z); hero.mesh.position.copy(hero.position);
@@ -68,7 +87,8 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             await page.screenshot({ path: testInfo.outputPath(`town-${label}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
         }
         expect(result).toEqual({ zoom: 15, opaque: true, courtSize: mobile ? 256 : 512, shadowFocused: true,
-            streetBatches: 12, streetSolids: 4 });
+            authoredClass: 'Fighter', equipment: 14,
+            streetBatches: 6, streetCells: 12, streetSolids: 4 });
         expect(failures).toEqual([]);
     });
 }

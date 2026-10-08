@@ -1,0 +1,41 @@
+{
+  "milestone": "1.87 Moonfrost environment refinement — staged, not published",
+  "checkedAt": "2026-10-08T04:49:43Z",
+  "parent": "fdfbd22347da680ae1219a65bfbb74a7f7878ae0",
+  "branch": "work/alpha-1-87-moonfrost-review-20261008",
+  "changes": [
+    "Replace round high-contrast ice/rime patches with softer directional frost beds, irregularly offset interrupted fissures and registered color/height/roughness fields.",
+    "Replace Tide Rib's uninterrupted rectangular supports with eight bevelled stone courses, broad feet and shoulders inside the original solid. Tide marks derive their face depth from those courses instead of floating at the former wider face.",
+    "Add actual RenderSystem/WorldGenerator High1280px and Low390px views at Tide Rib, Stranded Flotilla and Castaways' Refuge with foliage, paths, HUD and a14-slot class-compatible Uncommon/Rare authored Wizard."
+  ],
+  "retainedBoundaries": {
+    "waterWalkFootprintsSHA256": "f6f2166d66d6ef68834d4bc9bb4a60276cea7ce3b29b756ef23575df9158d67f",
+    "waterWalkFootprints": "Exact before/after JSON hash verified on the actual final builder; original two3x8x3 pier solids, all routes, anchors and hazards retained. No server/shared projection change.",
+    "material": "Existing three256px/128px maps, repeat64x52, texture lifecycle, lights and zero ground emissive remain. No new textures, per-frame shader work or authored-model changes.",
+    "geometry": "Each new support480 triangles; replaces a12-triangle box, adding936 static triangles total in the existing rib batch. Five Tide Rib batches retained. Bounds are +/-1.45000005m,0.001–7.381m; no new ground solid or climbing surface. Added geometry/material generation is not free CPU/GPU performance.",
+    "unchangedSurfaceSampleDigests": {
+      "fire": "388a58036a4673025f578bd990172defe335f8dbe483fdfb2fd5fc719bf362f4",
+      "air": "30a9e712023a0705e74f2e34724d68940130869dac8399b7f224d46496b8a786"
+    }
+  },
+  "sourceSHA256": {
+    "src/art/ElementalTerrainSurface.js": "a69869c1883d66a4d4fa281a8bb544a6d5a266fc2db65f169b260ab99f3bcf1c",
+    "src/art/WaterLandmarkGeometry.js": "d86abac758e7aec02c5a077c248ae3b15b10106fd3ad32d4204ba5fb3475281b",
+    "src/art/ProceduralElementalLocations.js": "c2d7c0f0cc7e947da1b9ee2e443f7de852d34af61436c152d26de320ad15762d"
+  },
+  "qualification": {
+    "units": "Initial three-suite run:27 PASS/1 FAIL23.939s; ElementalTerrainSurface14 and ElementalPopulation7 pass, while the new pier's lower bound is -1.49e-10m from Float32 rounding. Give the actual geometry1mm clearance, retaining the strict bound. Final affected WaterLandmarkGeometry7 PASS0.631s, including deterministic bounds/bevels/UVs and exact seven tide-mark face depths. Previous21 unchanged surface/canonical route checks retained, not labelled a fresh combined28-pass run.",
+    "lint": "Six changed JS files scoped ESLint max-warnings0 PASS; final affected geometry/builder/test correction lint PASS; whitespace PASS.",
+    "baseline": "Actual eight-location High/Low gallery2 PASS5.1s; inspected High reveals cloud-like high-contrast floor. First directional candidate2 PASS4.9s still too contrasty, so softened palette before retention.",
+    "nativeFinal": "Final equipped System Chrome1280px/390px2 PASS14.1s, root25170 terminal0; three actual populated views each, authored Wizard14 pieces, normal zoom15, existing High/Low map sizes and no collected browser failures. Both final Tide Rib captures inspected and port4190 closed.",
+    "retainedGallery": "Eight-location High/Low gallery passes in root77036 before final tide-mark face-depth correction; exact final terrain field retained. This is gallery scope, not a final all-location multiplayer/combat test.",
+    "failedNative": "Root77036 final-pier command3 PASS/1 FAIL12.6s: desktop module import interrupted. Preserved trace console records repeated net::ERR_NETWORK_CHANGED; RenderSystem response itself200. No relaxed check/browser flag. Same failed desktop case alone rechecked1 PASS8.8s, then final mark-depth source checked by both equipped cases above.",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-moonfrost-evidence-20261008-SobzXB5w"
+  },
+  "candidatePatchNotes": [
+    "Moonfrost ice and frost surfaces now have softer, more natural variation and clearer landmark contrast.",
+    "The Tide Rib now has layered carved-stone supports and properly fitted flood-measuring marks, preserving its walking route."
+  ],
+  "limits": "This is another code-owned modern-art improvement, not final Diablo/PoE-quality approval, frame-time/capacity proof, physical-phone combat, party/campaign or whole-realm acceptance. No quest, rewards, economy, terrain-profile activation, save/schema/access/version/dependency or production operation. Preserve all original art/performance gates and owner playtest decisions.",
+  "next": "Selectively integrate at ordered1.87 after current1.80 and predecessor gates, fresh remote reconciliation, actual synchronized patch notes/version and own deployment/public acceptance. Do not merge the older future branch wholesale into master. Continue all-family environment/actor/equipment polish and remaining operations work."
+}

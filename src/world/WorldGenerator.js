@@ -787,7 +787,7 @@ export class WorldGenerator {
     async createMoltenCore(centerX, centerZ, layout) {
         console.log(`Generating Molten Core at ${centerX},${centerZ}`);
 
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('molten_core');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('molten_core', { quality: this.graphicsQuality });
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -797,7 +797,7 @@ export class WorldGenerator {
     async createTempestSpire(centerX, centerZ, layout) {
         console.log(`Generating Tempest Spire at ${centerX},${centerZ}`);
 
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('tempest_spire');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('tempest_spire', { quality: this.graphicsQuality });
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -807,7 +807,7 @@ export class WorldGenerator {
     async createAbyssalWell(centerX, centerZ, layout) {
         console.log(`Generating Abyssal Well at ${centerX},${centerZ}`);
 
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('abyssal_well');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('abyssal_well', { quality: this.graphicsQuality });
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -816,7 +816,7 @@ export class WorldGenerator {
 
     async createUmbralNexus(centerX, centerZ, layout) {
         console.log(`Generating Umbral Nexus at ${centerX},${centerZ}`);
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('umbral_nexus');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('umbral_nexus', { quality: this.graphicsQuality });
         this.createLayoutDrivenDungeon(layout);
     }
 
@@ -1058,9 +1058,7 @@ export class WorldGenerator {
         const wallLength = segmentLength;
         const wallHeight = 15;
         const wallThickness = 2;
-        const wallGeo = this.dungeonInteriorKit
-            ? this.dungeonInteriorKit.wallGeometry(wallLength, wallHeight, wallThickness)
-            : new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
+        const wallGeo = this.dungeonInteriorKit ? null : new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
 
         // Determine transparency based on wall position relative to corridor center
         // Camera is at (+100, +100, +100) looking at (0,0,0)
@@ -1109,7 +1107,8 @@ export class WorldGenerator {
         }
 
         // Left Wall
-        const leftWall = new THREE.Mesh(wallGeo, leftMat);
+        const leftWall = new THREE.Mesh(this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.wallGeometry(wallLength, wallHeight, wallThickness, isLeftTransparent) : wallGeo, leftMat);
         leftWall.name = this.dungeonInteriorKit ? 'ProceduralDungeonCorridorWall' : 'DungeonCorridorWall';
         leftWall.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
         leftWall.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
@@ -1121,7 +1120,8 @@ export class WorldGenerator {
         this.collisionManager.addCollider(new THREE.Box3().setFromObject(leftWall));
 
         // Right Wall
-        const rightWall = new THREE.Mesh(wallGeo, rightMat);
+        const rightWall = new THREE.Mesh(this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.wallGeometry(wallLength, wallHeight, wallThickness, isRightTransparent) : wallGeo, rightMat);
         rightWall.name = this.dungeonInteriorKit ? 'ProceduralDungeonCorridorWall' : 'DungeonCorridorWall';
         rightWall.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
         rightWall.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';

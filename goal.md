@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current-master visual integration:** Selectively apply qualified
+town masonry, elemental terrain/canvas/piers and four-family dungeon
+surface/architecture changes onto fresh origin/master f9cbd41b. All14 runtime
+files match qualified eaf70ebf exactly; supplied models/motions, website work,
+authority, schema25, collisions, public access and flat-world profile remain.
+Current combined124 core checks pass73.626s; three presentation/compatibility
+suites380 pass12.468s, with a separately retained wrong-path invocation failure;
+corrected actual union and town suites20 pass17.093s. Eight actual equipped
+High/Low System Chrome rendering cases pass44.5s; original quality/collision/
+geometry limits remain. Inspected desktop/phone-sized images show modest
+improvements, not final Diablo/PoE art approval. Own1.79.3 version/cumulative
+notes prepared; publication/public acceptance pending. This component delivery
+does not close1.80 F1-F5,1.87 or the full active roadmap; no unchanged population
+or campaign replay. See [candidate receipt](docs/plans/2026-10-08-release1-79-3-checks.json).
+
 **October8 publication fixture correction:** First1.79.2 CI37721554849 full
 Jest runs643 passing suites/9604 passing checks and one stale sharding assertion
 requiring the old unsafe QA condition. Update only that fixture to require the

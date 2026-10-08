@@ -39,7 +39,14 @@ export class UIBindings {
             engine.renderSystem.entityGroup?.traverse(part => {
                 if (part.userData?.authoredClass && part.userData.authoredQuality !== actorQuality) actorReloadRequired = true;
             });
-            return actorReloadRequired ? { ...result, reloadRequired: true } : result;
+            // Existing instance textures, like actors, retain owned resources
+            // until reload. Do not rebuild a dungeon or reset its progress when
+            // changing quality in combat. Verdant keeps its established maps.
+            const kit = engine.activeWorldGenerator?.dungeonInteriorKit;
+            const surfaceQuality = normalized === 'low' ? 'low' : 'high';
+            const surfaceReloadRequired = kit?.surfaceQuality && kit.dungeonType !== 'verdant_bastion_catacombs' &&
+                kit.surfaceQuality !== surfaceQuality;
+            return actorReloadRequired || surfaceReloadRequired ? { ...result, reloadRequired: true } : result;
         };
         ui.onBrightnessChange = (level) => {
             engine.renderSystem.setBrightnessLevel(level);

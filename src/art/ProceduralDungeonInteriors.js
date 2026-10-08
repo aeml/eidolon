@@ -5,6 +5,8 @@ import { getDungeonRoomIdentityTag } from '../utils/dungeonRoomMetadata.js';
 import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { sampleVerdantMasonry } from './VerdantMasonry.js';
 import { createCryptWallGeometry } from './CryptWallGeometry.js';
+import { sampleElementalDungeonSurface } from './ElementalDungeonSurface.js';
+import { createElementalDungeonWallGeometry } from './ElementalDungeonWallGeometry.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -80,80 +82,11 @@ function mixBytes(a, b, amount) {
 
 function surfaceSample(dungeonType, surface, x, y, palette) {
     if (dungeonType === 'verdant_bastion_catacombs') return sampleVerdantMasonry(x, y, surface === 'wall');
-    const { shadow, ground, midtone, accent } = palette;
-    const wall = surface === 'wall';
-    const baseColor = mixBytes(shadow, wall ? midtone : ground, wall ? 0.48 : 0.72);
-    let color = baseColor;
-    let emissive = 0;
-    // Physical detail follows masonry, not brightness: luminous marks and
-    // stains must not turn into raised geometry or highly polished patches.
-    let relief = 0.5;
-    let roughness = 0.9;
-
-    if (dungeonType === 'molten_core') {
-        const plateX = (x + (Math.floor(y / 14) % 2) * 6) % 20;
-        const plate = plateX < 1 || y % 14 < 1;
-        const faultA = Math.abs(x - (30 + Math.sin(y * 0.17) * 11)) < 1.1;
-        const faultB = y > 18 && y < 38 && Math.abs(x - (35 + ((y - 28) * 0.72))) < 0.9;
-        relief -= plate || faultA || faultB ? 0.2 : 0;
-        roughness = plate || faultA || faultB ? 0.98 : 0.73;
-        if (plate) color = mixBytes(color, shadow, 0.72);
-        if (faultA || faultB) {
-            const brokenFault = ((x * 11 + y * 7) % 23) < 14;
-            color = mixBytes(color, accent, brokenFault ? 0.48 : 0.18);
-            emissive = brokenFault ? (wall ? 0.34 : 0.46) : 0.06;
-        } else if (((x * 13 + y * 17) % 47) < 4) {
-            color = mixBytes(color, midtone, 0.28);
-        }
-    } else if (dungeonType === 'tempest_spire') {
-        const offset = (Math.floor(y / 12) % 2) * 5;
-        const slate = (x + offset) % 20 < 1 || y % 12 < 1;
-        const conductor = Math.abs(((x - y + 128) % 37) - 18) < 0.9;
-        const node = ((x - 6) % 24 < 2) && ((y - 6) % 24 < 2);
-        relief -= slate ? 0.2 : 0;
-        roughness = slate ? 0.98 : conductor ? 0.68 : 0.84;
-        if (slate) color = mixBytes(color, shadow, 0.62);
-        if (conductor || node) {
-            color = mixBytes(color, node ? accent : midtone, node ? 0.62 : 0.38);
-            emissive = node ? 0.54 : 0.16;
-        }
-    } else if (dungeonType === 'abyssal_well') {
-        const blockX = (x + (Math.floor(y / 9) % 2) * 6) % 18;
-        const joint = blockX < 1 || y % 9 < 1;
-        // Broad, quiet tide marks underfoot; luminous pearls belong on the
-        // walls, where their repeating dots cannot compete with combat cues.
-        const tidePhase = wall ? x * 0.24 : x * Math.PI * 2 / TEXTURE_SIZE;
-        const tide = Math.abs(y - (32 + Math.sin(tidePhase) * (wall ? 10 : 7))) < 1.25;
-        const pearl = wall && ((x * 5 + y * 13) % 53) < 2;
-        relief -= joint ? 0.22 : 0;
-        roughness = joint ? 0.96 : 0.72;
-        if (joint) color = mixBytes(color, shadow, 0.7);
-        if (tide || pearl) {
-            color = mixBytes(color, accent, wall ? (tide ? 0.42 : 0.3) : 0.12);
-            emissive = wall ? (tide ? 0.28 : 0.2) : 0.035;
-        }
-    } else {
-        const fracture = Math.abs(x - (31 + Math.sin(y * 0.31) * 15)) < 1.2;
-        const constellation = ((x * 17 + y * 23) % 61) < 2;
-        const memoryTile = (x + (Math.floor(y / 10) % 2) * 5) % 19 < 1 || y % 10 < 1;
-        relief -= memoryTile || fracture ? 0.2 : 0;
-        roughness = memoryTile || fracture ? 0.98 : 0.76;
-        if (memoryTile) color = mixBytes(color, shadow, 0.72);
-        if (fracture || constellation) {
-            color = mixBytes(color, fracture ? accent : midtone, fracture ? 0.56 : 0.38);
-            emissive = fracture ? 0.42 : 0.24;
-        }
-    }
-
-    if (!wall) {
-        color = mixBytes(baseColor, color, 0.55);
-        emissive *= 0.3;
-    }
-    return { color, emissive, relief, roughness };
+    return sampleElementalDungeonSurface(x, y, dungeonType, surface === 'wall', palette);
 }
 
-function createSurfaceTexture(dungeonType, surface, channel = 'color', sampleCache = new Map()) {
-    const size = dungeonType === 'verdant_bastion_catacombs' ? 256 : TEXTURE_SIZE;
+function createSurfaceTexture(dungeonType, surface, channel, sampleCache, quality) {
+    const size = dungeonType === 'verdant_bastion_catacombs' || quality !== 'low' ? 256 : TEXTURE_SIZE;
     const step = TEXTURE_SIZE / size;
     const theme = getRegionTheme(dungeonType);
     const palette = Object.freeze({
@@ -176,8 +109,11 @@ function createSurfaceTexture(dungeonType, surface, channel = 'color', sampleCac
                 // Wrapped central differences keep repeat boundaries valid.
                 // Small tangent normals add relief without displacing floors.
                 const relief = (dx, dy) => samples[((y + dy + size) % size) * size + (x + dx + size) % size].relief;
-                const nx = (relief(-1, 0) - relief(1, 0)) * 1.5;
-                const ny = (relief(0, -1) - relief(0, 1)) * 1.5;
+                // Preserve Verdant's established field. Other families use
+                // canonical-domain slopes at both texture resolutions.
+                const strength = dungeonType === 'verdant_bastion_catacombs' ? 1.5 : 1.5 / step;
+                const nx = (relief(-1, 0) - relief(1, 0)) * strength;
+                const ny = (relief(0, -1) - relief(0, 1)) * strength;
                 const length = Math.hypot(nx, ny, 1);
                 data[offset] = clampByte((nx / length * 0.5 + 0.5) * 255);
                 data[offset + 1] = clampByte((ny / length * 0.5 + 0.5) * 255);
@@ -692,21 +628,22 @@ function batchDressing(source) {
     return result;
 }
 
-export function createProceduralDungeonInteriorKit(dungeonType) {
+export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'high' } = {}) {
     const definition = DUNGEON_INTERIOR_DEFINITIONS[dungeonType];
     if (!definition) throw new Error(`Unknown procedural dungeon interior: ${dungeonType}`);
 
     const theme = getRegionTheme(dungeonType);
+    const surfaceQuality = quality === 'low' ? 'low' : 'high';
     const sampleCache = new Map();
     const baseTextures = Object.freeze({
-        floor: createSurfaceTexture(dungeonType, 'floor', 'color', sampleCache),
-        floorEmissive: createSurfaceTexture(dungeonType, 'floor', 'emissive', sampleCache),
-        floorNormal: createSurfaceTexture(dungeonType, 'floor', 'normal', sampleCache),
-        floorRoughness: createSurfaceTexture(dungeonType, 'floor', 'roughness', sampleCache),
-        wall: createSurfaceTexture(dungeonType, 'wall', 'color', sampleCache),
-        wallEmissive: createSurfaceTexture(dungeonType, 'wall', 'emissive', sampleCache),
-        wallNormal: createSurfaceTexture(dungeonType, 'wall', 'normal', sampleCache),
-        wallRoughness: createSurfaceTexture(dungeonType, 'wall', 'roughness', sampleCache)
+        floor: createSurfaceTexture(dungeonType, 'floor', 'color', sampleCache, surfaceQuality),
+        floorEmissive: createSurfaceTexture(dungeonType, 'floor', 'emissive', sampleCache, surfaceQuality),
+        floorNormal: createSurfaceTexture(dungeonType, 'floor', 'normal', sampleCache, surfaceQuality),
+        floorRoughness: createSurfaceTexture(dungeonType, 'floor', 'roughness', sampleCache, surfaceQuality),
+        wall: createSurfaceTexture(dungeonType, 'wall', 'color', sampleCache, surfaceQuality),
+        wallEmissive: createSurfaceTexture(dungeonType, 'wall', 'emissive', sampleCache, surfaceQuality),
+        wallNormal: createSurfaceTexture(dungeonType, 'wall', 'normal', sampleCache, surfaceQuality),
+        wallRoughness: createSurfaceTexture(dungeonType, 'wall', 'roughness', sampleCache, surfaceQuality)
     });
     sampleCache.clear();
     const materials = new Map();
@@ -754,7 +691,8 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
             const value = kind === 'floor' ? new THREE.PlaneGeometry(width, height)
                 : kind === 'wall' && dungeonType === 'verdant_bastion_catacombs'
                     ? createCryptWallGeometry(width, height, depth)
-                    : new THREE.BoxGeometry(width, height, depth);
+                    : kind === 'wall' ? createElementalDungeonWallGeometry(dungeonType, width, height, depth, surfaceQuality)
+                        : new THREE.BoxGeometry(width, height, depth);
             value.computeBoundingBox();
             value.computeBoundingSphere();
             geometries.set(key, value);
@@ -764,6 +702,7 @@ export function createProceduralDungeonInteriorKit(dungeonType) {
 
     return Object.freeze({
         dungeonType,
+        surfaceQuality,
         definition,
         floorGeometry: (width, depth) => geometry('floor', width, depth),
         // Keep foreground cutaways simple: overlapping translucent courses

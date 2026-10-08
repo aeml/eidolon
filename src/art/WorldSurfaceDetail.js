@@ -3,7 +3,7 @@ import { Material } from 'three';
 // Material detail in physical world units, including merged/instanced buildings.
 // Retains MeshStandardMaterial lighting, shadows, fog and quality settings. No
 // downloaded textures, per-frame updates, extra meshes or displaced colliders.
-const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5, 'stratified-rock': 6, fortress: 7 });
+const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5, 'stratified-rock': 6, fortress: 7, 'weathered-masonry': 8 });
 
 const FRAGMENT = /* glsl */`
 varying vec3 vEidolonSurface;
@@ -68,6 +68,33 @@ vec3 eidolonSurface(vec3 p) {
     grain = mix(.5, grain, fade);
     return vec3(.78 + grain * .36 + weather * .16, .88 + grain * .09, grain * .004);
 #else
+#if EIDOLON_SURFACE == 8
+    // Town walls are dressed, weathered blocks rather than a high-contrast
+    // perfect brick stencil. Preserve the old horizontal paving field below:
+    // courtyards share this material with their well/bench construction.
+    if (axis.y <= max(axis.x, axis.z)) {
+        vec2 masonryTileSize = vec2(1.05, .56);
+        vec2 masonryWarp = vec2(eidolonNoise(uv * 1.7 + vec2(7., 13.)),
+            eidolonNoise(uv * 2.3 + vec2(31., 5.))) - .5;
+        vec2 masonryTile = uv / masonryTileSize + masonryWarp * vec2(.06, .04);
+        float masonryRow = floor(masonryTile.y);
+        masonryTile.x += mod(masonryRow, 2.) * .5 + (eidolonHash(vec2(masonryRow, 17.)) - .5) * .4;
+        vec2 masonryCell = floor(masonryTile), masonryFace = fract(masonryTile);
+        vec2 masonryFootprint = max(fwidth(masonryTile), vec2(.001));
+        vec2 masonryEdge = min(masonryFace, 1. - masonryFace);
+        vec2 masonryInside = smoothstep(vec2(.019) - masonryFootprint * .5,
+            vec2(.062) + masonryFootprint * .5, masonryEdge);
+        float masonryCoverage = masonryInside.x * masonryInside.y;
+        float masonrySeed = eidolonHash(masonryCell);
+        float masonryDetail = 1. - smoothstep(.3, .9, max(masonryFootprint.x, masonryFootprint.y));
+        float masonryGrainFade = 1. - smoothstep(.25, .8, max(fwidth(uv.x * 5.), fwidth(uv.y * 5.)));
+        float masonryGrain = mix(.5, eidolonNoise(uv * 5. + masonryWarp), masonryGrainFade);
+        float masonryTone = .86 + masonrySeed * .18 + weather * .12 + masonryGrain * .08;
+        float masonryShade = mix(.95, mix(.72, masonryTone, masonryCoverage), masonryDetail);
+        float masonryHeight = (masonryCoverage * .021 + masonryGrain * .004 * masonryGrainFade) * masonryDetail;
+        return vec3(masonryShade, mix(.98, .86 + masonrySeed * .08, masonryCoverage), masonryHeight);
+    }
+#endif
 #if EIDOLON_SURFACE == 7
     // Horizontal foundation caps are worn stone, not wall courses turned
     // sideways into oversized paving. Reserve ashlar joints for vertical faces.

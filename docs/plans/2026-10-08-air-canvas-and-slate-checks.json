@@ -1,0 +1,45 @@
+{
+  "milestone": "1.87 Air-realm material and canvas refinement — component staged",
+  "checkedAt": "2026-10-08T05:39:14Z",
+  "parent": "b39bffe1",
+  "branch": "work/alpha-1-87-skyreach-canvas-20261008",
+  "implementation": [
+    "Air slate uses interrupted wind-aligned dust streaks and softer albedo/physical contrast instead of broad round deposition patches. Existing directional bedding, seamless canonical domain, three aligned surface maps and High/Low sampling retained.",
+    "Couriers’ Exchange and Weatherkeepers’ Bivouac replace four flat windbreak sheets with original static folded/sagged canvas, pinned borders and vertex-colored hems/wear. One additional shared scene-owned material; no new texture or per-frame simulation.",
+    "Actual populated Air realm fixture uses WorldGenerator buildings/trees, normal RenderSystem lighting/zoom,14-slot class-compatible Uncommon/Rare Wizard and real HUD at1280px High/390px Low. Test labels corrected to the existing canonical Stormcrown name after qualification; no world/lore names changed."
+  ],
+  "preservation": {
+    "airWalkFootprintsSHA256": "3a7c9fb10764a02c4cf70285a673e41e4df46758ecafd1d4143fce433444ba77",
+    "footprints": "Parent and final actual builders produce exact identical High/Low walking solids. New sail billow stays within the existing0.7m frame thickness; rectangular size, pinned borders, site positions, ropes/poles, aisle, paths and hazard clearances retained. No safe-zone or reward changes.",
+    "terrain": "Existing three256px/128px maps, repeat, geometry, lights, filtering and disposal retained. Zero ground emissive. Static new field math costs construction CPU; no per-frame sampler or terrain-height/collision/profile change.",
+    "unchangedSiblingSampleSHA256": {
+      "fire": "388a58036a4673025f578bd990172defe335f8dbe483fdfb2fd5fc719bf362f4",
+      "water": "70ca2b639ac2423d5b7a9a343375c94911c58cd4399b51f8143ee92d8d077472"
+    },
+    "airSampleSHA256": "eb1c4d2ecc4ed71893fba980ba9f796632441047a6d6025b990140ef94354618"
+  },
+  "cost": {
+    "fullAirLocationsHigh": { "beforeTriangles": 16076, "afterTriangles": 17420, "beforeMeshes": 43, "afterMeshes": 45 },
+    "fullAirLocationsLow": { "beforeTriangles": 13132, "afterTriangles": 13324, "beforeMeshes": 43, "afterMeshes": 45 },
+    "limits": "High adds1344 static triangles; Low adds192; two additional material batches and one shared material. These are full isolated location-builder counts, not visible frame counts or free GPU/CPU cost. Native captures record actual render scopes, not frame-time, capacity or whole-party approval."
+  },
+  "qualification": {
+    "units": "AirCanvasGeometry,ElementalTerrainSurface,ElementalPopulation24 PASS24.08s, root40569 terminal0. Covers finite folded vertices/normals, pinned edges/bounds, ownership/shared material, exact High/Low solid equality, all regional path/hazard clearances, seamless fields, directional bedding, registered maps, disposal and unchanged sibling digests. Test-name-only corrections afterward do not change assertions/runtime.",
+    "static": "Six changed JS files scoped ESLint max-warnings0 PASS; corrected native fixture lint/whitespace PASS.",
+    "baseline": "Actual equipped three-site High/Low fixture2 PASS12.0s, root77026 terminal0. Desktop exchange and phone-sized bivouac inspected: flat rectangular sheets and cloudy ground motivate the scope. Baseline lacks later canvas assertions/JSON output; do not claim exact before/after rendered draw deltas.",
+    "fixtureFailure": "First candidate fails both views because a whole-populated-world ':canvas' query also includes LanternholdRoadCart's existing canopy. Preserve the strict expected two new Air batches and vertex-color checks by querying exact Couriers’ Exchange/Weatherkeepers’ Bivouac names, not counting or excluding unrelated scenery in production.",
+    "nativeFinal": "Same System Chrome normal hardware launch2 PASS11.2s, root98682 terminal0. Both qualities at three populated sites, actual registered ground maps/zero emissive, two colored camp-canvas batches, ordinary14-slot Wizard/HUD/zoom15 and no browser failure. Desktop exchange and phone-sized bivouac final captures inspected; owned4190 closed afterward. Subsequent fixture title-only correction retains this exact behavior and historical capture paths.",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-skyreach-canvas-evidence-20261008-7zPWDdJ5"
+  },
+  "sourceSHA256": {
+    "src/art/ElementalTerrainSurface.js": "3f0b7eed29724b855a51b35205775908ae11aaf66c16028f3651ecf296605afc",
+    "src/art/AirCanvasGeometry.js": "ffac51c92a334fb1f8720afc0d3da72885085ac9adf9081766539e19b44a82d7",
+    "src/art/ProceduralElementalLocations.js": "a8d69ad125242f02f34a7cf3b07d496e998ee1b6026d76760c7b1d3cb4930f06"
+  },
+  "candidatePatchNotes": [
+    "Stormcrown slate has softer, wind-aligned surface variation while retaining clear roads and hazards.",
+    "Air-realm camp windbreaks now have folded canvas and subtle hem/weathering detail, with their original walking aisles preserved."
+  ],
+  "limits": "Visible changes are modest; full modern ARPG composition, material/silhouette quality, all-family and equipped-party/device performance review remain open. No connected combat, real-phone, campaign/pacing or final art acceptance. No models, dependencies, save/schema, accounts, rewards, access, terrain activation, version, push or production operation changed.",
+  "next": "Prepare selective current-master visual-patch integration for owner playtesting, not a whole future-branch merge. A component patch may deliver qualified corrections without claiming1.80 freeze or1.87 completion. Retain every original milestone/quality/device/operations gate and the full active roadmap goal; publication requires synchronized notes/version and own CI/live acceptance."
+}

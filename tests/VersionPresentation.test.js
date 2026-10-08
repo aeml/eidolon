@@ -3,7 +3,22 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.2';
+const currentVersion = '1.79.3';
+
+test('1.79.3 records scoped elemental and town art without claiming final art acceptance', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.3"'), previous = html.indexOf('data-version="1.79.2"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['weathered masonry', 'collisions remain unchanged', 'folded basalt',
+        'Moonfrost', 'Stormcrown Reach', 'billowed camp canvas', 'not per-frame cloth simulation',
+        'blind arcades', 'not new passages', 'collision boxes', 'transparent camera cutaway',
+        'Verdant retains', 'High/Low', 'offers a reload', 'texture counts remain unchanged',
+        'bounded geometry', 'real HUD', 'ordinary gameplay zoom', 'not the 1.80 feature freeze',
+        'full 1.87', 'physical-phone party test', 'Raised terrain remains disabled',
+        'No account wipe', 'schema migration', 'alert-setting change', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.2 records scoped woodland, Moonfrost and release-trust fixes without claiming milestone freeze', () => {
     const html = fs.readFileSync('index.html', 'utf8');
