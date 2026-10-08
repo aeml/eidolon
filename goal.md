@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 pending1.79.3 / next1.80 review:** Exact b13dd3af is pushed;
+CI37734583404 verified running and authorized Luna monitors terminal outcome.
+No duplicate campaign or capacity run. Reconcile older freeze/exception/gap
+documents with accepted1.79.2, preserving its immutable public receipt and all
+65 promises. Seven Git trees/counts and six input hashes independently match
+f9; supplied assets, UI, authoritative game and content trees remain unchanged
+in b13. Read-only current GitHub API still has master unprotected/no rulesets;
+no settings mutation. This source-review preparation is separate from pending
+public1.79.3 acceptance and does not freeze/approve1.80 or final modern art.
+
 **October8 current-master visual integration:** Selectively apply qualified
 town masonry, elemental terrain/canvas/piers and four-family dungeon
 surface/architecture changes onto fresh origin/master f9cbd41b. All14 runtime

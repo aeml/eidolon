@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T04:00:26Z",
+  "version": "Alpha 1.79.2",
+  "commit": "f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",
+  "status": "guarded-local-deployment-and-scoped-public-checks-passed-ci-ssh-failure-retained",
+  "ci": {
+    "run": "https://github.com/aeml/eidolon/actions/runs/37722779214",
+    "conclusion": "failure",
+    "passed": "Client Jest, Server Go, all three Playwright shards, Predeploy Character QA, Validate Production QA Inputs and GitHub Pages. Root independently verifies exact head and completed job metadata; authorized Luna reports terminal outcome.",
+    "failure": "Deploy Server (SSH), Deploy via SSH: ssh: connect to host ssh.mendola.tech port 22: Connection timed out; exit255. Trusted host-key setup succeeds; the pin does not repair network routing.",
+    "skippedPredeploySteps": [
+      "Run deterministic High/Low animation gallery",
+      "Run required Well Rested rendering and GPU lifecycle QA",
+      "Run disposable full-character gameplay"
+    ],
+    "skippedJob": "Live Release and Character QA",
+    "limits": "No all-jobs-green, credentialed-live, four-class or campaign acceptance claim. Local fallback does not retroactively make hosted CI successful. First superseded run37721554849 retained its fixture failure and was cancelled; corrected run completed naturally."
+  },
+  "localDeployment": {
+    "checkout": "/home/aeml/eidolon",
+    "sourceChecks": "Fresh fetch, clean tracked/untracked status, exact origin/master equals tested f9cbd41b and detached checkout; status remains clean after deployment. Original dirty /home/aeml/Github/eidolon untouched.",
+    "command": "EIDOLON_BUILD_COMMIT=f9cbd41b2e5e0a9ca29dc19c07070658e57f0849 EIDOLON_BUILD_VERSION='Alpha 1.79.2' CLEAN_SERVER_TREE=false bash server/deploy/deploy_linux.sh",
+    "terminal": "Root session53831 exits0; no restart or second deployment invocation.",
+    "rollbackImage": "eidolon-api:rollback-67e71dda71061ee2facfd8ac598d09a125b132bdb5df613595187e39ec3c8566",
+    "schemaReceipt": "Schema preflight passed: database=25 supported=25 commit=f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",
+    "guards": "Existing deployment lock, source/Docker2048MiB headroom floor, prior-image pin, approved monitor configuration validation, Mongo readiness and exact target schema/health identities remain. Database schema unchanged; no migration or migration-backup branch invoked. No .env, QA allowlist, retention, volumes or player data changes; no cleanup.",
+    "api": "Actual container running with zero restarts; image sha256:f5c258f52f4e74a637083dd0d6a9959b44dcd290146999a1a3459c5b79ad4362."
+  },
+  "public": {
+    "transport": "Ordinary DNS, forcedIPv4 and verified HTTPS; curl fail-closed with3s connect/10s total and no-cache. No resolver override, credential or TLS bypass.",
+    "frontend": {"commit":"f9cbd41b2e5e0a9ca29dc19c07070658e57f0849","version":"Alpha 1.79.2"},
+    "backend": {"commit":"f9cbd41b2e5e0a9ca29dc19c07070658e57f0849","version":"Alpha 1.79.2","status":"ok","database":"ready"},
+    "runtimeComparison": "Root48126 terminal0. Read exact source using git show, apply exported rewriteHtml/rewriteJavaScript from scripts/version-pages-runtime.mjs in memory; all15 fetched runtime files byte-identical to expected published source.",
+    "files": [
+      "index.html",
+      "src/main.js",
+      "src/core/RecoveryLinkBoot.js",
+      "src/core/RenderSystem.js",
+      "src/core/FoliageShadowInfluence.js",
+      "src/core/ShadowViewCoverage.js",
+      "src/art/WoodlandLeafMaterial.js",
+      "src/art/FoliageRenderBatches.js",
+      "src/art/EarthUnderstory.js",
+      "src/art/EarthOutcrops.js",
+      "src/art/ProceduralLeafCanopy.js",
+      "src/art/ProceduralRealmFoliage.js",
+      "src/art/ElementalTerrainSurface.js",
+      "src/art/WorldSurfaceDetail.js",
+      "src/data/worldFoliage.js"
+    ]
+  },
+  "browser": {
+    "scope": "Existing tests/e2e/anonymous.spec.js against actual public URLs with exact expected commit, System Chrome and normal hardware launch policy; no backend-origin mapping or credentials.",
+    "terminal": "Root11182 exits0;2 passed33.9s.",
+    "assertions": "Desktop/375px open-source credit and keyboard focus; login document200, Alpha1.79.2 label and latest notes/Escape; actual vendored protobuf/Three; live WebSocket open; exact frontend/backend identities and database readiness; collected browser failures empty.",
+    "limits": "Viewport is not a physical phone. Anonymous checks do not play campaign/dungeon/raid, inspect every fitted item or certify subjective modern-ARPG quality. Retain qualified rendering/reference evidence in the candidate receipt without repeating unchanged long tests."
+  },
+  "alerts": {
+    "approval": "Owner approves existing ADMIN_NOTIFICATION_EMAILS recipients and current self-hosting/Postmark,30s health checks, alert after3 failures, recovery after2 successes and reminders at most every30m. Reconfirmed current turn; no new paid service.",
+    "verified": "Actual eidolon-monitor-1 running, zero restarts, unless-stopped; health URL http://127.0.0.1:18082/healthz, request5s, poll30s, failure3, recovery2, cooldown30m, Postmark enabled, mail timeout10s/minimum interval1m. Normal deployment leaves it running.",
+    "limits": "Local API/database only, not whole-host/public DNS/TLS/frontend. No new email test, forced outage, secret exposure or private configuration change. Owner already confirmed the separately approved test email."
+  },
+  "remaining": "Repair public SSH access for future hosted deployment. Full1.80 F1–F5 and later1.81–1.99 gates remain open, including modern all-family art, raised-terrain production integration, owner rights/operations choices and deferred human campaign/phone evidence. No wipe, beta admission change, payment, balance or alert-coverage expansion."
+}
