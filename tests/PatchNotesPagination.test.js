@@ -18,6 +18,22 @@ test('real login contains exactly ten notes and no embedded archived history', (
     expect(html.length).toBeLessThan(150_000);
     expect(html).not.toContain('data-version="0.22.0"');
 });
+test('the import map precedes all module loads while recovery scrubbing precedes analytics', () => {
+    const parsed = new DOMParser().parseFromString(readFileSync('index.html', 'utf8'), 'text/html');
+    const scripts = [...parsed.scripts];
+    const mapIndex = scripts.findIndex(script => script.type === 'importmap');
+    const recoveryIndex = scripts.findIndex(script => script.src.endsWith('/src/core/RecoveryLinkBoot.js'));
+    const analyticsIndex = scripts.findIndex(script => script.src.endsWith('/src/analytics/game.js'));
+    expect(mapIndex).toBeGreaterThanOrEqual(0);
+    expect(recoveryIndex).toBeGreaterThanOrEqual(0);
+    expect(analyticsIndex).toBeGreaterThan(recoveryIndex);
+    for (const [index, script] of scripts.entries()) {
+        if (script.type === 'module') expect(index).toBeGreaterThan(mapIndex);
+    }
+    for (const link of parsed.querySelectorAll('link[rel="modulepreload"]')) {
+        expect(parsed.querySelector('script[type="importmap"]').compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    }
+});
 test('does not fetch before clicking; appends in order, prevents duplicate mounts and ends cleanly', async () => {
     const button = setup(), fetchPage = jest.fn(async () => ({ ok: true,
         json: async () => ({ version: '1.79.11', pages: 2, page: fetchPage.mock.calls.length,

@@ -1,4 +1,5 @@
 import { getAssetPackNames, getVersionedAssetManifest } from './assetManifest.js';
+import { registerAssetServiceWorker } from './ServiceWorkerBoot.js';
 
 export class AssetCacheManager {
     constructor() {
@@ -15,14 +16,7 @@ export class AssetCacheManager {
     }
 
     static async registerServiceWorker() {
-        const serviceWorker = globalThis.navigator?.serviceWorker;
-        if (!serviceWorker?.register) {
-            return null;
-        }
-        return serviceWorker.register('./sw.js', {
-            scope: './',
-            updateViaCache: 'none'
-        });
+        return registerAssetServiceWorker();
     }
 
     getPackAssets(packName) {

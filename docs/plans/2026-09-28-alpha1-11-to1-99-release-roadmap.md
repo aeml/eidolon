@@ -2,9 +2,12 @@
 
 Requested login pagination is staged on prepared1.79.11: ten initial notes,
 explicit ten-entry older pages, all446 preserved; initial HTML about86% smaller.
-Login defers the engine and tolerates a late document-ready event.519 focused/
-history/smoke-plan cases and real Chrome load/retry pass. Firefox local check
-still fails before usable navigation; it is not accepted or claimed fixed.
+Login defers the engine/catalog and tolerates a late document-ready event.
+Firefox import-map ordering defect reproduced and corrected without changing
+private recovery scrubbing.519focused checks and actual Chrome/Firefox two
+login/pagination cases pass; no game catalog/renderer fetch at login. Local4190
+port restriction is separate from the actual startup defect; safe4192 used.
+Not a public acceptance or full Firefox gameplay/device qualification.
 [Scope and attempts](2026-10-08-login-pagination-checks.json). Delivery and the
 unchanged full roadmap gates remain open.
 

@@ -1,5 +1,5 @@
 import { mountPatchNotesPagination } from './ui/PatchNotesPagination.js';
-import { AssetCacheManager } from './assets/AssetCacheManager.js';
+import { registerAssetServiceWorker } from './assets/ServiceWorkerBoot.js';
 import { ensureGameStylesReady } from './assets/StylesheetBoot.js';
 import { resolveServerAddress } from './core/serverAddress.js';
 import { showSessionRecoveryLogin } from './ui/SessionRecovery.js';
@@ -108,7 +108,7 @@ const bootLogin = async () => {
     mountDataPrivacyNotices();
     if (!await ensureGameStylesReady()) return;
     void syncFullscreenPreference(false);
-    void AssetCacheManager.registerServiceWorker().catch((error) => {
+    void registerAssetServiceWorker().catch((error) => {
         console.warn('Asset service worker registration failed', error);
     });
 

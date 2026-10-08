@@ -424,6 +424,10 @@ Patch notes show the latest ten entries at startup. Older ten-entry pages load
 only through **Load more notes**. To add a release, insert its note at the top
 of the history in `index.html`, synchronize versions, and run
 `node scripts/paginate-patch-notes.mjs`. The script preserves the archive.
+The import map must appear before any module or module preload (including
+analytics); the private recovery-link scrub must still run before analytics.
+Login registers the cache worker without importing the 3D asset catalog.
+For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
 - Current source version: `Alpha 1.79.11`, regional needle boughs, hanging
   Water willow foliage, connected Fire snags, rooted mineral formations and

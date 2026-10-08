@@ -1,11 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
 **Current requested login improvement:** Prepared1.79.11 now paginates notes:
-ten initial, ten more per click, all446 entries retained.817493to110263bytes.
-Login defers the game engine and handles an already-fired document-ready event.
-519distinct focused/history/smoke-planning checks and real Chrome pagination/
-failure/retry pass. Firefox local navigation remains failed/unverified; do not
-claim that issue fixed. [Evidence](docs/plans/2026-10-08-login-pagination-checks.json).
+ten initial, ten more per click, all446 entries retained.817493to110462bytes.
+Login defers the engine/catalog and handles an already-fired ready event.
+Firefox startup defect reproduced: analytics precedes the import map. Correct
+module ordering while preserving private recovery scrubbing; actual Firefox
+and Chrome login/pagination pass2cases4.2s,519focused checks6.507s. Local4190
+is restricted in Firefox; use4192 without security overrides. Previous failed
+attempts retained. [Evidence](docs/plans/2026-10-08-login-pagination-checks.json).
+This qualifies local login, not live Firefox gameplay or the user's device.
 No push/live acceptance; pending releases remain ordered and full goal active.
 
 **Current October8 preparation —1.79.11:** Select regional art/retained travel
