@@ -320,8 +320,9 @@ describe('WorldGenerator shadow setup', () => {
         }
     });
 
-    test('builds deterministic instanced procedural foliage without authored model loads', async () => {
+    test.each(['high', 'low'])('builds deterministic instanced procedural foliage without authored model loads (%s)', async quality => {
         const generator = createGenerator();
+        generator.graphicsQuality = quality;
         const loadModelSpy = jest.spyOn(MeshFactory, 'loadModel');
 
         await generator.loadTrees(0, 200);
@@ -339,7 +340,7 @@ describe('WorldGenerator shadow setup', () => {
                 region: recipe.region,
                 instanceCount: recipe.count
             }));
-            expect(group.children.length).toBeGreaterThanOrEqual(getFoliageRenderBatches(recipe.id).length);
+            expect(group.children.length).toBeGreaterThanOrEqual(getFoliageRenderBatches(recipe.id, quality).length);
             for (const instance of group.children) {
                 expect(instance).toBeInstanceOf(THREE.InstancedMesh);
                 expect(instance.count).toBe(instance.userData.placementIndices.length);
@@ -350,7 +351,7 @@ describe('WorldGenerator shadow setup', () => {
                 expect(instance.material.depthWrite).toBe(true);
                 expect([THREE.FrontSide, THREE.DoubleSide]).toContain(instance.material.side);
             }
-            const parts = getFoliageRenderBatches(recipe.id);
+            const parts = getFoliageRenderBatches(recipe.id, quality);
             for (const part of parts) {
                 const batches = group.children.filter(instance => instance.name === part.name);
                 const indices = batches.flatMap(batch => batch.userData.placementIndices);
@@ -360,6 +361,10 @@ describe('WorldGenerator shadow setup', () => {
                     expect(batch.material).toBe(part.material);
                     batch.userData.placementIndices.forEach((placementIndex, instanceIndex) => {
                         const placement = group.userData.placements[placementIndex];
+                        // Compact Earth cells retain the exact tree identity,
+                        // not a lower-detail crown or a missing instance.
+                        const cellSize = recipe.region === 'earth' ? 8 : recipe.renderCellSize;
+                        expect(batch.userData.foliageCell).toBe(`${Math.floor(placement.x / cellSize)},${Math.floor(placement.z / cellSize)}`);
                         const expected = new THREE.Matrix4().compose(new THREE.Vector3(placement.x, 0, placement.z),
                             new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), placement.rotation),
                             new THREE.Vector3().setScalar(placement.scale)).multiply(part.matrix);

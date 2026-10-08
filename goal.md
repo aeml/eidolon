@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 woodland reference budget closed locally:** Current art branch now
+work/alpha-1-87-tree-cells-current-20261008 rooted6b828ad8. Retain every tree,
+leaf, plant, material and collider; smaller tree cells, individually cullable
+crowns and exact static boxes reduce invisible submission. High grass5.5m,
+Low16m. Current High woodland249406 triangles/338draws fits original250000/350;
+all three High and Low reference limits pass, paired pixels0/270080.
+29 distinct affected checks pass; final High native17.4s and unchanged Low scope
+reused explicitly. Rejected4m tree/grass and5m grass trials are not retained.
+No source/version push, raised-world delivery, final modern-art or1.80 freeze
+acceptance implied. [Exact scoped receipt](docs/plans/2026-10-08-woodland-reference-budget-checks.json).
+
 **October8 current-authority woodland batching improvement:** Select only planned
 renderer/foliage art and tests onto current source; retain Moonfrost, equipment,
 server and1.80 trust guards. High8m ground-cover cells preserve all13087 plants;

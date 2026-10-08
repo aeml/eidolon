@@ -1,4 +1,4 @@
-import { Matrix4, Sphere, Vector3 } from 'three';
+import { Box3, Matrix4, Sphere, Vector3 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getProceduralFoliageArchetype } from './ProceduralRealmFoliage.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
@@ -16,21 +16,27 @@ export function computeFoliageCellBounds(mesh) {
     mesh.boundingSphere ??= new Sphere();
     mesh.boundingBox.getBoundingSphere(mesh.boundingSphere);
     if (!mesh.count) return;
-    const matrix = new Matrix4(), point = new Vector3();
+    const matrix = new Matrix4(), point = new Vector3(), exactBox = new Box3();
     const positions = mesh.geometry.attributes.position;
     let radiusSquared = 0;
     for (let i = 0; i < mesh.count; i++) {
         mesh.getMatrixAt(i, matrix);
         for (let vertex = 0; vertex < positions.count; vertex++) {
             point.fromBufferAttribute(positions, vertex).applyMatrix4(matrix);
+            exactBox.expandByPoint(point);
             radiusSquared = Math.max(radiusSquared, point.distanceToSquared(mesh.boundingSphere.center));
         }
     }
     mesh.boundingSphere.radius = Math.min(mesh.boundingSphere.radius, Math.sqrt(radiusSquared) + .000001);
+    // The same existing vertex walk also tightens shadow influence bounds.
+    // Rotated source-box corners are not foliage; keep a conservative epsilon.
+    mesh.boundingBox.copy(exactBox).expandByScalar(.000001);
 }
 
-// Bake each static tree's same-material parts together once. Spatial instancing
-// still owns world placement/culling; previews retain their named source parts.
+// Bake static same-material parts once. Keep woodland crowns, needle tiers and
+// hanging curtains independently cullable: a shared enclosing box submits all
+// of them in shadow/color passes when only one contributes. Every
+// leaf/transform remains; spatial instancing still owns placement and culling.
 export function getFoliageRenderBatches(id, quality = 'high') {
     const source = getProceduralFoliageArchetype(id);
     const reduced = quality === 'low' && source.some(part => part.geometry.userData.woodlandCrown);
@@ -44,7 +50,8 @@ export function getFoliageRenderBatches(id, quality = 'high') {
                 crown === 'leaf' ? createLeafCanopyGeometry('low') : createConiferBoughGeometry('low'));
             part = { ...part, geometry: LOW_CROWNS.get(crown) };
         }
-        const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}`;
+        const crownKey = crown ? `:${part.name}` : '';
+        const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}${crownKey}`;
         if (!buckets.has(key)) buckets.set(key, []);
         buckets.get(key).push(part);
     }

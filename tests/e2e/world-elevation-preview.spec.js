@@ -12,6 +12,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { WOODLAND_WIND_REACH } = await import('/src/art/WoodlandWindMaterial.js');
+        const { computeFoliageCellBounds } = await import('/src/art/FoliageRenderBatches.js');
+        const { mergeGeometries } = await import('three/addons/utils/BufferGeometryUtils.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { Actor } = await import('/src/entities/Actor.js');
         const { Projectile } = await import('/src/entities/Projectile.js');
@@ -327,8 +329,11 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             const autoReset = render.renderer.info.autoReset;
             const wind = understory.children[0].material, updateWind = wind.onBeforeRender;
             const visibleBefore = understory.visible;
+            const treeGroups = render.instanceEnvironmentGroup.children
+                .filter(group => group.userData.proceduralFoliage && group.userData.region === 'earth')
+                .map(group => ({ group, visible: group.visible }));
             let originalBatches = null;
-            if (quality === 'high') {
+            {
                 // Rebatch the exact production matrices into the prior16m cells.
                 // Share the same blade geometry/material/frozen wind; compare
                 // actual pixels, not a separately generated placement recipe.
@@ -350,6 +355,34 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                     mesh.boundingSphere = mesh.boundingBox.getBoundingSphere(new THREE.Sphere());
                     mesh.userData.windBoundsIncluded = true; originalBatches.add(mesh);
                 }
+                // Reassemble prior tree cells from the actual current buffers,
+                // retaining the same geometry, materials, shadows and placement
+                // identities. A generated duplicate forest is not a pixel oracle.
+                for (const { group } of treeGroups) {
+                    const prior = new THREE.Group();
+                    Object.assign(prior.userData, group.userData);
+                    const treeCells = new Map();
+                    for (const source of group.children) for (let i = 0; i < source.count; i++) {
+                        const placement = group.userData.placements[source.userData.placementIndices[i]];
+                        const key = `${source.material.uuid}:${source.castShadow}:${source.receiveShadow}:${Math.floor(placement.x / 16)}:${Math.floor(placement.z / 16)}`;
+                        if (!treeCells.has(key)) treeCells.set(key, { source, geometries: [] });
+                        source.getMatrixAt(i, matrix);
+                        const geometry = source.geometry.index ? source.geometry.toNonIndexed() : source.geometry.clone();
+                        treeCells.get(key).geometries.push(geometry.applyMatrix4(matrix));
+                    }
+                    for (const { source, geometries } of treeCells.values()) {
+                        const geometry = mergeGeometries(geometries, false);
+                        geometries.forEach(part => part.dispose());
+                        if (!geometry) throw new Error('Unable to reconstruct prior same-material forest');
+                        const mesh = new THREE.InstancedMesh(geometry, source.material, 1);
+                        mesh.castShadow = source.castShadow; mesh.receiveShadow = source.receiveShadow;
+                        mesh.setMatrixAt(0, new THREE.Matrix4());
+                        mesh.userData.ownedComparisonGeometry = true;
+                        mesh.instanceMatrix.needsUpdate = true;
+                        computeFoliageCellBounds(mesh); prior.add(mesh);
+                    }
+                    originalBatches.add(prior);
+                }
                 understory.parent.add(originalBatches); originalBatches.visible = false;
             }
             wind.onBeforeRender = () => {};
@@ -361,6 +394,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 for (const mode of ['unculled', 'culled', ...(originalBatches ? ['original-batches'] : [])]) {
                     controller.enabled = mode !== 'unculled';
                     understory.visible = mode !== 'original-batches';
+                    for (const { group, visible } of treeGroups) group.visible = visible && mode !== 'original-batches';
                     if (originalBatches) originalBatches.visible = mode === 'original-batches';
                     render.renderer.info.reset();
                     render.renderer.render(render.scene, render.camera);
@@ -379,7 +413,12 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 controller.endFrame(); controller.enabled = enabledBefore;
                 render.renderer.info.autoReset = autoReset;
                 understory.visible = visibleBefore;
-                originalBatches?.removeFromParent(); originalBatches?.children.forEach(mesh => mesh.dispose());
+                for (const { group, visible } of treeGroups) group.visible = visible;
+                originalBatches?.removeFromParent();
+                originalBatches?.traverse(mesh => {
+                    if (mesh.isInstancedMesh) mesh.dispose();
+                    if (mesh.userData.ownedComparisonGeometry) mesh.geometry.dispose();
+                });
                 wind.onBeforeRender = updateWind;
                 render.renderer.setRenderTarget(previousTarget); target.dispose();
             }

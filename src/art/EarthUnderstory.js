@@ -59,7 +59,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     // High's dense plants need tighter submission cells at the camera edge.
     // Change batching only: retain every transform, blade and full wind bound.
     // Low keeps its existing draw-call/instance-object tradeoff.
-    const cellSize = quality === 'low' ? 16 : 8;
+    const cellSize = quality === 'low' ? 16 : 5.5;
     for (const plant of plants) {
         const key = `${Math.floor(plant.x / cellSize)}:${Math.floor(plant.z / cellSize)}:${plant.variant}`;
         if (!cells.has(key)) cells.set(key, []);

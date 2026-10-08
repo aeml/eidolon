@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T02:59:00Z",
+  "milestone": "1.87 woodland reference performance",
+  "status": "original-high-and-low-reference-budgets-pass-local-only",
+  "authority": {
+    "branch": "work/alpha-1-87-tree-cells-current-20261008",
+    "parent": "6b828ad8",
+    "remoteMaster": "c8ff2cd668213a3cf53cd536b7067bd3404d0437"
+  },
+  "implementation": [
+    "Earth tree cells16m→8m retain all391 trees, exact transforms, shared source surfaces/materials, shadow assignments and unchanged391 collision footprints. Other realms retain their original64m cells.",
+    "Woodland crowns/needle tiers/curtains remain individually cullable instead of merging every same-material crown into one broad box. All original leaf surfaces and High/Low detail policy retained. More draw calls are measured against the original350/200 limits, not assumed free.",
+    "Existing one-time transformed-vertex walk also tightens static tree boxes; no new per-frame scan. High ground-cover cells8m→5.5m preserve all13087 plants; Low16m cells and7439 plants unchanged. Full wind envelope retained."
+  ],
+  "qualification": {
+    "unit": "Current FoliageRenderBatches PASS25/1.198s, current High/Low real WorldGenerator transform/collision fixtures PASS2 within14.015s scoped run, final High/Low understory exact-transform/wind fixtures PASS2/4.440s:29 distinct checks. Includes actual transformed surfaces/normals, all crown identities, affine/sheared containment and production quality switching. No long campaign/server/cohort replay.",
+    "red": "High/Low8m cell contracts first FAIL2/2.797s on16m current runtime; independent willow-crown contracts first FAIL2/.561s. Initial single-axis tetrahedron box example did not expose empty corners; corrected compound rotation validates exact boxes and all vertices. Do not count the incorrect example as an independent reproduced defect.",
+    "nativeHigh": "Actual System Chrome AMD/Vulkan hardware, root35755 terminal exit0:PASS1/17.4s. Three real RAF120-frame reference profiles. Task-owned unit/lint checks terminal before native profiling. Original movement/jump/picking/effect checks and all performance limits unchanged.",
+    "nativeLow": "Root89904 terminal:Low PASS alongside the then-failing High8m-grass case, total32.2s. Its current tree cells/crowns/tight bounds/Low16m grass match final source behavior. Only the High grass ternary changed afterward; final exact Low-transform fixture also passes. Reuse this scope rather than claim a second full two-quality run.",
+    "pixels": "Three High and three Low paired draws report0/270080 changed pixels for controller on/off and prior cell/material grouping. Native comparison reconstructs prior16m grass/tree cells and merged material surfaces from actual current production buffers; shared frozen wind, not regenerated placements. Reconstructed trees bake world matrices into test-owned geometry, so its draw counts are not an exact historic renderer replay. Actual canonical full-surface unit signatures and inspected High/Low images retain appearance evidence.",
+    "static": "Scoped ESLint and git diff --check pass. Native handles terminal, owned4190 independently closed. Fresh origin/master unchanged."
+  },
+  "limits": {
+    "high": {
+      "triangles": 250000,
+      "calls": 350,
+      "medianMs": 20,
+      "p95Ms": 33.4
+    },
+    "low": {
+      "triangles": 85000,
+      "calls": 200,
+      "medianMs": 33.4,
+      "p95Ms": 50
+    }
+  },
+  "referenceViews": [
+    {
+      "quality": "high",
+      "name": "west-bank",
+      "triangles": 222552,
+      "calls": 243,
+      "medianMs": 16.7,
+      "p95Ms": 16.8
+    },
+    {
+      "quality": "high",
+      "name": "woodland-cut",
+      "triangles": 249406,
+      "calls": 338,
+      "medianMs": 16.7,
+      "p95Ms": 16.8
+    },
+    {
+      "quality": "high",
+      "name": "outer-fold",
+      "triangles": 215944,
+      "calls": 257,
+      "medianMs": 16.7,
+      "p95Ms": 16.8
+    },
+    {
+      "quality": "low",
+      "name": "west-bank",
+      "triangles": 79159,
+      "calls": 117,
+      "medianMs": 16.7,
+      "p95Ms": 16.7
+    },
+    {
+      "quality": "low",
+      "name": "woodland-cut",
+      "triangles": 70421,
+      "calls": 85,
+      "medianMs": 16.7,
+      "p95Ms": 16.7
+    },
+    {
+      "quality": "low",
+      "name": "outer-fold",
+      "triangles": 73416,
+      "calls": 91,
+      "medianMs": 16.7,
+      "p95Ms": 16.7
+    }
+  ],
+  "comparison": "Prior qualified6b828ad8 High reference woodland267605/230draws; current249406/338. Earlier unprepared original278135/173 remains historical. Narrow reference margins do not promise full-world/frame/HUD/equipped-party headroom.",
+  "rejectedTrials": "4m grass costs90 extra woodland calls for3866 fewer triangles before crown separation; reject. 4m tree cells add4 woodland calls without further triangle saving; revert8m. Final5m grass reaches248695 triangles but356 calls, over350; reject. Retain measured5.5m balance249406/338 without removing plants or weakening limits. Intermediate High failures remain failures.",
+  "visualReview": "Inspected final High and phone-sized Low woodland. Leaf/path/plant layout and shadows retained. Unequipped actor/no gameplay HUD: not final modern Diablo/PoE art, equipped-party readability, physical-phone performance or closed-beta acceptance.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-tree-cells-evidence-20261008-tfXDRYWu",
+    "foliageSha256": "e962a267f0dba323e28ec70954395421bed34e3a10d10b90deaef4e4d9b25b17",
+    "recipesSha256": "75adf46877a2c95c6910b4a4f456839e99ac877b146696ed7242d458f4a54d48",
+    "understorySha256": "627a790ac0c462e4f128b23a905fbfd33ebb9881bfa99ef7e7777647baba883a",
+    "fixtureSha256": "07ce309359fb34d1f61cd3724950c1d24fbcea8b78049765a9b1db699a4641ad",
+    "highImageSha256": "70d0d8a02f662f5d127a981913afebc3c1a62f69eeb4487d6db3240c7a4893b1",
+    "lowImageSha256": "5cc3683eaa3298ae9203a9b578813e1b1345a8f355297bdb2396ef13ae2b55f9"
+  },
+  "draftPatchNotes": [
+    "Woodland crowns and ground cover use more selective spatial batches while retaining every tree, leaf and plant.",
+    "High-quality woodland reference now fits the original triangle/draw/frame budgets; Low reference budgets remain passing.",
+    "Static tree shadow bounds reuse the existing creation-time vertex scan; no extra per-frame scan, lower foliage density or changed collisions."
+  ],
+  "publication": "Prepared only: no version bump, push, deployment, provider/data/account/retention/economy change. This closes the named woodland reference budget issue, not whole1.87, raised-world production integration, modern-art acceptance, original1.80F1–F5 or full roadmap."
+}

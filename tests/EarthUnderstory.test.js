@@ -44,7 +44,7 @@ test('understory forms repeatable beds with a matching Low subset and clear trav
     }
 });
 
-test.each([['high', 8], ['low', 16]])('smaller High batches preserve every plant transform and full wind reach (%s)', (quality, cellSize) => {
+test.each([['high', 5.5], ['low', 16]])('smaller High batches preserve every plant transform and full wind reach (%s)', (quality, cellSize) => {
     const terrainElevation = { sample: (x, z) => Math.sin(x * .03) + Math.cos(z * .02) };
     const plants = createEarthUnderstoryPlacements(quality);
     const root = createEarthUnderstory({ quality, terrainElevation });
