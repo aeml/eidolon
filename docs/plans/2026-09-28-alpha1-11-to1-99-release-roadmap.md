@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 staged floor repetition refinement: reuse existing coherent/canonical
+fields to warp physical detail continuously and filter fine moss contrast.
+Reject streaky first attempt and exact High timing failure; corrected shader
+2cases and final equipped High/Low native2cases43.5s pass original limits.
+Unchanged generation/maps/fetches/geometry/walking surfaces retained. Actual
+views reviewed, not final modern-art approval; see
+[evidence](2026-10-08-earth-surface-v11-checks.json).
+Current-flat selective integration/public acceptance and full F1-F5/1.87/
+world-art/device/beta/launch work remain; no future profile/renderer promotion.
+
 October8 staged understory composition: uneven grass/fern stands preserve all
 plants, species, Low subset and clear routes/sites. Nine units and High/Low
 equipped gallery pass; one native renderer/three-live-peer observation passes

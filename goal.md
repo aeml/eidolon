@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 ground repetition refinement, staged:** Coherent world-space detail
+warp and filtered, restrained moss fibres preserve maps/fetches/masks, all
+geometry and walking surfaces. Reject first streaky/fracture-driven attempt
+and exact High timing failure, then correct the actual shader. Changed shader
+cases2pass; earlier8 unchanged generation/resource cases retained. Final
+equipped High/Low native2cases43.5s pass original limits; actual views reviewed,
+still short of final modern art. See
+[attempts and scope](docs/plans/2026-10-08-earth-surface-v11-checks.json).
+Selective publication follows accepted prior releases, not future-branch merge.
+
 **October8 woodland composition qualified, staged:** Existing grass and ferns
 form uneven stands with clearer gaps; every plant/species/Low subset and route
 clearance retained. Nine unit cases and equipped High/Low gallery pass original
