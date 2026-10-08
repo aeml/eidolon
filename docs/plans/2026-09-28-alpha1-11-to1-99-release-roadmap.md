@@ -1,15 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October8 current delivery boundary: Alpha1.79.1 is verified live atc8ff2cd6.
-Hosted CI37709850553 retains its SSH failure; guarded local deployment, public
+October8 current delivery boundary: Alpha1.79.2 is verified live atf9cbd41b.
+Hosted CI37722779214 retains its SSH timeout; guarded local deployment, public
 identities/readiness, rewritten runtime bytes and anonymous Chrome checks pass
-within the [recorded scope](2026-10-08-release1-79-1-public-checks.json).
-Alpha1.79.2 selectively prepares the qualified woodland batching/shadow/leaf,
+within the [recorded scope](2026-10-08-release1-79-2-public-checks.json).
+Alpha1.79.2 selectively delivers the qualified woodland batching/shadow/leaf,
 rock and Moonfrost surface changes plus saved-quality startup and bounded,
 console-pinned deployment SSH. All original six woodland-reference performance
 limits now pass; narrow margins and unequipped reference imagery are not final
 world/art/device acceptance. Raised terrain remains disabled in live gameplay.
-Publication pending: [candidate checks](2026-10-08-release1-79-2-checks.json).
+Scoped preparation evidence: [candidate checks](2026-10-08-release1-79-2-checks.json).
 No freeze, beta, capacity promise, new alert coverage, balance or data change.
 Original1.80 F1–F5 and all later milestone gates remain mandatory; older dated
 states below are historical and not the latest publication status.

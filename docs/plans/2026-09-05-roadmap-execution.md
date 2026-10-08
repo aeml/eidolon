@@ -8,11 +8,12 @@ do not close the whole goal or restart historical queues.
 
 ## Current checkpoint October 8
 
-Live Alpha1.79.1 exactc8ff2cd6 has guarded local/public acceptance, not all-green
-CI: hosted SSH failed, while Pages/source/predeploy checks passed. See its
-[public receipt](2026-10-08-release1-79-1-public-checks.json). Prepared1.79.2
+Live Alpha1.79.2 exactf9cbd41b has guarded local/public acceptance, not all-green
+CI: hosted SSH timed out, while Pages/source/browser/predeploy/input checks passed.
+See its [public receipt](2026-10-08-release1-79-2-public-checks.json). Delivered1.79.2
 selectively integrates qualified rendering/release-trust work with cumulative
-notes and all version surfaces updated; publication remains pending. Affected
+notes and all version surfaces updated; public15-file byte comparisons and
+anonymous Chrome2PASS33.9s verify the current deployment. Affected
 509 client checks pass and all27 imported source/test files match qualified
 d3c47e95. Original six woodland-reference budgets pass without density cuts.
 [Candidate receipt](2026-10-08-release1-79-2-checks.json) retains evidence reuse,

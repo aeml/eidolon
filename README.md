@@ -420,14 +420,14 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.2`, a prepared scoped rendering/release-trust
-  stabilization patch; [scoped candidate checks](docs/plans/2026-10-08-release1-79-2-checks.json)
-  pass, publication is pending and1.80 freeze remains open.
-  Latest verified live release is `Alpha 1.79.1`, atc8ff2cd6: hosted source/Pages
-  checks passed, hosted SSH failed, and the exact build completed the guarded
-  local deploy. Public identities/readiness, login/notes/WebSocket and seven
-  versioned runtime files matched. [Acceptance receipt](docs/plans/2026-10-08-release1-79-1-public-checks.json)
-  preserves skipped QA scopes. Current identified API/driver qualification passed representative
+- Current source and verified live version: `Alpha 1.79.2`, atf9cbd41b,
+  a scoped rendering/release-trust stabilization patch. Hosted source/browser/
+  predeploy/input/Pages checks passed; SSH deployment timed out. The exact tested
+  build completed the guarded local deployment with schema25 unchanged.
+  Public identities/readiness, login/notes/WebSocket and15 publisher-rewritten
+  runtime files matched. [Acceptance receipt](docs/plans/2026-10-08-release1-79-2-public-checks.json)
+  preserves skipped QA scopes and the actual CI failure;1.80 freeze remains open.
+  Current identified API/driver qualification passed representative
   100 mixed/raid/event/town clients,112958ms common activity and100 independent
   fresh saves. Original server phase means total18.8475ms against33ms; all
   member combat, paid casino, raid repair/checkpoint and event-wave gates pass.

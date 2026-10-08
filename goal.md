@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 Alpha1.79.2 live acceptance:** Exact f9cbd41b is live on both
+public endpoints. Corrected CI37722779214 passes Client/Go/all three browser
+shards/predeploy/input checks and Pages; hosted deployment fails only when SSH
+to ssh.mendola.tech:22 times out. Guarded local deployment exits0 with schema25,
+previous-image rollback retained and no cleanup/private configuration changes.
+All15 checked publisher-rewritten runtime files match; public anonymous System
+Chrome2PASS33.9s verifies login/notes/dependencies, WebSocket and release
+identities/readiness. Skipped predeploy gallery/Well Rested/full-character steps
+and skipped hosted live job remain skipped, not inferred passes. Approved local
+API/database monitor remains running, zero restarts,30s/3 failures/2 recoveries/
+30m reminders. This supersedes pending publication paragraphs below, not the
+remaining full1.80 F1–F5/modern-art/raised-terrain/operations/rights/human gates.
+See [public acceptance](docs/plans/2026-10-08-release1-79-2-public-checks.json).
+
 **October8 publication fixture correction:** First1.79.2 CI37721554849 full
 Jest runs643 passing suites/9604 passing checks and one stale sharding assertion
 requiring the old unsafe QA condition. Update only that fixture to require the
