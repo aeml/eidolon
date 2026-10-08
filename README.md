@@ -429,7 +429,11 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.12`, explicitly reviewed, audited public
+- Current source version: `Alpha 1.79.13`, optional public login/release/API
+  monitoring with paired default-empty settings and managed preflight. Existing
+  installed monitoring remains local-only; public activation, staggered-release
+  qualification and off-machine coverage remain open. Also retains reviewed,
+  audited public
   maintenance/incident/recovery notices in Administration. Server authority and
   acknowledged activity storage gate each send; uncertain replies never resend.
   No service-stop, email, data or retention changes. Locally prepared, not live;

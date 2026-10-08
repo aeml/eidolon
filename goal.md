@@ -1,5 +1,22 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Prepared1.79.13 public-monitor integration:** Qualified optional public-probe
+and managed preflight code now has synchronized source/login/server/CI/default
+versions and accurate cumulative notes.387focused client checks, two root
+race functions/fifteen cases and two affected monitor race packages pass.
+All448notes retained; all447prior entry bytes unchanged. Existing installed
+monitor remains local-only: no private configuration, activation, email or
+public push. [Receipt](docs/plans/2026-10-08-release1-79-13-checks.json).
+Matching-artifact transition/recovery and full operations/freeze/art gates stay
+open. Publish only after existing ordered releases and fresh reconciliation.
+
+**Authoritative1.79.9 CI update:** Attempt1 of37791738441/head293a9ccc ends
+cancelled20:21:50UTC; GitHub annotation explicitly says maximum6h execution
+exceeded during browser install. Four earlier checks succeed; six downstream
+deployment/QA jobs skip, not pass. Root retries unsuccessful jobs on the same
+run/commit; attempt2 starts20:23:23UTC and Luna monitors it. Own CI/public
+acceptance still required; no later release queued or gate waived.
+
 **October8 managed public-monitor preparation:** Default-empty paired Compose
 configuration now maps to qualified public-probe CLI flags. Actual disposable
 Compose parser/compiled monitor8cases and isolated real deployment-script7cases

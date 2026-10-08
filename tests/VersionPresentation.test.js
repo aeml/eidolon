@@ -4,7 +4,20 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.12';
+const currentVersion = '1.79.13';
+
+test('1.79.13 records opt-in public monitoring without silently enabling it or claiming browser coverage', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.13"'), previous = html.indexOf('data-version="1.79.12"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['public login page', 'normal HTTPS', 'matching frontend/backend/local',
+        'one shared public deadline', 'no redirects or forced IPv4', 'not full browser gameplay',
+        'default to empty', 'before replacing the game service', 'local-only',
+        'explicitly configures', 'three-failure/two-success', 'retention remain unchanged',
+        'release-transition qualification', 'gates remain open', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.12 documents explicitly reviewed audited notices without claiming operations completion', () => {
     const html = readIndexWithPatchHistory();

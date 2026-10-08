@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 prepared1.79.13 integrates the optional public-probe and managed
+preflight components below, with synchronized versions and all448notes (all447
+prior entry bytes retained).387focused client checks,15managed race cases and
+both affected monitor race packages pass. No public push or private activation;
+installed monitoring remains local-only. Publish after ordered1.79.9–12 and
+fresh remote reconciliation. Full transition/recovery/off-machine/operator,
+1.80F1-F5/1.83/modern-art/device/human/beta/launch gates remain unchanged.
+[Integration receipt](2026-10-08-release1-79-13-checks.json).
+
 October8 optional public-monitor code is staged: bounded HTTPS login-page,
 release-manifest and public-API checks require identity agreement with baseline
 health and use unchanged debounce/alert policy. Scoped race tests and a read-only
