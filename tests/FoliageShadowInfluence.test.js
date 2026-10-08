@@ -38,6 +38,62 @@ test('unchanged qualified bounds are reused but parent transforms and live bound
     } finally { transform.mockRestore(); s.controller.dispose(); }
 });
 
+test('unchanged cached bounds reuse validity without copying or rechecking the box each frame', () => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, s.light); s.controller.endFrame();
+    const validity = jest.spyOn(THREE.Box3.prototype, 'isEmpty');
+    const copy = jest.spyOn(THREE.Box3.prototype, 'copy');
+    try {
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(s.mesh.castShadow).toBe(false);
+        expect(validity).not.toHaveBeenCalled(); expect(copy).not.toHaveBeenCalled();
+        s.controller.endFrame();
+        s.mesh.boundingBox.max.y = 400;
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(validity).toHaveBeenCalled(); expect(copy).toHaveBeenCalled();
+        expect(s.mesh.castShadow).toBe(true);
+    } finally { validity.mockRestore(); copy.mockRestore(); s.controller.dispose(); }
+});
+
+test.each(['empty', 'infinite', 'nan', 'matrix'])('invalid %s bounds stay conservative and recover immediately', kind => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    const frame = expected => {
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(s.mesh.castShadow).toBe(expected); s.controller.endFrame();
+    };
+    frame(false);
+    if (kind === 'empty') s.mesh.boundingBox.makeEmpty();
+    if (kind === 'infinite') s.mesh.boundingBox.max.x = Infinity;
+    if (kind === 'nan') s.mesh.boundingBox.min.z = NaN;
+    if (kind === 'matrix') s.mesh.matrixWorld.elements[0] = NaN;
+    frame(true); frame(true);
+    s.mesh.computeBoundingBox(); s.scene.updateMatrixWorld(true);
+    frame(false); s.controller.dispose();
+});
+
+test.each([false, true])('scalar and multi-material live wind changes remain authoritative (ground cover: %s)', groundCover => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    if (groundCover) {
+        s.group.userData = { earthUnderstory: true }; s.mesh.castShadow = false;
+        s.mesh.userData.windBoundsIncluded = true;
+    }
+    const a = s.mesh.material, b = new THREE.MeshStandardMaterial();
+    a.userData.woodlandWind = groundCover; b.userData.woodlandWind = groundCover;
+    const frame = eligible => {
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(groundCover ? !s.mesh.visible : !s.mesh.castShadow).toBe(eligible);
+        s.controller.endFrame();
+    };
+    frame(true);
+    s.mesh.material = [a, b]; frame(true);
+    b.userData.woodlandWind = !groundCover; frame(false);
+    b.userData.woodlandWind = groundCover; frame(true);
+    a.userData.woodlandWind = !groundCover; frame(false);
+    s.mesh.material = b; frame(true);
+    if (groundCover) { s.mesh.add(new THREE.Group()); frame(false); }
+    s.controller.dispose(); b.dispose();
+});
+
 test('detaching a registered root through an unwatched container restores its owned matrix hooks', () => {
     const s = fixture(), wrapper = new THREE.Group(); s.scene.add(wrapper); wrapper.add(s.group);
     const original = s.group.updateMatrixWorld;

@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 foliage guard work advances:** Remove per-cell temporary material
+arrays/callbacks, repeated box copies and unchanged-bound validity checks.
+Live material/wind/parent/bound changes and invalid-bound recovery retained.
+Focused renderer61 and related foliage81 checks (overlapping), native eight
+High/Low views41.2s and High live-party/fresh fitted saves36.75s pass. Party
+median33.2ms remains unqualified; no frame-speed claim. Next repeated exact
+frustum/traversal cost, not unchanged campaign replay. See
+[evidence and limits](docs/plans/2026-10-08-foliage-guard-checks.json).
+Full roadmap/F1-F5/1.87/final art/device/profile gates active; public remains
+accepted1.79.6, staged art unshipped.
+
 **October8 static-world matrix work corrected:** Reproduce idle parent forcing
 static foliage multiplication. First broad per-cell wrapper adds overhead, so
 reject that approach; guard only six owned containers and foliage groups,

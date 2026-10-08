@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 foliage guard work: remove per-cell temporary material arrays/callbacks,
+box copies and repeated unchanged-bound validation, preserving all live changes,
+invalid-bound recovery, foliage and shadow settings. Renderer61/related81 checks
+(overlapping), native eight High/Low views41.2s and actual High party/fresh fitted
+saves36.75s pass. Median33.2ms still leaves final party performance open; next
+repeated exact frustum/traversal cost, without another unchanged campaign run.
+See [scope and evidence](2026-10-08-foliage-guard-checks.json).
+Accepted public1.79.6 unchanged; full1.80 F1-F5/1.87/art/device/profile/beta/launch
+requirements remain active, not accepted by these focused checks.
+
 October8 idle matrix propagation advances: reject per-cell wrapper overhead,
 cache only owned container/foliage-group local transforms, and keep fixed grass
 identity like tree cells. Actor/bone, parent/manual/reparent/force semantics and

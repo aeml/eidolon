@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "base": "2b6a21be02e332ce1393189f46a695af36d00ece",
+  "status": "repeated-box-work-removed-scoped-checks-pass-party-performance-still-open",
+  "implementation": "Read scalar materials directly and iterate existing multi-material arrays without per-cell temporary arrays/callbacks. Cache transformed-box finite/nonempty validity only alongside exact local-box/world-matrix invalidation. Frustum tests read the cached box without copying it. Material/wind/child/visibility/camera/light/filter eligibility remains live; no population, geometry, shadow settings, quality or budget changes.",
+  "reproduction": "New unchanged-frame regression fails on base:1 fail24 pass0.602s. Existing source repeats Box3 validity and copy operations even on a cache hit. Updated source requires zero such operations while changed bounds immediately recompute and tall incoming shadows remain visible.",
+  "units": "Six renderer/lifecycle suites61 checks pass3.538s; six foliage/shadow/geometry suites81 checks pass28.621s (overlapping suites, not142 unique tests). Includes empty/Infinity/NaN/matrix-invalid recovery, scalar/multi-material replacement and in-place wind changes, bounds/parent changes, original wind envelopes and detach/disposal. Scoped ESLint and whitespace checks pass.",
+  "native": "Actual System Chrome AMD Vulkan/RADV High1280x844 and Low390x844: two cases41.2s pass all eight120-frame views using original thresholds. Medians16.7ms; p95 at most16.800000000000182ms. High woodland346calls/247325tri; Low100/66176. Filter and surface-culling comparisons change zero pixels; actual prior-tree comparison1-3/270080 remains within original.001 limit. Fourteen equipped items/no fallback, movement/effects/grounding checks remain. Not final art, campaign or physical-phone evidence.",
+  "party": "One native High renderer/three live authenticated equipped party socket peers, fresh fourteen-slot saves and disposable cleanup pass36.75s/browser30.4s.180 frames: median33.2ms,p95/p9933.4ms,38over33ms; CPU loop24.1/30.2ms median/p95;562calls/566801tri,394geometry/153textures,31entities,zero previews. Three-second post-sample CPU profile still attributes794635us to foliage visit. This bounded functional/save pass does not establish faster frames or final party/battle acceptance; host/entity differences prevent cross-run attribution. Four-browser case deliberately skipped, not re-passed.",
+  "evidence": {
+    "red": "/home/aeml/.local/share/eidolon-foliage-guard-red-20261008.log",
+    "redSHA256": "dd4ea6a0fe62f49cc03760812dc3b8043aea66bd441ce46bb4f49b05b0ccff64",
+    "rendererUnitsSHA256": "46117f31f7c388cc3d14235a91afb98d00fb4085d9dd15af5b7e15ed60c7481d",
+    "relatedUnitsSHA256": "ee55477e228ca4d636734daaac4dda4ce45241f4b36de3eb42ee63d3f924c6a4",
+    "native": "/home/aeml/.local/share/eidolon-foliage-guard-native-20261008.log",
+    "nativeSHA256": "2a85273f267eef3dcc92c1ca83072c4e4d2620cbff3a6d09247d566ad9c89e9f",
+    "party": "/home/aeml/.local/share/eidolon-terrain-save-evidence-eWQYDp2r/browser.log",
+    "partySHA256": "053e3726b25c3b2abb441efa6110a7059e6486022837af594f61d0869541a04f"
+  },
+  "sourceSHA256": {
+    "src/core/FoliageShadowInfluence.js": "7ee3555d14589d3c918a33d934182d6a430913a824bc5279e30eac96a62d034e",
+    "tests/FoliageShadowInfluence.test.js": "29d1629e60fb040b325802b4ef454a25959439e0ff811286dac5f9611186f95c"
+  },
+  "remaining": "Next investigate repeated exact frustum decisions/traversal cost without skipping live eligibility, reducing scenery or weakening pixel/budget gates. Do not replay unchanged campaigns/populations. Full1.80 F1-F5,1.87 final equipped-party/device/modern-art/profile/public delivery and later beta/launch gates remain open. Human campaign/phone evidence remains deferred, not passed. Fresh origin fetch unchanged37a13a41; accepted public Alpha1.79.6 unchanged, staged art/profile not published."
+}

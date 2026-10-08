@@ -1,4 +1,4 @@
-import { BasicShadowMap, Box3, Frustum, Matrix4, PCFShadowMap, PCFSoftShadowMap, Vector3 } from 'three';
+import { BasicShadowMap, Frustum, Matrix4, PCFShadowMap, PCFSoftShadowMap, Vector3 } from 'three';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from './ShadowViewCoverage.js';
 import { cacheUnchangedLocalMatrix } from './UnchangedLocalMatrix.js';
 
@@ -51,6 +51,12 @@ export function shadowInfluenceIntersectsFrustum(caster, sun, frustum) {
     return true;
 }
 
+function validCasterBounds(box) {
+    return !box.isEmpty() && Number.isFinite(box.min.x) && Number.isFinite(box.min.y) &&
+        Number.isFinite(box.min.z) && Number.isFinite(box.max.x) && Number.isFinite(box.max.y) &&
+        Number.isFinite(box.max.z);
+}
+
 export class FoliageShadowInfluence {
     constructor(scene = null, watchedGroups = [scene]) {
         this.enabled = true;
@@ -58,7 +64,6 @@ export class FoliageShadowInfluence {
         this.hidden = new Set();
         this.viewFrustum = new Frustum();
         this.frustum = new Frustum(); this.projection = new Matrix4();
-        this.caster = new Box3();
         this.sun = new Vector3(); this.target = new Vector3();
         // Production declares foliage roots at attachment. Revisit their live
         // leaves/flags each frame, not every rig and building in the scene.
@@ -96,35 +101,41 @@ export class FoliageShadowInfluence {
             const shadowCaster = this.shadowActive && object.castShadow && object.parent?.userData.proceduralFoliage &&
                 object.parent.userData.region === 'earth';
             if (!groundCover && !shadowCaster) return;
-            const materials = Array.isArray(object.material) ? object.material : [object.material];
             // Static trees exclude shader deformation. Ground cover has its
             // own explicitly qualified wind-padded bounds; actors stay out.
-            if (shadowCaster && materials.some(material => material.userData.woodlandWind)) return;
-            if (groundCover && (object.children.length || materials.some(material => !material.userData.woodlandWind))) return;
+            if (groundCover && object.children.length) return;
+            const material = object.material;
+            if (Array.isArray(material)) {
+                for (const part of material) {
+                    if (shadowCaster && part.userData.woodlandWind || groundCover && !part.userData.woodlandWind) return;
+                }
+            } else if (shadowCaster && material.userData.woodlandWind || groundCover && !material.userData.woodlandWind) return;
             let cached = this.boundsCache.get(object);
             if (!cached) {
                 cached = { local: object.boundingBox.clone(), matrix: object.matrixWorld.clone(),
                     world: object.boundingBox.clone().applyMatrix4(object.matrixWorld) };
+                cached.valid = validCasterBounds(cached.world);
                 this.boundsCache.set(object, cached);
             } else if (!cached.local.equals(object.boundingBox) || !cached.matrix.equals(object.matrixWorld)) {
                 cached.local.copy(object.boundingBox); cached.matrix.copy(object.matrixWorld);
                 cached.world.copy(object.boundingBox).applyMatrix4(object.matrixWorld);
+                cached.valid = validCasterBounds(cached.world);
             }
-            // Only the expensive corner transform is cached. Current camera,
-            // light/filter, visibility/material flags and complete live local
+            // Cache the world box and its validity, not current eligibility.
+            // There is no per-cell temporary array/callback or box copy on a
+            // cache hit. Both frustum tests only read the cached world box.
+            // Current camera, light/filter, visibility/material flags and live local
             // bounds are still evaluated on every frame; moving/reparented
             // foliage or quality/buffer-bound updates invalidate immediately.
-            this.caster.copy(cached.world);
-            if (this.caster.isEmpty() || ![this.caster.min.x, this.caster.min.y, this.caster.min.z,
-                this.caster.max.x, this.caster.max.y, this.caster.max.z].every(Number.isFinite)) return;
+            if (!cached.valid) return;
             if (groundCover) {
                 // Production grass/fern boxes include their complete shader
                 // wind envelope. These never cast shadows; hiding a proven
                 // out-of-view box cannot remove an incoming off-screen shadow.
-                if (!this.viewFrustum.intersectsBox(this.caster)) {
+                if (!this.viewFrustum.intersectsBox(cached.world)) {
                     this.hidden.add(object); object.visible = false;
                 }
-            } else if (!shadowInfluenceIntersectsFrustum(this.caster, this.sun, this.frustum)) {
+            } else if (!shadowInfluenceIntersectsFrustum(cached.world, this.sun, this.frustum)) {
                 this.omitted.add(object); object.castShadow = false;
             }
         };
