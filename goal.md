@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 selected-party hotbar correction:** Connected equipped four-class
+testing reproduced a real focus guard blocking healing after selecting an ally.
+Keep accessible roster focus and permit only hotbar actions from an enabled,
+selected support-target button; ordinary UI/typing/modifier/repeat/native
+activation guards and all server gameplay checks remain. Fresh current-master
+Alpha1.79.6 source contains only this fix, versions and cumulative notes, not
+staged art. Four focused release suites471 pass2.82s. Separate staged connected
+High/Low functional and fresh-save checks pass; shared-GPU frame samples are
+diagnostic, not final performance approval. See the
+[scope and retained limitations](docs/plans/2026-10-08-release1-79-6-checks.json).
+Own publication pending. Latest accepted live1.79.5 de106428, own37748224367
+all mandatory jobs successful, frontend/backend/database independently checked.
+Earlier pending publication statements below are historical. Full roadmap,
+1.80 F1–F5, final modern art, device and equipped-party performance remain open.
+
 **October8 user-requested administrator Dark Realm passage:** Separate scoped
 Alpha1.79.5 patch on fresh2b0fd839. Durable current account role bypasses only
 story/crystal entry receipts; level100, action/scene/proximity checks and ordinary

@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.5';
+const currentVersion = '1.79.6';
+
+test('1.79.6 documents selected party hotbar focus without loosening ordinary UI or gameplay gates', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.6"'), previous = html.indexOf('data-version="1.79.5"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['numbered or remapped hotbar keys', 'keyboard focus', 'Healing Light', 'Divine Intervention',
+        'enabled, selected', 'Typing fields', 'Enter and Space', 'server authority', 'No account wipe',
+        'schema migration', 'wearable derivatives remain staged', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.5 records administrator story-only passage and retained normal gates', () => {
     const html = fs.readFileSync('index.html', 'utf8');
