@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "milestone": "1.87 equipped-world qualification and wearable optimization, not live activation",
+  "base": "a956804117b86440ea5449b00f4562f474ae6097",
+  "status": "equipped-budget-gap-reproduced-first-wearable-derived-and-native-loaded",
+  "scope": "Optional EIDOLON_E2E_RAISED_EQUIPMENT=1 fits a class-appropriate14-item Rare/Uncommon Fighter outfit onto the real raised-world pilot. Preview now passes matching body quality into MeshFactory; previous Low-world references used a High-detail body and remain conservative world-only evidence, not Low-character qualification. No budgets, graphics targets, geometry counts, foliage population, saves or runtime rules weakened.",
+  "equippedWorld": {
+    "result": "Root18749 terminal1: actual System Chrome High and Low both fail original geometry limits. Equipment binds all14 models; ground/effects/culling checks remain, but narrow unequipped reference PASS does not qualify ordinary equipped play.",
+    "high": "grove322813tri/208calls; west381766/275; woodland408620/370; outer375158/289. Original250000tri/350calls limits retained; woodland additionally exceeds calls. Medians16.7ms, p9516.7–33.2ms.",
+    "low": "grove149391tri/65calls; west175762/133; woodland167024/101; outer170019/107. Original85000tri/200calls limits retained; medians16.7ms,p9516.7–16.8ms. Matching Low body is used in this scope.",
+    "diagnosis": "Delivered Fighter Plate Mail standard alone48547tri and Plate Greaves17976tri. This is actual dense garment geometry, not a broken FPS assertion or missing model. More wearables and scene/draw work remain before solo or party approval. Do not activate public raised profile from unequipped preview results."
+  },
+  "pilot": {
+    "source": "assets/equipment/authored/fits/Fighter/plate-mail-standard.glb",
+    "sourceSHA256": "fc9245497948f4d17870bcbfbbc2c639092e0a8381b90d044b5041c95d04fb0a",
+    "originalTriangles": 48547,
+    "high": { "triangles": 9021, "targetRatio": 0.12, "maximumSimplificationError": 0.002, "sha256": "290016e7efb3c59196a7f37ca8535485579d66966e8f10dc49c98c9b7eb7c40b" },
+    "low": { "triangles": 4605, "targetRatio": 0.04, "maximumSimplificationError": 0.006, "sha256": "f348a1e2cf575962f4b9a98227bc476f35bd165e170769fb4576506dfae52b6c" },
+    "tools": "Current pinned glTF Transform4.5.1 and meshoptimizer1.2.0 installed into task-owned directory, not the shared user node_modules. Source file is pinned/checked unchanged; outputs stay outside repository runtime catalog. Ratio is an aim constrained by error/topology, not guaranteed final ratio; official source https://gltf-transform.dev/modules/functions/functions/simplify.",
+    "contract": "Exact named hierarchy/transforms, ordered joints/inverse-bind arrays, animation names, texture payload hashes and material/UV/skin/morph semantics compare before/after and after actual serialized reread. Delivered originals never overwritten. This structural contract is not a full morph/skin animation-channel proof or mathematical no-clipping guarantee.",
+    "retainedFailures": "First serialization guard rejects node contract; second canonical ordering guard identifies same node-transform issue; attempted1e-6 exporter precision guard also rejects. Actual NodeIO serialization omits near-unit scales. Final generator restores exact delivered matrix/TRS values in the generated JSON only, retains generated BIN chunk, then rechecks exact structural contract. No widened transform tolerance remains. Earlier failed artifacts retained in task-owned directories, not promoted.",
+    "native": "Root56635 terminal0: actual System Chrome High/Low2 PASS7.4s. Each binds complete14-item outfit on original-left/pilot-right independent Fighter rigs, renders CombatIdle/Run/Attack/Jump comparisons and verifies fitted bone ownership. Test-only route/catalog substitution restored in finally; no runtime catalog or supplied source changes. Inspected High Attack and Low Run show broadly retained silhouette/fit with smoother chest detail, no obvious large gaps; six other captured poses are available, not claimed as visually reviewed. No strict pixel equivalence or full world performance pass inferred.",
+    "guards": "CLI safely rejects existing generated destination, original source directory and unknown model. All existing pilot artifact hashes remain unchanged. Scoped lint, syntax and whitespace checks pass. Original assets/generated catalog/FittedEquipment runtime unchanged. Owned4190 closed."
+  },
+  "evidence": {
+    "worldLog": "/home/aeml/.local/share/eidolon-raised-equipped-native-20261008.log",
+    "worldLogSHA256": "21797845bc9a403e21cb4c94cb5cb77938039c970c8c2f57dfc507fe3226062e",
+    "pilotDirectory": "/home/aeml/.local/share/eidolon-plate-pilot-A33k38o7",
+    "nativeLog": "/home/aeml/.local/share/eidolon-plate-pilot-native-20261008.log",
+    "nativeLogSHA256": "010d8504f6bd104c5d8d41fa5938c06f3996e962f83c605ca150a2b46a1f8591",
+    "nativeImages": "/home/aeml/.local/share/eidolon-plate-pilot-native-20261008/art-review",
+    "generatorSHA256": "fa5c60fde7151c636aa57b141ff299a464a6a73e43922a1613135992f28d7c94"
+  },
+  "next": "Qualify remaining garment derivatives/animated fit and integrate reviewed runtime quality selection/provenance/cache versions, then remeasure impacted equipped solo/party views. Dense foliage/draw costs remain; preserve original quality/population/geometry/frame targets. Current1.79.5 remains under its own release pipeline, with no staged model-art promotion. Full1.80 F1-F5/1.87/future roadmap and owner campaign/physical-phone gates remain open."
+}

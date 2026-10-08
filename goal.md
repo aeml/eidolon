@@ -1,5 +1,21 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 equipped-world gap / first wearable runtime-copy pilot:** Optional
+actual14-item Fighter preview now uses matching High/Low body quality. Both
+world cases FAIL original budgets: High woodland408620tri/370calls, Low
+west175762tri; earlier unequipped world references are not equipped acceptance.
+Delivered Plate Mail48547tri is a concrete cost. New immutable-source generator
+derives High9021/Low4605tri with exact structural rig/texture/transform checks;
+retains failed exporter-contract attempts before preserving original matrix/TRS
+in generated JSON, with no widened tolerance. Actual independent-rig/fitted
+outfit/Idle-Run-Attack-Jump Chrome2 PASS7.4s; inspected two comparisons, not full
+pixel or all-animation/four-class proof. Source files/runtime catalog unchanged,
+generated pilot stays task-local, no live promotion. Safe overwrite/source-dir/
+unknown-model rejection verified. Next complete reviewed wearable derivatives
+and actual equipment/party geometry scope, not another unequipped benchmark.
+See [receipt](docs/plans/2026-10-08-equipped-earth-and-wearable-pilot-checks.json).
+Full roadmap/F1-F5/art/device/profile gates active;1.79.5 remains under Luna.
+
 **October8 environment continuation / ordinary deployment reconciliation:**
 Root independently confirms1.79.4 run37744495087 terminal success at exact2b,
 all mandatory jobs and public front/backend/database match. Optional live

@@ -1,5 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 equipped qualification correction: using all14 fitted Rare/Uncommon
+Fighter items exposes High/Low triangle-budget failures; High woodland also
+exceeds original draw-call limit. Unequipped PASS below does not qualify actual
+equipped play. A first Plate Mail runtime-copy pilot reduces48547tri to9021/
+4605 and passes structural/native load/pose checks without replacing originals.
+Review remaining derivatives, integration and impacted full-outfit/party budgets
+before public raised activation. See [exact scope and failures](2026-10-08-equipped-earth-and-wearable-pilot-checks.json).
+
 October8 later evidence:1.79.4 own run37744495087 is now terminal success,
 including ordinary SSH/Pages/live QA, with independent matching public identity
 and selected publisher-byte checks in the [public receipt](2026-10-08-release1-79-4-public-checks.json).
