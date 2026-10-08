@@ -237,6 +237,8 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies and browser
+        # Bound stalled downloads/apt installs without skipping release gates.
+        timeout-minutes: 15
         run: |
           npm ci
           npx playwright install --with-deps chromium
