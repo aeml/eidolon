@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Future1.90backend preparation adds signup-only opaque, account-bound expiring
+invitation verification before credential/storage work, default open policy and
+fail-closed private-key configuration. Focused race and actual read-only compiled
+startup checks pass. [Scope](2026-10-08-beta-invitation-backend-checks.json).
+No production access, saved account, version, channel or label change. Admin
+issuance/client entry, real retained-account/signup/replay/restart checks and
+full near-complete beta/owner acceptance remain required, alongside unchanged
+earlier roadmap, art, operations, device and human gates.
+
 Prepared1.79.12 integrates audited, explicitly reviewed administrator public
 notices and safe incident/maintenance procedures onto prepared1.79.11.426focused
 checks, three scoped race server/journal/policy runs and actual desktop/narrow

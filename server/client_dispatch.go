@@ -26,6 +26,10 @@ func (c *Client) dispatchMessage(msg Message) {
 			c.sendError("Registration failed: " + err.Error())
 			return
 		}
+		if err := registrationInvitations.authorize(payload.Username, payload.Email, payload.InviteCode, time.Now()); err != nil {
+			c.sendError("Registration failed: " + err.Error())
+			return
+		}
 		done, err := credentialAdmission.begin(msg.Type, payload.Username, time.Now())
 		if err != nil {
 			c.sendError(err.Error())

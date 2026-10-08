@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Future1.90signup backend preparation only:** Signup-only account-bound,
+expiring opaque invitations now have strict verification before credential/
+storage work and fail-closed configuration, with open signup the default.
+Focused original/invitation race checks1.074s and actual compiled read-only
+startup/preflight cases pass. No production configuration, restriction,
+account or version change. [Evidence](docs/plans/2026-10-08-beta-invitation-backend-checks.json).
+Admin issuance/client entry, actual retained-account/duplicate/restart checks,
+operator and full near-complete beta/owner gates still remain. This is staged
+code, not completion of1.90or a substitute for full modern-world work.
+
 **Prepared1.79.12 operations foundation:** Select reviewed administrator
 maintenance/incident/recovery notices onto prepared1.79.11/8cd6e7fd, preserving
 current Dark Realm audit action, diagnostics, permissions and all player data.

@@ -452,6 +452,13 @@ func setupLogging() ([]io.Closer, error) {
 
 func main() {
 	flag.Parse()
+	invitationPolicy, invitationErr := newRegistrationInvitationPolicy(
+		os.Getenv("EIDOLON_REGISTRATION_MODE"), os.Getenv("EIDOLON_INVITATION_SIGNING_KEY"))
+	if invitationErr != nil {
+		fmt.Fprintln(os.Stderr, invitationErr)
+		os.Exit(2)
+	}
+	registrationInvitations = invitationPolicy
 	terrainProfile, terrainErr := resolveTerrainStartupProfile(*terrainProfileFlag, *qaTerrainElevationFlag, len(parseQAUsernames(*qaUsernamesFlag)) > 0)
 	if terrainErr != nil {
 		fmt.Fprintln(os.Stderr, terrainErr)

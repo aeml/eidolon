@@ -7,6 +7,28 @@ payment integration or new infrastructure purchase.
 
 ## Approved direction and decisions still required before transition
 
+### Staged invitation backend — not ready to activate
+
+The separate1.90preparation branch has signup-only invitation verification,
+not complete invited admissions. Default `EIDOLON_REGISTRATION_MODE=open`
+preserves public registration. No production environment or existing account
+has changed. Only an explicitly approved near-complete beta transition may
+select `invited` after the entire issuance/client/retained-account path qualifies.
+
+Proofs bind the exact chosen username and optional registration email; this
+binding is not mailbox verification or a replacement for recovery setup.
+They expire within seven days and use an opaque nonce/signature, with no readable
+account/email in the token. The private signing key is never part of client
+assets, public URLs or logs. Rotation invalidates outstanding invitations but
+must not invalidate existing account credentials or characters.
+
+Do not configure/enable this unfinished route yet. Authenticated audited admin
+issuance, private client entry, actual invited signup/duplicate/restart and
+existing-account login/resume/save checks, lifecycle/rollback review and operator
+handoff remain required. No automatic email, replay, blanket denial of existing
+accounts, player cap promise or beta-ready label is introduced.
+See [exact backend evidence](plans/2026-10-08-beta-invitation-backend-checks.json).
+
 | Decision | Current safe state |
 | --- | --- |
 | Existing alpha accounts, new invitations and cohort date | Retain existing accounts; invite new beta players only once the game is nearly complete.1.90 is the planned readiness review, not an automatic opening. |
