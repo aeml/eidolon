@@ -78,6 +78,12 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 // cannot establish the changed crown's appearance.
                 foliageSites.push({ id: `${id}-bough-review`, x: tree.x + 6,
                     z: tree.z + 8, region: recipe.region });
+                // Actual ordinary travel positions beside the composed stands,
+                // not a hero moved next to an arbitrarily remote tree.
+                foliageSites.push(...(elemental === 'air'
+                    ? [{ id: 'air-travel-stands', x: 1718, z: 130, region: 'air' }]
+                    : [{ id: 'water-travel-stands', x: 0, z: -862.5, region: 'water' },
+                        { id: 'fire-travel-stands', x: -1845, z: 240, region: 'fire' }]));
             }
             const sites = (elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [
                 ...LANTERNHOLD_COURTYARDS,

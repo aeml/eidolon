@@ -56,6 +56,15 @@ ownership and dispose replaced buffers. Thirteen focused/resource checks and
 four native regional cases pass with stable warmed GPU resources. Selective
 current-master integration and delivery remain open, not a full renderer release.
 
+Staged [elemental travel stands](2026-10-08-elemental-travel-stands-checks.json)
+recompose existing regional objects with retained counts, rotations/scales and
+actual path/hazard/site aprons. Earth positions remain unchanged. Eleven units
+and four native High/Low cases/thirty timed views pass original limits; Water/
+Fire road framing improves. Air still has conspicuous open stretches, and stems,
+crystals, terrain/groundcover cohesion and full regional art remain open.
+Current-master integration, patch notes/versions and deployment acceptance are
+still required; technical qualification is not complete modern art or beta.
+
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
 pre-section progress notes moved byte-for-byte to

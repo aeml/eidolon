@@ -89,6 +89,13 @@ warmed GPU resources across repeated switches for all 24 beds.
 [Settings-change proof](docs/plans/2026-10-08-groundcover-quality-checks.json).
 This does not complete regional environment art or current-master delivery;
 select only the two new renderer lines when integrating, not future core work.
+Staged regional travel stands recompose the existing 180 Water/165 Fire/165 Air
+objects, retaining per-index rotations/scales, original Earth placements and all
+actual path/hazard/site aprons. Eleven focused cases and four native High/Low
+cases/thirty timed views pass original limits. Water/Fire framing improves in
+actual road captures; Air still has conspicuous open stretches and primitive
+stems/crystals remain. [Exact scope and rejected attempts](docs/plans/2026-10-08-elemental-travel-stands-checks.json).
+Not delivered, uniformly populated routes or modern-art completion.
 After the >1h hosted install delay, ask once asynchronously whether to cancel
 and retry unfinished CI jobs; leave run intact until an answer. Luna continues
 read-only monitoring; an observation timeout is not terminal.

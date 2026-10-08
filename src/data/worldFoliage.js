@@ -114,8 +114,8 @@ export function isProceduralFoliagePlacementClear(region, x, z) {
         if (Math.abs(x) < 14 && (z < 110 || z > 290)) return false;
         if (Math.abs(z - 200) < 14 && Math.abs(x) > 90) return false;
     }
-    if (region === 'water' && Math.abs(x) < 42) return false;
-    if ((region === 'fire' || region === 'air') && Math.abs(z - 200) < 42) return false;
+    if (region === 'water' && Math.abs(x) < 14) return false;
+    if ((region === 'fire' || region === 'air') && Math.abs(z - 200) < 14) return false;
     return true;
 }
 
@@ -173,11 +173,7 @@ function createEarthWoodlandPlacements() {
     return result;
 }
 
-export function createProceduralFoliagePlacements(recipe) {
-    if (recipe.region === 'earth' && PROCEDURAL_FOLIAGE_RECIPES.includes(recipe)) {
-        earthPlacements ??= createEarthWoodlandPlacements();
-        return earthPlacements.get(recipe.id);
-    }
+function createScatteredFoliagePlacements(recipe) {
     const random = randomGenerator(hashSeed(`eidolon:${recipe.region}:${recipe.id}`));
     const [minX, maxX, minZ, maxZ] = recipe.bounds;
     const placements = [];
@@ -186,6 +182,10 @@ export function createProceduralFoliagePlacements(recipe) {
         const x = minX + random() * (maxX - minX);
         const z = minZ + random() * (maxZ - minZ);
         if (!isProceduralFoliagePlacementClear(recipe.region, x, z)) continue;
+        // Preserve the original scattered stream's scale/rotation identities
+        // when composing its positions around the modern travel routes.
+        if (recipe.region === 'water' && Math.abs(x) < 42) continue;
+        if (['fire', 'air'].includes(recipe.region) && Math.abs(z - 200) < 42) continue;
         placements.push(Object.freeze({
             x,
             z,
@@ -197,6 +197,63 @@ export function createProceduralFoliagePlacements(recipe) {
         throw new Error(`Unable to place ${recipe.id}: ${placements.length}/${recipe.count}`);
     }
     return placements;
+}
+
+const ELEMENTAL_PLACEMENTS = new Map();
+
+function composeElementalWoodland(region) {
+    const paths = region === 'water' ? WATER_PATHS : region === 'fire' ? FIRE_PATHS : AIR_PATHS;
+    const stands = [];
+    for (const path of paths) for (let segment = 1; segment < path.points.length; segment++) {
+        const [ax, az] = path.points[segment - 1], [bx, bz] = path.points[segment];
+        const length = Math.hypot(bx - ax, bz - az);
+        if (length < 75) continue;
+        const intervals = Math.ceil(length / 110);
+        const fractions = new Set([.3, .75, ...Array.from({ length: intervals }, (_, index) => (index + .5) / intervals)]);
+        for (const t of fractions) for (const side of [-1, 1]) {
+            const offset = side * (path.width / 2 + 15);
+            stands.push([ax + (bx - ax) * t - (bz - az) / length * offset,
+                az + (bz - az) * t + (bx - ax) / length * offset]);
+        }
+    }
+    const occupied = [], result = new Map();
+    for (const recipe of PROCEDURAL_FOLIAGE_RECIPES.filter(recipe => recipe.region === region)) {
+        const original = createScatteredFoliagePlacements(recipe), placements = [];
+        const random = randomGenerator(hashSeed(`eidolon:travel-stands:${recipe.id}`));
+        const [minX, maxX, minZ, maxZ] = recipe.bounds;
+        for (const tree of original) {
+            let placement;
+            const composed = random() < .85;
+            for (let attempt = 0; attempt < 160; attempt++) {
+                let x = tree.x, z = tree.z;
+                if (composed || attempt > 0) {
+                    const stand = stands[Math.floor(random() * stands.length)];
+                    const angle = random() * Math.PI * 2, radius = Math.sqrt(random()) * 7;
+                    x = stand[0] + Math.cos(angle) * radius; z = stand[1] + Math.sin(angle) * radius;
+                }
+                if (x < minX || x > maxX || z < minZ || z > maxZ ||
+                    !isProceduralFoliagePlacementClear(region, x, z) ||
+                    occupied.some(other => Math.hypot(other.x - x, other.z - z) < 7)) continue;
+                placement = Object.freeze({ ...tree, x, z }); break;
+            }
+            if (!placement) throw new Error(`Unable to compose travel stand: ${recipe.id}/${placements.length}`);
+            placements.push(placement); occupied.push(placement);
+        }
+        result.set(recipe.id, Object.freeze(placements));
+    }
+    return result;
+}
+
+export function createProceduralFoliagePlacements(recipe) {
+    if (PROCEDURAL_FOLIAGE_RECIPES.includes(recipe)) {
+        if (recipe.region === 'earth') {
+            earthPlacements ??= createEarthWoodlandPlacements();
+            return earthPlacements.get(recipe.id);
+        }
+        if (!ELEMENTAL_PLACEMENTS.has(recipe.region)) ELEMENTAL_PLACEMENTS.set(recipe.region, composeElementalWoodland(recipe.region));
+        return ELEMENTAL_PLACEMENTS.get(recipe.region).get(recipe.id);
+    }
+    return createScatteredFoliagePlacements(recipe);
 }
 import { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS, WATER_PATHS, FIRE_PATHS, AIR_PATHS } from './elementalPopulation.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from './worldPopulation.js';
