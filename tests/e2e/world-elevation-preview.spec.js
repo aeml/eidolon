@@ -495,6 +495,11 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     await page.screenshot({ path: testInfo.outputPath('grove-bedrock-shoulder.png') });
     await page.evaluate(() => window.__reviewEarthShoulder(-94, -313));
     await page.screenshot({ path: testInfo.outputPath('grove-rock-formation.png') });
+    // Actual production willow near the grove, at the ordinary gameplay zoom;
+    // this is a species-art view, not a floating isolated-model fixture.
+    await page.evaluate(() => window.__reviewEarthShoulder(-33, -235));
+    await page.screenshot({ path: testInfo.outputPath('grove-willow-curtains.png') });
+    await page.evaluate(() => window.__reviewEarthShoulder(-94, -313));
     const profileView = async name => {
         if (process.env.EIDOLON_E2E_RAISED_TERRAIN_PROFILE !== '1') return;
         const profile = await page.evaluate(() => window.__profileEarthTerrain());

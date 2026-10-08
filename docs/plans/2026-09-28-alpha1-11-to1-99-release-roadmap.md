@@ -22,6 +22,11 @@ wearable/core renderer publication. Broad floor fields, repeated props and
 limited formation variety remain. Full1.80 F1-F5/1.87/world-art/device/beta/
 launch scope stays open; human playtest and owner decisions are not invented.
 
+The staged [willow curtains](2026-10-08-willow-curtains-checks.json) add a
+species-specific hanging silhouette at the existing leaf/triangle budget.
+Focused units and equipped High/Low gallery qualify; not yet published or
+proof of complete environment art.
+
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
 pre-section progress notes moved byte-for-byte to

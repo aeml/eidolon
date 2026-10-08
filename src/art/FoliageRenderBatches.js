@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getProceduralFoliageArchetype } from './ProceduralRealmFoliage.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
+import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
@@ -68,7 +69,8 @@ export function getFoliageRenderBatches(id, quality = 'high') {
         const crown = part.geometry.userData.woodlandCrown;
         if (quality === 'low' && crown) {
             if (!LOW_CROWNS.has(crown)) LOW_CROWNS.set(crown,
-                crown === 'leaf' ? createLeafCanopyGeometry('low') : createConiferBoughGeometry('low'));
+                crown === 'leaf' ? createLeafCanopyGeometry('low') : crown === 'willow'
+                    ? createWillowCurtainGeometry('low') : createConiferBoughGeometry('low'));
             part = { ...part, geometry: LOW_CROWNS.get(crown) };
         }
         const crownKey = crown ? `:${part.name}` : '';

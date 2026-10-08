@@ -41,6 +41,11 @@ Fighter pilot or remove approved authored models.
   footprints, buried bases and 206 triangles/body. Reject first carved-looking
   notch despite green checks. Final five units and equipped High/Low native pass;
   [receipt](docs/plans/2026-10-08-rock-shoulders-checks.json).
+- Staged **willow curtains** distinguish three hanging crowns from rounded
+  birch foliage, with the same256 leaves and High1024/Low512 triangles per
+  curtain.39 focused units and equipped High/Low gallery pass original limits;
+  actual gameplay-camera review in
+  [the receipt](docs/plans/2026-10-08-willow-curtains-checks.json).
 
 ## Remaining scope and next work
 

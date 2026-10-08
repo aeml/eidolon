@@ -4,6 +4,7 @@ import { RenderSystem } from '../src/core/RenderSystem.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, getProceduralFoliageArchetype } from '../src/art/ProceduralRealmFoliage.js';
 import { createLeafCanopyGeometry } from '../src/art/ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from '../src/art/ProceduralConiferBoughs.js';
+import { createWillowCurtainGeometry } from '../src/art/WillowCurtainGeometry.js';
 
 function surfaceSignature(parts) {
     const surfaces = new Map();
@@ -56,7 +57,8 @@ test.each(['high', 'low'].flatMap(quality => ['ossuary_birch', 'grave_pine', 'mo
         const candidate = batches.find(part => part.name === leaf.name);
         expect(candidate).toBeDefined();
         const sourceGeometry = quality === 'low' ? (leaf.geometry.userData.woodlandCrown === 'leaf'
-            ? createLeafCanopyGeometry('low') : createConiferBoughGeometry('low')) : leaf.geometry;
+            ? createLeafCanopyGeometry('low') : leaf.geometry.userData.woodlandCrown === 'willow'
+                ? createWillowCurtainGeometry('low') : createConiferBoughGeometry('low')) : leaf.geometry;
         const expected = sourceGeometry.clone().applyMatrix4(leaf.matrix);
         const actual = candidate.geometry.clone();
         if (!candidate.matrix.equals(new THREE.Matrix4())) actual.applyMatrix4(candidate.matrix);
