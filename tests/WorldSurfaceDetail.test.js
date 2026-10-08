@@ -2,7 +2,7 @@ import { MeshStandardMaterial, MeshBasicMaterial, ShaderLib } from 'three';
 import { applyWorldSurfaceDetail } from '../src/art/WorldSurfaceDetail.js';
 
 describe('world surface detail', () => {
-    test.each(['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress'])('%s retains standard lighting and supports transformed instances', surface => {
+    test.each(['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry'])('%s retains standard lighting and supports transformed instances', surface => {
         const material = new MeshStandardMaterial({ roughness: .91 });
         const color = material.color.clone();
         expect(applyWorldSurfaceDetail(material, surface)).toBe(material);
@@ -24,9 +24,24 @@ describe('world surface detail', () => {
     });
 
     test('surface variants cannot accidentally reuse one compiled shader', () => {
-        const keys = ['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress'].map(surface =>
+        const keys = ['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry'].map(surface =>
             applyWorldSurfaceDetail(new MeshStandardMaterial(), surface).customProgramCacheKey());
-        expect(new Set(keys).size).toBe(7);
+        expect(new Set(keys).size).toBe(8);
+    });
+
+    test('weathered masonry breaks up vertical courses without changing horizontal paving or adding textures', () => {
+        const material = applyWorldSurfaceDetail(new MeshStandardMaterial(), 'weathered-masonry');
+        const shader = { ...ShaderLib.standard }; material.onBeforeCompile(shader);
+        for (const patch of ['#define EIDOLON_SURFACE 8', 'if (axis.y <= max(axis.x, axis.z))',
+            'vec2 masonryTileSize = vec2(1.05, .56)', 'float masonryRow = floor(masonryTile.y)',
+            'vec2 masonryFootprint = max(fwidth(masonryTile), vec2(.001))',
+            'float masonryGrainFade = 1. - smoothstep', 'eidolonReliefNormal(normal, eidolonDetail.z)']) {
+            expect({ patch, present: shader.fragmentShader.includes(patch) }).toEqual({ patch, present: true });
+        }
+        expect(material.customProgramCacheKey()).toBe('eidolon-world-surface-v1:weathered-masonry');
+        expect(material.normalMap).toBeNull(); expect(material.roughnessMap).toBeNull();
+        expect(material.emissiveIntensity).toBe(1); expect(material.emissive.getHex()).toBe(0);
+        material.dispose();
     });
 
     test('rock mineral detail stays registered across differently oriented faces', () => {

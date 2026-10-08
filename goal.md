@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 populated Lanternhold masonry refinement — staged1.87:** Dedicated
+weathered-masonry profile softens perfect black mortar grids, varies wall-course
+offsets/edges and adds filtered stone grain/physical relief. Only town building,
+street and courtyard stone selectors change; existing profiles1–7, horizontal
+paving, geometry/placements/collisions/lights/resources remain. Five affected
+Jest suites32PASS17.953s; lint/diff pass; equipped ordinary14-slot authored
+Fighter with HUD in actual populated town renders at desktop High/phone-sized
+Low,2PASS15.4s. The first baseline captures fail a stale twelve-mesh assertion:
+current six batches retain all twelve independently culled cells, proved by
+existing source-equivalence tests; corrected browser check verifies both counts.
+Well-camera placement moved out of the solid bowl, not a gameplay relocation.
+Normal-scale comparisons inspected; no whole-world/final-art/FPS/physical-phone
+claim. Retain [scope](docs/plans/2026-10-08-town-masonry-checks.json) for selective
+ordered integration; actual production remains accepted1.79.2,1.80 F gates open.
+
 **October8 staged1.87 Cinder surface refinement:** Replace remaining paving-like
 cell outlines with folded basalt crust, recessed scoria pores and registered
 ash coverage on the existing three maps. First visual candidate too granular;

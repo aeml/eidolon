@@ -150,9 +150,9 @@ const SHAPES = Object.freeze({
 function createMaterials() {
     const palette = getRegionTheme('town').palette;
     return Object.freeze({
-        foundation: material('lanternhold-foundation', 0x292824, { roughness: 0.98, surface: 'stone' }),
-        stone: material('lanternhold-stone', 0x555148, { roughness: 0.94, surface: 'stone' }),
-        paleStone: material('lanternhold-pale-stone', 0x777062, { roughness: 0.92, surface: 'stone' }),
+        foundation: material('lanternhold-foundation', 0x292824, { roughness: 0.98, surface: 'weathered-masonry' }),
+        stone: material('lanternhold-stone', 0x555148, { roughness: 0.94, surface: 'weathered-masonry' }),
+        paleStone: material('lanternhold-pale-stone', 0x777062, { roughness: 0.92, surface: 'weathered-masonry' }),
         timber: material('lanternhold-black-oak', 0x241a17, { roughness: 0.96, surface: 'timber' }),
         roof: material('lanternhold-roof-slate', 0x303946, { metalness: 0.04, roughness: 0.84, surface: 'fieldstone', vertexColors: true }),
         iron: material('lanternhold-old-iron', 0x34383a, { metalness: 0.7, roughness: 0.42 }),

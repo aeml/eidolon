@@ -9,7 +9,7 @@ import { createEarthGroundCoverTuft } from './EarthGroundCover.js';
 export function createLanternholdStreetFurniture({ quality = 'high', cx = 0, cz = 200, multiDraw = true } = {}) {
     const group = new THREE.Group(); group.name = 'Lanternhold planted street edges';
     const materials = {
-        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x696658, roughness: .93 }), 'stone'),
+        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x696658, roughness: .93 }), 'weathered-masonry'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x47392a, roughness: .92 }), 'timber'),
         iron: new THREE.MeshStandardMaterial({ color: 0x343b3a, metalness: .65, roughness: .52 }),
         earth: new THREE.MeshStandardMaterial({ color: 0x272b20, roughness: 1 }),

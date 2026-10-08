@@ -8,7 +8,7 @@ import { batchPosedTownResident } from './PosedTownResidentBatches.js';
 export function createLanternholdCourtyards({ quality = 'high' } = {}) {
     const group = new THREE.Group(); group.name = 'Lanternhold communal courtyards';
     const materials = {
-        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0xaaa28c, vertexColors: true, roughness: .91 }), 'stone'),
+        stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0xaaa28c, vertexColors: true, roughness: .91 }), 'weathered-masonry'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x66533c, roughness: .95 }), 'timber'),
         metal: new THREE.MeshStandardMaterial({ color: 0x71684e, metalness: .6, roughness: .62 }),
         cloth: new THREE.MeshStandardMaterial({ color: 0x859386, roughness: 1, side: THREE.DoubleSide }),

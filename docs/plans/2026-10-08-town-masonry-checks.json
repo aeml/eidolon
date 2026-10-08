@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T04:10:46Z",
+  "milestone": "1.87 staged code-owned visual refinement",
+  "status": "local-scoped-qualification-not-published",
+  "baseCommit": "61e8e69e",
+  "implementation": "New weathered-masonry profile8 varies vertical course offsets/edges, lowers stencil-like mortar contrast and adds derivative-filtered grain/relief with registered roughness. Selected only by Lanternhold architecture, street furniture and communal courtyards. Horizontal paving retains the existing stone field.",
+  "preservation": "Exact source comparison strips only the added profile8/map entry and obtains byte-identical original shader/hooks; reversing only the three town material selectors obtains byte-identical original builders. All existing profiles1–7, meshes/triangles, placements, collisions, physical heights, lights, material/texture counts, shadow flags and per-frame work unchanged. New fragment shader math is not free GPU cost; no full-game FPS claim.",
+  "checks": {
+    "initial": "New WorldSurfaceDetail red run exits1:two new weathered-masonry cases fail because the profile is absent;10 skipped. Baseline town root49148 exits1:both views produce all captures/equipped14-slot Fighter, then fail only stale streetBatches12 expectation against actual6.",
+    "fixtureCorrection": "Existing street source has six BatchedMeshes each retaining two original independent cells. Existing High/Low source-equivalence regressions verify all12 geometry/transforms/material/shadow records. Browser now checks6 batches plus12 cells and unchanged4 solids; no geometry/density gate weakened. Well view places the preview actor eight metres south instead of inside the bowl; this is a fixture camera/actor placement correction, not world movement or path evidence.",
+    "unit": "Root3564 terminal0:WorldSurfaceDetail,ProceduralLanternholdArchitecture,LanternholdStreetFurniture,LanternholdCourtyards,LanternholdFacadeGeometry;32PASS17.953s. Includes shader ownership/standard lighting, unchanged bounds/collisions/service approaches, source-cell equivalence and disposal.",
+    "static": "Scoped ESLint six changed JavaScript files max-warnings0, git diff --check pass. Exact Git source comparison passes for four runtime files.",
+    "native": "Root1593 terminal0:existing town-court-presentation expanded to ordinary14-slot authored Fighter and the well;2PASS15.4s. Actual System Chrome normal hardware launch, desktop1280×900 High and phone-sized390×844 Low; no browser failure. Both unit and lint sessions terminal before native execution, owned4190 independently closed afterward."
+  },
+  "visual": {
+    "evidenceDirectory": "/home/aeml/.local/share/eidolon-town-masonry-evidence-20261008-10y9puHI",
+    "captures": "baseline/ and candidate/ preserve court, market, smithy, casino and well on both viewports. Current native baseline has failed assertion status, not a functional acceptance pass. Final smithy/well desktop and market phone before/after inspected at ordinary zoom15 with HUD, real populated buildings/services and equipped Fighter.",
+    "candidateDesktopSmithySha256": "6e1be03ab7690d86fa585525fee6c4c7edb1c66bca5686f14c09a832d1e9c26c",
+    "candidatePhoneSmithySha256": "e0212ad486bca90ca796a6dfc7b6c676c13cd4562c7327f8c9733ce5e02a6acd",
+    "limits": "Small visible wall-material refinement, not completed modern environment art. HUD/ordinary equipment adds actual gameplay-scale context, but scene is a frontend construction fixture: no connected travel, named-player identity, account reward, campaign or physical-phone session. Original full-world/party/render budgets and owner visual review remain required."
+  },
+  "publication": "No push, live configuration/version/economy/save/access/dependency change or whole future-branch merge. Production remains accepted f9cbd41b Alpha1.79.2. Selectively integrate this material/fixture scope onto then-current master at its ordered milestone, preserve other artists' work and require the candidate's own deployment acceptance.",
+  "remaining": "Full1.80 freeze and1.81–1.99 gates remain active; all-family modern art, raised-terrain production compatibility/rollout, rights/operations choices, deferred human pacing/device evidence and final beta/release approval are not closed."
+}
