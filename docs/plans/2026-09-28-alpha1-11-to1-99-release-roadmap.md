@@ -1,5 +1,19 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Future1.90 preparation now has audited admin issuance/private register-only
+entry at2e679683 and actual-server/disposable-Mongo qualification at1037852c.
+426focused client checks, ten server race functions and two desktop/narrow
+synthetic-response UI cases pass. [Tools](2026-10-08-beta-invitation-tools-checks.json).
+One bounded real socket case passes16.31s for signup/invalid/replay/concurrent
+proofs, retained-character login/resume/earned saves, durable audit, key rotation
+and three process starts with same-artifact open-mode rollback; four affected
+journal cases pass race1.090s. [Scope](2026-10-08-beta-invitation-sockets-checks.json).
+Older-binary pending-audit compatibility, lifecycle/operator review and the full
+original near-complete art/content/performance/device/human/owner gates remain.
+Earlier pending-tools/socket wording below is historical, not1.90 completion.
+No production environment/access/account/version/channel change. Numbered
+requirements and full modern-world scope below remain intact.
+
 ## Current execution status — October 8, 2026
 
 Future1.90signup invitation backend is staged in isolation, source6c00212f:

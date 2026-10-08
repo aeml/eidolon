@@ -19,13 +19,23 @@ Fighter pilot or remove approved authored models.
 ## Current verified state — October 8, 2026
 
 - Future1.90invitation backend is staged separately at
-  `/home/aeml/.local/share/eidolon-beta-admission-qzHOCkS5`, source6c00212f. Signup-only opaque account-bound proofs,
+  `/home/aeml/.local/share/eidolon-beta-admission-qzHOCkS5`, current1037852c (backend6c00212f, tools2e679683). Signup-only opaque account-bound proofs,
   exact identity/expiry/rotation checks, default-open policy and fail-closed
   startup configuration qualify with scoped race1.074s and compiled read-only
   preflight cases. No actual public access/configuration, account, label or
   version change. [Evidence](docs/plans/2026-10-08-beta-invitation-backend-checks.json).
-  Admin issuance/client entry and real retained-account/duplicate/restart/
-  lifecycle/rollback checks remain; do not activate or claim1.90complete.
+  Audited current-role/session issuance, explicit private masked-code review,
+  transient register-only entry and closure/disconnect clearing now qualify:
+  426focused client checks, ten server race functions and two actual desktop/
+  narrow synthetic-response UI cases. [Tools](docs/plans/2026-10-08-beta-invitation-tools-checks.json).
+  One actual production-binary/disposable-Mongo socket case passes16.31s:
+  signup/uniform invalid proofs/replay/concurrent duplicates, retained-character
+  login/resume/earned saves, audit persistence, key rotation and three process
+  starts with same-artifact default-open rollback. Four affected journal race
+  cases pass1.090s. [Scope](docs/plans/2026-10-08-beta-invitation-sockets-checks.json).
+  Owned tmpfs fixture accounts removed; private evidence retained. Older-binary
+  pending-audit compatibility, invitation lifecycle/operator review remain;
+  do not activate or claim1.90complete. No capacity or older-binary rollback claim.
   Full earlier modern-art/operations/beta/owner gates remain unchanged.
 
 - Prepared **1.79.12 / af7993dd** at

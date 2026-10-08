@@ -1,0 +1,28 @@
+{
+  "status": "Staged administrator issuance and private registration entry locally qualified; not deployed or activated; 1.90 incomplete",
+  "base": "566db33a5a62cb67bb92da3ebdab213860f31aa9, separate default-open beta-admission preparation branch",
+  "scope": "Authenticated, current-role/session checked invitation issuance with explicit exact-identity/UTC-expiry review. Audit storage precedes private proof response; authority rechecked afterward. Duplicate/unknown JSON keys rejected; bounded payload and mandatory per-client rate policy. No account creation or email. Audit contains target/expiry/admission, not proof, key, password or email. Private client proof is masked, copied only explicitly, not stored or added to URLs, and cleared on edit/cancel/closure/disconnect/role loss. Uncertain requests are not automatically resent. Invitation input appears inside optional account help and is sent only for registration; registration/login success clears it. Login and all public access remain unchanged.",
+  "qualification": {
+    "client": "Six focused Jest suites, 426 distinct passing checks in 3.904 seconds: AdminBetaInvitation, AdminUI, AdminAnnouncement, MainAssetBoot, PatchNotesPagination and VersionPresentation. Includes actual main boot mock-socket register/login payloads and private result routing without public chat.",
+    "server": "Ten top-level invitation/admin/mandatory-dispatch test functions pass with race detection in 1.813 seconds. Covers missing audit, late authority/session loss, unavailable configuration, closed payload schema and audit-write failure without returning a proof. Fake repositories here, not actual Mongo durability or capacity evidence.",
+    "native": "Two real System Chrome presentation cases at 1280x720 and 390x844 pass in 14.2 seconds, using synthetic admin replies. Review, masked proof, accessible controls, no horizontal overflow and clearing on collapse qualify. Narrow screenshot independently inspected. Not physical-phone, real-account or Firefox gameplay evidence.",
+    "static": "Scoped ESLint, gofmt and git diff whitespace checks pass. Dependencies unchanged; no repeated world/raid/campaign run."
+  },
+  "failuresRetained": [
+    "Initial Go fixture used a string-key map instead of primitive.ObjectID, corrected before qualification.",
+    "Initial audit-failure assertion incorrectly expected no error acknowledgement. Corrected to verify the safe error acknowledgement has no proof, no success/final flag and a closed transport, with secret-free recovery evidence retained.",
+    "Initial native cases hit the existing maintenance fixture's now-ambiguous styling-class selector. Scope by its actual maintenance summary; preserve all original assertions and limits. Both corrected cases pass. Earlier attempts are not counted as passes."
+  ],
+  "proof": {
+    "unitsLog": "/home/aeml/.local/share/eidolon-beta-invitation-final-qualified-units-20261008.log",
+    "unitsSHA256": "329c32556f9370ab4accb50b74db3af07591d40f605b612a63fd15c5c16e4941",
+    "serverLog": "/home/aeml/.local/share/eidolon-beta-invitation-accepted-server-20261008.log",
+    "serverSHA256": "7b8b5e12cbd4053c04f4c6f6ce1676ef764333e19faee84e59d107cc8460733a",
+    "nativeLog": "/home/aeml/.local/share/eidolon-beta-invitation-accepted-native-20261008.log",
+    "nativeSHA256": "293b7f052830a1abc9dfbf54ac4ec3f7f54d6b89ec952802bfbc84ae73514773",
+    "nativeArtifacts": "/home/aeml/.local/share/eidolon-beta-invitation-accepted-native-20261008",
+    "server/admin_beta_invitation.go": "6d47d1e6f597fb99242d6b13eee2b1de9d879d3dabf5d7e02093fd6dd2539762",
+    "src/ui/AdminBetaInvitation.js": "2ebcf666ede9ad0d3a63333b9910722ab501c26dd73f39817b547eb27e444537"
+  },
+  "remaining": "Actual disposable Mongo and production-binary sockets must qualify invited signup, missing/invalid proofs, retained-account login/resume/save, concurrent duplicate creation, restart, key rotation, audit reopen and rollback. Binding is not verified mailbox ownership. No claim of separate per-invitation consumption/revocation storage. Existing unique-account indexes still need actual replay evidence. Operator handoff and all original near-complete art/content/performance/operations/device/human/owner CB/RC1 gates remain open. No version bump, patch-note completion claim, push, production environment change, beta activation, capacity promise or payment integration."
+}
