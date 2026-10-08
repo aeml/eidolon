@@ -1,8 +1,36 @@
 import * as THREE from 'three';
-import { createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear } from '../src/art/EarthUnderstory.js';
+import { composeEarthUnderstoryPlacement, createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear } from '../src/art/EarthUnderstory.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { WOODLAND_WIND_REACH } from '../src/art/WoodlandWindMaterial.js';
 import { STARTER_ROAD_CLEARINGS } from '../src/data/lanternholdApproach.js';
+
+test.each([['high', 13087, 3294, .6], ['low', 7439, 1876, .4]])('composed %s beds retain the original population while forming tighter local stands', (quality, count, bracken, pairedMinimum) => {
+    const plants = createEarthUnderstoryPlacements(quality);
+    expect(plants).toHaveLength(count);
+    expect(plants.filter(p => p.variant === 0)).toHaveLength(bracken);
+    const sample = plants.filter(p => p.x > -60 && p.x < 60 && p.z > -400 && p.z < -300);
+    const paired = sample.filter(a => sample.some(b => a !== b && Math.hypot(a.x - b.x, a.z - b.z) < 2));
+    // Original jittered lattice: High.437/Low.273 have another plant within2m
+    // in this grove patch. This is structure, not a screen coverage/art claim.
+    expect(paired.length / sample.length).toBeGreaterThan(pairedMinimum);
+});
+
+test('composition keeps invalid destinations at their source anchor and never crosses clear routes', () => {
+    for (const [x, z] of [[100, 200], [340, 200], [0, -260]]) {
+        expect(composeEarthUnderstoryPlacement(x, z)).toEqual({ x, z });
+    }
+    let moved = 0;
+    for (const [x, z] of [[-45, -350], [-32, -330], [340, 214], [620, 213]]) {
+        const first = composeEarthUnderstoryPlacement(x, z);
+        expect(first).toEqual(composeEarthUnderstoryPlacement(x, z));
+        expect(Math.hypot(first.x - x, first.z - z)).toBeLessThan(5.4);
+        if (first.x !== x || first.z !== z) {
+            moved++;
+            expect(isEarthUnderstoryClear(first.x, first.z)).toBe(true);
+        }
+    }
+    expect(moved).toBeGreaterThan(0);
+});
 
 test('low roadside cover uses path shoulders without inheriting the tree-trunk exclusion', () => {
     expect(isEarthUnderstoryClear(340, 209)).toBe(true);
