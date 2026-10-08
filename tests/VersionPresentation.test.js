@@ -3,7 +3,21 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.1';
+const currentVersion = '1.79.2';
+
+test('1.79.2 records scoped woodland, Moonfrost and release-trust fixes without claiming milestone freeze', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.2"'), previous = html.indexOf('data-version="1.79.1"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['every tree, leaf and plant', 'unchanged collisions', '249,406 triangles',
+        '338 draw calls', 'reference views', 'not a whole-world', 'Moonfrost',
+        'matching color, relief and roughness', 'existing texture count', 'saved graphics quality',
+        'Low-quality startup', 'shadow', 'pinned public host key', 'trusted production branches',
+        'does not repair external SSH', 'not the 1.80 feature freeze', 'full 1.87',
+        'No account wipe', 'schema migration', 'Gold/EP', 'alert-setting change', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.1 records scoped ground polish and browser-origin hardening without claiming feature freeze', () => {
     const html = fs.readFileSync('index.html', 'utf8');

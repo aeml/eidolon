@@ -12,6 +12,7 @@ import { ActorContactShadows } from './ActorContactShadows.js';
 import { ActorInstanceBatches } from '../art/ActorInstanceBatches.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
+import { FoliageShadowInfluence } from './FoliageShadowInfluence.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundMesh } from '../art/RealmGroundMesh.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
@@ -45,6 +46,11 @@ export class RenderSystem {
         
         // Optimization: Mobile Settings
         this.isMobile = isMobile;
+        this.graphicsQuality = 'high';
+        try {
+            const savedQuality = localStorage.getItem('eidolon.graphicsQuality');
+            if (['low', 'medium', 'high'].includes(savedQuality)) this.graphicsQuality = savedQuality;
+        } catch { /* Storage is optional; retain the existing default. */ }
 
         // Camera Setup (Isometric Orthographic)
         this.currentZoom = CONSTANTS.CAMERA.ZOOM;
@@ -103,7 +109,6 @@ export class RenderSystem {
         this.outputPass = null;
         this.usePostProcessing = false;
         this.postProcessingInitFailed = false;
-        this.graphicsQuality = 'high';
         this.bloomQualityScale = 1.0;
         this.effectQualityScale = 1.0;
         this.brightnessLevel = 50;
@@ -129,6 +134,16 @@ export class RenderSystem {
         this.scene.add(this.environmentGroup);
         this.scene.add(this.entityGroup);
         this.scene.add(this.effectGroup);
+        // Three updates scene/camera matrices before this hook and submits
+        // shadow draws afterwards. Install before actor batching so its normal
+        // hook composition and enable/disable lifecycle remain unchanged.
+        this.foliageShadowInfluence = new FoliageShadowInfluence();
+        this.scene.onBeforeRender = (renderer, scene, camera) => {
+            const light = renderer.shadowMap?.enabled && this.keyLight?.castShadow ? this.keyLight : null;
+            this.foliageShadowInfluence.beginFrame(scene, camera, light,
+                renderer.shadowMap?.type, renderer.capabilities?.maxTextureSize);
+        };
+        this.scene.onAfterRender = () => this.foliageShadowInfluence.endFrame();
         this.actorInstances = null;
         this.setActorInstancesEnabled(true);
         this.sceneryVisibility = new SceneryVisibility();
@@ -182,8 +197,9 @@ export class RenderSystem {
         // Lighting
         this.setupLights();
         this.applyLightingPreset('earth', true);
-        this.setupPostProcessing();
-        this.setGraphicsQuality('high');
+        // The quality setter owns postprocessing initialization. In particular,
+        // Low must never allocate a temporary High composer during startup.
+        this.setGraphicsQuality(this.graphicsQuality);
         this.setBrightnessLevel(50);
 
         // Water/Ground are created via `preloadEnvironment()` so the loading screen
@@ -650,14 +666,17 @@ export class RenderSystem {
 
     updateShadowFocus(position = null) {
         if (!this.keyLight || !position) return;
+        // The light is ground-anchored and texel-snapped, even while the hero
+        // and camera move above it. Fit receiver rays in that actual frame;
+        // subtracting the elevated hero instead shifts/clips the shadow map.
+        const snappedTarget = this.getShadowSnappedTarget(position);
         const bounds = getShadowViewBounds(this.camera, this.cameraOffset, this.shadowFollowOffset,
-            this.cameraTarget.clone().sub(position));
+            this.cameraTarget.clone().sub(snappedTarget));
         if (Object.keys(bounds).some(edge => bounds[edge] !== this.shadowViewBounds?.[edge])) {
             this.shadowViewBounds = bounds;
             this.shadowCoverageRadius = Math.max(bounds.right - bounds.left, bounds.top - bounds.bottom) / 2;
             this.configureShadowFrustum(this.keyLight);
         }
-        const snappedTarget = this.getShadowSnappedTarget(position);
         this.shadowTarget.copy(snappedTarget);
         this.keyLight.target.position.copy(this.shadowTarget);
         this.keyLight.position.copy(this.shadowTarget).add(this.shadowFollowOffset);
@@ -1188,6 +1207,7 @@ export class RenderSystem {
             // Scene.onAfterRender is not called if a renderer/pass throws.
             // Never let frame-only batching hide actors from subsequent input.
             this.actorInstances?.endFrame();
+            this.foliageShadowInfluence?.endFrame();
             info.autoReset = autoReset;
         }
         this.updatePerfOverlay();
@@ -1240,6 +1260,7 @@ export class RenderSystem {
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
         this.actorInstances?.dispose(); this.actorInstances = null;
+        this.foliageShadowInfluence?.endFrame();
         this.actorContactShadows?.dispose();
         this.actorContactShadows = null;
         this.disposePostProcessing();

@@ -420,11 +420,13 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.1`, a prepared ground-polish/browser-origin
-  stabilization patch; it is not yet deployed and does not declare1.80 frozen.
-  Latest accepted live release is `Alpha 1.79.0`, atb5c3981e after
-  CI37600167508 passed all ten jobs and independent public checks matched both
-  identities/readiness, login/notes and eleven runtime files. [Acceptance receipt](docs/plans/2026-10-07-release1-79-public-checks.json)
+- Current source version: `Alpha 1.79.2`, a prepared scoped rendering/release-trust
+  stabilization patch; [scoped candidate checks](docs/plans/2026-10-08-release1-79-2-checks.json)
+  pass, publication is pending and1.80 freeze remains open.
+  Latest verified live release is `Alpha 1.79.1`, atc8ff2cd6: hosted source/Pages
+  checks passed, hosted SSH failed, and the exact build completed the guarded
+  local deploy. Public identities/readiness, login/notes/WebSocket and seven
+  versioned runtime files matched. [Acceptance receipt](docs/plans/2026-10-08-release1-79-1-public-checks.json)
   preserves skipped QA scopes. Current identified API/driver qualification passed representative
   100 mixed/raid/event/town clients,112958ms common activity and100 independent
   fresh saves. Original server phase means total18.8475ms against33ms; all

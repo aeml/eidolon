@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T03:10:29Z",
+  "version": "Alpha 1.79.2",
+  "status": "prepared-local-qualification-publication-pending",
+  "baseCommit": "c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+  "source": {
+    "qualifiedCandidate": "d3c47e95e636c71a1feca339f129ba0ddcdcda16",
+    "identity": "All27 selected changed JavaScript runtime/test files other than the release-presentation fixture byte-identical to candidate Git blobs; includes new leaf material, shadow influence and deployment tests. No whole future-branch merge.",
+    "scope": "Woodland cells/crowns/static bounds/High understory, retained leaf and rock shading, Moonfrost three-map surface, saved-quality startup, conservative directional-shadow ownership, pinned console-verified SSH identity and bounded connection waits, canonical production self-hosted job guards.",
+    "versions": "Login, release/package/lockfile roots, workflow, server main/Docker/Compose/deploy and isolated QA defaults updated together; cumulative prior patch notes retained.",
+    "nonChanges": "Raised terrain production switch, saves/schema25, collisions, balance, Gold/EP, class rules, authored equipment/animations, access, payment, alert coverage/settings and provider retention unchanged."
+  },
+  "qualification": {
+    "client": "Root22543 terminal0:18 affected Jest suites,509 checks PASS28.248s. Includes rendering ownership, startup quality, surfaces, foliage, deployment host identity/queues/checkout, version and Pages/runtime regressions.",
+    "static": "Root99954 terminal0:scoped ESLint max-warnings0. git diff --check passes.",
+    "browser": "Root92423 terminal0:local anonymous System Chrome2PASS6.1s. Desktop/375px credit focus, login/default version, cumulative notes, real vendored runtime dependencies and no browser failures. Local frontend scope, not public or authenticated campaign/device acceptance.",
+    "retainedNative": "2026-10-08-woodland-reference-budget-checks.json records all three High and three Low original performance limits, all trees/plants and six zero-difference image comparisons. Retain the precise final High run and reused unchanged Low scope, not a fresh combined-run claim.",
+    "retainedSurface": "2026-10-08-moonfrost-surface-checks.json records the current High/Low native surface checks. Source identity makes repeating unchanged native or long campaign/cohort checks unnecessary here."
+  },
+  "operations": {
+    "verifiedMonitor": "Actual eidolon-monitor-1 running, unless-stopped policy;30s poll,3-failure alert,2-success recovery,30m reminders. Four required Postmark/admin environment names configured, values not exposed.",
+    "limits": "Local API/database only, not whole host or public DNS/TLS/frontend. No new mail, forced outage or configuration mutation.",
+    "ssh": "Pinned public ED25519 key fingerprint independently read from trusted local public key: SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE. Pinning and bounded waits do not fix unresolved public SSH routing."
+  },
+  "publication": {
+    "status": "pending",
+    "policy": "Fetch/reconcile origin before push; ordinary CI gates retained. If public SSH remains unavailable, guarded local deployment requires exact tested source and retains hosted CI failure honestly. Independently verify both public release identities/readiness and changed publisher-rewritten runtime bytes afterward."
+  },
+  "remaining": "Full1.80 F1–F5, modern Diablo/PoE art across all families, raised-world production delivery, owner operations/rights decisions and later1.81–1.99 acceptance remain open. Human campaign pacing and physical-phone dungeon/party checks remain deferred, not passed."
+}

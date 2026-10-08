@@ -23,9 +23,9 @@ export const PROCEDURAL_FOLIAGE_RECIPES = Object.freeze([
     // Detailed opaque leaves need spatial culling, not a realm-wide draw batch.
     // Dense roadside stands need tighter bounds in both camera and shadow
     // passes. Keep every tree/leaf/transform; only instance grouping changes.
-    Object.freeze({ id: 'ossuary_birch', region: 'earth', theme: 'pale ossuary birch', coreCount: 120, count: 141, bounds: [-950, 950, -550, 950], scale: [0.88, 1.28], collision: [0.72, 8.2], renderCellSize: 16 }),
-    Object.freeze({ id: 'grave_pine', region: 'earth', theme: 'black grave pine', coreCount: 115, count: 135, bounds: [-950, 950, -550, 950], scale: [0.9, 1.3], collision: [0.78, 8.5], renderCellSize: 16 }),
-    Object.freeze({ id: 'mourning_willow', region: 'earth', theme: 'votive mourning willow', coreCount: 95, count: 115, bounds: [-950, 950, -550, 950], scale: [0.88, 1.22], collision: [0.82, 7.2], renderCellSize: 16 }),
+    Object.freeze({ id: 'ossuary_birch', region: 'earth', theme: 'pale ossuary birch', coreCount: 120, count: 141, bounds: [-950, 950, -550, 950], scale: [0.88, 1.28], collision: [0.72, 8.2], renderCellSize: 8 }),
+    Object.freeze({ id: 'grave_pine', region: 'earth', theme: 'black grave pine', coreCount: 115, count: 135, bounds: [-950, 950, -550, 950], scale: [0.9, 1.3], collision: [0.78, 8.5], renderCellSize: 8 }),
+    Object.freeze({ id: 'mourning_willow', region: 'earth', theme: 'votive mourning willow', coreCount: 95, count: 115, bounds: [-950, 950, -550, 950], scale: [0.88, 1.22], collision: [0.82, 7.2], renderCellSize: 8 }),
     // Only Gloamwood retains tree collision because it is the one realm whose
     // authored trees already shaped navigation. New regional dressing stays
     // visual-only so this art migration cannot silently change combat paths.

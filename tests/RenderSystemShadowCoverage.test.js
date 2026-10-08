@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
+import { getShadowViewBounds } from '../src/core/ShadowViewCoverage.js';
 
 describe('RenderSystem shadow coverage', () => {
     beforeEach(() => {
@@ -43,6 +44,40 @@ describe('RenderSystem shadow coverage', () => {
         expect(fill.dot(eye)).toBeGreaterThan(.9);
         expect(renderSystem.fillLight.castShadow).toBe(false);
         expect(renderSystem.keyLight.position.clone().sub(renderSystem.keyLight.target.position).normalize().distanceTo(key)).toBeLessThan(.00001);
+        renderSystem.dispose();
+    });
+
+    test.each([0, 6, 42])('fits against the actual snapped light target at elevation %s', height => {
+        const renderSystem = new RenderSystem(false);
+        const focus = new THREE.Vector3(2200.133, height, -1400.371);
+        renderSystem.setCameraTarget(focus);
+        renderSystem.updateShadowFocus(focus);
+        const actualTarget = renderSystem.keyLight.target.position;
+        const expected = getShadowViewBounds(renderSystem.camera, renderSystem.cameraOffset,
+            renderSystem.shadowFollowOffset, renderSystem.cameraTarget.clone().sub(actualTarget));
+        expect(renderSystem.shadowViewBounds).toEqual(expected);
+        expect(actualTarget.y).toBe(0);
+        expect(renderSystem.keyLight.position.clone().sub(actualTarget).distanceTo(
+            renderSystem.shadowFollowOffset)).toBeLessThan(.00001);
+        const shadowCamera = renderSystem.keyLight.shadow.camera;
+        shadowCamera.position.copy(renderSystem.keyLight.position);
+        shadowCamera.lookAt(actualTarget);
+        shadowCamera.updateMatrixWorld(true);
+        renderSystem.camera.updateMatrixWorld(true);
+        for (const x of [-1, 1]) for (const y of [-1, 1]) for (const receiverHeight of [-8, 0, 64]) {
+            const ray = new THREE.Raycaster();
+            ray.setFromCamera(new THREE.Vector2(x, y), renderSystem.camera);
+            const receiver = ray.ray.intersectPlane(new THREE.Plane(
+                new THREE.Vector3(0, 1, 0), -receiverHeight), new THREE.Vector3());
+            expect(receiver).not.toBeNull();
+            // Preserve the full receiver volume and off-screen incoming casters,
+            // not just the ground directly beneath the elevated hero.
+            for (const advance of [0, 60]) {
+                const projected = receiver.clone().addScaledVector(
+                    renderSystem.shadowFollowOffset.clone().normalize(), advance).project(shadowCamera);
+                for (const component of ['x', 'y', 'z']) expect(Math.abs(projected[component])).toBeLessThan(1);
+            }
+        }
         renderSystem.dispose();
     });
 

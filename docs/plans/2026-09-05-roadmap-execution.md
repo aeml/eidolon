@@ -6,7 +6,20 @@ now owns future scope, gates and execution receipts through full-release
 readiness. This ledger preserves prior delivery evidence; individual hotfixes
 do not close the whole goal or restart historical queues.
 
-## Current checkpoint October 7
+## Current checkpoint October 8
+
+Live Alpha1.79.1 exactc8ff2cd6 has guarded local/public acceptance, not all-green
+CI: hosted SSH failed, while Pages/source/predeploy checks passed. See its
+[public receipt](2026-10-08-release1-79-1-public-checks.json). Prepared1.79.2
+selectively integrates qualified rendering/release-trust work with cumulative
+notes and all version surfaces updated; publication remains pending. Affected
+509 client checks pass and all27 imported source/test files match qualified
+d3c47e95. Original six woodland-reference budgets pass without density cuts.
+[Candidate receipt](2026-10-08-release1-79-2-checks.json) retains evidence reuse,
+limits and open modern-art/freeze gates. Existing approved local API/database
+alerts verified running unchanged; no repeated email or induced outage.
+
+## Historical checkpoint October 7
 
 Latest accepted live release is **Alpha1.79.0**, exact
 `b5c3981e060d6dea3ef50c9c2b4abb37999856db`, CI37600167508: all ten jobs passed.

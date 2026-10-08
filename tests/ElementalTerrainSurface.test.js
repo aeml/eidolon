@@ -1,6 +1,30 @@
 import { sampleElementalTerrain } from '../src/art/ElementalTerrainSurface.js';
 import { PROCEDURAL_TERRAIN_DEFINITIONS, createProceduralTerrainMaterial } from '../src/art/ProceduralRealmTerrain.js';
 
+test('Moonfrost has exposed ice beds and interrupted stress fractures beneath rougher rime', () => {
+    let ice = 0, fractures = 0, rime = 0;
+    const seed = PROCEDURAL_TERRAIN_DEFINITIONS.water.seed;
+    for (let y = 0; y < 256; y += 7) for (let x = 0; x < 256; x += 7) {
+        const sample = sampleElementalTerrain(x, y, 'water', seed);
+        expect(Number.isFinite(sample.ice)).toBe(true);
+        expect(Number.isFinite(sample.fracture)).toBe(true);
+        expect(sample.ice).toBeGreaterThanOrEqual(0);
+        expect(sample.ice).toBeLessThanOrEqual(1);
+        expect(sample.fracture).toBeGreaterThanOrEqual(0);
+        expect(sample.fracture).toBeLessThanOrEqual(1);
+        if (sample.ice > .65) ice++;
+        if (sample.fracture > .2) fractures++;
+        if (sample.cover > .8) {
+            rime++;
+            expect(sample.ice).toBeLessThan(.26);
+            expect(sample.roughness).toBeGreaterThan(.86);
+        }
+    }
+    expect(ice).toBeGreaterThan(20);
+    expect(fractures).toBeGreaterThan(10);
+    expect(rime).toBeGreaterThan(50);
+});
+
 test.each(['water', 'fire', 'air'])('%s geology wraps exactly and keeps deposits physically coherent', realm => {
     const seed = PROCEDURAL_TERRAIN_DEFINITIONS[realm].seed;
     let bare = 0, covered = 0, bareRoughness = 0, coveredRoughness = 0;

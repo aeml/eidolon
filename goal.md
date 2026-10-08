@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 Alpha1.79.2 prepared stabilization:** Selective rendering and
+deployment-trust integration on accepted live c8ff2cd6; no wholesale future
+milestone merge. All27 selected runtime/test files byte-match the qualified
+d3c47e95 candidate. Affected18 Jest suites PASS509/28.248s; scoped lint and
+whitespace pass. Retained native evidence now passes all original three High
+and three Low woodland-reference limits without removing trees/plants or
+weakening limits. These narrow reference results supersede the older remaining
+woodland-budget failures below, not whole-world/modern-art acceptance.
+Raised terrain remains disabled in production; no saves/economy/access change.
+Login/default versions and cumulative notes are1.79.2; publication pending.
+Owner-approved local API/database alerts independently verified running at
+30s/3 failures/2 successes/30m reminders with configured Postmark recipients.
+No new test email or induced outage. Full roadmap and1.80 F1–F5 remain open.
+See [scoped candidate checks](docs/plans/2026-10-08-release1-79-2-checks.json).
+
 **October8 resumption / storage blocker resolved externally:** About53GiB
 available after restoring identical committed1.79.1 source outside /tmp.
 Temporary worktree/evidence paths disappeared, but ab991065 and all tracked

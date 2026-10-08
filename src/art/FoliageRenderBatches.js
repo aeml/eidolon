@@ -1,4 +1,4 @@
-import { Matrix4, Sphere } from 'three';
+import { Box3, Matrix4, Sphere, Vector3 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getProceduralFoliageArchetype } from './ProceduralRealmFoliage.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
@@ -7,44 +7,36 @@ import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
 
-// Gershgorin bound on A^T A: largest column length alone is unsafe when
-// composed nonuniform scales and rotations introduce shear. This upper
-// singular-value bound retains ordinary orthogonal transforms' tight scale.
-function conservativeSphereScale(matrix) {
-    const e = matrix.elements;
-    const xx = e[0] ** 2 + e[1] ** 2 + e[2] ** 2;
-    const yy = e[4] ** 2 + e[5] ** 2 + e[6] ** 2;
-    const zz = e[8] ** 2 + e[9] ** 2 + e[10] ** 2;
-    const xy = Math.abs(e[0] * e[4] + e[1] * e[5] + e[2] * e[6]);
-    const xz = Math.abs(e[0] * e[8] + e[1] * e[9] + e[2] * e[10]);
-    const yz = Math.abs(e[4] * e[8] + e[5] * e[9] + e[6] * e[10]);
-    return Math.sqrt(Math.max(xx + xy + xz, yy + xy + yz, zz + xz + yz));
-}
-
 // Constructor/quality-change work only. A rotated tree's aggregate box sphere
-// contains empty corners far beyond its actual crown. Bound the same vertices
-// by their cached source spheres too; choose the tighter conservative radius.
-// This is O(instances), not a per-frame vertex scan or a different tree LOD.
+// and transformed source spheres contain empty space beyond the actual crown.
+// Visit the unchanged vertices once to bound their real transformed positions.
+// Affine shear is handled exactly too; no per-frame scan or different tree LOD.
 export function computeFoliageCellBounds(mesh) {
     mesh.computeBoundingBox();
     mesh.boundingSphere ??= new Sphere();
     mesh.boundingBox.getBoundingSphere(mesh.boundingSphere);
     if (!mesh.count) return;
-    if (!mesh.geometry.boundingSphere) mesh.geometry.computeBoundingSphere();
-    const matrix = new Matrix4(), sphere = new Sphere();
-    let radius = 0;
+    const matrix = new Matrix4(), point = new Vector3(), exactBox = new Box3();
+    const positions = mesh.geometry.attributes.position;
+    let radiusSquared = 0;
     for (let i = 0; i < mesh.count; i++) {
         mesh.getMatrixAt(i, matrix);
-        sphere.copy(mesh.geometry.boundingSphere);
-        sphere.center.applyMatrix4(matrix);
-        sphere.radius *= conservativeSphereScale(matrix);
-        radius = Math.max(radius, sphere.center.distanceTo(mesh.boundingSphere.center) + sphere.radius);
+        for (let vertex = 0; vertex < positions.count; vertex++) {
+            point.fromBufferAttribute(positions, vertex).applyMatrix4(matrix);
+            exactBox.expandByPoint(point);
+            radiusSquared = Math.max(radiusSquared, point.distanceToSquared(mesh.boundingSphere.center));
+        }
     }
-    mesh.boundingSphere.radius = Math.min(mesh.boundingSphere.radius, radius + .000001);
+    mesh.boundingSphere.radius = Math.min(mesh.boundingSphere.radius, Math.sqrt(radiusSquared) + .000001);
+    // The same existing vertex walk also tightens shadow influence bounds.
+    // Rotated source-box corners are not foliage; keep a conservative epsilon.
+    mesh.boundingBox.copy(exactBox).expandByScalar(.000001);
 }
 
-// Bake each static tree's same-material parts together once. Spatial instancing
-// still owns world placement/culling; previews retain their named source parts.
+// Bake static same-material parts once. Keep woodland crowns, needle tiers and
+// hanging curtains independently cullable: a shared enclosing box submits all
+// of them in shadow/color passes when only one contributes. Every
+// leaf/transform remains; spatial instancing still owns placement and culling.
 export function getFoliageRenderBatches(id, quality = 'high') {
     const source = getProceduralFoliageArchetype(id);
     const reduced = quality === 'low' && source.some(part => part.geometry.userData.woodlandCrown);
@@ -58,7 +50,8 @@ export function getFoliageRenderBatches(id, quality = 'high') {
                 crown === 'leaf' ? createLeafCanopyGeometry('low') : createConiferBoughGeometry('low'));
             part = { ...part, geometry: LOW_CROWNS.get(crown) };
         }
-        const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}`;
+        const crownKey = crown ? `:${part.name}` : '';
+        const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}${crownKey}`;
         if (!buckets.has(key)) buckets.set(key, []);
         buckets.get(key).push(part);
     }

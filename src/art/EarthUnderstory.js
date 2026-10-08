@@ -56,8 +56,12 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     const geometries = ['bracken', 'sedge'].map(createWoodlandUnderstoryGeometry);
     const material = createWoodlandWindMaterial();
     const cells = new Map();
+    // High's dense plants need tighter submission cells at the camera edge.
+    // Change batching only: retain every transform, blade and full wind bound.
+    // Low keeps its existing draw-call/instance-object tradeoff.
+    const cellSize = quality === 'low' ? 16 : 5.5;
     for (const plant of plants) {
-        const key = `${Math.floor(plant.x / 16)}:${Math.floor(plant.z / 16)}:${plant.variant}`;
+        const key = `${Math.floor(plant.x / cellSize)}:${Math.floor(plant.z / cellSize)}:${plant.variant}`;
         if (!cells.has(key)) cells.set(key, []);
         cells.get(key).push(plant);
     }
@@ -82,6 +86,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
         // Repeated sphere unions drift wider than these compact cells. The
         // aggregate AABB already includes every transformed plant vertex.
         mesh.boundingSphere = mesh.boundingBox.getBoundingSphere(new THREE.Sphere());
+        mesh.userData.windBoundsIncluded = true;
         root.add(mesh);
     }
     return root;

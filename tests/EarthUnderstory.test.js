@@ -44,6 +44,42 @@ test('understory forms repeatable beds with a matching Low subset and clear trav
     }
 });
 
+test.each([['high', 5.5], ['low', 16]])('smaller High batches preserve every plant transform and full wind reach (%s)', (quality, cellSize) => {
+    const terrainElevation = { sample: (x, z) => Math.sin(x * .03) + Math.cos(z * .02) };
+    const plants = createEarthUnderstoryPlacements(quality);
+    const root = createEarthUnderstory({ quality, terrainElevation });
+    const expected = new Set(), actual = new Set(), transform = new THREE.Object3D(), matrix = new THREE.Matrix4();
+    const key = (variant, values) => `${variant}:${Array.from(values).join(',')}`;
+    for (const plant of plants) {
+        transform.position.set(plant.x, terrainElevation.sample(plant.x, plant.z), plant.z);
+        transform.rotation.set(0, plant.rotation, 0); transform.scale.setScalar(plant.scale); transform.updateMatrix();
+        expected.add(key(plant.variant, new Float32Array(transform.matrix.elements)));
+    }
+    const geometries = new Set(), materials = new Set();
+    try {
+        for (const mesh of root.children) {
+            geometries.add(mesh.geometry); materials.add(mesh.material);
+            const [cx, cz, variant] = mesh.name.slice('understory:'.length).split(':').map(Number);
+            expect(mesh.userData.windBoundsIncluded).toBe(true);
+            for (let i = 0; i < mesh.count; i++) {
+                mesh.getMatrixAt(i, matrix);
+                const x = matrix.elements[12], z = matrix.elements[14];
+                expect(Math.floor(x / cellSize)).toBe(cx); expect(Math.floor(z / cellSize)).toBe(cz);
+                actual.add(key(variant, matrix.elements));
+            }
+            const padded = mesh.boundingBox.clone(); mesh.computeBoundingBox();
+            expect(padded.min.x).toBeCloseTo(mesh.boundingBox.min.x - WOODLAND_WIND_REACH * 1.4, 6);
+            expect(padded.max.z).toBeCloseTo(mesh.boundingBox.max.z + WOODLAND_WIND_REACH * 1.4, 6);
+        }
+        expect(actual).toEqual(expected); expect(actual.size).toBe(plants.length);
+        expect(root.userData.plantCount).toBe(plants.length);
+        expect(geometries.size).toBe(2); expect(materials.size).toBe(1);
+    } finally {
+        root.children.forEach(mesh => mesh.dispose());
+        geometries.forEach(geometry => geometry.dispose()); materials.forEach(material => material.dispose());
+    }
+});
+
 // Test the sampler contract independently of the opt-in world terrain profile.
 // Include flat production ground as well as a nonconstant elevated surface.
 test.each([null, { sample: (x, z) => 2 + Math.sin(x * .01) * .5 + Math.cos(z * .01) * .5 }])(

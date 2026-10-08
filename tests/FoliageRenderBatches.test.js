@@ -23,13 +23,29 @@ function surfaceSignature(parts) {
 test.each(PROCEDURAL_FOLIAGE_RECIPES.map(recipe => recipe.id))('%s batching preserves every transformed surface and shadow/material assignment', id => {
     const source = getProceduralFoliageArchetype(id), batches = getFoliageRenderBatches(id);
     expect(getFoliageRenderBatches(id)).toBe(batches);
-    expect(batches.length).toBeLessThan(source.length);
+    expect(batches.length).toBeLessThanOrEqual(source.length);
+    if (!source.some(part => part.geometry.userData.woodlandCrown)) expect(batches.length).toBeLessThan(source.length);
     expect(surfaceSignature(batches)).toEqual(surfaceSignature(source));
     expect(batches.every(part => part.geometry.boundingSphere.radius > 0)).toBe(true);
     for (const part of source) expect(part.matrix).toBeInstanceOf(THREE.Matrix4);
 });
 
 const triangles = parts => parts.reduce((sum, part) => sum + (part.geometry.index?.count || part.geometry.attributes.position.count) / 3, 0);
+
+test.each(['high', 'low'].flatMap(quality => ['ossuary_birch', 'grave_pine', 'mourning_willow'].map(id => [quality, id])))('%s %s crowns retain independent cullable geometry without losing a crown', (quality, id) => {
+    const source = getProceduralFoliageArchetype(id);
+    const leaves = source.filter(part => part.geometry.userData.woodlandCrown);
+    const batches = getFoliageRenderBatches(id, quality);
+    for (const leaf of leaves) {
+        const candidate = batches.find(part => part.name === leaf.name);
+        expect(candidate).toBeDefined();
+        expect(candidate.matrix).toEqual(leaf.matrix);
+        expect(candidate.material).toBe(leaf.material);
+        expect(candidate.castShadow).toBe(leaf.castShadow);
+        expect(candidate.geometry.userData.woodlandCrown).toBe(leaf.geometry.userData.woodlandCrown);
+    }
+    expect(batches.filter(part => part.geometry.userData.woodlandCrown)).toHaveLength(leaves.length);
+});
 
 test.each(['high', 'low'])('%s cell spheres contain every transformed crown vertex without empty-box-corner inflation', quality => {
     let improved = 0;
@@ -45,18 +61,20 @@ test.each(['high', 'low'])('%s cell spheres contain every transformed crown vert
             mesh.computeBoundingBox();
             const box = mesh.boundingBox.clone(), oldRadius = box.getBoundingSphere(new THREE.Sphere()).radius;
             computeFoliageCellBounds(mesh);
-            expect(mesh.boundingBox).toEqual(box);
+            expect(box.clone().expandByScalar(.000001).containsBox(mesh.boundingBox)).toBe(true);
             expect(mesh.boundingSphere.radius).toBeLessThanOrEqual(oldRadius);
             if (mesh.boundingSphere.radius < oldRadius - .01) improved++;
-            let escape = -Infinity;
+            let escape = -Infinity, boxEscape = 0;
             for (let i = 0; i < count; i++) {
                 mesh.getMatrixAt(i, matrix);
                 for (let j = 0; j < part.geometry.attributes.position.count; j++) {
                     point.fromBufferAttribute(part.geometry.attributes.position, j).applyMatrix4(matrix);
+                    boxEscape = Math.max(boxEscape, mesh.boundingBox.distanceToPoint(point));
                     escape = Math.max(escape, point.distanceTo(mesh.boundingSphere.center) - mesh.boundingSphere.radius);
                 }
             }
             expect(escape).toBeLessThanOrEqual(.000001);
+            expect(boxEscape).toBeLessThanOrEqual(.000001);
             expect(mesh.instanceMatrix.array).toEqual(original);
             mesh.dispose(); // shared source geometry/material are not owned
         }
@@ -71,6 +89,47 @@ test('an empty foliage cell retains empty bounds without inventing a visible tre
     expect(mesh.boundingBox.isEmpty()).toBe(true);
     expect(mesh.boundingSphere.isEmpty()).toBe(true);
     mesh.dispose();
+});
+
+test('one-time foliage bounds use the actual transformed vertices, not an inflated source sphere', () => {
+    const geometry = new THREE.TetrahedronGeometry(3), material = new THREE.MeshStandardMaterial();
+    const mesh = new THREE.InstancedMesh(geometry, material, 2);
+    try {
+        mesh.setMatrixAt(0, new THREE.Matrix4().compose(new THREE.Vector3(-2, 1, 0),
+            new THREE.Quaternion().setFromEuler(new THREE.Euler(.4, .7, .2)), new THREE.Vector3(1.8, .7, 1.2)));
+        mesh.setMatrixAt(1, new THREE.Matrix4().compose(new THREE.Vector3(3, 2, 1),
+            new THREE.Quaternion().setFromEuler(new THREE.Euler(.8, -.2, .6)), new THREE.Vector3(.8, 1.3, .6)));
+        computeFoliageCellBounds(mesh);
+        const matrix = new THREE.Matrix4(), point = new THREE.Vector3();
+        let exactRadius = 0;
+        for (let i = 0; i < mesh.count; i++) {
+            mesh.getMatrixAt(i, matrix);
+            for (let j = 0; j < geometry.attributes.position.count; j++) {
+                point.fromBufferAttribute(geometry.attributes.position, j).applyMatrix4(matrix);
+                exactRadius = Math.max(exactRadius, point.distanceTo(mesh.boundingSphere.center));
+            }
+        }
+        expect(mesh.boundingSphere.radius).toBeCloseTo(exactRadius, 5);
+    } finally { mesh.dispose(); geometry.dispose(); material.dispose(); }
+});
+
+test('one-time cell boxes exclude empty rotated source-box corners but contain every actual vertex', () => {
+    const geometry = new THREE.TetrahedronGeometry(3), material = new THREE.MeshBasicMaterial();
+    const mesh = new THREE.InstancedMesh(geometry, material, 1);
+    try {
+        mesh.setMatrixAt(0, new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(.4, .73, .2)));
+        mesh.computeBoundingBox();
+        const original = mesh.boundingBox.clone();
+        const matrix = new THREE.Matrix4(), point = new THREE.Vector3(), exact = new THREE.Box3();
+        mesh.getMatrixAt(0, matrix);
+        for (let i = 0; i < geometry.attributes.position.count; i++) {
+            exact.expandByPoint(point.fromBufferAttribute(geometry.attributes.position, i).applyMatrix4(matrix));
+        }
+        computeFoliageCellBounds(mesh);
+        expect(mesh.boundingBox.getSize(new THREE.Vector3()).length()).toBeLessThan(original.getSize(new THREE.Vector3()).length());
+        expect(mesh.boundingBox.min.distanceTo(exact.min)).toBeLessThan(.00001);
+        expect(mesh.boundingBox.max.distanceTo(exact.max)).toBeLessThan(.00001);
+    } finally { mesh.dispose(); geometry.dispose(); material.dispose(); }
 });
 
 test('compound sheared transforms cannot clip actual foliage vertices', () => {

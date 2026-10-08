@@ -261,7 +261,8 @@ jobs:
     name: Predeploy Character QA (System Chrome)
     needs: [client-tests, server-tests, browser-smoke]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
-    if: (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')) || inputs.full_stabilization == true
+    # Manual full QA must not execute arbitrary branch code on the game host.
+    if: github.repository == 'aeml/eidolon' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.full_stabilization == true))
     env:
       EIDOLON_E2E_WEB_PORT: '41873'
       EIDOLON_ISOLATED_QA_PORT: '18085'
@@ -536,11 +537,15 @@ jobs:
       - name: Configure SSH key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Public identity verified against the server's local public key.
+          # Rotation requires trusted console verification, not a network scan.
+          SSH_KNOWN_HOSTS: 'ssh.mendola.tech ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGiPjpRvGPRwDs4CoG7cAk412OIiNsrlllMFoCuMM5w8'
         run: |
           install -m 700 -d ~/.ssh
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ssh.mendola.tech >> ~/.ssh/known_hosts
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
 
       - name: Deploy via SSH
         env:
@@ -557,7 +562,7 @@ jobs:
             qa_usernames="${qa_usernames},${QA_USERNAME_SECONDARY}"
           fi
           qa_usernames_b64="$(printf '%s' "${qa_usernames}" | base64 -w0)"
-          ssh -o BatchMode=yes aeml@ssh.mendola.tech \
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=10 -o ConnectionAttempts=1 -o ServerAliveInterval=15 -o ServerAliveCountMax=2 aeml@ssh.mendola.tech \
             "REF_NAME='${REF_NAME}' COMMIT_SHA='${COMMIT_SHA}' QA_USERNAMES_B64='${qa_usernames_b64}' bash -se" <<'EOF'
           set -euo pipefail
           cd /home/aeml/eidolon
@@ -603,13 +608,15 @@ jobs:
           chmod --reference=.env "${qa_env_tmp}"
           mv "${qa_env_tmp}" .env
           trap - EXIT
-          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.79.1" bash ./deploy/deploy_linux.sh
+          CLEAN_SERVER_TREE=true EIDOLON_BUILD_COMMIT="${COMMIT_SHA}" EIDOLON_BUILD_VERSION="Alpha 1.79.2" bash ./deploy/deploy_linux.sh
           EOF
 
   post-deploy-browser:
     name: Live Release and Character QA
     needs: [deploy, deploy-server]
     runs-on: [self-hosted, linux, x64, eidolon-live-browser]
+    # Require a canonical production push as well as successful deployments.
+    if: github.repository == 'aeml/eidolon' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
     # Verify the migrated game domains. Variables allow explicit endpoint changes
     # without rewriting every live QA step; no health-only substitute for gameplay.
     env:

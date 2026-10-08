@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.1</span>
+                    <span class="start-version-row__label">Alpha 1.79.2</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -780,6 +780,18 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.79.2">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.2 (woodland rendering, Moonfrost surfaces and release trust)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Woodland crowns and ground cover use more selective render batches while retaining every tree, leaf and plant, their original detail and unchanged collisions. Static bounds reuse creation-time vertex work; no extra per-frame vertex scan. High woodland reference now measures 249,406 triangles and 338 draw calls within the original limits. All three High and Low reference views pass; this is not a whole-world or every-device performance guarantee.</li>
+                        <li>Gloamwood leaves gain subtle veins and shadow-aware light wrapping. Rock materials use registered mineral detail across differently angled faces, and optional raised-world outcrops retain sharp cleaves with smoother weathered shoulders. Silhouettes and collision geometry stay unchanged.</li>
+                        <li>Moonfrost ground gains weathered ice sheets, wind-deposited rime and short broken fissures with matching color, relief and roughness on High and Low. The existing texture count, geometry and gameplay stay unchanged.</li>
+                        <li>The renderer respects saved graphics quality from startup; Low-quality startup no longer briefly creates High-quality postprocessing. Ground-anchored, snapped shadow coverage and conservative foliage shadow bounds preserve off-screen shadows, restoring temporary flags after normal rendering, errors and disposal.</li>
+                        <li>Deployment uses a pinned public host key, strict verification and bounded SSH waits. Native QA runs only from trusted production branches and the canonical repository; ordinary hosted checks retain separate queues. This does not repair external SSH routing or bypass deployment guards.</li>
+                        <li>This is a scoped rendering/release-trust patch, not the 1.80 feature freeze or the full 1.87 art milestone. Raised-Earth live integration, final modern-art/equipped-party review, human pacing and supported-device acceptance remain open.</li>
+                        <li>No account wipe, schema migration, balance, Gold/EP, equipment restriction, animation, access, payment or alert-setting change. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.1">
                     <h3 class="patch-note-entry__title">Alpha 1.79.1 (realm-ground polish and stricter browser origins)</h3>
                     <ul class="patch-note-entry__list">
