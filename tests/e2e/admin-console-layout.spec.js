@@ -34,6 +34,8 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                     } : {}),
                     ...(type === 'admin_announcement' ? { final: true,
                         message: 'Synthetic presentation result: notice queued; delivery not guaranteed.' } : {}),
+                    ...(type === 'admin_beta_invitation' ? { final: true, code: 'A'.repeat(76), username: payload.username,
+                        expiresAt: payload.expiresAt, message: 'Synthetic private invitation; no account created.' } : {}),
                     ...(type === 'admin_chat_moderation_target' ? { target: {
                         accountId: 'abcdef012345678901234567', account: payload.target, revision: 2
                     } } : {}),
@@ -85,6 +87,23 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await expect(dialog.locator('li').last()).toBeInViewport();
         await dialog.getByRole('button', { name: 'Refresh players' }).scrollIntoViewIfNeeded();
         await page.screenshot({ path: testInfo.outputPath('administration.png') });
+        const invitations = dialog.locator('details').filter({ has: page.locator('summary', { hasText: 'Beta invitations (preparation)' }) });
+        await invitations.locator('summary').click();
+        await invitations.getByLabel('Exact new username', { exact: true }).fill('Invited Player');
+        await invitations.getByLabel('Exact registration email (optional)', { exact: true }).fill('private@example.invalid');
+        await invitations.getByLabel('Expiry (UTC; within seven days)', { exact: true }).fill(new Date(Date.now() + 86400000).toISOString().slice(0,16));
+        await invitations.getByRole('button', { name: 'Review invitation', exact: true }).click();
+        await expect(invitations.getByRole('button', { name: 'Cancel', exact: true })).toBeFocused();
+        const prepareInvitation = invitations.getByRole('button', { name: 'Prepare this invitation', exact: true });
+        await prepareInvitation.scrollIntoViewIfNeeded(); expect((await prepareInvitation.boundingBox()).height).toBeGreaterThanOrEqual(44);
+        expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+        await prepareInvitation.click();
+        await expect(invitations.getByLabel('Private invitation code', { exact: true })).toHaveValue('A'.repeat(76));
+        await expect(invitations.getByLabel('Private invitation code', { exact: true })).toHaveAttribute('type', 'password');
+        await invitations.getByRole('button', { name: 'Copy invitation code', exact: true }).scrollIntoViewIfNeeded();
+        await page.screenshot({ path: testInfo.outputPath('administration-invitation.png') });
+        await invitations.locator('summary').click();
+        await expect(invitations.getByLabel('Private invitation code', { exact: true })).toHaveValue('');
         await dialog.getByRole('button', { name: 'Service diagnostics', exact: true }).click();
         await expect(dialog.getByRole('list', { name: 'Service diagnostics' }).locator('li')).toHaveCount(18);
         await expect(dialog).toContainText('Realtime simulation frames');
@@ -214,7 +233,7 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await expect(operations.getByRole('combobox', { name: 'Rarity', exact: true })).toHaveValue('Eidolic');
         await expect(operations.getByLabel('Quantity', { exact: true })).toHaveAttribute('max', '1000');
         expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
-        const notices = dialog.locator('.administration-announcements');
+        const notices = dialog.locator('.administration-announcements').filter({ has: page.locator('summary', { hasText: 'Maintenance and incident notices' }) });
         await notices.locator('summary').click();
         await notices.getByRole('combobox', { name: 'Notice', exact: true }).selectOption('recovery');
         await notices.getByLabel('Public message', { exact: true }).fill('Service restored. <img src=x> is literal text. ' + 'w'.repeat(170));

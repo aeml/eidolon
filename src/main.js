@@ -1,4 +1,5 @@
 import { mountPatchNotesPagination } from './ui/PatchNotesPagination.js';
+import { registrationInvitationPayload, clearRegistrationInvitation } from './ui/RegistrationInvitation.js';
 import { registerAssetServiceWorker } from './assets/ServiceWorkerBoot.js';
 import { ensureGameStylesReady } from './assets/StylesheetBoot.js';
 import { resolveServerAddress } from './core/serverAddress.js';
@@ -327,10 +328,12 @@ const bootLogin = async () => {
             }
             if (loginModeration?.handleMessage(msg)) return;
             if (msg.type === 'error') {
+                if (typeof msg.payload === 'string' && msg.payload.startsWith('Registration successful!')) clearRegistrationInvitation();
                 finishAuthRequest();
                 authStatus.textContent = msg.payload;
                 authStatus.style.color = '#ff4444';
             } else if (msg.type === 'login_success') {
+                clearRegistrationInvitation();
                 finishAuthRequest();
                 isAuthenticated = true;
                 publicEmailRecovery?.close();
@@ -435,7 +438,8 @@ const bootLogin = async () => {
                 payload: {
                     username: authUsernameInput.value,
                     email: authEmailInput.value,
-                    password: authPasswordInput.value
+                    password: authPasswordInput.value,
+                    ...registrationInvitationPayload()
                 }
             }, "Register request sent...");
         });

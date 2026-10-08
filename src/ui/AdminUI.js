@@ -4,6 +4,7 @@ import { AdminReportReview } from './AdminReportReview.js';
 import { AdminRemovalReview } from './AdminRemovalReview.js';
 import { AdminChatModeration } from './AdminChatModeration.js';
 import { AdminAnnouncement } from './AdminAnnouncement.js';
+import { AdminBetaInvitation } from './AdminBetaInvitation.js';
 import { renderAdminServiceDiagnostics } from './AdminServiceDiagnostics.js';
 
 // Visibility is only presentation. Every read and operation must be
@@ -38,6 +39,7 @@ export class AdminUI {
                         <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="admin_service">Service diagnostic reads</option><option value="admin_report_review">Report review requests</option><option value="login">Login</option>
                         <option value="admin_chat_moderation">Moderation decisions</option>
                         <option value="admin_announcement">Public notice requests</option>
+                        <option value="admin_beta_invitation">Beta invitation requests</option>
                         <option value="admin_privacy_export_approval">Export approval decisions</option>
                         <option value="admin_removal_review">Removal dependency reads</option>
                         <option value="admin_chat_moderation_target">Moderation target checks</option>
@@ -87,6 +89,11 @@ export class AdminUI {
         this.note = this.root.querySelector('.administration-note');
         this.operations = new AdminOperations(this.root.querySelector('.administration-body'), (type, payload, id) => this.request(type, payload, id));
         this.announcements = new AdminAnnouncement(this.root.querySelector('.administration-body'), (type, payload, id) => this.request(type, payload, id));
+        this.invitations = new AdminBetaInvitation(this.root.querySelector('.administration-body'), (type, payload, id) => this.request(type, payload, id));
+        this.invitationVisibility = new MutationObserver(() => {
+            if (this.root.hidden || this.root.style.display === 'none') this.invitations.clear();
+        });
+        this.invitationVisibility.observe(this.root, { attributes: true, attributeFilter: ['hidden', 'style'] });
         this.open = () => {
             if (!this.authorized) return;
             this.openWindow(this.root);
@@ -95,6 +102,7 @@ export class AdminUI {
         };
         ownedEvent(this, launcher, 'click', this.open);
         ownedEvent(this, this.root.querySelector('.close-btn'), 'click', () => {
+            this.invitations.clear();
             this.closeWindow(this.root);
             if (!this.launcher?.hidden) this.launcher?.focus();
         });
@@ -133,6 +141,7 @@ export class AdminUI {
         for (const view of this.views) view.disabled = !this.authorized;
         this.operations.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
         this.announcements.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
+        this.invitations.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
         for (const review of this.reportReviews) review.setState(Boolean(this.pending));
         for (const moderation of this.reportModerations) moderation.setState(Boolean(this.pending));
         if (!this.authorized) {
@@ -156,12 +165,19 @@ export class AdminUI {
         this.root.setAttribute('aria-busy', 'true');
         this.operations.setState({ authorized: this.authorized, busy: true });
         this.announcements.setState({ authorized: this.authorized, busy: true });
+        this.invitations.setState({ authorized: this.authorized, busy: true });
         for (const review of this.reportReviews) review.setState(true);
         for (const moderation of this.reportModerations) moderation.setState(true);
         this.timeout = setTimeout(() => {
             const request = this.pending;
             this.pending = null;
             this.root.setAttribute('aria-busy', 'false');
+            if (request?.type === 'admin_beta_invitation') {
+                const message = 'Invitation acknowledgement was not received. Check activity history before preparing another; no automatic resend was made.';
+                this.invitations.handleResult({ id: request.id, message });
+                this.setAuthorized(this.authorized); this.status.textContent = message;
+                return;
+            }
             if (request?.type === 'admin_announcement') {
                 const message = 'Notice acknowledgement was not received. Check server chat and activity history before preparing another notice; no automatic resend was made.';
                 this.announcements.handleResult({ id: request.id, message });
@@ -224,7 +240,9 @@ export class AdminUI {
         const removalResult = type === 'admin_removal_review_result';
         const moderationResult = ['admin_chat_moderation_result', 'admin_chat_moderation_target_result'].includes(type);
         const announcementResult = type === 'admin_announcement_result';
-        this.setAuthorized(result.authorized === true && (mutation || reviewResult || removalResult || moderationResult || announcementResult || result.success === true));
+        const invitationResult = type === 'admin_beta_invitation_result';
+        this.setAuthorized(result.authorized === true && (mutation || reviewResult || removalResult || moderationResult || announcementResult || invitationResult || result.success === true));
+        if (invitationResult) this.invitations.handleResult(result);
         if (announcementResult) this.announcements.handleResult(result);
         if (mutation) this.operations.handleResult(result);
         if (!this.authorized) {
@@ -382,6 +400,7 @@ export class AdminUI {
     }
 
     dispose() {
+        this.invitationVisibility.disconnect();
         disposeOwnedEvents(this);
         this.connectionState('closed');
         this.launcher?.removeEventListener('click', this.open);

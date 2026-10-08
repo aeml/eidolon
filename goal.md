@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Future1.90 invitation tools staged:** Current-role/session checks and successful
+secret-free audit precede private issuance; explicit review, masked copy and
+transient register-only entry are implemented.426focused client checks, ten
+race-enabled server functions and two actual desktop/narrow synthetic-response
+UI cases qualify locally. [Evidence](docs/plans/2026-10-08-beta-invitation-tools-checks.json).
+Actual Mongo/signup/duplicate/restart/retained-account/lifecycle/rollback and
+full operator/near-complete art/content/performance/device/human/owner gates
+remain. This supersedes only the older pending-tools wording below. No version,
+production environment, public admission or beta-channel change; full goal active.
+
 **Future1.90signup backend preparation only:** Signup-only account-bound,
 expiring opaque invitations now have strict verification before credential/
 storage work and fail-closed configuration, with open signup the default.

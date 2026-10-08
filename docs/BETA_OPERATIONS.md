@@ -7,8 +7,9 @@ payment integration or new infrastructure purchase.
 
 ## Staged invitation backend — not ready to activate
 
-The separate1.90preparation branch has signup-only invitation verification,
-not complete invited admissions. Default `EIDOLON_REGISTRATION_MODE=open`
+The separate1.90preparation branch has signup verification, explicitly reviewed
+audited administrator issuance and transient client invitation entry, but not
+complete end-to-end admission qualification. Default `EIDOLON_REGISTRATION_MODE=open`
 preserves public registration. No production environment or existing account
 has changed. Only an explicitly approved near-complete beta transition may
 select `invited` after the entire issuance/client/retained-account path qualifies.
@@ -20,12 +21,26 @@ account/email in the token. The private signing key is never part of client
 assets, public URLs or logs. Rotation invalidates outstanding invitations but
 must not invalidate existing account credentials or characters.
 
-Do not configure/enable this unfinished route yet. Authenticated audited admin
-issuance, private client entry, actual invited signup/duplicate/restart and
-existing-account login/resume/save checks, lifecycle/rollback review and operator
-handoff remain required. No automatic email, replay, blanket denial of existing
+Administrators use **Administration → Beta invitations (preparation)** to
+review an exact new username, optional registration email and UTC expiry, then
+explicitly prepare a code. Successful audit storage and current role/session
+authority are required and rechecked before the private reply. Activity history
+records target/expiry/admission only, never the code or email. The code is masked;
+copying requires an explicit action. Closing the section/window, disconnecting
+or losing authorization clears it; no automatic resend follows uncertainty.
+
+Invitees enter the exact reviewed identity and code under **Connection & account
+help → Have a registration invitation?**, then select Register. Codes are not
+included in login requests, persisted, added to URLs or automatically replayed;
+successful registration/login clears the transient input. No automatic email or
+account is created by issuance, and nobody should post codes in chat or reports.
+
+Do not configure/enable this unfinished route yet. Actual invited signup/
+duplicate/restart and existing-account login/resume/save checks, invitation
+lifecycle/rollback review and operator handoff remain required. No blanket denial of existing
 accounts, player cap promise or beta-ready label is introduced.
 See [exact backend evidence](plans/2026-10-08-beta-invitation-backend-checks.json).
+See [staged issuance/client checks](plans/2026-10-08-beta-invitation-tools-checks.json).
 
 ## Approved direction and decisions still required before transition
 

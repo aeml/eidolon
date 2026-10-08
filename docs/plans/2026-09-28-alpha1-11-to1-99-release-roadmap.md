@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Future1.90 staged tools now include audited administrator issuance with explicit
+identity/expiry review, masked transient private code and register-only entry.
+426focused client checks, ten race-enabled server functions and two actual
+desktop/narrow synthetic-response UI cases pass; original limits retained.
+[Evidence](2026-10-08-beta-invitation-tools-checks.json). Actual Mongo/signup/
+duplicate/restart/retained-account/lifecycle/rollback and full operator/art/
+content/performance/device/human/owner gates remain. Older pending-tools wording
+below is historical only; no public access, configuration, version or label change.
+Original numbered requirements and the complete modern-world scope stay active.
+
 Future1.90backend preparation adds signup-only opaque, account-bound expiring
 invitation verification before credential/storage work, default open policy and
 fail-closed private-key configuration. Focused race and actual read-only compiled

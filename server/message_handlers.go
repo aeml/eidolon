@@ -6,6 +6,7 @@ package main
 type messageHandler func(*Client, Message)
 
 var messageHandlers = map[string]messageHandler{
+	MsgAdminBetaInvitation:        handleAdminBetaInvitation,
 	MsgAdminAnnouncement:          handleAdminAnnouncement,
 	MsgOwnerExportSection:         handleOwnerExport,
 	MsgChangePassword:             handlePasswordChange,

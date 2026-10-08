@@ -28,6 +28,28 @@ jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
 }));
 
 describe('asset persistence boot wiring', () => {
+    test.each(['login', 'register'])('private invitation is forwarded only during %s as appropriate and cleared after success', async type => {
+        buildStartDom(); installBrowserMocks();
+        document.body.insertAdjacentHTML('beforeend', '<input id="auth-invitation" type="password">');
+        const invitation = document.getElementById('auth-invitation'); invitation.value = 'A'.repeat(76);
+        const sockets = [];
+        class MockWebSocket {
+            static CONNECTING = 0; static OPEN = 1; static CLOSED = 3;
+            constructor() { this.readyState = 0; this.sent = []; sockets.push(this); }
+            send(value) { this.sent.push(JSON.parse(value)); }
+            close() { this.readyState = 3; this.onclose?.(); }
+        }
+        Object.defineProperty(globalThis, 'WebSocket', { configurable: true, value: MockWebSocket });
+        await import('../src/main.js'); window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
+        document.getElementById(type === 'login' ? 'btn-login' : 'btn-register').click();
+        sockets[0].readyState = 1; sockets[0].onopen();
+        expect(sockets[0].sent).toHaveLength(1); expect(sockets[0].sent[0].type).toBe(type);
+        if (type === 'register') expect(sockets[0].sent[0].payload.inviteCode).toBe('A'.repeat(76));
+        else expect(sockets[0].sent[0].payload).not.toHaveProperty('inviteCode');
+        sockets[0].onmessage({ data: JSON.stringify(type === 'register' ? { type: 'error', payload: 'Registration successful! Please login.' }
+            : { type: 'login_success', payload: { hasCharacter: false } }) });
+        expect(invitation.value).toBe('');
+    });
     // Each test builds a new document; production boot runs once per module.
     beforeEach(() => {
         // Retire the prior fixture's detached active screen before mounting
