@@ -6,6 +6,7 @@ import { createTaperedRoot } from './EarthLandmarkGeometry.js';
 import { sampleVerdantMasonry } from './VerdantMasonry.js';
 import { createCryptWallGeometry } from './CryptWallGeometry.js';
 import { sampleElementalDungeonSurface } from './ElementalDungeonSurface.js';
+import { createElementalDungeonWallGeometry } from './ElementalDungeonWallGeometry.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -690,7 +691,8 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
             const value = kind === 'floor' ? new THREE.PlaneGeometry(width, height)
                 : kind === 'wall' && dungeonType === 'verdant_bastion_catacombs'
                     ? createCryptWallGeometry(width, height, depth)
-                    : new THREE.BoxGeometry(width, height, depth);
+                    : kind === 'wall' ? createElementalDungeonWallGeometry(dungeonType, width, height, depth, surfaceQuality)
+                        : new THREE.BoxGeometry(width, height, depth);
             value.computeBoundingBox();
             value.computeBoundingSphere();
             geometries.set(key, value);

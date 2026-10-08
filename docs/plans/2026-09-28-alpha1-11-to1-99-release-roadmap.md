@@ -1446,6 +1446,17 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October8: **staged1.87 elemental dungeon architecture** adds family-specific
+blind arches, supports and layered stone courses without changing full-layout
+collision boxes or walk-floor partitions. Each wall stays one cached mesh;
+foreground room and legacy corridor cutaways remain simple boxes. Existing
+surface maps are byte-identical.36 distinct focused checks qualify the changed
+scope, with final18 geometry checks revalidated after removing overlapping crown
+faces; both final equipped desktop/phone-sized native cases pass.
+[Evidence and added geometry cost](2026-10-08-elemental-dungeon-architecture-checks.json)
+retain all modern-art, workload/performance and ordered release gates. This is
+not live publication, full1.87 acceptance or a beta-ready claim.
+
 October8: **staged1.87 elemental dungeon surfaces** now use softer weathered
 stone and less intrusive repeating glow in Fire/Air/Water/Umbral rooms. High
 and Medium use256px maps; Low retains its original64px map-memory footprint.

@@ -1058,9 +1058,7 @@ export class WorldGenerator {
         const wallLength = segmentLength;
         const wallHeight = 15;
         const wallThickness = 2;
-        const wallGeo = this.dungeonInteriorKit
-            ? this.dungeonInteriorKit.wallGeometry(wallLength, wallHeight, wallThickness)
-            : new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
+        const wallGeo = this.dungeonInteriorKit ? null : new THREE.BoxGeometry(wallLength, wallHeight, wallThickness);
 
         // Determine transparency based on wall position relative to corridor center
         // Camera is at (+100, +100, +100) looking at (0,0,0)
@@ -1109,7 +1107,8 @@ export class WorldGenerator {
         }
 
         // Left Wall
-        const leftWall = new THREE.Mesh(wallGeo, leftMat);
+        const leftWall = new THREE.Mesh(this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.wallGeometry(wallLength, wallHeight, wallThickness, isLeftTransparent) : wallGeo, leftMat);
         leftWall.name = this.dungeonInteriorKit ? 'ProceduralDungeonCorridorWall' : 'DungeonCorridorWall';
         leftWall.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
         leftWall.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';
@@ -1121,7 +1120,8 @@ export class WorldGenerator {
         this.collisionManager.addCollider(new THREE.Box3().setFromObject(leftWall));
 
         // Right Wall
-        const rightWall = new THREE.Mesh(wallGeo, rightMat);
+        const rightWall = new THREE.Mesh(this.dungeonInteriorKit
+            ? this.dungeonInteriorKit.wallGeometry(wallLength, wallHeight, wallThickness, isRightTransparent) : wallGeo, rightMat);
         rightWall.name = this.dungeonInteriorKit ? 'ProceduralDungeonCorridorWall' : 'DungeonCorridorWall';
         rightWall.userData.proceduralDungeonSurface = Boolean(this.dungeonInteriorKit);
         rightWall.userData.dungeonType = this.dungeonInteriorKit?.dungeonType || '';

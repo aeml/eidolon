@@ -70,12 +70,19 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                     render.setCameraTarget(hero.position); render.updateEnvironmentLighting(hero.position, 0);
                     render.render(); render.render();
                     const floor = render.instanceEnvironmentGroup.getObjectByName('DungeonUnionFloor');
+                    const walls = render.instanceEnvironmentGroup.children.filter(part => part.name === 'ProceduralDungeonWall');
+                    const detailed = walls.filter(part => part.geometry.userData.elementalWall === type);
                     return { type, view, zoom: render.currentZoom,
                         floorSize: floor.material.map.image.width,
+                        detailedWalls: detailed.length,
+                        maxWallTriangles: Math.max(...detailed.map(part => part.geometry.attributes.position.count / 3)),
+                        layeredCutaways: walls.filter(part => part.material.transparent && part.geometry.type !== 'BoxGeometry').length,
                         calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
                 }, { type, method, layout, view });
                 expect(sample.zoom).toBe(15); expect(sample.floorSize).toBe(mobile ? 64 : 256);
                 expect(sample.calls).toBeGreaterThan(1); expect(sample.triangles).toBeGreaterThan(100);
+                expect(sample.detailedWalls).toBeGreaterThan(0); expect(sample.maxWallTriangles).toBeLessThanOrEqual(3000);
+                expect(sample.layeredCutaways).toBe(0);
                 samples.push(sample);
                 await page.screenshot({ path: testInfo.outputPath(`${type}-${view}.png`),
                     style: '#perf-overlay { visibility: hidden !important; }' });

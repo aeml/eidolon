@@ -1,0 +1,58 @@
+{
+  "milestone": "1.87 elemental dungeon architecture — staged, not published",
+  "checkedAt": "2026-10-08T05:24:13Z",
+  "parent": "a18ad39fca0cf79303777d4045484473c27abf3e",
+  "branch": "work/alpha-1-87-dungeon-architecture-20261008",
+  "implementation": [
+    "Original one-mesh recessed wall architecture: clipped forge arches and broad piers in Molten Core; slender pointed arcades in Tempest Spire; rounded blind arches and tide courses in Abyssal Well; asymmetric fractured trim in Umbral Nexus.",
+    "Stepped sloped plinths/crowns and inset backing catch actual light inside the existing solid. Recesses are not doors, new walking space, or ground solids. Small wall/corner segments retain boxes; no added interactive object.",
+    "Opaque geometry is cached per instance/dimension. Foreground cutaways retain one simple box; the legacy corridor constructor now chooses its own opaque/cutaway geometry instead of sharing layered geometry across both.",
+    "All original bays/supports retained on Low; only Water's rounded arch tessellation is reduced10 to6 segments. No new material, texture, light, dependency, per-frame generation, actor/equipment or server rule."
+  ],
+  "preservation": {
+    "bounds": "Strict High/Low finite-normal/UV/triangle checks on widths6,23.5,122,500 require exact original BoxGeometry bounding boxes. Four entire production family layouts compare all collision boxes and every walk-floor partition/position/vertex/UV to the former simple-wall construction; exact equality passes.",
+    "cutaways": "Actual High/Low room construction reports zero layered transparent walls; focused tests also cover all five families' legacy corridor cutaways and unchanged collider dimensions.",
+    "maps": "Compare the parent module and final module in the same dependency context: all eight surface map byte arrays are identical for all five families at both quality selections. Existing map count/resolution/UV repeat/filtering and material behavior retained.",
+    "unchangedMapsSHA256": {
+      "verdant-high-and-low": "304aae47d5de269794b1e73cee7152d3ed953820e080495fb593c1b58a2e183a",
+      "fire-high": "3f96645a09932f20b9b464d090cfbe79974e847bdbd98f33ae7ea909ac1c0633",
+      "fire-low": "2353394b5b830408aabc1e5c1f0cf42a22d9e487eec29d21da10f854a02ebc32",
+      "air-high": "07fb88474bcb7480e40263bf66264eff433f650daa42f4666650bd2c8f94c87f",
+      "air-low": "cad7b20006241a0a0748491abff976d55c71e3c41cb0a659f4965d8659657fe5",
+      "water-high": "6c2e4b1d14716f603059c819aec78e7b6ad2e1af94255569dcc9f152cf8d9995",
+      "water-low": "faa4c9fe1169567bf4785f8f9007bd866d99351a1bf1c73b08bdb791d447599f",
+      "umbral-high": "f7e85730973f13c32fa3e20293ca145a8b5d8e9b7d9ecfbc1d9f505dbd250482",
+      "umbral-low": "c28dd37cccf78587fe52cec0342b653af0809fbdba66946b97db9c39ce1da9ba"
+    }
+  },
+  "geometryCost": {
+    "declaredCap": "At most8 bays and3000 triangles per detailed opaque wall; one mesh/no material groups. This is a local construction cap, not a whole-game performance target.",
+    "trianglesAt122m": {
+      "molten_core": { "high": 1896, "low": 1896 },
+      "tempest_spire": { "high": 1704, "low": 1704 },
+      "abyssal_well": { "high": 2856, "low": 2088 },
+      "umbral_nexus": { "high": 1512, "low": 1512 }
+    },
+    "buffers": "Largest retained opaque wall2856 triangles requires274176 raw position/normal/UV bytes instead of1152 for a nonindexed box. Instance caches reuse identical dimensions; more geometry costs CPU/buffer/GPU work even without extra draw calls.",
+    "observedViews": "All sixteen actual desktop/phone-sized room views add zero draw calls versus the accepted parent capture. Desktop adds4440–10740 rendered triangles, reaching289381–296793; Low adds1500–2076, reaching133229–135229. These equipped isolated-room counts are not the woodland benchmark scope, frame-time, full party/combat or capacity acceptance."
+  },
+  "qualification": {
+    "initial": "Initial geometry/crypt/union selection19 PASS/6 FAIL5.063s:one collapsed Water45-degree arch-reveal UV test and five fixture calls to nonexistent createCorridorSegment. Use the actual createCorridor API and deterministic dominant-axis UV tie-breaking. Diagnostics also show3552 High Water triangles with10 bays; reduce to8, retaining the original3000 cap rather than raising it.",
+    "units": "After corrections and full-layout checks,29 PASS6.796s across ElementalDungeonWallGeometry,CryptWallGeometry,DungeonSurfaceUnion. Existing targeted cleanup/resource-cache/canonical collider/room-state selection7 PASS9.108s,28 intentionally skipped. Captures reveal coincident core/crown faces; remove them and add strict two-triangle top/bottom surface assertions. Final affected18-test geometry suite PASS4.882s; previous18 distinct unchanged checks retained, not labelled a fresh combined36-test run.",
+    "lint": "Five changed JS files scoped ESLint max-warnings0 and whitespace PASS; final corrected source/test scope PASS.",
+    "native": "First actual equipped High1280px/Low390px2 PASS13.8s. Inspect all three elemental wall styles and identify crown speckling. After correcting backing/crown overlap, final same two System Chrome normal-hardware cases PASS12.7s, root23200 terminal0. Final Water/Umbral desktop and Water phone-sized captures inspected; original normal zoom15, HUD and14-slot Uncommon/Rare Fighter retained. No browser failures. Owned4190 closed afterward.",
+    "baselineEvidence": "/home/aeml/.local/share/eidolon-dungeon-walls-evidence-20261008-qeVpjZnP/final",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-dungeon-architecture-evidence-20261008-tUO63FrF"
+  },
+  "sourceSHA256": {
+    "src/art/ElementalDungeonWallGeometry.js": "910a855cdf193834505958e6dacaca43922eba54a3a4cca5c0fd8d378eab70d1",
+    "src/art/ProceduralDungeonInteriors.js": "b16ab075103854279b8a600f6eab8ffe9c727f1da57867430f844cc1231d1edb",
+    "src/world/WorldGenerator.js": "19c8946d0303b6657514f77e3a840e7066c4af30f056bf0d0fbff5e62b44b099"
+  },
+  "candidatePatchNotes": [
+    "Fire, Air, Water and Umbral dungeons now have distinct recessed stone arches, supports and layered wall courses inside their existing collision boundaries.",
+    "Foreground walls stay simple and translucent so the architecture does not obscure your character. Wall crowns no longer have overlapping surface faces."
+  ],
+  "limits": "Scoped code-owned architectural improvement, not final modern Diablo/PoE-quality art or all-room composition/lighting approval. No fresh/returning player journey, real-phone party/dungeon, connected campaign, frame-time/capacity or original release gate closed. No account/value grant, dependency, save/schema/access/version, production operation or push.",
+  "publication": "Fresh origin/master fetch remains f9cbd41b, last accepted Alpha1.79.2. Preserve current public source and other contributors' work. Selectively integrate this scope at ordered1.87 with its own synchronized notes/version and CI/public acceptance after unresolved1.80/predecessor gates; never merge the older future branch wholesale. Full roadmap goal remains active."
+}
