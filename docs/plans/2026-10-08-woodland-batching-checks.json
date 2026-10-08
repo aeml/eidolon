@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "milestone": "1.87 current-authority woodland preparation",
+  "status": "measured-improvement-retained-original-high-woodland-budget-still-fails",
+  "authority": {
+    "branch": "work/alpha-1-87-woodland-budget-current-20261008",
+    "parent": "f8ffef30",
+    "publicRelease": "Alpha 1.79.1 / c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+    "integration": "Select only inspected renderer, static foliage bounds, leaf/rock shading and their tests from the older 575a80f2 candidate. Preserve current server, equipment, origin checks, UI, release labels, Moonfrost material and prepared 1.80 trust guards. No wholesale future-branch merge. Fresh origin/master remains c8ff2cd6."
+  },
+  "diagnosis": "Actual current High preview reproduces woodland278135 triangles. Per-instance diagnostic identifies14947 submitted ground-cover triangles outside both relevant views, but trailing-only pruning saves only8193. Tighter swept-sphere test saves zero woodland shadow triangles; reject that additional runtime complexity. Remove both diagnostic experiments from the retained fixture. Baseline diagnostics are not full performance qualification.",
+  "implementation": "High ground-cover cells change16m to8m; Low remains16m. All13087 High plants, exact matrices, blade geometry, material, full wind envelope, elevation, clearings and noncasting flags remain unchanged. No dynamic matrix compaction, extra per-frame vertex scan, density reduction, actor LOD change, shadow quality change, server/collision or gameplay change. More visible batches trade additional draw calls for less invisible geometry submission.",
+  "red": "New transform/batch/wind contract first FAIL1/PASS1 in3.201s; four unchanged cases unselected. High still uses16m cells; Low passes. This is a new feature-contract failure, not a live gameplay defect claim.",
+  "unit": {
+    "understory": "PASS6/9.517s: compare every production instance matrix and variant against the deterministic source placements on nonconstant terrain; retain full wind-padded bounds, both shared geometries and one shared material. High8m and Low16m contracts explicit.",
+    "controllerAndBatches": "PASS33/1.094s on this current assembly, including exact affine-transformed bounds, conservative shadow/filter rules and throwing-render restoration.",
+    "recoveredArt": "PASS40/7.122s in six affected suites for leaf UV/shading, outcrop normals, world surface detail, procedural foliage and shadow-view coverage.",
+    "renderer": "PASS32/1.278s in four affected suites: saved-quality startup/resources, actual snapped shadow frame, actor batching and complete-frame counters.",
+    "static": "Scoped ESLint and git diff --check pass. Not the full client/server/campaign suite."
+  },
+  "nativeProfile": {
+    "session": "root65581 terminal exit1; only original High woodland triangle gate fails",
+    "scope": "Actual System Chrome AMD/Vulkan, existing raised-world integration preview, real RAF120-frame samples per view. Original movement/ground-picking/jump/effect checks and original performance limits unchanged. No software renderer, fake time or GPU finish. The scoped understory unit suite ran concurrently with the beginning of this native execution; precise overlap with timed samples was not recorded, so timing is an observation rather than an isolated-load qualification. Deterministic submission counts and subsequent pixel comparisons establish the retained batching improvement.",
+    "views": [
+      {"name": "west-bank", "beforeTriangles": 244827, "afterTriangles": 240161, "beforeCalls": 145, "afterCalls": 174, "medianMs": 16.7, "p95Ms": 16.7, "triangleLimit": 250000, "triangleGate": "pass"},
+      {"name": "woodland-cut", "beforeTriangles": 278135, "afterTriangles": 267605, "beforeCalls": 173, "afterCalls": 230, "medianMs": 16.7, "p95Ms": 16.8, "triangleLimit": 250000, "triangleGate": "fail", "remainingExcess": 17605},
+      {"name": "outer-fold", "beforeTriangles": 235898, "afterTriangles": 222728, "beforeCalls": 135, "afterCalls": 177, "medianMs": 16.7, "p95Ms": 16.8, "triangleLimit": 250000, "triangleGate": "pass"}
+    ],
+    "limits": "High median20ms/p9533.4ms/draw350 limits pass in all three views; woodland triangle limit does not. Low native profile not repeated for this High-only batching change; current Low exact-transform contract passes, older Low native evidence is historical rather than a new current run. Supported-device, whole connected world and final modern-ARPG quality remain unaccepted."
+  },
+  "nativePixelComparison": "root6739 terminal PASS1/10.0s. Rebatch the exact current production matrices into prior16m cells, share unchanged blade geometry/material/frozen wind, and compare actual full-scene render-target pixels. All three High views report batchingChanged0/270080; separate optimization-on/off shadow comparisons and original surface comparisons also0/270080. Full shadow+color counters confirm reduced triangles and increased calls. This visual-equivalence run does not assert the failing performance gate is passed.",
+  "visualReview": "Inspect actual final woodland screenshot. Vegetation/path arrangement retained; no visible batching seam. Preview remains a basic woodland with an unequipped actor, not final Diablo/PoE-level quality, equipped-character acceptance, gameplay readability or a closed-beta signoff.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-woodland-evidence-20261008-7M95NN3y",
+    "understorySha256": "e0ff38dbe09bb0335a2656d0f341b7f8e422a549bfb9d956eae00a336b239873",
+    "controllerSha256": "2e299730b821503f4999cb9a46d0cf3ec140df3be632074f583f0a0436e24088",
+    "rendererSha256": "179004a4b36ec71f00c05c1f0a56c695b6905080c6bc4bb845cae2b3577a49d3",
+    "fixtureSha256": "7a6219f938e07a2fc2163def743eb5dca340045f434cd5778de72eb0027dee0b",
+    "woodlandImageSha256": "74adce8e1560cbe6fd4acada45039381ada833951a398fed2cf7dfeb100da61d"
+  },
+  "draftPlayerNote": "High-quality woodland grass and ferns use tighter render batches to avoid drawing as many off-screen plants. Vegetation density and appearance are unchanged; Low-quality batching is unchanged. Also retain planned shadow coverage, saved-quality startup, leaf and rock shading corrections for ordered integration.",
+  "publication": "Local preparation only: no version bump, push, CI dispatch or deployment. Both native handles terminal and owned4190 independently closed. No production/Mongo/email/provider writes, full campaign/cohort rerun or deletion. Current1.80 freeze policy and full-roadmap gates remain open."
+}

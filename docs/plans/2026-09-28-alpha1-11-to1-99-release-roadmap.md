@@ -10,6 +10,9 @@ failed and its credentialed live QA skipped; see [scoped public receipt](2026-10
 This delivers scoped material/equipment/origin/storage fixes, not raised-world
 production, final modern art,1.80 freeze, beta access or full-roadmap completion.
 Continue actual1.80 reconciliation without another unchanged campaign/cohort run.
+October8 [current woodland preparation](2026-10-08-woodland-batching-checks.json)
+retains pixel-identical tighter High ground-cover batching. The High woodland
+original triangle gate still fails267605 versus250000; no1.87/final-art signoff.
 
 October7 latest qualification supersedes the historical pending/failure states
 below: exact current c323 driver/8c API/9a harness full100 PASS584.92s, common

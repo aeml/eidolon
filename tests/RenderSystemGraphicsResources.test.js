@@ -2,7 +2,34 @@ import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
-afterEach(() => jest.restoreAllMocks());
+beforeEach(() => localStorage.clear());
+afterEach(() => { localStorage.clear(); jest.restoreAllMocks(); });
+
+test.each(['low', 'medium', 'high'])('renderer starts at saved %s quality without temporary High resources', quality => {
+    localStorage.setItem('eidolon.graphicsQuality', quality);
+    const setup = jest.spyOn(RenderSystem.prototype, 'setupPostProcessing');
+    const render = new RenderSystem(false);
+    try {
+        expect(render.graphicsQuality).toBe(quality);
+        expect(setup).toHaveBeenCalledTimes(quality === 'low' ? 0 : 1);
+        expect(render.renderer.shadowMap.enabled).toBe(quality !== 'low');
+        expect(render.keyLight.shadow.mapSize.width).toBe(quality === 'low' ? 512 : quality === 'medium' ? 2048 : 4096);
+        if (quality === 'low') { expect(render.composer).toBeNull(); expect(render.effectQualityScale).toBe(.52); }
+        expect(localStorage.getItem('eidolon.graphicsQuality')).toBe(quality);
+    } finally { render.dispose(); }
+});
+
+test('invalid or blocked saved quality falls back to the existing High default without overwriting storage', () => {
+    localStorage.setItem('eidolon.graphicsQuality', 'invalid');
+    const invalid = new RenderSystem(false);
+    try { expect(invalid.graphicsQuality).toBe('high'); expect(localStorage.getItem('eidolon.graphicsQuality')).toBe('invalid'); }
+    finally { invalid.dispose(); }
+    const reads = jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new DOMException('Blocked'); });
+    try {
+        const blocked = new RenderSystem(false);
+        try { expect(blocked.graphicsQuality).toBe('high'); } finally { blocked.dispose(); }
+    } finally { reads.mockRestore(); }
+});
 
 test('a changed shadow resolution releases its target, while a repeated setting retains it', () => {
     const render = new RenderSystem(false);

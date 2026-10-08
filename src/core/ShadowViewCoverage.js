@@ -1,5 +1,8 @@
 import { Vector3 } from 'three';
 
+export const SHADOW_RECEIVER_MIN_HEIGHT = -8;
+export const SHADOW_VIEW_PADDING = 12;
+
 // Cover the visible receiver volume, not a fixed 560-unit square. A caster
 // anywhere along a sun ray has the same light-plane coordinates as its receiver,
 // so off-screen roofs/trees can still cast into this volume. Keep every caster
@@ -18,7 +21,7 @@ export function getShadowViewBounds(camera, cameraOffset, lightOffset, targetOff
     const lightDistance = lightOffset.length();
     let far = 1;
     for (const x of [camera.left, camera.right]) for (const y of [camera.bottom, camera.top]) {
-        for (const height of [-8, 64]) {
+        for (const height of [SHADOW_RECEIVER_MIN_HEIGHT, 64]) {
             const point = right.clone().multiplyScalar(x / camera.zoom)
                 .addScaledVector(up, y / camera.zoom).add(targetOffset);
             point.addScaledVector(backward, (height - point.y) / backward.y);
@@ -34,12 +37,12 @@ export function getShadowViewBounds(camera, cameraOffset, lightOffset, targetOff
     // centred on the player spends most of its area on unseen scenery. Fit
     // each edge instead, retaining the same full receiver/caster guarantee.
     const fit = (min, max) => {
-        let low = Math.floor((min - 12) / 16) * 16, high = Math.ceil((max + 12) / 16) * 16;
+        let low = Math.floor((min - SHADOW_VIEW_PADDING) / 16) * 16, high = Math.ceil((max + SHADOW_VIEW_PADDING) / 16) * 16;
         if (high - low < 64) { const padding = Math.ceil((64 - high + low) / 32) * 16; low -= padding; high += padding; }
         return [low, high];
     };
     const [minX, maxX] = fit(left, rightEdge), [minY, maxY] = fit(bottom, top);
     // Match the light-plane padding/snap; near remains 1 so tall and distant
     // off-screen casters toward the sun are not lost. This is not a radius cap.
-    return { left: minX, right: maxX, bottom: minY, top: maxY, far: Math.ceil((far + 12) / 16) * 16 };
+    return { left: minX, right: maxX, bottom: minY, top: maxY, far: Math.ceil((far + SHADOW_VIEW_PADDING) / 16) * 16 };
 }

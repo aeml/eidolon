@@ -73,6 +73,28 @@ test('an empty foliage cell retains empty bounds without inventing a visible tre
     mesh.dispose();
 });
 
+test('one-time foliage bounds use the actual transformed vertices, not an inflated source sphere', () => {
+    const geometry = new THREE.TetrahedronGeometry(3), material = new THREE.MeshStandardMaterial();
+    const mesh = new THREE.InstancedMesh(geometry, material, 2);
+    try {
+        mesh.setMatrixAt(0, new THREE.Matrix4().compose(new THREE.Vector3(-2, 1, 0),
+            new THREE.Quaternion().setFromEuler(new THREE.Euler(.4, .7, .2)), new THREE.Vector3(1.8, .7, 1.2)));
+        mesh.setMatrixAt(1, new THREE.Matrix4().compose(new THREE.Vector3(3, 2, 1),
+            new THREE.Quaternion().setFromEuler(new THREE.Euler(.8, -.2, .6)), new THREE.Vector3(.8, 1.3, .6)));
+        computeFoliageCellBounds(mesh);
+        const matrix = new THREE.Matrix4(), point = new THREE.Vector3();
+        let exactRadius = 0;
+        for (let i = 0; i < mesh.count; i++) {
+            mesh.getMatrixAt(i, matrix);
+            for (let j = 0; j < geometry.attributes.position.count; j++) {
+                point.fromBufferAttribute(geometry.attributes.position, j).applyMatrix4(matrix);
+                exactRadius = Math.max(exactRadius, point.distanceTo(mesh.boundingSphere.center));
+            }
+        }
+        expect(mesh.boundingSphere.radius).toBeCloseTo(exactRadius, 5);
+    } finally { mesh.dispose(); geometry.dispose(); material.dispose(); }
+});
+
 test('compound sheared transforms cannot clip actual foliage vertices', () => {
     const geometry = new THREE.SphereGeometry(1, 32, 16), material = new THREE.MeshStandardMaterial();
     const mesh = new THREE.InstancedMesh(geometry, material, 1), matrix = new THREE.Matrix4().makeShear(1, 0, 0, 0, 0, 0);

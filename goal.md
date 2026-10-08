@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current-authority woodland batching improvement:** Select only planned
+renderer/foliage art and tests onto current source; retain Moonfrost, equipment,
+server and1.80 trust guards. High8m ground-cover cells preserve all13087 plants;
+Low remains16m. Actual High woodland278135→267605 triangles,173→230 draws;
+original250000 gate still fails by17605. All three baseline/candidate batching
+pixel comparisons0/270080; affected111 unit checks pass. Keep this measured
+improvement, not ineffective swept-sphere/trailing-instance runtime complexity.
+No version bump/push/deploy or beta/modern-art acceptance. [Current receipt](docs/plans/2026-10-08-woodland-batching-checks.json).
+
 **October8 Moonfrost surface candidate while1.80 policy pending:** Isolate planned
 environment work on work/alpha-1-87-moonfrost-current-20261008, rooted82c9f8fa,
 reusing /home/aeml/.local/share/eidolon-recovery-181-J6w06IzA. Completed1.81 work

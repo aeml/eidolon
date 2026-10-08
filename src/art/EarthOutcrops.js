@@ -5,6 +5,30 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 
 const random = seed => ((Math.imul(seed + 71, 73856093) ^ Math.imul(seed + 13, 19349663)) >>> 0) / 4294967296;
 
+// Weathered shoulders share lighting across gentle joins, not across sharp
+// geological cleaves. Only normals change; the buried solid, silhouettes,
+// triangulation and collision footprints retain their exact authored recipe.
+function smoothShoulderNormals(positions, normals) {
+    const original = normals.slice(), vertices = new Map(), crease = Math.cos(Math.PI / 4);
+    for (let i = 0; i < positions.length; i += 3) {
+        const key = `${positions[i]},${positions[i + 1]},${positions[i + 2]}`;
+        if (!vertices.has(key)) vertices.set(key, []);
+        vertices.get(key).push(i);
+    }
+    const sum = new THREE.Vector3();
+    for (const indices of vertices.values()) for (const i of indices) {
+        sum.set(0, 0, 0);
+        for (const j of indices) {
+            if (original[i] * original[j] + original[i + 1] * original[j + 1] +
+                original[i + 2] * original[j + 2] >= crease) {
+                sum.x += original[j]; sum.y += original[j + 1]; sum.z += original[j + 2];
+            }
+        }
+        sum.normalize();
+        normals[i] = sum.x; normals[i + 1] = sum.y; normals[i + 2] = sum.z;
+    }
+}
+
 export function createEarthOutcropGeometry(solid, terrain = null) {
     const positions = [], colors = [], uv = [], normals = [];
     const ground = terrain?.sample(solid.x, solid.z) ?? 0;
@@ -63,6 +87,8 @@ export function createEarthOutcropGeometry(solid, terrain = null) {
         addFace(a, c, b, normal);
         addFace(b, c, d, normal);
     }
+    smoothShoulderNormals(positions, normals);
+    // The broad cleaved crown keeps its independent planar lighting.
     const top = rings.at(-1);
     const cap = THREE.ShapeUtils.triangulateShape(top.map(([x, , z]) => new THREE.Vector2(x, z)), []);
     for (const [a, b, c] of cap) {

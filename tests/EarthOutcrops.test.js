@@ -5,6 +5,36 @@ import { EARTH_ELEVATION } from '../src/data/worldElevation.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 
+test('weathered rock shoulders have continuous vertex lighting without rounding sharp cleaves', () => {
+    const geometry = createEarthOutcropGeometry(EARTH_OUTCROP_SOLIDS[0], EARTH_ELEVATION);
+    try {
+        const position = geometry.attributes.position, normal = geometry.attributes.normal;
+        const shared = new Map(), minimumDot = Math.cos(Math.PI / 4);
+        const point = i => new THREE.Vector3().fromBufferAttribute(position, i);
+        const face = i => new THREE.Vector3().subVectors(point(i + 1), point(i))
+            .cross(new THREE.Vector3().subVectors(point(i + 2), point(i))).normalize();
+        for (let quad = 0; quad < 192 * 3; quad += 6) {
+            const original = face(quad).add(face(quad + 3)).normalize();
+            for (let i = quad; i < quad + 6; i++) {
+                const key = `${position.getX(i)},${position.getY(i)},${position.getZ(i)}`;
+                if (!shared.has(key)) shared.set(key, []);
+                shared.get(key).push({ original, current: new THREE.Vector3().fromBufferAttribute(normal, i) });
+            }
+        }
+        let continuousPairs = 0, sharpPairs = 0;
+        for (const normals of shared.values()) {
+            const gentle = normals.every(a => normals.every(b => a.original.dot(b.original) > minimumDot));
+            for (let i = 0; i < normals.length; i++) for (let j = i + 1; j < normals.length; j++) {
+                const before = normals[i].original.dot(normals[j].original);
+                const after = normals[i].current.dot(normals[j].current);
+                if (gentle && before < .998) { expect(after).toBeGreaterThan(.998); continuousPairs++; }
+                if (before < .5) { expect(after).toBeLessThan(.97); sharpPairs++; }
+            }
+        }
+        expect(continuousPairs).toBeGreaterThan(0); expect(sharpPairs).toBeGreaterThan(0);
+    } finally { geometry.dispose(); }
+});
+
 test('candidate rock bodies have finite outward faces, buried bases and explicit bounded footprints', () => {
     for (const terrain of [null, EARTH_ELEVATION]) for (const solid of EARTH_OUTCROP_SOLIDS) {
         const geometry = createEarthOutcropGeometry(solid, terrain);
