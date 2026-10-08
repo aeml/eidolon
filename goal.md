@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 approved alerts verified /1.79.1 partial rollout:** Running independent
+monitor matches30s/3failures/2recoveries/30m reminders; restart policy and private
+deployment opt-in remain enabled. Configuration-only validation PASS without
+email/probe. One accidental extra monitor exec was specifically terminated,
+primary unaffected and no incident lines emitted. Owner's prior delivered test
+is retained; no duplicate test or induced outage. Exact CI37709850553/c8ff2cd6
+finished FAILURE solely at SSH-key setup: hosted ssh-keyscan exits1, actual
+backend deploy skipped. Client/server/browser/predeploy/input checks and Pages
+passed; live QA skipped. Public frontend nowc8ff/1.79.1; public backend remains
+healthyb5c3981e/1.79.0. Local SSH active/listening22; bounded public IPv4 scan
+also fails. Verify external SSH/router forwarding before another publication;
+do not bypass host validation, retry blindly or claim whole release acceptance.
+No production firewall/provider changes. Full ordered goal and1.80 freeze open.
+[Exact receipt](docs/plans/2026-10-08-alerts-and-partial-release-checks.json).
+
 **October8 resumption / storage blocker resolved externally:** About53GiB
 available after restoring identical committed1.79.1 source outside /tmp.
 Temporary worktree/evidence paths disappeared, but ab991065 and all tracked

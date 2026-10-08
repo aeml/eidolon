@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T01:20:07Z",
+  "status": "approved-alerts-active-release-publication-incomplete",
+  "alerts": {
+    "approval": "Existing ADMIN_NOTIFICATION_EMAILS recipients; current Postmark/self-hosting; no new paid service. Owner approves30s checks, alert after3 failures, recovery after2 successes and reminders no more often than30m.",
+    "service": "eidolon-monitor-1 running after host restart, non-root distroless monitor; restart unless-stopped and journald logging. Private production .env deployment opt-in verified true without printing recipients or secrets.",
+    "actualCommand": [
+      "--health-url=http://127.0.0.1:18082/healthz",
+      "--request-timeout=5s",
+      "--poll-interval=30s",
+      "--failure-threshold=3",
+      "--recovery-threshold=2",
+      "--notice-cooldown=30m",
+      "--postmark-alerts",
+      "--mail-timeout=10s",
+      "--mail-min-interval=1m"
+    ],
+    "validation": "Exact actual command run with EIDOLON_MONITOR_CHECK_CONFIG=true exits0; this local constructor validation makes no probe or mail request. Prior owner-reported inbox test retained; no new mail requested.",
+    "temporaryExecCorrection": "Initial extra exec mistakenly lacked configuration-only mode. Identify its exact host PID390453/container PID15, send SIGTERM only to that exec through a network-disabled read-only helper with shared PID namespace. Primary PID8479 remains running; final process list contains only primary monitor, extra exec exits0, bounded monitor logs emit no incident lines. No API/Mongo/main-monitor stop or incident induced.",
+    "limits": "Local API/database readiness only. Not whole-host, Docker, public DNS, frontend, TLS or off-machine network coverage. Pressure/storage thresholds remain disabled. Healthy polling is silent; RAM incident/rate state resets on restart; existing mail minimum can suppress closely spaced recovery emails. No service SLA or new retention policy inferred."
+  },
+  "publication": {
+    "candidateCommit": "c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+    "run": "https://github.com/aeml/eidolon/actions/runs/37709850553",
+    "conclusion": "failure",
+    "successfulJobs": [
+      "Client Tests (Jest)",
+      "Browser Smoke (Playwright 1/3)",
+      "Browser Smoke (Playwright 2/3)",
+      "Browser Smoke (Playwright 3/3)",
+      "Server Tests (Go)",
+      "Predeploy Character QA (System Chrome)",
+      "Validate Production QA Inputs",
+      "Deploy to GitHub Pages"
+    ],
+    "failure": "Deploy Server (SSH): Configure SSH key runs runtime ssh-keyscan for ssh.mendola.tech and exits1. Actual Deploy via SSH skipped; Live Release and Character QA skipped. Root independently verifies terminal metadata after authorized Luna report. Successful job conclusions are not a claim that every conditional substep ran.",
+    "publicFrontend": {
+      "commit": "c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+      "version": "Alpha 1.79.1"
+    },
+    "publicBackend": {
+      "commit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+      "version": "Alpha 1.79.0",
+      "status": "ok",
+      "database": "ready"
+    },
+    "probeScope": "Bounded curl with ordinary DNS, IPv4 and verified HTTPS reads frontend release.json and backend healthz. Changed frontend byte verification and exact matching backend acceptance remain incomplete; no IPv6/public-session proof inferred.",
+    "sshDiagnostics": "ssh.mendola.tech resolvesIPv4 47.203.222.61. Local SSH service active and listening22 on IPv4/IPv6. One public ED25519 scan forcedIPv4 with5s bound also exits1 without a host key. Server LAN address192.168.4.56/22. This suggests external reachability/forwarding but does not identify which router/firewall/ISP layer blocks it. Local trusted public ED25519 fingerprint remains SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE; prepared host pinning does not itself repair network access.",
+    "next": "Verify external TCP22 reachability/forwarding, then complete the tested release and exact frontend/backend acceptance. Do not blindly rerun CI, substitute an unverified host identity or claim release completion."
+  },
+  "changesExcluded": "No production firewall/router/provider mutation, additional email, induced outage, payment integration, data deletion, full campaign/cohort replay or automatic cleanup. Only local documentation receipts changed after these observations; not yet pushed. Full roadmap, modern art and1.80 freeze remain open."
+}
