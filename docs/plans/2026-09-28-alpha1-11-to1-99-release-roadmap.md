@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 exact frustum caching: stationary foliage skips repeated intersection
+math only when camera/light/padding/bounds/matrix inputs exactly match. Live
+eligibility and immediate input changes retained;75 focused assertions and
+High/Low eight-view native40.5s pass original limits. High observer/fresh saves
+34.94s pass; median16.7ms, exact p9533.400000000001455 remains strictly above33.4.
+No rounded acceptance or cross-run speed claim. See
+[scope and evidence](2026-10-08-foliage-frustum-checks.json).
+Remaining traversal/world costs, modern art, devices and full1.80 F1-F5/1.87/
+later gates remain; avoid unchanged test loops. Public remains accepted1.79.6,
+no staged art/profile publication.
+
 October8 foliage guard work: remove per-cell temporary material arrays/callbacks,
 box copies and repeated unchanged-bound validation, preserving all live changes,
 invalid-bound recovery, foliage and shadow settings. Renderer61/related81 checks

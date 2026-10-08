@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "base": "c11acd3e",
+  "status": "exact-frustum-result-cache-qualified-functionally-final-performance-and-art-open",
+  "implementation": "Cache ground-cover and swept-shadow intersections only for exact unchanged camera projection/world-inverse product, shadow padding/sun direction, local bounds and world matrix. Separate view/shadow revisions preserve eligibility changes between casting and ground-cover roles. All current material/wind/child/visibility/frustum/region flags remain checked every visit. No approximate movement threshold, stale timer, reduced foliage, shader/settings changes or relaxed limits.",
+  "reproduction": "Two added regressions fail on base:2 fail25 pass0.61s. Stationary ground cover repeats intersectsBox twice; static shadow cells repeat plane reads. Corrected tests require zero repeated math, with immediate camera movement/zoom, bounds/world movement, light direction/bias and unknown-filter transitions.",
+  "units": "Seven scoped renderer/foliage/shadow/lifecycle suites75 checks pass3.644s, including prior invalid-bound/material/parent/detach/resource checks. Scoped ESLint and whitespace checks pass.",
+  "native": "Actual System Chrome AMD Vulkan/RADV High1280x844/Low390x844 two cases pass40.5s. All eight120-frame views retain original frame/draw/geometry thresholds. High woodland346calls/247325tri and Low100/66176 unchanged. Medians16.7ms,p95 at most16.800000000000182ms. Foliage-filter and surface comparisons change zero pixels; prior-tree comparison1-3/270080 remains within original.001. Fourteen-item/no-fallback movement/effects/grounding checks remain; no final art or physical-device certification.",
+  "party": {
+    "scope": "One actual High renderer and three authenticated live party socket peers, not four renderers or a party-battle certificate. All fresh fourteen-slot saves and owned disposable cleanup pass34.94s/browser28.7s; root independently observes terminal exit0.",
+    "frames": 180,
+    "medianMs": 16.700000000000728,
+    "p95Ms": 33.400000000001455,
+    "p99Ms": 33.400000000001455,
+    "framesOver33_34Ms": 23,
+    "cpuLoopMedianMs": 21.69999999552965,
+    "cpuLoopP95Ms": 27,
+    "drawCallsMedian": 541,
+    "trianglesMedian": 560360,
+    "geometries": 395,
+    "textures": 153,
+    "activeEntities": 25,
+    "previewFrames": 0,
+    "limits": "Median is now inside the original solo reference20ms, but exact p95 strictly exceeds33.4; retain failure rather than rounding or redefining a party target. Different host/entity conditions do not establish a causal cross-run speed improvement. Three-second post-sample CPU still attributes831790us to foliage visit; function sampling and sampled frame counts differ. Broader combat/device/modern-art qualification remains open. Four-browser case deliberately skipped, not re-passed."
+  },
+  "evidence": {
+    "red": "/home/aeml/.local/share/eidolon-foliage-frustum-red-20261008.log",
+    "redSHA256": "24a8cf9e3d7aad7b7e4ba7f4844985b175bce38c84d4116b017952af5c1d4af5",
+    "unitsSHA256": "eb25bc7ce150f7177ca36070b86934b7c2924b820acf32c65742fa8c22679b56",
+    "native": "/home/aeml/.local/share/eidolon-foliage-frustum-native-20261008.log",
+    "nativeSHA256": "4f7532b873b8dbf44dd96e4228cd8d998cbf3fa2bf518c342798b28354309640",
+    "party": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ApN6xC49/browser.log",
+    "partySHA256": "ea174f07737700ed7f0fcb8a804a4afdd753a4822b425419267db91d095e6b71"
+  },
+  "sourceSHA256": {
+    "src/core/FoliageShadowInfluence.js": "38b3297ebf19648e17169f40873c0e8428402f5e4d7ca118efd5fad18d9d92b5",
+    "tests/FoliageShadowInfluence.test.js": "63bc54c0b964e301ceb0a4d129f549a70b0df7102689f97f0145929272eb9239"
+  },
+  "remaining": "Retain exact cache/dynamic/pixel invariants. Remaining foliage traversal/world-scene costs and modern-art composition are not closed by these checks; do not run unchanged campaigns or party loops to fish for a pass. Full1.80 F1-F5,1.87 equipped-party/device/art/profile/public delivery and later beta/launch requirements remain. Owner campaign/phone validation stays deferred, not passed. Fresh origin unchanged37a13a41; Alpha1.79.6 remains accepted public, staged art/profile unshipped."
+}

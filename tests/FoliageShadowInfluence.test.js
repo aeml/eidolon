@@ -94,6 +94,65 @@ test.each([false, true])('scalar and multi-material live wind changes remain aut
     s.controller.dispose(); b.dispose();
 });
 
+test('stationary ground-cover decisions skip repeated frustum work but immediately follow camera and bounds', () => {
+    const s = fixture(); s.group.userData = { earthUnderstory: true }; s.mesh.castShadow = false;
+    s.mesh.userData.windBoundsIncluded = true; s.mesh.material.userData.woodlandWind = true;
+    s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    const frame = () => { s.controller.beginFrame(s.scene, s.camera, null); s.controller.endFrame(); };
+    frame();
+    const intersect = jest.spyOn(s.controller.viewFrustum, 'intersectsBox');
+    try {
+        frame(); frame(); expect(intersect).not.toHaveBeenCalled();
+        s.camera.position.x = 100; s.camera.updateMatrixWorld(true);
+        s.controller.beginFrame(s.scene, s.camera, null);
+        expect(s.mesh.visible).toBe(true); expect(intersect).toHaveBeenCalledTimes(1); s.controller.endFrame();
+        s.mesh.boundingBox.translate(new THREE.Vector3(100, 0, 0));
+        s.controller.beginFrame(s.scene, s.camera, null);
+        expect(s.mesh.visible).toBe(false); expect(intersect).toHaveBeenCalledTimes(2); s.controller.endFrame();
+        s.mesh.position.x = 0; s.scene.updateMatrixWorld(true);
+        s.controller.beginFrame(s.scene, s.camera, null);
+        expect(s.mesh.visible).toBe(true); expect(intersect).toHaveBeenCalledTimes(3); s.controller.endFrame();
+        s.camera.zoom = .5; s.camera.updateProjectionMatrix(); frame();
+        expect(intersect).toHaveBeenCalledTimes(4);
+    } finally { intersect.mockRestore(); s.controller.dispose(); }
+});
+
+test('stationary shadow decisions skip plane math and invalidate on live light/filter/camera inputs', () => {
+    const s = fixture(); s.mesh.position.set(30, 5, 0); s.scene.updateMatrixWorld(true);
+    const frame = (expected, type = THREE.PCFSoftShadowMap) => {
+        s.controller.beginFrame(s.scene, s.camera, s.light, type);
+        expect(s.mesh.castShadow).toBe(expected); s.controller.endFrame();
+    };
+    frame(false);
+    const normals = s.controller.frustum.planes.map(plane => plane.normal);
+    let reads = 0;
+    for (const normal of normals) {
+        let x = normal.x;
+        Object.defineProperty(normal, 'x', { configurable: true, enumerable: true,
+            get() { reads++; return x; }, set(value) { x = value; } });
+    }
+    try {
+        frame(false); frame(false); expect(reads).toBe(0);
+        s.light.position.x = 500; s.scene.updateMatrixWorld(true); frame(true);
+        expect(reads).toBeGreaterThan(0); reads = 0;
+        frame(true); expect(reads).toBe(0);
+        s.light.position.x = 50; s.scene.updateMatrixWorld(true); frame(false);
+        s.light.shadow.bias = 1; frame(true);
+        s.light.shadow.bias = 0; frame(false);
+        frame(true, THREE.VSMShadowMap); frame(false);
+        s.camera.position.x = 30; s.camera.updateMatrixWorld(true); frame(true);
+        s.camera.position.x = 0; s.camera.updateMatrixWorld(true); frame(false);
+        s.mesh.boundingBox.max.y = 100; frame(true);
+        reads = 0; frame(true); expect(reads).toBe(0);
+    } finally {
+        for (const normal of normals) {
+            const x = normal.x;
+            Object.defineProperty(normal, 'x', { configurable: true, enumerable: true, writable: true, value: x });
+        }
+        s.controller.dispose();
+    }
+});
+
 test('detaching a registered root through an unwatched container restores its owned matrix hooks', () => {
     const s = fixture(), wrapper = new THREE.Group(); s.scene.add(wrapper); wrapper.add(s.group);
     const original = s.group.updateMatrixWorld;

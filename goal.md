@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 exact foliage decisions cached:** Reproduce repeated stationary
+frustum math, then cache only exact camera/light/padding/bounds/matrix decisions.
+Live material/visibility/wind flags and immediate input changes retained.
+75 focused checks and High/Low eight-view native40.5s pass original pixel,
+geometry and frame limits. High actual observer/fresh fitted saves34.94s pass;
+median16.7ms, exact p9533.400000000001455ms still strictly above33.4. No rounding,
+cross-run speed attribution or party/art/device acceptance. See
+[scope and evidence](docs/plans/2026-10-08-foliage-frustum-checks.json).
+Remaining traversal/world costs and modern-art composition stay open; avoid
+unchanged test loops. Full roadmap/F1-F5/1.87/art/profile/beta gates active;
+accepted public1.79.6 unchanged, staged art not shipped.
+
 **October8 foliage guard work advances:** Remove per-cell temporary material
 arrays/callbacks, repeated box copies and unchanged-bound validity checks.
 Live material/wind/parent/bound changes and invalid-bound recovery retained.

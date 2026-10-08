@@ -65,6 +65,9 @@ export class FoliageShadowInfluence {
         this.viewFrustum = new Frustum();
         this.frustum = new Frustum(); this.projection = new Matrix4();
         this.sun = new Vector3(); this.target = new Vector3();
+        this.viewProjection = new Matrix4(); this.viewRevision = -1;
+        this.shadowSun = new Vector3(); this.shadowRevision = 0;
+        this.shadowViewRevision = -1; this.shadowPadding = null;
         // Production declares foliage roots at attachment. Revisit their live
         // leaves/flags each frame, not every rig and building in the scene.
         // Callers without an owned scene retain the original traversal path.
@@ -113,13 +116,15 @@ export class FoliageShadowInfluence {
             let cached = this.boundsCache.get(object);
             if (!cached) {
                 cached = { local: object.boundingBox.clone(), matrix: object.matrixWorld.clone(),
-                    world: object.boundingBox.clone().applyMatrix4(object.matrixWorld) };
+                    world: object.boundingBox.clone().applyMatrix4(object.matrixWorld),
+                    viewRevision: -1, shadowRevision: -1 };
                 cached.valid = validCasterBounds(cached.world);
                 this.boundsCache.set(object, cached);
             } else if (!cached.local.equals(object.boundingBox) || !cached.matrix.equals(object.matrixWorld)) {
                 cached.local.copy(object.boundingBox); cached.matrix.copy(object.matrixWorld);
                 cached.world.copy(object.boundingBox).applyMatrix4(object.matrixWorld);
                 cached.valid = validCasterBounds(cached.world);
+                cached.viewRevision = cached.shadowRevision = -1;
             }
             // Cache the world box and its validity, not current eligibility.
             // There is no per-cell temporary array/callback or box copy on a
@@ -132,11 +137,21 @@ export class FoliageShadowInfluence {
                 // Production grass/fern boxes include their complete shader
                 // wind envelope. These never cast shadows; hiding a proven
                 // out-of-view box cannot remove an incoming off-screen shadow.
-                if (!this.viewFrustum.intersectsBox(cached.world)) {
+                if (cached.viewRevision !== this.viewRevision) {
+                    cached.intersectsView = this.viewFrustum.intersectsBox(cached.world);
+                    cached.viewRevision = this.viewRevision;
+                }
+                if (!cached.intersectsView) {
                     this.hidden.add(object); object.visible = false;
                 }
-            } else if (!shadowInfluenceIntersectsFrustum(cached.world, this.sun, this.frustum)) {
-                this.omitted.add(object); object.castShadow = false;
+            } else {
+                if (cached.shadowRevision !== this.shadowRevision) {
+                    cached.intersectsShadow = shadowInfluenceIntersectsFrustum(cached.world, this.sun, this.frustum);
+                    cached.shadowRevision = this.shadowRevision;
+                }
+                if (!cached.intersectsShadow) {
+                    this.omitted.add(object); object.castShadow = false;
+                }
             }
         };
     }
@@ -145,8 +160,13 @@ export class FoliageShadowInfluence {
         this.endFrame();
         if (this.disposed || !this.enabled || !camera) return;
         this.projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-        this.viewFrustum.setFromProjectionMatrix(this.projection);
-        for (const plane of this.viewFrustum.planes) plane.constant += .00001;
+        // Exact inputs only: no movement threshold, timer or approximate match.
+        // Live cell eligibility and local/world bounds still get checked below.
+        if (this.viewRevision < 0 || !this.viewProjection.equals(this.projection)) {
+            this.viewProjection.copy(this.projection); this.viewRevision++;
+            this.viewFrustum.setFromProjectionMatrix(this.projection);
+            for (const plane of this.viewFrustum.planes) plane.constant += .00001;
+        }
         this.shadowActive = false;
         let padding = null;
         if (light?.target) {
@@ -160,8 +180,12 @@ export class FoliageShadowInfluence {
         // map retains its original12-unit snapping margin; this separate test
         // needs the complete real filter/bias footprint, not unseen map padding.
         if (padding !== null) {
-            this.frustum.copy(this.viewFrustum);
-            for (const plane of this.frustum.planes) plane.constant += padding;
+            if (this.shadowViewRevision !== this.viewRevision || this.shadowPadding !== padding || !this.shadowSun.equals(this.sun)) {
+                this.shadowViewRevision = this.viewRevision; this.shadowPadding = padding;
+                this.shadowSun.copy(this.sun); this.shadowRevision++;
+                this.frustum.copy(this.viewFrustum);
+                for (const plane of this.frustum.planes) plane.constant += padding;
+            }
             this.shadowActive = true;
         }
         if (scene !== this.scene) scene.traverseVisible(this.visit);
