@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 High equipped solo gap corrected / raid-sized rendering verified:**
+Constructor-only exact ground-cover bounds retain full wind envelope and every
+plant/matrix/blade. High6.5m batching keeps woodland346calls/247325tri inside
+original350/250000; all four High120-RAF views pass21.559s, pixel comparisons0
+changed. Preserve prior362/355call failures; Low16m unchanged/passed in preceding
+runs, not mislabeled a final eight-view invocation. Existing controlled10-hero
+raid rendering passes at both actual body qualities with zero fallback; repeated
+busy geometry/textures stable, p9518.0-21.8ms. Luna reviews terminal metrics after
+root-scoped handle observation fails; root confirms original process exit0, no
+restart. This is rendering, not connected raid-clear or physical-phone proof.
+Next actual equipped-party raised-world/save/device scope and modern-art finish;
+no production profile or release change. See
+[exact outcomes/retained failures](docs/plans/2026-10-08-equipped-draw-and-raid-render-checks.json).
+
 **October8 quality-aware wearable integration advances real equipped costs:**
 Stage472 reduced GLBs beside unchanged252 delivery;32 unchanged fits reuse
 originals,736 registered hash-versioned paths. Renderer selects body quality,

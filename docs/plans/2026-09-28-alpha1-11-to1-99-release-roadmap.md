@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 equipped High single-hero reference now passes original budgets after
+exact wind-inclusive understory bounds and High6.5m grouping; retained earlier
+362/355call attempts remain failures. Final woodland346calls/247325tri, pixel
+comparisons0 changed. Low16m branch unchanged/previously qualified. Controlled
+ten-equipped-hero rendering passes actual High/Low bodies and repeated resource
+stability; not a connected raid-clear or Earth-party/device/profile rollout.
+See [scope/limits](2026-10-08-equipped-draw-and-raid-render-checks.json).
+This supersedes the single-hero draw gap below, not remaining1.80/1.87/full-art,
+returning checkpoint saves, phone/human or later roadmap gates. Live stays1.79.5.
+
 October8 staged renderer now uses quality-specific copies alongside originals:
 472 reduced files,32 unchanged variants reuse source,736 versioned paths. Actual
 four-class gallery passes; equipped Low Earth passes and High triangle/frame

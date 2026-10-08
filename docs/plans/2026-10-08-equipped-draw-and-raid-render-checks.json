@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "milestone": "1.87 staged equipped rendering consolidation",
+  "base": "501e80f9",
+  "status": "high-solo-draw-gap-corrected-and-ten-hero-rendering-qualified-not-live",
+  "change": "EarthUnderstory reuses constructor-only exact transformed-vertex bounds, expands both AABB and sphere by the full conservative wind reach, and groups High instances into6.5m rather than5.5m cells. Low stays16m. Every plant, matrix, blade, shared geometry/material, sway and clearance remains unchanged. No per-frame vertex scan, removed foliage, weakened target, collision/reward change or production profile activation.",
+  "unit": {
+    "initial": "EarthUnderstory/FoliageRenderBatches/WoodlandWindMaterial34 PASS26.179s at exact bounds/5.5m; checks every plant transform, blade containment and wind-envelope containment. Six EarthUnderstory cases PASS25.753s at6m.",
+    "finalImpacted": "Changed High6.5m full-transform/all-vertex/wind-containment case PASS10.869s; five unchanged cases explicitly skipped, not counted passed at this final invocation. Low16m partition, common bounding implementation, placement and shader are unchanged from prior complete/Low qualification. Scoped lint and whitespace pass."
+  },
+  "retainedAttempts": [
+    { "highCell": 5.5, "bounds": "exact plus wind", "result": "High fails woodland362calls; Low passes all four views; all pixel/batching/shadow comparisons0 changed." },
+    { "highCell": 6, "bounds": "exact plus wind", "result": "High fails woodland355calls/246907tri; Low passes all four views. High p9516.8-33.3ms remains within33.4; no rounding or threshold change." }
+  ],
+  "finalHighNative": {
+    "result": "Hardware System Chrome1 PASS21.559s, four120-RAF equipped views with zero fallback. Original250000tri/350calls/20ms median/33.4ms p95 all pass.",
+    "views": [
+      { "name": "grove-formation", "triangles": 160167, "calls": 183 },
+      { "name": "west-bank", "triangles": 219911, "calls": 265 },
+      { "name": "woodland-cut", "triangles": 247325, "calls": 346 },
+      { "name": "outer-fold", "triangles": 214716, "calls": 270 }
+    ],
+    "timing": "Median16.7ms; p9516.7-16.8ms. Actual AMD RADV hardware renderer, no software/TLS bypass. All grounding/movement/jump/surface/effect checks retained.",
+    "pixels": "Every road-view shadow and rebatching comparison0/270080 changed pixels; final spatial/no-culling comparison0/270080. Exact instances remain; tighter bounds omit empty space, not visible blades. Final High woodland screenshot inspected: same fully equipped actor and scene appearance, not final modern-art acceptance.",
+    "lowRetained": "Unchanged Low16m branch passed in both preceding two-quality runs: grove44864tri/61calls; west73359/131; woodland66176/100; outer67163/104. Original85000tri/200calls and frame limits retained. Not falsely described as a final same-invocation eight-view run."
+  },
+  "raidRendering": {
+    "scope": "Existing controlled native rendering workload: ten fully14-item equipped Fighter/Rogue/Wizard/Cleric actors, animated poses, UmbraPrime and overlapping fields/telegraphs. Added explicit rejection of original-detail fallback. Run with actual High bodies then Low bodies, each at both world-quality settings with busy/clear/busy-repeat phases. No connected/server raid-clear, encounter balance, actual Earth party or phone claim.",
+    "result": "Both root-owned sequential processes exit0. High-body test1 PASS33.512s; Low-body test1 PASS32.314s; no skips/flaky/unexpected or browser errors. Every repeated busy phase retains exact geometry/texture/call/triangle counts and has zero >50ms hitches.",
+    "profiles": [
+      { "body": "high", "world": "high", "busyMedianMs": 17.9, "busyP95Ms": 21.8, "repeatMedianMs": 17.3, "repeatP95Ms": 21.4, "calls": 1064, "triangles": 1405747, "geometries": 360, "textures": 115 },
+      { "body": "high", "world": "low", "busyMedianMs": 16.6, "busyP95Ms": 18.5, "repeatMedianMs": 16.7, "repeatP95Ms": 19.5, "calls": 598, "triangles": 706216, "geometries": 359, "textures": 101 },
+      { "body": "low", "world": "high", "busyMedianMs": 16.8, "busyP95Ms": 20.2, "repeatMedianMs": 16.6, "repeatP95Ms": 19.7, "calls": 1064, "triangles": 793177, "geometries": 367, "textures": 119 },
+      { "body": "low", "world": "low", "busyMedianMs": 16.7, "busyP95Ms": 18.0, "repeatMedianMs": 16.7, "repeatP95Ms": 18.9, "calls": 598, "triangles": 399931, "geometries": 366, "textures": 105 }
+    ],
+    "acceptanceBoundary": "Existing raid test verifies lifecycle/resource stability and records timing; it does not assert an absolute FPS/triangle/call budget. Observed timing is compatible with solo frame targets on this host, not an invented raid threshold pass or universal device guarantee. Ten heroes cost more geometry/calls than the single-hero Earth reference; its original limits remain unchanged and are not relabeled raid limits.",
+    "monitor": "Authorized Luna could not access root-scoped exec90097 (unknown handle is observation failure, not terminal test failure). Root re-polled same owned handle and confirmed both exits0; no restart. Luna then read terminal logs and reported bounded metrics; root independently verified JSON stats/errors/hashes. No deployment, credentials or paid service mutation.",
+    "images": "Low-body run's High/Low world screenshots inspected: gear/effects present. Sequential default output replaces earlier High-body screenshots; High logs/statistics remain, but those earlier screenshots are not claimed retained/reviewed. Both preview servers closed."
+  },
+  "evidenceSHA256": {
+    "EarthUnderstorySource": "74de878e00d69cc20b5c4f48332b617bd664c866f825d18a656fee7ac6374453",
+    "EarthUnderstoryTest": "39454f6ef4d39edf554ea1e3374845161610ddd080bb40609c694864c9725e71",
+    "initialUnitLog": "2b97d9a1f83c82545c49dbf14843adbb42f979c6b1d0f867e9945a4f4703827e",
+    "exactBoundsNativeLog": "7038d2ed1f42b735945b3da6fbd835b228b76ac1beef1f35ea7a53631c511691",
+    "sixMetreNativeLog": "d6d25f29982b819b4f7c1a91e1a48762375b3a73bad56605e06819bb8b05f5b2",
+    "finalHighUnitLog": "32ef4c4e7f402bd1581c0b3acda33dd97a2ee342eb44f62e8f712fb691a79e08",
+    "finalHighNativeLog": "2bfea83c2646c2e857d13f8590a343a8f71b3159e3b1894f075d1699f9e0ec4a",
+    "raidHighBodyLog": "14092dca25f8d5c6c42efb754711ee68761157051aafa0bb18c6b81135e076f9",
+    "raidLowBodyLog": "93c517f986c0e23e552c280e3fe072d5306d4fafbc4e7ccf2ae94d6b9d6093b5"
+  },
+  "artifactDirectory": "/home/aeml/.local/share; eidolon-understory-{bounds,cell,final-high}-{unit,native}-20261008 logs and native screenshot directories; eidolon-wearable-raid-{high,low}-native-20261008 logs. Current reviewed raid screenshots are in the owned worktree test-results directory.",
+  "remaining": "Actual equipped-party raised-world integration/returning checkpoint saves, declared device matrix, public profile rollout and full modern art/readability remain, alongside1.80 F1-F5 and all later roadmap requirements. Human campaign/phone tests deferred, not passed. Accepted public source is1.79.5 de106428; no staged1.87 publication or goal completion inferred."
+}

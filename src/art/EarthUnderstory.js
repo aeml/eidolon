@@ -3,6 +3,7 @@ import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../data/worldPopul
 import { sampleEarthMeadow } from './EarthGroundComposition.js';
 import { createWoodlandUnderstoryGeometry } from './WoodlandUnderstoryGeometry.js';
 import { createWoodlandWindMaterial, WOODLAND_WIND_REACH } from './WoodlandWindMaterial.js';
+import { computeFoliageCellBounds } from './FoliageRenderBatches.js';
 import { STARTER_ROAD_CLEARINGS, LANTERNHOLD_ROAD_CART } from '../data/lanternholdApproach.js';
 
 // First playable art reference: north grove route and east dungeon approach.
@@ -59,7 +60,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     // High's dense plants need tighter submission cells at the camera edge.
     // Change batching only: retain every transform, blade and full wind bound.
     // Low keeps its existing draw-call/instance-object tradeoff.
-    const cellSize = quality === 'low' ? 16 : 5.5;
+    const cellSize = quality === 'low' ? 16 : 6.5;
     for (const plant of plants) {
         const key = `${Math.floor(plant.x / cellSize)}:${Math.floor(plant.z / cellSize)}:${plant.variant}`;
         if (!cells.has(key)) cells.set(key, []);
@@ -78,14 +79,17 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
             transform.updateMatrix(); mesh.setMatrixAt(i, transform.matrix);
         });
         mesh.instanceMatrix.needsUpdate = true;
-        mesh.computeBoundingBox();
+        // Constructor-only exact vertex bounds avoid submitting a patch for
+        // rotated source-box corners where no blade exists. Instance buffers,
+        // geometry and shader motion remain unchanged.
+        computeFoliageCellBounds(mesh);
         // GPU-only sway is absent from CPU geometry bounds. Include its full
         // horizontal envelope so patch edges cannot pop out of the frustum.
         const reach = WOODLAND_WIND_REACH * 1.4;
         mesh.boundingBox.expandByVector(new THREE.Vector3(reach, 0, reach));
-        // Repeated sphere unions drift wider than these compact cells. The
-        // aggregate AABB already includes every transformed plant vertex.
-        mesh.boundingSphere = mesh.boundingBox.getBoundingSphere(new THREE.Sphere());
+        // The full displacement-vector length is bounded by reach. Expand the
+        // exact static sphere too; a small rest bound alone would clip wind.
+        mesh.boundingSphere.radius += reach;
         mesh.userData.windBoundsIncluded = true;
         root.add(mesh);
     }

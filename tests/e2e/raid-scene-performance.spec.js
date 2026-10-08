@@ -69,6 +69,7 @@ test('ten equipped heroes, Malachar and overlapping fields remain stable across 
                 if (mesh.userData.equipmentVisualItemCount !== 14 || mesh.userData.equipmentVisualMissing?.length) {
                     throw new Error(`Incomplete ${type} raid fixture loadout`);
                 }
+                if (mesh.userData.equipmentVisualFallback?.length) throw new Error(`Raid ${type} equipment used an original-detail fallback`);
                 const angle = index / 10 * Math.PI * 2;
                 mesh.position.set(Math.cos(angle) * 8, 0, Math.sin(angle) * 8);
                 mesh.rotation.y = -angle - Math.PI / 2;
