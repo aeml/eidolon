@@ -13,6 +13,44 @@ release identity in addition to readiness. The URL must be HTTPS or loopback
 HTTP with path `/healthz`, without credentials, query strings or fragments.
 Redirects are refused and TLS verification remains enabled.
 
+## Optional public frontend release check
+
+For the planned public-reachability/incident milestone, the prepared optional
+`-frontend-release-url https://play.eidolonrealms.com/release.json` verifies the
+published frontend identity against the same poll's ready API commit **and**
+version. Configure `-health-url https://server.eidolonrealms.com/healthz` to
+observe the public backend path too. Neither option is enabled by this code
+change: the currently approved production service remains loopback API-only.
+Use normal operator-reviewed deployment/configuration, not a duplicate monitor.
+Prepared Compose wiring uses optional `EIDOLON_MONITOR_HEALTH_URL` and
+`EIDOLON_MONITOR_FRONTEND_RELEASE_URL` in the private server `.env`. Both are
+unset by default: the health URL still follows `APP_HOST_PORT` on loopback and
+the frontend check is disabled. Public coverage requires explicitly setting
+both to the corresponding HTTPS URLs above at its ordered rollout.
+
+The frontend URL must use HTTPS or loopback HTTP, exactly `/release.json`, no
+credentials, query, fragment, encoded path or invalid port. TLS trust/hostname
+checks remain on; redirects are refused. API and frontend request/body reads
+share the single `-request-timeout` budget. The optional latency budget now
+includes both requests; local storage retains its separately bounded check.
+An unhealthy, malformed or wrong-release API skips the frontend request rather
+than hiding its failure. Disabled runs make no frontend request.
+
+Frontend JSON is limited to4KiB and must contain a valid matching commit and
+version. Unknown fields and raw peer/TLS/network errors are never copied into
+notices. Fixed causes distinguish `frontend_probe_failed`,
+`frontend_probe_timeout`, `frontend_unavailable`, `frontend_invalid_response`
+and `frontend_release_mismatch`. Existing failure/recovery thresholds, cooldown
+and global mail-attempt limits remain unchanged. Configuration-only deployment
+validation makes no probe or mail request even with this option.
+
+This checks verified public HTTP reachability and publication identity, not the
+HTML, JavaScript, asset graph, WebSocket, login or a playable session. A matching
+manifest can coexist with broken runtime assets. Ordinary resolver/address
+selection does not certify every advertised IPv4/IPv6 path. A monitor on the
+same host still cannot email during whole-host, Docker, power or complete
+network failure; separately approved off-machine coverage remains required.
+
 Stdout contains one JSON line per outage, cooldown reminder or sustained
 recovery, with sanitized cause, release identity and request latency. Healthy
 polling is silent. No URLs, arbitrary peer/error text, account records or mail

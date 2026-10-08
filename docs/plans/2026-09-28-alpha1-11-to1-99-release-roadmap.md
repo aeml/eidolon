@@ -10,6 +10,10 @@ failed and its credentialed live QA skipped; see [scoped public receipt](2026-10
 This delivers scoped material/equipment/origin/storage fixes, not raised-world
 production, final modern art,1.80 freeze, beta access or full-roadmap completion.
 Continue actual1.80 reconciliation without another unchanged campaign/cohort run.
+October8 [public-release probe preparation](2026-10-08-public-release-probe-checks.json)
+adds optional bounded frontend/API manifest matching to the existing monitor.
+Defaults and current production remain loopback-only; public/whole-host coverage
+and ordered1.83 acceptance remain separate, not inferred from local tests.
 
 October7 latest qualification supersedes the historical pending/failure states
 below: exact current c323 driver/8c API/9a harness full100 PASS584.92s, common

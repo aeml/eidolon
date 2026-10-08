@@ -577,6 +577,18 @@ only `monitor`; a flag change alone is not a stop command. See the
 [monitor operator guide](../cmd/monitor/README.md) for scope, inspection and
 reversible pause commands. Never print private Compose/environment configuration.
 
+Prepared public-release monitoring is opt-in through
+`EIDOLON_MONITOR_HEALTH_URL=https://server.eidolonrealms.com/healthz` and
+`EIDOLON_MONITOR_FRONTEND_RELEASE_URL=https://play.eidolonrealms.com/release.json`.
+Leaving both unset preserves the current loopback/API-only service. When
+reviewed for its ordered operations rollout, these settings reuse the same
+monitor, approved thresholds and recipients; local configuration validation
+still precedes service replacement and never probes or emails. The optional
+check detects public request/manifest failures and frontend/backend identity
+mismatches, not broken JavaScript, an authenticated game session or whole-host
+loss. Do not start a second monitor or treat configuration-only success as live
+public acceptance.
+
 Optional reboot resilience check:
 
 ```bash

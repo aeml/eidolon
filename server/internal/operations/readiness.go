@@ -61,6 +61,7 @@ func (q *queueInput) metrics() *QueueMetrics {
 
 type Probe struct {
 	endpoint, expectedCommit string
+	frontendEndpoint         string
 	client                   *http.Client
 	limits                   PressureLimits
 	storage                  *StorageProbe
@@ -109,6 +110,14 @@ func NewProbeWithStorage(endpoint, expectedCommit string, timeout time.Duration,
 
 func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	start := time.Now()
+	requestContext := ctx
+	if p.frontendEndpoint != "" {
+		// Both HTTP requests/body reads share one budget, not timeout per site.
+		// Storage retains its existing separately bounded caller-context check.
+		var cancel context.CancelFunc
+		requestContext, cancel = context.WithTimeout(ctx, p.client.Timeout)
+		defer cancel()
+	}
 	defer func() {
 		elapsed := time.Since(start)
 		sample.LatencyMS = elapsed.Milliseconds()
@@ -125,7 +134,7 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 			}
 		}
 	}()
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, p.endpoint, nil)
+	request, err := http.NewRequestWithContext(requestContext, http.MethodGet, p.endpoint, nil)
 	if err != nil {
 		sample.Cause = "probe_failed"
 		return
@@ -182,6 +191,9 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 		sample.Cause = "invalid_identity"
 	} else if p.expectedCommit != "" && sample.Commit != p.expectedCommit {
 		sample.Cause = "release_mismatch"
+	} else if p.frontendEndpoint != "" {
+		sample.Cause = p.checkFrontendRelease(requestContext, ctx, sample.Commit, sample.Version)
+		sample.Ready = sample.Cause == "ready"
 	} else {
 		sample.Ready, sample.Cause = true, "ready"
 	}
@@ -251,6 +263,7 @@ func (d *Detector) Observe(sample Sample, now time.Time) *Notice {
 	cause := "probe_failed"
 	switch sample.Cause {
 	case "probe_failed", "probe_timeout", "http_unavailable", "invalid_response", "not_ready", "invalid_identity", "release_mismatch",
+		"frontend_probe_failed", "frontend_probe_timeout", "frontend_unavailable", "frontend_invalid_response", "frontend_release_mismatch",
 		"latency_budget", "heap_budget", "goroutine_budget", "queue_budget", "inflight_budget", "metrics_unavailable",
 		"storage_budget", "storage_timeout", "storage_unavailable":
 		cause = sample.Cause

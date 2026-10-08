@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 public-release monitor preparation:** Isolate planned1.83 work on
+work/alpha-1-83-public-probes-current-20261008 rooted82c9f8fa; current reused
+freeze worktree is now on that branch, not the unchanged1.80 branch. Optional
+frontend manifest checking requires exact ready-API commit/version, shares one
+HTTP deadline and retains verified TLS/redirect refusal/sanitized causes. Compose
+defaults remain original loopback/disabled frontend and preserve all approved
+thresholds. Actual affected monitor packages pass race6.636/10.028s; real Compose
+parsing and executable preflight-order fixtures pass1.464s. Current production
+monitor/config untouched, no email or deployment. Manifest reachability is not
+playable-page or whole-host coverage; full roadmap/freeze gates remain open.
+[Prepared scope](docs/plans/2026-10-08-public-release-probe-checks.json).
+
 **October8 native-runner trust boundary corrected in1.80 preparation:** Execute
 the actual source condition in a bounded isolated VM; current manual feature
 dispatch with full_stabilization=true returns true despite required refusal.

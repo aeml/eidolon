@@ -17,6 +17,7 @@ func run(ctx context.Context, args []string, output io.Writer) error {
 	flags := flag.NewFlagSet("eidolon-monitor", flag.ContinueOnError)
 	flags.SetOutput(io.Discard) // Invalid arguments can contain private values.
 	endpoint := flags.String("health-url", "", "HTTPS /healthz or loopback HTTP")
+	frontendEndpoint := flags.String("frontend-release-url", "", "optional HTTPS /release.json or loopback HTTP; match API release")
 	commit := flags.String("expected-commit", "", "optional exact release commit")
 	timeout := flags.Duration("request-timeout", 0, "required, at most 10s")
 	interval := flags.Duration("poll-interval", 0, "required, 1s to 5m")
@@ -38,7 +39,7 @@ func run(ctx context.Context, args []string, output io.Writer) error {
 	if flags.Parse(args) != nil || flags.NArg() != 0 {
 		return fmt.Errorf("invalid monitor arguments; see server/cmd/monitor/README.md")
 	}
-	probe, err := operations.NewProbeWithStorage(*endpoint, *commit, *timeout, operations.PressureLimits{
+	probe, err := operations.NewProbeWithFrontendRelease(*endpoint, *frontendEndpoint, *commit, *timeout, operations.PressureLimits{
 		MaxProbeLatency: *maxLatency, MaxHeapAllocBytes: *maxHeap, MaxGoroutines: *maxGoroutines,
 		QueueUtilizationPercent: *queuePercent, MaxInFlightCalls: *maxInFlight}, operations.StorageConfig{
 		Path: *storagePath, Timeout: *storageTimeout, MinFreeBytes: *minStorageBytes, MinFreePercent: *minStoragePercent})

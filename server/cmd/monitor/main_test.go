@@ -53,6 +53,87 @@ func TestMonitorCommandDeploymentValidationDoesNotProbeOrSend(t *testing.T) {
 	}
 }
 
+func TestMonitorCommandFrontendOptInAndSilentValidation(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { requests.Add(1) }))
+	defer server.Close()
+	t.Setenv("EIDOLON_MONITOR_CHECK_CONFIG", "true")
+	var output strings.Builder
+	args := append(arguments(server.URL+"/healthz"), "-frontend-release-url", server.URL+"/release.json")
+	if err := run(context.Background(), args, &output); err != nil || requests.Load() != 0 || output.Len() != 0 {
+		t.Fatalf("frontend validation must be local and silent: %v requests=%d", err, requests.Load())
+	}
+	for _, endpoint := range []string{"http://example.invalid/release.json", server.URL + "/", server.URL + "/release.json?token=synthetic-private", "https://synthetic-private:secret@example.invalid/release.json"} {
+		if err := run(context.Background(), append(arguments(server.URL+"/healthz"), "-frontend-release-url", endpoint), &output); err == nil || strings.Contains(err.Error(), "synthetic-private") {
+			t.Fatal("unsafe frontend configuration accepted or echoed", err)
+		}
+	}
+	if requests.Load() != 0 || output.Len() != 0 {
+		t.Fatal("configuration checks accessed network or produced output")
+	}
+}
+
+func TestMonitorCommandActualFrontendMismatchRecovery(t *testing.T) {
+	var frontendRequests, backendRequests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/healthz" {
+			backendRequests.Add(1)
+			fmt.Fprint(w, `{"status":"ok","database":"ready","commit":"abcdef1","version":"Alpha 1.79.1"}`)
+			return
+		}
+		if r.URL.Path != "/release.json" {
+			t.Error("unexpected probe endpoint")
+			w.WriteHeader(500)
+			return
+		}
+		commit := "abcdef1"
+		if frontendRequests.Add(1) <= 2 {
+			commit = "abcdef2"
+		}
+		fmt.Fprintf(w, `{"commit":%q,"version":"Alpha 1.79.1","private":"synthetic-private-peer"}`, commit)
+	}))
+	defer server.Close()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	writes := 0
+	output := &captureWriter{onWrite: func() {
+		writes++
+		if writes == 2 {
+			cancel()
+		}
+	}}
+	args := append(arguments(server.URL+"/healthz"), "-frontend-release-url", server.URL+"/release.json")
+	if err := run(ctx, args, output); err != nil {
+		t.Fatal(err)
+	}
+	lines := strings.Split(strings.TrimSpace(output.text.String()), "\n")
+	if len(lines) != 2 || frontendRequests.Load() != 4 || backendRequests.Load() != 4 {
+		t.Fatal("wrong incident/poll counts", len(lines), frontendRequests.Load(), backendRequests.Load())
+	}
+	for i, kind := range []string{"outage", "recovered"} {
+		var event struct {
+			Notice struct{ Kind, Cause string }
+			Sample struct {
+				Ready  bool
+				Commit string
+			}
+		}
+		if err := json.Unmarshal([]byte(lines[i]), &event); err != nil {
+			t.Fatal(err)
+		}
+		cause := "frontend_release_mismatch"
+		if i == 1 {
+			cause = "ready"
+		}
+		if event.Notice.Kind != kind || event.Notice.Cause != cause || event.Sample.Ready != (i == 1) || event.Sample.Commit != "abcdef1" {
+			t.Fatal("frontend failure/recovery lost API identity or incident semantics")
+		}
+	}
+	if strings.Contains(output.text.String(), "synthetic-private") || strings.Contains(output.text.String(), server.URL) {
+		t.Fatal("frontend peer/URL leaked into monitor output")
+	}
+}
+
 func TestMonitorCommandActualOutageRecovery(t *testing.T) {
 	var requests atomic.Int32
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {

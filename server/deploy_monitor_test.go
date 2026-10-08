@@ -1,12 +1,69 @@
 package main
 
 import (
+	"encoding/json"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 )
+
+func TestDeployMonitorPublicProbeComposeConfiguration(t *testing.T) {
+	if _, err := exec.LookPath("docker"); err != nil {
+		t.Skip("Docker Compose parser unavailable")
+	}
+	composeSource, err := os.ReadFile("docker-compose.yml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, scenario := range []struct{ name, port, health, frontend, expectedHealth string }{
+		{name: "default", expectedHealth: "http://127.0.0.1:18082/healthz"},
+		{name: "custom-loopback", port: "18884", expectedHealth: "http://127.0.0.1:18884/healthz"},
+		{name: "public", port: "18884", health: "https://server.eidolonrealms.com/healthz", frontend: "https://play.eidolonrealms.com/release.json", expectedHealth: "https://server.eidolonrealms.com/healthz"},
+	} {
+		t.Run(scenario.name, func(t *testing.T) {
+			root := t.TempDir()
+			composePath := filepath.Join(root, "docker-compose.yml")
+			if err := os.WriteFile(composePath, composeSource, 0600); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(filepath.Join(root, ".env"), nil, 0600); err != nil {
+				t.Fatal(err)
+			}
+			command := exec.Command("docker", "compose", "--profile", "operations", "--env-file", "/dev/null", "-f", composePath, "config", "--format", "json")
+			// Parse only; no daemon/service call or production .env/credentials.
+			command.Env = []string{"PATH=" + os.Getenv("PATH"), "DOCKER_CONFIG=" + t.TempDir(), "COMPOSE_DISABLE_ENV_FILE=true", "MONGO_URI=mongodb://mongo:27017", "MONGO_INITDB_ROOT_USERNAME=fixture", "MONGO_INITDB_ROOT_PASSWORD=fixture", "APP_HOST_PORT=" + scenario.port, "EIDOLON_MONITOR_HEALTH_URL=" + scenario.health, "EIDOLON_MONITOR_FRONTEND_RELEASE_URL=" + scenario.frontend}
+			output, err := command.Output()
+			if err != nil {
+				t.Fatal("Compose configuration parsing failed", err)
+			}
+			var config struct {
+				Services map[string]struct{ Command []string }
+			}
+			if json.Unmarshal(output, &config) != nil {
+				t.Fatal("invalid Compose JSON")
+			}
+			args := config.Services["monitor"].Command
+			contains := func(value string) bool {
+				for _, arg := range args {
+					if arg == value {
+						return true
+					}
+				}
+				return false
+			}
+			if !contains("--health-url="+scenario.expectedHealth) || !contains("--frontend-release-url="+scenario.frontend) {
+				t.Fatal("monitor public opt-in/default configuration differs", args)
+			}
+			for _, setting := range []string{"--poll-interval=30s", "--failure-threshold=3", "--recovery-threshold=2", "--notice-cooldown=30m"} {
+				if !contains(setting) {
+					t.Fatal("owner-approved alert thresholds changed")
+				}
+			}
+		})
+	}
+}
 
 // Real deployment script with isolated fake external commands. No Docker,
 // database, production configuration, provider or service is changed here.

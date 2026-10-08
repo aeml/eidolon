@@ -74,6 +74,7 @@ func alertBody(event Event) ([]byte, error) {
 		if !event.Sample.Ready && event.Sample.Cause == event.Notice.Cause {
 			switch event.Notice.Cause {
 			case "probe_failed", "probe_timeout", "http_unavailable", "invalid_response", "not_ready", "invalid_identity", "release_mismatch",
+				"frontend_probe_failed", "frontend_probe_timeout", "frontend_unavailable", "frontend_invalid_response", "frontend_release_mismatch",
 				"latency_budget", "heap_budget", "goroutine_budget", "queue_budget", "inflight_budget", "metrics_unavailable",
 				"storage_budget", "storage_timeout", "storage_unavailable":
 				valid = true
