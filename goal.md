@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Managed public-monitor preparation now completes default-empty Compose
+  mapping and exact-command preflight atf5f64a31 in
+  `/home/aeml/.local/share/eidolon-public-monitor-SVPI3UWI`. Actual disposable
+  parser/compiled-binary8cases and isolated deployment-script7cases pass
+  race2.128s; disabled mode ignores unused invalid settings, failures precede
+  API replacement. [Evidence](docs/plans/2026-10-08-managed-public-monitor-checks.json).
+  No production .env/service activation, mail, version or push. Match artifacts
+  and qualify release-transition/recovery before activation; whole-host/
+  off-machine and full1.83/F1-F5 gates remain open. Select after prepared releases.
+
 - Staged dungeon vigils/coffers/fonts now have constructed geometry instead
   of bare shafts/flat boxes/torus vessels. Forty-three distinct focused checks
   across initial/final scopes and four final native cases/thirty timed prop
