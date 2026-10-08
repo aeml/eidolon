@@ -29,17 +29,33 @@ async function appearance(page) {
     return result;
 }
 
+async function cascade(page) {
+    return page.evaluate(() => {
+        const flatten = sheet => [...sheet.cssRules].flatMap(rule =>
+            rule.type === CSSRule.IMPORT_RULE ? flatten(rule.styleSheet) : [rule.cssText]);
+        return flatten(document.querySelector('[data-eidolon-game-styles]').sheet);
+    });
+}
+
 for (const width of [1280, 390]) test(`published single stylesheet retains login and patch-note appearance at ${width}px`, async ({ page }) => {
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
     const modular = await appearance(page);
+    // The publisher intentionally versions local asset URLs. Apply that exact
+    // existing transformation to the control, not a blanket URL normalization.
+    const modularCascade = (await cascade(page)).map(rule => rewriteCss(rule, 'style-test-20261008'));
     const requests = [], failures = [];
     page.on('request', request => { if (new URL(request.url()).pathname.endsWith('.css')) requests.push(request.url()); });
     page.on('pageerror', error => failures.push(error.message));
     await page.route('**/src/styles/index.css*', route => route.fulfill({ status: 200, contentType: 'text/css', body: published }));
     await page.goto('/', { waitUntil: 'networkidle' });
     expect(await appearance(page)).toEqual(modular);
+    // Compare every parsed rule in order, including all menus, fonts and media
+    // queries—not only the visible login selectors. Not a full visual audit.
+    const publishedCascade = await cascade(page);
+    expect({ rules: publishedCascade.length, sameCascade: JSON.stringify(publishedCascade) === JSON.stringify(modularCascade) })
+        .toEqual({ rules: modularCascade.length, sameCascade: true });
     expect(requests).toHaveLength(1);
     expect(await page.evaluate(() => [...document.querySelector('[data-eidolon-game-styles]').sheet.cssRules].filter(rule => rule.type === CSSRule.IMPORT_RULE).length)).toBe(0);
     expect(failures).toEqual([]);
