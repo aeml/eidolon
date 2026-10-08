@@ -28,6 +28,16 @@ own public acceptance remain pending. Raised production terrain remains off;
 this does not close1.80, full1.87 art/performance, dungeon/checkpoint/device
 compatibility, final art or human pacing gates. No original requirement waived.
 
+October8 raised-reference qualification: exact1bb4c4a4 passes all three High
+and three Low original triangle/draw/RAF budgets in33.8s; this supersedes the
+older six-view failures, not full1.87. Earlier woodland evidence used the same
+raised-field fixture, not an independent flat-world performance run. Configured
+flat/raised latest-boss return fixtures also pass recall/death recovery with
+floor/resource/clear-state preservation, race1.675s. Unequipped actor only;
+equipped-party/device headroom, actual persisted dungeon/checkpoint compatibility,
+modern art and production activation remain open. No rollout/version bump for
+these checks. See [current scoped evidence](2026-10-08-raised-terrain-reference-checks.json).
+
 October7 latest qualification supersedes the historical pending/failure states
 below: exact current c323 driver/8c API/9a harness full100 PASS584.92s, common
 112958ms and100 independent fresh saves. All four event members and five raid
@@ -1196,7 +1206,7 @@ art approval or a closed-beta transition. Keep those distinctions when closing Q
 | 1.84 | Player support readiness: lost account/progress, stuck character, billing only if enabled, abuse/appeals and error-report follow-up. | Support entry points, response expectations and role-limited workflows; no unnecessary data collection or unaudited compensations. |
 | 1.85 | Player-facing documentation: first steps, classes, party roles, gates, town rest, instances, crafting, economy, casino, controls, settings and known issues. | Docs match current UI and actual rules; accessible in-game links; no stale level requirements or obsolete portal directions. |
 | 1.86 | Content/update pipeline: authoring validation, quest/item/visual coverage, localization-ready text structure, event/season configuration and contributor guidance. | One small representative content change validates through existing tools; third-party asset/dependency licenses recorded; no speculative tooling rewrite. |
-| 1.87 | Candidate performance consolidation: apply unresolved measured improvements across supported hardware/workloads; settings persist and fallbacks stay readable. Finish shared raised-Earth terrain/outcrop delivery, not just its QA preview, after rendering and placement/movement/effects/returning-save compatibility qualify. | Earlier accepted benchmarks retained; rerun only impacted cases or missing evidence on a comparable host; no lowering targets to hide a regression. Current six raised-road views fail original triangle budgets; flat-world acceptance cannot stand in for that profile or public rollout. |
+| 1.87 | Candidate performance consolidation: apply unresolved measured improvements across supported hardware/workloads; settings persist and fallbacks stay readable. Finish shared raised-Earth terrain/outcrop delivery, not just its QA preview, after rendering and placement/movement/effects/returning-save compatibility qualify. | Earlier accepted benchmarks retained; rerun only impacted cases or missing evidence on a comparable host; no lowering targets to hide a regression. October8 current six raised-road reference views pass original budgets; equipped-party/device headroom, actual persisted dungeon/checkpoint compatibility, modern art and public rollout remain open. |
 | 1.88 | Integrated fresh/returning-player compatibility: saves from supported releases, in-progress story, bags/builds, social membership, wallets, cosmetics and reconnects. | Focused cross-feature journey plus schema/contract fixtures; user playtest owns whole-campaign pacing. Known saves cannot be stranded by new UI/gates. |
 | 1.89 | Commercial branch closeout OR explicit free-launch signoff. If separately authorized: checkout/provider sandbox, signed replay-safe entitlements, cancellation/refund/dispute and monthly benefit handling. | Owner/provider/specialist approvals and purchase/recovery receipts if paid; otherwise record disabled commerce and do not build it. No silent price/benefit decisions or EP→Gold escape. |
 | 1.90 | Near-completion closed-beta candidate: consolidate completed features/content/art, support, performance and exact artifacts. Review invitation-based admission for new beta players while retaining existing accounts/characters; up to100 beta players planned. | **CB/RC1** checklist and explicit owner go/no-go before access/channel changes. Reaching1.90 alone cannot open beta or authorize full release. |

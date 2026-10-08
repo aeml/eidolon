@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T07:28:16Z",
+  "milestone": "1.87 raised-Earth rendering and dungeon-return compatibility",
+  "status": "six-reference-budgets-and-configured-checkpoint-fixtures-pass-not-production-rollout",
+  "source": {
+    "commit": "1bb4c4a4a2339390ea296c7ccf770923b7ca38f6",
+    "branch": "work/alpha-1-87-raised-budget-current-20261008",
+    "fixtureSha256": "07ce309359fb34d1f61cd3724950c1d24fbcea8b78049765a9b1db699a4641ad",
+    "foliageSha256": "e962a267f0dba323e28ec70954395421bed34e3a10d10b90deaef4e4d9b25b17",
+    "outcropsSha256": "434b5c0a8c7a61559ca9cea206f368ab96b6b162778534c2e251812587a2d4cd"
+  },
+  "qualification": {
+    "native": "Root48105 terminal exit0: two System Chrome cases PASS33.8s, High1280px and Low390px. Real AMD RADV/Vulkan hardware; all six real RAF samples retain120 measured frames after30 warmup frames. Both optional raised-profile and draw-diagnostic flags enabled. Task-owned local unit/lint work absent during samples; no fake clock, uncapped loop or disabled foliage.",
+    "coverage": "Actual shared sampled Earth ground, negotiated production scenery/outcrops, movement/jump/picking/aiming/Fireball/beam/area/impact/attached-effect assertions retained. Preview WebSocket is deliberately blocked: not connected server, real campaign or physical-phone proof.",
+    "pixels": "All six shadow-controller/prior-batch comparisons and both ground-culling comparisons report0/270080 changed pixels. These are reconstructed test-owned prior batches with frozen wind, not exact historical renderer timing.",
+    "dungeon": "Strengthened existing latest-cleared-boss checkpoint fixture runs recall and death/respawn under both configured flat-v1 and earth-elevation-rocks-v1 worlds. Asserts actual flat town landing, instance-owned floor0, latest cleared checkpoint targets, resources/rewards, retained clear/reward state and duplicate-entry stability. Scoped race run root51864 PASS1.675s, four return cases plus contiguous-route case. Synthetic room clears: not earned dungeon clear or actual Mongo/logout/profile-switch restoration proof.",
+    "static": "git diff --check passed. Owned native session terminal and4190 listener independently absent. No production environment, service, player data, model, scenery density, shader or runtime geometry changed."
+  },
+  "limits": {
+    "high": { "triangles": 250000, "calls": 350, "medianMs": 20, "p95Ms": 33.4 },
+    "low": { "triangles": 85000, "calls": 200, "medianMs": 33.4, "p95Ms": 50 }
+  },
+  "referenceViews": [
+    { "quality": "high", "name": "west-bank", "height": 3.3262967225419064, "triangles": 222552, "calls": 243, "medianMs": 16.7, "p95Ms": 16.8 },
+    { "quality": "high", "name": "woodland-cut", "height": 1.4918811608706526, "triangles": 249406, "calls": 338, "medianMs": 16.7, "p95Ms": 16.8 },
+    { "quality": "high", "name": "outer-fold", "height": 1.4095926945208903, "triangles": 215944, "calls": 257, "medianMs": 16.7, "p95Ms": 16.8 },
+    { "quality": "low", "name": "west-bank", "height": 3.3262967225419064, "triangles": 79159, "calls": 117, "medianMs": 16.7, "p95Ms": 16.8 },
+    { "quality": "low", "name": "woodland-cut", "height": 1.4918811608706526, "triangles": 70421, "calls": 85, "medianMs": 16.7, "p95Ms": 16.7 },
+    { "quality": "low", "name": "outer-fold", "height": 1.4095926945208903, "triangles": 73416, "calls": 91, "medianMs": 16.7, "p95Ms": 16.8 }
+  ],
+  "attribution": "High Fighter body contributes128312 triangles including shadows; Low36510 without shadows. High woodland reference has only594 triangles/12 calls of remaining margin. These isolated unequipped-actor reference budgets are not adequate evidence for equipped-party/HUD headroom.",
+  "reconciliation": "This current raised-field execution supersedes the October7 six-road failures, not their historical record. The earlier October8 woodland receipt uses the same always-raised preview fixture, identical fixture hash and foliage hash: its six numbers are not a separate flat-world qualification. Reuse both receipts without inventing an independent flat-versus-raised performance comparison or rerunning unchanged samples.",
+  "visualReview": "Inspected current High grove-rock formation and phone-sized Low woodland screenshots. Grounded actor and populated terrain visible; outcrop silhouette remains fairly block-like and distant cover sparse. Modest component quality, not final Diablo/PoE art or equipped-party readability approval.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-raised-current-evidence-20261008-XmUFRQrd",
+    "logSha256": "8b38ee98302f2212154b51d3cd2a5061df75361c8b2e1e6e8a50f49732bbdc77"
+  },
+  "remaining": "Raised production switch, equipped/party and supported-device headroom, actual persisted dungeon/checkpoint compatibility, all-family modern art and original1.80 F1-F5 remain open. Alpha1.79.4 own CI37742963800 is still running overall, but Server Go coverage failed on a PvP save fixture expecting pre-admission flat Y2; all custom verification steps passed, race/restore/benchmark/build steps skipped. Root retrieved actual job logs113197732680 without waiting for the whole run. Correct and qualify that fixture before publication; accepted live release remains1.79.3. No new version, push, mail, induced outage, beta/access, balance or provider change accompanies these scoped checks."
+}

@@ -1,5 +1,21 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current raised-reference gap closed, not full art delivery:** Exact
+1bb4c4a4 preview passes both native quality cases33.8s and all six original
+triangle/draw/RAF limits; paired shadows/batching/ground pixels remain unchanged.
+Earlier October8 woodland evidence used this same raised-field fixture, not
+an independent flat-world run. Strengthened latest-boss checkpoint fixtures pass
+recall/respawn in both configured profiles, race1.675s, including floor/resource/
+reward preservation. Synthetic room clears do not prove persisted dungeon
+sessions. High woodland has only594 triangles/12 calls of margin with an
+unequipped Fighter, so equipped-party/device qualification remains necessary.
+No runtime art or production switch here; inspected images remain below final
+modern-art ambition. Alpha1.79.4 own CI37742963800 still running overall, but
+Server Go coverage failed on an outdated pre-admission PvP height expectation;
+actual job logs retrieved, fix/qualification required before publication.
+Latest accepted live1.79.3. Full ordered goal and1.80 F1-F5 remain open. See
+[current scoped receipt](docs/plans/2026-10-08-raised-terrain-reference-checks.json).
+
 **October8 Alpha1.79.4 compatibility precursor preparation:** Fresh remote
 remains accepted b13dd3af; preserved prior future-work branch548e5381, then
 selectively integrate21 exact configuration/recovery/test/evidence files onto

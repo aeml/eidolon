@@ -8,6 +8,19 @@ an assertion that no exploits exist, or approval to freeze/publish the game.
 
 ## Assets, actors and trust boundaries
 
+October8 reconciliation (older tables below retain October7 state): the origin
+tuple correction and trusted local ED25519 pin/strict bounded SSH/canonical
+workflow guards are now in the accepted1.79.3 source b13dd3af. Its own hosted
+SSH pin setup passed but the network connection timed out; exact guarded local
+deployment/public acceptance is retained in the1.79.3 public receipt. X01/X02's
+original code gaps are delivered; SSH routing and repository policy remain
+separate open issues. The current1bb4c4a4 raised reference passes all six original
+budgets and configured checkpoint fixtures pass both profiles, as recorded in
+[scoped terrain evidence](2026-10-08-raised-terrain-reference-checks.json).
+These supersede older numerical failures, not X06's modern-art/equipped-party/
+persisted-dungeon/production-rollout scope. F1-F5 remain unapproved/incomplete;
+no freeze or exception waiver follows this reconciliation.
+
 Protect account ownership and recovery links; exact character/item/Gold/EP
 custody; progression and instance eligibility; private reports/activity/exports;
 service availability; deployment credentials and original save journals.
