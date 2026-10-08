@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T14:13:50Z",
+  "version": "Alpha 1.79.8",
+  "commit": "bf145bdab4d63770e1d764c3bfb270fc0a374ea2",
+  "status": "deployed-public-identity-and-selected-bytes-verified-final-live-qa-pending",
+  "ci": {
+    "run": 37783791245,
+    "conclusion": "pending",
+    "monitor": "Authorized Luna monitors this exact corrected-source run. Root independently rechecks exact head: nine preceding jobs successful, Live Release and Character QA still in progress. No queued jobs or terminal outcome inferred. Terminal root confirmation remains required; deployed bytes alone do not waive final gameplay checks.",
+    "retainedInitialFailure": "Initial37781713097/ffb495c6 terminal failure, client pine minimum-height assertion; server/three smoke shards passed and five subsequent jobs skipped, no deployment. Correct the crown geometry and both-quality regression assertions;37783791245 is a new corrected-source run, not an unchanged failure retry."
+  },
+  "public": {
+    "transport": "Ordinary DNS with forced IPv4 and verified HTTPS; no resolver or TLS bypass. Known owner-deferred IPv6 issue remains separate.",
+    "frontend": { "version": "Alpha 1.79.8", "commit": "bf145bdab4d63770e1d764c3bfb270fc0a374ea2" },
+    "backend": { "version": "Alpha 1.79.8", "commit": "bf145bdab4d63770e1d764c3bfb270fc0a374ea2", "status": "ok", "database": "ready" },
+    "productionCheckout": "Root independently confirms tracked-clean /home/aeml/eidolon at exactbf145bda.",
+    "selectedPublishedBytes": {
+      "index.html": "c2453ad6c2b135ee1d996dc64e8ecd167a691088dc54a5b71fc97119710018d4",
+      "src/art/ProceduralConiferBoughs.js": "8c81753c6e62d4b9bec339c3c2c24d6b02e08c6fa9f39e47a8f6b66332f84518",
+      "src/art/WoodlandUnderstoryGeometry.js": "1828a1f9f6986a88a46b94d00453781160c795d88d1906bac14129d7586b686e",
+      "src/styles/index.css": "abfa2b6eb4889b6760786ab7fa0fdd83289b81bf0a4fddc6018359307677699e"
+    },
+    "method": "Root compares exact current-release source with actual exported HTML/JS/CSS rewrites. Actual exported bundleGameStyles runs only on a disposable copied styles directory; served ordered stylesheet byte-matches, not simulated import equivalence. Selected checks are not an all-assets audit."
+  },
+  "remaining": "Final exact CI/live QA acceptance before next push. Next1.79.9 is prepared locally; full F1-F5/1.87/world-art/device/beta/launch scope stays open. No raised terrain, wearable derivatives or additional renderer changes promoted; no campaign or physical-phone claim."
+}

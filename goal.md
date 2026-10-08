@@ -10,6 +10,13 @@ Prior1.79.8 acceptance and own publication still pending. Raised terrain,
 wearable derivatives and staged core renderer changes not promoted. Full goal,
 F1-F5/1.87/world-art/device/beta/launch gates remain open.
 
+**Current verified deployment candidate:** Corrected1.79.8/bf145bda is public;
+front/back/healthy DB, tracked-clean production and four selected published
+files match. Exact CI37783791245 has nine preceding jobs successful and final
+Live Release and Character QA still running. Authorized Luna monitors it;
+acceptance and next push wait for its terminal result. See
+[candidate evidence](docs/plans/2026-10-08-release1-79-8-public-checks.json).
+
 **October8 current-master woodland/startup patch assembled:** Alpha1.79.8
 selects reviewed fuller pine fans and curved green sedge, plus ordered
 publication-only CSS bundling onto fresh accepted7892224f. Every plant, existing

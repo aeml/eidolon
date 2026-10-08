@@ -433,6 +433,9 @@ Notes:
   [connected receipt](docs/plans/2026-10-08-connected-terrain-checks.json).
   Current accepted live release is `Alpha 1.79.7`, at7892224f, after ordinary
   CI/SSH/Pages and one bounded failed-Live-QA retry on run37773941500.
+  Corrected `Alpha 1.79.8` candidatebf145bda is now deployed and byte/identity
+  checked; nine preceding jobs pass, final live QA remains in progress. See
+  [candidate verification](docs/plans/2026-10-08-release1-79-8-public-checks.json).
   The surface refinement and prior party healing/admin passage are live;
   see the [public receipt](docs/plans/2026-10-08-release1-79-7-public-checks.json).
   Administrator Dark Realm passage bypasses
