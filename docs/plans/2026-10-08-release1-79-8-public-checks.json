@@ -1,13 +1,14 @@
 {
   "schema": 1,
-  "observedAt": "2026-10-08T14:13:50Z",
+  "observedAt": "2026-10-08T14:19:59Z",
   "version": "Alpha 1.79.8",
   "commit": "bf145bdab4d63770e1d764c3bfb270fc0a374ea2",
-  "status": "deployed-public-identity-and-selected-bytes-verified-final-live-qa-pending",
+  "status": "ordinary-ci-deployment-live-qa-and-independent-public-identity-passed",
   "ci": {
     "run": 37783791245,
-    "conclusion": "pending",
-    "monitor": "Authorized Luna monitors this exact corrected-source run. Root independently rechecks exact head: nine preceding jobs successful, Live Release and Character QA still in progress. No queued jobs or terminal outcome inferred. Terminal root confirmation remains required; deployed bytes alone do not waive final gameplay checks.",
+    "conclusion": "success",
+    "monitor": "Authorized Luna reports terminal success. Root independently confirms exact head and all ten required jobs successful: Client/Server, three Browser Smoke shards, Predeploy, production input validation, SSH/Pages and Live Release and Character QA.",
+    "liveScope": "Anonymous/persistent-character gameplay and town recovery/Well Rested steps succeed. Optional predeploy animation gallery, GPU lifecycle/full-character steps and live four-class remote-animation step skipped, not passed. No campaign, physical-phone or all-animation certification.",
     "retainedInitialFailure": "Initial37781713097/ffb495c6 terminal failure, client pine minimum-height assertion; server/three smoke shards passed and five subsequent jobs skipped, no deployment. Correct the crown geometry and both-quality regression assertions;37783791245 is a new corrected-source run, not an unchanged failure retry."
   },
   "public": {
@@ -23,5 +24,5 @@
     },
     "method": "Root compares exact current-release source with actual exported HTML/JS/CSS rewrites. Actual exported bundleGameStyles runs only on a disposable copied styles directory; served ordered stylesheet byte-matches, not simulated import equivalence. Selected checks are not an all-assets audit."
   },
-  "remaining": "Final exact CI/live QA acceptance before next push. Next1.79.9 is prepared locally; full F1-F5/1.87/world-art/device/beta/launch scope stays open. No raised terrain, wearable derivatives or additional renderer changes promoted; no campaign or physical-phone claim."
+  "remaining": "Next1.79.9 prepared locally and still needs own ordinary publication/public acceptance. Full F1-F5/1.87/world-art/device/beta/launch scope stays open. No raised terrain, wearable derivatives or additional renderer changes promoted; no campaign or physical-phone claim."
 }

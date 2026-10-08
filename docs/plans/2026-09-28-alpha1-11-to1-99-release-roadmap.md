@@ -1,5 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Accepted public1.79.8/bf145bda: corrected-source37783791245 all ten required
+jobs successful; root independently verifies terminal head, public identities/
+healthy DB, clean production and four selected actual publisher bytes. Optional
+broader animation/gallery scopes skipped, not passed. See
+[public receipt](2026-10-08-release1-79-8-public-checks.json).
+Prepared1.79.9 still requires own publication/live acceptance. Full roadmap,
+F1-F5/1.87/world-art/device/beta/launch scope remains active.
+
 October8 prepared1.79.9 selects bark and retained-population woodland stands
 onto fresh masterbf145bda. Original triangle limit exposes initial flat-world
 overdraw; exact vertex/full-wind bounds resolve it without losing plants or

@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Accepted public Alpha1.79.8 /bf145bda:** Corrected-source CI37783791245
+passes all ten required jobs. Root independently confirms exact terminal head,
+matching front/back/healthy DB, clean production and four published file bytes,
+including actual ordered stylesheet. Optional broader animation/gallery scopes
+skipped, not passed. See
+[public verification](docs/plans/2026-10-08-release1-79-8-public-checks.json).
+Next prepared1.79.9 woodland component needs its own publication/acceptance.
+
 **October8 prepared Alpha1.79.9:** Select distinct bark and retained-population
 undergrowth composition onto fresh corrected masterbf145bda. First flat gallery
 catches250659tri; reuse existing exact vertex bounds/full wind padding, retain
