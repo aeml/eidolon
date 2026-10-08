@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 current performance review: remove reproduced outside-casino scene
+lookups and full-scene foliage scans, retaining models/shadows and lifecycle.
+Actual connected High observer and all four fitted saves pass, but busy-host
+frame timing remains unqualified. Production-owned preview culling changes zero
+pixels; correcting its scene ownership exposes a formerly empty prior-tree
+comparison, now over the original pixel threshold at both qualities. Earlier
+empty-tree comparisons cannot accept that scope. Preserve failures and finish
+the real comparison/performance work before raised/art publication. See
+[exact evidence](2026-10-08-owned-scene-render-checks.json).
+1.79.6 front/backend/database and selected published bytes independently match;
+final ordinary Live QA still pending. Earlier live/pending entries are history;
+no full1.80/1.87, final art, device, beta or launch acceptance is implied.
+
 October8 equipped-party evidence update: four actual geared native browser
 clients now pass replicated independent rig/gear ownership, raised movement,
 Fireball damage/draw, focused-target healing and fresh-save preservation at High

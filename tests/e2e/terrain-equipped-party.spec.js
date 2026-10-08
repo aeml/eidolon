@@ -319,6 +319,31 @@ test('single native renderer observes three live equipped party socket peers on 
             scope: 'One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.'
         }, null, 2), contentType: 'application/json' });
         await testInfo.attach('untimed-party-draw-attribution', { body: JSON.stringify(draws, null, 2), contentType: 'application/json' });
+        if (process.env.EIDOLON_TERRAIN_PARTY_CPU_PROFILE === '1') {
+            // Opt-in diagnosis AFTER the frame sample, never part of its timing.
+            // CPU profiles contain function/source identities, not chat or args.
+            const session = await page.context().newCDPSession(page);
+            try {
+                await session.send('Profiler.enable');
+                await session.send('Profiler.start');
+                await page.waitForTimeout(3_000);
+                const { profile } = await session.send('Profiler.stop');
+                const nodes = new Map(profile.nodes.map(node => [node.id, node])), groups = new Map();
+                for (const [index, id] of (profile.samples || []).entries()) {
+                    const frame = nodes.get(id)?.callFrame;
+                    if (!frame) continue;
+                    const source = frame.url?.split('?')[0] || '', name = frame.functionName || '<anonymous>';
+                    const key = `${source}:${name}:${frame.lineNumber}`;
+                    const value = groups.get(key) || { source, name, line: frame.lineNumber + 1, samples: 0, selfMicros: 0 };
+                    value.samples++; value.selfMicros += profile.timeDeltas?.[index] || 0; groups.set(key, value);
+                }
+                const summary = [...groups.values()].sort((a, b) => b.selfMicros - a.selfMicros).slice(0, 24);
+                await testInfo.attach('diagnostic-cpu-functions', { body: JSON.stringify({
+                    scope: 'Three-second opt-in CPU function sample; profiling overhead excluded from the preceding frame report.', summary
+                }, null, 2), contentType: 'application/json' });
+                console.log('[diagnostic-party-cpu]', JSON.stringify(summary));
+            } finally { await session.detach(); }
+        }
         await page.screenshot({ path: testInfo.outputPath(`single-renderer-equipped-party-${quality}.png`) });
         expect(failures, failures.join('\n')).toEqual([]);
         console.log('[single-renderer-terrain-party]', JSON.stringify({ quality, ...report }));

@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "base": "b76ba1a09002a76d38a7b64052454f6451c9d611",
+  "status": "scoped-runtime-corrections-verified-staged-art-qualification-still-open",
+  "scope": {
+    "casino": "Do not search the complete scene for absent casino floors on each outside-casino tick. Inside-casino floor visibility remains unchanged.",
+    "foliage": "Register qualified roots on owned scene/environment attachment and removal. Visit live foliage leaves, bounds, visibility and material flags rather than every actor/building each frame. Preserve original swept-shadow and wind-inclusive bounds, filter padding, conservative fallback, and end-frame restoration. Dispose restores flags and removes listeners.",
+    "harness": "Earth preview now attaches generated scenery to the real instanceEnvironmentGroup. This also makes its existing prior-tree batching comparison actually cover the generated Earth trees; previous entityGroup attachment left the prior-tree selection empty. Optional three-second CPU sampling runs after frame measurement and exports only function/source/time summaries."
+  },
+  "reproduction": {
+    "casino": "One new regression fails and39 pass before correction: six town/dungeon ticks perform six absent-floor scene searches instead of zero.",
+    "foliage": "One new regression fails and15 pass before correction: unrelated actors are visited instead of only the qualified foliage root and mesh.",
+    "casinoLogSHA256": "8f0dc323a1a092506b5c7b3380085a185f5422a33ab552459f8b7340b408c57f",
+    "foliageLogSHA256": "74e7f89ec754c0eb7d8f4477bd31a03b03b0ed430d107616f322efe7061ebd81"
+  },
+  "focused": {
+    "initial": "CasinoController, FoliageShadowInfluence and RenderSystemActorInstances:62 assertions pass2.155s. Resource/scene/frame lifecycle suites:25 assertions pass1.3s. Strengthened visible reparent coverage subsequently passes16 foliage assertions1.027s. Final combined six suites87 assertions pass3.099s. Scoped ESLint and whitespace pass.",
+    "initialGreenSHA256": "8d81263f248f4386a9c9963bb8727546027f685f7793bf165c00ca5cdc77cc10",
+    "lifecycleSHA256": "cba672245c00deeb914ae605e558fc77ce635f4a1a0940b0555a7c1e687bb785"
+  },
+  "native": {
+    "status": "both-cases-failed-retained-not-acceptance",
+    "log": "/home/aeml/.local/share/eidolon-owned-scene-native-20261008.log",
+    "logSHA256": "2c9ca2b8efb1143528e18a4e17ca9a56e361483f72a7a448bf3e68a69cf26788",
+    "hardware": "System Chrome, ANGLE AMD Vulkan/RADV RENOIR; no software rendering or TLS bypass.",
+    "filterPixels": "West-bank culling enabled versus disabled changes zero of270080 pixels at both qualities. End-frame restoration checks pass.",
+    "revealedPriorBatchGap": "Actual prior-tree-plus-understory batching comparison changes289 High and294 Low pixels of270080, exceeding unchanged .001 threshold. Earlier comparisons with empty prior-tree selection do not qualify this broader scope. Neither threshold nor geometry/population changed to manufacture a pass.",
+    "timing": "High grove120 frames median33.3ms fails20ms; p9533.400000000001455 also strictly fails33.4. Low median/p9516.7ms passes. Host load observed16.67 with other live jobs; no comparable-host speed claim. West-bank High265calls/219911tri, Low131/73359; later views and checks not reached after hard pixel failures.",
+    "visualReview": "One actual High failure image inspected: intact equipped hero, path, trees, grass and shadows. This is not final modern-art approval or a real phone test."
+  },
+  "connected": {
+    "status": "actual-party-admission-and-fresh-saves-passed-performance-not-qualified",
+    "wrapper": "/home/aeml/.local/share/eidolon-party-owned-scene-high-20261008.log",
+    "wrapperSHA256": "a46ee52cf3e5c97949cb46c93dc3ef66e3b02284b224825abed5840ef521985c",
+    "browser": "/home/aeml/.local/share/eidolon-terrain-save-evidence-eg5t8fgF/browser.log",
+    "browserSHA256": "b953065db842c2b5a01c349986968ae7f56fe424187527400ad972250281e835",
+    "result": "Go48.40s/package49.467s, observer37.9s/browser41.2s. Three actual authenticated party socket peers and normal observer rendering; all four fourteen-slot fresh saves, bag and EP preserved. Four-browser input case deliberately skipped in observer mode, not passed again.",
+    "frameSample": {"frames":180,"quality":"high","width":1280,"height":844,"medianMs":33.400000000001455,"p95Ms":50,"p99Ms":50.10000000000218,"framesOver33ms":111,"cpuMedianMs":37.29999999701977,"cpuP95Ms":46.399999998509884,"calls":592,"triangles":570777,"entities":37,"previewFrames":0},
+    "cpu": "Post-sample3second summary: updateMatrixWorld501567us, foliage visit302553us, multiplyMatrices214296us. Absent-floor getObjectByProperty no longer appears among top24, but varying entity counts/host contention and probabilistic samples cannot establish a frame-time improvement. No full battle, campaign, device or capacity certification."
+  },
+  "sourceSHA256": {
+    "src/core/CasinoController.js": "736dda1a42bfe94073f05d4cbe8f75e92136414a7f25d293494904a84238a815",
+    "src/core/FoliageShadowInfluence.js": "0d6737cf1cc0ec81d422213d236fc0d5228d91444a0b6d8616a4928c857b9b14",
+    "src/core/RenderSystem.js": "488b59f02349be81c461340a0df71ce6bb5516a7239700dac0e4e855de697507",
+    "tests/e2e/world-elevation-preview.spec.js": "227a9fc3a5631ab78e99d762442e43faf0988d77c52b311076e25bbb2cceb1df",
+    "tests/e2e/terrain-equipped-party.spec.js": "9a0d62a1496482b64d4b159732dd82609c1ee8c20e1cb8f4fc9e4e869d5c1dd3"
+  },
+  "remaining": "Investigate the now-real prior-tree comparison and remaining measured matrix/foliage costs. Preserve all original art, fit, shadow and frame targets. No staged GLB/raised-profile publication or version bump from this receipt. Full1.80 F1-F5,1.87 equipped-party/device/modern-art and later1.81-1.99/beta/launch obligations remain open. Deferred human campaign/phone checks are not acceptance."
+}

@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current render investigation:** Reproduce and fix outside-casino
+whole-scene searches and foliage traversal of unrelated actors/buildings.
+Preserve scenery, models, live transforms and full shadow guards. Focused unit
+and lifecycle checks pass; actual High single-renderer/live-three-peer admission
+and all fresh fourteen-slot saves pass48.40s. High frame timing remains open on
+the busy host, not an improvement claim. Correct preview ownership to the real
+instance environment: enabled/disabled filtering changes zero pixels, but this
+also reveals the older prior-tree batching comparison previously selected no
+trees. Actual tree comparison now exceeds unchanged pixel threshold at both
+qualities; preserve failed evidence and investigate before publishing art.
+See [exact scope](docs/plans/2026-10-08-owned-scene-render-checks.json).
+Public1.79.6 now matches frontend/backend/healthy DB and selected published
+bytes; ordinary final hosted Live QA remains pending, not final acceptance.
+Full roadmap active; no stage/profile/version change or new campaign soak.
+
 **October8 actual-party rendering cost investigated and reduced structurally:**
 Single-renderer/live3peer scope isolates the actual Skeleton shadow submissions.
 Register qualified rigid Skeletons with existing instance batching; every model,

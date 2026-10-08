@@ -137,7 +137,8 @@ export class RenderSystem {
         // Three updates scene/camera matrices before this hook and submits
         // shadow draws afterwards. Install before actor batching so its normal
         // hook composition and enable/disable lifecycle remain unchanged.
-        this.foliageShadowInfluence = new FoliageShadowInfluence();
+        this.foliageShadowInfluence = new FoliageShadowInfluence(this.scene,
+            [this.scene, this.environmentGroup, this.staticEnvironmentGroup, this.instanceEnvironmentGroup]);
         this.scene.onBeforeRender = (renderer, scene, camera) => {
             const light = renderer.shadowMap?.enabled && this.keyLight?.castShadow ? this.keyLight : null;
             this.foliageShadowInfluence.beginFrame(scene, camera, light,
@@ -1260,7 +1261,7 @@ export class RenderSystem {
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
         this.actorInstances?.dispose(); this.actorInstances = null;
-        this.foliageShadowInfluence?.endFrame();
+        this.foliageShadowInfluence?.dispose();
         this.actorContactShadows?.dispose();
         this.actorContactShadows = null;
         this.disposePostProcessing();

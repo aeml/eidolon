@@ -51,7 +51,7 @@ export function shadowInfluenceIntersectsFrustum(caster, sun, frustum) {
 }
 
 export class FoliageShadowInfluence {
-    constructor() {
+    constructor(scene = null, watchedGroups = [scene]) {
         this.enabled = true;
         this.omitted = new Set();
         this.hidden = new Set();
@@ -59,6 +59,25 @@ export class FoliageShadowInfluence {
         this.frustum = new Frustum(); this.projection = new Matrix4();
         this.caster = new Box3();
         this.sun = new Vector3(); this.target = new Vector3();
+        // Production declares foliage roots at attachment. Revisit their live
+        // leaves/flags each frame, not every rig and building in the scene.
+        // Callers without an owned scene retain the original traversal path.
+        this.scene = scene; this.roots = new Set();
+        const register = root => {
+            if (root.userData.earthUnderstory || root.userData.proceduralFoliage) this.roots.add(root);
+        };
+        this.onAdded = event => event.child.traverse(register);
+        this.onRemoved = event => {
+            for (const root of this.roots) for (let node = root; node; node = node.parent) {
+                if (node === event.child) { this.roots.delete(root); break; }
+            }
+        };
+        this.watchedGroups = [...new Set(watchedGroups.filter(Boolean))];
+        scene?.traverse(register);
+        for (const group of this.watchedGroups) {
+            group.addEventListener('childadded', this.onAdded);
+            group.addEventListener('childremoved', this.onRemoved);
+        }
         this.visit = object => {
             if (!object.isInstancedMesh || !object.boundingBox || object.frustumCulled === false) return;
             const groundCover = object.parent?.userData.earthUnderstory && !object.castShadow && object.userData.windBoundsIncluded;
@@ -88,7 +107,7 @@ export class FoliageShadowInfluence {
 
     beginFrame(scene, camera, light, shadowType = PCFSoftShadowMap, maxTextureSize = Infinity) {
         this.endFrame();
-        if (!this.enabled || !camera) return;
+        if (this.disposed || !this.enabled || !camera) return;
         this.projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
         this.viewFrustum.setFromProjectionMatrix(this.projection);
         for (const plane of this.viewFrustum.planes) plane.constant += .00001;
@@ -109,7 +128,17 @@ export class FoliageShadowInfluence {
             for (const plane of this.frustum.planes) plane.constant += padding;
             this.shadowActive = true;
         }
-        scene.traverseVisible(this.visit);
+        if (scene !== this.scene) scene.traverseVisible(this.visit);
+        else for (const root of this.roots) {
+            let connected = false, visible = true, nested = false;
+            for (let node = root; node; node = node.parent) {
+                visible &&= node.visible;
+                if (node !== root && this.roots.has(node)) nested = true;
+                if (node === scene) { connected = true; break; }
+            }
+            if (!connected) this.roots.delete(root);
+            else if (visible && !nested) root.traverseVisible(this.visit);
+        }
     }
 
     endFrame() {
@@ -117,5 +146,16 @@ export class FoliageShadowInfluence {
         this.omitted.clear();
         for (const object of this.hidden) object.visible = true;
         this.hidden.clear();
+    }
+
+    dispose() {
+        this.endFrame();
+        if (this.disposed) return;
+        this.disposed = true;
+        for (const group of this.watchedGroups) {
+            group.removeEventListener('childadded', this.onAdded);
+            group.removeEventListener('childremoved', this.onRemoved);
+        }
+        this.watchedGroups.length = 0; this.roots.clear(); this.scene = null;
     }
 }

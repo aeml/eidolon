@@ -368,7 +368,9 @@ export class CasinoController {
                 else for (const box of this.furnitureColliders || []) if (!colliders.includes(box)) engine.collisionManager.addCollider(box);
             }
         }
-        const floors = engine.renderSystem.scene.getObjectByName('lanternhold-casino-interior')?.userData.floors;
+        // Other scenes cannot contain the active casino floors. An absent
+        // interior lookup otherwise walks the whole world on every fixed tick.
+        const floors = overworld ? engine.renderSystem.scene.getObjectByName('lanternhold-casino-interior')?.userData.floors : null;
         if (floors) { floors.public.visible = !upstairs; floors.vip.visible = upstairs; }
         if (this.furniture?.userData.vipFloor) this.furniture.userData.vipFloor.visible = upstairs;
         if (this.furniture?.userData.publicFloor) this.furniture.userData.publicFloor.visible = !upstairs;

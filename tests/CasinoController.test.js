@@ -183,6 +183,21 @@ test.each(['disposed', 'destroyed engine'])('a %s controller cannot apply late s
     controller.dispose();
 });
 
+test('ordinary world and dungeon ticks do not recursively search for absent casino floors', () => {
+    const { engine, controller } = setup();
+    const lookup = jest.spyOn(engine.renderSystem.scene, 'getObjectByName');
+    try {
+        for (const scene of ['', 'verdant-party-run', 'dark-realm']) {
+            engine.currentInstanceId = scene;
+            controller.beforeUpdate(.1); controller.beforeUpdate(.1);
+        }
+        expect(lookup).not.toHaveBeenCalled();
+        engine.currentInstanceId = 'lanternhold-casino';
+        controller.beforeUpdate(.1);
+        expect(lookup).toHaveBeenCalledWith('lanternhold-casino-interior');
+    } finally { lookup.mockRestore(); controller.dispose(); }
+});
+
 test('only the current floor and its patrons are visible, without revealing already hidden actors', () => {
     const { engine, controller } = setup();
     const interior = new THREE.Group(); interior.name = 'lanternhold-casino-interior';

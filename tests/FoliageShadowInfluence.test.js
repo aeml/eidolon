@@ -18,6 +18,37 @@ function fixture() {
     return { scene, group, mesh, camera, light, controller: new FoliageShadowInfluence() };
 }
 
+test('registered foliage roots avoid scanning unrelated actors and retain add/remove/visibility ownership', () => {
+    const s = fixture(), background = new THREE.Group(); s.scene.add(background);
+    for (let index = 0; index < 200; index++) background.add(new THREE.Group());
+    const wrapper = new THREE.Group(); s.scene.add(wrapper);
+    const controller = new FoliageShadowInfluence(s.scene, [s.scene, wrapper]);
+    const visited = [];
+    const original = controller.visit;
+    controller.visit = object => { visited.push(object); original(object); };
+    s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).toEqual([s.group, s.mesh]); expect(s.mesh.castShadow).toBe(false);
+    controller.endFrame();
+    const extra = new THREE.Group(); extra.userData = { proceduralFoliage: true, region: 'earth' };
+    const caster = s.mesh.clone(); extra.add(caster); s.scene.add(extra); s.scene.updateMatrixWorld(true);
+    visited.length = 0; controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).toContain(caster); expect(caster.castShadow).toBe(false); controller.endFrame();
+    wrapper.add(extra); wrapper.visible = false;
+    visited.length = 0; controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).not.toContain(caster); expect(caster.castShadow).toBe(true); controller.endFrame();
+    wrapper.visible = true;
+    visited.length = 0; controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).toContain(caster); expect(caster.castShadow).toBe(false); controller.endFrame();
+    extra.removeFromParent();
+    visited.length = 0; controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).not.toContain(caster); controller.endFrame();
+    s.scene.add(extra); s.scene.updateMatrixWorld(true);
+    controller.beginFrame(s.scene, s.camera, s.light); expect(caster.castShadow).toBe(false);
+    controller.dispose(); expect(s.mesh.castShadow).toBe(true); expect(caster.castShadow).toBe(true);
+    expect(controller.roots.size).toBe(0); controller.dispose();
+});
+
 test('filter padding includes complete texel footprint, depth and normal bias without changing the shadow map', () => {
     const shadow = new THREE.DirectionalLight().shadow;
     Object.assign(shadow.camera, { left: -100, right: 100, bottom: -200, top: 200, near: 1, far: 1001 });
