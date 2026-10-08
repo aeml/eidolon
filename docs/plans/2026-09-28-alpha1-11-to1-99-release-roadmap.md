@@ -1446,6 +1446,16 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October8: **staged Air materials/canvas component** softens Stormcrown's slate
+deposition and folds its camp windbreaks inside their unchanged walking solids.
+24 focused checks and both equipped populated High/Low native views pass.
+[Evidence and added material/geometry cost](2026-10-08-air-canvas-and-slate-checks.json)
+record the modest visual improvement and preserve all final art/performance
+gates. Prepare a selective current-master visual patch for playtesting; that
+component delivery must not be labelled1.80 freeze or full1.87 completion.
+Whole future-branch merges, skipped milestone gates and implied beta approval
+remain prohibited.
+
 October8: **staged1.87 elemental dungeon architecture** adds family-specific
 blind arches, supports and layered stone courses without changing full-layout
 collision boxes or walk-floor partitions. Each wall stays one cached mesh;

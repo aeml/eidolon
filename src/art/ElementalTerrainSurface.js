@@ -19,24 +19,27 @@ function noise(x, y, cells, seed) {
 
 function sampleWindWornSlate(x, y, seed) {
     const turn = Math.PI * 2 / 256;
-    const broad = noise(x, y, 5, seed ^ 0x1491), grit = noise(x, y, 43, seed ^ 0x493f);
+    const grit = noise(x, y, 43, seed ^ 0x493f);
     const weathering = noise(x, y, 7, seed ^ 0x7319);
     // Warped, elongated mineral beds break into irregular ledges rather than
     // parallel sinusoidal ripples or a cellular paving grid. Integer domain
     // frequencies keep the same continuous geology across the tile boundary.
     const bed = noise(x + Math.sin(y * turn) * 8, y * 3, 7, seed ^ 0x325a);
     const strata = smooth(.4, .62, bed) * (1 - smooth(.28, .72, weathering));
-    const cover = smooth(.36, .7, broad);
-    const mineral = .22 + grit * .24 + strata * .28;
+    // Dust lies in interrupted wind-aligned streaks, not round bright clouds.
+    // Keep the physical bedding directional and its color contrast restrained.
+    const drift = noise(x + Math.sin(y * turn * 2) * 7, y * 4, 3, seed ^ 0x1491);
+    const cover = smooth(.32, .7, drift + (noise(x, y, 11, seed ^ 0x529b) - .5) * .12);
+    const mineral = .24 + grit * .15 + strata * .19;
     const dark = [58, 57, 64], light = [100, 98, 107], dust = [123, 120, 131];
     const grain = hash(Math.floor(x), Math.floor(y), seed ^ 0xab3);
     const color = dark.map((value, i) => {
         const rock = value + (light[i] - value) * mineral;
-        return Math.round(rock + (dust[i] - rock) * cover * .36 + (grain - .5) * 2);
+        return Math.round(rock + (dust[i] - rock) * cover * .18 + (grain - .5) * 1.5);
     });
     return { color, cover, strata,
-        height: .24 + strata * .068 + grit * .045 + cover * .024,
-        roughness: .72 + cover * .23 + grit * .025 };
+        height: .24 + strata * .038 + grit * .018 + cover * .026,
+        roughness: .73 + cover * .2 + grit * .018 };
 }
 
 function sampleWeatheredIce(x, y, seed) {

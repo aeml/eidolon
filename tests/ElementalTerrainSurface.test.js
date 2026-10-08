@@ -38,8 +38,8 @@ test('fire albedo and packed roughness use the same basalt/ash field', () => {
 
 test.each([
     ['fire', '388a58036a4673025f578bd990172defe335f8dbe483fdfb2fd5fc719bf362f4'],
-    ['air', '30a9e712023a0705e74f2e34724d68940130869dac8399b7f224d46496b8a786']
-])('Water refinement retains qualified %s surface fields exactly', (realm, digest) => {
+    ['water', '70ca2b639ac2423d5b7a9a343375c94911c58cd4399b51f8143ee92d8d077472']
+])('Air refinement retains qualified %s surface fields exactly', (realm, digest) => {
     const samples = [];
     for (let y = 0; y < 256; y += 8) for (let x = 0; x < 256; x += 8) {
         samples.push(sampleElementalTerrain(x, y, realm, PROCEDURAL_TERRAIN_DEFINITIONS[realm].seed));

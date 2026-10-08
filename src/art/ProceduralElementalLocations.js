@@ -11,6 +11,7 @@ import { createKilnArchBeam } from './FireLandmarkGeometry.js';
 import { createHorizonRing } from './AirLandmarkGeometry.js';
 import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
 import { createElementalGroundCover } from './ElementalGroundCover.js';
+import { createAirWindbreakSail } from './AirCanvasGeometry.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
@@ -41,6 +42,8 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
     if (realm === 'fire') materials.furnace = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
         color: 0xffffff, vertexColors: true, roughness: .94
     }), 'fieldstone');
+    if (air) materials.canvas = new THREE.MeshStandardMaterial({ color: 0x9891ac, vertexColors: true,
+        side: THREE.DoubleSide, roughness: 1 });
     if (!air) materials.cover = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
         side: THREE.DoubleSide, roughness: 1 });
     for (const site of sites) {
@@ -57,7 +60,7 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                 if (!geometry.attributes.color) weatherWreckWood(geometry, x * 2 + z);
             }
             const baked = geometry.index ? geometry.toNonIndexed() : geometry.clone(); geometry.dispose();
-            if (!['furnace', 'wreckWood', 'wreckSail'].includes(key)) baked.deleteAttribute('color');
+            if (!['furnace', 'wreckWood', 'wreckSail', 'canvas'].includes(key)) baked.deleteAttribute('color');
             baked.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(x, y, z),
                 new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale)));
             if (!batches.has(key)) batches.set(key, []);
@@ -178,7 +181,7 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                 beam([x, 5, -7], [x, 5, 7], .22);
                 // Narrow side sails shelter open bays, leaving the central
                 // aisle and all ground-level gameplay sightlines unobstructed.
-                part(new THREE.PlaneGeometry(14, 3.5, 12, 2), 'cloth', x, 3, 0, [0, Math.PI / 2, -.1]);
+                part(createAirWindbreakSail(quality, side), 'canvas', x, 3, 0, [0, Math.PI / 2, -.1]);
                 footprint(x, 2.5, 0, .7, 5, 14);
                 rope([[x, 4.8, -7], [x + side * 2, 2, -9], [x + side * 3, .1, -10]], .09, 'iron');
                 if (site.recipe === 'courier-exchange') {
