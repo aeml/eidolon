@@ -13,12 +13,13 @@ export const PORTAL_CRYSTALS = Object.freeze([
 
 // Presentation only. The existing enter_dark_realm handler rechecks every
 // requirement, personal receipt, position and action on the authoritative server.
-export function getResonancePortalState(player) {
+export function getResonancePortalState(player, administrator = false) {
     const quests = player?.quests || [];
     const restored = PORTAL_CRYSTALS.map(crystal => hasChronicleRestoration(quests, crystal.realm));
     const legacy = quests.some(quest => ['chronicle_14_resonance_gate', 'chronicle_15_dark_king'].includes(quest.id)
         && (quest.completed === true || quest.accepted === true));
     const whole = restored.every(Boolean) || legacy;
-    const eligible = Number(player?.level) >= 100 && whole;
-    return { restored, legacy, eligible, stage: eligible ? 'active' : whole ? 'ready' : 'locked' };
+    const administratorPass = administrator === true && !whole;
+    const eligible = Number(player?.level) >= 100 && (whole || administratorPass);
+    return { restored, legacy, administratorPass, eligible, stage: eligible ? 'active' : whole ? 'ready' : 'locked' };
 }

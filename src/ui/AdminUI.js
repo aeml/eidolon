@@ -41,7 +41,7 @@ export class AdminUI {
                         <option value="admin_chat_moderation_target">Moderation target checks</option>
                         <option value="resume">Resume</option><option value="disconnect">Disconnect</option>
                         <option value="admin_grant_gold">Gold grants</option><option value="admin_grant_item">Item creation</option>
-                        <option value="admin_teleport">Teleports</option></select></label>
+                        <option value="admin_teleport">Teleports</option><option value="admin_dark_realm_access">Dark Realm admin access</option></select></label>
                     <label>UTC day<input data-day type="date"></label>
                 </div>
                 <div class="administration-filters" data-population-filters>

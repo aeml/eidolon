@@ -29,7 +29,8 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
             const engine = {
                 player: { id: 'fixture', level: 100, state: 'IDLE', position: new THREE.Vector3(28, 0, 239), quests: [] },
                 currentInstanceId: '', isMultiplayer: true, collisionManager: new CollisionManager(), sent: [],
-                network: { send: (type, payload) => engine.sent.push({ type, payload }) }
+                network: { send: (type, payload) => engine.sent.push({ type, payload }) },
+                uiManager: { admin: { authorized: false } }
             };
             const ground = new THREE.Mesh(new THREE.PlaneGeometry(198.5, 198.5), createProceduralTerrainMaterial('town'));
             ground.rotation.x = -Math.PI / 2; ground.position.set(0, -.01, 200); ground.receiveShadow = true; render.scene.add(ground);
@@ -55,7 +56,9 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
             // animation gallery (including summons) throughout every screenshot.
             const paint = () => { portal.update(1 / 60); render.render(); };
             const setStage = stage => {
-                engine.player.quests = stage === 'locked' ? [] : Object.values(CHRONICLE_RESTORATIONS).map(value => ({ id: value.questId, completed: true }));
+                engine.sent = [];
+                engine.uiManager.admin.authorized = stage === 'administrator';
+                engine.player.quests = ['locked', 'administrator'].includes(stage) ? [] : Object.values(CHRONICLE_RESTORATIONS).map(value => ({ id: value.questId, completed: true }));
                 engine.player.level = stage === 'ready' ? 99 : 100; paint();
             };
             window.__portalFixture = { engine, portal, setStage, render, paint, dispose() {
@@ -68,9 +71,9 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
         }, viewport.width < 600);
         await testInfo.attach('portal-renderer', { body: rendererIdentity, contentType: 'text/plain' });
         console.log(`Portal presentation renderer (${viewport.width}px): ${rendererIdentity}`);
-        for (const stage of ['locked', 'ready', 'active']) {
+        for (const stage of ['locked', 'ready', 'active', 'administrator']) {
             await page.evaluate(stage => window.__portalFixture.setStage(stage), stage);
-            await expect.poll(() => page.evaluate(() => window.__portalFixture.portal.mesh.userData.portalStage)).toBe(stage);
+            await expect.poll(() => page.evaluate(() => window.__portalFixture.portal.mesh.userData.portalStage)).toBe(stage === 'administrator' ? 'active' : stage);
             await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
             await page.screenshot({ path: testInfo.outputPath(`plaza-${stage}.png`) });
             if (stage === 'active') {
@@ -90,12 +93,16 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844
             await expect(dialog).toBeVisible();
             await expect(dialog.getByRole('listitem')).toHaveCount(4);
             const cross = dialog.getByRole('button', { name: 'Enter the Dark Realm' });
-            if (stage === 'active') await expect(cross).toBeEnabled(); else await expect(cross).toBeDisabled();
+            if (['active', 'administrator'].includes(stage)) await expect(cross).toBeEnabled(); else await expect(cross).toBeDisabled();
+            if (stage === 'administrator') {
+                await expect(dialog).toContainText('Administrator passage');
+                expect(await page.evaluate(() => window.__portalFixture.engine.player.quests)).toEqual([]);
+            }
             const box = await dialog.boundingBox();
             expect(box.x).toBeGreaterThanOrEqual(0); expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
             expect(box.y).toBeGreaterThanOrEqual(0); expect(box.y + box.height).toBeLessThanOrEqual(viewport.height);
             await page.screenshot({ path: testInfo.outputPath(`dialog-${stage}.png`) });
-            if (stage === 'active') {
+            if (['active', 'administrator'].includes(stage)) {
                 await cross.click();
                 expect(await page.evaluate(() => window.__portalFixture.engine.sent)).toEqual([{ type: 'enter_dark_realm', payload: {} }]);
             } else {

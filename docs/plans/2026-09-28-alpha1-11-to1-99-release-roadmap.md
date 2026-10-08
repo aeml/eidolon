@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 delivery update: corrected Alpha1.79.4 at2b0fd839 has passed its
+mandatory CI tests, predeploy checks, ordinary SSH and Pages deployments.
+Root independently confirms matching public frontend/backend version/commit
+and database readiness; final hosted live QA is pending at this edit. The
+earlier1.79.3 SSH failure below is historical, not the current deployment result.
+User-requested1.79.5 administrator Dark Realm story-only passage is prepared
+separately with current durable-role/audit checks and actual disposable
+travel/save/restart coverage. Level100 and ordinary player/Nexus/raid gates
+remain; no quests/rewards are granted. See its
+[candidate scope](2026-10-08-release1-79-5-checks.json); own publication and exact
+public acceptance remain required. Full1.80/1.87 and later roadmap scope is
+unchanged; this access fix does not certify art, pacing, beta or launch readiness.
+
 October8 current delivery boundary: Alpha1.79.3 is verified live at b13dd3af.
 Alpha1.79.3 selectively integrates qualified town masonry, Fire/Moonfrost/Air
 surfaces, Tide Rib piers, static camp canvas, quality-aware elemental dungeon

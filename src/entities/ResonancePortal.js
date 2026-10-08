@@ -56,7 +56,8 @@ export class ResonancePortal extends Entity {
     }
 
     update(dt = 0) {
-        this.portalModel?.update(dt, getResonancePortalState(this.gameEngine?.player), this.motionPreference.matches);
+        this.portalModel?.update(dt, getResonancePortalState(this.gameEngine?.player,
+            this.gameEngine?.uiManager?.admin?.authorized === true), this.motionPreference.matches);
         this.dialog?.update();
     }
 

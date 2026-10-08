@@ -104,10 +104,20 @@ var darkRealmWitnesses = []struct {
 // into the spatial grid. Shared-world logout does not reset district progress;
 // private Nexus/raid saves still use the separate fifteen-minute rule.
 func RestoreDarkRealmPosition(player *Entity) {
+	restoreDarkRealmPosition(player, false)
+}
+
+// Only a server-verified current administrator may use this travel-only path.
+// Story rewards/access checks remain separate and unchanged.
+func RestoreDarkRealmPositionForAdministrator(player *Entity) {
+	restoreDarkRealmPosition(player, true)
+}
+
+func restoreDarkRealmPosition(player *Entity, administrator bool) {
 	if player == nil || player.InstanceID != DarkRealmInstanceID {
 		return
 	}
-	if !DarkRealmEntryAllowed(player) {
+	if !darkRealmTravelAllowed(player, administrator) {
 		player.InstanceID, player.X, player.Y, player.Z = "", -1.25, 0, 200
 	} else {
 		inside := false
@@ -128,6 +138,20 @@ func RestoreDarkRealmPosition(player *Entity) {
 // Called by the guide or physical portal. Keep the transition
 // server-owned: a party leader's unlock must not carry an ineligible member in.
 func (w *World) EnterDarkRealm(playerID string) error {
+	return w.enterDarkRealm(playerID, false)
+}
+
+// Server callers must verify the live durable role before invoking this path.
+// It bypasses story receipts only, not level, scene, action or proximity checks.
+func (w *World) EnterDarkRealmForAdministrator(playerID string) error {
+	return w.enterDarkRealm(playerID, true)
+}
+
+func darkRealmTravelAllowed(player *Entity, administrator bool) bool {
+	return DarkRealmEntryAllowed(player) || administrator && player != nil && player.Type == TypePlayer && player.Level >= 100
+}
+
+func (w *World) enterDarkRealm(playerID string, administrator bool) error {
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 	p := w.Entities[playerID]
@@ -136,7 +160,7 @@ func (w *World) EnterDarkRealm(playerID string) error {
 	}
 	p.Mu.Lock()
 	defer p.Mu.Unlock()
-	if !DarkRealmEntryAllowed(p) {
+	if !darkRealmTravelAllowed(p, administrator) {
 		return errors.New("reach level 100 and restore all four crystals before entering the Dark Realm")
 	}
 	if p.InstanceID == DarkRealmInstanceID {

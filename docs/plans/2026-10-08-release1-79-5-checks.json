@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.5",
+  "base": "2b0fd839b239a5bdfbdeb2b202ca702866819897",
+  "status": "scoped-checks-passed-publication-pending",
+  "request": "Administrators can enter the Dark Realm without completing the questline.",
+  "scope": "Verified durable account role bypasses only Dark Realm story/crystal entry receipts. Level100, scene/action/alive/proximity checks remain. Portal and Dungeon Guide use current verified presentation; server ignores payload admin/player/quest claims and rechecks role/session after I/O. Saved Dark Realm restoration checks current role. Ordinary story gates, quest completion/rewards and Nexus/raid gates unchanged. Permission audit precedes travel; it records authorization, not a claim that a blocked move succeeded. Existing audit retention/journaling remains.",
+  "checks": {
+    "unit": "Four client suites49 PASS4.146s. Go Dark Realm root and game scope PASS race3.648s/4.140s;14 handler cases include ordinary/forged/bootstrap-only/active-VIP-only/role lookup error/unavailable audit/revoked or failed role after audit/replaced session/closed/underlevel/distant/dead. Five game restore cases preserve uncompleted story/resources. New database audit construction/filter case PASS1.022s. Other privileged admin/journal behaviors retain existing tests.",
+    "native": "Root94432 terminal0: two System Chrome tests PASS23.9s with actual AMD RADV rendering,1440px and390px, locked/ready/ordinary-active/admin-active portal scenes and dialogs. Click sends empty ordinary travel intent; no presentation fixture grants real authority. No physical-phone or full-campaign claim.",
+    "actualSessions": "Root54638 terminal0: production race binary, two synthetic accounts in explicitly disposable loopback Mongo, durable admin role, ordinary forged-entry rejection, actual admin travel, fresh disconnect save, process restart, current-role restoration and persisted authorization audit PASS12.62s/package13.675s. Normalized login baseline preserves quests/Gold/XP across travel/restart. Only owned disposable Mongo removed; no live account grants, quests, saves or credentials changed.",
+    "retainedFailures": "Root70927: first binary omitted required harness build identity, startup readiness fails10.27s despite healthy startup; root22632: max-level admission normalizes XP, so fixture pre-login expectation fails5.26s. Correct build stamp and establish normal saved login baseline before testing travel; no runtime gate or XP rule weakened. Root19599: initial version update missed README/release.json, two version checks fail, corrected before publication.",
+    "static": "Root52578 terminal0: final five client suites418 PASS6.236s including historical/current version assertions. Root5624 terminal0: current Dark Realm/admin role/read-completion race scope PASS6.044s(root)/3.715s(game); disposable socket check skips without explicit environment, not claimed as rerun. Scoped ESLint, shell syntax and whitespace pass. All release defaults/cumulative notes/login label synchronized1.79.5; dependency resolution unchanged. Actual-session test added to existing CI disposable-socket stage using its already-built binary/database; no production credentials/new service or long campaign run."
+  },
+  "evidence": {
+    "native": "/home/aeml/.local/share/eidolon-admin-dark-native-20261008",
+    "actualPass": "/home/aeml/.local/share/eidolon-admin-dark-recheck-20261008-NJ1HXjTQ/socket.log",
+    "actualPassSHA256": "0dd5f746e3128f8ce555c0cd5a0772ae56e76be260b64010e534ded99c019732",
+    "buildFixtureFailure": "/home/aeml/.local/share/eidolon-admin-dark-socket-20261008-JbBz3jl5/socket.log",
+    "normalizationFixtureFailure": "/home/aeml/.local/share/eidolon-admin-dark-socket-20261008-QDs5hcFm/socket.log"
+  },
+  "production": "Own1.79.5 CI/deployment and exact matching public acceptance pending. Existing1.79.4 run37744495087 mandatory tests/predeploy/SSH/Pages succeed; root independently observed matching public frontend/backend2b0fd839 Alpha1.79.4/database ready, final hosted live QA pending at preparation.",
+  "remaining": "Full original roadmap/1.80 F1-F5/1.87 modern art and equipped-party/device/profile-activation gates remain open. Human campaign and phone party validation deferred, not passed. Raised terrain default/private production configuration unchanged. No beta, complete-release or capacity certification."
+}

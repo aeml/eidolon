@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 user-requested administrator Dark Realm passage:** Separate scoped
+Alpha1.79.5 patch on fresh2b0fd839. Durable current account role bypasses only
+story/crystal entry receipts; level100, action/scene/proximity checks and ordinary
+player/Nexus/raid gates remain. Permission use is audited before travel; role,
+session or audit loss fails closed. Portal, guide and saved-position restoration
+integrated without quest/reward mutation. Four UI suites49 pass4.146s; two actual
+System Chrome desktop/390px presentation cases pass23.9s. Focused Go Dark Realm
+regressions pass race3.648s(root)/4.140s(game), new audit validation1.022s.
+Actual disposable role/socket/save/restart/audit scenario passes12.62s after
+retained harness build-stamp and login-normalization fixture failures. See
+[scope/evidence](docs/plans/2026-10-08-release1-79-5-checks.json).
+Own publication/public acceptance pending. Existing1.79.4 mandatory test,
+predeploy, SSH and Pages jobs pass; matching public2b frontend/backend/database
+observed, final hosted live QA pending. Full roadmap/art/F1–F5 gates remain open.
+
 **October8 Alpha1.79.4 publication fixture correction:** Own CI37742963800
 passes Client Jest and custom server verification, including actual saved-profile
 gate31.648s; coverage has one stale PvP pre-admission-height expectation. Exact

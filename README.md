@@ -420,18 +420,21 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.4`, a saved-height recovery and terrain
-  compatibility precursor prepared on accepted `master` b13dd3af. Own publication
-  and public acceptance remain pending; 1.80 freeze and the full 1.87 modern-art/
-  raised-world milestone remain open. Four-class actual saved-session proof and
+- Current source version: `Alpha 1.79.5`, a verified-administrator Dark Realm
+  story-gate bypass. Level100 and normal travel checks remain; quests, their
+  rewards and Nexus/raid gates are unchanged. Current durable roles govern both
+  travel and saved-location restoration. Own publication/public acceptance are
+  pending; 1.80 freeze and full 1.87 modern-art/raised-world gates remain open.
+  Four-class actual saved-session proof and
   narrow connected movement/Fireball/resume checks retain their exact limits in
   the [save receipt](docs/plans/2026-10-08-terrain-saved-session-checks.json) and
   [connected receipt](docs/plans/2026-10-08-connected-terrain-checks.json).
-  Latest verified live release is `Alpha 1.79.3`, at b13dd3af; own guarded local
-  promotion and public checks passed while hosted SSH failed, as recorded in the
-  [public receipt](docs/plans/2026-10-08-release1-79-3-public-checks.json). Hosted SSH routing
-  remains unresolved and does not justify bypassing release guards. Raised
-  terrain stays disabled, saves and public alpha access remain unchanged.
+  Current identified live release is `Alpha 1.79.4`, at2b0fd839, with matching
+  public frontend/backend identity and database readiness. Its ordinary SSH and
+  Pages deployment jobs succeeded; final live QA is still pending at this edit.
+  Prior1.79.3 fallback and its SSH failure remain in the
+  [historical public receipt](docs/plans/2026-10-08-release1-79-3-public-checks.json).
+  Raised terrain stays disabled, saves and public alpha access remain unchanged.
   Current identified API/driver qualification passed representative
   100 mixed/raid/event/town clients,112958ms common activity and100 independent
   fresh saves. Original server phase means total18.8475ms against33ms; all

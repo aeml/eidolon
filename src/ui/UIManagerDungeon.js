@@ -255,6 +255,7 @@ class UIManagerDungeonMethods {
             heading.textContent = 'Beyond the four crystals';
             const description = document.createElement('p');
             description.textContent = PORTAL_DIRECTIONS + ' I can also send you from here to the Resonant Foothold. Speak with Ilyra’s projection at camp. Each traveler needs level 100 and all four crystal repairs; this does not reset your party’s dungeon. Use Return to Lanternhold in the game menu (B) to come back.';
+            if (data.adminDarkRealmAccess === true) description.textContent += ' Your verified administrator access bypasses the crystal/story requirements, without completing quests or granting their rewards.';
             const cross = document.createElement('button');
             cross.id = 'btn-enter-dark-realm';
             cross.type = 'button';

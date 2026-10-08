@@ -49,6 +49,17 @@ test('personal locked, ready and active states require claims and preserve veter
     expect(getResonancePortalState(null).eligible).toBe(false);
 });
 
+test('verified admin presentation bypasses story claims without marking crystals or removing the level requirement', () => {
+    const player = { level: 100, quests: [], isAdmin: true };
+    expect(getResonancePortalState(player).eligible).toBe(false);
+    const state = getResonancePortalState(player, true);
+    expect(state).toMatchObject({ eligible: true, administratorPass: true, restored: [false, false, false, false] });
+    expect(player.quests).toEqual([]);
+    expect(getResonancePortalState({ ...player, level: 99 }, true).eligible).toBe(false);
+    expect(getResonancePortalState(player, 'true').eligible).toBe(false);
+    expect(getResonancePortalState(null, true).eligible).toBe(false);
+});
+
 test('portal is an interactable landmark, not an attack target; geometry and colliders clean up on re-entry', async () => {
     const tags = jest.spyOn(Entity.prototype, 'updateNameTag').mockImplementation(() => {});
     try {

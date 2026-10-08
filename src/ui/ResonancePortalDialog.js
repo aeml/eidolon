@@ -52,7 +52,7 @@ export function openResonancePortalDialog(engine, portal) {
     });
     close.onclick = cleanup;
     cross.onclick = () => {
-        if (!portal.canInteract(engine) || !getResonancePortalState(engine.player).eligible) { update(); return; }
+        if (!portal.canInteract(engine) || !getResonancePortalState(engine.player, engine.uiManager?.admin?.authorized === true).eligible) { update(); return; }
         engine.network?.send?.('enter_dark_realm', {});
         cleanup();
     };
@@ -60,11 +60,12 @@ export function openResonancePortalDialog(engine, portal) {
     const update = () => {
         if (closed) return;
         if (engine.player?.id !== playerID || !portal.canInteract(engine)) { cleanup(); return; }
-        const state = getResonancePortalState(engine.player);
+        const state = getResonancePortalState(engine.player, engine.uiManager?.admin?.authorized === true);
         const next = JSON.stringify(state);
         if (next === signature) return;
         signature = next;
-        status.textContent = state.eligible ? 'Active · The road to the Resonant Foothold is open to you.'
+        status.textContent = state.eligible && state.administratorPass ? 'Administrator passage · Story requirements are bypassed; no quests or rewards are granted.'
+            : state.eligible ? 'Active · The road to the Resonant Foothold is open to you.'
             : state.stage === 'ready' ? 'Resonance ready · Reach level 100 to cross.' : 'Dormant · Restore and claim all four crystal Vigils.';
         list.replaceChildren(...PORTAL_CRYSTALS.map((crystal, index) => {
             const item = document.createElement('li');

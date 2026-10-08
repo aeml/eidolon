@@ -675,7 +675,11 @@ func (c *Client) dispatchMessage(msg Message) {
 			}
 		}
 		entity.LastDailyQuest = char.LastDailyQuest
-		game.RestoreDarkRealmPosition(entity)
+		if entity.InstanceID == game.DarkRealmInstanceID && !game.DarkRealmEntryAllowed(entity) && darkRealmAdministrator(c) {
+			game.RestoreDarkRealmPositionForAdministrator(entity)
+		} else {
+			game.RestoreDarkRealmPosition(entity)
+		}
 
 		// Fix for persistence issue: If we have quests but no date (or zero date), assume they are valid for today to prevent reset
 		if len(entity.Quests) > 0 && entity.LastDailyQuest.IsZero() {
@@ -827,7 +831,9 @@ func (c *Client) dispatchMessage(msg Message) {
 		resp["darkRealmOpen"] = darkRealmOpen
 		resp["darkKingDefeated"] = darkKingDefeated
 		resp["darkRealmExpedition"] = true
-		resp["canEnterDarkRealm"] = game.DarkRealmEntryAllowed(player) && player.InstanceID == ""
+		adminDarkRealmAccess := player.Level >= 100 && darkRealmAdministrator(c)
+		resp["adminDarkRealmAccess"] = adminDarkRealmAccess
+		resp["canEnterDarkRealm"] = (game.DarkRealmEntryAllowed(player) || adminDarkRealmAccess) && player.InstanceID == ""
 		resp["canEnterUmbralNexus"] = game.CanEnterUmbralNexus(player)
 		resp["elementalRaidAccess"] = game.ElementalRaidAccessForPlayer(player)
 		if player.Level >= game.MaxPlayerLevel {

@@ -3,7 +3,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.4';
+const currentVersion = '1.79.5';
+
+test('1.79.5 records administrator story-only passage and retained normal gates', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.5"'), previous = html.indexOf('data-version="1.79.4"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Verified administrators', 'Resonance Portal', 'Dungeon Guide', 'Level 100',
+        'Ordinary players', 'does not complete quests', 'Umbral Nexus', 'current server-side account role',
+        'not a client flag', 'auditing failures', 'No account wipe', 'Raised terrain remains disabled', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.4 records save-height recovery and compatibility without claiming raised rollout', () => {
     const html = fs.readFileSync('index.html', 'utf8');

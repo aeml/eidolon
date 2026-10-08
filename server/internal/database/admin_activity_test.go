@@ -59,6 +59,18 @@ func TestAdminActivityLegacyAccountNamesRemainAuditable(t *testing.T) {
 	}
 }
 
+func TestAdminDarkRealmAccessActivityRemainsFilterable(t *testing.T) {
+	now := time.Now()
+	event, err := NewAdminActivity("operator", "", "admin_dark_realm_access", "dark-access-request", "success", "Story-gate bypass authorized.", now, 90)
+	if err != nil || ValidateAdminActivity(event) != nil {
+		t.Fatal("administrator passage audit rejected", err)
+	}
+	filter, err := adminActivityFilter(AdminActivityQuery{Action: event.Action}, now, 90)
+	if err != nil || filter["action"] != event.Action {
+		t.Fatal("administrator passage cannot be viewed in activity history", err)
+	}
+}
+
 func TestAdminActivityFilterUsesTimestampAndIDAndExcludesExpiredRows(t *testing.T) {
 	now := time.Now().UTC().Truncate(time.Millisecond)
 	event, _ := NewAdminActivity("operator", "", "login", "session-event", "success", "Authenticated login.", now, 90)
