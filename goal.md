@@ -15,6 +15,17 @@ still required.1.79.9 attempt2 failed loot QA; bounded real-combat correction is
 being checked without runtime targeting changes or pickup-gate bypass. Latest
 accepted public1.79.8. Full roadmap/F1-F5/art/device/beta/launch goal remains active.
 
+**October8 public-monitor process transition qualification:** Prepared1.79.13
+merges reconciled1.79.12 and corrected remote QA without monitor/runtime policy
+changes. New actual compiled-monitor/local HTTP+verified TLS fixture passes two
+sequential release mismatch/recovery cycles with process restart9.365s. Preserve
+3failure/2recovery thresholds and30mincooldown; test polls1s, managed policy30s.
+SIGTERM exits cleanly; private-body marker excluded, Postmark off/no production
+env/IO. [Evidence](docs/plans/2026-10-08-release1-79-13-checks.json).
+Actual managed deployment turnover/activation and off-machine/whole-host/browser
+coverage remain open, not replaced by this fixture. Ordered publication and
+original full roadmap/F1-F5/art/device/human/owner/beta/launch gates unchanged.
+
 **Prepared1.79.13 public-monitor integration:** Qualified optional public-probe
 and managed preflight code now has synchronized source/login/server/CI/default
 versions and accurate cumulative notes.387focused client checks, two root
@@ -83,6 +94,20 @@ Earlier status notes below are historical; no completion/freeze gate is waived.
 Preserve all approved supplied class/item GLBs and animations; the obsolete
 procedural-only language below does not authorize removing them. Full modern-art
 contract and authoritative numbered roadmap remain active.
+
+**October8 corrected1.79.9 publication QA:** Previous37791738441 attempt1
+times out after6h browser install; attempt2 fails manual loot acquisition because
+three living Skeletons remain after the helper's two-blocker cleanup limit.
+Preserve runtime priority and every actual-pointer/manual quantity/save gate.
+QA-only distinct-hostile clearance is bounded at8, through normal mouse/combat;
+34 regressions and actual disposable four-case release smoke pass. Fresh smoke
+does not reproduce the exact original pack; own mandatory replacement CI and
+public acceptance still required. Bring forward prepared15min install timeout
+with original install commands. See
+[failure/correction scope](docs/plans/2026-10-08-release1-79-9-loot-qa-checks.json).
+Latest accepted public remains1.79.8. Prepared1.79.10–14 must reconcile this
+correction and remote changes before ordered publication. Full goal active;
+original numbered roadmap/art/F1-F5/device/owner/beta/launch gates remain open.
 
 **Accepted public Alpha1.79.8 /bf145bda:** Corrected-source CI37783791245
 passes all ten required jobs. Root independently confirms exact terminal head,

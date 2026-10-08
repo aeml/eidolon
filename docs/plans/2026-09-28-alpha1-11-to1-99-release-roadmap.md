@@ -11,6 +11,14 @@ Ordered1.79.9–13 publication, fresh remote reconciliation and own exact live
 gates still required. Full numbered scope and1.80F1-F5 remain unchanged.
 [Integration receipt](2026-10-08-release1-79-14-checks.json).
 
+October8 public-monitor compiled-process fixture now covers two sequential
+release mismatches/recoveries across a clean process restart using local HTTP
+and ordinary verified TLS. Final focused race check9.365s;3/2thresholds and30m
+reminder policy retained, fixture polls1s/managed30s. No production activation,
+mail/env or runtime change. Actual managed turnover/whole-host/off-machine/
+browser and all original1.83/F1-F5/modern-art/device/owner/launch gates stay open.
+[Supplemental evidence](2026-10-08-release1-79-13-checks.json).
+
 October8 prepared1.79.13 integrates the optional public-probe and managed
 preflight components below, with synchronized versions and all448notes (all447
 prior entry bytes retained).387focused client checks,15managed race cases and
@@ -57,6 +65,15 @@ all prior history preserved. [Integration](2026-10-08-release1-79-11-checks.json
 Not pushed/live: pending1.79.9 needs acceptance, then1.79.10 publication/acceptance
 before1.79.11. Earlier status entries are historical; full numbered requirements,
 F1-F5/1.87/environment/device/beta/launch and owner/human gates remain unchanged.
+
+October8 corrected1.79.9 QA permits a bounded distinct hostile pack to be
+defeated through real combat before earned-loot pointer acquisition. Original
+runtime targeting/manual pickup/persistence gates retained;34 regressions and
+four-case real disposable smoke pass. Prior run37791738441 attempt2 failed and
+deploy/live gates skipped. Bring forward prepared15min browser-install timeout,
+unchanged commands. Own replacement CI/public acceptance and remote reconciliation
+remain required before next ordered milestones. Full scope unchanged.
+[Failure/correction evidence](2026-10-08-release1-79-9-loot-qa-checks.json).
 
 Accepted public1.79.8/bf145bda: corrected-source37783791245 all ten required
 jobs successful; root independently verifies terminal head, public identities/

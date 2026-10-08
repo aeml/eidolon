@@ -1,4 +1,40 @@
-import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile } from './e2e/loot-pointer-observation.js';
+import { jest } from '@jest/globals';
+import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile, acquirePointerWithBoundedCombat } from './e2e/loot-pointer-observation.js';
+
+test('combat can clear a five-hostile pack but still requires pointer acquisition afterward', async () => {
+    const error = new Error('covered loot'), point = { lootId: 'earned' };
+    const acquire = jest.fn();
+    for (let i = 0; i < 5; i++) acquire.mockRejectedValueOnce(error);
+    acquire.mockResolvedValueOnce(point);
+    const readBlocker = jest.fn(async () => `hostile-${readBlocker.mock.calls.length}`);
+    const defeat = jest.fn(async () => {});
+    expect(await acquirePointerWithBoundedCombat({ acquire, readBlocker, defeat })).toBe(point);
+    expect(acquire).toHaveBeenCalledTimes(6);
+    expect(defeat.mock.calls.map(([id]) => id)).toEqual(['hostile-1', 'hostile-2', 'hostile-3', 'hostile-4', 'hostile-5']);
+});
+
+test('continued spawns cannot cause unbounded combat or claim successful pickup', async () => {
+    const error = new Error('covered loot'), acquire = jest.fn(async () => { throw error; });
+    const readBlocker = jest.fn(async () => `hostile-${readBlocker.mock.calls.length}`);
+    const defeat = jest.fn(async () => {});
+    await expect(acquirePointerWithBoundedCombat({ acquire, readBlocker, defeat })).rejects.toBe(error);
+    expect(acquire).toHaveBeenCalledTimes(9);
+    expect(defeat).toHaveBeenCalledTimes(8);
+});
+
+test.each([null, 'repeated'])('a missing or repeated blocker does not manufacture progress: %s', async blocker => {
+    const error = new Error('covered loot'), acquire = jest.fn(async () => { throw error; });
+    const readBlocker = jest.fn(async () => blocker), defeat = jest.fn(async () => {});
+    await expect(acquirePointerWithBoundedCombat({ acquire, readBlocker, defeat })).rejects.toBe(error);
+    expect(defeat).toHaveBeenCalledTimes(blocker ? 1 : 0);
+});
+
+test('a failed real combat attempt propagates without further cleanup attempts', async () => {
+    const error = new Error('combat failed'), acquire = jest.fn(async () => { throw new Error('covered'); });
+    const defeat = jest.fn(async () => { throw error; });
+    await expect(acquirePointerWithBoundedCombat({ acquire, readBlocker: async () => 'hostile', defeat })).rejects.toBe(error);
+    expect(acquire).toHaveBeenCalledTimes(1);
+});
 
 const drop = id => ({ id, constructor: { name: 'LootDrop' }, isActive: true,
     item: { id: `item-${id}`, name: id } });
