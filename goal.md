@@ -18,6 +18,17 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Staged dungeon vigils/coffers/fonts now have constructed geometry instead
+  of bare shafts/flat boxes/torus vessels. Forty-three distinct focused checks
+  across initial/final scopes and four final native cases/thirty timed prop
+  views pass original quality/batch/frame/draw/triangle limits. Reject the
+  first green dark-box coffer; final vaulted lid and contrast reviewed.
+  [Evidence](docs/plans/2026-10-08-dungeon-vigil-checks.json). Fourteen shared
+  shapes/six existing materials, no texture/light/collision/state/gameplay
+  additions. Bare floors/large indicators/primitive motifs and whole environment
+  cohesion remain; not full modern-art/raid/device acceptance or public delivery.
+  Select after existing prepared releases with accurate notes; full goal active.
+
 - Staged filmic lighting now unifies actual world and dressing-room output.
   No exposure/light/material/content/geometry or new pass/resource changes.
   Thirty focused checks, six native town/five-dungeon High/Low cases and two

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 import { compareFilmicLighting } from './lighting-comparison.js';
+import { reviewDungeonProps } from './dungeon-prop-review.js';
 
 const fixture = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
     .find(value => value.dungeonType === 'verdant_bastion_catacombs');
@@ -66,6 +67,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         expect(wallReview.cutaway).toBeGreaterThan(0);
         expect(result.zoom).toBe(15);
         expect(result.textureSize).toBe(256);
+        await reviewDungeonProps(page, testInfo, '__masonryReview', 'verdant_bastion_catacombs', fixture.layout);
         expect(failures).toEqual([]);
     });
 }

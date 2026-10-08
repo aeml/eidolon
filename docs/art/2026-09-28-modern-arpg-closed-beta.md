@@ -83,6 +83,15 @@ silhouettes remain. This is not approval of the complete modern-ARPG direction,
 physical-device/party qualification or public delivery. See
 [scope and retained failures](../plans/2026-10-08-filmic-lighting-checks.json).
 
+Later October8 dungeon dressing review: code-built vigil feet/shafts/cages,
+vaulted reliquary coffers and hollow fonts improve constructed silhouettes using
+the existing material buckets. Reject the first green but still flat/dark coffer
+capture; revised actual five-family High/Low views retain original render limits.
+Broad bare tiles, large circular indicators and primitive regional fragments
+remain conspicuous and need further scene composition/material work. This is a
+staged improvement, not complete dungeon/raid art or connected-combat approval.
+[Scope, captures and limits](../plans/2026-10-08-dungeon-vigil-checks.json).
+
 | User-provided model scope | Code/integration work owned by implementation |
 | --- | --- |
 | Fighter, Rogue, Wizard and Cleric bodies/base appearances | Actor import/validation, rig/animation integration, equipment anchors, material assignment, previews, LOD/resource budgets, local/remote appearance and fallback behavior |
