@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "source": "a4a995a36c59c0d34f58b225566448bda4f31e95 plus the explicit on-demand harness below",
+  "status": "actual-four-browser-functional-and-fresh-save-passed-performance-unqualified",
+  "scope": "Four normal authenticated consenting Fighter/Cleric/Rogue/Wizard clients with independent native System Chrome processes, Rare/Uncommon primary-focused legal equipment plus three canonical accessories, fourteen slots each. Existing bounded encounter waypoint and acknowledged low-health preparation, not natural campaign progression or hostile injury evidence. High and Low are desktop1280x844, not phone tests.",
+  "assertions": "All four clients render all four independently owned class rigs, correct body quality and all fourteen fitted slots with zero missing/fallback models. Actual replicated server, actor and mesh positions agree with raised ground. Shift-ground native moves, Wizard native hotbar Fireball authoritative damage and actual submitted projectile draws, and Cleric native hotbar Healing Light to a still-focused selected party button pass. Normal disconnect saves preserve membership, every equipped item, bag and EP for all four actors.",
+  "runtimeFinding": "Selected roster focus blocked hotbar casting. A failing InputManager regression and actual no-cast/no-heal evidence reproduce it. Runtime a4a995a3 permits only mapped hotbar callbacks on enabled selected support-target buttons; ordinary UI, typing, native activation, repeats/modifiers and server checks remain. Same byte-identical fix is selectively published separately on current master for1.79.6; staged art is not part of that patch.",
+  "high": {
+    "result": "PASS85.11s/package86.162s",
+    "evidence": "/home/aeml/.local/share/eidolon-terrain-save-evidence-yKVfmMUh/browser.log",
+    "browserSHA256": "9b6fe122cbdf034802ae3f5ca922445f7df54c07a481a87b13ed232f428dc65c",
+    "measurement": "180frames, median50ms/p9566.7ms/p9966.7ms, CPU47.8/58.7ms, median634calls/567825tri,439geometries/155textures/25entities. Actual AMD RADV RENOIR, no preview work.",
+    "limitation": "Pause overlay appears in retained screenshot; it is not readable-scene art acceptance. Four concurrent browsers share one GPU. Measurements diagnostic only, no invented party threshold or standalone performance acceptance."
+  },
+  "low": {
+    "result": "PASS65.60s/package66.662s",
+    "evidence": "/home/aeml/.local/share/eidolon-terrain-save-evidence-piuFi1u4/browser.log",
+    "browserSHA256": "c57f9dc7583bc846529a03da3eed3b150985cd23d8de83132cca0fdf7e69e40f",
+    "measurement": "180frames, median33.3ms/p9533.4ms/p9950ms, CPU29/35.8ms, median263calls/170505tri,372geometries/146textures/37entities.63frames exceed33.34ms. Actual AMD RADV RENOIR, no preview work.",
+    "inspection": "One retained post-login image inspected: pause menu absent, all four outfits on-ground, selected/Well Rested rings visible. Long synthetic names, loot labels and an open party panel clutter the scene; not final label/readability or modern-art approval.",
+    "correction": "Escape only when chat still focused; explicitly assert menu hidden before profiling. No game-rule or workload reduction. Four renderers still share one GPU."
+  },
+  "retainedFailures": [
+    "77Bjl80g:65.31s failure because invite focus prevents helper Enter from focusing chat. Explicit visible chat input fixes harness without claiming a game bug.",
+    "EORBWR44:83.98s failed targeted-heal assertion after party rendering/Fireball gates. Add acknowledged wound and bounded diagnostics.",
+    "uzRyiDA1:88.05s failure: selected=true, Healing Light, ally distance6.19045, hp291, no cast/no heal. Real runtime focus bug, corrected without blurring buttons or weakening server rules."
+  ],
+  "harnessSHA256": {
+    "server/terrain_browser_party_integration_test.go": "965b0c7ec35f86dea7e7af392a4df0e1b81dbe69f47acca4330d26df1c2f60ef",
+    "tests/e2e/terrain-equipped-party.spec.js": "99e561c08fc5c1bf57757bef598f050663a2dc1ea96dcb47bc81c5521a1efa95",
+    "scripts/run-terrain-save-qa.sh": "2d5138e26fd6ab71dd70215c0a85fe3ae14efbb9d316deccf8435044be5b839c"
+  },
+  "safety": "Opt-in disposable loopback Mongo and production race binary. Explicit absolute Node/evidence paths and high|low quality, occupied web port rejected, private0600 browser log, no login screenshots/traces/videos. Owned fixture cleanup complete; no18189/4190 listeners or owned Mongo remain. Production accounts/configuration/profile/saves/assets unchanged.",
+  "remaining": "Representative single-renderer live-peer measurement, broader equipped scenes/party combat, physical devices and final art/readability still require evidence. Existing solo budgets retained; no blanket party performance certificate. Full1.80 F1-F5 and1.87/later roadmap remain open."
+}

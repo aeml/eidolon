@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 connected equipped party functionals now verified:** Actual four
+native Chrome clients qualify all-four rig ownership/fourteen fitted slots,
+raised movement, authoritative Fireball hit/draw, and targeted healing while
+the selected roster button retains focus. Real input bug reproduced then fixed;
+corrected High85.11s/Low65.60s and all fresh saves pass. Preserve failed attempts,
+High pause-overlay capture and shared-four-renderer frame limits; Low unpaused
+image inspected, not final modern art/performance approval. See the
+[exact evidence](docs/plans/2026-10-08-connected-equipped-terrain-party-checks.json).
+Next representative single-renderer live-peer performance and final art/device
+scope. Separate byte-identical hotbar fix1.79.6 pushed37a13a41 through ordinary
+CI37762573941, publication pending; no staged art/raised profile deployed.
+Full roadmap and1.80 F1–F5/1.87 remain active/open, latest accepted live1.79.5.
+
 **October8 earned-party checkpoint compatibility now verified:** Actual geared
 four-class sockets earn the first guardian kill under raised terrain; rejected
 claim/crash recovery, flat rollback, normal Recall/guide checkpoint return,

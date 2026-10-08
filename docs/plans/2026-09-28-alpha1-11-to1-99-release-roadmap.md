@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 equipped-party evidence update: four actual geared native browser
+clients now pass replicated independent rig/gear ownership, raised movement,
+Fireball damage/draw, focused-target healing and fresh-save preservation at High
+and Low. A real hotbar-focus fix is separately pushed as1.79.6 without staged art.
+The [receipt](2026-10-08-connected-equipped-terrain-party-checks.json) preserves
+the failed runs and shared-GPU/unpaused-image limits. Representative party
+performance, final modern art, actual devices,1.80 F1–F5 and later gates remain;
+functional evidence does not certify any of those.
+
 October8 checkpoint save gap advances: real geared four-class first-guardian
 combat, rejected-claim/crash recovery, flat rollback, town Recall/normal guide
 checkpoint re-entry, raised reactivation and explicit expired-logouts pass

@@ -7,9 +7,24 @@ readonly terrain_scenario="${EIDOLON_TERRAIN_SAVE_QA_SCENARIO:-world}"
 case "${terrain_scenario}" in
   world) terrain_test='^TestTerrainActualSavedSessionsAcrossProfileChanges$'; terrain_timeout=120s ;;
   earned-party) terrain_test='^TestTerrainActualEarnedPartyCheckpointAcrossProfileChanges$'; terrain_timeout=180s ;;
-  *) echo "Terrain save QA scenario must be world or earned-party." >&2; exit 1 ;;
+  connected-party) terrain_test='^TestTerrainActualEquippedBrowserParty$'; terrain_timeout=300s ;;
+  *) echo "Terrain save QA scenario must be world, earned-party or connected-party." >&2; exit 1 ;;
 esac
 readonly terrain_test terrain_timeout
+if [[ "${terrain_scenario}" == connected-party ]]; then
+  if ! [[ "${EIDOLON_TERRAIN_BROWSER_NODE:-}" == /* ]] || ! [[ -x "${EIDOLON_TERRAIN_BROWSER_NODE:-}" ]]; then
+    echo "Connected party QA requires an explicit absolute executable Node path." >&2
+    exit 1
+  fi
+  if ! [[ "${EIDOLON_TERRAIN_PARTY_QUALITY:-}" == high || "${EIDOLON_TERRAIN_PARTY_QUALITY:-}" == low ]]; then
+    echo "Connected party QA requires explicit high or low quality." >&2
+    exit 1
+  fi
+  if ss -ltn | grep -Eq ':4190[[:space:]]'; then
+    echo "Connected party QA web port4190 is occupied; refusing reuse." >&2
+    exit 1
+  fi
+fi
 if ! [[ "${terrain_mongo_port}" =~ ^[0-9]+$ ]] || (( terrain_mongo_port < 1024 || terrain_mongo_port > 65535 )); then
   echo "Terrain save QA requires an unprivileged loopback port." >&2
   exit 1
@@ -59,6 +74,7 @@ done
 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 \
 EIDOLON_RESOURCE_MONGO_URI="mongodb://127.0.0.1:${terrain_mongo_port}" \
 EIDOLON_RESOURCE_BINARY="${terrain_binary}" \
+EIDOLON_TERRAIN_BROWSER_EVIDENCE="${terrain_evidence}" \
 GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 \
   go -C server test -race -p 2 -count=1 -timeout="${terrain_timeout}" -v \
     -run "${terrain_test}" . \
