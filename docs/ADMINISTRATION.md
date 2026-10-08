@@ -306,6 +306,28 @@ Schema14 protects full-character operation receipts from older writers. Recovery
 requires a compatible database, private journals and server image; do not remove
 schema markers or run an older writer against a newer database.
 
+## Maintenance and incident notices (prepared, not yet live)
+
+In **Administration → Maintenance and incident notices**, choose maintenance,
+incident update or recovery. Enter public plain text (up to220 UTF-8 bytes)
+and a future next-update time in UTC within24 hours; recovery may omit the time.
+Select **Review notice**, check the exact public copy, then explicitly choose
+**Send this notice**. Editing or cancelling the review sends nothing.
+
+Current durable administrator authority and successful audit storage are
+required; authority is checked again before queueing. Connected players in all
+areas receive public server chat without the administrator's account identity.
+This does not stop services, change progress or send email. Notices are transient
+and are not replayed to later logins. Activity history records admission only,
+not proof of delivery to every player.
+
+If acknowledgement is missing, check server chat and Activity history before
+preparing another notice. The UI never retries automatically. Do not include
+private account, connection or security details. The tool is not an external
+status page during an outage; operator coverage, tabletop exercises and ordered
+publication still need acceptance. See the incident/maintenance playbook in
+[the operator guide](../server/deploy/README_LINUX.md).
+
 ## Safe live acceptance
 
 Sign in with an existing administrator account and confirm that **Administration**,

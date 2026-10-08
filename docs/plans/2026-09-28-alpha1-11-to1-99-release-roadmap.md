@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Prepared1.79.12 integrates audited, explicitly reviewed administrator public
+notices and safe incident/maintenance procedures onto prepared1.79.11.426focused
+checks, three scoped race server/journal/policy runs and actual desktop/narrow
+presentation pass; current permissions/audit actions and player data preserved.
+[Integration](2026-10-08-release1-79-12-checks.json). Not pushed/live: ordered
+earlier releases still need acceptance. This is a1.83 code foundation, not
+operator/tabletop or1.80/F1-F5/final-art/device/beta/launch acceptance. Original
+numbered requirements, dependencies and complete scope below remain unchanged.
+
 Requested login pagination is staged on prepared1.79.11: ten initial notes,
 explicit ten-entry older pages, all446 preserved; initial HTML about86% smaller.
 Login defers the engine/catalog and tolerates a late document-ready event.

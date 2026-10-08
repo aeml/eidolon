@@ -1,0 +1,20 @@
+{
+  "status": "prepared selective Alpha1.79.12, locally qualified; not pushed or accepted live",
+  "base": "prepared1.79.11/8cd6e7fd, origin/master293a9ccc remains pending in CI37791738441",
+  "selection": "Apply only notice tool/dispatch/policy/audit action/UI/network/layout tests and operator procedure from9e1d6f62. Exact server and UI component hashes match the qualified source. Two initial context patches refused because current docs differ and the audit allowlist now includes admin_dark_realm_access; preserve those current changes and apply only scoped notice additions. No wholesale ops/future branch merge.",
+  "scope": "Explicit review and send of maintenance, incident-update and recovery plain-text server chat across all scenes. Current durable admin role, closed bounded payload, connection budget, successful activity append and post-write authority checks remain server-authoritative. No automatic resend, no service-stop/email/player mutation. Audit history records admission, not universal delivery. Existing retention, Dark Realm audit action, diagnostics and admin operations preserved.",
+  "versions": "Twelve current source/login/package/release/server/CI/default/test locations synchronized1.79.12. New note above the full prior history. Pagination generator retains447notes with ten initial and44lazy pages; independent audit proves all446 earlier entry HTML bytes identical. Dependency resolutions unchanged apart from two root version values. Prior version-specific archive files retained.",
+  "units": "Six focused admin/version/pagination suites426pass3.567s. Earlier four-admin run44pass1.640s overlaps and is not an additional count. Scoped ESLint, gofmt-d, bash syntax and diff checks pass.",
+  "server": "Announcement, current console and authority regressions pass race2.321s; durable announcement journal replay/unchanged-expiry passes race1.039s; mandatory inbound dispatch/session/payload/rate policy regressions pass race11.474s. Uses fake durable role/activity stores and temporary journal, not a production Mongo restart rehearsal. No long unchanged raid/campaign/load replay.",
+  "native": "Actual System Chrome real AdminUI/window layout with synthetic private replies passes two cases12.6s at1280x720 and390x844. Explicit review, cancel/focus, literal unsafe-looking text, long-word wrapping,44px targets, send/acknowledgement and existing diagnostic/report/mutation presentation exercised. Root reviews actual narrow-screen notice image. Not a physical phone, authenticated production notice or full Firefox gameplay check.",
+  "logs": {
+    "unitsSHA256": "03c3ff662a2deb5ec626f7de4daa652482bb384c45726473bc49a1d42ebc1468",
+    "serverSHA256": "b79d0588b8f95e40caeba60705230455cc702dc144c469d0d49795eef0a06c75",
+    "journalSHA256": "dad6c328b943e6c107a49e9c149b08d555fff107ee2aab9acf493bb20e88b08e",
+    "nativeSHA256": "1f18592abdfec2b9d7f8804c9640d296c422abe64b75f0af7bf9af1e10662db8",
+    "sourceServerSHA256": "67dd1666ced99f02518208799e28cfe1112cb902eb299b1e34d8caaf18b71fa3",
+    "sourceUiSHA256": "d7660142693b0d3f3ecc13ff37f766e37848cb11cc6cd713dfb80d287075baab"
+  },
+  "artifacts": "/home/aeml/.local/share/eidolon-operations-integration-native-20261008 and eidolon-operations-* logs",
+  "delivery": "No push, CI dispatch, production notice, email, restart, save/schema/retention/currency change. Accept1.79.9, then publish/accept prepared1.79.10 and1.79.11 before this release, with fresh fetch/reconciliation. This closes a missing code route for1.83 but not complete operator coverage/tabletop/status/reopening acceptance,1.80F1-F5 or any modern-art/device/human/owner/beta/launch gate. Full roadmap goal active."
+}

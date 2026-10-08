@@ -7,6 +7,103 @@ This deploys:
 - Nginx on host (ports 80/443) reverse-proxying to API on localhost upstream port
 - TLS via Certbot Nginx flow
 
+## Incident and maintenance playbook (prepared 1.83)
+
+This is an operator procedure, not an automatic maintenance switch. Production
+state, access, DNS, provider configuration and retention are unchanged. The
+deployment operator (`aeml`) owns incident coordination and any privileged
+host action; an agent may inspect bounded public health and safe aggregate
+diagnostics, but must not improvise destructive recovery. Confirm a backup
+operator and alternate contact before beta; neither is assigned by this document.
+
+For each incident, retain UTC start time, affected surface, exact deployed
+client/server commit, last successful readiness check, a secret-free symptom,
+actions taken and the next update time. Keep the private recovery evidence
+outside Git/public reports. Do not attach `.env`, account exports, recovery
+links, bearer tokens, raw request bodies or unredacted production logs.
+
+Start with bounded read-only checks from the **actual installed server
+directory**, not a runner checkout or unrelated Compose project:
+
+```bash
+docker compose ps
+curl --connect-timeout 2 --max-time 5 -fsS http://127.0.0.1:${APP_HOST_PORT:-18082}/healthz
+curl -4 --connect-timeout 2 --max-time 5 -fsS https://server.eidolonrealms.com/healthz
+curl -4 --connect-timeout 2 --max-time 5 -I https://play.eidolonrealms.com/
+df -h .
+df -i .
+```
+
+Stop after a failed check and classify it before making changes. `curl -I`
+proves HTTP reachability, not runtime assets, login or combat. IPv4 checks do
+not validate advertised IPv6: that remains a separate owner-managed issue.
+Inspect only bounded, locally reviewed log excerpts when necessary. Readiness
+must include the database and exact expected commit; process/container uptime
+alone is not recovery. Do not run repeated login attempts or money-changing
+commands to diagnose an unavailable dependency.
+
+| Scenario | Safe investigation and containment | Stop/escalation and recovery proof |
+| --- | --- | --- |
+| Degraded database | Compare local/public readiness and Compose state. Preserve pending save/audit/custody journals and inspect only aggregate queue/error signals when available. Suspend further deployments and avoid new mutation tests. | Escalate to `aeml` on unavailable storage, refused admission or persistent pending work. Do not increase timeouts, erase journals or report success from a running API. Compatible dependency recovery must drain original work without duplicate rewards before normal login resumes. |
+| Unavailable origin | Separate frontend, public backend and loopback API responses. Check the exact CI/deployment result and deployed identity. Request operator Nginx/TLS/DNS inspection if loopback is healthy but public access fails. | Do not recreate Mongo, reset accounts or roll back data for a proxy/DNS failure. Do not bypass TLS verification. Recovery requires public HTTPS, runtime-asset identity and ordinary WebSocket/login checks; an IPv4 pass is not an IPv6 pass. |
+| Abuse burst | Inspect bounded connection/admission refusal and diagnostic-suppression counts. Retain existing limits and distinguish a household/proxy peer from an authenticated account. | Escalate sustained resource pressure to `aeml` for an explicitly approved edge action. No automatic account bans, broad IP bans, limit increases or deletion of durable audit. Verify ordinary reconnect/keepalive behavior after containment. |
+| Stuck casino/market settlement | Record game family, deployed commit and aggregate pending/error counts privately. Let the existing bounded retry pass recover its original saved operation. | Stop repeated wager/buy/refund attempts. Never grant compensating Gold/EP or clear receipts as a diagnostic shortcut. Escalate persistent pending work; validate the same operation settles once, independent wallet reload and reopen/restart without another debit/payout. |
+| Storage exhaustion | Inspect free bytes and inodes for the installed logs/backups and Docker storage filesystems. Preserve complete and incomplete recovery points and pending journals. | Refused durable writes/readiness are stop conditions, not reasons to disable durability. Do not prune volumes, receipts, journals or backups automatically. `aeml` approves exact disposable targets or added storage; verify writable journal, backlog recovery and independent saved state before reopening. |
+| Planned maintenance / failed upgrade | Coordinate an announcement, freeze competing deploys and identify the exact source/image/schema and consistent recovery set. Use the existing deployment lock and fail-closed preflight/backup path. | On any preflight, journal, backup, host-key or health failure, stop. Do not run `up -d` to override refusal. The previous image is not a valid data rollback after a schema upgrade; use a verified compatible forward fix or separately approved matching-set data-loss recovery. |
+
+### Player communication and reopening
+
+For planned work, the operator posts a short notice on an already available
+player-facing surface before the window, and an update at the stated next
+update time if it overruns. For an outage, state the verified affected surface
+and avoid asserting a cause or saved-progress guarantee that has not been
+checked. Do not invent an ETA: communicate the next update time instead.
+
+Suggested initial notice: "Eidolon maintenance starts [UTC time]. [Affected
+feature] may be unavailable. Please finish active encounters and wagers before
+then. Next update: [UTC time]." Outage notice: "We are investigating [verified
+symptom]. Please avoid repeated purchases or wagers. Next update: [UTC time]."
+Recovery notice follows verification: "[Affected service] is available again
+on [version/commit]. [Known limitations]. Please report continuing issues using
+the in-game report tool when available."
+
+The staged in-game route is **Administration → Maintenance and incident notices**.
+Choose maintenance, incident update or recovery; enter plain public text (up to
+220 UTF-8 bytes) and a future UTC next-update time within 24 hours. Recovery may
+omit the next-update time. Review the exact copy, then explicitly send it.
+Current durable administrator authority and acknowledged activity storage are
+required, with authority checked again after the audit write. The exact public
+copy/kind/time are recorded using existing activity retention; no account identity
+is included in public server chat. No maintenance mode, restart, email or player
+mutation is performed. A three-token burst budget refilling over one minute per
+authenticated connection bounds the route; review does not submit a request.
+
+Queue acknowledgement is not delivery to every player, and history's success row
+explicitly records **admission only**. If acknowledgement is missing, check server
+chat and Activity history before preparing another notice; the UI does not retry
+automatically. The transient notice is not replayed to players logging in later.
+Do not claim that a disconnected player saw an in-game notice. An always-reachable
+external status/contact destination still needs owner selection; the in-game tool
+cannot reach players during an origin outage. This staged route is not live or
+a substitute for operator coverage, tabletop exercises and ordered acceptance.
+No public email, account message or announcement is sent by these instructions.
+
+Reopening requires the exact expected server/client identities and ready
+database, private pending-work recovery, normal login/reconnect and a relevant
+ordinary-input smoke check. Reuse accepted scope-matched evidence when unchanged;
+exercise only the incident-invalidated path. Wallet/custody incidents additionally
+require independent saved balances/items and no duplicate settlement. Data
+restoration also requires review of removal requests and matching private journals,
+not just a Mongo restore. Record unresolved limitations and the operator's
+reopening decision. Never equate a green narrow test with complete campaign,
+100-player capacity, off-machine disaster recovery or final beta signoff.
+
+Before this milestone is accepted, perform and retain tabletop outcomes for all
+six rows, targeted safe failure/recovery exercises on explicitly disposable
+fixtures, the actual notice/reopening route and named operator coverage. No
+live database outage, disk filling, abuse flood or destructive restore is
+authorized to satisfy that gate.
+
 ## 1) Baseline and env wiring
 
 From server directory:

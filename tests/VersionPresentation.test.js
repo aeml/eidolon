@@ -4,7 +4,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.11';
+const currentVersion = '1.79.12';
+
+test('1.79.12 documents explicitly reviewed audited notices without claiming operations completion', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.12"'), previous = html.indexOf('data-version="1.79.11"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['review the exact public text', 'explicitly send', 'durable administrator authority',
+        'successful activity storage', 'existing activity retention', 'never resend automatically',
+        'admission only', 'disconnected players', 'does not stop the game', 'No account wipe',
+        'schema migration', 'gates remain open', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.11 records integrated regional art without claiming full modern-art completion', () => {
     const html = readIndexWithPatchHistory();

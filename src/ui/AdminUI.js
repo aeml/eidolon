@@ -3,6 +3,7 @@ import { AdminOperations } from './AdminOperations.js';
 import { AdminReportReview } from './AdminReportReview.js';
 import { AdminRemovalReview } from './AdminRemovalReview.js';
 import { AdminChatModeration } from './AdminChatModeration.js';
+import { AdminAnnouncement } from './AdminAnnouncement.js';
 import { renderAdminServiceDiagnostics } from './AdminServiceDiagnostics.js';
 
 // Visibility is only presentation. Every read and operation must be
@@ -36,6 +37,7 @@ export class AdminUI {
                         <option value="admin_status">Access checks</option><option value="admin_players">Player list reads</option>
                         <option value="admin_history">History reads</option><option value="admin_reports">Report reads</option><option value="admin_service">Service diagnostic reads</option><option value="admin_report_review">Report review requests</option><option value="login">Login</option>
                         <option value="admin_chat_moderation">Moderation decisions</option>
+                        <option value="admin_announcement">Public notice requests</option>
                         <option value="admin_privacy_export_approval">Export approval decisions</option>
                         <option value="admin_removal_review">Removal dependency reads</option>
                         <option value="admin_chat_moderation_target">Moderation target checks</option>
@@ -84,6 +86,7 @@ export class AdminUI {
         this.views = [...this.root.querySelectorAll('[data-view]')];
         this.note = this.root.querySelector('.administration-note');
         this.operations = new AdminOperations(this.root.querySelector('.administration-body'), (type, payload, id) => this.request(type, payload, id));
+        this.announcements = new AdminAnnouncement(this.root.querySelector('.administration-body'), (type, payload, id) => this.request(type, payload, id));
         this.open = () => {
             if (!this.authorized) return;
             this.openWindow(this.root);
@@ -129,6 +132,7 @@ export class AdminUI {
         this.actor.disabled = this.action.disabled = this.day.disabled = this.population.disabled = !this.authorized || Boolean(this.pending);
         for (const view of this.views) view.disabled = !this.authorized;
         this.operations.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
+        this.announcements.setState({ authorized: this.authorized, busy: Boolean(this.pending) });
         for (const review of this.reportReviews) review.setState(Boolean(this.pending));
         for (const moderation of this.reportModerations) moderation.setState(Boolean(this.pending));
         if (!this.authorized) {
@@ -151,12 +155,19 @@ export class AdminUI {
         this.status.textContent = 'Loading from server…';
         this.root.setAttribute('aria-busy', 'true');
         this.operations.setState({ authorized: this.authorized, busy: true });
+        this.announcements.setState({ authorized: this.authorized, busy: true });
         for (const review of this.reportReviews) review.setState(true);
         for (const moderation of this.reportModerations) moderation.setState(true);
         this.timeout = setTimeout(() => {
             const request = this.pending;
             this.pending = null;
             this.root.setAttribute('aria-busy', 'false');
+            if (request?.type === 'admin_announcement') {
+                const message = 'Notice acknowledgement was not received. Check server chat and activity history before preparing another notice; no automatic resend was made.';
+                this.announcements.handleResult({ id: request.id, message });
+                this.setAuthorized(this.authorized); this.status.textContent = message;
+                return;
+            }
             if (request && ['admin_chat_moderation', 'admin_chat_moderation_target'].includes(request.type)) {
                 this.actor.disabled = this.action.disabled = this.next.disabled = false;
                 const message = 'No reply was received. Chat decisions are unconfirmed; retry only the exact same decision or check the account again. Server permissions are rechecked on every request.';
@@ -212,7 +223,9 @@ export class AdminUI {
         const reviewResult = ['admin_report_review_result', 'admin_privacy_export_approval_result'].includes(type);
         const removalResult = type === 'admin_removal_review_result';
         const moderationResult = ['admin_chat_moderation_result', 'admin_chat_moderation_target_result'].includes(type);
-        this.setAuthorized(result.authorized === true && (mutation || reviewResult || removalResult || moderationResult || result.success === true));
+        const announcementResult = type === 'admin_announcement_result';
+        this.setAuthorized(result.authorized === true && (mutation || reviewResult || removalResult || moderationResult || announcementResult || result.success === true));
+        if (announcementResult) this.announcements.handleResult(result);
         if (mutation) this.operations.handleResult(result);
         if (!this.authorized) {
             this.status.textContent = result.message || 'Administrator access is unavailable.';

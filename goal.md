@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Prepared1.79.12 operations foundation:** Select reviewed administrator
+maintenance/incident/recovery notices onto prepared1.79.11/8cd6e7fd, preserving
+current Dark Realm audit action, diagnostics, permissions and all player data.
+426focused client/version/pagination checks, three scoped race-enabled server/
+journal/policy checks and two actual narrow/desktop UI cases pass. All447notes
+retained, all446prior entries byte-identical; versions synchronized. See
+[integration](docs/plans/2026-10-08-release1-79-12-checks.json). Not pushed/live;
+ordered1.79.9–1.79.11 acceptance precedes this release. Full1.80/F1-F5,
+modern-art and operator/device/human/owner/beta/launch gates remain open.
+
 **Current requested login improvement:** Prepared1.79.11 now paginates notes:
 ten initial, ten more per click, all446 entries retained.817493to110462bytes.
 Login defers the engine/catalog and handles an already-fired ready event.
