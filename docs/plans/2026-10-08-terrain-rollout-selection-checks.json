@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T03:20:45Z",
+  "milestone": "1.87 raised-Earth production integration preparation",
+  "status": "explicit-selection-qualified-local-only",
+  "baseCommit": "d3c47e95e636c71a1feca339f129ba0ddcdcda16",
+  "change": "Previously only QA startup could select the complete negotiated terrain. Add server-owned --terrain-profile/EIDOLON_TERRAIN_PROFILE selection: empty/default flat-v1 or explicit earth-elevation-rocks-v1. Complete hills/18 solids are loaded before world publication; unknown/partial profiles fail. Legacy QA flag remains allowlist-guarded. Terrain selection never changes QA-command authorization.",
+  "startup": "Validate selection before logging, journals, database or admission. Environment-backed flag also validates in the read-only schema preflight container. Compose supplies the same named environment selection; .env.example remains flat and explains the prepared rollout. No real environment edits.",
+  "checks": {
+    "selection": "Root48614 terminal0:TestTerrainStartupSelectionPreservesExplicitQAAndPublicSeparation with11 table cases PASS race1.048s.",
+    "world": "Root7104 terminal0:five named configured-world/legacy-startup tests PASS race1.873s. Actual complete factory, all four class entities admitted from old flat coordinates inside a new rock formation, safe local correction/stable re-admission, unchanged HP/MP/Gold/EP/level/XP/inventory and dungeon/casino instance-owned coordinates.",
+    "cli": "Root99203 build exits0. Actual compiled main with invalid environment profile plus --check-schema exits2 before database connection; legacy QA with explicit empty allowlist exits2. Both leave only the compiled binary in the owned evidence directory; no server log/journal files created.",
+    "static": "gofmt and git diff --check pass. One whitespace command was accidentally invoked outside Git and failed; rerun in the actual worktree passes, not counted as a game regression."
+  },
+  "evidenceDirectory": "/home/aeml/.local/share/eidolon-terrain-selection-checks-20261008-luUqqHcw",
+  "limits": "No new native benchmark, full campaign, real save/database restore, actual public deployment or device acceptance. Retain the already-qualified shared surface/movement/rock/effect and six reference-budget evidence; do not infer whole-world or modern Diablo/PoE quality from configuration/actor fixtures.",
+  "publication": "Prepared future branch only. Flat remains default, no live service/configuration/player/data/economy change and no version bump. Ordered integration, affected connected gameplay and own1.87 public rollout still required; all1.80F1-F5 and later art/beta/launch gates remain open."
+}

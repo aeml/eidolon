@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 staged1.87 public terrain selection:** Add explicit server-owned
+flat/raised profile configuration without granting QA commands. Default remains
+flat; unknown values and legacy QA without allowlist fail before logging/DB/
+journals, including schema preflight. World construction loads matching hills
+and18 rock solids together. Eleven selection cases PASS race1.048s; five affected
+game tests including four-class returning actor/resource/inventory and instance
+position coverage PASS race1.873s. Compiled actual CLI rejects both unsafe
+settings with exit2 and no files; build/whitespace pass. No production setting,
+version, wipe or terrain enablement. [Exact scope](docs/plans/2026-10-08-terrain-rollout-selection-checks.json).
+Own ordered1.87 integration/public and modern-art acceptance still required;
+current1.79.2 CI37721554849 is independently watched by authorized Luna.
+
 **October8 woodland reference budget closed locally:** Current art branch now
 work/alpha-1-87-tree-cells-current-20261008 rooted6b828ad8. Retain every tree,
 leaf, plant, material and collider; smaller tree cells, individually cullable
