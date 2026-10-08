@@ -154,7 +154,8 @@ export function createForestFloorDetail(quality = 'high') {
         const at = (y * size + x) * 4;
         // Coherent soil aggregates survive mip filtering at normal play zoom.
         // Pure per-texel noise averaged to grey, leaving only blurry realm masks.
-        data[at] = Math.round((.18 + noise(px / 32, py / 32, 8) * .55 + hash(px, py) * .16) * 255);
+        const aggregate = smooth(.28, .74, noise(px / 32, py / 32, 8));
+        data[at] = Math.round((.18 + aggregate * .55 + hash(px, py) * .08) * 255);
         data[at + 1] = Math.round(leaf * 255); data[at + 2] = Math.round(vein * 255);
         const fracture = smooth(.005, .12, second - nearest);
         const seamStrength = smooth(-.6, .1, Math.sin(px * turn * 3) * Math.cos(py * turn * 5));
@@ -172,7 +173,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v9';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v10';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -221,7 +222,10 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // smaller grit fills their faces rather than owning every clod.
             float earthClod = smoothstep(.25, .69, earthGrain.r * .72 + earthGrit * .28);
             float earthPore = smoothstep(.22, .65, earthFineGrit);
-            float earthMoss = smoothstep(.25, .66, earthGrain.r + (earthGrit - .5) * .24);
+            // Moss cushions and soil aggregates occupy different physical
+            // scales. Reusing the clod field for both flattened their height
+            // blend into a translucent green wash at ordinary play distance.
+            float earthMoss = smoothstep(.28, .65, earthBroad.r * .68 + earthGrit * .32);
             // Height-sensitive blending exposes dry clod faces between moss
             // cushions instead of painting a translucent green wash. Restrict
             // breakup to the transition: zero/one authored coverage stays
@@ -240,12 +244,14 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             float earthLeafCoverage = earthGrain.g * earthWear.r;
             // These are linear reflectances, lit by the existing physical
             // lights/shadows, never emissive colors or baked fake highlights.
-            vec3 earthSoil = mix(diffuseColor.rgb * .88, vec3(.073, .058, .038), earthClod * .65);
+            // Damp crevices and dry aggregate faces share the relief field;
+            // don't inherit a blurry broad color stain as the entire soil bed.
+            vec3 earthSoil = mix(vec3(.058, .045, .029), vec3(.087, .067, .043), earthClod);
             earthSoil *= mix(.92, 1.06, earthPore);
             vec3 forestBed = earthSoil * vec3(.53, .55, .46);
             vec3 fallenLeaf = mix(vec3(.065, .038, .016), vec3(.17, .115, .052), earthScatter);
             fallenLeaf *= .9 + earthGrain.b * .1;
-            vec3 heathBed = mix(vec3(.029, .048, .018), vec3(.075, .102, .037), earthMoss);
+            vec3 heathBed = mix(vec3(.037, .063, .023), vec3(.065, .096, .033), earthMossFiber);
             heathBed *= mix(.84, 1.12, earthMossFiber) * mix(.96, 1.04, earthClod);
             diffuseColor.rgb = mix(earthSoil, heathBed, earthMossCoverage);
             diffuseColor.rgb = mix(diffuseColor.rgb, forestBed, earthWear.r);

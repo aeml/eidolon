@@ -47,6 +47,16 @@ ARPG presentation. Review scene composition and material frequencies next to
 the remaining audio integration; retain clear enemy warnings and usable Low
 settings. A faster renderer alone does not close these visual gaps.
 
+October8 review: inspect actual equipped-party and High/Low Earth captures at
+normal gameplay zoom. Surface-v10 sharpens soil/moss separation and removes
+embossed contour-like rock bedding, preserving geometry/maps/lighting and
+original render limits. Reject the first excessive camouflage-like contrast
+even though technical checks passed. The refined capture is still a modest
+surface improvement: repeated understory clumps, broad open-space composition,
+angular large rock silhouettes and complete town/realm/landmark cohesion remain
+open. These component changes do not approve the final modern-ARPG contract.
+See [attempts, final captures and limits](../plans/2026-10-08-earth-surface-v10-checks.json).
+
 Latest user direction: do as much environment, texture, lighting and shader work
 as possible in code so the user's external asset work is limited to **player
 class models, monsters, bosses and NPCs**. This is the production division of

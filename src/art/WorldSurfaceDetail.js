@@ -45,22 +45,23 @@ vec3 eidolonSurface(vec3 p) {
     vec2 uv = axis.y > max(axis.x, axis.z) ? p.xz : (axis.x > axis.z ? p.zy : p.xy);
     float weather = eidolonNoise(p.xz * .23 + p.y * .17);
 #if EIDOLON_SURFACE == 6
-    // Reuse the continuous cleave field to interrupt seams: parallel regular
-    // stripes made the large shoulders resemble cut masonry at play distance.
+    // Bedding remains gently inclined and is interrupted by weathering, not
+    // warped by the full cleave field into embossed topographic contour lines.
     float cleave = eidolonRockNoise(p * 1.6 + vec3(weather, -weather, weather * .5));
-    float strata = p.y * .72 + p.x * .13 - p.z * .08 + cleave * 1.8;
+    float strata = p.y * .58 + p.x * .09 - p.z * .05 + weather * .1;
     float footprint = max(fwidth(strata), .001);
     float joint = 1. - smoothstep(.025 - footprint, .09 + footprint, abs(fract(strata) - .5));
     float fade = (1. - smoothstep(.2, .6, footprint)) * smoothstep(.2, .65, weather);
     fade *= 1. - smoothstep(.3, .8, axis.y / max(length(axis), .00001));
+    fade *= smoothstep(.38, .58, cleave);
     // Broad mineral breakup must read at play distance. Fine grain alone is
     // subpixel there and leaves the outcrop looking like plain polygon faces.
     vec3 grainFootprint = fwidth(p * 5.);
     float grainFade = 1. - smoothstep(.25, .8, max(grainFootprint.x, max(grainFootprint.y, grainFootprint.z)));
     float grain = mix(.5, eidolonRockNoise(p * 5.), grainFade);
-    return vec3(.63 + weather * .26 + cleave * .3 + grain * .1 - joint * fade * .12,
+    return vec3(.58 + weather * .28 + cleave * .36 + grain * .15 - joint * fade * .045,
         .79 + cleave * .13 + grain * .07,
-        cleave * .12 + grain * .018 * grainFade - joint * fade * .035);
+        cleave * .065 + grain * .012 * grainFade - joint * fade * .012);
 #elif EIDOLON_SURFACE == 5
     float grain = eidolonNoise(uv * vec2(7., .85) + vec2(weather * .3, 0.));
     float detail = 1. - smoothstep(.25, .8, max(fwidth(uv.x * 7.), fwidth(uv.y * .85)));
@@ -162,7 +163,7 @@ export function applyWorldSurfaceDetail(material, surface) {
         throw new Error('World surface detail cannot replace an existing shader hook');
     }
     material.userData.worldSurfaceDetail = surface;
-    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 4 : 1}:${surface}`;
+    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 5 : 1}:${surface}`;
     material.onBeforeCompile = shader => {
         shader.vertexShader = shader.vertexShader.replace('#include <common>',
             '#include <common>\nvarying vec3 vEidolonSurface;');

@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 gameplay-zoom surface refinement: soil/moss fields and interrupted
+rock bedding updated without new meshes, maps/fetches, collisions or lighting.
+Reject over-contrasted first attempt despite green tests. Final35 units and
+High/Low eight-view native41.0s pass original thresholds; High grove/Low rock
+reviewed, not final modern art. See
+[evidence and concrete remaining gaps](2026-10-08-earth-surface-v10-checks.json).
+Next selective current-master1.79.7 surface/Air-canvas component publication
+after flat-world checks, own synchronized notes/version and ordinary CI/live
+acceptance. This does not bypass full1.80/1.87 or deploy raised terrain/models.
+Accepted public1.79.6 unchanged; full roadmap remains active.
+
 October8 exact frustum caching: stationary foliage skips repeated intersection
 math only when camera/light/padding/bounds/matrix inputs exactly match. Live
 eligibility and immediate input changes retained;75 focused assertions and

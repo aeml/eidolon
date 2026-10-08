@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 surface review advances:** Inspect actual gameplay-zoom captures;
+refine soil/moss separation and interrupted rock bedding without new meshes,
+maps/fetches, walking solids or lighting changes. Reject first technically green
+but over-contrasted attempt; final35 units and High/Low eight-view native41.0s
+pass original limits. Final High grove/Low rock inspected, modest improvements
+not modern-art acceptance. See
+[retained attempt and final scope](docs/plans/2026-10-08-earth-surface-v10-checks.json).
+Next selective current-master1.79.7 surface/Air-canvas component integration,
+flat-world checks and ordinary synchronized publication—not the whole future
+branch or raised/profile/model rollout. Full1.80 F1-F5/1.87/art/device/beta/launch
+goal remains active; accepted public still1.79.6.
+
 **October8 exact foliage decisions cached:** Reproduce repeated stationary
 frustum math, then cache only exact camera/light/padding/bounds/matrix decisions.
 Live material/visibility/wind flags and immediate input changes retained.
