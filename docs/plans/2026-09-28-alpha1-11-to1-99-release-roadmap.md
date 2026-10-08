@@ -5,6 +5,8 @@ bark, separate color/roughness/filtered normal relief, existing meshes/UVs and
 zero new textures. Focused54 and equipped High/Low native41.1s pass; inspected
 gameplay views are modest improvement, not final modern art. See
 [scope and inherited crown correction](2026-10-08-woodland-bark-checks.json).
+Corrected crown and bark combined equipped native2cases pass41.1s at original
+limits; current-flat selective publication still requires own checks/acceptance.
 Exact revision cache works but per-cell overhead remains; see
 [party diagnostic](2026-10-08-foliage-revision-observation-checks.json).
 
@@ -17,6 +19,8 @@ Own CI/public acceptance pending.
 First1.79.8 CI37781713097 fails existing pine minimum-height contract. Correct
 lower tiers, retain original limits, add both-quality regression assertions;
 focused4 and fresh flat-native2 checks pass. Corrected own publication pending.
+Initial run terminal failure/no deployment verified; new37783791245/bf145bda
+remains pending under authorized Luna monitoring.
 Accepted public1.79.7/7892224f and
 ordinary37773941500 supersede historical pending statements below: first
 stylesheet-network failure retained; one bounded failed-job retry succeeds,

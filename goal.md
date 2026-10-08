@@ -6,8 +6,9 @@ roughness and filtered normal relief. No new textures/meshes/collisions or
 gameplay changes. Focused54 checks and equipped High/Low native41.1s pass;
 High/Low woodland inspected, modest improvement rather than final modern art.
 See [scope](docs/plans/2026-10-08-woodland-bark-checks.json). Reconcile independent
-pine-height correctionbf145bda; final combined source remains to qualify before
-publication. Party traversal remains costly despite unchanged exact revisions;
+pine-height correctionbf145bda; combined equipped native2cases pass41.1s at
+original limits. Own selective publication still required. Party traversal
+remains costly despite unchanged exact revisions;
 see [diagnostic](docs/plans/2026-10-08-foliage-revision-observation-checks.json).
 
 **October8 current-master woodland/startup patch assembled:** Alpha1.79.8
@@ -20,6 +21,8 @@ First CI37781713097 catches a missed existing pine minimum-height assertion;
 correct lower tier positions, retain original limits, add High/Low regression
 coverage. Focused4 checks and fresh flat-native2 cases pass; corrected own
 publication/public acceptance still required, not an unchanged retry.
+Root confirms initial run terminal failure/no deployment; corrected own
+37783791245/bf145bda pending, monitored by authorized Luna.
 Accepted live1.79.7 exact7892224f/CI37773941500 supersedes older pending entries:
 first stylesheet-network failure retained, one failed-job retry succeeds,
 root confirms all10 required jobs and matching public front/back/DB. See
