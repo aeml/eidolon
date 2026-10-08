@@ -39,7 +39,9 @@ Staged [Water/Air boughs](2026-10-08-elemental-boughs-checks.json) replace solid
 cones, repair Air crown attachment and retain existing instance/material batching.
 Final43 units and four populated native High/Low cases/24 timed views pass
 original limits. Actual tree-focused images reviewed; final regional quality
-guard has unit, not native hot-switch, proof. Not current-master integration or
+guard now has [four native hot-switch cases](2026-10-08-elemental-quality-switch-checks.json),
+with stable warmed GPU resources and retained instance/cell identities.
+This is not current-master integration or
 publication, full regional composition, modern-art approval or beta readiness.
 
 Every original version, requirement, gate, inherited decision, delivery rule,

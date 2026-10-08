@@ -186,6 +186,46 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 render.entityGroup.add(airShot.mesh);
             });
             window.__populatedWorld = { visit, engine, samples,
+                reviewRegionalQuality() {
+                    const id = elemental === 'air' ? 'gale_cypress' : 'rime_pine';
+                    const group = render.instanceEnvironmentGroup.getObjectByName(`foliage:${elemental === 'air' ? 'air' : 'water'}:${id}`);
+                    if (!group?.children.length) throw new Error(`Missing production foliage: ${id}`);
+                    const originalChildren = [...group.children];
+                    const originals = originalChildren.map(mesh => ({ mesh, material: mesh.material,
+                        buffer: mesh.instanceMatrix, transforms: mesh.instanceMatrix.array.slice(), count: mesh.count }));
+                    const phases = [];
+                    const resources = () => ({ geometries: render.renderer.info.memory.geometries,
+                        textures: render.renderer.info.memory.textures, programs: render.renderer.info.programs.length });
+                    const runCycle = () => {
+                        for (const next of ['high', 'low', quality]) {
+                            render.setGraphicsQuality(next);
+                            visit(`${id}-bough-review`);
+                            const triangles = [...new Set(group.children.map(mesh => mesh.geometry))].reduce((sum, geometry) => sum +
+                                (geometry.index?.count ?? geometry.attributes.position.count) / 3, 0);
+                            if (group.userData.foliageQuality !== next ||
+                                group.children.some((mesh, index) => mesh !== originalChildren[index])) {
+                                throw new Error(`Foliage identity/quality lost: ${id}/${next}`);
+                            }
+                            for (const original of originals) {
+                                const mesh = original.mesh;
+                                if (mesh.material !== original.material || mesh.instanceMatrix !== original.buffer ||
+                                    mesh.count !== original.count || mesh.instanceMatrix.array.some((value, index) => value !== original.transforms[index]) ||
+                                    !Number.isFinite(mesh.boundingSphere?.radius) || mesh.boundingSphere.radius <= 0) {
+                                    throw new Error(`Foliage placement, material or bounds lost: ${id}/${next}`);
+                                }
+                            }
+                            phases.push({ quality: next, triangles, calls: render.renderer.info.render.calls,
+                                renderedTriangles: render.renderer.info.render.triangles });
+                        }
+                    };
+                    runCycle(); // Warm both actual GPU geometry/shader paths.
+                    const beforeRepeat = resources();
+                    for (let cycle = 0; cycle < 3; cycle++) runCycle();
+                    return { id, phases, beforeRepeat, afterRepeat: resources(), restoredQuality: render.graphicsQuality,
+                        instanceCount: group.userData.instanceCount, batchCount: group.children.length,
+                        partsPerCell: new Set(group.children.map(mesh => mesh.name)).size,
+                        cells: new Set(group.children.map(mesh => mesh.userData.foliageCell)).size };
+                },
                 reviewWind() {
                     visit('first-grove-arch');
                     if (!windUniforms) throw new Error('No production understory shader compiled in grove');
@@ -452,6 +492,24 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     expect(view.calls, `${view.id} calls`).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);
                     expect(view.triangles, `${view.id} triangles`).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
                 }
+            }
+            if (elemental !== 'earth') {
+                const swaps = await page.evaluate(() => window.__populatedWorld.reviewRegionalQuality());
+                expect(swaps.restoredQuality).toBe(quality);
+                expect(swaps.instanceCount).toBe(elemental === 'air' ? 90 : 100);
+                expect(swaps.partsPerCell).toBe(elemental === 'air' ? 3 : 4);
+                expect(swaps.batchCount).toBe(swaps.partsPerCell * swaps.cells);
+                expect(swaps.afterRepeat).toEqual(swaps.beforeRepeat);
+                const high = swaps.phases.find(phase => phase.quality === 'high').triangles;
+                const low = swaps.phases.find(phase => phase.quality === 'low').triangles;
+                expect(high - low).toBe(elemental === 'air' ? 240 : 360);
+                for (const phase of swaps.phases) {
+                    expect(phase.triangles).toBe(phase.quality === 'low' ? low : high);
+                    expect(phase.calls).toBeGreaterThan(0);
+                    expect(phase.renderedTriangles).toBeGreaterThan(0);
+                }
+                await writeFile(testInfo.outputPath('regional-quality-swaps.json'), JSON.stringify(swaps, null, 2));
+                await page.screenshot({ path: testInfo.outputPath('regional-quality-restored.png') });
             }
             expect(failures, failures.join('\n')).toEqual([]);
         } finally { await page.evaluate(() => window.__populatedWorld.dispose()); }

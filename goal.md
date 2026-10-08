@@ -68,8 +68,11 @@ Fighter pilot or remove approved authored models.
 Staged elemental foliage now has branched Water/Air crowns instead of solid
 cones; actual Air crown/conductor attachment is corrected. Final43 units and
 four populated native cases/24 bounded views pass, with actual High/Low review.
-Runtime quality swaps now admit regional foliage; focused tests cover that
-final guard fix, native hot-switch qualification remains for integration.
+Runtime quality swaps now admit regional foliage. Four native Water/Air
+High/Low cases exercise twelve actual renderer-setting phases each, preserving
+all cell/instance/material identities with stable warmed GPU resources;
+[native hot-switch proof](docs/plans/2026-10-08-elemental-quality-switch-checks.json)
+closes that staged gap. Current-master integration and delivery remain open.
 [Exact component scope](docs/plans/2026-10-08-elemental-boughs-checks.json)
 retains rejected green artifacts and failed fixture history. Not yet integrated
 onto current master or delivered; do not accidentally add it to the already
