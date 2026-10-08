@@ -172,6 +172,47 @@ describe('InputManager ctrl-click propagation', () => {
         manager.dispose();
     });
 
+    test('selected healing roster focus keeps numbered and remapped hotbar casts usable', () => {
+        const manager = new InputManager({}, {});
+        const cast = jest.fn(), chat = jest.fn(), space = jest.fn();
+        manager.subscribe('onHotbar', cast);
+        manager.subscribe('onChat', chat);
+        manager.subscribe('onSpace', space);
+        const button = document.createElement('button');
+        button.dataset.partySupportTarget = 'ally';
+        button.setAttribute('aria-pressed', 'true');
+        document.body.append(button);
+        button.focus();
+        try {
+            for (const key of ['1', '2', '3', '4']) manager.onKeyDown({ key });
+            expect(cast.mock.calls).toEqual([[0], [1], [2], [3]]);
+            manager.keyboardBindings.hotbar0 = '5';
+            manager.onKeyDown({ key: '5' });
+            expect(cast).toHaveBeenLastCalledWith(0);
+            for (const event of [{ key: '5', repeat: true }, { key: '5', ctrlKey: true },
+                { key: '5', altKey: true }, { key: '5', metaKey: true }, { key: 'Enter' }, { key: ' ' }]) {
+                manager.onKeyDown(event);
+            }
+            expect(cast).toHaveBeenCalledTimes(5);
+            expect(chat).not.toHaveBeenCalled();
+            expect(space).not.toHaveBeenCalled();
+            expect(document.activeElement).toBe(button);
+        } finally { button.remove(); manager.dispose(); }
+    });
+
+    test.each(['unselected', 'disabled', 'ordinary'])('focused %s roster/control cannot cast a hotbar ability', mode => {
+        const manager = new InputManager({}, {}), cast = jest.fn();
+        manager.subscribe('onHotbar', cast);
+        const button = document.createElement('button');
+        if (mode !== 'ordinary') button.dataset.partySupportTarget = 'ally';
+        button.setAttribute('aria-pressed', mode === 'unselected' ? 'false' : 'true');
+        document.body.append(button);
+        button.focus();
+        if (mode === 'disabled') button.disabled = true;
+        try { manager.onKeyDown({ key: '1' }); expect(cast).not.toHaveBeenCalled(); }
+        finally { button.remove(); manager.dispose(); }
+    });
+
     test('F2 forwards dungeon debug overlay toggles to subscribers', () => {
         const manager = new InputManager({}, {});
         const callback = jest.fn();
