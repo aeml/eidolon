@@ -2,6 +2,14 @@
 
 ## Current execution status — October 8, 2026
 
+Prepared1.79.12/af7993dd integrates reviewed, audited administrator public
+notices onto1.79.11;426focused checks, scoped race server/journal/dispatch
+checks and two actual desktop/narrow UI cases pass. All447notes retained,
+all446previous entry bytes unchanged. [Receipt](2026-10-08-release1-79-12-checks.json).
+Committed locally, not pushed/live; previous ordered releases still pending.
+No production messages, email, restarts or data/retention changes. This is a
+1.83code route, not complete operations, feature-freeze, art or beta acceptance.
+
 Prepared selective **1.79.11 / 8cd6e7fd** now integrates the regional components
 described below onto prepared1.79.10.461focused/resource checks and four flat
 native cases/38timed views qualify the original scene limits; this does not

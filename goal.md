@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Prepared **1.79.12 / af7993dd** at
+  `/home/aeml/.local/share/eidolon-operations-release-U0VLQ4j8` selectively integrates audited administrator public notices
+  onto prepared1.79.11.426focused client/version/pagination checks, scoped
+  race-enabled server/journal/dispatch checks and two actual desktop/narrow
+  presentation cases pass. Versions synchronized; all447notes retained with
+  all446prior entry bytes unchanged. Not pushed/live; ordered prior releases
+  still need acceptance. [Receipt](docs/plans/2026-10-08-release1-79-12-checks.json).
+  No production notice/email/restart/data/retention change. This closes a1.83
+  code gap, not operator tabletop/coverage or any full1.80/art/beta gate.
+
 - Prepared selective **1.79.11 / 8cd6e7fd** in
   `/home/aeml/.local/share/eidolon-regional-release-UOCeBRDt` now integrates
   the regional components described below onto prepared1.79.10, not a wholesale
