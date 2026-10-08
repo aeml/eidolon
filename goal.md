@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Future1.90invitation backend is staged separately at
+  `/home/aeml/.local/share/eidolon-beta-admission-qzHOCkS5`, source6c00212f. Signup-only opaque account-bound proofs,
+  exact identity/expiry/rotation checks, default-open policy and fail-closed
+  startup configuration qualify with scoped race1.074s and compiled read-only
+  preflight cases. No actual public access/configuration, account, label or
+  version change. [Evidence](docs/plans/2026-10-08-beta-invitation-backend-checks.json).
+  Admin issuance/client entry and real retained-account/duplicate/restart/
+  lifecycle/rollback checks remain; do not activate or claim1.90complete.
+  Full earlier modern-art/operations/beta/owner gates remain unchanged.
+
 - Prepared **1.79.12 / af7993dd** at
   `/home/aeml/.local/share/eidolon-operations-release-U0VLQ4j8` selectively integrates audited administrator public notices
   onto prepared1.79.11.426focused client/version/pagination checks, scoped

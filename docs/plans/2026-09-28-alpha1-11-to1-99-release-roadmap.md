@@ -2,6 +2,15 @@
 
 ## Current execution status — October 8, 2026
 
+Future1.90signup invitation backend is staged in isolation, source6c00212f:
+opaque account-bound proof, expiry/rotation, default-open admission and
+fail-closed configuration. Scoped race and actual compiled read-only preflight
+qualify this backend only. [Scope](2026-10-08-beta-invitation-backend-checks.json).
+Not activated/published or a completed beta milestone; admin issuance/client
+entry and retained-account/registration/replay/restart/rollback checks remain.
+No version, account, production environment or public access change. Original
+full roadmap, modern art, operations, device and owner/beta gates remain open.
+
 Prepared1.79.12/af7993dd integrates reviewed, audited administrator public
 notices onto1.79.11;426focused checks, scoped race server/journal/dispatch
 checks and two actual desktop/narrow UI cases pass. All447notes retained,

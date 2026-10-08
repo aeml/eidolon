@@ -1,0 +1,24 @@
+{
+  "status": "staged1.90signup-backend-preparation-only; not a beta candidate, published release or activated restriction",
+  "base": "prepared1.79.12/af7993dd",
+  "observedAt": "2026-10-08T17:53:03Z",
+  "scope": "Pure account-bound opaque HMAC-SHA256 invitations with random128-bit nonces, exact username/email binding, fixed76-character proof, strict decoding and future expiry within seven days. Tokens contain no readable account or email. Signing keys stay server-side; feedback never echoes proof/key. Existing account-name uniqueness remains required for registration and must be exercised end to end before beta.",
+  "startup": "Default open signup. Explicit invited mode requires a private32-byte hex signing key; unknown modes, malformed/missing/all-zero keys fail startup before logging, journal/database/admission. Zero-value uninitialized policy fails closed. No real environment edited and no signing key generated or distributed.",
+  "boundary": "Optional inviteCode in registration payload; invited signup authorization runs after ordinary credential validation but before credential/account/query/hash work. Existing login/resume branches and account creation arguments remain unchanged. No schema, saved account, role, currency, mail or admission-capacity changes.",
+  "verification": "Five invitation test functions plus focused original registration/bootstrap/auth-dispatch/mandatory dispatch-policy tests pass race1.074s. Includes exact identity/case/email, expiry/rotation, malformed/forged/oversized proofs, closed-before-storage rejection with nil DB and zero consumed credential capacity, and100 distinct synthetic nonce samples.100tokens is not100players/load capacity. Earlier scoped helper check passes1.057s and boundary run1.080s overlap, not extra evidence. gofmt/diff checks pass.",
+  "process": "Build actual server binary. Read-only check-save-journal process with invited/missing-key and unknown mode exits2 without creating the owned nonexistent journal path; explicit open/empty-key exits0 and validates nonexistent journal without creating it. No DB/API start, production service, real secret or destructive restore.",
+  "artifacts": "/home/aeml/.local/share/eidolon-beta-admission-startup-3y9BA44A; /home/aeml/.local/share/eidolon-beta-admission-final-boundaries-20261008.log",
+  "sha256": {
+    "source": "40c9eb69745300fb677977c6b7ad2f902d24626b34014cf08bb30b8cf517d125",
+    "test": "a0ac9e423c59bd51d8123716f8bca878012119eca7bf393f0c8eb3200a8893c1",
+    "finalLog": "459cd3eb41c08d83a91cb39a3619140b67d7986ba95d04c64c9613f2538f9992"
+  },
+  "remaining": [
+    "Authenticated explicitly reviewed/audited administrator issuance UI and protocol route; no public signing endpoint.",
+    "Client registration invitation entry with private-proof handling and no automatic replay.",
+    "Actual disposable Mongo/socket tests for existing login/resume/saves in invited mode, successful invited registration, duplicate/race/restart behavior, key rotation and generic denials.",
+    "Read-only configuration/deployment rollback compatibility, operator handoff and any invitation lifecycle gaps found by integrated review.",
+    "Full near-complete1.90candidate, capacity/support/art/operations and explicit owner closed-beta go/no-go; retain existing accounts and characters."
+  ],
+  "delivery": "Source only, no version bump/patch-note claim, push, CI dispatch, signup/access/channel/label or real account change. Never merge the entire staged branch as an already accepted beta. Ordered pending1.79.9/10/11/12 releases still need their exact acceptance. Full roadmap scope remains active; no gate waived."
+}
