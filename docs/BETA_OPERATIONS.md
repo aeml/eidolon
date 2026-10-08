@@ -5,9 +5,7 @@ not beta at1.20. Current public Alpha access, labels and saves remain unchanged.
 This document does not authorize a wipe, invite restriction, production restore,
 payment integration or new infrastructure purchase.
 
-## Approved direction and decisions still required before transition
-
-### Staged invitation backend — not ready to activate
+## Staged invitation backend — not ready to activate
 
 The separate1.90preparation branch has signup-only invitation verification,
 not complete invited admissions. Default `EIDOLON_REGISTRATION_MODE=open`
@@ -28,6 +26,8 @@ existing-account login/resume/save checks, lifecycle/rollback review and operato
 handoff remain required. No automatic email, replay, blanket denial of existing
 accounts, player cap promise or beta-ready label is introduced.
 See [exact backend evidence](plans/2026-10-08-beta-invitation-backend-checks.json).
+
+## Approved direction and decisions still required before transition
 
 | Decision | Current safe state |
 | --- | --- |
