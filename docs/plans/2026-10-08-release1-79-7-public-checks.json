@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.7",
+  "commit": "7892224fc7cb3f9f68e93d9a81588b0fd4057f20",
+  "run": "37773941500",
+  "runURL": "https://github.com/aeml/eidolon/actions/runs/37773941500",
+  "status": "accepted-live-after-one-bounded-failed-job-retry",
+  "terminalCheckedAt": "2026-10-08T13:00:00Z",
+  "publicCheckedAt": "2026-10-08T12:30:35.956Z",
+  "public": "Independent ordinary-DNS forced-IPv4/no-cache requests with verified HTTPS: play/release.json and server/healthz match exact commit/version; health statusok/database ready. Production /home/aeml/eidolon tracked-clean at the same7892224f. No DNS, TLS, data, environment or gameplay writes during verification.",
+  "selectedBytes": "Compare exact published bytes using the actual exported rewriteHtml/rewriteJavaScript publisher functions. Three selected files match; not an all-assets audit.",
+  "publishedSHA256": {
+    "index.html": "fa309efea0dc3ecfa04c876f3bb3708806560c5d2e0e4c2f3adcded48bddd506",
+    "src/art/EarthGroundComposition.js": "957120a33c134bc27b6e9734065ec69abc941246ea1ae67483d33b8c863820e8",
+    "src/art/WorldSurfaceDetail.js": "b82a3c4df0a2010f23023ac4f158bbf23414c8aac17aec1068a244bebd455a31"
+  },
+  "ci": "First attempt: nine required jobs succeed; Live QA fails on accumulated stylesheet net::ERR_FAILED requests after rest/gameplay/combat/recovery/relogin assertions complete. Failure retained, not waived. ONE failed-job-only rerun succeeds, including full town recovery/Well Rested and rested-party scope. Authorized Luna reports terminal success; root independently confirms exact7892224f/run37773941500 completed/success and all10 required jobs successful. No further retry or repeated core/deploy jobs.",
+  "cssDiagnostic": "Current public System Chrome ordinary DNS/verified TLS normal navigation, matching tests-path routing, and routed second navigation each receive40 CSS responses/all200/all imported sheets loaded. No login/account writes. HTTP IPv4 CSS check200; known deferred direct IPv6 path still fails. These controls establish current asset availability, not a proven cause or erased historical error. Local log /home/aeml/.local/share/eidolon-release1797-css-anonymous-20261008.log; no blanket ERR_FAILED suppression or runtime/test change for the retry.",
+  "optional": "Predeploy High/Low gallery, Well Rested rendering/GPU lifecycle and disposable full-character gameplay; live four-class/remote-animation QA skipped, not passed. First attempt never reaches later rested-party scope; that scope passes on the one bounded rerun, not inferred from earlier assertions.",
+  "scope": "Earth surface component only, synchronized login/version and cumulative notes. Air canvas already delivered1.79.3; no future branch, renderer batching, wearable derivatives or raised-profile activation. Newly committed pine/leaf geometry remains staged, not included in7892224f.",
+  "remaining": "Full1.80 F1-F5/1.87 modern art, equipped-party/device/profile and later beta/release roadmap remain active. Narrow gallery/tests and this publication do not prove final visuals, human campaign pacing or physical-phone acceptance."
+}

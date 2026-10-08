@@ -18,7 +18,8 @@ export function createConiferBoughGeometry(quality = 'high') {
             const side = new Vector3(-forward.z, 0, forward.x);
             for (let fan = 0; fan < 6; fan++) {
                 const t = (fan + .4) / 6, reach = length * t;
-                const center = forward.clone().multiplyScalar(reach).setY(y - .28 * t + .13 * Math.sin(branch * 3 + tier));
+                const center = forward.clone().multiplyScalar(reach).setY(y - .28 * t + .13 * Math.sin(branch * 3 + tier)
+                    + .05 * Math.sin(fan * 1.7 + branch * .7 + tier));
                 const shade = .68 + tier * .055 + ((branch + fan) % 3) * .07;
                 // Paired narrow sprays replace the broad triangular arrowhead.
                 // Sweep each tip outward/down, with a raised folded midrib.
@@ -29,9 +30,12 @@ export function createConiferBoughGeometry(quality = 'high') {
                     // Keep every tier/fan and the existing Low detail policy.
                     const tip = center.clone().addScaledVector(forward, .41)
                         .addScaledVector(side, sign * .31 * (1 - t * .45));
-                    tip.y -= .025 + .04 * t;
-                    const ridge = root.clone().lerp(tip, .48); ridge.y += .055;
-                    const edge = ridge.clone().addScaledVector(side, sign * .15); edge.y -= .05;
+                    // Broaden the existing fan, not the branch's reach, and
+                    // curve its hanging tip. Flat, narrow sprays read as rows
+                    // of sticks when the entire crown is viewed at play zoom.
+                    tip.y -= .06 + .09 * t;
+                    const ridge = root.clone().lerp(tip, .48); ridge.y += .085;
+                    const edge = ridge.clone().addScaledVector(side, sign * .2); edge.y -= .075;
                     triangle(root, edge, tip, shade * (sign < 0 ? .91 : 1));
                     if (quality !== 'low') triangle(root, tip, ridge, shade * 1.04);
                 }

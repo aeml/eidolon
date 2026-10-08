@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "status": "local-qualified-selective-publication-pending",
+  "scope": "Publication-only ordered flat bundle of src/styles/index.css's39 same-directory source modules. Browser startup uses one stylesheet response instead of40. Source modules, cascade order, relative font/data URLs and bounded startup retry remain intact. No runtime error suppression or change to source/dev modular CSS.",
+  "tests": "PagesRuntimeVersioning plus StylesheetBoot:22 pass0.909s. Unsupported conditional/URL/remote/parent imports, nested import/charset/namespace, missing fragments, comment imports, cascade ordering, versioned fonts and idempotence covered. Scoped ESLint and diff check pass.",
+  "native": "Actual publisher bundle built from current39 source modules, fulfilled only for the entry stylesheet while normal game modules load. System Chrome3 cases pass11.3s:1280px/390px login and patch-note computed appearance/layout equal modular control; exactly one CSS request/no CSSImportRule; lost entry recovers with one existing retry. This is not a physical-phone gameplay test or a complete menu visual audit.",
+  "log": "/home/aeml/.local/share/eidolon-published-styles-native-20261008.log",
+  "limits": "Reduces stylesheet request count; no proven cause for1.79.7's transient historical ERR_FAILED failure and no claim that all networking failures are fixed. Full renderer/modern-art/device/roadmap requirements remain open."
+}

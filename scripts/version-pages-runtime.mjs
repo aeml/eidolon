@@ -112,6 +112,39 @@ async function listRuntimeFiles(root) {
     return files;
 }
 
+// Only the game's flat, same-directory stylesheet manifest is bundled. Keep
+// source modules editable and preserve their exact cascade and relative URLs.
+// Unsupported imports fail publication rather than silently changing styles.
+export async function bundleGameStyles(root) {
+    const directory = path.join(root, 'src', 'styles');
+    const entry = path.join(directory, 'index.css');
+    let source;
+    try { source = await fs.readFile(entry, 'utf8'); }
+    catch (error) { if (error.code === 'ENOENT') return false; throw error; }
+    const withoutComments = text => text.replace(/\/\*[\s\S]*?\*\//g, '');
+    const manifest = withoutComments(source);
+    if (!/@import\b/i.test(manifest)) return false;
+    const imports = /@import\s+(['"])(\.\/[A-Za-z0-9_-]+\.css)\1\s*;/g;
+    if (manifest.replace(imports, '').trim()) {
+        throw new Error('Game stylesheet manifest requires plain same-directory imports only');
+    }
+    const fragments = new Map();
+    for (const match of manifest.matchAll(imports)) {
+        const name = match[2];
+        const fragment = await fs.readFile(path.join(directory, name), 'utf8');
+        if (/@(?:import|charset|namespace)\b/i.test(withoutComments(fragment))) {
+            throw new Error(`Unsupported nested stylesheet directive: ${name}`);
+        }
+        fragments.set(name, fragment);
+    }
+    // Match the validated manifest, not comment text. Keeping comments between
+    // fragments is harmless; import-like text inside comments must not expand.
+    const bundled = manifest.replace(imports, (_match, _quote, name) =>
+        `/* ${name} */\n${fragments.get(name)}\n`);
+    await fs.writeFile(entry, bundled);
+    return true;
+}
+
 export async function versionPagesRuntime(root, release) {
     if (!SAFE_RELEASE.test(release)) throw new Error('Invalid Pages release id');
     const absoluteRoot = path.resolve(root);
@@ -122,6 +155,7 @@ export async function versionPagesRuntime(root, release) {
     if (typeof manifest.version !== 'string' || !manifest.version.trim()) {
         throw new Error('Pages source manifest requires a version');
     }
+    const bundledStyles = await bundleGameStyles(absoluteRoot);
     const files = await listRuntimeFiles(absoluteRoot);
     let changedFiles = 0;
     for (const filePath of files) {
@@ -137,7 +171,7 @@ export async function versionPagesRuntime(root, release) {
         changedFiles += 1;
     }
     await fs.writeFile(manifestPath, `${JSON.stringify({ ...manifest, commit: release }, null, 2)}\n`);
-    return { root: absoluteRoot, release, scannedFiles: files.length, changedFiles };
+    return { root: absoluteRoot, release, scannedFiles: files.length, changedFiles, bundledStyles };
 }
 
 const invokedPath = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : null;

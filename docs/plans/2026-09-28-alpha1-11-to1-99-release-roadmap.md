@@ -1,12 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-Current assembly: Alpha1.79.7 selectively integrates Earth surface refinements
-and their tests/versions/notes onto fresh accepted master37a13a41, not the future
-branch. Existing Air canvas remains unchanged; raised terrain and wearable
-derivatives are not promoted. See [scope](2026-10-08-release1-79-7-checks.json).
-Own flat-world/CI/public checks remain pending. Accepted public1.79.6/37a13a41
-and ordinary37762573941 supersede historical pending statements below; see
-[public evidence](2026-10-08-release1-79-6-public-checks.json).
+Current assembly: Alpha1.79.8 selects reviewed fuller pine fans/curved green
+sedge and ordered publication-only stylesheet bundling onto fresh accepted
+master7892224f, not the future branch. Plant counts, High/Low triangles,
+wind/shadows/collisions retained. Raised terrain, wearable derivatives and
+renderer optimizations not promoted. See [scope](2026-10-08-release1-79-8-checks.json).
+Own CI/public acceptance pending. Accepted public1.79.7/7892224f and
+ordinary37773941500 supersede historical pending statements below: first
+stylesheet-network failure retained; one bounded failed-job retry succeeds,
+root independently confirms all10 required jobs and public identity. See
+[public evidence](2026-10-08-release1-79-7-public-checks.json).
 Full1.80 F1-F5/1.87/art/device/profile/beta/launch gates remain open.
 
 October8 current delivery: Alpha1.79.5 de106428 is accepted live after its own

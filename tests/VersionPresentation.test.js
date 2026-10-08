@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.7';
+const currentVersion = '1.79.8';
+
+test('1.79.8 records reviewed foliage and published single-style startup without claiming full graphics completion', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.8"'), previous = html.indexOf('data-version="1.79.7"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['hanging needle fans', 'gently twisted leaves', 'every plant and tree',
+        'High/Low triangle counts', 'collision footprints', 'one ordered stylesheet',
+        'forty separate requests', 'startup recovery', 'not the 1.80 feature freeze',
+        'full 1.87', 'remain staged', 'No account wipe', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.7 documents only the surface component without claiming staged terrain, models or final art', () => {
     const html = fs.readFileSync('index.html', 'utf8');

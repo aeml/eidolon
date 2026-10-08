@@ -1,13 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October8 current-master surface patch assembled:** Alpha1.79.7 prepares only
-the qualified Earth surface/material component, matching tests, synchronized
-versions and cumulative notes. No future-branch merge, wearable derivatives,
-raised profile, new gameplay or Air-canvas relabeling (already delivered1.79.3).
-Own flat-world qualification/publication remain pending; see
-[current assembly](docs/plans/2026-10-08-release1-79-7-checks.json).
-Accepted live1.79.6 exact37a13a41/CI37762573941 supersedes older pending entries;
-see [public receipt](docs/plans/2026-10-08-release1-79-6-public-checks.json).
+**October8 current-master woodland/startup patch assembled:** Alpha1.79.8
+selects reviewed fuller pine fans and curved green sedge, plus ordered
+publication-only CSS bundling onto fresh accepted7892224f. Every plant, existing
+High/Low triangles, wind/shadows/collisions retained; no future branch,
+wearable derivatives, raised profile or renderer optimization promotion.
+See [current assembly](docs/plans/2026-10-08-release1-79-8-checks.json).
+Accepted live1.79.7 exact7892224f/CI37773941500 supersedes older pending entries:
+first stylesheet-network failure retained, one failed-job retry succeeds,
+root confirms all10 required jobs and matching public front/back/DB. See
+[public receipt](docs/plans/2026-10-08-release1-79-7-public-checks.json).
 Full roadmap/F1-F5/1.87/final art/device/beta/launch scope remains active.
 
 **October8 selected-party hotbar correction:** Connected equipped four-class

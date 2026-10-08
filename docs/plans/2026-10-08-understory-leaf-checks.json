@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "base": "a8991820",
+  "status": "qualified-staged-leaf-component-not-final-modern-art",
+  "change": "Sedge uses individually varied broad arching leaves with narrow rooted bases, hanging tips, gentle sheet twist and a greener palette. Existing16 blades/80 triangles and three bent sections retained. Bracken remains231 triangles and unchanged source geometry/colors. No extra random draws, placements, populations, materials, textures, lighting, shadows, collision, wind policy or terrain activation.",
+  "unitEvidence": "New geometry case fails old source. Final affected geometry/placement/batching/shadow/wind suites67 distinct checks pass29.011s; last added root/twist assertions pass in the repeated4-case geometry suite0.573s (overlap, not71 distinct). Determinism, normal lengths, Low placement subset, every plant transform, full wind bounds, route/site clearance and disposal covered. Scoped lint/diff pass. Projected area rises0.575 to1.058 square metres including overlap, not screen coverage.",
+  "retainedRejection": "First High/Low native gallery2 cases pass31.1s, but root rejects flat yellow leaf faces. Retain /home/aeml/.local/share/eidolon-understory-leaf-native-20261008, logSHA1a148c0f93b7677f83b84775b40e02f95f3e27abee6449de461d0c38205f4225. Correct palette and twist before accepting the component.",
+  "renderEvidence": "Refined System Chrome AMD Vulkan/RADV flat High1280/Low390 gallery2 pass32.4s; root inspects both woodland captures against rejected and prior pine-only captures. Equipped staged raised eight-view2 cases pass41.9s with original120-frame draw/triangle/frame/pixel limits. High woodland346 calls247325 triangles, Low100/66176 unchanged; filter/surface differences0, tree comparison within0.001. Equipped High woodland inspected. CI predeploy became active near this run's end; this is a budget pass, not isolated speed attribution. No unchanged party/campaign/soak replay.",
+  "limits": "Leaf silhouette improvement remains low-poly and repeated; whole-bed ecology, empty-ground composition, realistic texture/detail, rock silhouettes and final cohesive modern art remain open. These local galleries/previews do not prove physical-phone, equipped-party, public raised-profile or full1.87 acceptance. No new deployment in this art commit; full1.80 F1-F5 and later roadmap gates remain active.",
+  "evidence": {
+    "redLogSHA256": "730d398ed1077b4b0c8195a18e3cc41609b2aaf90c6139e01c1bfd0f817487bf",
+    "units": "/home/aeml/.local/share/eidolon-understory-leaf-refined-green-20261008.log",
+    "unitsSHA256": "b0b3c702bca0126f7a908edf8e06d526cf26658473f9f7666c27b3352d1a25d1",
+    "finalGeometrySHA256": "e16bbbde49dbe39c4556497f62902da0bd742524060258a3883eca692232d95f",
+    "gallery": "/home/aeml/.local/share/eidolon-understory-leaf-refined-native-20261008",
+    "galleryLogSHA256": "8349fb509720cc2252d749bf669316b8c62a6b8d54d96f3596f6f1720616a40e",
+    "equipped": "/home/aeml/.local/share/eidolon-understory-leaf-equipped-native-20261008",
+    "equippedLogSHA256": "55e6b950e4da9a275b8ccdbb36a2fa0786f0f71fdb3d75195b50f975365493f1"
+  },
+  "sourceSHA256": {
+    "src/art/WoodlandUnderstoryGeometry.js": "1828a1f9f6986a88a46b94d00453781160c795d88d1906bac14129d7586b686e",
+    "tests/WoodlandUnderstoryGeometry.test.js": "fbbf636ed219b0960fdde4b57b96a3cf058ce21826394b80546c453580d55025"
+  },
+  "next": "Finish pending1.79.7 public acceptance via Luna/independent verified HTTPS; prepare selective current-master visual delivery after reconciling origin, retaining cumulative notes/version. Continue broader world composition and full roadmap; do not merge the whole future branch."
+}

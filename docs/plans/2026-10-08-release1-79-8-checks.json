@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.8",
+  "status": "current-master-local-qualified-publication-pending",
+  "base": "7892224fc7cb3f9f68e93d9a81588b0fd4057f20",
+  "assembly": "Fresh isolated current-master worktree, selectively copies only reviewed pine/sedge geometry and corresponding tests/receipts, publication-time ordered stylesheet bundle and tests/receipt, synchronized version/notes and accepted1.79.7 receipt. No future-branch merge, elevated terrain/profile, wearable derivatives, batching/culling optimizations, account/schema/gameplay/economy/privacy/payment/alert changes.",
+  "woodland": "Fuller pine hanging needle fans retain840High/420Low triangles; curved varied green sedge retains80 triangles and untouched bracken. Every existing plant/tree, placement, material count, wind, lights, shadows and collision footprints retained. Earlier staged flat/equipped visual qualification and rejected leaf attempt retained in component receipts.",
+  "styles": "Actual publisher combines39same-directory source CSS imports in exact order into the same entry path; local fonts versioned and data URLs preserved. Exactly one published stylesheet request rather than40. Dev/source styles remain modular. Unsupported conditional/remote/nested imports fail publication. Existing bounded bootstrap recovery remains unchanged; this does not prove the cause of1.79.7's historical network failure.",
+  "units": "Initial6-suite run:408pass/1fail3.763s; version test catches stale CI and isolated-QA1.79.7 build labels. Correct both. FinalVersionPresentation372pass1.932s. Other5suites37pass from original run:409distinct total checks now pass across split evidence, not a clean repeated6-suite claim. Scoped ESLint/diff check pass.",
+  "native": "Fresh assembled source actual System Chrome:5 cases pass27.7s, flat production terrain/High1280px/Low390px eight gallery views plus3 published-style equivalence/recovery cases. Original frame/draw/triangle and pixel budgets remain unchanged. High woodland338calls/249406tri; Low outer-fold91calls/73416tri. Shadow/surface optimized versus controls zero changed pixels in flat views. Root inspects High woodland-cut and Low grove captures; not final modern-art acceptance.",
+  "logs": {
+    "initialUnits": "/home/aeml/.local/share/eidolon-release1798-unit-20261008.log",
+    "finalVersion": "/home/aeml/.local/share/eidolon-release1798-version-final-20261008.log",
+    "native": "/home/aeml/.local/share/eidolon-release1798-flat-native-20261008.log"
+  },
+  "sha256": {
+    "finalVersionLog": "0f9f33e0bf2c19ff3c5f9e812a546b5921b8c7141ded9d8d8a3244d5fd45e690",
+    "nativeLog": "d5d50548cc3cd44abc6843eb3489061b23d55e93fc0cc2b1c4ce4ecd94a33c54"
+  },
+  "publication": "Fresh fetch/reconcile before push; ordinary CI/SSH/Pages/exact public identity and hosted live QA acceptance required. Authorized Luna owns deployment monitoring. No unchanged campaign/dungeon/soak replay for this scoped component patch.",
+  "remaining": "Full1.80F1-F5/1.87 modern art, world composition, raised terrain, fitted wearable/profile/party performance and supported devices, then later beta/release roadmap remain open. Human pacing and physical-phone party checks deferred, not passed."
+}
