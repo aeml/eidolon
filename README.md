@@ -420,19 +420,20 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.7`, a modest Earth-surface refinement:
-  coherent soil aggregates, separate moss cushions and restrained mineral
-  bedding retain existing geometry, lights, maps and collision footprints.
+- Current source version: `Alpha 1.79.8`, fuller pine needle fans, curved varied
+  sedge leaves and one ordered published UI stylesheet. Existing plants,
+  High/Low triangle counts, wind, shadows and collisions remain intact.
   Publication/public acceptance are pending; 1.80 freeze and full
   1.87 modern-art/raised-world gates remain open. See the
-  [scoped qualification](docs/plans/2026-10-08-release1-79-7-checks.json).
+  [scoped qualification](docs/plans/2026-10-08-release1-79-8-checks.json).
   Four-class actual saved-session proof and
   narrow connected movement/Fireball/resume checks retain their exact limits in
   the [save receipt](docs/plans/2026-10-08-terrain-saved-session-checks.json) and
   [connected receipt](docs/plans/2026-10-08-connected-terrain-checks.json).
-  Current accepted live release is `Alpha 1.79.6`, at37a13a41, after its ordinary
-  CI/SSH/Pages/Live QA run37762573941. The selected party-healing hotbar focus fix
-  is live; see the [public receipt](docs/plans/2026-10-08-release1-79-6-public-checks.json).
+  Current accepted live release is `Alpha 1.79.7`, at7892224f, after ordinary
+  CI/SSH/Pages and one bounded failed-Live-QA retry on run37773941500.
+  The surface refinement and prior party healing/admin passage are live;
+  see the [public receipt](docs/plans/2026-10-08-release1-79-7-public-checks.json).
   Administrator Dark Realm passage bypasses
   story requirements only: level100, normal travel and Nexus/raid gates remain.
   Prior1.79.3 fallback and its SSH failure remain in the

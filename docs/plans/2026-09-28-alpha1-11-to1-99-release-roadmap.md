@@ -1,25 +1,19 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October8 staged woodland geometry: fuller pine fans retain840/420 triangles;
-curved, varied green sedge retains80. First flat-yellow leaf attempt rejected;
-final pine68/leaf67 checks and separate flat/equipped High/Low cases pass.
-[Pine](2026-10-08-conifer-coverage-checks.json) and
-[leaf](2026-10-08-understory-leaf-checks.json) scopes/limits. Whole-bed/world
-composition and full1.80/1.87 modern art/device/profile/beta/launch remain open.
+October8 party diagnostic:131frames/1,278,822foliage visits with zero view/light
+changes. Cache is working; per-cell overhead remains. See
+[diagnostic limits](2026-10-08-foliage-revision-observation-checks.json).
 
-Current assembly: Alpha1.79.7 selectively integrates Earth surface refinements
-and their tests/versions/notes onto fresh accepted master37a13a41, not the future
-branch. Existing Air canvas remains unchanged; raised terrain and wearable
-derivatives are not promoted. See [scope](2026-10-08-release1-79-7-checks.json).
-Fresh flat-native High/Low checks pass29.7s; public front/back/DB/selected bytes
-match7892224f. CI37773941500 first live QA fails on stylesheet network errors
-after rest gameplay assertions pass. Independent Chrome controls load40 CSS
-responses; ONE failed-job retry succeeds. Root confirms all10 required jobs;
-accepted public1.79.7/7892224f supersedes historical pending entries. See
-[public/retry evidence](2026-10-08-release1-79-7-public-checks.json).
-Accepted public1.79.6/37a13a41
-and ordinary37762573941 supersede historical pending statements below; see
-[public evidence](2026-10-08-release1-79-6-public-checks.json).
+Current assembly: Alpha1.79.8 selects reviewed fuller pine fans/curved green
+sedge and ordered publication-only stylesheet bundling onto fresh accepted
+master7892224f, not the future branch. Plant counts, High/Low triangles,
+wind/shadows/collisions retained. Raised terrain, wearable derivatives and
+renderer optimizations not promoted. See [scope](2026-10-08-release1-79-8-checks.json).
+Own CI/public acceptance pending. Accepted public1.79.7/7892224f and
+ordinary37773941500 supersede historical pending statements below: first
+stylesheet-network failure retained; one bounded failed-job retry succeeds,
+root independently confirms all10 required jobs and public identity. See
+[public evidence](2026-10-08-release1-79-7-public-checks.json).
 Full1.80 F1-F5/1.87/art/device/profile/beta/launch gates remain open.
 
 October8 gameplay-zoom surface refinement: soil/moss fields and interrupted

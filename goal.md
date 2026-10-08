@@ -1,27 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October8 woodland geometry refinements qualified, staged:** Fuller pine fans
-retain840/420 triangles; curved, varied green sedge retains80. Reject first
-flat-yellow leaf attempt before final native review. Pine68/leaf67 focused
-checks and separate flat/equipped High/Low native cases pass original limits.
-See [pine](docs/plans/2026-10-08-conifer-coverage-checks.json) and
-[leaf](docs/plans/2026-10-08-understory-leaf-checks.json) evidence/limits.
-Public surface acceptance complete; prepare selective woodland visual delivery.
-Full composition/modern-art/device/roadmap requirements remain active.
+**October8 party traversal diagnosis:** Exact view/light revisions remain
+unchanged during131frames, but1,278,822 foliage visits persist. New diagnostic
+passes fresh-save/connected checks; no renderer/performance acceptance claim.
+See [evidence](docs/plans/2026-10-08-foliage-revision-observation-checks.json).
 
-**October8 current-master surface patch assembled:** Alpha1.79.7 prepares only
-the qualified Earth surface/material component, matching tests, synchronized
-versions and cumulative notes. No future-branch merge, wearable derivatives,
-raised profile, new gameplay or Air-canvas relabeling (already delivered1.79.3).
-Fresh flat-native High/Low checks pass29.7s; public front/back/DB and selected
-bytes match7892224f. First CI37773941500 live QA fails on stylesheet network
-errors after all rest gameplay assertions complete. Independent anonymous
-Chrome controls load all40 CSS responses; ONE failed-job retry succeeds.
-Root verifies all10 required jobs and matching public front/back/DB identity;
-accepted live is now1.79.7/7892224f. See [public/retry evidence](docs/plans/2026-10-08-release1-79-7-public-checks.json) and
-[current assembly](docs/plans/2026-10-08-release1-79-7-checks.json).
-Accepted live1.79.6 exact37a13a41/CI37762573941 supersedes older pending entries;
-see [public receipt](docs/plans/2026-10-08-release1-79-6-public-checks.json).
+**October8 current-master woodland/startup patch assembled:** Alpha1.79.8
+selects reviewed fuller pine fans and curved green sedge, plus ordered
+publication-only CSS bundling onto fresh accepted7892224f. Every plant, existing
+High/Low triangles, wind/shadows/collisions retained; no future branch,
+wearable derivatives, raised profile or renderer optimization promotion.
+See [current assembly](docs/plans/2026-10-08-release1-79-8-checks.json).
+Accepted live1.79.7 exact7892224f/CI37773941500 supersedes older pending entries:
+first stylesheet-network failure retained, one failed-job retry succeeds,
+root confirms all10 required jobs and matching public front/back/DB. See
+[public receipt](docs/plans/2026-10-08-release1-79-7-public-checks.json).
 Full roadmap/F1-F5/1.87/final art/device/beta/launch scope remains active.
 
 **October8 surface review advances:** Inspect actual gameplay-zoom captures;
