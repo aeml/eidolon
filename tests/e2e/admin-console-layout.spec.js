@@ -32,6 +32,8 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
                     ...(['admin_grant_gold', 'admin_grant_item', 'admin_teleport'].includes(type) ? {
                         final: true, message: 'Synthetic presentation result: change saved.'
                     } : {}),
+                    ...(type === 'admin_announcement' ? { final: true,
+                        message: 'Synthetic presentation result: notice queued; delivery not guaranteed.' } : {}),
                     ...(type === 'admin_chat_moderation_target' ? { target: {
                         accountId: 'abcdef012345678901234567', account: payload.target, revision: 2
                     } } : {}),
@@ -212,6 +214,21 @@ for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 
         await expect(operations.getByRole('combobox', { name: 'Rarity', exact: true })).toHaveValue('Eidolic');
         await expect(operations.getByLabel('Quantity', { exact: true })).toHaveAttribute('max', '1000');
         expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+        const notices = dialog.locator('.administration-announcements');
+        await notices.locator('summary').click();
+        await notices.getByRole('combobox', { name: 'Notice', exact: true }).selectOption('recovery');
+        await notices.getByLabel('Public message', { exact: true }).fill('Service restored. <img src=x> is literal text. ' + 'w'.repeat(170));
+        await notices.getByRole('button', { name: 'Review notice', exact: true }).click();
+        await expect(notices.getByRole('button', { name: 'Cancel', exact: true })).toBeFocused();
+        await expect(notices.locator('[data-copy]')).toContainText('<img src=x>');
+        await expect(notices.locator('img')).toHaveCount(0);
+        const sendNotice = notices.getByRole('button', { name: 'Send this notice', exact: true });
+        await sendNotice.scrollIntoViewIfNeeded();
+        expect((await sendNotice.boundingBox()).height).toBeGreaterThanOrEqual(44);
+        expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+        await page.screenshot({ path: testInfo.outputPath('administration-notice-review.png') });
+        await sendNotice.click();
+        await expect(notices.getByRole('status')).toContainText('delivery not guaranteed');
         await dialog.getByRole('button', { name: 'Close administration' }).click();
         await expect(dialog).toBeHidden();
         await page.evaluate(() => window.__adminLayout.admin.connectionState('reconnecting'));

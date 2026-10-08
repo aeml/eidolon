@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current maintenance communications:** Worktree now on
+work/alpha-1-83-notices-current-20261008 rooted7fbdee83; earlier guide/support
+branches preserved. Select notice/playbook hunks only, preserving current
+Service diagnostics, recovery/privacy and prepared guide/public probes. Reviewed
+plain-text public notices require durable admin role, audit and post-IO authority;
+no automatic resend, email, maintenance switch or player mutation. Six client
+and one journal checks first fail;44 affected client checks and scoped race
+server/database checks pass. Actual desktop/phone-sized browser checks pass;
+phone review image inspected. Local preparation only, not ordered publication
+or operator tabletop acceptance. Approved production alerts unchanged.
+[Current notice scope](docs/plans/2026-10-08-current-maintenance-notice-checks.json).
+
 **October8 current Player Guide integration:** Reused worktree now on
 work/alpha-1-85-player-guide-current-20261008 rooted516faa2b; original support
 branch preserved. Select only planned1320cec6 Help/CSS/test hunks, not older

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T02:38:15Z",
+  "milestone": "1.83 incident and maintenance communications",
+  "status": "current-source-prepared-not-published",
+  "authority": {
+    "branch": "work/alpha-1-83-notices-current-20261008",
+    "parent": "7fbdee83743d8a2f27b06099bdb58e27cf2bc7a0",
+    "remoteMaster": "c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+    "integration": "Select only reviewed db29bd60 notice tool/test hunks and 88e700d9 operator procedure onto current prepared source. Preserve Service diagnostics, private progress support, player guide, recovery/privacy, current operations and rendering. No old authority or version imports."
+  },
+  "implementation": [
+    "Administration gets maintenance, incident-update and recovery notices with an explicit plain-text review and separate send action.",
+    "Server requires authenticated bounded dispatch, current durable admin authority, successful audit append and another role/session check after storage. Closed 1024-byte request schema; 220-byte public text; UTC update within 24 hours except optional recovery update; 3-token/minute connection budget.",
+    "Exact public copy, kind and timing use existing activity retention/journal. Public server chat is global across town, dungeon and casino; private actor/request identity is omitted.",
+    "Timeouts never resend automatically. History explicitly records admission, not guaranteed delivery. Notices do not change player state, stop the service, send email, or replay to later logins.",
+    "Operator procedure covers six incident classes, safe checks, stop/escalation conditions, communication and scope-specific reopening evidence. Owner staffing, external status destination and tabletop acceptance remain open."
+  ],
+  "verification": {
+    "baseline": "Six current client notice tests FAIL0.926s because the tool/result route is absent; new database announcement-journal test FAILrace0.019s because activity action is not allowlisted. Missing dependencies not involved.",
+    "unit": "AdminAnnouncement, AdminUI, AdminOperations and AdminChatModeration PASS44/1.891s; existing diagnostics and admin controls preserved.",
+    "server": "Focused announcement/console/authority/audit/global-broadcast tests PASS race3.461s; focused database announcement-journal test PASS race1.031s. Actual cross-scene deliverBroadcast, pre/post-audit revocation/replacement, unavailable role/audit/queue, closed connection and stopping paths exercised. Journal reopened with exact public copy and unchanged expiry. Fake role/activity stores and temporary journal, not a fresh production/Mongo restart rehearsal.",
+    "browser": "Actual System Chrome current AdminUI/real window layout PASS2/23.7s at1280x720 and390x844 using synthetic private replies. Final screenshot-only test change: phone case PASS1/14.4s. Review/cancel focus, literal markup, long-word wrapping, >=44px send target, acknowledgement and all current diagnostic/report/mutation presentation retained. No world login, production notice or player mutation.",
+    "visual": "Inspected actual390px review image: fixed header, wrapped literal public message and confidentiality guidance, readable review state and send/cancel buttons within window. Not physical-device or final-world-art acceptance.",
+    "static": "Scoped ESLint, gofmt -d and git diff --check pass. Both owned browser sessions terminal; owned4190 independently closed. No long unchanged campaign/cohort/profile rerun."
+  },
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-notices-evidence-20261008-CQfSJfk9",
+    "serverSha256": "67dd1666ced99f02518208799e28cfe1112cb902eb299b1e34d8caaf18b71fa3",
+    "uiSha256": "d7660142693b0d3f3ecc13ff37f766e37848cb11cc6cd713dfb80d287075baab",
+    "clientTestSha256": "8bdfd2171bab3d95834c6ddd2ac8242acf146733c9485a12c910edda918c5cca",
+    "phoneImageSha256": "c27e9860b41d608e96763b46c881e9695ffe9ebd98ff168c4b25d371fcd53175"
+  },
+  "draftPatchNotes": [
+    "Admins can review and explicitly send audited maintenance, incident and recovery notices to connected players across all areas.",
+    "Public notices use plain text, include UTC update times where required, and never automatically resend after an uncertain acknowledgement.",
+    "Operations documentation now includes safe incident triage, escalation, communication and reopening procedures."
+  ],
+  "publication": "Local preparation only: no version bump, push, CI dispatch, live notice, mail, restart, migration, retention/access/economy change. Approved existing alerts remain active and unchanged. Original1.80 F1–F5, ordered release acceptance, operator tabletop/coverage, external status/off-machine recovery and full visual/roadmap gates remain open."
+}
