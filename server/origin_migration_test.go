@@ -41,6 +41,9 @@ func TestMigrationOriginsAtWebsocketHandshake(t *testing.T) {
 		{"https://play.eidolonrealms.com:", false},
 		{"https://play.eidolonrealms.com:0", false},
 		{"https://play.eidolonrealms.com:65536", false},
+		{"https://[play.eidolonrealms.com]", false},
+		{"http://[localhost]:8080", false},
+		{"http://[127.0.0.1]:4173", false},
 		{"null", false},
 	} {
 		t.Run(tc.origin, func(t *testing.T) {

@@ -18,10 +18,12 @@ payment integration or new infrastructure purchase.
 
 The owner approved existing `ADMIN_NOTIFICATION_EMAILS` recipients as outage
 owners with30s health probes,3 failures,2 recoveries and30m reminders. The single
-labelled Postmark test reached its inbox. Ordered1.78 CI/deployment and actual
-independent monitor/public acceptance remain pending; approved settings are not
-proof of installed or off-machine coverage. Staffing/response commitments and
-the eventual beta transition remain separate decisions.
+labelled Postmark test reached its inbox. Ordered1.78 operations and1.79 public
+acceptance receipts now record the running independent monitor with the approved
+settings. October8 host-restart checks found the monitor running and the local
+API/database ready. This remains local API/database coverage, not off-machine
+or public DNS/TLS/frontend coverage. Staffing/response commitments and the
+eventual beta transition remain separate decisions.
 
 ## Live 1.71 password change and emailed recovery
 
