@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.3';
+const currentVersion = '1.79.4';
+
+test('1.79.4 records save-height recovery and compatibility without claiming raised rollout', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.4"'), previous = html.indexOf('data-version="1.79.3"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['Returning players', 'Horizontal position', 'dungeon/casino floors', 'active jump arcs',
+        'before logs', '18 matching rock solids', 'never grants QA commands', 'four classes', '16 fresh saved sessions',
+        'HP/MP', 'Gold/EP', 'actual Fireball draws and damage', 'Raised terrain remains disabled in production',
+        'not the 1.80 freeze', 'full 1.87', 'No account wipe', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.3 records scoped elemental and town art without claiming final art acceptance', () => {
     const html = fs.readFileSync('index.html', 'utf8');

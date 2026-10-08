@@ -72,11 +72,12 @@ var suspiciousLogFilePath = flag.String("suspicious-log-file", "logs/junk.log", 
 var economyMetricsFilePath = flag.String("economy-metrics-file", "logs/economy_metrics.jsonl", "Hourly gold source/sink metrics path (empty disables)")
 var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAMES"), "Comma-separated usernames allowed to use QA-only commands")
 var qaTerrainElevationFlag = flag.Bool("qa-terrain-elevation", false, "Enable the Earth terrain integration candidate on an explicitly configured QA server")
+var terrainProfileFlag = flag.String("terrain-profile", os.Getenv("EIDOLON_TERRAIN_PROFILE"), "Server-owned terrain profile: flat-v1 (default) or earth-elevation-rocks-v1; does not enable QA commands")
 var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Getenv("EIDOLON_ADMIN_BOOTSTRAP_USERNAMES"), "Comma-separated exact usernames allowed to bootstrap the durable admin role")
 
 var (
 	buildCommit  = "development"
-	buildVersion = "Alpha 1.79.3"
+	buildVersion = "Alpha 1.79.4"
 	qaUsernames  = map[string]struct{}{}
 )
 
@@ -451,6 +452,11 @@ func setupLogging() ([]io.Closer, error) {
 
 func main() {
 	flag.Parse()
+	terrainProfile, terrainErr := resolveTerrainStartupProfile(*terrainProfileFlag, *qaTerrainElevationFlag, len(parseQAUsernames(*qaUsernamesFlag)) > 0)
+	if terrainErr != nil {
+		fmt.Fprintln(os.Stderr, terrainErr)
+		os.Exit(2)
+	}
 	if *checkSaveJournal {
 		if *checkSchema {
 			fmt.Fprintln(os.Stderr, "Choose one read-only preflight at a time")
@@ -563,17 +569,9 @@ func main() {
 	// Seed the random number generator
 	rand.Seed(time.Now().UnixNano())
 
-	if *qaTerrainElevationFlag {
-		if len(qaUsernames) == 0 {
-			log.Fatal("Terrain candidate requires an explicit QA username allowlist")
-		}
-		candidate, err := game.NewWorldWithElevationCandidate(db)
-		if err != nil {
-			log.Fatalf("Cannot initialize terrain candidate: %v", err)
-		}
-		world = candidate
-	} else {
-		world = game.NewWorld(db)
+	world, err = game.NewWorldWithTerrainProfile(db, terrainProfile)
+	if err != nil {
+		log.Fatalf("Cannot initialize configured terrain: %v", err)
 	}
 	if err := world.Trading.ReadinessError(); err != nil {
 		log.Fatalf("Cannot load durable auction state; refusing an empty market: %v", err)

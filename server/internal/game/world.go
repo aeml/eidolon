@@ -349,6 +349,20 @@ func NewWorld(db *database.DB) *World {
 // Explicit integration candidate. The ordinary constructor remains flat until
 // the connected gameplay and presentation acceptance gates are complete.
 func NewWorldWithElevationCandidate(db *database.DB) (*World, error) {
+	return NewWorldWithTerrainProfile(db, RaisedEarthTerrainProfile)
+}
+
+// Explicit server-owned rollout selection. A world never mixes raised meshes
+// with flat authority or enables QA commands merely by selecting terrain.
+func NewWorldWithTerrainProfile(db *database.DB, profile string) (*World, error) {
+	switch profile {
+	case FlatTerrainProfile:
+		return NewWorld(db), nil
+	case RaisedEarthTerrainProfile:
+		// Load both matching elevation and collision data before publication.
+	default:
+		return nil, fmt.Errorf("unsupported terrain profile %q", profile)
+	}
 	field, err := readWorldElevationCandidate()
 	if err != nil {
 		return nil, err
@@ -1273,7 +1287,7 @@ func (w *World) AddEntity(e *Entity) {
 	}
 	w.Entities[e.ID] = e
 	w.recoverActorFromRocks(e)
-	w.groundActorLocked(e)
+	w.groundActorAtEntryLocked(e)
 	w.groundLootLocked(e)
 	w.Grid.Add(e)
 	if e.Type == TypePlayer && strings.HasPrefix(e.InstanceID, "dungeon_") {

@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.3</span>
+                    <span class="start-version-row__label">Alpha 1.79.4</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -780,6 +780,16 @@
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes">
+                <div class="patch-note-entry" data-version="1.79.4">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.4 (saved-position recovery and terrain compatibility)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Returning players are grounded at the current overworld floor when a flat-world save retains an elevated height. This prevents a character remaining suspended above town or the world after rejoining. Horizontal position, dungeon/casino floors, service offsets and active jump arcs remain owned by their existing systems.</li>
+                        <li>The server now validates an explicit terrain profile before logs, journals, database work or player admission. Flat remains the default. The future raised-Earth profile loads hills and all 18 matching rock solids together; selecting terrain never grants QA commands. Unknown or incomplete profiles are refused instead of silently changing the world.</li>
+                        <li>Focused compatibility checks cover four classes and 16 fresh saved sessions through flat, raised, flat and raised configurations, retaining equipment, bag/stash/buyback items, HP/MP, Gold/EP, quests and progression. A connected Wizard check covers raised walking, actual Fireball draws and damage, and matching-profile reconnect. These are prepared disposable fixtures, not whole-campaign balance or physical-phone acceptance.</li>
+                        <li>Raised terrain remains disabled in production. This compatibility precursor is not the 1.80 freeze or full 1.87 art/performance milestone; equipped-party performance, final modern art and remaining launch gates still require their own evidence.</li>
+                        <li>No account wipe, schema migration, damage tuning, reward change, payment integration, public-access change or alert-setting change. Full prior patch history remains below.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.3">
                     <h3 class="patch-note-entry__title">Alpha 1.79.3 (town masonry, elemental landscapes and dungeon architecture)</h3>
                     <ul class="patch-note-entry__list">

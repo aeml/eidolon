@@ -1,6 +1,6 @@
 // Serialized directly into page.evaluate; no browser /tests import is needed.
-// Project onto the same plane used by production click resolution, not the
-// actor's0.5m presentation lift or airborne position.
+// Project onto the negotiated production ground, not the actor's presentation
+// lift or airborne position. Instance floors remain owned by their ground plane.
 export function projectGroundOffsetInPage({ deltaX, deltaZ, allowScaling = true }) {
     const game = window.game;
     if (!game?.player?.position || !game.renderSystem?.camera || !game.inputManager?.groundPlane) return null;
@@ -9,7 +9,11 @@ export function projectGroundOffsetInPage({ deltaX, deltaZ, allowScaling = true 
         const target = game.player.position.clone();
         target.x += deltaX * scale;
         target.z += deltaZ * scale;
-        game.inputManager.groundPlane.projectPoint(target, target);
+        if (game.terrainElevation && !game.currentInstanceId) {
+            target.y = game.terrainElevation.sample(target.x, target.z);
+        } else {
+            game.inputManager.groundPlane.projectPoint(target, target);
+        }
         const world = { x: target.x, y: target.y, z: target.z };
         const projected = target.project(game.renderSystem.camera);
         lastProjection = {

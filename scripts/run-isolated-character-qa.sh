@@ -213,7 +213,7 @@ capture_isolated_service_failure() {
 docker build \
   --build-arg GO_VERSION=1.27.1 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.79.3" \
+  --build-arg "BUILD_VERSION=Alpha 1.79.4" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -247,6 +247,7 @@ mongo_uri="mongodb://${mongo_username}:${mongo_password}@${mongo_host}:${mongo_p
 docker run -d --name "${API_CONTAINER}" "${api_network_args[@]}" "${SERVER_IMAGE}" \
   --addr="${api_addr}" --mongo-uri="${mongo_uri}" \
   --qa-usernames="${qa_allowlist}" \
+  --terrain-profile="${EIDOLON_ISOLATED_QA_TERRAIN_PROFILE:-flat-v1}" \
   --qa-terrain-elevation="${EIDOLON_ISOLATED_QA_TERRAIN_ELEVATION:-false}" \
   --log-file= --log-stdout=false --suspicious-log-file= --suspicious-stdout=false >/dev/null
 api_created=true
@@ -641,6 +642,11 @@ run_well_rested() {
 
 set +e
 case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
+  terrain-profile)
+    # Test the public startup selection, not the legacy QA elevation switch.
+    EIDOLON_E2E_TERRAIN_PROFILE="${EIDOLON_ISOLATED_QA_TERRAIN_PROFILE:-flat-v1}" \
+      EIDOLON_E2E_CLASS=Wizard npx playwright test --retries=0 tests/e2e/terrain-profile-gameplay.spec.js
+    ;;
   release-smoke)
     EIDOLON_E2E_FULL_GAMEPLAY=1 EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js
     ;;
@@ -1148,6 +1154,7 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     EIDOLON_E2E_CLASS=Fighter npx playwright test --retries=0 tests/e2e/bastion-approach-gameplay.spec.js
     ;;
   *)
+    echo "Connected raised-terrain selection: EIDOLON_ISOLATED_QA_ROUTE=terrain-profile EIDOLON_ISOLATED_QA_TERRAIN_PROFILE=earth-elevation-rocks-v1" >&2
     echo "Town-to-Bastion touch travel and real entrance interaction: EIDOLON_ISOLATED_QA_ROUTE=bastion-route" >&2
     echo "Earned rest, real travel/combat and reconnect verification: EIDOLON_ISOLATED_QA_ROUTE=well-rested" >&2
     echo "Earned rest through prepared hostile death and dungeon transitions: EIDOLON_ISOLATED_QA_ROUTE=well-rested-transitions" >&2

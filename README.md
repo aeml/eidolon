@@ -420,13 +420,16 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.3`, a scoped town/elemental landscape and
-  dungeon-architecture patch prepared on current `master` f9cbd41b. Publication
-  and independent live acceptance remain pending; 1.80 freeze and the full 1.87
-  modern-art/raised-world milestone remain open. Individual source-specific art
-  checks are retained; current integration checks are recorded in the
-  [candidate receipt](docs/plans/2026-10-08-release1-79-3-checks.json).
-  Latest verified live release is `Alpha 1.79.2`, at f9cbd41b; hosted SSH routing
+- Current source version: `Alpha 1.79.4`, a saved-height recovery and terrain
+  compatibility precursor prepared on accepted `master` b13dd3af. Own publication
+  and public acceptance remain pending; 1.80 freeze and the full 1.87 modern-art/
+  raised-world milestone remain open. Four-class actual saved-session proof and
+  narrow connected movement/Fireball/resume checks retain their exact limits in
+  the [save receipt](docs/plans/2026-10-08-terrain-saved-session-checks.json) and
+  [connected receipt](docs/plans/2026-10-08-connected-terrain-checks.json).
+  Latest verified live release is `Alpha 1.79.3`, at b13dd3af; own guarded local
+  promotion and public checks passed while hosted SSH failed, as recorded in the
+  [public receipt](docs/plans/2026-10-08-release1-79-3-public-checks.json). Hosted SSH routing
   remains unresolved and does not justify bypassing release guards. Raised
   terrain stays disabled, saves and public alpha access remain unchanged.
   Current identified API/driver qualification passed representative

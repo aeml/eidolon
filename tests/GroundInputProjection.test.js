@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { planVisibleGroundStepInPage, projectGroundOffsetInPage } from './groundInputProjection.js';
 import { gatherPartyFormation, partyFormationStep, partyPathAvoidsActors } from './partyDungeonControls.js';
+import { EARTH_ELEVATION, intersectWorldElevationRay } from '../src/data/worldElevation.js';
 
 beforeEach(() => {
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
@@ -30,6 +31,36 @@ test.each([0, .5, 4])('click resolves the exact planned ground vector at actor h
     expect(world.z).toBeCloseTo(before.z + 1.201, 7);
     expect(world.y).toBe(0);
     expect(window.game.player.position.equals(before)).toBe(true);
+});
+
+test('a raised-world click resolves the sampled terrain rather than the flat plane or airborne actor', () => {
+    const game = window.game;
+    game.terrainElevation = EARTH_ELEVATION;
+    game.player.position.set(-120, EARTH_ELEVATION.sample(-120, -187) + 3, -187);
+    const before = game.player.position.clone();
+    game.renderSystem.camera.position.copy(before).add(new THREE.Vector3(30, 40, 30));
+    game.renderSystem.camera.lookAt(before);
+    game.renderSystem.camera.updateMatrixWorld(true);
+    const screen = projectGroundOffsetInPage({ deltaX: -6, deltaZ: 2, allowScaling: false });
+    expect(screen.canvas).toBe(true);
+    expect(screen.world.y).toBeGreaterThan(1);
+    const ray = new THREE.Raycaster();
+    ray.setFromCamera(new THREE.Vector2(screen.x / window.innerWidth * 2 - 1,
+        1 - screen.y / window.innerHeight * 2), game.renderSystem.camera);
+    const picked = intersectWorldElevationRay(ray.ray, new THREE.Vector3());
+    expect(picked.x).toBeCloseTo(before.x - 6, 5);
+    expect(picked.z).toBeCloseTo(before.z + 2, 5);
+    expect(picked.y).toBeCloseTo(EARTH_ELEVATION.sample(picked.x, picked.z), 5);
+    expect(game.player.position.equals(before)).toBe(true);
+});
+
+test.each(['casino', 'dungeon_test'])('terrain selection never replaces the owned %s floor', instanceId => {
+    window.game.terrainElevation = EARTH_ELEVATION;
+    window.game.currentInstanceId = instanceId;
+    window.game.inputManager.groundPlane.constant = -8;
+    const screen = projectGroundOffsetInPage({ deltaX: -6, deltaZ: 2, allowScaling: false });
+    expect(screen.world.y).toBe(8);
+    expect(clickedWorld(screen).y).toBeCloseTo(8, 7);
 });
 
 test('old elevated projection demonstrably aimed away from the planned floor point', () => {

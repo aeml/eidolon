@@ -1,5 +1,16 @@
 import { readFileSync } from 'node:fs';
 
+test('raised terrain QA uses explicit public selection without changing the flat default or legacy allowlist', () => {
+    const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
+    expect(script).toContain('--terrain-profile="${EIDOLON_ISOLATED_QA_TERRAIN_PROFILE:-flat-v1}"');
+    expect(script).toContain('--qa-terrain-elevation="${EIDOLON_ISOLATED_QA_TERRAIN_ELEVATION:-false}"');
+    expect(script).toContain('--qa-usernames="${qa_allowlist}"');
+    expect(script).toContain('EIDOLON_E2E_TERRAIN_PROFILE="${EIDOLON_ISOLATED_QA_TERRAIN_PROFILE:-flat-v1}"');
+    expect(script).toContain('npx playwright test --retries=0 tests/e2e/terrain-profile-gameplay.spec.js');
+    const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
+    expect(workflow).toContain('EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run \'^TestTerrainActualSavedSessionsAcrossProfileChanges$\' -count=1 -timeout=120s');
+});
+
 test('the complete gate retains real-server interrupted login recovery with one UI click', () => {
     const script = readFileSync('scripts/run-isolated-character-qa.sh', 'utf8');
     const probe = readFileSync('tests/e2e/auth-inflight-recovery.spec.js', 'utf8');

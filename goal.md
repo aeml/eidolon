@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 Alpha1.79.4 compatibility precursor preparation:** Fresh remote
+remains accepted b13dd3af; preserved prior future-work branch548e5381, then
+selectively integrate21 exact configuration/recovery/test/evidence files onto
+current master, not a future-branch merge. Four-class/16-session actual save
+test reproduces stale raised height under flat rollback; entry-only correction
+now qualifies fresh admission and disconnect save plus stable reactivation.
+One connected Wizard walking/Fireball/resume scope and original failed attempts
+remain documented. Version/notes synchronized1.79.4; own publication/public
+acceptance pending. Terrain remains flat by default/private production env
+unchanged; all original1.80/1.87/art/device/campaign/launch gates remain open.
+Full goal active, no new long capacity/campaign replay. Latest verified live
+release1.79.3 own receipt imported unchanged; hosted SSH failure retained.
+
 **October8 current-master visual integration:** Selectively apply qualified
 town masonry, elemental terrain/canvas/piers and four-family dungeon
 surface/architecture changes onto fresh origin/master f9cbd41b. All14 runtime

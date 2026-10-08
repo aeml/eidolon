@@ -31,7 +31,7 @@ services:
       args:
         GO_VERSION: 1.27.1
         BUILD_COMMIT: ${EIDOLON_BUILD_COMMIT:-development}
-        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 1.79.3}
+        BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 1.79.4}
     restart: unless-stopped
     env_file:
       - .env
@@ -50,6 +50,7 @@ services:
       - --suspicious-log-file=${SUSPICIOUS_LOG_FILE:-logs/junk.log}
       - --suspicious-stdout=${SUSPICIOUS_STDOUT:-false}
       - --qa-usernames=${EIDOLON_QA_USERNAMES:-}
+      - --terrain-profile=${EIDOLON_TERRAIN_PROFILE:-flat-v1}
       - --admin-bootstrap-usernames=${EIDOLON_ADMIN_BOOTSTRAP_USERNAMES:-}
     ports:
       - 127.0.0.1:${APP_HOST_PORT:-18082}:8080

@@ -7,21 +7,26 @@ import (
 	"math"
 )
 
-// Candidate surface for the Earth elevation integration. Worlds keep the field
-// nil until movement, placement and effects share the contract. Do not enable
-// it by raising the client mesh alone.
+// Shared triangulated Earth surface. Ordinary worlds remain flat; an explicit
+// configured profile loads matching elevation/solids together. Never enable
+// raised terrain by moving the client mesh alone.
 //
 //go:embed content/world-elevation.json
 var worldElevationJSON []byte
 
+const (
+	FlatTerrainProfile        = "flat-v1"
+	RaisedEarthTerrainProfile = "earth-elevation-rocks-v1"
+)
+
 func (w *World) TerrainProfile() string {
 	if w != nil && w.terrainElevation != nil {
 		if len(w.rockSolids) > 0 {
-			return "earth-elevation-rocks-v1"
+			return RaisedEarthTerrainProfile
 		}
 		return "earth-elevation-v1"
 	}
-	return "flat-v1"
+	return FlatTerrainProfile
 }
 
 type elevationBounds struct {
@@ -93,6 +98,16 @@ func (w *World) groundActorLocked(e *Entity) {
 	}
 	if height, ok := w.overworldGroundHeight(e.InstanceID, e.X, e.Z); ok {
 		e.Y = height
+	}
+}
+
+func (w *World) groundActorAtEntryLocked(e *Entity) {
+	w.groundActorLocked(e)
+	// A saved raised-ground height is not an owned floor in a flat world.
+	// Normalize only overworld player admission/restore, not normal frame work.
+	// Instance floors, NPC/projectile offsets and active jumps retain their Y.
+	if w.terrainElevation == nil && e.Type == TypePlayer && e.InstanceID == "" && e.State != "JUMPING" {
+		e.Y = 0
 	}
 }
 
