@@ -4,6 +4,10 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
+import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
+import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
+import { createEmberSnagGeometry, EMBER_SNAG_SOCKETS } from './EmberSnagGeometry.js';
+import { createFracturedCrystalGeometry } from './FracturedCrystalGeometry.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
 import { applyWoodlandLeafDetail } from './WoodlandLeafMaterial.js';
@@ -60,14 +64,13 @@ function part(name, geometryValue, materialValue, {
 
 const trunk = geometry('foliage-trunk', () => new THREE.CylinderGeometry(0.28, 0.48, 5.4, 7));
 const narrowTrunk = geometry('foliage-narrow-trunk', () => new THREE.CylinderGeometry(0.16, 0.32, 6.2, 7));
-const branch = geometry('foliage-branch', () => new THREE.CylinderGeometry(0.08, 0.18, 2.8, 6));
-const broadCrown = geometry('foliage-broad-crown', () => new THREE.DodecahedronGeometry(1.55, 0));
+const emberSnag = geometry('foliage-ember-snag', createEmberSnagGeometry);
+const drownedCrown = geometry('foliage-drowned-willow', createDrownedWillowGeometry);
 const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
 const needleCrown = geometry('foliage-needle-boughs', createConiferBoughGeometry);
 const willowCurtain = geometry('foliage-willow-curtain', createWillowCurtainGeometry);
-const pineCrown = geometry('foliage-pine-crown', () => new THREE.ConeGeometry(1.7, 3.4, 7));
-const curtain = geometry('foliage-curtain', () => new THREE.ConeGeometry(0.58, 3.5, 6, 1, true));
-const shard = geometry('foliage-shard', () => new THREE.ConeGeometry(0.34, 2.2, 5));
+const pineCrown = geometry('foliage-elemental-boughs', createElementalConiferGeometry);
+const shard = geometry('foliage-shard', createFracturedCrystalGeometry);
 const crystal = geometry('foliage-crystal', () => new THREE.OctahedronGeometry(0.7, 0));
 const root = geometry('foliage-root', () => new THREE.ConeGeometry(0.2, 1.9, 5));
 const lantern = geometry('foliage-lantern', () => new THREE.OctahedronGeometry(0.2, 0));
@@ -143,8 +146,8 @@ function createMourningWillow() {
 function createRimePine() {
     const p = palette('water');
     const bark = material('foliage-rime-bark', 0x334853);
-    const ice = material('foliage-rime-needle', 0x7898a6, { metalness: 0.08, roughness: 0.7 });
-    const snow = material('foliage-rime-snow', 0xb8ccd2, { roughness: 0.82 });
+    const ice = material('foliage-rime-needle', 0x7898a6, { metalness: 0.08, roughness: 0.7, vertexColors: true, side: THREE.DoubleSide });
+    const snow = material('foliage-rime-snow', 0xb8ccd2, { roughness: 0.82, vertexColors: true, side: THREE.DoubleSide });
     const glow = material('foliage-rime-glow', p.accent, { emissive: p.accent, emissiveIntensity: 0.66 });
     return [
         part('drowned pine trunk', trunk, bark, { position: [0, 2.75, 0], scale: [0.76, 1.05, 0.76] }),
@@ -157,14 +160,12 @@ function createRimePine() {
 
 function createDrownedWillow() {
     const p = palette('water');
-    const bark = material('foliage-drowned-bark', 0x263b43);
-    const leaf = material('foliage-drowned-reed', 0x536f79, { side: THREE.DoubleSide });
+    const bark = material('foliage-drowned-bark', 0x263b43, { barkDetail: 'willow', flatShading: false });
+    const leaf = material('foliage-drowned-reed', 0x536f79, { side: THREE.DoubleSide, vertexColors: true, leafDetail: true });
     const spirit = material('foliage-drowned-spirit', p.spirit, { emissive: p.spirit, emissiveIntensity: 0.82 });
     return [
-        part('bent drowned trunk', trunk, bark, { position: [0.28, 2.6, 0], rotation: [0, 0, -0.2], scale: [0.84, 1.02, 0.84] }),
-        part('drowned canopy', broadCrown, leaf, { position: [-0.4, 5.38, 0], scale: [1.36, 0.58, 1.08] }),
-        part('silver reed curtain west', curtain, leaf, { position: [-1.0, 3.72, 0], scale: [0.72, 0.92, 0.72] }),
-        part('silver reed curtain east', curtain, leaf, { position: [0.72, 3.55, 0.15], scale: [0.65, 0.82, 0.65] }),
+        part('bent drowned trunk', willowStem, bark, { position: [0.28, 2.6, 0], rotation: [0, 0, -0.2], scale: [0.84, 1.02, 0.84] }),
+        part('drowned canopy', drownedCrown, leaf),
         part('drowned soul fruit west', lantern, spirit, { position: [-0.9, 2.58, 0.25], castShadow: false }),
         part('drowned soul fruit east', lantern, spirit, { position: [0.65, 2.92, -0.08], scale: [0.75, 0.75, 0.75], castShadow: false })
     ];
@@ -172,55 +173,63 @@ function createDrownedWillow() {
 
 function createEmberSnag() {
     const p = palette('fire');
-    const char = material('foliage-charwood', 0x211b1a);
+    const char = material('foliage-charwood', 0x211b1a, { barkDetail: 'pine', flatShading: false });
     const ember = material('foliage-ember-heart', p.accent, { emissive: p.accent, emissiveIntensity: 1.05, roughness: 0.42 });
     return [
-        part('charred trunk', trunk, char, { position: [0, 2.6, 0], rotation: [0, 0, 0.08], scale: [0.86, 1, 0.86] }),
-        part('forked snag west', branch, char, { position: [-0.72, 4.55, 0], rotation: [0, 0, -0.7] }),
-        part('forked snag east', branch, char, { position: [0.78, 4.1, 0.12], rotation: [0.12, 0, 0.78], scale: [0.88, 0.88, 0.88] }),
-        part('ember shard west', shard, ember, { position: [-0.95, 5.68, 0], rotation: [0, 0, -0.2], scale: [0.5, 0.66, 0.5], castShadow: false }),
-        part('ember shard east', shard, ember, { position: [1.02, 5.24, 0.1], rotation: [0, 0, 0.22], scale: [0.42, 0.58, 0.42], castShadow: false }),
+        part('charred trunk and connected forks', emberSnag, char),
+        part('ember shard west', crystal, ember, { position: EMBER_SNAG_SOCKETS[0], rotation: [0, 0, -0.4], scale: [.22, .46, .22], castShadow: false }),
+        part('ember shard east', crystal, ember, { position: EMBER_SNAG_SOCKETS[1], rotation: [0, 0, 0.5], scale: [.2, .4, .2], castShadow: false }),
         part('ember heart', lantern, ember, { position: [0.08, 2.9, 0.35], castShadow: false })
     ];
 }
 
+function rootedCrystalFork(name, materialValue, angle, scale, anchor) {
+    const rotation = [0, 0, angle];
+    const baseOffset = new THREE.Vector3(0, -1.1, 0).multiply(new THREE.Vector3(...scale))
+        .applyEuler(new THREE.Euler(...rotation));
+    const position = new THREE.Vector3(...anchor).sub(baseOffset).toArray();
+    return part(name, shard, materialValue, { position, rotation, scale });
+}
+
 function createBasaltBriar() {
     const p = palette('fire');
-    const basalt = material('foliage-basalt', p.shadow, { roughness: 0.78 });
-    const rust = material('foliage-basalt-rust', p.midtone, { metalness: 0.28 });
+    const basalt = material('foliage-basalt', p.shadow, { roughness: 0.78, surface: 'stratified-rock' });
+    const rust = material('foliage-basalt-rust', p.midtone, { metalness: 0.28, surface: 'stratified-rock' });
     const magma = material('foliage-basalt-magma', p.spirit, { emissive: p.spirit, emissiveIntensity: 1.15, roughness: 0.35 });
     return [
         part('basalt briar spine', shard, basalt, { position: [0, 1.5, 0], scale: [1.2, 1.38, 1.2] }),
-        part('western basalt thorn', shard, rust, { position: [-0.88, 1.05, 0.15], rotation: [0, 0, -0.62], scale: [0.72, 0.72, 0.72] }),
-        part('eastern basalt thorn', shard, basalt, { position: [0.88, 0.95, -0.08], rotation: [0, 0, 0.68], scale: [0.66, 0.66, 0.66] }),
-        part('magma briar heart', crystal, magma, { position: [0, 1.2, 0.42], scale: [0.42, 0.72, 0.36], castShadow: false })
+        rootedCrystalFork('western basalt thorn', rust, .62, [.72, .72, .72], [-.1, -.08, .15]),
+        rootedCrystalFork('eastern basalt thorn', basalt, -.68, [.66, .66, .66], [.1, -.08, -.08]),
+        part('magma briar heart', shard, magma, { position: [0, 1.2, 0.42], scale: [.86, .46, .74], castShadow: false })
     ];
 }
 
 function createGaleCypress() {
     const p = palette('air');
     const bark = material('foliage-gale-bark', 0x4e5966, { metalness: 0.12 });
-    const leaf = material('foliage-gale-leaf', 0x526b78, { side: THREE.DoubleSide });
+    const leaf = material('foliage-gale-leaf', 0x526b78, { side: THREE.DoubleSide, vertexColors: true });
     const charge = material('foliage-gale-charge', p.accent, { emissive: p.accent, emissiveIntensity: 0.76 });
     return [
         part('wind-bent silver trunk', narrowTrunk, bark, { position: [0.35, 3, 0], rotation: [0, 0, -0.16], scale: [1.15, 0.98, 1.15] }),
-        part('low leeward crown', pineCrown, leaf, { position: [-0.5, 3.7, 0], rotation: [0, 0, -0.16], scale: [0.72, 0.78, 0.72] }),
-        part('high leeward crown', pineCrown, leaf, { position: [-0.75, 5.42, 0], rotation: [0, 0, -0.18], scale: [0.55, 0.68, 0.55] }),
-        part('storm conductor', shard, charge, { position: [-1.08, 6.75, 0], rotation: [0, 0, -0.22], scale: [0.34, 0.48, 0.34], castShadow: false }),
+        // Follow the existing tilted trunk's actual centreline. The old
+        // opposite-side offsets left both crowns/conductor floating beside it.
+        part('low leeward crown', pineCrown, leaf, { position: [.46, 3.7, 0], rotation: [0, 0, -0.16], scale: [0.72, 0.78, 0.72] }),
+        part('high leeward crown', pineCrown, leaf, { position: [.74, 5.42, 0], rotation: [0, 0, -0.18], scale: [0.55, 0.68, 0.55] }),
+        part('storm conductor', shard, charge, { position: [.95, 6.75, 0], rotation: [0, 0, -0.22], scale: [0.34, 0.48, 0.34], castShadow: false }),
         part('windward root', root, bark, { position: [0.74, 0.3, 0.1], rotation: [0, 0, -Math.PI / 2], scale: [0.72, 0.62, 0.72] })
     ];
 }
 
 function createStormCrystal() {
     const p = palette('air');
-    const slate = material('foliage-storm-slate', p.shadow, { roughness: 0.76 });
+    const slate = material('foliage-storm-slate', p.shadow, { roughness: 0.76, surface: 'slate' });
     const silver = material('foliage-storm-silver', 0x74859a, { metalness: 0.52, roughness: 0.48 });
     const charge = material('foliage-storm-violet', p.spirit, { emissive: p.spirit, emissiveIntensity: 1.08, roughness: 0.3 });
     return [
         part('storm crystal plinth', shard, slate, { position: [0, 1.18, 0], scale: [1.05, 1.08, 1.05] }),
-        part('silver conductor west', shard, silver, { position: [-0.72, 1.12, 0.08], rotation: [0, 0, -0.42], scale: [0.58, 0.78, 0.58] }),
-        part('silver conductor east', shard, silver, { position: [0.7, 0.92, -0.1], rotation: [0, 0, 0.5], scale: [0.52, 0.66, 0.52] }),
-        part('captive storm', crystal, charge, { position: [0, 1.72, 0.36], scale: [0.52, 0.82, 0.44], castShadow: false })
+        rootedCrystalFork('silver conductor west', silver, .42, [.58, .78, .58], [-.1, -.08, .08]),
+        rootedCrystalFork('silver conductor east', silver, -.5, [.52, .66, .52], [.1, -.08, -.1]),
+        part('captive storm', shard, charge, { position: [0, 1.72, 0.36], scale: [1.06, .52, .9], castShadow: false })
     ];
 }
 

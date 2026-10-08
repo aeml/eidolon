@@ -3,7 +3,20 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.10';
+const currentVersion = '1.79.11';
+
+test('1.79.11 records integrated regional art without claiming full modern-art completion', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.11"'), previous = html.indexOf('data-version="1.79.10"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['layered needle boughs', 'folded leaves', 'connected crooked branches',
+        'grounded side forks', 'Tree counts', 'Earth placements', '1,111 plants', '617 on Low',
+        'new visual-only scenery', 'all 24 groundcover beds', 'releases old buffers',
+        'Original scene performance limits', 'not the 1.80 feature freeze', 'full 1.87',
+        'remain staged', 'work in progress', 'No account wipe', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.10 records the integrated floor/willow component without claiming raised-world or final-art completion', () => {
     const html = fs.readFileSync('index.html', 'utf8');

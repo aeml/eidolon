@@ -44,7 +44,7 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
     }), 'fieldstone');
     if (air) materials.canvas = new THREE.MeshStandardMaterial({ color: 0x9891ac, vertexColors: true,
         side: THREE.DoubleSide, roughness: 1 });
-    if (!air) materials.cover = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
+    materials.cover = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
         side: THREE.DoubleSide, roughness: 1 });
     for (const site of sites) {
         const group = new THREE.Group(); group.name = `${realm}-location:${site.id}`;
@@ -364,10 +364,8 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         }
         addLocationGroundWear(group, site, groundMaterials, (x, z) =>
             paths.every(path => distanceToPath(x, z, path.points) > path.width / 2 + 2), FOLIAGE_HAZARD_CLEARINGS[realm]);
-        if (!air) {
-            const cover = createElementalGroundCover(site, realm, footprints, materials.cover, quality);
-            if (cover) group.add(cover);
-        }
+        const cover = createElementalGroundCover(site, realm, footprints, materials.cover, quality);
+        if (cover) group.add(cover);
         root.add(group);
     }
     root.userData.walkFootprints = footprints;

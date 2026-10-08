@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Current October8 preparation —1.79.11:** Select regional art/retained travel
+stands/Air heath and runtime cover settings on prepared1.79.10/cc340940.
+461distinct focused/version/resource checks and four current-base flat native
+cases/38timed views pass original limits. All versions/cumulative notes match.
+[Integrated scope](docs/plans/2026-10-08-release1-79-11-checks.json).
+Not pushed/live: accept pending1.79.9, then publish/accept1.79.10 before1.79.11.
+Earlier status notes below are historical; no completion/freeze gate is waived.
+Preserve all approved supplied class/item GLBs and animations; the obsolete
+procedural-only language below does not authorize removing them. Full modern-art
+contract and authoritative numbered roadmap remain active.
+
 **Accepted public Alpha1.79.8 /bf145bda:** Corrected-source CI37783791245
 passes all ten required jobs. Root independently confirms exact terminal head,
 matching front/back/healthy DB, clean production and four published file bytes,

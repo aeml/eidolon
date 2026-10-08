@@ -11,6 +11,7 @@ import { SceneryVisibility } from './SceneryVisibility.js';
 import { ActorContactShadows } from './ActorContactShadows.js';
 import { ActorInstanceBatches } from '../art/ActorInstanceBatches.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
+import { updateElementalGroundCoverQuality } from '../art/ElementalGroundCover.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
 import { FoliageShadowInfluence } from './FoliageShadowInfluence.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
@@ -709,6 +710,7 @@ export class RenderSystem {
         const previousQuality = this.graphicsQuality;
         this.graphicsQuality = normalized;
         updateFoliageRenderQuality(this.instanceEnvironmentGroup, normalized);
+        updateElementalGroundCoverQuality(this.instanceEnvironmentGroup, normalized);
         this.bloomQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.66 : 0.0);
         this.effectQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.78 : 0.52);
 

@@ -19,6 +19,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             const { WorldReading } = await import('/src/entities/WorldReading.js');
             const { EARTH_LOCATIONS, LANTERNHOLD_COURTYARDS, WORLD_READINGS } = await import('/src/data/worldPopulation.js');
             const { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS } = await import('/src/data/elementalPopulation.js');
+            const { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } = await import('/src/data/worldFoliage.js');
             const { getLanternholdWalkCollider } = await import('/src/art/ProceduralLanternholdArchitecture.js');
             const { createChronicleSiteModel } = await import('/src/art/ChronicleSiteModels.js');
             const { chronicleInvestigations } = await import('/src/data/chronicleInvestigations.generated.js');
@@ -67,7 +68,39 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             engine.chunkManager = { getActiveEntities: () => readings };
             engine.inputManager = new InputManager(render.camera, render.scene, render.renderer.domElement);
             engine.inputManager.subscribe('onInspect', () => requestNearbyChronicleInspection(engine));
-            const sites = elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [
+            const foliageSites = [];
+            if (elemental !== 'earth') {
+                const id = elemental === 'air' ? 'gale_cypress' : 'rime_pine';
+                const recipe = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id === id);
+                const tree = createProceduralFoliagePlacements(recipe)[0];
+                // Aim beside an actual production tree. Landmarks often keep
+                // generous vegetation clearances, so their screenshots alone
+                // cannot establish the changed crown's appearance.
+                foliageSites.push({ id: `${id}-bough-review`, x: tree.x + 6,
+                    z: tree.z + 8, region: recipe.region });
+                const crystalRecipe = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id ===
+                    (elemental === 'air' ? 'storm_crystal' : 'basalt_briar'));
+                const formation = createProceduralFoliagePlacements(crystalRecipe)[0];
+                foliageSites.push({ id: `${crystalRecipe.id}-review`, x: formation.x + 3,
+                    z: formation.z + 4, region: crystalRecipe.region });
+                if (elemental === 'water-fire') {
+                    const willow = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id === 'drowned_willow');
+                    const placement = createProceduralFoliagePlacements(willow)[0];
+                    foliageSites.push({ id: 'drowned-willow-review', x: placement.x + 6,
+                        z: placement.z + 8, region: 'water' });
+                    const snag = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id === 'ember_snag');
+                    const burnt = createProceduralFoliagePlacements(snag)[0];
+                    foliageSites.push({ id: 'ember-snag-review', x: burnt.x + 6,
+                        z: burnt.z + 8, region: 'fire' });
+                }
+                // Actual ordinary travel positions beside the composed stands,
+                // not a hero moved next to an arbitrarily remote tree.
+                foliageSites.push(...(elemental === 'air'
+                    ? [{ id: 'air-travel-stands', x: 1718, z: 130, region: 'air' }]
+                    : [{ id: 'water-travel-stands', x: 0, z: -862.5, region: 'water' },
+                        { id: 'fire-travel-stands', x: -1845, z: 240, region: 'fire' }]));
+            }
+            const sites = (elemental === 'air' ? AIR_LOCATIONS : elemental === 'water-fire' ? [...WATER_LOCATIONS, ...FIRE_LOCATIONS] : [
                 ...LANTERNHOLD_COURTYARDS,
                 { id: 'lanternhold-service-court', x: 0, z: 199, region: 'town' },
                 { id: 'lanternhold-trading-roof', x: -17, z: 191, region: 'town' },
@@ -77,7 +110,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 { id: 'bastion-road-junction', x: 520, z: 200, region: 'earth' },
                 { id: 'bastion-road-turn', x: 720, z: 200, region: 'earth' },
                 ...EARTH_LOCATIONS
-            ];
+            ]).concat(foliageSites);
             const samples = [];
             const visit = id => {
                 const site = sites.find(s => s.id === id);
@@ -174,6 +207,73 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 render.entityGroup.add(airShot.mesh);
             });
             window.__populatedWorld = { visit, engine, samples,
+                reviewRegionalQuality() {
+                    const id = elemental === 'air' ? 'gale_cypress' : 'rime_pine';
+                    const group = render.instanceEnvironmentGroup.getObjectByName(`foliage:${elemental === 'air' ? 'air' : 'water'}:${id}`);
+                    if (!group?.children.length) throw new Error(`Missing production foliage: ${id}`);
+                    const originalChildren = [...group.children];
+                    const originals = originalChildren.map(mesh => ({ mesh, material: mesh.material,
+                        buffer: mesh.instanceMatrix, transforms: mesh.instanceMatrix.array.slice(), count: mesh.count }));
+                    const covers = [];
+                    render.instanceEnvironmentGroup.traverse(mesh => {
+                        const cover = mesh.userData.elementalGroundCover;
+                        if (cover && (elemental === 'air' ? cover.realm === 'air' : ['water', 'fire'].includes(cover.realm))) {
+                            covers.push({ mesh, material: mesh.material, parent: mesh.parent,
+                                matrix: mesh.matrix.clone(), counts: new Map() });
+                        }
+                    });
+                    if (covers.length !== (elemental === 'air' ? 8 : 16)) throw new Error('Missing production cover beds');
+                    const phases = [];
+                    const resources = () => ({ geometries: render.renderer.info.memory.geometries,
+                        textures: render.renderer.info.memory.textures, programs: render.renderer.info.programs.length });
+                    const runCycle = () => {
+                        for (const next of ['high', 'low', quality]) {
+                            render.setGraphicsQuality(next);
+                            visit(`${id}-bough-review`);
+                            const triangles = [...new Set(group.children.map(mesh => mesh.geometry))].reduce((sum, geometry) => sum +
+                                (geometry.index?.count ?? geometry.attributes.position.count) / 3, 0);
+                            if (group.userData.foliageQuality !== next ||
+                                group.children.some((mesh, index) => mesh !== originalChildren[index])) {
+                                throw new Error(`Foliage identity/quality lost: ${id}/${next}`);
+                            }
+                            for (const original of originals) {
+                                const mesh = original.mesh;
+                                if (mesh.material !== original.material || mesh.instanceMatrix !== original.buffer ||
+                                    mesh.count !== original.count || mesh.instanceMatrix.array.some((value, index) => value !== original.transforms[index]) ||
+                                    !Number.isFinite(mesh.boundingSphere?.radius) || mesh.boundingSphere.radius <= 0) {
+                                    throw new Error(`Foliage placement, material or bounds lost: ${id}/${next}`);
+                                }
+                            }
+                            let coverPlants = 0, coverTriangles = 0;
+                            for (const original of covers) {
+                                const mesh = original.mesh, cover = mesh.userData.elementalGroundCover;
+                                visit(cover.site.id); // Upload/draw actual replacement buffers at their landmark.
+                                if (cover.quality !== next || mesh.material !== original.material || mesh.parent !== original.parent ||
+                                    !mesh.matrix.equals(original.matrix) || mesh.castShadow || !mesh.receiveShadow ||
+                                    !Number.isFinite(mesh.geometry.boundingSphere.radius) || mesh.geometry.boundingSphere.radius <= 0) {
+                                    throw new Error(`Cover ownership/quality/bounds lost: ${cover.site.id}/${next}`);
+                                }
+                                const triangles = mesh.geometry.attributes.position.count / 3;
+                                const counts = `${mesh.userData.plantCount}/${triangles}`;
+                                if (original.counts.has(next) && original.counts.get(next) !== counts) {
+                                    throw new Error(`Non-deterministic cover: ${cover.site.id}/${next}`);
+                                }
+                                original.counts.set(next, counts);
+                                coverPlants += mesh.userData.plantCount; coverTriangles += triangles;
+                            }
+                            visit(`${id}-bough-review`);
+                            phases.push({ quality: next, triangles, calls: render.renderer.info.render.calls,
+                                renderedTriangles: render.renderer.info.render.triangles, coverPlants, coverTriangles });
+                        }
+                    };
+                    runCycle(); // Warm both actual GPU geometry/shader paths.
+                    const beforeRepeat = resources();
+                    for (let cycle = 0; cycle < 3; cycle++) runCycle();
+                    return { id, phases, beforeRepeat, afterRepeat: resources(), restoredQuality: render.graphicsQuality,
+                        instanceCount: group.userData.instanceCount, batchCount: group.children.length,
+                        partsPerCell: new Set(group.children.map(mesh => mesh.name)).size,
+                        cells: new Set(group.children.map(mesh => mesh.userData.foliageCell)).size, coverBeds: covers.length };
+                },
                 reviewWind() {
                     visit('first-grove-arch');
                     if (!windUniforms) throw new Error('No production understory shader compiled in grove');
@@ -308,10 +408,10 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     }
                 }, async profile() {
                 const profiles = [];
-                const profileSites = elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
+                const profileSites = (elemental === 'air' ? ['open-observatory', 'spire-muster', 'horizon-orrery', 'weatherkeepers-bivouac'] :
                     elemental === 'water-fire' ? ['flood-shelter', 'stranded-flotilla', 'tide-rib', 'kiln-span', 'communal-kiln', 'quenched-foundry'] :
                         ['lanternhold-common-well', 'lanternhold-menders-yard', 'lanternhold-trading-roof', 'foresters-yard', 'returning-scar', 'first-grove-arch',
-                            'bastion-road-woodland', 'bastion-road-junction', 'bastion-road-turn'];
+                            'bastion-road-woodland', 'bastion-road-junction', 'bastion-road-turn']).concat(foliageSites.map(site => site.id));
                 for (const id of profileSites) {
                     visit(id);
                     const frameTimes = [], cpuTimes = []; let previous;
@@ -440,6 +540,33 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     expect(view.calls, `${view.id} calls`).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);
                     expect(view.triangles, `${view.id} triangles`).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
                 }
+            }
+            if (elemental !== 'earth') {
+                const swaps = await page.evaluate(() => window.__populatedWorld.reviewRegionalQuality());
+                expect(swaps.restoredQuality).toBe(quality);
+                expect(swaps.instanceCount).toBe(elemental === 'air' ? 90 : 100);
+                expect(swaps.partsPerCell).toBe(elemental === 'air' ? 3 : 4);
+                expect(swaps.batchCount).toBe(swaps.partsPerCell * swaps.cells);
+                expect(swaps.coverBeds).toBe(elemental === 'air' ? 8 : 16);
+                expect(swaps.afterRepeat).toEqual(swaps.beforeRepeat);
+                const high = swaps.phases.find(phase => phase.quality === 'high').triangles;
+                const low = swaps.phases.find(phase => phase.quality === 'low').triangles;
+                expect(high - low).toBe(elemental === 'air' ? 240 : 360);
+                for (const phase of swaps.phases) {
+                    expect(phase.triangles).toBe(phase.quality === 'low' ? low : high);
+                    expect(phase.calls).toBeGreaterThan(0);
+                    expect(phase.renderedTriangles).toBeGreaterThan(0);
+                    expect(phase.coverPlants).toBeGreaterThan(0);
+                    expect(phase.coverTriangles).toBeGreaterThan(0);
+                    if (elemental === 'air') {
+                        expect(phase.coverPlants).toBe(phase.quality === 'low' ? 617 : 1111);
+                        expect(phase.coverTriangles).toBe(phase.coverPlants * (phase.quality === 'low' ? 60 : 120));
+                    }
+                }
+                expect(swaps.phases.find(phase => phase.quality === 'low').coverTriangles)
+                    .toBeLessThan(swaps.phases.find(phase => phase.quality === 'high').coverTriangles);
+                await writeFile(testInfo.outputPath('regional-quality-swaps.json'), JSON.stringify(swaps, null, 2));
+                await page.screenshot({ path: testInfo.outputPath('regional-quality-restored.png') });
             }
             expect(failures, failures.join('\n')).toEqual([]);
         } finally { await page.evaluate(() => window.__populatedWorld.dispose()); }

@@ -1,0 +1,27 @@
+{
+  "status": "staged travel composition qualified technically; partial art improvement, not delivered",
+  "base": "4dbaaccd",
+  "scope": "Compose existing Water/Fire/Air foliage around canonical routes rather than scattering it across entire realms. Replace obsolete42m straight-road exclusion with14m cardinal sightline margin; retain every actual path width-plus8m, site radius-plus8m, hazard radius-plus8m and dungeon landmark clearing. Stands derive from segments at least75m long with extra candidate intervals at most110m apart, centred path half-width-plus15m, radius7m, cross-species trunk spacing7m. Deterministic bounded construction only, cached by realm. No new collider, model, material, geometry or population.",
+  "preserved": "All nine recipes exactly equal base; six regional counts, per-index original rotations/scales and Earth placements independently compared against HEAD4dbaaccd loaded from git source. Earth141birch/135pine/115willow serialized positions unchanged. Outside Earth foliage remains visual-only. Custom/unrecognized recipe objects retain original scattered generator. Composer arrays/entries frozen. Public production source not changed yet.",
+  "population": {
+    "water":{"total":180,"within32mOfCanonicalPath":154},
+    "fire":{"total":165,"within32mOfCanonicalPath":138},
+    "air":{"total":165,"within32mOfCanonicalPath":138}
+  },
+  "retainedAttempts": "First candidate set only two stations/long segment exhausted Water at drowned_willow55;9cases passed/2 failed. Add bounded candidate stations along long segments, retain all trees and7m spacing;11pass1.925s. First four native cases pass2.0m but actual Air/Fire travel shots still look too empty; Fire sample was inside the Kiln Span clearing. Bring stand centres4m closer without changing path/hazard/site aprons and move Fire review to ordinary road x-1845,z240 outside that clearing. Final11pass2.059s and four native cases2.0m. All logs/captures retained; overlapping attempts not extra checks.",
+  "units": "Two suites11pass: original server hazard anchors, placement counts/bounds/clearings and resource-cache contracts; deterministic frozen composition; cross-species7m spacing; unchanged per-index rotation/scale; at least75% within32m of canonical paths; every region's transformed canopy at maximum scale inside the retained8m apron. Scoped lint/diff pass. Independent base-source comparisons establish untouched Earth and original regional identities, not just a comparison against the new generator itself.",
+  "native": "Final isolated System Chrome AMD Vulkan populated Water/Fire and Air, High1280/Low390:4pass2.0m, thirty timed views/120 samples each including six ordinary travel views. Original High20ms median33.4ms p95/350draw/250k triangles and Low33.4/50ms/200draw/85k budgets pass unchanged. All four repeated-view GPU snapshots stable. Reading/approach interactions, Air aim/projectile fixtures and twelve tree/cover detail phases per case pass. Bare solo renderer/interaction fixture, not earned damage, connected/equipped party, sustained device or phone proof.",
+  "metrics": {
+    "highWaterFire":{"maxCalls":124,"maxTriangles":195555,"maxP95":16.700000000004366},
+    "highAir":{"maxCalls":120,"maxTriangles":160183,"maxP95":16.799999999999272},
+    "lowWaterFire":{"maxCalls":52,"maxTriangles":61380,"maxP95":16.799999999999272},
+    "lowAir":{"maxCalls":57,"maxTriangles":46156,"maxP95":16.799999999999272}
+  },
+  "review": "Root inspects initial High Water/Fire and High/Low Air, then refined High Fire/Air road captures. Water has visible pine framing; refined Fire has multiple charred snags with a clear central travel space. Air's chosen road view still shows broad empty ground and a small crystal; nearest cypress47m away, independently checked. Do not claim complete Air composition or uniformly filled routes. Fire trunks/branches/emissive cones and crystal silhouettes remain primitive, materials/terrain/groundcover/formation cohesion and broader regional scenery need more work. Technical acceptance is not modern-ARPG final approval or Diablo/PoE production equivalence.",
+  "sourceSHA256":"cf5a0095268e01e4027135f563602556b0c2766565828b2597089abce0fbf80a",
+  "unitsLogSHA256":"e3f5a6f6ebb3d320391e03d7189146384d41108ae1564facc19464a5f48d8c3d",
+  "nativeLogSHA256":"862f1a4e3bb54fba6b9ad735c08e8bddd46258a43ef971f5606ed57c00a91729",
+  "artifactDirectory":"/home/aeml/.local/share/eidolon-elemental-stands-refined-native-20261008",
+  "logs":["/home/aeml/.local/share/eidolon-elemental-stands-units-20261008.log","/home/aeml/.local/share/eidolon-elemental-stands-final-units-20261008.log","/home/aeml/.local/share/eidolon-elemental-stands-native-20261008.log","/home/aeml/.local/share/eidolon-elemental-stands-refined-units-20261008.log","/home/aeml/.local/share/eidolon-elemental-stands-refined-native-20261008.log"],
+  "remaining":"Current-master integration/notes/versions/own CI/public acceptance after selective1.79.10. Air/open travel intervals, regional stem/crystal/groundcover and complete town/dungeon/world art remain open, alongside raised production/wearables/party/device and1.80F1-F5/1.81-1.99. Pending1.79.9 run37791738441/head293a9ccc unchanged; Luna monitoring; owner cancellation/retry answer outstanding. No owner/human gates waived or long campaign replay."
+}

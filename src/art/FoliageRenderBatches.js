@@ -4,6 +4,8 @@ import { getProceduralFoliageArchetype } from './ProceduralRealmFoliage.js';
 import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
+import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
+import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
 
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
@@ -70,10 +72,15 @@ export function getFoliageRenderBatches(id, quality = 'high') {
         if (quality === 'low' && crown) {
             if (!LOW_CROWNS.has(crown)) LOW_CROWNS.set(crown,
                 crown === 'leaf' ? createLeafCanopyGeometry('low') : crown === 'willow'
-                    ? createWillowCurtainGeometry('low') : createConiferBoughGeometry('low'));
+                    ? createWillowCurtainGeometry('low') : crown === 'drowned-willow'
+                        ? createDrownedWillowGeometry('low') : crown === 'elemental-needle'
+                        ? createElementalConiferGeometry('low') : createConiferBoughGeometry('low'));
             part = { ...part, geometry: LOW_CROWNS.get(crown) };
         }
-        const crownKey = crown ? `:${part.name}` : '';
+        // The compact elemental crowns retain their original same-material
+        // batches. Unlike dense Earth crowns, splitting these cheap sprays
+        // would add cells/draws without enough saved triangles to justify it.
+        const crownKey = crown && crown !== 'elemental-needle' ? `:${part.name}` : '';
         const key = `${part.material.uuid}:${part.castShadow}:${part.receiveShadow}${crownKey}`;
         if (!buckets.has(key)) buckets.set(key, []);
         buckets.get(key).push(part);
@@ -101,7 +108,7 @@ export function getFoliageRenderBatches(id, quality = 'high') {
 export function updateFoliageRenderQuality(root, quality) {
     const level = quality === 'low' ? 'low' : 'high';
     root?.traverse(group => {
-        if (!group.userData.proceduralFoliage || group.userData.region !== 'earth' ||
+        if (!group.userData.proceduralFoliage || !group.userData.foliageId ||
             group.userData.foliageQuality === level) return;
         const parts = new Map(getFoliageRenderBatches(group.userData.foliageId, level).map(part => [part.name, part]));
         for (const mesh of group.children) {

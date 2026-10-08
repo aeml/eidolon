@@ -80,7 +80,7 @@ describe('procedural realm foliage', () => {
             expect(bounds.min.y).toBeGreaterThanOrEqual(-0.35);
             expect(bounds.max.y).toBeGreaterThan(2);
             expect(meshes.every((mesh) => mesh.material.isMeshStandardMaterial)).toBe(true);
-            if (recipe.region === 'earth') expect(meshes[0].material.flatShading).toBe(false);
+            if (recipe.region === 'earth' || ['drowned_willow', 'ember_snag'].includes(recipe.id)) expect(meshes[0].material.flatShading).toBe(false);
             else expect(meshes.every(mesh => mesh.material.flatShading)).toBe(true);
             expect(meshes.every((mesh) => mesh.matrixWorld.elements.every(Number.isFinite))).toBe(true);
         }
@@ -121,7 +121,7 @@ describe('procedural realm foliage', () => {
         }
 
         expect(getProceduralFoliageCacheMetrics()).toEqual({
-            geometries: 16,
+            geometries: 15,
             materials: 28,
             archetypes: 9
         });

@@ -1,0 +1,68 @@
+{
+  "status": "prepared selective Alpha1.79.11 qualified, committed locally only; not published or accepted live",
+  "base": "cc340940d84fcf3d4c0aeac4cec3d46292746a9c (prepared1.79.10), current origin master293a9cccb14534d721e60ebe97335a708bb2c9f6",
+  "source": "Selected ten art/layout source files and ten matching tests from abc122b2. Exact content equality verified for all20. RenderSystem changes only the groundcover import and settings-change call. No future static-matrix cache, shadow-lifetime optimization, raised-profile rollout, wearable derivatives or whole renderer imported. Existing WorldSurfaceDetail/WoodlandBarkMaterial/elementalPopulation/ElementalTerrainSurface match base unchanged.",
+  "scope": "Integrated Water/Air branched crowns, Water hanging willow, connected Fire snags, shared faceted conductors and rooted basalt/storm formations; retained regional tree population/per-index scales/rotations/Earth placements; readable travel stands; eight new visual-only Air heath beds; actual renderer crown/24-bed quality updates with owned-buffer disposal. No account/schema/gameplay/economy/permissions change.",
+  "versions": "All12 source/login/package/CI/server/script/presentation locations synchronized1.79.11. New cumulative entry above preserved1.79.10 and all earlier history, byte-preserved from its entry through the end of index.html. Lock changes only its two root versions; dependency resolutions independently identical. README states pending publication and remaining art scope.",
+  "units": "Ten suites445pass17.915s including new component/batch/placement/settings and all version/presentation checks. Existing resource/population pair first15pass1fail: old Air total-part cap lacks new cover allowance. Copy existing qualified component contract: original seven structure parts retained, exactly one cover batch required per landmark; no global budget relaxation or production change. Final pair16pass11.236s. Combined461distinct tests/12suites; overlapping attempts not extra checks. Scoped lint/bash syntax/diff checks pass.",
+  "preparation": "Existing node_modules ignored symlink and existing scripts/prepare-client.mjs prepares browser vendor before native. A grouped source-read/version-patch attempt exceeded tool output limits; no partial patch applied for the failed group. Repair using bounded per-file reads and separate login/history hunks; verify all selected contents exactly. No altered evidence or dependency workaround.",
+  "native": "Exact isolated release branch System Chrome AMD Vulkan ordinary flat world, Water/Fire and Air High1280/Low390:4pass2.4m;38timed views/120samples each. Original High20ms median33.4ms p95/350calls250k triangles and Low33.4/50ms/200calls85k triangles unchanged/pass. Tree/24-bed runtime setting cycles, reading approaches and Air projectile renderer fixture pass; warmed repeated GPU snapshots all stable. Bare solo fixture, not server combat, equipped party, sustained device or physical-phone proof. Unchanged Earth not replayed; its1.79.10 qualification retained.",
+  "metrics": {
+    "waterFireHigh": {
+      "views": 12,
+      "maxCalls": 124,
+      "maxTriangles": 196627,
+      "maxP95": 16.80000000000291,
+      "stable": true
+    },
+    "airHigh": {
+      "views": 7,
+      "maxCalls": 120,
+      "maxTriangles": 160327,
+      "maxP95": 16.799999999999272,
+      "stable": true
+    },
+    "airLow": {
+      "views": 7,
+      "maxCalls": 57,
+      "maxTriangles": 46180,
+      "maxP95": 16.799999999999272,
+      "stable": true
+    },
+    "waterFireLow": {
+      "views": 12,
+      "maxCalls": 51,
+      "maxTriangles": 61380,
+      "maxP95": 16.799999999999272,
+      "stable": true
+    }
+  },
+  "review": "Root inspects actual integrated Fire road stands High, Water willow Low and Air cypress High. All new artwork reads together on actual current-base renderer; still broad sparse ground, small stylized trees/minerals and conspicuous Air gaps, not complete modern art. Component High/Low inspections and rejected artifacts retained in copied eight component receipts. Full landscape/town/landmark/dungeon cohesion and equipped/device scope remain open.",
+  "sourceSHA256": {
+    "src/art/ElementalConiferGeometry.js": "c9e2b4267c5d24a972749e37bbf29484f71cb2f07a23d40bc7249f6b956fd152",
+    "src/art/DrownedWillowGeometry.js": "c9a280431aa20b4b41dd526935e09779440e08fb421cd471c717d089adcdd379",
+    "src/art/EmberSnagGeometry.js": "47e873dd889d89af82c114cdcbc9f15ebf96aafdc52bd02aa64e19a2713df8c4",
+    "src/art/FracturedCrystalGeometry.js": "8f32fd1b41ed52a56457170a5873f9ba4f49a3e2e4b962cc371400bd62e67787",
+    "src/art/AirHeathGeometry.js": "23a87e2a92e5df7d0d85a210b253e3dc591fb92bbd65bbd397a01d5f57d074c7",
+    "src/art/ProceduralRealmFoliage.js": "f63b5eeccbf21264e592f0fea6548291f4b0bba2531b16a02b8e838a3a08413e",
+    "src/art/FoliageRenderBatches.js": "7bd4ed7aa092611f8899e71bb95d26ebab148248b67c47f57cfcdf8e3da5ef2b",
+    "src/art/ElementalGroundCover.js": "20f3e1f7d171cdc159cfca0e22103cc385a7ae9a32e3c6cbb131d84985026217",
+    "src/art/ProceduralElementalLocations.js": "19e28c15715a4acb2021e31e32ff483d78f171b5352f406c3feb28929fc4667e",
+    "src/data/worldFoliage.js": "cf5a0095268e01e4027135f563602556b0c2766565828b2597089abce0fbf80a",
+    "src/core/RenderSystem.js": "4d3eef7ec7e3382bb936301c29f3f138044b152e4d33880b3e20663f9acd3032"
+  },
+  "logs": {
+    "units": "/home/aeml/.local/share/eidolon-regional-release-units-20261008.log",
+    "firstResources": "/home/aeml/.local/share/eidolon-regional-release-resources-20261008.log",
+    "finalResources": "/home/aeml/.local/share/eidolon-regional-release-final-resources-20261008.log",
+    "native": "/home/aeml/.local/share/eidolon-regional-release-native-20261008.log"
+  },
+  "logSHA256": {
+    "units": "181eec15cbd2ca81cf618f321d7fe7262a195371fc46ce03dda51bef501f32c1",
+    "finalResources": "c360a930d933bab177178a0f5ef6349437d8275d78b4a6b16d374692379e88b8",
+    "native": "e6d1ac3d14e0bc6a74b53fab4d29d91392119c80ec1374abc94edd260a376133"
+  },
+  "artifactDirectory": "/home/aeml/.local/share/eidolon-regional-release-native-20261008",
+  "releaseWorktree": "/home/aeml/.local/share/eidolon-regional-release-UOCeBRDt",
+  "delivery": "Not pushed. Existing1.79.9 exact run37791738441/head293a9ccc remains pending with Luna read-only watch; no cancel/retry authorized. Accept that run, then publish/accept prepared1.79.10, fresh-fetch/reconcile1.79.11 and publish its own required CI and public identities/actual bytes/functional evidence. No feature freeze/modern-art/device/human/owner gate waived; full1.80F1-F5 and1.81-1.99 roadmap remains active."
+}

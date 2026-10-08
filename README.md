@@ -420,9 +420,11 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.10`, improved forest-floor sampling,
-  species-specific hanging willow leaves and corrected tilted-part lighting.
-  Existing leaf/triangle budgets, placements, wind and walking clearances remain.
+- Current source version: `Alpha 1.79.11`, regional needle boughs, hanging
+  Water willow foliage, connected Fire snags, rooted mineral formations and
+  retained-population travel stands. Air landmarks gain visual-only leafy
+  heath; regional tree/groundcover detail now switches without a reload.
+  Original scene limits and walking clearances remain required.
   Raised-preview rocks are refined but public raised terrain remains disabled;
   wearable derivatives and broader renderer work remain staged. Future hosted
   browser installations have a 15-minute failure deadline without skipping gates.

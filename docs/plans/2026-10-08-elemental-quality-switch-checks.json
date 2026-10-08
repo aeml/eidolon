@@ -1,0 +1,20 @@
+{
+  "status": "staged native integration passed; not delivered or complete modern art",
+  "base": "6734c3e1b481fd75f80d9309583d58b0b4b40ff0",
+  "scope": "Exercise the production RenderSystem.setGraphicsQuality on production Water/Air foliage in a rendered populated world, not a separate preview mesh. Four High1280/Low390 cases pass42.2s in isolated System Chrome. Each executes12 phases: one High/Low/original warm cycle and three repeats. All original group children, material identities, instance buffers/counts/contents and finite prepared bounds survive. Restores the original graphics setting. No production source change in this follow-up.",
+  "retainedAttempt": "Initial native fixture incorrectly expected4/3 meshes for the whole regional group rather than4/3 parts per spatial cell. Water High failed with364 actual meshes; local run stopped after this proven fixture error to avoid repeating it. Water Low interrupted; two Air cases did not run. Correct fixture checks actual cell/part conservation and unique shared geometry counts; no production geometry/budget weakening. Initial log and artifacts retained.",
+  "cases": [
+    {"realm":"water","quality":"high","width":1280,"instances":100,"cells":91,"batches":364,"highSharedGeometryTriangles":758,"lowSharedGeometryTriangles":398,"resourcesBeforeAndAfter":{"geometries":280,"textures":55,"programs":67}},
+    {"realm":"water","quality":"low","width":390,"instances":100,"cells":91,"batches":364,"highSharedGeometryTriangles":758,"lowSharedGeometryTriangles":398,"resourcesBeforeAndAfter":{"geometries":275,"textures":41,"programs":33}},
+    {"realm":"air","quality":"high","width":1280,"instances":90,"cells":84,"batches":252,"highSharedGeometryTriangles":528,"lowSharedGeometryTriangles":288,"resourcesBeforeAndAfter":{"geometries":158,"textures":51,"programs":62}},
+    {"realm":"air","quality":"low","width":390,"instances":90,"cells":84,"batches":252,"highSharedGeometryTriangles":528,"lowSharedGeometryTriangles":288,"resourcesBeforeAndAfter":{"geometries":156,"textures":37,"programs":29}}
+  ],
+  "resources": "All four cases have exact stable rendered GPU geometry, texture and shader-program counts after warmed repeat cycles. Counts are whole rendered scenes; triangle totals above are unique shared tree geometry, not whole-scene render submissions or per-instance triangles.",
+  "limits": "No geometry, population, draw, triangle, frame or shadow limit changed. This bounded follow-up reuses the exact component native timing/24-view evidence in2026-10-08-elemental-boughs-checks.json; it does not repeat frame profiling or claim a new timing/party/device pass. Existing reading approaches and Air aim/projectile cases remain in the four native cases.",
+  "review": "Root inspects the restored High Air gameplay-camera capture: crowns are attached and retained after switching. Broad empty ground and stylized tree stems remain conspicuous. Correct quality switching is not an art approval; meaningful regional groundcover/rock/vegetation composition and complete landmarks/town/dungeon polish stay open. Bare solo renderer fixture is not equipped-party, network campaign or physical-phone proof.",
+  "testSHA256": "b53d61ff96bf93c0f03bfa4cef49ba54d239ba6310a63e4ea58b7b02190caca2",
+  "nativeLogSHA256": "f4fab9f14b1dbb66c293d242503b280a6a3848d477646caafe86198e8cc8d364",
+  "artifactDirectory": "/home/aeml/.local/share/eidolon-elemental-quality-hot-final-native-20261008",
+  "logs": ["/home/aeml/.local/share/eidolon-elemental-quality-hot-native-20261008.log", "/home/aeml/.local/share/eidolon-elemental-quality-hot-final-native-20261008.log"],
+  "remaining": "This closes the staged native hot-switch gap only. Current-master integration and its own cumulative notes/version/deployment acceptance remain after selective1.79.10. Pending1.79.9 run37791738441/head293a9ccc remains unchanged at hosted browser installation, with owner cancel/retry answer outstanding and Luna monitoring. Full goal and all unproven gates remain active."
+}

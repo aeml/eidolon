@@ -1,0 +1,26 @@
+{
+  "status": "staged Water willow component qualified; not delivered or complete environment art",
+  "base": "d65802b8",
+  "scope": "Replace the drowned willow's solid dodecahedron crown and two open cone curtains with one opaque folded-leaf crown, hanging shoots and the existing bent organic willow stem. Add existing registered leaf-vein/bark detail, smooth bark normals. Keep all80 tree anchors/scales/rotations, fruit transforms, three material batches and existing visual-only collision policy. No new material, texture, point light, wind animation or per-frame generator. Two retired cached primitive shapes replaced by one crown: shared geometry inventory16 to15; all28 materials/nine archetypes retained.",
+  "geometry": "128 leaves:64 clustered canopy leaves and64 lanceolate leaves on eight hanging shoots. High512/Low256 leaf triangles; Low retains every tip/shoulder/root and registered colors/UVs. More detailed than the old solid crown/curtains, not an unchanged per-tree triangle count. Original whole-scene draw/triangle/frame/shadow limits retained. Crown follows the positive leaning stem rather than the former opposite-side offset. Every transformed region canopy remains inside its existing8m sightline apron.",
+  "retainedAttempts": "First new fixture used a nonexistent woodlandLeaf metadata key;41 pass/1 fail. Fix to existing woodlandLeafDetail=true. Next fixture wrongly required object identity for unchanged merged fruit geometry across two quality caches;41 pass/1 fail. Fix to exact position/normal contents, retaining material/matrix identity checks and original batch counts. No production source or budget changes for these fixture corrections. Final four suites42pass3.639s. All logs retained; overlaps not extra checks.",
+  "units": "Finite deterministic bounds/unit normals; exact Low leaf tip/shoulder/root/color/UV retention; three High/Low material batches and unchanged non-crown contents/transforms; existing nine-species transformed batching/cell bounds, server hazard/placement/sightline/cache contracts and regional travel identity/spacing cases.42pass; scoped lint/diff pass. No campaign replay.",
+  "native": "Final isolated System Chrome AMD Vulkan populated Water/Fire High1280/Low390,2pass1.3m: twenty timed views/120 samples each including actual production willow-focused views and ordinary travel/landmark views. Original High20ms median33.4ms p95/350draw/250k triangles and Low33.4/50ms/200draw/85k limits unchanged and passed. Repeated-view GPU resource snapshots stable; reading approaches and existing tree/cover quality phases pass. Bare solo renderer/interaction fixture, not earned combat, equipped party, sustained device or physical-phone proof. Air code/placement unchanged; not replayed.",
+  "metrics": {
+    "high":{"maxCalls":124,"maxTriangles":195555,"maxP95":16.799999999999272},
+    "low":{"maxCalls":51,"maxTriangles":61380,"maxP95":16.799999999999272},
+    "highWillow":{"median":16.700000000000728,"p95":16.700000000000728,"calls":73,"triangles":145495},
+    "lowWillow":{"median":16.69999999999709,"p95":16.700000000000728,"calls":19,"triangles":38128}
+  },
+  "review": "Root inspects actual final High/Low willow views at normal gameplay zoom. Folded canopy sprays and hanging leaves remove the solid polygon/cone silhouette; stem and canopy read together. Still small stylized trees in broad open blue ground, not a finished landscape. Richer groundcover/geology, Fire's primitive stems/emissive cones, Air open stretches/crystals and full town/landmark/dungeon cohesion remain open. Not modern-ARPG final approval or Diablo/PoE production-equivalence claim.",
+  "sourceSHA256": {
+    "src/art/DrownedWillowGeometry.js":"c9a280431aa20b4b41dd526935e09779440e08fb421cd471c717d089adcdd379",
+    "src/art/ProceduralRealmFoliage.js":"3e51e50df805355424ce5959b15944edb1dce62a5903ce93a3eead9ce30ed97a",
+    "src/art/FoliageRenderBatches.js":"7bd4ed7aa092611f8899e71bb95d26ebab148248b67c47f57cfcdf8e3da5ef2b"
+  },
+  "unitsLogSHA256":"4ca0dd8ca05d7ed6ebe04adf0d037b00fa304e5eceaa49b98c4833c18cf60e3f",
+  "nativeLogSHA256":"9e21c599ccb9bcbfbda674ea2215e7c92f362248e0b9752fa4f6c0b9ad39c345",
+  "artifactDirectory":"/home/aeml/.local/share/eidolon-drowned-willow-native-20261008",
+  "logs":["/home/aeml/.local/share/eidolon-drowned-willow-units-20261008.log","/home/aeml/.local/share/eidolon-drowned-willow-final-units-20261008.log","/home/aeml/.local/share/eidolon-drowned-willow-corrected-units-20261008.log","/home/aeml/.local/share/eidolon-drowned-willow-native-20261008.log"],
+  "remaining":"Current-master integration/notes/versions/own CI/public acceptance after prepared selective1.79.10. Do not publish entire future renderer branch. Full modern environments, raised production/wearables/party/device and1.80F1-F5/1.81-1.99 scopes remain active.1.79.9 exact run37791738441/head293a9ccc unchanged, Luna monitoring, owner cancellation/retry answer outstanding. No owner/human gates waived."
+}

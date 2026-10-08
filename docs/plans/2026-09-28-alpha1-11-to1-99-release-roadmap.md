@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Current October8 prepared1.79.11 on prepared1.79.10/cc340940: selective regional
+foliage/minerals/retained travel stands, new Air heath and actual quality switches.
+461distinct focused/version/resource checks and four current-base flat native
+cases/38timed views pass original scene limits. Versions/cumulative notes match;
+all prior history preserved. [Integration](2026-10-08-release1-79-11-checks.json).
+Not pushed/live: pending1.79.9 needs acceptance, then1.79.10 publication/acceptance
+before1.79.11. Earlier status entries are historical; full numbered requirements,
+F1-F5/1.87/environment/device/beta/launch and owner/human gates remain unchanged.
+
 Accepted public1.79.8/bf145bda: corrected-source37783791245 all ten required
 jobs successful; root independently verifies terminal head, public identities/
 healthy DB, clean production and four selected actual publisher bytes. Optional
