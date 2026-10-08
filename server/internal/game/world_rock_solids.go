@@ -192,7 +192,7 @@ func (w *World) recoverActorFromRocks(e *Entity) {
 // correction. Do not hide XZ changes inside the height-only grounding helper.
 func (w *World) recoverWorldEntryLocked(e *Entity) {
 	w.recoverActorFromRocks(e)
-	w.groundActorLocked(e)
+	w.groundActorAtEntryLocked(e)
 	e.rockRoute = nil
 	e.TargetX, e.TargetZ = e.X, e.Z
 }

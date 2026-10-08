@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 actual terrain save compatibility / reproduced correction:** Reuse
+existing opt-in bounded real-process/socket/save helpers for4 classes and16
+fresh Mongo saves across flat→raised→flat→raised. First rollback proves an
+actual stale-height admission bug. Restore-only attempt is insufficient and
+also fails save/observed-position agreement; one entry-only grounding helper
+now runs at AddEntity and restore, retaining owned instance/NPC/projectile/jump
+heights and ordinary inactive-world frame semantics. Corrected race-built
+actual test PASS31.88s/package32.937s; all stored character fields except intended
+coordinates, fresh receipt/logout remain unchanged. Scoped grounding/config/
+entry race checks PASS4.024s. All failures and opt-in default skip retained.
+Only disposable fixture database removed; production unchanged. Prepare a small
+flat-entry compatibility precursor for publication, not raised-world activation
+or1.80/1.87 completion. Full roadmap active. See
+[real save evidence](docs/plans/2026-10-08-terrain-saved-session-checks.json).
+
 **October8 connected raised-terrain preparation:** Current65112328 plus scoped
 harness/test changes now exercises explicit public earth-elevation-rocks-v1
 with legacy QA elevation false, disposable authenticated Mongo/API and ordinary

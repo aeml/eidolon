@@ -1287,7 +1287,7 @@ func (w *World) AddEntity(e *Entity) {
 	}
 	w.Entities[e.ID] = e
 	w.recoverActorFromRocks(e)
-	w.groundActorLocked(e)
+	w.groundActorAtEntryLocked(e)
 	w.groundLootLocked(e)
 	w.Grid.Add(e)
 	if e.Type == TypePlayer && strings.HasPrefix(e.InstanceID, "dungeon_") {

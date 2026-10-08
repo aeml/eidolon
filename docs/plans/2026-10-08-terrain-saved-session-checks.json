@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08",
+  "status": "four-class-real-save-profile-switch-proof-passed-with-flat-entry-correction",
+  "baseCommit": "eba555e1",
+  "source": "Base plus world.go, world_elevation.go and world_rock_solids.go entry correction, two opt-in test/runner files and flat-entry regressions. Current working-tree binary identifies its exact owned fixture basename for the existing startup guard, not a released source commit.",
+  "checks": {
+    "actual": "Root18298 terminal0: opt-in actual saved-session test PASS31.88s, package32.937s. Four fresh server processes start sequentially against one disposable loopback Mongo: flat, raised, flat, raised. Four ordinary username/password login/join/disconnect sessions per process; every negotiation matches configuration, actual protobuf owner coordinates match the freshly persisted save, and the full saved character (except intended coordinates, fresh receipt and logout timestamp) remains identical after baseline normalization.16 fresh saves cover Fighter/Rogue/Wizard/Cleric. New-rock entry correction stays local within25m, flat rollback grounds at0 without moving XZ, and reactivation does not repeat horizontal correction.",
+    "scope": "Prepared level31 saves, not earned play or battle balance. Partial HP37/MP13, Gold4567/EP9, equipped Rare class-stat robes, inventory/stash/buyback, active quest and resonance data. Zero Wisdom/Vitality fixture attributes avoid attributing elapsed natural regeneration to migration. No player regen or combat rule changed; no QA waypoint, protected character, arbitrary live mutation, account grant, new schema or disabled save path.",
+    "unit": "Original root77724 terminal1 reproduces flat player admission height failure while owned-height preservation passes. Incomplete first correction root38758 still fails initial admission; it affects only later restore. Correct admission and restore use one entry-only helper. Root90563 exact configured/flat-entry/grounding/rock-entry race scope PASS4.024s. Flat-entry tests subsequently move unchanged in substance to independent world_flat_entry_test.go using ordinary NewWorld so they can accompany a compatibility patch on existing public source.",
+    "failedRealRuns": "Root13047 terminal1,20.059s: flat and raised initial sessions pass; first flat rollback retains raised height. Root55821 terminal1,20.957s: restore-only attempt changes height at disconnect but not initial publication, so saved and observed joined actor disagree. Neither failure hidden or retried automatically. Corrected root18298 requires both admission and save agreement and passes all phases.",
+    "defaultSkip": "Root66422 ordinary test with no explicit disposable opt-in exits0/1.053s by skipping external integration, not a passed real-save proof.",
+    "static": "gofmt, bash -n and git diff --check pass. Complete original scene/type/airborne boundaries retained; the ordinary per-frame groundActorLocked still leaves inactive-world owned Y untouched."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-terrain-save-evidence-Erh4dpcq",
+  "binarySha256": "b12e046cda4b467ea368525f8ceb556e3aaa76033b462dac5a757b367fba109f",
+  "earlierEvidenceRoots": ["/home/aeml/.local/share/eidolon-terrain-save-evidence-6P8uNpuw", "/home/aeml/.local/share/eidolon-terrain-save-evidence-fIGwfggp"],
+  "cleanup": "Owned temporary Mongo containers and their synthetic databases removed by the runner; no matching containers remain. Evidence directory/binary/log retained. No production Compose/.env/account/database/DNS/provider/mail changes.",
+  "remaining": "This qualifies configuration switches using the corrected current binary, not rollback to an older released binary without the fix, original dungeon15-minute/checkpoint behavior across a new terrain rollout, every legacy malformed save, equipped-party/device performance or final modern-art approval. Ship the flat-entry fix as a precursor before enabling raised terrain. Original1.80 and later ordered milestone gates remain; production terrain still flat and full roadmap goal active."
+}

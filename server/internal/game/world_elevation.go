@@ -101,6 +101,16 @@ func (w *World) groundActorLocked(e *Entity) {
 	}
 }
 
+func (w *World) groundActorAtEntryLocked(e *Entity) {
+	w.groundActorLocked(e)
+	// A saved raised-ground height is not an owned floor in a flat world.
+	// Normalize only overworld player admission/restore, not normal frame work.
+	// Instance floors, NPC/projectile offsets and active jumps retain their Y.
+	if w.terrainElevation == nil && e.Type == TypePlayer && e.InstanceID == "" && e.State != "JUMPING" {
+		e.Y = 0
+	}
+}
+
 // Loot has a stable authored half-unit presentation offset. Apply at every
 // publication path, including async death drops that do not call AddEntity.
 func (w *World) groundLootLocked(e *Entity) {
