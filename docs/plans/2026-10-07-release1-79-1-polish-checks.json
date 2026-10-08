@@ -1,7 +1,14 @@
 {
   "schema": 1,
   "milestone": "Alpha1.79.1 stabilization before feature freeze",
-  "status": "scoped-local-candidate-checked-awaiting-storage-and-ci-publication",
+  "status": "recovered-source-checked-storage-restored-ready-for-ci-publication",
+  "october8RecoveryAndPublicationPreparation": {
+    "source": "Prepared commit ab9910651d8a1c5e4f5ea75ab04a83f636234784 survives in Git. Previous temporary worktree/evidence paths are now absent; restore identical tracked source into /home/aeml/.local/share/eidolon-release-1791-lFs4B0JY on work/alpha-1-79-1-recovered-20261008, without changing or removing the dirty original checkout or stale worktree registrations. Historical temporary evidence is not claimed present or newly rerun.",
+    "storage": "Read-only October8 measurements55637576KiB available on checkout and Docker filesystem after restoration, above2097152KiB floor. Storage blocker resolved externally; agent performed no image/data/cache/worktree deletion and does not infer cleanup permission from resumption.",
+    "verification": "Recovered source equipment suite PASS27 in0.835s; exact new notes PASS1 in0.383s,364 unselected. Original two actual WebSocket origin suites and13-case executable storage guard PASS race1.280s. Bash syntax and whitespace pass. No unchanged100/campaign/benchmark rerun or duplicate mail.",
+    "remote": "Fresh fetch remains accepted b5c3981e060d6dea3ef50c9c2b4abb37999856db,12 local-only and0 remote-only commits before recovery receipt. Both browser and soak runners online/idle; production API/database healthy at1.79.0 after host restart. Reconcile once more immediately before ordinary non-force push.",
+    "limits": "This closes local storage/recovery preparation, not CI/public deployment acceptance,1.80 freeze or the full roadmap. Exact new CI and frontend/backend byte/identity/readiness checks remain required."
+  },
   "stormcrownSlate": {
     "integration": "Compare85b38f77 current authority with staged575a80f2: exactly the new slate sampler, its two terrain-factory consumers and two affected tests differ across the four selected files. Apply only those hunks; no future render/startup/shadow/raised-world/server changes or dependency additions. Source sampler and factory SHA256 match the qualified staged bytes exactly.",
     "implementation": "Existing three maps now describe one irregular wind-worn slate/scree field. Registered High/Low coordinates, dimensions and repeat remain; no geometry, collision, scene, authority, lighting, shader-pass or per-frame sampling change. Extra field work occurs during texture generation. First regular-ripple field rejected by visual inspection; refined interrupted mineral beds retained.",

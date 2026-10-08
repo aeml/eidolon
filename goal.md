@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 resumption / storage blocker resolved externally:** About53GiB
+available after restoring identical committed1.79.1 source outside /tmp.
+Temporary worktree/evidence paths disappeared, but ab991065 and all tracked
+work survive in Git; original dirty checkout untouched. Agent deleted no
+images/data/caches/worktrees. Recovered equipment PASS27/0.835s, exact new notes
+PASS1/0.383s and origin/storage race PASS1.280s; no unchanged100/campaign replay.
+Fresh remote stillb5c3981e, both runner queues online. Proceed ordinary CI/push
+and exact public acceptance; full roadmap and1.80 freeze remain active/open.
+
 **October7 Stormcrown slate integrated into prepared1.79.1:** Irregular,
 wind-worn mineral beds and scree now share color/relief/roughness fields on both
 qualities, preserving three map sizes/repeat, geometry/collisions/lighting and
