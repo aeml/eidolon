@@ -337,9 +337,13 @@ export class InputManager {
             // but never cast, recall, pan, or steal native activation/navigation.
             const key = (e.key || '').toLowerCase();
             if (!e.repeat && !e.ctrlKey && !e.altKey && !e.metaKey && key !== ' ' && !key.startsWith('arrow')) {
+                // Selecting an ally on the persistent HUD deliberately keeps
+                // accessible button focus. Explicit hotbar keys still cast on
+                // that selection; native activation and other UI stay guarded.
+                const selectedSupport = activeElement.closest('button[data-party-support-target][aria-pressed="true"]:not(:disabled)');
                 const action = KEYBOARD_ACTIONS.find(action => key && key === this.keyboardBindings[action.id]
-                    && MENU_CALLBACKS.has(action.callback));
-                if (action) this.callbacks[action.callback].forEach(cb => cb());
+                    && (MENU_CALLBACKS.has(action.callback) || selectedSupport && action.callback === 'onHotbar'));
+                if (action) this.callbacks[action.callback].forEach(cb => action.slot === undefined ? cb() : cb(action.slot));
             }
             return;
         }
