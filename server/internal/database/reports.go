@@ -169,7 +169,7 @@ func SupportedReportType(value string) bool {
 // Authenticated account support does not require entering the game world.
 // Privacy requests only create review cases, never exports or deletion jobs.
 func AccountSupportReportType(value string) bool {
-	return value == "Moderation Appeal" || value == "Account Data Export" || value == "Account Removal Request"
+	return value == "Account / Progress Help" || value == "Moderation Appeal" || value == "Account Data Export" || value == "Account Removal Request"
 }
 
 func (db *DB) CreateReport(username, reportType, text string) (*Report, error) {

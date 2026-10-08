@@ -9,6 +9,26 @@ import (
 	"time"
 )
 
+func TestAccountProgressHelpUsesExistingPrivateReportQueue(t *testing.T) {
+	const category = "Account / Progress Help"
+	if !AccountSupportReportType(category) || !SupportedReportType(category) {
+		t.Fatal("signed-in player cannot request progress help without entering world")
+	}
+	report, err := NewReport("support-fixture", category, "Stuck on loading after dungeon recall; happened about 09:00 UTC.", time.Now())
+	if err != nil || report.ReportType != category || report.Status != ReportStatusOpen {
+		t.Fatal("support case was not opened for review", report, err)
+	}
+	filter, err := reportPageFilter(ReportQuery{Status: ReportStatusOpen, ReportType: category})
+	if err != nil || filter["report_type"] != category {
+		t.Fatal("staff cannot filter support cases", filter, err)
+	}
+	for _, text := range []string{"", strings.Repeat("x", maximumReportLength+1)} {
+		if _, err := NewReport("support-fixture", category, text, time.Now()); err == nil {
+			t.Fatal("support category bypassed ordinary text bounds")
+		}
+	}
+}
+
 func TestModerationAppealKeepsOrdinaryReportValidationAndOpenReviewStatus(t *testing.T) {
 	now := time.Date(2026, 10, 1, 1, 0, 0, 0, time.UTC)
 	report, err := NewReport("reporter", "Moderation Appeal", "Please review notice 0123456789abcdef01234567.", now)

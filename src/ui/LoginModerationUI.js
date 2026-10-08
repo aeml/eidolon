@@ -26,7 +26,8 @@ export class LoginModerationUI {
             isOwnerExportSessionCurrent: () => this.current(),
             onModerationNoticeLookup: requestId => this.send('moderation_notice', { requestId }),
             getReportContext: () => ({ area: 'Account support outside the world' }) };
-        this.report = new ReportUI(ui); type.value = 'Moderation Appeal'; this.report.updateGuidance();
+        this.report = new ReportUI(ui); type.value = 'Account / Progress Help'; this.report.updateGuidance();
+        this.report.refreshContext();
         root.classList.add('support-window--login-report');
         root.__eidolonLoginSupport = this;
         this.nameCorrection = new PublicNameCorrectionUI({ parent: root.querySelector('#moderation-notice-status'),
@@ -62,7 +63,7 @@ export class LoginModerationUI {
         this.passwordChange.refresh();
         this.report.exportDownload.refresh();
         this.recoveryEmail.refresh();
-        this.root.querySelector('#btn-check-moderation')?.focus();
+        this.root.querySelector('#report-type')?.focus();
         return true;
     }
 

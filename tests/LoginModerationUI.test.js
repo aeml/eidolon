@@ -6,7 +6,7 @@ const notice = { kind: 'suspend', id: 'a'.repeat(64), reason: 'Public suspension
 beforeEach(() => {
     jest.useFakeTimers(); jest.spyOn(crypto, 'randomUUID').mockReturnValue('login-appeal-request-001');
     document.body.innerHTML = `<button id="help" hidden>Account help</button><div id="report-screen" style="display:none">
-      <select id="report-type"><option>Bug Report</option><option>Player Report</option><option>Moderation Appeal</option><option>Feature Request</option><option>Account Data Export</option><option>Account Removal Request</option></select>
+      <select id="report-type"><option>Bug Report</option><option>Player Report</option><option>Moderation Appeal</option><option>Account / Progress Help</option><option>Feature Request</option><option>Account Data Export</option><option>Account Removal Request</option></select>
       <textarea id="report-text"></textarea><button id="btn-submit-report">Submit</button><button id="btn-cancel-report">Cancel</button><button id="btn-close-report-header">Close</button>
       <input id="report-diagnostics" type="checkbox"><pre id="report-context"></pre><p id="report-status"></p><output id="report-count"></output><p id="report-guidance"></p>
       <input id="report-reference"><button id="btn-check-report">Check status</button><p id="report-lookup-status"></p>
@@ -17,6 +17,21 @@ beforeEach(() => {
 });
 afterEach(() => { support?.dispose(); jest.restoreAllMocks(); jest.useRealTimers(); });
 const sent = () => socket.send.mock.calls.map(([value]) => JSON.parse(value));
+test('progress help works without world entry and attaches no implicit character data', () => {
+    const type = root.querySelector('#report-type');
+    type.value = 'Account / Progress Help'; type.dispatchEvent(new Event('change'));
+    expect(type.selectedOptions[0].disabled).toBe(false);
+    const diagnostics = root.querySelector('#report-diagnostics');
+    expect(diagnostics.disabled).toBe(true);
+    expect(root.querySelector('#report-guidance').textContent).toContain('approximate time');
+    expect(root.querySelector('#report-guidance').textContent).toContain('No guaranteed response time');
+    root.querySelector('#report-text').value = 'Stuck after dungeon recall.';
+    root.querySelector('#btn-submit-report').click();
+    expect(sent()).toEqual([{type: 'report', payload: {reportType: 'Account / Progress Help', text: 'Stuck after dungeon recall.', requestId: 'login-appeal-request-001'}}]);
+    jest.advanceTimersByTime(16000);
+    expect(socket.send).toHaveBeenCalledTimes(1);
+    expect(root.querySelector('#report-text').value).toBe('Stuck after dungeon recall.');
+});
 test('authenticated account help owns password submission, receipt and close clearing', () => {
     button.click(); const password = support.passwordChange;
     password.current.value = 'oldpass'; password.next.value = password.confirm.value = 'A unique updated phrase';
@@ -45,8 +60,11 @@ test('authenticated help opens the shared form without world entry or automatic 
     expect(button.hidden).toBe(false); expect(socket.send).not.toHaveBeenCalled();
     button.click(); expect(root.style.display).toBe('flex'); expect(root.style.zIndex).toBe('10005');
     expect(root.classList.contains('support-window--login-report')).toBe(true);
-    expect(root.querySelector('#report-type').value).toBe('Moderation Appeal');
-    expect([...root.querySelector('#report-type').options].filter(option => !option.disabled).map(option => option.value)).toEqual(['Moderation Appeal', 'Account Data Export', 'Account Removal Request']);
+    expect(root.querySelector('#report-type').value).toBe('Account / Progress Help');
+    expect(document.activeElement.id).toBe('report-type');
+    expect(root.querySelector('#report-context').textContent).toContain('no automatic context');
+    expect(support.report.context).toBe('');
+    expect([...root.querySelector('#report-type').options].filter(option => !option.disabled).map(option => option.value)).toEqual(['Moderation Appeal', 'Account / Progress Help', 'Account Data Export', 'Account Removal Request']);
     root.querySelector('#btn-cancel-report').click(); expect(root.style.display).toBe('none');
     expect(socket.send).not.toHaveBeenCalled();
 });
@@ -61,7 +79,7 @@ test('only an explicit notice check sends a bounded owner-only read and can draf
     expect(socket.send).toHaveBeenCalledTimes(1);
 });
 
-test.each(['Account Data Export', 'Account Removal Request'])('%s is an explicit private account-support request without world entry or diagnostics', category => {
+test.each(['Account / Progress Help', 'Account Data Export', 'Account Removal Request'])('%s is an explicit private account-support request without world entry or diagnostics', category => {
     support.open();
     const type = root.querySelector('#report-type'), text = root.querySelector('#report-text');
     type.value = category; type.dispatchEvent(new Event('change'));
@@ -78,6 +96,8 @@ test.each(['Account Data Export', 'Account Removal Request'])('%s is an explicit
 });
 
 test('appeal submission preserves the draft until a matching durable acknowledgement', () => {
+    root.querySelector('#report-type').value = 'Moderation Appeal';
+    root.querySelector('#report-type').dispatchEvent(new Event('change'));
     const text = root.querySelector('#report-text'); text.value = 'Please review this decision.';
     root.querySelector('#btn-submit-report').click();
     expect(sent()[0].type).toBe('report'); expect(sent()[0].payload.reportType).toBe('Moderation Appeal');

@@ -10,6 +10,10 @@ failed and its credentialed live QA skipped; see [scoped public receipt](2026-10
 This delivers scoped material/equipment/origin/storage fixes, not raised-world
 production, final modern art,1.80 freeze, beta access or full-roadmap completion.
 Continue actual1.80 reconciliation without another unchanged campaign/cohort run.
+October8 [current private progress help](2026-10-08-current-progress-support-checks.json)
+selectively integrates login/in-game support and correct report-selector focus,
+preserving current admin diagnostics and recovery/privacy controls. Local staged
+code/browser scope is not1.84 publication, staffing/SLA or full support acceptance.
 October8 [public-release probe preparation](2026-10-08-public-release-probe-checks.json)
 adds optional bounded frontend/API manifest matching to the existing monitor.
 Defaults and current production remain loopback-only; public/whole-host coverage

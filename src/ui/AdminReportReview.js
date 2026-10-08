@@ -17,10 +17,13 @@ export class AdminReportReview {
         label.append(this.reason);
         this.status = document.createElement('p'); this.status.setAttribute('role', 'status');
         const privacy = PRIVACY_REPORT_TYPES.has(report.reportType);
+        const progressHelp = report.reportType === 'Account / Progress Help';
         const consequence = approval
             ? 'Verify the requesting account and scope before approving. This permits owner-only export delivery; it sends no data now and never deletes data. Revoke blocks future admissions but cannot recall an already delivered export. Current retention is unchanged.'
             : privacy
             ? 'Review only: no data is exported or deleted; current retention is unchanged. Verify ownership, custody, redaction and delivery separately.'
+            : progressHelp
+            ? 'Review only: no character restoration, teleport, item or currency grant, ownership transfer or sanction reversal. Any recovery requires its separately authorized audited workflow.'
             : 'Resolving a report records review only; it does not punish a player.';
         this.status.textContent = consequence;
         this.action = document.createElement('button'); this.action.type = 'button'; this.action.className = 'menu-btn';
@@ -53,7 +56,7 @@ export class AdminReportReview {
             this.quote = { id: crypto.randomUUID(), reportId: report.id, expectedRevision: revision,
                 expectedStatus: report.status, ...(approval ? {expectedReviewRevision: reviewRevision, enabled: !approved}
                     : {status: report.status === 'open' ? 'resolved' : 'open'}), reason, confirmed: true };
-            warning.textContent = `${this.action.textContent} ${report.id} at revision ${revision}? ${approval ? consequence : `The report and its review receipt change together; no player sanction is applied. ${privacy ? consequence : ''}`}`;
+            warning.textContent = `${this.action.textContent} ${report.id} at revision ${revision}? ${approval ? consequence : `The report and its review receipt change together; no player sanction is applied. ${privacy || progressHelp ? consequence : ''}`}`;
             this.reason.readOnly = true; this.action.hidden = true; this.confirmation.hidden = false; this.cancel.focus();
         };
         this.cancel.onclick = () => {

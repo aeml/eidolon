@@ -24,7 +24,8 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await page.locator('#login-account-help').click();
         const dialog = page.locator('#report-screen');
         await expect(dialog).toBeVisible();
-        await expect(page.locator('#report-type')).toHaveValue('Moderation Appeal');
+        await expect(page.locator('#report-type')).toHaveValue('Account / Progress Help');
+        await expect(page.locator('#report-type')).toBeFocused();
         const bounds = await dialog.boundingBox();
         const header = await dialog.locator('.window-header').boundingBox();
         const body = await dialog.locator('.support-window__body').boundingBox();
@@ -33,6 +34,7 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         expect(bounds.x).toBeGreaterThanOrEqual(0); expect(bounds.y).toBeGreaterThanOrEqual(0);
         expect(bounds.x + bounds.width).toBeLessThanOrEqual(width + 1);
         expect(bounds.y + bounds.height).toBeLessThanOrEqual(height + 1);
+        await page.screenshot({ path: testInfo.outputPath('login-progress-help-entry.png') });
         await dialog.getByText('My moderation notices and appeals', { exact: true }).click();
         await dialog.getByRole('button', { name: 'Check my moderation notices', exact: true }).click();
         await expect(dialog.locator('#moderation-notice-status')).toContainText('Public explanation');
@@ -63,6 +65,18 @@ for (const [width, height] of [[1280, 800], [390, 844]]) {
         await expect(page.locator('#report-text')).toHaveValue('');
         expect(requests.map(request => request.type)).toEqual(['login', 'moderation_notice', 'public_name_correction', 'report']);
         expect(await page.evaluate(() => Boolean(window.game))).toBe(false);
+        await dialog.locator('#report-type').selectOption('Account / Progress Help');
+        await expect(dialog.locator('#report-guidance')).toContainText('No guaranteed response time');
+        await expect(dialog.locator('#report-diagnostics')).toBeDisabled();
+        await dialog.locator('#report-text').fill('Synthetic stuck character after a recall at 09:00 UTC.');
+        await dialog.getByRole('button', { name: 'Submit', exact: true }).click();
+        await expect(dialog.locator('#report-status')).toContainText('Report saved for operator review');
+        const supportRequest = requests.at(-1);
+        expect(supportRequest.type).toBe('report');
+        expect(supportRequest.payload.reportType).toBe('Account / Progress Help');
+        expect(supportRequest.payload.text).toBe('Synthetic stuck character after a recall at 09:00 UTC.');
+        expect(await page.evaluate(() => Boolean(window.game))).toBe(false);
+        await page.screenshot({ path: testInfo.outputPath('login-progress-help.png') });
         await page.keyboard.press('Escape'); await expect(dialog).toBeHidden();
         await expect(page.locator('#login-account-help')).toBeFocused();
         expect(failures, failures.join('\n')).toEqual([]);

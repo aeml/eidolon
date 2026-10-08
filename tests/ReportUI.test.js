@@ -4,7 +4,7 @@ import { GameEngine } from '../src/core/GameEngine.js';
 
 function setup() {
     document.body.innerHTML = `<span class="start-version-row__label">Alpha test</span><div id="report-screen">
-        <select id="report-type"><option>Bug Report</option><option>Player Report</option><option>Moderation Appeal</option><option>Account Data Export</option><option>Account Removal Request</option></select><p id="report-guidance"></p><textarea id="report-text"></textarea>
+        <select id="report-type"><option>Bug Report</option><option>Player Report</option><option>Moderation Appeal</option><option>Account / Progress Help</option><option>Account Data Export</option><option>Account Removal Request</option></select><p id="report-guidance"></p><textarea id="report-text"></textarea>
         <button id="btn-submit-report">Submit</button><input id="report-diagnostics" type="checkbox">
         <pre id="report-context"></pre><p id="report-status"></p><output id="report-count"></output></div>`;
     const ui = { reportScreen: document.querySelector('#report-screen'), reportText: document.querySelector('#report-text'),
@@ -38,7 +38,7 @@ describe('report save confirmation and privacy', () => {
         expect(ui.report.status.textContent).toContain('0123456789abcdef01234567');
     });
 
-    test.each(['Account Data Export', 'Account Removal Request'])('%s requests review without diagnostics, automatic actions or double submission', category => {
+    test.each(['Account / Progress Help', 'Account Data Export', 'Account Removal Request'])('%s requests review without diagnostics, automatic actions or double submission', category => {
         const ui = setup();
         ui.report.optIn.checked = true;
         ui.reportType.value = category;
@@ -55,7 +55,7 @@ describe('report save confirmation and privacy', () => {
         ui.report.handleResult({requestId: 'test-request-id', success: false});
         expect(ui.reportText.value).toBe('Please review my own account request.');
         expect(ui.report.optIn.disabled).toBe(true);
-        expect(ui.report.guidance.textContent).toContain('Submission does not');
+        expect(ui.report.guidance.textContent).toContain('No automatic diagnostics');
         ui.reportType.value = 'Bug Report'; ui.reportType.dispatchEvent(new Event('change'));
         expect(ui.report.optIn.disabled).toBe(false);
         expect(ui.report.optIn.checked).toBe(false);

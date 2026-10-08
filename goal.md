@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current private progress-help integration:** Current reused worktree
+is now work/alpha-1-84-support-current-20261008 rooted89c18f71; inspect branch
+before freeze/probe edits. Select only prepared67c97dfd support hunks, preserving
+current Service diagnostics/privacy/recovery/version/runtime. Five affected
+client suites PASS94/1.884s; scoped report/admission race1.046/1.487s. Exact
+unchanged backing report pipeline permits reuse of recorded isolated Mongo proof,
+not a new native run. Actual desktop/phone-sized initial forms PASS2/11s; fix
+newly exposed obsolete moderation focus, final Login20checks/0.665s and phone
+PASS1/6.1s, entry inspected. No diagnostics/automatic compensation/SLA, version
+bump or deployment. Full roadmap and original ordered gates remain open.
+[Current support receipt](docs/plans/2026-10-08-current-progress-support-checks.json).
+
 **October8 public-release monitor preparation:** Isolate planned1.83 work on
 work/alpha-1-83-public-probes-current-20261008 rooted82c9f8fa; current reused
 freeze worktree is now on that branch, not the unchanged1.80 branch. Optional
