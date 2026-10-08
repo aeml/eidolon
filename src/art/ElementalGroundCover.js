@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { WATER_PATHS, FIRE_PATHS } from '../data/elementalPopulation.js';
+import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
 import { distanceToPath } from '../data/worldPopulation.js';
 import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
+import { createAirHeathGeometry } from './AirHeathGeometry.js';
 
 const random = seed => {
     let n = Math.imul(seed + 139, 1597334677);
@@ -16,6 +17,7 @@ function bedsFor(site) {
     if (site.recipe === 'boat-grave') return [[[-17, -12], [-17, -1], [-11, 9]], [[16, -5], [19, 7], [10, 15]]];
     if (site.recipe === 'tide-procession') return [[[-21, 40], [-22, 51], [-19, 62]], [[21, 40], [22, 51], [19, 62]]];
     if (site.recipe === 'furnace-procession') return [[[42, -21], [53, -23], [63, -19]], [[42, 21], [53, 23], [63, 19]]];
+    if (site.recipe === 'courier-muster') return [[[-42, -21], [-53, -23], [-60, -19]], [[-42, 21], [-53, 23], [-60, 19]]];
     const edge = Math.min(20, site.radius * .79);
     // Broken side/rear beds leave the arrival and central gathering space open.
     // Different reaches avoid putting every location inside the same wreath.
@@ -25,8 +27,8 @@ function bedsFor(site) {
 }
 
 export function elementalGroundCoverPlacements(site, realm, footprints = [], quality = 'high') {
-    if (!['water', 'fire'].includes(realm)) throw new TypeError(`Unsupported cover realm: ${realm}`);
-    const seed = hash(site.id), paths = realm === 'water' ? WATER_PATHS : FIRE_PATHS;
+    if (!['water', 'fire', 'air'].includes(realm)) throw new TypeError(`Unsupported cover realm: ${realm}`);
+    const seed = hash(site.id), paths = realm === 'water' ? WATER_PATHS : realm === 'air' ? AIR_PATHS : FIRE_PATHS;
     const region = WORLD_REGIONS[realm], placements = [], radius = 1.35;
     const ownSolids = footprints.filter(f => f.siteId === site.id);
     const clear = (x, z) => {
@@ -67,6 +69,8 @@ export function elementalGroundCoverPlacements(site, realm, footprints = [], qua
 }
 
 export function createElementalCoverTuft(realm, variant, quality = 'high') {
+    if (!['water', 'fire', 'air'].includes(realm)) throw new TypeError(`Unsupported cover realm: ${realm}`);
+    if (realm === 'air') return createAirHeathGeometry(variant, quality);
     const positions = [], colors = [];
     const water = realm === 'water', low = quality === 'low';
     const blades = low ? 5 : 9, segments = low ? 3 : 5;

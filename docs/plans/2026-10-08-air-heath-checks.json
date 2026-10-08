@@ -1,0 +1,30 @@
+{
+  "status": "staged landmark groundcover qualified; not delivered or complete regional art",
+  "base": "211413cc",
+  "scope": "Add wind-swept leafy heath at all eight existing Air locations. Visual-only: no colliders, safe zones, rewards or interactions. Reuse deterministic edge beds with whole-tuft road/hazard/story/reading/solid/realm-boundary clearances. Water/Fire placement and geometry formulas unchanged; existing trees, structures and generated authoritative solid footprints unchanged.",
+  "geometry": "Six shoots,48 paired leaves/shrub. High120/Low60 triangles inside original High180/Low60 tuft ceilings. Both retain all leaf tips/edges; Low removes central folds/halves stem subdivisions. Four deterministic variants; one shared scene-owned opaque DoubleSide material and one merged cover draw/location. No textures, shaders, per-frame animation, point lights or shadow casters. Preserve original seven-part structure-only cap; Air gets one explicitly new cover batch like Water/Fire. Whole-scene budgets unchanged.",
+  "newAirShrubs": {"high":1111,"low":617,"lowExactPlacementSubset":true},
+  "highBySite": {"open-observatory":169,"silent-weatherworks":173,"spire-muster":82,"horizon-orrery":137,"couriers-exchange":181,"weatherkeepers-bivouac":208,"unsent-dispatch":94,"unmeasured-sky":67},
+  "lowBySite": {"open-observatory":94,"silent-weatherworks":85,"spire-muster":47,"horizon-orrery":80,"couriers-exchange":98,"weatherkeepers-bivouac":122,"unsent-dispatch":51,"unmeasured-sky":40},
+  "retainedAttempts": "Initial swept grass passes15 units22.992s/two native cases45.5s but reject speck-like silhouette in actual High bivouac/Low orrery images. Replace only Air geometry with folded leafy shrubs. Final source passes15 cases; one new fixture incorrectly compares Air Low60 to Fire50 instead of original fixed Low60 ceiling. Fix exact120/60 expectation without changing geometry/budgets; rerun both Air-heath cases,2pass0.578s. Distinct final covered cases16, not overlapping attempts added together. All logs/artifacts retained.",
+  "units": "Generated server footprints; both-quality solids/routes/hazards; three realms' deterministic beds/exact Low subsets; material ownership/disposal; finite bounded geometry; all48 Air leaf tips/edges; distinct lower leafy silhouette; unsupported realms fail.15 unchanged cases pass22.387s and corrected case plus leaf-retention case pass0.578s. Scoped ESLint/diff pass. No campaign replay.",
+  "native": "Final isolated System Chrome AMD Vulkan production renderer Air High1280/Low390:2pass45.4s, ten timed views/120 samples each. Original High20ms median33.4ms p95/350draw/250k triangles and Low33.4/50ms/200draw/85k limits pass unchanged. Reading approaches, Air aim/projectile fixtures and twelve tree-quality phases/case pass. Repeated-view GPU resources stable. Bare solo renderer fixture, not server-earned combat/equipped-party/sustained device/physical phone.",
+  "metrics": {
+    "highMaxCalls":111,"highMaxTriangles":157533,"highMaxP95":16.700000000000728,
+    "lowMaxCalls":51,"lowMaxTriangles":45868,"lowMaxP95":16.800000000000182,
+    "highResourcesBeforeAndAfter":{"geometries":164,"textures":51,"programs":47},
+    "lowResourcesBeforeAndAfter":{"geometries":161,"textures":37,"programs":28}
+  },
+  "review": "Root inspects actual final High/Low bivouac at normal gameplay zoom. Revised tufts read as small leafy shrubs rather than thin spikes, frame rear edges and leave central walkway clear. Still modest stylized scenery: broad empty ground, repetitive small beds, simple bedrolls/masonry, richer formations and complete cohesion remain open. Not modern-ARPG art approval or Diablo/PoE production equivalence.",
+  "sourceSHA256": {
+    "src/art/AirHeathGeometry.js":"23a87e2a92e5df7d0d85a210b253e3dc591fb92bbd65bbd397a01d5f57d074c7",
+    "src/art/ElementalGroundCover.js":"663189178fa40f93831f8368599f039ef32a728b00aff702524286b4d8a55562",
+    "src/art/ProceduralElementalLocations.js":"19e28c15715a4acb2021e31e32ff483d78f171b5352f406c3feb28929fc4667e"
+  },
+  "nativeLogSHA256":"c29362b4d51e86c11cdf0b47bdfce98b1b7bc31927068bec8a0099d0871468da",
+  "unitsLogSHA256":"81a1e451ab5115068be629712480a0e7359dcd2a47554bd1412e60a0e6741e93",
+  "correctedUnitsLogSHA256":"8c819a3c6a86080e6d42901516f532d9ac861b29f80e4d46b974fec4fdfc59b9",
+  "artifactDirectory":"/home/aeml/.local/share/eidolon-air-heath-leafy-native-20261008",
+  "logs":["/home/aeml/.local/share/eidolon-air-heath-units-20261008.log","/home/aeml/.local/share/eidolon-air-heath-native-20261008.log","/home/aeml/.local/share/eidolon-air-heath-final-units-20261008.log","/home/aeml/.local/share/eidolon-air-heath-corrected-units-20261008.log","/home/aeml/.local/share/eidolon-air-heath-leafy-native-20261008.log"],
+  "remaining":"Current-master integration/notes/versions/own deployment after selective1.79.10. Cover follows scene-construction quality as Water/Fire did; hot-switch proof here concerns trees, not regenerated beds. Broader runtime detail switching/travel-corridor composition remain open.1.79.9 exact run37791738441/head293a9ccc live at hosted install, owner cancellation answer outstanding, Luna monitoring. Full goal/owner/human gates unchanged."
+}

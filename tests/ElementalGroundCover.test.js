@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { createElementalLocations } from '../src/art/ProceduralElementalLocations.js';
 import { elementalGroundCoverPlacements, createElementalCoverTuft } from '../src/art/ElementalGroundCover.js';
-import { WATER_LOCATIONS, FIRE_LOCATIONS, WATER_PATHS, FIRE_PATHS } from '../src/data/elementalPopulation.js';
+import { WATER_LOCATIONS, FIRE_LOCATIONS, AIR_LOCATIONS, WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../src/data/elementalPopulation.js';
 import { distanceToPath } from '../src/data/worldPopulation.js';
 import { FOLIAGE_HAZARD_CLEARINGS } from '../src/data/worldFoliage.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
-test.each([['water', WATER_LOCATIONS, WATER_PATHS], ['fire', FIRE_LOCATIONS, FIRE_PATHS]])(
+test.each([['water', WATER_LOCATIONS, WATER_PATHS], ['fire', FIRE_LOCATIONS, FIRE_PATHS], ['air', AIR_LOCATIONS, AIR_PATHS]])(
     '%s edge beds preserve routes, hazards, reading space and exact Low subsets', (realm, sites, paths) => {
         const root = createElementalLocations(realm), solids = root.userData.walkFootprints;
         const materials = new Set();
@@ -47,7 +47,7 @@ test.each([['water', WATER_LOCATIONS, WATER_PATHS], ['fire', FIRE_LOCATIONS, FIR
         expect(disposals).toBe(1);
     });
 
-test.each(['water', 'fire'])('%s curved cover geometry is finite and fits its whole-tuft clearance', realm => {
+test.each(['water', 'fire', 'air'])('%s curved cover geometry is finite and fits its whole-tuft clearance', realm => {
     for (const quality of ['high', 'low']) for (let variant = 0; variant < 4; variant++) {
         const geometry = createElementalCoverTuft(realm, variant, quality), p = geometry.attributes.position;
         expect([...p.array, ...geometry.attributes.normal.array, ...geometry.attributes.color.array].every(Number.isFinite)).toBe(true);
@@ -59,4 +59,33 @@ test.each(['water', 'fire'])('%s curved cover geometry is finite and fits its wh
         }
         geometry.dispose();
     }
+});
+
+test('Air heath keeps all48 leaf tips/edges at both qualities inside the original cover budget', () => {
+    const high = createElementalCoverTuft('air', 2), low = createElementalCoverTuft('air', 2, 'low');
+    try {
+        expect(high.attributes.position.count / 3).toBe(120);
+        expect(low.attributes.position.count / 3).toBe(60);
+        const vertices = geometry => new Set(Array.from({ length: geometry.attributes.position.count }, (_, index) =>
+            [geometry.attributes.position.getX(index), geometry.attributes.position.getY(index), geometry.attributes.position.getZ(index)].join(',')));
+        const highVertices = vertices(high);
+        for (const vertex of vertices(low)) expect(highVertices.has(vertex)).toBe(true);
+    } finally { high.dispose(); low.dispose(); }
+});
+
+test('Air heath has a distinct lower, leafy silhouette within the existing triangle limits', () => {
+    for (const quality of ['high', 'low']) {
+        const air = createElementalCoverTuft('air', 2, quality), fire = createElementalCoverTuft('fire', 2, quality);
+        try {
+            expect(air.attributes.position.count / 3).toBe(quality === 'low' ? 60 : 120);
+            expect(air.boundingBox.max.y).toBeLessThan(.5);
+            expect(air.boundingBox.max.y).toBeLessThan(fire.boundingBox.max.y);
+            expect(air.attributes.color.array).not.toEqual(fire.attributes.color.array);
+        } finally { air.dispose(); fire.dispose(); }
+    }
+});
+
+test('unsupported groundcover fails before generating geometry or placements', () => {
+    expect(() => createElementalCoverTuft('town', 0)).toThrow('Unsupported cover realm');
+    expect(() => elementalGroundCoverPlacements(AIR_LOCATIONS[0], 'town')).toThrow('Unsupported cover realm');
 });

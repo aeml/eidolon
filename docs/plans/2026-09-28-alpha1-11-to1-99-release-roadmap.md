@@ -44,6 +44,14 @@ with stable warmed GPU resources and retained instance/cell identities.
 This is not current-master integration or
 publication, full regional composition, modern-art approval or beta readiness.
 
+Staged [Air landmark heath](2026-10-08-air-heath-checks.json) adds 1,111 High/
+617 Low visual-only shrubs around the eight existing locations, retaining clear
+routes/hazards/readings and original solid footprints. Reject initial speck-like
+grass; final leafy tufts pass sixteen distinct focused cases and two native
+High/Low cases/ten timed views under unchanged whole-scene limits. Not yet
+delivered; broad regional travel-corridor composition and runtime cover-bed
+quality regeneration remain open, not final art or full-world completion.
+
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
 pre-section progress notes moved byte-for-byte to

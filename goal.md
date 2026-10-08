@@ -77,6 +77,13 @@ closes that staged gap. Current-master integration and delivery remain open.
 retains rejected green artifacts and failed fixture history. Not yet integrated
 onto current master or delivered; do not accidentally add it to the already
 qualified1.79.10. Regional emptiness and broader environmental art stay open.
+Air's eight landmark edges now have 1,111 High/617 Low visual-only leafy heath
+shrubs, exact Low placement subsets and unchanged solid footprints. Reject the
+initial speck-like grass despite passing tests; revised foliage passes sixteen
+distinct focused cases and two native Air High/Low cases/ten timed views under
+the original limits. [Scope and attempts](docs/plans/2026-10-08-air-heath-checks.json).
+Staged only; broader travel-corridor composition and runtime cover-bed quality
+regeneration remain open. This does not complete regional environment art.
 After the >1h hosted install delay, ask once asynchronously whether to cancel
 and retry unfinished CI jobs; leave run intact until an answer. Luna continues
 read-only monitoring; an observation timeout is not terminal.
