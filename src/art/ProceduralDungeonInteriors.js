@@ -7,6 +7,8 @@ import { sampleVerdantMasonry } from './VerdantMasonry.js';
 import { createCryptWallGeometry } from './CryptWallGeometry.js';
 import { sampleElementalDungeonSurface } from './ElementalDungeonSurface.js';
 import { createElementalDungeonWallGeometry } from './ElementalDungeonWallGeometry.js';
+import { createDungeonVigilBase, createDungeonVigilShaft, createDungeonVigilCage,
+    createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid } from './DungeonVigilGeometry.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -206,10 +208,15 @@ function createShapes() {
         cylinder8: new THREE.CylinderGeometry(0.5, 0.5, 1, 8),
         cone4: new THREE.ConeGeometry(0.5, 1, 4),
         cone6: new THREE.ConeGeometry(0.5, 1, 6),
-        torus: new THREE.TorusGeometry(0.5, 0.075, 6, 24),
+        cofferLid: createDungeonCofferLid(),
         vigilInlay: new THREE.RingGeometry(0.486, 0.5, 48),
         graveRoot: createTaperedRoot([[-1, 0, 0], [-.6, .18, .12], [.2, .08, -.12], [1, 0, 0]], .07, 'low'),
-        octahedron: new THREE.OctahedronGeometry(0.5, 0)
+        octahedron: new THREE.OctahedronGeometry(0.5, 0),
+        vigilBase: createDungeonVigilBase(),
+        vigilShaft: createDungeonVigilShaft(),
+        vigilCage: createDungeonVigilCage(),
+        bevelBlock: createDungeonBevelBlock(),
+        fontBasin: createDungeonFontBasin()
     });
 }
 
@@ -233,11 +240,14 @@ function addPart(root, name, shape, material, {
 }
 
 function addPylon(root, shapes, materials, name, x, z, height = 4) {
-    addPart(root, `${name}:base`, shapes.cylinder8, materials.shadow, {
+    addPart(root, `${name}:base`, shapes.vigilBase, materials.stone, {
         position: [x, 0.24, z], scale: [2.4, 0.48, 2.4]
     });
-    addPart(root, `${name}:shaft`, shapes.cylinder6, materials.metal, {
-        position: [x, height / 2, z], scale: [0.72, height, 0.72]
+    addPart(root, `${name}:shaft`, shapes.vigilShaft, materials.metal, {
+        position: [x, height / 2, z], scale: [1.12, height, 1.12]
+    });
+    addPart(root, `${name}:cage`, shapes.vigilCage, materials.metal, {
+        position: [x, height + .44, z]
     });
     addPart(root, `${name}:light`, shapes.octahedron, materials.accent, {
         position: [x, height + 0.55, z], scale: [1.1, 1.55, 1.1], castShadow: false
@@ -288,6 +298,7 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     const identity = getDungeonRoomIdentityTag(room) || 'route_hall';
     const size = Math.max(40, Number(room.width) || 80);
     const radius = Math.max(8, Math.min(24, size * 0.2));
+    const markerRadius = Math.min(4, radius * .25);
     const root = new THREE.Group();
     root.name = `DungeonRoomState:${dungeonType}:${roomIndex}`;
     root.position.set(
@@ -301,8 +312,8 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     root.userData.roomIdentity = identity;
     root.userData.radius = radius;
 
-    const objectiveMaterial = makeRoomStateMaterial(theme.palette.accent, 0.74);
-    const currentMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.38);
+    const objectiveMaterial = makeRoomStateMaterial(theme.palette.accent, 0.5);
+    const currentMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.26);
     const clearedMaterial = makeRoomStateMaterial(0xa8ffd0, 0.46);
     const sealMaterial = makeRoomStateMaterial(theme.palette.accent, 0.82);
     const portalMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.18);
@@ -310,21 +321,23 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     const objectiveHalo = addRoomStateMesh(
         root,
         'DungeonObjectiveHalo',
-        new THREE.RingGeometry(radius * 0.9 - Math.min(.45, radius * .025), radius * 0.9, 48),
+        // A compact sanctuary seal rather than a room-wide circle that reads
+        // like an attack telegraph. HUD/minimap keep the full room objective.
+        new THREE.RingGeometry(markerRadius * 0.9 - .09, markerRadius * 0.9, 48),
         objectiveMaterial,
         { position: [0, 0.24, 0], rotation: [-Math.PI / 2, 0, 0] }
     );
     const currentHalo = addRoomStateMesh(
         root,
         'DungeonCurrentRoomHalo',
-        new THREE.RingGeometry(radius * 0.55 - Math.min(.3, radius * .02), radius * 0.55, 32),
+        new THREE.RingGeometry(markerRadius * 0.55 - .07, markerRadius * 0.55, 32),
         currentMaterial,
         { position: [0, 0.23, 0], rotation: [-Math.PI / 2, 0, 0] }
     );
     const clearedSigil = addRoomStateMesh(
         root,
         'DungeonClearedSigil',
-        new THREE.RingGeometry(radius * 0.22, radius * 0.31, 8),
+        new THREE.RingGeometry(markerRadius * 0.22, markerRadius * 0.31, 8),
         clearedMaterial,
         { position: [0, 0.25, 0], rotation: [-Math.PI / 2, 0, Math.PI / 8] }
     );
@@ -343,7 +356,7 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
             new THREE.RingGeometry(.32, .46, 4),
             sealMaterial.clone(),
             {
-                position: [Math.cos(angle) * radius * 0.68, 0, Math.sin(angle) * radius * 0.68],
+                position: [Math.cos(angle) * markerRadius * 0.68, 0, Math.sin(angle) * markerRadius * 0.68],
                 rotation: [Math.PI / 2, 0, -angle]
             }
         );
@@ -421,8 +434,8 @@ export function animateDungeonRoomStatePresentation(presentation, elapsedSeconds
     const rewardSeal = presentation.getObjectByName('DungeonRewardSeal');
     const exitPortal = presentation.getObjectByName('DungeonExitPortal');
 
-    if (objectiveHalo?.visible) objectiveHalo.material.opacity = 0.58 + (pulse * 0.28);
-    if (currentHalo?.visible) currentHalo.material.opacity = 0.25 + (pulse * 0.22);
+    if (objectiveHalo?.visible) objectiveHalo.material.opacity = 0.42 + (pulse * 0.16);
+    if (currentHalo?.visible) currentHalo.material.opacity = 0.18 + (pulse * 0.12);
     if (clearedSigil?.visible) clearedSigil.material.opacity = 0.28 + (pulse * 0.2);
     if (sealCrown?.visible) sealCrown.rotation.y = elapsedSeconds * 0.34;
     if (rewardSeal?.visible) {
@@ -496,32 +509,41 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     root.userData.visualOnly = true;
     root.userData.roomBounds = [Number(room.width) || size, Number(room.height) || size];
 
-    addFloorRing(root, shapes, materials.shadow, `${identity}:outer-ward`, radius);
-    addFloorRing(root, shapes, materials.inlay, `${identity}:inner-ward`, radius * 0.67, 0.16);
+    const wardRadius = Math.min(6, radius * .32);
+    addFloorRing(root, shapes, materials.shadow, `${identity}:outer-ward`, wardRadius);
+    addFloorRing(root, shapes, materials.inlay, `${identity}:inner-ward`, wardRadius * 0.67, 0.16);
     buildRegionalMotif(root, dungeonType, shapes, materials, radius);
 
     switch (identity) {
     case 'entry_gate':
         addPylon(root, shapes, materials, 'entry:left-vigil', -radius * 0.62, -radius * 0.42, 5.8);
         addPylon(root, shapes, materials, 'entry:right-vigil', radius * 0.62, -radius * 0.42, 5.8);
-        addPart(root, 'entry:oath-threshold', shapes.box, materials.metal, {
+        addPart(root, 'entry:oath-threshold', shapes.bevelBlock, materials.stone, {
             position: [0, 0.2, -radius * 0.42], scale: [radius * 0.85, 0.4, 1.1]
         });
         break;
     case 'treasure_cache':
-        addPart(root, 'cache:reliquary-plinth', shapes.cylinder8, materials.metal, {
+        addPart(root, 'cache:reliquary-plinth', shapes.vigilBase, materials.stone, {
             position: [0, 0.45, radius * 0.2], scale: [4.8, 0.9, 4.8]
         });
-        addPart(root, 'cache:sealed-coffer', shapes.box, materials.shadow, {
+        addPart(root, 'cache:sealed-coffer', shapes.bevelBlock, materials.stone, {
             position: [0, 1.45, radius * 0.2], scale: [4.8, 1.6, 3.1]
         });
+        addPart(root, 'cache:coffer-lid', shapes.cofferLid, materials.metal, {
+            position: [0, 2.2, radius * .2], scale: [4.8, .75, 3.1]
+        });
+        for (const side of [-1, 1]) {
+            addPart(root, `cache:iron-strap:${side}`, shapes.bevelBlock, materials.metal, {
+                position: [side * 1.52, 1.45, radius * .2 + 1.56], scale: [.24, 1.55, .12]
+            });
+        }
         addPart(root, 'cache:warded-lock', shapes.octahedron, materials.accent, {
             position: [0, 1.5, radius * 0.2 + 1.62], scale: [0.72, 0.9, 0.48], castShadow: false
         });
         break;
     case 'restorative_shrine':
-        addPart(root, 'shrine:basin', shapes.torus, materials.stone, {
-            position: [0, 0.85, radius * 0.12], rotation: [-Math.PI / 2, 0, 0], scale: [5.8, 5.8, 3.2]
+        addPart(root, 'shrine:basin', shapes.fontBasin, materials.stone, {
+            position: [0, .95, radius * 0.12], scale: [6.4, 1.5, 6.4]
         });
         addPart(root, 'shrine:spirit-font', shapes.octahedron, materials.spirit, {
             position: [0, 2.4, radius * 0.12], scale: [1.8, 3.2, 1.8], castShadow: false
@@ -574,7 +596,7 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     case 'route_hall':
     default:
         for (const side of [-1, 1]) {
-            addPart(root, `route:waystone:${side}`, shapes.cylinder6, materials.stone, {
+            addPart(root, `route:waystone:${side}`, shapes.vigilShaft, materials.stone, {
                 position: [side * radius * 0.72, 1.35, 0], scale: [1.8, 2.7, 1.8]
             });
         }

@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { compareFilmicLighting } from './lighting-comparison.js';
+import { reviewDungeonProps } from './dungeon-prop-review.js';
 
 const fixtures = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
 const methods = { molten_core: 'createMoltenCore', tempest_spire: 'createTempestSpire',
@@ -84,9 +86,11 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                 expect(sample.detailedWalls).toBeGreaterThan(0); expect(sample.maxWallTriangles).toBeLessThanOrEqual(3000);
                 expect(sample.layeredCutaways).toBe(0);
                 samples.push(sample);
+                if (view === 'center') await compareFilmicLighting(page, testInfo, '__dungeonArtReview', type);
                 await page.screenshot({ path: testInfo.outputPath(`${type}-${view}.png`),
                     style: '#perf-overlay { visibility: hidden !important; }' });
             }
+            await reviewDungeonProps(page, testInfo, '__dungeonArtReview', type, layout);
         }
         await writeFile(testInfo.outputPath('render-scopes.json'), JSON.stringify(samples, null, 2));
         await page.evaluate(() => window.__dungeonArtReview.input.dispose());

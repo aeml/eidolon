@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { compareFilmicLighting } from './lighting-comparison.js';
+import { reviewDungeonProps } from './dungeon-prop-review.js';
 
 const fixture = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
     .find(value => value.dungeonType === 'verdant_bastion_catacombs');
@@ -49,6 +51,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                 width: floor.material.map.repeat.x, height: floor.material.map.repeat.y };
         }, { layout: fixture.layout, mobile });
         await page.screenshot({ path: testInfo.outputPath('verdant-room.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        await compareFilmicLighting(page, testInfo, '__masonryReview', 'verdant');
         const wallReview = await page.evaluate(room => {
             const { render, hero } = window.__masonryReview;
             hero.position.set(room.x - room.width / 2 + 8, 0, room.z - 10);
@@ -64,6 +67,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         expect(wallReview.cutaway).toBeGreaterThan(0);
         expect(result.zoom).toBe(15);
         expect(result.textureSize).toBe(256);
+        await reviewDungeonProps(page, testInfo, '__masonryReview', 'verdant_bastion_catacombs', fixture.layout);
         expect(failures).toEqual([]);
     });
 }

@@ -429,7 +429,12 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.13`, optional public login/release/API
+- Current source version: `Alpha 1.79.14`, selected supplied-equipment surface
+  detail and robe layering, registered quality-specific wearable copies with
+  original fallbacks, shared filmic output, constructed dungeon props, varied
+  flagstones and compact room markers. Full modern-art and raised-world/party/
+  device gates remain open. Also retains optional
+  public login/release/API
   monitoring with paired default-empty settings and managed preflight. Existing
   installed monitoring remains local-only; public activation, staggered-release
   qualification and off-machine coverage remain open. Also retains reviewed,
@@ -444,7 +449,7 @@ For local Firefox QA, use port4173 or4192, not its restricted port4190.
   heath; regional tree/groundcover detail now switches without a reload.
   Original scene limits and walking clearances remain required.
   Raised-preview rocks are refined but public raised terrain remains disabled;
-  wearable derivatives and broader renderer work remain staged. Future hosted
+  wearable detail variants are included; broader renderer work remains staged. Future hosted
   browser installations have a 15-minute failure deadline without skipping gates.
   Publication/public acceptance are pending; 1.80 freeze and full
   1.87 modern-art/raised-world gates remain open. See the

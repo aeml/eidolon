@@ -26,6 +26,7 @@ describe('soft material reflections', () => {
 
     test('keeps the same reflection map on Low and releases renderer-owned resources', () => {
         const system = new RenderSystem(false);
+        expect(system.renderer.toneMapping).toBe(THREE.ACESFilmicToneMapping);
         const texture = system.reflectionEnvironment;
         const dispose = jest.spyOn(texture, 'dispose');
         expect(system.scene.environment).toBe(texture);
@@ -33,8 +34,10 @@ describe('soft material reflections', () => {
         // not the constructor's temporary pre-preset0.65 value.
         expect(system.scene.environmentIntensity).toBeCloseTo(0.325);
         system.setGraphicsQuality('low');
+        expect(system.renderer.toneMapping).toBe(THREE.ACESFilmicToneMapping);
         expect(system.scene.environment).toBe(texture);
         system.setGraphicsQuality('high');
+        expect(system.renderer.toneMapping).toBe(THREE.ACESFilmicToneMapping);
         expect(system.scene.environment).toBe(texture);
         system.currentLighting.ambientIntensity = 1.9;
         system.applyLightingState();

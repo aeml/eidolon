@@ -46,7 +46,7 @@ export class CharacterPreview {
         }
         this.renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 1.5));
         this.renderer.setClearColor(0x000000, 0);
-        this.renderer.toneMapping = THREE.LinearToneMapping;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.35;
         this.renderer.domElement.setAttribute('aria-hidden', 'true');
         this.onContextRestored = () => this.render();

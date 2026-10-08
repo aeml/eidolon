@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 prepared1.79.14 selects robe coverage/authored surface maps, filmic
+gameplay/preview and constructed dungeon props/flagstones/compact seals. Actual
+equipped-native overbudget fails first; preserve limits/outfits and include
+validated quality-specific supplied-equipment derivatives. Final ten native
+cases and affected units pass; originals/rigs/gameplay/collision unchanged.
+449 cumulative notes retain448 prior entries byte-for-byte. This is not final
+modern art, equipped-world/party/device or timed raised-terrain acceptance.
+Ordered1.79.9–13 publication, fresh remote reconciliation and own exact live
+gates still required. Full numbered scope and1.80F1-F5 remain unchanged.
+[Integration receipt](2026-10-08-release1-79-14-checks.json).
+
 October8 prepared1.79.13 integrates the optional public-probe and managed
 preflight components below, with synchronized versions and all448notes (all447
 prior entry bytes retained).387focused client checks,15managed race cases and

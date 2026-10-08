@@ -4,6 +4,7 @@ import { resolveEquipmentVisualDescriptor, equipmentVisualSignature } from './Pr
 import { isActiveEquipment } from '../core/EquipmentSlots.js';
 import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 import { batchFittedEquipment } from './FittedEquipmentBatches.js';
+import { applyAuthoredEquipmentSurface } from './AuthoredEquipmentSurfaces.js';
 
 const owners = new WeakMap();
 const ownedMaterials = new WeakMap();
@@ -53,13 +54,17 @@ function restoreCoverage(state) {
 function applyCoverage(state, selection) {
     const head = !!selection.head, chest = !!selection.chest;
     const pants = !!selection.legs && selection.legs !== 'silk-skirt';
+    const longLower = selection.chest === 'robes' || selection.legs === 'silk-skirt';
+    // A skirt alone must not remove exposed skin above its waistband. Robes
+    // enclose the upper hips through to the existing torso coverage boundary.
+    const hipTop = selection.chest === 'robes' ? .583 : .52;
     const boots = !!selection.feet && selection.feet !== 'sandals', gloves = !!selection.gloves;
     for (const { mesh } of state.meshes) {
         if (head && /_(Hair|Scalp)(_|$)/.test(mesh.name)) mesh.visible = false;
         if (chest && /_Undertop|_ClothSeams/.test(mesh.name)) mesh.visible = false;
-        if (pants && /_Undershorts/.test(mesh.name)) mesh.visible = false;
+        if ((pants || longLower) && /_Undershorts/.test(mesh.name)) mesh.visible = false;
     }
-    if (!chest && !pants && !boots && !gloves) return;
+    if (!chest && !pants && !longLower && !boots && !gloves) return;
     const body = state.body, original = body.geometry;
     const { position, skinIndex: skin, skinWeight: weight } = original.attributes;
     const hidden = new Uint8Array(position.count), vertex = new THREE.Vector3();
@@ -75,6 +80,7 @@ function applyCoverage(state, selection) {
             sleeve = vertex.fromBufferAttribute(position, i).sub(arm.a).dot(arm.axis) / arm.lengthSquared < .31;
         }
         hidden[i] = chest && /^(pelvis|spine_|clavicle_|neck_)/.test(bone) && y > .583 && position.getY(i) < state.collar - .005 || sleeve ||
+            longLower && /^(pelvis|spine_|thigh_)/.test(bone) && y > .40 && y < hipTop ||
             pants && /^(pelvis|thigh_|calf_)/.test(bone) && y > .055 && y < .554 ||
             boots && /^(calf_|foot_|ball_)/.test(bone) && y < .104 ||
             gloves && /^(hand_|thumb_|index_|middle_|ring_|pinky_)/.test(bone);
@@ -89,10 +95,39 @@ function applyCoverage(state, selection) {
     state.ownedBodyGeometry.setIndex(keep); body.geometry = state.ownedBodyGeometry;
 }
 
+function coverRobeUnderlayers(state, selection, parts) {
+    if (selection.chest !== 'robes') return;
+    // The supplied closed upper skirt encloses the hips. Leave the visible
+    // lower trousers/greaves and crossing triangles intact, but do not render
+    // their bulky hip shell through the robe's back. Mask before batching and
+    // only on equip-owned clones; original GLBs and other actors are untouched.
+    const cutoff = state.height * .40;
+    for (const part of parts) {
+        if (part.userData.slot !== 'legs' || part.userData.fittedItem === 'silk-skirt' || !part.isSkinnedMesh) continue;
+        const geometry = part.geometry, index = geometry.index, position = geometry.attributes.position;
+        if (!index || !position) continue;
+        const keep = [];
+        for (let i = 0; i < index.count; i += 3) {
+            const a = index.getX(i), b = index.getX(i + 1), c = index.getX(i + 2);
+            if (!(position.getY(a) > cutoff && position.getY(b) > cutoff && position.getY(c) > cutoff)) keep.push(a, b, c);
+        }
+        if (keep.length === index.count) continue;
+        part.geometry = geometry.clone(); part.geometry.setIndex(keep);
+        part.userData.fittedOwnedGeometry = true;
+    }
+}
+
 function instanceMaterials(part, item, look) {
     const rarity = typeof item.rarity === 'string' ? item.rarity : item.rarity?.name;
     const accent = rarity === 'Eidolic' ? '#9f66dc' : AUTHORED_ASSETS.sets[item.setId]?.accentColor;
     const owned = new Map();
+    const uvEligibility = new Map();
+    part.traverse(mesh => {
+        if (!mesh.isMesh) return;
+        const uv = mesh.geometry.getAttribute('uv');
+        const valid = uv?.itemSize === 2 && uv.count === mesh.geometry.getAttribute('position')?.count;
+        for (const material of [].concat(mesh.material)) uvEligibility.set(material, (uvEligibility.get(material) ?? true) && valid);
+    });
     part.traverse(mesh => {
         if (!mesh.isMesh) return;
         mesh.castShadow = true; mesh.receiveShadow = true;
@@ -102,6 +137,7 @@ function instanceMaterials(part, item, look) {
             if (accent && result.emissive?.getHex() > 0) { result.emissive.set(accent); result.color.set(accent); }
             if (look) result.color.set(result.emissive?.getHex() > 0 ? look.secondary : look.primary);
             if (Number(item.potency) > 0 && result.emissive?.getHex() > 0) result.emissiveIntensity *= 1 + Math.min(1, item.potency / 20);
+            if (uvEligibility.get(material)) applyAuthoredEquipmentSurface(result);
             return result;
         };
         mesh.material = Array.isArray(mesh.material) ? mesh.material.map(clone) : clone(mesh.material);
@@ -174,14 +210,24 @@ export function clearFittedEquipment(root) {
     state.epoch++; disposeParts(state.parts); state.parts = []; restoreCoverage(state);
     root.userData.equipmentVisualSignature = '';
     root.userData.equipmentVisualItemCount = 0; root.userData.equipmentVisualPartCount = 0;
+    root.userData.equipmentVisualFallback = [];
     root.userData.updateWeaponProfile?.({});
+}
+
+export function resolveFittedEquipmentModel(catalog, tier, actorClass, quality, original = false) {
+    const fits = catalog?.models?.[tier];
+    const fit = fits?.[actorClass] ? actorClass : 'universal';
+    const source = fits?.[fit];
+    const detail = quality === 'low' ? 'low' : 'high';
+    const file = original ? source : catalog?.runtimeModels?.[tier]?.[fit]?.[detail] || source;
+    return { file, source };
 }
 
 export function applyFittedEquipment(root, equipment = {}, { force = false } = {}) {
     const state = owners.get(root); if (!state) return { supported: false };
     const actorClass = root.userData.authoredClass; state.actorClass = actorClass;
     const active = Object.fromEntries(Object.entries(equipment).filter(([slot, item]) => isActiveEquipment(slot, item, actorClass)));
-    const signature = equipmentVisualSignature(active);
+    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${equipmentVisualSignature(active)}`;
     if (!force && signature === root.userData.equipmentVisualSignature) return { supported: true, changed: false };
     const epoch = ++state.epoch; root.userData.equipmentVisualSignature = signature;
     root.userData.updateWeaponProfile?.(active);
@@ -191,12 +237,18 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         const catalog = AUTHORED_ASSETS.items[look?.base || descriptor?.baseName];
         if (!catalog) return [];
         const tier = ['Legendary', 'Eidolic'].includes(typeof item.rarity === 'string' ? item.rarity : item.rarity?.name) ? 'legendary' : 'standard';
-        const file = catalog.models[tier][actorClass] || catalog.models[tier].universal;
-        return [{ slot, item, catalog, look, file }];
+        const { file, source } = resolveFittedEquipmentModel(catalog, tier, actorClass, root.userData.authoredQuality, root.userData.fittedEquipmentLOD === false);
+        return [{ slot, item, catalog, look, file, source }];
     });
     root.userData.equipmentReady = Promise.all(requested.map(async request => {
         try { return { ...request, gltf: await state.loader(request.file, 8000) }; }
-        catch (error) { return { ...request, error }; }
+        catch (error) {
+            if (request.file !== request.source) {
+                try { return { ...request, gltf: await state.loader(request.source, 8000), fallback: true }; }
+                catch (error) { return { ...request, error }; }
+            }
+            return { ...request, error };
+        }
     })).then(results => {
         if (state.epoch !== epoch) return; // Released/reused actor or superseded equip.
         let staged = [];
@@ -213,6 +265,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
             for (const part of staged) {
                 if (part.userData.fittedItem === 'silk-skirt' && selection.chest === 'robes') part.visible = false;
             }
+            coverRobeUnderlayers(state, selection, staged);
             // Exact surfaces and native comparisons pass for compatible opaque
             // pieces. False retains the original path for diagnostic comparisons.
             if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged);
@@ -229,6 +282,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         root.userData.equipmentVisualItemCount = Object.keys(selection).length;
         root.userData.equipmentVisualPartCount = staged.reduce((count, part) => { part.traverse(mesh => { if (mesh.isMesh && mesh.visible) count++; }); return count; }, 0);
         root.userData.equipmentVisualMissing = missing;
+        root.userData.equipmentVisualFallback = results.filter(result => result.fallback).map(result => result.slot);
         root.userData.equipmentVisualRevision = (root.userData.equipmentVisualRevision || 0) + 1;
         if (missing.length) root.userData.equipmentVisualSignature = ''; // Allow retry, never cache failure as success.
         root.updateMatrixWorld(true);

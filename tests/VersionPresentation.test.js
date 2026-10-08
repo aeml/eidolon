@@ -4,7 +4,21 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.13';
+const currentVersion = '1.79.14';
+
+test('1.79.14 records selected character/dungeon polish without claiming broad staged rendering rollout', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.14"'), previous = html.indexOf('data-version="1.79.13"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['cloth, leather, wood and metal', 'preserving authored textures', 'usable UVs',
+        'concealed upper trouser', 'restore the original layers', 'supplied GLBs', 'filmic highlight',
+        'Existing lighting, exposure', 'vaulted lids', 'hollow basins', 'varied, worn flagstones',
+        'Compact room markers', 'Floors stay flat', 'not final modern-art approval', 'feature freeze',
+        'All 252 supplied wearable fits', 'High/Low detail selections', '32 unchanged variants',
+        'fall back to the registered original', 'source assets remain unchanged',
+        'Raised terrain', 'equipped-party/device', 'remain staged',
+        'No account wipe', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.13 records opt-in public monitoring without silently enabling it or claiming browser coverage', () => {
     const html = readIndexWithPatchHistory();

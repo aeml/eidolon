@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 prepared Alpha1.79.14:** Selected robe coverage/shared authored
+surfaces, gameplay/preview filmic curve, constructed dungeon props, chipped
+flagstones and compact seals on prepared1.79.13. Initial equipped-native check
+catches real triangle overruns; keep original limits/full outfit and include
+qualified quality-specific supplied-equipment derivatives via validated importer.
+Original models/rigs/gameplay/collision unchanged. Final affected units and ten
+native cases pass; all448 prior patch entries byte-identical. Root reviewed
+bounded final images. Bare Verdant/raised-preview actors and untimed terrain
+checks do not qualify equipped-world/party performance or final modern art.
+See [scope/evidence](docs/plans/2026-10-08-release1-79-14-checks.json).
+Not live: ordered1.79.9–13 publication/acceptance and fresh remote reconciliation
+still required.1.79.9 attempt2 failed loot QA; bounded real-combat correction is
+being checked without runtime targeting changes or pickup-gate bypass. Latest
+accepted public1.79.8. Full roadmap/F1-F5/art/device/beta/launch goal remains active.
+
 **Prepared1.79.13 public-monitor integration:** Qualified optional public-probe
 and managed preflight code now has synchronized source/login/server/CI/default
 versions and accurate cumulative notes.387focused client checks, two root

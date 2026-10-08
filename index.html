@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.13</span>
+                    <span class="start-version-row__label">Alpha 1.79.14</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -779,7 +779,19 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.13" data-notes-pages="44" data-notes-total="448">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.14" data-notes-pages="44" data-notes-total="449">
+                <div class="patch-note-entry" data-version="1.79.14">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.14 (character surfaces and constructed dungeon interiors)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>All 252 supplied wearable fits now have registered High/Low detail selections. Reduced copies preserve source identities, rigging and fit; 32 unchanged variants reuse originals. Missing copies fall back to the registered original and record the affected slot. Supplied source assets remain unchanged.</li>
+                        <li>Supplied equipment gains shared cloth, leather, wood and metal surface detail while preserving authored textures, colors and magical accents. Only eligible materials with usable UVs receive the generated maps; compatible equipment still batches together.</li>
+                        <li>Robes and skirts hide enclosed underwear and body hips. Robes also mask fully concealed upper trouser armor without removing visible lower legs, crossing triangles or exposed skirt waistbands. Outfit changes restore the original layers; supplied GLBs and other characters are unchanged.</li>
+                        <li>The game world and character preview now share filmic highlight handling. Existing lighting, exposure, quality controls and passes are retained.</li>
+                        <li>Dungeon vigils have stepped feet, profiled shafts and forged cages; reliquary coffers gain vaulted lids and straps, and restorative fonts have hollow basins. Existing shared materials and room batching are reused.</li>
+                        <li>All five dungeon themes have varied, worn flagstones with registered physical surface detail. Compact room markers leave the combat floor readable while preserving objective, reward, cleared-room and exit feedback. Floors stay flat; collisions, layout, encounter and reward rules are unchanged.</li>
+                        <li>This is an integrated polish pass, not final modern-art approval or the 1.80 feature freeze. Raised terrain, equipped-party/device qualification and full 1.87 remain staged. No account wipe, schema migration or economy change. Full prior patch history is preserved through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.13">
                     <h3 class="patch-note-entry__title">Alpha 1.79.13 (optional public outage monitoring)</h3>
                     <ul class="patch-note-entry__list">
@@ -866,16 +878,6 @@
                         <li>Administrator passage does not complete quests or grant their rewards, and does not unlock the Umbral Nexus or Dark King raid quest gates. Valid saved Dark Realm positions are restored for administrators on login; access is checked against the current server-side account role, not a client flag.</li>
                         <li>The portal explains administrator passage without marking unrepaired crystals as restored. Permission use is audited and available under Dark Realm admin access in Administration activity history; role lookup or auditing failures do not grant privileged entry.</li>
                         <li>No account wipe, schema migration, economy or ordinary-player progression changes. Raised terrain remains disabled in production; full modern-art and release-readiness milestones remain open. Full prior patch history remains below.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.4">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.4 (saved-position recovery and terrain compatibility)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Returning players are grounded at the current overworld floor when a flat-world save retains an elevated height. This prevents a character remaining suspended above town or the world after rejoining. Horizontal position, dungeon/casino floors, service offsets and active jump arcs remain owned by their existing systems.</li>
-                        <li>The server now validates an explicit terrain profile before logs, journals, database work or player admission. Flat remains the default. The future raised-Earth profile loads hills and all 18 matching rock solids together; selecting terrain never grants QA commands. Unknown or incomplete profiles are refused instead of silently changing the world.</li>
-                        <li>Focused compatibility checks cover four classes and 16 fresh saved sessions through flat, raised, flat and raised configurations, retaining equipment, bag/stash/buyback items, HP/MP, Gold/EP, quests and progression. A connected Wizard check covers raised walking, actual Fireball draws and damage, and matching-profile reconnect. These are prepared disposable fixtures, not whole-campaign balance or physical-phone acceptance.</li>
-                        <li>Raised terrain remains disabled in production. This compatibility precursor is not the 1.80 freeze or full 1.87 art/performance milestone; equipped-party performance, final modern art and remaining launch gates still require their own evidence.</li>
-                        <li>No account wipe, schema migration, damage tuning, reward change, payment integration, public-access change or alert-setting change. Full prior patch history remains below.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

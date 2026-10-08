@@ -89,7 +89,9 @@ export class RenderSystem {
         
         this.renderer.setSize(window.innerWidth, window.innerHeight, false);
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-        this.renderer.toneMapping = THREE.LinearToneMapping;
+        // Roll bright metal/elemental light into display range rather than
+        // clipping it; OutputPass uses this same curve on the bloom path.
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.45;
         this.reflectionEnvironment = createProceduralReflectionEnvironment();
         this.scene.environment = this.reflectionEnvironment;

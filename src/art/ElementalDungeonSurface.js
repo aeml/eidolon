@@ -1,5 +1,6 @@
 // Original periodic stonework in the dungeon's 64-unit material domain.
 // Stains/inscriptions affect color, not raised geometry or combat hazards.
+import { sampleDungeonFlagstone } from './DungeonFlagstone.js';
 const clamp = value => Math.max(0, Math.min(1, value));
 const smooth = (a, b, value) => { const t = clamp((value - a) / (b - a)); return t * t * (3 - 2 * t); };
 const wrap = (value, period) => ((value % period) + period) % period;
@@ -24,16 +25,20 @@ export function sampleElementalDungeonSurface(x, y, type, wall, palette) {
     const rowHeight = wall ? 8 : 16, row = Math.floor(y / rowHeight);
     const shifted = wrap(x + (row % 2) * 8 + (hash(row, 7, seed) - .5) * 1.3, 64);
     const column = Math.floor(shifted / 16), u = shifted % 16, v = y % rowHeight;
-    const stone = hash(column, row, seed), weather = noise(x, y, 5, seed ^ 0x3391);
+    const flagstone = wall ? null : sampleDungeonFlagstone(x, y, type);
+    const stone = wall ? hash(column, row, seed) : flagstone.stone;
+    const weather = noise(x, y, 5, seed ^ 0x3391);
     const grain = noise(x, y, 64, seed ^ 0x19f3);
     const edge = Math.min(u, 16 - u, v, rowHeight - v) + (grain - .5) * .08;
-    const bevel = smooth(.04, .36, edge), turn = Math.PI * 2 / 64;
+    const bevel = wall ? smooth(.04, .36, edge) : flagstone.bevel;
+    const turn = Math.PI * 2 / 64;
     // Small mineral variations survive gameplay zoom without a checkerboard
     // of unrelated bright stones. Mortar is worn, not perfectly black.
     const base = palette.shadow.map((value, i) => value +
         ((wall ? palette.midtone[i] : palette.ground[i]) - value) * (wall ? .48 : .72));
     const tone = .88 + stone * .12 + weather * .08 + grain * .025;
-    const color = base.map(value => value * tone * (.75 + bevel * .25));
+    const color = base.map(value => value * tone * ((wall ? .75 : .87) + bevel * (wall ? .25 : .13))
+        * (1 - (flagstone?.fracture || 0) * .09));
     let mark = 0, emissive = 0, tint = palette.accent;
     const node = (cx, cy, radius) => 1 - smooth(radius * .35, radius, Math.hypot(x - cx, y - cy));
     if (type === 'molten_core') {

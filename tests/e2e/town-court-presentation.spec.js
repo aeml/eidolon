@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { compareFilmicLighting } from './lighting-comparison.js';
 
 for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
     test(`town gathering court at gameplay scale ${width}px`, async ({ page, baseURL }, testInfo) => {
@@ -76,6 +77,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                 streetSolids: streets.userData.walkFootprints.length };
         }, mobile);
         await page.screenshot({ path: testInfo.outputPath('town-court.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        await compareFilmicLighting(page, testInfo, '__courtReview', 'town');
         for (const [label, x, z] of [['market', 22, 200], ['smithy', -20, 200], ['casino', 0, 183], ['well', 55, 248]]) {
             await page.evaluate(({ x, z }) => {
                 const { render, hero } = window.__courtReview;
