@@ -787,7 +787,7 @@ export class WorldGenerator {
     async createMoltenCore(centerX, centerZ, layout) {
         console.log(`Generating Molten Core at ${centerX},${centerZ}`);
 
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('molten_core');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('molten_core', { quality: this.graphicsQuality });
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -797,7 +797,7 @@ export class WorldGenerator {
     async createTempestSpire(centerX, centerZ, layout) {
         console.log(`Generating Tempest Spire at ${centerX},${centerZ}`);
 
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('tempest_spire');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('tempest_spire', { quality: this.graphicsQuality });
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -807,7 +807,7 @@ export class WorldGenerator {
     async createAbyssalWell(centerX, centerZ, layout) {
         console.log(`Generating Abyssal Well at ${centerX},${centerZ}`);
 
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('abyssal_well');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('abyssal_well', { quality: this.graphicsQuality });
 
         if (this.createLayoutDrivenDungeon(layout)) {
             return;
@@ -816,7 +816,7 @@ export class WorldGenerator {
 
     async createUmbralNexus(centerX, centerZ, layout) {
         console.log(`Generating Umbral Nexus at ${centerX},${centerZ}`);
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('umbral_nexus');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('umbral_nexus', { quality: this.graphicsQuality });
         this.createLayoutDrivenDungeon(layout);
     }
 

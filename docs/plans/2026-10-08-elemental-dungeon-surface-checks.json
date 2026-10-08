@@ -1,0 +1,39 @@
+{
+  "milestone": "1.87 elemental dungeon surface refinement — staged, not published",
+  "checkedAt": "2026-10-08T05:11:30Z",
+  "parent": "6599fee636755add77c1eaf8616a08d74dab3cfb",
+  "branch": "work/alpha-1-87-dungeon-walls-20261008-0453",
+  "changes": [
+    "Replace coarse binary stone joints and dense repeating glow patterns in Molten Core, Tempest Spire, Abyssal Well and Umbral Nexus with original periodic weathered masonry, softened bevels, restrained inscriptions and pigment-independent physical detail.",
+    "Use aligned 256px color/emissive/normal/roughness maps on High and Medium; preserve eight64px maps on Low. Derivative strength uses canonical sample spacing instead of weakening High relief by four times.",
+    "Pass the saved renderer quality to instance construction. Existing instance resources remain owned until the optional reload; changing quality cannot recreate a dungeon or reset its progress.",
+    "Capture four actual family layouts at center and near-wall views with an ordinary14-slot Uncommon/Rare authored Fighter, real HUD and normal zoom15. No account, server or gameplay grants."
+  ],
+  "retainedBoundaries": {
+    "verdantAllEightMapsSHA256": "304aae47d5de269794b1e73cee7152d3ed953820e080495fb593c1b58a2e183a",
+    "verdant": "Compare the original parent module and final module in the same dependency context: all eight Verdant texture byte arrays are identical under both quality selections. Existing256px maps, crypt walls and detail materials retained.",
+    "geometry": "No mesh, collision, walk rectangle, doorway, cutaway, floor elevation, layout, progression or server changes. All sixteen before/after rendered view counts have zero draw/triangle delta.",
+    "resources": "Same eight maps, shared pixel sources, material/geometry caches, filtering, UV repeats, disposal path and no per-frame sampling. Low raw RGBA bytes remain131072 total. High/Medium increase from131072 to2097152 bytes plus mipmaps and transient construction sampling; this is not free memory/CPU cost or measured frame-time acceptance.",
+    "renderScope": "Desktop fixture center views286047–286077 triangles/91–92 draws and wall views284725–284761/84–86; phone-sized fixture center133139–133153/42 and wall131633–131753/33–35. These are existing equipped isolated-room counts, not the woodland reference budget, supported-party proof or whole-game performance approval."
+  },
+  "sourceSHA256": {
+    "src/art/ElementalDungeonSurface.js": "7171f82166091aec53254f5801e6627f9448aeb72963fe366dcbcd981ff38188",
+    "src/art/ProceduralDungeonInteriors.js": "cdcb2354d62b9927429d6bcfece1c3267136d933fac76030f63a3bdaad98c30f",
+    "src/core/UIBindings.js": "069eb9b8a1d574bcd58ce68510529857de541557d8a57f4b74be1001c416e526",
+    "src/world/WorldGenerator.js": "e54d569ae90a1a32f75fe91f51c518ca4fc70570a2a7af87ced550bc55f03062"
+  },
+  "qualification": {
+    "initial": "Scoped lint identifies an accidentally removed mixBytes helper still needed by detail materials. Initial three-suite run30 PASS/40 FAIL47.168s, all failures from this missing helper. Restore the original helper; no gate relaxed.",
+    "units": "Final three-suite run70 PASS54.367s across ElementalDungeonSurface, ProceduralDungeonInteriors and UIBindings. Includes original normal length/facing/roughness, texture disposal, exact collider dimensions, authoritative room lifecycle, sRGB encoding and saved quality/reload contracts. Additional canonical High/Low slope assertions added afterward: affected ten-test suite PASS7.831s; other60 unchanged checks retained, not a fresh combined70-test run.",
+    "static": "Eight changed JS files scoped ESLint max-warnings0 PASS; final affected sampler-test lint and whitespace PASS.",
+    "baseline": "Actual four-family equipped desktop/phone-sized native fixture2 PASS14.0s. Baseline Molten/Abyssal walls and phone-sized Umbral wall inspected; dense pixel-like repeated glow motivates the material refinement.",
+    "nativeFinal": "System Chrome normal hardware launch,3 PASS15.5s, root25402 terminal0. Four-family equipped1280px High and390px Low cases pass plus existing five-family opaque-floor depth checks at zoom10/30. Browser failure collections empty. Final Molten/Abyssal walls, Tempest center and phone-sized Umbral wall inspected. Owned port4190 closed afterward.",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-dungeon-walls-evidence-20261008-qeVpjZnP"
+  },
+  "candidatePatchNotes": [
+    "Elemental dungeons have smoother weathered stone, softer joints and more restrained elemental markings so equipment and combat cues remain clearer.",
+    "High and Medium use finer dungeon surface maps; Low retains its previous map-memory footprint. Changing surface detail uses the existing optional reload prompt without resetting your run."
+  ],
+  "limits": "Scoped material improvement, not completed modern Diablo/PoE-quality environments. Wall silhouettes and room decoration still need broader art work; no FPS/capacity, connected combat, physical-phone, campaign/party, owner art approval or release gate closed. No version, dependencies, save/schema, access, rewards, economy, production activation, push or deployment.",
+  "next": "Selectively integrate at the ordered1.87 milestone after unresolved1.80 and predecessor gates, fresh remote reconciliation, synchronized version/patch notes and the candidate's own deployment/public acceptance. Do not merge the older future branch wholesale. Full roadmap goal remains active."
+}

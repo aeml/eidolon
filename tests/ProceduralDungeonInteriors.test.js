@@ -10,6 +10,8 @@ import {
 } from '../src/art/ProceduralDungeonInteriors.js';
 import { WorldGenerator } from '../src/world/WorldGenerator.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
+import { getRegionTheme } from '../src/art/darkFantasyTheme.js';
+import { sampleElementalDungeonSurface } from '../src/art/ElementalDungeonSurface.js';
 
 const identityRooms = Object.freeze({
     entry_gate: { type: 'start' },
@@ -46,7 +48,7 @@ describe('Procedural dungeon interior art', () => {
             const normal = material.normalMap, roughness = material.roughnessMap;
             for (const texture of [normal, roughness]) {
                 expect(texture.colorSpace).toBe(THREE.NoColorSpace);
-                const size = dungeonType === 'verdant_bastion_catacombs' ? 256 : 64;
+                const size = 256;
                 expect(texture.image.data.byteLength).toBe(size * size * 4);
                 expect(texture.wrapS).toBe(THREE.RepeatWrapping);
                 expect(texture.wrapT).toBe(THREE.RepeatWrapping);
@@ -69,22 +71,21 @@ describe('Procedural dungeon interior art', () => {
         }
     });
 
-    test('abyss tide paint does not become a raised or polished stripe', () => {
-        const material = createProceduralDungeonInteriorKit('abyssal_well').floorMaterial(24, 24);
-        // At x=4, y=34 is tide paint and y=33 is plain stone; both are
-        // away from mortar. Their physical material should be identical.
-        const pixel = (texture, y) => Array.from(texture.image.data.slice((y * 64 + 4) * 4, (y * 64 + 4) * 4 + 4));
-        expect(pixel(material.map, 34)).not.toEqual(pixel(material.map, 33));
-        expect(pixel(material.normalMap, 34)).toEqual(pixel(material.normalMap, 33));
-        expect(pixel(material.roughnessMap, 34)).toEqual(pixel(material.roughnessMap, 33));
-    });
-
     test('sRGB floor bytes preserve the authored basalt palette rather than double-darkening it', () => {
         const map = createProceduralDungeonInteriorKit('abyssal_well').floorMaterial(120, 120).map;
-        // Plain stone at (10,10):72% ground #102b37 over shadow #07131b.
-        const offset = (10 * 64 + 10) * 4;
+        const palette = Object.fromEntries(Object.entries(getRegionTheme('abyssal_well').palette).map(([name, hex]) => {
+            const color = new THREE.Color(hex).convertLinearToSRGB();
+            return [name, [color.r * 255, color.g * 255, color.b * 255]];
+        }));
+        // High's quarter-unit sample at (40,40) still represents canonical
+        // plain stone (10,10). Byte ranges independently reject double gamma.
+        const offset = (40 * 256 + 40) * 4;
+        const expected = sampleElementalDungeonSurface(10, 10, 'abyssal_well', false, palette).color;
         expect(map.colorSpace).toBe(THREE.SRGBColorSpace);
-        expect(Array.from(map.image.data.slice(offset, offset + 4))).toEqual([13, 36, 47, 255]);
+        expect(Array.from(map.image.data.slice(offset, offset + 4))).toEqual([...expected, 255]);
+        expect(expected[0]).toBeGreaterThanOrEqual(10); expect(expected[0]).toBeLessThanOrEqual(18);
+        expect(expected[1]).toBeGreaterThanOrEqual(29); expect(expected[1]).toBeLessThanOrEqual(45);
+        expect(expected[2]).toBeGreaterThanOrEqual(38); expect(expected[2]).toBeLessThanOrEqual(57);
     });
 
     test.each(DUNGEON_INTERIOR_IDS)('%s keeps floor detail broad and smoothly filtered without changing wall scale', (dungeonType) => {

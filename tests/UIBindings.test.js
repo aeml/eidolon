@@ -84,6 +84,22 @@ describe('UIBindings', () => {
         expect(part.userData.authoredQuality).toBe(authoredQuality);
     });
 
+    test.each([
+        ['molten_core', 'high', 'low', true],
+        ['tempest_spire', 'low', 'high', true],
+        ['abyssal_well', 'high', 'medium', false],
+        ['umbral_nexus', 'low', 'low', false],
+        ['verdant_bastion_catacombs', 'high', 'low', false]
+    ])('%s requests reload for a surface-detail mismatch without rebuilding its dungeon', (dungeonType, surfaceQuality, quality, reloadRequired) => {
+        const engine = createEngine();
+        const kit = Object.freeze({ dungeonType, surfaceQuality });
+        engine.activeWorldGenerator = { dungeonInteriorKit: kit };
+        engine.renderSystem.setGraphicsQuality.mockReturnValue({ changed: true, reloadRequired: false });
+        new UIBindings(engine).bindConstructorCallbacks();
+        expect(engine.uiManager.onGraphicsQualityChange(quality)).toEqual({ changed: true, reloadRequired });
+        expect(engine.activeWorldGenerator.dungeonInteriorKit).toBe(kit);
+    });
+
     test('procedural actors do not request a body reload or suppress an existing renderer reload', () => {
         const engine = createEngine();
         engine.renderSystem.entityGroup = { traverse: visitor => visitor({ userData: {} }) };

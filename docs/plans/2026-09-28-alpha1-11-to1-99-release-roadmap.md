@@ -1446,6 +1446,17 @@ never redefine success as “all version numbers were used.”
 
 ## 8. Execution receipts
 
+October8: **staged1.87 elemental dungeon surfaces** now use softer weathered
+stone and less intrusive repeating glow in Fire/Air/Water/Umbral rooms. High
+and Medium use256px maps; Low retains its original64px map-memory footprint.
+Verdant's eight maps remain byte-identical and all sixteen before/after room
+views retain exact draw/triangle counts.70 focused checks and three native
+checks pass; final added slope assertions pass in the affected ten-test suite.
+[Scoped evidence and costs](2026-10-08-elemental-dungeon-surface-checks.json)
+retain modern-art, geometry/silhouette, frame-time, device and release gates.
+This is not live publication or completion of1.87; ordered predecessor gates,
+selective current-source integration and own deployment acceptance remain.
+
 October4: **Alpha1.74.0 release assembly** now has its own login version and
 cumulative notes for the read-only moderation filters and reviewed permission
 boundaries.398 focused client checks pass; backend authority proof retains its
