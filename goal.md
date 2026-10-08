@@ -18,13 +18,35 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
-- Exact1.79.9 run37791738441 attempt1 ended cancelled20:21:50UTC. GitHub
-  annotation explicitly confirms maximum6h execution exceeded during browser
-  install; four prior checks passed, six downstream deployment/QA gates skipped.
-  Root retries unsuccessful jobs on the same commit293a9ccc/run. Luna verifies
-  attempt2 started20:23:23UTC and now runs browser smoke after installation.
-  Current retry and all deployment/public gates remain pending; do not treat
-  prior skipped gates as successful or queue a later release before acceptance.
+- Corrected1.79.9 pushed7114aad6fc5039befc292297d7c477414638c63e;
+  exact37842726678 is in progress, Luna monitors terminal-only. Prior37791738441
+  attempt1 hit6h browser-install timeout; attempt2 failed predeploy loot pointer:
+  three Skeletons remained after QA's two-hostile clearance cap. Runtime remains
+  unchanged. QA can clear8distinct blockers using actual mouse/combat; bounded
+  policy/raycast34 and CI-planning22 regressions plus actual disposable four-case
+  release smoke pass. Fresh smoke does not reproduce original pack. Deadline15m
+  brought forward without changing install commands or skipping gates. Own
+  mandatory CI/exact public acceptance remain pending; latest accepted1.79.8.
+  [Correction/evidence](docs/plans/2026-10-08-release1-79-9-loot-qa-checks.json).
+
+- Prepared1.79.14 committed89130299 in isolated character/dungeon release.
+  Shared supplied-equipment surfaces/robe masks, filmic curve, constructed
+  dungeon props/flagstones/compact seals select onto prepared1.79.13. Initial
+  equipped-native triangle overruns retained; preserve original budgets/full
+  outfit and import validated quality-specific wearable variants. All original
+  source assets/rigs/gameplay unchanged. Final ten native cases pass; affected
+  units and448prior note bytes retained. Root inspects bounded final images,
+  not final modern-art approval. Bare Verdant/raised-preview and untimed profile
+  tests do not establish equipped-world/party/device performance. Not pushed/live.
+  [Integration receipt](docs/plans/2026-10-08-release1-79-14-checks.json).
+
+- Prepared1.79.10 reconciled with corrected remote at32ca883a; all five reviewed
+  art hashes unchanged. Prepared1.79.11/login/Firefox merged that preparation
+  atb5734386, preserving both complete goal/roadmap records after append
+  conflicts. Neither pushed/live. Optional user choice requested: batch prepared
+  small1.79.10–14 patches after current acceptance to reduce repeated CI, while
+  preserving every patch note/separate numbered roadmap milestones. No answer
+  yet, so ordered publication remains the default. Full goal remains active.
 
 - Prepared1.79.13 optional public-monitor release is clean atbcc5827e in
   `/home/aeml/.local/share/eidolon-public-monitor-release-XpKvF87O`, based on
