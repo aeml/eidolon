@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**Current accepted public release: Alpha1.79.6, exact37a13a41.** Ordinary
+CI37762573941 succeeds through all ten required jobs including SSH/Pages and
+hosted Live QA; root independently verifies matching front/back/healthy DB,
+tracked-clean production and selected actual publisher bytes. Optional broad
+gallery/animation scopes skipped, not passed. See
+[public evidence](docs/plans/2026-10-08-release1-79-6-public-checks.json).
+This supersedes pending publication statements below. Staged rendering fixes
+are preserved separately atd9674642 with87 focused assertions passing; newly
+corrected prior-tree comparison and High timing remain open. No unqualified
+art/profile release or roadmap-completion claim.
+
 **October8 current render investigation:** Reproduce and fix outside-casino
 whole-scene searches and foliage traversal of unrelated actors/buildings.
 Preserve scenery, models, live transforms and full shadow guards. Focused unit

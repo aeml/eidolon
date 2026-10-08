@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Current accepted release: **Alpha1.79.6 /37a13a41**, ordinary run37762573941,
+all ten required jobs successful including final hosted Live QA. Root separately
+verifies matching public identity/database and selected actual published bytes;
+optional broad art/animation scopes skipped, not passed. See
+[public receipt](2026-10-08-release1-79-6-public-checks.json).
+Pending/live entries below are historical. Staged scene-scan corrections have87
+focused checks passing but revealed tree comparison/High timing gaps remain;
+full1.80 F1-F5,1.87 modern art/device/profile and later beta/launch gates open.
+
 October8 current performance review: remove reproduced outside-casino scene
 lookups and full-scene foliage scans, retaining models/shadows and lifecycle.
 Actual connected High observer and all four fitted saves pass, but busy-host
