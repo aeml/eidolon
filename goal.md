@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 Earth outcrop art component:** New independent crown-plane fixture
+first fails(dot1); seeded interior lean/crown planes and correlated shoulder
+fractures now retain206 triangles per body/18 original collision footprints.
+Rock-only registered mineral tint, interrupted seams and restrained lichen
+replace uniform-grey/parallel-band appearance without extra meshes/textures.
+Four affected suites22 PASS15.742s; final material12 PASS.487s. Actual final
+High/Low native2PASS37.8s includes two new visible-rock RAF samples and all six
+original roads/limits, with retained grounding/effects/pixel comparisons.
+Inspected images show modest improvement, not final modern art. Component kept
+for ordered consolidation, no extra version/pipeline or raised production switch.
+Corrected1.79.4 CI37744495087 still running; latest accepted live1.79.3.
+Full ordered goal/F1-F5/equipped-party/device/persisted-dungeon gates remain.
+See [scoped art receipt](docs/plans/2026-10-08-outcrop-art-checks.json).
+
 **October8 Alpha1.79.4 publication fixture correction:** Own CI37742963800
 passes Client Jest and custom server verification, including actual saved-profile
 gate31.648s; coverage has one stale PvP pre-admission-height expectation. Exact

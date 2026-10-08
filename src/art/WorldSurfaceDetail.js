@@ -28,6 +28,16 @@ float eidolonRockNoise(vec3 p) {
         eidolonNoise(p.zx + vec2(37., 11.))) / 3.;
     return clamp(.5 + (mineral - .5) * 1.5, 0., 1.);
 }
+vec3 eidolonRockTint(vec3 p) {
+    // Registered broad mineral stains and sheltered crown lichen, not a
+    // repeating UV decal or an extra transparent shell over the formation.
+    float patina = eidolonRockNoise(p * .36 + vec3(13., 5., 29.));
+    vec3 face = abs(cross(dFdx(p), dFdy(p)));
+    float up = face.y / max(length(face), .00001);
+    vec3 mineral = mix(vec3(.86, .91, .95), vec3(1.13, 1.05, .91), smoothstep(.3, .65, patina));
+    float lichen = smoothstep(.57, .75, patina) * smoothstep(.35, .85, up) * .75;
+    return mix(mineral, vec3(.71, .89, .62), lichen);
+}
 #endif
 // Returns color multiplier, roughness target and a small physical relief height.
 vec3 eidolonSurface(vec3 p) {
@@ -35,14 +45,16 @@ vec3 eidolonSurface(vec3 p) {
     vec2 uv = axis.y > max(axis.x, axis.z) ? p.xz : (axis.x > axis.z ? p.zy : p.xy);
     float weather = eidolonNoise(p.xz * .23 + p.y * .17);
 #if EIDOLON_SURFACE == 6
-    float strata = p.y * 1.2 + p.x * .13 - p.z * .08 + eidolonNoise(p.xz * .3) * 1.3;
+    // Reuse the continuous cleave field to interrupt seams: parallel regular
+    // stripes made the large shoulders resemble cut masonry at play distance.
+    float cleave = eidolonRockNoise(p * 1.6 + vec3(weather, -weather, weather * .5));
+    float strata = p.y * .72 + p.x * .13 - p.z * .08 + cleave * 1.8;
     float footprint = max(fwidth(strata), .001);
     float joint = 1. - smoothstep(.025 - footprint, .09 + footprint, abs(fract(strata) - .5));
     float fade = (1. - smoothstep(.2, .6, footprint)) * smoothstep(.2, .65, weather);
     fade *= 1. - smoothstep(.3, .8, axis.y / max(length(axis), .00001));
     // Broad mineral breakup must read at play distance. Fine grain alone is
     // subpixel there and leaves the outcrop looking like plain polygon faces.
-    float cleave = eidolonRockNoise(p * 1.6 + vec3(weather, -weather, weather * .5));
     vec3 grainFootprint = fwidth(p * 5.);
     float grainFade = 1. - smoothstep(.25, .8, max(grainFootprint.x, max(grainFootprint.y, grainFootprint.z)));
     float grain = mix(.5, eidolonRockNoise(p * 5.), grainFade);
@@ -150,7 +162,7 @@ export function applyWorldSurfaceDetail(material, surface) {
         throw new Error('World surface detail cannot replace an existing shader hook');
     }
     material.userData.worldSurfaceDetail = surface;
-    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 3 : 1}:${surface}`;
+    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 4 : 1}:${surface}`;
     material.onBeforeCompile = shader => {
         shader.vertexShader = shader.vertexShader.replace('#include <common>',
             '#include <common>\nvarying vec3 vEidolonSurface;');
@@ -171,6 +183,9 @@ export function applyWorldSurfaceDetail(material, surface) {
             #include <map_fragment>
             vec3 eidolonDetail = eidolonSurface(vEidolonSurface);
             diffuseColor.rgb *= eidolonDetail.x;
+            #if EIDOLON_SURFACE == 6
+                diffuseColor.rgb *= eidolonRockTint(vEidolonSurface);
+            #endif
         `).replace('#include <roughnessmap_fragment>', /* glsl */`
             #include <roughnessmap_fragment>
             roughnessFactor = clamp(mix(roughnessFactor, eidolonDetail.y, .55), .05, 1.);

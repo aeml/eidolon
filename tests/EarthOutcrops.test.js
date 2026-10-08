@@ -5,6 +5,24 @@ import { EARTH_ELEVATION } from '../src/data/worldElevation.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 
+test('seeded cleaved crowns vary their geological plane without adding surfaces', () => {
+    const solid = EARTH_OUTCROP_SOLIDS[0];
+    const geometries = [solid, { ...solid, seed: solid.seed + 19 }]
+        .map(recipe => createEarthOutcropGeometry(recipe, EARTH_ELEVATION));
+    try {
+        const crowns = geometries.map(geometry => {
+            const normal = geometry.attributes.normal, sum = new THREE.Vector3();
+            for (let i = 192 * 3; i < normal.count; i++) {
+                sum.add(new THREE.Vector3().fromBufferAttribute(normal, i));
+            }
+            return sum.normalize();
+        });
+        expect(crowns[0].dot(crowns[1])).toBeLessThan(.9995);
+        for (const geometry of geometries) expect(geometry.attributes.position.count / 3).toBe(206);
+        for (const crown of crowns) expect(crown.y).toBeGreaterThan(.9);
+    } finally { geometries.forEach(geometry => geometry.dispose()); }
+});
+
 test('weathered rock shoulders have continuous vertex lighting without rounding sharp cleaves', () => {
     const geometry = createEarthOutcropGeometry(EARTH_OUTCROP_SOLIDS[0], EARTH_ELEVATION);
     try {
