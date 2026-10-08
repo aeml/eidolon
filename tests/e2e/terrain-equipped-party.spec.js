@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { installFoliageRevisionObservation, readFoliageRevisionObservation,
+    restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
     collectBrowserFailures, loginAndEnterWorld, moveByGroundClick, projectNearestHostile,
     useEncounterQAWaypoint
@@ -324,6 +326,7 @@ test('single native renderer observes three live equipped party socket peers on 
             // CPU profiles contain function/source identities, not chat or args.
             const session = await page.context().newCDPSession(page);
             try {
+                await page.evaluate(installFoliageRevisionObservation);
                 await session.send('Profiler.enable');
                 await session.send('Profiler.start');
                 await page.waitForTimeout(3_000);
@@ -338,11 +341,19 @@ test('single native renderer observes three live equipped party socket peers on 
                     value.samples++; value.selfMicros += profile.timeDeltas?.[index] || 0; groups.set(key, value);
                 }
                 const summary = [...groups.values()].sort((a, b) => b.selfMicros - a.selfMicros).slice(0, 24);
+                const foliage = await page.evaluate(readFoliageRevisionObservation);
                 await testInfo.attach('diagnostic-cpu-functions', { body: JSON.stringify({
-                    scope: 'Three-second opt-in CPU function sample; profiling overhead excluded from the preceding frame report.', summary
+                    scope: 'Three-second opt-in CPU function sample with foliage revision/visit counters; probe/profiling overhead excluded from the preceding frame report.',
+                    summary, foliage
                 }, null, 2), contentType: 'application/json' });
                 console.log('[diagnostic-party-cpu]', JSON.stringify(summary));
-            } finally { await session.detach(); }
+                console.log('[diagnostic-foliage-revisions]', JSON.stringify(foliage));
+            } finally {
+                try {
+                    const restored = await page.evaluate(restoreFoliageRevisionObservation);
+                    expect(restored, 'Diagnostic wrappers must restore their owned controller methods').toBe(true);
+                } finally { await session.detach(); }
+            }
         }
         await page.screenshot({ path: testInfo.outputPath(`single-renderer-equipped-party-${quality}.png`) });
         expect(failures, failures.join('\n')).toEqual([]);

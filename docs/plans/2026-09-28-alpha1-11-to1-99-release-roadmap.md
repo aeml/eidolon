@@ -11,8 +11,12 @@ Current assembly: Alpha1.79.7 selectively integrates Earth surface refinements
 and their tests/versions/notes onto fresh accepted master37a13a41, not the future
 branch. Existing Air canvas remains unchanged; raised terrain and wearable
 derivatives are not promoted. See [scope](2026-10-08-release1-79-7-checks.json).
-Fresh flat-native High/Low checks pass29.7s; own7892224f/CI37773941500
-is running and public acceptance remains pending. Accepted public1.79.6/37a13a41
+Fresh flat-native High/Low checks pass29.7s; public front/back/DB/selected bytes
+match7892224f. CI37773941500 first live QA fails on stylesheet network errors
+after rest gameplay assertions pass. Independent Chrome controls load40 CSS
+responses; ONE failed-job retry is pending, not accepted. See
+[public/retry evidence](2026-10-08-release1-79-7-public-checks.json).
+Accepted public1.79.6/37a13a41
 and ordinary37762573941 supersede historical pending statements below; see
 [public evidence](2026-10-08-release1-79-6-public-checks.json).
 Full1.80 F1-F5/1.87/art/device/profile/beta/launch gates remain open.

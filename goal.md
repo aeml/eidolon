@@ -13,8 +13,11 @@ Full composition/modern-art/device/roadmap requirements remain active.
 the qualified Earth surface/material component, matching tests, synchronized
 versions and cumulative notes. No future-branch merge, wearable derivatives,
 raised profile, new gameplay or Air-canvas relabeling (already delivered1.79.3).
-Fresh flat-native High/Low checks pass29.7s; own CI/publication is pending
-at7892224f/run37773941500. See
+Fresh flat-native High/Low checks pass29.7s; public front/back/DB and selected
+bytes match7892224f. First CI37773941500 live QA fails on stylesheet network
+errors after all rest gameplay assertions complete. Independent anonymous
+Chrome controls load all40 CSS responses; ONE failed-job retry is pending,
+not accepted yet. See [public/retry evidence](docs/plans/2026-10-08-release1-79-7-public-checks.json) and
 [current assembly](docs/plans/2026-10-08-release1-79-7-checks.json).
 Accepted live1.79.6 exact37a13a41/CI37762573941 supersedes older pending entries;
 see [public receipt](docs/plans/2026-10-08-release1-79-6-public-checks.json).
