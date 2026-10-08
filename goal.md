@@ -1,5 +1,28 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 full wearable-copy qualification, not live integration:** All252
+supplied item/tier/class fits generated as504 immutable-source High/Low copies:
+2622016 original triangles ->769432 High/404332 Low,32 unchanged variants
+explicitly recorded, all hashes/structural contracts checked. First native16
+pose/outfit cases pass but disclose interleaved-export draw-call regression;
+preserve failure boundary and use separate attribute layout. Corrected actual
+Chrome16 pass58.118s, matching original draw calls for all four classes/two
+tiers/two qualities,14 items and independent rigs. Ten selected comparisons
+reviewed, not every capture/all animation/art fidelity proof. No runtime catalog
+activation or original edits. Next integrate reviewed derivative versions/quality
+selection, then impacted equipped world/party measurements; earlier unequipped
+PASS does not close those gates. See
+[catalog evidence](docs/plans/2026-10-08-wearable-catalog-checks.json).
+
+**October8 Alpha1.79.5 public acceptance:** Own run37748224367 succeeds at
+exactde106428 through ordinary SSH/Pages and hosted Live QA. Root independently
+confirms matching public frontend/backend/database, tracked-clean production
+checkout and three selected published files after actual release rewriting.
+Admin story-only Dark Realm passage is live; level100 and other travel/raid
+gates remain. Optional four-class/full-animation checks skipped, not passed.
+See [public receipt](docs/plans/2026-10-08-release1-79-5-public-checks.json).
+Historical pending entries below are superseded; full roadmap remains active.
+
 **October8 equipped-world gap / first wearable runtime-copy pilot:** Optional
 actual14-item Fighter preview now uses matching High/Low body quality. Both
 world cases FAIL original budgets: High woodland408620tri/370calls, Low
@@ -14,7 +37,8 @@ generated pilot stays task-local, no live promotion. Safe overwrite/source-dir/
 unknown-model rejection verified. Next complete reviewed wearable derivatives
 and actual equipment/party geometry scope, not another unequipped benchmark.
 See [receipt](docs/plans/2026-10-08-equipped-earth-and-wearable-pilot-checks.json).
-Full roadmap/F1-F5/art/device/profile gates active;1.79.5 remains under Luna.
+Full roadmap/F1-F5/art/device/profile gates active;1.79.5 live acceptance above
+supersedes the pending status recorded during this earlier work.
 
 **October8 environment continuation / ordinary deployment reconciliation:**
 Root independently confirms1.79.4 run37744495087 terminal success at exact2b,

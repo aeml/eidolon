@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 current publication:1.79.5 de106428 is independently accepted live after
+ordinary CI/SSH/Pages/Live QA, with matching public front/back/database and three
+selected publisher-byte comparisons. See
+[public receipt](2026-10-08-release1-79-5-public-checks.json).
+Separate1.87 wearable task now derives all252 supplied fits into504 High/Low
+copies with original hashes/rigs retained. Corrected separate-buffer native16
+outfit cases pass, retaining original draw calls after a diagnosed interleaved
+export regression. This is representative animated-fit qualification only;
+runtime integration and actual equipped-world/party targets remain mandatory.
+See [exact scope/retained issue](2026-10-08-wearable-catalog-checks.json).
+No final art, full freeze, beta or raised-profile approval is implied. Older
+pending publication entries below are historical, not current live status.
+
 October8 equipped qualification correction: using all14 fitted Rare/Uncommon
 Fighter items exposes High/Low triangle-budget failures; High woodland also
 exceeds original draw-call limit. Unequipped PASS below does not qualify actual

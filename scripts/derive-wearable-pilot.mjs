@@ -5,13 +5,13 @@ import { pathToFileURL } from 'node:url';
 
 // Generated assets only. Never overwrite the delivered source or install into
 // another worktree's shared dependencies. A pilot is not runtime activation.
-const [name, actorClass, outputDirectory] = process.argv.slice(2);
-if (!name || !actorClass || !outputDirectory || !path.isAbsolute(outputDirectory)) {
-    throw new Error('Usage: derive-wearable-pilot.mjs <item name> <class> <new absolute output directory>');
+const [name, actorClass, outputDirectory, tier = 'standard'] = process.argv.slice(2);
+if (!name || !actorClass || !outputDirectory || !path.isAbsolute(outputDirectory) || !['standard', 'legendary'].includes(tier)) {
+    throw new Error('Usage: derive-wearable-pilot.mjs <item name> <class> <new absolute output directory> [standard|legendary]');
 }
 const manifest = JSON.parse(fs.readFileSync('assets/equipment/authored/manifest.json', 'utf8'));
-const asset = manifest.items.find(item => item.name === name)?.models.standard[actorClass];
-if (!asset) throw new Error('No delivered standard fitted model for this item/class');
+const asset = manifest.items.find(item => item.name === name)?.models[tier]?.[actorClass];
+if (!asset) throw new Error(`No delivered ${tier} fitted model for this item/class`);
 const source = path.resolve(asset.file), destination = path.resolve(outputDirectory);
 if (!fs.statSync(destination).isDirectory() || destination === path.dirname(source)) {
     throw new Error('Use a separate, existing owned output directory');
@@ -52,12 +52,14 @@ const importTool = async name => {
     if (metadata.version !== settings[name]) throw new Error(`Unqualified tool version for ${name}`);
     return import(pathToFileURL(path.join(directory, metadata.module || metadata.main)).href);
 };
-const { NodeIO } = await importTool('@gltf-transform/core');
+const { NodeIO, VertexLayout } = await importTool('@gltf-transform/core');
 const { ALL_EXTENSIONS } = await importTool('@gltf-transform/extensions');
 const { weld, simplifyPrimitive } = await importTool('@gltf-transform/functions');
 const { MeshoptSimplifier } = await importTool('meshoptimizer');
 await MeshoptSimplifier.ready;
-const io = new NodeIO().registerExtensions(ALL_EXTENSIONS);
+// Delivered gear uses separate attribute buffers. Interleaved export prevents
+// the renderer's exact compatible-gear batching; keep its mergeable layout.
+const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).setVertexLayout(VertexLayout.SEPARATE);
 const contract = document => {
     const root = document.getRoot();
     return {
@@ -86,22 +88,35 @@ for (const [quality, ratio, error] of [['high', .12, .002], ['low', .04, .006]])
     if (JSON.stringify(contract(document)) !== JSON.stringify(originalContract)) {
         throw new Error('Rig, transforms, materials, UV/skin semantics, morphs or texture payload changed');
     }
-    if (triangles(document) >= originalTriangles) throw new Error('Pilot failed to reduce geometry');
+    if (triangles(document) > originalTriangles) throw new Error('Pilot increased geometry');
     await io.write(output, document);
     preserveDeliveredTransforms(output);
     const verified = await io.read(output);
+    const outputBytes = fs.readFileSync(output);
+    const outputJSON = JSON.parse(outputBytes.subarray(20, 20 + outputBytes.readUInt32LE(12)).toString());
+    for (const mesh of outputJSON.meshes) for (const primitive of mesh.primitives) {
+        for (const index of Object.values(primitive.attributes)) {
+            const accessor = outputJSON.accessors[index], view = outputJSON.bufferViews[accessor.bufferView];
+            const components = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4 }[accessor.type];
+            const bytes = { 5120: 1, 5121: 1, 5122: 2, 5123: 2, 5125: 4, 5126: 4 }[accessor.componentType];
+            if (!components || !bytes || view.byteStride && view.byteStride !== components * bytes) {
+                throw new Error('Serialized wearable is not separately mergeable');
+            }
+        }
+    }
     const outputContract = contract(verified);
     for (const field of Object.keys(originalContract)) {
         if (JSON.stringify(outputContract[field]) !== JSON.stringify(originalContract[field])) {
             throw new Error(`Serialized pilot changed its ${field} contract`);
         }
     }
-    variants[quality] = { file: output, sha256: hash(fs.readFileSync(output)), triangles: triangles(verified), ratio, maximumError: error };
+    variants[quality] = { file: output, sha256: hash(fs.readFileSync(output)), triangles: triangles(verified), ratio,
+        maximumError: error, reduced: triangles(verified) < originalTriangles };
     console.log(`${quality}: ${originalTriangles} -> ${variants[quality].triangles} triangles`);
 }
 if (hash(fs.readFileSync(source)) !== sourceHash) throw new Error('Original source changed during derivation');
 const receipt = path.join(destination, `${stem}-pilot.json`);
 if (fs.existsSync(receipt)) throw new Error('Refusing to overwrite an existing pilot receipt');
-fs.writeFileSync(receipt, JSON.stringify({ name, actorClass, source, sourceHash, originalTriangles,
-    status: 'derived-contract-only-not-visual-or-runtime-approval', variants }, null, 2) + '\n');
+fs.writeFileSync(receipt, JSON.stringify({ name, actorClass, tier, source, sourceHash, originalTriangles,
+    vertexLayout: 'separate', status: 'derived-contract-only-not-visual-or-runtime-approval', variants }, null, 2) + '\n');
 console.log(`Pilot evidence: ${receipt}`);

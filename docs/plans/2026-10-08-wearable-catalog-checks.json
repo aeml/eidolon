@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "milestone": "1.87 staged fitted wearable runtime copies",
+  "base": "4cc5a227e3619681bad8c33e00855f145ac30654",
+  "status": "all-delivered-fits-derived-representative-native-outfits-qualified-not-integrated",
+  "scope": "36 supplied items, 252 standard/legendary class/universal fits, 504 separate High/Low GLBs generated outside repository runtime assets. Original supplied source manifest, models, provenance and runtime catalog remain untouched. No production version, geometry/frame targets, foliage population, saves or class rules changed.",
+  "generation": {
+    "tools": { "gltfTransform": "4.5.1", "meshoptimizer": "1.2.0" },
+    "sourceManifestSHA256": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f",
+    "models": 252,
+    "variants": 504,
+    "originalTriangles": 2622016,
+    "highTriangles": 769432,
+    "lowTriangles": 404332,
+    "unchangedVariants": 32,
+    "hashFailures": 0,
+    "lowExceedsHigh": 0,
+    "interleavedAttributes": 0,
+    "contract": "Exact named node hierarchy/TRS, ordered skin joints/inverse-bind matrices, animation names, texture payload hashes and material/UV/skin/morph semantic contracts checked before and after simplification and serialized reread. Generated node transforms retain exact supplied values; separate output attributes remain mergeable. Error/topology can prevent reductions; 32 unchanged variants are recorded reduced:false, not hidden, forced or described as optimized. This is not exhaustive animation-channel or no-clipping proof.",
+    "retainedFailure": "First wrapper invocation placed redirected log inside target, correctly failed empty-directory guard before generation. Corrected invocation writes log outside a fresh directory; guard unchanged. First bulk catalog used exporter default interleaved buffers, preserving triangle reductions but disabling compatible fitted batching. It remains retained and unintegrated. Initial audit incorrectly classified any explicit byteStride as interleaved; actual Three loader compares stride with attribute itemBytes. Correct audit and generator guard compare the actual width, with zero incompatible attributes. No runtime batching eligibility weakened."
+  },
+  "native": {
+    "browser": "Actual System Chrome with hardware render-group WebGL, matching High/Low body quality; no software renderer or TLS bypass.",
+    "firstRun": "16 passed57.799s for rig/geometry/four poses before draw-call guard was added. Original/derived Fighter standard calls29/49 and legendary37/68 exposed regression; not a performance acceptance. Artifact directory retained separately.",
+    "correctedRun": "16 passed58.118s, zero skips/flaky/unexpected or browser failures. Separate exports preserve original per-outfit draw calls; explicit no-increase assertion now required. Each original-left/derived-right pair has independent bones, 14 complete fitted items, correct body skeleton ownership, finite sampled posed vertices and CombatIdle/Run/Attack/Jump captures.",
+    "outfitTriangles": [
+      { "class": "Fighter", "tier": "standard", "high": [143961, 63429], "low": [133305, 33017], "calls": 29 },
+      { "class": "Fighter", "tier": "legendary", "high": [152243, 67559], "low": [141587, 36423], "calls": 37 },
+      { "class": "Rogue", "tier": "standard", "high": [131334, 57132], "low": [119789, 28483], "calls": 29 },
+      { "class": "Rogue", "tier": "legendary", "high": [140523, 61129], "low": [128978, 32054], "calls": 38 },
+      { "class": "Wizard", "tier": "standard", "high": [145519, 73121], "low": [127395, 42535], "calls": 34 },
+      { "class": "Wizard", "tier": "legendary", "high": [157878, 81144], "low": [139754, 47906], "calls": 44 },
+      { "class": "Cleric", "tier": "standard", "high": [135920, 55904], "low": [124351, 29745], "calls": 33 },
+      { "class": "Cleric", "tier": "legendary", "high": [148410, 63770], "low": [136841, 35279], "calls": 44 }
+    ],
+    "visualReview": "Initial interleaved comparisons inspected: Fighter standard High Attack, legendary High Jump; Rogue standard High Attack, legendary High Jump; Wizard standard High Run; Cleric standard High Attack, legendary Low Run. Final separate-buffer comparisons inspected: Wizard legendary High Attack, Fighter standard Low Run, Cleric standard Low Attack. Broad outfit silhouettes and fit retained, some small plate detail smoother; no obvious large gaps in these samples. Other captures available but not claimed reviewed, no strict pixel equality/all combinations/full modern-art acceptance.",
+    "boundary": "Test-page-only catalog substitutions restored in finally. All source/variant hashes validated. Runtime asset versions/quality selection not integrated, no world/party performance or full animation sweep inferred. Owned preview server closed.",
+    "guards": "Final separate-layout and serialized-layout guard generator rerun for Plate Mail passes9021/4605tri. Existing output, original source directory and nonempty bulk target reject as expected; retained pilot files stay byte-identical. Scoped ESLint, whitespace and receipt JSON validation pass."
+  },
+  "artifacts": {
+    "firstCatalog": "/home/aeml/.local/share/eidolon-wearable-catalog-Nz4ya4UT",
+    "firstCatalogSHA256": "b32e34983781727a8595bac6415f37d9a4808da90c033be91fe348568d5f8d12",
+    "firstNativeLog": "/home/aeml/.local/share/eidolon-wearable-catalog-native-20261008.log",
+    "firstNativeLogSHA256": "039581435b3a4661df7b8a41ead68032e9b73161157bdc9ed1c499d1e3afec9b",
+    "separateCatalog": "/home/aeml/.local/share/eidolon-wearable-separate-catalog-RLo6G9Zy",
+    "separateCatalogSHA256": "11c48b08b5232aea84d9effaf64e61865bd40503f36605b79f3b28e7fb6e1413",
+    "separateNativeLog": "/home/aeml/.local/share/eidolon-wearable-separate-native-20261008.log",
+    "separateNativeLogSHA256": "8497b778a845017a9376bf7c9070f9d5bda71087b7789cc2edc38b1de1a5472d"
+  },
+  "next": "Review remaining representative art and integrate immutable-source quality derivatives/provenance/cache versions on the staged branch, retaining original fallback. Then measure impacted equipped solo/party world budgets without weakening targets or removing gear/foliage. Full1.80 F1-F5,1.87 device/profile/modern art, owner campaign and future roadmap gates remain open. Accepted public release is1.79.5 de106428, not this staged art."
+}

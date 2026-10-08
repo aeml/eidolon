@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T08:55:36Z",
+  "version": "Alpha 1.79.5",
+  "commit": "de106428b8c5350ff40f9071ed2a86fbd938a6de",
+  "status": "ordinary-ci-deployment-live-qa-and-independent-public-identity-passed",
+  "ci": {
+    "run": 37748224367,
+    "conclusion": "success",
+    "mandatory": "Authorized Luna reports terminal success; root independently reads exact head and all ten job conclusions. Client/Server, three Browser Smoke shards, Predeploy, production input validation, ordinary SSH/Pages publication and Live Release and Character QA all succeed.",
+    "live": "Anonymous/persistent-character and town recovery/Well Rested checks passed. Optional four-class/remote-animation check skipped, not passed. Predeploy optional full gallery, GPU lifecycle and full-character scenarios skipped; focused delivered equipment and release smoke passed. No exhaustive campaign, phone or all-animation claim."
+  },
+  "public": {
+    "transport": "Ordinary DNS, forced IPv4 and verified HTTPS. No resolver or TLS bypass.",
+    "frontend": { "version": "Alpha 1.79.5", "commit": "de106428b8c5350ff40f9071ed2a86fbd938a6de" },
+    "backend": { "status": "ok", "database": "ready", "version": "Alpha 1.79.5", "commit": "de106428b8c5350ff40f9071ed2a86fbd938a6de" },
+    "productionCheckout": "Tracked clean /home/aeml/eidolon independently matches de106428.",
+    "selectedBytes": "index.html, src/ui/ResonancePortalDialog.js and src/ui/AdminUI.js byte-match exact commit after actual exported publisher rewriting; selected checks, not an all-assets audit.",
+    "htmlSHA256": "05c77b9e0e1e757e120f5957b013f09b35b966b5369b88afee400ec7b31b495c",
+    "portalSHA256": "9228d9b7b1c5323d61b545d1ff059c085c0b3895b7f759c3415381ca39304c85",
+    "administrationSHA256": "93cc7535f24a296b9ac9a3ef422972cea9662c486fc54f9439043effec6eb3a0",
+    "retainedDiagnosticMistakes": "First guessed /api/health returns404; verified actual /healthz from workflow and reran successfully. First selected-byte script guessed nonexistent DarkRealmPortalDialog.js; resolved actual ResonancePortalDialog.js from committed change list and compared successfully. Neither diagnostic failure is hidden as an initial pass or changes production."
+  },
+  "feature": "Durable-role administrators bypass Dark Realm story/crystal requirements only. Level100, alive/action/scene/proximity checks remain. Permission is audited and current role/session/audit failures deny. Ordinary players and Nexus/raid gates unchanged; no quest/reward mutation.",
+  "remaining": "Future wearable/terrain work remains isolated and is not published. Full1.80 F1-F5,1.87 equipped-party/device/profile/modern-art and full roadmap gates remain open; deferred human campaign/physical-phone checks not passed."
+}
