@@ -113,9 +113,13 @@ export function createElementalCoverTuft(realm, variant, quality = 'high') {
     return geometry;
 }
 
-export function createElementalGroundCover(site, realm, footprints, material, quality = 'high') {
-    const plants = elementalGroundCoverPlacements(site, realm, footprints, quality);
-    if (!plants.length) return null;
+function createCoverGeometry(plants, realm, quality) {
+    if (!plants.length) {
+        const empty = new THREE.BufferGeometry();
+        for (const name of ['position', 'normal', 'color']) empty.setAttribute(name, new THREE.Float32BufferAttribute([], 3));
+        empty.computeBoundingBox(); empty.computeBoundingSphere();
+        return empty;
+    }
     const variants = Array.from({ length: 4 }, (_, i) => createElementalCoverTuft(realm, i, quality));
     const parts = plants.map(plant => {
         const geometry = variants[plant.variant].clone();
@@ -125,8 +129,36 @@ export function createElementalGroundCover(site, realm, footprints, material, qu
     const geometry = mergeGeometries(parts, false);
     [...parts, ...variants].forEach(g => g.dispose());
     geometry.computeBoundingBox(); geometry.computeBoundingSphere();
+    return geometry;
+}
+
+export function createElementalGroundCover(site, realm, footprints = [], material, quality = 'high') {
+    const level = quality === 'low' ? 'low' : 'high';
+    const plants = elementalGroundCoverPlacements(site, realm, footprints, level);
+    if (!plants.length) return null;
+    const geometry = createCoverGeometry(plants, realm, level);
     const mesh = new THREE.Mesh(geometry, material); mesh.name = `${site.id}:ground-cover`;
     mesh.receiveShadow = true; mesh.castShadow = false;
     mesh.userData.plantCount = plants.length;
+    mesh.userData.elementalGroundCover = { site, realm, quality: level,
+        footprints: footprints.filter(footprint => footprint.siteId === site.id) };
     return mesh;
+}
+
+// Settings-change work only, never a per-frame regeneration. Preserve the
+// existing mesh/material/parent/transforms; each replaced geometry is owned
+// by this scene and released immediately, with no retained alternate buffers.
+export function updateElementalGroundCoverQuality(root, quality) {
+    const level = quality === 'low' ? 'low' : 'high';
+    root?.traverse(mesh => {
+        const cover = mesh.userData.elementalGroundCover;
+        if (!mesh.isMesh || !cover || cover.quality === level) return;
+        const plants = elementalGroundCoverPlacements(cover.site, cover.realm, cover.footprints, level);
+        const geometry = createCoverGeometry(plants, cover.realm, level);
+        const previous = mesh.geometry;
+        mesh.geometry = geometry;
+        mesh.userData.plantCount = plants.length;
+        cover.quality = level;
+        previous.dispose();
+    });
 }

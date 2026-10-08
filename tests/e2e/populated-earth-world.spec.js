@@ -193,6 +193,15 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     const originalChildren = [...group.children];
                     const originals = originalChildren.map(mesh => ({ mesh, material: mesh.material,
                         buffer: mesh.instanceMatrix, transforms: mesh.instanceMatrix.array.slice(), count: mesh.count }));
+                    const covers = [];
+                    render.instanceEnvironmentGroup.traverse(mesh => {
+                        const cover = mesh.userData.elementalGroundCover;
+                        if (cover && (elemental === 'air' ? cover.realm === 'air' : ['water', 'fire'].includes(cover.realm))) {
+                            covers.push({ mesh, material: mesh.material, parent: mesh.parent,
+                                matrix: mesh.matrix.clone(), counts: new Map() });
+                        }
+                    });
+                    if (covers.length !== (elemental === 'air' ? 8 : 16)) throw new Error('Missing production cover beds');
                     const phases = [];
                     const resources = () => ({ geometries: render.renderer.info.memory.geometries,
                         textures: render.renderer.info.memory.textures, programs: render.renderer.info.programs.length });
@@ -214,8 +223,26 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                                     throw new Error(`Foliage placement, material or bounds lost: ${id}/${next}`);
                                 }
                             }
+                            let coverPlants = 0, coverTriangles = 0;
+                            for (const original of covers) {
+                                const mesh = original.mesh, cover = mesh.userData.elementalGroundCover;
+                                visit(cover.site.id); // Upload/draw actual replacement buffers at their landmark.
+                                if (cover.quality !== next || mesh.material !== original.material || mesh.parent !== original.parent ||
+                                    !mesh.matrix.equals(original.matrix) || mesh.castShadow || !mesh.receiveShadow ||
+                                    !Number.isFinite(mesh.geometry.boundingSphere.radius) || mesh.geometry.boundingSphere.radius <= 0) {
+                                    throw new Error(`Cover ownership/quality/bounds lost: ${cover.site.id}/${next}`);
+                                }
+                                const triangles = mesh.geometry.attributes.position.count / 3;
+                                const counts = `${mesh.userData.plantCount}/${triangles}`;
+                                if (original.counts.has(next) && original.counts.get(next) !== counts) {
+                                    throw new Error(`Non-deterministic cover: ${cover.site.id}/${next}`);
+                                }
+                                original.counts.set(next, counts);
+                                coverPlants += mesh.userData.plantCount; coverTriangles += triangles;
+                            }
+                            visit(`${id}-bough-review`);
                             phases.push({ quality: next, triangles, calls: render.renderer.info.render.calls,
-                                renderedTriangles: render.renderer.info.render.triangles });
+                                renderedTriangles: render.renderer.info.render.triangles, coverPlants, coverTriangles });
                         }
                     };
                     runCycle(); // Warm both actual GPU geometry/shader paths.
@@ -224,7 +251,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     return { id, phases, beforeRepeat, afterRepeat: resources(), restoredQuality: render.graphicsQuality,
                         instanceCount: group.userData.instanceCount, batchCount: group.children.length,
                         partsPerCell: new Set(group.children.map(mesh => mesh.name)).size,
-                        cells: new Set(group.children.map(mesh => mesh.userData.foliageCell)).size };
+                        cells: new Set(group.children.map(mesh => mesh.userData.foliageCell)).size, coverBeds: covers.length };
                 },
                 reviewWind() {
                     visit('first-grove-arch');
@@ -499,6 +526,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 expect(swaps.instanceCount).toBe(elemental === 'air' ? 90 : 100);
                 expect(swaps.partsPerCell).toBe(elemental === 'air' ? 3 : 4);
                 expect(swaps.batchCount).toBe(swaps.partsPerCell * swaps.cells);
+                expect(swaps.coverBeds).toBe(elemental === 'air' ? 8 : 16);
                 expect(swaps.afterRepeat).toEqual(swaps.beforeRepeat);
                 const high = swaps.phases.find(phase => phase.quality === 'high').triangles;
                 const low = swaps.phases.find(phase => phase.quality === 'low').triangles;
@@ -507,7 +535,15 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     expect(phase.triangles).toBe(phase.quality === 'low' ? low : high);
                     expect(phase.calls).toBeGreaterThan(0);
                     expect(phase.renderedTriangles).toBeGreaterThan(0);
+                    expect(phase.coverPlants).toBeGreaterThan(0);
+                    expect(phase.coverTriangles).toBeGreaterThan(0);
+                    if (elemental === 'air') {
+                        expect(phase.coverPlants).toBe(phase.quality === 'low' ? 617 : 1111);
+                        expect(phase.coverTriangles).toBe(phase.coverPlants * (phase.quality === 'low' ? 60 : 120));
+                    }
                 }
+                expect(swaps.phases.find(phase => phase.quality === 'low').coverTriangles)
+                    .toBeLessThan(swaps.phases.find(phase => phase.quality === 'high').coverTriangles);
                 await writeFile(testInfo.outputPath('regional-quality-swaps.json'), JSON.stringify(swaps, null, 2));
                 await page.screenshot({ path: testInfo.outputPath('regional-quality-restored.png') });
             }

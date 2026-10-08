@@ -1,0 +1,30 @@
+{
+  "status": "staged settings-change fix qualified; not delivered",
+  "base": "8fb4e683",
+  "scope": "RenderSystem.setGraphicsQuality now regenerates existing elemental cover beds at the normalized detail level. Preserve mesh, parent, material, transforms and receive-only shadow flags. Keep only the current scene-owned geometry; dispose every replaced geometry immediately. Repeated same-detail settings are no-ops; Medium uses existing High cover detail. No per-frame regeneration, alternate-buffer cache, new vegetation, collider change or texture.",
+  "units": "Two suites13pass6.956s: Water/Fire/Air setting switches retain scene identity, regenerate exact canonical position/normal/color bytes and plant counts, release old geometry once, restore High bytes, preserve material ownership until final disposal, skip unrelated/absent roots. Existing saved-quality/shadow/postprocessing/context ownership cases pass. Initial four new cases6.484s overlap, not extra tests. Scoped lint/diff pass.",
+  "native": "Final isolated System Chrome AMD Vulkan production renderer, Water/Fire and Air High1280/Low390: four cases55.8s. Twelve setting phases per case, including a warm cycle and three repeats. Visit/draw each of the16 Water/Fire or8 Air cover beds every phase, check material/parent/local-matrix/bounds/shadow identities, deterministic counts and restored setting. Existing tree instance conservation, reading interactions and Air aim/projectile fixtures pass. All four warmed repeat GPU resource snapshots exactly stable. These are bare solo renderer/interaction fixtures, not earned damage, equipped party, sustained device or physical-phone proof.",
+  "coverGeometryTotals": {
+    "waterFireHigh":{"plants":1743,"triangles":287082},
+    "waterFireLow":{"plants":926,"triangles":47960},
+    "airHigh":{"plants":1111,"triangles":133320},
+    "airLow":{"plants":617,"triangles":37020}
+  },
+  "totalsScope": "Totals are geometry across all landmarks, not simultaneously rendered whole-scene submissions or a new draw/frame budget. No content/geometry/shadow/frame/draw/triangle limit changed. The prior Air-heath timing/native scope remains separate; this bounded settings-change follow-up does not repeat or claim a new timing qualification.",
+  "stableResources": [
+    {"region":"waterFire","initialQuality":"high","geometries":280,"textures":55,"programs":85},
+    {"region":"waterFire","initialQuality":"low","geometries":275,"textures":41,"programs":33},
+    {"region":"air","initialQuality":"high","geometries":166,"textures":51,"programs":76},
+    {"region":"air","initialQuality":"low","geometries":164,"textures":37,"programs":29}
+  ],
+  "sourceSHA256": {
+    "src/art/ElementalGroundCover.js":"20f3e1f7d171cdc159cfca0e22103cc385a7ae9a32e3c6cbb131d84985026217",
+    "src/core/RenderSystem.js":"749566248aebeb1f445ab5fa63013e2ecc04bb9161e5773fb31768edb11ef4fe",
+    "tests/ElementalGroundCoverQuality.test.js":"c87f0b6c737fa4ac7239ce2d8ccdbc762b8c98187ad19280fd2f7e4e6ca30f3f",
+    "tests/e2e/populated-earth-world.spec.js":"bb227eb7fa522fc7266bc11647d3dee831aa15ea8da2a120b8ecc5de5d6cd60c"
+  },
+  "nativeLogSHA256":"afcd298c8a0f8a794e7ac37fa2e45a641e04eb764c9dcc55d4141628baac8fa5",
+  "artifactDirectory":"/home/aeml/.local/share/eidolon-groundcover-quality-native-20261008",
+  "logs":["/home/aeml/.local/share/eidolon-groundcover-quality-units-20261008.log","/home/aeml/.local/share/eidolon-groundcover-quality-final-units-20261008.log","/home/aeml/.local/share/eidolon-groundcover-quality-native-20261008.log"],
+  "remaining":"Closes staged elemental cover-bed runtime switching only. Current-master integration and its own version/notes/deployment acceptance remain after prepared selective1.79.10; do not publish the entire future RenderSystem branch. Broad regional corridor composition and full town/dungeon/world art, raised production/wearables/party/device and1.80F1-F5/1.81-1.99 remain open. Pending1.79.9 run37791738441 exact293a9ccc remains unchanged; Luna monitors, owner cancellation/retry answer outstanding. No campaign/soak replay or owner/human-gate waiver."
+}

@@ -49,8 +49,12 @@ Staged [Air landmark heath](2026-10-08-air-heath-checks.json) adds 1,111 High/
 routes/hazards/readings and original solid footprints. Reject initial speck-like
 grass; final leafy tufts pass sixteen distinct focused cases and two native
 High/Low cases/ten timed views under unchanged whole-scene limits. Not yet
-delivered; broad regional travel-corridor composition and runtime cover-bed
-quality regeneration remain open, not final art or full-world completion.
+delivered; broad regional travel-corridor composition remains open, not final
+art or full-world completion. Staged [cover-bed runtime settings](2026-10-08-groundcover-quality-checks.json)
+now update all 24 Water/Fire/Air beds without reloading, preserve mesh/material
+ownership and dispose replaced buffers. Thirteen focused/resource checks and
+four native regional cases pass with stable warmed GPU resources. Selective
+current-master integration and delivery remain open, not a full renderer release.
 
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
