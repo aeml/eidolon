@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Optional public login/manifest/API outage checks staged at2be4f1cd in
+  `/home/aeml/.local/share/eidolon-public-monitor-SVPI3UWI`, based on prepared
+  1.79.12. Paired startup-only HTTPS flags, bounded bodies/shared public
+  deadline, identity agreement and unchanged incident/alert policy qualify
+  with two scoped race packages and one read-only current-public1.79.8 test.
+  [Receipt](docs/plans/2026-10-08-public-monitor-checks.json). Production service
+  remains local-only; no activation, version, push, mail, private-env or policy
+  change. Structural HTTP is not browser execution or off-machine/whole-host
+  coverage;1.83/F1-F5 stay open. Select after existing prepared releases.
+
 - Staged supplied-equipment surfaces now reuse small generated cloth/leather/
   wood/metal maps while preserving authored textures, colors and magic.104
   focused checks and paired eight-outfit native reference/candidate pass with

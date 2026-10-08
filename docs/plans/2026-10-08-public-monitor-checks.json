@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-08",
+  "base": "af7993dd prepared Alpha 1.79.12; isolated work/alpha-1-83-public-monitor-preparation-20261008",
+  "scope": "Optional startup-only paired HTTPS /release.json and /healthz flags; frontend root page structural login controls; fixed typed public metrics and sanitized incident causes; public/local release identity agreement; ordinary TLS/DNS and redirect refusal. All defaults and installed local-only service unchanged.",
+  "bounds": "Baseline request retains existing timeout. Three public GETs share one additional request-timeout deadline. HTML <=1MiB; JSON <=32KiB each. Public checks only after healthy baseline; parent cancellation is not an outage. Existing optional whole-HTTP latency budget includes public work; storage/mail waits remain separate. Existing 3-failure/2-recovery/reminder/attempt policy unchanged.",
+  "failedAttempt": "Initial scoped race run found two test-fixture failures: replacing the client with httptest's trusted-TLS client also replaced redirect refusal. Preserve constructor redirect policy when installing test-only trusted transport; production already refused redirects. Original log retained. Also use atomic fixture state rather than changing a running server Handler, and reject even an empty URL fragment.",
+  "race": "go test -race -json ./internal/operations ./cmd/monitor passes7.125s and7.024s respectively. 161 operations plus9 command test/subtest pass events, including parent/subtest events (not170 independent cases); one explicit live opt-in skip in ordinary run, not a pass. Twenty real local TLS response scenarios cover page/manifest/API errors, redirect refusal, untrusted certificate, bounds, invalid/mismatched identity and privacy. Shared deadline/cancellation, default local-only isolation, generic config errors, configuration-only no-IO/no-mail and existing detector/alert regressions retained.",
+  "liveReadOnly": "Explicit EIDOLON_PUBLIC_MONITOR_QA=1 single scoped race test passes0.53s/1.552s package: four GETs, ordinary TLS/DNS, current frontend/page/manifest and API agree on Alpha 1.79.8 / bf145bdab4d63770e1d764c3bfb270fc0a374ea2. Same-host vantage only; no authentication, player mutation or email.",
+  "binary": "Actual go build ./cmd/monitor succeeds. CHECK_CONFIG=true with paired .invalid public URLs, unreachable local health and no mail credentials exits0 silently without IO. Incomplete public configuration exits1 with a generic message. diff checks and gofmt pass.",
+  "artifacts": "/home/aeml/.local/share/eidolon-public-monitor-checks-vSYP5VNB; initial failure /home/aeml/.local/share/eidolon-public-monitor-first-20261008.log",
+  "sha256": {
+    "raceJsonl": "4f9a4f180acf0a8b23a4b8417ca6c30a9fc9d7c56b322176bf599d53e3c44894",
+    "liveReadOnly": "6f008ae14fcd975c680ca92da76cf2359d873aa83e6697e329aa39e0ae472be9",
+    "initialFailure": "2c7a9aa5a03b644b36b1d988adf3bf65ed6d28b9800419b970a48afd625d6bf7"
+  },
+  "delivery": "No public version bump, patch note, push, CI dispatch, monitor activation, Compose/private-env/DNS/recipient/retention change, production restart or mail. Stage after ordered 1.79.9–1.79.12 acceptance with fresh remote reconciliation; add notes at actual integration.",
+  "remaining": "Structural HTTP checks cannot prove browser execution, full Firefox gameplay, every IPv4/IPv6 route, off-machine reachability or host-survival coverage. Production activation and deployment-transition/recovery qualification are still open. No complete1.83,1.80F1-F5, modern-art/device/human/owner/beta/launch acceptance; full goal active."
+}
