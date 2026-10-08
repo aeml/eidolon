@@ -69,6 +69,10 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     const transform = new THREE.Object3D();
     for (const [key, entries] of cells) {
         const mesh = new THREE.InstancedMesh(geometries[entries[0].variant], material, entries.length);
+        // Like tree cells, local identity is fixed: every plant's placement is
+        // in instanceMatrix and wind is in the shader. Live parent transforms
+        // still propagate, without composing this identity on every frame.
+        mesh.matrixAutoUpdate = false;
         mesh.name = `understory:${key}`;
         mesh.receiveShadow = true;
         mesh.castShadow = false;

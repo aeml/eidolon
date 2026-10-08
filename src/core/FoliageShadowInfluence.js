@@ -1,5 +1,6 @@
 import { BasicShadowMap, Box3, Frustum, Matrix4, PCFShadowMap, PCFSoftShadowMap, Vector3 } from 'three';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from './ShadowViewCoverage.js';
+import { cacheUnchangedLocalMatrix } from './UnchangedLocalMatrix.js';
 
 // Bound the actual shader lookup footprint in world units. PCF offsets reach
 // radius texels; PCFSoft reaches two texels and ignores radius. An extra texel
@@ -64,11 +65,21 @@ export class FoliageShadowInfluence {
         // Callers without an owned scene retain the original traversal path.
         this.scene = scene; this.roots = new Set();
         this.boundsCache = new WeakMap();
+        this.matrixRestorers = new Map();
         const register = root => {
-            if (root.userData.earthUnderstory || root.userData.proceduralFoliage) this.roots.add(root);
+            if (root.userData.earthUnderstory || root.userData.proceduralFoliage) {
+                this.roots.add(root);
+                if (!this.matrixRestorers.has(root)) {
+                    const restore = cacheUnchangedLocalMatrix(root);
+                    if (restore) this.matrixRestorers.set(root, restore);
+                }
+            }
         };
         this.onAdded = event => event.child.traverse(register);
         this.onRemoved = event => {
+            event.child.traverse(part => {
+                this.matrixRestorers.get(part)?.(); this.matrixRestorers.delete(part);
+            });
             for (const root of this.roots) for (let node = root; node; node = node.parent) {
                 if (node === event.child) { this.roots.delete(root); break; }
             }
@@ -150,7 +161,10 @@ export class FoliageShadowInfluence {
                 if (node !== root && this.roots.has(node)) nested = true;
                 if (node === scene) { connected = true; break; }
             }
-            if (!connected) this.roots.delete(root);
+            if (!connected) {
+                this.roots.delete(root);
+                this.matrixRestorers.get(root)?.(); this.matrixRestorers.delete(root);
+            }
             else if (visible && !nested) root.traverseVisible(this.visit);
         }
     }
@@ -172,5 +186,7 @@ export class FoliageShadowInfluence {
         }
         this.watchedGroups.length = 0; this.roots.clear(); this.scene = null;
         this.boundsCache = new WeakMap();
+        for (const restore of this.matrixRestorers.values()) restore();
+        this.matrixRestorers.clear();
     }
 }

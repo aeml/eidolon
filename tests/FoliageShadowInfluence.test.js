@@ -38,6 +38,16 @@ test('unchanged qualified bounds are reused but parent transforms and live bound
     } finally { transform.mockRestore(); s.controller.dispose(); }
 });
 
+test('detaching a registered root through an unwatched container restores its owned matrix hooks', () => {
+    const s = fixture(), wrapper = new THREE.Group(); s.scene.add(wrapper); wrapper.add(s.group);
+    const original = s.group.updateMatrixWorld;
+    const controller = new FoliageShadowInfluence(s.scene, [s.scene]);
+    expect(s.group.updateMatrixWorld).not.toBe(original);
+    wrapper.remove(s.group); controller.beginFrame(s.scene, s.camera, s.light);
+    expect(s.group.updateMatrixWorld).toBe(original); expect(controller.matrixRestorers.size).toBe(0);
+    controller.dispose(); s.controller.dispose();
+});
+
 test('registered foliage roots avoid scanning unrelated actors and retain add/remove/visibility ownership', () => {
     const s = fixture(), background = new THREE.Group(); s.scene.add(background);
     for (let index = 0; index < 200; index++) background.add(new THREE.Group());

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "base": "14e6612a",
+  "status": "scoped-static-matrix-work-removed-native-and-save-checks-pass-party-performance-still-open",
+  "implementation": "Guard unchanged local matrix composition on six owned scene containers and qualified foliage groups only. Preserve Three flags, current TRS/manual matrix edits, force updates, queries, reparenting and new-child world dirtiness; restore owned methods/listeners on detach/disposal without overwriting later hooks. Actor/bone/skinned/instanced mesh methods untouched. Generated grass cells use fixed local identity like existing tree cells; all placements/wind remain in original instance buffers/shader, with live parent propagation.",
+  "reproduction": "Existing renderer recomputes an unchanged static foliage world matrix on second frame: new regression1 fail13 pass0.71s. Corrected test requires zero such multiplies while ordinary actor/bone movement and moved parents still update.",
+  "retainedAttempt": "Initial per-cell wrappers qualify49 unit checks and native2 cases42.0s, but actual High observer36.70s has CPU26.6/33.5ms median/p95, with updateLocal271354us/updateWorld254563us in post-sample profile. No gain accepted. Remove all per-cell wrappers, retain only container/group guards and fixed generated-cell identity; not a hidden accepted intermediate.",
+  "finalUnits": "Six suites54 assertions pass3.725s, including Three-equivalent TRS/manual flags/queries, parent movement, settled-parent reparenting, force updates, new-child propagation, detach/listener teardown and unmodified actor/bone methods. Scoped ESLint and whitespace pass.",
+  "native": "Actual System Chrome AMD Vulkan/RADV: final High1280x844/Low390x844 two cases pass40.7s, all eight120-RAF profiles use original frame/geometry/draw limits. Filtering and surface-culling pixels change zero; actual prior-tree comparison stays1-3/270080 below unchanged.001 threshold. High woodland346calls/247325tri and Low100/66176 unchanged; movement/grounding/fit/effects checks remain. Not final modern art, all animations or a physical-phone test.",
+  "finalParty": "Actual single High renderer/three authenticated party socket peers and all four fresh fourteen-slot saves pass35.65s/browser29.3s.180-frame median33.2ms/p9533.4/p9933.5,35 over33ms; CPU24/29.4ms,574calls/568326tri,36entities,zero previews. Post-frame CPU: foliage visit774290us, updateMatrixWorld136714us/multiplyMatrices102574us. Different entity/host conditions prohibit cross-run speed attribution; no original High-party acceptance, battle/campaign or capacity certificate. Four-browser case deliberately skipped, not passed again. Disposable cleanup completed.",
+  "evidence": {
+    "red": "/home/aeml/.local/share/eidolon-static-world-matrix-red-20261008.log",
+    "redSHA256": "9937cb38d2887d8b194d33d52fc500734716111b786ab31be9de07c746586d11",
+    "unitsSHA256": "e6b95cb277b90d38869bed6f2086a6559936a09e8ed5a6035f1ae764506b6686",
+    "native": "/home/aeml/.local/share/eidolon-static-world-narrow-native-20261008.log",
+    "nativeSHA256": "1a1eceb8dc6142cbcda124cddebfa265759491318c52bdad748805a3ff7f25ab",
+    "party": "/home/aeml/.local/share/eidolon-terrain-save-evidence-3s4E08HL/browser.log",
+    "partySHA256": "3c560f8d738e67e1d169c4a054a6a63a1cd2c0cffe4b4b476ca7a969097c3581"
+  },
+  "sourceSHA256": {
+    "src/core/UnchangedLocalMatrix.js": "dd5acc357a98419fe1bf26edaa87f1b56ac1b71fef3ad790a050ba9a7a4412c0",
+    "src/core/RenderSystem.js": "bba64f95fe322cfa045ab59f54353e78c9d964fffdc7302698cc7eb4f2ba89d6",
+    "src/core/FoliageShadowInfluence.js": "e8d2d38710b552c8d978898523a959108c03e4cf3e48b8cdb64d3e80731c5d7d",
+    "src/art/EarthUnderstory.js": "90938d15c81a6f8c8f016aa574ab3d3df8c375744793b2e3af18da3fed5981ef"
+  },
+  "remaining": "Next inspect allocation-heavy live foliage guards/bounds checks and retain exact dynamic/pixel/lifecycle invariants before broader spatial restructuring or more party replays. Full1.80 F1-F5,1.87 final equipped-party/device/modern-art/profile/public delivery and later beta/launch requirements remain open. Human campaign/phone evidence stays deferred, not passed. Alpha1.79.6 remains accepted live; no staged asset/profile/version publication."
+}

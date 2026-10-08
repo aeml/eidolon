@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 static-world matrix work corrected:** Reproduce idle parent forcing
+static foliage multiplication. First broad per-cell wrapper adds overhead, so
+reject that approach; guard only six owned containers and foliage groups,
+with generated grass's fixed identity matching existing tree cells. Preserve
+TRS/manual/parent/reparent/force/query semantics and all actor/bone methods.
+Final54 focused assertions, High/Low eight-view native40.7s and actual High
+party/fresh fourteen-slot saves35.65s pass. Party median33.2ms still unqualified;
+no cross-run speed or modern-art/device claim. See
+[scope and retained attempt](docs/plans/2026-10-08-static-world-matrix-checks.json).
+Next allocation-heavy foliage guards/bounds checks; avoid unchanged campaign
+or population replays. Full roadmap/F1-F5/1.87/final art/profile gates active;
+public remains accepted1.79.6, no new staged art deployment.
+
 **October8 tree-shading gap resolved:** Reproduce unsupported instanced shear,
 bake only fixed sheared part transforms once with exact source surface/UV/color
 and normal checks, preserving all crowns/materials/shadows. Actual equipped

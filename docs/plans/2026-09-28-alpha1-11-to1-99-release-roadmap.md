@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 idle matrix propagation advances: reject per-cell wrapper overhead,
+cache only owned container/foliage-group local transforms, and keep fixed grass
+identity like tree cells. Actor/bone, parent/manual/reparent/force semantics and
+teardown retained;54 focused checks, actual High/Low eight-view native40.7s and
+High observer/fresh fitted saves35.65s pass. Party33.2ms median still leaves final
+performance open; next inspect allocation-heavy foliage guards without reducing
+quality or replaying unchanged campaigns. See
+[exact evidence](2026-10-08-static-world-matrix-checks.json).
+Accepted public1.79.6 unchanged; full1.80 F1-F5/1.87/art/device/profile/beta/launch
+scope remains active, not accepted by these bounded checks.
+
 October8 latest rendering evidence resolves the real prior-tree comparison:
 unsupported sheared normal transforms now baked once, with source surfaces,
 normals/UV/colors and every crown/material/shadow retained.72 focused checks
