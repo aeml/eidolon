@@ -3,7 +3,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.8';
+const currentVersion = '1.79.9';
+
+test('1.79.9 records distinct bark and retained-population woodland composition without claiming final art', () => {
+    const html = fs.readFileSync('index.html', 'utf8');
+    const start = html.indexOf('data-version="1.79.9"'), previous = html.indexOf('data-version="1.79.8"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['birch, pine and willow', 'filtered relief', 'uneven stands',
+        'Every existing plant', 'same Low-quality subset', 'walking clearances',
+        'No new textures', 'collision footprints', 'not the 1.80 feature freeze',
+        'full 1.87', 'remain staged', 'No account wipe', 'Full prior patch history']) {
+        expect(html.slice(start, previous)).toContain(text);
+    }
+});
 
 test('1.79.8 records reviewed foliage and published single-style startup without claiming full graphics completion', () => {
     const html = fs.readFileSync('index.html', 'utf8');

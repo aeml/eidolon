@@ -6,6 +6,7 @@ import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
 import { applyWoodlandLeafDetail } from './WoodlandLeafMaterial.js';
+import { applyWoodlandBarkDetail } from './WoodlandBarkMaterial.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -35,6 +36,7 @@ const material = (key, color, options = {}) => {
         }));
         if (options.surface) applyWorldSurfaceDetail(MATERIALS.get(key), options.surface);
         if (options.leafDetail) applyWoodlandLeafDetail(MATERIALS.get(key));
+        if (options.barkDetail) applyWoodlandBarkDetail(MATERIALS.get(key), options.barkDetail);
     }
     return MATERIALS.get(key);
 };
@@ -94,7 +96,7 @@ function matureWoodland(parts) {
 
 function createOssuaryBirch() {
     const p = palette('earth');
-    const bark = material('foliage-birch-bark', 0x8d8977, { surface: 'timber', flatShading: false });
+    const bark = material('foliage-birch-bark', 0x8d8977, { barkDetail: 'birch', flatShading: false });
     const scar = material('foliage-birch-scar', p.shadow);
     const leaf = material('foliage-gloam-leaf', 0x465738, { side: THREE.DoubleSide, vertexColors: true, leafDetail: true });
     const glow = material('foliage-grave-lantern', p.accent, { emissive: p.accent, emissiveIntensity: 0.72, roughness: 0.5 });
@@ -109,7 +111,7 @@ function createOssuaryBirch() {
 
 function createGravePine() {
     const p = palette('earth');
-    const bark = material('foliage-black-pine-bark', 0x262822, { surface: 'timber', flatShading: false });
+    const bark = material('foliage-black-pine-bark', 0x262822, { barkDetail: 'pine', flatShading: false });
     const leaf = material('foliage-black-pine-needle', 0x35483a, { side: THREE.DoubleSide, vertexColors: true });
     const moss = material('foliage-pine-moss', p.midtone);
     return matureWoodland([
@@ -123,7 +125,7 @@ function createGravePine() {
 
 function createMourningWillow() {
     const p = palette('earth');
-    const bark = material('foliage-willow-bark', 0x403a31, { surface: 'timber', flatShading: false });
+    const bark = material('foliage-willow-bark', 0x403a31, { barkDetail: 'willow', flatShading: false });
     const leaf = material('foliage-willow-leaf', 0x4a593e, { side: THREE.DoubleSide, vertexColors: true, leafDetail: true });
     const glow = material('foliage-willow-votive', p.spirit, { emissive: p.spirit, emissiveIntensity: 0.5 });
     return matureWoodland([

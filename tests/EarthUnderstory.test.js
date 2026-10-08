@@ -1,8 +1,36 @@
 import * as THREE from 'three';
-import { createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear } from '../src/art/EarthUnderstory.js';
+import { composeEarthUnderstoryPlacement, createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear } from '../src/art/EarthUnderstory.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { WOODLAND_WIND_REACH } from '../src/art/WoodlandWindMaterial.js';
 import { STARTER_ROAD_CLEARINGS } from '../src/data/lanternholdApproach.js';
+
+test.each([['high', 13087, 3294, .6], ['low', 7439, 1876, .4]])('composed %s beds retain the original population while forming tighter local stands', (quality, count, bracken, pairedMinimum) => {
+    const plants = createEarthUnderstoryPlacements(quality);
+    expect(plants).toHaveLength(count);
+    expect(plants.filter(p => p.variant === 0)).toHaveLength(bracken);
+    const sample = plants.filter(p => p.x > -60 && p.x < 60 && p.z > -400 && p.z < -300);
+    const paired = sample.filter(a => sample.some(b => a !== b && Math.hypot(a.x - b.x, a.z - b.z) < 2));
+    // Original jittered lattice: High.437/Low.273 have another plant within2m
+    // in this grove patch. This is structure, not a screen coverage/art claim.
+    expect(paired.length / sample.length).toBeGreaterThan(pairedMinimum);
+});
+
+test('composition keeps invalid destinations at their source anchor and never crosses clear routes', () => {
+    for (const [x, z] of [[100, 200], [340, 200], [0, -260]]) {
+        expect(composeEarthUnderstoryPlacement(x, z)).toEqual({ x, z });
+    }
+    let moved = 0;
+    for (const [x, z] of [[-45, -350], [-32, -330], [340, 214], [620, 213]]) {
+        const first = composeEarthUnderstoryPlacement(x, z);
+        expect(first).toEqual(composeEarthUnderstoryPlacement(x, z));
+        expect(Math.hypot(first.x - x, first.z - z)).toBeLessThan(5.4);
+        if (first.x !== x || first.z !== z) {
+            moved++;
+            expect(isEarthUnderstoryClear(first.x, first.z)).toBe(true);
+        }
+    }
+    expect(moved).toBeGreaterThan(0);
+});
 
 test('low roadside cover uses path shoulders without inheriting the tree-trunk exclusion', () => {
     expect(isEarthUnderstoryClear(340, 209)).toBe(true);
@@ -55,21 +83,34 @@ test.each([['high', 5.5], ['low', 16]])('smaller High batches preserve every pla
         transform.rotation.set(0, plant.rotation, 0); transform.scale.setScalar(plant.scale); transform.updateMatrix();
         expected.add(key(plant.variant, new Float32Array(transform.matrix.elements)));
     }
-    const geometries = new Set(), materials = new Set();
+    const geometries = new Set(), materials = new Set(), vertex = new THREE.Vector3();
     try {
         for (const mesh of root.children) {
             geometries.add(mesh.geometry); materials.add(mesh.material);
             const [cx, cz, variant] = mesh.name.slice('understory:'.length).split(':').map(Number);
             expect(mesh.userData.windBoundsIncluded).toBe(true);
+            const exact = new THREE.Box3(), restSphere = mesh.boundingSphere.clone();
+            const reach = WOODLAND_WIND_REACH * 1.4;
+            restSphere.radius -= reach;
             for (let i = 0; i < mesh.count; i++) {
                 mesh.getMatrixAt(i, matrix);
                 const x = matrix.elements[12], z = matrix.elements[14];
                 expect(Math.floor(x / cellSize)).toBe(cx); expect(Math.floor(z / cellSize)).toBe(cz);
                 actual.add(key(variant, matrix.elements));
+                for (let v = 0; v < mesh.geometry.attributes.position.count; v++) {
+                    vertex.fromBufferAttribute(mesh.geometry.attributes.position, v).applyMatrix4(matrix);
+                    exact.expandByPoint(vertex);
+                    if (!restSphere.containsPoint(vertex)) throw new Error('Tight rest sphere clips a blade');
+                    for (const axis of ['x', 'z']) for (const sign of [-1, 1]) {
+                        vertex[axis] += sign * reach;
+                        if (!mesh.boundingSphere.containsPoint(vertex)) throw new Error('Tight sphere clips the wind envelope');
+                        vertex[axis] -= sign * reach;
+                    }
+                }
             }
-            const padded = mesh.boundingBox.clone(); mesh.computeBoundingBox();
-            expect(padded.min.x).toBeCloseTo(mesh.boundingBox.min.x - WOODLAND_WIND_REACH * 1.4, 6);
-            expect(padded.max.z).toBeCloseTo(mesh.boundingBox.max.z + WOODLAND_WIND_REACH * 1.4, 6);
+            exact.expandByScalar(.000001).expandByVector(new THREE.Vector3(reach, 0, reach));
+            expect(mesh.boundingBox.min.toArray()).toEqual(exact.min.toArray());
+            expect(mesh.boundingBox.max.toArray()).toEqual(exact.max.toArray());
         }
         expect(actual).toEqual(expected); expect(actual.size).toBe(plants.length);
         expect(root.userData.plantCount).toBe(plants.length);
@@ -86,12 +127,9 @@ test.each([null, { sample: (x, z) => 2 + Math.sin(x * .01) * .5 + Math.cos(z * .
     'understory uses cullable opaque shared geometry and samples each instance (%p)', terrainElevation => {
     const root = createEarthUnderstory({ quality: 'low', terrainElevation });
     const geometries = new Set(), materials = new Set(), matrix = new THREE.Matrix4(), position = new THREE.Vector3();
-    const first = root.children[0], animatedBounds = first.boundingBox.clone();
-    first.computeBoundingBox();
-    expect(animatedBounds.min.x).toBeCloseTo(first.boundingBox.min.x - WOODLAND_WIND_REACH * 1.4, 5);
-    expect(animatedBounds.max.z).toBeCloseTo(first.boundingBox.max.z + WOODLAND_WIND_REACH * 1.4, 5);
-    expect(animatedBounds.min.y).toBe(first.boundingBox.min.y);
-    first.boundingBox.copy(animatedBounds);
+    const first = root.children[0];
+    expect(first.boundingBox.isEmpty()).toBe(false);
+    expect(first.boundingSphere.radius).toBeGreaterThan(WOODLAND_WIND_REACH * 1.4);
     let count = 0, raised = 0;
     for (const mesh of root.children) {
         geometries.add(mesh.geometry); materials.add(mesh.material);

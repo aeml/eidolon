@@ -420,12 +420,13 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.8`, fuller pine needle fans, curved varied
-  sedge leaves and one ordered published UI stylesheet. Existing plants,
-  High/Low triangle counts, wind, shadows and collisions remain intact.
+- Current source version: `Alpha 1.79.9`, distinct birch/pine/willow bark and
+  uneven grass/fern stands. All plants, Low subsets, wind and walking clearances
+  remain intact. Exact vertex bounds reuse the existing tree-cell helper and
+  include full wind reach, without changing the existing batching grid.
   Publication/public acceptance are pending; 1.80 freeze and full
   1.87 modern-art/raised-world gates remain open. See the
-  [scoped qualification](docs/plans/2026-10-08-release1-79-8-checks.json).
+  [scoped qualification](docs/plans/2026-10-08-release1-79-9-checks.json).
   Four-class actual saved-session proof and
   narrow connected movement/Fireball/resume checks retain their exact limits in
   the [save receipt](docs/plans/2026-10-08-terrain-saved-session-checks.json) and

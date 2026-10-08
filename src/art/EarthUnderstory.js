@@ -3,6 +3,7 @@ import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../data/worldPopul
 import { sampleEarthMeadow } from './EarthGroundComposition.js';
 import { createWoodlandUnderstoryGeometry } from './WoodlandUnderstoryGeometry.js';
 import { createWoodlandWindMaterial, WOODLAND_WIND_REACH } from './WoodlandWindMaterial.js';
+import { computeFoliageCellBounds } from './FoliageRenderBatches.js';
 import { STARTER_ROAD_CLEARINGS, LANTERNHOLD_ROAD_CART } from '../data/lanternholdApproach.js';
 
 // First playable art reference: north grove route and east dungeon approach.
@@ -27,6 +28,19 @@ export function isEarthUnderstoryClear(x, z, radius = 2.2) {
     return !EARTH_PATHS.some(path => distanceToPath(x, z, path.points) < path.width / 2 + radius + 2);
 }
 
+// Compose uneven stands from the existing population. Each neighbourhood has
+// its own off-centre focus/density; invalid destinations retain their anchor.
+// Source anchors still own quality selection, so Low remains a High subset.
+export function composeEarthUnderstoryPlacement(x, z) {
+    const cx = Math.floor(x / 9), cz = Math.floor(z / 9);
+    const focusX = cx * 9 + 2.5 + random(cx, cz, 71) * 4;
+    const focusZ = cz * 9 + 2.5 + random(cx, cz, 72) * 4;
+    const pull = .30 + random(cx, cz, 73) * .28;
+    const px = x + (focusX - x) * pull, pz = z + (focusZ - z) * pull;
+    if (sampleEarthMeadow(px, pz) < .32 || !isEarthUnderstoryClear(px, pz)) return { x, z };
+    return { x: px, z: pz };
+}
+
 export function createEarthUnderstoryPlacements(quality = 'high') {
     const plants = [];
     for (const [minX, maxX, minZ, maxZ] of BANDS) {
@@ -39,7 +53,7 @@ export function createEarthUnderstoryPlacements(quality = 'high') {
             if (cover < .32 || random(gx, gz, 3) > cover * .88) continue;
             if (quality === 'low' && random(gx, gz, 60) > .57) continue;
             if (!isEarthUnderstoryClear(x, z)) continue;
-            plants.push({ x, z, rotation: random(gx, gz, 4) * Math.PI * 2,
+            plants.push({ ...composeEarthUnderstoryPlacement(x, z), rotation: random(gx, gz, 4) * Math.PI * 2,
                 scale: .7 + random(gx, gz, 24) * .7,
                 variant: random(gx, gz, 44) > .75 ? 0 : 1 });
         }
@@ -78,14 +92,16 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
             transform.updateMatrix(); mesh.setMatrixAt(i, transform.matrix);
         });
         mesh.instanceMatrix.needsUpdate = true;
-        mesh.computeBoundingBox();
+        // Reuse the tree cells' constructor-only exact vertex bounds. Rotated
+        // source-box corners contain no plants; retain every actual blade.
+        computeFoliageCellBounds(mesh);
         // GPU-only sway is absent from CPU geometry bounds. Include its full
         // horizontal envelope so patch edges cannot pop out of the frustum.
         const reach = WOODLAND_WIND_REACH * 1.4;
         mesh.boundingBox.expandByVector(new THREE.Vector3(reach, 0, reach));
-        // Repeated sphere unions drift wider than these compact cells. The
-        // aggregate AABB already includes every transformed plant vertex.
-        mesh.boundingSphere = mesh.boundingBox.getBoundingSphere(new THREE.Sphere());
+        // Wind's full displacement-vector length is bounded by reach. Pad the
+        // exact rest sphere too, so tighter culling cannot clip moving blades.
+        mesh.boundingSphere.radius += reach;
         mesh.userData.windBoundsIncluded = true;
         root.add(mesh);
     }

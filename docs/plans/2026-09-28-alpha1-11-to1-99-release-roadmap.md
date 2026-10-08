@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 prepared1.79.9 selects bark and retained-population woodland stands
+onto fresh masterbf145bda. Original triangle limit exposes initial flat-world
+overdraw; exact vertex/full-wind bounds resolve it without losing plants or
+changing current batching/quality.382 changed units and final High/Low native
+2cases33.0s pass;19 unchanged selected units retained. See
+[scope](2026-10-08-release1-79-9-checks.json).
+Prior1.79.8 acceptance and own publication pending; no raised profile, wearable
+derivatives/core renderer rollout or final modern-art/F1-F5/1.87/beta acceptance.
+
 Current assembly: Alpha1.79.8 selects reviewed fuller pine fans/curved green
 sedge and ordered publication-only stylesheet bundling onto fresh accepted
 master7892224f, not the future branch. Plant counts, High/Low triangles,

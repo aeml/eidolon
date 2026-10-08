@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 prepared Alpha1.79.9:** Select distinct bark and retained-population
+undergrowth composition onto fresh corrected masterbf145bda. First flat gallery
+catches250659tri; reuse existing exact vertex bounds/full wind padding, retain
+all plants, current batching and original limits. Final382 changed unit checks
+and High/Low native2cases33.0s pass; other19 selected units retained. See
+[integration receipt](docs/plans/2026-10-08-release1-79-9-checks.json).
+Prior1.79.8 acceptance and own publication still pending. Raised terrain,
+wearable derivatives and staged core renderer changes not promoted. Full goal,
+F1-F5/1.87/world-art/device/beta/launch gates remain open.
+
 **October8 current-master woodland/startup patch assembled:** Alpha1.79.8
 selects reviewed fuller pine fans and curved green sedge, plus ordered
 publication-only CSS bundling onto fresh accepted7892224f. Every plant, existing
