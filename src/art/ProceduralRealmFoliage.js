@@ -6,6 +6,7 @@ import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
 import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
+import { createEmberSnagGeometry, EMBER_SNAG_SOCKETS } from './EmberSnagGeometry.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
 import { applyWoodlandLeafDetail } from './WoodlandLeafMaterial.js';
@@ -62,7 +63,7 @@ function part(name, geometryValue, materialValue, {
 
 const trunk = geometry('foliage-trunk', () => new THREE.CylinderGeometry(0.28, 0.48, 5.4, 7));
 const narrowTrunk = geometry('foliage-narrow-trunk', () => new THREE.CylinderGeometry(0.16, 0.32, 6.2, 7));
-const branch = geometry('foliage-branch', () => new THREE.CylinderGeometry(0.08, 0.18, 2.8, 6));
+const emberSnag = geometry('foliage-ember-snag', createEmberSnagGeometry);
 const drownedCrown = geometry('foliage-drowned-willow', createDrownedWillowGeometry);
 const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
 const needleCrown = geometry('foliage-needle-boughs', createConiferBoughGeometry);
@@ -171,14 +172,12 @@ function createDrownedWillow() {
 
 function createEmberSnag() {
     const p = palette('fire');
-    const char = material('foliage-charwood', 0x211b1a);
+    const char = material('foliage-charwood', 0x211b1a, { barkDetail: 'pine', flatShading: false });
     const ember = material('foliage-ember-heart', p.accent, { emissive: p.accent, emissiveIntensity: 1.05, roughness: 0.42 });
     return [
-        part('charred trunk', trunk, char, { position: [0, 2.6, 0], rotation: [0, 0, 0.08], scale: [0.86, 1, 0.86] }),
-        part('forked snag west', branch, char, { position: [-0.72, 4.55, 0], rotation: [0, 0, -0.7] }),
-        part('forked snag east', branch, char, { position: [0.78, 4.1, 0.12], rotation: [0.12, 0, 0.78], scale: [0.88, 0.88, 0.88] }),
-        part('ember shard west', shard, ember, { position: [-0.95, 5.68, 0], rotation: [0, 0, -0.2], scale: [0.5, 0.66, 0.5], castShadow: false }),
-        part('ember shard east', shard, ember, { position: [1.02, 5.24, 0.1], rotation: [0, 0, 0.22], scale: [0.42, 0.58, 0.42], castShadow: false }),
+        part('charred trunk and connected forks', emberSnag, char),
+        part('ember shard west', crystal, ember, { position: EMBER_SNAG_SOCKETS[0], rotation: [0, 0, -0.4], scale: [.22, .46, .22], castShadow: false }),
+        part('ember shard east', crystal, ember, { position: EMBER_SNAG_SOCKETS[1], rotation: [0, 0, 0.5], scale: [.2, .4, .2], castShadow: false }),
         part('ember heart', lantern, ember, { position: [0.08, 2.9, 0.35], castShadow: false })
     ];
 }

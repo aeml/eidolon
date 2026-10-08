@@ -96,6 +96,12 @@ cases/thirty timed views pass original limits. Water/Fire framing improves in
 actual road captures; Air still has conspicuous open stretches and primitive
 stems/crystals remain. [Exact scope and rejected attempts](docs/plans/2026-10-08-elemental-travel-stands-checks.json).
 Not delivered, uniformly populated routes or modern-art completion.
+Staged Fire snags now have connected curved timber forks and ember crystals
+registered to shared branch sockets, replacing rigid crossed cylinders and
+floating cone tips. All 90 anchors and two material batches retained. Forty
+focused cases and two native High/Low cases/22 timed views pass original limits;
+actual captures reviewed. [Component evidence](docs/plans/2026-10-08-ember-snag-checks.json).
+Not delivered or complete world art; broad terrain/prop cohesion remains open.
 Staged Water willow replaces solid polygon/cone foliage with 128 folded leaves
 and hanging shoots on the existing organic stem. All 80 anchors, scales,
 rotations and three material batches retained; two retired primitive caches

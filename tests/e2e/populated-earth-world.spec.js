@@ -83,6 +83,10 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     const placement = createProceduralFoliagePlacements(willow)[0];
                     foliageSites.push({ id: 'drowned-willow-review', x: placement.x + 6,
                         z: placement.z + 8, region: 'water' });
+                    const snag = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id === 'ember_snag');
+                    const burnt = createProceduralFoliagePlacements(snag)[0];
+                    foliageSites.push({ id: 'ember-snag-review', x: burnt.x + 6,
+                        z: burnt.z + 8, region: 'fire' });
                 }
                 // Actual ordinary travel positions beside the composed stands,
                 // not a hero moved next to an arbitrarily remote tree.

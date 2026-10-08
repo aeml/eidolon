@@ -1,0 +1,24 @@
+{
+  "status": "staged Fire snag component qualified; not delivered or complete modern environment art",
+  "base": "f3689c13",
+  "scope": "Replace the straight trunk/crossed cylinders with one connected bent trunk and three tapered forks. Shared fork socket coordinates attach two small ember crystals instead of floating cone tips. Existing charcoal material gains smooth bark normals and existing procedural pine-bark detail. All90 anchors, scales/rotations, visual-only collision policy, two bark/glow batches, glow intensity and non-shadowing ember policy retained. No new materials, textures, lights, wind work or per-frame generator. Retire the previously Ember-only cylinder branch cache; one new snag geometry replaces it, keeping15 shared geometries/28 materials/nine archetypes.",
+  "geometry": "204 timber triangles on both settings, versus the old76 trunk/branch triangles; not an unchanged per-tree triangle count. Existing octahedron geometry is reused for both ember tips. Deterministic finite UVs/positions, unit seam-smoothed normals, buried base above-.35m and full transformed foliage bounds inside existing sightline aprons. Original whole-scene performance budgets unchanged.",
+  "units": "Four suites40pass3.378s on first run. New deterministic geometry/normals/bounds/socket/batch checks plus existing archetype/cache, server hazard, travel spacing/identity and all-species transformed batching/cell bounds. Scoped ESLint and diff checks pass. No campaign or unchanged raid replay.",
+  "native": "Isolated System Chrome AMD Vulkan populated Water/Fire High1280 and Low390:2pass1.4m,22 timed views with120 samples each. Actual production snag focus, existing ordinary road/landmark views, reading approaches and quality phases included. Original High20ms median33.4ms p95/350calls250k triangles and Low33.4/50ms/200calls85k triangles retained and passed. Repeated-view GPU resources stable. Bare solo renderer fixture, not equipped multiplayer, sustained device or physical-phone acceptance. Earth/Air production recipes unchanged and not replayed.",
+  "metrics": {
+    "high": {"maxCalls":124,"maxTriangles":196195,"maxP95":16.799999999999272},
+    "low": {"maxCalls":51,"maxTriangles":61380,"maxP95":16.80000000000109},
+    "highSnag": {"median":16.69999999999709,"p95":16.799999999995634,"calls":52,"triangles":129115},
+    "lowSnag": {"median":16.700000000000728,"p95":16.700000000000728,"calls":18,"triangles":36974}
+  },
+  "review": "Root inspects both final snag-focused PNGs at normal gameplay zoom. Continuous curved branches replace the rigid X silhouette; ember tips visibly attach. Trunk reads as charcoal with an organic silhouette. Still a small stylized tree in broad sparse ground; regional geology/cover integration, crystals, Air gaps, town/landmark/dungeon cohesion and full modern-ARPG quality remain open. Not Diablo/PoE equivalence or full-art approval.",
+  "sourceSHA256": {
+    "src/art/EmberSnagGeometry.js":"47e873dd889d89af82c114cdcbc9f15ebf96aafdc52bd02aa64e19a2713df8c4",
+    "src/art/ProceduralRealmFoliage.js":"bb967caa99aa902f94f380d8a07175d3b6eccdc06eb1525d4ac01d2be4b0d423"
+  },
+  "unitsLogSHA256":"6b0de1d1e2f2a9af81ced28a33880c0b783de1d05e1c3889440fa27e03b79035",
+  "nativeLogSHA256":"4600f911a9a0efa8d33d1305c72797e65a302e2efef87fe3cb6ef15f929fea89",
+  "artifactDirectory":"/home/aeml/.local/share/eidolon-ember-snag-native-20261008",
+  "logs":["/home/aeml/.local/share/eidolon-ember-snag-units-20261008.log","/home/aeml/.local/share/eidolon-ember-snag-native-20261008.log"],
+  "remaining":"Selective integration/versions/cumulative patch notes/own CI/public acceptance after prepared1.79.10. Current1.79.9 run37791738441/head293a9ccc remains in progress; Luna authoritative16:39:34UTC smoke2/3 browser installation since14:21:11UTC. No cancel/retry authorized, no run mutation. Full roadmap, raised/wearables/equipped-party/device and1.80F1-F5/1.81-1.99 remain open; no human/owner gates waived."
+}

@@ -73,6 +73,13 @@ show a more organic silhouette; sparse terrain/groundcover, primitive regional
 props and complete world cohesion remain open. Selective integration and delivery
 are pending; this is not final modern art or a closed-beta readiness claim.
 
+Staged [Fire snag redesign](2026-10-08-ember-snag-checks.json) connects curved
+charred branches and attached ember crystals instead of crossed cylinders and
+floating cones. Ninety anchors/two batches retained; forty focused checks and
+two native High/Low cases/22 timed views pass unchanged scene limits. Actual
+captures reviewed. Selective integration and delivery remain pending; sparse
+terrain, regional props and full modern world cohesion are not complete.
+
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
 pre-section progress notes moved byte-for-byte to
