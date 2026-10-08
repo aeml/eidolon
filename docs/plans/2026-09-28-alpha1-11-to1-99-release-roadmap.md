@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Staged authored robe/skirt layering fixes actually observed underwear/trouser
+hip protrusions, retaining exposed lower legs, shared source assets, other actors
+and reversible/disposed owned masks.64focused checks and one expanded actual
+eight-rig High/Low case pass; representative back/side/mixed-motion captures
+reviewed. [Exact scope and failed fixture](2026-10-08-authored-robe-layering-checks.json).
+Not published or complete modern-character/gameplay/party/device approval.
+All original numbered art, performance, operations, beta and launch requirements
+remain; select after prepared ordered releases, not a whole future-branch merge.
+
 Staged Air main-passage composition reserves existing cypresses and adds broken
 near-road heath/scree without changing other realm placements, any solid or
 existing structure/renderer budgets. Reject first green tree-only screenshots

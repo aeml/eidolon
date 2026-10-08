@@ -1,0 +1,35 @@
+{
+  "status": "implemented and locally qualified; staged only, not deployed or complete modern-character approval",
+  "sourceBase": "a6d4c31a",
+  "finding": "Actual retained back/Block capture exposes Wizard underwear and Cleric trouser hips through the supplied robe. New before-change back-idle/back-run/side-cast capture reproduces it despite a green native case. Front-only attachment-count checks did not establish correct layering.",
+  "change": "Keep all supplied GLBs, bones, inverse binds, animations, item eligibility, stats, appearances and textures. A loaded robe or skirt hides base undershorts and conservatively masks enclosed hip skin on the existing actor-owned body copy. A skirt alone keeps exposed abdomen above its waistband. Under a successfully loaded robe, trousers/greaves mask only triangles with all three vertices above40% of the supplied actor height. Lower/crossing faces remain. Allocate an equip-owned geometry copy only when indices actually change; knee-only submeshes remain shared. Apply before existing fitted batching; existing cleanup releases masks. Unequip restores original body geometry/visibility and ordinary unmasked leg armor. Failed robe loads do not count as coverage.",
+  "units": {
+    "suites": ["FittedEquipmentCoverage", "FittedEquipmentBatches", "AuthoredFighter", "CharacterPreview"],
+    "result": "64 checks passed,4 suites,1.647s",
+    "newCoverage": "Four classes with robes or skirts; five legal robe/trouser-or-greave combinations; original/other-actor isolation, crossing/lower faces, once-only owned disposal, unmasked restoration, failed robe load, exposed waistband and knee-only no-copy cases. Existing binding, batching, animation and preview assertions retained.",
+    "lintAndDiff": "scoped ESLint and git diff --check passed"
+  },
+  "native": {
+    "browser": "actual System Chrome using existing hardware WebGL launch policy; local4192",
+    "result": "one expanded native case passed8.4s,10.0s total; no retries/skips",
+    "scope": "Eight independent actual supplied rigs: four classes in High/Legendary and Low/Rare, fourteen equipped slots each. Existing ordinary poses/alternating Rogue strikes, stealth restoration, independent dressing-room previews, unequip and pool checks retained. Add three back/side captures. Swap Fighter to robes/leather pants, Rogue to robes/leather pants, Cleric to robes/plate greaves and Wizard to skirt without chest or belt; all legal gear loads, no derivative fallback, base shorts hidden, no wholly concealed upper trouser faces remain. Three additional mixed back-idle/back-run/side-jump captures. Restore original outfits before existing lifecycle checks.",
+    "visualReview": "Root inspected final standard back-run and mixed back-idle/back-run/side-jump images. Visible brown underwear/trouser bulges are gone, lower legs/armor remain and the skirt-only waistband has skin above it. This is a representative enlarged gallery/preview review, not actual town/combat camera, every item/pose or automated no-intersection proof.",
+    "artifacts": "/home/aeml/.local/share/eidolon-robe-layering-waistband-20261008"
+  },
+  "retainedAttempts": [
+    "eidolon-robe-layering-before-20261008: green native reproduction with visibly wrong back layering, not accepted art",
+    "eidolon-robe-layering-first-20261008: first corrected representative capture,8.9s total",
+    "eidolon-robe-layering-mixed-20261008: initial mixed assertion failed because knee-only submeshes correctly had no owned mask. Replace blanket flag assumption with zero remaining concealed-face check and explicit knee-only ownership unit; preserve failure artifacts",
+    "eidolon-robe-layering-final-20261008: mixed pass10.4s; subsequent conservative skirt waistband refinement has its own final accepted proof above"
+  ],
+  "proof": {
+    "src/art/FittedEquipment.js": "94cb19fd2a76b545ed83d3b02570373b78c696a5c0abb0cef437cbeecae85c23",
+    "tests/FittedEquipmentCoverage.test.js": "1cb74405e4cbaba1fdb46cc6cfefb16c256397b3c3cbc5251a9155f2bddcb62b",
+    "tests/e2e/authored-class-equipment.spec.js": "d1f82b0dd6b637984c14a082e84f729988434b01c09fac8cabdc801f18c86b9e",
+    "unitsLogSHA256": "2b2b448704e144e7520f02bbf6aa61c83f5f6e3e2bb7a150085116e30556a2af",
+    "nativeLogSHA256": "708b2f4dc3217e6fb3b5d11594ca80712e273fdb6390158643dc56d51082334d"
+  },
+  "delivery": "No public version bump, new push or extra queued release. Fetch onOctober8 at19:03UTC confirms origin/master293a9ccc. Exact1.79.9 run37791738441 remains under read-only Luna monitoring; prepared1.79.10/11/12 still need ordered own CI/public acceptance. Select this small fit fix into a subsequent appropriate release with synchronized versions and a patch note; never promote the entire future renderer/terrain/wearable branch from this gallery.",
+  "remaining": "All-family original/derived fit and source rights, complete local/remote cosmetics/mixed-motion review, ordinary gameplay-camera composition, equipped-party performance, sustained physical devices, raised terrain compatibility/delivery, full1.80F1-F5 and1.81-1.99/operator/owner/beta/launch requirements remain. No draw/FPS/GPU-resource certificate or Diablo/PoE-equivalence claim from this fit check. Owner-deferred human pacing and phone-party/dungeon checks stay deferred, not passed.",
+  "nextPatchNote": "Fixed underwear and upper trousers showing through long robes; preserved exposed lower legs and restored original gear coverage when changing outfits."
+}

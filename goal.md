@@ -18,6 +18,15 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Staged authored robe/skirt layering now fixes the actually observed Wizard
+  underwear and Cleric trouser-hip protrusions.64focused checks and one expanded
+  actual eight-rig High/Low native case pass; back/side/mixed-motion images
+  reviewed, lower armor and exposed waistband preserved. Original GLBs and
+  other actors remain unchanged; owned masks restore/dispose on outfit change.
+  [Evidence and failed fixture](docs/plans/2026-10-08-authored-robe-layering-checks.json).
+  Not delivered or complete modern-character/gameplay/party/device approval;
+  select after existing prepared releases with its own patch note.
+
 - Staged Air main-passage composition reserves existing cypress framing and
   adds broken near-road heath/scree,2022High/1093Low in86matching cells using
   the existing material. Reject the first tree-only green screenshots as still

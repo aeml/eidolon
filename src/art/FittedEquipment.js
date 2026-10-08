@@ -53,13 +53,17 @@ function restoreCoverage(state) {
 function applyCoverage(state, selection) {
     const head = !!selection.head, chest = !!selection.chest;
     const pants = !!selection.legs && selection.legs !== 'silk-skirt';
+    const longLower = selection.chest === 'robes' || selection.legs === 'silk-skirt';
+    // A skirt alone must not remove exposed skin above its waistband. Robes
+    // enclose the upper hips through to the existing torso coverage boundary.
+    const hipTop = selection.chest === 'robes' ? .583 : .52;
     const boots = !!selection.feet && selection.feet !== 'sandals', gloves = !!selection.gloves;
     for (const { mesh } of state.meshes) {
         if (head && /_(Hair|Scalp)(_|$)/.test(mesh.name)) mesh.visible = false;
         if (chest && /_Undertop|_ClothSeams/.test(mesh.name)) mesh.visible = false;
-        if (pants && /_Undershorts/.test(mesh.name)) mesh.visible = false;
+        if ((pants || longLower) && /_Undershorts/.test(mesh.name)) mesh.visible = false;
     }
-    if (!chest && !pants && !boots && !gloves) return;
+    if (!chest && !pants && !longLower && !boots && !gloves) return;
     const body = state.body, original = body.geometry;
     const { position, skinIndex: skin, skinWeight: weight } = original.attributes;
     const hidden = new Uint8Array(position.count), vertex = new THREE.Vector3();
@@ -75,6 +79,7 @@ function applyCoverage(state, selection) {
             sleeve = vertex.fromBufferAttribute(position, i).sub(arm.a).dot(arm.axis) / arm.lengthSquared < .31;
         }
         hidden[i] = chest && /^(pelvis|spine_|clavicle_|neck_)/.test(bone) && y > .583 && position.getY(i) < state.collar - .005 || sleeve ||
+            longLower && /^(pelvis|spine_|thigh_)/.test(bone) && y > .40 && y < hipTop ||
             pants && /^(pelvis|thigh_|calf_)/.test(bone) && y > .055 && y < .554 ||
             boots && /^(calf_|foot_|ball_)/.test(bone) && y < .104 ||
             gloves && /^(hand_|thumb_|index_|middle_|ring_|pinky_)/.test(bone);
@@ -87,6 +92,28 @@ function applyCoverage(state, selection) {
     // Each actor owns its mask and GPU buffers; no cached source geometry mutation.
     state.ownedBodyGeometry = original.clone();
     state.ownedBodyGeometry.setIndex(keep); body.geometry = state.ownedBodyGeometry;
+}
+
+function coverRobeUnderlayers(state, selection, parts) {
+    if (selection.chest !== 'robes') return;
+    // The supplied closed upper skirt encloses the hips. Leave the visible
+    // lower trousers/greaves and crossing triangles intact, but do not render
+    // their bulky hip shell through the robe's back. Mask before batching and
+    // only on equip-owned clones; original GLBs and other actors are untouched.
+    const cutoff = state.height * .40;
+    for (const part of parts) {
+        if (part.userData.slot !== 'legs' || part.userData.fittedItem === 'silk-skirt' || !part.isSkinnedMesh) continue;
+        const geometry = part.geometry, index = geometry.index, position = geometry.attributes.position;
+        if (!index || !position) continue;
+        const keep = [];
+        for (let i = 0; i < index.count; i += 3) {
+            const a = index.getX(i), b = index.getX(i + 1), c = index.getX(i + 2);
+            if (!(position.getY(a) > cutoff && position.getY(b) > cutoff && position.getY(c) > cutoff)) keep.push(a, b, c);
+        }
+        if (keep.length === index.count) continue;
+        part.geometry = geometry.clone(); part.geometry.setIndex(keep);
+        part.userData.fittedOwnedGeometry = true;
+    }
 }
 
 function instanceMaterials(part, item, look) {
@@ -229,6 +256,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
             for (const part of staged) {
                 if (part.userData.fittedItem === 'silk-skirt' && selection.chest === 'robes') part.visible = false;
             }
+            coverRobeUnderlayers(state, selection, staged);
             // Exact surfaces and native comparisons pass for compatible opaque
             // pieces. False retains the original path for diagnostic comparisons.
             if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged);

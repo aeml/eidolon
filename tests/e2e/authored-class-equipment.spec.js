@@ -94,6 +94,16 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         expect(await page.evaluate(({ state, time, yaw }) => window.__classGear.sample(state, time, yaw), { state, time, yaw })).toBe(0);
         await page.locator('#class-equipment-qa').screenshot({ path: testInfo.outputPath(`${poseIndex++}-${state}.png`) });
     }
+    // Front-only galleries miss lower layers protruding through a long robe.
+    // Keep the ordinary poses and inspect the back/side without changing gear.
+    for (const [label, state, time, yaw] of [
+        ['back-idle', 'CombatIdle', .3, Math.PI],
+        ['back-run', 'Run', .3, Math.PI],
+        ['side-cast', 'Cast', .4, Math.PI / 2]
+    ]) {
+        expect(await page.evaluate(({ state, time, yaw }) => window.__classGear.sample(state, time, yaw), { state, time, yaw })).toBe(0);
+        await page.locator('#class-equipment-qa').screenshot({ path: testInfo.outputPath(`${label}.png`) });
+    }
     expect(await page.evaluate(async () => {
         const { applyActorStealthAppearance, restoreActorStealthAppearance } = await import('/src/entities/ActorStealthAppearance.js');
         const qa = window.__classGear, rogues = qa.actors.filter(entry => entry.type === 'Rogue');
@@ -112,6 +122,65 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         rogues.forEach(({actor}) => restoreActorStealthAppearance(actor));
         return faded && check(false) && qa.sample('CombatIdle') === 0;
     })).toBe(true);
+    const mixed = await page.evaluate(async () => {
+        const qa = window.__classGear;
+        const changes = {
+            Fighter: { chest: 'Robes', legs: 'Leather Pants' },
+            Rogue: { chest: 'Robes' },
+            Wizard: { chest: null, belt: null }, // Inspect the exposed waistband, not hidden by robes/a sash.
+            Cleric: { legs: 'Plate Greaves' }
+        };
+        const results = [];
+        for (const entry of qa.actors) {
+            const gear = { ...entry.gear };
+            for (const [slot, name] of Object.entries(changes[entry.type])) {
+                if (name === null) delete gear[slot];
+                else gear[slot] = { ...gear[slot], id: `mixed-${entry.type}-${slot}`, name, baseName: name };
+            }
+            entry.actor.syncEquipmentVisuals(gear); await entry.root.userData.equipmentReady;
+            const shorts = entry.root.getObjectByName(`${entry.type}_Undershorts`);
+            const pants = [];
+            entry.root.traverse(mesh => {
+                if (mesh.userData.slot === 'legs' && mesh.userData.fittedItem !== 'silk-skirt') pants.push(mesh);
+            });
+            const cutoff = 4.5 / entry.root.userData.authoredScale * .40;
+            let concealedFaces = 0;
+            for (const mesh of pants) {
+                const { index, attributes: { position } } = mesh.geometry;
+                for (let i = 0; i < index.count; i += 3) {
+                    if ([0, 1, 2].every(k => position.getY(index.getX(i + k)) > cutoff)) concealedFaces++;
+                }
+            }
+            results.push({ type: entry.type, quality: entry.quality,
+                missing: entry.root.userData.equipmentVisualMissing, fallback: entry.root.userData.equipmentVisualFallback,
+                items: entry.root.userData.equipmentVisualItemCount, shortsHidden: shorts.visible === false,
+                maskedPants: pants.some(mesh => mesh.userData.fittedOwnedGeometry), concealedFaces });
+        }
+        return results;
+    });
+    for (const entry of mixed) {
+        expect(entry.missing).toEqual([]); expect(entry.fallback).toEqual([]);
+        expect(entry.items).toBe(entry.type === 'Wizard' ? 12 : 14);
+        expect(entry.shortsHidden).toBe(true);
+        if (entry.type !== 'Wizard') {
+            // Knee/ankle-only material submeshes need no copy or masking.
+            expect(entry.maskedPants, `${entry.type}/${entry.quality}`).toBe(true);
+            expect(entry.concealedFaces, `${entry.type}/${entry.quality}`).toBe(0);
+        }
+    }
+    for (const [label, state, time, yaw] of [
+        ['mixed-back-idle', 'CombatIdle', .3, Math.PI],
+        ['mixed-back-run', 'Run', .3, Math.PI],
+        ['mixed-side-jump', 'Jump', .45, Math.PI / 2]
+    ]) {
+        expect(await page.evaluate(({ state, time, yaw }) => window.__classGear.sample(state, time, yaw), { state, time, yaw })).toBe(0);
+        await page.locator('#class-equipment-qa').screenshot({ path: testInfo.outputPath(`${label}.png`) });
+    }
+    await page.evaluate(async () => {
+        for (const { actor, root, gear } of window.__classGear.actors) {
+            actor.syncEquipmentVisuals(gear); await root.userData.equipmentReady;
+        }
+    });
     const ownership = await page.evaluate(async () => {
         const { actors, MeshFactory } = window.__classGear;
         const first = actors[0], second = actors[1];
