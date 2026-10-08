@@ -2,6 +2,7 @@
   "schema": 1,
   "milestone": "1.80 launch feature freeze",
   "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
+  "currentStatePrecedence": "October8 guarded1.79.1 delivery and trust preparation above/below supersede historical pending/earlier baseline statements. Exact public receipt2026-10-08-release1-79-1-public-checks.json now present after owned release-branch merge. Source-only1.80 guards are not runtime delivery or F1–F5 freeze acceptance; all65 original promise rows remain in scope.",
   "october8DeploymentTrustStabilization": {
     "baseline": "Exact c8ff2cd668213a3cf53cd536b7067bd3404d0437 Alpha1.79.1 deployed through the normal guarded local script after hosted SSH setup failed. Matching public frontend/backend identities,7 rewritten runtime files and real anonymous Chrome2checks pass. Original GitHub run37709850553 remains failed and credentialed live job skipped; exact receipt retained on recovered current release branch.",
     "trustedIdentity": "Re-read only local public /etc/ssh/ssh_host_ed25519_key.pub; SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE matches the previously prepared2879d399 pin. No key rotation, private-key read or unverified network trust. Current public SSH scan fails; pinning cannot repair routing.",

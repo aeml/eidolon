@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current1.80 trust candidate / release receipts reconciled:** Bring only
+the already console-verified ED25519 pin into current outgoing workflow, require
+strict host checking and bound unreachable/dead SSH waits10s/1attempt/15s/2count.
+Both current-workflow regressions first fail; host policy, actual exact-commit
+checkout and runner-separation suites PASS13/0.946s. Operator fallback documented,
+no network/provider/key mutation, future wholesale merge or release labels.
+Candidate349d1cab retains source-only acceptance limits; merge owned90af6491
+receipts/current roadmap, resolve only duplicate monitor paragraph in favour of
+newer precise verification. Original dirty checkout and other remote work remain
+untouched. No doc-only push, duplicate CI/campaign or second deployment. Current
+public1.79.1 delivered; actual1.80 F1–F5 and full roadmap remain open.
+
 **October8 Alpha1.79.1 deployed and public scoped checks passed:** Avoid blindly
 retrying unreachable public SSH. Existing clean production checkout fetched,
 ancestry/dirty checks passed, exactc8ff2cd6 selected; same normal guarded script
