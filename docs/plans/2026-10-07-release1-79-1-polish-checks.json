@@ -1,7 +1,23 @@
 {
   "schema": 1,
   "milestone": "Alpha1.79.1 stabilization before feature freeze",
-  "status": "recovered-source-checked-storage-restored-ready-for-ci-publication",
+  "status": "guarded-local-deployment-completed-public-identities-runtime-and-anonymous-checks-passed",
+  "october8GuardedLocalDeploymentOutcome": {
+    "commit": "c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+    "deployment": "Existing clean production checkout independently fetches master and validates exact commit ancestry/clean tracked state before detached checkout. Same normal deployment script completes root69881 exit0 with CLEAN_SERVER_TREE=false, exact build identity, storage guards, prior-image pin, monitor configuration validation and schema25/25. No private env/QA allowlist update, live migration or cleanup.",
+    "public": "Both ordinary-DNS IPv4 verified-HTTPS release probes now c8ff2cd6/Alpha1.79.1; database ready. Seven actual published runtime files byte-match committed source transformed with actual publisher functions.",
+    "browser": "SystemChrome anonymous public/login/patch-note/dependencies/WebSocket suite PASS2 in56.2s. No new campaign/cohort run or credentialed-live success claimed.",
+    "receipt": "2026-10-08-release1-79-1-public-checks.json",
+    "limits": "Original CI37709850553 remains failure at SSH setup and its live QA job skipped. This scoped local fallback does not repair public SSH or accept all art/freeze/beta gates. Earlier publication entries remain historical."
+  },
+  "october8PublicationOutcome": {
+    "commit": "c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+    "run": "https://github.com/aeml/eidolon/actions/runs/37709850553",
+    "outcome": "Terminal failure solely in Deploy Server (SSH), Configure SSH key. ssh-keyscan returned1; actual Deploy via SSH skipped. Client/server/browser/predeploy/input checks and Pages succeeded; Live Release and Character QA skipped.",
+    "public": "Ordinary-DNS IPv4 HTTPS probes observe frontend release.json c8ff2cd6/Alpha1.79.1 but backend healthz b5c3981e/Alpha1.79.0 with statusok/database ready. Partial publication, not exact frontend/backend release acceptance.",
+    "receipt": "2026-10-08-alerts-and-partial-release-checks.json",
+    "next": "Resolve external SSH reachability before completing publication; no blind retry, unverified host replacement or automatic firewall change. Historical preparation sections below describe earlier states."
+  },
   "october8RecoveryAndPublicationPreparation": {
     "source": "Prepared commit ab9910651d8a1c5e4f5ea75ab04a83f636234784 survives in Git. Previous temporary worktree/evidence paths are now absent; restore identical tracked source into /home/aeml/.local/share/eidolon-release-1791-lFs4B0JY on work/alpha-1-79-1-recovered-20261008, without changing or removing the dirty original checkout or stale worktree registrations. Historical temporary evidence is not claimed present or newly rerun.",
     "storage": "Read-only October8 measurements55637576KiB available on checkout and Docker filesystem after restoration, above2097152KiB floor. Storage blocker resolved externally; agent performed no image/data/cache/worktree deletion and does not infer cleanup permission from resumption.",

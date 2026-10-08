@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T01:24:11Z",
+  "milestone": "Alpha1.79.1 scoped stabilization delivery",
+  "status": "guarded-local-deployment-and-scoped-public-checks-passed-ci-ssh-failure-retained",
+  "commit": "c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+  "version": "Alpha 1.79.1",
+  "ci": {
+    "run": "https://github.com/aeml/eidolon/actions/runs/37709850553",
+    "conclusion": "failure",
+    "scope": "Client tests, all3 browser smoke shards, Go checks/build, predeploy character and input-validation jobs pass; Pages publishes exact candidate. Hosted SSH setup fails before any Deploy via SSH command. Root independently verifies head/status/job and conditional-step metadata; authorized Luna monitors terminal outcome.",
+    "skippedPredeploySteps": [
+      "Run deterministic High/Low animation gallery",
+      "Run required Well Rested rendering and GPU lifecycle QA",
+      "Run disposable full-character gameplay"
+    ],
+    "skippedJob": "Live Release and Character QA",
+    "limits": "No all-jobs green or credentialed-live/four-class/campaign success inferred. This run is not retroactively changed to success by local deployment."
+  },
+  "localDeployment": {
+    "checkout": "/home/aeml/eidolon",
+    "sourceChecks": "Existing deployment checkout tracked/untracked status clean. Fresh fetch master obtains c8ff, exact commit ancestry check and unstaged/staged diff checks all exit0; detached checkout selects that tested commit. Original heavily dirty /home/aeml/Github/eidolon remains untouched.",
+    "command": "EIDOLON_BUILD_COMMIT=c8ff2cd668213a3cf53cd536b7067bd3404d0437 EIDOLON_BUILD_VERSION='Alpha 1.79.1' CLEAN_SERVER_TREE=false bash ./deploy/deploy_linux.sh",
+    "terminal": "Root session69881 exits0. Child Luna cannot access root-local exec handle and reports missing handle; root resumes the original session, retrieves terminal output and does not restart the deployment.",
+    "rollbackImage": "eidolon-api:rollback-ebaa2cfbaa6e8c1c77c8ce0eb20431b02c0bce0b2224fcbe24b462cdf82742d3",
+    "schemaReceipt": "Schema preflight passed: database=25 supported=25 commit=c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+    "guards": "Existing lock, actual source/Docker filesystem2048MiB floor, prior-image pin, exact monitor configuration validation, unchanged Mongo readiness, exact schema receipt and post-start health verification preserved. API image rebuilt/replaced normally. Schema25 unchanged, so no migration or migration-backup branch invoked. Private .env/QA allowlist unchanged; no untracked cleanup or data deletion.",
+    "monitor": "Normal approved monitor up --no-deps succeeds; subsequent inspect confirms original monitor running, zero restarts and unchanged30s/3failures/2successes/30m thresholds. No induced outage or new mail test."
+  },
+  "public": {
+    "transport": "Ordinary DNS, forcedIPv4, verified HTTPS; curl fail-closed, connect3s/total10s and no-cache header. No origin resolver override, credentials or TLS bypass.",
+    "frontend": {"commit":"c8ff2cd668213a3cf53cd536b7067bd3404d0437","version":"Alpha 1.79.1"},
+    "backend": {"commit":"c8ff2cd668213a3cf53cd536b7067bd3404d0437","version":"Alpha 1.79.1","status":"ok","database":"ready"},
+    "byteComparison": "Read exact committed source with git show; apply exported rewriteHtml/rewriteJavaScript from actual scripts/version-pages-runtime.mjs in memory; compare every fetched byte. All7 match, not only manifest presence.",
+    "files": [
+      {"path":"index.html","bytes":800449,"exactMatch":true,"sha256":"a18ad1e447cd0e9d530ffea6fdfac70b36ee7552f707fc457232e659b349eae4"},
+      {"path":"src/main.js","bytes":26731,"exactMatch":true,"sha256":"7aebd629951255d8e5b972c61f161ee0c3554d8bc7a9a6a5a33beba8fe944977"},
+      {"path":"src/core/RecoveryLinkBoot.js","bytes":1670,"exactMatch":true,"sha256":"c7198db4612e46812597c91c4d30b3d79001669f069d3b98b6ce7a0b8bf30993"},
+      {"path":"src/art/EarthGroundComposition.js","bytes":18368,"exactMatch":true,"sha256":"1be1599e094c503c9f09725151c64ff093fa4693fe65121f782bec45ab97458a"},
+      {"path":"src/art/ElementalTerrainSurface.js","bytes":4741,"exactMatch":true,"sha256":"ee2167b2e7e20dc1bc4348a854ada70c27c0977162b69647514e7b92e85b1b78"},
+      {"path":"src/art/ProceduralRealmTerrain.js","bytes":18146,"exactMatch":true,"sha256":"3cea58c0eda2e2bcde435c67eb2e5cc2d5df1414ff58e9368cc42c448888c7f7"},
+      {"path":"src/art/FittedEquipment.js","bytes":14673,"exactMatch":true,"sha256":"ab07a8167b6bb2c8393fe1569ede09a9fa1b00e3ee40dd26b5b8c3fc73a051dc"}
+    ]
+  },
+  "browser": {
+    "scope": "Existing tests/e2e/anonymous.spec.js against actual public frontend/backend with exact expected commit, SystemChrome and normal hardware launch policy; no backend-origin IP override or credentials.",
+    "terminal": "Root63739 exits0;2 passed56.2s.",
+    "assertions": "Desktop375px mobile viewport open-source credit/focus usability; real login page200 and Alpha1.79.1; actual vendored protobuf/Three dependencies; visible latest1.79.1 patch-note entry and Escape dismissal; live WebSocket open; exact frontend and backend manifest/readiness; collected browser failures empty.",
+    "limits": "Browser mobile viewport is not physical-phone proof. This anonymous scope does not earn campaign rewards, play a dungeon/raid, render all equipped class variants or prove subjective modern-ARPG quality. Retain existing predeploy/scoped material and equipment regression evidence without replaying unchanged long campaigns."
+  },
+  "remaining": "Public SSH forwarding/access needs repair for future hosted deployment. Prepared trusted host pin/bounded SSH waits require own release acceptance. Full1.80 F1–F5, raised-world budget/delivery, all-family modern art, owner operations/rights choices and human pacing/device acceptance remain open. No wipe, beta access change, payment integration, cleanup or retention-policy change."
+}
