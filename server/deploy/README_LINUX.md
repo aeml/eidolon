@@ -7,6 +7,33 @@ This deploys:
 - Nginx on host (ports 80/443) reverse-proxying to API on localhost upstream port
 - TLS via Certbot Nginx flow
 
+## Prepared SSH endpoint trust and outage handling
+
+The candidate workflow pins the ED25519 host identity verified against this
+server's local public `/etc/ssh/ssh_host_ed25519_key.pub`. Its fingerprint is
+`SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE`.
+Network discovery alone does not establish trust. A changed key must stop
+deployment; never disable strict checking or paste an unverified scan as a fix.
+For deliberate rotation, verify the replacement through trusted server-console
+access and review the workflow update. Do not expose the private host key.
+
+The outgoing command requires strict host verification, a10s connection timeout,
+one connection attempt and15s/2-count SSH server-alive checks. These bound an
+unreachable/dead SSH connection, not deployment-build duration or an overall SLA.
+The source is prepared, not an accepted new workflow deployment.
+
+If hosted CI cannot reach public SSH but the authorized operator is on this
+server, the same exact tested production-branch commit can be deployed locally
+through `server/deploy/deploy_linux.sh`. First fetch/reconcile the production
+branch, verify commit ancestry and preserve/refuse tracked local edits; checkout
+the exact tested commit rather than the latest moving branch. Set its matching
+`EIDOLON_BUILD_COMMIT` and `EIDOLON_BUILD_VERSION`; do not skip storage, rollback
+image, schema, journal or health guards. Keep `CLEAN_SERVER_TREE=false` unless
+untracked cleanup is independently scoped. Leave private `.env` and QA allowlist
+unchanged. This does not make the failed GitHub job green: record the fallback
+and independently verify public identities, versioned bytes and appropriate
+browser checks. Public SSH reachability still needs separate repair.
+
 ## 1) Baseline and env wiring
 
 From server directory:
