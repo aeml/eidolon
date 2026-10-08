@@ -1,5 +1,17 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 latest rendering evidence resolves the real prior-tree comparison:
+unsupported sheared normal transforms now baked once, with source surfaces,
+normals/UV/colors and every crown/material/shadow retained.72 focused checks
+and combined actual High/Low eight-view native2 cases41.5s pass original pixel,
+frame, geometry and draw limits; live bounds changes remain immediate. Actual
+connected High observer/fresh equipped saves pass37.16s but median33.3ms does
+not close final party performance. Review remaining static matrix/foliage cost
+and full modern-art/device/profile delivery before publication. See
+[exact evidence](2026-10-08-foliage-normal-and-bounds-checks.json).
+This supersedes the tree failure below, not full1.80 F1-F5/1.87/beta/launch gates.
+Accepted public remains1.79.6; no staged art/profile rollout or new version.
+
 Current accepted release: **Alpha1.79.6 /37a13a41**, ordinary run37762573941,
 all ten required jobs successful including final hosted Live QA. Root separately
 verifies matching public identity/database and selected actual published bytes;

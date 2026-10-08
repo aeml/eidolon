@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "base": "b5bc3f5e170774a2ee10bc01d4e36ad7a3078322",
+  "status": "shear-shading-gap-corrected-and-scoped-native-qualification-passed-party-performance-remains-open",
+  "changes": {
+    "normalCorrection": "Three instancing assumes orthogonal matrix columns. Fixed woodland growth composed with tilted parts produces shear: new High/Low regression reproduces0.0623645 versus1e-7. Bake only those fixed part matrices into cloned geometry once, using inverse-transpose normals; retain placements, vertices, UVs/colors, all crowns, materials, shadows and original source geometry. Cache shared baked geometry per original geometry/matrix; independent crown culling and High/Low switching remain.",
+    "bounds": "Cache only transformed qualified foliage AABBs. Every frame still checks exact current local bounds and matrixWorld plus current material/visibility/wind/filter/camera/light guards. Parent motion, mutated bounds and replacement bounds immediately invalidate. End-frame flag restoration and disposal remain. No object or scenery removed."
+  },
+  "focused": {
+    "red": "Shear regression:2 fail25 pass1.333s. Repeated-world-bound regression:1 fail16 pass0.658s; identical second frame unnecessarily applies another corner transform.",
+    "retainedFixtureCorrection": "First new crown comparison mistakenly uses High geometry for Low and assumes all conifer parts have UVs; additionally applying identity re-normalizes already Float32-rounded normals.5 fail42 pass3.332s retained. Correct expected quality geometry and compare baked normals without a second transform, retaining exact array equality, not widened tolerance.",
+    "green": "Three shear/surface/archetype suites47 pass3.127s. Final combined foliage, shadow, scene/resource and actor-instance suites72 pass3.368s. Exact transformed arrays, independent crowns, retained sources/materials, quality changes, cache invalidation and conservative shadow/culling guards covered. Scoped ESLint/whitespace pass.",
+    "shearRedSHA256": "410ddd22a7b843b575c90545b5be5857267f6a9aaef4953f9ab0be05d1e996a5",
+    "boundsRedSHA256": "491a9b830c1fa61731235fb9fa4653c279e9e41a73764ee2fb255c14492d72c5",
+    "finalGreenSHA256": "6c9a99a7f465ec48f1993487214bcc30d8c93af97bdec73170b08fc77e512fea"
+  },
+  "native": {
+    "result": "Actual System Chrome AMD Vulkan/RADV High1280x844 and Low390x844:2 pass41.2s after shear fix, then changed-cache combined source2 pass41.5s. All eight120-RAF views pass original High20/33.4ms,350calls/250000tri and Low33.4/50ms,200/85000 targets. No rounding/tolerance changes.",
+    "pixels": "Actual prior-tree/understory comparison now changes1-2 High and1-3 Low pixels of270080, below original.001 target, versus retained prior289/294 failures. Filtering and terrain surface-culling comparisons change zero pixels. Models, movement/grounding/jump/aim/effects and fourteen-item fit/fallback assertions remain intact.",
+    "costs": "All final view medians16.7ms/p95 at most16.80000000000109. High woodland346calls/247325tri, other views183/160167,265/219911,270/214716. Low61/44864,131/73359,100/66176,104/67163. Same original geometry/call targets; no complete-world or battle certificate.",
+    "review": "Inspected actual final High woodland and Low rock-formation images. Intact dressed hero, terrain, plants and shadows; still modest procedural visuals, not final Diablo/PoE art approval.390px is a desktop browser viewport, not a physical phone.",
+    "log": "/home/aeml/.local/share/eidolon-foliage-final-native-20261008.log",
+    "logSHA256": "095da548c79f942b4896b99953f3331a7b603d1411876cc6e94199ee2873506b"
+  },
+  "connected": {
+    "result": "Actual single High renderer/three authenticated normal party socket peers and all four fresh fourteen-slot saves pass37.16s/package38.205s; browser observer29.0s. Four-browser input case deliberately skipped, not re-passed. Owned ephemeral database removed;4190/18189 checks clear.",
+    "sample": "180 frames: median33.3ms/p95-p9933.400000000001455,40 over33ms; CPU median25.2/p9530.2ms,514calls/562620tri,31entities,394geometries/152textures,zero previews. Entity counts/host conditions differ from preceding trials: no cross-run speed claim or original High-budget acceptance.",
+    "cpu": "Opt-in3second function sample after frame timing: foliage visit655079us, updateMatrixWorld419860us, multiplyMatrices216156us. Sample attribution alone does not establish cache regression or improvement. Separate alternating same600-cell warmed Node-only controller probe has original0.120-0.155ms/frame and cached0.095-0.129 across six trials; this is only a CPU microprobe, not Chrome/game acceptance.",
+    "browser": "/home/aeml/.local/share/eidolon-terrain-save-evidence-nm7juPU6/browser.log",
+    "browserSHA256": "cd5802f6aee2c80674ad6707a74f3a12c58e54f5eedd4d69aa424c2bb43e1469",
+    "wrapperSHA256": "e9be51ebe9c1f63a1210eec21bfd21e93ce89396a2872dfd3d153f1aa96313fa"
+  },
+  "sourceSHA256": {
+    "src/art/FoliageRenderBatches.js": "56ce39676749ad4ed00721f8a5ca7df236cee05b6607e5b7b0f58c353a25d90f",
+    "src/core/FoliageShadowInfluence.js": "237df05641bb86ce6bc43aa62222d5b126c408915de4c87bdb09bde40a4a5b9c",
+    "tests/FoliageRenderBatches.test.js": "2e55a03c97dd77bbc0270926f03f9a5d620a3e47663672b9ac6c0b2647b148b4",
+    "tests/FoliageShadowInfluence.test.js": "da7862b42499709056a469da59bc221576cfffee1662c2c4e838dbbd2ceba765"
+  },
+  "remaining": "Next investigate forced unchanged static-world matrix propagation and excessive foreground foliage traversal, with dynamic parent/quality/flags and pixel/lifecycle proofs retained. Equipped-party High, full modern art/device/profile/public delivery and1.80 F1-F5 remain open; whole roadmap1.81-1.99/beta/launch unchanged. Alpha1.79.6 remains accepted live; no staged asset/profile/version publication from this receipt. Deferred human campaign/phone evidence is not accepted."
+}

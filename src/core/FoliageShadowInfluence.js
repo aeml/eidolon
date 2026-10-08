@@ -63,6 +63,7 @@ export class FoliageShadowInfluence {
         // leaves/flags each frame, not every rig and building in the scene.
         // Callers without an owned scene retain the original traversal path.
         this.scene = scene; this.roots = new Set();
+        this.boundsCache = new WeakMap();
         const register = root => {
             if (root.userData.earthUnderstory || root.userData.proceduralFoliage) this.roots.add(root);
         };
@@ -89,7 +90,20 @@ export class FoliageShadowInfluence {
             // own explicitly qualified wind-padded bounds; actors stay out.
             if (shadowCaster && materials.some(material => material.userData.woodlandWind)) return;
             if (groundCover && (object.children.length || materials.some(material => !material.userData.woodlandWind))) return;
-            this.caster.copy(object.boundingBox).applyMatrix4(object.matrixWorld);
+            let cached = this.boundsCache.get(object);
+            if (!cached) {
+                cached = { local: object.boundingBox.clone(), matrix: object.matrixWorld.clone(),
+                    world: object.boundingBox.clone().applyMatrix4(object.matrixWorld) };
+                this.boundsCache.set(object, cached);
+            } else if (!cached.local.equals(object.boundingBox) || !cached.matrix.equals(object.matrixWorld)) {
+                cached.local.copy(object.boundingBox); cached.matrix.copy(object.matrixWorld);
+                cached.world.copy(object.boundingBox).applyMatrix4(object.matrixWorld);
+            }
+            // Only the expensive corner transform is cached. Current camera,
+            // light/filter, visibility/material flags and complete live local
+            // bounds are still evaluated on every frame; moving/reparented
+            // foliage or quality/buffer-bound updates invalidate immediately.
+            this.caster.copy(cached.world);
             if (this.caster.isEmpty() || ![this.caster.min.x, this.caster.min.y, this.caster.min.z,
                 this.caster.max.x, this.caster.max.y, this.caster.max.z].every(Number.isFinite)) return;
             if (groundCover) {
@@ -157,5 +171,6 @@ export class FoliageShadowInfluence {
             group.removeEventListener('childremoved', this.onRemoved);
         }
         this.watchedGroups.length = 0; this.roots.clear(); this.scene = null;
+        this.boundsCache = new WeakMap();
     }
 }

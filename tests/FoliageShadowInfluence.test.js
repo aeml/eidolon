@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { jest } from '@jest/globals';
 import { FoliageShadowInfluence, getDirectionalShadowInfluenceBounds, getShadowFilterWorldPadding, shadowInfluenceIntersectsFrustum } from '../src/core/FoliageShadowInfluence.js';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from '../src/core/ShadowViewCoverage.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
@@ -17,6 +18,25 @@ function fixture() {
     mesh.castShadow = mesh.receiveShadow = true; group.add(mesh);
     return { scene, group, mesh, camera, light, controller: new FoliageShadowInfluence() };
 }
+
+test('unchanged qualified bounds are reused but parent transforms and live bound edits immediately invalidate them', () => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    const transform = jest.spyOn(THREE.Box3.prototype, 'applyMatrix4');
+    try {
+        const frame = () => { s.controller.beginFrame(s.scene, s.camera, s.light); s.controller.endFrame(); };
+        frame(); expect(transform).toHaveBeenCalledTimes(1);
+        frame(); expect(transform).toHaveBeenCalledTimes(1);
+        s.group.position.x = -100; s.scene.updateMatrixWorld(true);
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(transform).toHaveBeenCalledTimes(2); expect(s.mesh.castShadow).toBe(true); s.controller.endFrame();
+        s.mesh.boundingBox.translate(new THREE.Vector3(100, 0, 0));
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(transform).toHaveBeenCalledTimes(3); expect(s.mesh.castShadow).toBe(false); s.controller.endFrame();
+        s.mesh.boundingBox = new THREE.Box3(new THREE.Vector3(-1, -1, -1), new THREE.Vector3(1, 1, 1));
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(transform).toHaveBeenCalledTimes(4); expect(s.mesh.castShadow).toBe(true); s.controller.endFrame();
+    } finally { transform.mockRestore(); s.controller.dispose(); }
+});
 
 test('registered foliage roots avoid scanning unrelated actors and retain add/remove/visibility ownership', () => {
     const s = fixture(), background = new THREE.Group(); s.scene.add(background);

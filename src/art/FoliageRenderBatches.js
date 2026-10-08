@@ -6,6 +6,27 @@ import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
+const SHEAR_BAKES = new WeakMap();
+
+// Three's instanced normal transform assumes orthogonal matrix columns. The
+// taller woodland recipe composes nonuniform growth with tilted branches,
+// producing shear. Bake only those fixed part transforms once, preserving
+// exact positions/UVs/colors and inverse-transpose normals; placement remains
+// an ordinary rotation plus uniform scale in the instance buffer.
+function supportedInstancePart(part) {
+    const columns = [0, 1, 2].map(index => new Vector3().setFromMatrixColumn(part.matrix, index).normalize());
+    if (Math.max(Math.abs(columns[0].dot(columns[1])), Math.abs(columns[0].dot(columns[2])),
+        Math.abs(columns[1].dot(columns[2]))) <= 1e-7) return part;
+    let matrices = SHEAR_BAKES.get(part.geometry);
+    if (!matrices) { matrices = new WeakMap(); SHEAR_BAKES.set(part.geometry, matrices); }
+    let geometry = matrices.get(part.matrix);
+    if (!geometry) {
+        geometry = part.geometry.clone().applyMatrix4(part.matrix);
+        geometry.computeBoundingBox(); geometry.computeBoundingSphere();
+        matrices.set(part.matrix, geometry);
+    }
+    return Object.freeze({ ...part, geometry, matrix: new Matrix4() });
+}
 
 // Constructor/quality-change work only. A rotated tree's aggregate box sphere
 // and transformed source spheres contain empty space beyond the actual crown.
@@ -56,7 +77,7 @@ export function getFoliageRenderBatches(id, quality = 'high') {
         buckets.get(key).push(part);
     }
     const batches = [...buckets.values()].map((parts, index) => {
-        if (parts.length === 1) return parts[0];
+        if (parts.length === 1) return supportedInstancePart(parts[0]);
         const baked = parts.map(part => {
             const geometry = part.geometry.index ? part.geometry.toNonIndexed() : part.geometry.clone();
             return geometry.applyMatrix4(part.matrix);

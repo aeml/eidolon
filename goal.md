@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 tree-shading gap resolved:** Reproduce unsupported instanced shear,
+bake only fixed sheared part transforms once with exact source surface/UV/color
+and normal checks, preserving all crowns/materials/shadows. Actual equipped
+High/Low eight-view native comparison now passes original budgets; prior-tree
+pixel delta drops289/294 to1–3 without changing tolerance. Cache unchanged
+world bounds with immediate live parent/bound invalidation;72 focused assertions
+and combined native2 cases41.5s pass. Actual connected High observer/fresh
+four-class fourteen-slot saves pass37.16s, but33.3ms median remains unqualified
+for final party performance. Two actual images reviewed, not modern-art or
+physical-phone acceptance. See
+[exact source, failures and limits](docs/plans/2026-10-08-foliage-normal-and-bounds-checks.json).
+Next static-world matrix propagation/foliage traversal cost, not unchanged
+campaign replay. Full goal active;1.80 F1-F5/1.87/final art/device/public profile
+gates remain open. Alpha1.79.6 remains accepted live; no new art deployment yet.
+
 **Current accepted public release: Alpha1.79.6, exact37a13a41.** Ordinary
 CI37762573941 succeeds through all ten required jobs including SSH/Pages and
 hosted Live QA; root independently verifies matching front/back/healthy DB,
