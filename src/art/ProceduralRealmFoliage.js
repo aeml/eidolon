@@ -7,6 +7,7 @@ import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
 import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
 import { createEmberSnagGeometry, EMBER_SNAG_SOCKETS } from './EmberSnagGeometry.js';
+import { createFracturedCrystalGeometry } from './FracturedCrystalGeometry.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
 import { applyWoodlandLeafDetail } from './WoodlandLeafMaterial.js';
@@ -69,7 +70,7 @@ const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
 const needleCrown = geometry('foliage-needle-boughs', createConiferBoughGeometry);
 const willowCurtain = geometry('foliage-willow-curtain', createWillowCurtainGeometry);
 const pineCrown = geometry('foliage-elemental-boughs', createElementalConiferGeometry);
-const shard = geometry('foliage-shard', () => new THREE.ConeGeometry(0.34, 2.2, 5));
+const shard = geometry('foliage-shard', createFracturedCrystalGeometry);
 const crystal = geometry('foliage-crystal', () => new THREE.OctahedronGeometry(0.7, 0));
 const root = geometry('foliage-root', () => new THREE.ConeGeometry(0.2, 1.9, 5));
 const lantern = geometry('foliage-lantern', () => new THREE.OctahedronGeometry(0.2, 0));
@@ -182,16 +183,24 @@ function createEmberSnag() {
     ];
 }
 
+function rootedCrystalFork(name, materialValue, angle, scale, anchor) {
+    const rotation = [0, 0, angle];
+    const baseOffset = new THREE.Vector3(0, -1.1, 0).multiply(new THREE.Vector3(...scale))
+        .applyEuler(new THREE.Euler(...rotation));
+    const position = new THREE.Vector3(...anchor).sub(baseOffset).toArray();
+    return part(name, shard, materialValue, { position, rotation, scale });
+}
+
 function createBasaltBriar() {
     const p = palette('fire');
-    const basalt = material('foliage-basalt', p.shadow, { roughness: 0.78 });
-    const rust = material('foliage-basalt-rust', p.midtone, { metalness: 0.28 });
+    const basalt = material('foliage-basalt', p.shadow, { roughness: 0.78, surface: 'stratified-rock' });
+    const rust = material('foliage-basalt-rust', p.midtone, { metalness: 0.28, surface: 'stratified-rock' });
     const magma = material('foliage-basalt-magma', p.spirit, { emissive: p.spirit, emissiveIntensity: 1.15, roughness: 0.35 });
     return [
         part('basalt briar spine', shard, basalt, { position: [0, 1.5, 0], scale: [1.2, 1.38, 1.2] }),
-        part('western basalt thorn', shard, rust, { position: [-0.88, 1.05, 0.15], rotation: [0, 0, -0.62], scale: [0.72, 0.72, 0.72] }),
-        part('eastern basalt thorn', shard, basalt, { position: [0.88, 0.95, -0.08], rotation: [0, 0, 0.68], scale: [0.66, 0.66, 0.66] }),
-        part('magma briar heart', crystal, magma, { position: [0, 1.2, 0.42], scale: [0.42, 0.72, 0.36], castShadow: false })
+        rootedCrystalFork('western basalt thorn', rust, .62, [.72, .72, .72], [-.1, -.08, .15]),
+        rootedCrystalFork('eastern basalt thorn', basalt, -.68, [.66, .66, .66], [.1, -.08, -.08]),
+        part('magma briar heart', shard, magma, { position: [0, 1.2, 0.42], scale: [.86, .46, .74], castShadow: false })
     ];
 }
 
@@ -213,14 +222,14 @@ function createGaleCypress() {
 
 function createStormCrystal() {
     const p = palette('air');
-    const slate = material('foliage-storm-slate', p.shadow, { roughness: 0.76 });
+    const slate = material('foliage-storm-slate', p.shadow, { roughness: 0.76, surface: 'slate' });
     const silver = material('foliage-storm-silver', 0x74859a, { metalness: 0.52, roughness: 0.48 });
     const charge = material('foliage-storm-violet', p.spirit, { emissive: p.spirit, emissiveIntensity: 1.08, roughness: 0.3 });
     return [
         part('storm crystal plinth', shard, slate, { position: [0, 1.18, 0], scale: [1.05, 1.08, 1.05] }),
-        part('silver conductor west', shard, silver, { position: [-0.72, 1.12, 0.08], rotation: [0, 0, -0.42], scale: [0.58, 0.78, 0.58] }),
-        part('silver conductor east', shard, silver, { position: [0.7, 0.92, -0.1], rotation: [0, 0, 0.5], scale: [0.52, 0.66, 0.52] }),
-        part('captive storm', crystal, charge, { position: [0, 1.72, 0.36], scale: [0.52, 0.82, 0.44], castShadow: false })
+        rootedCrystalFork('silver conductor west', silver, .42, [.58, .78, .58], [-.1, -.08, .08]),
+        rootedCrystalFork('silver conductor east', silver, -.5, [.52, .66, .52], [.1, -.08, -.1]),
+        part('captive storm', shard, charge, { position: [0, 1.72, 0.36], scale: [1.06, .52, .9], castShadow: false })
     ];
 }
 

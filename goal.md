@@ -96,6 +96,13 @@ cases/thirty timed views pass original limits. Water/Fire framing improves in
 actual road captures; Air still has conspicuous open stretches and primitive
 stems/crystals remain. [Exact scope and rejected attempts](docs/plans/2026-10-08-elemental-travel-stands-checks.json).
 Not delivered, uniformly populated routes or modern-art completion.
+Staged regional crystal formations replace perfect cones with mineral facets,
+weathered basalt/slate surfaces and properly grounded side forks. Reject the
+first detached fragments despite green checks; actual transforms corrected.
+Fifty-five focused cases and four native High/Low cases/38 timed views pass
+original limits; final Fire/Air views inspected.
+[Component evidence](docs/plans/2026-10-08-fractured-crystal-checks.json).
+Selective integration/delivery and broader modern-world cohesion remain open.
 Staged Fire snags now have connected curved timber forks and ember crystals
 registered to shared branch sockets, replacing rigid crossed cylinders and
 floating cone tips. All 90 anchors and two material batches retained. Forty

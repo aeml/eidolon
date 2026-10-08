@@ -80,6 +80,14 @@ two native High/Low cases/22 timed views pass unchanged scene limits. Actual
 captures reviewed. Selective integration and delivery remain pending; sparse
 terrain, regional props and full modern world cohesion are not complete.
 
+Staged [regional mineral formations](2026-10-08-fractured-crystal-checks.json)
+replace uniform cones with asymmetric facets and existing basalt/slate detail.
+Side forks now join grounded central roots instead of floating beside them;
+initial green-but-detached images are rejected. Fifty-five units and four native
+High/Low cases/38 timed views pass original limits; final Fire/Air captures
+reviewed. Selective integration/delivery and full modern-world cohesion remain
+open; stylized emissive cores and sparse terrain are not final art approval.
+
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
 pre-section progress notes moved byte-for-byte to

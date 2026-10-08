@@ -78,6 +78,11 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 // cannot establish the changed crown's appearance.
                 foliageSites.push({ id: `${id}-bough-review`, x: tree.x + 6,
                     z: tree.z + 8, region: recipe.region });
+                const crystalRecipe = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id ===
+                    (elemental === 'air' ? 'storm_crystal' : 'basalt_briar'));
+                const formation = createProceduralFoliagePlacements(crystalRecipe)[0];
+                foliageSites.push({ id: `${crystalRecipe.id}-review`, x: formation.x + 3,
+                    z: formation.z + 4, region: crystalRecipe.region });
                 if (elemental === 'water-fire') {
                     const willow = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id === 'drowned_willow');
                     const placement = createProceduralFoliagePlacements(willow)[0];
