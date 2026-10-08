@@ -11,6 +11,16 @@
     "managed": "f2bf4ddb8fcd79714d031d9482fb8aee62974c232a56120b3a20b37864fd11b8",
     "monitor": "170cbd4d6797e1f38cebc89d67973d33739dc2499d936c72fbee30fa46b2d732"
   },
-  "delivery": "Do not push until ordered1.79.9/10/11/12 acceptance and fresh fetch/reconciliation. Exact1.79.9 run37791738441/head293a9ccc attempt1 ended cancelled20:21:50UTC: GitHub annotation explicitly exceeded maximum6h execution while installing browser. Four prior checks successful, six downstream deployment/QA jobs skipped. Root retries unsuccessful jobs on same run/commit; attempt2 in_progress at20:23:23, Luna monitoring. Prior attempt not a pass, current retry requires all mandatory deployment/public gates.",
-  "remaining": "Release-transition/recovery exercise and approved public-monitor activation, off-machine/whole-host/browser execution coverage, operator/RPO/RTO/budget decisions, full1.83 and1.80F1-F5, modern-art/party/device/human/beta/launch gates stay open. Full roadmap objective active."
+  "reconciliation": "Merge prepared1.79.12/83976747, including updated1.79.10/11 reconciliation and corrected remote7114aad6 QA; art/login/runtime/monitor settings unchanged. Complete goal/roadmap records retained. Own publication still pending.",
+  "processTransition": {
+    "source": "server/monitor_public_transition_test.go",
+    "sourceSHA256": "4711fc2cb264a507d0f95c490f339c7905e13a4b82b07ba50a426d79fc2cd7d2",
+    "command": "go test -race -run '^TestMonitorPublicReleaseTransitionAndRestart$' -count=1 . (server directory)",
+    "result": "ok eidolon-server9.365s, two fresh compiled-monitor subprocess cycles",
+    "scope": "Real compiled command against synthetic loopback HTTP health and ordinary verified local TLS login/release/backend. Frontend advances first, three mismatch samples emit one public_release_mismatch outage; API/local catch up, two matching samples emit recovery with new identity. SIGTERM clean/silent exit. Fresh monitor process observes next sequential release transition, not stale prior identity. Approved3/2thresholds/30minute reminder cooldown retained; fixture-only1second polling is within existing CLI bounds, actual managed policy remains30seconds. Private peer-body marker excluded from parsed output. Postmark disabled; isolated child env contains only PATH/local test certificate trust, no production env/credentials/proxy or provider request.",
+    "attempts": "Initial two-cycle test passes9.421s. Strengthen fixture to advance release identities across restart rather than reset/repeat the same transition; final9.365s above. No production/runtime changes or extra release version. Existing monitor/deployment/notifier qualification retained rather than replayed.",
+    "limit": "Controlled compiled-process release mismatch/recovery/restart evidence, not an actual managed Compose/API/Nginx release turnover, real DNS/provider/browser execution, off-machine or whole-host power-loss proof. No production activation or mail."
+  },
+  "delivery": "Do not push until ordered1.79.9/10/11/12 acceptance and fresh fetch/reconciliation. Prior37791738441 attempt2 failed predeploy loot QA and downstream skipped. Corrected1.79.9/run37842726678/head7114aad6 requires own mandatory/public acceptance; Luna monitors terminal-only. Latest accepted public1.79.8. No gate bypass or prior skipped-gate pass claim.",
+  "remaining": "Actual managed release-turnover/recovery and approved public-monitor activation, off-machine/whole-host/browser execution coverage, operator/RPO/RTO/budget decisions, full1.83 and1.80F1-F5, modern-art/party/device/human/beta/launch gates stay open. Full roadmap objective active."
 }

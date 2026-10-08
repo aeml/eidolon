@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 public-monitor process transition qualification:** Prepared1.79.13
+merges reconciled1.79.12 and corrected remote QA without monitor/runtime policy
+changes. New actual compiled-monitor/local HTTP+verified TLS fixture passes two
+sequential release mismatch/recovery cycles with process restart9.365s. Preserve
+3failure/2recovery thresholds and30mincooldown; test polls1s, managed policy30s.
+SIGTERM exits cleanly; private-body marker excluded, Postmark off/no production
+env/IO. [Evidence](docs/plans/2026-10-08-release1-79-13-checks.json).
+Actual managed deployment turnover/activation and off-machine/whole-host/browser
+coverage remain open, not replaced by this fixture. Ordered publication and
+original full roadmap/F1-F5/art/device/human/owner/beta/launch gates unchanged.
+
 **Prepared1.79.13 public-monitor integration:** Qualified optional public-probe
 and managed preflight code now has synchronized source/login/server/CI/default
 versions and accurate cumulative notes.387focused client checks, two root

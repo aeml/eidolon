@@ -1,5 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 public-monitor compiled-process fixture now covers two sequential
+release mismatches/recoveries across a clean process restart using local HTTP
+and ordinary verified TLS. Final focused race check9.365s;3/2thresholds and30m
+reminder policy retained, fixture polls1s/managed30s. No production activation,
+mail/env or runtime change. Actual managed turnover/whole-host/off-machine/
+browser and all original1.83/F1-F5/modern-art/device/owner/launch gates stay open.
+[Supplemental evidence](2026-10-08-release1-79-13-checks.json).
+
 October8 prepared1.79.13 integrates the optional public-probe and managed
 preflight components below, with synchronized versions and all448notes (all447
 prior entry bytes retained).387focused client checks,15managed race cases and
