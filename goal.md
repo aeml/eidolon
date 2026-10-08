@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current-master surface patch assembled:** Alpha1.79.7 prepares only
+the qualified Earth surface/material component, matching tests, synchronized
+versions and cumulative notes. No future-branch merge, wearable derivatives,
+raised profile, new gameplay or Air-canvas relabeling (already delivered1.79.3).
+Fresh flat-native High/Low checks pass29.7s; own CI/publication is pending
+at7892224f/run37773941500. See
+[current assembly](docs/plans/2026-10-08-release1-79-7-checks.json).
+Accepted live1.79.6 exact37a13a41/CI37762573941 supersedes older pending entries;
+see [public receipt](docs/plans/2026-10-08-release1-79-6-public-checks.json).
+Full roadmap/F1-F5/1.87/final art/device/beta/launch scope remains active.
+
 **October8 surface review advances:** Inspect actual gameplay-zoom captures;
 refine soil/moss separation and interrupted rock bedding without new meshes,
 maps/fetches, walking solids or lighting changes. Reject first technically green

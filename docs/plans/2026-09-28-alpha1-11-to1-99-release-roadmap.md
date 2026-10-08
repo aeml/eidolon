@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+Current assembly: Alpha1.79.7 selectively integrates Earth surface refinements
+and their tests/versions/notes onto fresh accepted master37a13a41, not the future
+branch. Existing Air canvas remains unchanged; raised terrain and wearable
+derivatives are not promoted. See [scope](2026-10-08-release1-79-7-checks.json).
+Fresh flat-native High/Low checks pass29.7s; own7892224f/CI37773941500
+is running and public acceptance remains pending. Accepted public1.79.6/37a13a41
+and ordinary37762573941 supersede historical pending statements below; see
+[public evidence](2026-10-08-release1-79-6-public-checks.json).
+Full1.80 F1-F5/1.87/art/device/profile/beta/launch gates remain open.
+
 October8 gameplay-zoom surface refinement: soil/moss fields and interrupted
 rock bedding updated without new meshes, maps/fetches, collisions or lighting.
 Reject over-contrasted first attempt despite green tests. Final35 units and

@@ -420,18 +420,20 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.6`, a narrow party-healing hotbar fix:
-  selecting an ally keeps accessible button focus without suppressing numbered
-  or remapped ability keys. Ordinary UI controls and server gameplay checks stay
-  protected. Publication/public acceptance are pending; 1.80 freeze and full
+- Current source version: `Alpha 1.79.7`, a modest Earth-surface refinement:
+  coherent soil aggregates, separate moss cushions and restrained mineral
+  bedding retain existing geometry, lights, maps and collision footprints.
+  Publication/public acceptance are pending; 1.80 freeze and full
   1.87 modern-art/raised-world gates remain open. See the
-  [scoped qualification](docs/plans/2026-10-08-release1-79-6-checks.json).
+  [scoped qualification](docs/plans/2026-10-08-release1-79-7-checks.json).
   Four-class actual saved-session proof and
   narrow connected movement/Fireball/resume checks retain their exact limits in
   the [save receipt](docs/plans/2026-10-08-terrain-saved-session-checks.json) and
   [connected receipt](docs/plans/2026-10-08-connected-terrain-checks.json).
-  Current accepted live release is `Alpha 1.79.5`, atde106428, after its ordinary
-  CI/SSH/Pages/Live QA run37748224367. Administrator Dark Realm passage bypasses
+  Current accepted live release is `Alpha 1.79.6`, at37a13a41, after its ordinary
+  CI/SSH/Pages/Live QA run37762573941. The selected party-healing hotbar focus fix
+  is live; see the [public receipt](docs/plans/2026-10-08-release1-79-6-public-checks.json).
+  Administrator Dark Realm passage bypasses
   story requirements only: level100, normal travel and Nexus/raid gates remain.
   Prior1.79.3 fallback and its SSH failure remain in the
   [historical public receipt](docs/plans/2026-10-08-release1-79-3-public-checks.json).

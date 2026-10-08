@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.7",
+  "base": "37a13a41a8b35c3d4030fb1eb1ade56620150e70",
+  "status": "scoped-current-master-assembly-qualified-publication-pending",
+  "scope": "Select only EarthGroundComposition/WorldSurfaceDetail and matching tests from b3509846, plus synchronized release/login/container/deploy/QA versions and cumulative notes. No future-branch merge or runtime wearable derivatives, scene/matrix/Skeleton batching changes, raised-profile activation, Air-canvas relabeling, dependencies, schema, gameplay/economy/privacy/monitoring authority changes.",
+  "sourceSHA256": {
+    "src/art/EarthGroundComposition.js": "69b259c44ed34b7088cccdef5ee4980a7b29e4fa205ded546414935c1a958a26",
+    "src/art/WorldSurfaceDetail.js": "b82a3c4df0a2010f23023ac4f158bbf23414c8aac17aec1068a244bebd455a31"
+  },
+  "qualification": {
+    "source": "Qualified component35 tests and native High/Low eight-view41.0s with retained rejected art attempt are in 2026-10-08-earth-surface-v10-checks.json. Those staged raised/equipped views are not the fresh release flat-world proof.",
+    "freshMasterUnits": "New worktree actual ground/surface suites22 pass; version suite initially catches remaining container/deploy/QA/README defaults. Correct all six runtime identities, README and a new note-wording mismatch; final VersionPresentation371 pass1.818s. Combined scope393 distinct checks, evidenced by split retained invocations, not one wholly green run. Scoped ESLint/whitespace pass.",
+    "flatFailure": "First native2 cases fail before any rendering because the fresh worktree has no generated vendor/Three module. Preserve failure; run the existing prepare-client script, without dependency updates or application workaround.",
+    "flatNative": "Final exact new runtime source: System Chrome High1280x844/Low390x844 actual populated Earth/town with current flat WorldGenerator, normal renderer/lighting/zoom, structures/plants/services and original body assets. Both cases pass29.7s with browser failures absent. High Bastion woodland and Low grove arch inspected. This is bounded render/interaction gallery scope, not frame-time/capacity, equipped-party/combat, physical-phone or final art acceptance. No unqualified profile/models enter the release.",
+    "identity": "Source release.json, package/lock, login, main server, Dockerfile/Compose, deploy script, isolated character QA and CI build versions aligned to1.79.7. History retained; notes explicitly distinguish inactive raised-world rock material, old Air delivery and remaining milestones."
+  },
+  "evidence": {
+    "splitUnits": "/home/aeml/.local/share/eidolon-release1797-scoped-green-20261008.log",
+    "splitUnitsSHA256": "6268ab3a563ef892e8c3e8bd869ba24881b289fdfdf9da6bd2335691704d2dde",
+    "finalVersionSHA256": "b33c669ddfb9a39f8ea6e478700b67889827fedd3348768d670b4d80c103ef43",
+    "flatFailureSHA256": "3a58a9c573b752eb00700108a592ab9effbd6c47fe77db47ce8258b749c98201",
+    "flatNative": "/home/aeml/.local/share/eidolon-release1797-flat-prepared-native-20261008.log",
+    "flatNativeSHA256": "c04b8942fccda6eaac01c694c7da7126737ac9c1f8ef2daabef586bb72f6d0fa"
+  },
+  "publication": "Own ordinary CI/SSH/Pages/hosted Live QA and independently matching verified-HTTPS public front/back/DB still required after push. Last accepted public1.79.6 exact37a13a41/CI37762573941 remains authoritative until that evidence exists. Delegate deployment monitoring to the authorized Luna monitor, not per-tick root polling.",
+  "remaining": "Full1.80 F1-F5/1.87 modern-art, terrain/wearable/device/equipped-party and all later beta/launch gates remain. Human campaign/phone validation stays deferred, not passed. Modest surface publication is not the completed roadmap, feature freeze or closed-beta readiness."
+}
