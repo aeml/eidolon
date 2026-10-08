@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current1.80 source reconciliation:** Preserve all65 promises and
+current exact accepted f9 asset/content/UI/game/dependency/catalog identities;
+review actual post-b5 origin/storage/workflow/fitted-equipment runtime changes.
+Origin/trusted pin/native-ref guards now delivered; read-only GitHub API still
+master protected=false/no rulesets, hosted SSH timeout remains. Correct obsolete
+current-issue ledger and V03/O03 rows without erasing historical failed scopes.
+No new content freeze/version/policy approval, repeated gameplay test or incoming
+future-branch merge. F1–F5 remain open. Separate staged town material refinement
+now uses equipped14-slot Fighter/HUD/populated High/Low views,32 unit and2 native
+checks; future art is not yet live or final modern-art acceptance.
+
 **October8 Alpha1.79.2 live acceptance:** Exact f9cbd41b is live on both
 public endpoints. Corrected CI37722779214 passes Client/Go/all three browser
 shards/predeploy/input checks and Pages; hosted deployment fails only when SSH
