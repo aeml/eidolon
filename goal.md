@@ -1,11 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
-**October8 pine canopy refinement qualified, staged:** Fuller hanging sprays
-retain all branches/materials and840/420 triangles.68 focused checks, actual
-flat High/Low gallery30.2s and equipped eight-view native40.7s pass original
-limits; captures reviewed, not final modern-art/party/device acceptance. See
-[evidence](docs/plans/2026-10-08-conifer-coverage-checks.json).
-Next concrete understory/composition gaps; full roadmap remains active.
+**October8 woodland geometry refinements qualified, staged:** Fuller pine fans
+retain840/420 triangles; curved, varied green sedge retains80. Reject first
+flat-yellow leaf attempt before final native review. Pine68/leaf67 focused
+checks and separate flat/equipped High/Low native cases pass original limits.
+See [pine](docs/plans/2026-10-08-conifer-coverage-checks.json) and
+[leaf](docs/plans/2026-10-08-understory-leaf-checks.json) evidence/limits.
+Finish pending public surface acceptance; prepare selective visual delivery.
+Full composition/modern-art/device/roadmap requirements remain active.
 
 **October8 current-master surface patch assembled:** Alpha1.79.7 prepares only
 the qualified Earth surface/material component, matching tests, synchronized

@@ -1,10 +1,11 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October8 staged pine canopy: broaden/droop existing sprays without extra
-triangles, branches or materials.68 focused checks, flat High/Low gallery30.2s
-and equipped eight-view native40.7s pass; actual captures show modest fuller
-fans. [Scope/limits](2026-10-08-conifer-coverage-checks.json). Understory,
-composition, full1.80/1.87 modern art/device/profile/beta/launch remain open.
+October8 staged woodland geometry: fuller pine fans retain840/420 triangles;
+curved, varied green sedge retains80. First flat-yellow leaf attempt rejected;
+final pine68/leaf67 checks and separate flat/equipped High/Low cases pass.
+[Pine](2026-10-08-conifer-coverage-checks.json) and
+[leaf](2026-10-08-understory-leaf-checks.json) scopes/limits. Whole-bed/world
+composition and full1.80/1.87 modern art/device/profile/beta/launch remain open.
 
 Current assembly: Alpha1.79.7 selectively integrates Earth surface refinements
 and their tests/versions/notes onto fresh accepted master37a13a41, not the future
