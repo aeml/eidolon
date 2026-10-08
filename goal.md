@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 staged1.87 Cinder surface refinement:** Replace remaining paving-like
+cell outlines with folded basalt crust, recessed scoria pores and registered
+ash coverage on the existing three maps. First visual candidate too granular;
+broaden crust/soften pores before retaining. Final affected10 checks PASS13.797s;
+earlier complete37-check scope passes89.611s and unchanged Water/Air helper bytes
+plus1024 sampled fields per realm retained. Real Chrome final High/Low floor
+comparison PASS1/12.5s; textures/geometries/repeat unchanged. Inspected both
+images at gameplay scale; empty-floor/unequipped preview is not full realm,
+modern-art, performance/device or beta acceptance. Own4190 closed, no unchanged
+woodland/cohort replay. [Exact checks](docs/plans/2026-10-08-fire-surface-checks.json).
+Future source only, no current version/push/service/player mutation. Ordered
+1.87 integration and the full1.80/modern-art/roadmap gates remain open.
+
 **October8 staged1.87 public terrain selection:** Add explicit server-owned
 flat/raised profile configuration without granting QA commands. Default remains
 flat; unknown values and legacy QA without allowlist fail before logging/DB/

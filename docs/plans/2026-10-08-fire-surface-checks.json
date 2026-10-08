@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T03:39:38Z",
+  "milestone": "1.87 code-owned environment refinement",
+  "status": "fire-surface-qualified-local-only",
+  "baseCommit": "54497bbb",
+  "change": "Replace Fire's remaining cellular paving contours with periodic folded cooled-basalt crust and shallow scoria pores, filled by the original broad ash mask. Color, relief and roughness share the field. First inspected variant looked too granular; final crust frequency13→7 and pore albedo strength.23→.1 retain physical pore relief without pebble confetti.",
+  "unchanged": "No geometry, collisions, lighting/preset, map count/dimensions/repeat, per-frame work, server, economy or player change. Shared sampling helpers and Water/Air helper bytes match parent exactly;1024-point field digests per realm also match. Existing Earth/raised-world qualification remains separately scoped.",
+  "checks": {
+    "newContract": "Root30646:Cinder field expectation fails against prior runtime2.146s (1FAIL/1PASS), representing new refinement requirements, not a claimed gameplay bug.",
+    "completeInitial": "Root59487 exits0:two affected suites37PASS89.611s. Includes seamless edges, restrained non-emissive ground, deterministic registered High/Low albedo/normal/roughness, packed roughness and resource disposal.",
+    "finalImpacted": "Root7517:two affected suites final Fire-specific and unchanged Water/Air digest cases10PASS/27SKIP13.797s; scoped ESLint and whitespace pass. Skips are not counted as fresh final passes; shared material construction and other realm behavior did not change after completeInitial.",
+    "baselineNative": "Root7872 terminal0:existing Fire field High/Low reference1PASS15.3s. First command selected no tests because of an anchored full-title grep; corrected selection runs only the intended Fire case, no test weakened.",
+    "firstNative": "Root64093 terminal0:first candidate1PASS11.5s. Visually reviewed but superseded by the softened/broadened final variant.",
+    "finalNative": "Root61745 terminal0:actual System Chrome using normal hardware launch policy, High/Low reference1PASS12.5s; no browser failures. Task-owned unit/lint commands terminal before profiling. Owned4190 independently closed.",
+    "inspection": "Baseline, first and final High/Low images inspected. Final removes closed paving-like outlines and softens the first variant's granular patches. Bare floor and unequipped Fighter/no gameplay HUD; not full populated-realm, equipment, combat, physical-phone or final modern-ARPG acceptance."
+  },
+  "referenceMetrics": {
+    "baselineHigh": {"generationMs":79.5,"medianMs":16.7,"p95Ms":16.8,"geometries":51,"textures":65},
+    "baselineLow": {"generationMs":41.7,"medianMs":16.7,"p95Ms":16.7,"geometries":50,"textures":51},
+    "finalHigh": {"generationMs":79.6,"medianMs":16.7,"p95Ms":16.7,"geometries":51,"textures":65},
+    "finalLow": {"generationMs":41.6,"medianMs":16.7,"p95Ms":16.8,"geometries":50,"textures":51},
+    "limits": "Reference RAF measurements on this host, not certified device/full-game performance. Generation variation is not a claimed speed improvement. Each surface remains2 triangles, three RGBA maps at256High/128Low, repeat70/56 and linear surface channels."
+  },
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-fire-surface-evidence-20261008-ltCcNjIJ",
+    "surfaceSha256": "a0e0e6619a06c577c89c3afdb3e6a500c5e1fbb7433566af6ba401d2f67c7018",
+    "terrainSha256": "cc20c235669cc984ef1c3a25593735ece2dd0dc0c504dffe8ae112ef0bd05e29",
+    "unitSha256": "a6451a8a36dae0a74317305a65290c590babc83762a676e73e184b329c082b27",
+    "fixtureSha256": "67311497317c6b73b32cde0ce99a764bbfe360ab07edf48073f6d86c2873f7b4",
+    "finalHighImageSha256": "194df4ebe2bf5fc82dd1a4a9eb8fcb13789d5853d58b8b3f020ad2e55186b275",
+    "finalLowImageSha256": "2c27b85f10d04306f7b56537c1ba1b9753b48de2f78d84a5b5db2430482e4f0b"
+  },
+  "publication": "Isolated future preparation only, no version bump/push/deployment/terrain activation or complete1.87/1.80/modern-art/roadmap claim. Require ordered integration and own release notes/public acceptance. Current1.79.2 corrected CI remains independent."
+}

@@ -1,5 +1,51 @@
 import { sampleElementalTerrain } from '../src/art/ElementalTerrainSurface.js';
 import { PROCEDURAL_TERRAIN_DEFINITIONS, createProceduralTerrainMaterial } from '../src/art/ProceduralRealmTerrain.js';
+import { createHash } from 'node:crypto';
+
+test('Cinder basalt exposes broken flow crust and recessed pores beneath ash', () => {
+    let exposed = 0, pitted = 0, ash = 0;
+    const seed = PROCEDURAL_TERRAIN_DEFINITIONS.fire.seed;
+    for (let y = 0; y < 256; y += 7) for (let x = 0; x < 256; x += 7) {
+        const surface = sampleElementalTerrain(x, y, 'fire', seed);
+        for (const key of ['crust', 'flow', 'pores']) {
+            expect(Number.isFinite(surface[key])).toBe(true);
+            expect(surface[key]).toBeGreaterThanOrEqual(0);
+            expect(surface[key]).toBeLessThanOrEqual(1);
+        }
+        if (surface.cover < .1 && surface.crust > .6) exposed++;
+        if (surface.cover < .1 && surface.pores > .4) pitted++;
+        if (surface.cover > .9) {
+            ash++;
+            expect(surface.pores).toBeLessThan(.2);
+        }
+    }
+    expect(exposed).toBeGreaterThan(30);
+    expect(pitted).toBeGreaterThan(30);
+    expect(ash).toBeGreaterThan(50);
+});
+
+test('fire albedo and packed roughness use the same basalt/ash field', () => {
+    const material = createProceduralTerrainMaterial('fire');
+    try {
+        for (const [x, y] of [[3, 19], [84, 117], [190, 230], [254, 1]]) {
+            const surface = sampleElementalTerrain(x, y, 'fire', PROCEDURAL_TERRAIN_DEFINITIONS.fire.seed);
+            const offset = (y * 256 + x) * 4;
+            expect(Array.from(material.map.image.data.slice(offset, offset + 3))).toEqual(surface.color);
+            expect(material.roughnessMap.image.data[offset + 1]).toBe(Math.round(surface.roughness * 255));
+        }
+    } finally { material.map.dispose(); material.dispose(); }
+});
+
+test.each([
+    ['water', '5210401db50fe01324a9462121da2265f1169e3fe608751d24c075db9c34190b'],
+    ['air', '30a9e712023a0705e74f2e34724d68940130869dac8399b7f224d46496b8a786']
+])('Fire refinement retains qualified %s surface fields exactly', (realm, digest) => {
+    const samples = [];
+    for (let y = 0; y < 256; y += 8) for (let x = 0; x < 256; x += 8) {
+        samples.push(sampleElementalTerrain(x, y, realm, PROCEDURAL_TERRAIN_DEFINITIONS[realm].seed));
+    }
+    expect(createHash('sha256').update(JSON.stringify(samples)).digest('hex')).toBe(digest);
+});
 
 test('Moonfrost has exposed ice beds and interrupted stress fractures beneath rougher rime', () => {
     let ice = 0, fractures = 0, rime = 0;

@@ -70,42 +70,36 @@ function sampleWeatheredIce(x, y, seed) {
         roughness: .7 - ice * .085 + cover * .25 + grit * .015 };
 }
 
+function sampleCooledBasalt(x, y, seed) {
+    const turn = Math.PI * 2 / 256;
+    const broad = noise(x, y, 5, seed ^ 0x1491), grit = noise(x, y, 43, seed ^ 0x493f);
+    const cover = smooth(.36, .7, broad);
+    // Cooled flows form folded, broken crust instead of a cell-edge network
+    // that resembles town paving. Integer domain frequencies preserve seams.
+    const bed = noise(x + Math.sin(y * turn * 3) * 10,
+        y * 2 + Math.sin(x * turn) * 7, 7, seed ^ 0x19af);
+    const weathering = noise(x, y, 9, seed ^ 0x74a1);
+    const crust = smooth(.3, .67, bed) * (1 - smooth(.36, .82, weathering) * .65);
+    const flow = smooth(.3, .7, noise(x + Math.sin(y * turn) * 12, y * 3, 7, seed ^ 0x2c71));
+    // Vesicles are shallow recessed scoria pores, not bright pebble confetti.
+    // Ash fills them: all three maps use exactly the same deposition mask.
+    const pores = (1 - smooth(.16, .4, noise(x, y, 71, seed ^ 0x613b))) * (1 - cover * .9);
+    const grain = hash(Math.floor(x), Math.floor(y), seed ^ 0xab3);
+    const mineral = .14 + grit * .28 + crust * .34 + flow * .1;
+    const dark = [39, 40, 40], light = [84, 81, 75], deposit = [108, 100, 87];
+    const color = dark.map((value, i) => {
+        const rock = (value + (light[i] - value) * mineral) * (1 - pores * .1);
+        return Math.round(rock + (deposit[i] - rock) * cover * .72 + (grain - .5) * 2);
+    });
+    return { color, cover, crust, flow, pores,
+        height: .23 + crust * .058 + flow * .018 + grit * .022 - pores * .045 + cover * .06,
+        roughness: .76 + cover * .18 + grit * .018 + pores * .025 - crust * .045 };
+}
+
 export function sampleElementalTerrain(x, y, realm, seed) {
     if (!['water', 'fire', 'air'].includes(realm)) throw new TypeError(`Unsupported elemental surface: ${realm}`);
     x = wrap(x, 256); y = wrap(y, 256);
     if (realm === 'air') return sampleWindWornSlate(x, y, seed);
     if (realm === 'water') return sampleWeatheredIce(x, y, seed);
-    const turn = Math.PI * 2 / 256;
-    // Anisotropic, warped fragments, rather than uniform hexagons. Domain warp
-    // is periodic so the texture seam is no more visible than any other joint.
-    const px = x / 256 * 19 + Math.sin(y * turn * 3) * .24;
-    const py = y / 256 * 13 + Math.sin(x * turn * 2 + y * turn) * .2;
-    const cx = Math.floor(px), cy = Math.floor(py);
-    let nearest = Infinity, second = Infinity, plate = 0;
-    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-        const ix = cx + dx, iy = cy + dy, wx = wrap(ix, 19), wy = wrap(iy, 13);
-        // Bounded jitter retains complete nearest-neighbor coverage in 3x3.
-        const ox = .2 + hash(wx, wy, seed) * .6, oy = .2 + hash(wx, wy, seed ^ 0x74a1) * .6;
-        const distance = Math.hypot(px - ix - ox, py - iy - oy);
-        if (distance < nearest) {
-            second = nearest; nearest = distance; plate = hash(wx, wy, seed ^ 0x19af);
-        } else if (distance < second) second = distance;
-    }
-    const broad = noise(x, y, 5, seed ^ 0x1491), grit = noise(x, y, 43, seed ^ 0x493f);
-    const cover = smooth(.36, .7, broad); // ash accumulates in broad beds
-    // Interrupt fractures with weathering. A full cellular outline reads as
-    // laid paving, not weathered basalt, especially at ordinary gameplay zoom.
-    const seam = (1 - smooth(.005, .11, second - nearest)) * (1 - cover * .9) * smooth(.38, .72, grit);
-    const grain = hash(Math.floor(x), Math.floor(y), seed ^ 0xab3);
-    const mineral = .3 + plate * .14 + grit * .18;
-    const dark = [43, 43, 42];
-    const light = [76, 71, 65];
-    const deposit = [96, 88, 76];
-    const color = dark.map((value, i) => {
-        const rock = (value + (light[i] - value) * mineral) * (1 - seam * .12);
-        return Math.round(rock + (deposit[i] - rock) * cover * .66 + (grain - .5) * 3);
-    });
-    return { color, cover,
-        height: .24 + grit * .045 - seam * .028 + cover * .06,
-        roughness: .8 + cover * .17 + grit * .025 };
+    return sampleCooledBasalt(x, y, seed);
 }

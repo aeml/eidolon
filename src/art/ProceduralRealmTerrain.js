@@ -26,7 +26,7 @@ export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     ),
     fire: terrainDefinition(
         'cinder-waste-blackglass', 'fire', 'Cinder Wastes',
-        'cooled volcanic rock, soft ash pockets, iron-rich mineral grains, and wind-scoured basalt', 0xa21f3c87,
+        'folded cooled-flow basalt, recessed scoria pores, iron-rich crust, and wind-deposited ash pockets', 0xa21f3c87,
         { roughness: 0.96, metalness: 0.04, repeat: [70, 56], tint: 0xd9c8b6 }
     ),
     air: terrainDefinition(
