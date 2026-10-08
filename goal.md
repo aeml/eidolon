@@ -32,6 +32,20 @@ Preserve all approved supplied class/item GLBs and animations; the obsolete
 procedural-only language below does not authorize removing them. Full modern-art
 contract and authoritative numbered roadmap remain active.
 
+**October8 corrected1.79.9 publication QA:** Previous37791738441 attempt1
+times out after6h browser install; attempt2 fails manual loot acquisition because
+three living Skeletons remain after the helper's two-blocker cleanup limit.
+Preserve runtime priority and every actual-pointer/manual quantity/save gate.
+QA-only distinct-hostile clearance is bounded at8, through normal mouse/combat;
+34 regressions and actual disposable four-case release smoke pass. Fresh smoke
+does not reproduce the exact original pack; own mandatory replacement CI and
+public acceptance still required. Bring forward prepared15min install timeout
+with original install commands. See
+[failure/correction scope](docs/plans/2026-10-08-release1-79-9-loot-qa-checks.json).
+Latest accepted public remains1.79.8. Prepared1.79.10–14 must reconcile this
+correction and remote changes before ordered publication. Full goal active;
+original numbered roadmap/art/F1-F5/device/owner/beta/launch gates remain open.
+
 **Accepted public Alpha1.79.8 /bf145bda:** Corrected-source CI37783791245
 passes all ten required jobs. Root independently confirms exact terminal head,
 matching front/back/healthy DB, clean production and four published file bytes,

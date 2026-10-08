@@ -1,4 +1,22 @@
 // Read the real pointer result; never assign hover or send a pickup request.
+// A populated encounter can leave more than two hostiles over earned loot.
+// Keep clearance bounded, reject repeated blockers, and propagate real combat
+// failures. Only the combat route supplies defeat; pointer-only tests never do.
+export async function acquirePointerWithBoundedCombat({ acquire, readBlocker, defeat }) {
+    const cleared = new Set();
+    for (;;) {
+        try {
+            return await acquire();
+        } catch (error) {
+            if (cleared.size >= 8) throw error;
+            const blocker = await readBlocker(error);
+            if (!blocker || cleared.has(blocker)) throw error;
+            await defeat(blocker, error);
+            cleared.add(blocker);
+        }
+    }
+}
+
 export async function armManualLootClickObservation(page, aimedId) {
     await page.evaluate(aimedId => {
         const game = window.game;
