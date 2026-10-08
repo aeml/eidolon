@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "milestone": "1.87 staged environment component, not a deployed release",
+  "base": "de106428b8c5350ff40f9071ed2a86fbd938a6de",
+  "status": "scoped-art-and-original-reference-budgets-qualified-integration-open",
+  "scope": "Selectively retain five exact runtime/test files from72a9c37f outcrop crowns/mineral finish; no older whole-branch merge. Earth floor shader v9 uses existing six texture samples and two owned maps to sharpen filtered moss/soil transitions, add sheltered moss after canopy blending, and share coverage with roughness/relief. No new textures, meshes, lights, emission, per-frame CPU, geometry displacement, planting, collisions, gameplay or save changes. Admin patch and website work preserved.",
+  "checks": {
+    "unit": "Root24760 terminal0: four actual selected suites50 PASS136.75s; ProceduralRealmTerrain110s, EarthGroundComposition19.826s, EarthOutcrops6.426s and WorldSurfaceDetail. Covers deterministic/High-Low registered maps, path coverage, mask ownership/disposal, shared cache identity, six sampler fetches, material channels, flat/raised authored rock footprint/normals/crown variation and unchanged supplied surface contract. Broad terrain construction was expensive; retain result, no repeated whole texture suite needed for unchanged code.",
+    "firstNative": "Root12050 terminal1: Low passes, High fails53.0s. Concurrent CPU-bound texture unit construction causes Highp95 to reach33.400000000001455 at woodland-cut/outer-fold against unchanged33.4 limit. Raw failure retained; no frame-count/quality/triangle/call/target change or rounding tolerance added.",
+    "isolatedNative": "Root37478 terminal0: same exact source, unit construction finished, actual System Chrome/AMD RADV High1280px and Low390px2 PASS37.6s. Eight120-frame profiles: High grove176calls/163599tri, roads243/222552,338/249406,257/215944; Low grove49/52788, roads117/79159,85/70421,91/73416. All medians16.7ms, p9516.7–16.8ms. Original High20median/33.4p95/350calls/250000tri and Low33.4/50/200/85000 unchanged. Shadow/batch and surface-culling pixel comparisons0/270080 remain. These compare render alternatives under new art, not old/new art pixels.",
+    "static": "Scoped ESLint/whitespace pass. Five selectively retained files byte-match72a9c37f. Both native processes terminal, owned4190 and disposable18191 closed. No shader-cause performance guarantee inferred from a same-source isolated rerun."
+  },
+  "visualReview": "Root inspects actual High grove/woodland and Low grove. Moss/soil boundaries are less washed out, canopy retains fallen litter with sheltered greens, rocks retain off-centre crowns/interrupted mineral finish and roads stay worn/readable. These are incremental improvements: still sparse low-poly scene composition, unequipped pilot actor and unresolved party/device/final modern-ARPG art quality. Not Diablo/PoE-equivalent acceptance.",
+  "patchNotesDraft": "Earth landscape gains sharper moss/loam transitions and sheltered woodland moss, coordinated color/roughness/relief using existing textures. Weathered outcrops gain off-centre crowns and broken mineral seams. Walking space/collisions, gameplay, actors/equipment, saves and economy unchanged. This draft is not live patch history or completed1.87; final integration/deployment/profile acceptance remain.",
+  "evidence": {
+    "unitLog": "/home/aeml/.local/share/eidolon-earth-floor-tests-20261008.log",
+    "unitSHA256": "e3b892ccf9770692cab3c4ec17e2b59c9f8b866bccaa5fa3d60af51dffbe8f0f",
+    "firstNativeLog": "/home/aeml/.local/share/eidolon-earth-floor-native-20261008.log",
+    "isolatedNativeLog": "/home/aeml/.local/share/eidolon-earth-floor-isolated-native-20261008.log",
+    "isolatedNativeSHA256": "589ed70b1f6c41e9a75a199c1c1d6df9f3e40f94a1f3d1ff7ec502dcd2335cd6",
+    "nativeImages": "/home/aeml/.local/share/eidolon-earth-floor-isolated-native-20261008",
+    "floorSourceSHA256": "b32cd7b38500110517e666b6212eab7e6936a4058be7b02b3383b2128ba09678",
+    "floorTestsSHA256": "e208d6902eebd3b77c1d499ee90c4f8146af4f2e3ef173f4ce9e2361dd988b44"
+  },
+  "remaining": "Ordered integration after current release/1.80 decisions, actual equipped party hardware scope, full art/composition approval and negotiated production raised-profile activation remain. No new deployment or server-profile change for this isolated component. Human campaign/device gates still deferred, not passed. Full1.11–1.99 scope unchanged."
+}

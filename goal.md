@@ -1,5 +1,22 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 environment continuation / ordinary deployment reconciliation:**
+Root independently confirms1.79.4 run37744495087 terminal success at exact2b,
+all mandatory jobs and public front/backend/database match. Optional live
+four-class/animation step skipped, not claimed. Own1.79.5 de106428 admin passage
+push queued/running under Luna; no premature live claim. Staged fresh-de branch
+selectively retains72a9c37f outcrop source and refines existing Earth floor
+moss/soil/canopy channels without new maps/geometry/CPU or gameplay changes.
+Four unit suites50 PASS136.75s, retained expensive texture-construction scope.
+First native High fails33.400000000001455 against33.4 while concurrent tests
+consume CPU; Low passes. Same exact source isolated High/Low2 PASS37.6s, all
+eight original profiles/culling/effects checks retained and limits unchanged.
+Inspected actual images: modest sharper materials, not final modern-art quality.
+[Floor receipt](docs/plans/2026-10-08-earth-floor-art-checks.json) and
+[1.79.4 public receipt](docs/plans/2026-10-08-release1-79-4-public-checks.json)
+record scope/failures. Full1.80 F1-F5,1.87 equipped-party/device/raised activation
+and full roadmap remain open; staged art is not live or a new patch release.
+
 **October8 user-requested administrator Dark Realm passage:** Separate scoped
 Alpha1.79.5 patch on fresh2b0fd839. Durable current account role bypasses only
 story/crystal entry receipts; level100, action/scene/proximity checks and ordinary

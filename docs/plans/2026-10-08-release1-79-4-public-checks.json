@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T08:18:00Z",
+  "version": "Alpha 1.79.4",
+  "commit": "2b0fd839b239a5bdfbdeb2b202ca702866819897",
+  "status": "ordinary-ci-deployment-live-qa-and-independent-public-identity-passed",
+  "ci": {
+    "run": 37744495087,
+    "conclusion": "success",
+    "head": "2b0fd839b239a5bdfbdeb2b202ca702866819897",
+    "mandatory": "Client/Server tests, all three Browser Smoke jobs, Predeploy Character QA, production QA input validation, SSH/Pages deployment and Live Release and Character QA all succeed. Authorized Luna reports terminal; root independently reads exact run/head/all job conclusions and live steps.",
+    "live": "Matching live releases, live anonymous/persistent-character checks, town recovery/Well Rested checks and evidence sanitization/upload succeed. Optional live four-class/remote-animation step is skipped; do not infer an exhaustive art, campaign or physical-phone pass.",
+    "retainedFailure": "Original run37742963800 failed stale PvP pre-admission-height fixture, then was superseded/cancelled. Corrected fixture retains grounded0 and subsequent owned jumping2 assertions. No weakened runtime/persistence gate. Prior1.79.3 SSH failure is historical; this exact release uses ordinary successful SSH, not local fallback."
+  },
+  "public": {
+    "transport": "Ordinary DNS forcedIPv4 verifiedHTTPS; bounded no-cache requests, no origin-resolver or TLS bypass.",
+    "frontend": { "version": "Alpha 1.79.4", "commit": "2b0fd839b239a5bdfbdeb2b202ca702866819897" },
+    "backend": { "status": "ok", "database": "ready", "version": "Alpha 1.79.4", "commit": "2b0fd839b239a5bdfbdeb2b202ca702866819897" },
+    "source": "/home/aeml/eidolon independently matches2b0fd839.",
+    "bytes": "index.html, src/main.js and src/art/ProceduralRealmTerrain.js byte-match exact committed source after actual exported publisher rewriting. This is a selected surface/entry/art contract check, not an invented all-assets byte audit.",
+    "htmlSHA256": "e1a3644ff0ca68d6668de9d144461fcf51973a1bc4caa8069bd030d2663488d0"
+  },
+  "remaining": "Raised terrain production profile unchanged/disabled; full1.80 F1-F5,1.87 equipped-party/device/modern-art/profile rollout and full roadmap remain open. Deferred human campaign and physical-phone tests are not passed. No access, retention, schema, currency or monitor-policy change."
+}

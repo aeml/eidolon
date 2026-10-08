@@ -110,7 +110,7 @@ test('owns and releases only the two added maps once; leaves ground depth behavi
     // Ordinary soil has relief even when canopy, mineral and meadow masks
     // are zero; keep it distinct from the optional forest/rock contributions.
     expect(shader.fragmentShader).toContain('(earthClod * .022 + earthPore * .006) * (1. - earthRock)');
-    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v8');
+    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v9');
     expect(shader.fragmentShader).not.toContain('earthBroad.a * .085');
     expect(shader.vertexShader).not.toContain('transformed.y +=');
     material.dispose(); material.dispose();
@@ -133,6 +133,12 @@ test.each(['high', 'low'])('ground layers retain registered relief and filtered 
     // leaf must not remain a flat soil normal or borrow a separate random mask.
     expect(shader.fragmentShader.match(/earthLeafCoverage/g).length).toBeGreaterThanOrEqual(4);
     expect(shader.fragmentShader).toContain('earthMossCoverage * earthMoss * .012');
+    expect(shader.fragmentShader).toContain('earthWear.r * (1. - earthWear.g)');
+    expect(shader.fragmentShader).toContain('earthShelteredMoss * earthMossFiber * .018');
+    expect(shader.fragmentShader).toContain('max(earthMossCoverage, earthShelteredMoss) * (1. - earthRock)');
+    // Existing sampled fields drive all three material channels. No added
+    // sampler, emission or displaced floor to obtain the additional detail.
+    expect(shader.fragmentShader.match(/texture2D\(/g)).toHaveLength(6);
     expect(shader.vertexShader).not.toContain('transformed.y +=');
     const { mask, detail } = material.userData.earthGroundComposition;
     expect(mask.image.width).toBe(quality === 'low' ? 256 : 512);
