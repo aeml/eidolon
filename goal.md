@@ -18,6 +18,21 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Prepared selective **1.79.11 / 8cd6e7fd** in
+  `/home/aeml/.local/share/eidolon-regional-release-UOCeBRDt` now integrates
+  the regional components described below onto prepared1.79.10, not a wholesale
+  future-branch merge.461focused/resource cases and four flat High/Low native
+  cases/38timed views pass original limits. See
+  [integration](docs/plans/2026-10-08-release1-79-11-checks.json).
+  It also retains all446 patch notes with ten initial/ten more on demand,
+  reduces login HTML by about86%, defers engine/catalog loading and fixes the
+  reproduced Firefox import-map ordering defect while preserving private-link
+  scrubbing.519focused checks and actual Chrome/Firefox login/pagination pass;
+  [scope and failed attempts](docs/plans/2026-10-08-login-pagination-checks.json).
+  Committed locally, not pushed/live. Current1.79.9 CI is still live and stalled;
+  accept it, then publish/accept1.79.10 before1.79.11. No new release queued,
+  cancellation, security workaround or final Firefox gameplay claim.
+
 - Accepted public **Alpha 1.79.8**, exact
   `bf145bdab4d63770e1d764c3bfb270fc0a374ea2`, own CI `37783791245`.
   Root verifies all ten required jobs, front/back identity and healthy DB, clean
@@ -64,6 +79,12 @@ Fighter pilot or remove approved authored models.
   [integration](docs/plans/2026-10-08-release1-79-10-checks.json).
 
 ## Remaining scope and next work
+
+The following component descriptions retain earlier staged evidence; their
+selective current-master integration is now prepared in1.79.11 above, not yet
+delivered. Earlier integration-pending statements are historical. Complete
+world cohesion, equipped-party performance, raised profile, full1.80/F1-F5,
+1.87/device/owner/human/beta/launch gates remain open without narrowed scope.
 
 Staged elemental foliage now has branched Water/Air crowns instead of solid
 cones; actual Air crown/conductor attachment is corrected. Final43 units and

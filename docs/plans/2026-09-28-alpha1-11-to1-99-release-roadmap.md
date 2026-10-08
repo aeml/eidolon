@@ -2,6 +2,19 @@
 
 ## Current execution status — October 8, 2026
 
+Prepared selective **1.79.11 / 8cd6e7fd** now integrates the regional components
+described below onto prepared1.79.10.461focused/resource checks and four flat
+native cases/38timed views qualify the original scene limits; this does not
+approve final modern art. [Integration](2026-10-08-release1-79-11-checks.json).
+Requested login pagination retains446notes with ten initial and ten per click,
+about86% smaller HTML and no renderer/equipment catalog during login. Reproduced
+Firefox import-map ordering failure fixed while preserving private recovery
+scrubbing.519focused checks and actual Chrome/Firefox login/pagination pass;
+[evidence](2026-10-08-login-pagination-checks.json) retains earlier failed attempts.
+Not pushed/live;1.79.9 CI remains live, then1.79.10 must publish/accept before
+1.79.11. Earlier component integration-pending descriptions below are historical;
+delivery, full1.80/F1-F5/1.87/art/device/owner/human/beta/launch scope stays open.
+
 Accepted public **Alpha 1.79.8 / bf145bda**, own CI37783791245: all ten required
 jobs successful. Root independently verifies public identity/healthy DB, clean
 production and four actual published file bytes. Optional broader gallery/
