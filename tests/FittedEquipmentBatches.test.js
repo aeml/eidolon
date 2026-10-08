@@ -3,6 +3,7 @@ import { jest } from '@jest/globals';
 import { batchFittedEquipment } from '../src/art/FittedEquipmentBatches.js';
 import { applyActorStealthAppearance, restoreActorStealthAppearance } from '../src/entities/ActorStealthAppearance.js';
 import { prepareFittedEquipment, applyFittedEquipment, clearFittedEquipment } from '../src/art/FittedEquipment.js';
+import { AUTHORED_ASSETS } from '../src/assets/authoredEquipment.generated.js';
 
 function fixture() {
     const root = new THREE.Group(), bones = [new THREE.Bone(), new THREE.Bone()];
@@ -58,6 +59,41 @@ function skeletonSharingFixture(differentInverse = false) {
     const gear = () => { const meshes = []; root.traverse(mesh => { if (mesh.userData.authoredEquipment && mesh.isSkinnedMesh) meshes.push(mesh); }); return meshes; };
     return {root, scene, sourceScene, bones, equipment, gear, source: parts[1].skeleton, body: parts[0].skeleton};
 }
+
+test('quality changes reload the matching wearable; explicit original path remains reversible', async () => {
+    const current = skeletonSharingFixture(), paths = [];
+    prepareFittedEquipment(current.root, current.scene, async path => { paths.push(path); return {scene: current.sourceScene}; });
+    const catalog = AUTHORED_ASSETS.items['Plate Mail'];
+    for (const quality of ['high', 'low']) {
+        current.root.userData.authoredQuality = quality;
+        expect(applyFittedEquipment(current.root, current.equipment).changed).toBe(true);
+        await current.root.userData.equipmentReady;
+        expect(paths.at(-1)).toBe(catalog.runtimeModels.standard.Fighter[quality]);
+        expect(current.root.userData.equipmentVisualFallback).toEqual([]);
+        expect(applyFittedEquipment(current.root, current.equipment).changed).toBe(false);
+    }
+    current.root.userData.fittedEquipmentLOD = false;
+    expect(applyFittedEquipment(current.root, current.equipment).changed).toBe(true);
+    await current.root.userData.equipmentReady;
+    expect(paths.at(-1)).toBe(catalog.models.standard.Fighter);
+    clearFittedEquipment(current.root);
+});
+
+test('a missing derivative uses the registered delivered fallback and records it', async () => {
+    const current = skeletonSharingFixture(), catalog = AUTHORED_ASSETS.items['Plate Mail'];
+    const loader = jest.fn(async path => {
+        if (path === catalog.models.standard.Fighter) return {scene: current.sourceScene};
+        throw new Error('Missing runtime copy');
+    });
+    prepareFittedEquipment(current.root, current.scene, loader);
+    applyFittedEquipment(current.root, current.equipment); await current.root.userData.equipmentReady;
+    expect(loader.mock.calls.map(([path]) => path)).toEqual([catalog.runtimeModels.standard.Fighter.high, catalog.models.standard.Fighter]);
+    expect(current.root.userData.equipmentVisualMissing).toEqual([]);
+    expect(current.root.userData.equipmentVisualFallback).toEqual(['chest']);
+    expect(current.root.userData.equipmentVisualItemCount).toBe(1);
+    clearFittedEquipment(current.root);
+    expect(current.root.userData.equipmentVisualFallback).toEqual([]);
+});
 
 test('failed fitted binding releases completed local parts without disposing cached assets or masking the body', async () => {
     const current = skeletonSharingFixture();

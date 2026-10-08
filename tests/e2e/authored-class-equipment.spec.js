@@ -42,6 +42,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
                     rarity: quality === 'high' ? 'Legendary' : 'Rare', potency: 5 }]));
             actor.syncEquipmentVisuals(gear); await root.userData.equipmentReady;
             if (root.userData.equipmentVisualMissing?.length) throw new Error(`Missing ${type} equipment`);
+            if (root.userData.equipmentVisualFallback?.length) throw new Error(`Runtime ${type} equipment fell back to original geometry`);
             const body = root.getObjectByName(`${type}_Body`);
             let attached = 0, wrongBones = 0;
             root.traverse(part => { if (part.isSkinnedMesh && part.userData.authoredEquipment) {

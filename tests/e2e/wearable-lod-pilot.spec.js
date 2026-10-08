@@ -43,6 +43,7 @@ for (const quality of ['high', 'low']) test(`Plate Mail derived pilot retains an
         try {
             for (const pilot of [false, true]) {
                 const root = await MeshFactory.createMeshForType('Fighter', { quality });
+                root.userData.fittedEquipmentLOD = false; // Compare explicitly supplied copies, not integrated LODs.
                 const actor = new Actor(`pilot-${pilot}`, {}); actor.meshType = 'Fighter'; actor.setMesh(root);
                 if (pilot) catalog.Fighter = '/__qa/plate-pilot.glb';
                 actor.syncEquipmentVisuals(gear); await root.userData.equipmentReady;

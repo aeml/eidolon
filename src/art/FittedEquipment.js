@@ -174,14 +174,24 @@ export function clearFittedEquipment(root) {
     state.epoch++; disposeParts(state.parts); state.parts = []; restoreCoverage(state);
     root.userData.equipmentVisualSignature = '';
     root.userData.equipmentVisualItemCount = 0; root.userData.equipmentVisualPartCount = 0;
+    root.userData.equipmentVisualFallback = [];
     root.userData.updateWeaponProfile?.({});
+}
+
+export function resolveFittedEquipmentModel(catalog, tier, actorClass, quality, original = false) {
+    const fits = catalog?.models?.[tier];
+    const fit = fits?.[actorClass] ? actorClass : 'universal';
+    const source = fits?.[fit];
+    const detail = quality === 'low' ? 'low' : 'high';
+    const file = original ? source : catalog?.runtimeModels?.[tier]?.[fit]?.[detail] || source;
+    return { file, source };
 }
 
 export function applyFittedEquipment(root, equipment = {}, { force = false } = {}) {
     const state = owners.get(root); if (!state) return { supported: false };
     const actorClass = root.userData.authoredClass; state.actorClass = actorClass;
     const active = Object.fromEntries(Object.entries(equipment).filter(([slot, item]) => isActiveEquipment(slot, item, actorClass)));
-    const signature = equipmentVisualSignature(active);
+    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${equipmentVisualSignature(active)}`;
     if (!force && signature === root.userData.equipmentVisualSignature) return { supported: true, changed: false };
     const epoch = ++state.epoch; root.userData.equipmentVisualSignature = signature;
     root.userData.updateWeaponProfile?.(active);
@@ -191,12 +201,18 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         const catalog = AUTHORED_ASSETS.items[look?.base || descriptor?.baseName];
         if (!catalog) return [];
         const tier = ['Legendary', 'Eidolic'].includes(typeof item.rarity === 'string' ? item.rarity : item.rarity?.name) ? 'legendary' : 'standard';
-        const file = catalog.models[tier][actorClass] || catalog.models[tier].universal;
-        return [{ slot, item, catalog, look, file }];
+        const { file, source } = resolveFittedEquipmentModel(catalog, tier, actorClass, root.userData.authoredQuality, root.userData.fittedEquipmentLOD === false);
+        return [{ slot, item, catalog, look, file, source }];
     });
     root.userData.equipmentReady = Promise.all(requested.map(async request => {
         try { return { ...request, gltf: await state.loader(request.file, 8000) }; }
-        catch (error) { return { ...request, error }; }
+        catch (error) {
+            if (request.file !== request.source) {
+                try { return { ...request, gltf: await state.loader(request.source, 8000), fallback: true }; }
+                catch (error) { return { ...request, error }; }
+            }
+            return { ...request, error };
+        }
     })).then(results => {
         if (state.epoch !== epoch) return; // Released/reused actor or superseded equip.
         let staged = [];
@@ -229,6 +245,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         root.userData.equipmentVisualItemCount = Object.keys(selection).length;
         root.userData.equipmentVisualPartCount = staged.reduce((count, part) => { part.traverse(mesh => { if (mesh.isMesh && mesh.visible) count++; }); return count; }, 0);
         root.userData.equipmentVisualMissing = missing;
+        root.userData.equipmentVisualFallback = results.filter(result => result.fallback).map(result => result.slot);
         root.userData.equipmentVisualRevision = (root.userData.equipmentVisualRevision || 0) + 1;
         if (missing.length) root.userData.equipmentVisualSignature = ''; // Allow retry, never cache failure as success.
         root.updateMatrixWorld(true);

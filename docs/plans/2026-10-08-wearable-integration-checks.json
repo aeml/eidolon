@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "milestone": "1.87 staged quality-specific wearable integration",
+  "base": "48ad4547",
+  "status": "runtime-integration-and-low-equipped-views-qualified-high-draw-gap-retained-not-live",
+  "implementation": "Imported472 reduced GLBs with manifest/source hashes;32 unchanged variants reuse originals. Full supplied252-model delivery and body originals unchanged. Generated736 cache-versioned paths preserve all264 original body/motion/wearable registrations. Selection uses character High/Low, tier and matching class/universal fit; original-only diagnostic reversible. Missing derivative falls back to registered original and records slot; native qualification requires zero fallback. Quality/diagnostic changes alter equip signature. Existing ownership, bind/coverage, body masks, Rogue alternating strikes, shader batching and gameplay/class restrictions retained.",
+  "guards": "Importer validates complete source identities, pinned source/output hashes, actual indexed triangle counts, no increase and merge-compatible attribute widths before copying. It refuses an existing runtime destination; delivered files never overwritten. Generator checks source-manifest hash and complete fit coverage. Regenerating catalog byte-identically reproduces b293f8a9. No dependency, account, currency, terrain profile or public version change.",
+  "unit": "Four targeted suites50 PASS2.315s: AuthoredAssetCatalog/FittedEquipmentBatches/AssetVersioning/AuthoredFighter. Includes all736 file-version hashes, all504 fit selections,32 original reuse cases, quality change/reversible original diagnostics, missing-copy fallback and cleanup, exact batch/ownership rejection, independent body quality/pooling. Scoped ESLint and whitespace pass.",
+  "native": {
+    "result": "Actual hardware System Chrome3 cases48.695s: four-class equipment gallery passes; Low equipped Earth passes; High equipped Earth fails only woodland draw calls370 >350. Preserve this failure; no full world performance acceptance.",
+    "gallery": "Eight actual High/Low Fighter/Rogue/Wizard/Cleric bodies carry14 supplied items, no missing/fallback; independent skeletons and fitted batches, alternating Rogue strike clips, sampled normal/Run/Attack/Cast/Channel/Block, stealth sorting, equip cleanup/pool ownership and three equipped inventory previews verified. One Attack gallery image visually inspected, not every capture/full combat.",
+    "high": [
+      { "view": "grove-formation", "triangles": 161749, "calls": 208 },
+      { "view": "west-bank", "triangles": 220702, "calls": 275 },
+      { "view": "woodland-cut", "triangles": 247556, "calls": 370 },
+      { "view": "outer-fold", "triangles": 214094, "calls": 289 }
+    ],
+    "low": [
+      { "view": "grove-formation", "triangles": 49103, "calls": 65 },
+      { "view": "west-bank", "triangles": 75474, "calls": 133 },
+      { "view": "woodland-cut", "triangles": 66736, "calls": 101 },
+      { "view": "outer-fold", "triangles": 69731, "calls": 107 }
+    ],
+    "scope": "All eight120-RAF samples retain original High250000tri/350calls/20median/33.4p95 and Low85000tri/200calls/33.4median/50p95. All medians16.7ms,p9516.7-16.8ms and triangles pass; High woodland calls fail. Other grounding/movement/jump/effects/shadow/batching/surface-culling checks remain. Inspected actual High woodland frame: fully equipped actor renders; still modest art improvement, not Diablo/PoE-quality final acceptance.",
+    "diagnosis": "Separate untimed hardware High draw-hook diagnostic1 PASS11.163s, no timed-budget claim. Woodland heath/fern cells consume142 color draws/28714tri; pine26color+45shadow, birch25+32, Fighter28+27, willow3+12. Next reduce actual redundant submission with unchanged plant geometry/transforms/wind/visibility rather than remove scenery or relax targets. Owned4190 closed."
+  },
+  "hashes": {
+    "runtimeManifest": "55b7b7bbc27198911f4205af0f1aff85887e21540935cd5c0b05ff9e9cdcbbb1",
+    "generatedCatalog": "b293f8a9591612978ec82ee2d25b563af54e30dac8c4b66b8e004374aab8b587",
+    "unitLog": "52cdb7fa4a977b29b222bd2da74d7ee86403a1511980ed617ba4831c331cdd04",
+    "nativeLog": "8fe009db818d48f4b3e14ef7bdc02f4720e8e4707b59054119e54502420c0061",
+    "diagnosticLog": "20fdab84f5d353e462e7a5dcf45e8c4eaf0b81703aec4b3ffa85c78b8c0ead8e"
+  },
+  "artifacts": "/home/aeml/.local/share/eidolon-wearable-integration-tests-20261008.log; eidolon-wearable-integrated-native-20261008.log and corresponding screenshot directory; eidolon-wearable-draw-diagnosis-20261008.log (all under same owned share directory). Generated runtime manifest preserves individual binary hashes. No original assets changed.",
+  "remaining": "High woodland draw-cost correction, equipped party/device and full modern-world art/readability/profile activation remain. Full1.80 F1-F5 and whole later roadmap still active; human campaign/phone deferrals not passed. Accepted live release remains1.79.5 de106428. This staged integration is not pushed/promoted as a completed1.87 release."
+}

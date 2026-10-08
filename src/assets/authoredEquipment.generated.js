@@ -33,6 +33,20 @@ export const AUTHORED_ASSETS = {
         "legendary": {
           "universal": "./assets/equipment/authored/weapons/iron-sword-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/iron-sword-standard-high.glb",
+            "low": "./assets/equipment/runtime/universal/iron-sword-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/iron-sword-legendary-high.glb",
+            "low": "./assets/equipment/runtime/universal/iron-sword-legendary-low.glb"
+          }
+        }
       }
     },
     "Steel Dagger": {
@@ -44,6 +58,20 @@ export const AUTHORED_ASSETS = {
         },
         "legendary": {
           "universal": "./assets/equipment/authored/weapons/steel-dagger-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/steel-dagger-standard-high.glb",
+            "low": "./assets/equipment/runtime/universal/steel-dagger-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/steel-dagger-legendary-high.glb",
+            "low": "./assets/equipment/runtime/universal/steel-dagger-legendary-low.glb"
+          }
         }
       }
     },
@@ -57,6 +85,20 @@ export const AUTHORED_ASSETS = {
         "legendary": {
           "universal": "./assets/equipment/authored/weapons/wooden-staff-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/wooden-staff-standard-high.glb",
+            "low": "./assets/equipment/runtime/universal/wooden-staff-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/wooden-staff-legendary-high.glb",
+            "low": "./assets/equipment/runtime/universal/wooden-staff-legendary-low.glb"
+          }
+        }
       }
     },
     "Cleric Mace": {
@@ -68,6 +110,20 @@ export const AUTHORED_ASSETS = {
         },
         "legendary": {
           "universal": "./assets/equipment/authored/weapons/cleric-mace-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/cleric-mace-standard-high.glb",
+            "low": "./assets/equipment/runtime/universal/cleric-mace-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/cleric-mace-legendary-high.glb",
+            "low": "./assets/equipment/runtime/universal/cleric-mace-legendary-low.glb"
+          }
         }
       }
     },
@@ -81,6 +137,20 @@ export const AUTHORED_ASSETS = {
         "legendary": {
           "universal": "./assets/equipment/authored/weapons/wooden-shield-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/wooden-shield-standard-high.glb",
+            "low": "./assets/equipment/runtime/universal/wooden-shield-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/wooden-shield-legendary-high.glb",
+            "low": "./assets/equipment/runtime/universal/wooden-shield-legendary-low.glb"
+          }
+        }
       }
     },
     "Spell Tome": {
@@ -92,6 +162,20 @@ export const AUTHORED_ASSETS = {
         },
         "legendary": {
           "universal": "./assets/equipment/authored/weapons/spell-tome-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/spell-tome-standard-high.glb",
+            "low": "./assets/equipment/runtime/universal/spell-tome-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "universal": {
+            "high": "./assets/equipment/runtime/universal/spell-tome-legendary-high.glb",
+            "low": "./assets/equipment/runtime/universal/spell-tome-legendary-low.glb"
+          }
         }
       }
     },
@@ -111,6 +195,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/leather-cap-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/leather-cap-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-cap-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-cap-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-cap-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-cap-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-cap-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-cap-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-cap-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-cap-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-cap-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-cap-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-cap-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-cap-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-cap-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-cap-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-cap-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-cap-legendary-low.glb"
+          }
+        }
       }
     },
     "Iron Helm": {
@@ -128,6 +250,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/iron-helm-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/iron-helm-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/iron-helm-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/iron-helm-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/iron-helm-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/iron-helm-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/iron-helm-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/iron-helm-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/iron-helm-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/iron-helm-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/iron-helm-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/iron-helm-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/iron-helm-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/iron-helm-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/iron-helm-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/iron-helm-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/iron-helm-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/iron-helm-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/iron-helm-legendary-low.glb"
+          }
         }
       }
     },
@@ -147,6 +307,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/silk-hood-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/silk-hood-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silk-hood-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silk-hood-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silk-hood-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silk-hood-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silk-hood-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silk-hood-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silk-hood-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silk-hood-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silk-hood-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silk-hood-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silk-hood-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silk-hood-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silk-hood-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silk-hood-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silk-hood-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silk-hood-legendary-low.glb"
+          }
+        }
       }
     },
     "Leather Tunic": {
@@ -164,6 +362,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/leather-tunic-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/leather-tunic-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/leather-tunic-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-tunic-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-tunic-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-tunic-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-tunic-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-tunic-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-tunic-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-tunic-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-tunic-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-tunic-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-tunic-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-tunic-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-tunic-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-tunic-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-tunic-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-tunic-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-tunic-legendary-low.glb"
+          }
         }
       }
     },
@@ -183,6 +419,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/plate-mail-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/plate-mail-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/plate-mail-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/plate-mail-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/plate-mail-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/plate-mail-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/plate-mail-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/plate-mail-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/plate-mail-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/plate-mail-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/plate-mail-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/plate-mail-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/plate-mail-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/plate-mail-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/plate-mail-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/plate-mail-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/plate-mail-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/plate-mail-legendary-low.glb"
+          }
+        }
       }
     },
     "Robes": {
@@ -200,6 +474,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/robes-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/robes-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/robes-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/robes-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/robes-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/robes-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/robes-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/robes-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/robes-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/robes-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/robes-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/robes-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/robes-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/robes-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/robes-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/robes-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/robes-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/robes-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/robes-legendary-low.glb"
+          }
         }
       }
     },
@@ -219,6 +531,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/leather-pants-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/leather-pants-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-pants-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-pants-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-pants-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-pants-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-pants-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-pants-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-pants-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-pants-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-pants-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-pants-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-pants-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-pants-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-pants-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-pants-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-pants-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-pants-legendary-low.glb"
+          }
+        }
       }
     },
     "Plate Greaves": {
@@ -236,6 +586,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/plate-greaves-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/plate-greaves-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/plate-greaves-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/plate-greaves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/plate-greaves-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/plate-greaves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/plate-greaves-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/plate-greaves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/plate-greaves-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/plate-greaves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/plate-greaves-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/plate-greaves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/plate-greaves-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/plate-greaves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/plate-greaves-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/plate-greaves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/plate-greaves-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/plate-greaves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/plate-greaves-legendary-low.glb"
+          }
         }
       }
     },
@@ -255,6 +643,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/silk-skirt-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/silk-skirt-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silk-skirt-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silk-skirt-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silk-skirt-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silk-skirt-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silk-skirt-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silk-skirt-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silk-skirt-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silk-skirt-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silk-skirt-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silk-skirt-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silk-skirt-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silk-skirt-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silk-skirt-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silk-skirt-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silk-skirt-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silk-skirt-legendary-low.glb"
+          }
+        }
       }
     },
     "Leather Boots": {
@@ -272,6 +698,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/leather-boots-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/leather-boots-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/leather-boots-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-boots-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-boots-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-boots-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-boots-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-boots-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-boots-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-boots-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-boots-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-boots-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-boots-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-boots-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-boots-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-boots-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-boots-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-boots-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-boots-legendary-low.glb"
+          }
         }
       }
     },
@@ -291,6 +755,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/iron-boots-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/iron-boots-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/iron-boots-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/iron-boots-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/iron-boots-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/iron-boots-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/iron-boots-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/iron-boots-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/iron-boots-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/iron-boots-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/iron-boots-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/iron-boots-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/iron-boots-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/iron-boots-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/iron-boots-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/iron-boots-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/iron-boots-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/iron-boots-legendary-low.glb"
+          }
+        }
       }
     },
     "Sandals": {
@@ -308,6 +810,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/sandals-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/sandals-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/sandals-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/sandals-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/sandals-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/sandals-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/sandals-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/sandals-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/sandals-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/sandals-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/sandals-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/sandals-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/sandals-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/sandals-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/sandals-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/sandals-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/sandals-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/sandals-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/sandals-legendary-low.glb"
+          }
         }
       }
     },
@@ -327,6 +867,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/leather-gloves-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/leather-gloves-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-gloves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-gloves-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-gloves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-gloves-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-gloves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-gloves-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-gloves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-gloves-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/leather-gloves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/leather-gloves-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/leather-gloves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/leather-gloves-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/leather-gloves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/leather-gloves-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/leather-gloves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/leather-gloves-legendary-low.glb"
+          }
+        }
       }
     },
     "Iron Gauntlets": {
@@ -344,6 +922,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/iron-gauntlets-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/iron-gauntlets-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/iron-gauntlets-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/iron-gauntlets-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/iron-gauntlets-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/iron-gauntlets-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/iron-gauntlets-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/iron-gauntlets-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/iron-gauntlets-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/iron-gauntlets-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/iron-gauntlets-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/iron-gauntlets-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/iron-gauntlets-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/iron-gauntlets-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/iron-gauntlets-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/iron-gauntlets-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/iron-gauntlets-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/iron-gauntlets-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/iron-gauntlets-legendary-low.glb"
+          }
         }
       }
     },
@@ -363,6 +979,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/silk-gloves-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/silk-gloves-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silk-gloves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silk-gloves-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silk-gloves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silk-gloves-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silk-gloves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silk-gloves-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silk-gloves-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silk-gloves-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silk-gloves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silk-gloves-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silk-gloves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silk-gloves-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silk-gloves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silk-gloves-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silk-gloves-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silk-gloves-legendary-low.glb"
+          }
+        }
       }
     },
     "Reinforced Spaulders": {
@@ -380,6 +1034,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/reinforced-spaulders-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/reinforced-spaulders-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/reinforced-spaulders-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/reinforced-spaulders-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/reinforced-spaulders-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/reinforced-spaulders-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/reinforced-spaulders-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/reinforced-spaulders-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/reinforced-spaulders-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/reinforced-spaulders-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/reinforced-spaulders-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/reinforced-spaulders-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/reinforced-spaulders-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/reinforced-spaulders-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/reinforced-spaulders-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/reinforced-spaulders-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/reinforced-spaulders-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/reinforced-spaulders-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/reinforced-spaulders-legendary-low.glb"
+          }
         }
       }
     },
@@ -399,6 +1091,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/steel-pauldrons-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/steel-pauldrons-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/steel-pauldrons-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/steel-pauldrons-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/steel-pauldrons-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/steel-pauldrons-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/steel-pauldrons-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/steel-pauldrons-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/steel-pauldrons-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/steel-pauldrons-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/steel-pauldrons-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/steel-pauldrons-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/steel-pauldrons-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/steel-pauldrons-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/steel-pauldrons-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/steel-pauldrons-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/steel-pauldrons-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/steel-pauldrons-legendary-low.glb"
+          }
+        }
       }
     },
     "Velvet Mantle": {
@@ -416,6 +1146,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/velvet-mantle-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/velvet-mantle-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/velvet-mantle-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/velvet-mantle-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/velvet-mantle-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/velvet-mantle-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/velvet-mantle-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/velvet-mantle-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/velvet-mantle-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/velvet-mantle-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/velvet-mantle-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/velvet-mantle-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/velvet-mantle-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/velvet-mantle-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/velvet-mantle-legendary-low.glb"
+          }
         }
       }
     },
@@ -435,6 +1203,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/studded-belt-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/studded-belt-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/studded-belt-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/studded-belt-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/studded-belt-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/studded-belt-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/studded-belt-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/studded-belt-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/studded-belt-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/studded-belt-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/studded-belt-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/studded-belt-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/studded-belt-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/studded-belt-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/studded-belt-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/studded-belt-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/studded-belt-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/studded-belt-legendary-low.glb"
+          }
+        }
       }
     },
     "Plated Girdle": {
@@ -452,6 +1258,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/plated-girdle-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/plated-girdle-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/plated-girdle-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/plated-girdle-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/plated-girdle-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/plated-girdle-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/plated-girdle-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/plated-girdle-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/plated-girdle-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/plated-girdle-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/plated-girdle-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/plated-girdle-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/plated-girdle-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/plated-girdle-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/plated-girdle-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/plated-girdle-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/plated-girdle-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/plated-girdle-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/plated-girdle-legendary-low.glb"
+          }
         }
       }
     },
@@ -471,6 +1315,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/silk-sash-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/silk-sash-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silk-sash-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silk-sash-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silk-sash-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silk-sash-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silk-sash-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silk-sash-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silk-sash-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silk-sash-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silk-sash-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silk-sash-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silk-sash-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silk-sash-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silk-sash-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silk-sash-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silk-sash-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silk-sash-legendary-low.glb"
+          }
+        }
       }
     },
     "Gold Ring": {
@@ -488,6 +1370,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/gold-ring-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/gold-ring-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/gold-ring-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/gold-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/gold-ring-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/gold-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/gold-ring-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/gold-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/gold-ring-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/gold-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/gold-ring-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/gold-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/gold-ring-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/gold-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/gold-ring-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/gold-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/gold-ring-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/gold-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/gold-ring-legendary-low.glb"
+          }
         }
       }
     },
@@ -507,6 +1427,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/silver-ring-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/silver-ring-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silver-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silver-ring-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silver-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silver-ring-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silver-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silver-ring-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silver-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silver-ring-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/silver-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/silver-ring-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/silver-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/silver-ring-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/silver-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/silver-ring-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/silver-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/silver-ring-legendary-low.glb"
+          }
+        }
       }
     },
     "Ruby Ring": {
@@ -524,6 +1482,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/ruby-ring-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/ruby-ring-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/ruby-ring-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/ruby-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/ruby-ring-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/ruby-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/ruby-ring-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/ruby-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/ruby-ring-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/ruby-ring-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/ruby-ring-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/ruby-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/ruby-ring-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/ruby-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/ruby-ring-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/ruby-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/ruby-ring-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/ruby-ring-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/ruby-ring-legendary-low.glb"
+          }
         }
       }
     },
@@ -543,6 +1539,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/pendant-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/pendant-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/pendant-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/pendant-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/pendant-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/pendant-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/pendant-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/pendant-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/pendant-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/pendant-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/pendant-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/pendant-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/pendant-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/pendant-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/pendant-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/pendant-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/pendant-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/pendant-legendary-low.glb"
+          }
+        }
       }
     },
     "Choker": {
@@ -560,6 +1594,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/choker-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/choker-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/choker-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/choker-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/choker-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/choker-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/choker-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/choker-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/choker-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/choker-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/choker-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/choker-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/choker-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/choker-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/choker-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/choker-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/choker-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/choker-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/choker-legendary-low.glb"
+          }
         }
       }
     },
@@ -579,6 +1651,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/necklace-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/necklace-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/necklace-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/necklace-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/necklace-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/necklace-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/necklace-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/necklace-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/necklace-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/necklace-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/necklace-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/necklace-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/necklace-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/necklace-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/necklace-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/necklace-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/necklace-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/necklace-legendary-low.glb"
+          }
+        }
       }
     },
     "Amulet of Power": {
@@ -596,6 +1706,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/amulet-of-power-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/amulet-of-power-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/amulet-of-power-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/authored/fits/Fighter/amulet-of-power-standard.glb",
+            "low": "./assets/equipment/authored/fits/Fighter/amulet-of-power-standard.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/authored/fits/Wizard/amulet-of-power-standard.glb",
+            "low": "./assets/equipment/authored/fits/Wizard/amulet-of-power-standard.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/authored/fits/Cleric/amulet-of-power-standard.glb",
+            "low": "./assets/equipment/authored/fits/Cleric/amulet-of-power-standard.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/authored/fits/Rogue/amulet-of-power-standard.glb",
+            "low": "./assets/equipment/authored/fits/Rogue/amulet-of-power-standard.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/authored/fits/Fighter/amulet-of-power-legendary.glb",
+            "low": "./assets/equipment/authored/fits/Fighter/amulet-of-power-legendary.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/authored/fits/Wizard/amulet-of-power-legendary.glb",
+            "low": "./assets/equipment/authored/fits/Wizard/amulet-of-power-legendary.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/authored/fits/Cleric/amulet-of-power-legendary.glb",
+            "low": "./assets/equipment/authored/fits/Cleric/amulet-of-power-legendary.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/authored/fits/Rogue/amulet-of-power-legendary.glb",
+            "low": "./assets/equipment/authored/fits/Rogue/amulet-of-power-legendary.glb"
+          }
         }
       }
     },
@@ -615,6 +1763,44 @@ export const AUTHORED_ASSETS = {
           "Cleric": "./assets/equipment/authored/fits/Cleric/talisman-of-speed-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/talisman-of-speed-legendary.glb"
         }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/authored/fits/Fighter/talisman-of-speed-standard.glb",
+            "low": "./assets/equipment/authored/fits/Fighter/talisman-of-speed-standard.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/authored/fits/Wizard/talisman-of-speed-standard.glb",
+            "low": "./assets/equipment/authored/fits/Wizard/talisman-of-speed-standard.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/authored/fits/Cleric/talisman-of-speed-standard.glb",
+            "low": "./assets/equipment/authored/fits/Cleric/talisman-of-speed-standard.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/authored/fits/Rogue/talisman-of-speed-standard.glb",
+            "low": "./assets/equipment/authored/fits/Rogue/talisman-of-speed-standard.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/authored/fits/Fighter/talisman-of-speed-legendary.glb",
+            "low": "./assets/equipment/authored/fits/Fighter/talisman-of-speed-legendary.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/authored/fits/Wizard/talisman-of-speed-legendary.glb",
+            "low": "./assets/equipment/authored/fits/Wizard/talisman-of-speed-legendary.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/authored/fits/Cleric/talisman-of-speed-legendary.glb",
+            "low": "./assets/equipment/authored/fits/Cleric/talisman-of-speed-legendary.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/authored/fits/Rogue/talisman-of-speed-legendary.glb",
+            "low": "./assets/equipment/authored/fits/Rogue/talisman-of-speed-legendary.glb"
+          }
+        }
       }
     },
     "Orb of Mana": {
@@ -632,6 +1818,44 @@ export const AUTHORED_ASSETS = {
           "Wizard": "./assets/equipment/authored/fits/Wizard/orb-of-mana-legendary.glb",
           "Cleric": "./assets/equipment/authored/fits/Cleric/orb-of-mana-legendary.glb",
           "Rogue": "./assets/equipment/authored/fits/Rogue/orb-of-mana-legendary.glb"
+        }
+      },
+      "runtimeModels": {
+        "standard": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/orb-of-mana-standard-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/orb-of-mana-standard-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/orb-of-mana-standard-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/orb-of-mana-standard-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/orb-of-mana-standard-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/orb-of-mana-standard-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/orb-of-mana-standard-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/orb-of-mana-standard-low.glb"
+          }
+        },
+        "legendary": {
+          "Fighter": {
+            "high": "./assets/equipment/runtime/Fighter/orb-of-mana-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Fighter/orb-of-mana-legendary-low.glb"
+          },
+          "Wizard": {
+            "high": "./assets/equipment/runtime/Wizard/orb-of-mana-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Wizard/orb-of-mana-legendary-low.glb"
+          },
+          "Cleric": {
+            "high": "./assets/equipment/runtime/Cleric/orb-of-mana-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Cleric/orb-of-mana-legendary-low.glb"
+          },
+          "Rogue": {
+            "high": "./assets/equipment/runtime/Rogue/orb-of-mana-legendary-high.glb",
+            "low": "./assets/equipment/runtime/Rogue/orb-of-mana-legendary-low.glb"
+          }
         }
       }
     }
@@ -1145,6 +2369,6 @@ export const AUTHORED_ASSETS = {
     }
   }
 };
-const versions = ["fda495c5e7fe60dc","357284df9e9f22f9","8e5db5ff63e1124d","facb882f8a68ab69","52adfd98bd8ac6eb","949e5d2ecd1afc76","b0d77d7e0d321486","19784ca41b98d40b","0aea84dc222750d8","1da90eb190673004","8ec12238f6b62214","e1176f6c8b025144","8c3647850e028394","d4b7c3022017367c","91e39e470df82ca1","0133b5c2842f0fcf","358c81308ccd5647","e62abffeb51aac25","bb184cbfecf40265","6d1b97034ef1f08d","119348a66511ec18","e548ef4a5fc7af0f","8eb8f921b260125d","4b61da54cee99846","855eed14ad9113c8","553efcbd0ac8dbda","a36d26bc6e130011","c3e76cb7410b2b63","2eb6bbb39d29b64f","650f69ccd583c04a","4ca5f1f050bd2b8d","cc863415cf2e07b4","80bfc09cac9becf9","b9f16b75aa353c54","db0e3765d4d4e817","4151b27f7fd43cf5","e0543ac3aef9b99e","01f79af9e50f6af8","b98233978098aefa","056797979b991c39","a2d763dabf61af2a","4ae172821973109e","3c1d9be42fc40f79","a0dcc63d1efb6c39","797c769f94909732","06f78e830ab770c5","979e721bcbf079bd","a2ebbedeebc5aab2","b1cfa3d278d8ba2f","76c054ec888dcede","643eebbb698c9cec","15b37b90a4548ba8","4c063da467781042","691effdc958e366d","165f8f34f9043e32","be7b57a5e2d339ed","fc9245497948f4d1","9f35f0a69aa64a7b","8413120e75ec95b1","eae2052b5f6ad236","b758dbf0eedf3b4d","2c8b0500b47f0ec9","83da23d7875e6c48","7a2d87a2ddfb4adf","02d6d78837caba4b","d98b5982adabb5cc","4c0cdb83087663dd","0962fd16e49dd952","ddcb9ceeb3371bac","55de6656ac20a26c","bc6f26dc21cedf6f","35bcc3bbbeaa49c5","65c12a3158b1da07","e9bbcf8e9509d9c1","a2bee01cc9775697","acf00c0eb70ae759","9e5278b7270a1085","aca33fce09f02714","1d5c17c2659480d4","1fabd5f8b3481564","d1e32b585d2a06e8","078d7da8a6885221","21d96263a25cda09","4146d9ddbc9d3c7b","b7096ab3cc56c82a","e59968c7f683fe2c","70126a4f93b67870","332ba2181792b518","88e56680fadc3a11","aa2ebadda81122bd","d78673499ef74b2c","b37b2911a29d3eff","9394253061deb3a4","9fad4514121871b0","477718d42e525874","052b8761d0e36d5e","85f494acf7e66de3","74e55b7f0a652684","4ebff03da594be01","0c1363c633965d1e","2b762fca929f8831","0ba26dc23c067792","ebb3d07e844afabc","f65211699527131d","0a883530ca505f8a","41905da3bd51aa3f","3cf067e9a4a3aad6","c3467178b888213f","18c5dce807b44261","486967a0a81e4847","f328d23f623077a4","29b069bf796319dd","7ce01d46ed7d9421","367059e64ffa21ed","472e737fcd0a828f","543aa03fff818e1c","e29b604e0c972f05","18b77b6b15d26552","66218f1b57e6a0a1","04208c3ff85aeaca","52f886aec21f7b44","f35710d457d45105","5d521092068cd36f","c05a07c77a54a36a","cbeeb1ebea20133a","f5a8bddf43964283","3d9c1b89e8d61a31","31bf0e2658d72b11","63996a81c0ebcf4a","61eac861f7d9543d","ea76eaf0c6135f47","6029845a62aadd46","fdcfef5226bac542","40155f2fa46522f4","287a72775c4c3ac9","8f91475da5b2b7ec","f9f9df4c39f8397f","933ee2caa5b604e4","85bcbbb72a22d723","3aaa023443f1538a","a1f4782e4836d76b","7b18d926c6776a95","42222991a07820c9","51fcf0771c9a53f5","79bf1d797fa2bf2a","34ce585028c5bc79","3cdc4d5062e45521","66624b247dae9af5","d8ac45a78dfb9c32","d7900ee927146897","802a45013049683b","f6ed302389da2e6b","3cf89f54f741d71b","0f85c48156950a9d","ca6e4bfcc01c8e5d","0647d1d31f06b454","d9084053da7aee6e","eef13a14c5c73db3","7f29a714e5aa8d8f","2875a6519baf9315","372bbe6918582da1","23ee0b0f9ab1e4ce","48d22597b0ba3f65","0504b413b47d84e3","edcb00f8ab7b44b9","f0ad9411a97ccebe","fac7184a23d1edca","1a6d48d768bda5ea","f37515735a3d0574","3f725ec90fbfe31f","8e38d884c16e0da7","a3744274d3259cfb","234cd29c0e1c7e9a","c8d731bd5bc26ae6","fb794eb89edc99d1","ff29fe9f1c5cc36b","592323184df3b6dd","842f7e579bb2bae6","3e5ba6d7ff753fbe","e302b810d055e253","30f07e3733f93561","be19a23875e8fd94","e94866298df4efa2","b51fd9fe6b78e726","0dbfece3758eed39","a46bac0bc66631a8","0a59da3387686861","c2fd5815941a1d91","f7b950278cc4c87a","05f67de2da52f474","bdf4b54f1c321b59","1b6d9cd3d186406c","c4c7e99542da43c7","b3d4b50cfd9bccbd","3346f5275d4911b4","2434bd39599b0936","c5f3035e0715a575","38b609be74cc695a","0d12616ea013d46c","5c18db88cde5d276","d23ebed5408ed843","2142af81caff7e59","569884b3bc1491f7","f885e045cec5c4f9","c5104a47bba23d45","eacab79992d84773","a54450738e3c84ce","a5294726cb3f206e","a26afacf90e8a1b4","55dc9157639ca147","e7cb413793afbb4a","42162e6d4384e03c","c1c5386aa1105ee2","805000c0d25c1e78","5a89eb9e25aeb36b","f8f5191a4105f76a","a453101937dd981d","8030ac06e094574c","3c2b1b6cae923d31","3da1403081818c8c","1e7a4ab6489a9a54","4389e486897c7991","14defe40ef4a9606","2664262ae0b8e8bd","4802c77f2436d301","fd3ce2b2a2352577","59ab146e77a6d1fd","c44571aaf02bfd63","2cad144403ea2bb4","2a46cb6606ca723f","5a45fef5ec0deb61","9032c0b364c7534c","fcde58f7dd8764ab","d44aff416ea17812","61684958bc11f6ee","258649ac81d95ed2","0a62b5f6ca4b6800","31853b702e71692c","773f6992ad3874c7","cc2faed8c228a2a0","00bb7ee50b11ee90","937be12c8f55d50a","344c66bc3f7f1849","7f728294f8d7ecbd","1d1f8ed0acff6722","3c5c409592ff4486","781e487b7d159004","da7ddce048260445","6ca0b3b5ad0f9b3f","a58858bc2ce1b6d4","e13cbbd0fecaf9a8","e9622b4d35685751","67d336376349e818","c0ae240600b4c108","8c4acc8600f720bb","6e35b6128bb9eca9","9054b4e162b7ad0b","1d327ec5439c0164","ed4d4867639d1ac1","d994f34d4e00269f","175dbff49f8461dd","b7bfc2be5c2a0d87","de1b0ec6ba96994a","bcf95417c65689e3"];
-const paths = [...Object.values(AUTHORED_ASSETS.characters).flatMap(c => [c.high, c.low, c.motionBank]), ...Object.values(AUTHORED_ASSETS.items).flatMap(i => Object.values(i.models).flatMap(Object.values))];
+const versions = ["fda495c5e7fe60dc","357284df9e9f22f9","8e5db5ff63e1124d","facb882f8a68ab69","52adfd98bd8ac6eb","949e5d2ecd1afc76","b0d77d7e0d321486","19784ca41b98d40b","0aea84dc222750d8","1da90eb190673004","8ec12238f6b62214","e1176f6c8b025144","8c3647850e028394","d4b7c3022017367c","91e39e470df82ca1","0133b5c2842f0fcf","358c81308ccd5647","e62abffeb51aac25","bb184cbfecf40265","6d1b97034ef1f08d","119348a66511ec18","e548ef4a5fc7af0f","8eb8f921b260125d","4b61da54cee99846","855eed14ad9113c8","553efcbd0ac8dbda","a36d26bc6e130011","c3e76cb7410b2b63","2eb6bbb39d29b64f","650f69ccd583c04a","4ca5f1f050bd2b8d","cc863415cf2e07b4","80bfc09cac9becf9","b9f16b75aa353c54","db0e3765d4d4e817","4151b27f7fd43cf5","e0543ac3aef9b99e","01f79af9e50f6af8","b98233978098aefa","056797979b991c39","a2d763dabf61af2a","4ae172821973109e","3c1d9be42fc40f79","a0dcc63d1efb6c39","797c769f94909732","06f78e830ab770c5","979e721bcbf079bd","a2ebbedeebc5aab2","b1cfa3d278d8ba2f","76c054ec888dcede","643eebbb698c9cec","15b37b90a4548ba8","4c063da467781042","691effdc958e366d","165f8f34f9043e32","be7b57a5e2d339ed","fc9245497948f4d1","9f35f0a69aa64a7b","8413120e75ec95b1","eae2052b5f6ad236","b758dbf0eedf3b4d","2c8b0500b47f0ec9","83da23d7875e6c48","7a2d87a2ddfb4adf","02d6d78837caba4b","d98b5982adabb5cc","4c0cdb83087663dd","0962fd16e49dd952","ddcb9ceeb3371bac","55de6656ac20a26c","bc6f26dc21cedf6f","35bcc3bbbeaa49c5","65c12a3158b1da07","e9bbcf8e9509d9c1","a2bee01cc9775697","acf00c0eb70ae759","9e5278b7270a1085","aca33fce09f02714","1d5c17c2659480d4","1fabd5f8b3481564","d1e32b585d2a06e8","078d7da8a6885221","21d96263a25cda09","4146d9ddbc9d3c7b","b7096ab3cc56c82a","e59968c7f683fe2c","70126a4f93b67870","332ba2181792b518","88e56680fadc3a11","aa2ebadda81122bd","d78673499ef74b2c","b37b2911a29d3eff","9394253061deb3a4","9fad4514121871b0","477718d42e525874","052b8761d0e36d5e","85f494acf7e66de3","74e55b7f0a652684","4ebff03da594be01","0c1363c633965d1e","2b762fca929f8831","0ba26dc23c067792","ebb3d07e844afabc","f65211699527131d","0a883530ca505f8a","41905da3bd51aa3f","3cf067e9a4a3aad6","c3467178b888213f","18c5dce807b44261","486967a0a81e4847","f328d23f623077a4","29b069bf796319dd","7ce01d46ed7d9421","367059e64ffa21ed","472e737fcd0a828f","543aa03fff818e1c","e29b604e0c972f05","18b77b6b15d26552","66218f1b57e6a0a1","04208c3ff85aeaca","52f886aec21f7b44","f35710d457d45105","5d521092068cd36f","c05a07c77a54a36a","cbeeb1ebea20133a","f5a8bddf43964283","3d9c1b89e8d61a31","31bf0e2658d72b11","63996a81c0ebcf4a","61eac861f7d9543d","ea76eaf0c6135f47","6029845a62aadd46","fdcfef5226bac542","40155f2fa46522f4","287a72775c4c3ac9","8f91475da5b2b7ec","f9f9df4c39f8397f","933ee2caa5b604e4","85bcbbb72a22d723","3aaa023443f1538a","a1f4782e4836d76b","7b18d926c6776a95","42222991a07820c9","51fcf0771c9a53f5","79bf1d797fa2bf2a","34ce585028c5bc79","3cdc4d5062e45521","66624b247dae9af5","d8ac45a78dfb9c32","d7900ee927146897","802a45013049683b","f6ed302389da2e6b","3cf89f54f741d71b","0f85c48156950a9d","ca6e4bfcc01c8e5d","0647d1d31f06b454","d9084053da7aee6e","eef13a14c5c73db3","7f29a714e5aa8d8f","2875a6519baf9315","372bbe6918582da1","23ee0b0f9ab1e4ce","48d22597b0ba3f65","0504b413b47d84e3","edcb00f8ab7b44b9","f0ad9411a97ccebe","fac7184a23d1edca","1a6d48d768bda5ea","f37515735a3d0574","3f725ec90fbfe31f","8e38d884c16e0da7","a3744274d3259cfb","234cd29c0e1c7e9a","c8d731bd5bc26ae6","fb794eb89edc99d1","ff29fe9f1c5cc36b","592323184df3b6dd","842f7e579bb2bae6","3e5ba6d7ff753fbe","e302b810d055e253","30f07e3733f93561","be19a23875e8fd94","e94866298df4efa2","b51fd9fe6b78e726","0dbfece3758eed39","a46bac0bc66631a8","0a59da3387686861","c2fd5815941a1d91","f7b950278cc4c87a","05f67de2da52f474","bdf4b54f1c321b59","1b6d9cd3d186406c","c4c7e99542da43c7","b3d4b50cfd9bccbd","3346f5275d4911b4","2434bd39599b0936","c5f3035e0715a575","38b609be74cc695a","0d12616ea013d46c","5c18db88cde5d276","d23ebed5408ed843","2142af81caff7e59","569884b3bc1491f7","f885e045cec5c4f9","c5104a47bba23d45","eacab79992d84773","a54450738e3c84ce","a5294726cb3f206e","a26afacf90e8a1b4","55dc9157639ca147","e7cb413793afbb4a","42162e6d4384e03c","c1c5386aa1105ee2","805000c0d25c1e78","5a89eb9e25aeb36b","f8f5191a4105f76a","a453101937dd981d","8030ac06e094574c","3c2b1b6cae923d31","3da1403081818c8c","1e7a4ab6489a9a54","4389e486897c7991","14defe40ef4a9606","2664262ae0b8e8bd","4802c77f2436d301","fd3ce2b2a2352577","59ab146e77a6d1fd","c44571aaf02bfd63","2cad144403ea2bb4","2a46cb6606ca723f","5a45fef5ec0deb61","9032c0b364c7534c","fcde58f7dd8764ab","d44aff416ea17812","61684958bc11f6ee","258649ac81d95ed2","0a62b5f6ca4b6800","31853b702e71692c","773f6992ad3874c7","cc2faed8c228a2a0","00bb7ee50b11ee90","937be12c8f55d50a","344c66bc3f7f1849","7f728294f8d7ecbd","1d1f8ed0acff6722","3c5c409592ff4486","781e487b7d159004","da7ddce048260445","6ca0b3b5ad0f9b3f","a58858bc2ce1b6d4","e13cbbd0fecaf9a8","e9622b4d35685751","67d336376349e818","c0ae240600b4c108","8c4acc8600f720bb","6e35b6128bb9eca9","9054b4e162b7ad0b","1d327ec5439c0164","ed4d4867639d1ac1","d994f34d4e00269f","175dbff49f8461dd","b7bfc2be5c2a0d87","de1b0ec6ba96994a","bcf95417c65689e3","aa5e6b4507b020f7","c16b05889757a5ac","45422d3214e7b4ea","4910ddb263749812","4c40e7d6213f82db","82a8fbe4c1e5445d","3e1de4a019f10a7c","67a1fe4b092928ef","a7ce420aeec1a32d","fd22058c452cab02","d6983fc61d0cec45","e0601ce62766d790","2926379fe3fca6fe","c849b8ebdba1e1b8","d08331760af3151c","52ea9d896c9ff4a8","ed20b74264289970","d7a4f424e00a6088","4bf24dc5372e4b5a","0f72015c4c5b41e7","57560d11f9d60f4d","f4435c9e0b5bc221","2006905d93677be6","2f5ef8a1f5e65181","ecb390415087f4ab","79fc868322e0046c","1528bdccb2366f65","7020d71807dd08d1","3f64f6df5527ae30","278b86b3417203e8","8641a5191f989848","f71f4d4995ffbd9f","4fa1c2d76b58c892","b05339e6182da038","d3993aaafe7dadd8","03f67a97f4cda12e","7fecf27d6e9f1083","26e8ad8c3be8b4aa","3477493e5849e9f6","e0bbfc564712e5b6","5bebbb7a787dcb0a","79d9ecb89036b204","4c3b9630dd1e48aa","151864c55b7c46e9","f11dbb0215de2f18","50f0e759e76bccc3","bf480195ee4000ea","85f622e70978e4c7","ee25a04cd7ba95e9","f4e6530cd83b4ceb","31d0dabdea2813ec","e43c19752d079886","68f81cf338f36248","ec3a84d740b6d036","db9dc73716743d66","01a93a12591d2049","169b7455a8fa1272","8f46faa37f15ed66","b2240687fa789bd5","51b4071570b171b0","3e0714806674d360","c88d47eaa397b726","4e5e8e68db37e2ac","7f751f1a8cb057f2","2eadb04ba8343928","2ba71f974ef3bb1b","bd6c9f723af9033d","ced5accb4de4672d","c04c90e040daf62a","a20656fe4328c6e0","36db64d8356ec276","d66cdf1325c85954","889463321349ec8e","ad9bd3d1f4de2ceb","101c6bb6f2633bd3","b70f28df5a1e1482","003812e4e0d3bb98","07f9acebe8ee82cf","ead0d8a6dbc92caa","52d25f55b1281277","a735af9e2bf705e7","04d71c27f36c2b5d","f05c256f8a39bfc7","058ad7e7ce486140","1d1982a834c54d0f","85f3d81fa71bd2f5","9d1d7b8f2fefb41d","d7419706407648a0","d3acc3a207fc03a0","a30261e30b9f3293","1f5ce7c810754533","b545aab3e4f7cd9e","a6ca7c1729f9d520","b330b2440fbadbef","6ec5ab3a9196a760","732044eabfa2dfb5","b7d1e7d75e9ac43f","e46ed8310b525823","2d0d0e151362363a","2e1901da3525b3a5","4729b141b0825103","1d9698d10671755a","1263baa5ea3263a2","08d0ca664db79df8","2e98549e65d91e9f","4206a9adf70160cd","a27879d859e5c0a2","d9eb0af5612f7f0b","3a914a03c6259987","6f73e6531ad6b19c","6d1f7ce40c46e6df","38baf816fb01402c","1d6c13544ad984a6","e777c9f4b9e20dba","184b6ab8f65c38cc","3d81c631b6ae3748","caad83029ce5178f","f5264fc742b3a648","98408f19ce352fb2","e2768f6cf3ec286e","e95aae299aa7c7bd","d85f451f1e02186d","5154550a0f38925b","628f36b906e3f800","e8a7ab7f4b1da3c1","06f6398f845b4137","614c8d073741be34","b82996e483a6082c","dd616e6f20e26259","706cc6dea5246322","73600af3034794d9","b99e907a72b48fe6","d8c6e2e9e6d053fd","2ed2fbf7489eff22","1e3a4b7b136d1fc6","a4703e24acee8519","dc94971627f29ad7","44021dc406d9fa7f","aa26b745a300abff","4156ec372acc0f3b","167a8c7cb63e8058","041216913c97dfe2","f832effa4c03d0a9","7a42ef1dfc8c3617","35ac0dd112ef0524","2356772d4b341378","07f33fa82cf86978","e4bd42effcefbec6","d4061bd96217da5c","22b76c1c80bd5786","01777b9d0889b42e","d9de6114ccd7267f","8a521a6c2e02d988","8616461ab9e5cf65","0e30373dc5676540","e6ae6277aa69e6c8","c157752817abdbaa","919045e69aec9ad6","0c70fd392bc63346","3cd4196db0391a3a","c0f75d997a3424a6","d11532ab3bd7cd04","ce947e57f425e924","1ffbb86b5f9f2e64","d4dc060993c263cb","ced17180463dc34e","52e28568ba725696","6c0dbd5c1607e337","1dcceb4fd29f0a00","aaabda6b72d5cfc8","eeb4ba2c1363d9d2","691f3fbff99b76d0","34531ca16fc5b621","882dc459c380e389","99f7804ca7a3063c","3ed8ed389dc4528d","c92de37d2cc3351b","ed0a5275582e0817","72c2affde8e34b0e","e71e40e282b7c989","8b5118725bbf0b23","29258e71ea28ac24","adaeecf8646a8a2e","56d32ce7d5532708","f34610d8ce48c4ac","9527b1b92253f57b","a7fd398f8d332347","7d38afe8fc91eb0a","948c032bd8700e7c","737647c4a5066c52","4d397dcad0384bb2","d416eeca7dac385d","7ef40ee35afac085","1d3037dabfb18fbe","b4f12dd339de98a6","f52ea960e4c374d5","5ae82780b39c0812","3d3092fa571d9678","df9851e10248bc4f","25a5225d96f13d21","249508ca418b5c79","7be5a0abbc54e030","c69737a4eb5f98b3","7103e1c2627283b7","7bda340333df7216","a9ae050bf778f4c4","42392f36e55d0d9f","341c53c7ca7d265a","c2c092ede7ea4932","ac9201f9dc1122a0","596cf466968313a8","cb5df02bfff98ad1","8037710d5d00d404","0ffc132646c38669","6bb7674f4e34791f","2d5dbeb3cca0f3f7","10b1c2f4241d9e30","a303ef1abe4e30b8","317ceae6bce36afe","6bbe9335a94be6b7","0bb3e181bafa3a0d","3bd386a5d388a8ad","9a85fe421ede0122","85862a7bc1a862e7","8265698bf60e6a1d","3fe99c3380c3bfe7","e57ea0ed6a777eb8","f22392afeb775213","d0e98073848e4e9c","dcef1c3c56e09874","34c3cc96508d6ca4","2f861450a950e620","0075c63fa8337e70","790c4200d9764f56","11837222443cd1b2","f3335db3bf834c61","9214361d0bd16388","a4310076a6e4601d","fe742917c721c1bd","528382ee380ff29f","490e4ea08e6d8066","b36222901f3d9826","61ab749c19cefc16","4faff1bcb15b7a99","b7b9cfb70d3d236c","060529057b87b7a8","7196e656001aff08","53abc7c4fab5217f","a677fe61062c4372","0b9f55882a4ee243","bf58a8158d941fc4","3044e184e4c2713d","63a3a23642c29b39","0d1e54f9cc734309","204570cc787ecc38","db9dfccde2bee58b","4a862b6e8c68dd26","61328075caea661c","3df1056aa8fbcb4b","20ec0ef234a104a6","ad3afbc4dbf79e26","ca40e95b48ab6698","7a7edf2d10ee942c","7f87f5126dda098b","264d254def0aa572","6c9b8846cc4422a8","962c596a0e55fd5a","288e62597aa7b223","6d15b2214b0c4ae1","13316340665e5ad9","e71ba276cd220209","32d71c3b7fbac5c5","5954b8bc35074d4b","df13810f150eed4f","10c6c453a59e7dd0","6ffc728de660536d","7e123f2496dd0d14","4fb4459848e0087a","67f2449b3edce1d7","fb8427f2b8f178e4","1c84cde67d54b559","3390e9d8c5b080b4","8532d55e1eacaadc","d308303e244a5764","8c9e823754d30cb6","40c6f8cc289d374f","d194a8df44a3ee92","e473fcd6ebd3bf10","44ff637056f7d938","ecb5dc067ad3d1ad","88f48419e2026aaa","e206aa822bdca28d","e9f89b11772608b1","58ff508f52873d3b","20ef67a9eb13e343","b55d0c2e04715ec7","505851500c1d743e","8fa97eed5bef2525","d1697ef6fa961ca6","d6940036715d8f9e","29d4d7dd3eec922a","49084a6c4b3323a1","e1f13b9f637faff3","eb2df0becf895132","9aa496c3f87d3b54","0253f7017a37b26e","3166c4c26386157c","5eeaf29b35cdc284","4ad53d2db8dcfe9f","da9b23506c3238d3","9cde19fe189e73ee","94b405c81569331a","3fa3484240ce329e","d5d10efca893964d","2e522087da286f22","29365e866b67db3e","beb31e57fd31c9e6","4105ad64544a0abb","ba32ae43c944a1c4","e3150cd4a6ba1742","99446929e43886f7","e1f00dcc08df5c4a","cf62cc813e9677ef","289441f662fa974d","8a6cc313f25bf76a","fe32203934fb7d96","b37243a755e1a296","69a5d7a0da6be646","eabd0774cb647139","4914ef3a91fbe359","d36d4ba117045f1b","34b45a3b2d0508ea","208fece19a01a955","40c325f51f5ba3c1","8b39a753162c36f9","743e047295c69fa0","04073ecd1aad9df3","a74c873ab98c98d9","48d3c73a1bc4b7ac","86c4a24b8c7b119f","aa044fe85e77eec5","757626356e1eed74","e7a9fe339401b1e3","5916e6fa881ba2d3","a57bd0e8fb2aa7f3","a684c9ccce0434a5","7fe1931e4d6fe3de","fa6008f893c91def","e2838edd2ae34467","142d994a35db4ee5","ddecbe0cd0b9c7da","af5f549ac4b289e2","b8e317c02f14b83d","64b42ddd2dae9bf8","53e447bca1f0974f","c7dfef2d59f987c3","8f3ac3c4618a4287","a1df817d6537f8d5","f7c6fa6ab15676d6","13c6582b46e13e40","ec79f6c4f12e50cd","abf0e9ce2232598d","fbc5f36fda7d8e21","273fffda43c7ae75","e4235efa93b4b277","fcfb6a6373097ce4","313a8c6570552e4a","f64ecc03c797f5dd","73d0058fca041bfe","79b7cd129fe238a2","be8c2bfdb7d858bd","be27e0ddc0be78d5","9462e69258697f98","822ef1a1fc0a8a5a","65b1b37c4c0ce530","498ca462a62a26e5","fd72e3d4d1815f77","a2b80a89946dde12","3435d6a3ee28b5a6","874dafef6d68ad2c","4f16c846c9505cc3","8e90cc16c73e9657","2303a5654cddb747","851b019bcd887700","37a33ad9919d302c","0c3fe73d34f10924","a77c32054efc586d","0cfedfa63e9ca255","21d144cb6177fe97","55b06f33ef86c6ee","ab67874b5af4041d","986c3494e25cbda3","f499a6e6979f3910","72fe319c659455cd","0b11f856903f2636","0d90bcd4592e8bca","a95c55c2ade8ebce","fee5bf4f449614b4","1598331e6994e252","84f2b759c1b4cd44","43e096e77f002208","2f91c262d6e7e891","d1a8f372287f7fc4","e189371a07be3654","b22974d0f76568e8","067190630dd9d744","fba01d528a58a9f8","f7e132fe87023830","1bd197356cfe69fc","4c1e8de61a47c743","85a22f074ab2cc10","e579e64c1e8f12f3","8cafc9be8f359da9","364f8a21da9156ff","233abad0219a4568","bedf12539770815f","c87be2991f8a30fa","057176f1589c852f","c702ecbf56215ea1","c8e8dea2cae729fd","a69946a7843bf2fb","f8db9431015589ef","0eee759975deb068","28a3cec305cf1d54","9b4d1ad4d67e11a2","2bdffbc762479bf5","0ced11304193fc40","11055c46175182e4","74e3d71f334ffbd0","4f283b383c531563","fd2f3b4ffbf47eb4","595e3904da1aef75","42c377cd1c31ea45","d8613afcf990947a","0c40ac376be579f9","9d4d3de812af161c","7285be670af94743","c715501d4394b0dd","80ce447d2e263003","071bb6c2efcceb0d","c6f80ed88a67f9b2","91b7b28a9fe34e42","ef65713004f41f35","521766199d705e96","06fdf7155562d165","3bbb83c2c2fe2421","dc16db3372ce3d2f","ea779875c27015d8","5153b4153925dfd7","d147d4d7a751e2f5","ea7673481fda20c6","6191b37e569d5b5a","f86f5d30b033683f","1b7f7a83e00f0353","961b7038a741db7a","5950253b59a0808d","80946a02b7e26951","67700b22c4eb8993","1cd9fe0b2fdec6c2","4f02ada5e51605b3","5f7f989bd57b9883","26dc1ea2a8db7a30","36bacdda970331d2","fa436fded21f8f2c","ae3f3a2bdf3238cb","4cc8b859a5df20f4","edee1e5fe6a047b9","e5ce031105a1a899","5b5b51de38d970d3","b5ced2f75cf1719f","52597f182c3364ff","e4922ecd8fed4ed2"];
+const paths = [...new Set([...Object.values(AUTHORED_ASSETS.characters).flatMap(c => [c.high, c.low, c.motionBank]), ...Object.values(AUTHORED_ASSETS.items).flatMap(i => Object.values(i.models).flatMap(Object.values)), ...Object.values(AUTHORED_ASSETS.items).flatMap(i => Object.values(i.runtimeModels).flatMap(fits => Object.values(fits).flatMap(Object.values)))])];
 export const AUTHORED_ASSET_VERSIONS = Object.fromEntries(paths.map((path, i) => [path, versions[i]]));

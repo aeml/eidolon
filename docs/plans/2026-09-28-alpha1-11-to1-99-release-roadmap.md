@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 staged renderer now uses quality-specific copies alongside originals:
+472 reduced files,32 unchanged variants reuse source,736 versioned paths. Actual
+four-class gallery passes; equipped Low Earth passes and High triangle/frame
+limits pass, but woodland calls370 still fail350. Untimed submission diagnostic
+identifies142 understory color draws; next preserve all plant geometry/transforms/
+wind and reduce redundant draws before equipped-party/device/profile approval.
+Source assets/provenance untouched; no public1.87 or final-art claim. See
+[integrated evidence and failure](2026-10-08-wearable-integration-checks.json).
+
 October8 current publication:1.79.5 de106428 is independently accepted live after
 ordinary CI/SSH/Pages/Live QA, with matching public front/back/database and three
 selected publisher-byte comparisons. See

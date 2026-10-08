@@ -67,7 +67,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                     rarity: index % 2 ? 'Uncommon' : 'Rare', stats: { strength: 12, vitality: 8 } }];
             }));
             actor.syncEquipmentVisuals(gear); await actor.mesh.userData.equipmentReady;
-            if (actor.mesh.userData.equipmentVisualItemCount !== 14 || actor.mesh.userData.equipmentVisualMissing?.length) {
+            if (actor.mesh.userData.equipmentVisualItemCount !== 14 || actor.mesh.userData.equipmentVisualMissing?.length ||
+                actor.mesh.userData.equipmentVisualFallback?.length) {
                 throw new Error('Raised-world pilot did not bind all14 supplied wearable models');
             }
         }

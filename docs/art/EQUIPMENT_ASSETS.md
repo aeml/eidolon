@@ -103,6 +103,25 @@ second trinket slot. Necklaces use the shared character skin.
 
 ## Materials and integration limits
 
+October 8 staged runtime-copy integration keeps the complete delivery unchanged.
+`assets/equipment/runtime/manifest.json` records each original hash and its High/
+Low variants; 472 reduced GLBs live alongside the originals and 32 unchanged
+variants reuse the supplied files. The generated runtime catalog registers both
+original and reduced hashes. Character quality selects fitted equipment quality;
+load failure uses the original and records `equipmentVisualFallback`. Explicit
+`root.userData.fittedEquipmentLOD = false` retains original-only diagnostics.
+This is staged work, not a production 1.87 or raised-world performance approval.
+See [integration checks](../plans/2026-10-08-wearable-integration-checks.json).
+
+Generate all copies into a new owned directory using
+`scripts/derive-wearable-catalog.mjs`, then import them with
+`scripts/import-wearable-runtime.mjs /absolute/generated/directory` and regenerate
+`src/assets/authoredEquipment.generated.js` using
+`node scripts/generate-authored-equipment.mjs`. The importer validates all inputs
+before copying and refuses an existing runtime destination; do not remove a
+reviewed catalog just to bypass that guard. Preserve original Blender/GLB files
+and provenance. See the [copy workflow](../plans/2026-10-08-wearable-pilot-workflow.md).
+
 Standard equipment uses restrained iron, leather, wood and cloth materials.
 Legendary versions add crystal settings, raised trim, rune inlays, layered
 shoulders, crests and enlarged weapon details. Cleric plate uses an ivory/gold
@@ -114,9 +133,10 @@ All materials are embedded glTF metallic-roughness PBR materials. Legendary
 emission uses `KHR_materials_emissive_strength`; the glow halo requires bloom in
 the consuming renderer. There are no external texture dependencies. Surface
 detail is modeled geometry and material separation, not a baked texture atlas.
-This delivery contains one authored LOD per piece. Runtime batching, additional
-LODs, weapon-profile selection in the game, cloth simulation and final mixed-gear combat QA
-belong to the integration pass. The skinned robes already have separated panels
+This delivery contains one authored LOD per piece. The renderer integrates
+weapon profiles and compatible opaque fitted batching; the staged copies above
+add quality-specific wearable LODs. Cloth simulation and final mixed-gear combat
+QA remain separate integration work. The skinned robes already have separated panels
 and movement slits; they are not simulated cloth.
 
 ## Verification and reproducibility

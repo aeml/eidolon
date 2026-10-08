@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 quality-aware wearable integration advances real equipped costs:**
+Stage472 reduced GLBs beside unchanged252 delivery;32 unchanged fits reuse
+originals,736 registered hash-versioned paths. Renderer selects body quality,
+retains reversible original diagnostics and recorded load fallback; qualification
+rejects fallback. Four focused unit suites50 pass2.315s. Actual hardware class
+gallery passes ownership/strikes/stealth/previews; Low equipped Earth passes;
+High now passes all original triangle/frame limits but woodland calls370 still
+fail350. Preserve failed case. Exact untimed draw diagnostic identifies142
+heath/fern draws, so next optimize real submission without changing population,
+wind, appearance or limits, then equipped-party/device. Source/provenance,
+class/gameplay rules and live flat profile unchanged; no staged art release.
+See [integration receipt](docs/plans/2026-10-08-wearable-integration-checks.json).
+
 **October8 full wearable-copy qualification, not live integration:** All252
 supplied item/tier/class fits generated as504 immutable-source High/Low copies:
 2622016 original triangles ->769432 High/404332 Low,32 unchanged variants

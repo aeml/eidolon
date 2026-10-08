@@ -76,6 +76,7 @@ for (const actorClass of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
                 try {
                     for (const derivative of [false, true]) {
                         const root = await MeshFactory.createMeshForType(actorClass, { quality });
+                        root.userData.fittedEquipmentLOD = false; // Test-only source/copy substitution owns these paths.
                         const actor = new Actor(`derivative-${derivative}`, {}); actor.meshType = actorClass; actor.setMesh(root);
                         if (derivative) substitutions.forEach(row => { row.fits[row.fit] = row.url; });
                         actor.syncEquipmentVisuals(gear); await root.userData.equipmentReady;
