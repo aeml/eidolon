@@ -18,6 +18,24 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Exact1.79.9 run37791738441 attempt1 ended cancelled20:21:50UTC. GitHub
+  annotation explicitly confirms maximum6h execution exceeded during browser
+  install; four prior checks passed, six downstream deployment/QA gates skipped.
+  Root retries unsuccessful jobs on the same commit293a9ccc/run. Luna verifies
+  attempt2 started20:23:23UTC and now runs browser smoke after installation.
+  Current retry and all deployment/public gates remain pending; do not treat
+  prior skipped gates as successful or queue a later release before acceptance.
+
+- Prepared1.79.13 optional public-monitor release is clean atbcc5827e in
+  `/home/aeml/.local/share/eidolon-public-monitor-release-XpKvF87O`, based on
+  prepared1.79.12 plus qualified public-probe/managed preflight source.387focused
+  version/pagination/cache checks,15managed root race cases and both monitor
+  race packages pass. All448notes retained/all447prior entry bytes unchanged.
+  [Receipt](docs/plans/2026-10-08-release1-79-13-checks.json). No private config,
+  activation, mail, probe, version publication or push. Select after ordered
+ 1.79.9–12 acceptance and fresh fetch/reconciliation. Transition/recovery,
+  off-machine/owner/full1.83/F1-F5/art/device/human/beta/launch gates remain open.
+
 - Staged five-family dungeon flagstones now vary slab proportions, corners and
   interrupted physical wear without displacing floors or changing wall maps.
   Compact room/ward seals replace screen-dominating rings, retaining objective,
