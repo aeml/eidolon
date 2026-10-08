@@ -75,6 +75,7 @@ function readPartyTerrain(ids) {
 
 test('connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing', async ({ page, browser, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_TERRAIN_PARTY !== '1', 'Explicit disposable connected terrain party check');
+    test.skip(process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'four-browser', 'Four actual renderer scope only');
     test.setTimeout(230_000);
     expect(process.env.EIDOLON_E2E_WS_URL).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');
@@ -198,5 +199,132 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
     } finally {
         for (const actor of actors) await actor.page.evaluate(() => window.game?.destroy?.()).catch(() => {});
         for (const extra of ownedBrowsers) await extra.close();
+    }
+});
+
+// This separately measures one real renderer with three still-connected normal
+// socket peers, avoiding four renderers competing for a single test GPU. It is
+// not a substitute for the native four-client input/healing checks above.
+test('single native renderer observes three live equipped party socket peers on raised ground', async ({ page, baseURL }, testInfo) => {
+    test.skip(process.env.EIDOLON_E2E_TERRAIN_PARTY !== '1' ||
+        process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'single-renderer', 'Explicit isolated single-renderer party scope');
+    test.setTimeout(180_000);
+    const url = process.env.EIDOLON_E2E_WS_URL;
+    expect(url).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
+    expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');
+    const accounts = JSON.parse(process.env.EIDOLON_E2E_TERRAIN_PARTY_ACCOUNTS);
+    expect(accounts.map(account => account.characterClass)).toEqual(['Fighter', 'Cleric', 'Rogue', 'Wizard']);
+    const quality = process.env.EIDOLON_TERRAIN_PARTY_QUALITY;
+    expect(['high', 'low']).toContain(quality);
+    const failures = collectBrowserFailures(page, baseURL), peers = [];
+    const waitMessage = async (peer, type, predicate = () => true) => {
+        let index;
+        await expect.poll(() => {
+            expect(peer.errors).toEqual([]);
+            index = peer.messages.findIndex(message => message.type === type && predicate(message.payload));
+            return index;
+        }, { timeout: 15_000, message: `Normal isolated socket acknowledgement: ${type}` }).toBeGreaterThanOrEqual(0);
+        return peer.messages.splice(index, 1)[0].payload;
+    };
+    const send = (peer, type, payload) => peer.socket.send(JSON.stringify({ type, payload }));
+    try {
+        await page.setViewportSize({ width: 1280, height: 844 });
+        await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
+        await loginAndEnterWorld(page, accounts[0]);
+        await page.evaluate(observePartyTerrain);
+        const leaderID = await page.evaluate(() => window.game.player.id);
+        await page.keyboard.press('o');
+        await expect(page.locator('#social-window')).toBeVisible();
+        for (const account of accounts.slice(1)) {
+            const peer = { socket: new globalThis.WebSocket(url), messages: [], errors: [] };
+            peers.push(peer);
+            peer.socket.addEventListener('error', () => peer.errors.push('isolated socket transport error'));
+            peer.socket.addEventListener('message', event => {
+                // Binary replication is consumed normally by the native browser.
+                // Peers need only bounded JSON acknowledgements, never tokens/logs.
+                if (typeof event.data !== 'string') return;
+                const message = JSON.parse(event.data);
+                if (message.type === 'error') peer.errors.push(message.payload?.message || 'server rejected isolated peer');
+                if (peer.messages.length >= 256) peer.messages.shift();
+                peer.messages.push(message);
+            });
+            await expect.poll(() => peer.socket.readyState).toBe(1);
+            send(peer, 'login', { username: account.username, password: account.password });
+            const login = await waitMessage(peer, 'login_success');
+            expect(login.terrainProfile).toBe('earth-elevation-rocks-v1');
+            send(peer, 'join', { type: account.characterClass });
+            await waitMessage(peer, 'quest_update');
+            // Real user-visible invitation, accepted by a real authenticated peer.
+            await page.locator('#party-invite-input').fill(account.username);
+            await page.locator('#btn-invite-party').click();
+            const invite = await waitMessage(peer, 'party_request');
+            expect(invite.targetName).toBe(accounts[0].username);
+            send(peer, 'party_response', { inviterName: accounts[0].username, invitationId: invite.invitationId, accepted: true });
+            await waitMessage(peer, 'party_update');
+            send(peer, 'chat', { message: '/qa-waypoint encounter' });
+            await waitMessage(peer, 'chat', value => value?.message?.includes('live overworld encounter'));
+        }
+        await expect.poll(() => page.evaluate(() => window.game.uiManager.social.partyData?.members?.length)).toBe(4);
+        await page.keyboard.press('Escape');
+        await expect(page.locator('#social-window')).toBeHidden();
+        await page.locator('#chat-input').click();
+        await useEncounterQAWaypoint(page);
+        await moveByGroundClick(page, -6, 0, { moveOnly: true, allowAlternatePaths: true, allowJumpFallback: false, minimumDistance: 2 });
+        const ids = await page.evaluate(leaderID => [leaderID, ...window.game.uiManager.social.partyData.members
+            .map(member => member.id).filter(id => id !== leaderID)], leaderID);
+        await expect.poll(async () => {
+            const value = await page.evaluate(readPartyTerrain, ids);
+            return value.profile === 'earth-elevation-rocks-v1' && value.quality === quality && value.actors.length === 4 &&
+                value.actors.every(entry => entry.ready && entry.bodyQuality === quality && entry.items === 14 &&
+                    !entry.missing && !entry.fallback && !entry.bodyFallback && entry.bones > 0 &&
+                    entry.ownedBones && entry.independentBones && entry.ground > 1 && entry.playerError < .1 &&
+                    entry.meshError < .15 && entry.authorityError < .1);
+        }, { timeout: 30_000 }).toBe(true);
+        await expect(page.locator('#esc-menu')).toBeHidden();
+        for (const peer of peers) expect(peer.socket.readyState).toBe(1);
+        const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
+        expect(report.frames).toBe(180);
+        expect(report.visibility).toBe('visible');
+        expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+        expect(report.drawCallsMedian).toBeGreaterThan(0);
+        for (const peer of peers) { expect(peer.socket.readyState).toBe(1); expect(peer.errors).toEqual([]); }
+        const party = await page.evaluate(readPartyTerrain, ids);
+        expect(party.actors.map(actor => actor.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
+        // Untimed draw attribution at the renderer boundary. Per-object hooks
+        // would disable eligible ActorInstanceBatches, distorting this evidence.
+        const draws = await page.evaluate(() => {
+            const render = window.game.renderSystem, renderer = render.renderer;
+            const original = renderer.renderBufferDirect, counts = new Map();
+            const boundaries = [render.scene, render.staticEnvironmentGroup, render.entityGroup];
+            renderer.renderBufferDirect = function (camera, scene, geometry, material, object, group) {
+                let root = object;
+                while (root.parent && !boundaries.includes(root.parent) && !root.userData.authoredClass) root = root.parent;
+                const name = root.userData.authoredClass ? `Equipped ${root.userData.authoredClass}`
+                    : root.userData.tiledRealmGround ? 'Canonical terrain tiles' : root.name || root.type;
+                const entry = counts.get(name) || { name, color: 0, shadow: 0, triangles: 0 };
+                counts.set(name, entry);
+                entry[camera === render.camera ? 'color' : 'shadow']++;
+                const vertices = group?.count ?? Math.min(geometry.drawRange.count,
+                    geometry.index?.count ?? geometry.attributes.position.count);
+                entry.triangles += vertices / 3 * (object.isInstancedMesh ? object.count :
+                    geometry.isInstancedBufferGeometry ? geometry.instanceCount : 1);
+                return original.call(this, camera, scene, geometry, material, object, group);
+            };
+            try {
+                render.render();
+                return [...counts.values()].sort((a, b) => b.color + b.shadow - a.color - a.shadow);
+            } finally { renderer.renderBufferDirect = original; }
+        });
+        await testInfo.attach('single-renderer-live-party-profile', { body: JSON.stringify({ ...report, party,
+            scope: 'One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.'
+        }, null, 2), contentType: 'application/json' });
+        await testInfo.attach('untimed-party-draw-attribution', { body: JSON.stringify(draws, null, 2), contentType: 'application/json' });
+        await page.screenshot({ path: testInfo.outputPath(`single-renderer-equipped-party-${quality}.png`) });
+        expect(failures, failures.join('\n')).toEqual([]);
+        console.log('[single-renderer-terrain-party]', JSON.stringify({ quality, ...report }));
+        console.log('[untimed-party-draw-attribution]', JSON.stringify(draws.slice(0, 16)));
+    } finally {
+        await page.evaluate(() => window.game?.destroy?.()).catch(() => {});
+        for (const peer of peers) peer.socket.close();
     }
 });

@@ -1,8 +1,10 @@
 # 1.80 threat review and freeze exceptions
 
-Reviewed baseline: accepted Alpha1.79.0,
-`b5c3981e060d6dea3ef50c9c2b4abb37999856db`. The origin correction below is
-local successor work, not yet deployed. This review maps adversarial inputs to
+Original reviewed baseline: accepted Alpha1.79.0,
+`b5c3981e060d6dea3ef50c9c2b4abb37999856db`. October8 reconciliation checks
+accepted1.79.5 de106428: origin correction and strict pinned SSH/workflow guards
+are delivered; their older pending descriptions are superseded below. This
+review maps adversarial inputs to
 actual boundaries and retained evidence; it is not a penetration certificate,
 an assertion that no exploits exist, or approval to freeze/publish the game.
 
@@ -25,7 +27,7 @@ survival. Do not turn these limitations into broader security claims.
 
 | Boundary / attacker attempt | Actual controls and source | Evidence / remaining limit |
 | --- | --- | --- |
-| Browser origin spoofing or malformed headers | `server/main.go` upgrader: exact allowed hosts; local correction validates one HTTP(S) origin tuple, no URL credentials/path/query/fragment and valid numeric port | `server/origin_migration_test.go` exercises real handshakes, duplicate headers and native omission. New regressions failed on baseline, passed after correction. Does not prevent native-client impersonation without credentials |
+| Browser origin spoofing or malformed headers | `server/main.go` upgrader: exact allowed hosts; delivered correction validates one HTTP(S) origin tuple, no URL credentials/path/query/fragment and valid numeric port | `server/origin_migration_test.go` exercises real handshakes, duplicate headers and native omission. Reproduced on baseline, corrected and delivered in accepted1.79.1; [public receipt](2026-10-08-release1-79-1-public-checks.json). Does not prevent native-client impersonation without credentials |
 | Transport floods, slow assembly and forged messages | `http_server.go`, `websocket_admission.go`, `network.go`, `inbound_frame_guard.go`, `protocol_policy.go`: finite deadlines/process slots, bounded assembly/frame budgets, explicit command access/payload/rate policies | Retain1.77/1.79 evidence and focused admission/protocol race checks. Not distributed-DDoS protection; proxies and host resources remain separate |
 | Credential work exhaustion, replaced-owner login | `credential_admission.go`, `client_dispatch.go`: global work slots, bounded sixteen/250ms login queue, account attempt budgets, transport/account identity rechecks | Accepted1.71 and1.79 receipts plus changed-runtime review. Queue limits do not certify resistance to all credential stuffing |
 | Stolen/replayed resume or emailed recovery link | `main.go`, `email_recovery.go`, database `email_recovery.go`: random32-byte tokens, disconnected-owner-only single use, expiry; stored recovery digests and saved reset/session invalidation | Accepted1.71 connected/provider-isolated recovery evidence. Bearer-link compromise remains a threat; provider45-day retention is unchanged |
@@ -36,7 +38,7 @@ survival. Do not turn these limitations into broader security claims.
 | Foreign player private progression or mismatched frame cache | Owner bypass, detached actor-pointer membership, non-owner redaction and recipient-owned baselines in state encoding | `state_recipient_privacy_test.go`, accepted1.79 changed-runtime review. Visible name/class/equipment/combat fields remain intentionally public |
 | Report/notice HTML injection or unauthorized export/removal | `AdminUI.js`, `ActionErrorNotice.js`: untrusted text via textContent; static layout HTML is separate. Server-side export approval/review and current role/session checks; removal not enabled | Accepted1.74/1.75 scoped UI/privacy evidence. No automatic deletion, provider-setting changes or unsupported privacy/compliance certification |
 | Loss of saves/history during normal release or API termination | Final journals join before Mongo commits; unknown commit retains journals. Stable log/DB volumes and login-history journal-before-acknowledgement | Accepted1.74.7/1.76/1.79 receipts, including all100 fresh saves and ordinary shutdown. Not an off-machine backup or whole-host power-loss proof |
-| Deployment source or SSH endpoint compromise | Current master lacks protection/rulesets; current deploy performs runtime `ssh-keyscan`. Existing workflow action pins do not fix either trust boundary | Open issues below; prepared1.82 contains trusted local-key pin and workflow guards, not installed/accepted yet |
+| Deployment source or SSH endpoint compromise | Accepted current workflow pins the trusted console-verified public host key and requires `StrictHostKeyChecking=yes`; no runtime `ssh-keyscan`. Native predeploy/postdeploy checks require the canonical repository and release refs/events. Last read-only repository policy observation still has no branch protection/rulesets | Ordinary1.79.5 SSH/Pages/Live QA succeeded, exact public identity independently verified. Delivered source guards resolve endpoint discovery, not stolen credentials, malicious authorized workflow edits or owner policy; X03 remains |
 
 ## Launch-critical issue and exception policy
 
@@ -47,12 +49,12 @@ roadmap. A later version number cannot substitute for proof.
 
 | ID | Requirement / current state | Next milestone / owner / acceptance |
 | --- | --- | --- |
-| X01 | Origin tuple/cardinality gap reproduced and corrected locally | Prepared1.79.1 candidate includes the correction; current-version handshake suites pass race1.080s after earlier1.122s scoped admission/protocol checks. Its own CI/live acceptance is still required; no new account authorization policy |
-| X02 | Runtime SSH key discovery does not establish endpoint trust |1.82 agent: selectively integrate prepared trusted pin/strict checking; verify current final outgoing workflow and its own deployment, never paste private keys |
+| X01 | Resolved scoped origin tuple/cardinality defect | Accepted1.79.1 and subsequent current source retain the reproduced correction, race checks and own public acceptance. No new account authorization policy or universal anti-cheat certification |
+| X02 | Resolved runtime endpoint discovery; trusted SSH pin delivered | Accepted1.79.2 current-master workflow integrates the trusted public key/strict checking and canonical native-job guards; own1.79.5 ordinary SSH and full release acceptance confirm delivery. Key rotation still requires trusted operator verification; wider1.82/X03 review is not waived |
 | X03 | Unprotected master/no rulesets; runner/release trust needs explicit policy |1.82 agent/owner: distinguish code guards from repository-setting authorization; no unrequested admin setting mutation |
 | X04 | Alerts cover local API/DB only, not public TLS/DNS/frontend/whole host |1.81–1.83/1.94: bounded public probes and owner-approved off-machine coverage; existing self-hosting/Postmark approval is not approval for a new paid service |
 | X05 | Off-machine backup destination, RPO/RTO and recovery ownership undecided |1.81/1.89 owner policy plus agent rehearsal with disposable saves. Do not copy private data off-machine, promise recovery times or delete existing backups without scope |
-| X06 | Modern environment/actor/equipment quality and raised-Earth production delivery remain incomplete |1.86–1.90 agent: preserve all supplied art; integrate qualified improvements and actual all-family/readability proof. Staged1.87 now passes all three Low and two High original triangle limits; High woodland278135 still exceeds250000. Prepared1.79.1 brings only scoped ground/material and equipment failure-path fixes, not the future renderer or raised-world delivery. No lowered budgets, hidden scenery or final-art assertion |
+| X06 | Modern environment/actor/equipment quality and raised-Earth production delivery remain incomplete |1.86–1.90 agent: preserve all supplied art. Staged equipped High now passes all four solo reference limits, woodland247325tri/346calls; Low and ten-hero controlled rendering retain their exact evidence. Four real connected clients qualify movement/rigs/equipment/Fireball/healing/save functionals, not party performance. Single-renderer live-peer snapshot median33.3ms still needs attribution/optimization. Raised production profile remains off; final all-family/readability/device approval is not inferred from these checks |
 | X07 | Project/full asset/dependency rights review and notice catalog not complete |1.86 owner/agent: inventory exact shipped inputs/notices and resolve unknown rights; do not invent a license grant. Frozen bytes alone never establish rights |
 | X08 | Human campaign/party/finale pacing and physical-phone dungeon feedback are not measured | Owner/cohort before launch acceptance. Current explicit playtest deferrals stand; no repeated long automated campaign or fabricated human approval |
 | X09 | Service objectives, budget bounds, support/moderation staffing and final retention/recovery coordination are not all chosen |1.80 F3/F4 and1.81–1.96 owner/agent: retain existing approved hosting/recipients/retention and100-player planning target without SLA/concurrency guarantee |

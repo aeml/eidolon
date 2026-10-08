@@ -2,16 +2,17 @@ import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
-for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural fallback instances preserve animated surfaces, shadows and stealth`, async ({ page, baseURL }, testInfo) => {
+for (const family of ['classes', 'Skeleton']) for (const quality of ['high', 'low']) test(`${quality}: ten ${family} instances preserve animated surfaces, shadows and visibility`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: 1100, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const result = await page.evaluate(async quality => {
+    const result = await page.evaluate(async ({ quality, family }) => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { createProceduralFighter, createProceduralRogue, createProceduralWizard, createProceduralCleric } = await import('/src/art/ProceduralHumanoid.js');
+        const { createProceduralSkeleton } = await import('/src/art/ProceduralLegacyEnemies.js');
         const constructors = {Fighter: createProceduralFighter, Rogue: createProceduralRogue, Wizard: createProceduralWizard, Cleric: createProceduralCleric};
         const { canEquipItem } = await import('/src/core/EquipmentSlots.js');
         const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
@@ -26,17 +27,19 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural
         floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; render.scene.add(floor);
         const models = [];
         for (let index = 0; index < 10; index++) {
-            const type = ['Fighter', 'Rogue', 'Wizard', 'Cleric'][index % 4];
+            const type = family === 'Skeleton' ? 'Skeleton' : ['Fighter', 'Rogue', 'Wizard', 'Cleric'][index % 4];
             // Rigid instance batching applies to the real procedural fallback,
             // not imported skins. Authored-class fitting has its own native route.
-            const mesh = constructors[type]({batch: true});
-            const equipment = Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map(slot => {
+            const mesh = (family === 'Skeleton' ? createProceduralSkeleton : constructors[type])({batch: true});
+            const equipment = family === 'Skeleton' ? null : Object.fromEntries(EQUIPMENT_RENDER_SLOTS.map(slot => {
                 const candidates = BASE_ITEMS.filter(item => canEquipItem(type, item, slot));
                 const item = candidates[index % candidates.length];
                 return [slot, { ...item, id: `instance-${index}-${slot}`, baseName: item.name, rarity: 'Rare', level: 75 }];
             }));
-            const fit = applyEquipmentVisuals(mesh, equipment);
-            if (fit.items !== 14 || fit.missing.length) throw Error('Incomplete instance fixture');
+            if (family !== 'Skeleton') {
+                const fit = applyEquipmentVisuals(mesh, equipment);
+                if (fit.items !== 14 || fit.missing.length) throw Error('Incomplete instance fixture');
+            }
             mesh.position.set((index % 5 - 2) * 4, 0, index < 5 ? -3 : 3);
             render.entityGroup.add(mesh); models.push({ type, mesh, position: mesh.position.clone() });
             if (!actorRenderingIsOwned(render, mesh)) throw Error('Missing actor render ownership');
@@ -55,7 +58,9 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural
         capture(false); capture(true);
         let image, failureRestored = false;
         try {
-            for (const state of ['Idle', 'Run', 'Attack', 'Cast', 'Death', 'Stealth', 'FarRealmIdle']) {
+            const states = family === 'Skeleton' ? ['Idle', 'Run', 'Attack', 'Death', 'FarRealmIdle']
+                : ['Idle', 'Run', 'Attack', 'Cast', 'Death', 'Stealth', 'FarRealmIdle'];
+            for (const state of states) {
                 // Real instance coordinates are far from town. Compare both
                 // paths there too, without masking position precision errors.
                 const offset = state === 'FarRealmIdle' ? new THREE.Vector3(50000, 0, 20000) : new THREE.Vector3();
@@ -106,7 +111,7 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural
             floor.removeFromParent(); render.disposeObjectResources(floor); render.dispose();
         }
         return { reports, image, failureRestored };
-    }, quality);
+    }, { quality, family });
     await testInfo.attach('instance-comparison', { body: JSON.stringify(result.reports), contentType: 'application/json' });
     await writeFile(testInfo.outputPath('instance-comparison.json'), JSON.stringify(result.reports, null, 2));
     await writeFile(testInfo.outputPath('actor-instances.png'), Buffer.from(result.image.split(',')[1], 'base64'));

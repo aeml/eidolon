@@ -8,10 +8,11 @@ case "${terrain_scenario}" in
   world) terrain_test='^TestTerrainActualSavedSessionsAcrossProfileChanges$'; terrain_timeout=120s ;;
   earned-party) terrain_test='^TestTerrainActualEarnedPartyCheckpointAcrossProfileChanges$'; terrain_timeout=180s ;;
   connected-party) terrain_test='^TestTerrainActualEquippedBrowserParty$'; terrain_timeout=300s ;;
-  *) echo "Terrain save QA scenario must be world, earned-party or connected-party." >&2; exit 1 ;;
+  connected-party-observer) terrain_test='^TestTerrainActualEquippedBrowserParty$'; terrain_timeout=300s ;;
+  *) echo "Terrain save QA scenario must be world, earned-party, connected-party or connected-party-observer." >&2; exit 1 ;;
 esac
 readonly terrain_test terrain_timeout
-if [[ "${terrain_scenario}" == connected-party ]]; then
+if [[ "${terrain_scenario}" == connected-party* ]]; then
   if ! [[ "${EIDOLON_TERRAIN_BROWSER_NODE:-}" == /* ]] || ! [[ -x "${EIDOLON_TERRAIN_BROWSER_NODE:-}" ]]; then
     echo "Connected party QA requires an explicit absolute executable Node path." >&2
     exit 1
@@ -75,6 +76,7 @@ EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 \
 EIDOLON_RESOURCE_MONGO_URI="mongodb://127.0.0.1:${terrain_mongo_port}" \
 EIDOLON_RESOURCE_BINARY="${terrain_binary}" \
 EIDOLON_TERRAIN_BROWSER_EVIDENCE="${terrain_evidence}" \
+EIDOLON_TERRAIN_PARTY_RENDER_MODE="$([[ "${terrain_scenario}" == connected-party-observer ]] && echo single-renderer || echo four-browser)" \
 GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 \
   go -C server test -race -p 2 -count=1 -timeout="${terrain_timeout}" -v \
     -run "${terrain_test}" . \

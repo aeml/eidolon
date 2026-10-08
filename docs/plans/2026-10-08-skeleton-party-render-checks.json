@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "rigid-skeleton-draw-reduction-and-party-functional-checks-passed-high-frame-acceptance-open",
+  "base": "8ad2353ccdef195652cb2ca776e850c6d39b27a7",
+  "finding": "One actual renderer and three live normal authenticated/consenting equipped socket peers remove four-renderer GPU contention. Untimed renderer-boundary attribution finds ProceduralSkeleton142color/492shadow calls dominating the representative Earth scene. Object draw hooks were not used because they disable eligible actor instancing. The existing batching roster recognized procedural player fallback roots, not rigid Skeleton enemy roots.",
+  "correction": "Register only qualified procedural Skeleton enemy roots alongside existing procedural player roots. Every rigid leaf still passes existing material/hook/morph/skin/layer/visibility eligibility. Preserve geometry, full animated pivots, material identity, all shadows and population; restore original sources between frames and on failure. Other enemy families and imported skins retain normal paths. No gameplay, source model, server or live profile change.",
+  "checks": {
+    "red": "One new regression fails,16 retained assertions pass,0.525s: three Skeleton roots expected but none registered.",
+    "green": "Three affected suites39 pass3.096s: actual Skeleton animated world matrices/pooling/hidden roots/unknown-family refusal, retained procedural-player guards/lifecycle and enemy attack timing.",
+    "native": "Actual System Chrome High/Low ten-Skeleton comparisons,2 pass6.2s. Idle/Run/Attack/Death/FarRealmIdle all retain identical triangle counts, original visibility and caught-failure recovery. High near656->60calls, far656->104; Low near341->25, far341->49. Maximum mean pixel error0.001363 and changed fraction0.00001939, within original0.1/0.001 bounds. One High image inspected; no final modern-art claim.",
+    "connectedHigh": "Actual single-renderer observer and three live socket peers pass36.18s; all fourteen-slot fresh saves retained.180frames median33.3/p9550/p9950ms, CPU30.5/39.3ms,563calls/570966tri,43entities. Final frame qualification remains open. Untimed instance group48color/128shadow; ordinary Skeleton11/12 remains for unbatchable/single pieces.",
+    "connectedLow": "Actual single-renderer observer and three live socket peers pass30.63s; all fourteen-slot fresh saves retained.180frames median16.7/p9533.4/p9933.4ms, CPU16.6/22.8ms,223calls/163285tri,40entities.11frames exceed33.34ms. Actual AMD RADV RENOIR1280x844/DPR1, no preview work.",
+    "comparisonLimits": "Earlier baseline scene791calls/32entities and diagnostic972calls/36entities had median33.3/p9533.4ms. Current43entities and different host load prevent claiming a cross-run frame-speed improvement; High p95 actually worsens. Only controlled ten-Skeleton same-state geometry/pixel/draw comparisons demonstrate reduction. Standing live peers are not peer combat/input or physical-phone proof; four-native-input case deliberately skipped in observer runs, not passed anew."
+  },
+  "evidence": {
+    "native": "/home/aeml/.local/share/eidolon-skeleton-instance-native-20261008",
+    "nativeLogSHA256": "aef9db7c93307acdb1888a4eae18fd69be4104d05e7c52f704d66c16230d1006",
+    "baseline": "/home/aeml/.local/share/eidolon-terrain-save-evidence-FSvxrh25/browser.log",
+    "diagnostic": "/home/aeml/.local/share/eidolon-terrain-save-evidence-JXFl6q5R/browser.log",
+    "high": "/home/aeml/.local/share/eidolon-terrain-save-evidence-X6Ftc0eo/browser.log",
+    "highSHA256": "a9247d75a23a7b7e64648bb28b58283535035ce9217bee2281b8dcabd8050f2c",
+    "low": "/home/aeml/.local/share/eidolon-terrain-save-evidence-os1JH81x/browser.log",
+    "lowSHA256": "3eaabf14436bada8bced2ca3aa5e4a4889b5623dd42dc88f8fe358e35562925d",
+    "runtimeSHA256": "26812c89b38874f64414717d79f97ca65e436a14154412c7fa39746fad47ba67",
+    "runnerSHA256": "4f7c919ae43fbb8f13350ce48956a570fe181ba24cd4ffed409e02f50a792b25",
+    "goHarnessSHA256": "fc6cf205990aeb33bccbc86e5e476b81b6f9619d06046ea76aeb71d63b87b8d9",
+    "browserHarnessSHA256": "a770ed1457592b5397deaac8af9213c8180b2bf519a09d4e7254f07a49ab07e9"
+  },
+  "safetyAndRemaining": "Owned disposable fixture cleanup only; no18189/4190 listeners remain. Original assets/accounts/configuration/database and live flat profile unchanged. This is staged rendering work, not a new public version. Full1.80 F1-F5,1.87 modern-art/party/frame/device/rollout and later roadmap gates remain open. Avoid unchanged campaign/soak reruns; further frame diagnosis needs comparable workload and host conditions."
+}

@@ -8,6 +8,12 @@ const inside = (part, ancestor, visible = false) => {
     return false;
 };
 
+// The ossuary skeleton has the same immutable rigid-leaf/pivot contract as
+// procedural player fallbacks. Imported skins and unqualified enemy families
+// retain their normal rendering path; every leaf still passes eligible().
+const batchableRoot = root => Boolean(root?.userData.proceduralHumanoid ||
+    root?.userData.proceduralEnemyFamily && root.userData.proceduralActorType === 'Skeleton');
+
 const candidate = part => part.isMesh && !part.isInstancedMesh && !part.isSkinnedMesh && !part.children.length &&
     part.material?.isMeshStandardMaterial && !Array.isArray(part.material) && part.geometry?.attributes.position;
 
@@ -47,13 +53,13 @@ export class ActorInstanceBatches {
     }
 
     register(root) {
-        if (this.disposed || !root?.userData.proceduralHumanoid || this.roots.has(root)) return;
+        if (this.disposed || !batchableRoot(root) || this.roots.has(root)) return;
         this.roots.set(root, {}); this.dirty = true;
     }
 
     refreshRoster() {
         for (const [root, snapshot] of this.roots) {
-            if (!root.userData.proceduralHumanoid || !inside(root, this.scene)) { this.roots.delete(root); this.dirty = true; continue; }
+            if (!batchableRoot(root) || !inside(root, this.scene)) { this.roots.delete(root); this.dirty = true; continue; }
             const cell = `${Math.floor((root.matrixWorld.elements[12] + 32) / 64)},${Math.floor((root.matrixWorld.elements[14] + 32) / 64)}`;
             const revision = `${root.userData.equipmentVisualRevision || 0}:${root.userData.equipmentVisualSignature || ''}`;
             if (cell !== snapshot.cell || revision !== snapshot.revision) this.dirty = true;

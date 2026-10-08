@@ -28,6 +28,10 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 	if quality != "high" && quality != "low" {
 		t.Fatal("requires explicit high or low party quality")
 	}
+	mode := os.Getenv("EIDOLON_TERRAIN_PARTY_RENDER_MODE")
+	if mode != "four-browser" && mode != "single-renderer" {
+		t.Fatal("requires explicit four-browser or single-renderer scope")
+	}
 	type account struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -102,5 +106,5 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 			t.Fatal("fresh connected-party save lost its membership, gear, bag or EP", err)
 		}
 	}
-	t.Logf("actual four-class %s browser party, raised terrain, native input, rendered spells/healing and preserved fourteen-slot saves passed; owned evidence=%s", quality, evidence)
+	t.Logf("actual four-class %s party mode=%s and preserved fourteen-slot saves passed; owned evidence=%s", quality, mode, evidence)
 }

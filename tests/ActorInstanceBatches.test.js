@@ -1,6 +1,42 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { ActorInstanceBatches } from '../src/art/ActorInstanceBatches.js';
+import { createProceduralSkeleton } from '../src/art/ProceduralLegacyEnemies.js';
+
+test('rigid ossuary skeleton instances retain every animated surface and restore pooled visibility', () => {
+    const scene = new THREE.Scene(), models = [0, 1, 2].map(index => {
+        const root = createProceduralSkeleton({ batch: true }); root.position.x = index * 4;
+        scene.add(root); return root;
+    });
+    const instances = new ActorInstanceBatches(scene), local = new THREE.Matrix4(), world = new THREE.Matrix4();
+    const mixers = models.map(root => new THREE.AnimationMixer(root));
+    try {
+        for (const state of ['Idle', 'Run', 'Attack', 'Death']) {
+            mixers.forEach((mixer, index) => { mixer.stopAllAction(); mixer.clipAction(models[index].userData.animations
+                .find(clip => clip.name === state)).play(); mixer.update(.37); });
+            scene.updateMatrixWorld(true);
+            const visible = new Map(); models.forEach(root => root.traverse(part => visible.set(part, part.visible)));
+            instances.beginFrame();
+            expect(instances.roots.size).toBe(3); expect(instances.batches.size).toBeGreaterThan(0);
+            for (const entries of instances.buckets.values()) {
+                const parts = entries.map(entry => entry.part).filter(part => instances.hidden.includes(part));
+                if (!parts.length) continue;
+                const batch = [...instances.batches.values()].find(value => value.geometry === parts[0].geometry && value.material === parts[0].material);
+                expect(batch.count).toBe(parts.length);
+                parts.forEach((part, index) => {
+                    batch.getMatrixAt(index, local); world.multiplyMatrices(batch.matrixWorld, local);
+                    world.elements.forEach((value, element) => expect(value).toBeCloseTo(part.matrixWorld.elements[element], 5));
+                });
+            }
+            instances.endFrame(); expect([...visible].every(([part, value]) => part.visible === value)).toBe(true);
+            models.forEach(root => root.userData.resetPose());
+        }
+        models[1].visible = false; scene.updateMatrixWorld(true); instances.beginFrame();
+        expect(instances.hidden.some(part => models[1].getObjectByProperty('uuid', part.uuid))).toBe(false);
+        instances.endFrame(); models[1].visible = true; models[1].userData.proceduralActorType = 'Unknown';
+        instances.beginFrame(); expect(instances.roots.has(models[1])).toBe(false);
+    } finally { instances.dispose(); mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); }); }
+});
 
 function fixture() {
     const scene = new THREE.Scene(), geometry = new THREE.BoxGeometry(), material = new THREE.MeshStandardMaterial();

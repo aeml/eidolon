@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 actual-party rendering cost investigated and reduced structurally:**
+Single-renderer/live3peer scope isolates the actual Skeleton shadow submissions.
+Register qualified rigid Skeletons with existing instance batching; every model,
+pivot, material and shadow retained.39 scoped assertions and two native
+ten-enemy High/Low pixel/animation/lifecycle comparisons pass; near High656->60
+calls with identical triangles. Actual connected High/Low and all fresh geared
+saves pass, but High p9550ms remains unqualified; varying entity counts/host
+conditions do not prove frame improvement. See
+[exact limits and evidence](docs/plans/2026-10-08-skeleton-party-render-checks.json).
+Reconcile delivered origin/SSH guards in the threat ledger and retain the new
+admin passage as explicit promiseN13. No staged art/profile publication or
+freeze claim. Separate1.79.6 ordinary CI remains under Luna monitoring.
+
 **October8 connected equipped party functionals now verified:** Actual four
 native Chrome clients qualify all-four rig ownership/fourteen fitted slots,
 raised movement, authoritative Fireball hit/draw, and targeted healing while
