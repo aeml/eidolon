@@ -92,6 +92,14 @@ remain conspicuous and need further scene composition/material work. This is a
 staged improvement, not complete dungeon/raid art or connected-combat approval.
 [Scope, captures and limits](../plans/2026-10-08-dungeon-vigil-checks.json).
 
+Subsequent October8 floor review: varied original flagstones and compact room
+seals improve gameplay-camera floor/prop separation across five dungeon themes.
+Retain unchanged wall maps, flat collision floors, encounter/reward state and
+original native render budgets. This closes the identified oversized-marker
+presentation gap, not sparse room composition, regional prop quality, complete
+dungeon/raid art, connected combat, device or modern-ARPG acceptance. See
+[scope and reviewed captures](../plans/2026-10-08-dungeon-flagstones-checks.json).
+
 | User-provided model scope | Code/integration work owned by implementation |
 | --- | --- |
 | Fighter, Rogue, Wizard and Cleric bodies/base appearances | Actor import/validation, rig/animation integration, equipment anchors, material assignment, previews, LOD/resource budgets, local/remote appearance and fallback behavior |

@@ -196,8 +196,10 @@ describe('Procedural dungeon interior art', () => {
         expect(inlay.material.emissiveIntensity).toBeLessThanOrEqual(.1);
         const { innerRadius, outerRadius } = inlay.geometry.parameters;
         expect((outerRadius - innerRadius) / outerRadius).toBeLessThan(.03);
+        expect(inlay.scale.x * outerRadius).toBeLessThanOrEqual(6 * .67);
         const halo = dressing.getObjectByName('DungeonObjectiveHalo').geometry.parameters;
         expect(halo.outerRadius - halo.innerRadius).toBeLessThanOrEqual(.45 + Number.EPSILON * 16);
+        expect(halo.outerRadius).toBeLessThanOrEqual(3.6);
         const rune = dressing.getObjectByName('DungeonObjectiveRune:0');
         expect(rune.geometry.type).toBe('RingGeometry');
         expect(rune.geometry.parameters.outerRadius).toBeLessThanOrEqual(.5);

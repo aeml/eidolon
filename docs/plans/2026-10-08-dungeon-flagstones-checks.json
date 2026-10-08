@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-08",
+  "base": "afe11932 staged graphics branch, not public master",
+  "scope": "Original periodic flagstone fields for all five dungeon families: variable courses/slab widths, staggered joints, small continuous irregularities, chipped corners and short interrupted physical cleaves. Existing floor albedo/normal/roughness maps consume the same registered field; thematic inscriptions remain separate and retain their original emissive limits. Existing texture span/resolutions/count/materials/lights/passes unchanged. Compact room-state sanctuary seals replace room-wide circles; full objective/current/cleared/reward/exit lifecycle and HUD/minimap controls unchanged.",
+  "geometry": "Floors remain flat, collision/server layouts/encounter/reward data untouched. Objective seal radius caps at3.6m, current at2.2m; static outer ward caps at6m/inner6*.67m instead of room-sized radii. Existing geometry types/segments/count and batching buckets retained; no new shader/frame generation or downloaded assets. Exit portal placement, dimensions and readiness/opacity remain unchanged.",
+  "units": "Initial four focused suites53checks pass56.181s. After seal refinement, ten affected existing decorative-inlay/lifecycle checks pass12.23s;25 unrelated cases skipped explicitly, not represented as final rerun. Those ten overlap the initial53. Initial seal assertion fails on literal4.02 versus computed6*.67 floating-point representation; preserve failed log, correct assertion arithmetic, do not weaken render budgets. Subsequent Verdant cleanup removes the unused old floor partition only; its two existing periodic/bounds checks rerun separately. Scoped lint/diff checks pass.",
+  "wallAudit": {
+    "scope": "Direct pre-edit GitHEAD sampler versus current sampler,16384 half-unit samples per family, full JSON response hash. All wall outputs unchanged; floor outputs intentionally changed.",
+    "molten_core": "6275c2caf1012be767ceae72a1c8c49af857db6c229044877598defa64d72b32",
+    "tempest_spire": "9912f3a0b4eb59d90cde94270d0b7ceef9cdeb1b1e65494df2623adaa9a4acb2",
+    "abyssal_well": "c7f62e9d68c7100592123847b4fe48c6b2db15bbb2dd3289dec2cb0a90784603",
+    "umbral_nexus": "43eee6466031fe1d3d2fc7aa244b350989e6e11f32546ea5c23936402f052bdb",
+    "verdant_bastion_catacombs": "395458bc70225febd574472c58485eedf7d05630adce32372fb0edd8c944a3cc"
+  },
+  "native": "Initial floors-only four System Chrome cases pass1.4m but captures still show dominant room-wide rings. Revised final four cases pass1.4m at1280x900 High and390x844 Low with actual production five-family layouts, center/wall checks and thirty60-frame warmed prop views. Hardware RADV/Vulkan required; existing14-item Rare/Uncommon Fighter in elemental cases, unchanged bare Fighter in Verdant prepared art fixture. These are local single-renderer art scopes, not real party combat or physical phones. Semantics-only unused-floor-partition cleanup follows final captures; floor field remains the same.",
+  "metrics": {
+    "high": {"views":15,"maxMedianMs":16.700000000000728,"maxP95Ms":16.80000000000291,"maxCalls":105,"maxTriangles":148059,"maxBatches":6},
+    "low": {"views":15,"maxMedianMs":16.700000000000728,"maxP95Ms":16.800000000000182,"maxCalls":46,"maxTriangles":44898,"maxBatches":6}
+  },
+  "budgets": "Unchanged High median20ms/p9533.4ms/350calls/250000triangles; Low33.4ms/50ms/200calls/85000triangles and eight dressing buckets. No rounding a failing value into compliance.",
+  "visualReview": "Root reviews final actual storm coffer, Low furnace vigil and High Thorncrypt font at gameplay zoom. Varied slab proportions/readable short cleaves and compact seals improve floor/prop separation; circles no longer dominate the whole room. Rooms remain broad and sparsely composed, some regional fragments/coffers/fonts remain stylized and repeated, and complete modern dungeon/raid art and connected combat approval remain open. Not Diablo/PoE production-equivalence or final art acceptance.",
+  "artifacts": "/home/aeml/.local/share/eidolon-dungeon-flagstones-7eBzFOWP: initial/final unit and native logs/captures, family quality props JSON",
+  "sha256": {
+    "initialUnits":"ca80e40dd6d375fab4765eca712cbab76133a67dc1c31d25ef28c39999760a95",
+    "failedSealAssertion":"3835c6253ed576668c322aca750aa44ff9ee34ca84b10610ce3fca71a9652b49",
+    "finalAffectedUnits":"e4043226c54ae32a9195e003f970758d7264a8c66bd9a2be52261bf2126b38b3",
+    "initialNative":"2c7bf404439c071691a1c97dc63abcc94345af383b95c6e6e06966bf90cba81f",
+    "finalNative":"03fa596a4cb6c449114697a163b7e0bcdb8406e5f25f848ec9b9370527171cef"
+  },
+  "delivery": "Staged only: no version/push/production mutation or complete future-branch merge. Select with the other qualified dungeon components after ordered release acceptance and fresh remote reconciliation. Suggested patch note: Added worn, varied flagstones across all five dungeon themes and compact room markers that leave the combat floor readable.",
+  "remaining": "Full dungeon/raid/realm/town/actor material and composition cohesion, raised-profile/equipped-party/device release,1.80F1-F5, human/owner/beta/launch gates remain open. Full roadmap goal stays active."
+}

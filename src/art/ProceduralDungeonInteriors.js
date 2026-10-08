@@ -298,6 +298,7 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     const identity = getDungeonRoomIdentityTag(room) || 'route_hall';
     const size = Math.max(40, Number(room.width) || 80);
     const radius = Math.max(8, Math.min(24, size * 0.2));
+    const markerRadius = Math.min(4, radius * .25);
     const root = new THREE.Group();
     root.name = `DungeonRoomState:${dungeonType}:${roomIndex}`;
     root.position.set(
@@ -311,8 +312,8 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     root.userData.roomIdentity = identity;
     root.userData.radius = radius;
 
-    const objectiveMaterial = makeRoomStateMaterial(theme.palette.accent, 0.74);
-    const currentMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.38);
+    const objectiveMaterial = makeRoomStateMaterial(theme.palette.accent, 0.5);
+    const currentMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.26);
     const clearedMaterial = makeRoomStateMaterial(0xa8ffd0, 0.46);
     const sealMaterial = makeRoomStateMaterial(theme.palette.accent, 0.82);
     const portalMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.18);
@@ -320,21 +321,23 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     const objectiveHalo = addRoomStateMesh(
         root,
         'DungeonObjectiveHalo',
-        new THREE.RingGeometry(radius * 0.9 - Math.min(.45, radius * .025), radius * 0.9, 48),
+        // A compact sanctuary seal rather than a room-wide circle that reads
+        // like an attack telegraph. HUD/minimap keep the full room objective.
+        new THREE.RingGeometry(markerRadius * 0.9 - .09, markerRadius * 0.9, 48),
         objectiveMaterial,
         { position: [0, 0.24, 0], rotation: [-Math.PI / 2, 0, 0] }
     );
     const currentHalo = addRoomStateMesh(
         root,
         'DungeonCurrentRoomHalo',
-        new THREE.RingGeometry(radius * 0.55 - Math.min(.3, radius * .02), radius * 0.55, 32),
+        new THREE.RingGeometry(markerRadius * 0.55 - .07, markerRadius * 0.55, 32),
         currentMaterial,
         { position: [0, 0.23, 0], rotation: [-Math.PI / 2, 0, 0] }
     );
     const clearedSigil = addRoomStateMesh(
         root,
         'DungeonClearedSigil',
-        new THREE.RingGeometry(radius * 0.22, radius * 0.31, 8),
+        new THREE.RingGeometry(markerRadius * 0.22, markerRadius * 0.31, 8),
         clearedMaterial,
         { position: [0, 0.25, 0], rotation: [-Math.PI / 2, 0, Math.PI / 8] }
     );
@@ -353,7 +356,7 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
             new THREE.RingGeometry(.32, .46, 4),
             sealMaterial.clone(),
             {
-                position: [Math.cos(angle) * radius * 0.68, 0, Math.sin(angle) * radius * 0.68],
+                position: [Math.cos(angle) * markerRadius * 0.68, 0, Math.sin(angle) * markerRadius * 0.68],
                 rotation: [Math.PI / 2, 0, -angle]
             }
         );
@@ -431,8 +434,8 @@ export function animateDungeonRoomStatePresentation(presentation, elapsedSeconds
     const rewardSeal = presentation.getObjectByName('DungeonRewardSeal');
     const exitPortal = presentation.getObjectByName('DungeonExitPortal');
 
-    if (objectiveHalo?.visible) objectiveHalo.material.opacity = 0.58 + (pulse * 0.28);
-    if (currentHalo?.visible) currentHalo.material.opacity = 0.25 + (pulse * 0.22);
+    if (objectiveHalo?.visible) objectiveHalo.material.opacity = 0.42 + (pulse * 0.16);
+    if (currentHalo?.visible) currentHalo.material.opacity = 0.18 + (pulse * 0.12);
     if (clearedSigil?.visible) clearedSigil.material.opacity = 0.28 + (pulse * 0.2);
     if (sealCrown?.visible) sealCrown.rotation.y = elapsedSeconds * 0.34;
     if (rewardSeal?.visible) {
@@ -506,8 +509,9 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     root.userData.visualOnly = true;
     root.userData.roomBounds = [Number(room.width) || size, Number(room.height) || size];
 
-    addFloorRing(root, shapes, materials.shadow, `${identity}:outer-ward`, radius);
-    addFloorRing(root, shapes, materials.inlay, `${identity}:inner-ward`, radius * 0.67, 0.16);
+    const wardRadius = Math.min(6, radius * .32);
+    addFloorRing(root, shapes, materials.shadow, `${identity}:outer-ward`, wardRadius);
+    addFloorRing(root, shapes, materials.inlay, `${identity}:inner-ward`, wardRadius * 0.67, 0.16);
     buildRegionalMotif(root, dungeonType, shapes, materials, radius);
 
     switch (identity) {

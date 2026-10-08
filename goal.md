@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Staged five-family dungeon flagstones now vary slab proportions, corners and
+  interrupted physical wear without displacing floors or changing wall maps.
+  Compact room/ward seals replace screen-dominating rings, retaining objective,
+  reward, cleared and exit lifecycle.53 focused checks, ten overlapping affected
+  lifecycle reruns and four final native High/Low cases/thirty warmed prop views
+  pass original limits. [Evidence](docs/plans/2026-10-08-dungeon-flagstones-checks.json).
+  Full modern dungeon composition/raid/device approval remains open. No version
+  or push; select with the prior qualified dungeon components after existing
+  prepared releases. Public delivery remains separate from staged art progress.
+
 - Managed public-monitor preparation now completes default-empty Compose
   mapping and exact-command preflight atf5f64a31 in
   `/home/aeml/.local/share/eidolon-public-monitor-SVPI3UWI`. Actual disposable
