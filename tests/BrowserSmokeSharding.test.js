@@ -35,6 +35,17 @@ test('independent hosted browser work does not queue behind Go or Jest', () => {
     expect(browser).toContain('npm ci');
 });
 
+test('hosted dependency/browser installation has a bounded failure deadline, not a gate bypass', () => {
+    const install = browser.split('      - name: Install dependencies and browser\n')[1]
+        .split('\n      - name:')[0];
+    expect(install).toMatch(/^\s+timeout-minutes: 15$/m);
+    expect(install).toContain('npm ci');
+    expect(install).toContain('npx playwright install --with-deps chromium');
+    expect(install).not.toContain('continue-on-error');
+    expect(install).not.toContain('|| true');
+    expect(browser).not.toContain('cancel-in-progress');
+});
+
 test('production character QA still waits on Go, Jest and the complete browser matrix', () => {
     expect(predeploy).toContain('needs: [client-tests, server-tests, browser-smoke]');
     expect(predeploy).toContain("if: github.repository == 'aeml/eidolon' &&");

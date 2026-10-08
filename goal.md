@@ -46,6 +46,10 @@ Fighter pilot or remove approved authored models.
   curtain.39 focused units and equipped High/Low gallery pass original limits;
   actual gameplay-camera review in
   [the receipt](docs/plans/2026-10-08-willow-curtains-checks.json).
+- Staged hosted browser-install deadline15 minutes; same npm/Playwright commands,
+  no retries, cancellation, skipped gates or continue-on-error. Three queue/
+  smoke-contract suites15pass.658s. This changes future runs only; current
+ 1.79.9 run remains in progress and unmodified.
 
 ## Remaining scope and next work
 

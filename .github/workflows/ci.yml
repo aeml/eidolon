@@ -237,6 +237,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies and browser
+        # Normal sibling installs finish in minutes. Bound stalled hosted
+        # downloads/apt installs without bypassing smoke or publishing gates.
+        timeout-minutes: 15
         run: |
           npm ci
           npx playwright install --with-deps chromium
