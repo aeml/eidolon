@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "base": "27e1851c",
+  "status": "qualified-staged-component-not-final-modern-art",
+  "implementation": "Widen and droop existing opaque folded pine sprays, with deterministic within-bough height variation. Keep five tiers, seven branches, six paired fans, original branch reach and shared geometry/material ownership. High remains840 triangles; Low420 retains every outer spray and omits only the interior fold. No new texture, sampler, light, mesh, alpha sorting, population, collision or terrain activation.",
+  "units": "Three new geometry assertions fail on the old source. Final five affected conifer/canopy/foliage/batching/shadow suites68 checks pass3.528s. Deterministic positions/colors, normalized normals, bounded horizontal reach, High/Low correspondence and droop covered. Projected fan-area sum includes overlaps and is not screen coverage. Scoped lint and whitespace pass.",
+  "native": "System Chrome AMD Vulkan/RADV: populated flat Earth/town High1280 and Low390 gallery2 cases pass30.2s. Root reviews both woodland captures against prior same-gallery images: modest fuller, hanging fans, not final modern scenery. Equipped raised reference2 cases pass40.7s, all eight120-frame original geometry/draw/frame limits; High woodland346 calls247325 triangles, Low100/66176. Filtering/surface culling pixel differences remain0 and tree batching within original0.001. Root inspects equipped High woodland. No unchanged party/campaign/soak replay.",
+  "limits": "A staged equipped preview is not public raised-profile acceptance, a flat-gallery performance benchmark, a physical phone, or a connected party/raid. Broader sparse/repeated understory, empty-ground composition, rock silhouettes, landmark cohesion and modern-art/device acceptance remain open. Public Alpha1.79.7 surface deployment is separately pending, not updated by this commit.",
+  "evidence": {
+    "red": "/home/aeml/.local/share/eidolon-conifer-coverage-red-20261008.log",
+    "redSHA256": "d3328e156bbfb90f884ab88d5f8ac19ce2c8e7bfd908b1b06296825b255ecaf3",
+    "green": "/home/aeml/.local/share/eidolon-conifer-coverage-green-20261008.log",
+    "greenSHA256": "d81d8d563baa24a9baab5b6b19d6a65142df5e9de44028a1f358bd3d6fc69f4a",
+    "gallery": "/home/aeml/.local/share/eidolon-conifer-coverage-native-20261008",
+    "galleryLogSHA256": "c2dd5503a7e01e29b47cfb5b999fcf43d8d0947d69d3ca187551d479547709a8",
+    "equipped": "/home/aeml/.local/share/eidolon-conifer-equipped-native-20261008",
+    "equippedLogSHA256": "3161eba953c9239100f5f808f3c030e0e8da3414f374be584d749d168b948d0c"
+  },
+  "sourceSHA256": {
+    "src/art/ProceduralConiferBoughs.js": "3af57d4b6fd4b8446463b96da6c35ad094d794f77d101a53abbf1ac95c5e8039",
+    "tests/ProceduralConiferBoughs.test.js": "f9f9fa9dd2bda5cf92711afbc78f45a2e3d78f6f0e5cccf5475f35cdcc7947e7"
+  },
+  "next": "Improve concrete understory/composition gaps, then qualify selective current-master visual delivery with notes/version and own live verification. Keep full1.80 F1-F5/1.87/beta/release goal active; do not promote unrelated future assets or certify final art from green tests."
+}

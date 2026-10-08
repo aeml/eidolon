@@ -1,5 +1,12 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 pine canopy refinement qualified, staged:** Fuller hanging sprays
+retain all branches/materials and840/420 triangles.68 focused checks, actual
+flat High/Low gallery30.2s and equipped eight-view native40.7s pass original
+limits; captures reviewed, not final modern-art/party/device acceptance. See
+[evidence](docs/plans/2026-10-08-conifer-coverage-checks.json).
+Next concrete understory/composition gaps; full roadmap remains active.
+
 **October8 current-master surface patch assembled:** Alpha1.79.7 prepares only
 the qualified Earth surface/material component, matching tests, synchronized
 versions and cumulative notes. No future-branch merge, wearable derivatives,

@@ -1,5 +1,11 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 staged pine canopy: broaden/droop existing sprays without extra
+triangles, branches or materials.68 focused checks, flat High/Low gallery30.2s
+and equipped eight-view native40.7s pass; actual captures show modest fuller
+fans. [Scope/limits](2026-10-08-conifer-coverage-checks.json). Understory,
+composition, full1.80/1.87 modern art/device/profile/beta/launch remain open.
+
 Current assembly: Alpha1.79.7 selectively integrates Earth surface refinements
 and their tests/versions/notes onto fresh accepted master37a13a41, not the future
 branch. Existing Air canvas remains unchanged; raised terrain and wearable
