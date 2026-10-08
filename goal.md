@@ -22,6 +22,18 @@ Preserve all approved supplied class/item GLBs and animations; the obsolete
 procedural-only language below does not authorize removing them. Full modern-art
 contract and authoritative numbered roadmap remain active.
 
+**Accepted public1.79.9:** Exact7114aad6/run37842726678 passes all ten
+mandatory jobs. Root independently verifies public front/back identities,
+healthy DB, clean production checkout and four exact exported file bytes,
+including actual ordered CSS bundle. Optional broader steps skipped, not passed.
+Original timed-out/failed37791738441 attempts retained; corrected-source QA
+preserves runtime targeting and original manual loot/save gates. See
+[public receipt](docs/plans/2026-10-08-release1-79-9-public-checks.json).
+Next prepared1.79.10 may publish after fresh remote reconciliation; then1.79.11
+login/Firefox and prepared12–14. No optional batching answer yet, so preserve
+ordered release acceptance. Full original roadmap/art/F1-F5/device/owner/launch
+scope remains active; earlier pending states below are historical.
+
 **October8 corrected1.79.9 publication QA:** Previous37791738441 attempt1
 times out after6h browser install; attempt2 fails manual loot acquisition because
 three living Skeletons remain after the helper's two-blocker cleanup limit.

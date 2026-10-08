@@ -20,6 +20,14 @@ Not pushed/live: pending1.79.9 needs acceptance, then1.79.10 publication/accepta
 before1.79.11. Earlier status entries are historical; full numbered requirements,
 F1-F5/1.87/environment/device/beta/launch and owner/human gates remain unchanged.
 
+Accepted1.79.9/7114aad6: own37842726678 all ten mandatory jobs succeed; root
+confirms exact public front/back/healthy DB, clean production and four exported
+file bytes including ordered bundled CSS. Optional broader steps skipped, not
+passed. Earlier failed37791738441 attempts retained. Next prepared1.79.10 has
+its own ordered publication/live gate, then1.79.11 login/Firefox and12–14.
+[Public evidence](2026-10-08-release1-79-9-public-checks.json). Full original
+numbered roadmap/F1-F5/modern-art/party/device/owner/human/beta/launch unchanged.
+
 October8 corrected1.79.9 QA permits a bounded distinct hostile pack to be
 defeated through real combat before earned-loot pointer acquisition. Original
 runtime targeting/manual pickup/persistence gates retained;34 regressions and
