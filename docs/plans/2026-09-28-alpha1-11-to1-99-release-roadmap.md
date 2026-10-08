@@ -27,6 +27,14 @@ species-specific hanging silhouette at the existing leaf/triangle budget.
 Focused units and equipped High/Low gallery qualify; not yet published or
 proof of complete environment art.
 
+Selective current-master **1.79.10 / cc340940** integrates these floor/preview
+rock/willow changes and one-time exact tilted-part normals, without broader
+renderer/profile/wearable publication.443 distinct focused/version checks and
+flat High/Low gallery pass original limits; cumulative notes/versions aligned.
+Committed locally, not pushed/live: wait for1.79.9 acceptance and fresh-fetch
+before its own delivery. [Integration](2026-10-08-release1-79-10-checks.json)
+retains the initial missing-vendor fixture failure and exact final scope.
+
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
 pre-section progress notes moved byte-for-byte to

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.10",
+  "base": "293a9cccb14534d721e60ebe97335a708bb2c9f6",
+  "status": "prepared-current-master-qualified-not-pushed",
+  "scope": "Selective integration of floor-v11, narrower/leaning geological shoulders for the raised preview, three hanging willow curtains and exact inverse-transpose lighting for static sheared woodland parts. The five art modules match qualified staged source byte-for-byte; current master renderer, batching grid, public flat-world policy and supplied actor/equipment assets remain. Add a15-minute hosted browser-install deadline; all release gates stay required. Versions/defaults/login/cumulative patch notes aligned1.79.10. No dependency-resolution, saves, combat, economy, quest or admin changes.",
+  "rendererBoundary": "FoliageRenderBatches includes only one-time supportedInstancePart shear baking plus species-specific Low geometry selection. Cache geometry by original geometry and immutable part matrix; preserve exact surfaces, normals, material/shadow ownership, instance matrices and quality toggles. No future RenderSystem/frustum/static-matrix/visit-profile changes or wearable derivatives imported. Public Earth elevation/outcrop profile remains off.",
+  "units": "Fresh current-master integration8suites69pass29.407s: willow, exact transformed foliage/shadow/quality/cell bounds, all9species and immutable caches, registered floor maps/resources, eighteen flat/raised bounded rock bodies, CI shard/coverage/queue gates. Separate synchronized-version/history suite374pass1.783s.443distinct cases across9suites, not adding the earlier overlapping staged repeats. Scoped ESLint, shell syntax, whitespace pass. Lockfile changes only two package version labels; no dependency changes.",
+  "retainedAttempts": "First flat browser integration2cases fail before renderer construction because the new worktree has no generated vendor/three runtime. Run the existing scripts/prepare-client.mjs against already-installed pinned dependencies; only ignored vendor outputs generated, no source/dependency change. Re-run is a changed fixture after a terminal failure, not an observation-timeout restart. Logs/artifacts retained separately. Initial preparation readers exceeded output bounds; subsequent bounded reads/patch hunks preserve exact file bytes and cumulative history.",
+  "native": "Current-master flat-world native System Chrome AMD Vulkan High1280/Low390 two gallery cases pass33.9s; all original frame/draw/triangle/pixel limits retained. Six measured road views plus existing gameplay/ground/effects/shadow views and new actual grove-willow views. No equipment/raised-production/physical-phone or connected-party claim. No Chrome/4190listener before run, no local heavy-test overlap. Additional staged equipped gallery retains separate scope, not substituted for current source.",
+  "metrics": {
+    "highWoodland": {"median":16.69999999999891,"p95":16.80000000000109,"calls":313,"triangles":246960},
+    "highOuter": {"median":16.69999999999709,"p95":16.799999999999272,"calls":239,"triangles":214749},
+    "lowWoodland": {"median":16.69999999999891,"p95":16.799999999999272,"calls":84,"triangles":69408},
+    "lowOuter": {"median":16.69999999999891,"p95":16.799999999999272,"calls":87,"triangles":71141},
+    "surfaceChangedPixels": {"high":0,"low":0},
+    "highWoodlandFoliageShadowChangedPixels":0
+  },
+  "review": "Root inspects actual flat High woodland and Low grove-willow artifacts at ordinary gameplay zoom. Floor grain is less stencil-like/speckled; willow curtains have narrow hanging shoots instead of rounded birch clusters. Geological refinements reviewed separately in staged actual rock views. Large brown-green fields, geometric upper leaf crowns and limited environmental/formation variety remain; no final modern-ARPG art approval, complete1.87, feature freeze or beta claim.",
+  "sourceSHA256": {
+    "src/art/EarthGroundComposition.js":"904c3e3c971f249f95f32355bc1c50016b27d15d662899c016f3efd3c8d49138",
+    "src/art/EarthOutcrops.js":"ae585c6f41447b56b82ea8475f6c1e451d3c7452dd86f5c11b040afd6cd7185e",
+    "src/art/FoliageRenderBatches.js":"4b471ee5d996e43ea79c624cd77295cb2831be1a277e94a61e00239d5e6dccff",
+    "src/art/ProceduralRealmFoliage.js":"a6b3d767fcd53909fec4cabfe81a388ea0801c09e76f6d731a2e67be0e4c4bc1",
+    "src/art/WillowCurtainGeometry.js":"6b39fac67dfb4ed8c0afcc58be823e4277f8298e2708acb2714fbed34ea55a06"
+  },
+  "nativeLogSHA256":"6028885d816263f5bbf32794aa655a0fcc3ee0581ae2fbbd5174e4382cd71a80",
+  "logs":["/home/aeml/.local/share/eidolon-next-world-current-units-20261008.log","/home/aeml/.local/share/eidolon-next-world-version-units-20261008.log","/home/aeml/.local/share/eidolon-next-world-current-flat-native-20261008.log","/home/aeml/.local/share/eidolon-next-world-current-flat-prepared-native-20261008.log"],
+  "artifactDirectory":"/home/aeml/.local/share/eidolon-next-world-current-flat-prepared-native-20261008",
+  "deliveryGate":"Do not push before prior1.79.9/293a9ccc/run37791738441 terminal success and independent exact live acceptance. Fetch/reconcile remote master immediately before publishing; preserve website-agent work and dirty original worktree. Own1.79.10 CI/public identity/publisher-byte acceptance still required. Current hosted browser installation is unmodified; new deadline affects future runs only.",
+  "remaining":"Full original1.11-1.99 scope, all1.80F1-F5/1.87 modern art/raised-production/wearable/party/device gates remain open. Human campaign/phone and owner rights/recovery/operations decisions are deferred/not fabricated; no campaign/100-player replay or beta admission change."
+}

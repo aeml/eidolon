@@ -49,7 +49,19 @@ Fighter pilot or remove approved authored models.
 - Staged hosted browser-install deadline15 minutes; same npm/Playwright commands,
   no retries, cancellation, skipped gates or continue-on-error. Three queue/
   smoke-contract suites15pass.658s. This changes future runs only; current
- 1.79.9 run remains in progress and unmodified.
+  1.79.9 run remains in progress and unmodified.
+- Prepared selective **1.79.10 / cc340940** on fresh master293a9ccc in
+  `/home/aeml/.local/share/eidolon-next-world-A4K4nlpD`, branch
+  `work/alpha-1-79-next-world-current-20261008`. Floor-v11, preview rock
+  shoulders, willow curtains, one-time exact sheared-part normals and CI deadline;
+  no broader renderer/profile/wearable import.443 distinct changed/version
+  units and current flat High/Low native pass original limits; actual High
+  woodland and Low willow artifacts reviewed. Initial missing-vendor fixture
+  failure is retained and corrected with the existing client-preparation script.
+  Cumulative notes/login/server/CI/defaults synchronized. This is committed,
+  **not pushed or live**; accept1.79.9 first, then fresh-fetch/reconcile and
+  publish/verify its own release. See
+  [integration](docs/plans/2026-10-08-release1-79-10-checks.json).
 
 ## Remaining scope and next work
 
