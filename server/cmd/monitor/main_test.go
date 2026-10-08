@@ -39,6 +39,7 @@ func TestMonitorCommandDeploymentValidationDoesNotProbeOrSend(t *testing.T) {
 	t.Setenv("POSTMARK_MESSAGE_STREAM", "outbound")
 	t.Setenv("ADMIN_NOTIFICATION_EMAILS", "owner@example.invalid")
 	args := append(arguments(server.URL+"/healthz"), "-postmark-alerts", "-mail-timeout", "1s", "-mail-min-interval", "1m")
+	args = append(args, "-public-frontend-url", "https://example.invalid/release.json", "-public-backend-url", "https://api.example.invalid/healthz")
 	var output strings.Builder
 	if err := run(context.Background(), args, &output); err != nil || requests.Load() != 0 || output.Len() != 0 {
 		t.Fatalf("validation should be local/silent: %v requests=%d", err, requests.Load())
@@ -50,6 +51,25 @@ func TestMonitorCommandDeploymentValidationDoesNotProbeOrSend(t *testing.T) {
 	t.Setenv("EIDOLON_MONITOR_CHECK_CONFIG", "synthetic-private-invalid")
 	if err := run(context.Background(), arguments(server.URL+"/healthz"), &output); err == nil || strings.Contains(err.Error(), "synthetic-private") {
 		t.Fatal("invalid validation mode was accepted or leaked", err)
+	}
+}
+
+func TestMonitorCommandPublicConfigurationRejectsWithoutIO(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) { requests.Add(1) }))
+	defer server.Close()
+	t.Setenv("EIDOLON_MONITOR_CHECK_CONFIG", "true")
+	for _, extra := range [][]string{
+		{"-public-frontend-url", "https://example.invalid/release.json"},
+		{"-public-backend-url", "https://api.example.invalid/healthz"},
+		{"-public-frontend-url", "http://example.invalid/release.json", "-public-backend-url", "https://api.example.invalid/healthz"},
+		{"-public-frontend-url", "https://example.invalid/release.json", "-public-backend-url", "https://synthetic-private-user:secret@api.example.invalid/healthz"},
+	} {
+		var output strings.Builder
+		err := run(context.Background(), append(arguments(server.URL+"/healthz"), extra...), &output)
+		if err == nil || strings.Contains(err.Error(), "synthetic-private") || output.Len() != 0 || requests.Load() != 0 {
+			t.Fatal("unsafe public configuration admission", err)
+		}
 	}
 }
 

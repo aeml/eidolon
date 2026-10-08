@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 public outage-check preparation:** Optional HTTPS login-page,
+release-manifest and public-API observations share one bounded deadline and
+require agreement with the baseline API identity. Existing monitor defaults,
+debounce, alerts and production service unchanged. Two race-enabled packages
+pass; explicit read-only current-public check passes1.79.8/bf145bda. Not enabled,
+pushed or assigned a public version. Structural HTTP checks are not browser
+execution or off-machine/whole-host coverage;1.83 and1.80F1-F5 remain open.
+[Receipt](docs/plans/2026-10-08-public-monitor-checks.json). Full goal active;
+ordered1.79.9–1.79.12 acceptance still precedes subsequent publication.
+
 **Prepared1.79.12 operations foundation:** Select reviewed administrator
 maintenance/incident/recovery notices onto prepared1.79.11/8cd6e7fd, preserving
 current Dark Realm audit action, diagnostics, permissions and all player data.

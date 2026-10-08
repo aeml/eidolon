@@ -26,6 +26,7 @@ type Sample struct {
 	Runtime     *RuntimeMetrics     `json:"runtime,omitempty"`
 	Operational *OperationalMetrics `json:"operational,omitempty"`
 	Storage     *StorageMetrics     `json:"storage,omitempty"`
+	Public      *PublicMetrics      `json:"public,omitempty"`
 }
 
 // Fixed aggregate fields only: no account labels or arbitrary metric names.
@@ -64,6 +65,7 @@ type Probe struct {
 	client                   *http.Client
 	limits                   PressureLimits
 	storage                  *StorageProbe
+	public                   *publicProbe
 }
 
 // Permit ordinary loopback HTTP and authenticated HTTPS, never URL credentials,
@@ -185,6 +187,13 @@ func (p *Probe) Check(ctx context.Context) (sample Sample) {
 	} else {
 		sample.Ready, sample.Cause = true, "ready"
 	}
+	if sample.Ready && p.public != nil {
+		var cause string
+		sample.Public, cause = p.public.check(ctx, sample.Commit, sample.Version)
+		if cause != "" {
+			sample.Ready, sample.Cause = false, cause
+		}
+	}
 	return
 }
 
@@ -252,7 +261,8 @@ func (d *Detector) Observe(sample Sample, now time.Time) *Notice {
 	switch sample.Cause {
 	case "probe_failed", "probe_timeout", "http_unavailable", "invalid_response", "not_ready", "invalid_identity", "release_mismatch",
 		"latency_budget", "heap_budget", "goroutine_budget", "queue_budget", "inflight_budget", "metrics_unavailable",
-		"storage_budget", "storage_timeout", "storage_unavailable":
+		"storage_budget", "storage_timeout", "storage_unavailable",
+		"public_frontend_unavailable", "public_backend_unavailable", "public_invalid_response", "public_probe_timeout", "public_release_mismatch":
 		cause = sample.Cause
 	}
 	return &Notice{Kind: kind, Cause: cause}

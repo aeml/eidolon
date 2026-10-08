@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 optional public-monitor code is staged: bounded HTTPS login-page,
+release-manifest and public-API checks require identity agreement with baseline
+health and use unchanged debounce/alert policy. Scoped race tests and a read-only
+current-public1.79.8 check pass. Installed monitoring remains local-only; no new
+version, activation or policy mutation. Structural HTTP is not browser execution,
+off-machine/whole-host coverage,1.83 or1.80F1-F5 acceptance.
+[Preparation scope](2026-10-08-public-monitor-checks.json). Full numbered roadmap
+requirements and ordered deployment gates remain unchanged.
+
 Prepared1.79.12 integrates audited, explicitly reviewed administrator public
 notices and safe incident/maintenance procedures onto prepared1.79.11.426focused
 checks, three scoped race server/journal/policy runs and actual desktop/narrow

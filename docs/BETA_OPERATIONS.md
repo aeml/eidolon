@@ -1,5 +1,14 @@
 # Beta operations handoff — draft, not a beta announcement
 
+October8 optional public-monitor preparation: startup-only HTTPS login-page,
+release-manifest and public-API checks are implemented, bounded and race-tested.
+A read-only four-GET check observes matching current1.79.8 public identities.
+The installed service remains local-only; no production flags, mail recipients,
+retention, DNS or service settings changed. This is not browser execution,
+off-machine/whole-host coverage or1.83 acceptance. See
+[operator controls](../server/cmd/monitor/README.md) and
+[exact scope](plans/2026-10-08-public-monitor-checks.json).
+
 Prepared for Alpha1.19. Owner-approved direction is near-completion closed beta,
 not beta at1.20. Current public Alpha access, labels and saves remain unchanged.
 This document does not authorize a wipe, invite restriction, production restore,

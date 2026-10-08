@@ -18,6 +18,8 @@ func run(ctx context.Context, args []string, output io.Writer) error {
 	flags.SetOutput(io.Discard) // Invalid arguments can contain private values.
 	endpoint := flags.String("health-url", "", "HTTPS /healthz or loopback HTTP")
 	commit := flags.String("expected-commit", "", "optional exact release commit")
+	publicFrontend := flags.String("public-frontend-url", "", "optional HTTPS /release.json; requires public-backend-url")
+	publicBackend := flags.String("public-backend-url", "", "optional HTTPS /healthz; requires public-frontend-url")
 	timeout := flags.Duration("request-timeout", 0, "required, at most 10s")
 	interval := flags.Duration("poll-interval", 0, "required, 1s to 5m")
 	failures := flags.Int("failure-threshold", 0, "required consecutive failures, 1 to 60")
@@ -43,6 +45,9 @@ func run(ctx context.Context, args []string, output io.Writer) error {
 		QueueUtilizationPercent: *queuePercent, MaxInFlightCalls: *maxInFlight}, operations.StorageConfig{
 		Path: *storagePath, Timeout: *storageTimeout, MinFreeBytes: *minStorageBytes, MinFreePercent: *minStoragePercent})
 	if err != nil {
+		return err
+	}
+	if err := probe.ConfigurePublicEndpoints(*publicFrontend, *publicBackend); err != nil {
 		return err
 	}
 	detector, err := operations.NewDetector(*failures, *recoveries, *cooldown)

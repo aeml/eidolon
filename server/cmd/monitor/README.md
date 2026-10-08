@@ -19,6 +19,40 @@ polling is silent. No URLs, arbitrary peer/error text, account records or mail
 credentials are output. SIGINT/SIGTERM stop polling; cancellation is not an
 outage. An unavailable output sink exits with a generic error.
 
+## Optional public login and API checks — prepared, not enabled
+
+The command can additionally accept both `-public-frontend-url` (an exact HTTPS
+`/release.json`) and `-public-backend-url` (an exact HTTPS `/healthz`). Both are
+required together, without credentials, queries or fragments; redirects are
+refused and ordinary TLS/DNS remain enabled. Empty defaults keep the currently
+installed local-only monitor unchanged. This code preparation does not change
+Compose, private environment values, recipient policy or production activation.
+
+After a healthy baseline API observation, the optional check reads the frontend
+origin's `/`, its release manifest and the public backend health endpoint. The
+page must contain the current login controls; the manifest, public backend and
+baseline backend must agree on commit/version, and the public backend must report
+database readiness. Login HTML is capped at1MiB and each JSON response at32KiB.
+The three public requests share one `-request-timeout` deadline, in addition to
+the baseline request's existing timeout. With5s configured, HTTP observation can
+therefore take up to approximately10s, not20s; optional storage/mail waits remain
+separate. The optional latency budget now measures that whole HTTP observation,
+so choose it accordingly rather than reusing a local-only budget blindly.
+
+Fixed public causes use the ordinary failure/recovery debounce and cooldown.
+Output/email adds only five boolean coverage/readiness fields under `public`;
+it never includes endpoint URLs, page bodies, arbitrary TLS/DNS errors or account
+data. Cancellation remains a shutdown, not an outage. Configuration-check mode
+validates these flags without network or mail IO.
+
+This is structural HTTP availability, not execution of browser JavaScript or a
+Firefox/gameplay test. From the game host it can detect its observed public route,
+but not establish off-machine reachability, every IPv4/IPv6 route, or availability
+when the host itself fails. Owner-approved independent/off-machine coverage and
+safe deployment-transition/recovery exercises remain open. Exact source and
+read-only current-public checks are recorded in
+[the preparation receipt](../../../docs/plans/2026-10-08-public-monitor-checks.json).
+
 ## Optional pressure budgets
 
 All pressure checks are **disabled by default**. An operator can explicitly set
