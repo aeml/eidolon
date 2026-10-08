@@ -28,6 +28,10 @@ func TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure(t *testing
 	if err != nil {
 		t.Fatal(err)
 	}
+	verifier, err := filepath.Abs("deploy/verify_upgrade_backup.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
 	pinScript, err := os.ReadFile("deploy/pin_previous_image.sh")
 	if err != nil {
 		t.Fatal(err)
@@ -98,6 +102,14 @@ exec "$BACKUP_TEST_REAL_DOCKER" "$@"
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
+	verifyPoint := func(point string) {
+		t.Helper()
+		command := exec.CommandContext(ctx, "bash", verifier, point)
+		output, err := command.CombinedOutput()
+		if err != nil || !bytes.Contains(output, []byte("integrity verified (read-only)")) {
+			t.Fatalf("actual generated coordinated point failed verification: %v\n%s", err, output)
+		}
+	}
 	env := append(os.Environ(), "COMPOSE_PROJECT_NAME="+project, "COMPOSE_FILE="+filepath.Join(root, "compose.yml"))
 	run := func(input io.Reader, args ...string) []byte {
 		t.Helper()
@@ -207,6 +219,7 @@ d.users.createIndex({gold:1},{name:"backup_fixture_index"});'`)
 	if completeDir == "" {
 		t.Fatal("no complete recovery point")
 	}
+	verifyPoint(completeDir)
 	previousImage, err := os.ReadFile(filepath.Join(completeDir, "previous-image-id.txt"))
 	if err != nil || strings.TrimSpace(string(previousImage)) != imageID {
 		t.Fatal("backup lost the exact prior server image", err)
@@ -278,6 +291,7 @@ print("owned restored resources, EP, membership, cosmetics, receipts, pending wa
 			if _, err := os.Stat(filepath.Join(dir, "COMPLETE")); err != nil {
 				t.Fatal("no-previous-API backup is incomplete", err)
 			}
+			verifyPoint(dir)
 			foundNoAPI = true
 		}
 	}

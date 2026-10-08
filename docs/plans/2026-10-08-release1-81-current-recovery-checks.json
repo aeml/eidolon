@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T01:33:18Z",
+  "milestone": "1.81 recovery readiness",
+  "status": "current-source-integrity-and-disposable-restore-qualified-not-published-or-complete",
+  "baseCommit": "b736ae46",
+  "runtimeBaseline": "Exact public Alpha1.79.1/c8ff2cd668213a3cf53cd536b7067bd3404d0437/schema25 with source-only1.80 host-trust preparation. No1.80 or1.81 release labels/claims.",
+  "provenance": "Select reviewed verifier and six-case gate fixture from ef7510f0, then apply only12 restore-gate lines and native test hunks. Older future branch authority, dependency/package/version and unrelated files are not merged. Existing deployment/private data preserved.",
+  "changes": [
+    "Read-only verify_upgrade_backup.sh checks one selected completed directory: regular markers, fixed artifact allowlist, required Mongo/journal/image pair or fresh no-image marker, no duplicate/traversal/absolute/escaped names or selected symlinks, SHA256 and gzip integrity. No extraction, Docker, backup selection, pruning or authenticity/compatibility claim.",
+    "restore_mongo_archive.sh invokes the verifier before Docker for a named save-upgrade directory or either completion/checksum marker; only its regular mongo.archive.gz is accepted. Raw selected path retained for symlink refusal. Removing markers from a named point cannot downgrade to standalone; separately approved standalone Mongo-only recovery remains.",
+    "Expand actual archive fixture to current typed schema25/guild/rested/dungeon metadata, consume restored BSON through current dungeon restoration and latest cleared boss checkpoint. Existing backup fixture also validates generated completed-image and fresh-no-image recovery sets."
+  ],
+  "checks": {
+    "baseline": "Current real-shell coordinated gate FAIL5/PASS1/package0.094s before restore patch. Valid point lacks integrity receipt; missing-markers/alternate-archive/linked-archive/linked-directory reach synthetic Docker. Corrupt gzip already refused. No real Docker/database access in baseline.",
+    "focused": "Current21 direct verifier cases,6 coordinated gate cases and existing explicit stopped-target guard scope PASS race/package1.666s. Valid/fresh verification preserves bytes; unsafe/missing/duplicate/corrupt/image-pair cases refuse. These are synthetic refusal fixtures, not a database round trip.",
+    "existingRecoveryPoint": "Read-only helper succeeds on exact /home/aeml/eidolon/server/backups/save-upgrade-20261006T015420Z-SJiekp; no archive contents, credentials or logs printed and no Docker/extraction/restore command invoked. Integrity of that historical point is not current recovery-policy approval.",
+    "actualArchive": "Root58830 terminal exit0. Current TestRestoreActualArchiveRejectsMixedStateAndReplacesOnlyEidolon PASS16.70s; TestArchiveDungeonRuntimeUsesSavedBossCheckpoint PASS0.14s; race package17.900s. Two uniquely owned authenticated network-none Mongo7.0.14 stores exercise actual archive/restore helper. Complete Extended JSON namespace/document/index equality for fresh restore and explicitly scoped replacement; nonempty refusal and invalid-archive dry-run preserve destination; unrelated database retained.",
+    "runtimeCheckpoint": "Actual restored BSON decodes through current schema25 character models and validates canonical dungeon layout. Runtime restore creates only the one uncleared alive boss, preserves cleared/rewarded rooms/run/party/layout, and repeat restoration does not duplicate encounters. Scene-entry path selects latest cleared boss checkpoint without changing health17/mana0/Gold1184/EP83. Separate no-Docker control covers same behavior.",
+    "actualGeneratedBackup": "Root55682 terminal exit0. Current TestDeployUpgradeBackupPreservesPrivateStateAndRestartsOnFailure PASS20.37s/race package21.419s. Actual generated full-image and fresh-no-prior-image sets satisfy new verifier. Failed dump restarts exact prior writer stand-in; successful point keeps writer stopped and preserves original image, private journal and exact resource/EP/membership/cosmetic/receipt/pending-wager fixture records. This fixture retains its schema12 opaque markers, not current normal game-process recovery.",
+    "shellHygiene": "bash -n both helper scripts and git diff --check pass; verifier executable. Existing dependencies reused; no new dependency/lock changes or unchanged full campaign/cohort/native-art replay.",
+    "cleanup": "Owned restore project eidolon-restore-proof-1791423075523474143 and backup project eidolon-backup-proof-1791423165885272271 finish normal test cleanup. Independent exact project container/volume queries all empty; exact backup fixture image-reference and previous/replacement label queries empty. Only synthetic fixture containers/volumes/images/temporary files removed; production data/logs/backups and source worktree untouched."
+  },
+  "sha256": {
+    "server/deploy/verify_upgrade_backup.sh": "463202c8490c4a39b986c197a64044938ccc3e1f17f298faff88e2a8f27cf4cf",
+    "server/deploy/restore_mongo_archive.sh": "bc47b757e4a8e610c0dbd371ecb806d25e1de4c65f816228ad8232611cbfe303",
+    "server/deploy_restore_integration_test.go": "9559d01e0fdd940cba4f80c1972ff111ab96b2b1e76eafe9bec7ebb2a8fd4296"
+  },
+  "limits": [
+    "Checksums are not authenticity, journal/image compatibility, erasure attestation or permission to restore/reopen admission. No production restore, extraction, erasure or provider/infrastructure mutation.",
+    "Archive guild/casino pending fixtures are opaque preservation markers, not valid normal-startup settlement proofs. In-memory restored-dungeon consumption is not authenticated login, fifteen-minute expiry, full combat clear or normal game-process restart.",
+    "Owner-selected off-machine backup destination/access, retention and recovery-point/recovery-time objectives remain open; preserve current retention and backups, no automatic deletion.",
+    "Actual1.80 F1–F5 freeze/release gates remain open. Own1.81 integrated labels/notes, outgoing current-source review, CI/deployment/public acceptance still required. All full-roadmap, modern-art and owner playtest requirements retained."
+  ]
+}

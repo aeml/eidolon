@@ -1,5 +1,24 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current-source1.81 recovery integrity prepared:** Keep future work
+isolated on work/alpha-1-81-recovery-current-20261008 at
+/home/aeml/.local/share/eidolon-recovery-181-J6w06IzA, rooted currentb736ae46.
+Select only the reviewed helper, coordinated-restore gate and two restore/backup
+fixture extensions from ef7510f0, never replace current authority with its old
+base. Real-shell baseline gate FAIL5/PASS1: missing markers, alternate archive
+and selected symlinks reach synthetic Docker. Fixed gate plus21 verifier cases
+and retained stopped-target guard PASS race1.666s. Existing exact production
+recovery point passes read-only checks; no restore/extraction or secret output.
+Actual network-none current-schema archive/runtime checkpoint checks PASS2,
+package17.900s; generated-backup/failure-restart/fresh-no-image verification PASS
+package21.419s. Both unique fixture projects/volumes and backup-image labels gone
+after owned cleanup; no production data/logs/backups/services changed. Source
+and bash/whitespace checks pass, new native helper executable. No campaign/cohort
+replay, release labels or push. Current1.79.1 still public; actual1.80 F1–F5 and
+owner backup destination/retention/RPO/RTO decisions remain open. This is useful
+scoped recovery preparation, not1.81/full-roadmap/modern-art completion.
+[Current receipt](docs/plans/2026-10-08-release1-81-current-recovery-checks.json).
+
 **October8 current1.80 trust candidate / release receipts reconciled:** Bring only
 the already console-verified ED25519 pin into current outgoing workflow, require
 strict host checking and bound unreachable/dead SSH waits10s/1attempt/15s/2count.
