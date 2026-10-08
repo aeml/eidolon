@@ -57,6 +57,17 @@ angular large rock silhouettes and complete town/realm/landmark cohesion remain
 open. These component changes do not approve the final modern-ARPG contract.
 See [attempts, final captures and limits](../plans/2026-10-08-earth-surface-v10-checks.json).
 
+Later October8 staged review: distinct birch/pine/willow bark and grouped
+retained-population understory improve the existing woodland. Floor-v11
+reduces the repeated five-metre detail stencil and moss speckling; reject the
+first visibly streaky warp and retain its failed High timing evidence. Final
+equipped High/Low views pass unchanged technical limits and look cleaner, but
+large brown-green floor fields, repeated foliage/prop silhouettes, angular
+rock masses and complete town/realm/landmark cohesion remain open. These are
+specific art tasks, not permission to lower the modern-ARPG target. See
+[floor review](../plans/2026-10-08-earth-surface-v11-checks.json) and
+[woodland scope](../plans/2026-10-08-understory-composition-checks.json).
+
 Latest user direction: do as much environment, texture, lighting and shader work
 as possible in code so the user's external asset work is limited to **player
 class models, monsters, bosses and NPCs**. This is the production division of
