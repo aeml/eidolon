@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "status": "staged-component-qualified-not-published",
+  "base": "9f57e787",
+  "scope": "Separate code-owned birch/pine/willow bark on existing stem materials. Stem UVs survive fixed-part geometry baking and instancing: circular U fields avoid world-axis projection seams and keep grain attached to rotated trees. Birch gets interrupted lenticels/shallow peel; pine coarse axial ridges; willow finer grain. Separate color/roughness/normal-relief signals; derivative-filter detail. Standard lighting/shadows/fog/opaque depth retained.",
+  "ownership": "Only three Earth stem material hooks change; no meshes, texture maps/fetches, source UVs, placements, collisions, wind, lighting or actor/equipment/gameplay changes. Other fieldstone/bark/timber users remain unchanged. Three bounded style-specific program keys replace the shared timber key for these stems; no per-frame work. Unknown styles/hooks rejected; same-style application idempotent.",
+  "units": "WoodlandBarkMaterial/ProceduralRealmFoliage/FoliageRenderBatches/WorldSurfaceDetail:4suites54pass2.922s; scoped ESLint/diff pass.",
+  "native": "Actual System Chrome/AMD Vulkan equipped raised-terrain eight-view High1280/Low390 gallery2cases pass41.1s against original frame/draw/triangle/pixel limits. High woodland346calls/247325tri, median16.700000000000728ms/p9516.799999999999272ms; Low outer-fold104calls/67163tri. Root inspects High/Low woodland-cut images. No attribution of cross-run speed or full-device/party/art acceptance.",
+  "logs": ["/home/aeml/.local/share/eidolon-woodland-bark-units-20261008.log", "/home/aeml/.local/share/eidolon-woodland-bark-equipped-native-20261008.log"],
+  "inheritedRegression": "This bark native capture precedes the independent1.79.8 crown-height correction. Initialffb495c6 CI reveals the fuller pine extends below the older>-1.8contract despite the render/gallery checks. Retain that distinction: bark rendering passes are not whole-source acceptance. Correctionbf145bda retains original limit and must be reconciled before any later publication; don't promote the uncorrected crown or claim this capture checks the corrected source.",
+  "remaining": "Broader woodland composition, convincing rock/tree/plant silhouettes, equipment/party/device/profile and complete1.80F1-F5/1.87 modern art plus later beta/release remain open. Material refinement is modest, not Diablo/PoE-level completion."
+}

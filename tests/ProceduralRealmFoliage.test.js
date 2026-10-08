@@ -37,7 +37,7 @@ describe('procedural realm foliage', () => {
                 expect(Math.hypot(point.x, point.z)).toBeLessThan(recipe.collision[0]);
             }
             expect(Array.from(stem.geometry.attributes.normal.array).every(Number.isFinite)).toBe(true);
-            expect(stem.material.userData.worldSurfaceDetail).toBe('timber');
+            expect(stem.material.userData.woodlandBark).toBe({ ossuary_birch: 'birch', grave_pine: 'pine', mourning_willow: 'willow' }[recipe.id]);
         }
     });
     test('mature woodland crowns stay inside existing eight-metre sightline aprons', () => {
