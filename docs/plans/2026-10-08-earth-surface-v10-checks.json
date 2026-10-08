@@ -19,5 +19,5 @@
     "src/art/EarthGroundComposition.js": "69b259c44ed34b7088cccdef5ee4980a7b29e4fa205ded546414935c1a958a26",
     "src/art/WorldSurfaceDetail.js": "b82a3c4df0a2010f23023ac4f158bbf23414c8aac17aec1068a244bebd455a31"
   },
-  "next": "Prepare selective Alpha1.79.7 current-master surface/Air-canvas patch with existing qualified component work, its own flat-world checks, synchronized notes/version and ordinary CI/live verification. No whole future-branch merge, unqualified wearable promotion or raised-profile activation. Full ordered1.80 F1-F5/1.87 and later roadmap gates remain. Fresh origin still37a13a41/accepted Alpha1.79.6; no push/deployment in this art step."
+  "next": "Prepare selective Alpha1.79.7 current-master Earth-surface patch with its own flat-world checks, synchronized notes/version and ordinary CI/live verification. Fresh diff establishes Air-canvas/source/tests already delivered by b13dd3af/Alpha1.79.3; do not repeat that integration or claim it as new. No whole future-branch merge, unqualified wearable promotion or raised-profile activation. Full ordered1.80 F1-F5/1.87 and later roadmap gates remain. Fresh origin still37a13a41/accepted Alpha1.79.6; no push/deployment in this art step."
 }

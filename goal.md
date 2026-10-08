@@ -7,8 +7,9 @@ but over-contrasted attempt; final35 units and High/Low eight-view native41.0s
 pass original limits. Final High grove/Low rock inspected, modest improvements
 not modern-art acceptance. See
 [retained attempt and final scope](docs/plans/2026-10-08-earth-surface-v10-checks.json).
-Next selective current-master1.79.7 surface/Air-canvas component integration,
-flat-world checks and ordinary synchronized publication—not the whole future
+Next selective current-master1.79.7 Earth-surface component integration;
+fresh diff proves Air-canvas source/tests already delivered in1.79.3, not new.
+Use flat-world checks and ordinary synchronized publication—not the whole future
 branch or raised/profile/model rollout. Full1.80 F1-F5/1.87/art/device/beta/launch
 goal remains active; accepted public still1.79.6.
 
