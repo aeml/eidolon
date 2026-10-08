@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current-master surface patch assembled:** Alpha1.79.7 prepares only
+the qualified Earth surface/material component, matching tests, synchronized
+versions and cumulative notes. No future-branch merge, wearable derivatives,
+raised profile, new gameplay or Air-canvas relabeling (already delivered1.79.3).
+Own flat-world qualification/publication remain pending; see
+[current assembly](docs/plans/2026-10-08-release1-79-7-checks.json).
+Accepted live1.79.6 exact37a13a41/CI37762573941 supersedes older pending entries;
+see [public receipt](docs/plans/2026-10-08-release1-79-6-public-checks.json).
+Full roadmap/F1-F5/1.87/final art/device/beta/launch scope remains active.
+
 **October8 selected-party hotbar correction:** Connected equipped four-class
 testing reproduced a real focus guard blocking healing after selecting an ally.
 Keep accessible roster focus and permit only hotbar actions from an enabled,

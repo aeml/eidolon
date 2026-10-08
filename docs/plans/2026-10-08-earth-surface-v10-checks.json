@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "base": "4f36cb4d",
+  "status": "surface-refinement-staged-not-final-modern-art",
+  "implementation": "Canonical Earth soil aggregates have coherent higher-contrast faces with less uncorrelated texel noise. Soil crevices/faces share the relief field; moss has a separate broad cushion field instead of copying the clod field. Restrained soil/moss reflectances retain lit, nonemissive materials. Rock bedding is gently inclined and weathering-interrupted instead of warped into raised contour lines; shallow relief preserves mineral texture. Shader cache identities advance to groundv10 and rockv5.",
+  "preservation": "Only material generation/shaders and matching tests changed. Two existing ground maps/six shader fetches, High/Low sizes, canonical leaf/mineral locations, filtering, geometry, populations, walking solids, terrain activation, lights, shadows, depth, ownership and disposal unchanged. Rock detail adds no sampler. Surface6 has one runtime consumer: EarthOutcrops; other material variants retain their prior implementation/key.",
+  "retainedAttempt": "First same-source native2 cases passed technically, but root reviewed High grove/Low rock captures and rejected the excessive camouflage-like contrast and subdued rock relief. Original attempt retained at /home/aeml/.local/share/eidolon-earth-surface-v10-native-20261008 (logSHAea714b14dce9444be8ba4f86e8a59e8ffe2135d461719888547bd391598f080c). Corrected palettes/relief before final qualification; a green test was not visual acceptance.",
+  "units": "Final five affected surface/ground/rock suites35 checks pass28.162s. Covers deterministic cross-quality fields and tile edges, route masks, transformed-instance shader hooks, standard light/fog/shadow paths, all18 bounded rock solids, original206tri bodies/clearances, six fetches/two map ownership and cleanup. Scoped lint and whitespace pass.",
+  "native": "Final actual System Chrome AMD Vulkan/RADV High1280x844/Low390x844 two cases41.0s pass all eight120-frame original performance/geometry/draw limits. High woodland346calls/247325tri, Low100/66176 unchanged. Foliage-filter and surface-culling pixel comparisons remain zero; prior-tree comparison stays within original.001. Fourteen equipped items/no fallback, movement/effects/grounding remain. Root inspected final High grove and Low rock captures. No new party/campaign/soak run for this material-only change.",
+  "visualLimits": "Surface separation and bedding are modest refinements, not Diablo/PoE-equivalent scenery. Repeated understory clumps, broad open-space composition, angular large rock silhouettes and full town/realm/landmark cohesion remain concrete art gaps. Narrow browser emulation is not a physical-phone test. Final modern-art, party/device and raised-profile acceptance remain open.",
+  "evidence": {
+    "units": "/home/aeml/.local/share/eidolon-earth-surface-v10-refined-green-20261008.log",
+    "unitsSHA256": "37ad68ff5280a56c3c39fd538eb4ee12bf87d7c647e9f0087cabd98a7f59517b",
+    "native": "/home/aeml/.local/share/eidolon-earth-surface-v10-refined-native-20261008.log",
+    "nativeSHA256": "91fe28294d4c20f3266121d41a8df13b21de3c177a4b58f14f2f33096cb55feb",
+    "images": "/home/aeml/.local/share/eidolon-earth-surface-v10-refined-native-20261008"
+  },
+  "sourceSHA256": {
+    "src/art/EarthGroundComposition.js": "69b259c44ed34b7088cccdef5ee4980a7b29e4fa205ded546414935c1a958a26",
+    "src/art/WorldSurfaceDetail.js": "b82a3c4df0a2010f23023ac4f158bbf23414c8aac17aec1068a244bebd455a31"
+  },
+  "next": "Prepare selective Alpha1.79.7 current-master Earth-surface patch with its own flat-world checks, synchronized notes/version and ordinary CI/live verification. Fresh diff establishes Air-canvas/source/tests already delivered by b13dd3af/Alpha1.79.3; do not repeat that integration or claim it as new. No whole future-branch merge, unqualified wearable promotion or raised-profile activation. Full ordered1.80 F1-F5/1.87 and later roadmap gates remain. Fresh origin still37a13a41/accepted Alpha1.79.6; no push/deployment in this art step."
+}

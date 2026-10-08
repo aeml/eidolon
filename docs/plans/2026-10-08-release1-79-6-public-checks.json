@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-10-08",
+  "version": "Alpha 1.79.6",
+  "commit": "37a13a41a8b35c3d4030fb1eb1ade56620150e70",
+  "status": "ordinary-ci-deployment-live-qa-and-independent-public-identity-passed",
+  "ci": {
+    "run": 37762573941,
+    "conclusion": "success",
+    "evidence": "Authorized Luna reports completion; root independently reads exact head, completed success and all ten successful job conclusions. Client/Server, all three Browser Smoke shards, Predeploy, production QA input validation, ordinary SSH/Pages and hosted Live Release and Character QA pass.",
+    "limits": "Optional predeploy High/Low animation gallery, Well Rested rendering/GPU lifecycle and full-character gameplay skipped; optional live four-class and remote-animation QA skipped. Those are not passed or exhaustive art, party, campaign or device evidence."
+  },
+  "public": {
+    "transport": "Ordinary DNS, forced IPv4, verified HTTPS and no-cache requests. No resolver or TLS bypass.",
+    "frontend": {"version":"Alpha 1.79.6","commit":"37a13a41a8b35c3d4030fb1eb1ade56620150e70"},
+    "backend": {"status":"ok","database":"ready","version":"Alpha 1.79.6","commit":"37a13a41a8b35c3d4030fb1eb1ade56620150e70"},
+    "productionCheckout": "Read-only checks find tracked-clean /home/aeml/eidolon at exact37a13a41.",
+    "selectedBytes": "index.html, src/core/InputManager.js and src/ui/ResonancePortalDialog.js byte-match exact release source after the actual exported rewriteHtml/rewriteJavaScript publisher transforms. Three selected checks, not an all-asset audit.",
+    "htmlSHA256": "29146820ff7b9483e93ee630b040ef507277efe0133c9f7b11139c2dec556948",
+    "inputSHA256": "803e6881cdafcc59fb08b822cb5fb177f9e7da72a37071d743524fc2892fb417",
+    "portalSHA256": "04f5b989d57b06559a139f35abe22721920897ffab01a2805c575cbe4bc47840"
+  },
+  "feature": "Focused selected party-support button now permits mapped hotbar skills without losing accessible focus or weakening ordinary UI/typing/modifier/repeat guards. Existing administrator Dark Realm story-only bypass remains delivered; level100 and travel requirements unchanged.",
+  "remaining": "This live patch contains no staged runtime wearables, Earth floor/outcrop art or raised-profile activation. Full1.80 F1-F5,1.87 actual equipped-party/modern-art/device and all later beta/launch gates remain open. Newly corrected prior-tree native comparison and High frame timing remain failed/unqualified in the isolated staged branch, not production acceptance."
+}
