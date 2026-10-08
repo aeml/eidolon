@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 checkpoint save gap advances: real geared four-class first-guardian
+combat, rejected-claim/crash recovery, flat rollback, town Recall/normal guide
+checkpoint re-entry, raised reactivation and explicit expired-logouts pass
+50.76s with earned loot/credit/gear/full room progress/run age preserved.
+Prepared approach rooms/time fixtures are disclosed; not a full dungeon or
+campaign/phone/art acceptance. First missing fixture-owner failure retained.
+Opt-in on-demand check, not another long mandatory run for every deployment.
+See [exact scope](2026-10-08-earned-party-terrain-checkpoint-checks.json).
+Actual equipped-party world rendering, modern-art/device/profile delivery and
+full1.80/later gates remain; live stays1.79.5.
+
 October8 equipped High single-hero reference now passes original budgets after
 exact wind-inclusive understory bounds and High6.5m grouping; retained earlier
 362/355call attempts remain failures. Final woodland346calls/247325tri, pixel

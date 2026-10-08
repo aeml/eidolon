@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 earned-party checkpoint compatibility now verified:** Actual geared
+four-class sockets earn the first guardian kill under raised terrain; rejected
+claim/crash recovery, flat rollback, normal Recall/guide checkpoint return,
+raised reactivation and explicit16minute logout expiry pass50.76s. Original
+loot/credit/gear/room progress/run age retained. First empty-owner fixture
+failure preserved and corrected without granting earned progress. Four profile/
+recovery unit scenarios pass; default external skips not integration passes.
+On-demand check only, no new long deployment loop or runtime/profile/version
+change. See [scope/evidence](docs/plans/2026-10-08-earned-party-terrain-checkpoint-checks.json).
+Next actual equipped-party world rendering and remaining art/device/delivery
+scope; full roadmap remains active, accepted live still1.79.5.
+
 **October8 High equipped solo gap corrected / raid-sized rendering verified:**
 Constructor-only exact ground-cover bounds retain full wind envelope and every
 plant/matrix/blade. High6.5m batching keeps woodland346calls/247325tri inside

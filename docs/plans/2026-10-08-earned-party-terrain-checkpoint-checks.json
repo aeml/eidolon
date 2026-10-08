@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08",
+  "status": "actual-earned-four-class-checkpoint-profile-compatibility-passed",
+  "baseCommit": "5a9a910aa040e1cc74e8c506b894daaa5f6f4e81",
+  "source": "Current task-worktree tests and isolated runner; no production runtime, version, terrain configuration, schema or original asset changes. The owned race-enabled binary carries its actual fixture basename, not an invented released commit.",
+  "sourceSHA256": {
+    "server/boss_victory_session_integration_test.go": "487a7df8483c77da17f1e9b207e5f24d365d914fef947b5ba7a78a3c5b978943",
+    "server/terrain_party_checkpoint_integration_test.go": "6cd04874ac1cb33b1741517efd64cf184f4b2c4722ab5f09f3766c51b02ec781",
+    "server/internal/game/dungeon_checkpoint_test.go": "74bef4f6977c11e6fc7a05442181eb0fc67703f34756340107c2bcf8bb48061d",
+    "scripts/run-terrain-save-qa.sh": "0303aa47cc9c75cd128a4577f4d8f299fadea4c83484bb54083029de94a12a78"
+  },
+  "checks": {
+    "actual": "Root37587 terminal0, independently confirmed after Luna log/process monitoring. TestTerrainActualEarnedPartyCheckpointAcrossProfileChanges PASS50.76s; Go race package51.812s. Four server processes run sequentially on one disposable loopback Mongo: raised first guardian combat/expected SIGKILL, flat recovery, raised reactivation, flat expired-logouts. Existing real-Mongo rejected Rogue claim and filesystem-journal recovery retain the original four-person victory cohort. No simultaneous replacement database writer.",
+    "party": "Fighter, Cleric, Wizard and dual-wield Rogue use prepared class-stat Uncommon/Rare equipment and normal invite/accept, attacks and class skills. The approach rooms, level30, gear and pre-boss position are prepared; the actual Rootbound Warden kill, all four accepted class casts, manual-turn-in kill credit, reward receipts, private full-bag loot and boss-clear checkpoint are earned. This is not a full procedurally generated dungeon clear or natural leveling proof.",
+    "checkpoint": "All four actual saved characters reconnect to the shared flat-profile recovered run, Recall to grounded Lanternhold, and individually use ordinary guide-entry messages to return to the latest earned boss center (20000,0,19850), not the entrance. Fresh disconnect saves preserve original party/run ownership, layout, room progress, run age, Gold/XP/level/EP, equipment, inventory, pending private boss loot, quest credit and victory fingerprint. Raised-profile reactivation reconnects/saves all four again at the original flat dungeon checkpoint with the same invariants. Profile negotiations are checked on original raised admission and all added sessions.",
+    "expiry": "After the previous process stops, change only each synthetic LastLogout to16minutes ago. Four ordinary flat-profile logins return to town and fresh saves clear the instance/resume snapshot without changing the earned reward/gear/quest/private-loot invariants. This checks the existing15minute policy with an explicit time fixture, not a real16minute soak or exact threshold-boundary proof. No player-facing expiry rule changed.",
+    "unit": "Final root40127 terminal0: two game regressions pass race1.708s, including four flat/raised x Recall/Respawn scenarios, entrance/first-two-boss checkpoint selection, duplicate-entry idempotence and contiguous-cleared-route requirement. These unit clear/death flags are prepared, not earned combat. Root package1.057s skips both opt-in external scenarios in the ordinary environment; those skips are not integration passes.",
+    "retainedFailure": "Root74951 terminal1: first new real run earns and recovers its boss victory, then fails guide re-entry38.51s. Its prepared instance has empty PartyID while actual party consent creates the canonical leader-owned party; guide correctly creates a different owned run. Correct only the new fixture's pre-boss owning PartyID; do not seed character membership, boss completion, rewards or weaken same-instance assertions. Corrected run also checks full room-progress equality and party ownership.",
+    "static": "gofmt, bash -n and git diff --check pass. Invalid scenario rejected before any container/build/write. Runner default remains only the original world-save scenario with120s timeout; earned-party is explicitly selected with180s. Timeout selection refactor follows launch but leaves the executed earned-party180s behavior unchanged. This is an on-demand compatibility check, not a newly added long test on every deployment.",
+    "reproCommand": "EIDOLON_TERRAIN_SAVE_QA_SCENARIO=earned-party bash scripts/run-terrain-save-qa.sh"
+  },
+  "evidence": {
+    "passedRoot": "/home/aeml/.local/share/eidolon-terrain-save-evidence-IEc0ucYb",
+    "binary": "/home/aeml/.local/share/eidolon-terrain-save-evidence-IEc0ucYb/terrain-save-ced41b91131e",
+    "binarySHA256": "4e2ad63794d1ade396663605f08f7e1ab795f97a5d24fa276771277033bbd87d",
+    "passedWrapperLog": "/home/aeml/.local/share/eidolon-terrain-earned-party-owned-20261008.log",
+    "passedWrapperLogSHA256": "650c2e350fe70cd09c45f085e31d51e7730209d4a3084866c47532cdf81bad2a",
+    "passedTestLogSHA256": "33f5d4d90b562ece127936214b6fc4a7390e770126c3a9cf511e9f364f4dd5a4",
+    "serverEvidence": [
+      "/tmp/eidolon-compat-session-1406217493",
+      "/tmp/eidolon-compat-session-3824955683",
+      "/tmp/eidolon-compat-session-1213116656",
+      "/tmp/eidolon-compat-session-3422159386"
+    ],
+    "failedRoot": "/home/aeml/.local/share/eidolon-terrain-save-evidence-b5I9jqEz",
+    "failedWrapperLog": "/home/aeml/.local/share/eidolon-terrain-earned-party-20261008.log",
+    "failedWrapperLogSHA256": "6df9e40a5cc11fd1c9927c25651aff26eb765711415500c944eea006aac7864e",
+    "finalUnitLog": "/home/aeml/.local/share/eidolon-terrain-party-checkpoint-final-unit-20261008.log",
+    "finalUnitLogSHA256": "9db183262264ba4b33de42698b4307f96c5666d7f8a5d471203c2060e222de55"
+  },
+  "cleanup": "Both owned disposable Mongo containers and their synthetic databases removed by their runner traps; root independently finds no matching containers and no18189 listener. Owned evidence/binaries/logs retained. No production database, account, environment, mail, DNS, provider settings or collaborator original worktree changes.",
+  "remote": "Fresh fetch confirms origin/master remains acceptedde106428; no remote-ahead commits to reconcile. These checks remain staged and do not publish raised terrain or a release.",
+  "remaining": "Actual equipped-party raised-world rendering, physical devices, full modern-art/readability review and safe public profile delivery remain open. This does not certify every legacy malformed save, every dungeon/raid, rollback to a different old binary, a full campaign, natural pacing or final beta readiness. Full1.80 F1-F5 and all later ordered roadmap gates remain; accepted live staysAlpha1.79.5."
+}

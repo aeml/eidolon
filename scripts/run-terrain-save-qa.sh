@@ -3,6 +3,13 @@ set -euo pipefail
 
 # A focused compatibility check, never the production Compose/database/env.
 readonly terrain_mongo_port="${EIDOLON_TERRAIN_SAVE_QA_PORT:-18189}"
+readonly terrain_scenario="${EIDOLON_TERRAIN_SAVE_QA_SCENARIO:-world}"
+case "${terrain_scenario}" in
+  world) terrain_test='^TestTerrainActualSavedSessionsAcrossProfileChanges$'; terrain_timeout=120s ;;
+  earned-party) terrain_test='^TestTerrainActualEarnedPartyCheckpointAcrossProfileChanges$'; terrain_timeout=180s ;;
+  *) echo "Terrain save QA scenario must be world or earned-party." >&2; exit 1 ;;
+esac
+readonly terrain_test terrain_timeout
 if ! [[ "${terrain_mongo_port}" =~ ^[0-9]+$ ]] || (( terrain_mongo_port < 1024 || terrain_mongo_port > 65535 )); then
   echo "Terrain save QA requires an unprivileged loopback port." >&2
   exit 1
@@ -31,6 +38,7 @@ if docker container inspect "${terrain_container}" >/dev/null 2>&1; then
 fi
 echo "Terrain save evidence: ${terrain_evidence}"
 echo "Terrain save source: $(git rev-parse HEAD) (current working tree)"
+echo "Terrain save scenario: ${terrain_scenario}"
 GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go -C server build -race \
   -ldflags="-X main.buildCommit=${terrain_binary_name}" -o "${terrain_binary}" .
 # No authentication-bearing production URI is read. Only synthetic saves exist
@@ -52,7 +60,7 @@ EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 \
 EIDOLON_RESOURCE_MONGO_URI="mongodb://127.0.0.1:${terrain_mongo_port}" \
 EIDOLON_RESOURCE_BINARY="${terrain_binary}" \
 GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 \
-  go -C server test -race -p 2 -count=1 -timeout=120s -v \
-    -run '^TestTerrainActualSavedSessionsAcrossProfileChanges$' . \
+  go -C server test -race -p 2 -count=1 -timeout="${terrain_timeout}" -v \
+    -run "${terrain_test}" . \
     2>&1 | tee "${terrain_evidence}/terrain-save.log"
 echo "Terrain profile save check passed; only its disposable database is removed."

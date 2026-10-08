@@ -9,6 +9,7 @@ import (
 
 	"eidolon-server/internal/database"
 	"eidolon-server/internal/game"
+	"github.com/gorilla/websocket"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -19,7 +20,16 @@ import (
 // and spells must kill the actual restored first guardian. One real Mongo
 // rejection and actual SIGKILL then exercise original-cohort startup recovery.
 func TestBossVictoryActualPartyKillCrashAndRecovery(t *testing.T) {
+	testBossVictoryActualPartyKillCrashAndRecovery(t, false)
+}
+
+func testBossVictoryActualPartyKillCrashAndRecovery(t *testing.T, terrainSwitch bool) {
+	t.Helper()
 	repo, uri, binary := resourceJournalIntegration(t)
+	initialProfile, recoveredProfile := game.FlatTerrainProfile, game.FlatTerrainProfile
+	if terrainSwitch {
+		initialProfile = game.RaisedEarthTerrainProfile
+	}
 	instanceID := fmt.Sprintf("dungeon_boss_socket_%d", time.Now().UnixNano())
 	resume := roomPreparedResume(instanceID)
 	resume.CurrentRoomIndexValue = 2
@@ -34,6 +44,12 @@ func TestBossVictoryActualPartyKillCrashAndRecovery(t *testing.T) {
 	fixtures, passwords := make([]*database.Character, 4), make([]string, 4)
 	for i, class := range classes {
 		fixture, password := resourceJournalFixture(t, repo)
+		if terrainSwitch && i == 0 {
+			// A real portal-created run belongs to its leader's party. The
+			// prepared pre-boss layout must have that same owner; membership
+			// itself is still established below with real invite/accept consent.
+			resume.PartyID = "party-player-" + fixture.Name
+		}
 		fixture.Class, fixture.InstanceID, fixture.DungeonProgress, fixture.SelectedBranch = class, instanceID, resume, "A"
 		fixture.LastLogout, fixture.X, fixture.Z, fixture.EP = time.Now(), 19993.5, 19850+float64(i)*.3, 43
 		fixture.Quests = []database.Quest{{ID: "earned-guardian-credit", Type: "KILL", Target: "RootboundWarden", MaxCount: 1, Accepted: true}}
@@ -114,10 +130,15 @@ func TestBossVictoryActualPartyKillCrashAndRecovery(t *testing.T) {
 		}
 	}
 	t.Cleanup(func() { setValidator(bson.M{}) })
-	address, crash := compatStartServerWithCrash(t, binary, uri, 745, true, "-save-journal-dir", dir)
+	address, crash := compatStartServerWithCrash(t, binary, uri, 745, true, "-save-journal-dir", dir, "-terrain-profile", initialProfile)
 	probes := make([]*roomSocketProbe, 4)
 	for i, fixture := range fixtures {
-		connection, _ := resourceLoginCharacter(t, address, fixture.Name, passwords[i], fixture.Class)
+		var connection *websocket.Conn
+		if terrainSwitch {
+			connection = terrainCheckpointLogin(t, address, fixture.Name, passwords[i], fixture.Class, initialProfile)
+		} else {
+			connection, _ = resourceLoginCharacter(t, address, fixture.Name, passwords[i], fixture.Class)
+		}
 		if scene := resourceReadScene(t, connection); scene.InstanceID != instanceID {
 			t.Fatal("ordinary pre-boss resume failed")
 		}
@@ -205,7 +226,7 @@ func TestBossVictoryActualPartyKillCrashAndRecovery(t *testing.T) {
 		<-probe.done
 	}
 	setValidator(bson.M{})
-	address, stop := compatStartServer(t, binary, uri, 746, "-save-journal-dir", dir)
+	address, stop := compatStartServer(t, binary, uri, 746, "-save-journal-dir", dir, "-terrain-profile", recoveredProfile)
 	recoveredRecord, err := repo.GetBossVictory(operationID)
 	if err != nil || recoveredRecord == nil || recoveredRecord.State != database.BossVictoryComplete || !reflect.DeepEqual(record.BossVictoryOperation, recoveredRecord.BossVictoryOperation) {
 		t.Fatal("fresh server lost or rerolled the actual earned cohort", err)
@@ -247,5 +268,8 @@ func TestBossVictoryActualPartyKillCrashAndRecovery(t *testing.T) {
 	}
 	_ = connection.Close()
 	<-probe.done
+	if terrainSwitch {
+		terrainEarnedPartyCheckpointRecovery(t, repo, uri, binary, dir, address, stop, fixtures, passwords, recoveredRecord)
+	}
 	stop()
 }
