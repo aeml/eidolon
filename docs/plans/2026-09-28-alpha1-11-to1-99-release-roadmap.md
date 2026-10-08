@@ -1,5 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October8 staged understory composition: uneven grass/fern stands preserve all
+plants, species, Low subset and clear routes/sites. Nine units and High/Low
+equipped gallery pass; one native renderer/three-live-peer observation passes
+36.48s. Exact p9533.400000000001455ms remains above33.4; no speed attribution,
+four-browser/device or final-art acceptance. See
+[scope](2026-10-08-understory-composition-checks.json).
+Next selective bark/composition integration follows pending1.79.8 acceptance.
+
 October8 staged woodland material work: distinct periodic-UV birch/pine/willow
 bark, separate color/roughness/filtered normal relief, existing meshes/UVs and
 zero new textures. Focused54 and equipped High/Low native41.1s pass; inspected

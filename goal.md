@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 woodland composition qualified, staged:** Existing grass and ferns
+form uneven stands with clearer gaps; every plant/species/Low subset and route
+clearance retained. Nine unit cases and equipped High/Low gallery pass original
+limits. Changed-source single-renderer/three-live-peer observer passes36.48s;
+exact p9533.400000000001455ms still above33.4, not rounded into acceptance or
+attributed as a speed gain. See
+[bounded evidence](docs/plans/2026-10-08-understory-composition-checks.json).
+Next selectively integrate bark/composition onto current public source after
+pending1.79.8 acceptance; future raised/profile/renderer work stays separate.
+
 **October8 woodland material work advances, staged:** Existing Earth stems now
 have distinct periodic-UV birch, pine and willow bark with separate color,
 roughness and filtered normal relief. No new textures/meshes/collisions or
