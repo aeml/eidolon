@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October8 current Player Guide integration:** Reused worktree now on
+work/alpha-1-85-player-guide-current-20261008 rooted516faa2b; original support
+branch preserved. Select only planned1320cec6 Help/CSS/test hunks, not older
+authority. Six native collapsed/touch-sized reference chapters retain existing
+journey, remapped controls, timer, privacy/recovery, admin and version source.
+Missing-chapter tests first FAIL5/2.027s; current guide/keyboard/dungeon checks
+PASS43/2.631s and actual desktop/phone-sized Help PASS2/17.6s. Ten unchanged rule
+inputs match the qualified guide source, so do not rerun unchanged server/equipment
+work. Phone capture inspected; no final art/device/campaign/SLA claim. Local
+only, no version/push/deployment; ordered freeze/full goal remain open.
+[Current guide scope](docs/plans/2026-10-08-current-player-guide-checks.json).
+
 **October8 current private progress-help integration:** Current reused worktree
 is now work/alpha-1-84-support-current-20261008 rooted89c18f71; inspect branch
 before freeze/probe edits. Select only prepared67c97dfd support hunks, preserving

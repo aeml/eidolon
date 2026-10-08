@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T02:28:08Z",
+  "milestone": "1.85 player-facing documentation",
+  "status": "current-player-guide-integrated-locally-ordered-release-open",
+  "authority": {
+    "branch": "work/alpha-1-85-player-guide-current-20261008",
+    "parent": "516faa2b",
+    "worktree": "/home/aeml/.local/share/eidolon-freeze-180-LPJZ9Alg",
+    "integration": "Select only inspected1320cec6 Help HTML/CSS and guide tests onto current1.79.1 authority plus prepared1.80/1.83/1.84 changes. Preserve current recovery-link boot, analytics/privacy controls, Service diagnostics, shaders/equipment, existing Help/journey/timer/remapped controls and release identity. No old future branch wholesale merge or new authority/storage/network route."
+  },
+  "implementation": "Existing Help window becomes Player Guide with six native collapsed chapters: classes/equipment/bag; parties/raids/safety; story/dungeons/portal/expiry; Forge/repairs; Gold/EP/trade/casino; settings/accessibility/known limits. Touch-size44px summaries, keyboard-focus outlines and wrapping class cards retain the shared scrollable window/header/footer. No speculative navigation framework, dependency, new service or external documentation site.",
+  "sourceReview": "Current armor eligibility, Rogue weapon/offhand rules, dungeon30/60/70/70/100 floors, personal Ilyra/crystal/Fifth Note gates, southeast portal directions, latest cleared-boss return, separate five-minute empty-run and15-minute logout windows, Gold/EP exchange/allowance/no-power boundaries and current menus/keyboard defaults remain explicit. Town recovery, training, first-hour guidance, recurring activities and local-only optional playtest timer remain. The named town Chronicle witnesses are separate nonreward lore residents, not substituted service-giver identities; retain the actual Quest Giver instructions rather than guessing Dain's role.",
+  "compatibilityReuse": "Compare current source with qualified1320cec6: EquipmentSlots.js, game/equipment_slots.go, client/game dungeon_progression, ep_exchange.go, vip.go, DungeonPreparation, ElementalRaidBriefing, ResonancePortalDialog and EPWalletUI have no diff. Reuse their retained authoritative rule evidence rather than rerunning unchanged server/equipment suites. Current guide tests additionally read real client eligibility/catalog and actual server EP constants; this is not a fresh complete gameplay or persistence run.",
+  "verification": {
+    "red": "All five recovered guide-contract tests fail against current baseline because six required chapters are absent:2.027s. No missing-module/setup failure counted as regression.",
+    "unit": "PlayerGuide, KeyboardBindings and DungeonProgressionRules PASS43 distinct checks2.631s, root36637 terminal exit0. Verify collapsed native chapters, actual class-family eligibility, all current dungeon floors/personal gates/portal directions/checkpoint/expiry, real backend EP exchange/monthly constants, no reverse/power/payments and visible accessibility/authority limits.",
+    "browser": "Actual System Chrome UIManager Help/class-selection flow PASS2/17.6s at1280px and390px, root53222 terminal exit0. Six chapters open/close with focused Enter, summaries reach44px, paragraph/list/class text and windows have no horizontal overflow; existing journey guidance and close behavior retained. Explicit WebSocket block, no accounts/world progression/provider activity. Not a physical-phone session or campaign/device-performance certification.",
+    "visual": "Inspect actual390px equipment-reference screenshot. Readable wrapping class descriptions and focused disclosure with persistent header/footer; long chapters scroll, not clipped into horizontal columns. Screenshot shows the visible portion, not all cards at once; browser checks cover chapter text overflow separately. No assertion that one guide capture accepts final modern world/character quality.",
+    "static": "Scoped ESLint and git diff --check pass. No extra unchanged campaign/cohort/profile/server run. Browser handle terminal and owned4190 independently closed."
+  },
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-guide-evidence-20261008-QXLTied5",
+    "indexSha256": "d599c67197caf7fb28881c5c022d6e3755f55fdd229bdff2d30df2ea1b8a11af",
+    "windowsCssSha256": "e9068bcc494d9b16b964982a7d4a57729358fba02157e1d69a19a2736c38f993",
+    "guideTestSha256": "19349a41b1ae4969fc54669e3704931bdcd61566f0bbc7980c5da7f6ed072825",
+    "phoneImageSha256": "e43df6b3c905dac8c38c06b33f2b0819561676f8b5ff91dd75fd702a20569903"
+  },
+  "draftPlayerNotes": [
+    "Help becomes a fuller Player Guide with six collapsible reference chapters for equipment, grouping, instances, Forge progression, currency/casino and settings.",
+    "Guide documents current dungeon entry levels, personal crystal/portal gates, latest-boss checkpoint returns and the preserved15-minute logout rule.",
+    "Equipment and EP/VIP guidance reflects actual class restrictions and the irreversible cosmetic-only EP economy; pacing/device/support limitations stay visible."
+  ],
+  "publication": "Prepared local code/documentation only: no version bump, push, CI dispatch or deployment. No private data/provider/retention/payment/role/Gold/EP/save/access changes, new service, broad cleanup or owner policy assumption. Original1.80 freeze/service choices,1.85 own release/reader acceptance, full modern art/raised-world/performance and original1.99 goal remain open. Fresh origin/master fetch remains c8ff2cd6."
+}

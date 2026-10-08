@@ -10,6 +10,10 @@ failed and its credentialed live QA skipped; see [scoped public receipt](2026-10
 This delivers scoped material/equipment/origin/storage fixes, not raised-world
 production, final modern art,1.80 freeze, beta access or full-roadmap completion.
 Continue actual1.80 reconciliation without another unchanged campaign/cohort run.
+October8 [current Player Guide preparation](2026-10-08-current-player-guide-checks.json)
+integrates six source-checked collapsible Help chapters onto current authority;
+actual desktop/phone-sized layout and43 scoped checks pass. Ordered1.85 delivery,
+reader feedback and original art/device/operations gates remain distinct.
 October8 [current private progress help](2026-10-08-current-progress-support-checks.json)
 selectively integrates login/in-game support and correct report-selector focus,
 preserving current admin diagnostics and recovery/privacy controls. Local staged
