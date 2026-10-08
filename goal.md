@@ -6,7 +6,7 @@ flat-yellow leaf attempt before final native review. Pine68/leaf67 focused
 checks and separate flat/equipped High/Low native cases pass original limits.
 See [pine](docs/plans/2026-10-08-conifer-coverage-checks.json) and
 [leaf](docs/plans/2026-10-08-understory-leaf-checks.json) evidence/limits.
-Finish pending public surface acceptance; prepare selective visual delivery.
+Public surface acceptance complete; prepare selective woodland visual delivery.
 Full composition/modern-art/device/roadmap requirements remain active.
 
 **October8 current-master surface patch assembled:** Alpha1.79.7 prepares only
@@ -16,8 +16,9 @@ raised profile, new gameplay or Air-canvas relabeling (already delivered1.79.3).
 Fresh flat-native High/Low checks pass29.7s; public front/back/DB and selected
 bytes match7892224f. First CI37773941500 live QA fails on stylesheet network
 errors after all rest gameplay assertions complete. Independent anonymous
-Chrome controls load all40 CSS responses; ONE failed-job retry is pending,
-not accepted yet. See [public/retry evidence](docs/plans/2026-10-08-release1-79-7-public-checks.json) and
+Chrome controls load all40 CSS responses; ONE failed-job retry succeeds.
+Root verifies all10 required jobs and matching public front/back/DB identity;
+accepted live is now1.79.7/7892224f. See [public/retry evidence](docs/plans/2026-10-08-release1-79-7-public-checks.json) and
 [current assembly](docs/plans/2026-10-08-release1-79-7-checks.json).
 Accepted live1.79.6 exact37a13a41/CI37762573941 supersedes older pending entries;
 see [public receipt](docs/plans/2026-10-08-release1-79-6-public-checks.json).

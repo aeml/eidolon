@@ -14,7 +14,8 @@ derivatives are not promoted. See [scope](2026-10-08-release1-79-7-checks.json).
 Fresh flat-native High/Low checks pass29.7s; public front/back/DB/selected bytes
 match7892224f. CI37773941500 first live QA fails on stylesheet network errors
 after rest gameplay assertions pass. Independent Chrome controls load40 CSS
-responses; ONE failed-job retry is pending, not accepted. See
+responses; ONE failed-job retry succeeds. Root confirms all10 required jobs;
+accepted public1.79.7/7892224f supersedes historical pending entries. See
 [public/retry evidence](2026-10-08-release1-79-7-public-checks.json).
 Accepted public1.79.6/37a13a41
 and ordinary37762573941 supersede historical pending statements below; see

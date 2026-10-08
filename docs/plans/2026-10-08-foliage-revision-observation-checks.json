@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "status": "diagnostic-complete-performance-remains-open",
+  "sourceCommit": "3fb237e0",
+  "scope": "Opt-in three-second foliage revision/visit counters after the timed party sample. Does not change rendering, scenery, culling decisions or quality. Four hook ownership/cleanup/error unit tests pass.",
+  "native": "Connected-party-observer High: Go38.43s/browser31.3s passes, one System Chrome GPU renderer and three authenticated normal socket peers with fresh14-slot saves. Disposable loopback database/server only. Root confirms owned session99702 exit0 and retained browser log; Luna monitors terminal completion.",
+  "counters": { "frames": 131, "visits": 1278822, "viewChanges": 0, "shadowChanges": 0, "initialRoots": 10 },
+  "timedSample": { "frames": 180, "medianMs": 33.3, "p95Ms": 33.4, "p99Ms": 33.5, "framesOver33_34Ms": 40, "drawCalls": 507, "triangles": 563428, "geometries": 396, "textures": 153, "entities": 27, "previewTextures": 0 },
+  "postSample": "CPU loop median25.5ms/p9533.5ms. Foliage visit self796822us, intersectsObject187822us, projectObject133408us. Profiling and probe overhead excluded from preceding timed sample; different entity counts and host state forbid cross-run speed attribution.",
+  "finding": "View/light revisions remain unchanged: caching already avoids repeated exact plane decisions. Per-cell eligibility/bounds traversal remains costly. No camera damping/epsilon/snap change justified. Further optimization must preserve immediate material/flag/parent/visibility/bounds changes and all foliage/shadow content.",
+  "logs": ["/home/aeml/.local/share/eidolon-party-foliage-revision-high-20261008.log", "/home/aeml/.local/share/eidolon-terrain-save-evidence-iISWD3cT/browser.log"],
+  "limits": "Not a full four-browser party, raid/campaign completion, sustained device qualification or formal party performance acceptance. Full1.80/1.87 and later roadmap remain open. No unchanged campaign/soak replay."
+}

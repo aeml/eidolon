@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {
     appendReleaseVersion,
+    bundleGameStyles,
     rewriteCss,
     rewriteHtml,
     rewriteJavaScript,
@@ -21,6 +22,72 @@ function parseGLTF(data) {
 }
 
 describe('Pages runtime release versioning', () => {
+    test('bundles published styles in source order with versioned fonts, unchanged data URLs and no source edits', async () => {
+        const root = fs.mkdtempSync(path.join(os.tmpdir(), 'eidolon-pages-styles-'));
+        try {
+            const styles = path.join(root, 'src', 'styles');
+            fs.mkdirSync(styles, { recursive: true });
+            const manifest = "/* @import './ignored.css'; */\n@import './tokens.css';\n@import './phone.css';";
+            const tokens = ".test {color:red} @font-face{src:url('../../assets/fonts/local.ttf')}";
+            const phone = ".test {color:blue;background:url('data:image/svg+xml;base64,abc')}";
+            fs.writeFileSync(path.join(styles, 'index.css'), manifest);
+            fs.writeFileSync(path.join(styles, 'tokens.css'), tokens);
+            fs.writeFileSync(path.join(styles, 'phone.css'), phone);
+            fs.writeFileSync(path.join(root, 'release.json'), JSON.stringify({ version: 'Alpha 9.8.7' }));
+            const result = await versionPagesRuntime(root, release);
+            const bundled = fs.readFileSync(path.join(styles, 'index.css'), 'utf8');
+            expect(result.bundledStyles).toBe(true);
+            expect(bundled).not.toContain('@import');
+            expect(bundled.indexOf('color:red')).toBeLessThan(bundled.indexOf('color:blue'));
+            expect(bundled).toContain(`../../assets/fonts/local.ttf?release=${release}`);
+            expect(bundled).toContain("data:image/svg+xml;base64,abc");
+            expect(fs.readFileSync(path.join(styles, 'phone.css'), 'utf8')).toBe(phone);
+            const rerun = await versionPagesRuntime(root, release);
+            expect(rerun.bundledStyles).toBe(false);
+            expect(fs.readFileSync(path.join(styles, 'index.css'), 'utf8')).toBe(bundled);
+        } finally { fs.rmSync(root, { recursive: true, force: true }); }
+    });
+
+    test.each([
+        "@import './tokens.css' screen;", "@import url('./tokens.css');",
+        "@import '../tokens.css';", "@import 'https://example.com/styles.css';",
+        "@import './tokens.css'; body{color:red}"
+    ])('rejects unsupported manifest syntax without overwriting it: %s', async manifest => {
+        const root = fs.mkdtempSync(path.join(os.tmpdir(), 'eidolon-pages-invalid-styles-'));
+        try {
+            const styles = path.join(root, 'src', 'styles');
+            fs.mkdirSync(styles, { recursive: true });
+            fs.writeFileSync(path.join(styles, 'index.css'), manifest);
+            await expect(bundleGameStyles(root)).rejects.toThrow(/plain same-directory/);
+            expect(fs.readFileSync(path.join(styles, 'index.css'), 'utf8')).toBe(manifest);
+        } finally { fs.rmSync(root, { recursive: true, force: true }); }
+    });
+
+    test.each(["@import './nested.css';", '@charset "utf-8";', '@namespace svg url(http://www.w3.org/2000/svg);'])('rejects nested directives without changing the entry: %s', async fragment => {
+        const root = fs.mkdtempSync(path.join(os.tmpdir(), 'eidolon-pages-nested-styles-'));
+        try {
+            const styles = path.join(root, 'src', 'styles');
+            fs.mkdirSync(styles, { recursive: true });
+            const manifest = "@import './tokens.css';";
+            fs.writeFileSync(path.join(styles, 'index.css'), manifest);
+            fs.writeFileSync(path.join(styles, 'tokens.css'), fragment);
+            await expect(bundleGameStyles(root)).rejects.toThrow(/nested stylesheet/);
+            expect(fs.readFileSync(path.join(styles, 'index.css'), 'utf8')).toBe(manifest);
+        } finally { fs.rmSync(root, { recursive: true, force: true }); }
+    });
+
+    test('missing fragment fails without publishing a partially combined stylesheet', async () => {
+        const root = fs.mkdtempSync(path.join(os.tmpdir(), 'eidolon-pages-missing-styles-'));
+        try {
+            const styles = path.join(root, 'src', 'styles');
+            fs.mkdirSync(styles, { recursive: true });
+            const manifest = "@import './missing.css';";
+            fs.writeFileSync(path.join(styles, 'index.css'), manifest);
+            await expect(bundleGameStyles(root)).rejects.toMatchObject({ code: 'ENOENT' });
+            expect(fs.readFileSync(path.join(styles, 'index.css'), 'utf8')).toBe(manifest);
+        } finally { fs.rmSync(root, { recursive: true, force: true }); }
+    });
+
     test('the actual live gate parses compact and formatted release JSON', () => {
         const workflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/ci.yml'), 'utf8');
         const gate = workflow.split('- name: Wait for matching live releases')[1]
