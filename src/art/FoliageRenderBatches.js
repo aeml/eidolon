@@ -5,6 +5,7 @@ import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
+import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
 
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
@@ -71,7 +72,8 @@ export function getFoliageRenderBatches(id, quality = 'high') {
         if (quality === 'low' && crown) {
             if (!LOW_CROWNS.has(crown)) LOW_CROWNS.set(crown,
                 crown === 'leaf' ? createLeafCanopyGeometry('low') : crown === 'willow'
-                    ? createWillowCurtainGeometry('low') : crown === 'elemental-needle'
+                    ? createWillowCurtainGeometry('low') : crown === 'drowned-willow'
+                        ? createDrownedWillowGeometry('low') : crown === 'elemental-needle'
                         ? createElementalConiferGeometry('low') : createConiferBoughGeometry('low'));
             part = { ...part, geometry: LOW_CROWNS.get(crown) };
         }

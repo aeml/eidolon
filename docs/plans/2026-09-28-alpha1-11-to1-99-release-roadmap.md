@@ -65,6 +65,14 @@ crystals, terrain/groundcover cohesion and full regional art remain open.
 Current-master integration, patch notes/versions and deployment acceptance are
 still required; technical qualification is not complete modern art or beta.
 
+Staged [Water willow foliage](2026-10-08-drowned-willow-checks.json) replaces
+solid crowns/cones with folded leaves and hanging shoots, retaining all 80
+anchors and three material batches. Forty-two focused cases and two native
+High/Low cases/twenty timed views pass original scene limits. Actual captures
+show a more organic silhouette; sparse terrain/groundcover, primitive regional
+props and complete world cohesion remain open. Selective integration and delivery
+are pending; this is not final modern art or a closed-beta readiness claim.
+
 Every original version, requirement, gate, inherited decision, delivery rule,
 receipt and reference below is preserved unchanged. The accumulated dated
 pre-section progress notes moved byte-for-byte to

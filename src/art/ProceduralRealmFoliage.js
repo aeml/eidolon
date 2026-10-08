@@ -5,6 +5,7 @@ import { createLeafCanopyGeometry } from './ProceduralLeafCanopy.js';
 import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
+import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
 import { applyWoodlandLeafDetail } from './WoodlandLeafMaterial.js';
@@ -62,12 +63,11 @@ function part(name, geometryValue, materialValue, {
 const trunk = geometry('foliage-trunk', () => new THREE.CylinderGeometry(0.28, 0.48, 5.4, 7));
 const narrowTrunk = geometry('foliage-narrow-trunk', () => new THREE.CylinderGeometry(0.16, 0.32, 6.2, 7));
 const branch = geometry('foliage-branch', () => new THREE.CylinderGeometry(0.08, 0.18, 2.8, 6));
-const broadCrown = geometry('foliage-broad-crown', () => new THREE.DodecahedronGeometry(1.55, 0));
+const drownedCrown = geometry('foliage-drowned-willow', createDrownedWillowGeometry);
 const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
 const needleCrown = geometry('foliage-needle-boughs', createConiferBoughGeometry);
 const willowCurtain = geometry('foliage-willow-curtain', createWillowCurtainGeometry);
 const pineCrown = geometry('foliage-elemental-boughs', createElementalConiferGeometry);
-const curtain = geometry('foliage-curtain', () => new THREE.ConeGeometry(0.58, 3.5, 6, 1, true));
 const shard = geometry('foliage-shard', () => new THREE.ConeGeometry(0.34, 2.2, 5));
 const crystal = geometry('foliage-crystal', () => new THREE.OctahedronGeometry(0.7, 0));
 const root = geometry('foliage-root', () => new THREE.ConeGeometry(0.2, 1.9, 5));
@@ -158,14 +158,12 @@ function createRimePine() {
 
 function createDrownedWillow() {
     const p = palette('water');
-    const bark = material('foliage-drowned-bark', 0x263b43);
-    const leaf = material('foliage-drowned-reed', 0x536f79, { side: THREE.DoubleSide });
+    const bark = material('foliage-drowned-bark', 0x263b43, { barkDetail: 'willow', flatShading: false });
+    const leaf = material('foliage-drowned-reed', 0x536f79, { side: THREE.DoubleSide, vertexColors: true, leafDetail: true });
     const spirit = material('foliage-drowned-spirit', p.spirit, { emissive: p.spirit, emissiveIntensity: 0.82 });
     return [
-        part('bent drowned trunk', trunk, bark, { position: [0.28, 2.6, 0], rotation: [0, 0, -0.2], scale: [0.84, 1.02, 0.84] }),
-        part('drowned canopy', broadCrown, leaf, { position: [-0.4, 5.38, 0], scale: [1.36, 0.58, 1.08] }),
-        part('silver reed curtain west', curtain, leaf, { position: [-1.0, 3.72, 0], scale: [0.72, 0.92, 0.72] }),
-        part('silver reed curtain east', curtain, leaf, { position: [0.72, 3.55, 0.15], scale: [0.65, 0.82, 0.65] }),
+        part('bent drowned trunk', willowStem, bark, { position: [0.28, 2.6, 0], rotation: [0, 0, -0.2], scale: [0.84, 1.02, 0.84] }),
+        part('drowned canopy', drownedCrown, leaf),
         part('drowned soul fruit west', lantern, spirit, { position: [-0.9, 2.58, 0.25], castShadow: false }),
         part('drowned soul fruit east', lantern, spirit, { position: [0.65, 2.92, -0.08], scale: [0.75, 0.75, 0.75], castShadow: false })
     ];

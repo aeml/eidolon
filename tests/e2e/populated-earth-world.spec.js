@@ -78,6 +78,12 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                 // cannot establish the changed crown's appearance.
                 foliageSites.push({ id: `${id}-bough-review`, x: tree.x + 6,
                     z: tree.z + 8, region: recipe.region });
+                if (elemental === 'water-fire') {
+                    const willow = PROCEDURAL_FOLIAGE_RECIPES.find(recipe => recipe.id === 'drowned_willow');
+                    const placement = createProceduralFoliagePlacements(willow)[0];
+                    foliageSites.push({ id: 'drowned-willow-review', x: placement.x + 6,
+                        z: placement.z + 8, region: 'water' });
+                }
                 // Actual ordinary travel positions beside the composed stands,
                 // not a hero moved next to an arbitrarily remote tree.
                 foliageSites.push(...(elemental === 'air'
