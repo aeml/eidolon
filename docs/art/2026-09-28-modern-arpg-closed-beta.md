@@ -73,6 +73,16 @@ as possible in code so the user's external asset work is limited to **player
 class models, monsters, bosses and NPCs**. This is the production division of
 work, not merely an optional way to divide a larger outsourced asset list.
 
+October8 staged shared-output review: actual world and dressing-room renderers
+now use the same filmic highlight curve rather than linear clipping. Same-instance
+town/five-dungeon/equipped-Earth High/Low comparisons retain lights/exposure,
+geometry/resources and original frame budgets. Actual class previews use legal
+gear and wait for imported assets. Contrast improves modestly; furnace shadows
+are darker, while broad floor fields and simple/repeated interior/formation
+silhouettes remain. This is not approval of the complete modern-ARPG direction,
+physical-device/party qualification or public delivery. See
+[scope and retained failures](../plans/2026-10-08-filmic-lighting-checks.json).
+
 | User-provided model scope | Code/integration work owned by implementation |
 | --- | --- |
 | Fighter, Rogue, Wizard and Cleric bodies/base appearances | Actor import/validation, rig/animation integration, equipment anchors, material assignment, previews, LOD/resource budgets, local/remote appearance and fallback behavior |

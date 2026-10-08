@@ -18,6 +18,17 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- Staged filmic lighting now unifies actual world and dressing-room output.
+  No exposure/light/material/content/geometry or new pass/resource changes.
+  Thirty focused checks, six native town/five-dungeon High/Low cases and two
+  equipped Earth cases/fourteen paired lighting views pass original limits.
+  An existing asynchronous/illegal-loadout sheet fixture fails, then corrected
+  actual four-class readiness/eligibility check passes with original UI gates.
+  [Evidence](docs/plans/2026-10-08-filmic-lighting-checks.json). Root reviews
+  actual comparisons; modest contrast improvement, darker furnace shadows,
+  still primitive/stylized scenery, not modern-art or device acceptance.
+  No public version/push; select after existing prepared releases with notes.
+
 - Optional public login/manifest/API outage checks staged at2be4f1cd in
   `/home/aeml/.local/share/eidolon-public-monitor-SVPI3UWI`, based on prepared
   1.79.12. Paired startup-only HTTPS flags, bounded bodies/shared public

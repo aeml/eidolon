@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import * as THREE from 'three';
 import { CharacterPreview } from '../src/ui/CharacterPreview.js';
 import { BASE_ITEMS, RARITY } from '../src/core/ItemSystem.js';
 import { EQUIPMENT_RENDER_SLOTS } from '../src/art/ProceduralEquipment.js';
@@ -27,6 +28,8 @@ test('creates graphics lazily and redraws gear changes, not health or XP ticks',
     expect(createRenderer).not.toHaveBeenCalled();
     preview.update(player);
     expect(createRenderer).toHaveBeenCalledTimes(1);
+    expect(renderer.toneMapping).toBe(THREE.ACESFilmicToneMapping);
+    expect(renderer.toneMappingExposure).toBe(1.35);
     expect(renderer.render).toHaveBeenCalledTimes(1);
     expect(preview.model.userData.equipmentVisualItemCount).toBe(1);
     const model = preview.model;

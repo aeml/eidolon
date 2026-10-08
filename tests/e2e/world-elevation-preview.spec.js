@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { compareFilmicLighting } from './lighting-comparison.js';
 
 // An isolated integration preview. Live movement/scenery still use level ground;
 // this does not establish a complete elevated world or physical-phone acceptance.
@@ -264,6 +265,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             plants: understory.userData.plantCount };
         understory.visible = true; render.render();
         let reviewWarning = null;
+        window.__earthLightingReview = { render };
         window.__reviewEarthAuraDanger = () => {
             GameEngine.prototype.spawnTransientEffect.call(engine, 'telegraph', actor.position.clone().add(new THREE.Vector3(-4, 0, -4)), 0xff2200,
                 { radius: 8, telegraphDuration: 2, threatTier: 'danger' });
@@ -516,6 +518,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         expect.soft(profile.calls, `${name} calls`).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);
         expect.soft(profile.triangles, `${name} triangles`).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
     };
+    await compareFilmicLighting(page, testInfo, '__earthLightingReview', 'earth-grove');
     // Road views mostly submit outcrop shadows. Also qualify the actual color
     // material where the formation occupies a meaningful part of the screen.
     await profileView('grove-formation');
