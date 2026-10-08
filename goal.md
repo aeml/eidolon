@@ -18,15 +18,20 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
-- Corrected1.79.9 pushed7114aad6fc5039befc292297d7c477414638c63e;
-  exact37842726678 is in progress, Luna monitors terminal-only. Prior37791738441
+- Accepted public1.79.9 exact7114aad6fc5039befc292297d7c477414638c63e;
+  own37842726678 all ten required jobs successful. Root confirms exact public
+  front/back/healthy DB, tracked-clean production and four byte-identical actual
+  publisher outputs including ordered stylesheet. Optional broader predeploy
+  gallery/GPU/full-character and live four-class animation skipped, not passed.
+  [Public acceptance](docs/plans/2026-10-08-release1-79-9-public-checks.json).
+  Prior37791738441
   attempt1 hit6h browser-install timeout; attempt2 failed predeploy loot pointer:
   three Skeletons remained after QA's two-hostile clearance cap. Runtime remains
   unchanged. QA can clear8distinct blockers using actual mouse/combat; bounded
   policy/raycast34 and CI-planning22 regressions plus actual disposable four-case
   release smoke pass. Fresh smoke does not reproduce original pack. Deadline15m
-  brought forward without changing install commands or skipping gates. Own
-  mandatory CI/exact public acceptance remain pending; latest accepted1.79.8.
+  brought forward without changing install commands or skipping gates. Latest
+  accepted1.79.9 supersedes earlier pending descriptions; full goal stays active.
   [Correction/evidence](docs/plans/2026-10-08-release1-79-9-loot-qa-checks.json).
 
 - Prepared1.79.14 originally committed89130299, now reconciled c90805f7 in
@@ -44,9 +49,13 @@ Fighter pilot or remove approved authored models.
   [Integration receipt](docs/plans/2026-10-08-release1-79-14-checks.json).
 
 - Prepared1.79.10 reconciled with corrected remote at32ca883a; all five reviewed
-  art hashes unchanged. Prepared1.79.11/login/Firefox merged that preparation
-  atb5734386, preserving both complete goal/roadmap records after append
-  conflicts. Neither pushed/live. Optional user choice requested: batch prepared
+  art hashes unchanged. It is now pushed6ed016b7911687f5cd378263c956a59149f7e02e,
+  exact37861950511 queued; Luna monitors terminal-only, own mandatory/exact public
+  acceptance pending. Fresh fetch shows no remote-ahead changes. Prepared1.79.11
+  login/Firefox now merges that published source at7cc94c45, preserving both
+  complete goal/roadmap records after append conflicts. Rendering/login/archive
+  bytes unchanged, no unaffected scene replay.11 not pushed/live. Optional user
+  choice requested: batch prepared
   small1.79.10–14 patches after current acceptance to reduce repeated CI, while
   preserving every patch note/separate numbered roadmap milestones. No answer
   yet, so ordered publication remains the default. Full goal remains active.
