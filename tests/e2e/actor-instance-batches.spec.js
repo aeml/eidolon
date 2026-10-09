@@ -204,7 +204,11 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural
     await writeFile(testInfo.outputPath('instance-comparison.json'), JSON.stringify(result.reports, null, 2));
     await writeFile(testInfo.outputPath('actor-instances.png'), Buffer.from(result.image.split(',')[1], 'base64'));
     for (const row of result.reports) {
-        expect(row.afterCalls).toBeLessThan(row.beforeCalls);
+        // This deliberately unsupported pose must retain the original path,
+        // not manufacture a draw reduction through invalid instance normals.
+        // Every original supported pose keeps its strict reduction assertion.
+        if (row.state === 'StretchedAttack') expect(row.afterCalls).toBe(row.beforeCalls);
+        else expect(row.afterCalls).toBeLessThan(row.beforeCalls);
         expect(row.afterTriangles).toBe(row.beforeTriangles);
         expect(row.meanError).toBeLessThan(.1); expect(row.changed).toBeLessThan(.001);
         expect(row.visibilityRestored).toBe(true);
