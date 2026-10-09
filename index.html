@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.14</span>
+                    <span class="start-version-row__label">Alpha 1.79.15</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
             </div>
@@ -779,7 +779,17 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.14" data-notes-pages="44" data-notes-total="449">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.15" data-notes-pages="44" data-notes-total="450">
+                <div class="patch-note-entry" data-version="1.79.15">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.15 (unchanged scenery rendering work)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Owned, unchanged scene containers and foliage groups avoid repeated local matrix composition and unnecessary static world-matrix multiplication. Actors, bones, equipment animations, moved parents and reparented scenery remain live.</li>
+                        <li>The foliage registry visits registered scenery instead of unrelated character rigs and buildings. Cell bounds and frustum results are reused only for exact current transforms, bounds, camera, light and shadow-filter inputs. No movement thresholds or timed approximations are introduced.</li>
+                        <li>Generated groundcover keeps its fixed local transform while shader wind and live instance transforms remain active. Detached scenery and disposed renderers restore their original methods and remove owned listeners.</li>
+                        <li>Geometry, density, shadows, cell sizes, filter margins, quality settings, collisions, gameplay and frame budgets remain unchanged. Raised terrain remains disabled in the public world; final equipped-party, device, modern-art and feature-freeze qualification remain open.</li>
+                        <li>No account wipe, schema migration, economy or permission change. Full prior patch history is preserved through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.14">
                     <h3 class="patch-note-entry__title">Alpha 1.79.14 (character surfaces and constructed dungeon interiors)</h3>
                     <ul class="patch-note-entry__list">
@@ -869,15 +879,6 @@
                         <li>After selecting an ally in the party healing roster, numbered or remapped hotbar keys now work while the selected button retains keyboard focus. Healing Light and Divine Intervention keep the selected ally as their target; no extra world click is needed to regain gameplay input.</li>
                         <li>Only an enabled, selected healing-target button permits this shortcut. Typing fields, ordinary menu buttons, unselected or disabled roster buttons, modifier shortcuts and repeated key presses remain guarded. Enter and Space retain native button activation; focus remains accessible.</li>
                         <li>No changes to healing strength, range, mana cost, cooldowns, party credit or server authority. No account wipe, schema migration, economy or progression changes. Raised terrain and new wearable derivatives remain staged, not enabled by this patch. Full prior patch history remains below.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.5">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.5 (administrator Dark Realm passage)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Verified administrators can enter the Dark Realm through the town Resonance Portal or Dungeon Guide without completing the crystal/story questline. Level 100, proximity and normal travel/action checks still apply. Ordinary players retain the existing story requirements.</li>
-                        <li>Administrator passage does not complete quests or grant their rewards, and does not unlock the Umbral Nexus or Dark King raid quest gates. Valid saved Dark Realm positions are restored for administrators on login; access is checked against the current server-side account role, not a client flag.</li>
-                        <li>The portal explains administrator passage without marking unrepaired crystals as restored. Permission use is audited and available under Dark Realm admin access in Administration activity history; role lookup or auditing failures do not grant privileged entry.</li>
-                        <li>No account wipe, schema migration, economy or ordinary-player progression changes. Raised terrain remains disabled in production; full modern-art and release-readiness milestones remain open. Full prior patch history remains below.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

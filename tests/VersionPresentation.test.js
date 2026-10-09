@@ -4,7 +4,17 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.14';
+const currentVersion = '1.79.15';
+
+test('1.79.15 documents bounded renderer caching without freezing animation or claiming final world qualification', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.15"'), previous = html.indexOf('data-version="1.79.14"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['unchanged scene containers', 'Actors, bones', 'remain live', 'exact current transforms',
+        'camera, light', 'No movement thresholds', 'restore their original methods',
+        'Geometry, density, shadows', 'frame budgets remain unchanged', 'Raised terrain remains disabled',
+        'equipped-party', 'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.14 records selected character/dungeon polish without claiming broad staged rendering rollout', () => {
     const html = readIndexWithPatchHistory();

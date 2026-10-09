@@ -429,7 +429,10 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.14`, selected supplied-equipment surface
+- Current source version: `Alpha 1.79.15`, exact unchanged-container matrix and
+  foliage-bound caching, with live actor/bone animation, transforms, wind and
+  camera/light invalidation. Geometry, shadow margins and scene budgets stay
+  unchanged. Also retains selected supplied-equipment surface
   detail and robe layering, registered quality-specific wearable copies with
   original fallbacks, shared filmic output, constructed dungeon props, varied
   flagstones and compact room markers. Full modern-art and raised-world/party/

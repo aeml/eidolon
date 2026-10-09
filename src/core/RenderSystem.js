@@ -14,6 +14,7 @@ import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { updateElementalGroundCoverQuality } from '../art/ElementalGroundCover.js';
 import { getShadowViewBounds } from './ShadowViewCoverage.js';
 import { FoliageShadowInfluence } from './FoliageShadowInfluence.js';
+import { cacheUnchangedLocalMatrix } from './UnchangedLocalMatrix.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createRealmGroundMesh } from '../art/RealmGroundMesh.js';
 import { createProceduralReflectionEnvironment } from '../art/ProceduralReflectionEnvironment.js';
@@ -137,10 +138,14 @@ export class RenderSystem {
         this.scene.add(this.environmentGroup);
         this.scene.add(this.entityGroup);
         this.scene.add(this.effectGroup);
+        this.restoreSceneMatrices = [this.scene, this.environmentGroup, this.staticEnvironmentGroup,
+            this.instanceEnvironmentGroup, this.entityGroup, this.effectGroup]
+            .map(cacheUnchangedLocalMatrix).filter(Boolean);
         // Three updates scene/camera matrices before this hook and submits
         // shadow draws afterwards. Install before actor batching so its normal
         // hook composition and enable/disable lifecycle remain unchanged.
-        this.foliageShadowInfluence = new FoliageShadowInfluence();
+        this.foliageShadowInfluence = new FoliageShadowInfluence(this.scene,
+            [this.scene, this.environmentGroup, this.staticEnvironmentGroup, this.instanceEnvironmentGroup]);
         this.scene.onBeforeRender = (renderer, scene, camera) => {
             const light = renderer.shadowMap?.enabled && this.keyLight?.castShadow ? this.keyLight : null;
             this.foliageShadowInfluence.beginFrame(scene, camera, light,
@@ -1264,7 +1269,9 @@ export class RenderSystem {
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
         this.actorInstances?.dispose(); this.actorInstances = null;
-        this.foliageShadowInfluence?.endFrame();
+        this.foliageShadowInfluence?.dispose();
+        for (const restore of this.restoreSceneMatrices || []) restore();
+        this.restoreSceneMatrices = [];
         this.actorContactShadows?.dispose();
         this.actorContactShadows = null;
         this.disposePostProcessing();

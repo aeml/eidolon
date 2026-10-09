@@ -3,6 +3,29 @@ import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem scene groups', () => {
+    test('unchanged owned world branches do not force static foliage world matrices while actor animation remains live', () => {
+        const render = new RenderSystem(false), foliage = new THREE.Group();
+        foliage.userData = { proceduralFoliage: true, region: 'earth' };
+        const cell = new THREE.InstancedMesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial(), 1);
+        cell.matrixAutoUpdate = false; cell.computeBoundingBox(); foliage.add(cell);
+        render.instanceEnvironmentGroup.add(foliage);
+        const actor = new THREE.Group(), bone = new THREE.Bone(); actor.add(bone); render.entityGroup.add(actor);
+        render.scene.updateMatrixWorld(true);
+        const multiply = jest.spyOn(cell.matrixWorld, 'multiplyMatrices');
+        try {
+            render.scene.updateMatrixWorld();
+            expect(multiply).not.toHaveBeenCalled();
+            actor.position.x = 7; bone.position.y = 3;
+            render.scene.updateMatrixWorld();
+            expect(bone.matrixWorld.elements[12]).toBe(7); expect(bone.matrixWorld.elements[13]).toBe(3);
+            foliage.position.x = 5; render.environmentGroup.position.z = 9;
+            render.scene.updateMatrixWorld();
+            expect(cell.matrixWorld.elements[12]).toBe(5); expect(cell.matrixWorld.elements[14]).toBe(9);
+            render.staticEnvironmentGroup.add(foliage); render.scene.updateMatrixWorld();
+            expect(cell.matrixWorld.elements[12]).toBe(5); expect(cell.matrixWorld.elements[14]).toBe(9);
+        } finally { multiply.mockRestore(); render.dispose(); }
+    });
+
     test.each([
         ['earth_crystal_raid', 'verdant_bastion_catacombs'],
         ['water_crystal_raid', 'abyssal_well'],

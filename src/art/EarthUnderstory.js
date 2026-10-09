@@ -82,6 +82,9 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     const transform = new THREE.Object3D();
     for (const [key, entries] of cells) {
         const mesh = new THREE.InstancedMesh(geometries[entries[0].variant], material, entries.length);
+        // Placement remains in instance buffers and wind stays in the shader.
+        // Keep this owned local identity fixed; parent transforms remain live.
+        mesh.matrixAutoUpdate = false;
         mesh.name = `understory:${key}`;
         mesh.receiveShadow = true;
         mesh.castShadow = false;

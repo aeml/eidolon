@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 prepared1.79.15 — unchanged scenery work:** Select exact owned
+container matrix and foliage registry/bounds/frustum caches onto prepared14.
+Actors/bones, transforms, shader wind, geometry/density/shadows and all original
+budgets remain live/unchanged. Initial raised-preview High exceeds draw budgets:
+fixture attaches world into an actor child, not production's direct environment.
+Correct that fixture only; both native preview cases pass31.2s, flat town/Earth
+High/Low pass1.1m, final429focused checks pass2.963s. Retain failed evidence and
+all449older patch entries byte-identically. Root reviewed bounded images.
+[Receipt](docs/plans/2026-10-09-release1-79-15-checks.json).
+Not live: last accepted public9/7114aad6; pushed10/6ed016b7/run37861950511
+pending, Luna monitors terminal-only. Prepared11 has requested login/Firefox
+fix. Ordered11-15 publication, fresh remote reconciliation, CI/public gates
+still required. Full roadmap/F1-F5/art/equipped-party/device/human/owner/beta/
+launch goal stays active; no public raised-world/monitor activation.
+
 **October8 prepared Alpha1.79.14:** Selected robe coverage/shared authored
 surfaces, gameplay/preview filmic curve, constructed dungeon props, chipped
 flagstones and compact seals on prepared1.79.13. Initial equipped-native check

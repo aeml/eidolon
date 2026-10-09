@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared1.79.15 selects exact unchanged-container matrix and foliage
+registry/bounds/frustum caches, preserving animated actors, wind, transforms,
+geometry/density/shadows and original limits. Wrong actor-group attachment in
+the raised preview first fails High's draw budget; match production's direct
+environment without changing runtime/limits. Two native preview and two flat
+town/Earth cases now pass, final429focused checks pass; all449older notes remain
+byte-identical. [Evidence](2026-10-09-release1-79-15-checks.json).
+Last accepted public9/7114aad6, pushed10/6ed016b7/run37861950511 pending.
+Prepared11 includes the requested login pagination/Firefox correction; ordered
+11-15 delivery requires remote reconciliation and each CI/public acceptance.
+All numbered scope/F1-F5/art/equipped-party/device/human/operator/rights/beta/
+launch gates remain unchanged; no public raised-world or monitor activation.
+
 October8 prepared1.79.14 selects robe coverage/authored surface maps, filmic
 gameplay/preview and constructed dungeon props/flagstones/compact seals. Actual
 equipped-native overbudget fails first; preserve limits/outfits and include

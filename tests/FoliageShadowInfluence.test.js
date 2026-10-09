@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { jest } from '@jest/globals';
 import { FoliageShadowInfluence, getDirectionalShadowInfluenceBounds, getShadowFilterWorldPadding, shadowInfluenceIntersectsFrustum } from '../src/core/FoliageShadowInfluence.js';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from '../src/core/ShadowViewCoverage.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
@@ -17,6 +18,181 @@ function fixture() {
     mesh.castShadow = mesh.receiveShadow = true; group.add(mesh);
     return { scene, group, mesh, camera, light, controller: new FoliageShadowInfluence() };
 }
+
+test('unchanged qualified bounds are reused but parent transforms and live bound edits immediately invalidate them', () => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    const transform = jest.spyOn(THREE.Box3.prototype, 'applyMatrix4');
+    try {
+        const frame = () => { s.controller.beginFrame(s.scene, s.camera, s.light); s.controller.endFrame(); };
+        frame(); expect(transform).toHaveBeenCalledTimes(1);
+        frame(); expect(transform).toHaveBeenCalledTimes(1);
+        s.group.position.x = -100; s.scene.updateMatrixWorld(true);
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(transform).toHaveBeenCalledTimes(2); expect(s.mesh.castShadow).toBe(true); s.controller.endFrame();
+        s.mesh.boundingBox.translate(new THREE.Vector3(100, 0, 0));
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(transform).toHaveBeenCalledTimes(3); expect(s.mesh.castShadow).toBe(false); s.controller.endFrame();
+        s.mesh.boundingBox = new THREE.Box3(new THREE.Vector3(-1, -1, -1), new THREE.Vector3(1, 1, 1));
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(transform).toHaveBeenCalledTimes(4); expect(s.mesh.castShadow).toBe(true); s.controller.endFrame();
+    } finally { transform.mockRestore(); s.controller.dispose(); }
+});
+
+test('unchanged cached bounds reuse validity without copying or rechecking the box each frame', () => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, s.light); s.controller.endFrame();
+    const validity = jest.spyOn(THREE.Box3.prototype, 'isEmpty');
+    const copy = jest.spyOn(THREE.Box3.prototype, 'copy');
+    try {
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(s.mesh.castShadow).toBe(false);
+        expect(validity).not.toHaveBeenCalled(); expect(copy).not.toHaveBeenCalled();
+        s.controller.endFrame();
+        s.mesh.boundingBox.max.y = 400;
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(validity).toHaveBeenCalled(); expect(copy).toHaveBeenCalled();
+        expect(s.mesh.castShadow).toBe(true);
+    } finally { validity.mockRestore(); copy.mockRestore(); s.controller.dispose(); }
+});
+
+test.each(['empty', 'infinite', 'nan', 'matrix'])('invalid %s bounds stay conservative and recover immediately', kind => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    const frame = expected => {
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(s.mesh.castShadow).toBe(expected); s.controller.endFrame();
+    };
+    frame(false);
+    if (kind === 'empty') s.mesh.boundingBox.makeEmpty();
+    if (kind === 'infinite') s.mesh.boundingBox.max.x = Infinity;
+    if (kind === 'nan') s.mesh.boundingBox.min.z = NaN;
+    if (kind === 'matrix') s.mesh.matrixWorld.elements[0] = NaN;
+    frame(true); frame(true);
+    s.mesh.computeBoundingBox(); s.scene.updateMatrixWorld(true);
+    frame(false); s.controller.dispose();
+});
+
+test.each([false, true])('scalar and multi-material live wind changes remain authoritative (ground cover: %s)', groundCover => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    if (groundCover) {
+        s.group.userData = { earthUnderstory: true }; s.mesh.castShadow = false;
+        s.mesh.userData.windBoundsIncluded = true;
+    }
+    const a = s.mesh.material, b = new THREE.MeshStandardMaterial();
+    a.userData.woodlandWind = groundCover; b.userData.woodlandWind = groundCover;
+    const frame = eligible => {
+        s.controller.beginFrame(s.scene, s.camera, s.light);
+        expect(groundCover ? !s.mesh.visible : !s.mesh.castShadow).toBe(eligible);
+        s.controller.endFrame();
+    };
+    frame(true);
+    s.mesh.material = [a, b]; frame(true);
+    b.userData.woodlandWind = !groundCover; frame(false);
+    b.userData.woodlandWind = groundCover; frame(true);
+    a.userData.woodlandWind = !groundCover; frame(false);
+    s.mesh.material = b; frame(true);
+    if (groundCover) { s.mesh.add(new THREE.Group()); frame(false); }
+    s.controller.dispose(); b.dispose();
+});
+
+test('stationary ground-cover decisions skip repeated frustum work but immediately follow camera and bounds', () => {
+    const s = fixture(); s.group.userData = { earthUnderstory: true }; s.mesh.castShadow = false;
+    s.mesh.userData.windBoundsIncluded = true; s.mesh.material.userData.woodlandWind = true;
+    s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    const frame = () => { s.controller.beginFrame(s.scene, s.camera, null); s.controller.endFrame(); };
+    frame();
+    const intersect = jest.spyOn(s.controller.viewFrustum, 'intersectsBox');
+    try {
+        frame(); frame(); expect(intersect).not.toHaveBeenCalled();
+        s.camera.position.x = 100; s.camera.updateMatrixWorld(true);
+        s.controller.beginFrame(s.scene, s.camera, null);
+        expect(s.mesh.visible).toBe(true); expect(intersect).toHaveBeenCalledTimes(1); s.controller.endFrame();
+        s.mesh.boundingBox.translate(new THREE.Vector3(100, 0, 0));
+        s.controller.beginFrame(s.scene, s.camera, null);
+        expect(s.mesh.visible).toBe(false); expect(intersect).toHaveBeenCalledTimes(2); s.controller.endFrame();
+        s.mesh.position.x = 0; s.scene.updateMatrixWorld(true);
+        s.controller.beginFrame(s.scene, s.camera, null);
+        expect(s.mesh.visible).toBe(true); expect(intersect).toHaveBeenCalledTimes(3); s.controller.endFrame();
+        s.camera.zoom = .5; s.camera.updateProjectionMatrix(); frame();
+        expect(intersect).toHaveBeenCalledTimes(4);
+    } finally { intersect.mockRestore(); s.controller.dispose(); }
+});
+
+test('stationary shadow decisions skip plane math and invalidate on live light/filter/camera inputs', () => {
+    const s = fixture(); s.mesh.position.set(30, 5, 0); s.scene.updateMatrixWorld(true);
+    const frame = (expected, type = THREE.PCFSoftShadowMap) => {
+        s.controller.beginFrame(s.scene, s.camera, s.light, type);
+        expect(s.mesh.castShadow).toBe(expected); s.controller.endFrame();
+    };
+    frame(false);
+    const normals = s.controller.frustum.planes.map(plane => plane.normal);
+    let reads = 0;
+    for (const normal of normals) {
+        let x = normal.x;
+        Object.defineProperty(normal, 'x', { configurable: true, enumerable: true,
+            get() { reads++; return x; }, set(value) { x = value; } });
+    }
+    try {
+        frame(false); frame(false); expect(reads).toBe(0);
+        s.light.position.x = 500; s.scene.updateMatrixWorld(true); frame(true);
+        expect(reads).toBeGreaterThan(0); reads = 0;
+        frame(true); expect(reads).toBe(0);
+        s.light.position.x = 50; s.scene.updateMatrixWorld(true); frame(false);
+        s.light.shadow.bias = 1; frame(true);
+        s.light.shadow.bias = 0; frame(false);
+        frame(true, THREE.VSMShadowMap); frame(false);
+        s.camera.position.x = 30; s.camera.updateMatrixWorld(true); frame(true);
+        s.camera.position.x = 0; s.camera.updateMatrixWorld(true); frame(false);
+        s.mesh.boundingBox.max.y = 100; frame(true);
+        reads = 0; frame(true); expect(reads).toBe(0);
+    } finally {
+        for (const normal of normals) {
+            const x = normal.x;
+            Object.defineProperty(normal, 'x', { configurable: true, enumerable: true, writable: true, value: x });
+        }
+        s.controller.dispose();
+    }
+});
+
+test('detaching a registered root through an unwatched container restores its owned matrix hooks', () => {
+    const s = fixture(), wrapper = new THREE.Group(); s.scene.add(wrapper); wrapper.add(s.group);
+    const original = s.group.updateMatrixWorld;
+    const controller = new FoliageShadowInfluence(s.scene, [s.scene]);
+    expect(s.group.updateMatrixWorld).not.toBe(original);
+    wrapper.remove(s.group); controller.beginFrame(s.scene, s.camera, s.light);
+    expect(s.group.updateMatrixWorld).toBe(original); expect(controller.matrixRestorers.size).toBe(0);
+    controller.dispose(); s.controller.dispose();
+});
+
+test('registered foliage roots avoid scanning unrelated actors and retain add/remove/visibility ownership', () => {
+    const s = fixture(), background = new THREE.Group(); s.scene.add(background);
+    for (let index = 0; index < 200; index++) background.add(new THREE.Group());
+    const wrapper = new THREE.Group(); s.scene.add(wrapper);
+    const controller = new FoliageShadowInfluence(s.scene, [s.scene, wrapper]);
+    const visited = [];
+    const original = controller.visit;
+    controller.visit = object => { visited.push(object); original(object); };
+    s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).toEqual([s.group, s.mesh]); expect(s.mesh.castShadow).toBe(false);
+    controller.endFrame();
+    const extra = new THREE.Group(); extra.userData = { proceduralFoliage: true, region: 'earth' };
+    const caster = s.mesh.clone(); extra.add(caster); s.scene.add(extra); s.scene.updateMatrixWorld(true);
+    visited.length = 0; controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).toContain(caster); expect(caster.castShadow).toBe(false); controller.endFrame();
+    wrapper.add(extra); wrapper.visible = false;
+    visited.length = 0; controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).not.toContain(caster); expect(caster.castShadow).toBe(true); controller.endFrame();
+    wrapper.visible = true;
+    visited.length = 0; controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).toContain(caster); expect(caster.castShadow).toBe(false); controller.endFrame();
+    extra.removeFromParent();
+    visited.length = 0; controller.beginFrame(s.scene, s.camera, s.light);
+    expect(visited).not.toContain(caster); controller.endFrame();
+    s.scene.add(extra); s.scene.updateMatrixWorld(true);
+    controller.beginFrame(s.scene, s.camera, s.light); expect(caster.castShadow).toBe(false);
+    controller.dispose(); expect(s.mesh.castShadow).toBe(true); expect(caster.castShadow).toBe(true);
+    expect(controller.roots.size).toBe(0); controller.dispose();
+});
 
 test('filter padding includes complete texel footprint, depth and normal bias without changing the shadow map', () => {
     const shadow = new THREE.DirectionalLight().shadow;

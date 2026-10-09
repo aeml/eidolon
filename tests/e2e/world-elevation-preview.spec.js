@@ -57,7 +57,9 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         actor.update(0); actor.resetTransformInterpolation(); actor.render(1);
         render.entityGroup.add(actor.mesh);
         // Exercise production generation, not fixture-only placement matrices.
-        const scenery = new THREE.Group(); render.entityGroup.add(scenery);
+        // Match GameEngine.getInstanceEnvironmentGroup(): production scenery
+        // attaches directly to the owned environment, never the actor group.
+        const scenery = render.instanceEnvironmentGroup;
         const world = new WorldGenerator(scenery, new CollisionManager(), { terrainElevation: field,
             terrainProfile: EARTH_OUTCROP_PROFILE, graphicsQuality: quality });
         await world.loadTrees(0, 200); await world.loadBuildings(0, 200);
