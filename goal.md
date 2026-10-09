@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 material-layer wearable preparation:** Joint seam reduction is
+inapplicable:12sources have no shared positions between main/trim regions.
+Retaining reviewed secondary material triangles while reducing only the largest
+supplied main/undersuit layer prepares40fits:High285208→256512/Low150348→131318.
+All160GLBs validate; every809952output vertex retains exact source attributes,
+285secondary regions retain reviewed triangle corners.223units, three native
+galleries and actual four-class race/save observer pass. Wizard gold trim remains
+in reviewed close-up. Whole High476draws/502083triangles/rawp9533.400000000001455
+still fails unchanged limits;436106equipped-root triangles alone exceed250000.
+Prepared variants remain outside runtime/assets; current protectedHighc09 and
+public1.79.22/profile/access unchanged. [Preparation and retained failures](docs/plans/2026-10-09-wearable-material-layer-preparation.json).
+Continue larger actor/scene costs and full inherited1.11–1.99/art/Q/CB/party/device/
+F1–F5/operations/rights/owner/human/beta/launch/handoff; no narrower completion.
+
+
 **October9 protected High body selection:** The owned private milestone now
 selects prepared High bodies at four additive, hash-pinned paths; all prior
 High/Low/source files remain and Low selection stays exact.221 focused/cache/fit

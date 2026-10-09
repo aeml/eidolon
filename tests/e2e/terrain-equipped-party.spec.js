@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
 import { installBodyLodPilot } from './body-lod-pilot.js';
+import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -16,7 +17,8 @@ import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', serviceWorkers:
-    process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' || process.env.EIDOLON_E2E_BODY_LOD_PILOT ? 'block' : 'allow' });
+    process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' || process.env.EIDOLON_E2E_BODY_LOD_PILOT ||
+    process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_COMPARE === '1' || process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT ? 'block' : 'allow' });
 
 function observePartyTerrain() {
     const game = window.game;
@@ -92,6 +94,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
     test.skip(process.env.EIDOLON_E2E_TERRAIN_PARTY !== '1', 'Explicit disposable connected terrain party check');
     test.skip(process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'four-browser', 'Four actual renderer scope only');
     expect(process.env.EIDOLON_E2E_BODY_LOD_PILOT, 'Body LOD diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
+    expect(process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT, 'Wearable diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
     test.setTimeout(230_000);
     expect(process.env.EIDOLON_E2E_WS_URL).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');
@@ -233,6 +236,7 @@ test('single native renderer observes three live equipped party socket peers on 
     const quality = process.env.EIDOLON_TERRAIN_PARTY_QUALITY;
     expect(['high', 'low']).toContain(quality);
     const failures = collectBrowserFailures(page, baseURL), peers = [];
+    const wearablePilot = await installWearableAttributePilot(page);
     const bodyPilot = await installBodyLodPilot(page);
     const bodySelection = process.env.EIDOLON_TERRAIN_BODY_SELECTION === '1'
         ? JSON.parse(await readFile('assets/archetypes/runtime-selection.json', 'utf8')) : null;
@@ -325,6 +329,7 @@ test('single native renderer observes three live equipped party socket peers on 
         const party = await page.evaluate(readPartyTerrain, ids);
         expect(party.actors.map(actor => actor.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
         if (bodySelection) {
+            expect(wearablePilot, 'Selected-path cache qualification requires ordinary wearable assets and service worker').toBeNull();
             expect(bodyPilot, 'Selected-path qualification must use ordinary assets').toBeNull();
             const selection = bodySelection;
             const selected = await page.evaluate(async ({ ids, selection, quality }) => {
@@ -545,6 +550,13 @@ test('single native renderer observes three live equipped party socket peers on 
             const substitution = bodyPilot.read(), classes = substitution.requested.filter(row => row.quality === quality).map(row => row.actorClass).sort();
             expect(classes).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
             await writeFile(testInfo.outputPath('body-pilot-substitution.json'), JSON.stringify(substitution, null, 2));
+        }
+        if (wearablePilot) {
+            const substitution = wearablePilot.read();
+            expect(substitution.requested.length).toBeGreaterThan(0);
+            expect(substitution.requested.every(row => row.quality === quality)).toBe(true);
+            expect(new Set(substitution.requested.map(row => row.actorClass)).size).toBe(4);
+            await writeFile(testInfo.outputPath('wearable-pilot-substitution.json'), JSON.stringify(substitution, null, 2));
         }
         expect(failures, failures.join('\n')).toEqual([]);
         console.log('[single-renderer-terrain-party]', JSON.stringify({ quality, ...report }));

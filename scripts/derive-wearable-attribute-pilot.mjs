@@ -7,9 +7,10 @@ import { weightedWearableIndices, materialSeamLocks } from './lib/weighted-weara
 
 // Generated assets only. Never overwrite the delivered source or install into
 // another worktree's shared dependencies. A pilot is not runtime activation.
-const [name, actorClass, outputDirectory, tier = 'standard'] = process.argv.slice(2);
-if (!name || !actorClass || !outputDirectory || !path.isAbsolute(outputDirectory) || !['standard', 'legendary'].includes(tier)) {
-    throw new Error('Usage: derive-wearable-attribute-pilot.mjs <item name> <class> <new absolute output directory> [standard|legendary]');
+const [name, actorClass, outputDirectory, tier = 'standard', mode = 'guarded'] = process.argv.slice(2);
+if (!name || !actorClass || !outputDirectory || !path.isAbsolute(outputDirectory) || !['standard', 'legendary'].includes(tier) ||
+    !['guarded', 'main-layer-soft', 'main-layer-protected'].includes(mode)) {
+    throw new Error('Usage: derive-wearable-attribute-pilot.mjs <item name> <class> <new absolute output directory> [standard|legendary] [guarded|main-layer-soft|main-layer-protected]');
 }
 const manifest = JSON.parse(fs.readFileSync('assets/equipment/authored/manifest.json', 'utf8'));
 const asset = manifest.items.find(item => item.name === name)?.models[tier]?.[actorClass];
@@ -99,31 +100,72 @@ for (const [quality, ratio, error] of [['high', .04, .002], ['low', .02, .006]])
     const document = await io.read(source);
     await document.transform(weld({ overwrite: false }));
     const details = [];
+    const qualified = runtimeRow.variants[quality], qualifiedBytes = fs.readFileSync(qualified.file);
+    if (hash(qualifiedBytes) !== qualified.sha256) throw new Error('Qualified baseline hash mismatch');
+    const baseline = mode === 'guarded' ? null : await io.read(qualified.file);
+    if (baseline && JSON.stringify(contract(baseline).skins) !== JSON.stringify(originalContract.skins)) {
+        throw new Error('Baseline joint palette differs from supplied source');
+    }
+    const baselineMeshes = baseline?.getRoot().listMeshes();
     const protectedVertices = new Map();
-    for (const mesh of document.getRoot().listMeshes()) for (const primitive of mesh.listPrimitives()) {
+    for (const mesh of document.getRoot().listMeshes()) for (const primitive of mode === 'guarded' ? mesh.listPrimitives() : []) {
         protectedVertices.set(primitive, materialSeamLocks(primitive, mesh.listPrimitives(), error));
     }
-    for (const mesh of document.getRoot().listMeshes()) for (const primitive of mesh.listPrimitives()) {
-        const candidate = weightedWearableIndices(primitive, ratio, error, protectedVertices.get(primitive));
-        if (!candidate) {
-            simplifyPrimitive(primitive, { simplifier: MeshoptSimplifier, ratio: quality === 'high' ? .12 : .04, error, lockBorder: true });
-            details.push({ mesh: mesh.getName(), mode: 'qualified-strict-fallback' }); continue;
+    for (const [meshIndex, mesh] of document.getRoot().listMeshes().entries()) {
+        const primitives = mesh.listPrimitives();
+        const main = primitives.reduce((a, b) => a.getIndices().getCount() > b.getIndices().getCount() ? a : b);
+        if (baseline && (baselineMeshes.length !== document.getRoot().listMeshes().length ||
+            baselineMeshes[meshIndex].listPrimitives().length !== primitives.length)) throw new Error('Baseline primitive roster differs');
+        const mainMaterial = main.getMaterial()?.getName();
+        // Greaves have a larger supplied undersuit than their plate surfaces.
+        // Retain their plate and trim exactly while reducing that base layer.
+        if (baseline && !mainMaterial?.endsWith(' | main') && mainMaterial !== 'Undersuit charcoal') {
+            throw new Error('Largest supplied region is not a recognized main/undersuit surface');
         }
-        const corners = cornerDigest(primitive, candidate.indices), previous = primitive.getIndices();
-        primitive.setIndices(document.createAccessor(previous.getName()).setType('SCALAR')
-            .setBuffer(previous.getBuffer()).setArray(candidate.indices));
-        if (previous.listParents().length === 1) previous.dispose();
-        compactPrimitive(primitive);
-        if (primitive.getAttribute('POSITION').getCount() <= 65534) primitive.getIndices().setArray(new Uint16Array(primitive.getIndices().getArray()));
-        if (cornerDigest(primitive, primitive.getIndices().getArray()) !== corners) throw new Error('Compaction changed a surviving supplied triangle-corner attribute');
-        details.push({ mesh: mesh.getName(), mode: 'weighted-skin-permissive', reportedError: candidate.reportedError,
-            lockedSkinSeamVertices: candidate.lockedSkinSeamVertices, activeBones: candidate.activeBones,
-            lockedVertices: candidate.lockedVertices,
-            triangles: primitive.getIndices().getCount() / 3, exactCornerSHA256: corners });
+        for (const [primitiveIndex, primitive] of primitives.entries()) {
+            if (baseline && primitive !== main) {
+                const original = baselineMeshes[meshIndex].listPrimitives()[primitiveIndex];
+                if (original.getMaterial()?.getName() !== primitive.getMaterial()?.getName() ||
+                    JSON.stringify(original.listSemantics().sort()) !== JSON.stringify(primitive.listSemantics().sort()) ||
+                    original.listTargets().length || primitive.listTargets().length) throw new Error('Baseline material/semantic/morph roster differs');
+                const buffer = primitive.getIndices().getBuffer();
+                for (const semantic of primitive.listSemantics()) {
+                    const accessor = original.getAttribute(semantic);
+                    const previous = primitive.getAttribute(semantic);
+                    primitive.setAttribute(semantic, document.createAccessor(accessor.getName()).setType(accessor.getType())
+                        .setNormalized(accessor.getNormalized()).setBuffer(buffer).setArray(accessor.getArray().slice()));
+                    if (previous.listParents().length === 1) previous.dispose();
+                }
+                const previous = primitive.getIndices();
+                primitive.setIndices(document.createAccessor().setType('SCALAR').setBuffer(buffer).setArray(original.getIndices().getArray().slice()));
+                if (previous.listParents().length === 1) previous.dispose();
+                const corners = cornerDigest(original, original.getIndices().getArray());
+                if (cornerDigest(primitive, primitive.getIndices().getArray()) !== corners) throw new Error('Baseline region copy changed triangle corners');
+                details.push({ mesh: mesh.getName(), mode: 'exact-qualified-material-region', triangles: primitive.getIndices().getCount() / 3,
+                    material: primitive.getMaterial()?.getName(), exactCornerSHA256: corners }); continue;
+            }
+            const candidate = weightedWearableIndices(primitive, ratio, error, protectedVertices.get(primitive), mode === 'main-layer-protected' ? .25 : .05);
+            if (!candidate) {
+                if (baseline) throw new Error('Unsupported main-layer source; do not derive independently');
+                simplifyPrimitive(primitive, { simplifier: MeshoptSimplifier, ratio: quality === 'high' ? .12 : .04, error, lockBorder: true });
+                details.push({ mesh: mesh.getName(), mode: 'qualified-strict-fallback' }); continue;
+            }
+            const corners = cornerDigest(primitive, candidate.indices), previous = primitive.getIndices();
+            primitive.setIndices(document.createAccessor(previous.getName()).setType('SCALAR')
+                .setBuffer(previous.getBuffer()).setArray(candidate.indices));
+            if (previous.listParents().length === 1) previous.dispose();
+            compactPrimitive(primitive);
+            if (primitive.getAttribute('POSITION').getCount() <= 65534) primitive.getIndices().setArray(new Uint16Array(primitive.getIndices().getArray()));
+            if (cornerDigest(primitive, primitive.getIndices().getArray()) !== corners) throw new Error('Compaction changed a surviving supplied triangle-corner attribute');
+            details.push({ mesh: mesh.getName(), mode: 'weighted-skin-permissive', reportedError: candidate.reportedError,
+                lockedSkinSeamVertices: candidate.lockedSkinSeamVertices, activeBones: candidate.activeBones,
+                lockedVertices: candidate.lockedVertices, material: primitive.getMaterial()?.getName(),
+                normalWeight: mode === 'main-layer-protected' ? .25 : .05,
+                triangles: primitive.getIndices().getCount() / 3, exactCornerSHA256: corners });
+        }
     }
     // A candidate that is no smaller retains the exact reviewed runtime file.
     // No pre-existing runtime directory or binary is removed or overwritten.
-    const qualified = runtimeRow.variants[quality];
     const useCandidate = triangles(document) < qualified.triangles;
 
     if (JSON.stringify(contract(document)) !== JSON.stringify(originalContract)) {
@@ -132,8 +174,6 @@ for (const [quality, ratio, error] of [['high', .04, .002], ['low', .02, .006]])
     if (triangles(document) > originalTriangles) throw new Error('Pilot increased geometry');
     if (useCandidate) { await io.write(output, document); preserveDeliveredTransforms(output); }
     else {
-        const qualifiedBytes = fs.readFileSync(qualified.file);
-        if (hash(qualifiedBytes) !== qualified.sha256) throw new Error('Qualified baseline hash mismatch');
         fs.writeFileSync(output, qualifiedBytes, { flag: 'wx' });
     }
     const verified = await io.read(output);
@@ -155,7 +195,7 @@ for (const [quality, ratio, error] of [['high', .04, .002], ['low', .02, .006]])
         let index = 0;
         for (const mesh of verified.getRoot().listMeshes()) for (const primitive of mesh.listPrimitives()) {
             const detail = details[index++];
-            if (detail.mode === 'weighted-skin-permissive' && cornerDigest(primitive, primitive.getIndices().getArray()) !== detail.exactCornerSHA256) {
+            if (detail.exactCornerSHA256 && cornerDigest(primitive, primitive.getIndices().getArray()) !== detail.exactCornerSHA256) {
                 throw new Error('Serialized pilot changed an exact surviving supplied triangle-corner attribute');
             }
         }
@@ -168,12 +208,12 @@ for (const [quality, ratio, error] of [['high', .04, .002], ['low', .02, .006]])
         }
     }
     variants[quality] = { file: output, sha256: hash(fs.readFileSync(output)), triangles: triangles(verified), ratio,
-        maximumError: error, algorithm: useCandidate ? 'weighted-skin-permissive' : 'exact-qualified-runtime', baselineTriangles: qualified.triangles, gltfErrors: validation.issues.numErrors, gltfWarnings: validation.issues.numWarnings, details, reduced: triangles(verified) < originalTriangles };
+        maximumError: error, algorithm: useCandidate ? (mode === 'guarded' ? 'weighted-skin-permissive' : mode) : 'exact-qualified-runtime', baselineTriangles: qualified.triangles, gltfErrors: validation.issues.numErrors, gltfWarnings: validation.issues.numWarnings, details, reduced: triangles(verified) < originalTriangles };
     console.log(`${quality}: ${originalTriangles} -> ${variants[quality].triangles} triangles`);
 }
 if (hash(fs.readFileSync(source)) !== sourceHash) throw new Error('Original source changed during derivation');
 const receipt = path.join(destination, `${stem}-pilot.json`);
 if (fs.existsSync(receipt)) throw new Error('Refusing to overwrite an existing pilot receipt');
-fs.writeFileSync(receipt, JSON.stringify({ name, actorClass, tier, source, sourceHash, originalTriangles,
+fs.writeFileSync(receipt, JSON.stringify({ name, actorClass, tier, mode, source, sourceHash, originalTriangles,
     vertexLayout: 'separate', status: 'attribute-pilot-contract-only-not-visual-or-runtime-approval', variants }, null, 2) + '\n');
 console.log(`Pilot evidence: ${receipt}`);

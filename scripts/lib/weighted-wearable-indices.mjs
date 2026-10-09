@@ -3,7 +3,8 @@ import { MeshoptSimplifier } from 'meshoptimizer';
 // Index-only candidate: surviving supplied attributes, bone palette and skin
 // weights remain exact. Weighted errors constrain interpolation; they do not
 // prove every posed surface is equivalent. Native motion/fit review is separate.
-export function weightedWearableIndices(primitive, ratio, error, protectedVertices = null) {
+export function weightedWearableIndices(primitive, ratio, error, protectedVertices = null, normalWeight = .05) {
+    if (!Number.isFinite(normalWeight) || normalWeight <= 0) throw new Error('Invalid normal error weight');
     const position = primitive.getAttribute('POSITION'), positions = position.getArray();
     const indices = new Uint32Array(primitive.getIndices().getArray()), count = position.getCount();
     if (primitive.getMode() !== 4 || primitive.listTargets().length || !(positions instanceof Float32Array)) return null;
@@ -25,7 +26,7 @@ export function weightedWearableIndices(primitive, ratio, error, protectedVertic
     const attributeWidth = widths.reduce((sum, width) => sum + width, 0), stride = attributeWidth + bones.length;
     if (stride > 32) return null;
     const values = new Float32Array(count * stride), weights = [];
-    semantics.forEach((name, index) => { for (let i = 0; i < widths[index]; i++) weights.push(name === 'NORMAL' ? .05 : .1); });
+    semantics.forEach((name, index) => { for (let i = 0; i < widths[index]; i++) weights.push(name === 'NORMAL' ? normalWeight : .1); });
     weights.push(...bones.map(() => .1));
     for (let vertex = 0; vertex < count; vertex++) {
         let offset = vertex * stride;

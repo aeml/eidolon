@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-09T23:34:08.591513+00:00",
-  "classification": "Qualified private protected High body selection at additive immutable paths; exact Low/prior files retained. Selected native/cache/ordinary-party/save checks pass; full High geometry/draw and whole inherited roadmap/art/device/owner/launch gates remain open.",
+  "recordedUTC": "2026-10-09T23:59:07.225537+00:00",
+  "classification": "Opt-in largest-layer wearable preparation preserves exact reviewed trim/secondary regions and passes native/source/party/save checks; modest savings, unselected. Full inherited roadmap and whole-scene/device/art/owner/launch gates remain open.",
   "qualifiedRuntime": "Qualified6fbffd3435e1798841a56ab120e938db3d512e34 rendering implementation plus protected High body selection in current receipt. Runtime intentionally changes only Fighter catalog authority and generated four selected High paths/versions; assets add four exact prepared High GLBs and selection manifest. Server/package/public version/profile/access remain unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,102 +9,111 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-09T23:13:07Z",
+    "readOnlyObservationUTC": "2026-10-09T23:37:23Z",
     "result": {
-      "observed_at_utc": "2026-10-09T23:13:07Z",
+      "observed_at_utc": "2026-10-09T23:37:23Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
         "status": "in_progress",
         "conclusion": null,
         "run_attempt": 1,
-        "html_url": "https://github.com/aeml/eidolon/actions/runs/37880032315",
-        "updated_at": "2026-10-09T03:36:16Z"
+        "updated_at": "2026-10-09T03:36:16Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
       },
       "jobs": [
         {
           "name": "100-client authoritative-state soak",
           "status": "in_progress",
           "conclusion": null,
-          "started_at": "2026-10-09T03:36:15Z",
-          "completed_at": null,
           "steps": [
             {
               "name": "Set up job",
               "status": "completed",
-              "conclusion": "success",
-              "number": 1
+              "conclusion": "success"
             },
             {
               "name": "Initialize containers",
               "status": "completed",
-              "conclusion": "success",
-              "number": 2
+              "conclusion": "success"
             },
             {
               "name": "Checkout",
               "status": "completed",
-              "conclusion": "success",
-              "number": 3
+              "conclusion": "success"
             },
             {
               "name": "Setup Go",
               "status": "completed",
-              "conclusion": "success",
-              "number": 4
+              "conclusion": "success"
             },
             {
               "name": "Setup Node.js",
               "status": "completed",
-              "conclusion": "success",
-              "number": 5
+              "conclusion": "success"
             },
             {
               "name": "Run multiplayer soak",
               "status": "in_progress",
-              "conclusion": null,
-              "number": 6
+              "conclusion": null
             },
             {
               "name": "Upload soak evidence",
               "status": "pending",
-              "conclusion": null,
-              "number": 7
+              "conclusion": null
             },
             {
               "name": "Post Setup Node.js",
               "status": "pending",
-              "conclusion": null,
-              "number": 11
+              "conclusion": null
             },
             {
               "name": "Post Setup Go",
               "status": "pending",
-              "conclusion": null,
-              "number": 12
+              "conclusion": null
             },
             {
               "name": "Post Checkout",
               "status": "pending",
-              "conclusion": null,
-              "number": 13
+              "conclusion": null
             },
             {
               "name": "Stop containers",
               "status": "pending",
-              "conclusion": null,
-              "number": 14
+              "conclusion": null
             }
           ]
         }
       ]
     },
-    "status": "Exact37880032315/attempt1/dc7d22f2 run and100-client job/step6 still in progress at sparse observation; upload pending. No restart/cancel/acceptance or repeated substitute soak."
+    "action": "Read-only delegated snapshot; no restart/cancel/acceptance. Stale after timestamp."
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
   "currentReceipt": "docs/plans/2026-10-09-body-lod-integration.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "Prepared source-derived High body LOD with native functional/visual and real connected-party evidence; not selected in runtime/catalogs. Strict lower Low variant rejected for faceting, exact reviewed Low retained.",
   "nextAction": "Continue dominant fit/material-coordinated body/gear/eye and actual scene submission costs. Preserve supplied art, exact source attributes/bones/morph/attachment/animation contracts and unchanged High/Low budgets. Full modern art/Q/CB, equipped-party/support-device, raised compatible activation/rollback/F1-F5, operations/rights/owner-policy/human-playtest/beta/admission/launch/final-handoff scope remains active; no public microrelease.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-09-body-lod-integration.json"
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-09-body-lod-integration.json",
+  "wearableMaterialLayerPreparation": {
+    "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
+    "preparedNotSelected": true,
+    "runtimeBase": "c09b32ee4cbaa2088b9ece964fc24fa99213c7ce",
+    "sourceFitsPerMode": 40,
+    "gltfValidVariants": 160,
+    "focusedTestsPassed": 223,
+    "softSubsetHighTriangles": [
+      285208,
+      256512
+    ],
+    "softSubsetLowTriangles": [
+      150348,
+      131318
+    ],
+    "actualHighEquippedRootTriangles": 436106,
+    "actualHighSceneTriangles": 502083,
+    "actualHighDrawCalls": 476,
+    "actualHighRawP95Ms": 33.400000000001455,
+    "wholeHighBudget": "fail",
+    "wholeLowDeviceAndFinalArt": "open"
+  }
 }
