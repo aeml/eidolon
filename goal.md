@@ -18,6 +18,13 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Current disposable equipped-party CPU caller sample isolates repeated foliage
+  checks; functional/save check passes, measured party frames remain slow.
+  Frame-restoration arrays reduce matched controller CPU work by0.18–1.22ms
+  per view with zero changed pixels/draws/triangles in ten native High/Low views.
+  Focused32checks pass; existing safe caller summarizer reused, no duplicate
+  layer, scenery reduction or frame-budget claim. Staged only; see receipt.
+
 - Staged pilgrim camps now use folded ridge canvas, open curtains, real frame
   and lantern support. Corrected buried origin; exact15 horizontal placements
   and blockers retained.12 focused units plus world registration and native
