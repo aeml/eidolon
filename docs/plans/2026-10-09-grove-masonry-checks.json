@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "qualified-staged-component-not-versioned-pushed-or-live",
+  "base": "Prepared1.79.15/50f08f90; only EarthLandmarkGeometry and its focused regressions change",
+  "scope": "First Grove vault stones follow their elliptical opening, with inward edge wear and shallow carved lips on both faces. Pier-course blocks gain unequal worn corners and shallow exposed-edge loss; existing grave-road use inherits those courses. Site-owned geometry reuses the same fieldstone material and location batches. Source disposal retained; no new cache, texture, material, draw bucket or collider.",
+  "unchanged": "Published pillar solids, overhead passage and old vault-depth envelope, threshold fragments, site transforms/population, walking/spawn clearances, roots/foliage, lighting, surface shaders, animation, gameplay, save, rewards and all original geometry/frame/draw/triangle limits. No account/model/catalog mutation or public raised-world activation.",
+  "retainedReview": "First curved/chipped stones pass geometry and two native cases1.1m, but root review still finds flat block surfaces. Preserve initial captures; add shallow carved border into existing stones rather than accepting the first green artifact as finished art. Final refinement remains modest; the landscape still has broad brown-green fields, simple/repeated silhouettes and broader composition/material/prop needs. Not final modern-ARPG or landmark/world approval.",
+  "units": "Final two affected suites15pass2.427s (geometry8, population7); strengthen the exact middle-angle curved-face assertion and re-run only geometry8pass0.481s. Do not add overlapping counts. Exact authoritative footprint comparison passes. Unit caps unchanged:13vault stones832triangles under1000, each pier course176under200. Finite normals/UVs/colors, deterministic geometry, original bounds and both lip orientations verified. Scoped lint/whitespace pass.",
+  "native": "Final production-renderer flat Earth/town System Chrome AMD Vulkan/RADV High1280 and Low390 two cases pass1.1m with unchanged frame/draw/triangle/resource/animation/wind checks. First Grove120frames: High262draws245947triangles, median16.7ms/p9516.8; Low119draws67958triangles, median/p9516.7ms. No software GPU or security override. Bare actor, no connected/equipped-party/physical-phone claim. Root reviewed actual High and Low arch captures at normal gameplay zoom.",
+  "sourceSHA256": {
+    "src/art/EarthLandmarkGeometry.js": "0b29a16c003882dba1a5c501f5ddea35e0c506a6a25a0bea8c128e0aa44b4894",
+    "tests/EarthLandmarkGeometry.test.js": "0a954b6fc44055f7821c2442eb4606587d0ec0f4727996691ee46e12c6254ea8"
+  },
+  "logSHA256": {
+    "finalNative": "07f5fba029611f81f5b59486c2b9944525b24c72e284090a98297bef2190317c",
+    "finalUnits": "14a572a50ad54e661763c656a584013e731996475161f0239aa098f1d69350df",
+    "strengthenedGeometryUnits": "6f6bdfcfc0cadb9bb04be8c92f71a98cef6ad0181b71a7ef1b31320cec62bb58"
+  },
+  "artifacts": "/home/aeml/.local/share/eidolon-grove-masonry-final-native-20261009; initial discarded style /home/aeml/.local/share/eidolon-grove-masonry-native-20261009",
+  "delivery": "Component only, no version/patch-history change. Integrate into a properly reconciled next world-art candidate with accurate notes after ordered prepared releases. Retain corrected Go1.27.2/d3a3b9f7 before any publication; do not publish this older prepared15 base directly. Current10CI37864085950 awaits acceptance, prepared11 includes requested login/Firefox fix. Preserve dirty original worktree and remote website-agent work.",
+  "remaining": "Complete coherent town/realm/landmark/dungeon material/composition/prop art and equipped-party/raised/device qualification, full1.80F1-F5 and1.81-1.99/human/owner/operations/rights/beta/launch gates stay open. Goal active; no narrowed scope or final-art acceptance."
+}
