@@ -7,6 +7,7 @@ import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
 import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
 import { createEmberSnagGeometry, EMBER_SNAG_SOCKETS } from './EmberSnagGeometry.js';
+import { createGaleCypressGeometry } from './GaleCypressGeometry.js';
 import { createFracturedCrystalGeometry } from './FracturedCrystalGeometry.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createWoodlandStemGeometry } from './WoodlandStemGeometry.js';
@@ -65,6 +66,7 @@ function part(name, geometryValue, materialValue, {
 const trunk = geometry('foliage-trunk', () => new THREE.CylinderGeometry(0.28, 0.48, 5.4, 7));
 const narrowTrunk = geometry('foliage-narrow-trunk', () => new THREE.CylinderGeometry(0.16, 0.32, 6.2, 7));
 const emberSnag = geometry('foliage-ember-snag', createEmberSnagGeometry);
+const galeStem = geometry('foliage-gale-stem', createGaleCypressGeometry);
 const drownedCrown = geometry('foliage-drowned-willow', createDrownedWillowGeometry);
 const leafCrown = geometry('foliage-leaf-crown', createLeafCanopyGeometry);
 const needleCrown = geometry('foliage-needle-boughs', createConiferBoughGeometry);
@@ -206,18 +208,18 @@ function createBasaltBriar() {
 
 function createGaleCypress() {
     const p = palette('air');
-    const bark = material('foliage-gale-bark', 0x4e5966, { metalness: 0.12 });
+    const bark = material('foliage-gale-bark', 0x4e5966, { metalness: 0.12, barkDetail: 'pine', flatShading: false });
     const leaf = material('foliage-gale-leaf', 0x526b78, { side: THREE.DoubleSide, vertexColors: true });
     const charge = material('foliage-gale-charge', p.accent, { emissive: p.accent, emissiveIntensity: 0.76 });
     return [
-        part('wind-bent silver trunk', narrowTrunk, bark, { position: [0.35, 3, 0], rotation: [0, 0, -0.16], scale: [1.15, 0.98, 1.15] }),
+        part('wind-bent silver trunk', galeStem, bark, { position: [0.35, 3, 0], rotation: [0, 0, -0.16], scale: [1.15, 0.98, 1.15] }),
         // Follow the existing tilted trunk's actual centreline. The old
         // opposite-side offsets left both crowns/conductor floating beside it.
-        part('low leeward crown', pineCrown, leaf, { position: [.46, 3.7, 0], rotation: [0, 0, -0.16], scale: [0.72, 0.78, 0.72] }),
-        part('high leeward crown', pineCrown, leaf, { position: [.74, 5.42, 0], rotation: [0, 0, -0.18], scale: [0.55, 0.68, 0.55] }),
-        part('storm conductor', shard, charge, { position: [.95, 6.75, 0], rotation: [0, 0, -0.22], scale: [0.34, 0.48, 0.34], castShadow: false }),
-        part('windward root', root, bark, { position: [0.74, 0.3, 0.1], rotation: [0, 0, -Math.PI / 2], scale: [0.72, 0.62, 0.72] })
-    ];
+        part('low leeward crown', pineCrown, leaf, { position: [.46, 3.7, 0], rotation: [0, 0, -0.16], scale: [0.83, 0.78, 0.83] }),
+        part('high leeward crown', pineCrown, leaf, { position: [.74, 5.42, 0], rotation: [0, 0, -0.18], scale: [0.63, 0.68, 0.63] }),
+        part('storm conductor', shard, charge, { position: [.95, 6.75, 0], rotation: [0, 0, -0.22], scale: [0.34, 0.48, 0.34], castShadow: false })
+    ].map(descriptor => Object.freeze({ ...descriptor,
+        matrix: new THREE.Matrix4().makeScale(1, 1.35, 1).multiply(descriptor.matrix) }));
 }
 
 function createStormCrystal() {

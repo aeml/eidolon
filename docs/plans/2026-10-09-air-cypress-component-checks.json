@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "status": "local Air route-cohesion component; focused CPU checks pass; native visual/frame review pending",
+  "base": "69cac7a54de1bfb940b9b9fec6f7a6fe25cf97ea",
+  "scope": "Gale cypress only: connected curved timber, overlapping forks and three shallow buttresses replace the cylinder/root cone. Existing upper-axis crown/conductor attachment positions retained; crowns modestly broadened and all fixed parts grown vertically 1.35x. UV-bound existing pine bark detail on stock opaque material. No supplied asset, collision, gameplay, dependency, light or texture changes. Three existing High/Low material batches retained.",
+  "checks": {
+    "units": "Actual five suites: GaleCypressGeometry, ElementalConiferGeometry, ProceduralRealmFoliage, WoodlandBarkMaterial, ElementalTravelStands; 29 pass, 5.895 seconds. Includes 244-triangle stem budget, finite unit normals/UVs, grounding, original eight-metre planting apron, upper attachments, quality/resource identity and unchanged counts/batches.",
+    "preservation": "Independent before/after imported-module comparison using each module's own registered recipe identity: all nine complete planting arrays and all eight other archetypes' positions/normals/UVs/indices/transforms/material colors/program keys/shadow flags exact against base. Initial comparison wrongly passed the after-module recipe to the before-module registry, invoking its custom-recipe scattered-placement fallback; corrected audit passes, no placement code changed.",
+    "lint": "Four affected source/test files ESLint zero warnings and git diff whitespace check pass.",
+    "native": "Deferred while exact startup-correction CI37879564669 occupies the host. No new visual approval, frame/resource certificate, party/device acceptance or public deployment claim. Retain original High/Low frame/draw/triangle limits. Combined Air-cohesion release only after actual visual review and ordered predecessors accepted."
+  },
+  "sourceHashes": {
+    "src/art/GaleCypressGeometry.js": "e2a2aeabdaf1bbfc804e73fa161cef9c042203a19bf42e173bdfde776ca5bf5b",
+    "src/art/ProceduralRealmFoliage.js": "9d9785817655d92d12d588e85e1016b9e5747c6da392bea7c5850a95ebd5ebc4",
+    "tests/GaleCypressGeometry.test.js": "293955f30183e1da07b015b6ca8241e14f8539d396c8716314d487792ab89606",
+    "tests/ProceduralRealmFoliage.test.js": "a00811f5ac9436003cd71b31ed7f5c85987c59b674e2600f1dd5f17399331853"
+  },
+  "remaining": "Native images plus original presentation/frame/resource and quality-swap checks when host GPU is free; reconcile current17 ancestry before public release; complete broader scene/combat/equipment/party/device/world-art and full-roadmap gates. Existing versions/patch-note history unchanged; no version18 yet."
+}
