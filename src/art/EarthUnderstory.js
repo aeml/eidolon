@@ -15,6 +15,15 @@ const random = (x, z, salt = 0) => {
     return ((n ^ n >>> 13) >>> 0) / 4294967296;
 };
 
+// Quiet fresh/old-leaf variation belongs to the existing plant, not its render
+// cell or quality level. Linear multipliers preserve the authored vertex tones
+// and use ordinary shared-material instance colors; no extra mesh or texture.
+export function earthUnderstoryTint(plant, target = new THREE.Color()) {
+    const x = Math.floor(plant.x * 8), z = Math.floor(plant.z * 8);
+    const age = random(x, z, 84), shade = .92 + random(x, z, 85) * .12;
+    return target.setRGB(shade * (.90 + age * .12), shade * (.97 - age * .06), shade * (.88 - age * .08));
+}
+
 export function isEarthUnderstoryClear(x, z, radius = 2.2) {
     // The town is rectangular. The old165m circle stripped all vegetation
     // from the first fights east of the gate, well outside the actual fence.
@@ -79,7 +88,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
         if (!cells.has(key)) cells.set(key, []);
         cells.get(key).push(plant);
     }
-    const transform = new THREE.Object3D();
+    const transform = new THREE.Object3D(), tint = new THREE.Color();
     for (const [key, entries] of cells) {
         const mesh = new THREE.InstancedMesh(geometries[entries[0].variant], material, entries.length);
         // Placement remains in instance buffers and wind stays in the shader.
@@ -93,8 +102,10 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
             transform.rotation.set(0, plant.rotation, 0);
             transform.scale.setScalar(plant.scale);
             transform.updateMatrix(); mesh.setMatrixAt(i, transform.matrix);
+            mesh.setColorAt(i, earthUnderstoryTint(plant, tint));
         });
         mesh.instanceMatrix.needsUpdate = true;
+        mesh.instanceColor.needsUpdate = true;
         // Reuse the tree cells' constructor-only exact vertex bounds. Rotated
         // source-box corners contain no plants; retain every actual blade.
         computeFoliageCellBounds(mesh);
