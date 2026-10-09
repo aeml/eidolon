@@ -7,7 +7,7 @@ import { createLocationGroundMaterials, addLocationGroundWear } from './Location
 import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
 import { createTideRibStone, createTideRibPier, createWreckPlank, wreckHullHalfWidth, createWreckRib,
     createTornWreckSail, weatherWreckWood } from './WaterLandmarkGeometry.js';
-import { createKilnArchBeam } from './FireLandmarkGeometry.js';
+import { createKilnArchBeam, createKilnPier } from './FireLandmarkGeometry.js';
 import { createHorizonRing, createWindVaneNeedle } from './AirLandmarkGeometry.js';
 import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
 import { createElementalGroundCover, createAirPassageGroundCover } from './ElementalGroundCover.js';
@@ -55,6 +55,14 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             siteId: site.id, x: site.x + x, y, z: site.z + z, width, height, depth, angle: 0
         });
         const part = (geometry, key, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
+            if (realm === 'fire' && ['kiln-span', 'furnace-procession'].includes(site.recipe) && key === 'stone') {
+                key = 'furnace';
+                if (!geometry.attributes.color) {
+                    const color = new THREE.Color(0x584841), colors = [];
+                    for (let i = 0; i < geometry.attributes.position.count; i++) colors.push(color.r, color.g, color.b);
+                    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+                }
+            }
             if (site.recipe === 'tide-rib' && key === 'stone') key = 'rib';
             if (site.recipe === 'boat-grave' && key === 'wood') {
                 key = 'wreckWood';
@@ -84,7 +92,10 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             part(new THREE.TubeGeometry(curve, quality === 'low' ? 10 : 20, radius, 5, false), key, 0, 0, 0);
         };
         const gauge = (x, z, height = 7) => {
-            box('stone', x, height / 2, z, 1.2, height, 1.2, true);
+            if (site.recipe === 'furnace-procession') {
+                part(createKilnPier(height, 1.2, x + z, quality), 'stone', x, 0, z);
+                footprint(x, height / 2, z, 1.2, height, 1.2);
+            } else box('stone', x, height / 2, z, 1.2, height, 1.2, true);
             box('iron', x, .5, z, 1.35, .2, 1.35);
             box('stone', x, height + .12, z, 1.5, .24, 1.5);
             for (let i = 1; i < height; i++) box('accent', x, i, z + .63, i % 2 ? .5 : .9, .06, .04);
@@ -257,7 +268,10 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                     }
                     part(pier, 'rib', side * 10, 0, 0);
                     footprint(side * 10, 4, 0, 3, 8, 3);
-                } else box('stone', 0, 4, side * 10, 3, 8, 3, true);
+                } else {
+                    part(createKilnPier(8, 3, side, quality), 'stone', 0, 0, side * 10);
+                    footprint(0, 4, side * 10, 3, 8, 3);
+                }
             }
             for (const shift of [-2.5, 2.5]) {
                 if (water) {

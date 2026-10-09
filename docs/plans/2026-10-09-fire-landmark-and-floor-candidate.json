@@ -1,0 +1,23 @@
+{
+  "status": "Staged current-source Fire environment refinement; not deployed or final world/performance acceptance",
+  "base": "c745fbb6, queued18 lineage plus current raised-atlas/equipped harness and soil candidate; ordered14-18 untouched",
+  "implementation": "Replace two Kiln Span supports and six Molten Approach gauge columns with seeded staggered basalt courses, worn edges and quiet soot variation inside original solids. Reuse existing shared furnace fieldstone material for these sites rather than painting a second brick grid; six mesh batches per site unchanged at both qualities. Fire terrain uses roughly9m rather than31m tiles, quieter ash/basalt albedo and restrained iron-weathering hue variation. Crust/flow/ash/pores, registered relief/roughness, water/Air sampling and all original geometry/populations/hazards/paths/quest coordinates remain unchanged.",
+  "cost": "High eight-metre support720tri/Low336tri. Two affected sites add4704High/2144Low stored triangles total; shadow submissions are additional. No new materials, textures, samplers, per-frame work or draw batches. Existing3maps/256-128quality, ownership/disposal/depth and original frame/draw/triangle limits retained. Actual Fire walk-footprint JSON hash exactly unchanged:a8f611cc23848be49e74940eb165accfdf3d05adfbc8f40c0971476fc3e02097.",
+  "checks": "Pier and complete elemental population suites12pass25.311s, including all-realm path/hazard/reading clearance and deterministic finite bounded High/Low supports. First complete terrain run43pass1fail166.446s: quieter palette had only135distinct colors, below original>200 requirement. Keep failure; do not lower it. Reuse existing weathering field for small independent iron hue variation:518actual colors, muted saturation/brightness retained. Final affected Fire/basalt selection11pass19.827s/33unselected, including old surface-variety constraint, wrapping, masks, map registration/ownership and new physical-scale/contrast checks. Scoped seven-file lint/whitespace pass. Untouched Water/Air results keep prior source scope, not a new full-run pass.",
+  "native": "Actual System Chrome AMD Vulkan/RADV galleries on High/Low: baseline2pass5.0s; pier-only2pass4.9s; first quieter-floor2pass8.4s; final source2pass6.9s, retries0. Root reviewed before/pier-after/final High and pier-after Low. Constructed eight-site400px gallery, not the full populated gameplay renderer, party, physical phone or FPS evidence. Final floor no longer dominates the landmarks with huge bright/dark clouds; architecture is a modest improvement. Full populated Fire review/limits remain pending; CI native job was left uncontended.",
+  "surfaceSignatures": {
+    "originalFire": "388a58036a4673025f578bd990172defe335f8dbe483fdfb2fd5fc719bf362f4",
+    "reviewedFinalFire": "ee7ddfb5a7dcacf6d420c6cd44d25363dd372236e66a55802229c97c48fc899d",
+    "waterUnchanged": "70ca2b639ac2423d5b7a9a343375c94911c58cd4399b51f8143ee92d8d077472"
+  },
+  "evidence": {
+    "before": "/home/aeml/.local/share/eidolon-fire-piers-before-20261009",
+    "pierAfter": "/home/aeml/.local/share/eidolon-fire-piers-after-20261009",
+    "final": "/home/aeml/.local/share/eidolon-fire-surface-scale-final-20261009",
+    "pierUnitsSHA256": "32dc1809f559263800ec3d899fb41b8762b8d6deeded73371f405ae9848627ac",
+    "retainedFailedUnitsSHA256": "33e81ffa823899ae42ef1ad72f2c820e08ace0b08d010643b4e57dfa8beed3c6",
+    "finalFireUnitsSHA256": "3ba1d9dea5c2108ce2e5041855538c68bac456dc91e9b2a0bf85f51c18873089",
+    "finalGalleryLogSHA256": "7d54b917c32268573cfe9593fc93c75131dd934df16501ab27db3ed7ca9bc0c6"
+  },
+  "remaining": "Complete coherent realm/town/landmark/combat-camera review, equipment/party/device and strict native performance/raised rollout gates. Broad sparse scenery and other primitive props remain; no modern-ARPG equivalence or art/freeze/beta approval. Goal stays full1.11-1.99; no new microversion, production terrain selection, player/config mutation or unrelated service stop."
+}

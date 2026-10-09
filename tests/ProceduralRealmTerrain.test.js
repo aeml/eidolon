@@ -11,6 +11,13 @@ import { WORLD_REGIONS } from '../src/data/worldGeography.js';
 const TERRAIN_KEYS = Object.freeze(['earth', 'town', 'water', 'fire', 'air', 'ocean', 'sky']);
 
 describe('procedural dark-fantasy realm terrain', () => {
+    test('Cinder basalt uses roughly nine-metre tiles for character-scale crust and pores', () => {
+        const region = WORLD_REGIONS.fire, repeat = PROCEDURAL_TERRAIN_DEFINITIONS.fire.surface.repeat;
+        for (const size of [(region.maxX - region.minX - 1.5) / repeat[0],
+            (region.maxZ - region.minZ - 1.5) / repeat[1]]) {
+            expect(size).toBeGreaterThan(8); expect(size).toBeLessThan(10);
+        }
+    });
     test('Air slate uses ground-material scale rather than view-sized bedding', () => {
         const { minX, maxX, minZ, maxZ } = WORLD_REGIONS.air;
         const repeat = PROCEDURAL_TERRAIN_DEFINITIONS.air.surface.repeat;

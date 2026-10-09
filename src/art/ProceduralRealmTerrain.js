@@ -27,7 +27,9 @@ export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     fire: terrainDefinition(
         'cinder-waste-blackglass', 'fire', 'Cinder Wastes',
         'folded cooled-flow basalt, recessed scoria pores, iron-rich crust, and wind-deposited ash pockets', 0xa21f3c87,
-        { roughness: 0.96, metalness: 0.04, repeat: [70, 56], tint: 0xd9c8b6 }
+        // Match the physical scale of scoria pores and cooled crust to the
+        // character, not six-metre ash clouds on a thirty-metre texture tile.
+        { roughness: 0.96, metalness: 0.04, repeat: [224, 176], tint: 0xd9c8b6 }
     ),
     air: terrainDefinition(
         'stormcrown-slate', 'air', 'Stormcrown Reach',
