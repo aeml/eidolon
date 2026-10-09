@@ -20,8 +20,9 @@ Fighter pilot or remove approved authored models.
 
 - Last independently accepted release: **1.79.10 / d3a3b9f7**, CI37864085950.
   Later served source is not thereby accepted. Corrective11 **5bd725b9** is pushed;
-  **CI37884472930** genuinely running at the latest observation. Client, Server
-  and Smoke3 succeed; Smoke1/2 run anonymous browser smoke. Authorized Luna
+  **CI37884472930** genuinely running at the latest observation. Client, Server,
+  all three Smoke shards, predeploy character QA and input validation succeed;
+  Pages and SSH deploy are running, live QA not yet accepted. Authorized Luna
   `/root/watch_deploy_1795_1008` owns terminal-only monitoring. Root must still
   verify all required terminal gates, transformed publisher bytes and live
   frontend/backend identity/TLS/database before publishing12.
@@ -37,14 +38,18 @@ Fighter pilot or remove approved authored models.
   Exact predecessor notes447-452total/ten initial per version are retained.
   Actual17graph compiles417modules/shared21; no later public push or blanket
   stage qualification. Per-release public acceptance remains mandatory.
-- Air composition **a57b58a9** is local in the owned Air branch below: rooted
+- Air composition **f18128bc** is local in the owned Air branch below: rooted
   cypresses/roughly9m slate, sheltered dust pockets, forged instruments and
-  grounded chart tables. Nine dust and five distinct instrument/path/leg checks
-  plus bounded native Low visual review pass. Root reviewed actual images;
+  grounded chart tables, supported camp racks and folded canvas bedrolls.
+  Nine dust, five instrument/path/leg and two new camp checks plus bounded
+  native Low visual reviews pass (overlapping Air path reruns not added).
+  Root rejected the initial bright camp cloth, then reviewed revised muted
+  canvas in the existing windbreak batch, removing one separate bedroll batch.
+  Root reviewed actual images;
   improvement is modest, still sparse/stylized, not final modern ARPG art.
   **High frame gate remains failed** at two views33.2/33.3ms vs original20ms.
   The later image/prop checks disable profiling and do not fix/certify that
-  failure. Candidate418module publisher graph compiles, no release18/promotion.
+  failure. Final419module publisher graph compiles, no release18/promotion.
   Full component receipt is in that branch at
   `docs/plans/2026-10-09-air-cypress-component-checks.json`.
 - Existing nightly **37880032315/dc7** was independently confirmed running
@@ -106,7 +111,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   branch `work/alpha-1-79-startup-bundle-current-20261009`, pushed5bd725b9.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, locala57b58a9.
+  branch `work/alpha-1-79-air-cypress-current-20261009`, localf18128bc.
 - Ordered queued release worktrees and last clean heads:
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
