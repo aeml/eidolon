@@ -1,6 +1,16 @@
 {
   "head": "98cef7c77346f78886c87ef4194129af7e69a812",
-  "status": "PUSHED: Alpha1.79.16 /CI37926567202 in progress, not public accepted",
+  "status": "ACCEPTED public Alpha1.79.16 /98cef7c7 /CI37926567202 attempt1 SUCCESS",
+  "acceptance": {
+    "checkedAt": "2026-10-09T12:31:11.712Z",
+    "mandatoryJobs": "All ten terminal SUCCESS; root independently checks exact head/run/jobs and downloads native/live job logs. No job skips. Four optional steps skip, not pass.",
+    "native": "Actual AMD Vulkan/RADV:6 regional54.5s, celebration1case4.0s, class/Ilyra2cases12.0s, disposable smoke4cases1.4m including manual inventory route. Credential scan passes.",
+    "live": "7 actual cases5.8m; town/rest2cases1.6m; party1case48.5s. Credential scans pass.",
+    "optionalSkipped": "Native deterministic High/Low animation gallery, required Well Rested/GPU lifecycle route and full-character gameplay; live four-class/remote-animation route.",
+    "public": "All five expected publisher hashes match after terminal result; frontend/backend exact98cef7c7 and Alpha1.79.16, database ready. Ordinary verified HTTPS forcedIPv4; no IPv6, full campaign, physical-phone or full modern-art/beta/launch claim.",
+    "nativeLogSHA256": "174ca08c905915cf17bba56552721c462a9a2351571d360bce06466689976137",
+    "liveLogSHA256": "1a7458b9d5b0664d8e2a613c28e3c88084771f9048f2bf05f906dfa2a6de50d1"
+  },
   "publication": "After root15 terminal/native/live/exact-public acceptance11:50:48.427UTC, fresh fetch and normal merge changed only three older release receipts. Recheck immediately before normal push unchanged98cef7c7; master0ac75025..98cef7c7 succeeded. No force, website overwrite, dirty original tree change or overlapping deployment. Existing authorized Luna exact-run monitor; own16 terminal/native/live/public acceptance required before17.",
   "reconciliation": "Runtime/art/assets/index/server/workflow/tests/scripts unchanged from qualified6c242a1c/610eae29; no replay of unaffected native scenes. Two current version/history suites386pass3.142s; synchronized login/source/server/build/deploy/CI16,451notes/10initial/45lazy archive pages, prior450 history retained.",
   "fixture": "/tmp/eidolon-16-ready-publisher-TAdTUmn7",
@@ -13,5 +23,5 @@
     "release.json": "2c7461f0a5d3c5417ba5c07fef89808c9f1c184dc9437d011a3dbdfccf5cfc6b"
   },
   "scope": "Locally qualified masonry/fieldstone/Skeleton shared rendering and woodland shading/instance tint/buffer cleanup.18timed flat-world views pass original limits, not whole party/device/raised-world performance. New staged Fire/soil/books/growth/rock/tents are not in16; public flat-v1 and optional public monitoring off retained.",
-  "next": "Root own16 CI/native/live/public verification, then fresh reconcile queued17/18 including qualified16 art where normal merge requires it. Do not silently merge entire future tree. Full modern-art/raised-world/F1-F5/1.81-1.99/owner-beta-and-launch gates remain active."
+  "next": "Prepared17 normally retains qualified16; private merge1ecfeb20 has398 metadata/history/decimal checks and actual418module publisher. Fresh fetch/normal reconcile before normal push; own17 acceptance required before18. Do not silently merge entire future tree. Full modern-art/raised-world/F1-F5/1.81-1.99/owner-beta-and-launch gates remain active."
 }

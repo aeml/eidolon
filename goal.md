@@ -18,6 +18,14 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Accepted public16/98cef7c7/CI37926567202 attempt1 SUCCESS: ten jobs, native
+  6regional/1celebration/2class/4smoke; live7cases5.8m, town/rest2cases1.6m,
+  party1case48.5s. Four optional steps skip, not pass. Root five exact publisher
+  bytes/frontend/backend/verifiedIPv4HTTPS/ready DB match12:31:11UTC.
+  Private prepared17 normally retains remote16;398 metadata/history/decimal
+  checks and actual418module publisher qualify. Fresh fetch before public push;
+  own17 acceptance before18. Full original roadmap/art/raised/F/owner gates stay.
+
 - Shared town/elemental canvas candidate adds physical filtered thread detail
   to existing tents/banners/sails without new maps, geometry or simulation.
   Source/integration checks pass; actual GPU compilation and gameplay/close-up
@@ -410,14 +418,15 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Accept or diagnose pushed16/98cef7c7/CI37926567202 after authorized Luna
+1. Publish then accept or diagnose prepared17 after authorized Luna
    terminal notice; independently verify required native/live jobs, public
    frontend/backend identity and actual five transformed publisher bytes.
-   Accepted15/0ac75025 and earlier releases retain exact historical failures and
+   Accepted16/98cef7c7 and earlier releases retain exact historical failures and
    corrections; stale older pending entries above are chronological records,
    not current status. Then fresh-fetch/normal reconcile and individually
-   publish/accept prepared17-18 in order;16's local timing hold now cleared,
-   own CI/public acceptance still required. Never promote the whole future branch, overlap pushes, rerun
+   publish/accept prepared17-18 in order; private preparation can proceed while
+   the prior release runs, but public push requires its own acceptance and a
+   fresh normal remote reconciliation. Never promote the whole future branch, overlap pushes, rerun
    unchanged successful tests or infer acceptance from a running job. Continue
    integrated modern-world work while CI runs.
 2. Finish the complete modern world/art work, not just these woodland changes:
