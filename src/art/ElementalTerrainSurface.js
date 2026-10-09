@@ -75,10 +75,14 @@ function sampleWindWornSlate(x, y, seed) {
     // frequencies keep the same continuous geology across the tile boundary.
     const bed = noise(x + Math.sin(y * turn) * 8, y * 3, 7, seed ^ 0x325a);
     const strata = smooth(.4, .62, bed) * (1 - smooth(.28, .72, weathering));
-    // Dust lies in interrupted wind-aligned streaks, not round bright clouds.
-    // Keep the physical bedding directional and its color contrast restrained.
+    // Wind still aligns the rock bedding, but deposited dust settles in
+    // irregular sheltered pockets. Letting its four-times-stretched field
+    // dominate albedo turned the whole ground into repeated diagonal stripes.
     const drift = noise(x + Math.sin(y * turn * 2) * 7, y * 4, 3, seed ^ 0x1491);
-    const cover = smooth(.32, .7, drift + (noise(x, y, 11, seed ^ 0x529b) - .5) * .12);
+    const pockets = noise(x + Math.sin(y * turn * 2) * 11,
+        y + Math.sin(x * turn * 3) * 9, 6, seed ^ 0x65fc);
+    const cover = smooth(.32, .7, drift * .25 + pockets * .75 +
+        (noise(x, y, 11, seed ^ 0x529b) - .5) * .12);
     const fragment = slateFragments(x, y, seed);
     // Recesses break up beneath weathering/deposits. Never outline every
     // cellular face: a complete black network reads as manufactured paving.

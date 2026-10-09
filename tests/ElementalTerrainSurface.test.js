@@ -136,6 +136,24 @@ test('air slate has directional, broken bedding rather than uncorrelated noise o
     expect(exposed).toBeGreaterThan(100); expect(weathered).toBeGreaterThan(100);
 });
 
+test('Air dust breaks into sheltered pockets instead of copying the directional bed stripes', () => {
+    const seed = PROCEDURAL_TERRAIN_DEFINITIONS.air.seed;
+    let along = 0, across = 0, bare = 0, deposited = 0;
+    for (let y = 0; y < 256; y += 3) for (let x = 0; x < 256; x += 3) {
+        const surface = sampleElementalTerrain(x, y, 'air', seed);
+        along += Math.abs(surface.cover - sampleElementalTerrain(x + 1, y, 'air', seed).cover);
+        across += Math.abs(surface.cover - sampleElementalTerrain(x, y + 1, 'air', seed).cover);
+        if (surface.cover < .1) bare++;
+        if (surface.cover > .9) deposited++;
+    }
+    // Bedding retains its separate directional contract above. Deposition
+    // must vary across both axes, without painting over every exposed face.
+    expect(across).toBeLessThan(along * 2);
+    expect(along).toBeLessThan(across * 2);
+    expect(bare).toBeGreaterThan(100);
+    expect(deposited).toBeGreaterThan(100);
+});
+
 test('air albedo and packed roughness sample the same slate and scree coverage', () => {
     const material = createProceduralTerrainMaterial('air');
     try {
