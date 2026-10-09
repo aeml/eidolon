@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "source": "0e319ac0e2aafe1c3a0e093c38e03a5e142f0835",
+  "status": "Four-browser High functional and save check passed; performance remains open",
+  "fixture": "Owned loopback Mongo7.0.14 and race-enabled Go server, raised Earth profile, four synthetic level30 Fighter/Cleric/Rogue/Wizard accounts with class-appropriate Uncommon/Rare equipment in all14 slots. Production accounts/database/env were not used.",
+  "result": "TestTerrainActualEquippedBrowserParty passed92.36s; Go terminal exit0/93.410s. Playwright1passed1.4m, single-renderer observer1intentionally skipped, retries0. Actual browser login, party invitations/acceptance, ground-click movement, independently owned equipped rigs in all four views, real keyboard Fireball and server damage, visible targeted Healing Light and server healing passed. Fresh disconnect saves retain membership, equipment, inventory and EP for all four accounts.",
+  "measurement": {
+    "scope": "Leader's180frame sample while four Chrome renderers share one AMD RADV RENOIR GPU; not four independent physical devices or a performance-budget pass",
+    "viewport": { "width": 1280, "height": 844, "pixelRatio": 1 },
+    "frameMedianMs": 66.60000000000582,
+    "frameP95Ms": 83.40000000000873,
+    "drawCallsMedian": 542,
+    "trianglesMedian": 542736,
+    "geometries": 409,
+    "textures": 167,
+    "activeEntities": 34
+  },
+  "visual": "Root reviewed post-login party screenshot: four equipped characters and grounded enemies/effects visible, but sparse/repetitive terrain and slow measured rendering remain. No modern-ARPG art approval inferred.",
+  "artifacts": {
+    "directory": "/home/aeml/.local/share/eidolon-terrain-save-evidence-PE6sbpy6",
+    "wrapperLogSHA256": "dcf95930469fd400c19c7d53f9cd5f9cf758b5de1ae295ee57e03374e5c4aa7a",
+    "postLoginScreenshotSHA256": "7bd4f3177c0d11e70aa741f4ee83b513434bf8ecbd67a39e908c4f8bee133a14"
+  },
+  "cleanup": "Wrapper exited successfully and independent Docker name-filter check found no remaining eidolon-terrain-save-qa container. Only the fixture database was removed; no production deletion occurred.",
+  "limitations": "Low party mode was not run on this source. No dungeon/raid/campaign clear, phone qualification, natural progression, public raised-profile activation or deployment acceptance. CI Chrome became active afterward; no competing local native run was started. Original budgets and assertions unchanged. Full roadmap remains active."
+}
