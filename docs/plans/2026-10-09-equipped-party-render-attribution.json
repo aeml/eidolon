@@ -1,0 +1,29 @@
+{
+  "source": "7fb93177",
+  "status": "One real renderer and three authenticated peers pass functional/save checks; measured performance is slow",
+  "result": "Isolated race Go check passes 49.01 seconds; native browser case passes 41.1 seconds, retries 0. All four fourteen-slot gear sets, grounding and fresh saves checked. This does not replace the separate four-browser functional evidence.",
+  "measurement": {
+    "frames": 180, "viewport": [1280, 844], "pixel_ratio": 1,
+    "median_ms": 49.9, "p95_ms": 66.6, "p99_ms": 66.8,
+    "cpu_loop_median_ms": 40.8, "cpu_loop_p95_ms": 53.3,
+    "draw_calls": 585, "triangles": 563761, "geometries": 395,
+    "textures": 166, "active_entities": 38
+  },
+  "untimed_draw_attribution": {
+    "opaque_actor_instances_color_shadow": [48, 156],
+    "environment_color_shadow": [82, 6],
+    "wizard_color_shadow": [34, 29],
+    "cleric_color_shadow": [32, 27],
+    "fighter_color_shadow": [30, 27],
+    "rogue_color_shadow": [31, 26],
+    "same_scene_without_existing_instancing": { "draw_calls": 1341, "triangles": 553105 },
+    "same_scene_with_existing_instancing": { "draw_calls": 597, "triangles": 563741 }
+  },
+  "artifacts": {
+    "directory": "/home/aeml/.local/share/eidolon-terrain-save-evidence-bd5iHTcz",
+    "log_sha256": "a145e568805eede379c2829a896f1a848dd54dc34ff25d2ff5c54ab3ce19f9d1"
+  },
+  "review": "Root reviewed gameplay image and independently checked disposable database cleanup. Existing instancing reduces calls substantially; no frame-rate improvement follows from untimed attribution alone. Even one renderer is slow, so do not attribute all slowness to four-browser GPU contention.",
+  "next": "Identify sampled CPU hot work rather than duplicate existing rig sharing. A private tint-palette experiment saved only 12 gallery calls and failed exact image parity; disabled and excluded from this delivery tree.",
+  "limitations": "No party performance pass, final modern-art approval, campaign or physical-phone qualification. Public raised terrain remains disabled. Original budgets and strict assertions unchanged."
+}
