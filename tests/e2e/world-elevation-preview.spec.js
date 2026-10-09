@@ -10,6 +10,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     await page.goto('/', { waitUntil: 'networkidle' });
     const result = await page.evaluate(async ({ quality, equipped }) => {
         const THREE = await import('three');
+        const { renderFrameInterval } = await import('/tests/e2e/renderFrameInterval.js');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { WOODLAND_WIND_REACH } = await import('/src/art/WoodlandWindMaterial.js');
         const { computeFoliageCellBounds } = await import('/src/art/FoliageRenderBatches.js');
@@ -298,7 +299,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 render.updateEnvironmentLighting(actor.position, 0);
                 render.render();
                 if (frame >= 30) {
-                    frames.push(now - previous);
+                    frames.push(renderFrameInterval(now, previous));
                     calls = Math.max(calls, render.renderer.info.render.calls);
                     triangles = Math.max(triangles, render.renderer.info.render.triangles);
                 }
