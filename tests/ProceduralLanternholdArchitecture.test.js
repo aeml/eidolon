@@ -31,6 +31,14 @@ function visibleMeshes(root) {
 }
 
 describe('procedural Lanternhold architecture', () => {
+    test('camp canvas and entrance share physical cloth detail without new material buckets', () => {
+        const camp = createProceduralLanternholdStructure('camp');
+        for (const name of ['camp:grave-road-tent', 'camp:open-tent-flap']) {
+            const material = camp.getObjectByName(name).material;
+            expect(material.userData.worldSurfaceDetail).toBe('canvas');
+            expect([material.map, material.normalMap, material.roughnessMap]).toEqual([null, null, null]);
+        }
+    });
     test('smithy workbench and repair supplies are outside the wall, inside the unchanged building envelope', () => {
         const root = createProceduralLanternholdStructure('blacksmith');
         root.updateMatrixWorld(true);

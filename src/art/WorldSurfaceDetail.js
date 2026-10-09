@@ -3,7 +3,7 @@ import { Material } from 'three';
 // Material detail in physical world units, including merged/instanced buildings.
 // Retains MeshStandardMaterial lighting, shadows, fog and quality settings. No
 // downloaded textures, per-frame updates, extra meshes or displaced colliders.
-const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5, 'stratified-rock': 6, fortress: 7, 'weathered-masonry': 8 });
+const SURFACES = Object.freeze({ stone: 1, slate: 2, timber: 3, fieldstone: 4, bark: 5, 'stratified-rock': 6, fortress: 7, 'weathered-masonry': 8, canvas: 9 });
 
 const FRAGMENT = /* glsl */`
 varying vec3 vEidolonSurface;
@@ -63,7 +63,25 @@ vec3 eidolonSurface(vec3 p) {
     vec3 axis = abs(cross(dFdx(p), dFdy(p)));
     vec2 uv = axis.y > max(axis.x, axis.z) ? p.xz : (axis.x > axis.z ? p.zy : p.xy);
     float weather = eidolonNoise(p.xz * .23 + p.y * .17);
-#if EIDOLON_SURFACE == 6
+#if EIDOLON_SURFACE == 9
+    // World-registered coarse canvas, including baked and instanced cloth.
+    // Blend the three projections rather than switching at a bent tent fold
+    // or sail normal. The8mm thread period is physical, not UV-scale dependent.
+    vec3 weaveDomain = fract(p / .008) * 6.28318530718;
+    vec3 footprint = fwidth(p / .008);
+    vec3 detail = 1. - smoothstep(vec3(.15), vec3(.65), footprint);
+    vec3 threads = sin(weaveDomain) * detail;
+    vec3 weights = axis / max(length(axis), .00000001);
+    weights *= weights;
+    weights /= max(weights.x + weights.y + weights.z, .00001);
+    float interlace = dot(vec3(threads.y * threads.z, threads.z * threads.x,
+        threads.x * threads.y), weights);
+    // Thread relief disappears with its color/roughness contrast when smaller
+    // than a pixel. Keep original physical lighting; no painted highlights,
+    // new texture maps, glow or cloth simulation.
+    return vec3(.96 + weather * .08 + interlace * .035,
+        .965 + interlace * .015, interlace * .00035);
+#elif EIDOLON_SURFACE == 6
     // Bedding remains gently inclined and is interrupted by weathering, not
     // warped by the full cleave field into embossed topographic contour lines.
     float cleave = eidolonRockNoise(p * 1.6 + vec3(weather, -weather, weather * .5));

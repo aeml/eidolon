@@ -65,6 +65,22 @@ test.each([['water', WATER_LOCATIONS, WATER_PATHS], ['fire', FIRE_LOCATIONS, FIR
         }
     });
 
+test.each(['water', 'fire', 'air'])('%s cloth uses the shared physical canvas surface without extra texture maps', realm => {
+    const root = createElementalLocations(realm);
+    const canvas = new Set();
+    root.traverse(part => {
+        if (part.material?.userData.worldSurfaceDetail === 'canvas') canvas.add(part.material);
+    });
+    expect(canvas.size).toBeGreaterThan(0);
+    for (const material of canvas) {
+        expect(material.isMeshStandardMaterial).toBe(true);
+        expect(material.side).toBe(2);
+        expect([material.map, material.normalMap, material.roughnessMap]).toEqual([null, null, null]);
+        expect(material.emissive.getHex()).toBe(0);
+    }
+    RenderSystem.prototype.disposeObjectResources.call({}, root);
+});
+
 test('public realm destinations and readings agree with built scenes without revealing story-gated markers', () => {
     const publicPlaces = getAtlasWorldLocations({});
     for (const site of [...WATER_LOCATIONS, ...FIRE_LOCATIONS, ...AIR_LOCATIONS]) {
