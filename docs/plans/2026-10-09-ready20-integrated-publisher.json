@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Normally pushed; own20 CI/native/live/public acceptance pending",
+  "status": "Deployed but original CI failed live town-rest QA; retained failure, not release acceptance. Corrected QA-only successor e5989112 pushed separately.",
   "candidate": {
     "version": "Alpha 1.79.20",
     "head": "07743ba7e3feb8f3270286600d7baa24044762b0",
@@ -11,7 +11,9 @@
   "verification": "Current combined four distinct native AMD RADV production cases pass1.0m/retries0. Two same populated Earth/town cases explicitly profiled afterward:18named views/120real RAF samples each pass unchanged original budgets1.5m/retries0; these are extensions, not six distinct cases. High max16.7median/33.4p95/240draws/245636tri; Low16.7/16.8/109/78990. Repeated resource counts stable. Street seam failure retained and corrected without relaxing gate; final six affected street checks pass,22unselected not new passes. Prior16camp checks retain unchanged camp inputs;390current metadata checks pass. Actual-client admin catalog unchanged. Scoped lint/syntax/whitespace pass. Busy shared host, not sustained party/device/final-art qualification.",
   "history": "455total notes/10initial/45lazy pages. All454 previously shipped raw entries exact against corrected19; prior aggregate SHA2566e70699ef4ed26ac6f0769f588c370edafad52e3a7393f5a524aaa41e92456ed. All539non-root lock entries exact. Version20 defaults synchronized. Historical camp-only17ff publisher is explicitly superseded and cannot certify077.",
   "reconciliation": "Root independently accepted corrected19 CI37941972587/native/live/exact public files and front-back identities/ready DB14:49:52.738UTC. Immediately before20 publication, fresh fetch and normal merge report origin293/8ahead/0remote-only/clean; normal push293..077 succeeds. Dirty original worktree and concurrent website work untouched; no force push.",
-  "ci": { "run": 37948468016, "attempt": 1, "head": "07743ba7e3feb8f3270286600d7baa24044762b0", "status": "in_progress", "conclusion": null },
+  "ci": { "run": 37948468016, "attempt": 1, "head": "07743ba7e3feb8f3270286600d7baa24044762b0", "status": "completed", "conclusion": "failure" },
+  "failure": "Nine jobs succeeded; live QA failed. Anonymous release suite8passed; town-rest1passed/1failed because a confirmed damage notification was followed by reading the preceding HP snapshot (110/110). Party command did not run after the shell aborted. Five optional/cleanup steps skipped, not passed. Original private live log SHA256 a195dfe397f41c88eef06f86e428c762ca4f0d0a6d82460c9334ee9957edd0c5. Native job succeeded; exact original native case counts not independently consumed yet.",
+  "publicPresence": "Root normal TLS/ordinary DNS/forced IPv4 verification2026-10-09T15:48:33.844Z: all five expected hashes exact, frontend/backend Alpha1.79.20/07743ba7 and database ready. This proves deployment presence, not failed-CI acceptance or IPv6/all-device availability.",
   "publisher": {
     "fixture": "/tmp/eidolon-20-integrated-publisher-8TuM04vK",
     "compiler": "Byte-identical qualified publication compiler/locked esbuild0.28.2; actual committed077 source archive plus generated vendor.423modules/3256884bytes/21shared login modules;402of895versioned runtime files.",

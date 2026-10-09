@@ -18,6 +18,17 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Corrected20/e5989112 normally pushed: QA-only wait for confirmed damage AND
+  wounded replicated HP within the unchanged deadline. Focused public journey
+  passes54.3s: real damage, Fireball/mana use, recall/healing, rested aura/bank
+  and fresh login. Original20 CI37948468016 FAILED live QA (8release passes,
+  town-rest1pass/1fail, party not run); not accepted. Original public five files,
+  front/backend20/077 and ready DB independently match15:48:33.844UTC.
+  New exact423module successor publisher retained; own terminal successor
+  CI/native/live/public acceptance pending before next21 public push.
+  Private21 normally merges the correction and starts final combined utility
+  native review. All earlier in-progress statements below are historical.
+
 - Unpushed21/bc9027fd groups well/bench/market utility refinement. Current
   metadata391checks pass;456notes/ten initial/45lazy pages, all455earlier raw
   entries and539non-root lock entries exact. Scoped lint/syntax/whitespace pass.

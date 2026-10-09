@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "Normally pushed QA-only correction; exact successor CI and own final acceptance pending",
+  "version": "Alpha 1.79.20",
+  "head": "e59891126671b7710cdcaa3f5ed37122734f57cc",
+  "scope": "Only town-rest test ordering changed. Confirm hostile damage AND an actual alive/wounded replicated resource snapshot within the original15-second deadline. Retain strict HP, Fireball, mana, recall, town healing, buff banking/aura and relog assertions. Runtime, rewards, regeneration, version and cumulative notes unchanged.",
+  "focusedLiveCheck": {
+    "source": "Exact successor test against public deployed077 game; ordinary fresh Wizard, no health/buff/teleport/grant mutation",
+    "result": "1passed54.3s/retries0. HP108/110 after real damage2; Fireball accepted, mana110to80; recall reached Lanternhold, resources110/110, rested aura present and bank persisted after fresh login.",
+    "privateLog": "/home/aeml/.local/share/eidolon-17920-corrected-rest-live-20261009.log",
+    "logSHA256": "d7b4537e947e7940b016354cdb71d14e4115843d8f46782371bb95164d4935fd",
+    "artifacts": "/home/aeml/.local/share/eidolon-17920-corrected-rest-live-20261009",
+    "limits": "One focused live sequence, not broad campaign, party, mobile or original failed-CI acceptance. Credentials and auth-bearing automatic recordings not exposed."
+  },
+  "reconciliation": "Fresh fetch and normal merge reported up to date before commit and immediately before normal push077..e598. Original dirty user/website worktree untouched. Scoped ESLint and whitespace checks pass.",
+  "publisher": {
+    "fixture": "/tmp/eidolon-20-corrected-publisher-q8XeWRk1",
+    "compiler": "Byte-identical qualified compiler/locked esbuild0.28.2; committed source archive.423modules/3256884bytes/21shared login modules;402of895versioned runtime files. Initial own-tree invocation could not resolve esbuild; no successful artifact claimed from it. Qualified compiler invocation succeeded.",
+    "expectedSHA256": {
+      "index.html": "96087434bd9af90684f525eefc78ddd18fd99654f9495450143ae940c50fc7e0",
+      "src/main.js": "1cb4038c35c55441cc36d3cb42467af24a397714c58fd7908865e10df3eded7c",
+      "src/core/GameEngine.bundle.js": "ec56dd0433711cc4a5de9bbf91db95d4d905893ca18ac88871180dc26ff0f5ba",
+      "src/styles/index.css": "7a46d8041651a6127052d5a3facd1339d19073c161a435a35eeb5a5e45a5b81a",
+      "release.json": "cc630d4240fcc2b3f82149f4c6416a2a119214de5fd2fab3425a8841d5c5d51f"
+    }
+  },
+  "deliveryGate": "Original CI37948468016 remains FAILED. Luna monitors exact corrected successor, no retries/cancels. Root consumes terminal jobs/native/live scopes and five public hashes/frontend-backend identity/ready DB before next public21 push. Optional skipped steps are not passes. Existing ongoing soak unchanged. Full roadmap remains active."
+}
