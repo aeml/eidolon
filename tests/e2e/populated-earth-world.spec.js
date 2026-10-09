@@ -3,8 +3,12 @@ import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
 // Bounded production-renderer scene review, not campaign or network coverage.
-for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, width] of [['high', 1280], ['low', 390]]) {
-    test(`populated ${elemental === 'air' ? 'Air' : elemental === 'water-fire' ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px`, async ({ page, baseURL }, testInfo) => {
+for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, width] of [['high', 1280], ['low', 390]])
+for (const review of elemental === 'earth' ? ['presentation'] : ['presentation', 'quality']) {
+    // Hosted software rendering must not combine the full scenery/input
+    // review and twelve GPU quality-switch phases in one120s case. Separate
+    // owned fixtures retain every view, cycle, assertion and original limit.
+    test(`populated ${elemental === 'air' ? 'Air' : elemental === 'water-fire' ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px${review === 'quality' ? ' quality switches' : ''}`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height: 844 });
@@ -447,6 +451,7 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
             return sites.map(s => s.id);
         }, { quality, mobile: width < 600, elemental });
         try {
+            if (review === 'presentation') {
             const breakdown = [];
             for (const id of locations) {
                 const stats = await page.evaluate(id => window.__populatedWorld.visit(id), id);
@@ -541,13 +546,15 @@ for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, wid
                     expect(view.triangles, `${view.id} triangles`).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
                 }
             }
-            if (elemental !== 'earth') {
+            }
+            if (review === 'quality') {
                 const swaps = await page.evaluate(() => window.__populatedWorld.reviewRegionalQuality());
                 expect(swaps.restoredQuality).toBe(quality);
                 expect(swaps.instanceCount).toBe(elemental === 'air' ? 90 : 100);
                 expect(swaps.partsPerCell).toBe(elemental === 'air' ? 3 : 4);
                 expect(swaps.batchCount).toBe(swaps.partsPerCell * swaps.cells);
                 expect(swaps.coverBeds).toBe(elemental === 'air' ? 8 : 16);
+                expect(swaps.phases).toHaveLength(12);
                 expect(swaps.afterRepeat).toEqual(swaps.beforeRepeat);
                 const high = swaps.phases.find(phase => phase.quality === 'high').triangles;
                 const low = swaps.phases.find(phase => phase.quality === 'low').triangles;

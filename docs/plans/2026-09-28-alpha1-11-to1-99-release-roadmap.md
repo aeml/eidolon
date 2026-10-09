@@ -35,6 +35,23 @@ earlier releases still need acceptance. This is a1.83 code foundation, not
 operator/tabletop or1.80/F1-F5/final-art/device/beta/launch acceptance. Original
 numbered requirements, dependencies and complete scope below remain unchanged.
 
+October9 corrected11 QA: originalc3a45083/run37867222336 fails premature engine
+reads and two software regional120s cases; deployment skips, public10 healthy.
+Actual transport readiness and controlled import-gap credential receipts pass
+8native-bootstrap cases;91focused units pass. Split presentation/12-phase GPU
+quality-switch cases retain all views/cycles/assertions/limits; four CI-style
+High cases pass3.7m. Failed duplicate-site experiment retained then removed.
+[Evidence](2026-10-09-release1-79-11-ci-correction-checks.json).
+QA only, runtime/version/notes unchanged. Fresh remote reconciliation/new11
+acceptance before12-16; full numbered art/F1-F5/party/device/beta/launch stays open.
+
+October9 corrected1.79.10/d3a3b9f7/run37864085950 accepted: all ten mandatory
+jobs success, independently exact public identities/DB/clean production/four
+actual publisher outputs at00:55:02Z. Optional broader steps skip, not pass;
+original security failure retained. [Public receipt](2026-10-09-release1-79-10-public-checks.json).
+Next11 may publish with fresh fetch/reconcile then its own acceptance.12-15
+inherit security/login locally, notlive. Full original scope and gates unchanged.
+
 October9 prepared11 graphics failure guidance: actual Firefox login works but
 headless context creation fails before four-class renderer qualification. Keep
 that failure open; no forced software/context/security workaround. Failure-only
