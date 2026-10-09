@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 corrected1.79.10/d3a3b9f7 is pushed, CI37864085950 running and Luna
+monitors terminal-only. Old37861950511/6ed016b7 ends security failure: nine
+reachable Go1.27.1 standard-library advisories, all fixed1.27.2. Client/browser
+shards pass; downstream QA/deploy skip, not pass. Exact strict scan0reachable,
+actual patched API/monitor builds, module verification, two race packages and
+412fresh-locked-client checks pass. No dependency/art/gameplay/gate changes.
+Only current unaccepted10note updated;444historical entries byte-identical.
+Prepared11 now reconciled83b19e29, qualified login/art/archive/test bytes unchanged,
+all445corrected prior entries preserved. Own corrected10CI/public acceptance
+still precedes11.12-15 must reconcile before publication. Last accepted public9;
+full F1-F5/art/party/device/human/operator/rights/beta/launch scope remains open.
+[Security correction and retained failure](2026-10-09-go1272-security-checks.json).
+
 October9 prepared1.79.15/50f08f90 selectively integrates exact owned matrix
 and foliage registry/bounds/frustum caching onto reconciled14/c90805f7.
 Actors/bones/wind/transforms and all geometry/shadow/quality limits unchanged.

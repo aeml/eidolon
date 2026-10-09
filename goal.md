@@ -18,6 +18,26 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- October9 corrected1.79.10 now pushed **d3a3b9f7567e08870587f38dc11fc9547c139240**,
+  own CI **37864085950** running; Luna monitors terminal-only. Prior37861950511/
+  6ed016b7 finishes failure: nine reachable Go1.27.1 standard-library advisories,
+  all fixed1.27.2; client/all three browser shards pass, downstream gates skip.
+  Root independently confirms terminal exacthead; no retry/cancel/gate bypass.
+  Upgrade every build pin to1.27.2, preserve dependencies/go.sum/npm lock/art/
+  gameplay. Actual strict scan0reachable, module verification, two race packages,
+  API/monitor binaries and412fresh-locked-client checks pass. Official October8
+  security release and container amd64 manifest verified. Fresh owned npmci
+  fixes stale shared Node-link fixture; shared directory never modified.
+  Only unaccepted10note gets security line, all444older notes byte-identical.
+  [Evidence](docs/plans/2026-10-09-go1272-security-checks.json).
+  Prepared11 now clean83b19e29b1ffd66950008cd3616e5e0383f9517a after merge;
+  both complete goal/roadmap records retained. Qualified login/art/archive/native
+  fixture bytes unchanged, all445corrected prior entries exactly inherited.
+  Shared dependency link now points at new10locked install. No unaffected3D
+  replay.11 remains local until corrected10own CI/public acceptance. Prepared
+  12-15 must inherit this correction/reconciliation before publishing, never
+  reintroduce old Go pins. Last accepted public9/7114aad6; full scope active.
+
 - October9 prepared1.79.15 clean50f08f90888850c8fa03df5806528ca1a4f24422
   in `/home/aeml/.local/share/eidolon-render-current-jdPpzQnN`, based on14/c908.
   Exact owned-container matrix and foliage registry/bounds/frustum caches;
