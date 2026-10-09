@@ -1167,6 +1167,12 @@ class GameEngineMovementMethods {
 
     getRaycastMeshForEntity(entity) {
         if (!entity?.mesh || this.casino?.isActorCutAway(entity)) return null;
+        // Actor.setMesh owns this exact direct-child proxy. Avoid searching the
+        // complete fitted rig on every hover sample; detached/replaced models
+        // retain the existing recursive fallback, never a stale cached target.
+        const proxy = entity.interactionHitbox;
+        if (proxy?.parent === entity.mesh && proxy.name === 'ActorInteractionHitbox' &&
+            proxy.userData.entityId === entity.id) return proxy;
         return entity.mesh.getObjectByName?.('ActorInteractionHitbox') || entity.mesh;
     }
 
