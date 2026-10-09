@@ -173,7 +173,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v12';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v13';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -231,10 +231,16 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // field, independently of the unchanged fallen-leaf silhouettes.
             // Fade contrast and relief together when the aggregates become
             // subpixel, rather than re-amplifying mip averages into speckles.
-            float earthAggregateFootprint = max(fwidth(earthGritDomain.x * .74), fwidth(earthGritDomain.y * .74));
-            float earthAggregateDetail = 1. - smoothstep(.1, .45, earthAggregateFootprint);
-            float earthClod = mix(.5, smoothstep(.25, .69, earthGrit * .72 + earthFineGrit * .28), earthAggregateDetail);
-            float earthPore = smoothstep(.22, .65, earthFineGrit);
+            // The generated detail map contains eight aggregates per tile.
+            // Derivatives in tile units understated their true footprint by8,
+            // retaining sharp clod contrast after it became a few pixels wide.
+            float earthAggregateFootprint = max(fwidth(earthGritDomain.x * .74 * 8.), fwidth(earthGritDomain.y * .74 * 8.));
+            float earthAggregateDetail = 1. - smoothstep(.16, .6, earthAggregateFootprint);
+            float earthFineFootprint = max(fwidth(earthDomain.x * 1.73 * 8.), fwidth(earthDomain.y * 1.73 * 8.));
+            float earthFineDetail = 1. - smoothstep(.16, .6, earthFineFootprint);
+            float earthFilteredFine = mix(.5, earthFineGrit, earthFineDetail);
+            float earthClod = mix(.5, smoothstep(.25, .69, earthGrit * .72 + earthFilteredFine * .28), earthAggregateDetail);
+            float earthPore = mix(.5, smoothstep(.22, .65, earthFineGrit), earthFineDetail);
             // Moss cushions and soil aggregates occupy different physical
             // scales. Reusing the clod field for both flattened their height
             // blend into a translucent green wash at ordinary play distance.
@@ -256,9 +262,9 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // Smoothstep re-amplifies the mip-filtered grain at long views.
             // Fade fibre contrast toward its mean, keeping the broad moss
             // cushions and authored coverage, rather than sparkling speckles.
-            float earthFiberFootprint = max(fwidth(earthGritDomain.x * .74), fwidth(earthGritDomain.y * .74));
-            float earthFiberDetail = 1. - smoothstep(.14, .65, earthFiberFootprint);
-            float earthMossFiber = mix(.5, smoothstep(.28, .72, earthGrit * .65 + earthFineGrit * .35), earthFiberDetail);
+            float earthFiberFootprint = earthAggregateFootprint;
+            float earthFiberDetail = 1. - smoothstep(.16, .6, earthFiberFootprint);
+            float earthMossFiber = mix(.5, smoothstep(.28, .72, earthGrit * .65 + earthFilteredFine * .35), earthFiberDetail);
             float earthLeafCoverage = earthGrain.g * earthWear.r;
             // These are linear reflectances, lit by the existing physical
             // lights/shadows, never emissive colors or baked fake highlights.
@@ -287,7 +293,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
         `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
             roughnessFactor = mix(roughnessFactor, .92 + earthGrain.r * .07, earthWear.r);
             roughnessFactor = mix(roughnessFactor, .81 + earthStone.a * .15, earthRock);
-            roughnessFactor = mix(roughnessFactor, .87 + earthPore * .12,
+            roughnessFactor = mix(roughnessFactor, .82 + earthClod * .15,
                 (1. - earthWear.r) * (1. - earthRock));
             roughnessFactor = mix(roughnessFactor, .88 + earthPore * .08, earthLeafCoverage * (1. - earthRock));
             roughnessFactor = mix(roughnessFactor, .96,
