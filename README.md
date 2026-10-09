@@ -429,7 +429,8 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.11`, regional needle boughs, hanging
+- Current source version: `Alpha 1.79.11`, inherited Go1.27.2 security correction
+  with unchanged vulnerability gates/dependencies, regional needle boughs, hanging
   Water willow foliage, connected Fire snags, rooted mineral formations and
   retained-population travel stands. Air landmarks gain visual-only leafy
   heath; regional tree/groundcover detail now switches without a reload.

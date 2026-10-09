@@ -31,7 +31,7 @@ if docker container inspect "${terrain_container}" >/dev/null 2>&1; then
 fi
 echo "Terrain save evidence: ${terrain_evidence}"
 echo "Terrain save source: $(git rev-parse HEAD) (current working tree)"
-GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go -C server build -race \
+GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go -C server build -race \
   -ldflags="-X main.buildCommit=${terrain_binary_name}" -o "${terrain_binary}" .
 # No authentication-bearing production URI is read. Only synthetic saves exist
 # in this disposable database; Docker publishes its port on loopback only.
@@ -51,7 +51,7 @@ done
 EIDOLON_RESOURCE_DISPOSABLE_DATABASE=1 \
 EIDOLON_RESOURCE_MONGO_URI="mongodb://127.0.0.1:${terrain_mongo_port}" \
 EIDOLON_RESOURCE_BINARY="${terrain_binary}" \
-GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 \
+GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 \
   go -C server test -race -p 2 -count=1 -timeout=120s -v \
     -run '^TestTerrainActualSavedSessionsAcrossProfileChanges$' . \
     2>&1 | tee "${terrain_evidence}/terrain-save.log"

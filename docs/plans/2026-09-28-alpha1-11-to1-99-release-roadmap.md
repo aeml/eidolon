@@ -20,6 +20,18 @@ Not pushed/live: pending1.79.9 needs acceptance, then1.79.10 publication/accepta
 before1.79.11. Earlier status entries are historical; full numbered requirements,
 F1-F5/1.87/environment/device/beta/launch and owner/human gates remain unchanged.
 
+October9 unaccepted1.79.10 security correction: CI37861950511/6ed016b7 ends
+failure on nine reachable Go1.27.1 standard-library advisories, fixed1.27.2.
+Client/all three browser shards pass; five downstream QA/deploy gates skip.
+Upgrade all build pins without changing dependencies, art, gameplay or gates.
+Strict scan0reachable, actual patched API/monitor builds, module verification,
+two race packages and412fresh-locked-client checks pass. Retain failed CI/local
+Node-link fixture evidence; only current unaccepted note updated,444historical
+entries byte-identical. [Receipt](2026-10-09-go1272-security-checks.json).
+New corrected10 still requires own CI/public acceptance before requested11
+login/Firefox fix and prepared12-15. Last accepted9, full numbered scope and
+F1-F5/art/party/device/human/operations/rights/beta/launch gates remain open.
+
 Accepted1.79.9/7114aad6: own37842726678 all ten mandatory jobs succeed; root
 confirms exact public front/back/healthy DB, clean production and four exported
 file bytes including ordered bundled CSS. Optional broader steps skipped, not
