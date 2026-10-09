@@ -19,10 +19,14 @@ Fighter pilot or remove approved authored models.
 ## Current verified state — October 9, 2026
 
 - Last independently accepted release: **1.79.10 / d3a3b9f7**, CI37864085950.
-  Later served source is not thereby accepted. Corrective11 **5bd725b9** is pushed;
-  **CI37884472930** genuinely running at the latest observation. Client, Server,
-  all three Smoke shards, predeploy character QA and input validation succeed;
-  Pages and SSH deploy are running, live QA not yet accepted. Authorized Luna
+  Later served source is not thereby accepted. Corrective11 **5bd725b9** deployed,
+  but **CI37884472930 failed** live loot setup: valid NECK/GLOVES equipment was
+  excluded by the test's duplicate gear list. Nine jobs and seven live cases pass;
+  later animation/recovery steps skip. Read-only inspection of allowlisted QA
+  inventory confirms five such single-item spares and available stash space.
+  New QA-only fix **fd7bb300 / CI37888678907** is pushed and running.83 affected
+  checks pass; all item/metadata/Gold conservation checks remain. No runtime,
+  startup bundle, notes, accounts or economy changes. Authorized Luna
   `/root/watch_deploy_1795_1008` owns terminal-only monitoring. Root must still
   verify all required terminal gates, transformed publisher bytes and live
   frontend/backend identity/TLS/database before publishing12.
@@ -34,11 +38,11 @@ Fighter pilot or remove approved authored models.
   [Current integration receipt](docs/plans/2026-10-09-startup-bundle-and-air-review-progress.json)
   links the owned source receipt/artifacts. Prior SSH and static-module408
   failures and initial fixture failures remain preserved, not reclassified.
-- Prepared12-17 all normally inherit5bd725b9, clean at their last source audit.
+- Prepared12-17 all normally inheritfd7bb300, clean at their last source audit.
   Exact predecessor notes447-452total/ten initial per version are retained.
   Actual17graph compiles417modules/shared21; no later public push or blanket
   stage qualification. Per-release public acceptance remains mandatory.
-- Air composition **f18128bc** is local in the owned Air branch below: rooted
+- Air composition **d6ae6286** (f18128bc art plus fd7 QA fix) is local below: rooted
   cypresses/roughly9m slate, sheltered dust pockets, forged instruments and
   grounded chart tables, supported camp racks and folded canvas bedrolls.
   Nine dust, five instrument/path/leg and two new camp checks plus bounded
@@ -64,11 +68,13 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Accept or diagnose corrective11/5bd725b9/CI37884472930 after authorized Luna
+1. Accept or diagnose corrective11/fd7bb300/CI37888678907 after authorized Luna
    terminal notice; independently verify required jobs, public identities and
    actual transformed publisher bytes. Prior dc7 attempt2 fails engine-module
    download with matching static HTTP408 evidence; upstream cause remains
-   unproven. Require own CI/public acceptance, then fresh-fetch/normal reconcile
+   unproven. Later5bd reaches gameplay but fails the QA gear selector;83 affected
+   checks qualify the fd7 correction, not live acceptance. Require own CI/public
+   acceptance, then fresh-fetch/normal reconcile
    and individually publish/accept prepared12-17 in order. Never promote the
    whole future branch, overlap pushes, retry successful tests or infer acceptance
    from a running job. Continue integrated modern-world work while CI runs.
@@ -108,20 +114,20 @@ qualification never proves a later tree, full visual approval or public rollout.
   Preserve unrelated user/website-agent changes.
 - Current corrective11:
   `/home/aeml/.local/share/eidolon-startup-bundle-release-20261009`;
-  branch `work/alpha-1-79-startup-bundle-current-20261009`, pushed5bd725b9.
+  branch `work/alpha-1-79-startup-bundle-current-20261009`, pushedfd7bb300.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, localf18128bc.
+  branch `work/alpha-1-79-air-cypress-current-20261009`, locald6ae6286.
 - Ordered queued release worktrees and last clean heads:
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
   | --- | --- | --- |
-  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `6478d47c` |
-  | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `6429f5c4` |
-  | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `d2e8bed5` |
-  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `d49ab8af` |
-  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `89dc3405` |
-  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `adc79772` |
+  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `3d56b5b9` |
+  | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `bf690620` |
+  | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `0e6c1a5a` |
+  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `6135a833` |
+  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `cb78814c` |
+  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `4e086eab` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
