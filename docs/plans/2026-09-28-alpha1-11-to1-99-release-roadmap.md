@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared16/20f0a460 in isolatedmasonry-release-CkTEzcx0: curved Grove
+vault/lips/worn Grove/Bastion courses and registered mineral grain/patina/lichen/
+damp.425focused cases and two native High/Low cases18timed views pass original
+limits;450older notes exact. First green image still plain, material refined;
+root still records modest improvement, not final art/party/device approval.
+[Receipt](2026-10-09-release1-79-16-checks.json). Select shared fieldstone source
+and regression into future branch, no version downgrade.16notlive; ordered11-15
+acceptance and fresh remote reconcile precede publication. Full scope remains.
+
 October9 accepted public10/d3a3b9f7/run37864085950: root verifies all ten mandatory
 jobs and exact front/back/DB/clean production/four exported bytes at00:55:02Z.
 Optional broader steps skip, not pass; initial failed security run retained.

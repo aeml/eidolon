@@ -68,4 +68,22 @@ describe('world surface detail', () => {
         customized.onBeforeCompile = () => {};
         expect(() => applyWorldSurfaceDetail(customized, 'stone')).toThrow('existing shader hook');
     });
+
+    test('carved fieldstone uses registered mineral patina without projected seams, textures or new geometry', () => {
+        const material = applyWorldSurfaceDetail(new MeshStandardMaterial({ roughness: .96 }), 'fieldstone');
+        const originalColor = material.color.clone(), shader = { ...ShaderLib.standard };
+        material.onBeforeCompile(shader);
+        for (const patch of ['float eidolonFieldstoneNoise(vec3 p)', 'eidolonFieldstoneNoise(p * 1.7)',
+            'eidolonFieldstoneNoise(p * 7.)', 'vec3 grainFootprint = fwidth(p * 7.)',
+            'vec3 eidolonFieldstoneTint(vec3 p)', 'diffuseColor.rgb *= eidolonFieldstoneTint(vEidolonSurface)',
+            'smoothstep(.35, .85, up)', 'smoothstep(.2, 2.4, p.y)', 'grain * .014 * detail'])
+            expect({ patch, present: shader.fragmentShader.includes(patch) }).toEqual({ patch, present: true });
+        const branch = shader.fragmentShader.split('#elif EIDOLON_SURFACE == 4')[1].split('#elif')[0];
+        expect(branch).not.toContain('eidolonNoise(uv');
+        expect(material.customProgramCacheKey()).toBe('eidolon-world-surface-v2:fieldstone');
+        expect(material.color).toEqual(originalColor); expect(material.roughness).toBe(.96);
+        expect(material.map).toBeNull(); expect(material.normalMap).toBeNull();
+        expect(material.emissive.getHex()).toBe(0);
+        material.dispose();
+    });
 });

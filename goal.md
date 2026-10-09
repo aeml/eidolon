@@ -18,6 +18,20 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- October9 prepared16 **20f0a460a592fe66bc8ed9df83a0a77385d9a943** in isolated
+  `/home/aeml/.local/share/eidolon-masonry-release-CkTEzcx0`, based on reconciled
+  15/e07a46d7. Grove/Bastion curved vault/lips/worn courses and registered stone
+  mineral grain/patina/lichen/damp; no extra maps/draw buckets/collisions or
+  supplied-model change. Initial geometry-only green capture still looked plain;
+  final material refined and reviewed High/Low.425focused checks and two native
+  cases/18timed views1.1m pass original budgets, repeat resources stable.
+  All450prior notes exact;451total/10initial/45lazy and synchronized16labels.
+  [Receipt](docs/plans/2026-10-09-release1-79-16-checks.json).
+  Shared fieldstone source/test selected onto this future branch, no public
+  version downgrade. Notlive: ordered11-15 acceptance and fresh remote reconcile
+  precede16. Modest refinement, not final modern art/equipped-party/device proof.
+  Full original roadmap/F1-F5/human/owner/operations/beta/launch stays active.
+
 - October9 **public1.79.10 accepted d3a3b9f7**: corrected37864085950 completes
   success, all ten mandatory jobs. Root independently verifies terminal exact
   head, front/back identities/DB/clean production and four actual publisher
