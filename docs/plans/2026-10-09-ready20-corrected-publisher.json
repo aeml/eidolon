@@ -1,9 +1,17 @@
 {
   "schema": 1,
-  "status": "Normally pushed QA-only correction; exact successor CI and own final acceptance pending",
+  "status": "Accepted corrected20: own exact terminal CI, native/live scopes and public identity/hash/readiness verification passed",
   "version": "Alpha 1.79.20",
   "head": "e59891126671b7710cdcaa3f5ed37122734f57cc",
-  "ci": { "run": 37954540092, "attempt": 1, "head": "e59891126671b7710cdcaa3f5ed37122734f57cc", "status": "in_progress", "conclusion": null, "monitor": "Authorized Luna watch_deploy_1795_1008, sparse terminal/actionable reports; no retry/cancel" },
+  "ci": { "run": 37954540092, "attempt": 1, "head": "e59891126671b7710cdcaa3f5ed37122734f57cc", "status": "completed", "conclusion": "success", "jobs": "Root independently verifies all ten exact-run jobs succeeded. Original37948468016 remains failed, not retried or waived.", "monitor": "Authorized Luna watch_deploy_1795_1008 terminal report consumed; no retry/cancel" },
+  "liveCI": {
+    "job": 113912929272,
+    "result": "Root actual log:8release cases7.0m,2town/rest cases1.7m,1party case1.5m pass. First sanitizer0files/final1file. Live four-class/remote-animation step skipped, not passed; three native optional steps likewise remain skipped, four total optional skips.",
+    "privateLog": "/home/aeml/.local/share/eidolon-17920-corrected-live-ci-20261009.log",
+    "logSHA256": "527998dbe6533bd086be5e6700a77b9f8e9cc696e070acf6259a91e87c9ef53f"
+  },
+  "publicAcceptance": "Root after-terminal normal TLS/ordinary DNS/forced IPv4 verification2026-10-09T16:29:04.087Z: all five exact successor publisher hashes match, frontend/backend Alpha1.79.20/e5989112 and database ready. Not IPv6/all-region or real-phone certification.",
+  "nativeArtifactLimit": "Root downloads exact artifact11628542393 (253738bytes), enumerates ZIP with the existing Playwright yauzl reader: only playwright-report/index.html remains. Subsequent smoke overwrites default output/report directories, so earlier native class/environment/celebration images are NOT retained. Native execution passes remain scoped; no missing images treated as new final-art review. Next21 fixes unique stage output/report paths and guarded sanitation/upload without new test reruns. Initial unzip unavailable and guessed zipBundle path unsuccessful; no source change or data mutation from those attempts.",
   "nativeCI": {
     "job": 113909783381,
     "result": "Root independently consumes exact completed successful native job steps and private log: actual AMD Vulkan1.4.318 RADV;7regional cases2.0m,1celebration case6.4s,2delivered-class cases19.4s,4disposable smoke cases2.4m. Three optional native steps skipped, not passed: animation gallery, rested GPU lifecycle, full-character gameplay.",

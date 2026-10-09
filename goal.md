@@ -18,6 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Corrected20/e598 is independently accepted: all ten CI37954540092 jobs pass;
+  actual native7regional/1celebration/2class/4smoke and live8release/2town-rest/
+  1party cases pass. Four optional stages remain skipped, not passed. Public
+  five hashes, front/backend20/e598 and ready DB match16:29:04UTC over normal
+  TLS/forced IPv4. Native artifact lost earlier visual captures to later smoke.
+  Final21/541c2eda fixes separate stage evidence paths and guarded scanning,
+  adds grouped town utilities and script-free credits;419focused checks pass.
+  Normally pushed after fresh reconciliation; CI37960034584 now under sparse
+  Luna watch. Own terminal/native/live/public and retained-artifact acceptance
+  required before another public release. Earlier prepared/in-progress records
+  below are historical. Full art, raised/party/device and roadmap gates open.
+
 - Prepared21/bfee2395 normally adds lightweight, script-free original component
   notices to qualified town update.76login/396history checks pass; two Firefox
   software320/1280 static-page views fit without network requests. Every game,
