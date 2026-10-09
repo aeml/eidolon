@@ -120,7 +120,8 @@ class GameEngineNetworkMessageMethods {
         // Generate new world
         const worldGen = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, {
             instanceId, instanceType: type, layout, graphicsQuality: this.renderSystem.graphicsQuality,
-            terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile
+            terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile,
+            understorySpatialBatches: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true
         });
         this.activeWorldGenerator = worldGen;
         if (type === 'casino') {

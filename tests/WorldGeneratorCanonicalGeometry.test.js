@@ -47,6 +47,20 @@ function buildCanonicalLayout() {
     };
 }
 
+test('world generation retains instanced ground cover without multi-draw capability', async () => {
+    const fixture = createGenerator();
+    const generator = new WorldGenerator(fixture.scene, fixture.collisionManager,
+        { graphicsQuality: 'low', understorySpatialBatches: false });
+    await generator.loadTrees(0, 200);
+    const cover = generator.scene.add.mock.calls.map(([object]) => object).find(root => root.userData.earthUnderstory);
+    expect(cover.children.every(mesh => mesh.isInstancedMesh && !mesh.isBatchedMesh)).toBe(true);
+    expect(cover.children.reduce((count, mesh) => count + mesh.count, 0)).toBe(cover.userData.plantCount);
+    const geometries = new Set(), materials = new Set();
+    for (const mesh of cover.children) { geometries.add(mesh.geometry); materials.add(mesh.material); mesh.dispose(); }
+    for (const geometry of geometries) geometry.dispose();
+    for (const material of materials) material.dispose();
+});
+
 function verifyCanonicalSurfaces(generator, layout) {
     expect(generator.createRoom).not.toHaveBeenCalled();
     expect(generator.createCorridor).not.toHaveBeenCalled();

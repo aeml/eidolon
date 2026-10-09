@@ -22,8 +22,13 @@ test('wind uses shared render uniforms and responds to live reduced motion witho
     expect(material.transparent).toBe(false);
     expect(material.depthWrite).toBe(true);
     expect(material.map).toBeNull();
-    expect(material.customProgramCacheKey()).toBe('woodland-rooted-wind-v2');
+    expect(material.customProgramCacheKey()).toBe('woodland-rooted-wind-v3');
     expect(shaders[0].vertexShader).toContain('direction *= min(woodlandStretch.x, woodlandStretch.y) / woodlandSafeStretch');
+    // GLSL calls require batching helpers to be declared before the wind
+    // function, including when Three emulates draw IDs without multi-draw.
+    expect(shaders[0].vertexShader.indexOf('#include <batching_pars_vertex>'))
+        .toBeLessThan(shaders[0].vertexShader.indexOf('vec2 woodlandBend()'));
+    expect(shaders[0].vertexShader).toContain('getBatchingMatrix(getIndirectIndex(gl_DrawID))');
     material.dispose();
 });
 

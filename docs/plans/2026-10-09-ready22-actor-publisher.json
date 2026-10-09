@@ -1,0 +1,240 @@
+{
+  "status": "Accepted at exact commit after terminal attempt1 CI, retained native/live evidence review and independent public identities/assets/database-readiness checks",
+  "head": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+  "version": "Alpha 1.79.22",
+  "scope": "Actual sheared procedural actor normal correction, not new imported models, gameplay, frame-rate or modern-art acceptance. Original b86 runtime and four distinct native High/Low scopes retained in source actor-normal receipt, including the original new-pose assertion failure and its test-only correction.",
+  "checks": "Six suites469checks pass12.384s, scoped lint/whitespace pass;457notes/teninitial/45pages,all456prior raw entries exact,539nonroot lock entries exact. LogSHA256657001d886dead900e5b4e802db0ae831cd038b427ebf41fa5c8d377baafbf9c;historySHA256dd6f7b2eb5270d53f6a160532639c126372227e3c34a939488cfa616c2456028.",
+  "publisher": {
+    "fixture": "/tmp/eidolon-22-actor-publisher-UCJBgvjI",
+    "compiler": "Byte-identical qualified compiler/locked esbuild;424modules/3259954bytes/21sharedloginmodules;402of897versionedruntimefiles",
+    "expectedSHA256": {
+      "index.html": "9b84380fe9086de78e8fe5910696ffbe23359ce88fd4ac49ac05c2f10780cb88",
+      "src/main.js": "2e6e8888d521e8c79df87dd99ebbd110cd4fbe23e7cc2452b8427ac9b9efca6c",
+      "src/core/GameEngine.bundle.js": "69ceaf48ad26f5d489dccd7de2138f375d7003b43251342223d2fc6207fdd6a3",
+      "src/styles/index.css": "6f0f176444828899018815b25cbc4e3107ca514bb27bf1051e80e9808c11d3d7",
+      "release.json": "c46026ad9b069aa8cd7e8074524b3212fa95b7036d738a40a0b49d2a87f87399",
+      "assets/notices/index.html": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d"
+    }
+  },
+  "gate": "Release22 accepted within actual scoped evidence. Preserve all open full-goal gates. Future coherent milestones require fresh fetch/ordinary merge and their own exact terminal CI/public acceptance; do not force-push or alter original dirty user checkout.",
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "id": 37967212738,
+    "run_attempt": 1,
+    "status": "completed",
+    "jobs": [
+      {
+        "databaseId": 113944445992,
+        "name": "Browser Smoke (Playwright 2/3)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113944446002,
+        "name": "Browser Smoke (Playwright 3/3)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113944446035,
+        "name": "Server Tests (Go)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113944446042,
+        "name": "Browser Smoke (Playwright 1/3)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113944446588,
+        "name": "Client Tests (Jest)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113952840379,
+        "name": "Predeploy Character QA (System Chrome)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113955369417,
+        "name": "Validate Production QA Inputs",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113955403357,
+        "name": "Deploy Server (SSH)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113955403395,
+        "name": "Deploy to GitHub Pages",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 113956029677,
+        "name": "Live Release and Character QA",
+        "conclusion": "success"
+      }
+    ],
+    "url": "https://github.com/aeml/eidolon/actions/runs/37967212738",
+    "completeLogSHA256": "3d2e99a95a73e5df89f5adba258ad5f7e296942ed868a5b486b1ad4ef9e9cf00"
+  },
+  "acceptance": {
+    "native": "AMD ANGLE Vulkan1.4.318 RADV.7regional2.2m,1celebration6.6s,2authored-equipment19.6s,4focused release2.4m passed. Three optional suites skipped, not passed. Sanitizers0retained/1focused files.",
+    "live": "8release7.7m,2town-recovery1.6m,1rested-party1.4m passed. Optional four-class/remote-animation skipped, not passed. Sanitizers0recovery/1final files.",
+    "artifacts": [
+      {
+        "id": 11636451309,
+        "name": "live-browser-evidence-30a8b6038df9e071eef0f57564ae94087d1a0b11",
+        "size_in_bytes": 12399316,
+        "created_at": "2026-10-09T18:14:47Z"
+      },
+      {
+        "id": 11635880549,
+        "name": "predeploy-character-evidence-30a8b6038df9e071eef0f57564ae94087d1a0b11",
+        "size_in_bytes": 9573102,
+        "created_at": "2026-10-09T18:01:52Z"
+      }
+    ],
+    "inspection": "Root downloaded separate native and live artifacts. Native has44files/32PNGs, separate regional/celebration/authored reports retained. Viewed all-four-class CombatIdle, fitted Rogue/Wizard/Cleric closeups, regional restored view and live High390px rested-party HUD. No missing evidence represented as reviewed; no final art, every realm, physical-phone or human approval claim.",
+    "public": {
+      "observedAt": "2026-10-09T18:14:50.894524+00:00",
+      "head": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+      "assets": [
+        {
+          "path": "index.html",
+          "expected": "9b84380fe9086de78e8fe5910696ffbe23359ce88fd4ac49ac05c2f10780cb88",
+          "actual": "9b84380fe9086de78e8fe5910696ffbe23359ce88fd4ac49ac05c2f10780cb88",
+          "match": true
+        },
+        {
+          "path": "src/main.js",
+          "expected": "2e6e8888d521e8c79df87dd99ebbd110cd4fbe23e7cc2452b8427ac9b9efca6c",
+          "actual": "2e6e8888d521e8c79df87dd99ebbd110cd4fbe23e7cc2452b8427ac9b9efca6c",
+          "match": true
+        },
+        {
+          "path": "src/core/GameEngine.bundle.js",
+          "expected": "69ceaf48ad26f5d489dccd7de2138f375d7003b43251342223d2fc6207fdd6a3",
+          "actual": "69ceaf48ad26f5d489dccd7de2138f375d7003b43251342223d2fc6207fdd6a3",
+          "match": true
+        },
+        {
+          "path": "src/styles/index.css",
+          "expected": "6f0f176444828899018815b25cbc4e3107ca514bb27bf1051e80e9808c11d3d7",
+          "actual": "6f0f176444828899018815b25cbc4e3107ca514bb27bf1051e80e9808c11d3d7",
+          "match": true
+        },
+        {
+          "path": "release.json",
+          "expected": "c46026ad9b069aa8cd7e8074524b3212fa95b7036d738a40a0b49d2a87f87399",
+          "actual": "c46026ad9b069aa8cd7e8074524b3212fa95b7036d738a40a0b49d2a87f87399",
+          "match": true
+        },
+        {
+          "path": "assets/notices/index.html",
+          "expected": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d",
+          "actual": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d",
+          "match": true
+        }
+      ],
+      "health": {
+        "status": "ok",
+        "database": "ready",
+        "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+        "version": "Alpha 1.79.22",
+        "goroutines": 40,
+        "heapAllocBytes": 83113296,
+        "heapObjects": 86986,
+        "broadcastQueues": {
+          "queued": 0,
+          "capacity": 1024,
+          "encounterQueued": 0,
+          "encounterCapacity": 128,
+          "dropped": 0,
+          "encounterDropped": 0,
+          "invalidDropped": 0
+        },
+        "operational": {
+          "characterJournal": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 38,
+            "failed": 0,
+            "timedSamples": 38,
+            "totalMicros": 601114,
+            "maxMicros": 63282
+          },
+          "characterCommit": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 38,
+            "failed": 0,
+            "timedSamples": 38,
+            "totalMicros": 372999,
+            "maxMicros": 38766
+          },
+          "characterCleanup": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 38,
+            "failed": 0,
+            "timedSamples": 38,
+            "totalMicros": 287630,
+            "maxMicros": 41067
+          },
+          "characterRecovery": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 12,
+            "failed": 0,
+            "timedSamples": 12,
+            "totalMicros": 883,
+            "maxMicros": 150
+          },
+          "casinoGold": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "casinoEP": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "realtimeUpdate": {
+            "inFlight": 1,
+            "inFlightKnown": true,
+            "completed": 21131,
+            "failed": 0,
+            "timedSamples": 21131,
+            "totalMicros": 199308504,
+            "maxMicros": 37623
+          },
+          "stateBroadcast": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 21131,
+            "failed": 0,
+            "timedSamples": 21131,
+            "totalMicros": 20125301,
+            "maxMicros": 25553
+          }
+        }
+      },
+      "release": {
+        "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+        "version": "Alpha 1.79.22"
+      },
+      "scope": "Normal TLS, ordinary DNS, IPv4. Terminal CI acceptance still separately required."
+    },
+    "limits": "Current public profile remains flat. Modern art, terrain rollout, broader equipped party/device, complete inherited roadmap and all F/CB/R owner gates remain open. No retry, cancellation, beta/access/policy/rights or production mutation during acceptance."
+  }
+}

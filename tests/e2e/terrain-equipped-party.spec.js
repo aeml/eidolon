@@ -73,7 +73,11 @@ function readPartyTerrain(ids) {
             authorityError: Number.isFinite(authority?.y) && field ? Math.abs(authority.y - field.sample(authority.x, authority.z)) : Infinity
         };
     });
-    return { profile: game.terrainProfile, quality: game.renderSystem.graphicsQuality, actors };
+    const cover = game.getInstanceEnvironmentGroup().children.find(root => root.userData.earthUnderstory);
+    return { profile: game.terrainProfile, quality: game.renderSystem.graphicsQuality, actors,
+        groundCover: { plants: cover?.userData.plantCount ?? 0, meshes: cover?.children.length ?? 0,
+            spatialBatches: Boolean(cover?.children.length && cover.children.every(mesh => mesh.isBatchedMesh)),
+            multiDrawAvailable: game.renderSystem.renderer.extensions.has('WEBGL_multi_draw') } };
 }
 
 test('connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing', async ({ page, browser, baseURL }, testInfo) => {
@@ -293,6 +297,8 @@ test('single native renderer observes three live equipped party socket peers on 
         for (const peer of peers) { expect(peer.socket.readyState).toBe(1); expect(peer.errors).toEqual([]); }
         const party = await page.evaluate(readPartyTerrain, ids);
         expect(party.actors.map(actor => actor.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
+        expect(party.groundCover.plants).toBeGreaterThan(0);
+        expect(party.groundCover.spatialBatches).toBe(party.groundCover.multiDrawAvailable);
         // Untimed draw attribution at the renderer boundary. Per-object hooks
         // would disable eligible ActorInstanceBatches, distorting this evidence.
         const draws = await page.evaluate(() => {
@@ -309,7 +315,9 @@ test('single native renderer observes three live equipped party socket peers on 
                 entry[camera === render.camera ? 'color' : 'shadow']++;
                 const vertices = group?.count ?? Math.min(geometry.drawRange.count,
                     geometry.index?.count ?? geometry.attributes.position.count);
-                entry.triangles += vertices / 3 * (object.isInstancedMesh ? object.count :
+                if (object.isBatchedMesh) {
+                    for (let i = 0; i < object._multiDrawCount; i++) entry.triangles += object._multiDrawCounts[i] / 3;
+                } else entry.triangles += vertices / 3 * (object.isInstancedMesh ? object.count :
                     geometry.isInstancedBufferGeometry ? geometry.instanceCount : 1);
                 return original.call(this, camera, scene, geometry, material, object, group);
             };
@@ -336,6 +344,43 @@ test('single native renderer observes three live equipped party socket peers on 
         await testInfo.attach('untimed-same-scene-instance-comparison', { body: JSON.stringify({ ...pairedDraws,
             scope: 'Two untimed synchronous renders of the same party/poses/camera. Borrowed exact geometry; aggregate instance bounds may draw more offscreen triangles. Not a frame-budget certificate.'
         }, null, 2), contentType: 'application/json' });
+        if (process.env.EIDOLON_TERRAIN_PARTY_SUBMISSION_COMPARE === '1') {
+            // Diagnostic only: alternate identical plant content in this actual
+            // connected scene. Actors, AI, weather and normal RAF stay live.
+            // Record entity counts rather than treating another fixture's
+            // different population as a comparable performance baseline.
+            await page.evaluate(async () => {
+                const { createEarthUnderstory } = await import('/src/art/EarthUnderstory.js');
+                const game = window.game, render = game.renderSystem;
+                const parent = game.getInstanceEnvironmentGroup();
+                const spatial = parent.children.find(root => root.userData.earthUnderstory);
+                if (!spatial?.children.every(mesh => mesh.isBatchedMesh)) throw new Error('Paired diagnostic requires actual spatial production cover');
+                const original = createEarthUnderstory({ quality: render.graphicsQuality, terrainElevation: game.terrainElevation });
+                if (original.userData.plantCount !== spatial.userData.plantCount) throw new Error('Paired diagnostic lost plants');
+                window.__understorySubmissionComparison = { parent, spatial, original, render };
+            });
+            const phases = [];
+            try {
+                for (const mode of ['original', 'spatial', 'spatial', 'original']) {
+                    await page.evaluate(async mode => {
+                        const state = window.__understorySubmissionComparison;
+                        state.original.removeFromParent(); state.spatial.removeFromParent(); state.parent.add(state[mode]);
+                        for (let i = 0; i < 20; i++) await new Promise(resolve => requestAnimationFrame(resolve));
+                    }, mode);
+                    phases.push({ mode, ...await profileGameplayScene(page, `paired-ground-cover-${mode}`) });
+                }
+            } finally {
+                await page.evaluate(() => {
+                    const state = window.__understorySubmissionComparison;
+                    state.original.removeFromParent(); state.spatial.removeFromParent(); state.parent.add(state.spatial);
+                    state.render.disposeObjectResources(state.original); delete window.__understorySubmissionComparison;
+                });
+            }
+            await testInfo.attach('paired-ground-cover-profile', { body: JSON.stringify({ phases,
+                scope: 'Alternating full-game samples of the same connected party and exact plant content; normal simulation and natural entity changes retained. Diagnostic, not physical-device or busy-battle certification.'
+            }, null, 2), contentType: 'application/json' });
+            console.log('[paired-ground-cover-profile]', JSON.stringify(phases));
+        }
         if (process.env.EIDOLON_TERRAIN_PARTY_CPU_PROFILE === '1') {
             // Opt-in diagnosis AFTER the frame sample, never part of its timing.
             // CPU profiles contain function/source identities, not chat or args.

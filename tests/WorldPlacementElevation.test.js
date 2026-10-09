@@ -8,7 +8,7 @@ test('actual foliage batches and trunk colliders move together without changing 
     const raised = new WorldGenerator(new THREE.Group(), new CollisionManager(), { terrainElevation: field });
     await flat.loadTrees(0, 200); await raised.loadTrees(0, 200);
     expect(raised.scene.children.length).toBe(flat.scene.children.length);
-    let lifted = 0;
+    let lifted = 0, treeMatrixError = 0;
     for (let g = 0; g < flat.scene.children.length; g++) {
         const a = flat.scene.children[g], b = raised.scene.children[g];
         if (a.userData.earthUnderstory) {
@@ -22,15 +22,21 @@ test('actual foliage batches and trunk colliders move together without changing 
             for (let part = 0; part < a.children.length; part++) {
                 const source = a.children[part], target = b.children[part];
                 expect(target.name).toBe(source.name);
-                expect(target.count).toBe(source.count);
+                expect(source.isBatchedMesh).toBe(true);
+                expect(target.instanceCount).toBe(source.instanceCount);
                 if (!checked.has(source.geometry)) {
                     checked.add(source.geometry);
                     expect(target.geometry).not.toBe(source.geometry);
                     for (const key of Object.keys(source.geometry.attributes)) {
-                        expect(target.geometry.attributes[key].array).toEqual(source.geometry.attributes[key].array);
+                        const before = source.geometry.attributes[key].array;
+                        const after = target.geometry.attributes[key].array;
+                        expect(after.length).toBe(before.length);
+                        // Exact full-buffer equality without millions of
+                        // Jest recursive element comparisons across sectors.
+                        if (!after.every((value, i) => value === before[i])) throw new Error(`changed understory ${key}`);
                     }
                 }
-                for (let i = 0; i < source.count; i++) {
+                for (let i = 0; i < source.instanceCount; i++) {
                     const before = new THREE.Matrix4(), after = new THREE.Matrix4();
                     source.getMatrixAt(i, before); target.getMatrixAt(i, after);
                     before.elements[13] = field.sample(before.elements[12], before.elements[14]);
@@ -55,11 +61,16 @@ test('actual foliage batches and trunk colliders move together without changing 
                 const p = a.userData.placements[source.userData.placementIndices[i]];
                 const height = field.sample(p.x, p.z);
                 before.elements[13] += height;
-                before.elements.forEach((v, j) => expect(after.elements[j]).toBeCloseTo(v, 4));
+                before.elements.forEach((v, j) => {
+                    treeMatrixError = Math.max(treeMatrixError, Math.abs(after.elements[j] - v));
+                });
                 if (height > 1) lifted++;
             }
         }
     }
+    // Same strict half-unit threshold as toBeCloseTo(value,4), applied to
+    // every matrix component without hundreds of thousands of matcher calls.
+    expect(treeMatrixError).toBeLessThan(.00005);
     expect(lifted).toBeGreaterThan(0);
     expect(raised.collisionManager.colliders).toHaveLength(flat.collisionManager.colliders.length);
     flat.collisionManager.colliders.forEach((box, i) => {

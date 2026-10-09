@@ -506,7 +506,8 @@ export class GameEngine {
         this.currentDungeonLayout = null;
         this.activeBuffs = [];
         this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, {
-            graphicsQuality: this.renderSystem.graphicsQuality, terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile
+            graphicsQuality: this.renderSystem.graphicsQuality, terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile,
+            understorySpatialBatches: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true
         });
         this.activeWorldGenerator = this.worldGenerator;
         this.minimap = new Minimap();

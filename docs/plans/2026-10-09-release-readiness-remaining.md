@@ -8,20 +8,21 @@ This register supplements the [89-milestone roadmap](2026-09-28-alpha1-11-to1-99
 It preserves carried requirements from 1.11 onward; it does not replace them
 with a smaller 1.80–1.99 objective or certify unchecked gates.
 
-The public baseline rechecked at 17:58 UTC is Alpha 1.79.21,
-`541c2edadf4a682e63000f8e1acfae4747d7f051`: frontend/backend identities and
-database readiness agree, and six independently fetched public files match
-the accepted publisher receipt. Alpha 1.79.22 at `30a8b603` is pushed and in
-native QA, **not yet accepted**. Its hosted client/server and three browser
-shards completed successfully. Actions run `37967212738` remains the release
-handle; `37880032315` remains the separately running soak. Neither was restarted
-or cancelled. Later continuation must requery these exact handles and endpoints.
+The public baseline accepted at 18:14 UTC is Alpha 1.79.22,
+`30a8b6038df9e071eef0f57564ae94087d1a0b11`: all ten CI jobs completed
+successfully on attempt1; required native/live checks and retained artifacts
+were independently inspected, and frontend/backend identities, database readiness
+and six public file hashes agree. Optional scopes remain skipped, not passed.
+See the [exact acceptance receipt](2026-10-09-ready22-actor-publisher.json).
+Actions run `37967212738` was not restarted or cancelled. The separately running
+soak `37880032315` remains untouched; requery its exact state when needed.
 
 | Work | Current evidence and status | Next required result / owner |
 | --- | --- | --- |
-| Current release | 1.79.21 deployed/verified; 1.79.22 pushed with CI active | Exact terminal run/head, required native/live stages, retained artifact inspection and independent public identities/assets/readiness before another release / implementation |
-| Raised terrain and atlas | Clean retained raised candidate `73a3d48e`; functional save/profile/grounding, equipped solo road budgets and atlas receipts exist. Production activation held | Integrate this candidate deliberately; finish coherent art and equipped-party/device qualification, then matching client/server/profile rollout and compatible return-to-flat verification / implementation |
+| Current release | 1.79.22 deployed/verified at exact30a8b603 with all ten CI jobs successful | Reuse accepted22 scope; the next coherent milestone needs its own exact CI/live/assets/readiness acceptance / implementation |
+| Raised terrain and atlas | Retained raised candidate `33f536c4` including staged rollout guards; functional save/profile/grounding, equipped solo road budgets and atlas receipts exist. Production activation held | Integrate this candidate deliberately; finish coherent art and equipped-party/device qualification, then matching client/server/profile rollout and compatible return-to-flat verification / implementation |
 | Terrain rollout guards | New owned candidate validates profile before mutations, passes it to preflights and checks initialized-world health. Focused race and real-process HTTP/login checks passed; **staged, not deployed** | Include with the coherent terrain milestone and obtain its own exact deployment acceptance; [receipt](2026-10-09-terrain-rollout-readiness-checks.json) / implementation |
+| Ground-cover performance | Private spatial-batching candidate preserves every High13087/Low7439 plant, exact native image/wind output and GPU cleanup; supported multi-draw only, established fallback retained. Raised movement/aim/shadows and actual equipped-party saves pass. Paired connected scene saves about2–3ms CPU median, but High median33.3–33.4ms/p9550.0–50.1ms still fail the whole-game budget | Keep held with raised milestone; investigate measured scene-projection/world-matrix/bounds/shadow costs, then qualify actual equipped party and supported devices. No plant removal, budget reduction or public microrelease; [scoped receipt](2026-10-09-understory-spatial-checks.json) / implementation |
 | Modern environments | Code-owned material, terrain, road, foliage, architecture, landmark and interior improvements delivered or staged at differing exact sources. Latest viewed raised woodland capture still has sparse composition and repeated vegetation. Q/CB art acceptance open | Gameplay-size, moving, equipped/HUD review of Lanternhold → Earth → fight → dungeon approach, then every realm/border/dungeon/raid/Dark Realm/casino/PvP family; repair actual gaps / implementation, final owner review |
 | Supplied actors/equipment | Four GLBs, equipment catalog and motion banks delivered; current rig/slot/material/dual-wield/cleanup receipts retained. No new asset request | Finish full/mixed/cosmetic fit and material identity in motion, local/remote swaps and supported profiles without replacing supplied models / implementation |
 | Combat and presentation | Twelve kits and class-authority implementation retained; art/effects/audio and resource-lifetime receipts are source-scoped | Close actual class/spec, animation/contact, warning hierarchy, sound and busy-group/readability gaps. Essential warnings survive Low/reduced effects/mute / implementation and playtest |

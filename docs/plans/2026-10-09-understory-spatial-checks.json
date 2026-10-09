@@ -1,0 +1,2645 @@
+{
+  "schema": 1,
+  "status": "Private coherent terrain candidate; focused native, grounding and connected-party functional verification retained. Paired same-scene comparison completed; full equipped-party/device frame budget and modern-art gates remain open. Public22 remains accepted.",
+  "base": "33f536c423ba93c2723c1fd4fa16883822ecf9ea plus exact working runtime hashes below",
+  "worktree": "/home/aeml/.local/share/eidolon-understory-spatial-batching-20261009",
+  "runtimeSHA256": {
+    "src/art/SpatialUnderstoryBatches.js": "c93729541fabb2fb75b196bb98079de3a2f146e4cf7c6890bb4e377c19a44a4c",
+    "src/art/EarthUnderstory.js": "7f7e83dba36371b58098cfb731f1079f516223d788a0572930714e4df276dd07",
+    "src/art/WoodlandWindMaterial.js": "479fe0ebd54756fc169a53a175939125d2319a069bfdad2fbe8adf8347bd0627",
+    "src/world/WorldGenerator.js": "df2ffd8fda630a62cb87dae81b05d1b47cc65f8bdb7fc047d130d2c72865b111",
+    "src/core/GameEngine.js": "9bbd74156c6d67ed133753ca0d12a1620597a9a87878f41b0efc5022ffeb256c",
+    "src/core/GameEngineNetworkMessages.js": "2ef06f52e94ebf8648a31ba1da320234032a74f4e976ce832c6838189e3a64c6"
+  },
+  "implementation": {
+    "plants": "Every High13087/Low7439 plant retains exact Float32 transform, shape, normals, vertex tone and per-plant tint. No plant deletion, distance LOD, altered gameplay, assets or silhouettes.",
+    "submission": "32m sectors containing both original recipes;326High/319Low BatchedMeshes replace6862High/1590Low scene leaves. Conservative wind-padded sector and per-plant bounds remain live. Shared wind reads the actual plant matrix in both Three shader paths.",
+    "selection": "Main startup and every network world generation select spatial batches only when actual renderer WEBGL_multi_draw is available. Other browsers retain established instanced cells. Forced Three emulation compiled and rendered exactly, but High399calls versus288baseline breaches350call budget; that path is NOT adopted for unsupported devices.",
+    "cost": "High counted buffers grow1028200\u219212339364bytes;Low598952\u219211556040bytes. Geometry duplicated per sector; three owned data textures per batch. Repeated native GPU release verified; no claim that higher allocation is free."
+  },
+  "cpuDiagnostic": {
+    "file": "/tmp/eidolon-understory-spatial-cpu.json",
+    "sha256": "d9b06e282b94b9cd34adb1a38e5fd48be186108681fcf38b4cfacbeba46d0877",
+    "results": {
+      "measuredAt": "2026-10-09T18:13:10.447Z",
+      "scope": "CPU-only ground-cover diagnostic",
+      "samples": [
+        {
+          "quality": "high",
+          "view": [
+            -75,
+            -330
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 13087,
+              "meshes": 6862,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 1028200,
+              "submitted": {
+                "draws": 129,
+                "triangles": 32978
+              },
+              "frames": 900,
+              "medianCpuMs": 10.839782983064651,
+              "p95CpuMs": 14.878064006567001
+            },
+            {
+              "spatialBatches": true,
+              "plants": 13087,
+              "meshes": 326,
+              "geometryBuffers": 326,
+              "dataTextures": 978,
+              "bufferBytes": 12339364,
+              "submitted": {
+                "draws": 12,
+                "triangles": 30268
+              },
+              "frames": 900,
+              "medianCpuMs": 0.13125798106193542,
+              "p95CpuMs": 0.16887900233268738
+            }
+          ]
+        },
+        {
+          "quality": "high",
+          "view": [
+            -33,
+            -235
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 13087,
+              "meshes": 6862,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 1028200,
+              "submitted": {
+                "draws": 99,
+                "triangles": 22341
+              },
+              "frames": 900,
+              "medianCpuMs": 10.418135017156601,
+              "p95CpuMs": 15.130924016237259
+            },
+            {
+              "spatialBatches": true,
+              "plants": 13087,
+              "meshes": 326,
+              "geometryBuffers": 326,
+              "dataTextures": 978,
+              "bufferBytes": 12339364,
+              "submitted": {
+                "draws": 12,
+                "triangles": 22341
+              },
+              "frames": 900,
+              "medianCpuMs": 0.1227630078792572,
+              "p95CpuMs": 0.1579590141773224
+            }
+          ]
+        },
+        {
+          "quality": "high",
+          "view": [
+            340,
+            200
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 13087,
+              "meshes": 6862,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 1028200,
+              "submitted": {
+                "draws": 54,
+                "triangles": 12059
+              },
+              "frames": 900,
+              "medianCpuMs": 9.163150012493134,
+              "p95CpuMs": 12.003404974937439
+            },
+            {
+              "spatialBatches": true,
+              "plants": 13087,
+              "meshes": 326,
+              "geometryBuffers": 326,
+              "dataTextures": 978,
+              "bufferBytes": 12339364,
+              "submitted": {
+                "draws": 11,
+                "triangles": 10966
+              },
+              "frames": 900,
+              "medianCpuMs": 0.12169000506401062,
+              "p95CpuMs": 0.1632789969444275
+            }
+          ]
+        },
+        {
+          "quality": "high",
+          "view": [
+            470,
+            200
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 13087,
+              "meshes": 6862,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 1028200,
+              "submitted": {
+                "draws": 117,
+                "triangles": 26812
+              },
+              "frames": 900,
+              "medianCpuMs": 10.101847022771835,
+              "p95CpuMs": 14.983334004878998
+            },
+            {
+              "spatialBatches": true,
+              "plants": 13087,
+              "meshes": 326,
+              "geometryBuffers": 326,
+              "dataTextures": 978,
+              "bufferBytes": 12339364,
+              "submitted": {
+                "draws": 11,
+                "triangles": 25941
+              },
+              "frames": 900,
+              "medianCpuMs": 0.12305301427841187,
+              "p95CpuMs": 0.1474989950656891
+            }
+          ]
+        },
+        {
+          "quality": "high",
+          "view": [
+            600,
+            200
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 13087,
+              "meshes": 6862,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 1028200,
+              "submitted": {
+                "draws": 104,
+                "triangles": 25967
+              },
+              "frames": 900,
+              "medianCpuMs": 9.982531011104584,
+              "p95CpuMs": 14.12092199921608
+            },
+            {
+              "spatialBatches": true,
+              "plants": 13087,
+              "meshes": 326,
+              "geometryBuffers": 326,
+              "dataTextures": 978,
+              "bufferBytes": 12339364,
+              "submitted": {
+                "draws": 14,
+                "triangles": 24003
+              },
+              "frames": 900,
+              "medianCpuMs": 0.1486710011959076,
+              "p95CpuMs": 0.1809920072555542
+            }
+          ]
+        },
+        {
+          "quality": "low",
+          "view": [
+            -75,
+            -330
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 7439,
+              "meshes": 1590,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 598952,
+              "submitted": {
+                "draws": 35,
+                "triangles": 23496
+              },
+              "frames": 900,
+              "medianCpuMs": 1.7439800202846527,
+              "p95CpuMs": 3.4295910000801086
+            },
+            {
+              "spatialBatches": true,
+              "plants": 7439,
+              "meshes": 319,
+              "geometryBuffers": 319,
+              "dataTextures": 957,
+              "bufferBytes": 11556040,
+              "submitted": {
+                "draws": 12,
+                "triangles": 17658
+              },
+              "frames": 900,
+              "medianCpuMs": 0.10470899939537048,
+              "p95CpuMs": 0.13784101605415344
+            }
+          ]
+        },
+        {
+          "quality": "low",
+          "view": [
+            -33,
+            -235
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 7439,
+              "meshes": 1590,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 598952,
+              "submitted": {
+                "draws": 27,
+                "triangles": 13152
+              },
+              "frames": 900,
+              "medianCpuMs": 1.7176910042762756,
+              "p95CpuMs": 3.20278999209404
+            },
+            {
+              "spatialBatches": true,
+              "plants": 7439,
+              "meshes": 319,
+              "geometryBuffers": 319,
+              "dataTextures": 957,
+              "bufferBytes": 11556040,
+              "submitted": {
+                "draws": 12,
+                "triangles": 12432
+              },
+              "frames": 900,
+              "medianCpuMs": 0.10171201825141907,
+              "p95CpuMs": 0.13562598824501038
+            }
+          ]
+        },
+        {
+          "quality": "low",
+          "view": [
+            340,
+            200
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 7439,
+              "meshes": 1590,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 598952,
+              "submitted": {
+                "draws": 20,
+                "triangles": 10735
+              },
+              "frames": 900,
+              "medianCpuMs": 1.4826449751853943,
+              "p95CpuMs": 3.060280978679657
+            },
+            {
+              "spatialBatches": true,
+              "plants": 7439,
+              "meshes": 319,
+              "geometryBuffers": 319,
+              "dataTextures": 957,
+              "bufferBytes": 11556040,
+              "submitted": {
+                "draws": 11,
+                "triangles": 7118
+              },
+              "frames": 900,
+              "medianCpuMs": 0.1030150055885315,
+              "p95CpuMs": 0.12000700831413269
+            }
+          ]
+        },
+        {
+          "quality": "low",
+          "view": [
+            470,
+            200
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 7439,
+              "meshes": 1590,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 598952,
+              "submitted": {
+                "draws": 35,
+                "triangles": 22625
+              },
+              "frames": 900,
+              "medianCpuMs": 1.440125972032547,
+              "p95CpuMs": 2.281107008457184
+            },
+            {
+              "spatialBatches": true,
+              "plants": 7439,
+              "meshes": 319,
+              "geometryBuffers": 319,
+              "dataTextures": 957,
+              "bufferBytes": 11556040,
+              "submitted": {
+                "draws": 11,
+                "triangles": 14983
+              },
+              "frames": 900,
+              "medianCpuMs": 0.10053998231887817,
+              "p95CpuMs": 0.12685999274253845
+            }
+          ]
+        },
+        {
+          "quality": "low",
+          "view": [
+            600,
+            200
+          ],
+          "modes": [
+            {
+              "spatialBatches": false,
+              "plants": 7439,
+              "meshes": 1590,
+              "geometryBuffers": 2,
+              "dataTextures": 0,
+              "bufferBytes": 598952,
+              "submitted": {
+                "draws": 28,
+                "triangles": 19294
+              },
+              "frames": 900,
+              "medianCpuMs": 1.2048799991607666,
+              "p95CpuMs": 1.8810200095176697
+            },
+            {
+              "spatialBatches": true,
+              "plants": 7439,
+              "meshes": 319,
+              "geometryBuffers": 319,
+              "dataTextures": 957,
+              "bufferBytes": 11556040,
+              "submitted": {
+                "draws": 13,
+                "triangles": 12886
+              },
+              "frames": 900,
+              "medianCpuMs": 0.11169201135635376,
+              "p95CpuMs": 0.15265798568725586
+            }
+          ]
+        }
+      ]
+    },
+    "limits": "Node18 CPU-only diagnostic covers actual scene matrices, controller eligibility, outer frustum and visible BatchedMesh per-plant preparation. Not FPS, whole game, actor/network or phone evidence."
+  },
+  "focusedUnits": {
+    "node": "CI24.19.0 executable, existing locked deps unchanged",
+    "conservationWorldWind": "Four suites33checks passed91.627s; full shape/matrix/tint conservation, raised/flat actual generation, wind bounds and disposal. Existing tree-matrix threshold stays strict. Full-array and maximum-component comparisons retain every element while avoiding excessive matcher calls.",
+    "capability": "One new real-world-generation fallback check passed9.779s;24unselected cases skipped, not passed. Two startup/instance-lifetime suites18checks passed6.13s. Unchanged original shadow/resource suites retained from first run.",
+    "lint": "All touched source/test/diagnostic files and whitespace checked; final check to repeat only if more edits occur."
+  },
+  "nativeSurface": {
+    "artifacts": "/home/aeml/.local/share/eidolon-understory-spatial-surface-final-20261009",
+    "logSHA256": "3803cd71c9972b42291e4ce9f78cb9bacc4d576dd317115e3f8de2c4080050fd",
+    "result": "High and Low passed35.4s. Production world-generated batches compared against original factory submission at1280/390px, actual AMD ANGLE Vulkan1.4.318 RADV; correct XY-plane rotation and ray/sampler surface check. Five views \u00d7moving/reduced motion\u00d7two qualities all exact pixel equality. Nonempty colors and visible wind differences required. Four alternating120-frame samples per alternative include actual scene/lighting/composer; browser clocks/RAF live. No equipped actors/HUD/network or battle-budget claim.",
+    "comparisons": [
+      {
+        "quality": "high",
+        "plants": [
+          13087,
+          13087
+        ],
+        "meshes": [
+          6862,
+          326
+        ],
+        "graphics": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "multiDraw": true
+        },
+        "comparisons": [
+          {
+            "name": "grove",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 3885,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "grove",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 3889,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 131235,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "willow",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 5956,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "willow",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 5965,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 118363,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "west-bank",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 4575,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "west-bank",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 4573,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 37634,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "woodland-cut",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 5290,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "woodland-cut",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 5294,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 129174,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "outer-fold",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 4073,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "outer-fold",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 4071,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 120198,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          }
+        ],
+        "timings": [
+          {
+            "spatialBatches": false,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 33.4,
+            "medianRenderCpuMs": 20.400000005960464,
+            "p95RenderCpuMs": 34.20000001788139,
+            "calls": 288,
+            "triangles": 117976
+          },
+          {
+            "spatialBatches": true,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 16.8,
+            "medianRenderCpuMs": 13.400000005960464,
+            "p95RenderCpuMs": 20.30000001192093,
+            "calls": 180,
+            "triangles": 117105
+          }
+        ]
+      },
+      {
+        "quality": "low",
+        "plants": [
+          7439,
+          7439
+        ],
+        "meshes": [
+          1590,
+          319
+        ],
+        "graphics": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "multiDraw": true
+        },
+        "comparisons": [
+          {
+            "name": "grove",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1218,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "grove",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1221,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 18731,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "willow",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 2313,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "willow",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 2320,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 12316,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "west-bank",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1654,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "west-bank",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1655,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 6243,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "woodland-cut",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 2137,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "woodland-cut",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 2134,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 21943,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "outer-fold",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1773,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "outer-fold",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1777,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 15364,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          }
+        ],
+        "timings": [
+          {
+            "spatialBatches": false,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 16.7,
+            "medianRenderCpuMs": 6.4000000059604645,
+            "p95RenderCpuMs": 11.899999976158142,
+            "calls": 71,
+            "triangles": 32706
+          },
+          {
+            "spatialBatches": true,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 16.8,
+            "medianRenderCpuMs": 4.100000023841858,
+            "p95RenderCpuMs": 6.9000000059604645,
+            "calls": 47,
+            "triangles": 25134
+          }
+        ]
+      }
+    ]
+  },
+  "forcedFallbackAndLifetime": {
+    "artifacts": "/home/aeml/.local/share/eidolon-understory-spatial-fallback-lifetime-final-20261009",
+    "logSHA256": "75aef977273ad5fa12d12632bb9c76b5ed2b4587cc89811af829d731b21f0327",
+    "result": "Three native checks passed42.7s: both image/wind comparisons explicitly disable multi-draw; separate lifetime test uses actual renderer capabilities. Fallback image equality is not its draw-budget acceptance.",
+    "comparisons": [
+      {
+        "quality": "high",
+        "plants": [
+          13087,
+          13087
+        ],
+        "meshes": [
+          6862,
+          326
+        ],
+        "graphics": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "multiDraw": false
+        },
+        "comparisons": [
+          {
+            "name": "grove",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 3885,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "grove",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 3889,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 131235,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "willow",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 5956,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "willow",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 5965,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 118363,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "west-bank",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 4575,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "west-bank",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 4573,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 37634,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "woodland-cut",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 5290,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "woodland-cut",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 5294,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 129174,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "outer-fold",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 4073,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "outer-fold",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 4071,
+              "nonBlack": 16125
+            },
+            "windChangedChannels": 120198,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          }
+        ],
+        "timings": [
+          {
+            "spatialBatches": false,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 49.9,
+            "medianRenderCpuMs": 22.900000005960464,
+            "p95RenderCpuMs": 36.400000005960464,
+            "calls": 288,
+            "triangles": 117976
+          },
+          {
+            "spatialBatches": true,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 33.4,
+            "medianRenderCpuMs": 14.5,
+            "p95RenderCpuMs": 28,
+            "calls": 399,
+            "triangles": 117105
+          }
+        ]
+      },
+      {
+        "quality": "low",
+        "plants": [
+          7439,
+          7439
+        ],
+        "meshes": [
+          1590,
+          319
+        ],
+        "graphics": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "multiDraw": false
+        },
+        "comparisons": [
+          {
+            "name": "grove",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1218,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "grove",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1221,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 18731,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "willow",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 2313,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "willow",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 2320,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 12316,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "west-bank",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1654,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "west-bank",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1655,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 6243,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "woodland-cut",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 2137,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "woodland-cut",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 2134,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 21943,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "outer-fold",
+            "reducedMotion": false,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1773,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": null,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          },
+          {
+            "name": "outer-fold",
+            "reducedMotion": true,
+            "baselineRepeat": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            },
+            "content": {
+              "colors": 1777,
+              "nonBlack": 4913
+            },
+            "windChangedChannels": 15364,
+            "candidate": {
+              "changedChannels": 0,
+              "maximumDifference": 0
+            }
+          }
+        ],
+        "timings": [
+          {
+            "spatialBatches": false,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 16.8,
+            "medianRenderCpuMs": 5.299999982118607,
+            "p95RenderCpuMs": 11.599999994039536,
+            "calls": 71,
+            "triangles": 32706
+          },
+          {
+            "spatialBatches": true,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 16.8,
+            "medianRenderCpuMs": 5.4000000059604645,
+            "p95RenderCpuMs": 10.400000005960464,
+            "calls": 152,
+            "triangles": 25134
+          }
+        ]
+      }
+    ],
+    "lifetime": [
+      {
+        "baseline": {
+          "geometries": 14,
+          "textures": 28
+        },
+        "cycles": [
+          {
+            "quality": "high",
+            "allocated": {
+              "geometries": 25,
+              "textures": 61
+            },
+            "released": {
+              "geometries": 14,
+              "textures": 28
+            },
+            "registeredRoots": 0
+          },
+          {
+            "quality": "low",
+            "allocated": {
+              "geometries": 25,
+              "textures": 61
+            },
+            "released": {
+              "geometries": 14,
+              "textures": 28
+            },
+            "registeredRoots": 0
+          },
+          {
+            "quality": "high",
+            "allocated": {
+              "geometries": 25,
+              "textures": 61
+            },
+            "released": {
+              "geometries": 14,
+              "textures": 28
+            },
+            "registeredRoots": 0
+          }
+        ]
+      }
+    ]
+  },
+  "groundingAndShadow": {
+    "artifacts": "/home/aeml/.local/share/eidolon-understory-spatial-grounding-both-cullers-20261009",
+    "result": "Two High/Low actual production terrain integration checks passed37.0s: movement/jump/picking/aim, combat effects, surface placement, shadows and faithful prior16m rebatching. Draw attribution counts actual BatchedMesh ranges after preparation. Baseline disables BOTH sector and per-plant culling and refreshes public instance visibility cache; pixel and existing >2x triangle-reduction threshold preserved.",
+    "logSHA256": "e1b2ff1f3ad9dd02959d7f3f577ec218702c66b1573421a9d48304a4b4af8c2a"
+  },
+  "connectedParty": {
+    "artifacts": "/home/aeml/.local/share/eidolon-terrain-save-evidence-P4Weq0PV",
+    "result": "Actual race binary, isolated Mongo7.0.14, one native renderer with three normal authenticated socket peers: functional four-class rigs/all14wearables, ground negotiation and preserved bag/gear/EP/party after normal disconnect passed60.34s/package61.434s. Active cover mode asserted against actual extension. Original saves/accounts/production untouched; root independently confirms owned container/loopback4190/18189 gone.",
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.400000000001455,
+      "frameP95Ms": 66.69999999999709,
+      "frameP99Ms": 83.39999999999418,
+      "framesOver33ms": 111,
+      "cpuLoopMedianMs": 35.80000001192093,
+      "cpuLoopP95Ms": 58.400000005960464,
+      "drawCallsMedian": 523,
+      "trianglesMedian": 553291,
+      "geometries": 419,
+      "textures": 274,
+      "activeEntities": 38,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "limits": "p9566.7ms with38active entities does NOT meet the party budget. Earlier source-scoped19 sample had26entities, so it is not a matched performance baseline. Modern art, real phones, four-renderer peer input/healing and complete gameplay remain separately scoped. Raw browser.log/private fixture inputs are not publication artifacts.",
+    "pairedDiagnostic": {
+      "artifacts": "/home/aeml/.local/share/eidolon-terrain-save-evidence-8mD3zWRX",
+      "wrapperLogSHA256": "9dba9a7d1421c1a1e6bf7cffb39ead52b04abfd888710bab83972f75ac2fa8b4",
+      "safeDiagnosticSHA256": "3f9aa88c890f513466895391e8813f57b07c2bc55c8dc0caaa58bbf14c3860f8",
+      "functional": "TestTerrainActualEquippedBrowserParty passed90.31s; package91.389s. Four normal accounts preserve all fourteen equipped slots, bags, EP and party state through normal save/disconnect. Owned loopback services and Mongo container removed. Original logs are private and contain authentication context; only whitelisted numeric/function summaries are retained here.",
+      "method": "Same connected game scene, one actual GPU renderer plus three normal authenticated/socket peers. Alternate original/spatial/spatial/original ground-cover submission,20 live RAF warmup then180 frames per phase. All plants retained. Game clocks, actors, AI, lighting and weather remain live; entity count30/30/30/29. CDP three-second CPU diagnostic runs after timing; wrappers restored.",
+      "profiles": [
+        {
+          "mode": "original",
+          "label": "paired-ground-cover-original",
+          "frames": 180,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "viewport": {
+            "width": 1280,
+            "height": 844,
+            "pixelRatio": 1
+          },
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+          "visibility": "visible",
+          "frameMedianMs": 33.39999999999418,
+          "frameP95Ms": 50.099999999998545,
+          "frameP99Ms": 66.70000000000437,
+          "framesOver33ms": 91,
+          "cpuLoopMedianMs": 32.599999994039536,
+          "cpuLoopP95Ms": 45.30000001192093,
+          "drawCallsMedian": 563,
+          "trianglesMedian": 542971,
+          "geometries": 422,
+          "textures": 266,
+          "activeEntities": 30,
+          "previewFramesDuringSample": 0,
+          "previewGeometries": 0,
+          "previewTextures": 0
+        },
+        {
+          "mode": "spatial",
+          "label": "paired-ground-cover-spatial",
+          "frames": 180,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "viewport": {
+            "width": 1280,
+            "height": 844,
+            "pixelRatio": 1
+          },
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+          "visibility": "visible",
+          "frameMedianMs": 33.30000000000291,
+          "frameP95Ms": 50.099999999998545,
+          "frameP99Ms": 66.69999999999709,
+          "framesOver33ms": 69,
+          "cpuLoopMedianMs": 30.099999994039536,
+          "cpuLoopP95Ms": 42.19999998807907,
+          "drawCallsMedian": 509,
+          "trianglesMedian": 546187,
+          "geometries": 422,
+          "textures": 266,
+          "activeEntities": 30,
+          "previewFramesDuringSample": 0,
+          "previewGeometries": 0,
+          "previewTextures": 0
+        },
+        {
+          "mode": "spatial",
+          "label": "paired-ground-cover-spatial",
+          "frames": 180,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "viewport": {
+            "width": 1280,
+            "height": 844,
+            "pixelRatio": 1
+          },
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+          "visibility": "visible",
+          "frameMedianMs": 33.30000000000291,
+          "frameP95Ms": 50,
+          "frameP99Ms": 66.69999999999709,
+          "framesOver33ms": 75,
+          "cpuLoopMedianMs": 28.80000001192093,
+          "cpuLoopP95Ms": 45.39999997615814,
+          "drawCallsMedian": 529,
+          "trianglesMedian": 544978,
+          "geometries": 422,
+          "textures": 266,
+          "activeEntities": 30,
+          "previewFramesDuringSample": 0,
+          "previewGeometries": 0,
+          "previewTextures": 0
+        },
+        {
+          "mode": "original",
+          "label": "paired-ground-cover-original",
+          "frames": 180,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "viewport": {
+            "width": 1280,
+            "height": 844,
+            "pixelRatio": 1
+          },
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+          "visibility": "visible",
+          "frameMedianMs": 33.30000000000291,
+          "frameP95Ms": 50,
+          "frameP99Ms": 66.69999999999709,
+          "framesOver33ms": 86,
+          "cpuLoopMedianMs": 31,
+          "cpuLoopP95Ms": 47.30000001192093,
+          "drawCallsMedian": 542,
+          "trianglesMedian": 541760,
+          "geometries": 422,
+          "textures": 266,
+          "activeEntities": 29,
+          "previewFramesDuringSample": 0,
+          "previewGeometries": 0,
+          "previewTextures": 0
+        }
+      ],
+      "cpuHotspots": [
+        {
+          "source": "",
+          "name": "(program)",
+          "line": 0,
+          "samples": 133,
+          "selfMicros": 827182
+        },
+        {
+          "source": "/vendor/three/build/three.core.js",
+          "name": "intersectsObject",
+          "line": 26581,
+          "samples": 169,
+          "selfMicros": 216951
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "projectObject",
+          "line": 16814,
+          "samples": 136,
+          "selfMicros": 180147
+        },
+        {
+          "source": "/vendor/three/build/three.core.js",
+          "name": "updateMatrixWorld",
+          "line": 14354,
+          "samples": 117,
+          "selfMicros": 148861
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "renderObject",
+          "line": 8914,
+          "samples": 104,
+          "selfMicros": 138627
+        },
+        {
+          "source": "/vendor/three/build/three.core.js",
+          "name": "multiplyMatrices",
+          "line": 11917,
+          "samples": 78,
+          "selfMicros": 111354
+        },
+        {
+          "source": "/src/core/FoliageShadowInfluence.js",
+          "name": "FoliageShadowInfluence.visit",
+          "line": 105,
+          "samples": 54,
+          "selfMicros": 72336
+        },
+        {
+          "source": "/vendor/three/build/three.core.js",
+          "name": "updateMatrix",
+          "line": 14335,
+          "samples": 49,
+          "selfMicros": 67274
+        },
+        {
+          "source": "",
+          "name": "bindVertexArray",
+          "line": 0,
+          "samples": 39,
+          "selfMicros": 52890
+        },
+        {
+          "source": "/src/core/FoliageShadowInfluence.js",
+          "name": "beginFrame",
+          "line": 163,
+          "samples": 36,
+          "selfMicros": 51884
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "setProgram",
+          "line": 17279,
+          "samples": 41,
+          "selfMicros": 51477
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "WebGLRenderer.renderBufferDirect",
+          "line": 16193,
+          "samples": 44,
+          "selfMicros": 49708
+        },
+        {
+          "source": "/src/art/ActorInstanceBatches.js",
+          "name": "beginFrame",
+          "line": 108,
+          "samples": 37,
+          "selfMicros": 48491
+        },
+        {
+          "source": "",
+          "name": "(idle)",
+          "line": 0,
+          "samples": 20,
+          "selfMicros": 45115
+        },
+        {
+          "source": "/vendor/three/build/three.core.js",
+          "name": "equals",
+          "line": 5635,
+          "samples": 33,
+          "selfMicros": 42479
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "getProgram",
+          "line": 17132,
+          "samples": 29,
+          "selfMicros": 39740
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "setup",
+          "line": 1600,
+          "samples": 24,
+          "selfMicros": 39122
+        },
+        {
+          "source": "/src/core/CollisionManager.js",
+          "name": "checkEntityCollision",
+          "line": 170,
+          "samples": 31,
+          "selfMicros": 38336
+        },
+        {
+          "source": "",
+          "name": "uniformMatrix4fv",
+          "line": 0,
+          "samples": 25,
+          "selfMicros": 38297
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "getParameters",
+          "line": 7009,
+          "samples": 28,
+          "selfMicros": 37649
+        },
+        {
+          "source": "",
+          "name": "bindTexture",
+          "line": 0,
+          "samples": 27,
+          "selfMicros": 37563
+        },
+        {
+          "source": "/vendor/three/build/three.core.js",
+          "name": "applyMatrix4",
+          "line": 10571,
+          "samples": 30,
+          "selfMicros": 31972
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "upload",
+          "line": 5719,
+          "samples": 18,
+          "selfMicros": 31832
+        },
+        {
+          "source": "/vendor/three/build/three.module.js",
+          "name": "refreshUniformsCommon",
+          "line": 14224,
+          "samples": 21,
+          "selfMicros": 30374
+        }
+      ],
+      "cpuCallerChains": [
+        {
+          "stack": [
+            {
+              "source": "",
+              "name": "(program)",
+              "line": 0
+            },
+            {
+              "source": "",
+              "name": "(root)",
+              "line": 0
+            }
+          ],
+          "samples": 133,
+          "selfMicros": 827182
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "projectObject",
+              "line": 16814
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "<anonymous>",
+              "line": 87
+            },
+            {
+              "source": "",
+              "name": "(root)",
+              "line": 0
+            }
+          ],
+          "samples": 136,
+          "selfMicros": 180147
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "intersectsObject",
+              "line": 26581
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "projectObject",
+              "line": 16814
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "<anonymous>",
+              "line": 87
+            },
+            {
+              "source": "",
+              "name": "(root)",
+              "line": 0
+            }
+          ],
+          "samples": 127,
+          "selfMicros": 167309
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "renderObject",
+              "line": 8914
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLShadowMap.render",
+              "line": 8644
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "<anonymous>",
+              "line": 87
+            },
+            {
+              "source": "",
+              "name": "(root)",
+              "line": 0
+            }
+          ],
+          "samples": 104,
+          "selfMicros": 138627
+        },
+        {
+          "stack": [
+            {
+              "source": "/src/core/FoliageShadowInfluence.js",
+              "name": "FoliageShadowInfluence.visit",
+              "line": 105
+            },
+            {
+              "source": "",
+              "name": "visit",
+              "line": 22
+            },
+            {
+              "source": "/src/core/FoliageShadowInfluence.js",
+              "name": "beginFrame",
+              "line": 163
+            },
+            {
+              "source": "",
+              "name": "begin",
+              "line": 13
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "RenderSystem.scene.onBeforeRender",
+              "line": 150
+            },
+            {
+              "source": "/src/art/ActorInstanceBatches.js",
+              "name": "ActorInstanceBatches.beforeHook",
+              "line": 70
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            }
+          ],
+          "samples": 54,
+          "selfMicros": 72336
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "<anonymous>",
+              "line": 87
+            }
+          ],
+          "samples": 53,
+          "selfMicros": 69260
+        },
+        {
+          "stack": [
+            {
+              "source": "/src/core/FoliageShadowInfluence.js",
+              "name": "beginFrame",
+              "line": 163
+            },
+            {
+              "source": "",
+              "name": "begin",
+              "line": 13
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "RenderSystem.scene.onBeforeRender",
+              "line": 150
+            },
+            {
+              "source": "/src/art/ActorInstanceBatches.js",
+              "name": "ActorInstanceBatches.beforeHook",
+              "line": 70
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "<anonymous>",
+              "line": 87
+            }
+          ],
+          "samples": 36,
+          "selfMicros": 51884
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "intersectsObject",
+              "line": 26581
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "renderObject",
+              "line": 8914
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLShadowMap.render",
+              "line": 8644
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "<anonymous>",
+              "line": 87
+            },
+            {
+              "source": "",
+              "name": "(root)",
+              "line": 0
+            }
+          ],
+          "samples": 41,
+          "selfMicros": 48573
+        },
+        {
+          "stack": [
+            {
+              "source": "/src/art/ActorInstanceBatches.js",
+              "name": "beginFrame",
+              "line": 108
+            },
+            {
+              "source": "/src/art/ActorInstanceBatches.js",
+              "name": "ActorInstanceBatches.beforeHook",
+              "line": 70
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "<anonymous>",
+              "line": 87
+            },
+            {
+              "source": "",
+              "name": "(root)",
+              "line": 0
+            }
+          ],
+          "samples": 37,
+          "selfMicros": 48491
+        },
+        {
+          "stack": [
+            {
+              "source": "",
+              "name": "(idle)",
+              "line": 0
+            },
+            {
+              "source": "",
+              "name": "(root)",
+              "line": 0
+            }
+          ],
+          "samples": 20,
+          "selfMicros": 45115
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "equals",
+              "line": 5635
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "equals",
+              "line": 10217
+            },
+            {
+              "source": "/src/core/FoliageShadowInfluence.js",
+              "name": "FoliageShadowInfluence.visit",
+              "line": 105
+            },
+            {
+              "source": "",
+              "name": "visit",
+              "line": 22
+            },
+            {
+              "source": "/src/core/FoliageShadowInfluence.js",
+              "name": "beginFrame",
+              "line": 163
+            },
+            {
+              "source": "",
+              "name": "begin",
+              "line": 13
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "RenderSystem.scene.onBeforeRender",
+              "line": 150
+            },
+            {
+              "source": "/src/art/ActorInstanceBatches.js",
+              "name": "ActorInstanceBatches.beforeHook",
+              "line": 70
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            }
+          ],
+          "samples": 33,
+          "selfMicros": 42479
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrix",
+              "line": 14335
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            }
+          ],
+          "samples": 26,
+          "selfMicros": 37564
+        },
+        {
+          "stack": [
+            {
+              "source": "",
+              "name": "bindVertexArray",
+              "line": 0
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "bindVertexArrayObject",
+              "line": 1645
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "setup",
+              "line": 1600
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.renderBufferDirect",
+              "line": 16193
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "renderObject",
+              "line": 8914
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLShadowMap.render",
+              "line": 8644
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            }
+          ],
+          "samples": 25,
+          "selfMicros": 36930
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            }
+          ],
+          "samples": 24,
+          "selfMicros": 33698
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "setProgram",
+              "line": 17279
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.renderBufferDirect",
+              "line": 16193
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "renderObject",
+              "line": 17101
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "renderObjects",
+              "line": 17074
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "renderScene",
+              "line": 16928
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "loop",
+              "line": 51
+            }
+          ],
+          "samples": 27,
+          "selfMicros": 33451
+        },
+        {
+          "stack": [
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.core.js",
+              "name": "updateMatrixWorld",
+              "line": 14354
+            },
+            {
+              "source": "/src/core/UnchangedLocalMatrix.js",
+              "name": "updateWorld",
+              "line": 24
+            },
+            {
+              "source": "/vendor/three/build/three.module.js",
+              "name": "WebGLRenderer.render",
+              "line": 16628
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/RenderPass.js",
+              "name": "render",
+              "line": 111
+            },
+            {
+              "source": "/vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+              "name": "render",
+              "line": 214
+            },
+            {
+              "source": "/src/core/RenderSystem.js",
+              "name": "render",
+              "line": 1196
+            },
+            {
+              "source": "",
+              "name": "game.renderSystem.render",
+              "line": 30
+            },
+            {
+              "source": "/src/core/GameEngineRuntime.js",
+              "name": "render",
+              "line": 928
+            }
+          ],
+          "samples": 26,
+          "selfMicros": 31633
+        }
+      ],
+      "foliageRevisionProbe": {
+        "frames": 97,
+        "visits": 231442,
+        "viewChanges": 0,
+        "shadowChanges": 0,
+        "initialRoots": 10
+      },
+      "conclusion": "Ground-cover batching reduces CPU-loop median by roughly2\u20133ms in this connected scene; RAF median33.3\u201333.4ms and p9550.0\u201350.1ms still fail the established High whole-game budget. Do not round binary decimal samples into a pass. Residual Three scene projection, world matrices, bounds and shadow submission need investigation. Prior38-entity p9566.7ms sample is preserved separately, not a directly comparable baseline. No four-renderer/physical-device/earned-campaign or full party-ready claim."
+    }
+  },
+  "retainedFailures": [
+    {
+      "log": "/tmp/eidolon-understory-spatial-units.log",
+      "result": "Initial combined units1failed49passed: conservative sector box differed at boundary by8.88e-16. Add actual constructor1e-6 bound padding; unchanged strict containment passes4checks14.797s."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-native.log",
+      "result": "First harness exited143; no pass. Global clock override/direct GL reads invalid; no performance/image qualification."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-native-clockfix.log",
+      "result": "High timed out on hidden login canvas screenshot; Low did not run. Direct GL empty pixels invalidated; preserve failure."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-native-capturefix.log",
+      "result": "Same hidden first-canvas selector; owned local run interrupted after diagnosis. No terminal pass credited."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-native-final.log",
+      "result": "High passed, Low import failed. Retained trace proves two dependency ERR_NETWORK_CHANGED failures at18:23:33, matching networkd veth carrier loss18:23:32\u201333. One targeted Low run passed15.4s; no browser flag/test weakening. Later image inspection revealed missing fixture ground rotation, so ALL vertical-ground timings/scope superseded by correct surface receipt."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-native-fallback.log",
+      "result": "Two checks passed36.3s but vertical-ground fixture; superseded for actual surface scope, no ground-budget credit."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-world-units.log",
+      "result": "Node18:23passed2failed on existing toSorted requirement. Use CI Node24; no compatibility polyfill or weakened test."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-node24-final.log",
+      "result": "Unfinished command exited143, not a pass. Correct excessive unchanged matcher work at identical threshold and run bounded Node24 check."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-grounding.log",
+      "result": "Server could not bind occupied4317; no test pass; do not kill its unrelated owner."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-grounding-final.log",
+      "result": "Runner bundled npx missing npm cli; use absolute Node24 with checked-in Playwright CLI, no install or dependency mutation."
+    },
+    {
+      "log": "/tmp/eidolon-understory-spatial-grounding-qualified.log",
+      "result": "Two failures: culling baseline still enabled per-plant BatchedMesh rejection. Correct baseline to submit all plants when disabled; retain exact pixel and original2x reduction checks. Source culling intact."
+    }
+  ],
+  "gate": "Staged with existing raised surface/atlas/rollout guards, no public push or version microrelease. Full1.11\u20131.99/F/CB/R objective remains active. Preserve original dirty checkout, no owner approval invented, no campaign/soak restart, no policy/access/DNS/retention or production mutation.",
+  "qualificationSHA256": {
+    "scripts/benchmark-understory-spatial.mjs": "67d4ab26f4e50c980bf96d315d3b64c0502f0aedbdd77b3d2f4fe1e3051db40e",
+    "tests/SpatialUnderstoryBatches.test.js": "7f38e8c545a684b00f0f95de5d2dd4cdc8143e131cb1aeafe19884983a5e8a65",
+    "tests/WoodlandWindMaterial.test.js": "038bda2251878910ae541036bda38359012086c92f7665d0bce08bc42c7fed4f",
+    "tests/WorldGeneratorCanonicalGeometry.test.js": "d556c8a89c2912e2f2c4a28c544e5674614ae02ab81a80389aa92bfdd4f044f9",
+    "tests/WorldPlacementElevation.test.js": "1ea8ef3eb1a98aa68539f23e4ada6858bcf55f945ab172a661c0180c9a360a51",
+    "tests/e2e/understory-spatial-batches.spec.js": "a95d50c91e7591560e122d4a672de014cf305628e8e7aad70894fe268087b62b",
+    "tests/e2e/world-elevation-preview.spec.js": "a47eed97a3d9e18a560701341143046036b26f8f3a02cabcb04ba7ed0e62d46b",
+    "tests/e2e/terrain-equipped-party.spec.js": "89f3c962952cb89cd9533f3421a34acc0dce39547f477dd3cf8c210cd8c77472"
+  }
+}

@@ -5,6 +5,7 @@ import { createWoodlandUnderstoryGeometry } from './WoodlandUnderstoryGeometry.j
 import { createWoodlandWindMaterial, WOODLAND_WIND_REACH } from './WoodlandWindMaterial.js';
 import { computeFoliageCellBounds } from './FoliageRenderBatches.js';
 import { STARTER_ROAD_CLEARINGS, LANTERNHOLD_ROAD_CART } from '../data/lanternholdApproach.js';
+import { createSpatialUnderstoryBatches } from './SpatialUnderstoryBatches.js';
 
 // First playable art reference: north grove route and east dungeon approach.
 // Low vegetation only: no new blockers, server footprints or reward sources.
@@ -80,7 +81,7 @@ export function earthUnderstoryScale(plant) {
         plant.scale * (.74 + random(x, z, 82) * .26)];
 }
 
-export function createEarthUnderstory({ quality = 'high', terrainElevation = null } = {}) {
+export function createEarthUnderstory({ quality = 'high', terrainElevation = null, spatialBatches = false } = {}) {
     const root = new THREE.Group();
     root.name = 'Gloamwood heath and fern beds';
     root.userData.earthUnderstory = true;
@@ -88,6 +89,11 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     root.userData.plantCount = plants.length;
     const geometries = ['bracken', 'sedge'].map(createWoodlandUnderstoryGeometry);
     const material = createWoodlandWindMaterial();
+    if (spatialBatches) {
+        root.add(...createSpatialUnderstoryBatches({ plants, geometries, material, terrainElevation,
+            scaleForPlant: earthUnderstoryScale, tintForPlant: earthUnderstoryTint }));
+        return root;
+    }
     const cells = new Map();
     // High's dense plants need tighter submission cells at the camera edge.
     // Change batching only: retain every transform, blade and full wind bound.
