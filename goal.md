@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Private actor-normal repair b86df009 reproduces a real positive-determinant
+  shear admitted by the rigid batcher although pinned Three instance normals
+  do not support it. Preserve the original path for unsupported leaves, keep
+  ordinary rotated nonuniform scale batched and check live transform changes.
+  Three suites71checks pass; native High/Low pixel comparison pending on free
+  release GPU. No frame-rate/modern-art claim or public version advance yet.
+  Current21 CI37960034584 remains actual in progress; Client and Browser3 pass,
+  Go and Browser1/2 still run. Luna owns sparse deployment watch; root keeps
+  terminal/live/public/evidence acceptance before any next public release.
+
 - Corrected20/e598 is independently accepted: all ten CI37954540092 jobs pass;
   actual native7regional/1celebration/2class/4smoke and live8release/2town-rest/
   1party cases pass. Four optional stages remain skipped, not passed. Public
