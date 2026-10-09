@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "status": "Qualified local town utility refinement; not published or a final modern-art approval",
+  "source": "ff682107aa5b0eabc7b6e28bf0fffaf71289db1a, based on pushed20/07743ba7. Runtime unchanged after these checks; version/release preparation still required before any future push.",
+  "scope": "Existing communal well gains an open thick-walled bucket, iron bands/bail, winding drum/rope and crank. Three existing courtyard benches gain separated beveled slats and back supports. Preserve13exact walk footprints,31render meshes/29unique geometries/18materials, batch ownership and ordinary motion/reduced-motion behavior. Raw courtyard triangles High4652to8732,Low3404to6260. No new material/draw/texture or per-frame work, service/reward/collision/account/terrain-profile change. Review harness uses the actual delivered dressed Ilyra instead of an inaccurate bare player Wizard proxy; no runtime NPC replacement.",
+  "checks": "Two full affected unit suites6checks pass21.092s; scoped lint/whitespace pass. Four distinct System Chrome production scene cases pass1.9m/retries0: populated Earth/town High1280/Low390 plus equipped fourteen-slot Fighter/HUD town High/Low. Both populated cases explicitly profile9named views each/120real RAF samples each. Original High20median/33.4p95/350calls/250000tri and Low33.4/50/200/85000 gates unchanged. Profile artifacts record actual AMD Vulkan1.4.318/RADV RENOIR; separate exact same launch-policy GPU probe also passes. No nonexistent verify-browser-gpu spec counted as a test: the probe is scripts/verify-browser-gpu.mjs.",
+  "high": { "maxMedianMs": 16.8, "maxP95Ms": 33.4, "maxCalls": 240, "maxTriangles": 245636, "stableGeometries": 275, "stableTextures": 82, "stablePrograms": 86 },
+  "low": { "maxMedianMs": 16.7, "maxP95Ms": 16.8, "maxCalls": 109, "maxTriangles": 78990, "stableGeometries": 256, "stableTextures": 69, "stablePrograms": 60 },
+  "review": "Root compares baseline20 and current High well screenshots at identical ordinary camera/layout/outfit: open bucket/working windlass and separated timber construction read without changing circulation or central court. Low/native captures retained. Populated profile uses its existing body reference, not an equipped-party workload; separate town captures include equipped Fighter and delivered Ilyra. Broad sparse town fields and other procedural silhouettes remain, not Diablo/PoE parity or physical-phone/final-art approval.",
+  "evidence": "/home/aeml/.local/share/eidolon-town-utility-native-20261009; owned4190 independently closed after exit0, only owned anonymous render fixture used. Busy shared host, existing services/soak untouched. No long campaign or unchanged broad replay.",
+  "logsSHA256": {
+    "units": "9628a2eb11cf16bcc452981826de9c0047d69ef9eab6427fdba582f1900c1460",
+    "native": "dcf408a0af2caefcf39c8124cee1a6fca063599ac3892672bbe54c07cfac1354",
+    "gpu": "a0f50fdc33fe6c5d58ac71e577cb3a80ccdfd8ed6b0a25a17741b29448c6efce"
+  },
+  "delivery": "Own20 CI37948468016/native/live/exact public acceptance remains required before another normal push. Group this bounded refinement with further relevant work rather than deploying every individual prop. Full modern art/character fit/combat, raised/equipped-party/device,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch requirements remain open. Do not promote unrelated private operations or terrain candidates."
+}
