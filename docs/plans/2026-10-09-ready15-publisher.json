@@ -1,6 +1,7 @@
 {
   "head": "0ac750255333837111e43a4cbea00e2fc7915984",
-  "status": "Prepared only: not pushed, deployed or accepted; prerequisite14 CI37918281583 still active",
+  "status": "PUSHED: exact0ac75025/Alpha1.79.15; CI37922288706 queued, not yet deployed or accepted",
+  "publication": "After prerequisite14 terminal SUCCESS and root exact public acceptance11:11:22UTC, fresh fetch/normal merge still unchanged0ac75025. Normal push master90fca2f1..0ac75025 succeeded; earlier prepared expected bytes remain valid for this exact head. No force, overlapping publication, original dirty-tree/website overwrite or private production configuration change. Authorized existing Luna watches exact new run terminal/actionable-only; root must accept its own native/live/public gates before16.",
   "reconciliation": "Fresh normal fetch/merge retains remote90fca2f1. Runtime/art/assets/index/server/workflow/tests/scripts unchanged from prior4208498b after merge; actual version/history385tests pass3.632s. Original qualified15 renderer, atlas and casino-search scopes retained; not new frame-budget certification.",
   "fixture": "/tmp/eidolon-15-ready-publisher-04tCAwmX",
   "build": "Committed source archive and locked vendor; byte-identical qualified actual compiler418modules3226434bytes/21shared; publisher402/890files. Five selected outputs, not full binary asset certification. A changed publication head requires new versioned expectations.",
