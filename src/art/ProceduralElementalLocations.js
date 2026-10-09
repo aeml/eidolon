@@ -207,7 +207,9 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                 beam([x, 5, -7], [x, 5, 7], .22);
                 // Narrow side sails shelter open bays, leaving the central
                 // aisle and all ground-level gameplay sightlines unobstructed.
-                part(createAirWindbreakSail(quality, side), 'canvas', x, 3, 0, [0, Math.PI / 2, -.1]);
+                // Mount the pinned top edge to the5m spar. Tilting this
+                // entire panel detached its corners from both upright posts.
+                part(createAirWindbreakSail(quality, side), 'canvas', x, 3.25, 0, [0, Math.PI / 2, 0]);
                 footprint(x, 2.5, 0, .7, 5, 14);
                 rope([[x, 4.8, -7], [x + side * 2, 2, -9], [x + side * 3, .1, -10]], .09, 'iron');
                 if (site.recipe === 'courier-exchange') {
