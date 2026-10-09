@@ -175,11 +175,12 @@ test('derived Fighter assets render and animate with independent player skeleton
     });
     await writeFile(testInfo.outputPath('equipment-intake.json'), JSON.stringify(equipped, null, 2));
     await page.locator('#fighter-pilot').screenshot({ path: testInfo.outputPath('Equipped-Idle.png') });
-    for (const [index, actor] of equipped.actors.entries()) {
+    for (const actor of equipped.actors) {
         expect(actor.supported).toBe(true); expect(actor.items).toBe(14); expect(actor.missing).toEqual([]);
         expect(actor.masked && actor.hairHidden).toBe(true);
-        // The supplied cloth skirt deliberately retains modest underclothes.
-        expect(actor.shortsHidden).toBe(index !== 3);
+        // Long garments now own hip coverage just like trousers. The final
+        // unequip review below must still restore every actor's underclothes.
+        expect(actor.shortsHidden).toBe(true);
         expect([...new Set(actor.skins.map(skin => skin.slot))].sort()).toEqual(['belt', 'chest', 'feet', 'gloves', 'head', 'legs', 'neck', 'ring1', 'ring2', 'shoulders', 'trinket1', 'trinket2']);
         expect(actor.skins.every(skin => skin.sameSkeleton)).toBe(true);
         expect(actor.skins.filter(skin => !(skin.triangles > 0 && skin.sameSkeleton))).toEqual([]);
