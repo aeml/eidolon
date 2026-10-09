@@ -19,7 +19,9 @@ Fighter pilot or remove approved authored models.
 ## Current verified state — October 9, 2026
 
 - Current pushed corrective11 is **dc77fb46 / CI37898805331**, independently
-  verified running and exact master. Restores the complete original graphics
+  verified running and exact master. Client/server/all three hosted smoke,
+  native predeploy, input validation and both deployment jobs pass; final Live
+  Release and Character QA remains in progress, not accepted. Restores the complete original graphics
   review after two duplicate-draw experiments fail resource equality; no
   assertion, timeout, rendering body, asset, runtime or note change promoted.
   Routes six trusted-release High review cases to required native predeploy;
@@ -148,6 +150,13 @@ Fighter pilot or remove approved authored models.
  449older notes retained. Normal clean merges carry it into16-18. No art/assets,
   gameplay/budgets or public rollout change. Shared receipt in those branches:
   `docs/plans/2026-10-09-party-input-render-checks.json`.
+- Opt-in CPU caller diagnostic9c7f8340 is ready in the owned
+  `eidolon-party-callers-4YGldqgB` worktree: four focused checks pass0.685s,
+  scoped lint passes. It preserves actual callers behind recursive searches,
+  exports only local source metadata, not raw profiles/session URLs, and runs
+  after the existing timed sample. No runtime optimization or performance gain
+  claimed yet. Current CI Chrome still owns the renderer; run one isolated
+  current18 observer sample after it exits, then act on measured callers.
 - Existing nightly **37880032315/dc7** was independently confirmed running
   on the separate soak runner and remains untouched. Its concurrent host-load
   contribution to Air timings is unproven. Do not cancel/restart it or claim
@@ -229,7 +238,7 @@ qualification never proves a later tree, full visual approval or public rollout.
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
   | --- | --- | --- |
-  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `e89769d2` |
+  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `5acd4861` |
   | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `e7369fce` |
   | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `3e0b1a1f` |
   | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `adf83270` |
