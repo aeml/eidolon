@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "PUSHED exact Alpha1.79.19 /fa47c57c /CI37939634467; own terminal/public acceptance pending",
+  "status": "FAILED original Alpha1.79.19 /fa47c57c /CI37939634467 attempt1; never deployed. Corrected293fbfa1/CI37941972587 is tracked in ready19-corrected-publisher.json",
   "candidate": {
     "version": "Alpha 1.79.19",
     "head": "fa47c57c85ed40623c9252a3a44133d0748ac8a3",

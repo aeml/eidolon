@@ -18,6 +18,15 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Corrected19/293fbfa1/CI37941972587 normally pushed after original19 CI
+  terminal failure. Sole stale generated admin landing catalog fixed:15 camp
+  vertical bounds+.655m, every other geometry field retained. Current1client,
+  7server race and389metadata checks pass; actual422module corrected publisher
+  recorded. Root independently confirms live18 identities/readyDB14:08:27UTC.
+  Luna exact-run watch; own corrected19 CI/native/live/public acceptance pending.
+  Original671suites/9939checks pass,1fails;server/3browser jobs pass,5 QA/deploy
+  jobs skip—not pass. No unchanged native/campaign/soak replay or next push.
+
 - Pushed19/fa47c57c/CI37939634467 after root18 acceptance/fresh fetch and
   normal reconciliation retained unchanged publisher head/18 ancestry. Combined
   visual update has version19/cumulative notes and source/native qualification;

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "PUSHED corrected Alpha1.79.19 /293fbfa1 /CI37941972587; own terminal/native/live/public acceptance pending",
+  "candidate": {
+    "version": "Alpha 1.79.19",
+    "head": "293fbfa19b1d9affe111608e13fb279db2f5919a",
+    "worktree": "/home/aeml/.local/share/eidolon-integrated-world-release-P5ph9TBy",
+    "previousAcceptedRelease": "81702abb6e0c953d523b8299b5bf540dffb18424"
+  },
+  "retainedFailure": "Originalfa47c57c/CI37939634467 attempt1 FAILED. Root independently confirms terminal:client fails sole stale AdminLandingColliders comparison,671suites/9939checks pass and1suite/1check fails. Server and three browser shards pass. Predeploy,inputs,SSH,Pages,live jobs skipped—not passed. No deployment of failed head; live18 identities/readyDB independently match14:08:27.935UTC.",
+  "correction": "Existing actual-builder generator updates exactly15 camp vertical intervals by+.655m for the corrected-.65→.005 origin. Audit verifies all XZ positions/half-dimensions/yaw and every non-camp catalog field byte-equivalent after canonical JSON parsing. Add explanatory current19 patch-note bullet; no version increment for an unshipped correction, no prior history rewrite, schema/dependency/runtime-art/player-data/permission changes.",
+  "verification": "Current source catalog-matches-client Jest1pass35.455s;7named AdminTeleport checks -race/count1 pass4.784s after generator completion. Earlier4.851s parallel server precheck started before generation and is not acceptance of regenerated embedded bytes. Two version/history suites389pass5.096s. Original19 scoped144source/9native/60timed-view evidence retained unchanged; no unchanged full campaign/soak/native replay.",
+  "logsSHA256": {
+    "failedCIClient": "cd06d4abd5036358701b2167eb9de0283c2cc1bce531f1f66925586ea475ebf9",
+    "client": "c629286c871d1a5949615eb1d884f19aed8fe0b79cba67c39200edbef9c2806c",
+    "serverAfterGeneration": "50da44f823292eccb9aad2dec3af2c928a7d2fd0b3742b6e3ff8783322c6b597",
+    "metadata": "b5d58b4632948b6383e27550186a594eb9c2e8c2b4b1040f09c525adb04a94e2"
+  },
+  "publisher": {
+    "fixture": "/tmp/eidolon-19-corrected-publisher-TcAxtMzo",
+    "compiler": "Byte-identical qualified compiler, actual committed293fbfa1 source archive plus vendor.422modules/3253893bytes/21shared login modules;402of894versioned runtime files.",
+    "expectedSHA256": {
+      "index.html": "58a67aca96458ad0d52f1c827cede4acff1a6298b5d0288dc80cd4299099fe2a",
+      "src/main.js": "43c795fc4b954eadf78ecb469050914ee6f719dd7429c8e9ab1b3292f65a4a14",
+      "src/core/GameEngine.bundle.js": "14600f7ec9b8c953527292f9283d218a7bed75eef9a15864d048d0bb228a8a87",
+      "src/styles/index.css": "a67a1ebd3949f0ef2d92783814b3a090958b62d41453261c6cd10a3aec58beea",
+      "release.json": "ad90469a2e043f7cb275a65f2395293d29ac5cfc7e7b7f16483676ce4da31a8e"
+    },
+    "scope": "Five selected transformed files, not all binary assets; changed HEAD after future reconciliation requires exact rebuilt expectations."
+  },
+  "deliveryGate": "Prior original CI terminal confirmed before fresh origin/master fetch/normal merge retains293 clean and fa47 ancestry. Normal masterfa47..293 push succeeds. CorrectedCI37941972587 exact head monitored by approved Luna with terminal/actionable reports. Root own CI/native/live/public acceptance before any next push. No overlapping deployment, force, dirty original edit, website overwrite, automatic retry/cancel or production terrain activation.",
+  "remaining": "Full roadmap/modern-world/fit/combat, raised/equipped-party/device gates,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch stay open. Qualified separate camp dressing and staged atlas/rock changes are not in19."
+}
