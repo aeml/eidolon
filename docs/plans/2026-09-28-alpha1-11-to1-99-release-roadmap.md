@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 publication-name correction: exactfd7/CI37888678907 fails the final
+town-rest hover gate. Bundling renames the enemy class Skeleton2, breaking
+constructor-name actor filters. Preserve original names in the compiler rather
+than weakening targeting assertions. Actual published browser reproduction and
+five focused suites55checks qualify the correction; prior failures stay retained.
+New exact CI/public acceptance is required before ordered12-18. The separate
+loot-click obstruction observation and full modern-art/party/device/freeze/beta
+scope remain open. [Evidence](2026-10-09-published-class-name-checks.json).
+
 October9 corrective11 QA inventory fix: CI37884472930/5bd deploys successfully,
 but persistent loot setup rejects valid NECK/GLOVES gear. Read-only allowlisted
 QA inventory inspection confirms five such spares and available stash space.
