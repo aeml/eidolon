@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared16 connected-party observation: actual native High1280 client
+renders four independent fully geared authored class rigs on disposable raised
+terrain with three live normal sockets. Race/saved gear and180frame observation
+pass;920draws remain expensive, dominated by Skeleton shadows. This is not a
+four-input combat/raid/device certificate or public raised-terrain activation.
+[Scope/evidence](2026-10-09-equipped-party-render-checks.json).
+11/c3a45083/run37867222336 fails browser shards; deployment skips. Preserve
+accepted public10, correct scoped readiness/duplicate-render fixtures, then
+ordered CI/public acceptance and remote reconciliation. Full numbered scope open.
+
 October9 prepared16world-art component on reconciled15/e07a46d7: curved Grove
 vault, carved lips, worn Grove/Bastion bonded piers plus registered mineral
 grain, restrained patina/lichen/damp. No new textures/meshes/draw buckets or

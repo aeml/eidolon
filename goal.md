@@ -1,5 +1,17 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 actual equipped-party observation:** Prepared16's unchanged runtime
+renders four fully geared authored classes on local raised terrain, using one
+native GPU browser and three normal connected party sockets. Race fixture and
+saved gear/membership checks pass;180frames median16.7/p9516.8ms,920draws.
+Skeletons dominate draw cost despite existing rigid batching. This is not active
+four-browser combat, a raid clear, a new budget or physical-device acceptance.
+[Receipt](docs/plans/2026-10-09-equipped-party-render-checks.json).
+11/c3a45083 CI37867222336 fails legacy deferred-entry readiness tests and two
+software-renderer regional cases; downstream deployment skips. Public10 stays
+accepted. Correct those scoped fixtures without weakening runtime/art gates;
+ordered publication and full original roadmap/art/party/device gates stay open.
+
 **October9 prepared1.79.16:** On reconciled15/e07a46d7, select curved Grove
 vault/two-face carved lips and worn Grove/Bastion piers46740f0. Refine registered
 natural-stone grain/patina after initial green capture still looked plain; no
