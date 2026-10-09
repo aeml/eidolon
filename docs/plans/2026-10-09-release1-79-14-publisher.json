@@ -1,0 +1,16 @@
+{
+  "head": "b6aeee03878760092c4cf323b9668ea6648ec99f",
+  "ci": 37911224822,
+  "status": "Pushed; own mandatory CI/native/live/public acceptance pending",
+  "prepublication": "Independent exact13/ebdf/run37906851626 acceptance and five public selected hashes/front+back identity/IPv4 TLS/DBready09:24:46Z. Fresh fetch/normal merge068608b4 retains remote and website ancestry, source/art/assets/index/native tests/workflow/compiler unchanged vsqualified3e0b1a1f.384version/pagination checks4.523s. Documentation-onlyb6 commit, second freshfetch/merge already up to date, normalpush/master independently resolves exactb6. No force/reset, original dirty worktree or whole future branch promotion.",
+  "fixture": "/tmp/eidolon-14-final-publisher-uqKIAk",
+  "build": "Fresh committed index/src/sw/release plus actual locked generated vendor; byte-identical qualified compiler pinned0.28.2, actual publisher.416modules3218768bytes/21shared login modules;402/888files versioned. Earlier068prepublication fixture retained separately; its commit-specific hashes are not finalb6 hashes. Binary assets not copied into this selected-byte fixture; full asset publication is CI responsibility, not certified here.",
+  "sha256": {
+    "index.html": "010d7ba80bbf1a1f7fd9640ee5d5e426e7fdc40a71c356f484e51df63049bde5",
+    "src/main.js": "37d8b053717f2d7a56f04f51dbb7da79debda2a5a6d63176eb2e271ac3a991eb",
+    "src/core/GameEngine.bundle.js": "5aa7f3246c3b12f7791ae01550a634b4c2eb99391eba282a7dfedf95cf7a594c",
+    "src/styles/index.css": "2df2d1c9bd3b101a26f4a2b0807b4f6b74913b09c7e3c6067326d2aacfe60909",
+    "release.json": "c1864adbeaa2bdd62797ef469fcfa994af4a3215768ad3a9390bbcb714be6158"
+  },
+  "watch": "Authorized existing Luna/root/watch_deploy_1795_1008 exact run/head terminal-only. Root separately verifies mandatory/native/live results and selected bytes/identities/readiness before15. No overlapping push, automatic retry/cancel, notices/emails/player mutations or raised/public-monitor activation. Held woodland16/1dceefd5 does not become qualified through this14 delivery. Full original modern-world/F1-F5/1.81-1.99/party/device/owner/beta/launch scope stays active."
+}

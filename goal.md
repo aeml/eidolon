@@ -18,6 +18,13 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Pushed **1.79.14 /b6aeee03 /CI37911224822 attempt1** after own13 acceptance,
+  two fresh normal fetch/reconciliations and384metadata checks. Remote resolves
+  exactb6; originally qualified art/runtime/native-test/workflow bytes unchanged.
+  Required CI/native/live/public acceptance pending; Luna watches terminal-only.
+  Actual five-file publisher expectations/416module compiler proof are in
+  [14 publisher record](docs/plans/2026-10-09-release1-79-14-publisher.json).
+  No15push before own14 acceptance. Future graphics not wholesale promoted.
 - Woodland shading and owned instance-buffer cleanup are unit-qualified at
   bf2b2712, selected narrowly into current16/86795c17 with candidate record
   1dceefd5. Current16 is held: untimed High/Low passes are not timed passes;
@@ -298,7 +305,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   | --- | --- | --- |
   | 1.79.12 (accepted) | `eidolon-operations-release-U0VLQ4j8` | `1255aade` |
   | 1.79.13 (accepted) | `eidolon-public-monitor-release-XpKvF87O` | `ebdfd4e8` |
-  | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `3e0b1a1f` |
+  | 1.79.14 (pushed, CI pending) | `eidolon-character-dungeon-release-llOMKtuQ` | `b6aeee03` |
   | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `2bca9889` |
   | 1.79.16 (held candidate; qualified reference54c1634a) | `eidolon-masonry-release-CkTEzcx0` | `1dceefd5` |
   | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `baa610f4` |
