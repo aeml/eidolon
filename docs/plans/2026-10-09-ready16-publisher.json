@@ -1,0 +1,17 @@
+{
+  "head": "98cef7c77346f78886c87ef4194129af7e69a812",
+  "status": "PUSHED: Alpha1.79.16 /CI37926567202 in progress, not public accepted",
+  "publication": "After root15 terminal/native/live/exact-public acceptance11:50:48.427UTC, fresh fetch and normal merge changed only three older release receipts. Recheck immediately before normal push unchanged98cef7c7; master0ac75025..98cef7c7 succeeded. No force, website overwrite, dirty original tree change or overlapping deployment. Existing authorized Luna exact-run monitor; own16 terminal/native/live/public acceptance required before17.",
+  "reconciliation": "Runtime/art/assets/index/server/workflow/tests/scripts unchanged from qualified6c242a1c/610eae29; no replay of unaffected native scenes. Two current version/history suites386pass3.142s; synchronized login/source/server/build/deploy/CI16,451notes/10initial/45lazy archive pages, prior450 history retained.",
+  "fixture": "/tmp/eidolon-16-ready-publisher-TAdTUmn7",
+  "build": "Committed source archive and current locked generated vendor; actual byte-identical qualified compiler418modules3230779bytes/21shared singletons; actual publisher402/890files. Five selected expected bytes, not full binary asset certification. Changed head requires fresh versioned expectations.",
+  "sha256": {
+    "index.html": "86cbf85eb230ebaf6d77d472e80cf44a3e6fd38ba274900c9d99c63133985ee3",
+    "src/main.js": "04d06b764d36c0bb8667ec0dab306f3c5b573637d5999fe0598144404e90cc51",
+    "src/core/GameEngine.bundle.js": "4becea141a6d1080c38cab49e5f199ccde1f179de8dc4289b50278600316cc5d",
+    "src/styles/index.css": "062b66988744d2f7ce05c1e40dee3d0d0ff7c2220eb2517a75ca83e7de58abd4",
+    "release.json": "2c7461f0a5d3c5417ba5c07fef89808c9f1c184dc9437d011a3dbdfccf5cfc6b"
+  },
+  "scope": "Locally qualified masonry/fieldstone/Skeleton shared rendering and woodland shading/instance tint/buffer cleanup.18timed flat-world views pass original limits, not whole party/device/raised-world performance. New staged Fire/soil/books/growth/rock/tents are not in16; public flat-v1 and optional public monitoring off retained.",
+  "next": "Root own16 CI/native/live/public verification, then fresh reconcile queued17/18 including qualified16 art where normal merge requires it. Do not silently merge entire future tree. Full modern-art/raised-world/F1-F5/1.81-1.99/owner-beta-and-launch gates remain active."
+}
