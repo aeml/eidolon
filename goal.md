@@ -24,10 +24,17 @@ Fighter pilot or remove approved authored models.
   excluded by the test's duplicate gear list. Nine jobs and seven live cases pass;
   later animation/recovery steps skip. Read-only inspection of allowlisted QA
   inventory confirms five such single-item spares and available stash space.
-  New QA-only fix **fd7bb300 / CI37888678907** is pushed and running.83 affected
-  checks pass; all item/metadata/Gold conservation checks remain. No runtime,
-  startup bundle, notes, accounts or economy changes. Authorized Luna
-  `/root/watch_deploy_1795_1008` owns terminal-only monitoring. Root must still
+  QA-only fix **fd7bb300 / CI37888678907** passes83 affected checks but its
+  exact CI now **fails** town-rest hover: the published compiler renames the
+  enemy class Skeleton2, excluding it from constructor-name targeting filters.
+  Root reproduces this in a collision unit and actual browser-loaded factory.
+  Corrective **f1ca948d / CI37892701200** is now pushed/running: compiler
+  keepNames restores intended gameplay names, without weakening QA filters,
+  deadlines or retries.55affected checks/native published case7.5s pass.
+  Initial fixture cleanup error is retained separately from the reproduced bug;
+  earlier native loot-click obstruction is not proven resolved by this fix.
+  All445older notes exact; current11 note clarifies preserved names. Authorized
+  Luna `/root/watch_deploy_1795_1008` owns terminal-only monitoring. Root must still
   verify all required terminal gates, transformed publisher bytes and live
   frontend/backend identity/TLS/database before publishing12.
 - Exact fd7 frontend/backend identity, valid IPv4 TLS/database readiness and
@@ -42,7 +49,9 @@ Fighter pilot or remove approved authored models.
   [Current integration receipt](docs/plans/2026-10-09-startup-bundle-and-air-review-progress.json)
   links the owned source receipt/artifacts. Prior SSH and static-module408
   failures and initial fixture failures remain preserved, not reclassified.
-- Prepared12-18 all normally inheritfd7bb300, clean at their last source audit.
+- Prepared12-18 now normally inheritf1ca948d, retainingfd7. Six merges are clean;
+  the18 roadmap introduction conflict preserves both complete status sections.
+  All seven worktrees are clean after reconciliation; no public12-18 push.
   Exact predecessor notes447-452total/ten initial per version are retained.
   Actual17graph compiles417modules/shared21; no later public push or blanket
   stage qualification. Per-release public acceptance remains mandatory.
@@ -92,12 +101,14 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Accept or diagnose corrective11/fd7bb300/CI37888678907 after authorized Luna
+1. Accept or diagnose corrective11/f1ca948d/CI37892701200 after authorized Luna
    terminal notice; independently verify required jobs, public identities and
    actual transformed publisher bytes. Prior dc7 attempt2 fails engine-module
    download with matching static HTTP408 evidence; upstream cause remains
    unproven. Later5bd reaches gameplay but fails the QA gear selector;83 affected
-   checks qualify the fd7 correction, not live acceptance. Require own CI/public
+   checks qualify the fd7 correction, not live acceptance. Laterfd7 fails bundled
+   class-name recognition; root reproduces the bug and f1 preserves names.
+   Its55focused/native checks are not authenticated-world acceptance. Require own CI/public
    acceptance, then fresh-fetch/normal reconcile
    and individually publish/accept prepared12-18 in order. Never promote the
    whole future branch, overlap pushes, retry successful tests or infer acceptance
@@ -138,22 +149,23 @@ qualification never proves a later tree, full visual approval or public rollout.
   Preserve unrelated user/website-agent changes.
 - Current corrective11:
   `/home/aeml/.local/share/eidolon-startup-bundle-release-20261009`;
-  branch `work/alpha-1-79-startup-bundle-current-20261009`, pushedfd7bb300.
+  branch `work/alpha-1-79-startup-bundle-current-20261009`, pushedf1ca948d.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, local5e78ab4b/1.79.18;
-  art/runtime source0e319ac0 unchanged by the subsequent party evidence commit.
+  branch `work/alpha-1-79-air-cypress-current-20261009`, localc82ba3dc/1.79.18;
+  art/runtime source0e319ac0 unchanged; party evidence and corrected publication
+  names are retained by normal reconciliation, not a new art qualification.
 - Ordered queued release worktrees and last clean heads:
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
   | --- | --- | --- |
-  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `fd4884e7` |
-  | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `bf690620` |
-  | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `0e6c1a5a` |
-  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `6135a833` |
-  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `cb78814c` |
-  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `4e086eab` |
-  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `5e78ab4b` |
+  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `fdb5a335` |
+  | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `06e43cee` |
+  | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `25d51c02` |
+  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `a88e97b1` |
+  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `39098884` |
+  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `33d351f7` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `c82ba3dc` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
