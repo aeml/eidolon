@@ -52,6 +52,9 @@ describe('procedural Lanternhold architecture', () => {
             expect(log.min.z).toBeGreaterThan(ring.min.z);
             expect(log.max.z).toBeLessThan(ring.max.z);
         }
+        const lower = new THREE.Box3().setFromObject(camp.getObjectByName('camp:hearth-log:0'));
+        const upper = new THREE.Box3().setFromObject(camp.getObjectByName('camp:hearth-log:1'));
+        expect(upper.min.y).toBeCloseTo(lower.max.y, 6);
         const placements = createLanternholdCampPlacements(0, 200);
         const field = createProceduralLanternholdCampField(placements);
         expect(placements).toHaveLength(15);

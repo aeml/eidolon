@@ -503,7 +503,7 @@ function createCamp(root) {
     });
     for (const [index, yaw] of [0, Math.PI / 2].entries()) {
         addMesh(root, `camp:hearth-log:${index}`, SHAPES.cylinder, MATERIAL_SET.timber, {
-            position: [2.35, .135 + index * .055, 1.9],
+            position: [2.35, .135 + index * .22, 1.9],
             rotation: [Math.PI / 2, 0, yaw],
             scale: [.22, .95, .22]
         });
