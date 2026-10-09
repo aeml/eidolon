@@ -18,6 +18,13 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Pushed17/1ecfeb20/CI37930673270 after own16 acceptance and fresh normal
+  remote reconciliation. Qualified16 woodland/renderer/decimal helper retained;
+  398 metadata/history/decimal checks and actual418module publisher qualify.
+  Cumulative452notes/10initial/45lazy pages; five expected hashes in ready17
+  receipt. Luna exact-run terminal watch; root own17 acceptance before18.
+  New staged art/canvas/restoration changes remain outside this release.
+
 - Accepted public16/98cef7c7/CI37926567202 attempt1 SUCCESS: ten jobs, native
   6regional/1celebration/2class/4smoke; live7cases5.8m, town/rest2cases1.6m,
   party1case48.5s. Four optional steps skip, not pass. Root five exact publisher
