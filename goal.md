@@ -38,11 +38,11 @@ Fighter pilot or remove approved authored models.
   [Current integration receipt](docs/plans/2026-10-09-startup-bundle-and-air-review-progress.json)
   links the owned source receipt/artifacts. Prior SSH and static-module408
   failures and initial fixture failures remain preserved, not reclassified.
-- Prepared12-17 all normally inheritfd7bb300, clean at their last source audit.
+- Prepared12-18 all normally inheritfd7bb300, clean at their last source audit.
   Exact predecessor notes447-452total/ten initial per version are retained.
   Actual17graph compiles417modules/shared21; no later public push or blanket
   stage qualification. Per-release public acceptance remains mandatory.
-- Air composition **d6ae6286** (f18128bc art plus fd7 QA fix) is local below: rooted
+- Air composition **0e319ac0 / prepared1.79.18** is local below: rooted
   cypresses/roughly9m slate, sheltered dust pockets, forged instruments and
   grounded chart tables, supported camp racks and folded canvas bedrolls.
   Nine dust, five instrument/path/leg and two new camp checks plus bounded
@@ -51,9 +51,20 @@ Fighter pilot or remove approved authored models.
   canvas in the existing windbreak batch, removing one separate bedroll batch.
   Root reviewed actual images;
   improvement is modest, still sparse/stylized, not final modern ARPG art.
-  **High frame gate remains failed** at two views33.2/33.3ms vs original20ms.
-  The later image/prop checks disable profiling and do not fix/certify that
-  failure. Final419module publisher graph compiles, no release18/promotion.
+  Subsequent Air lighting rebalances ambient/key/fill only, retaining light
+  count, colors, exposure, fog and bloom.5 theme checks and393selected
+  theme/version/pagination checks pass (overlap, not398distinct).
+  **Current integrated High/Low frame/resource gates pass**: two native cases,
+  nine timed views each, original caps unchanged. High maxmedian16.7ms,
+  p95 33.4ms/126draws/180741triangles; Low16.7/16.8/58/50638.
+  One full-Air12-phase quality-switch case passes14.9s; all8beds/3passage
+  views and identity/ownership/disposal assertions retained. Earlier High
+  failure33.2/33.3ms remains recorded for that older source/conditions, not
+  erased or proven solely caused by lighting/host load. Equipped14-piece
+  Wizard/HUD Low review passes9.1s; subtle shading gain, not final art/party/
+  physical-phone approval.419module copied publisher graph compiles.
+  All452previous notes exact;453total/10initial/45lazy pages. Version18
+  source/login/server defaults synchronized, not pushed or promoted.
   Full component receipt is in that branch at
   `docs/plans/2026-10-09-air-cypress-component-checks.json`.
 - Existing nightly **37880032315/dc7** was independently confirmed running
@@ -75,7 +86,7 @@ qualification never proves a later tree, full visual approval or public rollout.
    unproven. Later5bd reaches gameplay but fails the QA gear selector;83 affected
    checks qualify the fd7 correction, not live acceptance. Require own CI/public
    acceptance, then fresh-fetch/normal reconcile
-   and individually publish/accept prepared12-17 in order. Never promote the
+   and individually publish/accept prepared12-18 in order. Never promote the
    whole future branch, overlap pushes, retry successful tests or infer acceptance
    from a running job. Continue integrated modern-world work while CI runs.
 2. Finish the complete modern world/art work, not just these woodland changes:
@@ -117,7 +128,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   branch `work/alpha-1-79-startup-bundle-current-20261009`, pushedfd7bb300.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, locald6ae6286.
+  branch `work/alpha-1-79-air-cypress-current-20261009`, local0e319ac0/1.79.18.
 - Ordered queued release worktrees and last clean heads:
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
@@ -128,6 +139,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `6135a833` |
   | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `cb78814c` |
   | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `4e086eab` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `0e319ac0` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
