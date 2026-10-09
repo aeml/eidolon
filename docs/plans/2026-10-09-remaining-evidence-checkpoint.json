@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-09T22:26:06.296784+00:00",
-  "classification": "progress through qualified native attribution: existing understory preparation0ms town/approach and0.10ms party median does not justify cache. Actual four equipped roots submit489598color+shadow triangles; native per-mesh gallery identifies body and gear costs. Four-class race/save/native checks pass; full budgets fail. No runtime or public release change.",
+  "recordedUTC": "2026-10-09T22:52:51.702307+00:00",
+  "classification": "Rejected independent weighted wearable LOD selection. Retain source-pinned experiments and opt-in native substitution diagnostic only; runtime/assets/package unchanged.",
   "qualifiedRuntime": "6fbffd3435e1798841a56ab120e938db3d512e34 runtime/assets/package remain byte-identical; current addition is opt-in QA diagnosis and missing-vendor launcher preflight only. Qualified runtime scope stays2026-10-09-rigid-surface-render-checks.json.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,9 +9,9 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-09T22:12:35Z",
+    "readOnlyObservationUTC": "2026-10-09T22:42:19Z",
     "result": {
-      "observed_at_utc": "2026-10-09T22:12:35Z",
+      "observed_at_utc": "2026-10-09T22:42:19Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -102,9 +102,9 @@
     "status": "Single read-only observation in_progress, step6running/uploadpending. No terminal acceptance, cancel or restart."
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-09-understory-preparation-diagnosis.json",
+  "currentReceipt": "docs/plans/2026-10-09-wearable-attribute-rejected.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress through verified rejection: isolateddd354331 woodland spatial prototype preserves source triangles/poses/indices but strict native1pixel2channel failure repeats, CPU improvement unproven, roughly88MB duplicated raw geometry rejected on both qualities. Qualified6fbffd34source retained; full objective active.",
-  "nextAction": "Prioritize actual supplied-body and fitted-equipment triangle/vertex submissions, already489598color+shadow triangles for four equipped roots. Inspect reproducible source-derived optimization and current error/seam/attribute limits, retaining originals, all gear/rig/morph/material/attachment identities and native motion/fit/visual evidence. Continue dominant measured scene traversal/matrix/shadow work where it helps CPU; do not implement an unjustified understory cache or repeat unchanged campaigns/soaks.",
+  "previousGoalTurnClassification": "progress through qualified native attribution: existing understory preparation0ms town/approach and0.10ms party median does not justify cache. Actual four equipped roots submit489598color+shadow triangles; native per-mesh gallery identifies body and gear costs. Four-class race/save/native checks pass; full budgets fail. No runtime or public release change.",
+  "nextAction": "Investigate coordinated material-surface LOD and dominant supplied-body/eye geometry with source-derived rigs/morphs/fit retained. Current independent per-primitive weighted index collapse is not selected. Do not use counts or exact fallback preview to claim whole-game acceptance.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-09-rigid-surface-render-checks.json"
 }

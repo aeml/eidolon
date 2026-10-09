@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 fitted-geometry experiment:**40source-pinned fit pairs validate rigs,
+attributes and serialization; controlled native gallery confirms actual loading.
+Independent weighted index collapse saves14.3%High/30.8%Low in that subset but
+visibly loses robe trim: rejected. Material-proximity locks mostly fall back to
+exact reviewed files, saving only182color triangles in the native gallery.
+Retain tools/opt-in diagnostic and [rejection evidence](docs/plans/2026-10-09-wearable-attribute-rejected.json);
+no runtime/assets/catalog/public/profile/access activation. Full inherited
+1.11–1.99/art/Q/CB/equipped-party/device/F1–F5/operations/owner/beta/launch/handoff
+remains active. Next investigate coordinated surfaces and supplied-body/eye cost.
+
 **October9 measured rendering diagnosis:** Existing understory preparation is
 0ms in town/approach and0.10ms/frame median in actual equipped party; no complex
 cache selected. Four equipped player roots alone submit489598color+shadow

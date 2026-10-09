@@ -1,9 +1,16 @@
 import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
+import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
 import { collectBrowserFailures } from './helpers.js';
+
+// Explicit routed-asset comparisons need both controls to bypass the service
+// worker, which would otherwise serve reviewed files outside page.route.
+test.use({ serviceWorkers: process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_COMPARE === '1' ||
+    process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT ? 'block' : 'allow' });
 
 test('all delivered classes use fitted gear, independent rigs and alternating Rogue strikes', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
+    const attributePilot = await installWearableAttributePilot(page);
     const surfaceReference = process.env.EIDOLON_E2E_AUTHORED_SURFACES_REFERENCE === '1';
     if (surfaceReference) {
         // Explicit isolated A/B reference: identical gear/poses/batching but
@@ -142,7 +149,8 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
             expect(variant.trianglesIncludingFloor).toBe(2 + variant.meshes.reduce((sum, mesh) => sum + mesh.triangles, 0));
         }
         await writeFile(testInfo.outputPath('equipped-triangle-diagnosis.json'), JSON.stringify({
-            scope: 'Separate untimed native gallery draw census. Eight fully fitted High/Low class outfits, color pass only; actual game shadow/party timing recorded separately. No content/geometry/shader changes.', ...census
+            scope: 'Separate untimed native gallery draw census. Eight fully fitted High/Low class outfits, color pass only; actual game shadow/party timing recorded separately. ' +
+                (attributePilot ? 'Explicit generated wearable geometry substitutions; source hashes and requests recorded separately.' : 'Normal selected runtime geometry.'), ...census
         }, null, 2));
         console.log('[diagnostic-equipped-triangles]', JSON.stringify(census.variants.map(({ type, quality, meshes }) => ({
             type, quality, total: meshes.reduce((sum, mesh) => sum + mesh.triangles, 0), top: meshes.slice(0, 4)
@@ -285,5 +293,10 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         await page.locator('.character-preview-stage canvas').screenshot({ path: testInfo.outputPath(`${type}-equipped-preview.png`) });
     }
     await page.evaluate(() => { window.__classGear.preview.dispose(); window.__classGear.previewHost.remove(); });
+    if (attributePilot) {
+        const substitution = attributePilot.read();
+        expect(substitution.requested.length).toBeGreaterThan(0);
+        await writeFile(testInfo.outputPath('wearable-pilot-substitution.json'), JSON.stringify(substitution, null, 2));
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });
