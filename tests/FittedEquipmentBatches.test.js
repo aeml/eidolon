@@ -265,6 +265,7 @@ test('merges identical opaque surfaces without changing source buffers, bones or
 
 test.each([
     ['color', part => part.material.color.set('#123456')],
+    ['precolored surface', part => { part.material.vertexColors = true; part.material.color.set('#123456'); }],
     ['potency emission', part => { part.material.emissiveIntensity = 2; }],
     ['transparent', part => { part.material.transparent = true; }],
     ['texture', part => { part.material.map = new THREE.Texture(); }],
@@ -286,6 +287,55 @@ test.each([
     const result = batchFittedEquipment(parts);
     expect(result).toEqual(parts); expect(parts[0].visible).toBe(true);
     expect(parts[0].userData.fittedBatchSource).toBeUndefined();
+});
+
+test('differently tinted compatible gear retains its exact linear colors, bones and original buffers', () => {
+    const { root, parts, bones } = fixture();
+    parts[1].material.color.set('#123456');
+    const originalColors = parts.map(part => part.material.color.clone());
+    const originalGeometry = parts.map(part => part.geometry);
+    const result = batchFittedEquipment(parts, { palette: true }), batch = result.at(-1);
+    expect(result).toHaveLength(3);
+    expect(batch.userData.fittedPaletteBatch).toBe(true);
+    expect(batch.userData.fittedBatchSourceIds).toEqual(parts.map(part => part.uuid));
+    expect(batch.material).not.toBe(parts[0].material);
+    expect(batch.material.color.getHex()).toBe(0xffffff);
+    expect(batch.material.vertexColors).toBe(true);
+    expect(batch.skeleton).toBe(parts[0].skeleton);
+    root.add(batch);
+    for (const angle of [0, .4, -.7]) {
+        bones[1].rotation.z = angle; root.updateMatrixWorld(true);
+        const merged = surface(batch), separate = parts.flatMap(surface);
+        expect(merged.map(vertex => vertex.position)).toEqual(separate.map(vertex => vertex.position));
+        let cursor = 0;
+        parts.forEach((part, i) => {
+            for (let vertex = 0; vertex < part.geometry.index.count; vertex++) {
+                const color = merged[cursor++].attributes.color;
+                color.forEach((value, channel) => expect(value).toBeCloseTo(originalColors[i].toArray()[channel], 7));
+            }
+        });
+    }
+    parts.forEach((part, i) => {
+        expect(part.geometry).toBe(originalGeometry[i]);
+        expect(part.geometry.attributes.color).toBeUndefined();
+        expect(part.material.color.equals(originalColors[i])).toBe(true);
+        expect(part.material.vertexColors).toBe(false);
+    });
+    batch.geometry.dispose(); batch.material.dispose();
+});
+
+test.each(['vertex colors', 'existing color buffer'])('palette batching never replaces %s even when serialized tints round alike', boundary => {
+    const { parts } = fixture();
+    parts.forEach((part, i) => {
+        part.material.color.setRGB(.123456 + i * .0000001, .2, .3);
+        if (boundary === 'vertex colors') part.material.vertexColors = true;
+        else part.geometry.setAttribute('color', new THREE.Float32BufferAttribute(
+            new Float32Array(part.geometry.attributes.position.count * 3).fill(.5), 3));
+    });
+    expect(parts[0].material.color.getHex()).toBe(parts[1].material.color.getHex());
+    expect(parts[0].material.color.equals(parts[1].material.color)).toBe(false);
+    expect(batchFittedEquipment(parts, { palette: true })).toEqual(parts);
+    expect(parts.every(part => part.visible)).toBe(true);
 });
 
 test('exact shared generated surfaces retain fitted batching, but changed surface/map boundaries stay separate', () => {

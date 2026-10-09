@@ -1,0 +1,28 @@
+{
+  "status": "Private diagnostic only; rejected for promotion; disabled by default",
+  "base": "7fb93177",
+  "scope": "Opt-in vertex-tint batching of otherwise compatible opaque fitted equipment. Original class assets, rigs, geometry, maps and default color-keyed batching remain unchanged.",
+  "native_exact_previous_renderer_comparison": {
+    "result": "FAIL; strict zero-channel-difference assertion retained",
+    "poses": ["CombatIdle", "Run", "Cast"],
+    "candidate_draw_calls": 273,
+    "previous_draw_calls": 285,
+    "triangles_each": 383179,
+    "changed_channels": [12, 42, 10],
+    "maximum_channel_difference": [35, 59, 15],
+    "log": "/home/aeml/.local/share/eidolon-fitted-palette-native-reference-20261009.log",
+    "log_sha256": "b82503129b80ac4c25147bdd58072f5bf0dc7358e10e07d8df70010c5587a93e"
+  },
+  "default_path": {
+    "units": "2 actual suites, 46 passing checks; a requested nonexistent third test was not run",
+    "unit_log_sha256": "9133b0ba759be9420dc8869c54cd81bd8371ec6d2d06f9db49fd7aef1a0a96a8",
+    "native": "1 passing case, 14.9 seconds, retries 0; eight equipped High/Low bodies, class restrictions, independent rigs, seven poses, rogue alternation, stealth and cleanup",
+    "native_log_sha256": "87aff0341b4a452cfede2de9d5ed0ca752a6247889754072f656a40af688761b",
+    "lint": "Four changed files and whitespace checks pass"
+  },
+  "earlier_failures_retained": [
+    "Initial private native run lacked generated vendor files and failed before exercising the prototype",
+    "An initial unbatched-reference comparison failed visual parity; it was replaced with the exact previous color-keyed renderer, not represented as the previous production behavior"
+  ],
+  "decision": "Do not merge into the release queue. Twelve saved draws do not justify remaining visual differences. No frame-rate improvement or modern-art approval claimed. Larger equipped-party rendering bottleneck remains open."
+}

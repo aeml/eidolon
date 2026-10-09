@@ -268,7 +268,11 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
             coverRobeUnderlayers(state, selection, staged);
             // Exact surfaces and native comparisons pass for compatible opaque
             // pieces. False retains the original path for diagnostic comparisons.
-            if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged);
+            if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged, {
+                // Unreleased diagnostic prototype; normal equipment keeps its
+                // exact color-keyed behavior until native parity qualifies.
+                palette: root.userData.fittedEquipmentPaletteBatching === true
+            });
         } catch (error) {
             disposeParts(staged);
             if (state.epoch === epoch) root.userData.equipmentVisualSignature = '';

@@ -1,9 +1,14 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
+import { execFileSync } from 'node:child_process';
 
 test('all delivered classes use fitted gear, independent rigs and alternating Rogue strikes', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     const surfaceReference = process.env.EIDOLON_E2E_AUTHORED_SURFACES_REFERENCE === '1';
+    if (process.env.EIDOLON_E2E_EQUIPMENT_PALETTE_COMPARE === '1') {
+        const reference = execFileSync('git', ['show', '7fb93177:src/art/FittedEquipmentBatches.js'], { encoding: 'utf8' });
+        await page.route('**/src/art/FittedEquipmentBatchesReference.js', route => route.fulfill({ contentType: 'text/javascript', body: reference }));
+    }
     if (surfaceReference) {
         // Explicit isolated A/B reference: identical gear/poses/batching but
         // no new generated surfaces. No runtime diagnostic flag or source edit.
@@ -13,7 +18,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
     }
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const evidence = await page.evaluate(async () => {
+    const evidence = await page.evaluate(async paletteCompare => {
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         const { Actor } = await import('/src/entities/Actor.js');
@@ -41,6 +46,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         const actors = [];
         for (const [i, type] of classes.entries()) for (const quality of ['high', 'low']) {
             const root = await MeshFactory.createMeshForType(type, { quality });
+            root.userData.fittedEquipmentPaletteBatching = paletteCompare;
             if (root.userData.authoredClass !== type) throw new Error(`Authored ${type} failed (${quality})`);
             const actor = new Actor(`asset-${type}-${quality}`, {}); actor.meshType = type; actor.setMesh(root);
             root.position.set((i - 1.5) * 5.3, 0, quality === 'high' ? 0 : -8); scene.add(root);
@@ -103,13 +109,73 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         window.__classGear = { actors, renderer, scene, camera, sample, MeshFactory };
         return { classes: actors.map(({ type, quality, attached, wrongBones, items }) => ({ type, quality, attached, wrongBones, items })), strikes, costs, resources,
             independent: actors.every(({ root }, i) => i % 2 === 0 || root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0] !== actors[i - 1].root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0]) };
-    });
+    }, process.env.EIDOLON_E2E_EQUIPMENT_PALETTE_COMPARE === '1');
     expect(evidence.independent).toBe(true);
     await testInfo.attach('equipped-surface-costs', { body: JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources }), contentType: 'application/json' });
     console.log(`[equipped surface costs] ${JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources })}`);
     expect(evidence.classes).toHaveLength(8);
     for (const actor of evidence.classes) { expect(actor.attached).toBeGreaterThan(9); expect(actor.wrongBones).toBe(0); expect(actor.items).toBe(14); }
     expect(evidence.strikes).toEqual(['Dagger_Attack', 'Sword_Attack_Left', 'Dagger_Attack', 'Sword_Attack_Left']);
+    if (process.env.EIDOLON_E2E_EQUIPMENT_PALETTE_COMPARE === '1') {
+        const comparison = await page.evaluate(async () => {
+            const { batchFittedEquipment: referenceBatch } = await import('/src/art/FittedEquipmentBatchesReference.js');
+            const qa = window.__classGear, renderer = qa.renderer, gl = renderer.getContext();
+            const sources = [], batches = [];
+            for (const { root } of qa.actors) root.traverse(mesh => {
+                if (mesh.userData.fittedBatchSource) sources.push(mesh);
+                if (mesh.userData.fittedBatchSources) batches.push(mesh);
+            });
+            const originalVisibility = [...sources, ...batches].map(mesh => [mesh, mesh.visible]);
+            // Reconstruct the exact previous color-keyed batching, not a
+            // fully unbatched image that can differ in existing coplanar joins.
+            for (const mesh of batches) mesh.visible = false;
+            for (const mesh of sources) { mesh.visible = true; mesh.userData.fittedParent = mesh.parent; }
+            const reference = referenceBatch(sources).slice(sources.length);
+            const referenceVisibility = sources.map(mesh => [mesh, mesh.visible]);
+            for (const mesh of reference) { mesh.userData.fittedParent.add(mesh); mesh.visible = false; }
+            for (const mesh of sources) delete mesh.userData.fittedParent;
+            for (const [mesh, visible] of originalVisibility) mesh.visible = visible;
+            const capture = () => {
+                renderer.render(qa.scene, qa.camera);
+                const pixels = new Uint8Array(1440 * 900 * 4);
+                gl.readPixels(0, 0, 1440, 900, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                return { pixels, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
+            };
+            const poses = [];
+            try {
+                for (const [state, time, yaw] of [['CombatIdle', .3, 0], ['Run', .3, .7], ['Cast', .4, Math.PI / 2]]) {
+                    qa.sample(state, time, yaw);
+                    for (const mesh of reference) mesh.visible = false;
+                    for (const [mesh, visible] of originalVisibility) mesh.visible = visible;
+                    const merged = capture();
+                    for (const mesh of batches) mesh.visible = false;
+                    for (const [mesh, visible] of referenceVisibility) mesh.visible = visible;
+                    for (const mesh of reference) mesh.visible = true;
+                    const separate = capture();
+                    let changed = 0, maximum = 0;
+                    for (let i = 0; i < merged.pixels.length; i++) {
+                        const delta = Math.abs(merged.pixels[i] - separate.pixels[i]);
+                        if (delta) changed++;
+                        maximum = Math.max(maximum, delta);
+                    }
+                    poses.push({ state, changed, maximum, mergedCalls: merged.calls, separateCalls: separate.calls,
+                        mergedTriangles: merged.triangles, separateTriangles: separate.triangles });
+                }
+                return { paletteBatches: batches.filter(mesh => mesh.userData.fittedPaletteBatch).length, poses };
+            } finally {
+                for (const mesh of reference) { mesh.removeFromParent(); mesh.geometry.dispose(); }
+                for (const [mesh, visible] of originalVisibility) mesh.visible = visible;
+            }
+        });
+        await testInfo.attach('fitted-palette-pixel-comparison', { body: JSON.stringify(comparison), contentType: 'application/json' });
+        console.log('[fitted-palette-comparison]', JSON.stringify(comparison));
+        expect(comparison.paletteBatches).toBeGreaterThan(0);
+        for (const pose of comparison.poses) {
+            expect(pose.maximum).toBe(0);
+            expect(pose.mergedTriangles).toBe(pose.separateTriangles);
+            expect(pose.mergedCalls).toBeLessThan(pose.separateCalls);
+        }
+    }
     let poseIndex = 0;
     for (const [state, time, yaw] of [['CombatIdle', .3, 0], ['Run', .3, .7], ['Attack', 14 / 30, 0], ['Attack', 14 / 30, 0], ['Cast', .4, 0], ['Channel', .5, .4], ['Block', .3, Math.PI]]) {
         expect(await page.evaluate(({ state, time, yaw }) => window.__classGear.sample(state, time, yaw), { state, time, yaw })).toBe(0);
