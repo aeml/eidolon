@@ -1,0 +1,13 @@
+{
+  "status": "Qualified test-only correction for the next same-version 1.79.14 push; deployment pending",
+  "failedRun": "37913862221 / 0384b0a0404cdd579d7cf31acb039b62c1afcb8e: Client, Server and all three hosted browser jobs passed. Mandatory native predeploy failed the inventory loot click; validation, both deployments and live QA skipped. Native regional six cases, celebration and two equipment cases passed. No 1.79.14 deployment occurred.",
+  "diagnosis": "Unchanged isolated inventory passed 31.5s, so the exact intermittent CI cause is not independently reproduced. A controlled geometry fixture does reproduce a stale projection when camera follow changes after successful hover observation: old helper clicks null. Runtime targeting remains unchanged.",
+  "correction": "Preserve the verified exposed hitbox corner, reproject immediately before the native mouse click, and retain real click raycast/pickup/quantity assertions. No direct pickup, hover assignment, target-priority change, timeout increase, retry or relaxed assertion.",
+  "checks": "Corrected seven pointer cases passed 24.8s, 22 observation unit tests passed 1.113s, actual isolated inventory flow passed 31.2s, retries zero. Lint and whitespace passed. Disposable loopback API/database and fresh test accounts only; artifact credential scan passed and fixture cleanup completed.",
+  "logs": [
+    "/home/aeml/.local/share/eidolon-corrected14-click-gap-before-20261009.log",
+    "/home/aeml/.local/share/eidolon-corrected14-click-gap-after-20261009.log",
+    "/home/aeml/.local/share/eidolon-corrected14-click-observation-units-20261009.log",
+    "/home/aeml/.local/share/eidolon-corrected14-inventory-fresh-click-20261009.log"
+  ]
+}
