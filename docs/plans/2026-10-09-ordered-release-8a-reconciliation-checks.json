@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "local ordered12-17 reconciliation; no later public push",
+  "remote": "8a57420eb5d0a28de2113e82cc40638d9aaa18da",
+  "method": "Fresh origin fetch and normal merge into12, then normal predecessor merges into13 through17. Two12 roadmap-header conflicts retain both complete progress blocks. Five17 QA conflicts keep already-qualified17 Air passage additions; resolved file is byte-identical to17's prior qualified fixture. Every candidate is tracked-clean and has exact8a as a Git ancestor. No force/reset or edits to original dirty user worktree.",
+  "heads": {
+    "12": "630d7b9cc7a199478bf559e842ebabc7e9a91b1e",
+    "13": "53bacc3dc430004dc17c5606d865e2328aad9fe6",
+    "14": "e40fe2fdfca42fe11ab8b80bbd1d3862390e9f01",
+    "15": "86b69a383e2765db1c29984f535babf2252409a8",
+    "16": "e4cc23d486ed858e30daa1bc1b805b6e54f71f8c",
+    "17": "a6e52157a11ce5766cdff8351ac51d9d1c8bf8b1"
+  },
+  "preservation": "Independently inspect all six Git ranges against their previously qualified prepared heads.12-16 differ only in docs/goal, new11 cover-partition receipt and inherited regional browser fixture.17 differs only in docs/goal and receipt; qualified fixture hash86f05ed09dcbc63e278df511ea07cb60956682f8268c5065b87871ecbe970bca unchanged. Runtime, source assets, dependencies, pins, all current version labels and each complete patch history are unchanged. Earlier component qualification remains scoped; no broad replay or new GPU certificate claimed.",
+  "focusedCheck": "Actual BrowserSmokePlan suite using repository ESM command passes19checks0.775s on12. Initial plain-Jest invocation fails ESM setup before running any test, not counted. Previously recorded393version/pin/pagination cases remain historical unaffected evidence, not newly rerun.",
+  "publicPrecheck": {
+    "observedAt": "2026-10-09T03:02:25.369Z",
+    "version": "Alpha 1.79.11",
+    "commit": "8a57420eb5d0a28de2113e82cc40638d9aaa18da",
+    "transport": "ordinary DNS/forcedIPv4/verifiedTLS; owner-deferred IPv6 not certified",
+    "backend": "exact11/8a, statusok/database ready",
+    "production": "exact8a /home/aeml/eidolon, no tracked changes",
+    "selectedPublisherBytes": {
+      "index.html": "7f71b2b9f4ab1d2e27d02cc4a4f3a91368905e95d1af42c66c017dad830693d9",
+      "src/core/GraphicsStartup.js": "f48842011671f6d77aeef73f85a63fec05eeb62e57a483f6bbf78583b829d993",
+      "src/art/ElementalGroundCover.js": "eb471406ab1f81d4b23399e50c491eacb32a8823b1551a9e75695ac6133adf1b",
+      "src/styles/index.css": "d12c8fa4edaead3b4ff39a8c4b17a6bd73f7f94afff5767fe7865bdf0a2cf5b3"
+    },
+    "method": "Actual exported publisher rewriteHtml/rewriteJavaScript/rewriteCss outputs compared byte-for-byte; actual bundleGameStyles on owned copied styles in eidolon-public-17911-yLcxqd. Initial incorrect GraphicsStartup path fails before complete comparison; corrected existing core path qualifies all four. Public/source styles not modified.",
+    "gate": "CI37874149991 not terminal at observation: nine jobs green, Live Release and Character QA still running. This is a precheck, not whole release acceptance. Root independently verifies exact terminal jobs and final identities after Luna notice before later publication."
+  },
+  "remaining": "Individual ordered12-17 CI/public acceptance and fresh remote reconciliation before each push remain required. Air surfacef26d8e5f stays unqualified/local, repeat only affected native cases after shared live QA frees GPU. Full original modern-art/F1-F5/party/device/owner/operations/rights/beta/launch roadmap remains active; no raised activation, feature freeze or final art claim."
+}

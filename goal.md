@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- All local12-17 now normally inherit freshly fetched8a through predecessor
+  merges:630d7b9c/53bacc3d/e40fe2fd/86b69a38/e4cc23d4/a6e52157.
+  Independently tracked-clean/ancestor/range checks preserve every runtime,
+  source asset/current label/history/dependency;17 resolved QA byte-identical.
+  Four actual publisher outputs match public11/8a at03:02:25Z, front/back exact,
+  DB ready and production tracked-clean. CI37874149991 nine jobs success,
+  live QA still running: precheck, not terminal acceptance or next-publication
+  authority. Luna watches; avoid overlapping native GPU tests. No later push.
+  [Reconciliation/precheck](docs/plans/2026-10-09-ordered-release-8a-reconciliation-checks.json).
+
 - Local Air-surface refinement **f26d8e5f** in owned
   `eidolon-air-slate-release-WU2VBYzB` remains **unqualified**, not release18.
   Forty affected unit checks pass; first green visual attempt rejected as paving.

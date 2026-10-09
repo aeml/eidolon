@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 normal fresh8a reconciliation rolls through local12-17; all runtime,
+assets/current labels/complete histories/dependencies unchanged.17 QA conflict
+resolution preserves exact qualified fixture. Public11 front/back/DB/clean
+checkout/four actual publisher outputs verified03:02:25Z; nine CI jobs success,
+live QA still running. Precheck, not terminal acceptance or later push.
+[Evidence](2026-10-09-ordered-release-8a-reconciliation-checks.json).
+Wait for independent11 acceptance before each ordered12-17 publication. Native
+Air-surface work stays unqualified; no shared GPU overlap/reclassified failures.
+Full original modern-art/F1-F5/party/device/owner/beta/launch scope remains open.
+
 October9 local Air-surface refinement f26d8e5f is **not qualified or release18**.
 Forty affected units pass; first green capture rejected as paving. Revised actual
 High images are subtle; broader route-scale modern cohesion remains unfinished.
