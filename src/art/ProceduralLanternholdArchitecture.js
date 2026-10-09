@@ -162,8 +162,8 @@ function createMaterials() {
         iron: material('lanternhold-old-iron', 0x34383a, { metalness: 0.7, roughness: 0.42 }),
         brass: material('lanternhold-oath-brass', 0x9d6a32, { metalness: 0.66, roughness: 0.4 }),
         leather: material('lanternhold-road-leather', 0x4c3025, { roughness: 0.92 }),
-        cloth: material('lanternhold-blood-cloth', 0x5b2927, { roughness: 0.98, side: THREE.DoubleSide, vertexColors: true }),
-        ashCloth: material('lanternhold-ash-cloth', 0x77705f, { roughness: 0.98, side: THREE.DoubleSide, vertexColors: true, flatShading: false }),
+        cloth: material('lanternhold-blood-cloth', 0x5b2927, { roughness: 0.98, side: THREE.DoubleSide, vertexColors: true, surface: 'canvas' }),
+        ashCloth: material('lanternhold-ash-cloth', 0x77705f, { roughness: 0.98, side: THREE.DoubleSide, vertexColors: true, flatShading: false, surface: 'canvas' }),
         amber: material('lanternhold-amber-window', palette.accent, {
             emissive: palette.accent,
             emissiveIntensity: 0.95,

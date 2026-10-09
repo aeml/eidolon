@@ -18,6 +18,14 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Shared town/elemental canvas candidate adds physical filtered thread detail
+  to existing tents/banners/sails without new maps, geometry or simulation.
+  Source/integration checks pass; actual GPU compilation and gameplay/close-up
+  visual review pending, not accepted art or shipped code. Native release16
+  passes6regional/1celebration/2class/4smoke cases and both deploy jobs; five
+  exact public bytes/identities/ready DB match12:24:48UTC. Final live job
+  113815958571 still running; own16 acceptance required before17. See receipts.
+
 - Current disposable equipped-party CPU caller sample isolates repeated foliage
   checks; functional/save check passes, measured party frames remain slow.
   Frame-restoration arrays reduce matched controller CPU work by0.18–1.22ms

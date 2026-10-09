@@ -1,0 +1,16 @@
+{
+  "status": "Source/integration-qualified shared canvas candidate; actual GPU compilation and visual acceptance pending",
+  "change": "Add physical8mm crossed-thread canvas to shared standard-material surface library. Three continuously blended world-space projections retain folding/instanced/baked registration without UV requirements. Fractional phase bounds sine input; derivative filtering fades color, roughness and0.35mm relief together. Canvas only uses new variant9/cache-v1; other surface keys and rules retained.",
+  "integration": "Existing town blood-cloth/ash-cloth and elemental cloth/wreck sails/Air canvas use the same surface. Existing colors, geometry, normals, material bucket counts, maps, footprints, horizontal placements, collision, lights, actors, authoring assets, dependencies and game rules unchanged. No new texture fetches, shader uniforms or CPU/frame cloth simulation. Adds bounded fragment work; no free GPU/FPS claim.",
+  "verification": "Raised3suites initial36pass/1fail31.822s: old rock test extraction expected #if6 while canvas changes its actual surface body to #elif6. Exact clause/noise-count/relief checks retained with marker-aware extraction; all16 shader tests pass0.487s. Final fractional phase16checks pass0.679s, lint/whitespace pass. Earlier architecture/population checks passed unchanged. Canonical narrow selection3suites36pass33.299s (its retained suite differs); final phase16pass0.585s, scoped lint/whitespace pass. These inspect geometry/contracts and generated shader strings, not real GL compilation, cloth pixel quality, timing or complete art approval.",
+  "evidence": {
+    "raisedInitialLogSHA256": "66bd5348e211b8a7ca179ec1e7f6248d0ea1daf42f178e8e7376184b500fd32b",
+    "raisedFinalPhaseLogSHA256": "d34b141bc3da380e8d8c59b5bfc7209fb730aa883ac20ffc856e47a482abe241",
+    "canonicalLogSHA256": "e051f8a660490ffef97407651acdd2e2ccf5b99b3ec49a6037503d035ede0925",
+    "canonicalFinalPhaseLogSHA256": "bba5206f5fd5bfa5ce33abcf3d54daa08adca982ab5f5c124e574790548c5c59",
+    "surfaceSourceSHA256": "8a0b969379c5874b88345cb3aad78d7e80e5912735700f8d95f992af19e1c0da",
+    "architectureSourceSHA256": "683aaae18dcbd767b378a8094230427d48fd91a55367a22459131854da7c0e0d"
+  },
+  "next": "Once current16 native/live release work no longer owns GPU, run selected existing equipped town/Water/Air and Fire composition views with actual shader compile/error collection, normal gameplay-camera review and original resource/draw/triangle checks; no campaign replay. Compare close-up filtering before visual approval. Narrow canonical selection preserves unrelated terrain/Air source, not whole-tree native equivalence.",
+  "delivery": "Staged only. Public16 release exact98cef7c7 has own predeploy/deploy success and five public-byte/identity matches, final live QA pending. No new version, whole-future promotion, public raised-profile activation, freeze or full modern-world/F1-F5/1.81-1.99 acceptance."
+}

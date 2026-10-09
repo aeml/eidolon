@@ -25,7 +25,7 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x77727d : water ? 0x657d87 : 0x584841, roughness: .91 }), 'stone'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x555160 : water ? 0x4e6264 : 0x473c32, roughness: .96 }), 'timber'),
         iron: new THREE.MeshStandardMaterial({ color: air ? 0x9e9476 : water ? 0x748f99 : 0x4b4542, roughness: .65, metalness: .7 }),
-        cloth: new THREE.MeshStandardMaterial({ color: air ? 0x9891ac : water ? 0x91a9aa : 0x987957, side: THREE.DoubleSide, roughness: 1 }),
+        cloth: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x9891ac : water ? 0x91a9aa : 0x987957, side: THREE.DoubleSide, roughness: 1 }), 'canvas'),
         accent: new THREE.MeshStandardMaterial({ color: air ? 0xbcb3cb : water ? 0x95c7d2 : 0xb8804b, roughness: water ? .3 : .82,
             metalness: water ? .1 : .3, emissive: air ? 0x211d32 : water ? 0x16333b : 0x392017, emissiveIntensity: .22 })
     };
@@ -36,14 +36,14 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
     if (water) {
         materials.wreckWood = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
             color: 0xffffff, vertexColors: true, roughness: .96 }), 'timber');
-        materials.wreckSail = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
-            side: THREE.DoubleSide, roughness: 1 });
+        materials.wreckSail = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
+            side: THREE.DoubleSide, roughness: 1 }), 'canvas');
     }
     if (realm === 'fire') materials.furnace = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
         color: 0xffffff, vertexColors: true, roughness: .94
     }), 'fieldstone');
-    if (air) materials.canvas = new THREE.MeshStandardMaterial({ color: 0x9891ac, vertexColors: true,
-        side: THREE.DoubleSide, roughness: 1 });
+    if (air) materials.canvas = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x9891ac, vertexColors: true,
+        side: THREE.DoubleSide, roughness: 1 }), 'canvas');
     materials.cover = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
         side: THREE.DoubleSide, roughness: 1 });
     for (const site of sites) {
