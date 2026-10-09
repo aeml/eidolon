@@ -13,7 +13,7 @@ func TestDeployJournalUpgradeChecksDrainedVolumeAndRestartsPreviousOnRefusal(t *
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, kind := range []string{"valid", "legacy", "noisy", "wrong-build", "wrong-format", "already-stopped", "fresh", "bad-container"} {
+	for _, kind := range []string{"valid", "legacy", "noisy", "wrong-build", "wrong-format", "already-stopped", "fresh", "bad-container", "raised"} {
 		t.Run(kind, func(t *testing.T) {
 			root := t.TempDir()
 			for _, name := range []string{"deploy", "bin"} {
@@ -29,13 +29,15 @@ echo backup >> "$JOURNAL_COMMANDS"
 echo stopped > "$JOURNAL_LIVE"
 echo preserved-backup > "$JOURNAL_BACKUP"
 `,
-				".env":     "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://mongo:27017\n",
-				"bin/git":  "#!/bin/sh\nexit 1\n",
-				"bin/curl": "#!/bin/sh\necho '{\"commit\":\"fixture-commit\",\"database\":\"ready\"}'\n",
+				".env":    "MONGO_INITDB_ROOT_USERNAME=fixture\nMONGO_INITDB_ROOT_PASSWORD=fixture\nMONGO_URI=mongodb://mongo:27017\n",
+				"bin/git": "#!/bin/sh\nexit 1\n",
+				"bin/curl": `#!/bin/sh
+printf '{"commit":"fixture-commit","database":"ready","terrainProfile":"%s"}' "$JOURNAL_PROFILE"
+`,
 				"bin/docker": `#!/bin/bash
 echo "$*" >> "$JOURNAL_COMMANDS"
 case "$*" in
-  *--check-schema*) echo 'Schema preflight passed: database=22 supported=23 commit=fixture-commit' ;;
+  *--check-schema*) [[ "$*" = *"--terrain-profile=$JOURNAL_PROFILE" ]] || exit 93; echo 'Schema preflight passed: database=22 supported=23 commit=fixture-commit' ;;
   'compose ps -a -q api')
     case "$JOURNAL_KIND" in
       fresh) ;;
@@ -47,6 +49,7 @@ case "$*" in
   *--check-save-journal*)
     [[ "$*" = *"/logs:/app/logs:ro"* ]] || exit 91
     [[ "$*" = *"--save-journal-dir=/app/logs/character-saves"* ]] || exit 92
+    [[ "$*" = *"--terrain-profile=$JOURNAL_PROFILE" ]] || exit 93
     case "$JOURNAL_KIND" in
       legacy|already-stopped) exit 1 ;;
       noisy) echo noise; echo 'Character journal preflight passed: supported=2 commit=fixture-commit' ;;
@@ -63,6 +66,11 @@ esac
 			if kind == "already-stopped" {
 				files["live"] = "stopped\n"
 			}
+			profile := "flat-v1"
+			if kind == "raised" {
+				profile = "earth-elevation-rocks-v1"
+			}
+			files[".env"] += "EIDOLON_TERRAIN_PROFILE=" + profile + "\n"
 			for name, content := range files {
 				if err := os.WriteFile(filepath.Join(root, name), []byte(content), 0700); err != nil {
 					t.Fatal(err)
@@ -71,13 +79,13 @@ esac
 			installDeploymentStorageFixture(t, root)
 			command := exec.Command("bash", filepath.Join(root, "deploy/deploy_linux.sh"))
 			command.Env = append(os.Environ(), "PATH="+filepath.Join(root, "bin")+":"+os.Getenv("PATH"),
-				"JOURNAL_KIND="+kind, "JOURNAL_COMMANDS="+filepath.Join(root, "commands"),
+				"JOURNAL_KIND="+kind, "JOURNAL_PROFILE="+profile, "JOURNAL_COMMANDS="+filepath.Join(root, "commands"),
 				"JOURNAL_LIVE="+filepath.Join(root, "live"), "JOURNAL_BACKUP="+filepath.Join(root, "backup"),
 				"EIDOLON_BUILD_COMMIT=fixture-commit", "CLEAN_SERVER_TREE=false")
 			output, runErr := command.CombinedOutput()
 			commands, _ := os.ReadFile(filepath.Join(root, "commands"))
 			state, _ := os.ReadFile(filepath.Join(root, "live"))
-			valid := kind == "valid" || kind == "fresh"
+			valid := kind == "valid" || kind == "fresh" || kind == "raised"
 			if (runErr == nil) != valid {
 				t.Fatalf("upgrade %s: %v %s", kind, runErr, output)
 			}

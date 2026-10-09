@@ -7,7 +7,46 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"eidolon-server/internal/game"
 )
+
+func TestHealthTerrainProfileUsesInitializedWorld(t *testing.T) {
+	originalWorld, originalFlag := world, *terrainProfileFlag
+	t.Cleanup(func() { world, *terrainProfileFlag = originalWorld, originalFlag })
+	for _, profile := range []string{game.FlatTerrainProfile, game.RaisedEarthTerrainProfile} {
+		t.Run(profile, func(t *testing.T) {
+			var err error
+			world, err = game.NewWorldWithTerrainProfile(nil, profile)
+			if err != nil {
+				t.Fatal(err)
+			}
+			// A changed startup flag is not proof of a changed running world.
+			*terrainProfileFlag = "unapplied-configuration"
+			for _, databaseReady := range []bool{true, false} {
+				recorder := httptest.NewRecorder()
+				healthHandler(func(context.Context) error {
+					if !databaseReady {
+						return errors.New("offline")
+					}
+					return nil
+				})(recorder, httptest.NewRequest(http.MethodGet, "/healthz", nil))
+				var response healthResponse
+				if err := json.Unmarshal(recorder.Body.Bytes(), &response); err != nil {
+					t.Fatal(err)
+				}
+				if response.TerrainProfile != profile {
+					t.Fatalf("health profile=%q, initialized=%q", response.TerrainProfile, profile)
+				}
+			}
+		})
+	}
+	world = nil
+	response, _ := collectHealthResponse(context.Background(), func(context.Context) error { return nil })
+	if response.TerrainProfile != "" {
+		t.Fatal("uninitialized world advertised a terrain profile")
+	}
+}
 
 func TestHealthHandlerReportsReleaseAndDatabaseReadiness(t *testing.T) {
 	originalCommit, originalVersion := buildCommit, buildVersion

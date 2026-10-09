@@ -145,6 +145,7 @@ type healthResponse struct {
 	Database        string                        `json:"database"`
 	Commit          string                        `json:"commit"`
 	Version         string                        `json:"version"`
+	TerrainProfile  string                        `json:"terrainProfile,omitempty"`
 	Goroutines      int                           `json:"goroutines"`
 	HeapAllocBytes  uint64                        `json:"heapAllocBytes"`
 	HeapObjects     uint64                        `json:"heapObjects"`
@@ -166,6 +167,11 @@ func collectHealthResponse(ctx context.Context, pingDatabase func(context.Contex
 		Operational:     operationalMetricsSnapshot(),
 	}
 	statusCode := http.StatusOK
+	// Report the initialized world, not a flag or environment default. Profile
+	// changes need the same exact live verification as the deployed executable.
+	if world != nil {
+		response.TerrainProfile = world.TerrainProfile()
+	}
 	if pingDatabase == nil || pingDatabase(ctx) != nil {
 		response.Status = "unavailable"
 		response.Database = "unavailable"

@@ -619,7 +619,42 @@ ss -ltnp | grep -E ':(80|443|18082)\s'
 curl -fsS https://<your-domain>/healthz
 ```
 
-The deploy script injects `EIDOLON_BUILD_COMMIT` into the binary and fails unless `/healthz` reports that exact commit with `database: ready`. A root-path 404 is not a readiness signal.
+The deploy script injects `EIDOLON_BUILD_COMMIT` into the binary and fails unless
+`/healthz` reports that exact commit, `database: ready`, and the configured
+`terrainProfile`. The profile comes from the initialized world, so it describes
+the geometry/collisions negotiated with ordinary logins. A root-path 404 is not
+a readiness signal.
+
+`EIDOLON_TERRAIN_PROFILE` remains `flat-v1` by default. Deployment rejects unknown
+or incomplete profiles before image builds, backups or API replacement, and
+passes the selected profile to both read-only compatibility preflights. Raised
+Earth (`earth-elevation-rocks-v1`) remains a held rollout until its populated,
+equipped-party, device and visual requirements are accepted. Installing this
+guard does not authorize or activate that rollout.
+
+For an accepted terrain rollout, record the current commit/schema, actual
+profile and compatible previous image before changing the operator-owned
+setting. Verify loopback and public health, ordinary login negotiation, cached
+client reload, saved-position admission, dungeon return and equipped movement
+against the accepted receipts. A missing/wrong health profile fails acceptance;
+the script does not automatically restore an old image or player data.
+
+A profile-only return to `flat-v1` on a schema-compatible build is distinct from
+database rollback: keep the existing saves and use the existing entry-time
+grounding/collision recovery. Recheck the same health/login/return paths after
+the normal serialized deployment. Do not select an older binary incompatible
+with the current schema/journals, restore a database, or wipe character positions
+to undo terrain. Preserve the exact failure evidence if a gate refuses.
+
+The bounded private readiness check uses an owned loopback Mongo fixture and
+two actual server processes without gameplay or browser replay:
+
+```bash
+EIDOLON_TERRAIN_SAVE_QA_SCENARIO=readiness bash scripts/run-terrain-save-qa.sh
+```
+
+Run it from the repository root. This verifies preflight and HTTP/login profile
+agreement, not party performance, art acceptance or live production activation.
 
 Alpha1.78 adds an explicitly opt-in independent monitor. The owner approved
 existing self-hosting/admin Postmark recipients and 30s polling, three failures,
