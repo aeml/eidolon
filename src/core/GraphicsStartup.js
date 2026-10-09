@@ -25,3 +25,13 @@ export function gameStartupFailureMessage(error) {
     return error?.code === 'WEBGL2_UNAVAILABLE'
         ? GRAPHICS_UNAVAILABLE_MESSAGE : 'The game could not start. Please try again.';
 }
+
+// Public diagnostic categories only: never expose arbitrary error text,
+// URLs, account identifiers or credentials through the login DOM.
+export function gameStartupFailureKind(error) {
+    if (error?.code === 'WEBGL2_UNAVAILABLE') return 'graphics-unavailable';
+    const message = typeof error?.message === 'string' ? error.message : '';
+    if (/Failed to fetch dynamically imported module|error loading dynamically imported module|Importing a module script failed/i.test(message)) return 'module-download';
+    if (/does not provide an export named|ambiguous indirect export/i.test(message)) return 'module-export';
+    return 'unknown';
+}
