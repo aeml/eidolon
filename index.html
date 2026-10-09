@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.15</span>
+                    <span class="start-version-row__label">Alpha 1.79.16</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -780,7 +780,18 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.15" data-notes-pages="44" data-notes-total="450">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.16" data-notes-pages="45" data-notes-total="451">
+                <div class="patch-note-entry" data-version="1.79.16">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.16 (worn Grove and Bastion masonry)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>The First Grove vault follows a curved stone profile with shallow carved lips on both faces. Its original overhead clearance, footprint, depth and shared fieldstone material remain unchanged.</li>
+                        <li>Grove and Bastion pier courses have worn corners and staggered masonry joints instead of monolithic slices. Existing material batching is retained; no new textures or runtime draw buckets are added.</li>
+                        <li>Natural stone gains continuous mineral grain, sheltered lichen and damp lower courses. Detail follows world space across curved faces and fades below pixel size rather than painting another brick grid over the vault.</li>
+                        <li>Collision, paths, quest targets, planted roots, thresholds and gameplay rules stay unchanged. Original geometry and scene performance limits remain required.</li>
+                        <li>This is incremental landmark refinement, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
+                        <li>No account wipe, schema migration, currency or permission change. Full prior patch history is preserved through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.15">
                     <h3 class="patch-note-entry__title">Alpha 1.79.15 (unchanged scenery rendering work)</h3>
                     <ul class="patch-note-entry__list">
@@ -874,14 +885,6 @@
                         <li>The prepared rock material for staged raised terrain has bedding that is gently inclined and broken by weathering rather than embossed into contour-like lines. This does not activate the raised-world rocks. Existing geometry, collision footprints, roads, plants, lights and shadows remain unchanged; the refinement adds no meshes, textures or shader texture fetches.</li>
                         <li>This is a modest surface pass, not the 1.80 feature freeze or full 1.87 modern-art completion. Raised terrain and wearable derivatives remain staged, not enabled by this patch. Air-realm canvas was already delivered in 1.79.3 and is unchanged here.</li>
                         <li>No account wipe, schema migration, quest, economy, combat or administrator-access changes. Full prior patch history remains below.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.6">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.6 (party healing hotbar input)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>After selecting an ally in the party healing roster, numbered or remapped hotbar keys now work while the selected button retains keyboard focus. Healing Light and Divine Intervention keep the selected ally as their target; no extra world click is needed to regain gameplay input.</li>
-                        <li>Only an enabled, selected healing-target button permits this shortcut. Typing fields, ordinary menu buttons, unselected or disabled roster buttons, modifier shortcuts and repeated key presses remain guarded. Enter and Space retain native button activation; focus remains accessible.</li>
-                        <li>No changes to healing strength, range, mana cost, cooldowns, party credit or server authority. No account wipe, schema migration, economy or progression changes. Raised terrain and new wearable derivatives remain staged, not enabled by this patch. Full prior patch history remains below.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

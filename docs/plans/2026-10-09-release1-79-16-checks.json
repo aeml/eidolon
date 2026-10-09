@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.16",
+  "status": "prepared locally qualified world-art patch, not pushed/live",
+  "base": "Prepared15/e07a46d7dc909000c57f34e7f9e8d8aac77ce2bf, with corrected Go1.27.2 and11/0cac2b16 login/guidance already inherited",
+  "scope": "Select original-limit-qualified Grove masonry46740f0 (local pick e56922db): continuous curved vault, carved lips on two faces and worn bonded pier courses reused at Grove/Bastion. Refine fieldstone shader with world-registered three-plane mineral grain and broad mineral patina, restrained upper lichen/damp lower courses; derivative-filter subpixel grain. Fieldstone program keyv2, all other surface keys unchanged. No projected brick grid over vault, textures, meshes, new material buckets, displaced collision, tree/root/threshold, gameplay or supplied actor/equipment changes.",
+  "versions": "All current package/two lock labels/login/release/server/build/deploy/CI/disposable labels16. Accurate451notes, ten initial and45lazy pages. Independent exact raw index+archive Git audit proves all450prior entries byte-identical. Dependencies and player data unchanged.",
+  "units": "Final seven geometry/population/material/pin/YAML/version/pagination suites425pass4.703s. Earlier six412pass4.812s overlap, not added. Geometry stays inside original solids/depth/overhead and original1000vault/200course triangle caps. Shader retains stock lighting/shadows/fog and registered instance/world transforms, no extra maps/emissive. Scoped ESLint/whitespace and shell syntax pass.",
+  "native": "Exact assembled16 final System Chrome AMD Vulkan/RADV High1280/Low390 two populated flat Earth/town cases pass1.1m.18timed views,120RAF samples each; original High250000tri/350calls/20median/33.4p95 and Low85000tri/200calls/33.4median/50p95 retained. Original resource/animation/wind/interaction assertions unchanged; warmed repeat geometries/textures/programs stable. Bare actor and anonymous local scene, not fully equipped/connected party/physical phone/world/device qualification.",
+  "metrics": {
+    "high": {
+      "groveCalls": 262,
+      "groveTriangles": 245947,
+      "groveMedianMs": 16.700000000000728,
+      "groveP95Ms": 16.700000000000728,
+      "maxCalls": 262,
+      "maxTriangles": 245947,
+      "maxP95Ms": 16.799999999999272
+    },
+    "low": {
+      "groveCalls": 119,
+      "groveTriangles": 67958,
+      "groveMedianMs": 16.69999999999709,
+      "groveP95Ms": 16.700000000000728,
+      "maxCalls": 119,
+      "maxTriangles": 67958,
+      "maxP95Ms": 16.799999999999272
+    }
+  },
+  "review": "Initial geometry-only assembled native two cases pass but root actual High image still reads as plain stone; refine registered material rather than accept green tests as final style. Root reviews final High/Low Grove images: continuous warmer/patinated faces and worn construction, still a modest improvement. Root also reviews inherited equipped CombatIdle gallery without claiming new outfit approval. Not Diablo/PoE-equivalent final art, complete landmarks/environments or feature freeze.",
+  "proof": {
+    "src/art/EarthLandmarkGeometry.js": "0b29a16c003882dba1a5c501f5ddea35e0c506a6a25a0bea8c128e0aa44b4894",
+    "tests/EarthLandmarkGeometry.test.js": "0a954b6fc44055f7821c2442eb4606587d0ec0f4727996691ee46e12c6254ea8",
+    "src/art/WorldSurfaceDetail.js": "7a2d482b21ba44e03dadfdf07dce2b25353dc713e4aa940e8dd1edeaf80ab644",
+    "tests/WorldSurfaceDetail.test.js": "d0846b822f676408d4e0177e81ac64a46ab3d49d72c2adfb3a9632abcdca7276",
+    "finalUnitsSHA256": "f2a872b40f2d31a0836293a27c0b8b1c7e91c006cff9be21531b31d51e9f239d",
+    "finalNativeSHA256": "f8d4a26d56f95c3767a4a7e852de9b144bac1f450788e3b3afe79bb39c893971"
+  },
+  "artifacts": "/home/aeml/.local/share/eidolon-masonry-material-final-native-20261009 and matching final logs; initial geometry-only assembled native under eidolon-masonry-release-native-20261009 retained. No concurrent local Chrome before either run; no software GPU or browser-security bypass.",
+  "delivery": "Corrected10/d3a3b9f7/run37864085950 independently accepted public00:55:02Z.11/c3a45083/run37867222336 pushed, Luna terminal-only monitor; not yet accepted.16 remains local until ordered11-15 CI/public acceptance and fresh fetch/reconciliation, preserving website-agent commits. Source art only selected, never whole future branch promotion. Full original1.11-1.99 roadmap/F1-F5/modern character/world art/equipped-party/raised/device/human/owner/operations/rights/beta/launch scope remains open."
+}

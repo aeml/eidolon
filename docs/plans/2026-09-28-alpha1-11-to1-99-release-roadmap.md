@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared16world-art component on reconciled15/e07a46d7: curved Grove
+vault, carved lips, worn Grove/Bastion bonded piers plus registered mineral
+grain, restrained patina/lichen/damp. No new textures/meshes/draw buckets or
+collision/model change.425focused cases and native High/Low2cases/18timed
+views pass original budgets;450older notes exact. Root still records modest
+refinement, not final modern-art approval. [Receipt](2026-10-09-release1-79-16-checks.json).
+Notlive;10accepted d3a3b9f7,11pushed c3a45083/CI37867222336 pending. Preserve
+ordered11-15 acceptance before16/fresh remote reconciliation. Full scope open.
+
 October9 prepared1.79.15 selects exact unchanged-container matrix and foliage
 registry/bounds/frustum caches, preserving animated actors, wind, transforms,
 geometry/density/shadows and original limits. Wrong actor-group attachment in

@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 prepared1.79.16:** On reconciled15/e07a46d7, select curved Grove
+vault/two-face carved lips and worn Grove/Bastion piers46740f0. Refine registered
+natural-stone grain/patina after initial green capture still looked plain; no
+new textures/draw buckets/colliders or source models.425focused cases and final
+High1280/Low390 two native cases/18timed views pass original budgets/resources.
+Root reviews both Grove captures: modest improvement, not final modern art.
+All450older notes exact,451total/10initial/45lazy; version labels synchronized.
+[Evidence](docs/plans/2026-10-09-release1-79-16-checks.json).
+16local only. Public10/d3a3b9f7 accepted all mandatory/exact identities;11now
+pushedc3a45083/CI37867222336, Luna terminal-only monitor.11-15 own acceptance
+and fresh remote reconciliation precede16. Full modern-art/F1-F5/world/party/
+device/human/owner/operations/rights/beta/launch goal remains active.
+
 **October9 prepared1.79.15 — unchanged scenery work:** Select exact owned
 container matrix and foliage registry/bounds/frustum caches onto prepared14.
 Actors/bones, transforms, shader wind, geometry/density/shadows and all original

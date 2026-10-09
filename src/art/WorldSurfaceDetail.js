@@ -39,6 +39,25 @@ vec3 eidolonRockTint(vec3 p) {
     return mix(mineral, vec3(.71, .89, .62), lichen);
 }
 #endif
+#if EIDOLON_SURFACE == 4
+// Register mineral grain in space, not in a normal-selected projection: a
+// curved vault must not switch its grain abruptly at each differently angled
+// stone face. Broad patina remains visible when fine grain becomes subpixel.
+float eidolonFieldstoneNoise(vec3 p) {
+    return (eidolonNoise(p.xy) + eidolonNoise(p.yz + vec2(13., 29.)) +
+        eidolonNoise(p.zx + vec2(31., 7.))) / 3.;
+}
+vec3 eidolonFieldstoneTint(vec3 p) {
+    float patina = eidolonFieldstoneNoise(p * .38);
+    vec3 face = abs(cross(dFdx(p), dFdy(p)));
+    float up = face.y / max(length(face), .00001);
+    vec3 mineral = mix(vec3(.89, .94, .97), vec3(1.08, 1.03, .91),
+        smoothstep(.36, .64, patina));
+    float lichen = smoothstep(.52, .68, patina) * smoothstep(.35, .85, up) * .55;
+    float damp = (1. - smoothstep(.2, 2.4, p.y)) * smoothstep(.4, .62, patina) * .3;
+    return mix(mix(mineral, vec3(.76, .85, .73), damp), vec3(.72, .88, .63), lichen);
+}
+#endif
 // Returns color multiplier, roughness target and a small physical relief height.
 vec3 eidolonSurface(vec3 p) {
     vec3 axis = abs(cross(dFdx(p), dFdy(p)));
@@ -70,10 +89,14 @@ vec3 eidolonSurface(vec3 p) {
 #elif EIDOLON_SURFACE == 4
     // Carved natural blocks have their own geometric joints: do not paint an
     // unrelated rectangular brick grid across a curved vault or fallen stone.
-    float grain = eidolonNoise(uv * 7.);
-    float detail = 1. - smoothstep(.25, .8, max(fwidth(uv.x * 7.), fwidth(uv.y * 7.)));
+    float mineral = eidolonFieldstoneNoise(p * 1.7);
+    float grain = eidolonFieldstoneNoise(p * 7.);
+    vec3 grainFootprint = fwidth(p * 7.);
+    float detail = 1. - smoothstep(.25, .8,
+        max(grainFootprint.x, max(grainFootprint.y, grainFootprint.z)));
     grain = mix(.5, grain, detail);
-    return vec3(.72 + weather * .34 + grain * .15, .91 + grain * .07, grain * .012 * detail);
+    return vec3(.64 + weather * .28 + mineral * .3 + grain * .12,
+        .9 + mineral * .07, mineral * .008 + grain * .014 * detail);
 #elif EIDOLON_SURFACE == 3
     // Subtle, interrupted fibres rather than deep stripes on cross-beams.
     float grain = eidolonNoise(uv * vec2(22., 1.8));
@@ -163,7 +186,7 @@ export function applyWorldSurfaceDetail(material, surface) {
         throw new Error('World surface detail cannot replace an existing shader hook');
     }
     material.userData.worldSurfaceDetail = surface;
-    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 5 : 1}:${surface}`;
+    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 5 : surface === 'fieldstone' ? 2 : 1}:${surface}`;
     material.onBeforeCompile = shader => {
         shader.vertexShader = shader.vertexShader.replace('#include <common>',
             '#include <common>\nvarying vec3 vEidolonSurface;');
@@ -186,6 +209,9 @@ export function applyWorldSurfaceDetail(material, surface) {
             diffuseColor.rgb *= eidolonDetail.x;
             #if EIDOLON_SURFACE == 6
                 diffuseColor.rgb *= eidolonRockTint(vEidolonSurface);
+            #endif
+            #if EIDOLON_SURFACE == 4
+                diffuseColor.rgb *= eidolonFieldstoneTint(vEidolonSurface);
             #endif
         `).replace('#include <roughnessmap_fragment>', /* glsl */`
             #include <roughnessmap_fragment>

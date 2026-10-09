@@ -4,7 +4,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.15';
+const currentVersion = '1.79.16';
+
+test('1.79.16 describes worn bounded masonry without claiming whole-world completion', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.16"'), previous = html.indexOf('data-version="1.79.15"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['curved stone profile', 'both faces', 'overhead clearance',
+        'Grove and Bastion', 'worn corners', 'material batching', 'continuous mineral grain',
+        'world space across curved faces', 'Collision, paths',
+        'Original geometry and scene performance limits', 'not final modern-world',
+        'equipped-party', 'Raised terrain remains disabled', 'Full prior patch history'])
+        expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.15 documents bounded renderer caching without freezing animation or claiming final world qualification', () => {
     const html = readIndexWithPatchHistory();

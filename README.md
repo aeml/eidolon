@@ -429,7 +429,11 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.15`, exact unchanged-container matrix and
+- Current source version: `Alpha 1.79.16`, a curved First Grove vault with
+  carved stone lips and worn bonded pier courses at the Grove and Bastion.
+  Original walking clearances and scenery budgets stay unchanged; this is
+  incremental landmark work, not final modern-world or beta qualification.
+  Inherited exact unchanged-container matrix and
   foliage-bound caching, with live actor/bone animation, transforms, wind and
   camera/light invalidation. Geometry, shadow margins and scene budgets stay
   unchanged. Also retains selected supplied-equipment surface
