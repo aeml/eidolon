@@ -18,6 +18,12 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Pushed19/fa47c57c/CI37939634467 after root18 acceptance/fresh fetch and
+  normal reconciliation retained unchanged publisher head/18 ancestry. Combined
+  visual update has version19/cumulative notes and source/native qualification;
+  own CI/native/live/public acceptance remains pending under Luna watch.
+  Separate camp-grounding and raised activation are NOT in this release.
+
 - Accepted live18/81702abb/CI37935111832 attempt1 SUCCESS: all ten jobs;
   native7quality/1celebration/2class/4smoke, live8/town-rest2/party1 pass.
   Four optional steps skipped, not passed. Root after-terminal public hashes

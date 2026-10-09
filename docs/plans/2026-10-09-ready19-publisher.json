@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Prepared exact Alpha1.79.19; NOT pushed or accepted live",
+  "status": "PUSHED exact Alpha1.79.19 /fa47c57c /CI37939634467; own terminal/public acceptance pending",
   "candidate": {
     "version": "Alpha 1.79.19",
     "head": "fa47c57c85ed40623c9252a3a44133d0748ac8a3",
@@ -20,6 +20,6 @@
     },
     "scope": "Five selected transformed files, not all binary assets. Fresh normal remote reconciliation before push; any changed HEAD requires regenerated exact publisher expectations."
   },
-  "deliveryGate": "Own18 terminal CI/native/live/public acceptance required first; exact CI37935111832 under approved Luna watch. No overlapping deployment, force push, website overwrite or dirty original worktree modification. Own19 exact CI/public acceptance required after later push.",
+  "deliveryGate": "Root independently accepts18 terminal/native/live/public at13:48:56.804UTC. Fresh fetch/normal merge preserves exactfa47c57c,18 ancestry and clean tree; normal81702abb..fa47c57c master push succeeds. Own19 CI37939634467 under approved Luna terminal/actionable watch; root own terminal/native/live/public acceptance required before any next push. No overlapping deployment, force push, website overwrite or dirty original worktree modification. New camp-hearth/bedroll/charcoal work remains separate, not in19.",
   "remaining": "Full roadmap remains active: coherent modern-world/fit/combat, raised-terrain/equipped-party/device gates,1.80 F1-F5,1.81-1.99 and owner human/rights/operations/beta/launch decisions. No terrain activation, grants, provider/retention/payment/access changes or campaign/soak replay."
 }
