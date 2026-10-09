@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { execFileSync } from 'node:child_process';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -234,6 +235,10 @@ test('single native renderer observes three live equipped party socket peers on 
         return peer.messages.splice(index, 1)[0].payload;
     };
     const send = (peer, type, payload) => peer.socket.send(JSON.stringify({ type, payload }));
+    if (process.env.EIDOLON_TERRAIN_PARTY_FOLIAGE_COMPARE === '1') {
+        const previous = execFileSync('git', ['show', '5c4998e9:src/core/FoliageShadowInfluence.js'], { encoding: 'utf8' });
+        await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
+    }
     try {
         await page.setViewportSize({ width: 1280, height: 844 });
         await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
@@ -380,6 +385,36 @@ test('single native renderer observes three live equipped party socket peers on 
                 scope: 'Alternating full-game samples of the same connected party and exact plant content; normal simulation and natural entity changes retained. Diagnostic, not physical-device or busy-battle certification.'
             }, null, 2), contentType: 'application/json' });
             console.log('[paired-ground-cover-profile]', JSON.stringify(phases));
+        }
+        if (process.env.EIDOLON_TERRAIN_PARTY_FOLIAGE_COMPARE === '1') {
+            await page.evaluate(async () => {
+                const { FoliageShadowInfluence: Reference } = await import('/src/core/FoliageShadowInfluenceReference.js');
+                const render = window.game.renderSystem;
+                window.__foliageProjectionComparison = { render, candidate: render.foliageShadowInfluence,
+                    previous: new Reference(render.scene, [render.scene, render.environmentGroup,
+                        render.staticEnvironmentGroup, render.instanceEnvironmentGroup]) };
+            });
+            const phases = [];
+            try {
+                for (const mode of ['previous', 'candidate', 'candidate', 'previous']) {
+                    await page.evaluate(async mode => {
+                        const state = window.__foliageProjectionComparison;
+                        state.render.foliageShadowInfluence.endFrame(); state.render.foliageShadowInfluence = state[mode];
+                        for (let i = 0; i < 20; i++) await new Promise(resolve => requestAnimationFrame(resolve));
+                    }, mode);
+                    phases.push({ mode, ...await profileGameplayScene(page, `paired-foliage-projection-${mode}`) });
+                }
+            } finally {
+                await page.evaluate(() => {
+                    const state = window.__foliageProjectionComparison;
+                    state.render.foliageShadowInfluence.endFrame(); state.render.foliageShadowInfluence = state.candidate;
+                    state.previous.dispose(); delete window.__foliageProjectionComparison;
+                });
+            }
+            await testInfo.attach('paired-foliage-projection-profile', { body: JSON.stringify({ phases,
+                scope: 'Same connected game scene; exact predecessor versus conservative swept-volume scene projection. Actors/AI/clocks stay live. No physical-device or busy-battle certificate.'
+            }, null, 2), contentType: 'application/json' });
+            console.log('[paired-foliage-projection-profile]', JSON.stringify(phases));
         }
         if (process.env.EIDOLON_TERRAIN_PARTY_CPU_PROFILE === '1') {
             // Opt-in diagnosis AFTER the frame sample, never part of its timing.

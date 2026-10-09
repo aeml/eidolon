@@ -1,0 +1,919 @@
+{
+  "schema": 1,
+  "status": "Private qualified follow-up to5c4998e9; focused units/native pixel checks/copied-site bundle and actual connected-party functional checks passed. Paired whole-game frame budget still unmet; raised terrain/modern-art/device gates remain open.",
+  "base": "5c4998e9 plus exact working hashes below",
+  "sourceSHA256": {
+    "src/core/FoliageShadowInfluence.js": "6da08a53e6c97ba3d1770282f41daaa0df04ea780c9ff0564fcf6d1e85e209f6",
+    "tests/FoliageShadowInfluence.test.js": "9dcecad61af91a9f50018a7a4ab0fc294a690c43fd70b3576c5acd7147b8fe2e",
+    "tests/e2e/foliage-projection-parity.spec.js": "a78260cc6cd5f8c0d669f9a25befc40f3b97196bba09c891b583692fc8adf0cc",
+    "tests/e2e/terrain-equipped-party.spec.js": "f3769d0fafa9be48e4c607802569816e9c5d3cab009d2d5f07ba87163c1d6604"
+  },
+  "implementation": {
+    "proof": "The existing filter-padded separating-plane test includes both the original caster box and its entire swept directional-shadow volume to the lowest receiver. Rejection proves both geometry and incoming shadow cannot reach this camera. Only qualified static Earth instanced leaves without descendants skip renderer projection. Every plant/transform/material remains; no LOD/distance cap/budget relaxation.",
+    "lifecycle": "Existing frame-local restoration resets visibility and castShadow before every camera and on normal/failure cleanup or disposal. Unknown filters, deformation, non-Earth trees, missing/invalid bounds, opted-out culling and descendants remain conservative. Low shadows-off preset retains its exact previous path."
+  },
+  "units": {
+    "result": "Controller and unchanged-matrix suites33checks passed1.091s, including incoming tall offscreen caster, second camera, descendant traversal and interrupted-frame disposal.",
+    "logSHA256": "b26ed29de5167a835b3ab3f4caa016c0ecb74664ced1973f0119599d5abdb603"
+  },
+  "native": {
+    "artifacts": "/home/aeml/.local/share/eidolon-foliage-projection-native-final-20261009",
+    "result": "High/Low actual AMD ANGLE Vulkan1.4.318 RADV; eight views across Earth/water/fire/air with correctly rotated raised ground and ray/sampler assertion. All color/shadow channels exactly equal to predecessor and stable baseline; nonempty image required. High skips1718\u20131806 tree cells, calls/triangles never increase. Ordinary Low keeps exact original calls/triangles.",
+    "comparisons": [
+      {
+        "quality": "low",
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "reports": [
+          {
+            "realm": "earth",
+            "x": -75,
+            "z": -330,
+            "colors": 1192,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 18,
+              "triangles": 8998,
+              "hidden": 0,
+              "omittedShadows": 0
+            },
+            "current": {
+              "calls": 18,
+              "triangles": 8998,
+              "hidden": 0,
+              "omittedShadows": 0
+            }
+          },
+          {
+            "realm": "earth",
+            "x": -33,
+            "z": -235,
+            "colors": 2565,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 43,
+              "triangles": 16822,
+              "hidden": 0,
+              "omittedShadows": 0
+            },
+            "current": {
+              "calls": 43,
+              "triangles": 16822,
+              "hidden": 0,
+              "omittedShadows": 0
+            }
+          },
+          {
+            "realm": "earth",
+            "x": 340,
+            "z": 200,
+            "colors": 1584,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 35,
+              "triangles": 12001,
+              "hidden": 0,
+              "omittedShadows": 0
+            },
+            "current": {
+              "calls": 35,
+              "triangles": 12001,
+              "hidden": 0,
+              "omittedShadows": 0
+            }
+          },
+          {
+            "realm": "earth",
+            "x": 470,
+            "z": 200,
+            "colors": 2176,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 28,
+              "triangles": 11759,
+              "hidden": 0,
+              "omittedShadows": 0
+            },
+            "current": {
+              "calls": 28,
+              "triangles": 11759,
+              "hidden": 0,
+              "omittedShadows": 0
+            }
+          },
+          {
+            "realm": "earth",
+            "x": 600,
+            "z": 200,
+            "colors": 1442,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 19,
+              "triangles": 8965,
+              "hidden": 0,
+              "omittedShadows": 0
+            },
+            "current": {
+              "calls": 19,
+              "triangles": 8965,
+              "hidden": 0,
+              "omittedShadows": 0
+            }
+          },
+          {
+            "realm": "water",
+            "x": 0,
+            "z": -1000,
+            "colors": 302,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 6,
+              "triangles": 86,
+              "hidden": 0,
+              "omittedShadows": 0
+            },
+            "current": {
+              "calls": 6,
+              "triangles": 86,
+              "hidden": 0,
+              "omittedShadows": 0
+            }
+          },
+          {
+            "realm": "fire",
+            "x": -1100,
+            "z": 200,
+            "colors": 346,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 10,
+              "triangles": 1088,
+              "hidden": 0,
+              "omittedShadows": 0
+            },
+            "current": {
+              "calls": 10,
+              "triangles": 1088,
+              "hidden": 0,
+              "omittedShadows": 0
+            }
+          },
+          {
+            "realm": "air",
+            "x": 1100,
+            "z": 200,
+            "colors": 471,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 19,
+              "triangles": 9428,
+              "hidden": 0,
+              "omittedShadows": 0
+            },
+            "current": {
+              "calls": 19,
+              "triangles": 9428,
+              "hidden": 0,
+              "omittedShadows": 0
+            }
+          }
+        ],
+        "timings": [
+          {
+            "controller": "previous",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "cpuMedianMs": 4,
+            "cpuP95Ms": 8.5,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          {
+            "controller": "candidate",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "cpuMedianMs": 4,
+            "cpuP95Ms": 7.4000000059604645,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          {
+            "controller": "candidate",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "cpuMedianMs": 3.5999999940395355,
+            "cpuP95Ms": 7,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          {
+            "controller": "previous",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "cpuMedianMs": 3.899999976158142,
+            "cpuP95Ms": 6.699999988079071,
+            "hidden": 0,
+            "omittedShadows": 0
+          }
+        ],
+        "scope": "Actual world/renderer/composer; no equipped actors, HUD, networking or whole-game/device budget claim."
+      },
+      {
+        "quality": "high",
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "reports": [
+          {
+            "realm": "earth",
+            "x": -75,
+            "z": -330,
+            "colors": 3885,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 38,
+              "triangles": 40469,
+              "hidden": 0,
+              "omittedShadows": 1806
+            },
+            "current": {
+              "calls": 38,
+              "triangles": 40469,
+              "hidden": 1806,
+              "omittedShadows": 1806
+            }
+          },
+          {
+            "realm": "earth",
+            "x": -33,
+            "z": -235,
+            "colors": 5956,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 123,
+              "triangles": 95974,
+              "hidden": 0,
+              "omittedShadows": 1767
+            },
+            "current": {
+              "calls": 122,
+              "triangles": 95566,
+              "hidden": 1767,
+              "omittedShadows": 1767
+            }
+          },
+          {
+            "realm": "earth",
+            "x": 340,
+            "z": 200,
+            "colors": 4575,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 156,
+              "triangles": 92768,
+              "hidden": 0,
+              "omittedShadows": 1724
+            },
+            "current": {
+              "calls": 156,
+              "triangles": 92768,
+              "hidden": 1724,
+              "omittedShadows": 1724
+            }
+          },
+          {
+            "realm": "earth",
+            "x": 470,
+            "z": 200,
+            "colors": 5290,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 180,
+              "triangles": 117105,
+              "hidden": 0,
+              "omittedShadows": 1718
+            },
+            "current": {
+              "calls": 178,
+              "triangles": 115673,
+              "hidden": 1718,
+              "omittedShadows": 1718
+            }
+          },
+          {
+            "realm": "earth",
+            "x": 600,
+            "z": 200,
+            "colors": 4073,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 119,
+              "triangles": 84281,
+              "hidden": 0,
+              "omittedShadows": 1760
+            },
+            "current": {
+              "calls": 119,
+              "triangles": 84281,
+              "hidden": 1760,
+              "omittedShadows": 1760
+            }
+          },
+          {
+            "realm": "water",
+            "x": 0,
+            "z": -1000,
+            "colors": 599,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 33,
+              "triangles": 7453,
+              "hidden": 0,
+              "omittedShadows": 1806
+            },
+            "current": {
+              "calls": 33,
+              "triangles": 7453,
+              "hidden": 1806,
+              "omittedShadows": 1806
+            }
+          },
+          {
+            "realm": "fire",
+            "x": -1100,
+            "z": 200,
+            "colors": 411,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 45,
+              "triangles": 21465,
+              "hidden": 0,
+              "omittedShadows": 1806
+            },
+            "current": {
+              "calls": 45,
+              "triangles": 21465,
+              "hidden": 1806,
+              "omittedShadows": 1806
+            }
+          },
+          {
+            "realm": "air",
+            "x": 1100,
+            "z": 200,
+            "colors": 788,
+            "baselineRepeat": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "candidate": {
+              "changed": 0,
+              "maximum": 0
+            },
+            "previous": {
+              "calls": 67,
+              "triangles": 51065,
+              "hidden": 0,
+              "omittedShadows": 1806
+            },
+            "current": {
+              "calls": 67,
+              "triangles": 51065,
+              "hidden": 1806,
+              "omittedShadows": 1806
+            }
+          }
+        ],
+        "timings": [
+          {
+            "controller": "previous",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.3,
+            "cpuMedianMs": 13.099999994039536,
+            "cpuP95Ms": 24.30000001192093,
+            "hidden": 0,
+            "omittedShadows": 1718
+          },
+          {
+            "controller": "candidate",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "cpuMedianMs": 11.5,
+            "cpuP95Ms": 21.600000023841858,
+            "hidden": 1718,
+            "omittedShadows": 1718
+          },
+          {
+            "controller": "candidate",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "cpuMedianMs": 10.299999982118607,
+            "cpuP95Ms": 17.69999998807907,
+            "hidden": 1718,
+            "omittedShadows": 1718
+          },
+          {
+            "controller": "previous",
+            "frames": 120,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.3,
+            "cpuMedianMs": 12.900000005960464,
+            "cpuP95Ms": 30,
+            "hidden": 0,
+            "omittedShadows": 1718
+          }
+        ],
+        "scope": "Actual world/renderer/composer; no equipped actors, HUD, networking or whole-game/device budget claim."
+      }
+    ],
+    "logSHA256": "c821d8959d3c62c40263a6085588269d6941848093f60f775a4a524e4d3c334a",
+    "review": "Primary independently viewed1280px raised woodland image retains visible tree crowns/ground cover, road and incoming shadows. Static isolated scene only; no final environment/HUD/motion acceptance."
+  },
+  "bundle": {
+    "result": {
+      "bundledModules": 426,
+      "bytes": 3267011,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    },
+    "method": "Copy current source and byte-identical bundler into owned temporary directories; existing installed esbuild borrowed read-only through tool-local node_modules link. No edits to publishing/original source or dependencies.",
+    "esbuildVersion": "0.28.2"
+  },
+  "retainedFailures": [
+    {
+      "log": "/tmp/eidolon-foliage-projection-native.log",
+      "reason": "Both fixtures failed before qualification: fixture collision stub omitted setOverworldRockSolids. Corrected to actual CollisionManager; source unchanged."
+    },
+    {
+      "log": "/tmp/eidolon-foliage-projection-native-collider.log",
+      "reason": "All sixteen pixel comparisons exactly matched; High case passed, Low case failed an incorrect assertion that shadows-off Low should cull shadow leaves. Corrected to require exact retained Low calls/triangles/visibility. RAF helper also lacked previous timestamp, so null frame metrics are invalid and superseded by final finite-timing checks. No pixel tolerance or performance target changed."
+    },
+    {
+      "reason": "First isolated bundle attempt failed with ERR_MODULE_NOT_FOUND esbuild in older borrowed dependencies; terminal shell cat masked exit status. No build credit; subsequent set-e check uses existing0.28.2 installation read-only and passes."
+    }
+  ],
+  "connectedParty": {
+    "result": "TestTerrainActualEquippedBrowserParty passed89.37s; package90.509s. Actual native GPU renderer and three normal authenticated/socket peers preserve all four fourteen-slot outfits, bags, EP and party through normal save/disconnect. Owned loopback listeners4190/18189 and disposable Mongo removed; independent cleanup inspected.",
+    "artifacts": "/home/aeml/.local/share/eidolon-terrain-save-evidence-G87gc6J7",
+    "safeDiagnostic": "/home/aeml/.local/share/eidolon-terrain-save-evidence-G87gc6J7/diagnostic-functions.json",
+    "safeDiagnosticSHA256": "d7a1749fe4d2adce663e18983b10786c7f6463117d93cbdcf121dbebc3a25a52",
+    "wrapperLogSHA256": "ec7bb65723e11343deb332affb88822a062e1a006817c0ceada3bd4dc00bf65f",
+    "method": "Alternate exact predecessor/candidate/candidate/predecessor in the same connected normal game scene;20 live RAF warmup then180 frames per phase. All four phases retain24 active entities; actor/AI/game/weather/browser clocks remain live. CPU function sample runs after timings with bounded restoration-checked probes.",
+    "profiles": [
+      {
+        "mode": "previous",
+        "label": "paired-foliage-projection-previous",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.30000000000291,
+        "frameP95Ms": 50,
+        "frameP99Ms": 50.10000000000582,
+        "framesOver33ms": 61,
+        "cpuLoopMedianMs": 27.900000005960464,
+        "cpuLoopP95Ms": 40.599999994039536,
+        "drawCallsMedian": 402,
+        "trianglesMedian": 535798,
+        "geometries": 429,
+        "textures": 279,
+        "activeEntities": 24,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      {
+        "mode": "candidate",
+        "label": "paired-foliage-projection-candidate",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.299999999995634,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 50.099999999998545,
+        "framesOver33ms": 42,
+        "cpuLoopMedianMs": 24.900000005960464,
+        "cpuLoopP95Ms": 35.5,
+        "drawCallsMedian": 355,
+        "trianglesMedian": 532624,
+        "geometries": 429,
+        "textures": 279,
+        "activeEntities": 24,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      {
+        "mode": "candidate",
+        "label": "paired-foliage-projection-candidate",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.30000000000291,
+        "frameP95Ms": 50,
+        "frameP99Ms": 66.60000000000582,
+        "framesOver33ms": 67,
+        "cpuLoopMedianMs": 27.099999994039536,
+        "cpuLoopP95Ms": 43.39999997615814,
+        "drawCallsMedian": 354,
+        "trianglesMedian": 532622,
+        "geometries": 429,
+        "textures": 279,
+        "activeEntities": 24,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      {
+        "mode": "previous",
+        "label": "paired-foliage-projection-previous",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.30000000000291,
+        "frameP95Ms": 50,
+        "frameP99Ms": 66.69999999999709,
+        "framesOver33ms": 63,
+        "cpuLoopMedianMs": 28.69999998807907,
+        "cpuLoopP95Ms": 41.20000001788139,
+        "drawCallsMedian": 355,
+        "trianglesMedian": 532634,
+        "geometries": 430,
+        "textures": 279,
+        "activeEntities": 24,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      }
+    ],
+    "candidateStandingSnapshot": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.29999999999927,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50.099999999998545,
+      "framesOver33ms": 53,
+      "cpuLoopMedianMs": 27,
+      "cpuLoopP95Ms": 37,
+      "drawCallsMedian": 402,
+      "trianglesMedian": 535734,
+      "geometries": 432,
+      "textures": 279,
+      "activeEntities": 24,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "cpuHotspots": [
+      {
+        "source": "",
+        "name": "(program)",
+        "line": 0,
+        "samples": 146,
+        "selfMicros": 786450
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "projectObject",
+        "line": 16814,
+        "samples": 123,
+        "selfMicros": 173207
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "intersectsObject",
+        "line": 26581,
+        "samples": 109,
+        "selfMicros": 162345
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "renderObject",
+        "line": 8914,
+        "samples": 99,
+        "selfMicros": 128142
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrixWorld",
+        "line": 14354,
+        "samples": 85,
+        "selfMicros": 119146
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrix",
+        "line": 14335,
+        "samples": 60,
+        "selfMicros": 94862
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "multiplyMatrices",
+        "line": 11917,
+        "samples": 50,
+        "selfMicros": 82227
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "setProgram",
+        "line": 17279,
+        "samples": 46,
+        "selfMicros": 72043
+      },
+      {
+        "source": "",
+        "name": "bindVertexArray",
+        "line": 0,
+        "samples": 45,
+        "selfMicros": 71385
+      },
+      {
+        "source": "/src/core/FoliageShadowInfluence.js",
+        "name": "FoliageShadowInfluence.visit",
+        "line": 105,
+        "samples": 40,
+        "selfMicros": 58153
+      },
+      {
+        "source": "/src/art/ActorInstanceBatches.js",
+        "name": "beginFrame",
+        "line": 108,
+        "samples": 32,
+        "selfMicros": 53886
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "equals",
+        "line": 5635,
+        "samples": 35,
+        "selfMicros": 53851
+      },
+      {
+        "source": "",
+        "name": "(idle)",
+        "line": 0,
+        "samples": 31,
+        "selfMicros": 50975
+      },
+      {
+        "source": "/src/core/FoliageShadowInfluence.js",
+        "name": "beginFrame",
+        "line": 175,
+        "samples": 27,
+        "selfMicros": 50528
+      },
+      {
+        "source": "",
+        "name": "drawElements",
+        "line": 0,
+        "samples": 26,
+        "selfMicros": 42419
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "WebGLRenderer.renderBufferDirect",
+        "line": 16193,
+        "samples": 34,
+        "selfMicros": 40722
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "evaluate",
+        "line": 41515,
+        "samples": 23,
+        "selfMicros": 40683
+      },
+      {
+        "source": "",
+        "name": "bindTexture",
+        "line": 0,
+        "samples": 27,
+        "selfMicros": 40588
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "getProgram",
+        "line": 17132,
+        "samples": 28,
+        "selfMicros": 39861
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "applyMatrix4",
+        "line": 10571,
+        "samples": 29,
+        "selfMicros": 38014
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "getParameters",
+        "line": 7009,
+        "samples": 25,
+        "selfMicros": 37231
+      },
+      {
+        "source": "/src/core/CollisionManager.js",
+        "name": "checkEntityCollision",
+        "line": 170,
+        "samples": 24,
+        "selfMicros": 35708
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "update",
+        "line": 54151,
+        "samples": 21,
+        "selfMicros": 35425
+      },
+      {
+        "source": "",
+        "name": "uniformMatrix4fv",
+        "line": 0,
+        "samples": 20,
+        "selfMicros": 29508
+      }
+    ],
+    "foliageRevisionProbe": {
+      "frames": 84,
+      "visits": 200424,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    },
+    "conclusion": "Paired CPU median27.9/28.7ms predecessor versus24.9/27.1ms candidate shows a modest benefit; normal scene/pose changes mean draw-count differences are not wholly attributable to this change. Both candidate medians33.3ms exceed the High20ms target; candidate p9533.400000000001455/50ms also does not establish the33.4ms gate. No tolerance/budget change. No busy battle, four-renderer or physical-device claim. Residual projection/bounds/world-matrix/shadow work remains measured."
+  },
+  "gate": "No public push, version bump, profile activation or beta/release declaration. Raised milestone remains held until actual equipped-party/device/art qualification.",
+  "lint": "All four touched source/test files and whitespace checked; no warning or diff error.",
+  "soakObservation": {
+    "conclusion": "",
+    "databaseId": 37880032315,
+    "headSha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+    "status": "in_progress",
+    "updatedAt": "2026-10-09T03:36:16Z",
+    "checkedAtUTC": "2026-10-09T19:01:30.934812+00:00",
+    "action": "Read-only API observation; still in_progress, no success credited or restart/cancel."
+  }
+}

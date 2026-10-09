@@ -272,7 +272,7 @@ test('an off-screen tall caster keeps shadows that travel into the visible view'
     const frustum = new THREE.Frustum().setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(s.camera.projectionMatrix, s.camera.matrixWorldInverse));
     expect(frustum.intersectsBox(s.mesh.boundingBox.clone().applyMatrix4(s.mesh.matrixWorld))).toBe(false);
     s.controller.beginFrame(s.scene, s.camera, s.light);
-    expect(s.mesh.castShadow).toBe(true);
+    expect(s.mesh.castShadow).toBe(true); expect(s.mesh.visible).toBe(true);
     s.controller.endFrame();
 });
 
@@ -294,19 +294,41 @@ test('the separating-plane test retains every sampled ray that reaches the actua
     expect(visibleRays).toBeGreaterThan(0); expect(rejected).toBeGreaterThan(0);
 });
 
-test('only irrelevant shadow submission is omitted and every flag is restored after the frame', () => {
+test('a leaf outside the swept shadow volume skips both passes and preserves every geometry and flag', () => {
     const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
     const geometry = s.mesh.geometry, positions = geometry.attributes.position.array.slice();
     const instances = s.mesh.instanceMatrix.array.slice();
     s.controller.beginFrame(s.scene, s.camera, s.light);
-    expect(s.mesh.castShadow).toBe(false); expect(s.mesh.visible).toBe(true);
+    expect(s.mesh.castShadow).toBe(false); expect(s.mesh.visible).toBe(false);
     expect(s.mesh.receiveShadow).toBe(true); expect(s.controller.omitted).toHaveLength(1);
     expect(s.mesh.geometry).toBe(geometry); expect(geometry.attributes.position.array).toEqual(positions);
     expect(s.mesh.instanceMatrix.array).toEqual(instances);
-    s.controller.endFrame(); expect(s.mesh.castShadow).toBe(true); expect(s.controller.omitted).toHaveLength(0);
+    s.controller.endFrame(); expect(s.mesh.castShadow).toBe(true); expect(s.mesh.visible).toBe(true);
+    expect(s.controller.omitted).toHaveLength(0); expect(s.controller.hidden).toHaveLength(0);
     s.mesh.position.set(0, 5, 0); s.scene.updateMatrixWorld(true);
     s.controller.beginFrame(s.scene, s.camera, s.light); expect(s.mesh.castShadow).toBe(true);
     s.controller.endFrame();
+});
+
+test('a caster with descendants keeps normal traversal even outside its own shadow bounds', () => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0);
+    const child = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial());
+    child.position.x = -100; s.mesh.add(child); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, s.light);
+    expect(s.mesh.castShadow).toBe(false); expect(s.mesh.visible).toBe(true);
+    expect(s.controller.hidden).toHaveLength(0);
+    s.controller.dispose(); child.geometry.dispose(); child.material.dispose();
+});
+
+test('a second camera immediately restores a previously culled caster and dispose restores interrupted visibility', () => {
+    const s = fixture(); s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, s.light);
+    expect(s.mesh.visible).toBe(false);
+    const second = s.camera.clone(); second.position.x = 100; second.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, second, s.light);
+    expect(s.mesh.visible).toBe(true); expect(s.mesh.castShadow).toBe(true);
+    s.controller.beginFrame(s.scene, s.camera, s.light); expect(s.mesh.visible).toBe(false);
+    s.controller.dispose(); expect(s.mesh.visible).toBe(true); expect(s.mesh.castShadow).toBe(true);
 });
 
 test('unknown, moving, non-Earth and originally noncasting objects are never opted into culling', () => {
