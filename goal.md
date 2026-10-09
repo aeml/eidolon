@@ -18,6 +18,19 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- 21/541 is independently accepted after CI37960034584 attempt2 success:
+  all ten jobs, native7regional/1celebration/2class/4smoke and live8release/
+  2town-rest/1party pass. Four optional stages skipped, not passed. Root public
+  six hashes/front-back identities/ready DB match17:32:56UTC over normal TLS
+  and forced IPv4. Successful artifact11632802925 retains44entries/32PNGs in
+  separate native stage folders; root inspects scoped class/regional captures.
+  Original failed attempt1 and its diagnosis remain retained, not erased.
+  Prepared22/30a8b603 corrects actual unsupported actor-normal transforms;
+  469focused checks and four distinct native High/Low cases qualified.457notes
+  preserve all456 prior raw entries. Own next CI/live/public acceptance remains
+  required; full modern art/raised/party/device/F1-F5/later roadmap remains open.
+  Earlier in-progress/prepared statements below are historical only.
+
 - 21/541 attempt1 failed required native stage5pass/2module-import failures;
   root traces/journal establish HTTP200 named modules, ERR_NETWORK_CHANGED
   dependencies and coincident host veth52/54/56s changes. No21 deployment:

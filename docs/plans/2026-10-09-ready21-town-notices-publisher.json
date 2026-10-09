@@ -1,9 +1,18 @@
 {
   "schema": 1,
-  "status": "Attempt1 failed native module imports; diagnosed network-change aborts, one failed-jobs rerun requested; own acceptance still pending",
+  "status": "Accepted after own terminal CI, native/live counts, retained evidence and public identity/hash verification; original attempt1 failure preserved",
   "version": "Alpha 1.79.21",
   "head": "541c2edadf4a682e63000f8e1acfae4747d7f051",
-  "ci": { "run": 37960034584, "attempt": "New attempt increment awaiting start; immediate API after failed-jobs rerun still reports1/queued", "status": "queued after explicitly requested failed-jobs rerun", "monitor": "Authorized Luna watch_deploy_1795_1008 sparse read-only monitoring. Root requested ONE evidence-backed rerun after diagnosis, not delegated automatic retry. No further retry/cancel or ongoing soak mutation." },
+  "ci": { "run": 37960034584, "attempt": 2, "status": "completed/success", "monitor": "Authorized Luna sparse read-only monitoring; root independently checks exact run/head/attempt and all ten successful jobs. ONE evidence-backed failed-jobs rerun, no blind retry or ongoing soak mutation." },
+  "acceptedAttempt2": {
+    "jobs": [113931582961, 113931583443, 113931583659, 113931584562, 113931619246, 113931631756, 113933958803, 113933994472, 113933994522, 113934567816],
+    "native": "Actual AMD ANGLE Vulkan1.4.318 RADV;7regional cases2.0m,1celebration6.2s,2authored-equipment20.1s,4focused smoke2.2m pass. Three optional native stages skipped, not passed.",
+    "live": "8release cases7.9m,2town-rest1.6m,1party1.5m pass. Optional four-class/remote-animation step skipped, not passed. Sanitizers passed0then1files.",
+    "nativeLogSHA256": "1089c665423523abcf44af24daf05894ae9ef2ec0b023f2e953578237b95ef8c",
+    "completeCILogSHA256": "d7865060f3a700510ff1e882678c861642cca6de0e33368bead846b2a806f071",
+    "retainedArtifact": "11632802925, created17:07:59UTC after actual successful attempt2,9562603bytes;SHA2569e63f2fba98cd867365638b9a34199c297c93e31e988dc17269649410c9f705c.44entries/32PNGs retain separate regional,celebration and authored-equipment reports/results after final smoke. Root inspects all-four-class sample captures and regional restored views. This verifies evidence retention, not complete modern-art approval, physical phones or every-region art review. Native evidence sanitizer succeeded0files before guarded upload; focused smoke sanitizer1file.",
+    "public": "Root independently verifies all six exact expected hashes below at2026-10-09T17:32:56.873Z, normal TLS/ordinary DNS/forced IPv4. Front/backend Alpha1.79.21 exact541c2edadf4a682e63000f8e1acfae4747d7f051;database ready. No IPv6/global/device certification."
+  },
   "originalAttempt1": {
     "status": "completed/failure",
     "job": 113927916772,
@@ -43,5 +52,5 @@
       "assets/notices/index.html": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d"
     }
   },
-  "deliveryGate": "Corrected20 CI37954540092 accepted through own terminal/native/live/public checks. Final21 CI37960034584 own terminal/native/live/public and retained-visual-artifact verification pending. No subsequent public release before that acceptance. Full roadmap/art/F1-F5/party/device/human/owner/rights/operations/beta/launch gates remain active."
+  "deliveryGate": "21 now accepted within its actual scoped checks. Full roadmap/art/F1-F5/party/device/human/owner/rights/operations/beta/launch gates remain active. No later candidate is accepted from this predecessor's checks."
 }

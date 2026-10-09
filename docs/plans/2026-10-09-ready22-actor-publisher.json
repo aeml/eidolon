@@ -1,0 +1,20 @@
+{
+  "status": "Qualified private candidate; predecessor21 independently accepted; normal push and own CI/live acceptance pending",
+  "head": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+  "version": "Alpha 1.79.22",
+  "scope": "Actual sheared procedural actor normal correction, not new imported models, gameplay, frame-rate or modern-art acceptance. Original b86 runtime and four distinct native High/Low scopes retained in source actor-normal receipt, including the original new-pose assertion failure and its test-only correction.",
+  "checks": "Six suites469checks pass12.384s, scoped lint/whitespace pass;457notes/teninitial/45pages,all456prior raw entries exact,539nonroot lock entries exact. LogSHA256657001d886dead900e5b4e802db0ae831cd038b427ebf41fa5c8d377baafbf9c;historySHA256dd6f7b2eb5270d53f6a160532639c126372227e3c34a939488cfa616c2456028.",
+  "publisher": {
+    "fixture": "/tmp/eidolon-22-actor-publisher-UCJBgvjI",
+    "compiler": "Byte-identical qualified compiler/locked esbuild;424modules/3259954bytes/21sharedloginmodules;402of897versionedruntimefiles",
+    "expectedSHA256": {
+      "index.html": "9b84380fe9086de78e8fe5910696ffbe23359ce88fd4ac49ac05c2f10780cb88",
+      "src/main.js": "2e6e8888d521e8c79df87dd99ebbd110cd4fbe23e7cc2452b8427ac9b9efca6c",
+      "src/core/GameEngine.bundle.js": "69ceaf48ad26f5d489dccd7de2138f375d7003b43251342223d2fc6207fdd6a3",
+      "src/styles/index.css": "6f0f176444828899018815b25cbc4e3107ca514bb27bf1051e80e9808c11d3d7",
+      "release.json": "c46026ad9b069aa8cd7e8074524b3212fa95b7036d738a40a0b49d2a87f87399",
+      "assets/notices/index.html": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d"
+    }
+  },
+  "gate": "Fresh fetch/ordinary merge before normal push; no force or original dirty-user-tree changes. Luna sparse deployment watch; root exact terminal/head/native/live/public acceptance before next public push. No unchanged campaign/soak rerun or cancellation. Full roadmap remains active."
+}
