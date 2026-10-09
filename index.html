@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.18</span>
+                    <span class="start-version-row__label">Alpha 1.79.19</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -780,7 +780,20 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.18" data-notes-pages="45" data-notes-total="453">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.19" data-notes-pages="45" data-notes-total="454">
+                <div class="patch-note-entry" data-version="1.79.19">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.19 (Grounded town and regional materials)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Lanternhold pilgrim tents have folded ridge canvas, open curtains, timber frames and supported lanterns. Their buried origin is corrected while the 15 horizontal camp placements and existing walking blockers remain unchanged.</li>
+                        <li>Tents, banners and regional sails share physical canvas thread detail that filters away below pixel resolution. Existing colors, lighting and material batches remain; there are no additional cloth textures or per-frame cloth simulation. Air windbreak corners now meet their support posts and crossbars.</li>
+                        <li>Earth soil has finer aggregate detail and quieter broad contrast. Existing plants gain deterministic variation in breadth and height, while preserving every placement, horizontal clearance, Low subset, plant tones and rooted wind bounds.</li>
+                        <li>Cinder Wastes ground uses a roughly nine-metre basalt and ash scale with restrained contrast. Kiln Span and Molten Approach supports gain staggered worn basalt courses inside their existing collision footprints.</li>
+                        <li>Regional lore books gain curved paper stacks and writing that follows the fold. Their desks, bindings, quest markers and inspection bounds are retained; fewer page and writing meshes are submitted.</li>
+                        <li>Foliage visibility and shadow restoration reuse frame-local arrays instead of rebuilding hash sets. Eligibility, exact bounds, live actors and end-of-frame restoration stay unchanged.</li>
+                        <li>Original frame, draw and triangle limits remain unchanged. Bounded native High/Low world views and equipped town captures qualify this update, not final modern-world, equipped-party, physical-device or campaign acceptance. Raised terrain remains disabled by default; no experimental outcrop-shader rollout.</li>
+                        <li>Supplied actor, equipment and animation assets, class restrictions, combat, rewards and saved player data remain unchanged. Full prior patch history is retained; login initially shows ten notes with a load-more control.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.18">
                     <h3 class="patch-note-entry__title">Alpha 1.79.18 (Air Realm scenery and lighting)</h3>
                     <ul class="patch-note-entry__list">
@@ -890,15 +903,6 @@
                         <li>Future hosted browser installations have a 15-minute deadline, so stalled downloads fail visibly instead of blocking deployment for hours. All release test gates remain required.</li>
                         <li>Server, outage monitor, CI and isolated QA builds now use Go 1.27.2, fixing the newly reported reachable standard-library security issues. Dependency versions, vulnerability checks and deployment gates are unchanged.</li>
                         <li>Not the 1.80 feature freeze or full 1.87 modern-art completion. No account wipe, schema migration, quests, combat, economy or administrator-access changes. Full prior patch history remains below.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.9">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.9 (woodland bark and natural undergrowth)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Earth-realm birch, pine and willow now have distinct bark: broken birch markings and peeling, coarse pine ridges and finer willow grain. Surface color, roughness and filtered relief follow the existing trunks instead of sharing generic timber.</li>
-                        <li>Gloamwood grass and ferns form uneven stands with clearer gaps rather than a uniformly jittered grid. Every existing plant, species, scale and rotation is retained, with the same Low-quality subset. Roads, town approaches and investigation sites retain their walking clearances.</li>
-                        <li>No new textures, lights or collision footprints. Tree placement, geometry, wind and shadows are unchanged. This is a woodland component improvement, not the 1.80 feature freeze or full 1.87 modern-art completion. Raised terrain, wearable derivatives and additional renderer optimizations remain staged.</li>
-                        <li>No account wipe, schema migration, combat, quests, economy or administrator-access changes. Full prior patch history remains below.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

@@ -4,7 +4,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.18';
+const currentVersion = '1.79.19';
+
+test('1.79.19 records combined grounded scenery without claiming full-world or party acceptance', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.19"'), previous = html.indexOf('data-version="1.79.18"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['folded ridge canvas', '15 horizontal camp placements', 'pixel resolution',
+        'finer aggregate detail', 'every placement', 'rooted wind bounds', 'staggered worn basalt',
+        'inspection bounds', 'frame-local arrays', 'Original frame, draw and triangle limits',
+        'not final modern-world', 'equipped-party', 'Raised terrain remains disabled by default',
+        'Full prior patch history', 'ten notes']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.18 records combined Air scenery and lighting without claiming whole-world acceptance', () => {
     const html = readIndexWithPatchHistory();

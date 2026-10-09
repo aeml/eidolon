@@ -429,14 +429,16 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.18`, combined Air scene refinement:
-  rooted cypresses, finer slate/dust scale, calibrated weather instruments,
-  supported camp furniture and directional lighting. Original frame budgets
-  pass in bounded native High/Low views, not whole-world/party/device approval.
+- Current source version: `Alpha 1.79.19`, combined town and regional refinement:
+  grounded folded tents, filtered cloth, finer soil, varied growth habits,
+  worn basalt supports, quieter Fire ground and curved lore books. Reuse
+  frame-local foliage restoration arrays without dropping scenery. Original
+  limits pass in bounded native High/Low views, not final art/party/device approval.
   Retains visual-only broken Air passage heath,
   scree and retained-population gale cypress road framing. High/Low placement
   subsets and existing path/site/hazard/portal clearances remain required.
-  Other realms, supplied actors/equipment and gameplay stay unchanged.
+  Supplied actors/equipment/animations and gameplay stay unchanged. Raised
+  terrain remains disabled by default; experimental rock-shader changes excluded.
   Also retains a curved First Grove vault with
   carved stone lips and worn bonded pier courses at the Grove and Bastion.
   Original walking clearances and scenery budgets stay unchanged; this is

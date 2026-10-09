@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Private integrated-art selection, source/contracts qualified; current-tree native rendering and release metadata/public delivery pending",
+  "status": "Prepared Alpha1.79.19 integrated-art update: scoped source/native/version/history qualification complete; not pushed or accepted live",
   "base": "81702abb6e0c953d523b8299b5bf540dffb18424, normally reconciled prepared18",
   "selection": "Narrow owned83311529 selection: folded grounded Lanternhold tents and real lantern support; shared physical filtered cloth; Earth17cm soil aggregate detail and quieter reflectance; deterministic plant growth habits with retained16 smooth normals/tints and bounded same-breeze shader; staggered basalt supports/quieter roughly9m Fire ground; curved lore-book paper/writing; corrected Air sail mounting; frame-local foliage restoration arrays. Not a wholesale future/raised/operations branch promotion.",
   "retained": "Current18 cypress/camp/slate/lighting, current renderer graphics-startup diagnostics and InstancedMesh matrix/color GPU cleanup, decimal frame helper, supplied class/equipment/animation files, asset URLs, world placements/horizontal blockers, quest/economy/combat/accounts and all original budgets. Public terrain defaultflat-v1 remains unchanged. WorldSurfaceDetail narrow selection retains original stratified-rock v5 body/cache key: staged outcrop fissure/quartz v6 explicitly excluded.",
@@ -8,7 +8,7 @@
     "core": "Eleven actual suites100checks pass115.169s; requested nonexistent ChronicleSiteModels.test.js matches no suite and is not claimed as coverage. Then actual ChronicleSite.test.js33checks pass1.92s: interaction/picking/approaches/restoration/source contracts retained.",
     "fire": "Affected basalt/fire/Cinder selection10pass17.391s,33unselected; unchanged Water/Air not requalified by those results.",
     "world": "One changed deterministic procedural town architecture registration case passes15.829s,23unselected.15actual suite runs/144distinct selected checks total. Scoped source/test lint and git diff --check pass.",
-    "native": "None on this combined tree yet. Current17 live CI owns native browser runner. Prior component images/frame/party checks retain their exact earlier sources; no retroactive integrated native/performance acceptance."
+    "native": "Current combined tree005d6ca8 (art identicalf11d7541) System Chrome AMD Vulkan1.4.318 RADV RENOIR:9distinct cases pass3.8m/retries0. Actual GL cloth filtering, six High1280/Low390 populated town/Earth/Water/Fire/Air cases with60timed views, two14-slot authored Fighter/HUD town cases. Extend last two fixtures with15-camp/9-batch equipped close view and recheck them15.0s; not11distinct cases. All browser/error, original frame/draw/triangle/resource assertions pass. Solo render fixtures, not party combat/device/campaign approval."
   },
   "logsSHA256": {
     "core": "9cb6371d95b85a996d5456fcdec1ede50476c2495f6a404bd393b09fddf5b3ad",
@@ -17,6 +17,16 @@
     "town": "843280dabcf7fdd294985e0f4b930afee67e74383750472eff96c672387b8ea5"
   },
   "compilation": "Actual committedf11d7541 source archive passes the byte-identical qualified publication compiler:422modules/3253893bytes/21shared login modules, external identities retained. Initial local vendor copy failed because fresh worktree had not provisioned that generated dependency; existing qualified vendor was then provided to the local worktree/fixture. Compiler graph itself passed before provisioning. This is compilation-only, not final versioned publisher bytes or native/full delivery acceptance. Fixture:/tmp/eidolon-integrated-world-build-gwAOCG5Y.",
-  "next": "Once exact17 live QA no longer owns GPU, run affected combined native presentation/timing/cloth/interaction views with existing original gates and root review; do not repeat unrelated campaigns/soak. Synchronize next milestone version and cumulative notes only after that scoped qualification. Accept17 then fresh normal reconcile/push/accept18 before any further public update; no overlaps.",
+  "nativeQualification": {
+    "frames": "All six profiles maximum median16.7ms/p9516.8ms. Original High20/33.4ms/350draw/250000tri and Low33.4/50ms/200draw/85000tri limits retained. This does not isolate a causal improvement or represent every live workload.",
+    "maxCallsTriangles": "Earth/town High240/245636 Low109/75690; Water/Fire High108/196707 Low43/61420; Air High110/180781 Low50/50678. Warmed geometries/textures/programs unchanged after repetition at each quality; one canvas program expected, no lifecycle growth.",
+    "review": "Root views High pilgrim-rest/woodland road, Low starter encounter, High Molten Approach, Low Kiln Span, equipped High town court and final equipped High/Low Lanternhold camp. Finer quieter surfaces, grounded folded tent and legible paths; broad sparse spaces/repeated silhouettes still need integrated modern-world art. No final aesthetic approval or Diablo/PoE equivalence claim.",
+    "nativeLogSHA256": "74e27d10373da7d9d008ace9160a867f9f72ace1df05b446ce249bf47244c559",
+    "equippedCampLogSHA256": "41b394250de63ba7d0d66c372920eadf968dc4e572c68c9c9e537678e6cbbfb9",
+    "artifacts": "/home/aeml/.local/share/eidolon-integrated-world-native-20261009 and matching.log; separate eidolon-integrated-world-camp-native-20261009 and matching.log preserve the original run. No native CI overlap:17 fully terminal before launch,18 still hosted. Existing soak/services untouched; not an isolated-host certificate."
+  },
+  "releaseMetadata": "Source/login/package/lock-root/release/server/Docker/compose/deploy/isolated-QA/workflow defaults synchronized1.79.19; three version/history/decimal suites400pass2.815s.454total notes/10initial/45lazy pages. Independent JSDOM exact raw audit: all453prior entries byte-identical, prior SHA256d03125284b649ef4bf248a12e5ac4c28b59bd0ea2169b1787223923d1d9f0f46.539non-root dependency entries unchanged. Scoped lint/shell syntax/whitespace pass. These metadata/test-only edits follow native runtime qualification without changing tested art.",
+  "releaseMetadataLogSHA256": "9cfcb5f36fcbcc29b6075e54d5f3b0c4aa6584ee46ac724c426223497ef71835",
+  "next": "17 accepted independently;18 exact81702abb/CI37935111832 normally pushed and monitored by Luna. Own18 terminal/native/live/public acceptance then fresh normal remote reconciliation required before19 push; no overlaps/force/website overwrite. Final exact committed19 publisher build/expected public bytes and own19 CI/public acceptance remain needed. No unchanged campaign/soak replay.",
   "remaining": "Full modern-world/art/raised-party-device/F1-F5/1.81-1.99 and owner/human/rights/operations/beta/launch gates remain active. No whole-game/art/performance certificate, production terrain activation or new grants/provider/retention/payment/access changes."
 }

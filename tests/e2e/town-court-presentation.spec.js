@@ -91,6 +91,18 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         expect(result).toEqual({ zoom: 15, opaque: true, courtSize: mobile ? 256 : 512, shadowFocused: true,
             authoredClass: 'Fighter', equipment: 14,
             streetBatches: 6, streetCells: 12, streetSolids: 4 });
+        const camp = await page.evaluate(async () => {
+            const { createLanternholdCampPlacements } = await import('/src/art/ProceduralLanternholdArchitecture.js');
+            const { render, hero } = window.__courtReview;
+            const placement = createLanternholdCampPlacements(0, 200)[0];
+            hero.position.set(placement.x + 4, 0, placement.z + 4); hero.mesh.position.copy(hero.position);
+            render.setCameraTarget(hero.position); render.updateEnvironmentLighting(hero.position, 0);
+            render.render(); render.render();
+            const field = render.instanceEnvironmentGroup.getObjectByName('Lanternhold:Pilgrim Vigil Field');
+            return { camps: field.userData.instanceCount, batches: field.children.length };
+        });
+        expect(camp).toEqual({ camps: 15, batches: 9 });
+        await page.screenshot({ path: testInfo.outputPath('town-pilgrim-camp.png'), style: '#perf-overlay { visibility: hidden !important; }' });
         expect(failures).toEqual([]);
     });
 }
