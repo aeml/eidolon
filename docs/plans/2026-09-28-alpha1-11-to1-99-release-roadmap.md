@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared11/0cac2b16 has visible/focused shared-header startup guidance
+for unavailable WebGL. Actual Firefox login works; headless Firefox 3D context
+still fails before four-class qualification.425focused cases, three native
+login/failure-path cases and one normal Chrome 3D/loot case pass;445older notes
+exactly retained. [Evidence](2026-10-09-graphics-startup-checks.json).
+Keep failure open and no browser/security/software override. Notlive until
+corrected10/d3a3b9f7/run37864085950 own mandatory/public acceptance; all later
+prepared branches must inherit11/Go1.27.2 without reverting their renderer work.
+Full original art/F1-F5/world/party/device/human/owner/beta/launch scope remains.
+
 October9 staged First Grove masonry refines curved vault stones, two-face
 carved borders and worn pier corners with original batches/materials/solids.
 Keep original1000/200geometry caps and native frame/draw/triangle limits.

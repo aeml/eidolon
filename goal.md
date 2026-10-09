@@ -18,6 +18,19 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- October9 prepared11 now **0cac2b16**: lightweight unavailable-WebGL guidance
+  in a visible/focused shared header, not the hidden authenticated login panel.
+  Actual Firefox login and pagination pass; headless Firefox 3D context fails
+  and remains unqualified, with retained diagnostic trace. No software/security/
+  vendor workaround.425focused checks, three native login/failure-path cases
+  and one normal Chrome hardware-policy 3D/loot case pass.445older notes exact,
+  446total/10initial/44lazy/111116bytes. Screenshot of actual guidance reviewed.
+  [Evidence](docs/plans/2026-10-09-graphics-startup-checks.json).
+  Notlive; corrected10/d3a3b9f7/run37864085950 must independently pass own
+  mandatory/public acceptance first. Prepared12-15 and future branch must merge
+  this login/security work before publication, preserving their later renderer
+  improvements. Full art/F1-F5/party/device/human/owner/beta/launch goal active.
+
 - October9 staged First Grove masonry component **46740f0** in isolated
   `/home/aeml/.local/share/eidolon-grove-masonry-4f0ao4OD`, selected onto this
   future worktree at282757ec. Curved vault, shallow two-face carved lips and
