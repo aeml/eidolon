@@ -1,9 +1,17 @@
 {
   "schema": 1,
-  "status": "Normally pushed final21; own exact CI/native/live/public acceptance pending",
+  "status": "Attempt1 failed native module imports; diagnosed network-change aborts, one failed-jobs rerun requested; own acceptance still pending",
   "version": "Alpha 1.79.21",
   "head": "541c2edadf4a682e63000f8e1acfae4747d7f051",
-  "ci": { "run": 37960034584, "attempt": 1, "status": "queued at discovery", "monitor": "Authorized Luna watch_deploy_1795_1008; sparse read-only exact-run monitoring, no retry/cancel or ongoing soak mutation." },
+  "ci": { "run": 37960034584, "attempt": "New attempt increment awaiting start; immediate API after failed-jobs rerun still reports1/queued", "status": "queued after explicitly requested failed-jobs rerun", "monitor": "Authorized Luna watch_deploy_1795_1008 sparse read-only monitoring. Root requested ONE evidence-backed rerun after diagnosis, not delegated automatic retry. No further retry/cancel or ongoing soak mutation." },
+  "originalAttempt1": {
+    "status": "completed/failure",
+    "job": 113927916772,
+    "result": "Client/Server/all3Browser hosted jobs succeeded. Native required regional suite5passed/2failed1.5m on dynamic Actor.js/RenderSystem.js imports; remaining required celebration/class/smoke stages and optional stages skipped, not passes. Inputs/Pages/SSH/Live skipped; no21 deployment.",
+    "diagnosis": "Root inspects anonymous retained trace ZIPs: named modules HTTP200, dependencies emit ERR_NETWORK_CHANGED. Read-only systemd-networkd journal shows veth loss16:54:52, new link16:54:54 and IPv6LL16:54:56, matching failures. Evidence-supported transient host interface notification; no missing source, game defect or proven need for source change. Candidate Chrome notifier flag not found in installed binary/primary source; do not add an unsupported flag or weaken public DNS/TLS checks.",
+    "nativeArtifact": "Exact11632915782/10213212bytes, SHA256d28296a1ff26fd74161379e1aa6522964bd0c724e43e9c22ed164c4f7cbcfbee.44entries/8PNGs include separate regional-quality/report and results/trace folders. Retention fix works for failed regional stage; later stages never executed, no fabricated class/celebration review. Sanitizer succeeded0files before guarded upload.",
+    "logSHA256": "f04117f667dc634ddd1c53042dc1f9ce8f37530509e63267f2e1d4c2e5a985c2"
+  },
   "supersededPublisher": { "head": "bfee2395e57bae5351990e9eff2b4cc3278505b6", "fixture": "/tmp/eidolon-21-notices-publisher-QOdoHqMp", "reason": "Final native evidence retention fix changes source/head and unpublished21 note. Old publisher must not be used for541 acceptance." },
   "worktree": "/home/aeml/.local/share/eidolon-town-utility-20261009",
   "integration": "Normally fast-forward prepared721 to bfee; only three files added/changed: new component notice page and its tests, plus login link and one unpublished21 note. Every core/art/entity/world/style/package/lock/backend input is byte-identical to qualified721. Original combined native town evidence retains its unchanged runtime scope. Earlier721 publisher retained as superseded, not used for newHEAD.",

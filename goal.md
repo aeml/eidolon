@@ -18,6 +18,20 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- 21/541 attempt1 failed required native stage5pass/2module-import failures;
+  root traces/journal establish HTTP200 named modules, ERR_NETWORK_CHANGED
+  dependencies and coincident host veth52/54/56s changes. No21 deployment:
+  inputs/Pages/SSH/Live skipped. Native evidence now retained/scanned in unique
+  folder. One root-authorized, evidence-backed failed-jobs rerun requested;
+  exactrun37960034584 queued, new attempt increment pending at first API check.
+  Luna watches sparsely; no blind retry, unsupported flag, soak or host mutation.
+  Private normal repair has four distinct High/Low native cases qualified:
+  Skeleton2first-run passes; full-kit2corrected passes after correcting ONLY
+  the new unsupported pose's inappropriate draw-reduction expectation. Every
+  original pose keeps strict reductions/triangles/pixel/visibility limits;
+  unsupported pose has exact pixels/triangles/original draws. Runtime remains
+  exactb86; no frame-time/all-authored/modern-art or full-roadmap claim.
+
 - Private actor-normal repair b86df009 reproduces a real positive-determinant
   shear admitted by the rigid batcher although pinned Three instance normals
   do not support it. Preserve the original path for unsupported leaves, keep
