@@ -33,6 +33,9 @@ Fighter pilot or remove approved authored models.
   Root must verify terminal gates/public identity/bytes before12. Expected
   five-file publisher proof and7queued reconciliation are in
   `docs/plans/2026-10-09-corrective11-native-route-publisher.json`.
+  Root public precheck07:57UTC now matches all five expected dc77 publication
+  hashes, exact frontend/backend identity and valid IPv4 TLS/database readiness.
+  Final live QA remains in progress; not release acceptance or authority to12.
 - Last independently accepted release: **1.79.10 / d3a3b9f7**, CI37864085950.
   Later served source is not thereby accepted. Corrective11 **5bd725b9** deployed,
   but **CI37884472930 failed** live loot setup: valid NECK/GLOVES equipment was

@@ -1,7 +1,17 @@
 {
   "head": "dc77fb46dfae3abc880ae2a7142c7c56046348cf",
   "ci": 37898805331,
-  "status": "Pushed/running; expected selected publication bytes, not public acceptance",
+  "status": "Pushed/running; independently matched public identities and all five selected publication bytes; final live QA pending, not accepted",
+  "publicPrecheck": {
+    "checkedAt": "2026-10-09T07:57:14.566Z",
+    "matches": 5,
+    "frontendAndBackendCommit": "dc77fb46dfae3abc880ae2a7142c7c56046348cf",
+    "frontendAndBackendVersion": "Alpha 1.79.11",
+    "status": "ok",
+    "database": "ready",
+    "transport": "Ordinary DNS, forced IPv4 and standard HTTPS certificate verification. IPv6 remains owner-deferred.",
+    "scope": "Selected transformed files/identities/health only. Final Live Release and Character QA remains independently confirmed in progress, so no release acceptance or public12 push."
+  },
   "fixture": "/tmp/eidolon-dc77-publisher-kHRnHb",
   "scope": "Clean committed index/src/vendor/sw/release copied into a new owned tree. Actual compiler and stylesheet/URL publisher applied with exact dc77 release identity. Five selected outputs only; no asset-tree or authenticated-world certificate. This CI-only routing patch leaves runtime, assets, login and notes source unchanged from f1.",
   "compile": { "modules": 412, "bytes": 3154006, "shared_login_modules": 21 },
