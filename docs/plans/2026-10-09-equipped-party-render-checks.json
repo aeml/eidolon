@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "bounded connected-party render observation, not a combat/device/performance certificate",
+  "source": "Prepared1.79.16/20f0a460a592fe66bc8ed9df83a0a77385d9a943 plus the recorded QA-only working-tree files; art/runtime unchanged",
+  "scope": "Disposable race-built Go1.27.2 API and owned loopback Mongo7.0.14. Four saved level30 classes with class-focused Uncommon/Rare fourteen-slot outfits. One actual System Chrome native AMD/RADV High1280 renderer; three normal authenticated socket peers accept actual UI party invitations. Normal ground-click leader movement, replicated independent authored rigs, full fitted outfits and server/client raised-ground alignment. QA waypoint and prepared gear are explicit, not campaign progression. Raised profile local only, no public activation.",
+  "result": "Actual race fixture passes25.03s/package26.071s; observer Playwright case passes18.1s, overall19.3s. Four-browser Fireball/healing case skipped, not passed. Normal disconnect/repository save preserves party membership, fourteen equipped items, inventory and EP for all four characters. Owned nonce DB container removed by scoped trap, no production accounts/env/database touched.",
+  "metrics": {
+    "frames": 180,
+    "frameMedianMs": 16.69999999999891,
+    "frameP95Ms": 16.80000000000109,
+    "frameP99Ms": 33.29999999999927,
+    "framesOver33_34Ms": 2,
+    "cpuLoopMedianMs": 16.200000002980232,
+    "cpuLoopP95Ms": 19.700000002980232,
+    "drawCallsMedian": 920,
+    "trianglesMedian": 537802,
+    "geometries": 390,
+    "textures": 165,
+    "activeEntities": 35,
+    "previewFrames": 0
+  },
+  "diagnosis": "Untimed renderer-boundary attribution after timing preserves instance eligibility. Procedural Skeletons account for143 color/475 shadow calls with24563 triangles; environment84/6, four equipped classes collectively125/109. Existing rigid Skeleton batching already enabled; cross-actor controller currently registers proceduralHumanoid only. Draw-cost/headroom remains open. No enemies/equipment/scenery removed and no formal new party budget invented; bare-gallery budgets unchanged and are a different cohort.",
+  "review": "Root inspected post-login native screenshot: four supplied equipped class bodies are visibly represented on raised ground with the ordinary party HUD and nearby Skeletons. This is not final Diablo/PoE-quality art, active peer input, a raid clear or physical-device acceptance.",
+  "proof": {
+    "scriptSHA256": "dee6cb707a7d3a6319572b48bee855c7396bbcce3683cf322a1edac0993bda14",
+    "goFixtureSHA256": "fc6cf205990aeb33bccbc86e5e476b81b6f9619d06046ea76aeb71d63b87b8d9",
+    "browserFixtureSHA256": "3accee1f51a9136a45732e02cfb098f2cbb6ac4630b0e546b20907e15d37b7b6",
+    "browserLogSHA256": "3997dc06db0c863b31cdf498cc610d515774c53ea485ff1afec80d74398d209b",
+    "raceLogSHA256": "9c54c01d077939099312046e38a91ebee4fdf8a31bfe87abbb07c4112970ea03"
+  },
+  "artifacts": "/home/aeml/.local/share/eidolon-terrain-save-evidence-38Ixitt9; sanitized summary eidolon-masonry-equipped-party-high-20261009.log; automatic credentials recordings disabled",
+  "delivery": "Local observation only.1.79.11/c3a45083/run37867222336 fails two browser shards; deployment jobs skipped. Last independently accepted public10/d3a3b9f7. Ordered correction/acceptance precedes12-16 publication, with fresh remote reconciliation. Full original roadmap/art/F1-F5/party/device/human/owner/operations/rights/beta/launch goal remains active."
+}

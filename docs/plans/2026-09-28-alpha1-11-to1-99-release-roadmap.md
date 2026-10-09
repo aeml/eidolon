@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared16 actual equipped-party baseline51629895: one native High1280
+browser and three normal sockets render four independent supplied rigs/full
+fourteen-slot class-focused outfits on local raised ground. Actual race/save
+checks pass;180frames median16.7/p9516.8ms but920draws; Skeleton shadows dominate.
+This is not four-input combat/raid/device acceptance or public raised activation.
+[Evidence](2026-10-09-equipped-party-render-checks.json). Scoped reuse of existing
+cross-actor batching is being checked; no unqualified optimization promoted.
+11/c3a45083/run37867222336 now terminal failure: deferred-entry fixture reads
+engine too early; two hosted regional reviews time out. Root independently
+verifies failure, downstream deployments skip. Public10 remains accepted;
+correct scoped fixtures then fresh reconciliation/own acceptance before12-16.
+Full original numbered scope, modern art/F1-F5/party/device/beta/launch stays open.
+
 October9 prepared16/20f0a460 in isolatedmasonry-release-CkTEzcx0: curved Grove
 vault/lips/worn Grove/Bastion courses and registered mineral grain/patina/lichen/
 damp.425focused cases and two native High/Low cases18timed views pass original

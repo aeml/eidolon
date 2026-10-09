@@ -18,6 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- October9 actual prepared16 equipped-party baseline **51629895**, unchanged
+  runtime20f0a460: disposable race API/Mongo, four level30 class-focused
+  fourteen-slot outfits, one native AMD/RADV High1280 browser plus three normal
+  authenticated party sockets. Actual input/replication/independent rigs/raised
+  ground/save checks pass;180frames median16.7/p9516.8ms,920calls. Skeletons
+  dominate628color/shadow calls, despite existing rigid batches. No public
+  raised activation, new party budget, four-input combat/raid/device certificate.
+  [Scope/evidence](docs/plans/2026-10-09-equipped-party-render-checks.json).
+  Local source work is checking existing cross-actor batching for reviewed
+  Skeletons only, preserving all supplied skins/other enemy families. No
+  unqualified optimization promoted. Full original scope remains active.
+
 - October9 prepared16 **20f0a460a592fe66bc8ed9df83a0a77385d9a943** in isolated
   `/home/aeml/.local/share/eidolon-masonry-release-CkTEzcx0`, based on reconciled
   15/e07a46d7. Grove/Bastion curved vault/lips/worn courses and registered stone
@@ -38,8 +50,11 @@ Fighter pilot or remove approved authored models.
   outputs at00:55:02Z. Broader optional steps skip, not pass; initial security
   failure retained. [Receipt](docs/plans/2026-10-09-release1-79-10-public-checks.json).
   Prepared11 now pushed **c3a450831da09f0922581d47b901a04255728e38** after fresh
-  fetch/reconcile, own CI **37867222336** running. Authorized Luna terminal-only
-  monitor resumed; no poll-driven retries or gate bypass.11 not accepted/live
+  fetch/reconcile, own CI **37867222336** now terminal failure. Root verifies
+  exact head/result after Luna notice: password fixtures assume the deferred
+  engine already exists; two hosted software regional reviews time out.
+  Downstream deployment skips, not passes. Scoped fixture corrections in work;
+  no retry/cancel, later promotion or runtime/budget bypass.11 not accepted/live
   yet.12-15 retain updated security/login and need accepted remote reconciliation
   before individual publication. Full art/F1-F5/world/party/device/human/owner/
   operations/rights/beta/launch scope stays active, no full completion claim.
