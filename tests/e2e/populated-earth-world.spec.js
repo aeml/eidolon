@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import { collectBrowserFailures } from './helpers.js';
 
 // Bounded production-renderer scene review, not campaign or network coverage.
@@ -18,6 +19,19 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
             quality === 'high' && review !== 'presentation', 'Required native-GPU predeploy coverage, not a waived release gate');
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        const woodlandReferenceHits = new Set();
+        if (elemental === 'earth' && process.env.EIDOLON_E2E_WOODLAND_REFERENCE === '1') {
+            // Private anonymous art comparison only. Same world/camera/budgets;
+            // use the exact pre-change leaf geometry and instance appearance.
+            // Default CI never requires this historical commit in shallow Git.
+            for (const name of ['EarthUnderstory', 'WoodlandUnderstoryGeometry']) {
+                const body = execFileSync('git', ['show', `54c1634a:src/art/${name}.js`], { encoding: 'utf8' });
+                await page.route(`**/src/art/${name}.js*`, route => {
+                    woodlandReferenceHits.add(name);
+                    return route.fulfill({ body, contentType: 'text/javascript' });
+                });
+            }
+        }
         await page.setViewportSize({ width, height: 844 });
         await page.goto('/', { waitUntil: 'networkidle' });
         const locations = await page.evaluate(async ({ quality, mobile, elemental, review }) => {
@@ -494,6 +508,9 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
             } };
             return sites.map(s => s.id);
         }, { quality, mobile: width < 600, elemental, review });
+        if (elemental === 'earth' && process.env.EIDOLON_E2E_WOODLAND_REFERENCE === '1') {
+            expect([...woodlandReferenceHits].sort()).toEqual(['EarthUnderstory', 'WoodlandUnderstoryGeometry']);
+        }
         try {
             if (review === 'presentation') {
             const breakdown = [];

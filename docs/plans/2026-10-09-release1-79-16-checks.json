@@ -1,5 +1,6 @@
 {
   "schema": 1,
+  "latestWoodlandQualification": "2026-10-09-woodland-shading-candidate.json currentQualification: exact6c242a1c native High/Low2pass1.3m, original18view timing/resource limits unchanged; local candidate ready, not pushed. Earlier metrics below are the original masonry-only source, not current woodland measurements.",
   "version": "Alpha 1.79.16",
   "status": "prepared locally qualified world-art patch, not pushed/live",
   "base": "Prepared15/e07a46d7dc909000c57f34e7f9e8d8aac77ce2bf, with corrected Go1.27.2 and11/0cac2b16 login/guidance already inherited",
