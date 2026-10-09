@@ -14,6 +14,7 @@ import {
     createProceduralFoliagePlacements
 } from '../art/ProceduralRealmFoliage.js';
 import { computeFoliageCellBounds, getFoliageRenderBatches } from '../art/FoliageRenderBatches.js';
+import { declareStaticFoliageBounds } from '../art/StaticFoliageBounds.js';
 import { createEarthUnderstory } from '../art/EarthUnderstory.js';
 import {
     LANTERNHOLD_STRUCTURE_DEFINITIONS,
@@ -195,6 +196,7 @@ export class WorldGenerator {
                     instance.instanceMatrix.needsUpdate = true;
                     if (recipe.renderCellSize) computeFoliageCellBounds(instance);
                     else { instance.computeBoundingBox(); instance.computeBoundingSphere(); }
+                    declareStaticFoliageBounds(instance);
                     group.add(instance);
                 }
             }

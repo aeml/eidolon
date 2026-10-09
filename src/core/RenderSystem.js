@@ -150,7 +150,7 @@ export class RenderSystem {
         this.scene.onBeforeRender = (renderer, scene, camera) => {
             const light = renderer.shadowMap?.enabled && this.keyLight?.castShadow ? this.keyLight : null;
             this.foliageShadowInfluence.beginFrame(scene, camera, light,
-                renderer.shadowMap?.type, renderer.capabilities?.maxTextureSize);
+                renderer.shadowMap?.type, renderer.capabilities?.maxTextureSize, renderer.shadowMap?.enabled === false);
         };
         this.scene.onAfterRender = () => this.foliageShadowInfluence.endFrame();
         this.actorInstances = null;

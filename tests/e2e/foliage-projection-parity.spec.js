@@ -8,7 +8,7 @@ import { collectBrowserFailures } from './helpers.js';
 for (const [quality, width] of [['high', 1280], ['low', 390]]) {
     test(`swept-volume culling preserves foliage color and incoming shadows: ${quality}`, async ({ page, baseURL }, testInfo) => {
         test.skip(process.env.EIDOLON_E2E_FOLIAGE_PROJECTION_COMPARE !== '1', 'Explicit private predecessor comparison');
-        const previous = execFileSync('git', ['show', '5c4998e9:src/core/FoliageShadowInfluence.js'], { encoding: 'utf8' });
+        const previous = execFileSync('git', ['show', '8e6cdb8f:src/core/FoliageShadowInfluence.js'], { encoding: 'utf8' });
         await page.route('**/src/core/FoliageShadowInfluenceReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         const failures = collectBrowserFailures(page, baseURL);
@@ -135,14 +135,9 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
             expect(sample.current.calls).toBeLessThanOrEqual(sample.previous.calls);
             expect(sample.current.triangles).toBeLessThanOrEqual(sample.previous.triangles);
         }
-        if (quality === 'high') expect(result.reports.some(sample => sample.current.hidden > sample.previous.hidden)).toBe(true);
-        else for (const sample of result.reports) {
-            // The production Low preset disables shadows, so this shadow
-            // proof is intentionally inactive and must retain its exact path.
-            expect(sample.current.hidden).toBe(sample.previous.hidden);
-            expect(sample.current.calls).toBe(sample.previous.calls);
-            expect(sample.current.triangles).toBe(sample.previous.triangles);
-        }
+        // Both High swept-shadow and Low explicitly disabled-shadow paths now
+        // qualify declared static foliage. Exact pixels above remain mandatory.
+        expect(result.reports.some(sample => sample.current.hidden > sample.previous.hidden)).toBe(true);
         for (const sample of result.timings) {
             expect(Number.isFinite(sample.frameMedianMs)).toBe(true);
             expect(Number.isFinite(sample.frameP95Ms)).toBe(true);

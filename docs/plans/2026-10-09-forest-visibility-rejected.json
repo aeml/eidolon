@@ -1,0 +1,538 @@
+{
+  "schema": 1,
+  "base": "8e6cdb8f5c3a2bc165443233f4a3cf3cc128647e",
+  "status": "REJECTED for adoption: source only in isolated prototype branch; held/public candidates unchanged.",
+  "dateUTC": "2026-10-09T19:41:46.801147+00:00",
+  "sourceSHA256": {
+    "src/art/FoliageRenderBatches.js": "5b56ec8fffc61a0872c1c6e514e75fd8fc30968a02d602158f094695aa6638d9",
+    "src/core/FoliageShadowInfluence.js": "f8d5d7176b95786f756473eac9e26b727462596406e2c0e2afb55e3a76de7497",
+    "src/core/RenderSystem.js": "5793e2c8725e1a2e49b69f62d628fb744dfacdf3677019fa84fba71200e6ad2f",
+    "src/world/WorldGenerator.js": "b972273b72adffb80210af40b8e8670777ae7a64b4d8b01dc7c89231cb4662d4",
+    "tests/FoliageShadowInfluence.test.js": "88b78cceceaa282a5fd7a93e4884874773ef90f787b05136d3ebda251b481d2a",
+    "tests/e2e/foliage-projection-parity.spec.js": "f4155e0ff5a14aa7bce9d104c07d5ec1473e2066c2fdb28b0a28e25f43d04a7c",
+    "src/art/StaticFoliageBounds.js": "a135d425b9f5f0e403476577f2e1d3e9a8d2698f21af7605369ac665d716f735"
+  },
+  "hypothesis": "Explicit exact generated-foliage declarations permit full swept-shadow culling across realms and geometry-only rejection when renderer shadows are explicitly disabled. Originals restored before each camera and after failures; every source plant/mesh retained.",
+  "units": "53 checks passed1.134s across FoliageShadowInfluence/UnchangedLocalMatrix, including incoming shadows, second camera, transforms/bounds and declaration revocation on GPU/source/shader/owner changes.",
+  "native": "Two actual AMD ANGLE RADV cases passed;16 exact image comparisons. More offscreen leaves omitted, but extra per-frame declaration/bound/visibility bookkeeping costs more than it saves.",
+  "evidence": [
+    {
+      "quality": "low",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "artifact": "/home/aeml/.local/share/eidolon-forest-visibility-native-20261009/foliage-projection-parity--8a14a-or-and-incoming-shadows-low/comparison.json",
+      "sha256": "7e2510a7d807d3fdb3aaab51a4235c95179387ffb0ca150651149183b7b2d89c",
+      "comparisons": [
+        {
+          "realm": "earth",
+          "x": -75,
+          "z": -330,
+          "colors": 1192,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 18,
+            "triangles": 8998,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          "current": {
+            "calls": 18,
+            "triangles": 8998,
+            "hidden": 3146,
+            "omittedShadows": 0
+          }
+        },
+        {
+          "realm": "earth",
+          "x": -33,
+          "z": -235,
+          "colors": 2565,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 43,
+            "triangles": 16822,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          "current": {
+            "calls": 43,
+            "triangles": 16822,
+            "hidden": 3120,
+            "omittedShadows": 0
+          }
+        },
+        {
+          "realm": "earth",
+          "x": 340,
+          "z": 200,
+          "colors": 1584,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 35,
+            "triangles": 12001,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          "current": {
+            "calls": 30,
+            "triangles": 10777,
+            "hidden": 3131,
+            "omittedShadows": 0
+          }
+        },
+        {
+          "realm": "earth",
+          "x": 470,
+          "z": 200,
+          "colors": 2176,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 28,
+            "triangles": 11759,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          "current": {
+            "calls": 26,
+            "triangles": 11379,
+            "hidden": 3136,
+            "omittedShadows": 0
+          }
+        },
+        {
+          "realm": "earth",
+          "x": 600,
+          "z": 200,
+          "colors": 1442,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 19,
+            "triangles": 8965,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          "current": {
+            "calls": 18,
+            "triangles": 8613,
+            "hidden": 3142,
+            "omittedShadows": 0
+          }
+        },
+        {
+          "realm": "water",
+          "x": 0,
+          "z": -1000,
+          "colors": 302,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 6,
+            "triangles": 86,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          "current": {
+            "calls": 6,
+            "triangles": 86,
+            "hidden": 3146,
+            "omittedShadows": 0
+          }
+        },
+        {
+          "realm": "fire",
+          "x": -1100,
+          "z": 200,
+          "colors": 346,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 10,
+            "triangles": 1088,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          "current": {
+            "calls": 9,
+            "triangles": 1020,
+            "hidden": 3146,
+            "omittedShadows": 0
+          }
+        },
+        {
+          "realm": "air",
+          "x": 1100,
+          "z": 200,
+          "colors": 471,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 19,
+            "triangles": 9428,
+            "hidden": 0,
+            "omittedShadows": 0
+          },
+          "current": {
+            "calls": 19,
+            "triangles": 9428,
+            "hidden": 3143,
+            "omittedShadows": 0
+          }
+        }
+      ],
+      "timings": [
+        {
+          "controller": "previous",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "cpuMedianMs": 4.0999999940395355,
+          "cpuP95Ms": 8.200000017881393,
+          "hidden": 0,
+          "omittedShadows": 0
+        },
+        {
+          "controller": "candidate",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "cpuMedianMs": 6,
+          "cpuP95Ms": 10.599999994039536,
+          "hidden": 3136,
+          "omittedShadows": 0
+        },
+        {
+          "controller": "candidate",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "cpuMedianMs": 5,
+          "cpuP95Ms": 7.5999999940395355,
+          "hidden": 3136,
+          "omittedShadows": 0
+        },
+        {
+          "controller": "previous",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "cpuMedianMs": 4,
+          "cpuP95Ms": 8,
+          "hidden": 0,
+          "omittedShadows": 0
+        }
+      ]
+    },
+    {
+      "quality": "high",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "artifact": "/home/aeml/.local/share/eidolon-forest-visibility-native-20261009/foliage-projection-parity--cd905-r-and-incoming-shadows-high/comparison.json",
+      "sha256": "fb539b47a0fdfe1a8420fc1259d1f29ddaaf31320b058d8d615a400725507b1c",
+      "comparisons": [
+        {
+          "realm": "earth",
+          "x": -75,
+          "z": -330,
+          "colors": 3885,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 38,
+            "triangles": 40469,
+            "hidden": 1806,
+            "omittedShadows": 1806
+          },
+          "current": {
+            "calls": 38,
+            "triangles": 40469,
+            "hidden": 3146,
+            "omittedShadows": 2531
+          }
+        },
+        {
+          "realm": "earth",
+          "x": -33,
+          "z": -235,
+          "colors": 5956,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 122,
+            "triangles": 95566,
+            "hidden": 1767,
+            "omittedShadows": 1767
+          },
+          "current": {
+            "calls": 122,
+            "triangles": 95566,
+            "hidden": 3103,
+            "omittedShadows": 2492
+          }
+        },
+        {
+          "realm": "earth",
+          "x": 340,
+          "z": 200,
+          "colors": 4575,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 156,
+            "triangles": 92768,
+            "hidden": 1724,
+            "omittedShadows": 1724
+          },
+          "current": {
+            "calls": 156,
+            "triangles": 92768,
+            "hidden": 3060,
+            "omittedShadows": 2449
+          }
+        },
+        {
+          "realm": "earth",
+          "x": 470,
+          "z": 200,
+          "colors": 5290,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 178,
+            "triangles": 115673,
+            "hidden": 1718,
+            "omittedShadows": 1718
+          },
+          "current": {
+            "calls": 178,
+            "triangles": 115673,
+            "hidden": 3053,
+            "omittedShadows": 2443
+          }
+        },
+        {
+          "realm": "earth",
+          "x": 600,
+          "z": 200,
+          "colors": 4073,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 119,
+            "triangles": 84281,
+            "hidden": 1760,
+            "omittedShadows": 1760
+          },
+          "current": {
+            "calls": 119,
+            "triangles": 84281,
+            "hidden": 3097,
+            "omittedShadows": 2485
+          }
+        },
+        {
+          "realm": "water",
+          "x": 0,
+          "z": -1000,
+          "colors": 599,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 33,
+            "triangles": 7453,
+            "hidden": 1806,
+            "omittedShadows": 1806
+          },
+          "current": {
+            "calls": 23,
+            "triangles": 1941,
+            "hidden": 3144,
+            "omittedShadows": 2529
+          }
+        },
+        {
+          "realm": "fire",
+          "x": -1100,
+          "z": 200,
+          "colors": 411,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 45,
+            "triangles": 21465,
+            "hidden": 1806,
+            "omittedShadows": 1806
+          },
+          "current": {
+            "calls": 40,
+            "triangles": 20887,
+            "hidden": 3137,
+            "omittedShadows": 2524
+          }
+        },
+        {
+          "realm": "air",
+          "x": 1100,
+          "z": 200,
+          "colors": 788,
+          "baselineRepeat": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "candidate": {
+            "changed": 0,
+            "maximum": 0
+          },
+          "previous": {
+            "calls": 67,
+            "triangles": 51065,
+            "hidden": 1806,
+            "omittedShadows": 1806
+          },
+          "current": {
+            "calls": 58,
+            "triangles": 49967,
+            "hidden": 3134,
+            "omittedShadows": 2522
+          }
+        }
+      ],
+      "timings": [
+        {
+          "controller": "previous",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "cpuMedianMs": 11.800000011920929,
+          "cpuP95Ms": 18.19999998807907,
+          "hidden": 1718,
+          "omittedShadows": 1718
+        },
+        {
+          "controller": "candidate",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 33.3,
+          "cpuMedianMs": 14.599999994039536,
+          "cpuP95Ms": 24.80000001192093,
+          "hidden": 3053,
+          "omittedShadows": 2443
+        },
+        {
+          "controller": "candidate",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "cpuMedianMs": 12,
+          "cpuP95Ms": 18.599999994039536,
+          "hidden": 3053,
+          "omittedShadows": 2443
+        },
+        {
+          "controller": "previous",
+          "frames": 120,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "cpuMedianMs": 11.299999982118607,
+          "cpuP95Ms": 18.200000017881393,
+          "hidden": 1718,
+          "omittedShadows": 1718
+        }
+      ]
+    }
+  ],
+  "decision": "High previous CPU medians11.8/11.3ms versus candidate14.6/12.0; Low previous4.1/4.0 versus candidate6.0/5.0. No actual full-game improvement proved; do not promote, run redundant connected QA, lower budgets or call visual equality a performance pass. Continue measured work and code-owned art gaps.",
+  "remaining": "Full1.11\u20131.99, modern-art, High party/device/terrain/F1\u2013F5/operations/beta/owner/launch gates remain open."
+}

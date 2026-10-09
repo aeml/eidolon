@@ -1,6 +1,7 @@
 import { BasicShadowMap, Frustum, Matrix4, PCFShadowMap, PCFSoftShadowMap, Vector3 } from 'three';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from './ShadowViewCoverage.js';
 import { cacheUnchangedLocalMatrix } from './UnchangedLocalMatrix.js';
+import { hasStaticFoliageBounds } from '../art/StaticFoliageBounds.js';
 
 // Bound the actual shader lookup footprint in world units. PCF offsets reach
 // radius texels; PCFSoft reaches two texels and ignores radius. An extra texel
@@ -105,9 +106,11 @@ export class FoliageShadowInfluence {
         this.visit = object => {
             if (!object.isInstancedMesh || !object.boundingBox || object.frustumCulled === false) return;
             const groundCover = object.parent?.userData.earthUnderstory && !object.castShadow && object.userData.windBoundsIncluded;
+            const staticFoliage = object.parent?.userData.proceduralFoliage && hasStaticFoliageBounds(object);
+            const unshadowedFoliage = staticFoliage && (!object.castShadow || this.shadowsDisabled);
             const shadowCaster = this.shadowActive && object.castShadow && object.parent?.userData.proceduralFoliage &&
-                object.parent.userData.region === 'earth';
-            if (!groundCover && !shadowCaster) return;
+                (object.parent.userData.region === 'earth' || staticFoliage);
+            if (!groundCover && !shadowCaster && !unshadowedFoliage) return;
             // Static trees exclude shader deformation. Ground cover has its
             // own explicitly qualified wind-padded bounds; actors stay out.
             if (groundCover && object.children.length) return;
@@ -137,10 +140,10 @@ export class FoliageShadowInfluence {
             // bounds are still evaluated on every frame; moving/reparented
             // foliage or quality/buffer-bound updates invalidate immediately.
             if (!cached.valid) return;
-            if (groundCover) {
-                // Production grass/fern boxes include their complete shader
-                // wind envelope. These never cast shadows; hiding a proven
-                // out-of-view box cannot remove an incoming off-screen shadow.
+            if (groundCover || unshadowedFoliage) {
+                // Wind-padded noncasting understory and declared static trees
+                // with no active shadows can use their complete geometry box.
+                // No active caster takes this color-only rejection path.
                 if (cached.viewRevision !== this.viewRevision) {
                     cached.intersectsView = this.viewFrustum.intersectsBox(cached.world);
                     cached.viewRevision = this.viewRevision;
@@ -172,9 +175,10 @@ export class FoliageShadowInfluence {
         };
     }
 
-    beginFrame(scene, camera, light, shadowType = PCFSoftShadowMap, maxTextureSize = Infinity) {
+    beginFrame(scene, camera, light, shadowType = PCFSoftShadowMap, maxTextureSize = Infinity, shadowsDisabled = false) {
         this.endFrame();
         if (this.disposed || !this.enabled || !camera) return;
+        this.shadowsDisabled = shadowsDisabled;
         this.projection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
         // Exact inputs only: no movement threshold, timer or approximate match.
         // Live cell eligibility and local/world bounds still get checked below.
@@ -218,13 +222,12 @@ export class FoliageShadowInfluence {
             }
             else if (visible && !nested) {
                 // Production foliage cells are direct leaf children. Only
-                // Earth shadow casters and wind-bounded understory can qualify;
-                // other realms need no per-cell cache/material/matrix checks.
+                // Declared static foliage in every realm and wind-bounded
+                // understory can qualify; declarations are checked live below.
                 // Evaluate live root flags every frame, and retain recursive
                 // traversal for arbitrary nested content rather than assuming
                 // that descendants inherit the root's region or eligibility.
-                const directEligible = root.userData.earthUnderstory ||
-                    this.shadowActive && root.userData.proceduralFoliage && root.userData.region === 'earth';
+                const directEligible = root.userData.earthUnderstory || root.userData.proceduralFoliage;
                 for (const child of root.children) {
                     if (!child.visible) continue;
                     if (child.isInstancedMesh && !child.children.length) {

@@ -6,6 +6,7 @@ import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
 import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
+import { declareStaticFoliageBounds } from './StaticFoliageBounds.js';
 
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
@@ -116,6 +117,7 @@ export function updateFoliageRenderQuality(root, quality) {
             if (!part || mesh.geometry === part.geometry) continue;
             mesh.geometry = part.geometry;
             computeFoliageCellBounds(mesh);
+            declareStaticFoliageBounds(mesh);
         }
         group.userData.foliageQuality = level;
     });

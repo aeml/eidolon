@@ -3,6 +3,7 @@ import { jest } from '@jest/globals';
 import { FoliageShadowInfluence, getDirectionalShadowInfluenceBounds, getShadowFilterWorldPadding, shadowInfluenceIntersectsFrustum } from '../src/core/FoliageShadowInfluence.js';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from '../src/core/ShadowViewCoverage.js';
 import { RenderSystem } from '../src/core/RenderSystem.js';
+import { declareStaticFoliageBounds, hasStaticFoliageBounds } from '../src/art/StaticFoliageBounds.js';
 
 function fixture() {
     const scene = new THREE.Scene(), group = new THREE.Group();
@@ -194,7 +195,7 @@ test('registered foliage roots avoid scanning unrelated actors and retain add/re
     expect(controller.roots.size).toBe(0); controller.dispose();
 });
 
-test('direct non-Earth leaf cells skip visits, but live flags and nested Earth content remain authoritative', () => {
+test('undeclared non-Earth cells remain conservative, but live flags and nested Earth content remain authoritative', () => {
     const s = fixture();
     s.group.userData.region = 'air'; s.mesh.position.set(100, 5, 0);
     const nested = new THREE.Group(); nested.userData = { proceduralFoliage: true, region: 'earth' };
@@ -205,7 +206,7 @@ test('direct non-Earth leaf cells skip visits, but live flags and nested Earth c
     const frame = () => controller.beginFrame(s.scene, s.camera, s.light);
     try {
         frame();
-        expect(visit).not.toHaveBeenCalledWith(s.mesh);
+        expect(visit).toHaveBeenCalledWith(s.mesh);
         expect(visit).toHaveBeenCalledWith(caster);
         expect(s.mesh.castShadow).toBe(true); expect(caster.castShadow).toBe(false);
         controller.endFrame();
@@ -403,4 +404,69 @@ test('unqualified wind bounds and explicitly disabled frustum culling stay untou
     s.mesh.userData.windBoundsIncluded = true; s.mesh.frustumCulled = false;
     s.controller.beginFrame(s.scene, s.camera, null); expect(s.mesh.visible).toBe(true);
     expect(s.controller.hidden).toHaveLength(0); s.controller.endFrame();
+});
+
+test.each(['water', 'fire', 'air'])('declared %s trees retain incoming shadows and restore before a second camera', region => {
+    const s = fixture(); s.group.userData.region = region;
+    declareStaticFoliageBounds(s.mesh); expect(hasStaticFoliageBounds(s.mesh)).toBe(true);
+    s.mesh.position.set(18, 30, 0); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, s.light);
+    expect(s.mesh.visible).toBe(true); expect(s.mesh.castShadow).toBe(true); s.controller.endFrame();
+    s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, s.camera, s.light);
+    expect(s.mesh.visible).toBe(false); expect(s.mesh.castShadow).toBe(false);
+    const second = s.camera.clone(); second.position.x = 100; second.updateMatrixWorld(true);
+    s.controller.beginFrame(s.scene, second, s.light);
+    expect(s.mesh.visible).toBe(true); expect(s.mesh.castShadow).toBe(true);
+    s.controller.beginFrame(s.scene, s.camera, s.light); s.controller.dispose();
+    expect(s.mesh.visible).toBe(true); expect(s.mesh.castShadow).toBe(true);
+});
+
+test('declared color bounds require explicit disabled shadows and track movement, parent transforms and camera edits', () => {
+    const s = fixture(); s.group.userData.region = 'water'; declareStaticFoliageBounds(s.mesh);
+    s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
+    const frame = disabled => s.controller.beginFrame(s.scene, s.camera, null, THREE.PCFSoftShadowMap, Infinity, disabled);
+    frame(false); expect(s.mesh.visible).toBe(true); s.controller.endFrame();
+    frame(true); expect(s.mesh.visible).toBe(false); expect(s.mesh.castShadow).toBe(true); s.controller.endFrame();
+    s.group.position.x = -100; s.scene.updateMatrixWorld(true);
+    frame(true); expect(s.mesh.visible).toBe(true); s.controller.endFrame();
+    s.mesh.boundingBox.translate(new THREE.Vector3(100, 0, 0));
+    frame(true); expect(s.mesh.visible).toBe(false); s.controller.endFrame();
+    s.camera.position.x = 100; s.camera.updateMatrixWorld(true);
+    frame(true); expect(s.mesh.visible).toBe(true); s.controller.dispose();
+});
+
+test.each(['geometry', 'position', 'upload', 'instances', 'count', 'material', 'compile', 'update', 'beforeRender', 'beforeShadow', 'wind', 'displacement', 'morph', 'depth', 'children'])('static declaration revokes on live %s change without hiding unknown foliage', kind => {
+    const s = fixture(); s.group.userData.region = 'water';
+    s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true); declareStaticFoliageBounds(s.mesh);
+    s.controller.beginFrame(s.scene, s.camera, s.light); expect(s.mesh.visible).toBe(false); s.controller.endFrame();
+    if (kind === 'geometry') s.mesh.geometry = s.mesh.geometry.clone();
+    if (kind === 'position') s.mesh.geometry.setAttribute('position', s.mesh.geometry.attributes.position.clone());
+    if (kind === 'upload') s.mesh.geometry.attributes.position.needsUpdate = true;
+    if (kind === 'instances') s.mesh.instanceMatrix.needsUpdate = true;
+    if (kind === 'count') s.mesh.count = 0;
+    if (kind === 'material') s.mesh.material = s.mesh.material.clone();
+    if (kind === 'compile') s.mesh.material.onBeforeCompile = () => {};
+    if (kind === 'update') s.mesh.material.onBeforeRender = () => {};
+    if (kind === 'beforeRender') s.mesh.onBeforeRender = () => {};
+    if (kind === 'beforeShadow') s.mesh.onBeforeShadow = () => {};
+    if (kind === 'wind') s.mesh.material.userData.woodlandWind = true;
+    if (kind === 'displacement') s.mesh.material.displacementMap = new THREE.Texture();
+    if (kind === 'morph') s.mesh.geometry.morphAttributes.position = [s.mesh.geometry.attributes.position.clone()];
+    if (kind === 'depth') s.mesh.customDepthMaterial = new THREE.MeshDepthMaterial();
+    if (kind === 'children') s.mesh.add(new THREE.Group());
+    expect(hasStaticFoliageBounds(s.mesh)).toBe(false);
+    s.controller.beginFrame(s.scene, s.camera, s.light);
+    expect(s.mesh.visible).toBe(true); expect(s.mesh.castShadow).toBe(true); s.controller.dispose();
+});
+
+test('static declarations track interleaved position uploads and redeclaration after a builder bound refresh', () => {
+    const s = fixture(); s.group.userData.region = 'air';
+    const position = s.mesh.geometry.attributes.position;
+    const data = new THREE.InterleavedBuffer(position.array.slice(), 3);
+    s.mesh.geometry.setAttribute('position', new THREE.InterleavedBufferAttribute(data, 3, 0));
+    s.mesh.computeBoundingBox(); declareStaticFoliageBounds(s.mesh); expect(hasStaticFoliageBounds(s.mesh)).toBe(true);
+    data.needsUpdate = true; expect(hasStaticFoliageBounds(s.mesh)).toBe(false);
+    s.mesh.computeBoundingBox(); declareStaticFoliageBounds(s.mesh); expect(hasStaticFoliageBounds(s.mesh)).toBe(true);
+    s.controller.dispose();
 });
