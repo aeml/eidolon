@@ -24,6 +24,26 @@ test('unknown vegetation does not silently become a generic plant', () => {
     expect(() => createWoodlandUnderstoryGeometry('missing')).toThrow('Unknown woodland cover');
 });
 
+test.each(['bracken', 'sedge'])('%s ribbon seams share smooth unit normals without welding separate leaves', kind => {
+    const geometry = createWoodlandUnderstoryGeometry(kind);
+    try {
+        const { position: p, normal: n } = geometry.attributes;
+        const stride = kind === 'sedge' ? 15 : 99;
+        for (let start = 0; start < p.count; start += stride) {
+            for (const offsets of [[2, 5, 6], [4, 7, 9], [8, 11, 12]]) {
+                const [a, ...others] = offsets.map(i => start + i);
+                for (const b of others) {
+                    expect([p.getX(a), p.getY(a), p.getZ(a)]).toEqual([p.getX(b), p.getY(b), p.getZ(b)]);
+                    expect([n.getX(a), n.getY(a), n.getZ(a)]).toEqual([n.getX(b), n.getY(b), n.getZ(b)]);
+                }
+            }
+        }
+        // Tips/root still have different analytic surface directions; do not
+        // replace the bent ribbon with one flat normal or smooth every plant.
+        expect([n.getX(0), n.getY(0), n.getZ(0)]).not.toEqual([n.getX(14), n.getY(14), n.getZ(14)]);
+    } finally { geometry.dispose(); }
+});
+
 test('sedge forms varied curved leaf clusters at the existing eighty-triangle cost', () => {
     const geometry = createWoodlandUnderstoryGeometry('sedge');
     try {
