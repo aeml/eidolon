@@ -4,7 +4,17 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.20';
+const currentVersion = '1.79.21';
+
+test('1.79.21 records working town details without claiming final art or party qualification', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.21"'), previous = html.indexOf('data-version="1.79.20"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['open wooden bucket', 'beveled edges', 'thirteen walking footprints',
+        'actual stone platform', 'already uses that outfit', 'not final modern-world art',
+        'Original rendering limits', 'Raised terrain remains disabled', 'saved progress remain unchanged',
+        'Full prior patch history', 'ten notes initially', 'Load more notes']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.20 records grounded camp dressing without claiming complete world or party acceptance', () => {
     const html = readIndexWithPatchHistory();

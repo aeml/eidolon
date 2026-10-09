@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.20</span>
+                    <span class="start-version-row__label">Alpha 1.79.21</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -780,7 +780,18 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.20" data-notes-pages="45" data-notes-total="455">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.21" data-notes-pages="45" data-notes-total="456">
+                <div class="patch-note-entry" data-version="1.79.21">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.21 (Working town details)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Lanternhold’s common well has an open wooden bucket, iron bands and bail, a winding drum, rope and crank. Its existing stone basin, safe-zone recovery, walking space and ambient worker behavior are retained.</li>
+                        <li>Courtyard benches use separated timber slats with modest beveled edges and back supports. The same thirteen walking footprints, material batches and scene-owned resource cleanup remain; no new obstacles, texture maps or per-frame animation work.</li>
+                        <li>Votive Market gains curved provision casks with iron hoops under its canopy. Casks and the supply chest meet the actual stone platform; stacked shipping crates meet each other rather than overlapping or sinking into the plinth. Existing market bounds, services and walking routes remain unchanged.</li>
+                        <li>The town review uses the delivered dressed Archmage Ilyra appearance rather than an inaccurate bare player Wizard stand-in. This corrects the review scene; the live story NPC already uses that outfit.</li>
+                        <li>This scoped town refinement is not final modern-world art, equipped-party or physical-device acceptance. Original rendering limits remain unchanged. Raised terrain remains disabled by default; broader world, character and performance work continues.</li>
+                        <li>Supplied class, equipment and animation assets, gameplay, rewards, permissions and saved progress remain unchanged. Full prior patch history is retained; login shows ten notes initially with Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.20">
                     <h3 class="patch-note-entry__title">Alpha 1.79.20 (Pilgrim camps and worn streets)</h3>
                     <ul class="patch-note-entry__list">
@@ -887,22 +898,6 @@
                         <li>Missing acknowledgements never resend automatically. History records admission only, not guaranteed delivery; disconnected players do not receive old transient notices.</li>
                         <li>The operator guide includes safe incident triage, communication, escalation and reopening procedures. This tool does not stop the game, restart services, send email or change player progress.</li>
                         <li>No account wipe, schema migration, retention, economy, quest or Dark Realm access changes. Original 1.80 feature-freeze and full modern-art, operations and beta gates remain open. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.11">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.11 (elemental landscapes and mineral formations)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>World entry downloads a consolidated game engine instead of hundreds of separate game modules. Login still loads independently; shared session state, gameplay class names, original editable sources and release-versioned assets are preserved.</li>
-                        <li>Startup failures retain a non-sensitive phase and category for diagnostics, without exposing raw errors or account details. Interrupted module downloads and incompatible module exports now recommend reloading the page. This is recovery guidance, not automatic retries or a claim that every startup failure is resolved.</li>
-                        <li>If WebGL 2 is unavailable or blocked, entering the world returns to login with hardware-acceleration and browser/device guidance. The message appears in the page, never a browser alert. Successful renderer creation and browser security settings are unchanged.</li>
-                        <li>Login now shows only the latest ten patch notes. Load more notes fetches the next ten on demand; the complete history is retained. Login startup no longer waits for the full game-engine dependency graph and also initializes if the document-ready event has already fired.</li>
-                        <li>Fixed Firefox login startup: register the dependency import map before loading any modules, while preserving private recovery-link scrubbing before analytics starts.</li>
-                        <li>Water and Air conifers have layered needle boughs instead of solid cones. Drowned willows have folded leaves and hanging shoots; Fire snags have connected crooked branches and attached ember tips.</li>
-                        <li>Fire and Air mineral formations have asymmetric facets, weathered basalt/slate detail and grounded side forks instead of floating fragments. Water and Air conductor shards share the refined mineral shape.</li>
-                        <li>The existing 180 Water, 165 Fire and 165 Air scenery objects form uneven stands beside travel routes. Tree counts, per-tree scales and rotations, Earth placements, walking lanes, hazards and investigation clearings are retained.</li>
-                        <li>Air landmark edges gain leafy heath: 1,111 plants on High and 617 on Low. This is new visual-only scenery, with no movement blockers. Switching graphics quality now updates regional crowns and all 24 groundcover beds without reloading, releases old buffers and preserves material ownership.</li>
-                        <li>Original scene performance limits remain required. This is regional component polish, not the 1.80 feature freeze or full 1.87 modern-art completion. Raised terrain, wearable derivatives and broader renderer optimizations remain staged; landscape cohesion and sparse travel stretches remain work in progress.</li>
-                        <li>No account wipe, schema migration, quests, combat, economy or administrator-access changes. Full prior patch history remains below.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

@@ -429,7 +429,13 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.20`, grounded camps and worn town streets:
+- Current source version: `Alpha 1.79.21`, working town details:
+  an open bucket, winding drum and crank make the communal well readable as
+  working equipment; courtyard benches have separated beveled timber slats.
+  Market casks, chest and stacked crates meet their actual supporting surfaces.
+  Existing material batches, walking space, services and saved progress remain.
+  The town review uses delivered dressed Ilyra, not a bare Wizard stand-in.
+  Retains grounded camps and worn town streets:
   folded bedrolls meet the ground, hearth stones and stacked firewood make
   physical contact, and charcoal and compacted footpaths follow all fifteen
   actual rotated camps. Ground wear reuses the existing texture mask; no decals,
