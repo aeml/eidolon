@@ -27,7 +27,14 @@ Fighter pilot or remove approved authored models.
   17/18 have not inherited this candidate. See the compact
   [candidate record](docs/plans/2026-10-09-woodland-shading-candidate.json).
   Broader repeated-clump/sparse-floor and complete modern-world art gaps remain.
-- Current pushed **1.79.13 /ebdfd4e8 /CI37906851626** is running, not accepted.
+- Accepted public **1.79.13 /ebdfd4e8 /CI37906851626 attempt1**: all ten
+  mandatory jobs, six native High cases1.5m and final live persistent/town/
+  Well Rested QA pass. Root matches all five selected publisher hashes/exact
+  frontend+backend identity/verified IPv4 TLS/ready DB09:24:46UTC. Expanded
+  optional steps skipped, not passed. Optional public monitoring stays off.
+  Next14 fresh normal merge068608b4 retains remote;384version/pagination
+  checks pass4.523s; original qualified art/runtime/test bytes unchanged.
+- Historical13 prepublication state: pushed **ebdfd4e8 /CI37906851626**.
   Fresh normal fetch/merge retains accepted12, monitor code unchanged;383
   current version/pagination checks pass4.133s. Actual selected publisher
   expected bytes are recorded in2026-10-09-release1-79-13-publisher.json.
@@ -290,7 +297,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
   | --- | --- | --- |
   | 1.79.12 (accepted) | `eidolon-operations-release-U0VLQ4j8` | `1255aade` |
-  | 1.79.13 (pushed, CI pending) | `eidolon-public-monitor-release-XpKvF87O` | `ebdfd4e8` |
+  | 1.79.13 (accepted) | `eidolon-public-monitor-release-XpKvF87O` | `ebdfd4e8` |
   | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `3e0b1a1f` |
   | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `2bca9889` |
   | 1.79.16 (held candidate; qualified reference54c1634a) | `eidolon-masonry-release-CkTEzcx0` | `1dceefd5` |
