@@ -1,0 +1,35 @@
+{
+  "status": "Qualified targeted CPU-work reduction; not a party frame-budget pass or public deployment",
+  "source": "9272a3f8 on prepared18/d04aa7c6",
+  "scope": "Skip irrelevant direct foliage leaf visits while retaining recursive nested handling and all live eligibility/bound/visibility inputs. Reuse the exact actor-owned interaction proxy with parent/name/owner validation and recursive fallback on replacement or detachment. No asset, geometry, shadow, population, camera, cadence or gameplay rule change.",
+  "baseline_cpu_sample": {
+    "source": "d04aa7c6",
+    "seconds": 3, "frames": 79, "foliage_visits": 791422,
+    "camera_changes": 0, "light_changes": 0,
+    "foliage_visit_self_micros": 628599,
+    "recursive_object_search_self_micros": 337534,
+    "log_sha256": "8462004dc245a8f3463d2f5b79566f4ec0deb08b27da927484d3747893472958"
+  },
+  "units": "4 actual suites, 62 passing checks, 3.069 seconds. Owned proxies make zero recursive searches across 100 samples; detachment, replacement and foreign ownership use fallback. Nested Earth content, root flag changes, hidden parents, bounds and existing filter/cache/cleanup cases pass. Scoped six-file lint and whitespace pass after formatting two newly added mixed-line-ending lines.",
+  "native_parity": {
+    "result": "1 case passes 7.6 seconds, retries 0; ten High/Low views of Earth Grove/Bastion, Water, Fire and Air",
+    "reference": "Exact previous FoliageShadowInfluence source from d04aa7c6; identical world, geometry, camera, material and frozen shader time",
+    "changed_channels_each_view": 0,
+    "draw_calls_and_triangles": "Exactly equal in every view",
+    "previous_visits_each_view": 10018,
+    "candidate_high_visits": 8922,
+    "candidate_low_visits": 6862,
+    "log_sha256": "bdd908a4f1005f54df67195fe65124ab4f68194a44a1eb964baf9b0c980a5b54"
+  },
+  "current_party": {
+    "result": "Isolated race Go passes53.03 seconds/54.101 total; one native renderer and three authenticated ordinary peers preserve all four fourteen-slot saves. Disposable database cleanup independently verified; production untouched",
+    "directory": "/home/aeml/.local/share/eidolon-terrain-save-evidence-5cQdEUEH",
+    "log_sha256": "4ad23095ae0562b9a7a062b7944058c69f1c8eec8b01c0b94edf644994212a96",
+    "median_ms": 33.4, "p95_ms": 50.1, "cpu_median_ms": 37.5, "cpu_p95_ms": 54.2,
+    "calls": 651, "triangles": 571359, "active_entities": 48,
+    "diagnostic_visits": 615618, "diagnostic_frames": 69,
+    "recursive_search_self_micros": 307110,
+    "interpretation": "Still slow. Population differs from baseline20 and earlier38 entities, so no controlled FPS gain claimed. Recursive object search remains substantial: do not claim the actor proxy change eliminated all search cost. Future CPU evidence should include caller chains."
+  },
+  "delivery_plan": "Fold into already prepared1.79.15 rendering milestone rather than create another release for this small patch. Its five existing affected source/test files are byte-identical to d04aa7c6 before this change. Current18 native evidence is scoped, not a claim of a new15 performance qualification; later trees inherit by normal reconciliation. Strict original gates remain unchanged."
+}
