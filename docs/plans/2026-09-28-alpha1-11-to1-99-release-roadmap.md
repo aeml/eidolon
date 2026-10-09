@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 root verifies11/e259/run37870274115 terminal failure after Luna notice:
+Client/Server/Smoke2/3 pass; two High regional quality-switch cases exceed120s
+twice,50other Smoke1 cases pass. All downstream deployment gates skip, not pass.
+Public10 remains healthy/exact. Bounded disjoint High cover-draw fixtures in
+qualification retain every site/twelve phases/original checks and limits.
+Normal local12-16 merges59490933/ba23026b/cde55b56/a392e27f/d3d71b3e preserve
+runtime/current labels/raw history;393focused and8bootstrap cases pass.
+[Supplement](2026-10-09-ordered-release-qa-reconciliation-checks.json).
+17 Air-passage selective integration local-only, not yet qualified/committed.
+11 own CI/public acceptance precedes all later individual publications.
+Full numbered/art/F1-F5/equipped-party/device/human/owner/launch scope stays open.
+The following earlier pending statements are historical, not current acceptance.
+
 October9 corrected11/e259f015 pushed after fresh normal remote reconciliation,
 CI37870274115 pending/Luna terminal-only watch. Eight local session/bootstrap
 cases and four CI-style regional presentation/12-phase quality cases pass;

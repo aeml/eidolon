@@ -18,6 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Corrected11/e259 run37870274115 is now terminal failure, independently
+  verified after Luna notice. Client/Server/Smoke2/3 succeed; Smoke1 has50pass
+  and two High regional quality-switch cases exceeding120s twice. Downstream
+  deployment skips, not passes; accepted public10 remains healthy/exact/DBready.
+  Split High GPU cover draws into bounded disjoint groups while preserving all
+  twelve phases, every site and original checks/limits; qualification in progress.
+  Normal local12-16 merges now59490933/ba23026b/cde55b56/a392e27f/d3d71b3e,
+  with unchanged runtime/versions/history and393focused+8bootstrap checks pass.
+  [Ordered-merge evidence](docs/plans/2026-10-09-ordered-release-qa-reconciliation-checks.json).
+  Air passage17 isolated integration started, not yet qualified/committed/live.
+  Full goal remains active; no later publication before11 own acceptance.
+
 - Prepared16 supplement **f6d3ec3d** qualifies previously staged Skeleton
   cross-actor rendering on the corrected current base, now explicitly requiring
   constructor batching.486focused checks, four native surface/triangle/visibility
@@ -457,13 +469,16 @@ twenty timed views pass original scene limits. Actual captures reviewed;
 [component scope](docs/plans/2026-10-08-drowned-willow-checks.json) preserves
 fixture failures and remaining sparse/stylized-world gaps. Not delivered or
 complete modern art; integrate selectively after the prepared next release.
-After the >1h hosted install delay, ask once asynchronously whether to cancel
-and retry unfinished CI jobs; leave run intact until an answer. Luna continues
-read-only monitoring; an observation timeout is not terminal.
+The earlier >1h hosted-install observation is historical; that attempt ended
+and its evidence remains. No cancellation question is currently outstanding.
+Luna monitors each new deployment read-only until terminal completion; an
+observation timeout is not a failure or authority to retry/cancel.
 
-1. Accept or diagnose the exact 1.79.9 run, then integrate the next qualified
-   work onto fresh current master. Never publish the entire future branch
-   accidentally or overlap release pushes.
+1. Correct and qualify the11 hosted quality-review bottleneck after exact
+   run37870274115 failure; fresh-fetch/reconcile and publish the scoped correction.
+   Accept its own mandatory CI/public identity before individually publishing
+   prepared12-16 in order. Complete selective17 Air-passage integration meanwhile.
+   Never promote the entire future branch or overlap release pushes.
 2. Finish the complete modern world/art work, not just these woodland changes:
    coherent town/realm/landmark/dungeon scenery, material scale, useful populated
    spaces, natural geological/foliage variety, lighting, fit and responsive
@@ -494,8 +509,11 @@ read-only monitoring; an observation timeout is not terminal.
 
 - Do not edit/stage the dirty original `/home/aeml/Github/eidolon` worktree.
   Preserve unrelated user/website-agent changes.
-- Current selective release: `/home/aeml/.local/share/eidolon-release-1799-dP3jVWwe`,
-  branch `work/alpha-1-79-9-woodland-current-20261008`.
+- Current public acceptance is1.79.10/d3a3b9f7. Current selective release11:
+  `/home/aeml/.local/share/eidolon-regional-release-UOCeBRDt`, branch
+  `work/alpha-1-79-regional-current-20261008`. Local Air-passage17 work:
+  `/home/aeml/.local/share/eidolon-air-passage-release-KzBO8WOW`, branch
+  `work/alpha-1-79-air-passage-current-20261009`.12-16 remain ordered candidates.
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
   public acceptance. Recovery/freeze worktrees remain separate.
