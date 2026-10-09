@@ -18,6 +18,15 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- **Accepted public1.79.14 /90fca2f1 /CI37918281583 attempt1 SUCCESS**:
+  root verifies all ten mandatory jobs, six native regional cases, celebration,
+  classes/Ilyra and four disposable smoke cases including manual loot pickup.
+  Final live7cases7.6m, town/rest2cases1.6m and party1case1.4m pass. Expanded
+  optional steps skip, not pass. All five publisher bytes/exact frontend+backend/
+  verified IPv4 HTTPS/ready DB rechecked11:11:22UTC. Scope remains14, not full
+  modern art/F/beta/launch.15 freshly fetched/merged unchanged0ac75025 and can
+  now advance with its own CI/public acceptance; no original dirty-tree changes.
+
 - Current14 CI37918281583 now passes hosted gates, mandatory native predeploy,
   release-input validation and both deployments. Native6regional/1celebration/
   2equipment and4isolated smoke pass, including actual manual inventory pickup.
