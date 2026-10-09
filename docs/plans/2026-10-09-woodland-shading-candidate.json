@@ -1,0 +1,60 @@
+{
+  "status": "Local native qualification passed for exact corrected16 source; not pushed or public accepted. Historical attempts retained below.",
+  "currentQualification": {
+    "source": "6c242a1c2ecd0ecf98489e9a1797b955acd758b9; runtime/art unchanged since held86795c17, exact decimal measurement helper corrected",
+    "result": "Two exact current16 populated flat Earth/town native cases pass1.3m/retries0; High1280x844 and Low390x844,9views each/120reported RAF samples per view. All original draw/triangle/timing/resource/reduced-motion/interaction assertions pass. This clears the local woodland hold only, not CI/public/full art/party/raised/device acceptance.",
+    "high": {
+      "maxMedianMs": 16.7,
+      "maxP95Ms": 33.4,
+      "maxCalls": 242,
+      "maxTriangles": 245947,
+      "hitchesOver50ms": 0,
+      "warmedResources": {
+        "geometries": 275,
+        "textures": 82,
+        "programs": 84
+      },
+      "profileSHA256": "93b692078a948f07af559cf05be00c949a2c8a16a8861ffb0d20825b50b8bf00"
+    },
+    "low": {
+      "maxMedianMs": 16.7,
+      "maxP95Ms": 16.8,
+      "maxCalls": 109,
+      "maxTriangles": 67958,
+      "hitchesOver50ms": 0,
+      "warmedResources": {
+        "geometries": 256,
+        "textures": 69,
+        "programs": 58
+      },
+      "profileSHA256": "bd66ff1bffddd68a3add22ba742b5c37e24d21954ff71bbc10482b24da156844"
+    },
+    "boundaries": "Unchanged High median20ms/p95 33.4ms/350calls/250000tri and Low33.4ms/50ms/200calls/85000tri. Decimal helper11unit boundary checks retained; actual33.4001/33.401/33.5 still fail33.4. No rounding, epsilon, timeout or sample-count change. Previous failed candidate/reference attempts remain failures, not reclassified.",
+    "environment": "2026-10-09T11:31:40UTC before launch:16logical CPUs, load12.25/13.26/18.51 and CPU some avg10=12.58%; no active System Chrome process. Lower than earlier competing-GPU/load26-28 condition, not an isolated host. Concurrent soak/server workloads continue untouched. Actual ANGLE AMD Vulkan1.4.318 RADV RENOIR; no software GPU/security bypass. Bounded once because measurement source changed, not repeated unchanged for green. Observed strict-budget pass is not a controlled FPS gain or wider device guarantee.",
+    "artifact": "/home/aeml/.local/share/eidolon-woodland-corrected-timestamps-timed-20261009",
+    "logSHA256": "5def1c30ff2bdbecb61bc73fb7fa6c3fe24f7d79fe46808418ca7153f2d99748",
+    "sourceSHA256": {
+      "src/art/EarthUnderstory.js": "cd981d6e6280f93bb1d63e0c9946a39770fcf9d6d80576af49c7b3e5d4cb36ac",
+      "src/art/WoodlandUnderstoryGeometry.js": "3bf5aee13794916d7fd4f6e3a60129b1066abdd0073c3472f0f69931feaa7e5d",
+      "src/core/RenderSystem.js": "cf71b810721afb8e554adc752a4811902329c2f5dc4e876478f2615127dad2d6",
+      "tests/e2e/populated-earth-world.spec.js": "b00255374af26111fd95e6727ebecaf057dc633df199e176b5f2fee6587d5964",
+      "tests/e2e/renderFrameInterval.js": "0f7cfc0ed7cd47b4cefdc44c83c299bac3d14780f72a0da8688e1c5de5ac522b"
+    },
+    "delivery": "Public14 accepted;15/0ac75025/CI37922288706 still running.16 locally qualified but not pushed. Require own15 terminal/native/live/exact-public acceptance, fresh normal remote reconciliation and own16 publisher/CI/live verification.17/18 do not yet inherit this formerly held art. New staged growth/rock refinements are separate future work, not silently added to16."
+  },
+  "timestampCorrection": "Selected existing17 renderFrameInterval helper and11tests byte-identically. Previous16 alone still subtracted binary floating-point timestamps, turning reported33.4 into33.400000000001455. Use exact decimal subtraction, not duration rounding or tolerance;33.4001/33.401/33.5 still fail original33.4 cap.11unit checks pass0.434s, lint/whitespace pass. Runtime/art/geometry/sampling/sample-count/all limits unchanged. Historical profile is not reclassified as a pass; do not rerun contended benchmarks merely to get green.",
+  "source": "Canonical bf2b27121a7fba78b1b891caa6fa3d0d895596b1 selected narrowly as86795c17 into current16; last qualified current16 reference54c1634a. Existing current High5.5-cell bounds preserved, not future6.5 bounds.",
+  "scope": "Area-weighted normals shared only inside each original leaf/stem ribbon; deterministic per-placement restrained instance tint; dispose owned InstancedMesh matrix/color buffers while retaining original shared geometry/material deduplication. No new plant, position, triangle, material bucket, collision, route or gameplay change.",
+  "checks": "Canonical three geometry/tint/wind suites10pass6.151s and three actual population/resources/actor suites26pass42.643s. Current five focused suites27pass6.818s; version/pagination two suites386pass4.275s. Scoped lint/whitespace pass. Counts overlap and must not be added as unique coverage. Locked Three WebGLObjects actual disposal listeners tested with intercepted attribute IO, not a fictitious implementation.",
+  "geometry": "Independent exact bc40514a comparison: both position/color buffers byte-identical. Sedge80tri, bracken231tri; changed normal components644/263. Per-instance RGB storage157044High/89268Low bytes excludes driver/cell overhead. No GPU throughput improvement claim.",
+  "notes": "451total,10initial,45lazy pages; all450older entries independently byte-identical; joined older SHA256 cf5cac5e15c8648570d7c0f91ea0857b753ed5c582f66acde6068a9013dd5a34.",
+  "nativeAttempts": [
+    {"artifact":"eidolon-woodland-ribbon-before-20261009", "result":"Original-art High untimed1pass19.5s, retries0; not a frame-budget pass", "logSHA256":"2f940bf1a7bf4aafbf3373964f8d2bb9f4cd973f8aac30a42db6c4e4987497e2"},
+    {"artifact":"eidolon-woodland-ribbon-candidate-20261009", "result":"Candidate High/Low untimed2pass36.2s, retries0; not frame-budget passes", "logSHA256":"e9b286430d94c48ce379f22c97ad0f05687d4c31335fdfeb76a33149d7413ff3"},
+    {"artifact":"eidolon-woodland-ribbon-timed-20261009", "result":"PROFILE=1: HighFAIL p95TradingHouseRoof33.400000000001455 exceeds original33.4; LowPASS. Nine views each; candidate High medians within20. Highmax242calls/245947tri, Lowmax109calls/67958tri. Warmed resources stable275/82/84High,256/69/58Low. No rounding, waiver or green retry", "logSHA256":"1cce0dddf17ef33e2d8862344899e0c34c7cb29befc6283dfbef2fb03249695d"},
+    {"artifact":"eidolon-woodland-ribbon-reference-timed-20261009", "result":"REFERENCE=1/PROFILE=1 diagnostic HighFAIL: CommonWell median33.29999999999927 exceeds20; TradingHouseRoof also33.2. Exact same draw/triangle totals as candidate. Anonymous trace records both expected historical-module requests200, but routed response bodies are not recorded; no independent response-body hash proof. Added future explicit route-hit assertions without rerunning for a green result", "logSHA256":"1f130929e5d0757e3e781caeedc834184beef8e4cd9117000cd9a2f80926f03d"}
+  ],
+  "environment": "Actual System Chrome AMD Vulkan/RADV, original budgets/settings. At2026-10-09T09:10:08UTC host load26.38/28.56/28.13; multiple unrelated servers/load jobs/browsers competing. Contribution uncertain, not proof tint causes or fixes timing. No unrelated service or ongoing soak stopped/reprioritized. Do not repeat benchmarks while known contention remains.",
+  "review": "Actual High/Low screenshots show subtle softer shading/quieter variation, but conspicuous repeated clumps and sparse broad floor remain. Not modern ARPG art approval, controlled pixel/FPS gain, fully geared party, physical phone or future raised-world qualification.",
+  "delivery": "Retain last qualified16 reference and this held candidate distinctly.13 own live QA still pending;14/15 may advance only after ordered own CI/public acceptance/fresh normal remote reconciliation. Complete world/art/F1-F5/1.81-1.99 scope remains active."
+}

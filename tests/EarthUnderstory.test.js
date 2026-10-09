@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { composeEarthUnderstoryPlacement, createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear } from '../src/art/EarthUnderstory.js';
+import { composeEarthUnderstoryPlacement, createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear, earthUnderstoryTint } from '../src/art/EarthUnderstory.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { WOODLAND_WIND_REACH } from '../src/art/WoodlandWindMaterial.js';
 import { STARTER_ROAD_CLEARINGS } from '../src/data/lanternholdApproach.js';
@@ -77,17 +77,21 @@ test.each([['high', 5.5], ['low', 16]])('smaller High batches preserve every pla
     const plants = createEarthUnderstoryPlacements(quality);
     const root = createEarthUnderstory({ quality, terrainElevation });
     const expected = new Set(), actual = new Set(), transform = new THREE.Object3D(), matrix = new THREE.Matrix4();
+    const expectedTints = new Map();
     const key = (variant, values) => `${variant}:${Array.from(values).join(',')}`;
     for (const plant of plants) {
         transform.position.set(plant.x, terrainElevation.sample(plant.x, plant.z), plant.z);
         transform.rotation.set(0, plant.rotation, 0); transform.scale.setScalar(plant.scale); transform.updateMatrix();
         expected.add(key(plant.variant, new Float32Array(transform.matrix.elements)));
+        expectedTints.set(key(plant.variant, new Float32Array(transform.matrix.elements)),
+            Array.from(new Float32Array(earthUnderstoryTint(plant).toArray())));
     }
     const geometries = new Set(), materials = new Set(), vertex = new THREE.Vector3();
     try {
         for (const mesh of root.children) {
             geometries.add(mesh.geometry); materials.add(mesh.material);
             const [cx, cz, variant] = mesh.name.slice('understory:'.length).split(':').map(Number);
+            expect(mesh.instanceColor.count).toBe(mesh.count);
             expect(mesh.userData.windBoundsIncluded).toBe(true);
             const exact = new THREE.Box3(), restSphere = mesh.boundingSphere.clone();
             const reach = WOODLAND_WIND_REACH * 1.4;
@@ -97,6 +101,8 @@ test.each([['high', 5.5], ['low', 16]])('smaller High batches preserve every pla
                 const x = matrix.elements[12], z = matrix.elements[14];
                 expect(Math.floor(x / cellSize)).toBe(cx); expect(Math.floor(z / cellSize)).toBe(cz);
                 actual.add(key(variant, matrix.elements));
+                const color = new THREE.Color(); mesh.getColorAt(i, color);
+                expect(color.toArray()).toEqual(expectedTints.get(key(variant, matrix.elements)));
                 for (let v = 0; v < mesh.geometry.attributes.position.count; v++) {
                     vertex.fromBufferAttribute(mesh.geometry.attributes.position, v).applyMatrix4(matrix);
                     exact.expandByPoint(vertex);
