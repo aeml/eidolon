@@ -18,6 +18,17 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Air composition candidate **30658cc0** now breaks the prominent wind-striped
+  dust mask into irregular sheltered patches while retaining directional slate
+  bedding. Same three registered maps, sizes/samplers, geometry, shaders and
+  placements; Fire/Water samples exact. Nine selected field/map checks and a
+  13.6s native Low presentation case pass; eight field tests unselected and frame
+  profiling disabled, not new frame acceptance. Root directly reviews the
+  ordinary travel image: visible but modest improvement, still sparse/stylized.
+  Prior High failure stays open; source remains in owned Air candidate, not
+  selected here or deployed, no release18. Full scoped candidate receipt and
+  logs retain old interrupted/failed attempts; no repeated High or long soak.
+
 - Corrective11 **5bd725b9** is normally pushed after fresh remote reconciliation;
   exact CI **37884472930** is in progress with authorized Luna terminal-only
   monitoring. Prior dc7 attempt2 deployed but failed mandatory live engine-module

@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 local Air composition30658cc0: replace dominant wind-striped dust
+coverage with irregular sheltered deposits; directional slate bedding remains.
+Same registered three maps/dimensions/runtime shaders/geometry/placements,
+other realms exact. Nine selected field/map checks plus native Low presentation
+case13.6s pass; eight other field checks unselected and no new frame profile.
+Root reviews ordinary travel screenshot: modest reduction in repetition, not
+final scene quality. Prior High frame failure remains open; no release18,
+source selection or public promotion. Full original art/F1-F5/party/device/
+owner/beta/launch scope unchanged; exact11 CI remains separately Luna-monitored.
+
 October9 actual startup download correction: prior dc7 attempt2 fails mandatory
 live engine entry; nginx records two matching static JS408 responses, upstream
 cause unproven. Publication-only lazy bundle5bd725b9 consolidates412modules and
