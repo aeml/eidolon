@@ -52,14 +52,18 @@ test('actual published engine stays lazy at login and constructs each class from
         for (const character of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
             const game = new GameEngine(character, false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
             try {
+                const actor = game.createRemotePlayer('Player', `class-${character}`, character);
+                const enemy = game.createRemotePlayer('Enemy', `enemy-${character}`, 'Skeleton');
                 result.push({ character, renderer: Boolean(game.renderSystem?.renderer),
-                    network: Boolean(game.network), ui: Boolean(game.uiManager) });
+                    network: Boolean(game.network), ui: Boolean(game.uiManager),
+                    className: actor.constructor.name, enemyName: enemy.constructor.name });
+                actor.dispose(); enemy.dispose();
             } finally { game.destroy(); }
         }
         return result;
     }, release);
     expect(result).toEqual(['Fighter', 'Rogue', 'Wizard', 'Cleric'].map(character =>
-        ({ character, renderer: true, network: true, ui: true })));
+        ({ character, renderer: true, network: true, ui: true, className: character, enemyName: 'Skeleton' })));
     expect(metadata.bundledModules).toBeGreaterThan(350);
     // Shared login imports retain their one module instance; independent game
     // entities/UI/art/data arrive through one bundle, not hundreds of requests.
