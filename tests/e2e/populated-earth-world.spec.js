@@ -11,6 +11,11 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
     // The disjoint cases cover every original site, with no removed checks
     // or increased timeout. Low-quality cases retain their complete review.
     test(`populated ${elemental === 'air' ? 'Air' : elemental === 'water-fire' ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px${review === 'presentation' ? '' : ` quality switches${quality === 'high' ? ` cover batch ${review + 1}` : ''}`}`, async ({ page, baseURL }, testInfo) => {
+        // Trusted release CI runs these same six expensive graphics cases as
+        // a required native-GPU predeploy step. Other branches/local runs keep
+        // their ordinary coverage; presentation and Low reviews stay hosted.
+        test.skip(process.env.EIDOLON_E2E_NATIVE_COVERAGE_PENDING === 'true' &&
+            quality === 'high' && review !== 'presentation', 'Required native-GPU predeploy coverage, not a waived release gate');
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height: 844 });
