@@ -36,6 +36,7 @@ test.describe('startup failure diagnostic phases', () => {
             await expect(status).toHaveAttribute('data-startup-phase', phase);
             await expect(status).toHaveAttribute('data-failure-kind', kind);
             await expect(status).not.toContainText('private fixture detail');
+            if (phase === 'engine-module') await expect(status).toContainText('Reload the page');
             await expect(page.locator('#start-screen')).toBeVisible();
             await expect(page.locator('#loading-screen')).toBeHidden();
         });

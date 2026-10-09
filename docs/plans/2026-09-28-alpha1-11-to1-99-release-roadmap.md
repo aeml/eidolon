@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 corrective11 startup recovery candidate: retained8a/run37874149991
+live-auth failure has unknown cause, nine jobs/six other live cases succeed.
+Unmodified public fresh-Wizard registration/login/authoritative-world entry
+passes without admin grants, not failed-run acceptance or root-cause proof.
+Safe startup phase/category and module-reload guidance pass415affected checks/
+four native cases; all445old raw notes exact/current11 note truthful. No weaker
+deadlines/retries/security/runtime rules. [Evidence](2026-10-09-release1-79-11-startup-recovery-checks.json).
+Fresh normal remote reconciliation/new same-version CI/public acceptance before
+individual12-17. Full original roadmap/modern-world/F1-F5/party/device/owner/
+operations/rights/beta/launch gates stay active. Older statements historical.
+
 October9 bounded High cover QA: root verifies11/e259/run37870274115 failure;
 Server/Client/Smoke2/3 pass, two High quality-switch cases exceed120s twice.
 Downstream deployment skips. Six disjoint four-cover software cases pass10.8m

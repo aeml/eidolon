@@ -22,8 +22,11 @@ export function createRendererWithGraphicsError(options, createRenderer, createP
 }
 
 export function gameStartupFailureMessage(error) {
-    return error?.code === 'WEBGL2_UNAVAILABLE'
-        ? GRAPHICS_UNAVAILABLE_MESSAGE : 'The game could not start. Please try again.';
+    const kind = gameStartupFailureKind(error);
+    if (kind === 'graphics-unavailable') return GRAPHICS_UNAVAILABLE_MESSAGE;
+    if (kind === 'module-download') return 'Some game files could not be downloaded. Reload the page and try again.';
+    if (kind === 'module-export') return 'The game files could not initialise. Reload the page to load the latest version.';
+    return 'The game could not start. Please try again.';
 }
 
 // Public diagnostic categories only: never expose arbitrary error text,

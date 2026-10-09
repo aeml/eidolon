@@ -49,4 +49,6 @@ test.each([
 ])('startup diagnostics expose a constant category, not the raw failure %#', (error, kind) => {
     expect(gameStartupFailureKind(error)).toBe(kind);
     expect(gameStartupFailureKind(error)).not.toMatch(/private|unsafe|token|https/);
+    expect(gameStartupFailureMessage(error)).not.toMatch(/private|unsafe|token|https/);
+    if (kind.startsWith('module-')) expect(gameStartupFailureMessage(error)).toContain('Reload the page');
 });
