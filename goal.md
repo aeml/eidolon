@@ -18,6 +18,14 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Correct Air windbreak mounting: real High/Low merged-corner regression
+  fails before and passes after; five scoped units per tree and two equipped
+  native views pass. No footprint/mesh/triangle cost changes. Private raised
+  branch then normally merges prepared18 at889a8c2b, retaining qualified16
+  normals/tint/instance-buffer disposal alongside staged growth/canvas/other
+  art. All28 affected merge checks pass38.971s. No public rollout claim; receipts
+  distinguish earlier native sources from this combined tree.
+
 - Shared canvas qualification complete: seven native GL/town/Water/Air cases
   pass37.5s and two Fire gallery cases pass4.3s. Root reviews selected High/Low
   captures and close/distant contact sheet; weave filters out below resolution.

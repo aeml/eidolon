@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "status": "Private raised/current-source reconciliation complete; ordered public rollout remains pending",
+  "head": "889a8c2b7cc75bdd684d2b426bfebc97413d07a5",
+  "parents": [
+    "179ff25d (staged art and corrected windbreak mounts)",
+    "81702abb6e0c953d523b8299b5bf540dffb18424 (normally reconciled prepared18)"
+  ],
+  "reconciliation": "Normal merge retains supplied current Air18 cypress/camp/slate/lighting, staged soil/Fire/books/tents/canvas/growth/controller-array/atlas work, and qualified16 smooth foliage normals, subtle per-plant tint and real InstancedMesh buffer cleanup. Only conflict is test import: preserve both earthUnderstoryScale and earthUnderstoryTint; no source conflict or public overwrite.",
+  "verification": "Four affected suites EarthUnderstory/EarthUnderstoryTint/WoodlandUnderstoryGeometry/RenderSystemGraphicsResources:28 checks pass38.971s. Merged production transform/tint buffers verified against each composed plant, exact wind bounds and scale/quality/placement invariants retained; actual locked Three matrix/color-buffer cleanup tests pass. Seven-file lint and whitespace pass. Existing prior native art/party/soil evidence remains tied to its original sources, not retroactively assigned to this merged whole tree.",
+  "unitLogSHA256": "c8d6c438ece8a440779f9191fe5501fef3e026d18627054d1faadb9c59712411",
+  "windbreak": "Immediately preceding mount correction179ff25d has failing-before/passing-after real merged-mesh anchors and High/Low equipped native captures; no collision/mesh/triangle cost change. Canonical same pose/test source separately committed1261db30; its retained older Air prop geometry is not whole scene parity.",
+  "delivery": "Owned private raised tree only, clean committed merge. Public17 exact1ecfeb20 CI37930673270 remains monitored by Luna; own exact public acceptance then fresh reconciliation before18 push. Do not publish the full private tree or activate raised terrain from unit evidence. Next integrated release selection must preserve current qualified16/17/18 runtime and independently qualify affected rendering/workloads.",
+  "remaining": "Full original roadmap/modern art, final coherent world composition, raised rollout/equipped-party/device gates,1.80F1-F5/1.81-1.99 and owner/human/beta/launch authority remain active."
+}
