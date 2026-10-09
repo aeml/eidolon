@@ -18,6 +18,31 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Corrective same-version11 **dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8**
+  normally pushed after fresh fetch/merge; own **CI37879564669** live, authorized
+  Luna terminal-only monitor. Safe startup categories/phase and module-error
+  reload guidance qualify415focused units/four native local bootstrap cases;
+  all445older raw notes exact/current11 note truthful. Prior8a incident cause
+  still unresolved, never accepted/reclassified. Bounded unmodified public
+  ordinary fresh Wizard registration/login/world entry succeeds: authoritative
+  state/socketOPEN, no observed module/startup failures or admin grants. One
+  codex-boot QA account retained and excluded from real-player population.
+  [Scoped recovery evidence](docs/plans/2026-10-09-release1-79-11-startup-recovery-checks.json).
+  Next11 own terminal/public acceptance before ordered12-17;12local normal merge
+  nowedac4774, later candidates still need inheritance of this new correction.
+
+- Air surface **69cac7a5** is now technically qualified/local, not release18.
+  Two isolated native High/Low cases/18timed views pass1.2m original limits:
+  High16.7median/33.4p95/127calls/173269tri; Low16.7/16.8/56/48768, resources
+  warm-stable. Earlier paving rejection and overlap-associated failure retained,
+  not reclassified or sole-cause proof. Actual captures remain subtle/broad gray
+  travel; modern route cohesion unfinished. Select only three exactly hash-matched
+  source/test files here, no future renderer/Earth-cell/model/version replacement
+  or full future scene qualification; do not replay unchanged140s units.
+  [Component review](docs/plans/2026-10-09-air-slate-component-checks.json).
+  Keep code for combined route-scale work, not a premature tiny release or art
+  certificate. Every full-roadmap/art/F1-F5/party/device/owner gate remains open.
+
 - **Current11 delivery gate failed:** root independently confirms exact
   8a/run37874149991 terminal failure after Luna notice. Nine jobs green, live
   authenticated entry fails before an engine/state/socket is observable; Water
@@ -541,9 +566,10 @@ and its evidence remains. No cancellation question is currently outstanding.
 Luna monitors each new deployment read-only until terminal completion; an
 observation timeout is not a failure or authority to retry/cancel.
 
-1. Diagnose terminal failed11/8a57420e/run37874149991 using local0460b1d9 safe
-   startup diagnostics; qualify correction and truthful notes before any new
-   current11 publication. Then require own CI/public acceptance and fresh-fetch/normal
+1. Accept or diagnose corrective11/dc7d22f2/CI37879564669 after authorized Luna
+   terminal notice; independently verify public identities/mandatory jobs. Prior
+   8a failure cause remains unresolved; use new safe evidence if it recurs, never
+   suppress or guess. Then require own CI/public acceptance and fresh-fetch/normal
    reconcile and individually publish/accept prepared12-17 in order.17is locally
    qualified, not live. Continue broader modern-world cohesion work while CI runs.
    Never promote the entire future branch or overlap release pushes.

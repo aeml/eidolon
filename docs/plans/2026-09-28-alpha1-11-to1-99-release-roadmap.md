@@ -1,5 +1,19 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 scoped startup recovery11/dc7d22f2 normally pushed after fresh merge;
+own CI37879564669 running/Luna terminal-only watch.415affected units/four native
+local cases pass, all445old notes exact. Unmodified public ordinary fresh Wizard
+login/world entry passes, not prior8a failed-run acceptance or root-cause proof.
+[Evidence](2026-10-09-release1-79-11-startup-recovery-checks.json).12normal local
+mergeedac4774; own11 acceptance before all individual12-17 publications.
+Air surface69cac7a5 two isolated native cases18timed views pass original limits,
+High33.4p95/173269tri/127calls, Low16.8/48768/56. Retain first rejected paving and
+later failed overlapping run. Exact three-file source selection into future,
+not full-future scene/modern art approval; visual gain modest, route cohesion
+unfinished. [Review](2026-10-09-air-slate-component-checks.json). No new release18,
+raised activation or narrowed full-roadmap/F1-F5/party/device/owner/beta scope.
+Earlier pending/failure/precheck statements below remain historical.
+
 **Current11 gate failed:** root verifies8a/run37874149991 terminal failure;
 nine jobs green, live authenticated entry fails before observable engine/state,
 Water case flaky and six others including Verdant dungeon pass. Subsequent

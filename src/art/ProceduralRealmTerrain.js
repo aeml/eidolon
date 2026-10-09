@@ -31,7 +31,7 @@ export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     ),
     air: terrainDefinition(
         'stormcrown-slate', 'air', 'Stormcrown Reach',
-        'wind-scoured slate, broken warped bedding, pale scree deposits, and weathered violet-grey stone', 0xc3841dd9,
+        'wind-scoured fractured slate, shallow riven faces, interrupted mineral bedding, and pale scree deposits', 0xc3841dd9,
         { roughness: 0.93, metalness: 0.03, repeat: [68, 54], tint: 0xd1cdd8 }
     ),
     ocean: terrainDefinition(
