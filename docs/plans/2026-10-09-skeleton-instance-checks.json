@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.16 prepared supplement",
+  "status": "qualified bounded renderer change, not pushed/live or full party/device acceptance",
+  "source": "Prepared16/51629895b7fe580bebc6d9ba1b1b7a2cec1daeef plus the exact recorded source/test hashes below. Select corrected11/e259f015 QA-only readiness/regional split fixtures without replacing later renderer/art/version work.",
+  "scope": "Allow the existing ActorInstanceBatches controller to register constructor-batched procedural Skeleton roots, alongside its existing humanoid fallbacks. Explicitly exclude unbatched Skeletons, all unreviewed enemy families and supplied/skinned actors. Existing strict opaque/default-shader/default-hook/non-mirrored/no-morph eligibility, spatial cells, borrowed exact geometry/materials and frame-only visibility restoration unchanged. Every actor's live independent pivot transforms drive standard instance matrices. No enemies, surfaces, equipment, animations, hitboxes, foliage, shadows or collision removed; no custom shader or GPU matrix textures.",
+  "units": "Final ten affected actor/geometry/population/surface/pin/YAML/version/pagination suites486pass6.792s. Earlier61actor cases overlap, not added. Five independently posed Skeleton Idle/Walk/Run/Attack/Death cases verify borrowed geometry, world matrices, membership, reset and visibility; existing custom-hook/skin/morph/mirror/transparency/ownership/retirement guards remain intact. Scoped ESLint and whitespace pass.",
+  "nativeSurfaces": "System Chrome/native AMD/RADV High+Low: two eight-Skeleton independent-animation pixel/triangle/shadow comparisons and two original ten-equipped-procedural-fallback comparisons,4pass9.5s. All five Skeleton states retain exact triangles and restored visibility, mean pixel error below original0.1/changed-pixel fraction below original0.001. Idle High528to60calls with19889tri unchanged; Low273to25calls with10202tri unchanged. Imported class fitting is not replaced by this fallback-only route.",
+  "nativeWorld": "Actual assembled16 populated flat Earth/town High1280/Low390 two cases pass1.1m,18timed views120RAF each. Original High250000tri/350calls/20median/33.4p95 and Low85000tri/200calls/33.4median/50p95 unchanged. Highmax242calls/245947tri; Lowmax109calls/67958tri. Both maxmedian16.700000000000728/maxp9516.799999999999272ms, warmed repeat geometries/textures/programs stable. Original wind/input/inspection/geometry assertions unchanged. Bare gallery remains different from geared party.",
+  "connectedParty": "Disposable race Go1.27.2/Mongo fixture passes25.81s/package26.858s. One actual native High1280 renderer plus three normal authenticated party sockets; all four independent supplied class rigs, fourteen-slot outfits, raised-ground alignment and saved gear/membership/bag/EP retained.180frames median16.7/p9533.3/p9933.4ms,7over33.34ms; CPUmedian17.1/p9521.4ms,545mediandraws/538724tri/29active entities. Four-browser Fireball/healing case skipped, not passed. No production env/accounts/data or raised activation; owned DB removed.",
+  "pairedSameScene": {
+    "scope": "Two untimed synchronous renders of the exact same party/poses/camera, existing controller toggled off/on after frame sampling and restored. Not a frame-time comparison.",
+    "without": { "calls": 734, "triangles": 527671 },
+    "with": { "calls": 528, "triangles": 537607 },
+    "conclusion": "28% fewer calls in this same scene. Aggregate instance bounds draw9936more offscreen/shadow triangles; no surface is simplified/removed. Earlier920-call baseline had35entities/different scenery and is not a directly matched timing improvement. CPU/frame-time benefit, active four-input battle, raid/phone/device budgets and final modern-art acceptance remain open. No invented or relaxed party budget."
+  },
+  "notes": "Only unaccepted16 note title/supplement updated to describe shared enemy rendering.451total/10initial/45lazy; independent raw Git index+archive audit against15/e07a46d7 proves all450prior entries byte-identical, including legacy entries. All16version labels and dependencies unchanged.",
+  "proof": {
+    "controllerSHA256": "dc28775c05822f7ba94096d2be905d59aa47f0ae09e5ee0137bd8a05a84dddcc",
+    "actorUnitSHA256": "b99ed5ca1d6339a88fdafde48d94949656b756ad9725e2f77f817ca3b150c829",
+    "pixelFixtureSHA256": "ec30cd2112984e5c427e0c129b6fbb4b59fef45f20ceef78de908c18998be292",
+    "partyFixtureSHA256": "b5954a00a715d11d32710a46cc2dabeb09bc4d2a0128d11b753bb49b25446578",
+    "finalUnitsSHA256": "fb74c1a46228cc649e4f71774d2f237a8e79283084c2e0f016fdc95f57523ba8",
+    "pixelNativeLogSHA256": "a99efb288457b06d3ea1bb52bd60407eaa50b92a8c969faa35af5ef6c68141a8",
+    "worldNativeLogSHA256": "d02b4081ad69f1e0d9ef013857b739e8796ec7def098b2dd3116996874478054",
+    "partyBrowserLogSHA256": "75801d80b4d319fe272e0b9078cf3aa45c5807ebe1db5dbe58e9d45fbe5892a0",
+    "partyRaceLogSHA256": "3907a59adab9fbee3bf06d616af77766b99e05f54fb258ae59155e17958a416e"
+  },
+  "artifacts": "Task-owned eidolon-skeleton-instance-native-20261009, eidolon-skeleton-instance-world-native-20261009 and matching logs, final units log; party eidolon-terrain-save-evidence-YV4Dn2rL. No concurrent local browser before native runs, original failed/baseline evidence retained, credentials recordings off.",
+  "delivery": "Corrected11/e259f0151d6725d152aeaf3ba5dcb645fb6a0ff4 normally pushed after fresh fetch/merge with no new remote changes. New CI37870274115 pending; Luna terminal-only watch, root independently verifies eventual acceptance. Last accepted public10/d3a3b9f7 healthy/exact.16 remains local until ordered11-15 acceptance/fresh remote reconciliation. Full original1.11-1.99 roadmap/F1-F5/modern world/class art/party/raised/device/human/owner/operations/rights/beta/launch remains active."
+}

@@ -317,10 +317,24 @@ test('single native renderer observes three live equipped party socket peers on 
                 return [...counts.values()].sort((a, b) => b.color + b.shadow - a.color - a.shadow);
             } finally { renderer.renderBufferDirect = original; }
         });
+        const pairedDraws = await page.evaluate(() => {
+            const render = window.game.renderSystem, instances = render.actorInstances;
+            const enabled = instances.enabled;
+            const capture = value => {
+                instances.enabled = value; render.render();
+                return { calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+            };
+            try { return { without: capture(false), with: capture(true) }; }
+            finally { instances.enabled = enabled; instances.endFrame(); }
+        });
+        expect(pairedDraws.with.calls).toBeLessThan(pairedDraws.without.calls);
         await testInfo.attach('single-renderer-live-party-profile', { body: JSON.stringify({ ...report, party,
             scope: 'One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.'
         }, null, 2), contentType: 'application/json' });
         await testInfo.attach('untimed-party-draw-attribution', { body: JSON.stringify(draws, null, 2), contentType: 'application/json' });
+        await testInfo.attach('untimed-same-scene-instance-comparison', { body: JSON.stringify({ ...pairedDraws,
+            scope: 'Two untimed synchronous renders of the same party/poses/camera. Borrowed exact geometry; aggregate instance bounds may draw more offscreen triangles. Not a frame-budget certificate.'
+        }, null, 2), contentType: 'application/json' });
         if (process.env.EIDOLON_TERRAIN_PARTY_CPU_PROFILE === '1') {
             // Opt-in diagnosis AFTER the frame sample, never part of its timing.
             // CPU profiles contain function/source identities, not chat or args.
@@ -359,6 +373,7 @@ test('single native renderer observes three live equipped party socket peers on 
         expect(failures, failures.join('\n')).toEqual([]);
         console.log('[single-renderer-terrain-party]', JSON.stringify({ quality, ...report }));
         console.log('[untimed-party-draw-attribution]', JSON.stringify(draws.slice(0, 16)));
+        console.log('[untimed-same-scene-instance-comparison]', JSON.stringify(pairedDraws));
     } finally {
         await page.evaluate(() => window.game?.destroy?.()).catch(() => {});
         for (const peer of peers) peer.socket.close();

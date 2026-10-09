@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 qualified16 Skeleton render supplement:** Reuse existing cross-actor
+opaque batches only for reviewed constructor-batched Skeletons; supplied skins,
+other families, live poses/materials/hitboxes/shadows and eligibility unchanged.
+486focused cases, four native pixel/triangle/visibility cases and two populated
+world cases18timed views pass original limits. Actual disposable geared party
+save/rig checks pass; same-scene untimed734to528calls, not a timing certificate.
+Party180frames median16.7/p9533.3ms; CPU benefit/battle/device remains open.
+All450prior raw notes exact, current16note truthful. Corrected11QA fixtures
+selected without replacing later art/renderer work.
+[Evidence](docs/plans/2026-10-09-skeleton-instance-checks.json).
+11 replacemente259f015 normally pushed after fresh remote reconciliation,
+CI37870274115 pending/Luna terminal-only monitoring. Public10 remains accepted;
+ordered11-15 acceptance precedes16. Full original roadmap/art/F1-F5/party/device/
+human/owner/operations/rights/beta/launch scope remains active.
+
 **October9 actual equipped-party observation:** Prepared16's unchanged runtime
 renders four fully geared authored classes on local raised terrain, using one
 native GPU browser and three normal connected party sockets. Race fixture and

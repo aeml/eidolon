@@ -8,6 +8,13 @@ const inside = (part, ancestor, visible = false) => {
     return false;
 };
 
+// Supplied/skinned actors and unreviewed enemy families retain their original
+// path. The constructor-batched Skeleton owns immutable leaves below live
+// animation pivots, just like the existing procedural humanoid fallback.
+const ownedRigidActor = root => root?.userData.proceduralHumanoid ||
+    (root?.userData.proceduralEnemyFamily === true && root.userData.proceduralActorType === 'Skeleton' &&
+        Boolean(root.userData.humanoidRenderBatches));
+
 const candidate = part => part.isMesh && !part.isInstancedMesh && !part.isSkinnedMesh && !part.children.length &&
     part.material?.isMeshStandardMaterial && !Array.isArray(part.material) && part.geometry?.attributes.position;
 
@@ -47,13 +54,13 @@ export class ActorInstanceBatches {
     }
 
     register(root) {
-        if (this.disposed || !root?.userData.proceduralHumanoid || this.roots.has(root)) return;
+        if (this.disposed || !ownedRigidActor(root) || this.roots.has(root)) return;
         this.roots.set(root, {}); this.dirty = true;
     }
 
     refreshRoster() {
         for (const [root, snapshot] of this.roots) {
-            if (!root.userData.proceduralHumanoid || !inside(root, this.scene)) { this.roots.delete(root); this.dirty = true; continue; }
+            if (!ownedRigidActor(root) || !inside(root, this.scene)) { this.roots.delete(root); this.dirty = true; continue; }
             const cell = `${Math.floor((root.matrixWorld.elements[12] + 32) / 64)},${Math.floor((root.matrixWorld.elements[14] + 32) / 64)}`;
             const revision = `${root.userData.equipmentVisualRevision || 0}:${root.userData.equipmentVisualSignature || ''}`;
             if (cell !== snapshot.cell || revision !== snapshot.revision) this.dirty = true;

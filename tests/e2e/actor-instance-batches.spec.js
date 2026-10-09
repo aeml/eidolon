@@ -2,6 +2,74 @@ import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
+for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instances preserve independently animated color and shadow surfaces`, async ({ page, baseURL }, testInfo) => {
+    const failures = collectBrowserFailures(page, baseURL);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.setViewportSize({ width: 1100, height: 844 });
+    await page.goto('/', { waitUntil: 'networkidle' });
+    const reports = await page.evaluate(async quality => {
+        const THREE = await import('three');
+        const { RenderSystem } = await import('/src/core/RenderSystem.js');
+        const { MeshFactory } = await import('/src/utils/MeshFactory.js');
+        document.getElementById('start-screen').style.display = 'none';
+        const render = new RenderSystem(quality === 'low'); render.setGraphicsQuality(quality);
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: 0x4a4842 }));
+        floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; render.scene.add(floor);
+        const models = [];
+        for (let index = 0; index < 8; index++) {
+            const mesh = await MeshFactory.createMeshForType('Skeleton');
+            mesh.position.set((index % 4 - 1.5) * 4, 0, index < 4 ? -3 : 3);
+            render.entityGroup.add(mesh); models.push(mesh);
+        }
+        render.setZoom(18); render.setCameraTarget(new THREE.Vector3(0, 1, 0));
+        render.applyLightingPreset('town', true); render.updateEnvironmentLighting(new THREE.Vector3(), 0);
+        const canvas = render.renderer.domElement, copy = document.createElement('canvas');
+        copy.width = canvas.width; copy.height = canvas.height;
+        const context = copy.getContext('2d', { willReadFrequently: true }), reports = [];
+        const capture = enabled => {
+            render.actorInstances.enabled = enabled; render.render(); context.drawImage(canvas, 0, 0);
+            return { pixels: context.getImageData(0, 0, copy.width, copy.height).data,
+                calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+        };
+        capture(false); capture(true);
+        try {
+            for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
+                const mixers = models.map((mesh, index) => {
+                    const mixer = new THREE.AnimationMixer(mesh);
+                    mixer.clipAction(mesh.userData.animations.find(clip => clip.name === state)).play();
+                    mixer.update(.2 + index * .07); return mixer;
+                });
+                const visibility = new Map(); models.forEach(mesh => mesh.traverse(part => visibility.set(part, part.visible)));
+                const before = capture(false), after = capture(true); let error = 0, changed = 0;
+                for (let index = 0; index < before.pixels.length; index += 4) {
+                    const delta = Math.max(...[0, 1, 2].map(c => Math.abs(before.pixels[index + c] - after.pixels[index + c])));
+                    error += delta; if (delta > 8) changed++;
+                }
+                reports.push({ state, beforeCalls: before.calls, afterCalls: after.calls,
+                    beforeTriangles: before.triangles, afterTriangles: after.triangles,
+                    meanError: error / (copy.width * copy.height), changed: changed / (copy.width * copy.height),
+                    visibilityRestored: [...visibility].every(([part, visible]) => part.visible === visible) });
+                mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); });
+                models.forEach(mesh => mesh.userData.resetPose());
+            }
+        } finally {
+            render.setActorInstancesEnabled(false);
+            models.forEach(mesh => { mesh.removeFromParent(); MeshFactory.releaseMesh('Skeleton', mesh); });
+            floor.removeFromParent(); render.disposeObjectResources(floor); render.dispose();
+        }
+        return reports;
+    }, quality);
+    await writeFile(testInfo.outputPath('skeleton-instance-comparison.json'), JSON.stringify(reports, null, 2));
+    await testInfo.attach('skeleton-instance-comparison', { body: JSON.stringify(reports), contentType: 'application/json' });
+    for (const row of reports) {
+        expect(row.afterCalls).toBeLessThan(row.beforeCalls);
+        expect(row.afterTriangles).toBe(row.beforeTriangles);
+        expect(row.meanError).toBeLessThan(.1); expect(row.changed).toBeLessThan(.001);
+        expect(row.visibilityRestored).toBe(true);
+    }
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
 for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural fallback instances preserve animated surfaces, shadows and stealth`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});

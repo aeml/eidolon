@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared16 qualified Skeleton cross-actor batches preserve exact
+independent animations/surfaces/shadows/hitboxes and borrowed resources; supplied
+skins/other families unchanged.486units/four native comparisons/two world cases
+18timed views pass original limits. Disposable equipped-party saves/rigs pass;
+paired same-scene734to528calls, but not proven faster frames or battle/device
+acceptance. All450older notes exact. [Supplement](2026-10-09-skeleton-instance-checks.json).
+Corrected11/e259f015 pushed after fresh fetch/merge, CI37870274115 pending/Luna.
+16local only until ordered11-15 acceptance and fresh remote reconciliation;
+full numbered scope/modern art/F1-F5/party/device/human/beta/launch remains open.
+
 October9 prepared16 connected-party observation: actual native High1280 client
 renders four independent fully geared authored class rigs on disposable raised
 terrain with three live normal sockets. Race/saved gear and180frame observation

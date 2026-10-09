@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { ActorInstanceBatches } from '../src/art/ActorInstanceBatches.js';
+import { createProceduralSkeleton, createProceduralImp } from '../src/art/ProceduralLegacyEnemies.js';
 
 function fixture() {
     const scene = new THREE.Scene(), geometry = new THREE.BoxGeometry(), material = new THREE.MeshStandardMaterial();
@@ -27,6 +28,55 @@ test('borrows exact surfaces and retains parent-transformed world positions', ()
     f.actors.forEach(({ mesh }) => expect(mesh.visible).toBe(false));
     f.instances.endFrame(); f.actors.forEach(({ mesh }) => expect(mesh.visible).toBe(true));
     expect(f.instances.group.visible).toBe(false); f.instances.dispose();
+});
+
+test.each(['Idle', 'Walk', 'Run', 'Attack', 'Death'])('reviewed Skeleton instances retain independent %s pivot transforms and visibility', state => {
+    const scene = new THREE.Scene();
+    const roots = [0, 1, 2].map(index => {
+        const root = createProceduralSkeleton({ batch: true });
+        root.position.x = index * 4;
+        const mixer = new THREE.AnimationMixer(root);
+        mixer.clipAction(root.userData.animations.find(clip => clip.name === state)).play();
+        mixer.update(.2 + index * .17);
+        scene.add(root); return root;
+    });
+    const instances = new ActorInstanceBatches(scene);
+    try {
+        scene.updateMatrixWorld(true);
+        const visibility = new Map();
+        roots.forEach(root => root.traverse(part => visibility.set(part, part.visible)));
+        instances.beginFrame();
+        expect(instances.roots.size).toBe(3);
+        expect(instances.batches.size).toBeGreaterThan(0);
+        const matrix = new THREE.Matrix4();
+        for (const batch of instances.batches.values()) {
+            const parts = instances.hidden.filter(part => part.geometry === batch.geometry && part.material === batch.material &&
+                part.castShadow === batch.castShadow && part.receiveShadow === batch.receiveShadow);
+            expect(batch.count).toBe(parts.length);
+            for (let index = 0; index < batch.count; index++) {
+                batch.getMatrixAt(index, matrix); matrix.premultiply(batch.matrixWorld);
+                expect(parts.some(part => part.matrixWorld.elements.every((value, element) =>
+                    Math.abs(value - matrix.elements[element]) < .00001))).toBe(true);
+            }
+        }
+        instances.endFrame();
+        for (const [part, visible] of visibility) expect(part.visible).toBe(visible);
+        roots[2].removeFromParent(); scene.updateMatrixWorld(true); instances.beginFrame();
+        expect(instances.roots.size).toBe(2);
+        instances.endFrame();
+        roots.forEach(root => root.userData.resetPose());
+        for (const [part, visible] of visibility) expect(part.visible).toBe(visible);
+    } finally { instances.dispose(); }
+});
+
+test('unbatched Skeleton, unreviewed enemy and supplied actor do not enter the rigid instance roster', () => {
+    const scene = new THREE.Scene();
+    scene.add(createProceduralSkeleton(), createProceduralImp());
+    const supplied = new THREE.Group(); supplied.userData.authoredClass = 'Fighter';
+    supplied.add(new THREE.SkinnedMesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial()));
+    scene.add(supplied);
+    const instances = new ActorInstanceBatches(scene);
+    try { expect(instances.roots.size).toBe(0); } finally { instances.dispose(); }
 });
 
 test.each(['transparent', 'customDepth', 'customRender', 'customShader', 'skinned', 'morph', 'mirrored', 'hidden', 'other-layer', 'other-shadow', 'nonprocedural'])('%s retains the normal rendering path', kind => {
