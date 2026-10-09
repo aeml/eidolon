@@ -18,6 +18,15 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Woodland shading and owned instance-buffer cleanup are unit-qualified at
+  bf2b2712, selected narrowly into current16/86795c17 with candidate record
+  1dceefd5. Current16 is held: untimed High/Low passes are not timed passes;
+  timed High fails original33.4ms p95 while Low passes. Original-art reference
+  also fails20ms median on a heavily loaded shared host; contribution uncertain.
+  Keep both failures, no rounded limit or green retry. Last qualified16 is54c1634a;
+  17/18 have not inherited this candidate. See the compact
+  [candidate record](docs/plans/2026-10-09-woodland-shading-candidate.json).
+  Broader repeated-clump/sparse-floor and complete modern-world art gaps remain.
 - Current pushed **1.79.13 /ebdfd4e8 /CI37906851626** is running, not accepted.
   Fresh normal fetch/merge retains accepted12, monitor code unchanged;383
   current version/pagination checks pass4.133s. Actual selected publisher
@@ -284,7 +293,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   | 1.79.13 (pushed, CI pending) | `eidolon-public-monitor-release-XpKvF87O` | `ebdfd4e8` |
   | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `3e0b1a1f` |
   | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `2bca9889` |
-  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `54c1634a` |
+  | 1.79.16 (held candidate; qualified reference54c1634a) | `eidolon-masonry-release-CkTEzcx0` | `1dceefd5` |
   | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `baa610f4` |
   | 1.79.18 | `eidolon-air-cypress-release-20261009` | `73f19f60` |
 
