@@ -173,7 +173,7 @@ test('registered foliage roots avoid scanning unrelated actors and retain add/re
     controller.visit = object => { visited.push(object); original(object); };
     s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
     controller.beginFrame(s.scene, s.camera, s.light);
-    expect(visited).toEqual([s.group, s.mesh]); expect(s.mesh.castShadow).toBe(false);
+    expect(visited).toEqual([s.mesh]); expect(s.mesh.castShadow).toBe(false);
     controller.endFrame();
     const extra = new THREE.Group(); extra.userData = { proceduralFoliage: true, region: 'earth' };
     const caster = s.mesh.clone(); extra.add(caster); s.scene.add(extra); s.scene.updateMatrixWorld(true);
@@ -192,6 +192,35 @@ test('registered foliage roots avoid scanning unrelated actors and retain add/re
     controller.beginFrame(s.scene, s.camera, s.light); expect(caster.castShadow).toBe(false);
     controller.dispose(); expect(s.mesh.castShadow).toBe(true); expect(caster.castShadow).toBe(true);
     expect(controller.roots.size).toBe(0); controller.dispose();
+});
+
+test('direct non-Earth leaf cells skip visits, but live flags and nested Earth content remain authoritative', () => {
+    const s = fixture();
+    s.group.userData.region = 'air'; s.mesh.position.set(100, 5, 0);
+    const nested = new THREE.Group(); nested.userData = { proceduralFoliage: true, region: 'earth' };
+    const caster = s.mesh.clone(); nested.add(caster); s.group.add(nested);
+    s.scene.updateMatrixWorld(true);
+    const controller = new FoliageShadowInfluence(s.scene);
+    const visit = jest.spyOn(controller, 'visit');
+    const frame = () => controller.beginFrame(s.scene, s.camera, s.light);
+    try {
+        frame();
+        expect(visit).not.toHaveBeenCalledWith(s.mesh);
+        expect(visit).toHaveBeenCalledWith(caster);
+        expect(s.mesh.castShadow).toBe(true); expect(caster.castShadow).toBe(false);
+        controller.endFrame();
+        s.group.userData.region = 'earth'; visit.mockClear(); frame();
+        expect(visit).toHaveBeenCalledWith(s.mesh); expect(s.mesh.castShadow).toBe(false);
+        controller.endFrame();
+        nested.visible = false; visit.mockClear(); frame();
+        expect(visit).not.toHaveBeenCalledWith(caster); expect(caster.castShadow).toBe(true);
+        controller.endFrame();
+        nested.visible = true; s.group.userData = { earthUnderstory: true };
+        s.mesh.castShadow = false; s.mesh.userData.windBoundsIncluded = true;
+        s.mesh.material.userData.woodlandWind = true; visit.mockClear(); frame();
+        expect(visit).toHaveBeenCalledWith(s.mesh); expect(s.mesh.visible).toBe(false);
+        controller.endFrame(); expect(s.mesh.visible).toBe(true);
+    } finally { visit.mockRestore(); controller.dispose(); s.controller.dispose(); }
 });
 
 test('filter padding includes complete texel footprint, depth and normal bias without changing the shadow map', () => {
