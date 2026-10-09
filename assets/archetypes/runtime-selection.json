@@ -1,0 +1,609 @@
+{
+  "schemaVersion": 1,
+  "preparationReceipt": "docs/plans/2026-10-09-body-lod-preparation.json",
+  "characters": {
+    "Fighter": {
+      "source": {
+        "file": "assets/archetypes/Fighter/fighter.glb",
+        "sha256": "dcb48696059094dc5d79e8539fd9368b9932ebb8f3bc57d14b1c4098caae2a3a"
+      },
+      "variants": {
+        "high": {
+          "bytes": 6712312,
+          "sha256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae",
+          "triangles": 49812,
+          "meshTriangles": {
+            "Fighter_Body": 31748,
+            "Fighter_Brows": 192,
+            "Fighter_ClothSeams": 1920,
+            "Fighter_Eye_l": 960,
+            "Fighter_Eye_r": 960,
+            "Fighter_Hair": 2256,
+            "Fighter_Iris_l": 960,
+            "Fighter_Iris_r": 960,
+            "Fighter_Pupil_l": 960,
+            "Fighter_Pupil_r": 960,
+            "Fighter_Undershorts": 7936
+          },
+          "joints": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "skinnedMeshes": [
+            "Fighter_Body",
+            "Fighter_Brows",
+            "Fighter_ClothSeams",
+            "Fighter_Eye_l",
+            "Fighter_Eye_r",
+            "Fighter_Hair",
+            "Fighter_Iris_l",
+            "Fighter_Iris_r",
+            "Fighter_Pupil_l",
+            "Fighter_Pupil_r",
+            "Fighter_Undershorts"
+          ],
+          "morphTargets": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 11,
+          "externalDependencies": [],
+          "maximumTextureSize": 1024,
+          "ratio": 0.2,
+          "maximumSimplificationError": 0.002,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+          "bodyTriangles": 31748,
+          "baselineFile": "assets/archetypes/Fighter/fighter-runtime-high.glb",
+          "baselineSHA256": "fda495c5e7fe60dc2d79b644c0ee6acb868a6a36e3bf9c69792418f0b0a10bc5",
+          "algorithm": "attributes",
+          "maximumError": 0.002,
+          "gltfErrors": 0,
+          "gltfWarnings": 0
+        },
+        "low": {
+          "bytes": 3680212,
+          "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+          "triangles": 36498,
+          "meshTriangles": {
+            "Fighter_Body": 18434,
+            "Fighter_Brows": 192,
+            "Fighter_ClothSeams": 1920,
+            "Fighter_Eye_l": 960,
+            "Fighter_Eye_r": 960,
+            "Fighter_Hair": 2256,
+            "Fighter_Iris_l": 960,
+            "Fighter_Iris_r": 960,
+            "Fighter_Pupil_l": 960,
+            "Fighter_Pupil_r": 960,
+            "Fighter_Undershorts": 7936
+          },
+          "joints": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "skinnedMeshes": [
+            "Fighter_Body",
+            "Fighter_Brows",
+            "Fighter_ClothSeams",
+            "Fighter_Eye_l",
+            "Fighter_Eye_r",
+            "Fighter_Hair",
+            "Fighter_Iris_l",
+            "Fighter_Iris_r",
+            "Fighter_Pupil_l",
+            "Fighter_Pupil_r",
+            "Fighter_Undershorts"
+          ],
+          "morphTargets": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 11,
+          "externalDependencies": [],
+          "maximumTextureSize": 512,
+          "ratio": 0.18,
+          "maximumSimplificationError": 0.006,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+          "bodyTriangles": 18434,
+          "baselineFile": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+          "baselineSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+          "algorithm": "exact-reviewed-runtime",
+          "maximumError": 0.006,
+          "gltfErrors": 0,
+          "gltfWarnings": 0
+        }
+      }
+    },
+    "Rogue": {
+      "source": {
+        "file": "assets/archetypes/Rogue/rogue.glb",
+        "sha256": "f3cee5ce0564c2c14f201e35e296c4e91556b76702701bc70db9a9919f70d9c9"
+      },
+      "variants": {
+        "high": {
+          "bytes": 5546784,
+          "sha256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f",
+          "triangles": 63042,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "StealthIdle",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 9,
+          "externalDependencies": [],
+          "maximumTextureSize": 1024,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+          "bodyTriangles": 30134,
+          "baselineFile": "assets/archetypes/Rogue/rogue-runtime-high.glb",
+          "baselineSHA256": "1da90eb1906730046be0cb3a03beac1881d92fd0cee33805a78b85ea37a5c9ef",
+          "algorithm": "attributes",
+          "maximumError": 0.002,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Rogue_Body": 30134,
+            "Rogue_Brows": 192,
+            "Rogue_Eye_l": 528,
+            "Rogue_Eye_r": 528,
+            "Rogue_Hair": 5352,
+            "Rogue_Iris_l": 528,
+            "Rogue_Iris_r": 528,
+            "Rogue_Pupil_l": 528,
+            "Rogue_Pupil_r": 528,
+            "Rogue_Scalp": 1300,
+            "Rogue_Undershorts": 7088,
+            "Rogue_Undershorts_Seams": 2016,
+            "Rogue_Undertop": 10864,
+            "Rogue_Undertop_Seams": 2928
+          },
+          "ratio": 0.2
+        },
+        "low": {
+          "bytes": 4017940,
+          "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+          "triangles": 50932,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "StealthIdle",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 9,
+          "externalDependencies": [],
+          "maximumTextureSize": 512,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+          "bodyTriangles": 18024,
+          "baselineFile": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+          "baselineSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+          "algorithm": "exact-reviewed-runtime",
+          "maximumError": 0.006,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Rogue_Body": 18024,
+            "Rogue_Brows": 192,
+            "Rogue_Eye_l": 528,
+            "Rogue_Eye_r": 528,
+            "Rogue_Hair": 5352,
+            "Rogue_Iris_l": 528,
+            "Rogue_Iris_r": 528,
+            "Rogue_Pupil_l": 528,
+            "Rogue_Pupil_r": 528,
+            "Rogue_Scalp": 1300,
+            "Rogue_Undershorts": 7088,
+            "Rogue_Undershorts_Seams": 2016,
+            "Rogue_Undertop": 10864,
+            "Rogue_Undertop_Seams": 2928
+          }
+        }
+      }
+    },
+    "Wizard": {
+      "source": {
+        "file": "assets/archetypes/Wizard/wizard.glb",
+        "sha256": "130d4d06573861e4accd2eac9bccb8b9b409949ebb2b8f07438b60199a821841"
+      },
+      "variants": {
+        "high": {
+          "bytes": 4575428,
+          "sha256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e",
+          "triangles": 49478,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "Channel",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 7,
+          "externalDependencies": [],
+          "maximumTextureSize": 1024,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+          "bodyTriangles": 30846,
+          "baselineFile": "assets/archetypes/Wizard/wizard-runtime-high.glb",
+          "baselineSHA256": "facb882f8a68ab69c715113cf45cab03611e59cc8ec1b6854dfaf1188bc2f5aa",
+          "algorithm": "attributes",
+          "maximumError": 0.002,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Wizard_Body": 30846,
+            "Wizard_Brows": 192,
+            "Wizard_Eye_l": 528,
+            "Wizard_Eye_r": 528,
+            "Wizard_Hair": 3344,
+            "Wizard_Iris_l": 528,
+            "Wizard_Iris_r": 528,
+            "Wizard_Pupil_l": 528,
+            "Wizard_Pupil_r": 528,
+            "Wizard_Scalp": 2248,
+            "Wizard_Undershorts": 7664,
+            "Wizard_Undershorts_Seams": 2016
+          },
+          "ratio": 0.2
+        },
+        "low": {
+          "bytes": 3215076,
+          "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+          "triangles": 37244,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "Channel",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 7,
+          "externalDependencies": [],
+          "maximumTextureSize": 512,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+          "bodyTriangles": 18612,
+          "baselineFile": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+          "baselineSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+          "algorithm": "exact-reviewed-runtime",
+          "maximumError": 0.006,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Wizard_Body": 18612,
+            "Wizard_Brows": 192,
+            "Wizard_Eye_l": 528,
+            "Wizard_Eye_r": 528,
+            "Wizard_Hair": 3344,
+            "Wizard_Iris_l": 528,
+            "Wizard_Iris_r": 528,
+            "Wizard_Pupil_l": 528,
+            "Wizard_Pupil_r": 528,
+            "Wizard_Scalp": 2248,
+            "Wizard_Undershorts": 7664,
+            "Wizard_Undershorts_Seams": 2016
+          }
+        }
+      }
+    },
+    "Cleric": {
+      "source": {
+        "file": "assets/archetypes/Cleric/cleric.glb",
+        "sha256": "3957360ca8bdf931ada2b48164fb7c917d8b1872737fa1ea79b13feac6d1ee7f"
+      },
+      "variants": {
+        "high": {
+          "bytes": 5561764,
+          "sha256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7",
+          "triangles": 64546,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "CombatIdle",
+            "Death",
+            "Heal",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 9,
+          "externalDependencies": [],
+          "maximumTextureSize": 1024,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+          "bodyTriangles": 30476,
+          "baselineFile": "assets/archetypes/Cleric/cleric-runtime-high.glb",
+          "baselineSHA256": "b0d77d7e0d3214860878ad61a8032146ad66b07c5079f8a6366db92291fc5eea",
+          "algorithm": "attributes",
+          "maximumError": 0.002,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Cleric_Body": 30476,
+            "Cleric_Brows": 192,
+            "Cleric_Eye_l": 528,
+            "Cleric_Eye_r": 528,
+            "Cleric_Hair": 5518,
+            "Cleric_Iris_l": 528,
+            "Cleric_Iris_r": 528,
+            "Cleric_Pupil_l": 528,
+            "Cleric_Pupil_r": 528,
+            "Cleric_Scalp": 2088,
+            "Cleric_Undershorts": 7008,
+            "Cleric_Undershorts_Seams": 2112,
+            "Cleric_Undertop": 10864,
+            "Cleric_Undertop_Seams": 3120
+          },
+          "ratio": 0.2
+        },
+        "low": {
+          "bytes": 4061680,
+          "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+          "triangles": 52094,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "CombatIdle",
+            "Death",
+            "Heal",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 9,
+          "externalDependencies": [],
+          "maximumTextureSize": 512,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+          "bodyTriangles": 18024,
+          "baselineFile": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+          "baselineSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+          "algorithm": "exact-reviewed-runtime",
+          "maximumError": 0.006,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Cleric_Body": 18024,
+            "Cleric_Brows": 192,
+            "Cleric_Eye_l": 528,
+            "Cleric_Eye_r": 528,
+            "Cleric_Hair": 5518,
+            "Cleric_Iris_l": 528,
+            "Cleric_Iris_r": 528,
+            "Cleric_Pupil_l": 528,
+            "Cleric_Pupil_r": 528,
+            "Cleric_Scalp": 2088,
+            "Cleric_Undershorts": 7008,
+            "Cleric_Undershorts_Seams": 2112,
+            "Cleric_Undertop": 10864,
+            "Cleric_Undertop_Seams": 3120
+          }
+        }
+      }
+    }
+  }
+}

@@ -269,10 +269,11 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
     }
     const ownership = await page.evaluate(async () => {
         const { actors, MeshFactory } = window.__classGear;
+        const { fighterRuntimePath } = await import('/src/art/AuthoredFighter.js');
         const first = actors[0], second = actors[1];
         const secondIndex = second.root.getObjectByName('Fighter_Body').geometry.index.count;
         first.actor.syncEquipmentVisuals({}); await first.root.userData.equipmentReady;
-        const ownRestored = first.root.getObjectByName('Fighter_Body').geometry === (await MeshFactory.loadModel('./assets/archetypes/Fighter/fighter-runtime-high.glb')).scene.getObjectByName('Fighter_Body').geometry;
+        const ownRestored = first.root.getObjectByName('Fighter_Body').geometry === (await MeshFactory.loadModel(fighterRuntimePath('high'))).scene.getObjectByName('Fighter_Body').geometry;
         const otherUnchanged = second.root.getObjectByName('Fighter_Body').geometry.index.count === secondIndex;
         first.actor.syncEquipmentVisuals(first.gear); MeshFactory.releaseMesh('Fighter', first.root);
         await first.root.userData.equipmentReady;

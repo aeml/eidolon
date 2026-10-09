@@ -20,15 +20,19 @@ const stagedCharacterExports = new Set([
     'assets/npcs/ilyra/ilyra-archmage.glb',
     'assets/archetypes/Fighter/fighter.glb',
     'assets/archetypes/Fighter/fighter-runtime-high.glb',
+    'assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb',
     'assets/archetypes/Fighter/fighter-runtime-low.glb',
     'assets/archetypes/Wizard/wizard.glb',
     'assets/archetypes/Wizard/wizard-runtime-high.glb',
+    'assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb',
     'assets/archetypes/Wizard/wizard-runtime-low.glb',
     'assets/archetypes/Cleric/cleric.glb',
     'assets/archetypes/Cleric/cleric-runtime-high.glb',
+    'assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb',
     'assets/archetypes/Cleric/cleric-runtime-low.glb',
     'assets/archetypes/Rogue/rogue.glb',
     'assets/archetypes/Rogue/rogue-runtime-high.glb',
+    'assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb',
     'assets/archetypes/Rogue/rogue-runtime-low.glb'
 ]);
 // Owner-requested equipment delivery: exact catalog names, tiers and character
@@ -71,17 +75,22 @@ const MAX_LEGACY_MODEL_BYTES = 0;
 const MAX_RUNTIME_GLB_TOKENS = 1;
 const auditedAssetReferenceAllowlist = new Map([
     ['src/art/AuthoredIlyra.js', new Set(['./assets/npcs/ilyra/ilyra-archmage.glb'])],
-    ['src/art/AuthoredFighter.js', new Set(['./assets/archetypes/Fighter/fighter-runtime-high.glb', './assets/archetypes/Fighter/fighter-runtime-low.glb'])],
+    ['src/art/AuthoredFighter.js', new Set()],
     // Preserve duplicate original references for the32 unchanged variants:
     // each appearance is expected, not an unlimited token or path allowance.
     ['src/assets/authoredEquipment.generated.js', [
         ...[...stagedCharacterExports].filter(file => file.includes('-runtime-')).map(file => `./${file}`),
+        ...['Fighter', 'Wizard', 'Cleric', 'Rogue'].map(name => `./assets/archetypes/${name}/${name.toLowerCase()}-runtime-low.glb`),
         ...[...stagedEquipmentExports].map(file => `./${file}`),
         ...wearableRuntimeReferences.map(file => `./${file}`)
     ]],
     ['scripts/import-wearable-runtime.mjs', new Set(['${destination}/${actorClass}/${item.id}-${tier}-${quality}.glb'])],
     ['scripts/derive-wearable-catalog.mjs', new Set(['.glb'])],
     ['scripts/derive-wearable-pilot.mjs', new Set(['.glb', '${stem}-pilot-${quality}.glb'])],
+    ['scripts/derive-body-lod-pilot.mjs', new Set(['${directory}/${stem}.glb', '${directory}/${stem}-runtime-${quality}.glb', '${stem}-body-pilot-${quality}.glb'])],
+    ['scripts/derive-wearable-attribute-pilot.mjs', new Set(['.glb', '${stem}-pilot-${quality}.glb'])],
+    ['scripts/inspect-body-lod.mjs', new Set(['${directory}/${stem}.glb', '${directory}/${stem}-runtime-${quality}.glb'])],
+    ['scripts/lib/character-runtime-selection.mjs', new Set(['-runtime-${quality}.glb'])],
     ['scripts/derive-fighter-runtime.mjs', new Set(['fighter.glb', 'fighter-runtime-${quality}.glb'])]
 ]);
 

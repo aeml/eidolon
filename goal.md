@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 protected High body selection:** The owned private milestone now
+selects prepared High bodies at four additive, hash-pinned paths; all prior
+High/Low/source files remain and Low selection stays exact.221 focused/cache/fit
+units, native eight-outfit/32bare-pose/blink checks, production cold/offline cache,
+all-vertex source proof and ordinary selected-path four-class race/save check pass.
+Full High scene497draws/496215triangles and446678equipped-root triangles still
+exceed unchanged350/250000limits. Raw frame16.7/33.3ms passes this sample;
+35entities do not provide controlled CPU attribution. No public/version/profile/
+access activation or final art/device acceptance. See
+[selection and retained failures](docs/plans/2026-10-09-body-lod-integration.json).
+Next continue dominant fit/material/body/eye and scene cost with original art,
+rigs, morphs and every whole-game/device gate preserved. Full inherited1.11–1.99,
+Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff remains active.
+
+
 **October9 body LOD preparation:** Source-derived strict Low0.08 is rejected for
 visible shoulder/neck faceting. Additional normal/tangent/blink protection yields
 prepared High bodies182740→123204triangles; current Low bytes retained.

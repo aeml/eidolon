@@ -4,16 +4,50 @@ import { AUTHORED_ASSETS, AUTHORED_ASSET_VERSIONS } from '../src/assets/authored
 import { EQUIPMENT_VISUAL_DESCRIPTORS } from '../src/art/ProceduralEquipment.js';
 import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../src/data/cosmetics.generated.js';
 import { resolveFittedEquipmentModel } from '../src/art/FittedEquipment.js';
+import { fighterRuntimePath } from '../src/art/AuthoredFighter.js';
 
 test('runtime catalog covers every delivered base item and all four class qualities without source-model boot dependencies', () => {
     expect(Object.keys(AUTHORED_ASSETS.items).sort()).toEqual(Object.keys(EQUIPMENT_VISUAL_DESCRIPTORS).sort());
     expect(Object.keys(AUTHORED_ASSETS.characters).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
-    expect(Object.keys(AUTHORED_ASSET_VERSIONS)).toHaveLength(736);
+    expect(Object.keys(AUTHORED_ASSET_VERSIONS)).toHaveLength(740);
     for (const [file, version] of Object.entries(AUTHORED_ASSET_VERSIONS)) {
         const bytes = fs.readFileSync(file);
         expect(createHash('sha256').update(bytes).digest('hex').slice(0, 16)).toBe(version);
         expect(file).not.toMatch(/\/(fighter|wizard|rogue|cleric)\.glb$/);
     }
+});
+
+test('protected High selections use additive hash-pinned paths and retain exact Low and previous assets', () => {
+    const selection = JSON.parse(fs.readFileSync('assets/archetypes/runtime-selection.json'));
+    let before = 0, after = 0;
+    for (const [name, row] of Object.entries(selection.characters)) {
+        const baseline = JSON.parse(fs.readFileSync(row.source.file.replace('.glb', '-runtime.manifest.json')));
+        for (const quality of ['high', 'low']) {
+            const variant = row.variants[quality];
+            expect(AUTHORED_ASSETS.characters[name][quality]).toBe(`./${variant.file}`);
+            expect(AUTHORED_ASSETS.previousCharacters[name][quality]).toBe(`./${variant.baselineFile}`);
+            expect(AUTHORED_ASSET_VERSIONS[`./${variant.baselineFile}`]).toBe(baseline.variants[quality].sha256.slice(0, 16));
+            const bytes = fs.readFileSync(variant.file);
+            const json = JSON.parse(bytes.subarray(20, 20 + bytes.readUInt32LE(12)));
+            const body = json.meshes[json.nodes.find(node => node.name === `${name}_Body`).mesh];
+            const triangles = body.primitives.reduce((sum, primitive) => sum + json.accessors[primitive.indices].count / 3, 0);
+            expect(triangles).toBe(variant.bodyTriangles);
+            expect(json.skins.map(skin => skin.joints.length)).toEqual([53]);
+            expect(json.buffers.every(buffer => !buffer.uri)).toBe(true);
+            expect(json.images.every(image => !image.uri)).toBe(true);
+        }
+        expect(row.variants.high.file).toMatch(/-runtime-body-v2-high\.glb$/);
+        expect(row.variants.high.sha256).not.toBe(row.variants.high.baselineSHA256);
+        expect(row.variants.low.file).toBe(row.variants.low.baselineFile);
+        expect(row.variants.low.sha256).toBe(row.variants.low.baselineSHA256);
+        const old = fs.readFileSync(row.variants.high.baselineFile);
+        const json = JSON.parse(old.subarray(20, 20 + old.readUInt32LE(12)));
+        before += json.meshes[json.nodes.find(node => node.name === `${name}_Body`).mesh].primitives.reduce((sum, p) => sum + json.accessors[p.indices].count / 3, 0);
+        after += row.variants.high.bodyTriangles;
+    }
+    expect({ before, after }).toEqual({ before: 182740, after: 123204 });
+    expect(fighterRuntimePath('high')).toBe(AUTHORED_ASSETS.characters.Fighter.high);
+    expect(fighterRuntimePath('low')).toBe(AUTHORED_ASSETS.characters.Fighter.low);
 });
 
 test('each quality selects its pinned derivative and original diagnostics remain reversible', () => {

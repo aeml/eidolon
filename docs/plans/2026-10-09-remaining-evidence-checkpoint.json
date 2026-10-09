@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-09T23:11:26.002568+00:00",
-  "classification": "Prepared source-derived High body LOD with native functional/visual and real connected-party evidence; not selected in runtime/catalogs. Strict lower Low variant rejected for faceting, exact reviewed Low retained.",
-  "qualifiedRuntime": "6fbffd3435e1798841a56ab120e938db3d512e34 runtime/assets/package remain byte-identical; current addition is opt-in QA diagnosis and missing-vendor launcher preflight only. Qualified runtime scope stays2026-10-09-rigid-surface-render-checks.json.",
+  "recordedUTC": "2026-10-09T23:34:08.591513+00:00",
+  "classification": "Qualified private protected High body selection at additive immutable paths; exact Low/prior files retained. Selected native/cache/ordinary-party/save checks pass; full High geometry/draw and whole inherited roadmap/art/device/owner/launch gates remain open.",
+  "qualifiedRuntime": "Qualified6fbffd3435e1798841a56ab120e938db3d512e34 rendering implementation plus protected High body selection in current receipt. Runtime intentionally changes only Fighter catalog authority and generated four selected High paths/versions; assets add four exact prepared High GLBs and selection manifest. Server/package/public version/profile/access remain unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-09T22:54:15Z",
+    "readOnlyObservationUTC": "2026-10-09T23:13:07Z",
     "result": {
-      "observed_at_utc": "2026-10-09T22:54:15Z",
+      "observed_at_utc": "2026-10-09T23:13:07Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -99,12 +99,12 @@
         }
       ]
     },
-    "status": "Single read-only observation in_progress, step6running/uploadpending. No terminal acceptance, cancel or restart."
+    "status": "Exact37880032315/attempt1/dc7d22f2 run and100-client job/step6 still in progress at sparse observation; upload pending. No restart/cancel/acceptance or repeated substitute soak."
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-09-body-lod-preparation.json",
+  "currentReceipt": "docs/plans/2026-10-09-body-lod-integration.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Rejected independent weighted wearable LOD selection. Retain source-pinned experiments and opt-in native substitution diagnostic only; runtime/assets/package unchanged.",
-  "nextAction": "Deliberately integrate prepared High body variants at additive immutable paths with hash-validated catalog generation, preserving old clients/originals and exact current Low. Qualify actual selected paths/cache and equipped/native/party behavior, then continue dominant gear/body/eye geometry and scene traversal work toward full budgets. No public microrelease or claim that this closes Q/CB/party/device/F1-F5/operations/owner/beta/launch/handoff.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-09-rigid-surface-render-checks.json"
+  "previousGoalTurnClassification": "Prepared source-derived High body LOD with native functional/visual and real connected-party evidence; not selected in runtime/catalogs. Strict lower Low variant rejected for faceting, exact reviewed Low retained.",
+  "nextAction": "Continue dominant fit/material-coordinated body/gear/eye and actual scene submission costs. Preserve supplied art, exact source attributes/bones/morph/attachment/animation contracts and unchanged High/Low budgets. Full modern art/Q/CB, equipped-party/support-device, raised compatible activation/rollback/F1-F5, operations/rights/owner-policy/human-playtest/beta/admission/launch/final-handoff scope remains active; no public microrelease.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-09-body-lod-integration.json"
 }

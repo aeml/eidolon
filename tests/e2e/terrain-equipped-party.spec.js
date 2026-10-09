@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { installBodyLodPilot } from './body-lod-pilot.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
@@ -234,6 +234,17 @@ test('single native renderer observes three live equipped party socket peers on 
     expect(['high', 'low']).toContain(quality);
     const failures = collectBrowserFailures(page, baseURL), peers = [];
     const bodyPilot = await installBodyLodPilot(page);
+    const bodySelection = process.env.EIDOLON_TERRAIN_BODY_SELECTION === '1'
+        ? JSON.parse(await readFile('assets/archetypes/runtime-selection.json', 'utf8')) : null;
+    const bodyResponses = [];
+    if (bodySelection) {
+        const paths = new Set(Object.values(bodySelection.characters).map(row => `/${row.variants[quality].file}`));
+        page.on('response', response => {
+            if (!paths.has(new URL(response.url()).pathname)) return;
+            const row = { url: response.url(), status: response.status(), fromServiceWorker: response.fromServiceWorker() };
+            bodyResponses.push(row);
+        });
+    }
     const waitMessage = async (peer, type, predicate = () => true) => {
         let index;
         await expect.poll(() => {
@@ -313,6 +324,50 @@ test('single native renderer observes three live equipped party socket peers on 
         for (const peer of peers) { expect(peer.socket.readyState).toBe(1); expect(peer.errors).toEqual([]); }
         const party = await page.evaluate(readPartyTerrain, ids);
         expect(party.actors.map(actor => actor.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
+        if (bodySelection) {
+            expect(bodyPilot, 'Selected-path qualification must use ordinary assets').toBeNull();
+            const selection = bodySelection;
+            const selected = await page.evaluate(async ({ ids, selection, quality }) => {
+                const { MeshFactory } = await import('/src/utils/MeshFactory.js');
+                const { authoredCharacterPath } = await import('/src/art/AuthoredCharacters.js');
+                const { resolveAssetPath } = await import('/src/assets/assetManifest.js');
+                const cache = await caches.open('eidolon-assets-2026-09-04-11');
+                return Promise.all(ids.map(async id => {
+                    const game = window.game, actor = id === game.player.id ? game.player : game.remotePlayers.get(id);
+                    const name = actor.mesh.userData.authoredClass, variant = selection.characters[name].variants[quality];
+                    const path = authoredCharacterPath(name, quality), cached = MeshFactory.cache[path];
+                    const body = cached?.scene.getObjectByName(`${name}_Body`);
+                    const url = new URL(resolveAssetPath(path), document.baseURI).href;
+                    // Chrome may omit CDP response bodies served by a worker.
+                    // Read the exact response clone that the production worker
+                    // cached during this observed GET; never issue another GET.
+                    const response = await cache.match(url);
+                    const cachedSHA256 = response ? [...new Uint8Array(await crypto.subtle.digest('SHA-256', await response.arrayBuffer()))]
+                        .map(byte => byte.toString(16).padStart(2, '0')).join('') : null;
+                    return { name, path, expectedPath: `./${variant.file}`, url,
+                        expectedVersion: variant.sha256.slice(0, 16), expectedSHA256: variant.sha256,
+                        cachedSHA256,
+                        cachedOriginalBodyTriangles: body?.geometry.index.count / 3,
+                        expectedBodyTriangles: variant.bodyTriangles,
+                        liveMaskedBodyTriangles: actor.mesh.getObjectByName(`${name}_Body`).geometry.index.count / 3 };
+                }));
+            }, { ids, selection, quality });
+            // Resource Timing's bounded buffer can omit early model requests
+            // in a populated world. Keep actual response metadata from before
+            // login, and hash the worker's exact cache entries above.
+            await writeFile(testInfo.outputPath('selected-body-runtime.json'), JSON.stringify({ selected, bodyResponses }, null, 2));
+            expect(selected).toHaveLength(4);
+            for (const row of selected) {
+                expect(row.path).toBe(row.expectedPath);
+                expect(new URL(row.url).searchParams.get('v')).toBe(row.expectedVersion);
+                expect(bodyResponses.some(response => response.url === row.url && response.status === 200 &&
+                    response.fromServiceWorker), `${row.name} actual selected worker response`).toBe(true);
+                expect(row.cachedSHA256, `${row.name} actual selected cached response hash`).toBe(row.expectedSHA256);
+                expect(row.cachedOriginalBodyTriangles).toBe(row.expectedBodyTriangles);
+                expect(row.liveMaskedBodyTriangles).toBeGreaterThan(0);
+                expect(row.liveMaskedBodyTriangles).toBeLessThanOrEqual(row.expectedBodyTriangles);
+            }
+        }
         expect(party.groundCover.plants).toBeGreaterThan(0);
         expect(party.groundCover.spatialBatches).toBe(party.groundCover.multiDrawAvailable);
         expect(party.actors.every(entry => entry.surfaceBatches > 0), 'Actual connected class outfits must use the qualified surface submissions').toBe(true);

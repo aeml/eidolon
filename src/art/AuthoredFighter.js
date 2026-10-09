@@ -5,13 +5,14 @@ import { prepareAuthoredFighterEquipment, clearAuthoredFighterEquipment } from '
 import { installAuthoredFighterSeatedPose } from './AuthoredFighterSeatedPose.js';
 import { prepareFittedEquipment, clearFittedEquipment } from './FittedEquipment.js';
 import { prepareWeaponMotions } from './AuthoredWeaponMotions.js';
+import { AUTHORED_ASSETS } from '../assets/authoredEquipment.generated.js';
 
 // Only derived exports are runtime candidates. The full-detail source is never
 // a boot dependency. MeshFactory loads the selected candidate on demand with
 // a procedural fallback; this unpublished integration still needs final review.
 export const FIGHTER_RUNTIME_PATHS = Object.freeze({
-    high: './assets/archetypes/Fighter/fighter-runtime-high.glb',
-    low: './assets/archetypes/Fighter/fighter-runtime-low.glb'
+    high: AUTHORED_ASSETS.characters.Fighter.high,
+    low: AUTHORED_ASSETS.characters.Fighter.low
 });
 export const FIGHTER_AUTHORED_CLIPS = Object.freeze([
     'Attack', 'Block', 'CombatIdle', 'Death', 'Hit', 'Idle', 'Jump',
