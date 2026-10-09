@@ -18,11 +18,30 @@ const ownedRigidActor = root => root?.userData.proceduralHumanoid ||
 const candidate = part => part.isMesh && !part.isInstancedMesh && !part.isSkinnedMesh && !part.children.length &&
     part.material?.isMeshStandardMaterial && !Array.isArray(part.material) && part.geometry?.attributes.position;
 
+// Three's standard instance shader supports rotation/nonuniform scale, but
+// not shear: it divides normals by squared column lengths instead of using an
+// inverse transpose. A stretched ancestor followed by a child rotation can
+// produce shear even when every local transform is ordinary TRS. Keep those
+// leaves on their original normal-matrix path; never bake an animated pose.
+function supportsInstanceNormals(matrix) {
+    const e = matrix.elements;
+    const x = e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
+    const y = e[4] * e[4] + e[5] * e[5] + e[6] * e[6];
+    const z = e[8] * e[8] + e[9] * e[9] + e[10] * e[10];
+    if (!(x > 0 && y > 0 && z > 0) || !Number.isFinite(x + y + z) ||
+        e[3] !== 0 || e[7] !== 0 || e[11] !== 0 || e[15] !== 1) return false;
+    const xy = e[0] * e[4] + e[1] * e[5] + e[2] * e[6];
+    const xz = e[0] * e[8] + e[1] * e[9] + e[2] * e[10];
+    const yz = e[4] * e[8] + e[5] * e[9] + e[6] * e[10];
+    return xy * xy <= 1e-14 * x * y && xz * xz <= 1e-14 * x * z && yz * yz <= 1e-14 * y * z;
+}
+
 const eligible = part => candidate(part) && part.material.visible && !part.material.transparent && !part.material.alphaHash &&
     part.material.onBeforeCompile === Material.prototype.onBeforeCompile && !part.customDepthMaterial && !part.customDistanceMaterial &&
     part.onBeforeRender === Object3D.prototype.onBeforeRender && part.onAfterRender === Object3D.prototype.onAfterRender &&
     part.onBeforeShadow === Object3D.prototype.onBeforeShadow && part.onAfterShadow === Object3D.prototype.onAfterShadow &&
-    !Object.keys(part.geometry.morphAttributes).length && part.matrixWorld.determinant() > 0;
+    !Object.keys(part.geometry.morphAttributes).length && part.matrixWorld.determinant() > 0 &&
+    supportsInstanceNormals(part.matrixWorld);
 
 // Frame-owned presentation only: original actor visibility is restored before
 // update/input/gear/stealth logic can run. Geometry/materials remain borrowed.

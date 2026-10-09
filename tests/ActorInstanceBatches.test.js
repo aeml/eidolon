@@ -30,6 +30,50 @@ test('borrows exact surfaces and retains parent-transformed world positions', ()
     expect(f.instances.group.visible).toBe(false); f.instances.dispose();
 });
 
+test('a stretched parent and rotated child retain the original inverse-transpose normal path', () => {
+    const f = fixture(), { root, mesh } = f.actors[1];
+    try {
+        root.scale.set(2, 1, 1);
+        mesh.rotation.z = Math.PI / 4;
+        f.scene.updateMatrixWorld(true);
+        // Reproduce the pinned Three shader's unsupported shear: scaling each
+        // normal component by a column length is not an inverse transpose.
+        const e = mesh.matrixWorld.elements;
+        const lengths = [0, 4, 8].map(i => e[i] ** 2 + e[i + 1] ** 2 + e[i + 2] ** 2);
+        const shaderNormal = new THREE.Vector3(1 / lengths[0], 0, 0)
+            .applyMatrix3(new THREE.Matrix3().setFromMatrix4(mesh.matrixWorld)).normalize();
+        const correctNormal = new THREE.Vector3(1, 0, 0)
+            .applyNormalMatrix(new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld));
+        expect(shaderNormal.distanceTo(correctNormal)).toBeGreaterThan(.5);
+        f.instances.beginFrame();
+        expect(f.instances.batches.size).toBe(0);
+        expect(mesh.visible).toBe(true);
+        expect(mesh.geometry).toBe(f.geometry); expect(mesh.material).toBe(f.material);
+        f.instances.endFrame();
+        root.scale.set(1, 1, 1); f.begin();
+        expect(f.instances.batches.size).toBe(1);
+        expect(mesh.visible).toBe(false);
+        f.instances.endFrame();
+        root.scale.set(2, 1, 1); f.begin();
+        expect(f.instances.batches.size).toBe(0);
+        expect(mesh.visible).toBe(true);
+    } finally { f.instances.dispose(); }
+});
+
+test('rotated nonuniform scale without shear remains instanceable', () => {
+    const f = fixture();
+    try {
+        for (const { mesh } of f.actors) {
+            mesh.scale.set(2, .6, 1.3); mesh.rotation.set(.3, .5, .7);
+        }
+        f.begin();
+        expect(f.instances.batches.size).toBe(1);
+        expect([...f.instances.batches.values()][0].count).toBe(2);
+        f.instances.endFrame();
+        for (const { mesh } of f.actors) expect(mesh.visible).toBe(true);
+    } finally { f.instances.dispose(); }
+});
+
 test.each(['Idle', 'Walk', 'Run', 'Attack', 'Death'])('reviewed Skeleton instances retain independent %s pivot transforms and visibility', state => {
     const scene = new THREE.Scene();
     const roots = [0, 1, 2].map(index => {
@@ -79,7 +123,7 @@ test('unbatched Skeleton, unreviewed enemy and supplied actor do not enter the r
     try { expect(instances.roots.size).toBe(0); } finally { instances.dispose(); }
 });
 
-test.each(['transparent', 'customDepth', 'customRender', 'customShader', 'skinned', 'morph', 'mirrored', 'hidden', 'other-layer', 'other-shadow', 'nonprocedural'])('%s retains the normal rendering path', kind => {
+test.each(['transparent', 'customDepth', 'customRender', 'customShader', 'skinned', 'morph', 'mirrored', 'hidden', 'other-layer', 'other-shadow', 'nonprocedural', 'sheared', 'projective', 'degenerate'])('%s retains the normal rendering path', kind => {
     const f = fixture(), { root, mesh } = f.actors[1];
     if (kind === 'transparent') mesh.material = new THREE.MeshStandardMaterial({ transparent: true });
     if (kind === 'customDepth') mesh.customDepthMaterial = new THREE.MeshDepthMaterial();
@@ -92,6 +136,9 @@ test.each(['transparent', 'customDepth', 'customRender', 'customShader', 'skinne
     if (kind === 'other-layer') mesh.layers.set(1);
     if (kind === 'other-shadow') mesh.castShadow = false;
     if (kind === 'nonprocedural') root.userData.proceduralHumanoid = false;
+    if (kind === 'sheared') { mesh.matrixAutoUpdate = false; mesh.matrix.makeShear(.5, 0, 0, 0, 0, 0); }
+    if (kind === 'projective') { mesh.matrixAutoUpdate = false; mesh.matrix.elements[3] = .1; }
+    if (kind === 'degenerate') mesh.scale.x = 0;
     f.begin(); expect(f.instances.batches.size).toBe(0); expect(mesh.visible).toBe(true); f.instances.dispose();
 });
 
