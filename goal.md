@@ -18,10 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Current pushed release is **1.79.12 /1255aade /CI37902548159**, independently
+  verified exact master/running. Admin notice source hashes remain qualified;
+  login/versions/cumulative notes382checks pass5.33s. Fresh normal fetch/merge
+  preserves remote. Authorized Luna watches exact CI; root must accept its
+  terminal/public scope before13. Expected five-file publisher outputs are in
+  `docs/plans/2026-10-09-release1-79-12-publisher.json`. No real notice sent.
 - Current pushed corrective11 is **dc77fb46 / CI37898805331**, independently
-  verified running and exact master. Client/server/all three hosted smoke,
-  native predeploy, input validation and both deployment jobs pass; final Live
-  Release and Character QA remains in progress, not accepted. Restores the complete original graphics
+  accepted: all ten required jobs and final live QA pass. Root independently
+  reads all six native case titles/6passed1.4m, then rechecks five actual public
+  publisher hashes, matching frontend/backend/Alpha1.79.11 identity, IPv4 TLS
+  and ready database08:00UTC. Optional expanded character/gallery/rest steps
+  skip, not pass. Restores the complete original graphics
   review after two duplicate-draw experiments fail resource equality; no
   assertion, timeout, rendering body, asset, runtime or note change promoted.
   Routes six trusted-release High review cases to required native predeploy;
@@ -30,13 +38,13 @@ Fighter pilot or remove approved authored models.
   non-release refs keep original hosted coverage. Both deploy jobs still depend
   on native predeploy through release-inputs. Hosted six skips are pending
   native coverage, not passes. Authorized Luna watches exact new run/head.
-  Root must verify terminal gates/public identity/bytes before12. Expected
+  Root verified terminal gates/public identity/bytes before12. Expected
   five-file publisher proof and7queued reconciliation are in
   `docs/plans/2026-10-09-corrective11-native-route-publisher.json`.
   Root public precheck07:57UTC now matches all five expected dc77 publication
   hashes, exact frontend/backend identity and valid IPv4 TLS/database readiness.
   Final live QA remains in progress; not release acceptance or authority to12.
-- Last independently accepted release: **1.79.10 / d3a3b9f7**, CI37864085950.
+- Historical accepted predecessor: **1.79.10 / d3a3b9f7**, CI37864085950.
   Later served source is not thereby accepted. Corrective11 **5bd725b9** deployed,
   but **CI37884472930 failed** live loot setup: valid NECK/GLOVES equipment was
   excluded by the test's duplicate gear list. Nine jobs and seven live cases pass;
@@ -183,7 +191,7 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Accept or diagnose corrective11/dc77fb46/CI37898805331 after authorized Luna
+1. Accept or diagnose current12/1255aade/CI37902548159 after authorized Luna
    terminal notice; independently verify required jobs, public identities and
    actual transformed publisher bytes. Prior dc7 attempt2 fails engine-module
    download with matching static HTTP408 evidence; upstream cause remains
@@ -192,7 +200,7 @@ qualification never proves a later tree, full visual approval or public rollout.
    class-name recognition; root reproduces the bug and f1 preserves names.
    Its55focused/native checks are not authenticated-world acceptance. Require own CI/public
    acceptance, then fresh-fetch/normal reconcile
-   and individually publish/accept prepared12-18 in order. Never promote the
+   and individually publish/accept prepared13-18 in order. Never promote the
    whole future branch, overlap pushes, retry successful tests or infer acceptance
    from a running job. Continue integrated modern-world work while CI runs.
 2. Finish the complete modern world/art work, not just these woodland changes:
@@ -241,7 +249,7 @@ qualification never proves a later tree, full visual approval or public rollout.
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
   | --- | --- | --- |
-  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `5acd4861` |
+  | 1.79.12 (pushed, CI pending) | `eidolon-operations-release-U0VLQ4j8` | `1255aade` |
   | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `e7369fce` |
   | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `3e0b1a1f` |
   | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `adf83270` |

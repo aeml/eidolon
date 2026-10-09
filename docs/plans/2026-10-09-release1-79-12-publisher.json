@@ -1,0 +1,18 @@
+{
+  "head": "1255aade926f38390c94229f0ee4b480be042c46",
+  "ci": 37902548159,
+  "status": "Pushed and running, not accepted; expected selected publication bytes ready",
+  "prerequisite": "Corrective11/dc77/CI37898805331 independently accepted: all ten required jobs, mandatory six native cases1.4m and live QA pass. Five selected public hashes and frontend/backend Alpha1.79.11/dc77 identity, ordinary IPv4 HTTPS and database readiness match08:00:51UTC. Expanded gallery/rest/full-character/live-four-class steps skipped, not passed.",
+  "prepublication": "Fresh fetch/normal merge is already up to date; no website commits overwritten. Qualified notice server/UI hashes unchanged. Two current version/pagination suites382checks pass5.33s. Master independently resolves exact1255 after normal push. No production notice/admin/player/email mutation.",
+  "fixture": "/tmp/eidolon-1255-publisher-9xybPrNM",
+  "scope": "Clean committed index/src/vendor/sw/release copied into owned tree; no full binary asset tree, so proof is five selected transformed files only. Actual byte-identical compiler from the already-qualified startup worktree plus actual current12 stylesheet/URL publisher, exact1255 release identity. Initial local invocation could not find esbuild in the older12 dependency link; no generated output from that failed compiler call. The clean copied fixture then compiles with the same pinned0.28.2 dependency used by required CI. No source or dependency edits needed.",
+  "compile": { "modules": 413, "bytes": 3159090, "sharedLoginModules": 21 },
+  "sha256": {
+    "index.html": "76b1aa00d77e3921835a4983e671e6bc4a0348d4b66393ea31b66492f056f43b",
+    "src/main.js": "203f5ba067c8d703b71e4d61b7e1755b635c8c1fcffc8ec8fb515958015f1480",
+    "src/core/GameEngine.bundle.js": "6fe6fb05693230974b6d0d1440f49174e16347052db865097383e32b54f9ac1c",
+    "src/styles/index.css": "c69e0fd1d5cee483d98e18d45410c1fdbc6f0a0176f089c37958c2f73fec4547",
+    "release.json": "077ca6260eb2ce0844acdb421081f6eb20e39c8d64739afbbf5ca6a98bfbed20"
+  },
+  "watch": "Authorized Luna /root/watch_deploy_1795_1008 monitors exact run/head, terminal/actionable only. Root independently verifies mandatory terminal gates, selected public bytes/identity/TLS/ready database before13. No retry/cancel/overlapping public push; unrelated soak untouched. Full original world/art/terrain/device/F1-F5/operations/beta/launch scope stays open."
+}
