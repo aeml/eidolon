@@ -222,6 +222,10 @@ jobs:
     # Go or Jest. Run hosted work together; keep every gate below before using
     # the native runner or publishing a release.
     runs-on: ubuntu-latest
+    env:
+      # Only the trusted release path has a mandatory native-GPU successor.
+      # PR/other-branch coverage stays on the hosted runner unchanged.
+      EIDOLON_E2E_NATIVE_COVERAGE_PENDING: ${{ github.repository == 'aeml/eidolon' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.full_stabilization == true)) }}
     strategy:
       fail-fast: false
       matrix:
@@ -292,6 +296,14 @@ jobs:
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
         run: sg render -c 'npm run test:e2e:animations'
+
+      - name: Run required native High regional quality-switch coverage
+        env:
+          EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+          EIDOLON_E2E_NATIVE_COVERAGE_PENDING: 'false'
+        # All six original cases, original warm-up/twelve phases and resource
+        # assertions. This step is mandatory and blocks both deploy jobs.
+        run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/populated-earth-world.spec.js --grep "quality switches cover batch" --workers=1 --retries=0 --reporter=line,html'
 
       - name: Run required Well Rested rendering and GPU lifecycle QA
         if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'

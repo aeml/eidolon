@@ -1,0 +1,24 @@
+{
+  "status": "Six original native cases and routing checks pass; public CI/deployment still required",
+  "predecessor": "f1ca948df4e96afe5125999c2e4673c662d05498",
+  "ci": {
+    "run": 37892701200, "result": "failure independently verified",
+    "passed": "Client/server and browser shards2/3+3/3",
+    "failed": "Browser shard1/3:51pass, six High Water/Fire and Air cover-batch cases exceed unchanged120s, including retry",
+    "skipped": "Production QA validation, predeploy character, Pages, SSH and live QA; not passed",
+    "evidence": "/home/aeml/.local/share/eidolon-f1-smoke-failure-rmgXsL5M"
+  },
+  "trace_scope": "Water/Fire batch3 and Air batch1 test trace locate the long Evaluate at source line564/reviewRegionalQuality (125519ms/115947ms). Browser protocol traces finish their evaluate events in8332ms/7280ms; do not conflate these timestamps or claim a proven GPU/host/network root cause. Anonymous artifact only; no authentication trace read.",
+  "change": "All original rendering code, warm-up, twelve phases, cover draws, identity/bounds/count/resource assertions, viewports and120s limit remain exact. Trusted release hosted CI marks only the six heavy High cover cases pending mandatory native coverage. The guarded existing System Chrome/GPU-verified predeploy job executes all six unchanged, explicitly disabling the hosted pending flag. Both deploy jobs remain transitively blocked by predeploy through release-inputs. Hosted presentation/Low and all other checks remain; PR/foreign/non-release-ref runs do not skip the six cases. No shader/runtime/asset/dependency/version/login/notes change.",
+  "baseline_local": "One original software-rendered Water/Fire batch1 passes1.7m/retries0. Does not reproduce hosted timeout; no universal performance claim. LogSHA f55894fcff08d48e6b5d2cdd30406758f4a29ec4629286a1405c93e990a0db9e.",
+  "retained_initial_failure": "Removing the duplicate draw from warm-up as well as repeat cycles produces81then82shader programs in Water/Fire, violating unchanged resource equality. One Air case passes. This attempt is not promoted; restore the complete original warm-up. Artifact/logSHA95bc813f572a1978ca98acb1d18e768df1c95ff106e01d1043941c3b5a8cf7dd retained.",
+  "retained_second_failure": "Preserving warm-up while cutting repeat draws still grows Water/Fire programs78to80 and Air63to64. LogSHA782b9aaf605c02b3b06876520f8ef66f2791818a61feb54c809c2a9600d8dbb1. Abandon and restore the whole original review body; do not relax resource equality or promote either experiment. Initial routing unit assumed a direct native dependency, but actual deploy jobs are guarded transitively through release-inputs; correct the test to check that exact existing chain.",
+  "native": {
+    "result": "All6originalcases pass1.4minutes, retries0",
+    "gpu": "System Chrome ANGLE AMD Vulkan/RADV RENOIR; independent verify:browser-gpu succeeds, no software renderer",
+    "coverage": "All16Water/Fire and8Air sites in disjoint four-site batches, each12phases. Every case preserves identical geometry/texture/program counts across repeat cycles",
+    "log_sha256": "93170ceb179c90e2fc9d67fc21169c1eb5b4579e1ab04b5acd25bd03dce6b0f1"
+  },
+  "units": "Six actual routing/smoke-plan/runner/coverage/sharding/compiler suites63pass7.919s, logSHA373c8509859db3b5700bd406f8826286b671e7386e9d5fc8b795ae2e2999bee2. Scoped lint/whitespace pass. Exact discovery union remains300declared cases; release routing means294hosted plus6required native, not300hosted passes. Routing guard equals native admission guard and PR/foreign/non-release refs retain original hosted coverage. Prior56checks overlap, not119distinct.",
+  "remaining": "Require exact new CI/public acceptance before prepared12-18. No inference of public names/combat/party performance, final modern-art, physical-phone or campaign approval. Full roadmap remains active."
+}
