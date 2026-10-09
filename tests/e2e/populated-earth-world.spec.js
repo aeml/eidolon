@@ -36,6 +36,7 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
         await page.goto('/', { waitUntil: 'networkidle' });
         const locations = await page.evaluate(async ({ quality, mobile, elemental, review }) => {
             const THREE = await import('three');
+            const { renderFrameInterval } = await import('/tests/e2e/renderFrameInterval.js');
             const { RenderSystem } = await import('/src/core/RenderSystem.js');
             const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
@@ -455,7 +456,7 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                         const now = await new Promise(resolve => requestAnimationFrame(resolve));
                         const start = performance.now();
                         world.updateTownPresentation(1 / 60, engine.player.position); render.render();
-                        if (i >= 30) { frameTimes.push(now - previous); cpuTimes.push(performance.now() - start); }
+                        if (i >= 30) { frameTimes.push(renderFrameInterval(now, previous)); cpuTimes.push(performance.now() - start); }
                         previous = now;
                     }
                     const percentile = (values, p) => values.sort((a, b) => a - b)[Math.floor((values.length - 1) * p)];
