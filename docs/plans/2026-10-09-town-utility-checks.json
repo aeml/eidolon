@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Well/bench slice qualified atff682107; market follow-up unit/catalog checked but integrated native review pending. Not published or final modern-art approval",
+  "status": "Combined well/bench/market slice native qualified at e8836cd7; prepared21 not published, final modern-art approval remains open",
   "source": "ff682107aa5b0eabc7b6e28bf0fffaf71289db1a, based on pushed20/07743ba7. Runtime unchanged after these checks; version/release preparation still required before any future push.",
   "scope": "Existing communal well gains an open thick-walled bucket, iron bands/bail, winding drum/rope and crank. Three existing courtyard benches gain separated beveled slats and back supports. Preserve13exact walk footprints,31render meshes/29unique geometries/18materials, batch ownership and ordinary motion/reduced-motion behavior. Raw courtyard triangles High4652to8732,Low3404to6260. No new material/draw/texture or per-frame work, service/reward/collision/account/terrain-profile change. Review harness uses the actual delivered dressed Ilyra instead of an inaccurate bare player Wizard proxy; no runtime NPC replacement.",
   "checks": "Two full affected unit suites6checks pass21.092s; scoped lint/whitespace pass. Four distinct System Chrome production scene cases pass1.9m/retries0: populated Earth/town High1280/Low390 plus equipped fourteen-slot Fighter/HUD town High/Low. Both populated cases explicitly profile9named views each/120real RAF samples each. Original High20median/33.4p95/350calls/250000tri and Low33.4/50/200/85000 gates unchanged. Profile artifacts record actual AMD Vulkan1.4.318/RADV RENOIR; separate exact same launch-policy GPU probe also passes. No nonexistent verify-browser-gpu spec counted as a test: the probe is scripts/verify-browser-gpu.mjs.",
@@ -27,5 +27,16 @@
     "metadataSHA256": "667aa830a04733c72d587f5fa66447027c0b2f2e9712e9344dc1a6d115698705",
     "gate": "20 final live QA occupies native runner. Await root20 terminal/native/live/public acceptance, then final combined21 native/visual check, fresh normal remote reconciliation and exact publisher for final HEAD before any normal21 push. No overlapping deployments or use of historical ff profiles to certify market geometry."
   },
-  "delivery": "Own20 CI37948468016/native/live/exact public acceptance remains required before another normal push. Group this bounded refinement with further relevant work rather than deploying every individual prop. Full modern art/character fit/combat, raised/equipped-party/device,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch requirements remain open. Do not promote unrelated private operations or terrain candidates."
+  "combinedAcceptance": {
+    "source": "e8836cd798f2cc1c47517293aa4ae43233972bdc; normal merge of corrected20/e5989112, runtime utility/market unchanged",
+    "checks": "Four distinct actual System Chrome AMD RADV cases pass1.9m/retries0: populated Earth/town High1280 and Low390 with18named views/120real RAF samples each, plus equipped fourteen-slot Fighter/HUD/actual dressed Ilyra town High/Low. All original frame/draw/triangle budgets retained; resource counts stable after repeat traversal.",
+    "high": { "maxMedianMs": 16.8, "maxP95Ms": 33.4, "maxCalls": 240, "maxTriangles": 245636, "stableGeometries": 275, "stableTextures": 82, "stablePrograms": 86 },
+    "low": { "maxMedianMs": 16.7, "maxP95Ms": 16.8, "maxCalls": 109, "maxTriangles": 78990, "stableGeometries": 257, "stableTextures": 69, "stablePrograms": 60 },
+    "review": "Root inspects current equipped High market/well captures: barrels, chest/crates, winding bucket and separated bench slats are above their supporting surfaces at ordinary camera. Retain Low captures. Broad world composition and other procedural silhouettes remain incomplete; no PoE/Diablo parity, real-phone, four-browser-party or final art approval.",
+    "artifacts": "/home/aeml/.local/share/eidolon-town-utility-combined-native-20261009",
+    "logSHA256": "2a70bc9b233a6e66d99f8dadeee5ed624a460f086e31b3b6a60fedb9bc1e278f",
+    "cleanup": "Owned local4190 server closed automatically; native checks ended before corrected20 native CI occupancy. Production services and ongoing soak unchanged.",
+    "delivery": "Prepared21 still not public. Original20 failed live QA retained; corrected20 CI37954540092 must receive own terminal/public acceptance before normal21 publication. Fresh reconciliation and exact publisher for final HEAD remain required."
+  },
+  "delivery": "Own corrected20 CI37954540092/native/live/exact public acceptance remains required before another normal push. Original20 CI37948468016 failed, not accepted. Group bounded refinements rather than deploying each prop. Full modern art/character fit/combat, raised/equipped-party/device,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch requirements remain open."
 }
