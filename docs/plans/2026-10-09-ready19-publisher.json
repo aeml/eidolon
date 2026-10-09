@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "status": "Prepared exact Alpha1.79.19; NOT pushed or accepted live",
+  "candidate": {
+    "version": "Alpha 1.79.19",
+    "head": "fa47c57c85ed40623c9252a3a44133d0748ac8a3",
+    "worktree": "/home/aeml/.local/share/eidolon-integrated-world-release-P5ph9TBy",
+    "previousRelease": "81702abb6e0c953d523b8299b5bf540dffb18424"
+  },
+  "qualification": "See integrated-world-selection-checks.json:144 focused source checks;9 distinct actual native cases and60 timed world views with all original budgets, plus expanded two equipped camp views;400 metadata checks;454 cumulative notes/10initial/45lazy pages, all453 prior raw entries unchanged,539 non-root dependency entries unchanged. Root reviewed selected native captures; broader composition and full modern-art approval remain open.",
+  "publisher": {
+    "fixture": "/tmp/eidolon-19-ready-publisher-nFWf0gaK",
+    "compiler": "Byte-identical qualified startup publication compiler, actual git archive of committed fa47c57c plus generated vendor.422modules/3253893bytes/21shared login modules;402of894versioned runtime files.",
+    "expectedSHA256": {
+      "index.html": "2a30992b392cc03f526d12f3621a6a996cea0c66d96aa4417b8e4766bb27754b",
+      "src/main.js": "51b8ff61ff3c3439a54e136dba8e598b67b1c4be345555c57b38c1e315a2991c",
+      "src/core/GameEngine.bundle.js": "ae4008117b64f82a9481d30dc91675ec96259cb18e8945f0a3a498f97437590e",
+      "src/styles/index.css": "45c2ab87586304f9b913f2b6b79e9f5fbb1af9398c70cf4068a76f7312c5fcda",
+      "release.json": "5894d6307ffdafd135dab500ff609351c48bb0cf75cdb3b6b4772f0374fac20a"
+    },
+    "scope": "Five selected transformed files, not all binary assets. Fresh normal remote reconciliation before push; any changed HEAD requires regenerated exact publisher expectations."
+  },
+  "deliveryGate": "Own18 terminal CI/native/live/public acceptance required first; exact CI37935111832 under approved Luna watch. No overlapping deployment, force push, website overwrite or dirty original worktree modification. Own19 exact CI/public acceptance required after later push.",
+  "remaining": "Full roadmap remains active: coherent modern-world/fit/combat, raised-terrain/equipped-party/device gates,1.80 F1-F5,1.81-1.99 and owner human/rights/operations/beta/launch decisions. No terrain activation, grants, provider/retention/payment/access changes or campaign/soak replay."
+}

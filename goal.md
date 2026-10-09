@@ -31,13 +31,16 @@ Fighter pilot or remove approved authored models.
   after terminal completion. Fresh normal18 reconciliation remains81702abb;
   ordered18 public push now permitted with its own subsequent acceptance.
 
-- Combined visual update isolated atf11d7541 in
+- Prepared combined visual release19 atfa47c57c in
   `eidolon-integrated-world-release-P5ph9TBy`: narrow current18 selection of
   town tents/cloth, soil/growth, Fire floor/supports, lore books, mounts and
-  measured foliage-array optimization.144 focused checks and422module compile
-  pass; experimental rock-v6/raised activation and other future ops excluded.
-  Version/notes/public delivery and combined native review remain pending;
-  live17 owns browser runner. Own17 then18 acceptance precedes later push.
+  measured foliage-array optimization.144 focused checks,9 distinct native
+  cases/60 timed views with original budgets and400 metadata checks pass.
+  Final equipped High/Low camp captures reviewed; broader art remains open.
+  Version19/454 cumulative notes synchronized; all453 prior entries retained.
+  Exact422module publisher and five expected hashes recorded in ready19.
+  Experimental rock-v6/raised activation and future ops excluded. NOT pushed;
+  own18 acceptance then fresh normal reconciliation precedes public delivery.
 
 - Correct Air windbreak mounting: real High/Low merged-corner regression
   fails before and passes after; five scoped units per tree and two equipped
