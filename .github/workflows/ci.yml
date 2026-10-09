@@ -418,6 +418,7 @@ jobs:
           mkdir -p public
           cp -r index.html assets src vendor public/
           cp sw.js release.json public/
+          node scripts/bundle-game-engine.mjs public
           node scripts/version-pages-runtime.mjs public "${GITHUB_SHA}"
           
           # Create coverage directory
