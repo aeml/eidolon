@@ -1,5 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 corrective11 QA inventory fix: CI37884472930/5bd deploys successfully,
+but persistent loot setup rejects valid NECK/GLOVES gear. Read-only allowlisted
+QA inventory inspection confirms five such spares and available stash space.
+Reuse canonical equipment classification, preserving all existing conservation
+and safety assertions.22 affected checks pass; no player/runtime/notes changes.
+[Evidence](2026-10-09-persistent-qa-equipment-checks.json). A new exact CI/public
+acceptance is required before ordered12-17; full original scope remains open.
+
 October9 corrective11 publication bundle: dc7/run37879564669 attempt1 SSH
 fails; its single failed-job-only retry deploys but mandatory live startup
 fails at engine-module download. Release-matched nginx static JavaScript
