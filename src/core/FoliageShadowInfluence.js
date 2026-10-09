@@ -200,7 +200,22 @@ export class FoliageShadowInfluence {
                 this.roots.delete(root);
                 this.matrixRestorers.get(root)?.(); this.matrixRestorers.delete(root);
             }
-            else if (visible && !nested) root.traverseVisible(this.visit);
+            else if (visible && !nested) {
+                // Production foliage cells are direct leaf children. Only
+                // Earth shadow casters and wind-bounded understory can qualify;
+                // other realms need no per-cell cache/material/matrix checks.
+                // Evaluate live root flags every frame, and retain recursive
+                // traversal for arbitrary nested content rather than assuming
+                // that descendants inherit the root's region or eligibility.
+                const directEligible = root.userData.earthUnderstory ||
+                    this.shadowActive && root.userData.proceduralFoliage && root.userData.region === 'earth';
+                for (const child of root.children) {
+                    if (!child.visible) continue;
+                    if (child.isInstancedMesh && !child.children.length) {
+                        if (directEligible) this.visit(child);
+                    } else child.traverseVisible(this.visit);
+                }
+            }
         }
     }
 
