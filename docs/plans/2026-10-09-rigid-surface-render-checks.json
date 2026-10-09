@@ -32,12 +32,13 @@
       "src/utils/MeshFactory.js": "0564229e786d9a522d51ef848e973f650e594c05b78799075667691496b65f95",
       "tests/RigidSurfaceBatches.test.js": "c3637c4c18a80122a0254f4151bb3900f968df936c6632b29221d4eb1766287c",
       "tests/HumanoidRenderBatches.test.js": "6ca89e6146e04ee79066cd31a3d53183c4880feba55cc80bfe40e5eefae5c793",
-      "tests/e2e/rigid-surface-batches.spec.js": "c3d1ab97c71a44c9a1a51c15aa9f6fc7b5d86e561247a44091d5cf6f72be8ae8",
+      "tests/e2e/rigid-surface-batches.spec.js": "389cd04b837621857451b2825c17936ebb70f4d0a2dcd96c431e43833030a28b",
       "tests/e2e/actual-scene-render-diagnosis.js": "8a72c8ae9e674e66f30a47b261fde66e1549776ea44550a45f954bb1e2571d59",
       "tests/e2e/terrain-equipped-party.spec.js": "88e0790585d851dc6f2e45511aeb115c984de7dc2b9aca79e0542aecc20ee62d",
       "tests/e2e/rigid-surface-lifetime.spec.js": "5dae335f3989903f3d2233e3a7aebac93069925b6015740d25302bd303228997"
     },
-    "frozenLiveSourceCheck": "Every captured source hash before connected followup still matches final runtime and diagnosis helper. Lifetime fixture alone was strengthened after its first run to record native backend and require the injected throw to be observed; two final cases rerun."
+    "frozenLiveSourceCheck": "Every captured runtime and live diagnosis helper hash before connected followup still matches final source. Lifetime fixture was strengthened after its first run to record native backend and require the injected throw; two final cases rerun. Final appearance fixture differs only by removing an extra blank EOF line; exact executed fixture hash retained separately.",
+    "executedNativeFixtureSHA256": "c3d1ab97c71a44c9a1a51c15aa9f6fc7b5d86e561247a44091d5cf6f72be8ae8"
   },
   "units": {
     "suites": 6,
@@ -2530,7 +2531,8 @@
   "retainedDevelopmentResults": [
     "Initial restriction rejected all geometries with groups, unnecessarily preventing scalar BoxGeometry merging. Initial10native cases passed30.2s with smaller gains; preserve them as superseded prototype evidence. Reviewed Three scalar-group behavior, added meaningful72-vertex unit and reran final native appearance.",
     "Initial lifetime2cases passed7.6s but did not explicitly require observed injected throw or record native renderer. Strengthened fixture and reran only these2cases; final both pass5.4s.",
-    "First ad-hoc CPU census used obsolete batch.mesh shape and failed TypeError before a result. Correct retained script reads current InstancedMesh values directly and completed; no runtime code change or previous failed census acceptance."
+    "First ad-hoc CPU census used obsolete batch.mesh shape and failed TypeError before a result. Correct retained script reads current InstancedMesh values directly and completed; no runtime code change or previous failed census acceptance.",
+    "First cached diff check found an extra blank EOF line in the newly added appearance fixture after the earlier unstaged check had excluded new files. Removed only that blank line, preserved executed fixture hash and checked all committed changes before selecting held candidate. No runtime or test behavior change."
   ],
   "cleanup": "Independent no-listener checks confirm owned4190/18189disposable QA and4192native fixture servers exited. Fixture cleanup removed only its disposable database. Owned vendor symlink removed before commit. Original dirty workspace, production, accounts, terrain profile and separate long soak unchanged.",
   "longSoakReadOnly": {

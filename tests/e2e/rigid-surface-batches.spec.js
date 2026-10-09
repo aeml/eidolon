@@ -93,4 +93,3 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby ${type} packed s
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
-
