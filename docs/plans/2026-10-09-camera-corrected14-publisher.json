@@ -1,7 +1,9 @@
 {
   "head": "90fca2f188749e99dce4f5cbac0d85b2d7176b0e",
   "ci": 37918281583,
-  "status": "Pushed same-version 1.79.14; CI and deployment acceptance pending",
+  "status": "1.79.14 deployed and independently matched publicly; final live-character CI gate still active, not yet accepted",
+  "publicVerification": "2026-10-09T11:00:39.357Z: root matches all five recorded hashes, exact frontend/backend90fca2f1/Alpha1.79.14, verified IPv4 HTTPS and ready database. Other address-family/device/campaign scopes unchanged. Both deployments and all preceding required jobs success; live job113788452137 in progress.",
+  "nativeVerification": "Root independently reads completed native job113786290883: actual AMD Vulkan/RADV; six High regional switch cases1.4m, celebration1case6.9s, fitted classes/Ilyra2cases20.0s, isolated smoke4cases2.1m including native inventory pickup all pass. Original assertions retained; optional expanded steps skipped, not passed. Artifact credential scan passed.",
   "change": "Test-only fresh projection after hover confirmation, with deterministic post-hover camera-follow regression. Seven pointer cases,22 observation units and full disposable inventory flow passed; runtime/art/assets/version/workflow unchanged from0384. Exact intermittent CI cause not independently reproduced. Prior failure and local proof retained in loot-click-camera-follow-correction.json.",
   "remote": "Fresh fetch and normal merge already current before normal push. Remote master90fca2f1; no force/reset, website overwrite or original dirty-worktree changes. Accepted13 frontend/backend/IPv4 verified TLS/ready DB rechecked during this turn.",
   "build": "Committed source archive plus existing locked vendor, byte-identical qualified actual compiler:416modules3218768bytes/21shared; publisher402/888files. Five selected outputs, not binary-asset certification.",
