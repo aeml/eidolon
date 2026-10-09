@@ -78,9 +78,22 @@ vec3 eidolonSurface(vec3 p) {
     vec3 grainFootprint = fwidth(p * 5.);
     float grainFade = 1. - smoothstep(.25, .8, max(grainFootprint.x, max(grainFootprint.y, grainFootprint.z)));
     float grain = mix(.5, eidolonRockNoise(p * 5.), grainFade);
-    return vec3(.58 + weather * .28 + cleave * .36 + grain * .15 - joint * fade * .045,
-        .79 + cleave * .13 + grain * .07,
-        cleave * .065 + grain * .012 * grainFade - joint * fade * .012);
+    // Inclined geological joints interrupt broad stains, not concentric noise
+    // contours. Use one continuous world-space plane across adjoining faces;
+    // the existing mineral field breaks the exposed seam without another
+    // noise evaluation or decal. Color and relief fade together when subpixel.
+    float seamPlane = p.x * .21 + p.y * .19 - p.z * .12 + weather * .04;
+    float seamFootprint = max(fwidth(seamPlane), .001);
+    float seamDistance = abs(fract(seamPlane) - .5);
+    float seamDetail = (1. - smoothstep(.06, .18, seamFootprint)) * smoothstep(.3, .6, cleave);
+    float fissure = (1. - smoothstep(.009 - seamFootprint, .022 + seamFootprint, seamDistance)) * seamDetail;
+    float mineralEdge = (1. - smoothstep(.023 - seamFootprint, .058 + seamFootprint, seamDistance)) * seamDetail;
+    float quartz = max(0., mineralEdge - fissure);
+    return vec3(.58 + weather * .28 + cleave * .36 + grain * .15 - joint * fade * .045
+            - fissure * .13 + quartz * .22,
+        .79 + cleave * .13 + grain * .07 - quartz * .11,
+        cleave * .065 + grain * .012 * grainFade - joint * fade * .012
+            - fissure * .013 + quartz * .006);
 #elif EIDOLON_SURFACE == 5
     float grain = eidolonNoise(uv * vec2(7., .85) + vec2(weather * .3, 0.));
     float detail = 1. - smoothstep(.25, .8, max(fwidth(uv.x * 7.), fwidth(uv.y * .85)));
@@ -186,7 +199,7 @@ export function applyWorldSurfaceDetail(material, surface) {
         throw new Error('World surface detail cannot replace an existing shader hook');
     }
     material.userData.worldSurfaceDetail = surface;
-    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 5 : surface === 'fieldstone' ? 2 : 1}:${surface}`;
+    material.customProgramCacheKey = () => `eidolon-world-surface-v${surface === 'stratified-rock' ? 6 : surface === 'fieldstone' ? 2 : 1}:${surface}`;
     material.onBeforeCompile = shader => {
         shader.vertexShader = shader.vertexShader.replace('#include <common>',
             '#include <common>\nvarying vec3 vEidolonSurface;');

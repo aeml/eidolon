@@ -18,6 +18,12 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Staged Earth rock joints preserve collision/geometry and reuse existing
+  mineral fields without new maps/noise calls. Initial contour-like appearance
+  rejected in root review despite technical passes; final inclined joints pass
+  14 focused units0.533s and equipped native High/Low2cases22.2s. Timed profile
+  off; subtle material improvement, not final modern-art approval. See receipt.
+
 - Staged understory growth habits retain exact13,087 High/7,439 Low plant
   placements and existing path/wind envelope.14 focused units pass38.105s;
   equipped native High/Low2cases pass23.5s. Root gameplay-view review shows
@@ -359,18 +365,16 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Accept or diagnose current12/1255aade/CI37902548159 after authorized Luna
-   terminal notice; independently verify required jobs, public identities and
-   actual transformed publisher bytes. Prior dc7 attempt2 fails engine-module
-   download with matching static HTTP408 evidence; upstream cause remains
-   unproven. Later5bd reaches gameplay but fails the QA gear selector;83 affected
-   checks qualify the fd7 correction, not live acceptance. Laterfd7 fails bundled
-   class-name recognition; root reproduces the bug and f1 preserves names.
-   Its55focused/native checks are not authenticated-world acceptance. Require own CI/public
-   acceptance, then fresh-fetch/normal reconcile
-   and individually publish/accept prepared13-18 in order. Never promote the
-   whole future branch, overlap pushes, retry successful tests or infer acceptance
-   from a running job. Continue integrated modern-world work while CI runs.
+1. Accept or diagnose pushed15/0ac75025/CI37922288706 after authorized Luna
+   terminal notice; independently verify required native/live jobs, public
+   frontend/backend identity and actual five transformed publisher bytes.
+   Accepted14/90fca2f1 and earlier releases retain exact historical failures and
+   corrections; stale older pending entries above are chronological records,
+   not current status. Then fresh-fetch/normal reconcile and individually
+   publish/accept prepared16-18 in order;16 remains held for strict timed
+   qualification. Never promote the whole future branch, overlap pushes, rerun
+   unchanged successful tests or infer acceptance from a running job. Continue
+   integrated modern-world work while CI runs.
 2. Finish the complete modern world/art work, not just these woodland changes:
    coherent town/realm/landmark/dungeon scenery, material scale, useful populated
    spaces, natural geological/foliage variety, lighting, fit and responsive
