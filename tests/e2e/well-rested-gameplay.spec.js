@@ -164,9 +164,20 @@ test('earned sanctuary rest follows real travel, combat and a fresh login', asyn
     }, { timeout: 15_000 }).toBeLessThan(12);
     // Let the ordinary hostile attack before finishing it. A reduced maximum
     // at buff expiry is not evidence that combat depleted actual health.
-    await expect.poll(() => page.evaluate(() => window.__restJourneyEvidence.incomingDamage),
-        { timeout: 15_000 }).toBeGreaterThan(0);
-    const beforeCast = await restState(page);
+    // Hit feedback and authoritative resource snapshots are separate messages.
+    // A damage receipt alone must not let this read the preceding full-health
+    // snapshot. Wait for both real hostile damage and actual replicated loss;
+    // retain the same deadline and strict alive/wounded requirements.
+    let beforeCast;
+    await expect.poll(async () => {
+        const damage = await page.evaluate(() => window.__restJourneyEvidence.incomingDamage);
+        const current = await restState(page);
+        if (damage > 0 && current.hp > 0 && current.hp < current.maxHP) {
+            beforeCast = current;
+            return true;
+        }
+        return false;
+    }, { timeout: 15_000, message: 'Real hostile damage must reach the authoritative health snapshot' }).toBe(true);
     expect(beforeCast.hp).toBeGreaterThan(0);
     expect(beforeCast.hp).toBeLessThan(beforeCast.maxHP);
     const beforeHP = await targetHP();
