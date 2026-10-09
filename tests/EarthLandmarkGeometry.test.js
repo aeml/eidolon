@@ -36,6 +36,51 @@ test('thirteen beveled vault stones remain overhead with a clear hero-height pas
     expect(triangles).toBeLessThan(1000);
 });
 
+test('vault faces follow the elliptical opening instead of cutting flat chords across it', () => {
+    const geometry = createGroveArchStone(3), position = geometry.attributes.position;
+    const angles = new Set();
+    for (let i = 0; i < position.count; i++) {
+        const x = position.getX(i), y = (position.getY(i) - 8) / .55;
+        const radius = Math.hypot(x, y);
+        // Inspect the front/back flat face vertices, not bevel-offset corners.
+        if (radius > 9.3 && radius < 9.5) angles.add(Math.atan2(y, x).toFixed(3));
+    }
+    expect(angles.size).toBeGreaterThanOrEqual(3);
+    expect(angles.has((3.5 / 13 * Math.PI).toFixed(3))).toBe(true);
+    geometry.dispose();
+});
+
+test('carved opening lips are finite, face both ways and stay inside the original vault depth', () => {
+    const geometry = createGroveArchStone(4); geometry.computeBoundingBox();
+    expect(geometry.boundingBox.min.z).toBeGreaterThanOrEqual(-1.961);
+    expect(geometry.boundingBox.max.z).toBeLessThanOrEqual(1.961);
+    const position = geometry.attributes.position, normal = geometry.attributes.normal;
+    const front = [], back = [];
+    for (let i = 0; i < position.count; i++) {
+        const radius = Math.hypot(position.getX(i), (position.getY(i) - 8) / .55);
+        if (radius < 6.60 || radius > 6.94) continue;
+        if (position.getZ(i) < -1.93) front.push(normal.getZ(i));
+        if (position.getZ(i) > 1.93) back.push(normal.getZ(i));
+    }
+    expect(front.length).toBeGreaterThan(0); expect(back.length).toBeGreaterThan(0);
+    expect(front.some(z => z < -.5)).toBe(true); expect(back.some(z => z > .5)).toBe(true);
+    geometry.dispose();
+});
+
+test('worn masonry is deterministic and keeps useful UVs and unit face normals', () => {
+    for (const create of [() => createGroveArchStone(4), () => createGrovePierCourse(2)]) {
+        const geometry = create(), repeat = create();
+        expect(geometry.attributes.position.array).toEqual(repeat.attributes.position.array);
+        expect(geometry.attributes.color.array).toEqual(repeat.attributes.color.array);
+        expect(geometry.attributes.uv.count).toBe(geometry.attributes.position.count);
+        for (let i = 0; i < geometry.attributes.normal.count; i++) {
+            const length = new Vector3().fromBufferAttribute(geometry.attributes.normal, i).length();
+            expect(length).toBeCloseTo(1, 4);
+        }
+        geometry.dispose(); repeat.dispose();
+    }
+});
+
 test('worn pier courses stay within the original authoritative pillar solid', () => {
     for (let index = 0; index < 6; index++) {
         const geometry = createGrovePierCourse(index); geometry.computeBoundingBox();

@@ -45,13 +45,44 @@ export function createGroveArchStone(index, count = 13) {
     const a = index / count * Math.PI + .005, b = (index + 1) / count * Math.PI - .005;
     const inner = 6.5, outer = 9.5 + (index === Math.floor(count / 2) ? .24 : 0);
     const shape = new THREE.Shape();
-    shape.moveTo(Math.cos(a) * inner, Math.sin(a) * inner);
-    shape.lineTo(Math.cos(a) * outer, Math.sin(a) * outer);
-    shape.lineTo(Math.cos(b) * outer, Math.sin(b) * outer);
-    shape.lineTo(Math.cos(b) * inner, Math.sin(b) * inner);
+    // Follow the actual segmental vault instead of joining thirteen flat
+    // wedges into a polygon. Small inward wear varies each bonded block;
+    // no detached rubble, extra material/draw batch or wider solid footprint.
+    const edge = (angle, radius) => shape.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+    shape.moveTo(Math.cos(a) * (inner + .035), Math.sin(a) * (inner + .035));
+    edge(a, outer - .04 - stoneNoise(index + 41) * .08);
+    edge((a + b) / 2, outer - .01 - stoneNoise(index + 67) * .025);
+    edge(b, outer - .04 - stoneNoise(index + 121) * .08);
+    edge(b, inner + .035);
+    edge((a + b) / 2, inner + .012 + stoneNoise(index + 151) * .018);
     shape.closePath();
-    const geometry = new THREE.ExtrudeGeometry(shape, { depth: 3.72, steps: 1,
-        bevelEnabled: true, bevelThickness: .10, bevelSize: .06, bevelSegments: 1, curveSegments: 1 });
+    const body = new THREE.ExtrudeGeometry(shape, { depth: 3.72, steps: 1,
+        bevelEnabled: true, bevelThickness: .10, bevelSize: .075, bevelSegments: 1, curveSegments: 1 });
+    // A low carved lip catches light along both faces of the opening. Build
+    // it into this stone's existing batch, within its old depth envelope.
+    const values = [], uv = [], angles = [a, (a + b) / 2, b];
+    const triangle = (p, q, r) => {
+        for (const point of [p, q, r]) { values.push(...point); uv.push(point[0], point[1]); }
+    };
+    for (const back of [false, true]) {
+        const base = back ? 3.73 : -.01, crest = back ? 3.80 : -.08;
+        const rings = angles.map(angle => [[6.61, base], [6.75, crest], [6.92, base]]
+            .map(([radius, z]) => [Math.cos(angle) * radius, Math.sin(angle) * radius, z]));
+        for (let section = 0; section < 2; section++) for (let band = 0; band < 2; band++) {
+            const [p, q, r, s] = [rings[section][band], rings[section][band + 1],
+                rings[section + 1][band + 1], rings[section + 1][band]];
+            if (back) { triangle(p, q, r); triangle(p, r, s); }
+            else { triangle(p, r, q); triangle(p, s, r); }
+        }
+        const start = rings[0], end = rings[2];
+        if (back) { triangle(start[0], start[2], start[1]); triangle(end[0], end[1], end[2]); }
+        else { triangle(start[0], start[1], start[2]); triangle(end[0], end[2], end[1]); }
+    }
+    const lip = new THREE.BufferGeometry();
+    lip.setAttribute('position', new THREE.Float32BufferAttribute(values, 3));
+    lip.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); lip.computeVertexNormals();
+    const geometry = mergeGeometries([body, lip], false);
+    body.dispose(); lip.dispose();
     // A low segmental vault keeps the complete landmark readable at the actual
     // gameplay camera, rather than pushing its crown off the desktop view.
     geometry.scale(1, .55, 1);
@@ -70,7 +101,12 @@ export function createGrovePierCourse(index) {
             const chip = .025 + stoneNoise(seed) * .035;
             const shape = new THREE.Shape();
             shape.moveTo(left + chip, 0); shape.lineTo(right, chip);
-            shape.lineTo(right - chip, 1.18); shape.lineTo(left, 1.18 - chip); shape.closePath();
+            // Unequal worn corners and a shallow loss at the exposed top edge
+            // break up perfect horizontal slices without moving bonded joints.
+            shape.lineTo(right - chip, 1.18 - chip);
+            shape.lineTo(right - .18 - chip, 1.18);
+            shape.lineTo(left + .12 + chip, 1.18 - stoneNoise(seed + 31) * .045);
+            shape.lineTo(left, 1.18 - chip); shape.closePath();
             const stone = new THREE.ExtrudeGeometry(shape, { depth: 1.72, steps: 1,
                 bevelEnabled: true, bevelThickness: .08, bevelSize: .06, bevelSegments: 1, curveSegments: 1 });
             stone.translate(0, index * (8 / 6) + .075, row ? .1 : -1.82);
