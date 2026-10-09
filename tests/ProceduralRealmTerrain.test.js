@@ -167,22 +167,19 @@ describe('procedural dark-fantasy realm terrain', () => {
         expect(getProceduralTerrainMetrics(new THREE.Texture())).toBeNull();
     });
 
-    test('town stones retain their physical pattern on Low, without bright repeating marks', () => {
+    test('town flagstones retain their complete physical pattern on Low, without bright repeating marks', () => {
         const high = createProceduralTerrainTexture('town');
         const low = createProceduralTerrainTexture('town', { quality: 'low' });
         const pixel = (texture, x, y) => Array.from(texture.image.data.slice((y * texture.image.width + x) * 4, (y * texture.image.width + x) * 4 + 3));
-        for (let row = 0; row < 16; row++) {
-            for (let column = 0; column < 8; column++) {
-                const x = (column * 32 + 16 - (row % 2) * 16 + 256) % 256;
-                const y = row * 16 + 8;
-                expect(pixel(low, x / 2, y / 2)).toEqual(pixel(high, x, y));
-            }
-        }
+        // Check joints and chipped corners too, not just old regular brick
+        // centres. Both qualities sample the same varied flagstone field.
+        for (let y = 0; y < 128; y += 3) for (let x = 0; x < 128; x += 3)
+            expect(pixel(low, x, y)).toEqual(pixel(high, x * 2, y * 2));
         const colors = Array.from(high.image.data).filter((_, index) => index % 4 !== 3);
         expect(colors.reduce((maximum, value) => Math.max(maximum, value), 0)).toBeLessThan(130);
-        const stoneWidth = 198.5 / (PROCEDURAL_TERRAIN_DEFINITIONS.town.surface.repeat[0] * 8);
-        expect(stoneWidth).toBeGreaterThan(0.8);
-        expect(stoneWidth).toBeLessThan(1.1);
+        const stoneWidth = 198.5 / (PROCEDURAL_TERRAIN_DEFINITIONS.town.surface.repeat[0] * 6);
+        expect(stoneWidth).toBeGreaterThan(1);
+        expect(stoneWidth).toBeLessThan(1.5);
         high.dispose();
         low.dispose();
     });
