@@ -174,7 +174,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality), surface = createEarthSurfaceDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail, surface };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v14';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v15';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail }, earthSurface: { value: surface }, earthSurfaceScale: { value: 1 / EARTH_SURFACE_TILE_METRES },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -229,7 +229,13 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             earthRock = smoothstep(.14, .8, earthRock) * .72;
             float earthClod = earthSurfaceSample.r;
             float earthMoss = earthSurfaceSample.b;
-            float earthGravel = earthSurfaceSample.g * (1. - earthWear.a * .75) * (1. - earthWear.r * .75);
+            // Loose stones collect in irregular exposed patches, rather than
+            // covering every bare square metre with the same confetti. The
+            // existing coherent soil field breaks up the broad mineral mask;
+            // color and relief share this placement weight exactly.
+            float earthGravelPatch = smoothstep(.32, .65, earthBroad.r * .75 + earthWear.b * .25);
+            float earthGravelPlacement = earthGravelPatch * (1. - earthWear.a * .75) * (1. - earthWear.r * .75);
+            float earthGravel = earthSurfaceSample.g * earthGravelPlacement;
             // Height-sensitive blending exposes dry clod faces between moss
             // cushions instead of painting a translucent green wash. Restrict
             // breakup to the transition: zero/one authored coverage stays
@@ -281,7 +287,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
                 max(earthMossCoverage, earthShelteredMoss) * (1. - earthRock));
             roughnessFactor = mix(roughnessFactor, .79 + earthSurfaceSample.a * .10, earthGravel * (1. - earthRock));
         `).replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-            float earthRelief = (earthClod * .035 + earthSurfaceSample.a * .055) * (1. - earthRock)
+            float earthRelief = (earthClod * .035 + earthSurfaceSample.a * earthGravelPlacement * .055) * (1. - earthRock)
                 + earthMossCoverage * earthMoss * .012
                 + earthShelteredMoss * earthMossFiber * .018
                 + earthLeafCoverage * (.018 + earthGrain.b * .01)

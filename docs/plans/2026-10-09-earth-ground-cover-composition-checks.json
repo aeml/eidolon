@@ -1,0 +1,943 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T20:37:15.210757+00:00",
+  "status": "Selected private composition follow-up over5550fd3f; not deployed or Q/CB accepted",
+  "baseCommit": "5550fd3f386423780d0463119a841e53ac895ec6",
+  "currentSourceSHA256": {
+    "src/art/EarthGroundComposition.js": "b98bc0e9f681590036db13699694a28fb485d22cff4d3f2e5c92ec014e0b0604",
+    "src/art/EarthUnderstory.js": "4f080124ae91adc97408028f0773f54968dd92a6f88a3698e90908a7fc6cf80c",
+    "src/art/WoodlandUnderstoryGeometry.js": "dd88c55c07962ec32f219aafe526ddc2311fae0644f7b760bcb3dc1e74937859",
+    "tests/EarthGroundComposition.test.js": "f7c5c5fc71e919834c29bbcd5249b26c9c93bc69e51809e21752a4be6a83684b",
+    "tests/e2e/earth-ground-cover-composition.spec.js": "625824da1239dc8a662b9cddd57da749408099c0dcf901032b1eb58cf37e5a0f",
+    "tests/e2e/terrain-equipped-party.spec.js": "04a2b8294ecac70dab1ce6b1f8b8d4bbd058c6dae5d1f6d99654b05fd83254f3",
+    "tests/e2e/earth-moving-route.js": "45be43920217d8606b499a620afa01936363d03d26181128be037afffb37e71d"
+  },
+  "implementation": {
+    "purpose": "Make the first playable Earth reference read as low irregular woodland stands and stone patches instead of evenly spaced corn-like tufts and uniformly bright gravel.",
+    "ground": "Existing coherent broad soil and canonical mineral mask control gravel placement. Coverage and normal relief use the same placement weight; no additional map/fetch, lighting trick, displacement or collision change. Program cache advancesv14\u2192v15.",
+    "plants": "Every original anchor/quality selection/variant survives. Each plant selects its nearest jittered stand from nine neighbouring cells, with bounded5.2m attraction and unchanged meadow/road/town/site/fight-clearing rejection. Low remains exact subset of High. Invalid destinations retain their anchor.",
+    "sedge": "Same16 rooted leaves and80 triangles. Lower/longer arches with unequal side curvature replace tall short radial tufts; folded sheet normals and opaque wind remain. Bracken recipe remains byte-identical.",
+    "resources": {
+      "census": {
+        "scope": "CPU recipe/placement census, not GPU/VRAM or final art certification",
+        "recipes": {
+          "previous": {
+            "bracken": {
+              "triangles": 231,
+              "rawAttributeBytes": 24948,
+              "min": [
+                -1.0759308338165283,
+                0,
+                -1.0639079809188843
+              ],
+              "max": [
+                1.0961835384368896,
+                0.7119970321655273,
+                0.9777871966362
+              ]
+            },
+            "sedge": {
+              "triangles": 80,
+              "rawAttributeBytes": 8640,
+              "min": [
+                -0.9068612456321716,
+                0,
+                -0.9200498461723328
+              ],
+              "max": [
+                1.1333340406417847,
+                0.6738874316215515,
+                1.032741904258728
+              ]
+            }
+          },
+          "candidate": {
+            "bracken": {
+              "triangles": 231,
+              "rawAttributeBytes": 24948,
+              "min": [
+                -1.0759308338165283,
+                0,
+                -1.0639079809188843
+              ],
+              "max": [
+                1.0961835384368896,
+                0.7119970321655273,
+                0.9777871966362
+              ]
+            },
+            "sedge": {
+              "triangles": 80,
+              "rawAttributeBytes": 8640,
+              "min": [
+                -0.9430745244026184,
+                0,
+                -0.8797778487205505
+              ],
+              "max": [
+                1.0873011350631714,
+                0.4260241985321045,
+                1.0289546251296997
+              ]
+            }
+          }
+        },
+        "placements": {
+          "high": {
+            "previous": {
+              "plants": 13087,
+              "bracken": 3294,
+              "sedges": 9793,
+              "sectors": 326,
+              "recipeTriangles": 1544354
+            },
+            "candidate": {
+              "plants": 13087,
+              "bracken": 3294,
+              "sedges": 9793,
+              "sectors": 326,
+              "recipeTriangles": 1544354
+            }
+          },
+          "low": {
+            "previous": {
+              "plants": 7439,
+              "bracken": 1876,
+              "sedges": 5563,
+              "sectors": 319,
+              "recipeTriangles": 878396
+            },
+            "candidate": {
+              "plants": 7439,
+              "bracken": 1876,
+              "sedges": 5563,
+              "sectors": 320,
+              "recipeTriangles": 878396
+            }
+          }
+        }
+      },
+      "meaning": "Shared recipe raw attribute sizes unchanged:bracken24948B/sedge8640B. Full population recipe triangles remain1544354High/878396Low. High sectors326\u2192326, Low319\u2192320; the additional Low sector and redistribution can alter batch texture padding. No claim of zero overall GPU cost or measured VRAM. Actual temporary group GPU disposal returns baseline."
+    }
+  },
+  "units": {
+    "result": "5 suites/34 tests pass88.313s; no skipped/failed tests. High/Low counts/variant counts/subset, clearances, geometry/normals, wind envelope, constructor batches/instance matrices/tints, shader and map ownership verified.",
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-units.log",
+      "sha256": "6d064c8f51ec155589d4046190b6dada5af0503853365b8a6bdf3dd1557a7ca8"
+    }
+  },
+  "native": {
+    "result": "2 High/Low checks pass43.7s (23.4s/17.4s). Stable predecessor pixel repeat; eight visibly changed candidate views. Calls unchanged; culling moves a few plants across the camera edge, so submitted triangles may change. Every sampled candidate stays below originalHigh350calls/250ktri orLow200calls/85ktri limits. Four temporary cover allocation/disposal cycles return exactly to warm geometry/texture baseline.",
+    "evidence": [
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/comparison.json",
+        "sha256": "356b779e3ddebb12fa3bfda686cf1e5eac1c45d4813434058b4e0ea21c1e356e",
+        "report": {
+          "quality": "low",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "label": "gate-run",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 137850,
+                "maximum": 94
+              },
+              "previous": {
+                "calls": 55,
+                "triangles": 60793,
+                "geometries": 64,
+                "textures": 67
+              },
+              "current": {
+                "calls": 55,
+                "triangles": 60793,
+                "geometries": 64,
+                "textures": 67
+              }
+            },
+            {
+              "label": "road-attack",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 205084,
+                "maximum": 104
+              },
+              "previous": {
+                "calls": 50,
+                "triangles": 44776,
+                "geometries": 89,
+                "textures": 109
+              },
+              "current": {
+                "calls": 50,
+                "triangles": 43772,
+                "geometries": 89,
+                "textures": 109
+              }
+            },
+            {
+              "label": "woodland-idle",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 183274,
+                "maximum": 92
+              },
+              "previous": {
+                "calls": 65,
+                "triangles": 49839,
+                "geometries": 116,
+                "textures": 151
+              },
+              "current": {
+                "calls": 65,
+                "triangles": 49759,
+                "geometries": 116,
+                "textures": 151
+              }
+            },
+            {
+              "label": "road-detail",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 102963,
+                "maximum": 86
+              },
+              "previous": {
+                "calls": 44,
+                "triangles": 39382,
+                "geometries": 116,
+                "textures": 151
+              },
+              "current": {
+                "calls": 44,
+                "triangles": 39693,
+                "geometries": 116,
+                "textures": 151
+              }
+            }
+          ],
+          "warm": {
+            "geometries": 116,
+            "textures": 151
+          },
+          "afterRepeat": {
+            "geometries": 116,
+            "textures": 151
+          },
+          "timings": [
+            {
+              "mode": "previous",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.700000000000728,
+              "submissionMedianMs": 5.699999988079071,
+              "submissionP95Ms": 9.699999988079071
+            },
+            {
+              "mode": "candidate",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.700000000000728,
+              "submissionMedianMs": 5.200000017881393,
+              "submissionP95Ms": 9.699999988079071
+            },
+            {
+              "mode": "candidate",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.700000000000728,
+              "submissionMedianMs": 5.699999988079071,
+              "submissionP95Ms": 10.799999982118607
+            },
+            {
+              "mode": "previous",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.799999999999272,
+              "submissionMedianMs": 5.100000023841858,
+              "submissionP95Ms": 10
+            }
+          ],
+          "lifetime": [
+            {
+              "cycle": 0,
+              "baseline": {
+                "geometries": 116,
+                "textures": 151
+              },
+              "allocated": {
+                "geometries": 121,
+                "textures": 166
+              },
+              "released": {
+                "geometries": 116,
+                "textures": 151
+              }
+            },
+            {
+              "cycle": 1,
+              "baseline": {
+                "geometries": 116,
+                "textures": 151
+              },
+              "allocated": {
+                "geometries": 121,
+                "textures": 166
+              },
+              "released": {
+                "geometries": 116,
+                "textures": 151
+              }
+            }
+          ],
+          "plantCounts": {
+            "previous": 7439,
+            "candidate": 7439
+          },
+          "spatial": true,
+          "scope": "Production raised scene, supplied14-slot Fighter and fixed sampled poses, gameplay zoom18/detail10. Same actors, trees, cameras, shadows, plant counts and map allocation; ground-cover positions/sedge geometry and gravel placement change; wind shader uniform held only for comparison. No actual connected combat/HUD/whole-game/device budget acceptance."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/gate-run-candidate.png",
+            "sha256": "99c99c1c16a9c4b1eed8c919cdc018dda8773d2c19da5d586105e0012464fbd7"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/gate-run-previous.png",
+            "sha256": "629c725b2fa6af11df3ed58e044a66609e2e99a05a1fda52369e881ed44b9346"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/road-attack-candidate.png",
+            "sha256": "9438ed668b570d454cd8e633dc61b987b24a343b7703bd5c581a58527ca9e8d4"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/road-attack-previous.png",
+            "sha256": "0fd729c51273ae598536a5848be38c4b0d9d4804b0be0f297a5a629a243926eb"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/road-detail-candidate.png",
+            "sha256": "5bc18c465926208f5dd82e23c12b56e4ff5ed256e249ea9ca968e697e58540fc"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/road-detail-previous.png",
+            "sha256": "9c46b92e183240e58748744d5411e8dc4113f8641512b34b087bda132fc86e66"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/woodland-idle-candidate.png",
+            "sha256": "c5a9ba1db02d7305f031c739a6ae56c11b1e2a5c97a4867c3cb801d9439594f9"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-2d0b8-hter-and-raised-scenery-low/woodland-idle-previous.png",
+            "sha256": "a92fb2fcce6cdef0c95a18eaef553633da3d0376455c9fe8708f52ed15cc1735"
+          }
+        ]
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/comparison.json",
+        "sha256": "9288dbf7cdabb6fd95e7bee855db74dcab65f2b606638e545e3f676c629b3ee1",
+        "report": {
+          "quality": "high",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "reports": [
+            {
+              "label": "gate-run",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 529401,
+                "maximum": 95
+              },
+              "previous": {
+                "calls": 110,
+                "triangles": 183522,
+                "geometries": 72,
+                "textures": 90
+              },
+              "current": {
+                "calls": 110,
+                "triangles": 183522,
+                "geometries": 72,
+                "textures": 90
+              }
+            },
+            {
+              "label": "road-attack",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 730228,
+                "maximum": 108
+              },
+              "previous": {
+                "calls": 220,
+                "triangles": 242327,
+                "geometries": 116,
+                "textures": 162
+              },
+              "current": {
+                "calls": 220,
+                "triangles": 242158,
+                "geometries": 116,
+                "textures": 162
+              }
+            },
+            {
+              "label": "woodland-idle",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 700622,
+                "maximum": 119
+              },
+              "previous": {
+                "calls": 164,
+                "triangles": 222220,
+                "geometries": 152,
+                "textures": 234
+              },
+              "current": {
+                "calls": 164,
+                "triangles": 222300,
+                "geometries": 152,
+                "textures": 234
+              }
+            },
+            {
+              "label": "road-detail",
+              "baselineRepeat": {
+                "changed": 0,
+                "maximum": 0
+              },
+              "candidate": {
+                "changed": 477606,
+                "maximum": 113
+              },
+              "previous": {
+                "calls": 146,
+                "triangles": 184855,
+                "geometries": 152,
+                "textures": 234
+              },
+              "current": {
+                "calls": 146,
+                "triangles": 185255,
+                "geometries": 152,
+                "textures": 234
+              }
+            }
+          ],
+          "warm": {
+            "geometries": 152,
+            "textures": 234
+          },
+          "afterRepeat": {
+            "geometries": 152,
+            "textures": 234
+          },
+          "timings": [
+            {
+              "mode": "previous",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.80000000000109,
+              "submissionMedianMs": 12.699999988079071,
+              "submissionP95Ms": 22.5
+            },
+            {
+              "mode": "candidate",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999891,
+              "rafP95Ms": 16.799999999999272,
+              "submissionMedianMs": 11.599999994039536,
+              "submissionP95Ms": 17.299999982118607
+            },
+            {
+              "mode": "candidate",
+              "frames": 120,
+              "rafMedianMs": 16.700000000000728,
+              "rafP95Ms": 16.700000000000728,
+              "submissionMedianMs": 10.699999988079071,
+              "submissionP95Ms": 16.700000017881393
+            },
+            {
+              "mode": "previous",
+              "frames": 120,
+              "rafMedianMs": 16.69999999999709,
+              "rafP95Ms": 16.700000000000728,
+              "submissionMedianMs": 10.600000023841858,
+              "submissionP95Ms": 18
+            }
+          ],
+          "lifetime": [
+            {
+              "cycle": 0,
+              "baseline": {
+                "geometries": 152,
+                "textures": 234
+              },
+              "allocated": {
+                "geometries": 160,
+                "textures": 258
+              },
+              "released": {
+                "geometries": 152,
+                "textures": 234
+              }
+            },
+            {
+              "cycle": 1,
+              "baseline": {
+                "geometries": 152,
+                "textures": 234
+              },
+              "allocated": {
+                "geometries": 160,
+                "textures": 258
+              },
+              "released": {
+                "geometries": 152,
+                "textures": 234
+              }
+            }
+          ],
+          "plantCounts": {
+            "previous": 13087,
+            "candidate": 13087
+          },
+          "spatial": true,
+          "scope": "Production raised scene, supplied14-slot Fighter and fixed sampled poses, gameplay zoom18/detail10. Same actors, trees, cameras, shadows, plant counts and map allocation; ground-cover positions/sedge geometry and gravel placement change; wind shader uniform held only for comparison. No actual connected combat/HUD/whole-game/device budget acceptance."
+        },
+        "images": [
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/gate-run-candidate.png",
+            "sha256": "919ede6bc5272df650bee5699fe2295c488c9d53ed84040389ebe77990bcb186"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/gate-run-previous.png",
+            "sha256": "34c6892b03c818c7580f9cc146bce8c701f7929cb917f20cb21e4f1bf8bb63a8"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/road-attack-candidate.png",
+            "sha256": "d6d14cd774f7013b28318a4bf43c55269bf70858fbabdf4c65c3794468e945b2"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/road-attack-previous.png",
+            "sha256": "5db7c9198df3adeb4835d604717d6b4534ba598d0f5f0cb32373fa941c321353"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/road-detail-candidate.png",
+            "sha256": "a698d4a46aa796bb0330e67e0ebe339932b54ba7bcd91e94cffb04b763538771"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/road-detail-previous.png",
+            "sha256": "c7101e921c8ffa3d87e7f753d0f5e7ba8001ddbab0bf0b133f6f7a471d30b6d1"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/woodland-idle-candidate.png",
+            "sha256": "26aa639a0f477182fbf9286a2f65ef316e509ed0c82ec5d8956894691b280b1e"
+          },
+          {
+            "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-native-20261009/earth-ground-cover-composi-d00af-ter-and-raised-scenery-high/woodland-idle-previous.png",
+            "sha256": "c4f61e954d3c85578fb91f5dc4aab04884aa6b958fef030b4ccb3fdb6d20e8ab"
+          }
+        ]
+      }
+    ],
+    "scope": "Supplied14-slot Fighter sampled poses in production raised terrain/tree/building scene. Overworld entrance entities/full town/connected simulation/HUD absent. Wind time held only for image pairing. ABBA4x120 RAF/submission timing per quality shows no sustained-game/device gain certificate."
+  },
+  "fallback": {
+    "result": "2 additional native checks pass33.9s:20 exact pixel comparisons between current InstancedMesh and spatial BatchedMesh across five views, wind and reduced motion, High/Low. Same current plants and shapes retained.",
+    "evidence": [
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-fallback-20261009/understory-spatial-batches-544ad-ndered-plants-and-wind-high/comparison.json",
+        "sha256": "044f3d71fef038bdb61e71bd4b1afaf8c348d58f5d6c4d507a3e88778851f785",
+        "quality": "high",
+        "graphics": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "multiDraw": true
+        },
+        "plants": [
+          13087,
+          13087
+        ],
+        "meshes": [
+          6302,
+          326
+        ],
+        "exactComparisons": 10,
+        "allDeltasZero": true,
+        "timings": [
+          {
+            "spatialBatches": false,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 33.4,
+            "medianRenderCpuMs": 22.099999994039536,
+            "p95RenderCpuMs": 31,
+            "calls": 282,
+            "triangles": 116766
+          },
+          {
+            "spatialBatches": true,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 16.8,
+            "medianRenderCpuMs": 12.200000017881393,
+            "p95RenderCpuMs": 19.900000005960464,
+            "calls": 178,
+            "triangles": 115504
+          }
+        ]
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-fallback-20261009/understory-spatial-batches-88a76-endered-plants-and-wind-low/comparison.json",
+        "sha256": "8bdc255d2153427dd75768b257370a30d7c3a1e3f8636f37dbbaca4a8de0611a",
+        "quality": "low",
+        "graphics": {
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "multiDraw": true
+        },
+        "plants": [
+          7439,
+          7439
+        ],
+        "meshes": [
+          1600,
+          320
+        ],
+        "exactComparisons": 10,
+        "allDeltasZero": true,
+        "timings": [
+          {
+            "spatialBatches": false,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 16.8,
+            "medianRenderCpuMs": 6.299999982118607,
+            "p95RenderCpuMs": 11.800000011920929,
+            "calls": 72,
+            "triangles": 34119
+          },
+          {
+            "spatialBatches": true,
+            "frames": 120,
+            "medianFrameMs": 16.7,
+            "p95FrameMs": 16.7,
+            "medianRenderCpuMs": 4.199999988079071,
+            "p95RenderCpuMs": 7.0999999940395355,
+            "calls": 46,
+            "triangles": 25614
+          }
+        ]
+      }
+    ],
+    "budgetStatus": "Image correctness established. Legacy fallback High draw-call budget remains unqualified; do not turn a passing equivalence fixture into unsupported-device performance approval."
+  },
+  "movingRoute": {
+    "result": "Actual prepared level30 Fighter moves from town(-1.25,200) around the Votive Market via(0,186)/(60,186)/(60,200), through the east gate and Earth road to(760,200) beside Verdant Bastion.41 real ground-click steps settle before subsequent input. Eight equipped14-slot/profile/health/grounding checkpoints pass. No teleport, direct position assignment, jump or weakened collision check on this route.",
+    "report": {
+      "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/moving-route.json",
+      "sha256": "f23ee1343d80f671207a3891ca90165291b853ad745cb1b08244d4d61400e9d3"
+    },
+    "elapsedMs": 64510.67279199999,
+    "steps": 41,
+    "checkpoints": [
+      {
+        "label": "town-start",
+        "x": -1.25,
+        "y": 0,
+        "z": 200,
+        "calls": 848,
+        "triangles": 268965,
+        "equippedItems": 14
+      },
+      {
+        "label": "north-court",
+        "x": -0.03379649299040466,
+        "y": 0,
+        "z": 185.98492236723305,
+        "calls": 706,
+        "triangles": 302504,
+        "equippedItems": 14
+      },
+      {
+        "label": "market-pass",
+        "x": 59.852055927175,
+        "y": 0,
+        "z": 186.00128357461335,
+        "calls": 417,
+        "triangles": 271508,
+        "equippedItems": 14
+      },
+      {
+        "label": "east-street",
+        "x": 59.967477643414114,
+        "y": 0,
+        "z": 199.99074355678758,
+        "calls": 529,
+        "triangles": 279141,
+        "equippedItems": 14
+      },
+      {
+        "label": "east-gate",
+        "x": 119.85333006357965,
+        "y": 0,
+        "z": 200.007104764168,
+        "calls": 270,
+        "triangles": 227189,
+        "equippedItems": 14
+      },
+      {
+        "label": "earth-road",
+        "x": 239.58248556870598,
+        "y": 0.0009842525546949758,
+        "z": 199.99727784372405,
+        "calls": 573,
+        "triangles": 214899,
+        "equippedItems": 14
+      },
+      {
+        "label": "woodland-cut",
+        "x": 469.97401764546913,
+        "y": 1.493085679871322,
+        "z": 200.00939914954304,
+        "calls": 554,
+        "triangles": 227264,
+        "equippedItems": 14
+      },
+      {
+        "label": "bastion-approach",
+        "x": 759.9702274559947,
+        "y": 0,
+        "z": 200.00804824927286,
+        "calls": 875,
+        "triangles": 169041,
+        "equippedItems": 14
+      }
+    ],
+    "video": {
+      "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/moving-route.mp4",
+      "sha256": "57e96ef4ce996c47bf2bbdf84ce55bf529c4b017593c7c3c4a9490a1f6097bf6",
+      "probe": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "width": 1280,
+            "height": 844,
+            "nb_frames": "336"
+          }
+        ],
+        "format": {
+          "duration": "60.760000",
+          "size": "16561485"
+        }
+      },
+      "capturedFrames": 335,
+      "capturedDurationSeconds": 60.66791796684265,
+      "meaning": "Explicit post-login CDP JPEG screencast every sixth compositor frame, encoded with original timestamp intervals into VFR H264.336 encoded frames include the duplicate final frame. Sampled footage, not a continuous30fps capture or a performance measurement."
+    },
+    "reviewedImages": [
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/town-start.png",
+        "sha256": "5250144c04d5d4356bd6c51b4d52ca9bbbe1e824cd4f558b8fb2e312ce5333fd"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/east-gate.png",
+        "sha256": "2e25d945c8d4e0b048208750eedf2dbcda49bbaeccf14456ed79f0691ac16b9f"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/woodland-cut.png",
+        "sha256": "618c2a5f3cfe630ea1971ced56aef6ca839805daae9c18d234c1c7bf7fd44ebd"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/bastion-approach.png",
+        "sha256": "24f1b6b47dc22f2342af5de5f3d9b6662050d6d1ef22a6b49c81c5233ec57ebf"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/post-login-moving-route/frame-0042.jpg",
+        "sha256": "00805d7bbd80d45d00d6fc079e343b194c2fdf405544ba563a7eba11cfd0f8d1"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/post-login-moving-route/frame-0180.jpg",
+        "sha256": "5317ec8ae03f6996a0a9e2834a810cfce805f16a744c14ea1a539b7731dc6289"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-VtM4UOlN/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/post-login-moving-route/frame-0280.jpg",
+        "sha256": "695cacf3024e15552b7d7fa96506b9189954073c7cb307f6fbd6b1b3c5c4f0c3"
+      }
+    ],
+    "scope": "Normal input/HUD/grounded outfit journey, not earned chapter pacing, a combat/encounter/dungeon clear, physical phone or final art/gait/contact approval. Capture/FFmpeg excluded from party frame measurement; party profile runs after screencast stops and FFmpeg runs only after browser terminal.",
+    "postRunMetadataCorrection": {
+      "executedHelper": {
+        "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/executed-earth-moving-route.js",
+        "sha256": "af3badf0e816ab8fe5a6255c6a5ed050ce15b63c9cb9024c419f2d40b9ad1d29"
+      },
+      "change": "Current helper corrects only output scope word preceding\u2192subsequent for party timings. Movement, recording and assertions unchanged; captured report retains original text. No unchanged route rerun for wording correction."
+    }
+  },
+  "connectedParty": {
+    "result": "Race-enabled actual server/disposable Mongo7.0.14, one native renderer and three normal authenticated socket peers. Four supplied classes with14 fitted slots/independent bones/grounding and preserved equipment/inventory/EP/membership through normal logout pass111.38s (package112.462s), including the64.51s added moving-route phase.",
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.30000000000291,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50.10000000000582,
+      "framesOver33ms": 65,
+      "cpuLoopMedianMs": 26.5,
+      "cpuLoopP95Ms": 39.099999994039536,
+      "drawCallsMedian": 419,
+      "trianglesMedian": 537072,
+      "geometries": 636,
+      "textures": 535,
+      "activeEntities": 30,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "safeSummary": {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/party-frame-profile.json",
+      "sha256": "33de88de40f0028781a8d8803dcfca8ecc0a5782e0b09e9635d462ddc0a3ec80"
+    },
+    "drawAttribution": {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/party-draw-attribution.json",
+      "sha256": "c034790d1b104954d1d18136cea2ee5ab3710b959b5cb6eb71d218e691a7981f"
+    },
+    "budgetStatus": "FAIL/OPEN: High20ms median/33.4ms p95 target; observed33.3/50ms.30 active entities after visiting the route, with636 geometries/535 textures retained in this warmed scene. Previous static party had31 entities/396 geometries/281 textures; those different scenes do not prove a CPU benefit or a leak. Sustained travel/returning-session/resource/device qualification remains open.",
+    "cleanup": "Current and failed attempt both terminal; owned disposable Mongo containers and4190/18189/4192 listeners independently absent. Raw browser logs remain0600/uncommitted. Explicit recording frame directory700 and JPEGs600; reviewed synthetic post-login artifact references only."
+  },
+  "visualReview": {
+    "selected": "Lower fans form irregular connected stands; gravel no longer covers every bare patch equally. Ordinary HUD journey retains clear road/actor/entrance identity. Technical success is a partial art foundation.",
+    "remaining": [
+      "Broad ground masks and dense repeating conifer boughs still show procedural repetition; scene silhouettes/rock shelves/architecture need further refinement.",
+      "Actual journey848 town draws/875 approach draws greatly exceed isolated scene counts. Attribute real Town/entrance/actor/shadow submissions and resource retention before deciding a renderer optimization.",
+      "Footage and grounding do not establish animated gait/contact/combat or fun. Inspect actual moving actor action/bone progression and perform the focused kit/fight review without replacing owner-deferred earned campaign/playtests.",
+      "Every other realm/interior/dungeon/raid/finale/casino/PvP family and supported device scope remains separate; Q/CB art approval open."
+    ]
+  },
+  "failedAttempt": {
+    "artifactRoot": "/home/aeml/.local/share/eidolon-terrain-save-evidence-AWZQS83M",
+    "terminalLog": {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-party-route.log",
+      "sha256": "2d8c7743eff2bed967ddd3aa2d754bde5bcc419791f60b501d8e796ac2cfb328"
+    },
+    "result": "First route aborts after4.6s/three frames nearx6: an assumed straight town line intersects the actual Trading Post at(30,200); shared moveByGroundClick establishes progress even with arrival supplied, so the next click began before settlement. Corrected fixture walks the northern pass and explicitly requires normal IDLE arrival at every step. No collider, input/movement assertion or deadline weakened; initial26.68s test failure retained, not counted as a pass."
+  },
+  "build": {
+    "result": "Copied-site engine bundle passes,427 modules/3274961bytes using unchanged tool-local esbuild0.28.2; editable and shared dependencies untouched.",
+    "summary": {
+      "bundledModules": 427,
+      "bytes": 3274961,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    }
+  },
+  "lint": "Seven affected JS files pass ESLint max-warnings0 before final descriptive metadata correction; changed helper separately passes after correction. git diff --check passes.",
+  "safeFiles": [
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-bundle.json",
+      "sha256": "bb5e82ea1f0a716303cec37ef2677bc52952d498fb3a2cf8ee598b340123bdd2"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-census.json",
+      "sha256": "ff9591bec6e9d6c4aa154ea63c3002e31f8ba3ee3894aa3faf393c70c802cc0d"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-fallback.log",
+      "sha256": "5bc3314fdacc2449f7a192ed639c9a34e129cdddd247c05a02ba27abad3baf7a"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-lint-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-native.log",
+      "sha256": "88002fe75af66f9c3ff012a6e11aea42e51477644a5602629a7647f4faa3fef8"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-party-route-corrected.log",
+      "sha256": "9fb9e57d4bcf9c7baa6c6febe05883add8f78551b9e08e838769b2d45489576d"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-party-route.log",
+      "sha256": "2d8c7743eff2bed967ddd3aa2d754bde5bcc419791f60b501d8e796ac2cfb328"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-route-metadata-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/eidolon-earth-ground-cover-units.log",
+      "sha256": "6d064c8f51ec155589d4046190b6dada5af0503853365b8a6bdf3dd1557a7ca8"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/executed-earth-moving-route.js",
+      "sha256": "af3badf0e816ab8fe5a6255c6a5ed050ce15b63c9cb9024c419f2d40b9ad1d29"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/party-draw-attribution.json",
+      "sha256": "c034790d1b104954d1d18136cea2ee5ab3710b959b5cb6eb71d218e691a7981f"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/party-frame-profile.json",
+      "sha256": "33de88de40f0028781a8d8803dcfca8ecc0a5782e0b09e9635d462ddc0a3ec80"
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-earth-ground-cover-checks-20261009/party-instance-comparison.json",
+      "sha256": "28007fbc9656b42c284e3c877985af126bae53b60bfae153133a003527e1eb78"
+    }
+  ],
+  "nextRequiredWork": "Attribute actual town/dungeon approach renderer submissions and shadow costs, then implement measured consolidation without deleting content. Inspect actual moving supplied-actor animation progression/contact and refine coherent scene silhouettes. Continue full inherited milestone/operational work; reuse current unchanged evidence rather than rerun the same journey/campaign.",
+  "remaining": "Full1.11\u20131.99 objective, modern-art Q/CB, whole-game equipped-party/support-device/terrain rollout, feature-freezeF1\u2013F5, operations, policy/rights/playtest/beta/launch approval and handoff remain open. No version/public push/profile/access change."
+}

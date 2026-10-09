@@ -6,6 +6,7 @@ import {
     collectBrowserFailures, loginAndEnterWorld, moveByGroundClick, projectNearestHostile,
     useEncounterQAWaypoint
 } from './helpers.js';
+import { captureEarthMovingRoute } from './earth-moving-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
@@ -217,7 +218,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
 test('single native renderer observes three live equipped party socket peers on raised ground', async ({ page, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_TERRAIN_PARTY !== '1' ||
         process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'single-renderer', 'Explicit isolated single-renderer party scope');
-    test.setTimeout(180_000);
+    test.setTimeout(process.env.EIDOLON_TERRAIN_ART_ROUTE === '1' ? 230_000 : 180_000);
     const url = process.env.EIDOLON_E2E_WS_URL;
     expect(url).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');
@@ -244,6 +245,7 @@ test('single native renderer observes three live equipped party socket peers on 
         await page.setViewportSize({ width: 1280, height: 844 });
         await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
         await loginAndEnterWorld(page, accounts[0]);
+        if (process.env.EIDOLON_TERRAIN_ART_ROUTE === '1') await captureEarthMovingRoute(page, testInfo);
         await page.evaluate(observePartyTerrain);
         const leaderID = await page.evaluate(() => window.game.player.id);
         await page.keyboard.press('o');

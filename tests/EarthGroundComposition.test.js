@@ -109,8 +109,8 @@ test('owns and releases all three added maps once; leaves ground depth behavior 
     expect(shader.uniforms.earthSurfaceScale.value).toBe(1 / 8);
     // Ordinary soil has relief even when canopy, mineral and meadow masks
     // are zero; keep it distinct from the optional forest/rock contributions.
-    expect(shader.fragmentShader).toContain('(earthClod * .035 + earthSurfaceSample.a * .055) * (1. - earthRock)');
-    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v14');
+    expect(shader.fragmentShader).toContain('(earthClod * .035 + earthSurfaceSample.a * earthGravelPlacement * .055) * (1. - earthRock)');
+    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v15');
     expect(shader.fragmentShader).not.toContain('earthBroad.a * .085');
     expect(shader.vertexShader).not.toContain('transformed.y +=');
     material.dispose(); material.dispose();
@@ -132,7 +132,8 @@ test.each(['high', 'low'])('ground layers retain registered relief and filtered 
     expect(shader.fragmentShader).toContain('earthDomain * earthSurfaceScale');
     expect(shader.fragmentShader).toContain('earthClod = earthSurfaceSample.r');
     expect(shader.fragmentShader).toContain('earthMoss = earthSurfaceSample.b');
-    expect(shader.fragmentShader).toContain('earthGravel = earthSurfaceSample.g');
+    expect(shader.fragmentShader).toContain('earthGravel = earthSurfaceSample.g * earthGravelPlacement');
+    expect(shader.fragmentShader).toContain('earthGravelPlacement = earthGravelPatch');
     expect(shader.fragmentShader).toContain('earthSoil = mix(earthSoil, earthGravelColor, earthGravel)');
     expect(shader.fragmentShader).toContain('earthSurfaceSample.a * .10, earthGravel');
     expect(shader.fragmentShader).toContain('fwidth(earthMossHeight)');
