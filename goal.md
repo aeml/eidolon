@@ -67,6 +67,15 @@ Fighter pilot or remove approved authored models.
   source/login/server defaults synchronized, not pushed or promoted.
   Full component receipt is in that branch at
   `docs/plans/2026-10-09-air-cypress-component-checks.json`.
+- Current18/0e319ac0 actual **four-browser High equipped party** passes92.36s:
+  all four classes/14 slots, replicated ground movement, Fireball server damage,
+  targeted Healing Light and fresh gear/bag/membership/EP saves. Owned disposable
+  database removed; production untouched. Root reviewed post-login image.
+  Shared-GPU180frame sample is slow:66.6ms median/83.4ms p95/542draws/542736triangles.
+  This is functional/save evidence, **not a performance pass**. Low party is not
+  run on this source; physical devices/campaign/public terrain remain open.
+  CI Chrome is now active, so no competing native run was started. Scoped receipt
+  is `docs/plans/2026-10-09-equipped-party-high-checks.json` in the18 branch.
 - Existing nightly **37880032315/dc7** was independently confirmed running
   on the separate soak runner and remains untouched. Its concurrent host-load
   contribution to Air timings is unproven. Do not cancel/restart it or claim
