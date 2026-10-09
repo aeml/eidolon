@@ -420,7 +420,8 @@ Notes:
 
 ## Project Status
 
-- Current source version: `Alpha 1.79.10`, improved forest-floor sampling,
+- Current source version: `Alpha 1.79.10`, Go1.27.2 security correction with
+  unchanged vulnerability gates and dependencies, improved forest-floor sampling,
   species-specific hanging willow leaves and corrected tilted-part lighting.
   Existing leaf/triangle budgets, placements, wind and walking clearances remain.
   Raised-preview rocks are refined but public raised terrain remains disabled;

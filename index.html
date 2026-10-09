@@ -788,6 +788,7 @@
                         <li>Fixed lighting on tilted woodland parts: their exact static transform is baked once so instanced normals remain correct. Geometry silhouettes, material ownership, shadows and quality switches are preserved; no additional tree parts or draw calls.</li>
                         <li>Raised-terrain preview rocks have narrower, varied shoulders and gentle fractures within their existing collision footprints. This is preview preparation: raised terrain remains disabled in ordinary public worlds. Wearable derivatives and broader renderer changes remain staged.</li>
                         <li>Future hosted browser installations have a 15-minute deadline, so stalled downloads fail visibly instead of blocking deployment for hours. All release test gates remain required.</li>
+                        <li>Server, outage monitor, CI and isolated QA builds now use Go 1.27.2, fixing the newly reported reachable standard-library security issues. Dependency versions, vulnerability checks and deployment gates are unchanged.</li>
                         <li>Not the 1.80 feature freeze or full 1.87 modern-art completion. No account wipe, schema migration, quests, combat, economy or administrator-access changes. Full prior patch history remains below.</li>
                     </ul>
                 </div>

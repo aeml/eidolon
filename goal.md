@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 security correction for unaccepted1.79.10:** Run37861950511/head
+6ed016b7 terminates failure: nine newly reported reachable Go1.27.1 standard-
+library advisories, all fixed in1.27.2. Client/all three browser shards pass;
+downstream deployment/QA skip, not pass. Leave run intact, never bypass scan.
+Align every API/monitor/CI/isolated build pin to1.27.2; modules/locks/gameplay/
+art unchanged. Exact strict scan now0reachable, module verification, two race
+packages, actual API/monitor builds and412locked-client checks pass. Retain
+initial stale shared Node-link failure; fresh owned npmci fixes fixture only.
+Only current unaccepted10note changed, all444older entries byte-identical.
+[Evidence](docs/plans/2026-10-09-go1272-security-checks.json).
+Corrected10 needs new CI/public acceptance; last accepted9/7114aad6. Prepared
+11 contains requested login/Firefox fix;12-15 and full original roadmap/art/
+F1-F5/party/device/human/owner/beta/launch gates remain open and goal active.
+
 **Accepted public1.79.9:** Exact7114aad6/run37842726678 passes all ten
 mandatory jobs. Root independently verifies public front/back identities,
 healthy DB, clean production checkout and four exact exported file bytes,
