@@ -1,0 +1,15 @@
+{
+  "head": "0ac750255333837111e43a4cbea00e2fc7915984",
+  "status": "Prepared only: not pushed, deployed or accepted; prerequisite14 CI37918281583 still active",
+  "reconciliation": "Fresh normal fetch/merge retains remote90fca2f1. Runtime/art/assets/index/server/workflow/tests/scripts unchanged from prior4208498b after merge; actual version/history385tests pass3.632s. Original qualified15 renderer, atlas and casino-search scopes retained; not new frame-budget certification.",
+  "fixture": "/tmp/eidolon-15-ready-publisher-04tCAwmX",
+  "build": "Committed source archive and locked vendor; byte-identical qualified actual compiler418modules3226434bytes/21shared; publisher402/890files. Five selected outputs, not full binary asset certification. A changed publication head requires new versioned expectations.",
+  "sha256": {
+    "index.html": "17590a8f66820fd9e75e75403287a570c62af135bf776d4d8e40319229a9a7cb",
+    "src/main.js": "450a3774921863d3a507c41e2da70f304739362af2763dbfc2c5fc9d59090212",
+    "src/core/GameEngine.bundle.js": "ed198cf0015758639ef1e8a7448b5c59548074d8271efd6d02dc627bd05c9570",
+    "src/styles/index.css": "2a8dcbf6f1fe6a68c39533e0113ab2c6391d1f3e423a77718125563fa27cb70d",
+    "release.json": "e73a183285b478c5cd327c944d35402b93bcfd0831ef100f6f303359439a622c"
+  },
+  "next": "Root must first accept14 mandatory/native/live jobs and exact public frontend/backend identity and five bytes. Then fresh fetch/normal merge before any15 push, preserving other website work. Woodland16 remains held; Fire/soil/raised profile remain staged and optional public monitoring off. Full roadmap/modern-art/F/beta/launch gates remain active."
+}
