@@ -72,6 +72,14 @@ describe('WorldMap town wayfinding', () => {
         ]));
     });
 
+    test('world atlas takes the current server terrain profile, defaulting to the flat live world', () => {
+        const flat = new WorldMap({ player: null });
+        expect(flat.cartography.elevation).toBeNull(); flat.dispose();
+        const raised = new WorldMap({ player: null, terrainProfile: 'earth-elevation-rocks-v1' });
+        expect(raised.cartography.terrainProfile).toBe('earth-elevation-rocks-v1');
+        expect(raised.cartography.elevation.maxHeight).toBeGreaterThan(10); raised.dispose();
+    });
+
     test('touch pan and pinch preserve the location beneath the gesture and stop on cancellation', () => {
         const map = new WorldMap({ player: null });
         map.canvas.getBoundingClientRect = () => ({ left: 0, top: 0, width: 640, height: 440 });
