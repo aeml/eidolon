@@ -7,6 +7,7 @@ import {
 } from './helpers.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
+import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -345,22 +346,14 @@ test('single native renderer observes three live equipped party socket peers on 
                 await session.send('Profiler.start');
                 await page.waitForTimeout(3_000);
                 const { profile } = await session.send('Profiler.stop');
-                const nodes = new Map(profile.nodes.map(node => [node.id, node])), groups = new Map();
-                for (const [index, id] of (profile.samples || []).entries()) {
-                    const frame = nodes.get(id)?.callFrame;
-                    if (!frame) continue;
-                    const source = frame.url?.split('?')[0] || '', name = frame.functionName || '<anonymous>';
-                    const key = `${source}:${name}:${frame.lineNumber}`;
-                    const value = groups.get(key) || { source, name, line: frame.lineNumber + 1, samples: 0, selfMicros: 0 };
-                    value.samples++; value.selfMicros += profile.timeDeltas?.[index] || 0; groups.set(key, value);
-                }
-                const summary = [...groups.values()].sort((a, b) => b.selfMicros - a.selfMicros).slice(0, 24);
+                const { summary, callerChains } = summarizePartyCPUProfile(profile, new URL(baseURL).origin);
                 const foliage = await page.evaluate(readFoliageRevisionObservation);
                 await testInfo.attach('diagnostic-cpu-functions', { body: JSON.stringify({
                     scope: 'Three-second opt-in CPU function sample with foliage revision/visit counters; probe/profiling overhead excluded from the preceding frame report.',
-                    summary, foliage
+                    summary, callerChains, foliage
                 }, null, 2), contentType: 'application/json' });
                 console.log('[diagnostic-party-cpu]', JSON.stringify(summary));
+                console.log('[diagnostic-party-cpu-callers]', JSON.stringify(callerChains));
                 console.log('[diagnostic-foliage-revisions]', JSON.stringify(foliage));
             } finally {
                 try {
