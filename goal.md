@@ -41,8 +41,9 @@ Fighter pilot or remove approved authored models.
 - **Pushed1.79.15 /0ac75025 /CI37922288706** after own14 acceptance and
   fresh normal fetch/merge; unchanged prepared publisher bytes remain valid.
   Luna exact-run watch, root acceptance required before16. No new microversion
-  or replay of unchanged local graphics.16 remains held pending timed source
-  qualification; staged Fire/soil/books/raised profile remain unpublished.
+  or replay of unchanged local graphics.16's newer scoped qualification above
+  clears the local timing hold; own release CI/public acceptance remains.
+  Staged Fire/soil/books/growth/rock and raised profile remain unpublished.
 
 - **Accepted public1.79.14 /90fca2f1 /CI37918281583 attempt1 SUCCESS**:
   root verifies all ten mandatory jobs, six native regional cases, celebration,
