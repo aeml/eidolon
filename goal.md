@@ -18,6 +18,13 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Shared canvas qualification complete: seven native GL/town/Water/Air cases
+  pass37.5s and two Fire gallery cases pass4.3s. Root reviews selected High/Low
+  captures and close/distant contact sheet; weave filters out below resolution.
+  Browser/shader errors absent in these fixtures. No timed party/device or
+  final art approval. Staged only, outside pushed17; retained failure and exact
+  scope in `docs/plans/2026-10-09-shared-canvas-candidate.json`.
+
 - Pushed17/1ecfeb20/CI37930673270 after own16 acceptance and fresh normal
   remote reconciliation. Qualified16 woodland/renderer/decimal helper retained;
   398 metadata/history/decimal checks and actual418module publisher qualify.

@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { openGame } from './helpers.js';
+import { collectBrowserFailures, openGame } from './helpers.js';
 import { writeFile } from 'node:fs/promises';
 
 for (const realm of ['water', 'fire', 'air']) for (const quality of ['high', 'low']) {
-    test(`${realm} location composition gallery ${quality}`, async ({ page }, testInfo) => {
+    test(`${realm} location composition gallery ${quality}`, async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await openGame(page);
         const result = await page.evaluate(async ({ realm, quality }) => {
@@ -52,5 +53,6 @@ for (const realm of ['water', 'fire', 'air']) for (const quality of ['high', 'lo
         const path = testInfo.outputPath(`${realm}-${quality}.png`);
         await writeFile(path, Buffer.from(result.image.split(',')[1], 'base64'));
         await testInfo.attach('composition-gallery', { path, contentType: 'image/png' });
+        expect(failures).toEqual([]);
     });
 }
