@@ -21,6 +21,12 @@ if [[ "${terrain_scenario}" == connected-party* ]]; then
     echo "Connected party QA requires explicit high or low quality." >&2
     exit 1
   fi
+  for terrain_browser_asset in vendor/three/build/three.module.js vendor/three/build/three.core.js vendor/protobuf/protobuf.min.js; do
+    if ! [[ -r "${terrain_browser_asset}" ]]; then
+      echo "Connected party QA needs prepared browser vendor files; run npm run prepare:client in this checkout." >&2
+      exit 1
+    fi
+  done
   if ss -ltn | grep -Eq ':4190[[:space:]]'; then
     echo "Connected party QA web port4190 is occupied; refusing reuse." >&2
     exit 1

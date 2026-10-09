@@ -11,6 +11,7 @@ import { captureEarthMovingRoute } from './earth-moving-route.js';
 import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
+import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
@@ -475,6 +476,9 @@ test('single native renderer observes three live equipped party socket peers on 
                     expect(restored, 'Diagnostic wrappers must restore their owned controller methods').toBe(true);
                 } finally { await session.detach(); }
             }
+        }
+        if (process.env.EIDOLON_TERRAIN_UNDERSTORY_PREPARATION === '1') {
+            await captureUnderstoryPreparation(page, `equipped-party-${quality}`, testInfo);
         }
         await page.screenshot({ path: testInfo.outputPath(`single-renderer-equipped-party-${quality}.png`) });
         expect(failures, failures.join('\n')).toEqual([]);

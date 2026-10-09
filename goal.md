@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 measured rendering diagnosis:** Existing understory preparation is
+0ms in town/approach and0.10ms/frame median in actual equipped party; no complex
+cache selected. Four equipped player roots alone submit489598color+shadow
+triangles, above the unchanged250000High full-scene limit. Native eight-outfit
+per-mesh census and four-class race/save checks pass; full budgets remain open.
+Runtime/assets stay exact6fbffd34; add opt-in QA and missing-vendor preflight only.
+See [the diagnosis](docs/plans/2026-10-09-understory-preparation-diagnosis.json).
+Entire inherited1.11–1.99/art/Q/CB/party/device/F1–F5/operations/owner/beta/launch/
+handoff goal remains active; public1.79.22 and profile/access remain unchanged.
+
 **October9 rendering investigation:** Isolated woodland multi-draw prototype
 dd354331 preserves every source piece/triangle/index/matrix/collider, but both
 native revisions fail the strict one-pixel/two-channel gate; CPU gain is mixed

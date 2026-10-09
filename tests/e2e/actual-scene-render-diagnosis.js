@@ -3,6 +3,7 @@ import { writeFile } from 'node:fs/promises';
 import { moveByGroundClick, readPlayerState, useVerdantQAWaypoint } from './helpers.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
+import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 
 // Explicit disposable-game diagnosis. Instrument only untimed renders; retain
 // the normal loop/animation/network for profiles and real movement input.
@@ -46,7 +47,9 @@ export async function captureActualSceneRenderDiagnosis(page, testInfo) {
             } finally { renderer.renderBufferDirect = original; }
         });
         const cpu = process.env.EIDOLON_TERRAIN_SCENE_CPU_PROFILE === '1' ? await captureSceneCPU(page, label, testInfo) : null;
-        const scene = { label, profile, attribution, cpu }; scenes.push(scene);
+        const understory = process.env.EIDOLON_TERRAIN_UNDERSTORY_PREPARATION === '1'
+            ? await captureUnderstoryPreparation(page, label, testInfo) : null;
+        const scene = { label, profile, attribution, cpu, understory }; scenes.push(scene);
         await writeFile(testInfo.outputPath('actual-scene-diagnosis.json'), JSON.stringify({ scenes }, null, 2));
         scene.paired = process.env.EIDOLON_TERRAIN_RIG_PAIR === '1' ? await profileOwnedRigPair(page, label, testInfo) : null;
         await writeFile(testInfo.outputPath('actual-scene-diagnosis.json'), JSON.stringify({ scenes }, null, 2));

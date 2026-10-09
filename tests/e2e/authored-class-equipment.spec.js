@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 
 test('all delivered classes use fitted gear, independent rigs and alternating Rogue strikes', async ({ page, baseURL }, testInfo) => {
@@ -104,6 +105,49 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         return { classes: actors.map(({ type, quality, attached, wrongBones, items }) => ({ type, quality, attached, wrongBones, items })), strikes, costs, resources,
             independent: actors.every(({ root }, i) => i % 2 === 0 || root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0] !== actors[i - 1].root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0]) };
     });
+    if (process.env.EIDOLON_E2E_EQUIPPED_TRIANGLE_DIAGNOSIS === '1') {
+        const census = await page.evaluate(() => {
+            const { renderer, scene, camera, actors } = window.__classGear;
+            const original = renderer.renderBufferDirect, visibility = actors.map(entry => entry.root.visible);
+            const variants = []; let meshes;
+            renderer.renderBufferDirect = function (camera, scene, geometry, material, object, group) {
+                if (object.isMesh && object !== scene.children.find(child => child.geometry?.type === 'PlaneGeometry')) {
+                    const count = group?.count ?? Math.min(geometry.drawRange.count,
+                        geometry.index?.count ?? geometry.attributes.position.count);
+                    meshes.push({ name: object.name, triangles: count / 3, vertices: geometry.attributes.position.count,
+                        skinned: Boolean(object.isSkinnedMesh), morphTargets: Object.keys(geometry.morphAttributes),
+                        fitted: Boolean(object.userData.authoredEquipment), slots: object.userData.fittedSlots ||
+                            (object.userData.slot ? [object.userData.slot] : []), surfaceBatch: Boolean(material.userData.fittedSurfaceAttributes) });
+                }
+                return original.call(this, camera, scene, geometry, material, object, group);
+            };
+            try {
+                for (const entry of actors) {
+                    for (const other of actors) other.root.visible = other === entry;
+                    meshes = []; renderer.render(scene, camera);
+                    variants.push({ type: entry.type, quality: entry.quality, items: entry.items,
+                        calls: renderer.info.render.calls, trianglesIncludingFloor: renderer.info.render.triangles,
+                        meshes: meshes.sort((a, b) => b.triangles - a.triangles) });
+                }
+            } finally {
+                renderer.renderBufferDirect = original;
+                actors.forEach((entry, index) => { entry.root.visible = visibility[index]; });
+            }
+            const gl = renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            return { renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER), variants };
+        });
+        expect(census.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
+        expect(census.variants).toHaveLength(8);
+        for (const variant of census.variants) {
+            expect(variant.trianglesIncludingFloor).toBe(2 + variant.meshes.reduce((sum, mesh) => sum + mesh.triangles, 0));
+        }
+        await writeFile(testInfo.outputPath('equipped-triangle-diagnosis.json'), JSON.stringify({
+            scope: 'Separate untimed native gallery draw census. Eight fully fitted High/Low class outfits, color pass only; actual game shadow/party timing recorded separately. No content/geometry/shader changes.', ...census
+        }, null, 2));
+        console.log('[diagnostic-equipped-triangles]', JSON.stringify(census.variants.map(({ type, quality, meshes }) => ({
+            type, quality, total: meshes.reduce((sum, mesh) => sum + mesh.triangles, 0), top: meshes.slice(0, 4)
+        }))));
+    }
     expect(evidence.independent).toBe(true);
     await testInfo.attach('equipped-surface-costs', { body: JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources }), contentType: 'application/json' });
     console.log(`[equipped surface costs] ${JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources })}`);
