@@ -18,6 +18,17 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Accepted corrected19/293fbfa1/CI37941972587 attempt1 SUCCESS: all ten
+  jobs; native7quality/1celebration/2class/4smoke,live8/town-rest2/party1 pass.
+  Four optional steps skipped, not passed. Root after-terminal public five
+  hashes/front-back identities/ready DB match14:49:52.738UTC. Original failed19
+  and its catalog correction remain retained. Group larger irregular worn
+  street slabs into unpushed20 instead of another micro-release/CI cycle;
+  original17ff camp-only publisher is historical and cannot certify new HEAD.
+  New current source6town/street checks pass39.099s after a real seam failure
+  is corrected without relaxing its gate;22unselected are not new passes.
+  Combined native review underway after exact19 CI terminal. Full scope open.
+
 - Prepared grouped camp release20/17ff2aae: grounded bedding/hearth/firewood,
   charcoal and compacted actual entrance-to-hearth paths in existing mask.
   Final16affected checks/390metadata checks/two native equipped town cases pass;

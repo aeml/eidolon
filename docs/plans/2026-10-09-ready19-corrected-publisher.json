@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "PUSHED corrected Alpha1.79.19 /293fbfa1 /CI37941972587; own terminal/native/live/public acceptance pending",
+  "status": "ACCEPTED exact Alpha1.79.19 /293fbfa1 /CI37941972587 attempt1 SUCCESS",
   "candidate": {
     "version": "Alpha 1.79.19",
     "head": "293fbfa19b1d9affe111608e13fb279db2f5919a",
@@ -28,6 +28,10 @@
     },
     "scope": "Five selected transformed files, not all binary assets; changed HEAD after future reconciliation requires exact rebuilt expectations."
   },
-  "deliveryGate": "Prior original CI terminal confirmed before fresh origin/master fetch/normal merge retains293 clean and fa47 ancestry. Normal masterfa47..293 push succeeds. CorrectedCI37941972587 exact head monitored by approved Luna with terminal/actionable reports. Root own CI/native/live/public acceptance before any next push. No overlapping deployment, force, dirty original edit, website overwrite, automatic retry/cancel or production terrain activation.",
+  "deliveryGate": "Prior original CI terminal confirmed before fresh origin/master fetch/normal merge retains293 clean and fa47 ancestry. Normal masterfa47..293 push succeeds. Luna terminal report and root independent API confirm exactCI37941972587 attempt1 SUCCESS, all ten mandatory jobs. Four optional native-gallery/rested-GPU/full-character/live-four-class steps skipped, not passed; no jobs skipped. Native AMD Vulkan1.4.318/RADV7quality cases1.9m/1celebration7.7s/2class21.1s/4smoke2.2m. Live8cases7.8m/town-rest2cases1.6m/party1case1.2m, sanitizers successful. Root after-terminal HTTPS/ordinaryDNS/forcedIPv4 check14:49:52.738UTC matches frontend/backend exact19,readyDB and all five expected transformed publisher bytes. Own next push permitted after fresh normal reconciliation and its own subsequent acceptance. No overlapping deployment, force, dirty original edit, website overwrite, automatic retry/cancel or production terrain activation.",
+  "ciLogSHA256": {
+    "native": "47bd109fbc3bfcd0cc599722fd0b852c4b31fd59b810067659995c8c1d6da445",
+    "live": "6cdafb777191506e883bd5466054cbd23877fa1da94fb836c62d3b9cec592bfb"
+  },
   "remaining": "Full roadmap/modern-world/fit/combat, raised/equipped-party/device gates,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch stay open. Qualified separate camp dressing and staged atlas/rock changes are not in19."
 }
