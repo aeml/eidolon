@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T19:54:51.509064+00:00",
+  "classification": "progress: two measured/reviewed experiments rejected, actual connected-party frame/save evidence changes next action; no runtime selection or public release",
+  "qualifiedRuntime": "8e6cdb8f5c3a2bc165443233f4a3cf3cc128647e",
+  "rejectedSourceCommits": [
+    "282d0a78",
+    "ab3ce06d"
+  ],
+  "longSoak": {
+    "readOnlyObservationUTC": "2026-10-09T19:54:51.509064+00:00",
+    "result": {
+      "conclusion": "",
+      "databaseId": 37880032315,
+      "headSha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+      "jobs": [
+        {
+          "completedAt": "0001-01-01T00:00:00Z",
+          "conclusion": "",
+          "databaseId": 113657358646,
+          "name": "100-client authoritative-state soak",
+          "startedAt": "2026-10-09T03:36:15Z",
+          "status": "in_progress",
+          "steps": [
+            {
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Initialize containers",
+              "number": 2,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Checkout",
+              "number": 3,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup Go",
+              "number": 4,
+              "status": "completed"
+            },
+            {
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 5,
+              "status": "completed"
+            },
+            {
+              "conclusion": "",
+              "name": "Run multiplayer soak",
+              "number": 6,
+              "status": "in_progress"
+            },
+            {
+              "conclusion": "",
+              "name": "Upload soak evidence",
+              "number": 7,
+              "status": "pending"
+            },
+            {
+              "conclusion": "",
+              "name": "Post Setup Node.js",
+              "number": 11,
+              "status": "pending"
+            },
+            {
+              "conclusion": "",
+              "name": "Post Setup Go",
+              "number": 12,
+              "status": "pending"
+            },
+            {
+              "conclusion": "",
+              "name": "Post Checkout",
+              "number": 13,
+              "status": "pending"
+            },
+            {
+              "conclusion": "",
+              "name": "Stop containers",
+              "number": 14,
+              "status": "pending"
+            }
+          ],
+          "url": "https://github.com/aeml/eidolon/actions/runs/37880032315/job/113657358646"
+        }
+      ],
+      "status": "in_progress",
+      "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+    },
+    "snapshotSHA256": "a34b73b9cf4f9ef1b36e6977388a5893b4d2fd89ab518560473e1c1d7f55ce70",
+    "scope": "Exact old dc7 100-client authoritative-state run is currently in_progress; no cancellation, restart or terminal acceptance. Not High GPU/device performance evidence."
+  },
+  "nextRequiredResult": "Improve convincing code-owned ground material morphology/composition at gameplay scale, while continuing measured renderer/simulation work. Native technical equivalence or quieter grain alone does not establish modern-art acceptance. Full original goal remains active."
+}
