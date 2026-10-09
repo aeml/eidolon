@@ -1,0 +1,20 @@
+{
+  "status": "Locally qualified component; folded into prepared1.79.15, not live or final-art approval",
+  "source": "Future component f1597181; only glyph helper/test and one import/call selected into current15, retaining its flat map/profile behavior",
+  "scope": "Seven original code-rendered engraving families cover all nine existing foliage species. Pines, birches, hanging willows, open deadwood, basalt briars, swept cypresses and faceted storm crystals reuse exact deterministic production positions/scales. Unknown future species keeps the original triangle. Existing roads/gates/markers/picking, resolution, static CPU tile caching, cleanup, terrain authority and world assets remain unchanged.",
+  "future_units": "Four actual suites31checks pass7.692s: glyphs, cartography, terrain relief and town wayfinding. Nine species have bounded paths at desktop/phone tile scales, seven distinct silhouettes, diamond facets/open deadwood and unknown fallback. Existing relief/footprints/roads/cache/cleanup pass. Source/test/config lint and whitespace pass.",
+  "firefox": {
+    "result": "Initial four-case anonymous 2D run has3passes/1failure in1.3m, no retries. Desktop controls and desktop/phone-sized relief pass; mobile-navigation case cannot create its Chromium-only CDP touch session. This is an unsupported test driver, not a game defect or a passing gesture check.",
+    "config": "playwright.atlas-firefox.config.js preserves the main credential-safe recording policy and explicitly discovers only the three supported cases. No original Chromium test/gesture assertion was removed or weakened, and the mixed initial run is not reported green. No additional rerun just to obtain a green summary.",
+    "artifacts": "/home/aeml/.local/share/eidolon-atlas-glyph-firefox-20261009",
+    "limit": "2D atlas evidence only, not Firefox WebGL, physical-phone, party or whole-game certification"
+  },
+  "current15": {
+    "units": "Five actual map/version/pagination suites410checks pass6.029s; counts overlap earlier qualification and are not added together",
+    "browser": "Original two Chrome atlas-navigation cases pass18.3s with retries0, including 390px native CDP pan/pinch, quest/known location picking, waypoint/instance isolation and input propagation assertions",
+    "artifacts": "/home/aeml/.local/share/eidolon-atlas-glyph-current15-chrome-20261009",
+    "history": "Exact Git HEAD versus current raw-entry audit450total/449older byte-identical; older-entry SHA256153643d6dedd29b6ab616dd7fa1de3bfca28113f26334c4f25ed00078f4c166b. All archives unchanged. Ten initial/44lazy pages preserved. Only current15 title/bullet changed, no version/dependency bump."
+  },
+  "visual_review": "Root inspected actual Earth relief at1280/390, Water/Fire/Air quest-area maps and current15 phone lore/waypoint view. Regional silhouette variety is modest. Magnified baked symbols remain soft and the world map still has broad rectangular realm structure; this does not close the full modern cartography/world-art contract.",
+  "delivery": "Current15 inherits normally into16-18; no whole future branch promotion, new public version, raised-profile activation or bypass of ordered per-release CI/public acceptance. Full roadmap goal remains active."
+}

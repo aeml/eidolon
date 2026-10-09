@@ -2,6 +2,7 @@ import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../data/worldFoliage.js';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
 import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
+import { drawAtlasFoliageGlyph } from './AtlasFoliageGlyphs.js';
 
 const PATHS = Object.freeze({ earth: EARTH_PATHS, water: WATER_PATHS, fire: FIRE_PATHS, air: AIR_PATHS });
 
@@ -51,9 +52,7 @@ export class AtlasCartography {
             for (const p of createProceduralFoliagePlacements(recipe)) {
                 const x = (p.x - region.minX) * sx, y = (p.z - region.minZ) * sz;
                 const size = Math.max(1.5, 6 * p.scale * sx);
-                ctx.fillStyle = ink[1]; ctx.strokeStyle = ink[2]; ctx.lineWidth = .6;
-                ctx.beginPath(); ctx.moveTo(x, y - size); ctx.lineTo(x + size * .7, y + size * .5);
-                ctx.lineTo(x - size * .7, y + size * .5); ctx.closePath(); ctx.fill(); ctx.stroke();
+                drawAtlasFoliageGlyph(ctx, recipe.id, x, y, size, ink);
             }
         }
         if (PATHS[id]) {

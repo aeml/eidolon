@@ -782,12 +782,13 @@
             </div>
             <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.15" data-notes-pages="44" data-notes-total="450">
                 <div class="patch-note-entry" data-version="1.79.15">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.15 (unchanged scenery rendering work)</h3>
+                    <h3 class="patch-note-entry__title">Alpha 1.79.15 (scenery rendering and atlas detail)</h3>
                     <ul class="patch-note-entry__list">
                         <li>Owned, unchanged scene containers and foliage groups avoid repeated local matrix composition and unnecessary static world-matrix multiplication. Actors, bones, equipment animations, moved parents and reparented scenery remain live.</li>
                         <li>The foliage registry visits registered scenery instead of unrelated character rigs and buildings. Cell bounds and frustum results are reused only for exact current transforms, bounds, camera, light and shadow-filter inputs. No movement thresholds or timed approximations are introduced.</li>
                         <li>Irrelevant direct foliage cells skip eligibility work, while nested scenery and live region, material and visibility changes retain their existing behavior. Pointer targeting reuses each actor's owned interaction box instead of repeatedly searching its fitted rig; detached or replaced boxes fall back to normal lookup.</li>
                         <li>Ordinary world frames no longer search the entire scene for a casino interior that is not present. Casino doors and floors reuse their current owned scene roots, reacquire replacements and release references on cleanup. Seating, floor visibility, table timers and wagers are unchanged.</li>
+                        <li>The atlas uses distinct engraved birch, pine, willow, deadwood, briar, wind-bent cypress and storm-crystal symbols at their existing world locations. Roads, gates, destinations, phone controls and cached map sizes are unchanged.</li>
                         <li>Generated groundcover keeps its fixed local transform while shader wind and live instance transforms remain active. Detached scenery and disposed renderers restore their original methods and remove owned listeners.</li>
                         <li>Geometry, density, shadows, cell sizes, filter margins, quality settings, collisions, gameplay and frame budgets remain unchanged. Raised terrain remains disabled in the public world; final equipped-party, device, modern-art and feature-freeze qualification remain open.</li>
                         <li>No account wipe, schema migration, economy or permission change. Full prior patch history is preserved through Load more notes.</li>
