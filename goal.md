@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 accepted public1.79.10:** Corrected d3a3b9f7/run37864085950
+finishes success. Root independently verifies all ten mandatory jobs, exact
+front/back identity/healthy DB/clean production and four actual publisher bytes
+at00:55:02Z. Optional broader QA skipped, not passed; initial security failure
+retained. [Receipt](docs/plans/2026-10-09-release1-79-10-public-checks.json).
+11 login/Firefox/guidance/regional art may now publish after fresh remote
+reconciliation, then own CI/public acceptance.12-15 already inherit11/Go1.27.2
+locally; every release still needs ordered acceptance. Full original roadmap,
+modern art/F1-F5/party/device/human/owner/beta/launch scope remains unfinished.
+
 **October9 prepared11 startup guidance:** Retain corrected10/d3a3b9f7.
 Actual Firefox login works; local headless 3D context creation still fails and
 is not qualified. Add lightweight failure-only graphics guidance without

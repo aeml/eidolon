@@ -1,5 +1,12 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 corrected1.79.10/d3a3b9f7/run37864085950 accepted: all ten mandatory
+jobs success, independently exact public identities/DB/clean production/four
+actual publisher outputs at00:55:02Z. Optional broader steps skip, not pass;
+original security failure retained. [Public receipt](2026-10-09-release1-79-10-public-checks.json).
+Next11 may publish with fresh fetch/reconcile then its own acceptance.12-15
+inherit security/login locally, notlive. Full original scope and gates unchanged.
+
 October9 prepared11 graphics failure guidance: actual Firefox login works but
 headless context creation fails before four-class renderer qualification. Keep
 that failure open; no forced software/context/security workaround. Failure-only
