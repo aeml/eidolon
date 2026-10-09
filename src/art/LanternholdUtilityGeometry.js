@@ -14,3 +14,11 @@ export function createLanternholdWellBucket(quality = 'high') {
         [.4, .35], [.305, -.28], [0, -.28]];
     return new LatheGeometry(profile.map(([r, y]) => new Vector2(r, y)), quality === 'low' ? 12 : 24);
 }
+
+// Broad bulged staves, seated on a flat bottom, with closed recessed ends.
+// Shared once by the existing town structure cache, not rebuilt per barrel.
+export function createLanternholdSupplyBarrel() {
+    const profile = [[0, .025], [.42, .025], [.46, .12], [.5, .42],
+        [.5, .98], [.46, 1.28], [.42, 1.4], [0, 1.4]];
+    return new LatheGeometry(profile.map(([r, y]) => new Vector2(r, y)), 16);
+}

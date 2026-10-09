@@ -7,6 +7,7 @@ import { createLanternholdArchPanel, createLanternholdArchFrame } from './Lanter
 import { createLanternholdCanopy } from './LanternholdCanopyGeometry.js';
 import { createLanternholdTentCanvas, createLanternholdTentFrame } from './LanternholdTentGeometry.js';
 import { createAirBedroll } from './AirCampGeometry.js';
+import { createLanternholdSupplyBarrel } from './LanternholdUtilityGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -150,6 +151,7 @@ const SHAPES = Object.freeze({
     tentCanvas: geometry('lanternhold-tent-canvas', createLanternholdTentCanvas),
     tentEntrance: geometry('lanternhold-tent-entrance', () => createLanternholdTentCanvas({ entrance: true })),
     tentFrame: geometry('lanternhold-tent-frame', createLanternholdTentFrame),
+    supplyBarrel: geometry('lanternhold-supply-barrel', createLanternholdSupplyBarrel),
     // Reuse the existing folded/rolled construction at its bounded Low mesh
     // density. Town's fifteen camps remain in their existing material batches.
     campBedroll: geometry('lanternhold-camp-bedroll', () => {
@@ -415,9 +417,24 @@ function createTradingPost(root) {
         });
         box(root, `market:ledger:${x}`, MATERIAL_SET.parchment, [1.2, 0.12, 0.8], [x, 2.25, 2.72], [-0.18, 0, 0]);
     }
-    box(root, 'market:rear-supply-chest', MATERIAL_SET.leather, [2.1, 1.25, 1.35], [-2.75, 1.3, -2.4]);
-    addShippingCrate(root, 'market:sealed-crate', 2.7, .8, -2.45, 1.45);
-    addShippingCrate(root, 'market:stacked-crate', 2.9, 2.25, -2.45, 1.05);
+    const supplyFloor = .72 + .55 / 2; // Actual cut-stone plinth top.
+    box(root, 'market:rear-supply-chest', MATERIAL_SET.leather, [2.1, 1.25, 1.35], [-2.75, supplyFloor + 1.25 / 2, -2.4]);
+    addShippingCrate(root, 'market:sealed-crate', 2.7, supplyFloor, -2.45, 1.45);
+    addShippingCrate(root, 'market:stacked-crate', 2.9, supplyFloor + 1.45, -2.45, 1.05);
+    // Provision casks belong under the canopy, inside its existing blocked
+    // envelope. Their curved staves and three iron hoops join existing wood/
+    // iron buckets; no new material, draw, collision or interaction is added.
+    for (const [i, [x, z]] of [[-.75, -1.7], [.72, -2.3]].entries()) {
+        const scale = i === 0 ? 1.2 : .95;
+        const base = supplyFloor - .025 * scale;
+        addMesh(root, `market:supply-cask:${i}`, SHAPES.supplyBarrel, MATERIAL_SET.timber,
+            { position: [x, base, z], scale: [scale, scale, scale] });
+        for (const [j, [y, radius]] of [[.14, .464], [.7, .5], [1.26, .464]].entries()) {
+            addMesh(root, `market:cask-hoop:${i}:${j}`, SHAPES.torus, MATERIAL_SET.iron,
+                { position: [x, base + y * scale, z], rotation: [Math.PI / 2, 0, 0],
+                    scale: [radius * 2 * scale, radius * 2 * scale, .55 * scale] });
+        }
+    }
     // Supplies on the counter communicate a working market at play distance;
     // keep the ledgers and all dressing within its existing blocked footprint.
     for (const [i, x] of [-2.2, .1, 2.3].entries()) {
