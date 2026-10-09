@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 superseding delivery checkpoint:** Corrected19/293/CI37941972587
+passes all ten jobs; root public bytes/front-back/ready DB match14:49:52UTC.
+Combine larger irregular worn streets into still-unpublished20 rather than
+another micro-release. Four native scene cases and explicit18view120sample
+profiles pass original budgets; High240calls/245636tri,Low109/78990 with stable
+resources. Six current street checks/390metadata checks pass; first seam failure
+retained/corrected without weaker limit. All454earlier notes exact. Fresh normal
+remote reconciliation/new exact publisher precede20push and its own acceptance.
+Full original scope remains active; older checkpoints below are historical.
+
 **October9 current checkpoint (supersedes older pending entries below):**
 Public18/81702abb accepted after all ten CI jobs and exact public bytes/healthy
 identities. Original19/fa47 CI fails stale camp admin vertical data and does not

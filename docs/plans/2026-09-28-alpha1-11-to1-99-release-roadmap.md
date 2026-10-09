@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 accepted19 and combined20 preparation: exact293/CI37941972587 passes
+all ten jobs plus root five public bytes/identities/readyDB. Group larger worn
+street flagstones into the unpushed camp update20, with existing-map color/
+relief/roughness registration. Four native scene cases plus18timed views pass
+original budgets, resources stable. Current6street/390metadata checks pass;
+retained seam failure corrected without loosening the gate. Fresh normal
+reconciliation/new exact publisher and own20 acceptance still required.
+Full modern art, raised/equipped-party/device, freeze and beta/launch gates
+remain open; this does not supersede their requirements or prior failures.
+
 October9 superseding checkpoint: accepted public18/81702abb; corrected19/293fbfa1
 CI37941972587 is running after original19 failed stale generated camp clearance
 data. Private camp follow-up20 groups grounded bedding/hearth/firewood and

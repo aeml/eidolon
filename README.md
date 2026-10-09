@@ -429,12 +429,15 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.20`, grounded pilgrim camp dressing:
+- Current source version: `Alpha 1.79.20`, grounded camps and worn town streets:
   folded bedrolls meet the ground, hearth stones and stacked firewood make
   physical contact, and charcoal and compacted footpaths follow all fifteen
   actual rotated camps. Ground wear reuses the existing texture mask; no decals,
   extra draws, textures or per-frame work. Earlier regional qualification is
   retained, not a claim of complete world art or equipped-party performance.
+  Town roads use irregular human-scale flagstones with shared periodic color,
+  relief and roughness. Their footprint stays registered on High and Low,
+  including joint texels; no extra surface maps, geometry or shader samples.
   Retains combined town and regional refinement:
   grounded folded tents, filtered cloth, finer soil, varied growth habits,
   worn basalt supports, quieter Fire ground and curved lore books. Reuse
