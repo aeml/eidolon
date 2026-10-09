@@ -1,5 +1,22 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 corrected11/e259f015 pushed after fresh normal remote reconciliation,
+CI37870274115 pending/Luna terminal-only watch. Eight local session/bootstrap
+cases and four CI-style regional presentation/12-phase quality cases pass;
+all original views/cycles/assertions/limits/gates kept. Wrong duplicate-site
+experiment removed, failure retained. [Receipt](2026-10-09-release1-79-11-ci-correction-checks.json).
+Public10 remains healthy/exact; own11 acceptance before12-16 publication.
+
+Prepared16/f6d3ec3d qualifies Skeleton cross-actor rendering on current base:
+486units, four native surface comparisons and two world cases18timed views pass
+original limits; actual full-outfit party saves/rigs pass. Same-scene untimed
+734to528draws, not a proven timing/battle/device improvement. Strict constructor
+guard/independent Walk poses selected onto future branch while preserving its
+prior Skeleton and extra Air roadside checks;57future units pass, not whole
+future GPU qualification. [Evidence](2026-10-09-skeleton-instance-checks.json).
+No version downgrade/raised activation/later publication. Full numbered scope,
+modern art/F1-F5/party/device/human/owner/operations/rights/beta/launch stays open.
+
 October9 prepared16 actual equipped-party baseline51629895: one native High1280
 browser and three normal sockets render four independent supplied rigs/full
 fourteen-slot class-focused outfits on local raised ground. Actual race/save

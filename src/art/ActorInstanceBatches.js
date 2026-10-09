@@ -12,7 +12,8 @@ const inside = (part, ancestor, visible = false) => {
 // procedural player fallbacks. Imported skins and unqualified enemy families
 // retain their normal rendering path; every leaf still passes eligible().
 const batchableRoot = root => Boolean(root?.userData.proceduralHumanoid ||
-    root?.userData.proceduralEnemyFamily && root.userData.proceduralActorType === 'Skeleton');
+    root?.userData.proceduralEnemyFamily === true && root.userData.proceduralActorType === 'Skeleton' &&
+        root.userData.humanoidRenderBatches);
 
 const candidate = part => part.isMesh && !part.isInstancedMesh && !part.isSkinnedMesh && !part.children.length &&
     part.material?.isMeshStandardMaterial && !Array.isArray(part.material) && part.geometry?.attributes.position;

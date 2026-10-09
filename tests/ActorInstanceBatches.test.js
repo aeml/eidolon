@@ -1,7 +1,13 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { ActorInstanceBatches } from '../src/art/ActorInstanceBatches.js';
-import { createProceduralSkeleton } from '../src/art/ProceduralLegacyEnemies.js';
+import { createProceduralSkeleton, createProceduralImp } from '../src/art/ProceduralLegacyEnemies.js';
+
+test('only constructor-batched Skeletons join the qualified enemy instance roster', () => {
+    const scene = new THREE.Scene(); scene.add(createProceduralSkeleton(), createProceduralImp());
+    const instances = new ActorInstanceBatches(scene);
+    try { expect(instances.roots.size).toBe(0); } finally { instances.dispose(); }
+});
 
 test('rigid ossuary skeleton instances retain every animated surface and restore pooled visibility', () => {
     const scene = new THREE.Scene(), models = [0, 1, 2].map(index => {
@@ -11,9 +17,9 @@ test('rigid ossuary skeleton instances retain every animated surface and restore
     const instances = new ActorInstanceBatches(scene), local = new THREE.Matrix4(), world = new THREE.Matrix4();
     const mixers = models.map(root => new THREE.AnimationMixer(root));
     try {
-        for (const state of ['Idle', 'Run', 'Attack', 'Death']) {
+        for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
             mixers.forEach((mixer, index) => { mixer.stopAllAction(); mixer.clipAction(models[index].userData.animations
-                .find(clip => clip.name === state)).play(); mixer.update(.37); });
+                .find(clip => clip.name === state)).play(); mixer.update(.2 + index * .17); });
             scene.updateMatrixWorld(true);
             const visible = new Map(); models.forEach(root => root.traverse(part => visible.set(part, part.visible)));
             instances.beginFrame();

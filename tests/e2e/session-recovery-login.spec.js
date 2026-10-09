@@ -48,6 +48,7 @@ for (const blockedStorage of [false, true]) test(`failed resume returns to usabl
     if (blockedStorage) await page.evaluate(() => { window.__holdLoad = true; });
     await page.locator('#btn-play-character').click();
     await expect(page.locator('#start-screen')).toBeHidden();
+    await expect.poll(() => page.evaluate(() => typeof window.game?.network?.onReconnectFailed)).toBe('function');
     await page.evaluate(() => { window.__oldFailure = window.game.network.onReconnectFailed; window.__retired = window.game; });
     await activeSocket.close({ code: 1011, reason: 'fixture transport interruption' });
     await expect(page.locator('#start-screen')).toBeVisible();
@@ -65,6 +66,8 @@ for (const blockedStorage of [false, true]) test(`failed resume returns to usabl
     await page.locator('#btn-login').click();
     await page.locator('#btn-play-character').click();
     await expect(page.locator('#start-screen')).toBeHidden();
+    await expect.poll(() => page.evaluate(() => window.game !== window.__retired &&
+        typeof window.game?.network?.onReconnectFailed === 'function')).toBe(true);
     await page.evaluate(() => window.__oldFailure());
     expect(await page.evaluate(() => Boolean(window.game && !window.game.isDestroyed))).toBe(true);
     expect({ logins, resumes }).toEqual({ logins: 2, resumes: 1 });

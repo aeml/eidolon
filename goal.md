@@ -16,7 +16,33 @@ not the older procedural-only aesthetic. Preserve all four supplied class GLBs,
 equipment/animations and source provenance; do not ask for the already-delivered
 Fighter pilot or remove approved authored models.
 
-## Current verified state — October 8, 2026
+## Current verified state — October 9, 2026
+
+- Prepared16 supplement **f6d3ec3d** qualifies previously staged Skeleton
+  cross-actor rendering on the corrected current base, now explicitly requiring
+  constructor batching.486focused checks, four native surface/triangle/visibility
+  cases and two world cases/18timed views pass original limits. Actual disposable
+  fully geared party saves/rigs pass; same-scene untimed734to528calls (28% fewer),
+  not proof of faster frames. Party180frames median16.7/p9533.3ms; active peer
+  combat, CPU/frame benefit, raid/device and final art gates stay open.
+  [Evidence](docs/plans/2026-10-09-skeleton-instance-checks.json).
+  Retain future branch's prior Skeleton/native/roadside work; select stricter
+  constructor guard and independent Walk poses only,57affected future unit
+  cases pass2.583s. No whole-future GPU qualification or version downgrade.
+  Select corrected11 QA fixtures without discarding future Air passage checks.
+  All450prior16raw notes exact;16 local-only until ordered11-15 acceptance.
+
+- Corrected11 **e259f0151d6725d152aeaf3ba5dcb645fb6a0ff4** pushed normally
+  after fresh fetch/merge (remote unchanged). New CI **37870274115** pending,
+  authorized Luna terminal-only monitoring; root independent public acceptance
+  still required. Eight local password/session bootstrap cases and four hosted-
+  configuration regional presentation/12-phase quality cases pass; all original
+  views/cycles/limits and every browser gate retained. Initial wrong duplicate-
+  cover assumption removed and its failure kept. Runtime/notes/versions unchanged.
+  [Receipt](docs/plans/2026-10-09-release1-79-11-ci-correction-checks.json).
+  Public10/d3a3b9f7 remains healthy/exact. Prepared12-15 must normally reconcile
+  these new QA corrections plus accepted remote changes before publication.
+  Full original roadmap/art/F1-F5/party/device/human/owner/beta/launch active.
 
 - October9 actual prepared16 equipped-party baseline **51629895**, unchanged
   runtime20f0a460: disposable race API/Mongo, four level30 class-focused
