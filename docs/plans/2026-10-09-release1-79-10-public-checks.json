@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-09T00:55:02.241Z",
+  "version": "Alpha 1.79.10",
+  "commit": "d3a3b9f7567e08870587f38dc11fc9547c139240",
+  "status": "ordinary-ci-deployment-live-qa-and-independent-public-identity-passed",
+  "ci": {
+    "run": 37864085950,
+    "conclusion": "success",
+    "scope": "Authorized Luna reports terminal success; root independently verifies exact head/completed success and all ten mandatory jobs. Server reachable-vulnerability gate, client/full browser smoke, predeploy smoke/class equipment/focused level-up sanctuary, production inputs, SSH, Pages, live anonymous/persistent-character and town recovery/Well Rested steps pass. Optional full predeploy gallery/GPU lifecycle/full-character and live four-class remote-animation steps skipped, not passed.",
+    "retainedFailure": "Initial37861950511/6ed016b7 fails nine newly published reachable Go1.27.1 standard-library advisories. Corrected source uses official Go1.27.2 for all build pins with exact strict scan preserved and no dependency/gameplay/art changes; original failed run retained. No in-progress rerun, cancellation or gate bypass."
+  },
+  "public": {
+    "transport": "Ordinary DNS, forced IPv4, verified HTTPS; no resolver/TLS override. Owner-deferred IPv6 issue not certified.",
+    "frontend": {
+      "version": "Alpha 1.79.10",
+      "commit": "d3a3b9f7567e08870587f38dc11fc9547c139240"
+    },
+    "backend": {
+      "version": "Alpha 1.79.10",
+      "commit": "d3a3b9f7567e08870587f38dc11fc9547c139240",
+      "status": "ok",
+      "database": "ready"
+    },
+    "productionCheckout": "Root confirms /home/aeml/eidolon at exact d3a3b9f7 with no tracked changes.",
+    "selectedPublishedBytes": {
+      "index.html": "f6f1e259d379832e9ecfa6621b852e4acfaf303a089e4f40bad2c56c605f838f",
+      "src/art/EarthGroundComposition.js": "307e6f336aa3bc865eddece71ebf4c6db6fce85d076d034e12884796c1afa198",
+      "src/art/WillowCurtainGeometry.js": "6b39fac67dfb4ed8c0afcc58be823e4277f8298e2708acb2714fbed34ea55a06",
+      "src/styles/index.css": "3955cfaa8a505e34fb7b6ee9ad8a4a873e29ad8d8a1872c90e07d83ef43c8b31"
+    },
+    "method": "Compare actual publisher rewriteHtml/rewriteJavaScript/rewriteCss outputs byte-for-byte against served outputs. Actual bundleGameStyles used on copied owned styles directory only, never production/source styles. Four selected outputs, not all-assets audit."
+  },
+  "remaining": "Next prepared1.79.11 login pagination/Firefox/guidance/regional art needs fresh remote reconciliation, own normal CI/public acceptance.12-15 reconciled locally but not live. Full original roadmap/F1-F5/modern-art/world/equipped-party/device/human/operator/rights/beta/launch gates stay open; no automatic raised-profile/public-monitor activation or final art claim."
+}
