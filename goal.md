@@ -30,6 +30,16 @@ Fighter pilot or remove approved authored models.
   Deployment11 Client/Server/all three smoke shards green per Luna observation;
   character predeploy still running, not terminal/root accepted. No later push.
 
+- Prepared12 now normally merges freshly fetched8a/master as
+  **630d7b9cc7a199478bf559e842ebabc7e9a91b1e**. Two roadmap-header conflicts
+  resolved by preserving both complete progress blocks. Merge changes only
+  docs/goal and inherited regional QA; runtime, labels,447notes and dependencies
+  unchanged. Actual BrowserSmokePlan19checks pass0.775s with the repository's
+  ESM test command; initial plain-Jest invocation fails before running any test
+  and is not counted. Local-only, own11 public acceptance still required.
+  Luna reports character predeploy/input checks now success and both deployment
+  jobs running; optional broader checks skipped, not passed. No later push.
+
 - Prepared17 **3ecf2620f75f045012f35ac6bcd4fa4d1bc76ad6** selectively integrates
   staged Air passage onto current16:2022High/1093Low heath/scree/86cells and
   retained-tree road framing. Preserve all supplied assets/current renderer/

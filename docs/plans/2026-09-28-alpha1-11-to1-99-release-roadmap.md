@@ -11,6 +11,12 @@ the two affected cases after shared QA finishes, without relaxing budgets.
 predeploy running, no terminal/root acceptance or later public push. Ordered
 12-17 publication and all full-roadmap/art/F1-F5/party/device/owner gates remain.
 
+Prepared12 normal fresh8a/master merge630d7b9c preserves both roadmap blocks;
+only inherited QA/docs change, game code/current labels/all447notes unchanged.
+BrowserSmokePlan19checks pass0.775s using actual ESM command (initial plain Jest
+fails setup/zero tests, not counted). Local-only. Luna reports predeploy/input
+success, both deployments running; optional broad checks skipped, not passed.
+
 October9 prepared17/3ecf2620 selectively integrates staged Air-passage heath/
 scree/retained-tree framing onto current16.424focused/30tooling/11exact timing
 checks pass with overlap; six native cases18timed views and one new High
