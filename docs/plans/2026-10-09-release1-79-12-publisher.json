@@ -1,7 +1,8 @@
 {
   "head": "1255aade926f38390c94229f0ee4b480be042c46",
   "ci": 37902548159,
-  "status": "Pushed and running, not accepted; expected selected publication bytes ready",
+  "status": "Accepted exact release12 after terminal required gates and fresh public byte/identity verification",
+  "acceptance": "Root independently verifies CI37902548159 attempt1 terminal success/exact1255: all ten required jobs pass, including required six native High regional cases6passed1.1m and final persistent-character/town recovery/Well Rested QA. Optional expanded gallery/predeploy-GPU/full-character/live-four-class steps skip, not pass. At2026-10-09T08:41:44.996Z all five expected selected hashes match actual publication; frontend/backend Alpha1.79.12/exact1255, ordinary verified IPv4 TLS and statusok/databaseready. No production notice/admin/player/mail mutation.",
   "prerequisite": "Corrective11/dc77/CI37898805331 independently accepted: all ten required jobs, mandatory six native cases1.4m and live QA pass. Five selected public hashes and frontend/backend Alpha1.79.11/dc77 identity, ordinary IPv4 HTTPS and database readiness match08:00:51UTC. Expanded gallery/rest/full-character/live-four-class steps skipped, not passed.",
   "prepublication": "Fresh fetch/normal merge is already up to date; no website commits overwritten. Qualified notice server/UI hashes unchanged. Two current version/pagination suites382checks pass5.33s. Master independently resolves exact1255 after normal push. No production notice/admin/player/email mutation.",
   "fixture": "/tmp/eidolon-1255-publisher-9xybPrNM",

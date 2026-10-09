@@ -18,11 +18,20 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
-- Current pushed release is **1.79.12 /1255aade /CI37902548159**, independently
-  verified exact master/running. Admin notice source hashes remain qualified;
+- Current pushed **1.79.13 /ebdfd4e8 /CI37906851626** is running, not accepted.
+  Fresh normal fetch/merge retains accepted12, monitor code unchanged;383
+  current version/pagination checks pass4.133s. Actual selected publisher
+  expected bytes are recorded in2026-10-09-release1-79-13-publisher.json.
+  Optional public monitoring remains off/private production config unchanged.
+  Authorized Luna watches exact run/head; root acceptance required before14.
+- Accepted public release is **1.79.12 /1255aade /CI37902548159 attempt1**:
+  all ten required jobs, six native High cases1.1m and final persistent-character/
+  town recovery/Well Rested QA pass. Root confirms five selected publisher hashes,
+  exact frontend/backend identity and verified IPv4 TLS/ready DB08:41:44UTC.
+  Broader optional steps skip, not pass. Admin notice source hashes remain qualified;
   login/versions/cumulative notes382checks pass5.33s. Fresh normal fetch/merge
-  preserves remote. Authorized Luna watches exact CI; root must accept its
-  terminal/public scope before13. Expected five-file publisher outputs are in
+  preserves remote. Authorized Luna terminal report independently verified;
+ 13 can advance after its own fresh fetch/merge and qualification. Five-file outputs are in
   `docs/plans/2026-10-09-release1-79-12-publisher.json`. No real notice sent.
 - Accepted corrective11 is **dc77fb46 / CI37898805331**, independently
   accepted: all ten required jobs and final live QA pass. Root independently
@@ -181,6 +190,15 @@ Fighter pilot or remove approved authored models.
   retaining the qualified helper/cleanup (canonical47checks pass2.784s).
   Receipts `2026-10-09-party-cpu-caller-diagnostic.json` and
   `2026-10-09-casino-scene-search-checks.json` preserve scoped evidence.
+- Distinct atlas engraving familiesf1597181 selected narrowly into prepared15
+  as2bca9889 (not a new microversion): nine species reuse actual placement data,
+  including faceted storm crystals. Current15 five suites410checks and original
+  two Chrome desktop/phone navigation/gesture cases18.3s pass;449older notes and
+  all archives exact. Future31map checks and three Firefox2D cases pass; initial
+  mobile-CDP driver case fails unsupported, not a game defect or gesture pass.
+  Root reviews real maps; modest variety, magnified baked symbols remain soft,
+  full modern map/world-art contract open. Normal16→17→18 reconciliation clean,
+  seven-case native selector unchanged. Receipt2026-10-09-atlas-foliage-glyph-checks.json.
 - Existing nightly **37880032315/dc7** was independently confirmed running
   on the separate soak runner and remains untouched. Its concurrent host-load
   contribution to Air timings is unproven. Do not cancel/restart it or claim
@@ -255,20 +273,20 @@ qualification never proves a later tree, full visual approval or public rollout.
   branch `work/alpha-1-79-startup-bundle-current-20261009`, pusheddc77fb46.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, local9739675d/1.79.18;
+  branch `work/alpha-1-79-air-cypress-current-20261009`, local73f19f60/1.79.18;
   art/terrain source0e319ac0 retained; targeted shared CPU/input9272a3f8, party evidence and corrected publication
   names are retained by normal reconciliation, not a new art qualification.
 - Ordered queued release worktrees and last clean heads:
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
   | --- | --- | --- |
-  | 1.79.12 (pushed, CI pending) | `eidolon-operations-release-U0VLQ4j8` | `1255aade` |
-  | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `e7369fce` |
+  | 1.79.12 (accepted) | `eidolon-operations-release-U0VLQ4j8` | `1255aade` |
+  | 1.79.13 (pushed, CI pending) | `eidolon-public-monitor-release-XpKvF87O` | `ebdfd4e8` |
   | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `3e0b1a1f` |
-  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `071171a2` |
-  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `884216bb` |
-  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `d3075900` |
-  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `9739675d` |
+  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `2bca9889` |
+  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `54c1634a` |
+  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `baa610f4` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `73f19f60` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not

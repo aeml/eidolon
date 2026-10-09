@@ -1,0 +1,19 @@
+{
+  "head": "ebdfd4e8b67fc54f20243db9380b3885cadd0adc",
+  "ci": 37906851626,
+  "status": "Pushed and running; own CI/public acceptance still pending",
+  "prerequisite": "Release12/1255/CI37902548159 attempt1 independently accepted: all ten required jobs, six native High cases1.1m, live persistent-character and town recovery/Well Rested QA. Five selected public publisher hashes/exact frontend/backend Alpha1.79.12 identity/verified IPv4 TLS/ready DB match2026-10-09T08:41:44.996Z. Optional expanded steps skipped, not passed.",
+  "prepublication": "Fresh normal fetch/merge incorporates exact accepted1255 into13/d3f440f8; source-only monitor/preflight/Compose/deployment/runtime comparison against prepared e7369fce is unchanged. Two actual version/pagination suites383checks pass4.133s. A second fresh fetch/merge before normal push is already up to date; remote master independently resolves exactebdf. No force/reset or dirty-original/website work overwritten.",
+  "scope": "Optional paired normal-TLS public frontend/backend observation, default-empty/off. Installed private configuration/service remains unchanged; no activation, notice, email, DNS, real-player/save mutation, new paid service or operations-capacity approval.",
+  "fixture": "/tmp/eidolon-13-publisher-wUyJdZ7q",
+  "build": "Clean committed index/src/sw/release, generated vendor via existing locked dependency preparation, actual publisher and byte-identical qualified engine compiler using pinned0.28.2. Initial archive command incorrectly included ignored/untracked vendor and exits before compilation/push; retained as local fixture failure. Corrected fresh fixture uses the existing vendor generator and copies its result. No full binary asset tree: five selected transformed files only, not all-assets certification.",
+  "compile": { "modules": 413, "bytes": 3159090, "sharedLoginModules": 21 },
+  "sha256": {
+    "index.html": "fca93aed580ec849347d62a5e94c924c947a217c5dacf53951312c7cdab2f167",
+    "src/main.js": "d8fcf7bc9147b79aa784caddfa70b9a8e7858f292ea3085b70d55e6267d22d4f",
+    "src/core/GameEngine.bundle.js": "08ba68ad06a47ee0ba080b1c1484eda062407924e546e22404f0e95f18c6b019",
+    "src/styles/index.css": "451af1e4115594ee63866ecb5d7c2964025c4484e2b00a791bc2ca757fd8ab6a",
+    "release.json": "9b48e3432e6dc06f8e3aab5c2840d0cc3dda86c566bb95b0a6c69aa00d4ef378"
+  },
+  "watch": "Existing authorized Luna/root/watch_deploy_1795_1008 monitors exact run/head terminal/actionable only. Root independently verifies all mandatory terminal gates, native cases, live QA, selected public bytes, frontend/backend identity/TLS/ready database before14. No overlapping release push/retry/cancel; unrelated soak untouched. Full art/terrain/device/party/F1-F5/operations/beta/launch scope stays open."
+}
