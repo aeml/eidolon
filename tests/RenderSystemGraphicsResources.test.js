@@ -1,9 +1,32 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
+import { WebGLObjects } from 'three/src/renderers/webgl/WebGLObjects.js';
 
 beforeEach(() => localStorage.clear());
 afterEach(() => { localStorage.clear(); jest.restoreAllMocks(); });
+
+test.each([false, true])('owned instances release stock Three matrix/color buffers even with shared geometry (colors=%s)', colored => {
+    const geometry = new THREE.BoxGeometry(), material = new THREE.MeshStandardMaterial();
+    const releaseGeometry = jest.spyOn(geometry, 'dispose'), releaseMaterial = jest.spyOn(material, 'dispose');
+    const root = new THREE.Group(), meshes = [1, 2].map(count => new THREE.InstancedMesh(geometry, material, count));
+    const attributes = { update: jest.fn(), remove: jest.fn() };
+    // Actual locked Three ownership/listener implementation, not a replacement
+    // dispose mock. Only the WebGL attribute IO is intercepted here.
+    const objects = WebGLObjects({ ARRAY_BUFFER: 34962 }, { get: (mesh, source) => source, update: jest.fn() }, attributes, { render: { frame: 1 } });
+    for (const mesh of meshes) {
+        if (colored) mesh.setColorAt(0, new THREE.Color(.9, .8, .7));
+        root.add(mesh); objects.update(mesh);
+    }
+    const expected = meshes.flatMap(mesh => [mesh.instanceMatrix, ...(colored ? [mesh.instanceColor] : [])]);
+    expect(attributes.update.mock.calls.map(([buffer]) => buffer)).toEqual(expected);
+    RenderSystem.prototype.disposeObjectResources.call({}, root);
+    expect(attributes.remove.mock.calls.map(([buffer]) => buffer)).toEqual(expected);
+    expect(releaseGeometry).toHaveBeenCalledTimes(1); expect(releaseMaterial).toHaveBeenCalledTimes(1);
+    meshes.forEach(mesh => mesh.dispose());
+    expect(attributes.remove).toHaveBeenCalledTimes(expected.length);
+    objects.dispose();
+});
 
 test.each(['low', 'medium', 'high'])('renderer starts at saved %s quality without temporary High resources', quality => {
     localStorage.setItem('eidolon.graphicsQuality', quality);

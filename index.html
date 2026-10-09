@@ -806,12 +806,14 @@
                     </ul>
                 </div>
                 <div class="patch-note-entry" data-version="1.79.16">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.16 (worn masonry and shared enemy rendering)</h3>
+                    <h3 class="patch-note-entry__title">Alpha 1.79.16 (worn masonry, woodland shading and shared enemy rendering)</h3>
                     <ul class="patch-note-entry__list">
                         <li>The First Grove vault follows a curved stone profile with shallow carved lips on both faces. Its original overhead clearance, footprint, depth and shared fieldstone material remain unchanged.</li>
                         <li>Grove and Bastion pier courses have worn corners and staggered masonry joints instead of monolithic slices. Existing material batching is retained; no new textures or runtime draw buckets are added.</li>
                         <li>Natural stone gains continuous mineral grain, sheltered lichen and damp lower courses. Detail follows world space across curved faces and fades below pixel size rather than painting another brick grid over the vault.</li>
                         <li>Nearby Skeletons share opaque render batches across their independently animated rigs, reducing repeated color and shadow draws without removing enemies or changing their surfaces, animations or hitboxes. Supplied class models and unreviewed enemy families keep their existing rendering path.</li>
+                        <li>Bent woodland leaves have continuous lighting across their sections and subtle plant-to-plant tones instead of identical repeated colors. Existing plants, silhouettes, triangle counts, placements, wind and walking clearances remain unchanged.</li>
+                        <li>Area cleanup releases each instanced mesh's matrix and color buffers as well as its shared geometry, preventing those owned GPU buffers from accumulating across area changes.</li>
                         <li>Collision, paths, quest targets, planted roots, thresholds and gameplay rules stay unchanged. Original geometry and scene performance limits remain required.</li>
                         <li>This is incremental landmark refinement, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
                         <li>No account wipe, schema migration, currency or permission change. Full prior patch history is preserved through Load more notes.</li>

@@ -1130,6 +1130,10 @@ export class RenderSystem {
             material.dispose?.();
         };
         object.traverse?.((child) => {
+            // Instance matrices/colors belong to each mesh, not its shared
+            // geometry. Three releases their GPU buffers on the mesh's own
+            // dispose event; disposing only geometry leaks them on area swaps.
+            if (child.isInstancedMesh) child.dispose?.();
             if (child.geometry?.dispose && !disposedGeometries.has(child.geometry)) {
                 // BatchedMesh owns geometry AND its matrix/indirection textures.
                 // Its dispose releases all three; do not dispose geometry twice.
