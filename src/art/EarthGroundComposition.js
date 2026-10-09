@@ -173,7 +173,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v11';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v12';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -226,9 +226,14 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // Exposed shoulders retain soil between mineral fragments. A
             // full replacement turned whole hillsides into pale cracked paving.
             earthRock = smoothstep(.14, .8, earthRock) * .72;
-            // Character-scale aggregates survive gameplay minification. The
-            // smaller grit fills their faces rather than owning every clod.
-            float earthClod = smoothstep(.25, .69, earthGrain.r * .72 + earthGrit * .28);
+            // The litter field's roughly70cm cells made bare dirt look like
+            // camouflage. Soil aggregates instead use the existing17cm grit
+            // field, independently of the unchanged fallen-leaf silhouettes.
+            // Fade contrast and relief together when the aggregates become
+            // subpixel, rather than re-amplifying mip averages into speckles.
+            float earthAggregateFootprint = max(fwidth(earthGritDomain.x * .74), fwidth(earthGritDomain.y * .74));
+            float earthAggregateDetail = 1. - smoothstep(.1, .45, earthAggregateFootprint);
+            float earthClod = mix(.5, smoothstep(.25, .69, earthGrit * .72 + earthFineGrit * .28), earthAggregateDetail);
             float earthPore = smoothstep(.22, .65, earthFineGrit);
             // Moss cushions and soil aggregates occupy different physical
             // scales. Reusing the clod field for both flattened their height
@@ -259,9 +264,9 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // lights/shadows, never emissive colors or baked fake highlights.
             // Damp crevices and dry aggregate faces share the relief field;
             // don't inherit a blurry broad color stain as the entire soil bed.
-            vec3 earthSoil = mix(vec3(.058, .045, .029), vec3(.087, .067, .043), earthClod);
+            vec3 earthSoil = mix(vec3(.065, .050, .033), vec3(.079, .061, .040), earthClod);
             earthSoil *= mix(.92, 1.06, earthPore);
-            vec3 forestBed = earthSoil * vec3(.53, .55, .46);
+            vec3 forestBed = earthSoil * vec3(.72, .76, .66);
             vec3 fallenLeaf = mix(vec3(.065, .038, .016), vec3(.17, .115, .052), earthScatter);
             fallenLeaf *= .9 + earthGrain.b * .1;
             vec3 heathBed = mix(vec3(.046, .068, .029), vec3(.054, .076, .034), earthMossFiber);
