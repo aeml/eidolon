@@ -18,6 +18,13 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Same-version14 test-only correction **90fca2f1 /CI37918281583** pushed after
+  fresh fetch/normal merge. Luna monitors terminal results; root must verify
+  deployment before15. Actual five-file publisher bytes are retained in the
+  [camera-corrected receipt](docs/plans/2026-10-09-camera-corrected14-publisher.json).
+  Correction selected narrowly into15–18, raised and this branch; held16 stays
+  held and staged Fire/soil are not in this deployment. Public13 remains healthy.
+
 - Latest corrected14 run37913862221 is terminal **failure**: hosted gates pass,
   native inventory click fails, downstream deployments/live QA skip. Public13
   remains the accepted release; no15 push. Old inventory flow passes locally,
