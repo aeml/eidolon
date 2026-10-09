@@ -1,5 +1,17 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 Air composition candidatea57b58a9 adds forged overhead weathercocks,
+bearings/calibrated bands and grounded/braced observatory tables. Same merged
+materials, footprints and interactions; five focused geometry/path/leg checks
+and native Low presentation14.4s pass. Root reviews actual instruments and
+new table legs, not final art approval. Other realms and six Air sites/passage
+preserved in pre-leg geometry/material audit; actual418module publisher graph
+compiles. Original High performance failure remains open; no new frame/phone/
+party certificate or source selection/public18. Corrective11 CI37884472930
+remains genuinely live (Client/Smoke3 pass, Server/Smoke1/2in_progress); Luna
+terminal-only watch. Full numbered roadmap and modern-art/F1-F5/owner gates
+remain active; no later public push while own11 acceptance is outstanding.
+
 October9 local Air composition30658cc0: replace dominant wind-striped dust
 coverage with irregular sheltered deposits; directional slate bedding remains.
 Same registered three maps/dimensions/runtime shaders/geometry/placements,

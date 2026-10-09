@@ -18,6 +18,20 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Air composition candidate **a57b58a9** now includes forged weathercock heads,
+  visible bearings/calibrated bands and grounded/braced observatory chart tables.
+  Five distinct focused geometry/path/leg checks pass; no new material batches,
+  colliders, interactions or shaders. Independent comparison before the final
+  chart-leg addition preserves all Water/Fire and other six Air sites/passage
+  geometry/transforms/materials/shadows at both qualities; original footprint
+  arrays exact. Native Low presentation14.4s passes and root reviews actual
+  instruments/table legs. No frame profiling/new High acceptance; prior20ms
+  failure remains. Actual418module publisher graph compiles/shared login21.
+  Source remains staged in owned Air branch; no version18/public promotion.
+  CI37884472930 latest root snapshot: Client/Smoke3 passed; Server/Smoke1/2
+  genuinely in_progress. Luna still owns terminal-only deployment watch; no
+  rerun/cancel/later push. Full original art/F1-F5/party/device/owner gates open.
+
 - Air composition candidate **30658cc0** now breaks the prominent wind-striped
   dust mask into irregular sheltered patches while retaining directional slate
   bedding. Same three registered maps, sizes/samplers, geometry, shaders and
