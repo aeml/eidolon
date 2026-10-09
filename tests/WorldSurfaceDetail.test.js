@@ -56,7 +56,23 @@ describe('world surface detail', () => {
             expect({ patch, present: shader.fragmentShader.includes(patch) }).toEqual({ patch, present: true });
         }
         expect(shader.fragmentShader).not.toContain('cleave * 1.8');
-        expect(material.customProgramCacheKey()).toBe('eidolon-world-surface-v5:stratified-rock');
+        expect(material.customProgramCacheKey()).toBe('eidolon-world-surface-v6:stratified-rock');
+    });
+
+    test('rock seams share registered mineral detail and filter color, roughness and relief together', () => {
+        const material = applyWorldSurfaceDetail(new MeshStandardMaterial({ roughness: .95 }), 'stratified-rock');
+        const shader = { ...ShaderLib.standard }; material.onBeforeCompile(shader);
+        const rock = shader.fragmentShader.split('#if EIDOLON_SURFACE == 6')[2].split('#elif')[0];
+        for (const patch of ['p.x * .21 + p.y * .19 - p.z * .12 + weather * .04',
+            'max(fwidth(seamPlane), .001)', 'abs(fract(seamPlane) - .5)',
+            '1. - smoothstep(.06, .18, seamFootprint)', 'smoothstep(.3, .6, cleave)', 'max(0., mineralEdge - fissure)',
+            '- fissure * .13 + quartz * .22', '- quartz * .11', '- fissure * .013 + quartz * .006'])
+            expect({ patch, present: rock.includes(patch) }).toEqual({ patch, present: true });
+        expect((rock.match(/eidolonRockNoise\(/g) || []).length).toBe(2);
+        expect(rock).not.toContain('abs(cleave - .5)');
+        expect(material.map).toBeNull(); expect(material.normalMap).toBeNull();
+        expect(material.roughnessMap).toBeNull(); expect(material.emissive.getHex()).toBe(0);
+        material.dispose();
     });
 
     test('rejects invalid usage and protects existing shader customizations', () => {
