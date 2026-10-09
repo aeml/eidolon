@@ -28,23 +28,30 @@ Fighter pilot or remove approved authored models.
   exact CI now **fails** town-rest hover: the published compiler renames the
   enemy class Skeleton2, excluding it from constructor-name targeting filters.
   Root reproduces this in a collision unit and actual browser-loaded factory.
-  Corrective **f1ca948d / CI37892701200** is now pushed/running: compiler
+  Corrective **f1ca948d / CI37892701200** is pushed but its CI now **fails**: compiler
   keepNames restores intended gameplay names, without weakening QA filters,
   deadlines or retries.55affected checks/native published case7.5s pass.
   Initial fixture cleanup error is retained separately from the reproduced bug;
   earlier native loot-click obstruction is not proven resolved by this fix.
   All445older notes exact; current11 note clarifies preserved names. Authorized
-  Luna `/root/watch_deploy_1795_1008` owns terminal-only monitoring. Root must still
+  Luna `/root/watch_deploy_1795_1008` reports terminal/actionable status. Root must still
   verify all required terminal gates, transformed publisher bytes and live
   frontend/backend identity/TLS/database before publishing12.
 - Exact fd7 frontend/backend identity, valid IPv4 TLS/database readiness and
   five actual transformed publisher files independently match at06:05–06:06UTC.
-  Nine CI jobs succeed; final live gameplay remains in progress. This is not
+  Nine CI jobs succeeded at this precheck; later live town-rest QA failed. This is not
   release acceptance. [Public precheck](docs/plans/2026-10-09-corrective11-public-precheck.json).
 - Exact f1 transformed publisher outputs are prepared for final comparison:
  412modules/3154006bytes/shared21; expected hashes and owned fixture path are in
  [the publisher receipt](docs/plans/2026-10-09-corrective11-name-publisher.json).
  This is not delivery or authenticated-world acceptance.
+- Root independently verifies f1 CI37892701200 terminal failure: client/server
+  and smoke2/3+3/3 pass; smoke1/3 has51passes/6timeouts at unchanged120s. These
+  are all four Water/Fire and two Air High quality-switch cover batches,
+  including retries. Six subsequent predeploy/publication/live gates skip,
+  not pass. Logs provide no in-test callsite. Root retains anonymous failure
+  artifacts and runs one focused software-rendered reproduction, not all six
+  cases/campaigns. No retry, timeout relaxation or public12 push.
 - Corrective11 bundles412engine modules only in the copied publishing tree.
   Login stays lazy, shared credentials/session module identity and import-map
   vendors remain, editable sources stay intact.438affected checks/native
@@ -112,6 +119,18 @@ Fighter pilot or remove approved authored models.
   fails strict pixel parity against the actual previous renderer. Default path
   passes46units and native eight-body animation/stealth checks. Prototype stays
   disabled and excluded from the queue; no new version or performance approval.
+- CPU sample of current18 finds791422foliage visits/79frames with no view/light
+  revision. Targeted9272a3f8 skips irrelevant direct leaf checks (retains nested
+  and live flags) and reuses validated actor-owned interaction proxies. Strict
+  native ten-view High/Low pixels/draws/triangles match exactly7.6s; visits10018
+  become8922High/6862Low. Current isolated party/save case passes53.03s but
+  remains slow33.4/50.1ms with48entities, not a controlled gain versus20/38
+  entities. Recursive object search remains substantial; identify callers next,
+  do not claim the proxy fix eliminates all searches. Folded into prepared15
+  (235077cc), not a new micro-release: six actual15 suites447pass13.709s;
+ 449older notes retained. Normal clean merges carry it into16-18. No art/assets,
+  gameplay/budgets or public rollout change. Shared receipt in those branches:
+  `docs/plans/2026-10-09-party-input-render-checks.json`.
 - Existing nightly **37880032315/dc7** was independently confirmed running
   on the separate soak runner and remains untouched. Its concurrent host-load
   contribution to Air timings is unproven. Do not cancel/restart it or claim
@@ -124,7 +143,7 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Accept or diagnose corrective11/f1ca948d/CI37892701200 after authorized Luna
+1. Diagnose corrective11/f1ca948d/CI37892701200's six software cover timeouts after authorized Luna
    terminal notice; independently verify required jobs, public identities and
    actual transformed publisher bytes. Prior dc7 attempt2 fails engine-module
    download with matching static HTTP408 evidence; upstream cause remains
@@ -175,8 +194,8 @@ qualification never proves a later tree, full visual approval or public rollout.
   branch `work/alpha-1-79-startup-bundle-current-20261009`, pushedf1ca948d.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, locald04aa7c6/1.79.18;
-  art/runtime source0e319ac0 unchanged; party evidence and corrected publication
+  branch `work/alpha-1-79-air-cypress-current-20261009`, local3b28131e/1.79.18;
+  art/terrain source0e319ac0 retained; targeted shared CPU/input9272a3f8, party evidence and corrected publication
   names are retained by normal reconciliation, not a new art qualification.
 - Ordered queued release worktrees and last clean heads:
 
@@ -185,10 +204,10 @@ qualification never proves a later tree, full visual approval or public rollout.
   | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `fdb5a335` |
   | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `06e43cee` |
   | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `25d51c02` |
-  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `a88e97b1` |
-  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `39098884` |
-  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `33d351f7` |
-  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `d04aa7c6` |
+  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `235077cc` |
+  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `b74bb06c` |
+  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `e6a429d7` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `3b28131e` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
