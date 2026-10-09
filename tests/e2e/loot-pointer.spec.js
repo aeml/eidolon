@@ -116,6 +116,40 @@ test('manual pickup re-aims after camera movement instead of clicking an old hov
     expect(await page.evaluate(() => window.game.remotePlayers.get('loot').isActive)).toBe(true);
 });
 
+test('manual pickup projects again when camera follow changes after hover confirmation', async ({ page }) => {
+    await page.evaluate(() => {
+        const game = window.game;
+        game.activeEntitiesCache = [game.remotePlayers.get('loot')];
+        window.__lootPointerClicks = [];
+        game.inputManager.subscribe('onClick', () => {
+            game.performRaycast();
+            window.__lootPointerClicks.push(game.hoveredEntity?.id ?? null);
+        });
+    });
+    // Geometry fixture only: model one camera-follow reconciliation immediately
+    // after observing the successful hover, before native mousedown dispatch.
+    // Keep the entity, pointer priority and actual click raycast untouched.
+    const evaluate = page.evaluate.bind(page);
+    let followed = false;
+    page.evaluate = async (fn, argument) => {
+        const result = await evaluate(fn, argument);
+        if (!followed && argument?.id === 'loot' && Object.hasOwn(argument, 'allowOverlappingLoot') && result === 'loot') {
+            followed = true;
+            await evaluate(() => {
+                const camera = window.game.renderSystem.camera;
+                camera.position.x += 6; camera.lookAt(6, 0, 0); camera.updateMatrixWorld(true);
+            });
+        }
+        return result;
+    };
+    try {
+        await clickLootPointer(page, 'loot', 2000);
+    } finally { page.evaluate = evaluate; }
+    expect(followed).toBe(true);
+    expect(await page.evaluate(() => window.__lootPointerClicks)).toEqual(['loot']);
+    expect(await page.evaluate(() => window.game.remotePlayers.get('loot').isActive)).toBe(true);
+});
+
 test('combat loot recovery clicks a fully covering hostile before reacquiring the earned drop', async ({page}) => {
     // Component fixture only: model an authoritative death response to one real
     // hostile click. The disposable gameplay smoke separately proves combat and
