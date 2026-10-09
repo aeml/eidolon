@@ -139,6 +139,7 @@ export class AtlasNavigation {
             <button type="button" data-atlas-overview>World overview</button></div>
             <details class="atlas-directory"><summary>Locations & legend</summary>
             <div class="atlas-filters" role="group" aria-label="Location filters"></div>
+            <p data-atlas-terrain-legend hidden>Earth contours: 3m elevation intervals. Shaded hills are terrain, not roads.</p>
             <div class="atlas-results" role="list" aria-label="Known locations"></div></details>
             <section class="atlas-detail" aria-label="Selected destination" hidden></section>
             <div class="atlas-waypoint-row"><output aria-label="Waypoint guidance" aria-live="off">No personal waypoint</output>
@@ -184,6 +185,7 @@ export class AtlasNavigation {
             this.selectedId = null; this.query = ''; this.search.value = '';
         }
         this.space = space;
+        this.root.querySelector('[data-atlas-terrain-legend]').hidden = !this.map.cartography?.elevation || !isOverworldAtlas(this.engine);
         this.locations = getAtlasLocations(this.engine);
         const signature = JSON.stringify([this.locations, this.query, [...this.filters], this.selectedId]);
         if (force || signature !== this.signature) {
