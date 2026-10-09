@@ -944,7 +944,8 @@ export async function acquireLootPointer(page, id, timeout = 10_000, options = {
                 const projected = mesh.localToWorld(world).project(game.renderSystem.camera);
                 const x = (projected.x + 1) * innerWidth / 2;
                 const y = (1 - projected.y) * innerHeight / 2;
-                return { x, y, visible: Math.abs(projected.x) <= 1 && Math.abs(projected.y) <= 1 &&
+                return { x, y, hitboxPoint: { x: offset[0], y: offset[1], z: offset[2] },
+                    visible: Math.abs(projected.x) <= 1 && Math.abs(projected.y) <= 1 &&
                     Math.abs(projected.z) <= 1 && document.elementFromPoint(x, y)?.tagName === 'CANVAS' };
             }, { id, candidate: candidate++ });
             if (!point?.visible) return false;
@@ -985,9 +986,14 @@ export async function acquireCombatLootPointer(page, id, timeout = 10_000) {
 // hover was acquired. Re-aim using ordinary pointer input immediately before
 // clicking; the runtime still performs its own authoritative click raycast.
 export async function clickLootPointer(page, id, timeout = 10_000) {
-    const point = await acquireLootPointer(page, id, timeout);
+    const acquired = await acquireLootPointer(page, id, timeout);
+    // Hover confirmation includes a20Hz sample wait. Camera follow can move
+    // during that wait or the observation round trip; preserve the exposed
+    // hitbox corner but project it freshly before the real native click.
+    const point = await projectEntity(page, id, acquired.hitboxPoint);
+    expect(point?.visible, 'The acquired loot corner must remain on unobstructed canvas').toBe(true);
     await page.mouse.click(point.x, point.y);
-    return point;
+    return { ...point, hitboxPoint: acquired.hitboxPoint, lootId: acquired.lootId };
 }
 
 async function projectNearestLoot(page) {
