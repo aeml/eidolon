@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 publication-only startup bundle:** dc7/run37879564669 attempt1
+fails external deployment SSH; one failed-job-only retry deploys but attempt2
+fails mandatory live engine-module entry. Nginx records two release-matched
+static JavaScript HTTP408 responses. The upstream reason remains unproven.
+Bundle the copied publication engine, retaining lazy login, shared module
+identity, import-map vendors, original sources and asset/release URLs.
+Six affected suites438checks and actual four-class native construction pass;
+these are not authenticated world, party, Firefox3D or public acceptance.
+[Evidence](docs/plans/2026-10-09-published-engine-bundle-checks.json).
+Corrective same-version11 needs fresh reconciliation and its own CI/public
+acceptance before individually publishing12-17. Full original goal remains
+active; earlier pending statements below are historical.
+
 **October9 scoped11 startup recovery:**8a/run37874149991 fails mandatory live
 auth entry; original cause remains unknown. Nine jobs green/six live cases pass,
 including Verdant dungeon; Water case flaky then passes. Bounded unmodified
