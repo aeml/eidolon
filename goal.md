@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- All local12-17 now normally inherit corrective11/dc7, clean/exact ancestor:
+  edac4774/a8c2cdb6/7c598677/e3bb076d/2000c7aa/1058d657.
+  Only document-header conflicts, both complete blocks retained. Independent
+  all-child/raw archive chain audit proves all446through451 predecessor notes
+  exact at successive447through452totals, ten initial/current metadata intact.
+  Four affected actual12 suites416pass5.311s, overlap not full-project count.
+  [Reconciliation](docs/plans/2026-10-09-ordered-startup-reconciliation-checks.json).
+  No later public push; exact11 CI37879564669 still delegated to Luna, root must
+  verify own terminal/public acceptance before individual later publications.
+
 - Corrective same-version11 **dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8**
   normally pushed after fresh fetch/merge; own **CI37879564669** live, authorized
   Luna terminal-only monitor. Safe startup categories/phase and module-error

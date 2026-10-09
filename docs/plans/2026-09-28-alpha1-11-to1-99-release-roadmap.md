@@ -1,5 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 all local12-17 normally inherit new corrective11/dc7, clean/ancestor
+checks pass; only document-header conflicts, both full blocks preserved. Actual
+all-child/raw archive chain audit proves all446through451predecessor notes exact,
+447through452totals/ten initial/current metadata. Four actual12 affected suites
+416pass5.311s, overlap not new full-project total. [Evidence](2026-10-09-ordered-startup-reconciliation-checks.json).
+No later public push; own11 CI37879564669/public acceptance still required,
+Luna terminal-only watcher. Full scope/art/F1-F5/party/device/owner gates open.
+
 October9 scoped startup recovery11/dc7d22f2 normally pushed after fresh merge;
 own CI37879564669 running/Luna terminal-only watch.415affected units/four native
 local cases pass, all445old notes exact. Unmodified public ordinary fresh Wizard
