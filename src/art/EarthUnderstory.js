@@ -70,6 +70,16 @@ export function createEarthUnderstoryPlacements(quality = 'high') {
     return plants;
 }
 
+// Different growth habits break the repeated star-shaped clump at play distance.
+// Retain every placement and original horizontal reach. Height varies separately
+// from breadth; Low gets exactly the same shape for every retained High plant.
+export function earthUnderstoryScale(plant) {
+    const x = Math.round(plant.x * 100), z = Math.round(plant.z * 100);
+    return [plant.scale * (.74 + random(x, z, 81) * .26),
+        plant.scale * (.85 + random(x, z, 83) * .35),
+        plant.scale * (.74 + random(x, z, 82) * .26)];
+}
+
 export function createEarthUnderstory({ quality = 'high', terrainElevation = null } = {}) {
     const root = new THREE.Group();
     root.name = 'Gloamwood heath and fern beds';
@@ -100,7 +110,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
         entries.forEach((plant, i) => {
             transform.position.set(plant.x, terrainElevation?.sample(plant.x, plant.z) ?? 0, plant.z);
             transform.rotation.set(0, plant.rotation, 0);
-            transform.scale.setScalar(plant.scale);
+            transform.scale.fromArray(earthUnderstoryScale(plant));
             transform.updateMatrix(); mesh.setMatrixAt(i, transform.matrix);
             mesh.setColorAt(i, earthUnderstoryTint(plant, tint));
         });

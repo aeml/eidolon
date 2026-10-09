@@ -22,7 +22,22 @@ test('wind uses shared render uniforms and responds to live reduced motion witho
     expect(material.transparent).toBe(false);
     expect(material.depthWrite).toBe(true);
     expect(material.map).toBeNull();
+    expect(material.customProgramCacheKey()).toBe('woodland-rooted-wind-v2');
+    expect(shaders[0].vertexShader).toContain('direction *= min(woodlandStretch.x, woodlandStretch.y) / woodlandSafeStretch');
     material.dispose();
+});
+
+test('unequal horizontal growth preserves the common world breeze and original wind envelope', () => {
+    const breeze = new THREE.Vector2(.86, .5).normalize();
+    for (const angle of [0, .3, 1.6, 2.8, 4.9]) for (const [x, z] of [[.52, 1.4], [1.4, .52], [.9, .9]]) {
+        const axisX = new THREE.Vector2(Math.cos(angle), -Math.sin(angle));
+        const axisZ = new THREE.Vector2(Math.sin(angle), Math.cos(angle));
+        const width = Math.min(x, z);
+        const local = new THREE.Vector2(axisX.dot(breeze) * width / x, axisZ.dot(breeze) * width / z);
+        const world = axisX.multiplyScalar(local.x * x).add(axisZ.multiplyScalar(local.y * z));
+        expect(world.distanceTo(breeze.clone().multiplyScalar(width))).toBeLessThan(1e-12);
+        expect(world.length() * WOODLAND_WIND_REACH).toBeLessThanOrEqual(1.4 * WOODLAND_WIND_REACH);
+    }
 });
 
 test.each(['bracken', 'sedge'])('%s wind stays in existing placement clearance with planted roots', kind => {

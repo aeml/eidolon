@@ -2,7 +2,7 @@ import { MeshStandardMaterial, MeshBasicMaterial, ShaderLib } from 'three';
 import { applyWorldSurfaceDetail } from '../src/art/WorldSurfaceDetail.js';
 
 describe('world surface detail', () => {
-    test.each(['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry'])('%s retains standard lighting and supports transformed instances', surface => {
+    test.each(['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry', 'canvas'])('%s retains standard lighting and supports transformed instances', surface => {
         const material = new MeshStandardMaterial({ roughness: .91 });
         const color = material.color.clone();
         expect(applyWorldSurfaceDetail(material, surface)).toBe(material);
@@ -24,9 +24,23 @@ describe('world surface detail', () => {
     });
 
     test('surface variants cannot accidentally reuse one compiled shader', () => {
-        const keys = ['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry'].map(surface =>
+        const keys = ['stone', 'slate', 'timber', 'fieldstone', 'bark', 'stratified-rock', 'fortress', 'weathered-masonry', 'canvas'].map(surface =>
             applyWorldSurfaceDetail(new MeshStandardMaterial(), surface).customProgramCacheKey());
-        expect(new Set(keys).size).toBe(8);
+        expect(new Set(keys).size).toBe(9);
+    });
+
+    test('canvas uses physical filtered thread scales and continuous projection blending without UVs or new maps', () => {
+        const material = applyWorldSurfaceDetail(new MeshStandardMaterial({ side: 2, roughness: .98 }), 'canvas');
+        const shader = { ...ShaderLib.standard }; material.onBeforeCompile(shader);
+        for (const patch of ['#define EIDOLON_SURFACE 9', 'fract(p / .008) * 6.28318530718',
+            'fwidth(p / .008)', 'sin(weaveDomain) * detail', 'axis / max(length(axis), .00000001)',
+            'weights *= weights', 'dot(vec3(threads.y * threads.z', 'interlace * .00035'])
+            expect(shader.fragmentShader).toContain(patch);
+        expect(material.customProgramCacheKey()).toBe('eidolon-world-surface-v1:canvas');
+        expect([material.map, material.normalMap, material.roughnessMap]).toEqual([null, null, null]);
+        expect(material.emissive.getHex()).toBe(0);
+        expect(material.side).toBe(2); expect(material.roughness).toBe(.98);
+        material.dispose();
     });
 
     test('weathered masonry breaks up vertical courses without changing horizontal paving or adding textures', () => {

@@ -3,6 +3,7 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createKilnFurnaceGeometry } from './KilnWorkshopGeometry.js';
 import { createKeeperCottage } from './KeeperCottage.js';
 import { createReturningScarClue } from './ReturningScar.js';
+import { createChronicleBookGeometry } from './ChronicleBookGeometry.js';
 
 const PALETTES = {
     earth: { stone: 0x696b50, wood: 0x54402e, glow: 0x95d994 },
@@ -62,11 +63,9 @@ export function createChronicleSiteModel(site, realm) {
         box(2.2, 0.18, 1.4, wood, 0, 1.25);
         for (const x of [-0.78, 0.78]) box(0.16, 1.2, 0.18, wood, x, 0.6, 0.4);
         box(1.16, 0.1, 0.88, brass, 0, 1.4);
-        for (const side of [-1, 1]) {
-            const page = box(0.53, 0.07, 0.76, paper, side * 0.27, 1.48);
-            page.rotation.z = side * -0.12;
-            for (let line = 0; line < 4; line++) box(0.34, 0.015, 0.022, wood, side * 0.27, 1.53, -0.2 + line * 0.12);
-        }
+        const spread = createChronicleBookGeometry();
+        mesh(spread.pages, paper, 0, 1.47);
+        mesh(spread.ink, wood, 0, 1.47);
         box(0.045, 0.02, 0.95, glow, 0, 1.56, 0.1);
     };
     const house = ['ruined_house', 'flood_shelter', 'cold_kiln', 'observatory'].includes(site.model);

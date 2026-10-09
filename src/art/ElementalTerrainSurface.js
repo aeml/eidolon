@@ -154,10 +154,15 @@ function sampleCooledBasalt(x, y, seed) {
     const pores = (1 - smooth(.16, .4, noise(x, y, 71, seed ^ 0x613b))) * (1 - cover * .9);
     const grain = hash(Math.floor(x), Math.floor(y), seed ^ 0xab3);
     const mineral = .14 + grit * .28 + crust * .34 + flow * .1;
-    const dark = [39, 40, 40], light = [84, 81, 75], deposit = [108, 100, 87];
+    // Ash remains a material deposit, not a high-contrast camouflage stencil.
+    // Keep registered crust/pores/roughness; illumination supplies warm light.
+    const dark = [48, 48, 47], light = [79, 76, 72], deposit = [91, 87, 80];
     const color = dark.map((value, i) => {
         const rock = (value + (light[i] - value) * mineral) * (1 - pores * .1);
-        return Math.round(rock + (deposit[i] - rock) * cover * .72 + (grain - .5) * 2);
+        // Iron weathering varies hue independently of ash brightness. Retain
+        // genuine mineral variety rather than collapsing the floor to grey.
+        const iron = (weathering - .5) * 6 * [1, .15, -.75][i];
+        return Math.round(rock + (deposit[i] - rock) * cover * .28 + iron + (grain - .5) * 2);
     });
     return { color, cover, crust, flow, pores,
         height: .23 + crust * .058 + flow * .018 + grit * .022 - pores * .045 + cover * .06,

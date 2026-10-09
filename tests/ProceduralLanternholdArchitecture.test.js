@@ -31,6 +31,14 @@ function visibleMeshes(root) {
 }
 
 describe('procedural Lanternhold architecture', () => {
+    test('camp canvas and entrance share physical cloth detail without new material buckets', () => {
+        const camp = createProceduralLanternholdStructure('camp');
+        for (const name of ['camp:grave-road-tent', 'camp:open-tent-flap']) {
+            const material = camp.getObjectByName(name).material;
+            expect(material.userData.worldSurfaceDetail).toBe('canvas');
+            expect([material.map, material.normalMap, material.roughnessMap]).toEqual([null, null, null]);
+        }
+    });
     test('smithy workbench and repair supplies are outside the wall, inside the unchanged building envelope', () => {
         const root = createProceduralLanternholdStructure('blacksmith');
         root.updateMatrixWorld(true);
@@ -77,7 +85,7 @@ describe('procedural Lanternhold architecture', () => {
             expect(bounds.min.y).toBeCloseTo(0, 5);
             expect(parts.length).toBeGreaterThanOrEqual(structureId === 'camp' ? 13 : 11);
             expect(parts.every((part) => part.geometry?.isBufferGeometry)).toBe(true);
-            expect(parts.every((part) => part.material?.flatShading)).toBe(true);
+            expect(parts.every((part) => part.material?.flatShading || part.name === 'camp:grave-road-tent')).toBe(true);
             expect(parts.every((part) => [
                 part.position.x, part.position.y, part.position.z,
                 part.scale.x, part.scale.y, part.scale.z
@@ -120,7 +128,7 @@ describe('procedural Lanternhold architecture', () => {
         first.position.set(20, 3, -5);
         expect(second.position.toArray()).toEqual([0, 0, 0]);
         expect(getProceduralLanternholdCacheMetrics()).toEqual({
-            geometries: 18,
+            geometries: 21,
             materials: 15,
             structures: 7
         });
@@ -147,7 +155,7 @@ describe('procedural Lanternhold architecture', () => {
         expect(campField.userData).toEqual(expect.objectContaining({
             proceduralTownCampField: true,
             instanceCount: 15,
-            sourceMeshCount: 195,
+            sourceMeshCount: 225,
             drawMeshCount: 9
         }));
         expect(campField.children).toHaveLength(9);
@@ -186,6 +194,20 @@ describe('procedural Lanternhold architecture', () => {
         } finally {
             loadSpy.mockRestore();
         }
+    });
+
+    test('canvas hems ground on the town surface instead of retaining the buried legacy origin', () => {
+        const placements = createLanternholdCampPlacements(0, 200);
+        const field = createProceduralLanternholdCampField(placements);
+        const canvas = field.children.find(part => part.material.flatShading === false);
+        expect(canvas).toBeDefined();
+        const matrix = new THREE.Matrix4();
+        for (let i = 0; i < canvas.count; i++) {
+            canvas.getMatrixAt(i, matrix);
+            expect(canvas.geometry.boundingBox.clone().applyMatrix4(matrix).min.y).toBeCloseTo(.025, 6);
+        }
+        expect(canvas.material.vertexColors).toBe(true);
+        expect(canvas.material.map).toBeNull();
     });
 
     test('places all fifteen outer-town camps deterministically with the existing clearance contract', () => {

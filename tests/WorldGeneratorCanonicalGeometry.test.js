@@ -472,7 +472,7 @@ describe('WorldGenerator shadow setup', () => {
         expect(structures[3].userData).toEqual(expect.objectContaining({
             proceduralTownCampField: true,
             instanceCount: 15,
-            sourceMeshCount: 195,
+            sourceMeshCount: 225,
             drawMeshCount: 9
         }));
         expect(structures.slice(0, 3).reduce(

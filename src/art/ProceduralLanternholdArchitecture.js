@@ -5,6 +5,7 @@ import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createLappedSlateRoof, createDormerGable } from './LanternholdRoofGeometry.js';
 import { createLanternholdArchPanel, createLanternholdArchFrame } from './LanternholdFacadeGeometry.js';
 import { createLanternholdCanopy } from './LanternholdCanopyGeometry.js';
+import { createLanternholdTentCanvas, createLanternholdTentFrame } from './LanternholdTentGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -118,7 +119,7 @@ function material(key, color, options = {}) {
             metalness: options.metalness ?? 0,
             emissive: options.emissive ?? 0x000000,
             emissiveIntensity: options.emissiveIntensity ?? 0,
-            flatShading: true,
+            flatShading: options.flatShading ?? true,
             side: options.side ?? THREE.FrontSide,
             transparent: options.transparent ?? false,
             opacity: options.opacity ?? 1,
@@ -144,7 +145,10 @@ const SHAPES = Object.freeze({
     torus: geometry('lanternhold-unit-torus', () => new THREE.TorusGeometry(0.5, 0.065, 5, 12)),
     ring: geometry('lanternhold-unit-ring', () => new THREE.RingGeometry(0.38, 0.5, 12)),
     archPanel: geometry('lanternhold-arch-panel', createLanternholdArchPanel),
-    archFrame: geometry('lanternhold-arch-frame', createLanternholdArchFrame)
+    archFrame: geometry('lanternhold-arch-frame', createLanternholdArchFrame),
+    tentCanvas: geometry('lanternhold-tent-canvas', createLanternholdTentCanvas),
+    tentEntrance: geometry('lanternhold-tent-entrance', () => createLanternholdTentCanvas({ entrance: true })),
+    tentFrame: geometry('lanternhold-tent-frame', createLanternholdTentFrame)
 });
 
 function createMaterials() {
@@ -158,8 +162,8 @@ function createMaterials() {
         iron: material('lanternhold-old-iron', 0x34383a, { metalness: 0.7, roughness: 0.42 }),
         brass: material('lanternhold-oath-brass', 0x9d6a32, { metalness: 0.66, roughness: 0.4 }),
         leather: material('lanternhold-road-leather', 0x4c3025, { roughness: 0.92 }),
-        cloth: material('lanternhold-blood-cloth', 0x5b2927, { roughness: 0.98, side: THREE.DoubleSide, vertexColors: true }),
-        ashCloth: material('lanternhold-ash-cloth', 0x3b3735, { roughness: 0.98, side: THREE.DoubleSide }),
+        cloth: material('lanternhold-blood-cloth', 0x5b2927, { roughness: 0.98, side: THREE.DoubleSide, vertexColors: true, surface: 'canvas' }),
+        ashCloth: material('lanternhold-ash-cloth', 0x77705f, { roughness: 0.98, side: THREE.DoubleSide, vertexColors: true, flatShading: false, surface: 'canvas' }),
         amber: material('lanternhold-amber-window', palette.accent, {
             emissive: palette.accent,
             emissiveIntensity: 0.95,
@@ -481,13 +485,9 @@ function createBlacksmith(root) {
 }
 
 function createCamp(root) {
-    addMesh(root, 'camp:grave-road-tent', SHAPES.cone4, MATERIAL_SET.ashCloth, {
-        position: [-0.55, 2.25, -0.45],
-        rotation: [0, Math.PI / 4, 0],
-        scale: [4.2, 4.5, 4.2]
-    });
-    box(root, 'camp:tent-ridge', MATERIAL_SET.timber, [0.18, 4.4, 0.18], [-0.55, 2.2, -0.45]);
-    box(root, 'camp:open-tent-flap', MATERIAL_SET.cloth, [1.15, 2.45, 0.12], [-0.55, 1.42, 1.3], [0.05, 0, -0.28]);
+    addMesh(root, 'camp:grave-road-tent', SHAPES.tentCanvas, MATERIAL_SET.ashCloth, { position: [-.55, 0, -.45] });
+    addMesh(root, 'camp:tent-ridge', SHAPES.tentFrame, MATERIAL_SET.timber, { position: [-.55, 0, -.45] });
+    addMesh(root, 'camp:open-tent-flap', SHAPES.tentEntrance, MATERIAL_SET.cloth, { position: [-.55, 0, -.45] });
     addMesh(root, 'camp:oathfire-ring', SHAPES.torus, MATERIAL_SET.stone, {
         position: [2.35, 0.25, 1.9],
         rotation: [Math.PI / 2, 0, 0],
@@ -504,6 +504,8 @@ function createCamp(root) {
     box(root, 'camp:bedroll', MATERIAL_SET.leather, [2.4, 0.22, 0.85], [-2.15, 0.24, 1.95], [0, -0.25, 0]);
     box(root, 'camp:road-standard', MATERIAL_SET.timber, [0.16, 4.5, 0.16], [2.65, 2.25, -2.35]);
     box(root, 'camp:split-oath-banner', MATERIAL_SET.cloth, [1.2, 1.75, 0.08], [2.02, 3.62, -2.35], [0, 0, -0.12]);
+    box(root, 'camp:lantern-post', MATERIAL_SET.timber, [.12, 2.12, .12], [-2.75, 1.06, -2.65]);
+    box(root, 'camp:lantern-hanger', MATERIAL_SET.timber, [.12, .12, .42], [-2.75, 2.02, -2.47]);
     addLantern(root, 'camp:way-lantern', -2.75, 1.6, -2.4, 0.7);
 }
 
@@ -705,7 +707,9 @@ export function createProceduralLanternholdStructure(structureId, { optimized = 
     return root;
 }
 
-export function createProceduralLanternholdCampField(placements, { targetY = -0.65 } = {}) {
+// The .02m canvas hem meets the .025m town surface. The retired-.65m asset
+// offset buried cloth, bedrolls and hearths; camp centers/footprints stay fixed.
+export function createProceduralLanternholdCampField(placements, { targetY = .005 } = {}) {
     const normalizedPlacements = Array.isArray(placements) ? placements : [];
     const optimized = getOptimizedStructureParts('camp');
     const field = new THREE.Group();

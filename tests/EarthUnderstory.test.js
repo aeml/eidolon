@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { composeEarthUnderstoryPlacement, createEarthUnderstory, createEarthUnderstoryPlacements, isEarthUnderstoryClear, earthUnderstoryTint } from '../src/art/EarthUnderstory.js';
+import { composeEarthUnderstoryPlacement, createEarthUnderstory, createEarthUnderstoryPlacements, earthUnderstoryScale, isEarthUnderstoryClear, earthUnderstoryTint } from '../src/art/EarthUnderstory.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { WOODLAND_WIND_REACH } from '../src/art/WoodlandWindMaterial.js';
 import { STARTER_ROAD_CLEARINGS } from '../src/data/lanternholdApproach.js';
@@ -72,7 +72,28 @@ test('understory forms repeatable beds with a matching Low subset and clear trav
     }
 });
 
-test.each([['high', 5.5], ['low', 16]])('smaller High batches preserve every plant transform and full wind reach (%s)', (quality, cellSize) => {
+test('growth habits vary breadth and height without expanding horizontal clearance or changing Low shapes', () => {
+    const high = createEarthUnderstoryPlacements(), low = createEarthUnderstoryPlacements('low');
+    const shapes = new Map(high.map(plant => [JSON.stringify(plant), earthUnderstoryScale(plant)]));
+    let narrow = 0, tall = 0;
+    for (const plant of high) {
+        const [x, y, z] = earthUnderstoryScale(plant);
+        expect([x, y, z].every(Number.isFinite)).toBe(true);
+        for (const width of [x, z]) {
+            expect(width).toBeGreaterThanOrEqual(plant.scale * .74);
+            expect(width).toBeLessThanOrEqual(plant.scale);
+        }
+        expect(y).toBeGreaterThanOrEqual(plant.scale * .85);
+        expect(y).toBeLessThanOrEqual(plant.scale * 1.2);
+        if (Math.min(x, z) / y < .75) narrow++;
+        if (y / plant.scale > 1.1) tall++;
+    }
+    expect(narrow).toBeGreaterThan(high.length * .15);
+    expect(tall).toBeGreaterThan(high.length * .2);
+    for (const plant of low) expect(earthUnderstoryScale(plant)).toEqual(shapes.get(JSON.stringify(plant)));
+});
+
+test.each([['high', 5.5], ['low', 16]])('High batches retain every plant, exact composed geometry and full wind reach (%s)', (quality, cellSize) => {
     const terrainElevation = { sample: (x, z) => Math.sin(x * .03) + Math.cos(z * .02) };
     const plants = createEarthUnderstoryPlacements(quality);
     const root = createEarthUnderstory({ quality, terrainElevation });
@@ -81,7 +102,7 @@ test.each([['high', 5.5], ['low', 16]])('smaller High batches preserve every pla
     const key = (variant, values) => `${variant}:${Array.from(values).join(',')}`;
     for (const plant of plants) {
         transform.position.set(plant.x, terrainElevation.sample(plant.x, plant.z), plant.z);
-        transform.rotation.set(0, plant.rotation, 0); transform.scale.setScalar(plant.scale); transform.updateMatrix();
+        transform.rotation.set(0, plant.rotation, 0); transform.scale.fromArray(earthUnderstoryScale(plant)); transform.updateMatrix();
         expected.add(key(plant.variant, new Float32Array(transform.matrix.elements)));
         expectedTints.set(key(plant.variant, new Float32Array(transform.matrix.elements)),
             Array.from(new Float32Array(earthUnderstoryTint(plant).toArray())));

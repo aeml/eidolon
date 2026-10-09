@@ -7,7 +7,7 @@ import { createLocationGroundMaterials, addLocationGroundWear } from './Location
 import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
 import { createTideRibStone, createTideRibPier, createWreckPlank, wreckHullHalfWidth, createWreckRib,
     createTornWreckSail, weatherWreckWood } from './WaterLandmarkGeometry.js';
-import { createKilnArchBeam } from './FireLandmarkGeometry.js';
+import { createKilnArchBeam, createKilnPier } from './FireLandmarkGeometry.js';
 import { createHorizonRing, createWindVaneNeedle } from './AirLandmarkGeometry.js';
 import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
 import { createElementalGroundCover, createAirPassageGroundCover } from './ElementalGroundCover.js';
@@ -26,7 +26,7 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
         stone: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x77727d : water ? 0x657d87 : 0x584841, roughness: .91 }), 'stone'),
         wood: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x555160 : water ? 0x4e6264 : 0x473c32, roughness: .96 }), 'timber'),
         iron: new THREE.MeshStandardMaterial({ color: air ? 0x9e9476 : water ? 0x748f99 : 0x4b4542, roughness: .65, metalness: .7 }),
-        cloth: new THREE.MeshStandardMaterial({ color: air ? 0x9891ac : water ? 0x91a9aa : 0x987957, side: THREE.DoubleSide, roughness: 1 }),
+        cloth: applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: air ? 0x9891ac : water ? 0x91a9aa : 0x987957, side: THREE.DoubleSide, roughness: 1 }), 'canvas'),
         accent: new THREE.MeshStandardMaterial({ color: air ? 0xbcb3cb : water ? 0x95c7d2 : 0xb8804b, roughness: water ? .3 : .82,
             metalness: water ? .1 : .3, emissive: air ? 0x211d32 : water ? 0x16333b : 0x392017, emissiveIntensity: .22 })
     };
@@ -37,14 +37,14 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
     if (water) {
         materials.wreckWood = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
             color: 0xffffff, vertexColors: true, roughness: .96 }), 'timber');
-        materials.wreckSail = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
-            side: THREE.DoubleSide, roughness: 1 });
+        materials.wreckSail = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
+            side: THREE.DoubleSide, roughness: 1 }), 'canvas');
     }
     if (realm === 'fire') materials.furnace = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({
         color: 0xffffff, vertexColors: true, roughness: .94
     }), 'fieldstone');
-    if (air) materials.canvas = new THREE.MeshStandardMaterial({ color: 0x9891ac, vertexColors: true,
-        side: THREE.DoubleSide, roughness: 1 });
+    if (air) materials.canvas = applyWorldSurfaceDetail(new THREE.MeshStandardMaterial({ color: 0x9891ac, vertexColors: true,
+        side: THREE.DoubleSide, roughness: 1 }), 'canvas');
     materials.cover = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true,
         side: THREE.DoubleSide, roughness: 1 });
     for (const site of sites) {
@@ -55,6 +55,14 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             siteId: site.id, x: site.x + x, y, z: site.z + z, width, height, depth, angle: 0
         });
         const part = (geometry, key, x, y, z, rotation = [0, 0, 0], scale = [1, 1, 1]) => {
+            if (realm === 'fire' && ['kiln-span', 'furnace-procession'].includes(site.recipe) && key === 'stone') {
+                key = 'furnace';
+                if (!geometry.attributes.color) {
+                    const color = new THREE.Color(0x584841), colors = [];
+                    for (let i = 0; i < geometry.attributes.position.count; i++) colors.push(color.r, color.g, color.b);
+                    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+                }
+            }
             if (site.recipe === 'tide-rib' && key === 'stone') key = 'rib';
             if (site.recipe === 'boat-grave' && key === 'wood') {
                 key = 'wreckWood';
@@ -84,7 +92,10 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
             part(new THREE.TubeGeometry(curve, quality === 'low' ? 10 : 20, radius, 5, false), key, 0, 0, 0);
         };
         const gauge = (x, z, height = 7) => {
-            box('stone', x, height / 2, z, 1.2, height, 1.2, true);
+            if (site.recipe === 'furnace-procession') {
+                part(createKilnPier(height, 1.2, x + z, quality), 'stone', x, 0, z);
+                footprint(x, height / 2, z, 1.2, height, 1.2);
+            } else box('stone', x, height / 2, z, 1.2, height, 1.2, true);
             box('iron', x, .5, z, 1.35, .2, 1.35);
             box('stone', x, height + .12, z, 1.5, .24, 1.5);
             for (let i = 1; i < height; i++) box('accent', x, i, z + .63, i % 2 ? .5 : .9, .06, .04);
@@ -196,7 +207,9 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                 beam([x, 5, -7], [x, 5, 7], .22);
                 // Narrow side sails shelter open bays, leaving the central
                 // aisle and all ground-level gameplay sightlines unobstructed.
-                part(createAirWindbreakSail(quality, side), 'canvas', x, 3, 0, [0, Math.PI / 2, -.1]);
+                // Mount the pinned top edge to the5m spar. Tilting this
+                // entire panel detached its corners from both upright posts.
+                part(createAirWindbreakSail(quality, side), 'canvas', x, 3.25, 0, [0, Math.PI / 2, 0]);
                 footprint(x, 2.5, 0, .7, 5, 14);
                 rope([[x, 4.8, -7], [x + side * 2, 2, -9], [x + side * 3, .1, -10]], .09, 'iron');
                 if (site.recipe === 'courier-exchange') {
@@ -257,7 +270,10 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                     }
                     part(pier, 'rib', side * 10, 0, 0);
                     footprint(side * 10, 4, 0, 3, 8, 3);
-                } else box('stone', 0, 4, side * 10, 3, 8, 3, true);
+                } else {
+                    part(createKilnPier(8, 3, side, quality), 'stone', 0, 0, side * 10);
+                    footprint(0, 4, side * 10, 3, 8, 3);
+                }
             }
             for (const shift of [-2.5, 2.5]) {
                 if (water) {

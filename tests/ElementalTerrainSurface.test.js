@@ -37,14 +37,24 @@ test('fire albedo and packed roughness use the same basalt/ash field', () => {
 });
 
 test.each([
-    ['fire', '388a58036a4673025f578bd990172defe335f8dbe483fdfb2fd5fc719bf362f4'],
+    ['fire', 'ee7ddfb5a7dcacf6d420c6cd44d25363dd372236e66a55802229c97c48fc899d'],
     ['water', '70ca2b639ac2423d5b7a9a343375c94911c58cd4399b51f8143ee92d8d077472']
-])('Air refinement retains qualified %s surface fields exactly', (realm, digest) => {
+])('reviewed %s surface fields retain their recorded signatures', (realm, digest) => {
     const samples = [];
     for (let y = 0; y < 256; y += 8) for (let x = 0; x < 256; x += 8) {
         samples.push(sampleElementalTerrain(x, y, realm, PROCEDURAL_TERRAIN_DEFINITIONS[realm].seed));
     }
     expect(createHash('sha256').update(JSON.stringify(samples)).digest('hex')).toBe(digest);
+});
+
+test('Cinder ash retains surface variety without dominating basalt with dark/light blotches', () => {
+    const values = [], seed = PROCEDURAL_TERRAIN_DEFINITIONS.fire.seed;
+    for (let y = 0; y < 256; y += 8) for (let x = 0; x < 256; x += 8) {
+        values.push(sampleElementalTerrain(x, y, 'fire', seed).color.reduce((sum, value) => sum + value) / 3);
+    }
+    values.sort((a, b) => a - b);
+    expect(values[Math.floor(values.length * .9)] / values[Math.floor(values.length * .1)]).toBeLessThan(1.3);
+    expect(new Set(values).size).toBeGreaterThan(50);
 });
 
 test('Moonfrost albedo and roughness share the registered ice/rime field', () => {

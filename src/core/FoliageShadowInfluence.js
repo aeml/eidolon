@@ -60,8 +60,12 @@ function validCasterBounds(box) {
 export class FoliageShadowInfluence {
     constructor(scene = null, watchedGroups = [scene]) {
         this.enabled = true;
-        this.omitted = new Set();
-        this.hidden = new Set();
+        // These are frame-local restoration lists, not membership indexes.
+        // Normal scene traversal visits each cell once. Reusing arrays avoids
+        // rebuilding large hash tables for thousands of offscreen cells every
+        // frame; all eligibility/bounds checks and end-of-frame restoration stay.
+        this.omitted = [];
+        this.hidden = [];
         this.viewFrustum = new Frustum();
         this.frustum = new Frustum(); this.projection = new Matrix4();
         this.sun = new Vector3(); this.target = new Vector3();
@@ -142,7 +146,7 @@ export class FoliageShadowInfluence {
                     cached.viewRevision = this.viewRevision;
                 }
                 if (!cached.intersectsView) {
-                    this.hidden.add(object); object.visible = false;
+                    this.hidden.push(object); object.visible = false;
                 }
             } else {
                 if (cached.shadowRevision !== this.shadowRevision) {
@@ -150,7 +154,7 @@ export class FoliageShadowInfluence {
                     cached.shadowRevision = this.shadowRevision;
                 }
                 if (!cached.intersectsShadow) {
-                    this.omitted.add(object); object.castShadow = false;
+                    this.omitted.push(object); object.castShadow = false;
                 }
             }
         };
@@ -221,9 +225,9 @@ export class FoliageShadowInfluence {
 
     endFrame() {
         for (const object of this.omitted) object.castShadow = true;
-        this.omitted.clear();
+        this.omitted.length = 0;
         for (const object of this.hidden) object.visible = true;
-        this.hidden.clear();
+        this.hidden.length = 0;
     }
 
     dispose() {

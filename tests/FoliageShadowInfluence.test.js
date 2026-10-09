@@ -300,10 +300,10 @@ test('only irrelevant shadow submission is omitted and every flag is restored af
     const instances = s.mesh.instanceMatrix.array.slice();
     s.controller.beginFrame(s.scene, s.camera, s.light);
     expect(s.mesh.castShadow).toBe(false); expect(s.mesh.visible).toBe(true);
-    expect(s.mesh.receiveShadow).toBe(true); expect(s.controller.omitted.size).toBe(1);
+    expect(s.mesh.receiveShadow).toBe(true); expect(s.controller.omitted).toHaveLength(1);
     expect(s.mesh.geometry).toBe(geometry); expect(geometry.attributes.position.array).toEqual(positions);
     expect(s.mesh.instanceMatrix.array).toEqual(instances);
-    s.controller.endFrame(); expect(s.mesh.castShadow).toBe(true); expect(s.controller.omitted.size).toBe(0);
+    s.controller.endFrame(); expect(s.mesh.castShadow).toBe(true); expect(s.controller.omitted).toHaveLength(0);
     s.mesh.position.set(0, 5, 0); s.scene.updateMatrixWorld(true);
     s.controller.beginFrame(s.scene, s.camera, s.light); expect(s.mesh.castShadow).toBe(true);
     s.controller.endFrame();
@@ -319,7 +319,7 @@ test('unknown, moving, non-Earth and originally noncasting objects are never opt
     ]) {
         setup(); const original = s.mesh.castShadow;
         s.controller.beginFrame(s.scene, s.camera, s.light);
-        expect(s.mesh.castShadow).toBe(original); expect(s.controller.omitted.size).toBe(0);
+        expect(s.mesh.castShadow).toBe(original); expect(s.controller.omitted).toHaveLength(0);
         s.controller.endFrame(); expect(s.mesh.castShadow).toBe(original);
     }
 });
@@ -338,7 +338,7 @@ test('a new frame restores an interrupted frame before considering current visib
     s.controller.beginFrame(s.scene, s.camera, s.light); expect(s.mesh.castShadow).toBe(false);
     s.group.visible = false;
     s.controller.beginFrame(s.scene, s.camera, s.light); expect(s.mesh.castShadow).toBe(true);
-    expect(s.controller.omitted.size).toBe(0); s.controller.endFrame();
+    expect(s.controller.omitted).toHaveLength(0); s.controller.endFrame();
 });
 
 test.each([false, true])('production render finally restores scene flags even when drawing throws (ground cover: %s)', groundCover => {
@@ -355,7 +355,7 @@ test.each([false, true])('production render finally restores scene flags even wh
     };
     expect(() => render.render()).toThrow('fixture-draw-failure');
     expect(s.mesh.castShadow).toBe(!groundCover); expect(s.mesh.visible).toBe(true);
-    expect(s.controller.omitted.size).toBe(0); expect(s.controller.hidden.size).toBe(0);
+    expect(s.controller.omitted).toHaveLength(0); expect(s.controller.hidden).toHaveLength(0);
     expect(render.renderer.info.autoReset).toBe(true);
 });
 
@@ -366,9 +366,9 @@ test('noncasting ground cover uses complete wind bounds even when shadows are di
     s.mesh.position.set(100, 5, 0); s.scene.updateMatrixWorld(true);
     s.controller.beginFrame(s.scene, s.camera, null);
     expect(s.mesh.visible).toBe(false); expect(s.mesh.castShadow).toBe(false);
-    expect(s.controller.hidden.size).toBe(1);
+    expect(s.controller.hidden).toHaveLength(1);
     s.controller.endFrame(); expect(s.mesh.visible).toBe(true); expect(s.mesh.castShadow).toBe(false);
-    expect(s.controller.hidden.size).toBe(0);
+    expect(s.controller.hidden).toHaveLength(0);
     s.mesh.position.set(0, 5, 0); s.scene.updateMatrixWorld(true);
     s.controller.beginFrame(s.scene, s.camera, null); expect(s.mesh.visible).toBe(true);
     s.controller.endFrame();
@@ -380,5 +380,5 @@ test('unqualified wind bounds and explicitly disabled frustum culling stay untou
     s.controller.beginFrame(s.scene, s.camera, null); expect(s.mesh.visible).toBe(true);
     s.mesh.userData.windBoundsIncluded = true; s.mesh.frustumCulled = false;
     s.controller.beginFrame(s.scene, s.camera, null); expect(s.mesh.visible).toBe(true);
-    expect(s.controller.hidden.size).toBe(0); s.controller.endFrame();
+    expect(s.controller.hidden).toHaveLength(0); s.controller.endFrame();
 });
