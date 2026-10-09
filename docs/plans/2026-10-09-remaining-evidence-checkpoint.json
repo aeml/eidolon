@@ -1,16 +1,17 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-09T21:41:23.692958+00:00",
-  "classification": "progress: private opaque same-pivot rig PBR consolidation qualifies157units/28native comparisons/finalHighLow GPU lifetime and real connected party/save evidence; corrected control now measured, incremental CPU gains and full performance failures retained; no public release",
-  "qualifiedRuntime": "private source over2e3cf1b370f8db24f0982c71bcde89c37dcba037; exact frozen source hashes in2026-10-09-rigid-surface-render-checks.json; full goal/gates active",
+  "recordedUTC": "2026-10-09T22:08:15.020679+00:00",
+  "classification": "progress through verified rejection: isolateddd354331 woodland spatial prototype preserves source triangles/poses/indices but strict native1pixel2channel failure repeats, CPU improvement unproven, roughly88MB duplicated raw geometry rejected on both qualities. Qualified6fbffd34source retained; full objective active.",
+  "qualifiedRuntime": "6fbffd3435e1798841a56ab120e938db3d512e34 runtime remains qualified within2026-10-09-rigid-surface-render-checks.json scope. Current update copies rejection evidence only, no new selected runtime or public release.",
   "rejectedSourceCommits": [
     "282d0a78",
-    "ab3ce06d"
+    "ab3ce06d",
+    "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-09T21:30:24Z",
+    "readOnlyObservationUTC": "2026-10-09T21:45:31Z",
     "result": {
-      "observed_at_utc": "2026-10-09T21:30:24Z",
+      "observed_at_utc": "2026-10-09T21:45:31Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -98,11 +99,12 @@
         }
       ]
     },
-    "status": "Last read-only observation in_progress, step6running/uploadpending. Historical snapshot; no terminal acceptance/cancel/restart."
+    "status": "Single read-only observation in_progress, step6running/uploadpending. Historical snapshot; no terminal acceptance/cancel/restart."
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1–F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-09-rigid-surface-render-checks.json",
+  "currentReceipt": "docs/plans/2026-10-09-woodland-spatial-rejected.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: actual scene/animation diagnosis identifies measured costs; private weapon-profile calibration and reviewed NPC/Titan constructor/instance integration,117units14native tests and actual four-class/save evidence; performance gaps and control limitation retained; no public release",
-  "nextAction": "Investigate observed repeated foliage traversal with stable view/shadow revisions, complete invalidation and native shadow equivalence; continue supplied equipped-party renderer/matrix/triangle and town costs without hiding content or weakening gates. Coherent physical ground/world/combat art and entire inherited roadmap remain active."
+  "previousGoalTurnClassification": "progress: private opaque same-pivot rig PBR consolidation qualifies157units/28native comparisons/finalHighLow GPU lifetime and real connected party/save evidence; corrected control now measured, incremental CPU gains and full performance failures retained; no public release",
+  "nextAction": "Investigate reusable stock BatchedMesh draw preparation for existing owned understory, preserving exact camera/world/geometry/instance/visibility invalidation and native output. Avoid per-sector duplicated tree geometry. Qualify actual equipped-party effect before selection; whole-scene triangle/matrix/render costs and complete inherited art/roadmap requirements remain active.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-09-rigid-surface-render-checks.json"
 }

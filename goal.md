@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 rendering investigation:** Isolated woodland multi-draw prototype
+dd354331 preserves every source piece/triangle/index/matrix/collider, but both
+native revisions fail the strict one-pixel/two-channel gate; CPU gain is mixed
+and raw duplicated geometry rises to88MB on both qualities. Keep it unselected;
+qualified6fbffd34runtime and accepted public1.79.22 remain intact. See the
+[rejection evidence](docs/plans/2026-10-09-woodland-spatial-rejected.json).
+Full inherited1.11–1.99 and every remaining art/party/device/freeze/operations/
+owner/beta/launch/handoff gate remain active; no narrower completion target.
+
 **October9 current full-scope checkpoint:** Public1.79.22/exact30a8b603
 is accepted with all ten CI jobs, mandatory native/live evidence and public
 assets/identities/readyDB. The held terrain milestone now includes qualified
