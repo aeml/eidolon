@@ -1,5 +1,16 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 body LOD preparation:** Source-derived strict Low0.08 is rejected for
+visible shoulder/neck faceting. Additional normal/tangent/blink protection yields
+prepared High bodies182740→123204triangles; current Low bytes retained.
+Native eight-outfit/32bare-pose/blink checks, all-vertex source proof and actual
+four-class race/save observer pass. Full High party482350scene/446678equipped
+triangles still exceed250000; different populations do not establish CPU gain.
+[Prepared evidence](docs/plans/2026-10-09-body-lod-preparation.json), not runtime/catalog selection
+or final art/budget acceptance. Deliberate additive path/cache integration next.
+Full inherited1.11–1.99/art/Q/CB/party/device/F1–F5/operations/owner/beta/launch/
+handoff remains active; public1.79.22/profile/access unchanged.
+
 **October9 fitted-geometry experiment:**40source-pinned fit pairs validate rigs,
 attributes and serialization; controlled native gallery confirms actual loading.
 Independent weighted index collapse saves14.3%High/30.8%Low in that subset but

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
+import { writeFile } from 'node:fs/promises';
+import { installBodyLodPilot } from './body-lod-pilot.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -13,7 +15,8 @@ import { profileGameplayScene } from './scene-performance.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
 
-test.use({ trace: 'off', screenshot: 'off', video: 'off' });
+test.use({ trace: 'off', screenshot: 'off', video: 'off', serviceWorkers:
+    process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' || process.env.EIDOLON_E2E_BODY_LOD_PILOT ? 'block' : 'allow' });
 
 function observePartyTerrain() {
     const game = window.game;
@@ -88,6 +91,7 @@ function readPartyTerrain(ids) {
 test('connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing', async ({ page, browser, baseURL }, testInfo) => {
     test.skip(process.env.EIDOLON_E2E_TERRAIN_PARTY !== '1', 'Explicit disposable connected terrain party check');
     test.skip(process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'four-browser', 'Four actual renderer scope only');
+    expect(process.env.EIDOLON_E2E_BODY_LOD_PILOT, 'Body LOD diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
     test.setTimeout(230_000);
     expect(process.env.EIDOLON_E2E_WS_URL).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');
@@ -229,6 +233,7 @@ test('single native renderer observes three live equipped party socket peers on 
     const quality = process.env.EIDOLON_TERRAIN_PARTY_QUALITY;
     expect(['high', 'low']).toContain(quality);
     const failures = collectBrowserFailures(page, baseURL), peers = [];
+    const bodyPilot = await installBodyLodPilot(page);
     const waitMessage = async (peer, type, predicate = () => true) => {
         let index;
         await expect.poll(() => {
@@ -481,6 +486,11 @@ test('single native renderer observes three live equipped party socket peers on 
             await captureUnderstoryPreparation(page, `equipped-party-${quality}`, testInfo);
         }
         await page.screenshot({ path: testInfo.outputPath(`single-renderer-equipped-party-${quality}.png`) });
+        if (bodyPilot) {
+            const substitution = bodyPilot.read(), classes = substitution.requested.filter(row => row.quality === quality).map(row => row.actorClass).sort();
+            expect(classes).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
+            await writeFile(testInfo.outputPath('body-pilot-substitution.json'), JSON.stringify(substitution, null, 2));
+        }
         expect(failures, failures.join('\n')).toEqual([]);
         console.log('[single-renderer-terrain-party]', JSON.stringify({ quality, ...report }));
         console.log('[untimed-party-draw-attribution]', JSON.stringify(draws.slice(0, 16)));

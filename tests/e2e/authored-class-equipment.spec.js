@@ -1,16 +1,19 @@
 import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
+import { installBodyLodPilot, captureBodyLodReview } from './body-lod-pilot.js';
 import { collectBrowserFailures } from './helpers.js';
 
 // Explicit routed-asset comparisons need both controls to bypass the service
 // worker, which would otherwise serve reviewed files outside page.route.
 test.use({ serviceWorkers: process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_COMPARE === '1' ||
-    process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT ? 'block' : 'allow' });
+    process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT || process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' ||
+    process.env.EIDOLON_E2E_BODY_LOD_PILOT ? 'block' : 'allow' });
 
 test('all delivered classes use fitted gear, independent rigs and alternating Rogue strikes', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     const attributePilot = await installWearableAttributePilot(page);
+    const bodyPilot = await installBodyLodPilot(page);
     const surfaceReference = process.env.EIDOLON_E2E_AUTHORED_SURFACES_REFERENCE === '1';
     if (surfaceReference) {
         // Explicit isolated A/B reference: identical gear/poses/batching but
@@ -150,7 +153,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         }
         await writeFile(testInfo.outputPath('equipped-triangle-diagnosis.json'), JSON.stringify({
             scope: 'Separate untimed native gallery draw census. Eight fully fitted High/Low class outfits, color pass only; actual game shadow/party timing recorded separately. ' +
-                (attributePilot ? 'Explicit generated wearable geometry substitutions; source hashes and requests recorded separately.' : 'Normal selected runtime geometry.'), ...census
+                (attributePilot || bodyPilot ? 'Explicit generated geometry substitutions; source hashes and requests recorded separately.' : 'Normal selected runtime geometry.'), ...census
         }, null, 2));
         console.log('[diagnostic-equipped-triangles]', JSON.stringify(census.variants.map(({ type, quality, meshes }) => ({
             type, quality, total: meshes.reduce((sum, mesh) => sum + mesh.triangles, 0), top: meshes.slice(0, 4)
@@ -254,6 +257,16 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
             actor.syncEquipmentVisuals(gear); await root.userData.equipmentReady;
         }
     });
+    if (process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1') {
+        const samples = await captureBodyLodReview(page, testInfo);
+        expect(samples).toHaveLength(32);
+        for (const sample of samples) {
+            expect(sample.badVertices).toBe(0);
+            expect(sample.morphNames).toEqual(['Blink_L', 'Blink_R']);
+            expect(sample.morphInfluences).toEqual([sample.blink, sample.blink]);
+        }
+        await writeFile(testInfo.outputPath('body-lod-review.json'), JSON.stringify(samples, null, 2));
+    }
     const ownership = await page.evaluate(async () => {
         const { actors, MeshFactory } = window.__classGear;
         const first = actors[0], second = actors[1];
@@ -297,6 +310,11 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         const substitution = attributePilot.read();
         expect(substitution.requested.length).toBeGreaterThan(0);
         await writeFile(testInfo.outputPath('wearable-pilot-substitution.json'), JSON.stringify(substitution, null, 2));
+    }
+    if (bodyPilot) {
+        const substitution = bodyPilot.read();
+        expect(substitution.requested).toHaveLength(8);
+        await writeFile(testInfo.outputPath('body-pilot-substitution.json'), JSON.stringify(substitution, null, 2));
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
