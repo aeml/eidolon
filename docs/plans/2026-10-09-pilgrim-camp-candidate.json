@@ -1,0 +1,35 @@
+{
+  "status": "Staged pilgrim-camp improvement; not public activation or full modern-art approval",
+  "change": "Replace solid pyramid tents with static folded ridge canvas, open curtains and a supported timber ridge; add grounded lantern post/hanger. Correct retired -0.65m camp origin to +0.005m so the 0.02m canvas hem meets the town's 0.025m surface. Collider vertical origin follows; existing 15 XZ placements, rotations, 2x2 horizontal blockers and height10 remain unchanged.",
+  "cost": {
+    "canvasTriangles": 564,
+    "entranceTriangles": 240,
+    "frameTriangles": 36,
+    "campTrianglesBefore": 264,
+    "campTrianglesAfter": 1096,
+    "fieldRawTrianglesAdded": 12480,
+    "cachedGeometries": 21,
+    "cachedMaterials": 15,
+    "fieldMaterialBatches": 9,
+    "fieldSourceParts": 225,
+    "noNew": "textures, fetches, materials, lights, per-frame simulation, dependencies"
+  },
+  "placementsSHA256": "9a61f87babbdca99b539d01fe04676be87279256262fb186df7e324a1683bf08",
+  "verification": {
+    "units": "12 focused geometry/architecture tests pass1.348s; changed world-registration case1pass15.744s/23unselected; canonical narrow selection12pass1.591s. Scoped lint and whitespace pass.",
+    "native": "Final4cases pass1.5m/retries0, SystemChrome AMD Vulkan/RADV. Populated flat Earth/town High1280x844 and Low390x844: nine views each/120 reported RAF intervals each, original limits unchanged. Equipped court/camp High1280x900 and Low390x844 use supplied Fighter/14 legal Uncommon/Rare items and HUD; those two UI cases are not timed performance measurements.",
+    "high": "max median16.7ms/p95 33.4ms/240calls/245636tri; warmed resources275geometries/82textures/85programs unchanged",
+    "low": "max median16.7ms/p95 16.8ms/109calls/75690tri; warmed resources256geometries/69textures/59programs unchanged",
+    "review": "Root reviewed final High/Low actual camp captures. Canvas entrance/ridge, hearth and attached lantern are visible; broad surrounding mud, sparse composition and final material/prop detail remain art gaps. Phone-width is not physical-phone qualification.",
+    "retained": "Earlier37pass/1fail exposed stale already-nine-child Air registration guard (separately corrected); not a tent failure. Earlier native4pass retained but visual review caught floating lantern, corrected in final source. No rejected image silently counted as approval."
+  },
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-pilgrim-tent-supported-native-20261009",
+    "nativeLogSHA256": "c9a7989ed5a2937829ca710c93b599135dd538dabf78a4466820f2bbca457ec6",
+    "unitsLogSHA256": "89c92163c738080f204787618f3fe80644c6a240ec6cf98fd87508063c239f84",
+    "worldLogSHA256": "ed8ad84de66828fc77662049559956148a54179e2d2395921f68ccfd80c5beaa",
+    "geometrySHA256": "8561b241159bf1eaa5b3c246eab87efd623c8b57bae118b3517bb8f12b7c35de",
+    "architectureSHA256": "c9abfb67de0009536d08ad214e6900ba067b263962d6738e08ad2e91d1f67df5"
+  },
+  "delivery": "Narrow staged raised/canonical source only; canonical preserves unrelated older terrain source, so no whole-tree native equivalence claim. Pushed16 remains exact98cef7c7/CI37926567202; queued17/18 unchanged. Full world/raised/equipped-party/device/F1-F5/1.81-1.99 gates remain."
+}

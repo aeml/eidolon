@@ -18,6 +18,14 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Staged pilgrim camps now use folded ridge canvas, open curtains, real frame
+  and lantern support. Corrected buried origin; exact15 horizontal placements
+  and blockers retained.12 focused units plus world registration and native
+  High/Low populated/equipped court4cases pass; original timed budgets intact.
+  Nine material batches remain, raw field geometry adds12,480triangles.
+  Root reviews actual camp images; surrounding composition/final art remain.
+  See pilgrim-camp candidate receipt. Not in pushed16 or queued17/18.
+
 - Pushed16/98cef7c7/CI37926567202 after own15 acceptance/fresh normal
   fetch/merge. Only older receipt docs changed, qualified source unchanged;
   386 current version/history checks3.142s. Actual418module publisher and
@@ -387,13 +395,13 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Accept or diagnose pushed15/0ac75025/CI37922288706 after authorized Luna
+1. Accept or diagnose pushed16/98cef7c7/CI37926567202 after authorized Luna
    terminal notice; independently verify required native/live jobs, public
    frontend/backend identity and actual five transformed publisher bytes.
-   Accepted14/90fca2f1 and earlier releases retain exact historical failures and
+   Accepted15/0ac75025 and earlier releases retain exact historical failures and
    corrections; stale older pending entries above are chronological records,
    not current status. Then fresh-fetch/normal reconcile and individually
-   publish/accept prepared16-18 in order;16's local timing hold now cleared,
+   publish/accept prepared17-18 in order;16's local timing hold now cleared,
    own CI/public acceptance still required. Never promote the whole future branch, overlap pushes, rerun
    unchanged successful tests or infer acceptance from a running job. Continue
    integrated modern-world work while CI runs.

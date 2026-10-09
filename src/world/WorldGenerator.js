@@ -309,7 +309,7 @@ export class WorldGenerator {
         const campHeight = LANTERNHOLD_STRUCTURE_DEFINITIONS.camp.bounds[1];
         for (const placement of campPlacements) {
             const collider = new THREE.Box3().setFromCenterAndSize(
-                new THREE.Vector3(placement.x, -0.65 + campHeight / 2, placement.z),
+                new THREE.Vector3(placement.x, .005 + campHeight / 2, placement.z),
                 new THREE.Vector3(2, 10, 2)
             );
             this.collisionManager.addCollider(collider);
