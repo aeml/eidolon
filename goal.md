@@ -18,6 +18,29 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Corrective11/dc7 **CI37879564669 attempt1 failed only at hosted SSH TCP
+  connection timeout**, before deployment commands ran. All tests/predeploy,
+  input validation and Pages succeeded; live QA skipped, not accepted. Root
+  verified DNS=current publicIPv4, active listening sshd and local public22 TCP
+  response (not external reachability/root-cause proof); production tracked
+  checkout stayed8a and public check showed clientdc7/backend8a before retry.
+  Fresh origin/master remained exactdc7. Root deliberately requested **failed
+  jobs only** once; authoritative API confirms attempt2 in_progress/exactdc7.
+  Luna owns terminal-only watch. Do not retry successful tests or publish12
+  before own exact terminal/public acceptance. Existing nightly soak37880032315
+  was independently confirmed live on its separate runner; untouched.
+
+- Air route-cohesion candidate is now **a9a9df97**, clean and normally merged
+  with current17/1058d657. Slate material tile corrected from roughly30m to9m
+  with identical sampler/map bytes; three selected actual Air terrain checks
+  pass10.309s (22other tests not selected). Prior tree29checks remain qualified;
+  six-file lint passes. First native review deliberately stopped only its owned
+  Playwright process when deployed-QA Chrome was observed: High screenshots
+  show the mature trees, but profiling interrupted and Low unrun/not passed.
+  Final ground-scale images/frame/resource/quality-switch acceptance pending.
+  Full scoped receipt lives in candidate branch; source not yet copied here,
+  release18 not created, no public/final-art/party/device acceptance claimed.
+
 - Air cypress route-cohesion work is saved locally at **5e4c6cdc** in
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`: rooted,
   forked mature trunks, fuller crowns and existing UV-bound bark. Five affected

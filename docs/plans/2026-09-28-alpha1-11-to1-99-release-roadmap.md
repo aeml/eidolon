@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 exact11/dc7 CI37879564669 attempt1 terminal SSH TCP timeout; all tests/
+predeploy/input/Pages passed, liveQA skipped. Root confirmed DNS/currentpublicIPv4,
+listening sshd/localpublic22 and fresh origin exactdc7, then deliberately retried
+failed jobs only once. API verifies attempt2 live; Luna terminal-only monitor.
+Pre-retry public clientdc7/backend8a mismatch is retained, not acceptance. No12
+publication before exact own terminal/public gates; no repeated successful tests.
+Air local candidatea9a9df97 normally inherits current17 and adds ground-scale
+correction (same sampler/map bytes, roughly9m tile). Three selected Air checks
+pass10.309s/22notselected; interrupted native High and unrun Low not passes.
+Final idle-GPU images/original frame-resource/quality-switch review remains open.
+
 October9 local Air-cypress component5e4c6cdc adds connected rooted/forked timber,
 fuller mature crowns and existing UV bark with the same three material batches.
 Five affected suites29pass5.895s; all nine planting arrays and other eight
