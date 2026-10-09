@@ -18,7 +18,14 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
--20 CI37948468016: hosted tests, native predeploy, inputs, SSH and Pages
+- Unpushed21/bc9027fd groups well/bench/market utility refinement. Current
+  metadata391checks pass;456notes/ten initial/45lazy pages, all455earlier raw
+  entries and539non-root lock entries exact. Scoped lint/syntax/whitespace pass.
+  Await root20 terminal/public acceptance and final combined21 native/visual
+  review, fresh normal remote reconciliation and exact publisher before push.
+  Existing ff native qualification does not certify new market geometry.
+
+- 20 CI37948468016: hosted tests, native predeploy, inputs, SSH and Pages
   have passed; final live QA now runs under Luna's sparse watch. Root own
   terminal/native/live/public acceptance still required. GPU checks stopped
   for the occupied runner. Local utility branch qualifies well/bench slice

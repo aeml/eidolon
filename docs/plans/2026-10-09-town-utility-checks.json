@@ -20,5 +20,12 @@
     "unitsSHA256": "56b8763507804661fcdb8aeb301096bf3c73f5bc1434fa2e24082fd5cd5b98f0",
     "adminCatalogSHA256": "a7ce99ff3e96de022f44c1fc4ed01703b6dc9dfbea92ed447f6f2d74d0ae59cf"
   },
+  "releasePreparation": {
+    "source": "bc9027fdced217c8b46deabd3d6a81668df52fe9",
+    "version": "Alpha 1.79.21",
+    "checks": "Version defaults synchronized across login/package/lock/release/server/container/compose/deploy/isolatedQA/workflow. Two current metadata/history suites391checks pass5.201s; scoped lint/shell syntax/whitespace pass. Independent JSDOM raw-byte audit against20/077 retains all455prior entries exactly,456total/10initial/45lazy pages; prior aggregateSHA256dcb7ebabb89441e5fd9fdb496d992c6fbeb4e2a4d49a23dfeb693feafff6b54c. All539non-root dependency lock entries exact. No compiler/publication artifact or current combined native acceptance claimed yet.",
+    "metadataSHA256": "667aa830a04733c72d587f5fa66447027c0b2f2e9712e9344dc1a6d115698705",
+    "gate": "20 final live QA occupies native runner. Await root20 terminal/native/live/public acceptance, then final combined21 native/visual check, fresh normal remote reconciliation and exact publisher for final HEAD before any normal21 push. No overlapping deployments or use of historical ff profiles to certify market geometry."
+  },
   "delivery": "Own20 CI37948468016/native/live/exact public acceptance remains required before another normal push. Group this bounded refinement with further relevant work rather than deploying every individual prop. Full modern art/character fit/combat, raised/equipped-party/device,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch requirements remain open. Do not promote unrelated private operations or terrain candidates."
 }
