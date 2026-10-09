@@ -16,7 +16,7 @@ import {
 
 describe('Eidolon dark-fantasy art direction', () => {
     test('refined overworld regions keep directional shape without raising ambient wash', () => {
-        for (const region of ['earth', 'town', 'water', 'fire']) {
+        for (const region of ['earth', 'town', 'water', 'fire', 'air']) {
             const lighting = DARK_FANTASY_REGION_THEMES[region].lighting;
             expect(lighting.keyIntensity / lighting.ambientIntensity).toBeGreaterThan(2.4);
             expect(lighting.fillIntensity).toBeGreaterThanOrEqual(.4);

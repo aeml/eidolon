@@ -1,5 +1,14 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 combined18 Air candidate: integrate rooted cypresses, sheltered dust,
+weather instruments and camp refinements with directional Air lighting.
+Current native High/Low18-view frame/resource and full-Air12-phase switching
+checks pass original budgets; prior failures stay retained. Equipped Wizard/HUD
+review is partial art evidence, not final modern-world or physical-phone approval.
+All452older raw notes retained;453total/10initial/45lazy pages. Prepared locally,
+not pushed: exact corrective11 then individual12-17 acceptance precedes18.
+[Evidence](2026-10-09-release1-79-18-checks.json). Full original scope stays open.
+
 October9 corrective11 QA inventory fix: CI37884472930/5bd deploys successfully,
 but persistent loot setup rejects valid NECK/GLOVES gear. Read-only allowlisted
 QA inventory inspection confirms five such spares and available stash space.

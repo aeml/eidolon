@@ -4,7 +4,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.17';
+const currentVersion = '1.79.18';
+
+test('1.79.18 records combined Air scenery and lighting without claiming whole-world acceptance', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.18"'), previous = html.indexOf('data-version="1.79.17"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['curved rooted trunks', '90 existing tree placements', 'roughly nine-metre',
+        'sheltered dust pockets', 'three registered surface maps', 'calibrated instrument bands',
+        'grounded legs', 'folded canvas bedrolls', 'existing canvas material batch',
+        'directional light', 'exposure, fog', 'Original frame, draw and triangle limits',
+        'not final modern-world', 'equipped-party', 'Raised terrain remains disabled',
+        'Full prior patch history']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.17 records bounded Air passage composition without claiming full environment or device acceptance', () => {
     const html = readIndexWithPatchHistory();

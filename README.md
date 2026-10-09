@@ -429,7 +429,11 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.17`, visual-only broken Air passage heath,
+- Current source version: `Alpha 1.79.18`, combined Air scene refinement:
+  rooted cypresses, finer slate/dust scale, calibrated weather instruments,
+  supported camp furniture and directional lighting. Original frame budgets
+  pass in bounded native High/Low views, not whole-world/party/device approval.
+  Retains visual-only broken Air passage heath,
   scree and retained-population gale cypress road framing. High/Low placement
   subsets and existing path/site/hazard/portal clearances remain required.
   Other realms, supplied actors/equipment and gameplay stay unchanged.

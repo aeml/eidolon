@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "local Air route-cohesion component; units and native Low pass; native High frame gate fails; not qualified for publication",
+  "status": "Alpha1.79.18 combined candidate: current native High/Low frame/resource and full Air quality-switch checks pass; prior High failure retained below; ordered public acceptance pending",
   "base": "69cac7a54de1bfb940b9b9fec6f7a6fe25cf97ea",
   "scope": "Air only: gale cypress connected curved timber, overlapping forks and three shallow buttresses replace the cylinder/root cone. Existing upper-axis crown/conductor attachment positions retained; crowns modestly broadened and all fixed parts grown vertically 1.35x. UV-bound existing pine bark detail on stock opaque material. Slate's existing three registered maps tile at roughly nine metres rather than thirty: repeat224/176. The later dust revision below changes the registered image samples only, not map count/dimensions/runtime shader or geology's bedding. No supplied asset, collision, gameplay, dependency, light or extra texture changes. Three existing High/Low foliage material batches retained.",
   "checks": {
@@ -66,5 +66,17 @@
     },
     "artifacts": "/home/aeml/.local/share/eidolon-air-camp-final-visual-20261009 and matching.log (SHA25698b063ade29bc8339e5738973745653884e2909ccfb4ed1023a1819c116aa2e7); final units log SHA2568887b2b57d46953b4a5e30b262f3af6d157c8dcba5a290f7e4936f99190647f7. Initial eidolon-air-camp-visual-20261009 and units log remain retained despite technical passes because appearance was rejected. No new public version or profile activation."
   },
-  "remaining": "Investigate the native High frame regression without weakening original caps or repeatedly replaying unchanged scenes; actual quality-swap checks and broader scene/combat/equipment/party/device/world-art/full-roadmap gates remain. Existing versions/patch-note history unchanged; no version18 yet. Source is not selected into the canonical future tree or deployed."
+  "integratedReview": {
+    "sourceBase": "d6ae6286e4cb1c704c064049d75ab49a5e9d50f1 plus the Air lighting-only change; subsequent version/notes edits do not change tested scenery",
+    "lighting": "Air ambient1.84 to1.2, directional key2.55 to3.2, fill0.34 to0.42. Existing lights, colors, exposure, fog, bloom, geometry, textures and gameplay retained. Extend the existing directional-shape contract to Air: baseline fails its ratio1.3859 below2.4; all5 theme cases then pass0.607s. Scoped ESLint/whitespace pass. This does not prove lighting caused recovery of the earlier frame failure.",
+    "equippedVisual": "Actual native390px Wizard with14 authored equipped visuals, real HUD and three Air views: baseline8.0s, lighting revision9.1s/retries0 pass. Root inspects bivouac and orrery before/after: subtle surface-shading change, no wholesale brightness shift; still sparse/stylized and not final modern art. These private prepared render fixtures do not authenticate or simulate combat/party/physical-phone play. Log hashes a578af27b37cae04c0e3a1e2fbb26bcd212e5a4f3d4dea627792afd3ccea0d83 and eac24f177fe7705ba35f38effa3d2d418261d7e74f94b654914392887d8c736d.",
+    "frames": "One complete native High/Low presentation/profile run1.3m/retries0 passes all original assertions in18timed views, nine each. Same AMD RADV RENOIR renderer as the prior failure. High maximum median16.7ms/p95 33.4ms/126draws/180741triangles; Low maximum median16.7ms/p95 16.8ms/58draws/50638triangles. Stable High resources198geometries/51textures/50programs; Low187/37/30. No limits, sampling precision, selections or assertion scope changed. Prior interrupted/failed runs remain evidence for their earlier source and conditions, not discarded or retroactively passed. No sole host-load or lighting causal claim.",
+    "qualitySwitch": "Actual native Low full-Air quality-switch case14.9s/retries0 passes: all8 location beds and all3 passage views drawn through12High/Low phases; original material/scene/transform identity, disposal, population, triangle and quality restoration assertions remain. This one case covers the full Air set, not the narrower individual High partitions. No physical-device certification.",
+    "artifacts": "/home/aeml/.local/share/eidolon-air-integrated-profile-20261009 and matching.log SHA25656083688ed87a70965b908258866ff8d4424ef70d98881eb45cde7fa1b297491; eidolon-air-integrated-quality-20261009; eidolon-air-equipped-review-20261009; eidolon-air-lighting-equipped-final-20261009; baseline/final theme logs retained.",
+    "sourceHashes": {
+      "src/art/darkFantasyTheme.js": "334e81fa1bc4361e3e65a34abceb8251424129d0dbe7c619cfbc2ecc5520545f",
+      "tests/DarkFantasyTheme.test.js": "32a3dce405e8268a351aec1cca1e9f048d00be10af5e416549d2bc05c56d02fd"
+    }
+  },
+  "remaining": "Combined local1.79.18 now has its scoped native frame/resource/quality evidence, not a public delivery or final modern-world certificate. First independently accept corrective11/fd7 and each prepared12-17, with fresh reconciliation before individual pushes. Broader scene cohesion, combat/fit, equipped-party/device, raised terrain, F1-F5/owner/operations/rights/beta/launch requirements remain. Source is not wholesale selected into the canonical future tree or deployed."
 }

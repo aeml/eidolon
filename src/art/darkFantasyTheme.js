@@ -120,11 +120,14 @@ export const DARK_FANTASY_REGION_THEMES = Object.freeze({
         motif: 'storm slate, silver banners, fractured peaks, violet lightning',
         palette: { shadow: 0x151824, ground: 0x30384b, midtone: 0x71809b, accent: 0x9dc8ff, spirit: 0xb694ff, fog: 0x929db1 },
         lighting: {
-            ambientIntensity: 1.84,
-            keyIntensity: 2.55,
+            // Retain a cool, readable overcast scene, but let directional
+            // light shape the cloth, worn stone and equipped characters.
+            // More ambient wash flattened those surfaces into one grey field.
+            ambientIntensity: 1.2,
+            keyIntensity: 3.2,
             keyColor: 0xe5efff,
             fillColor: 0x7969ad,
-            fillIntensity: 0.34,
+            fillIntensity: 0.42,
             fogColor: 0x929db1,
             fogNear: 1180,
             fogFar: 4200,
