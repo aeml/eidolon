@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "status": "Prepared combined21, NOT pushed; corrected20 terminal acceptance required first",
+  "version": "Alpha 1.79.21",
+  "head": "bfee2395e57bae5351990e9eff2b4cc3278505b6",
+  "worktree": "/home/aeml/.local/share/eidolon-town-utility-20261009",
+  "integration": "Normally fast-forward prepared721 to bfee; only three files added/changed: new component notice page and its tests, plus login link and one unpublished21 note. Every core/art/entity/world/style/package/lock/backend input is byte-identical to qualified721. Original combined native town evidence retains its unchanged runtime scope. Earlier721 publisher retained as superseded, not used for newHEAD.",
+  "scope": "Grouped well/bench/market utility refinement plus lightweight Credits & notices. Original source notices are linked, not reinterpreted/relicensed. No new project license, dependency update, rights certification, provider/policy change or beta/freeze claim.",
+  "checks": {
+    "login": "ComponentNotices and MenuPolish2suites76checks pass8.358s; scoped ESLint and whitespace pass. Existing GitHub credit and separate-tab safety retained.",
+    "history": "ComponentNotices, VersionPresentation and PatchNotesPagination3suites396checks pass5.885s.456total notes/10initial/45lazy pages retained; only the unpublished21 entry gains one notice bullet, no old entry or archive change.",
+    "browser": "Two Firefox software-rendered static-page views320/1280px have exact viewport/content widths, readable16px text, fourteen links and zero network requests. Root inspects320px capture. No game/WebGL/GPU/real-device claim or overlap with native CI work.",
+    "art": "Existing four distinct native AMD cases/18timed views and equipped High/Low town captures at e883 are unchanged-runtime scoped; original limits and repeated-resource stability retained. Not final PoE/Diablo art or party/device qualification."
+  },
+  "logsSHA256": {
+    "loginUnits": "1268124b45d26f4485dcc30f2d83a7f2b1faf2d68fd5ec44260a8b1cf9c788a0",
+    "historyUnits": "735c6042830ee0232aa87e80f26cbf0e8d2648f4e6b21ccb9e146d4a4063e6ff"
+  },
+  "browserArtifacts": "/home/aeml/.local/share/eidolon-component-notices-firefox-20261009",
+  "reconciliation": "Fresh fetch/normal merge up to date with corrected20/e598, clean bfee source. No21 public push yet; recheck immediately before normal publication. Original dirty user/website worktree untouched.",
+  "publisher": {
+    "fixture": "/tmp/eidolon-21-notices-publisher-QOdoHqMp",
+    "compiler": "Byte-identical qualified compiler/locked esbuild0.28.2, committed source archive plus generated vendor;424modules/3259392bytes/21shared login modules;402of897versioned runtime files.",
+    "expectedSHA256": {
+      "index.html": "8c9bb6d0849558add24dee02ec15622bb02fdfd932aa0a8fe31ea9717f978992",
+      "src/main.js": "3bba095c995820073c46420cf2450eaf0ebc9c261b47f506503e97dee0b2d805",
+      "src/core/GameEngine.bundle.js": "04d75324df11c9a13f67a5388ac1ff9837909e79274cf370a7196a14eea68c7f",
+      "src/styles/index.css": "6ea122975cc2f9c1808810da8b0197a894360d73d30aefdd08a19cdd151ba9cb",
+      "release.json": "83cf56293fa4d327aa607682bcae4f4267e20e29bd1c39b9e2ff4ea6d8fbc8e0",
+      "assets/notices/index.html": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d"
+    }
+  },
+  "deliveryGate": "Corrected20 CI37954540092 must pass own terminal/native/live/public acceptance first. Luna sparse watch continues; no retry/cancel or ongoing soak mutation. Then fresh normal reconciliation and normal21 push, own exact CI/deployment verification. Full roadmap/art/F1-F5/party/device/human/owner/rights/operations/beta/launch gates remain active."
+}

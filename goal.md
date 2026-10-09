@@ -18,6 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Prepared21/bfee2395 normally adds lightweight, script-free original component
+  notices to qualified town update.76login/396history checks pass; two Firefox
+  software320/1280 static-page views fit without network requests. Every game,
+  art, style, dependency and backend input remains exact721, retaining scoped
+  native town proof. New exact424module publisher includes notice-page hash;
+  historical721 publisher superseded. Fresh remote reconciled, clean source;
+  no21push before corrected20 terminal acceptance. Its hosted5/native/input jobs
+  passed; deployments progress under Luna, final live QA still required.
+  Private raised branch normally merges21 atbb72b1d5. Another tiny foliage
+  classification experiment has no measurable CPU gain and is fully removed;
+  original controller exact. No further equality/parent-classification repeats.
+
 - Prepared21/7217394c now includes corrected20 through normal merge and passes
   final combined native review: four distinct cases1.9m,18timed views, equipped
   High/Low town and actual dressed Ilyra. Root reviews market/well captures on

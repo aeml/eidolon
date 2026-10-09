@@ -4,6 +4,13 @@
   "version": "Alpha 1.79.20",
   "head": "e59891126671b7710cdcaa3f5ed37122734f57cc",
   "ci": { "run": 37954540092, "attempt": 1, "head": "e59891126671b7710cdcaa3f5ed37122734f57cc", "status": "in_progress", "conclusion": null, "monitor": "Authorized Luna watch_deploy_1795_1008, sparse terminal/actionable reports; no retry/cancel" },
+  "nativeCI": {
+    "job": 113909783381,
+    "result": "Root independently consumes exact completed successful native job steps and private log: actual AMD Vulkan1.4.318 RADV;7regional cases2.0m,1celebration case6.4s,2delivered-class cases19.4s,4disposable smoke cases2.4m. Three optional native steps skipped, not passed: animation gallery, rested GPU lifecycle, full-character gameplay.",
+    "privateLog": "/home/aeml/.local/share/eidolon-17920-corrected-native-ci-20261009.log",
+    "logSHA256": "1fa27205ff1c2c6f8d9427400620d775a6ef3b968fdc45c115e64894200edabb",
+    "limits": "This is completed native-job evidence only. Own full CI terminal/live/public acceptance remains pending. No skipped step or earlier failed run substituted for a pass."
+  },
   "scope": "Only town-rest test ordering changed. Confirm hostile damage AND an actual alive/wounded replicated resource snapshot within the original15-second deadline. Retain strict HP, Fireball, mana, recall, town healing, buff banking/aura and relog assertions. Runtime, rewards, regeneration, version and cumulative notes unchanged.",
   "focusedLiveCheck": {
     "source": "Exact successor test against public deployed077 game; ordinary fresh Wizard, no health/buff/teleport/grant mutation",
