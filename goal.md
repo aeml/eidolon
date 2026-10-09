@@ -18,6 +18,22 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Latest corrected14 run37913862221 is terminal **failure**: hosted gates pass,
+  native inventory click fails, downstream deployments/live QA skip. Public13
+  remains the accepted release; no15 push. Old inventory flow passes locally,
+  while a controlled post-hover camera-follow fixture reproduces stale click
+  coordinates. Test-only fresh projection retains targeting and all assertions:
+  seven pointer cases,22 observation tests and isolated inventory31.2s pass.
+  Next same-version correction still requires fresh push and deployment gates.
+- Raised current Fire candidate **e354b567** replaces eight primitive supports
+  with jointed basalt inside unchanged collision footprints and reduces ash
+  texture scale/contrast.12 population/pier checks pass; final11 affected terrain
+  checks and two native gallery views pass. Earlier palette-variety failure is
+  retained and corrected without lowering its constraint. Narrow Fire selection
+  here preserves older Air/held woodland source; no claim of whole-tree native
+  equivalence. Full populated/performance and coherent modern-art gates remain.
+  See [Fire candidate](docs/plans/2026-10-09-fire-landmark-and-floor-candidate.json).
+
 - Corrected same-version14 **0384b0a0 /CI37913862221 attempt1** pushed after
   original37911224822/b6 terminalfailure. Root reproduces472 rejected derivative
   files, audits exact pinned catalog/source/output hashes and actual old robe
