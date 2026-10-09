@@ -33,10 +33,11 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instanc
         };
         capture(false); capture(true);
         try {
-            for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death']) {
+            for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death', 'StretchedAttack']) {
                 const mixers = models.map((mesh, index) => {
+                    mesh.scale.set(...(state === 'StretchedAttack' ? [1.7, .8, 1.1] : [1, 1, 1]));
                     const mixer = new THREE.AnimationMixer(mesh);
-                    mixer.clipAction(mesh.userData.animations.find(clip => clip.name === state)).play();
+                    mixer.clipAction(mesh.userData.animations.find(clip => clip.name === (state === 'StretchedAttack' ? 'Attack' : state))).play();
                     mixer.update(.2 + index * .07); return mixer;
                 });
                 const visibility = new Map(); models.forEach(mesh => mesh.traverse(part => visibility.set(part, part.visible)));
@@ -45,7 +46,23 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instanc
                     const delta = Math.max(...[0, 1, 2].map(c => Math.abs(before.pixels[index + c] - after.pixels[index + c])));
                     error += delta; if (delta > 8) changed++;
                 }
-                reports.push({ state, beforeCalls: before.calls, afterCalls: after.calls,
+                let shearedLeaves = 0;
+                const columns = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
+                const sheared = matrix => {
+                    columns.forEach((column, index) => column.setFromMatrixColumn(matrix, index).normalize());
+                    return Math.max(Math.abs(columns[0].dot(columns[1])), Math.abs(columns[0].dot(columns[2])),
+                        Math.abs(columns[1].dot(columns[2]))) > 1e-7;
+                };
+                for (const mesh of models) mesh.traverse(part => {
+                    if (part.isMesh && !part.isInstancedMesh && sheared(part.matrixWorld)) shearedLeaves++;
+                });
+                let unsafeInstances = 0;
+                const instanceMatrix = new THREE.Matrix4();
+                for (const batch of render.actorInstances.batches.values()) for (let index = 0; index < batch.count; index++) {
+                    batch.getMatrixAt(index, instanceMatrix);
+                    if (sheared(instanceMatrix)) unsafeInstances++;
+                }
+                reports.push({ state, shearedLeaves, unsafeInstances, beforeCalls: before.calls, afterCalls: after.calls,
                     beforeTriangles: before.triangles, afterTriangles: after.triangles,
                     meanError: error / (copy.width * copy.height), changed: changed / (copy.width * copy.height),
                     visibilityRestored: [...visibility].every(([part, visible]) => part.visible === visible) });
@@ -66,6 +83,8 @@ for (const quality of ['high', 'low']) test(`${quality}: nearby Skeleton instanc
         expect(row.afterTriangles).toBe(row.beforeTriangles);
         expect(row.meanError).toBeLessThan(.1); expect(row.changed).toBeLessThan(.001);
         expect(row.visibilityRestored).toBe(true);
+        expect(row.unsafeInstances).toBe(0);
+        if (row.state === 'StretchedAttack') expect(row.shearedLeaves).toBeGreaterThan(0);
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
