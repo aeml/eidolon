@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "status": "scoped Air surface component technically qualified and visually reviewed; local-only, no release18 or final modern-art approval",
+  "sourceBase": "3ecf2620f75f045012f35ac6bcd4fa4d1bc76ad6",
+  "qualifiedHead": "7e76a9753153ddeb774ca8d287e008136bc6d60f",
+  "scope": "Air-only registered seamless surface field: isolated eroded slate exposures, interrupted fissures, shallow relief and dust/mineral variation drive the existing albedo/normal/roughness maps. Private one-seed4096-byte immutable descriptor set, no pixel/unbounded cache. Terrain factory changes only Air motif. No extra textures/geometry/draw buckets/lights, placements, collisions, actors, supplied assets, gameplay, saves or dependencies. Prepared17 current labels/history unchanged. Normal new8a ancestry merge into this branch changes only docs, not qualified component source/QA.",
+  "qualification": {
+    "units": "Two actual component suites40pass139.477s from retained refined-source check; exact same source except comment cleanup. Deterministic alternated seeds/periodic wrap/shallow fields/High-Low canonical registration/other-realm digests. Standalone7396samples51.738ms is CPU sampler observation only. No redundant full-world/campaign/raid replay.",
+    "native": "Actual System Chrome149/native AMD Vulkan RADV, unchanged graphics/browser policy, no other non-zombie Chrome or Runner.Worker at start. Two affected populated Air High1280/Low390 presentation cases pass1.2m/retries0,18timed views with120RAF samples each. Original strict frame/draw/triangle and warmed-resource checks unchanged. This is not four-player/raid/device/full-future acceptance.",
+    "high": { "views": 9, "samples": 1080, "maxMedianMs": 16.7, "maxP95Ms": 33.4, "maxCalls": 127, "maxTriangles": 173269, "resources": { "geometries": 198, "textures": 51, "programs": 49 } },
+    "low": { "views": 9, "samples": 1080, "maxMedianMs": 16.7, "maxP95Ms": 16.8, "maxCalls": 56, "maxTriangles": 48768, "resources": { "geometries": 187, "textures": 37, "programs": 29 } },
+    "visual": "Root reviews actual High east-passage and Low travel captures against prepared17 and rejected initial paving. Revised ground is restrained/subtle and does not paint complete paving cells; broad gray/rippled floors, sparse route silhouettes, density/landmark variety and modern-ARPG world cohesion remain unfinished. Not final art approval; do not create a release solely to declare this wider work complete.",
+    "preservation": "Independently compare selected three source/test hashes with future base before applying. All three match actual3ecbase, so select only exact component diff without copying future renderer/Earth-cell policy/version/model changes. Exact post-copy hashes match qualified current source; this is source selection, not a full future scene qualification."
+  },
+  "retainedAttempts": "Initial39unit/two-native green result visually rejected as paving. Refined40unit source then High native median33.3against20 fails, Low not run; another deployment Chrome overlaps that run. Retain original failure/profile/trace/video; overlap is not proof of sole cause. Separate final isolated run passes unchanged gates; original failure never reclassified. Earlier in-progress receipt remains historical.",
+  "proof": {
+    "surfaceSHA256": "a25c769ba76c9e5bd663c3c3b5ffea7d8f344fb10ff394f004c30ee4757d9db2",
+    "factorySHA256": "63408f88d9857cb7db14525012ea1215792c29d00ed7001cce7b88e332feef77",
+    "surfaceTestsSHA256": "e1f79d8b7d153ffa2458e2e453846b0fc8185ab58b6253c7612759e1d5ecb198",
+    "refinedUnitsLogSHA256": "c7d3f0d25571c8e48e8806816baebc6e1d8c6d127d2def75601361268b09cca4",
+    "isolatedNativeLogSHA256": "57bce6c2d2feeb6d3200067c7fc77a00d7e8e02113e4e0be3c962b4644a8e4b6"
+  },
+  "artifacts": "Owned eidolon-air-slate-native-isolated-20261009 with matching log and18timed profiles; prior rejected/failed artifact directories and refined unit log retained. Source worktree eidolon-air-slate-release-WU2VBYzB; original dirty user worktree untouched.",
+  "delivery": "No new public surface version yet. Corrective same-version11 dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8 normally pushed after fresh fetch/merge; own CI37879564669 pending/authorized Luna terminal-only monitoring. Prior8a/live gate failed, cause unresolved, actual ordinary fresh public Wizard world-entry probe passes but not failed-run acceptance.12-17 publication remains queued behind own11 acceptance. Prepare combined route-scale visual scope, not a false modern-quality or feature-freeze certificate. Full original roadmap/art/F1-F5/party/device/owner/operations/rights/beta/launch goal stays active; public raised terrain disabled."
+}
