@@ -13,7 +13,8 @@ import { MeshFactory } from '../src/utils/MeshFactory.js';
 const REQUIRED_IDENTITY_PARTS = Object.freeze({
     oathhall: ['oathhall:bell-tower', 'oathhall:oath-bell', 'oathhall:belfry-spire'],
     trading_post: ['market:merchant-counter', 'market:ledger:-3.25', 'market:votive:lantern-flame',
-        'market:tensioned-cloth-canopy', 'market:sealed-crate:lid:0', 'market:wrapped-bundle:0'],
+        'market:tensioned-cloth-canopy', 'market:sealed-crate:lid:0', 'market:wrapped-bundle:0',
+        'market:supply-cask:0', 'market:cask-hoop:1:2'],
     blacksmith: ['smithy:chimney-stack', 'smithy:horned-stack-cap', 'smithy:sign-anvil',
         'smithy:repair-rack-crossbar', 'smithy:unfinished-blade:0', 'smithy:hammer-head'],
     camp: ['camp:grave-road-tent', 'camp:oathfire-ring', 'camp:split-oath-banner'],
@@ -31,6 +32,18 @@ function visibleMeshes(root) {
 }
 
 describe('procedural Lanternhold architecture', () => {
+    test('market supplies meet the actual platform and stacked crates meet each other', () => {
+        const root = createProceduralLanternholdStructure('trading_post'); root.updateMatrixWorld(true);
+        const bounds = name => new THREE.Box3().setFromObject(root.getObjectByName(name));
+        const floor = bounds('market:cut-stone-plinth').max.y;
+        for (const name of ['market:rear-supply-chest', 'market:supply-cask:0', 'market:supply-cask:1',
+            'market:sealed-crate:face:0:-1']) {
+            expect(bounds(name).min.y).toBeCloseTo(floor, 6);
+        }
+        const lower = bounds('market:sealed-crate:face:0:-1');
+        const upper = bounds('market:stacked-crate:face:0:-1');
+        expect(upper.min.y).toBeCloseTo(lower.max.y, 6);
+    });
     test('pilgrim hearth and folded bedroll meet the town ground without changing the camp footprint or batches', () => {
         const camp = createProceduralLanternholdStructure('camp');
         camp.updateMatrixWorld(true);
@@ -160,7 +173,7 @@ describe('procedural Lanternhold architecture', () => {
         first.position.set(20, 3, -5);
         expect(second.position.toArray()).toEqual([0, 0, 0]);
         expect(getProceduralLanternholdCacheMetrics()).toEqual({
-            geometries: 22,
+            geometries: 23,
             materials: 15,
             structures: 7
         });

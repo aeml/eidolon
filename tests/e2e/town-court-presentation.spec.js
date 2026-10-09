@@ -53,12 +53,16 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             for (const [type, x, z, yaw] of [['TradingHouse', -22, 185, Math.PI / 4],
                 ['Forge', -28, 218, Math.PI / 2], ['Stash', -28, 210, Math.PI / 2],
                 ['QuestNPC', -20, 200, Math.PI / 2], ['DwarfSalesman', 22.5, 200, -Math.PI / 2],
-                ['Wizard', 20, 215, -Math.PI / 2], ['RespecNPC', 0, 220, 0], ['DungeonNPC', 0, 240, Math.PI]]) {
+                ['ArchmageIlyra', 20, 215, -Math.PI / 2], ['RespecNPC', 0, 220, 0], ['DungeonNPC', 0, 240, Math.PI]]) {
                 const mesh = await MeshFactory.createMeshForType(type);
                 mesh.position.set(x, .5, z); mesh.rotation.y = yaw;
                 render.entityGroup.add(mesh);
                 const collider = getLanternholdWalkCollider(mesh);
                 if (collider) collision.addOrientedCollider(collider);
+                if (type === 'ArchmageIlyra') {
+                    render.scene.userData.reviewStoryAppearance = mesh.userData.npcAppearance;
+                    if (mesh.userData.assetFallback) throw new Error('Town review requires the delivered dressed Ilyra model');
+                }
             }
             render.onWindowResize(); render.setCameraTarget(hero.position);
             render.applyLightingPreset('town', true);
@@ -69,6 +73,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             const streetMeshes = []; streets.traverse(part => { if (part.isMesh) streetMeshes.push(part); });
             return { zoom: render.currentZoom, opaque: !render.groundTown.material.transparent,
                 authoredClass: hero.mesh.userData.authoredClass,
+                storyAppearance: render.scene.userData.reviewStoryAppearance,
                 equipment: hero.mesh.userData.equipmentVisualItemCount,
                 courtSize: render.groundTown.material.userData.townGroundComposition.paving.color.image.width,
                 shadowFocused: render.shadowTarget.distanceTo(hero.position) < 1,
@@ -90,6 +95,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         }
         expect(result).toEqual({ zoom: 15, opaque: true, courtSize: mobile ? 256 : 512, shadowFocused: true,
             authoredClass: 'Fighter', equipment: 14,
+            storyAppearance: 'ilyra-fourfold-archmage',
             streetBatches: 6, streetCells: 12, streetSolids: 4 });
         const camp = await page.evaluate(async () => {
             const { createLanternholdCampPlacements } = await import('/src/art/ProceduralLanternholdArchitecture.js');

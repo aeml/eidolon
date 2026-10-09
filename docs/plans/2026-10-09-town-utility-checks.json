@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "status": "Combined well/bench/market slice native qualified at e8836cd7; prepared21 not published, final modern-art approval remains open",
+  "source": "ff682107aa5b0eabc7b6e28bf0fffaf71289db1a, based on pushed20/07743ba7. Runtime unchanged after these checks; version/release preparation still required before any future push.",
+  "scope": "Existing communal well gains an open thick-walled bucket, iron bands/bail, winding drum/rope and crank. Three existing courtyard benches gain separated beveled slats and back supports. Preserve13exact walk footprints,31render meshes/29unique geometries/18materials, batch ownership and ordinary motion/reduced-motion behavior. Raw courtyard triangles High4652to8732,Low3404to6260. No new material/draw/texture or per-frame work, service/reward/collision/account/terrain-profile change. Review harness uses the actual delivered dressed Ilyra instead of an inaccurate bare player Wizard proxy; no runtime NPC replacement.",
+  "checks": "Two full affected unit suites6checks pass21.092s; scoped lint/whitespace pass. Four distinct System Chrome production scene cases pass1.9m/retries0: populated Earth/town High1280/Low390 plus equipped fourteen-slot Fighter/HUD town High/Low. Both populated cases explicitly profile9named views each/120real RAF samples each. Original High20median/33.4p95/350calls/250000tri and Low33.4/50/200/85000 gates unchanged. Profile artifacts record actual AMD Vulkan1.4.318/RADV RENOIR; separate exact same launch-policy GPU probe also passes. No nonexistent verify-browser-gpu spec counted as a test: the probe is scripts/verify-browser-gpu.mjs.",
+  "high": { "maxMedianMs": 16.8, "maxP95Ms": 33.4, "maxCalls": 240, "maxTriangles": 245636, "stableGeometries": 275, "stableTextures": 82, "stablePrograms": 86 },
+  "low": { "maxMedianMs": 16.7, "maxP95Ms": 16.8, "maxCalls": 109, "maxTriangles": 78990, "stableGeometries": 256, "stableTextures": 69, "stablePrograms": 60 },
+  "review": "Root compares baseline20 and current High well screenshots at identical ordinary camera/layout/outfit: open bucket/working windlass and separated timber construction read without changing circulation or central court. Low/native captures retained. Populated profile uses its existing body reference, not an equipped-party workload; separate town captures include equipped Fighter and delivered Ilyra. Broad sparse town fields and other procedural silhouettes remain, not Diablo/PoE parity or physical-phone/final-art approval.",
+  "evidence": "/home/aeml/.local/share/eidolon-town-utility-native-20261009; owned4190 independently closed after exit0, only owned anonymous render fixture used. Busy shared host, existing services/soak untouched. No long campaign or unchanged broad replay.",
+  "logsSHA256": {
+    "units": "9628a2eb11cf16bcc452981826de9c0047d69ef9eab6427fdba582f1900c1460",
+    "native": "dcf408a0af2caefcf39c8124cee1a6fca063599ac3892672bbe54c07cfac1354",
+    "gpu": "a0f50fdc33fe6c5d58ac71e577cb3a80ccdfd8ed6b0a25a17741b29448c6efce"
+  },
+  "marketFollowup": {
+    "source": "9e400a8a2233d6ea000e86994cdf2ec12aeb5fc7",
+    "scope": "Two bulged provision casks with iron hoops under the existing canopy; ground casks/rear chest on actual plinth top and upper crate on lower crate top. Same existing wood/iron material batches, picking/walking envelopes; shared geometry cache22to23, materials15unchanged. No live NPC/role/reward/collision change.",
+    "checks": "Two current complete affected unit suites16checks pass1.722s after precise grounding; lint/whitespace pass. Read-only actual-client admin landing catalog --check passes with existing catalog untouched. Initial15checks at earlier partially sunk cask placement retained as historical, not final-grounding proof. Current combined native/frame/visual acceptance still required after20 live QA; prior ff images/profiles cannot certify new market geometry.",
+    "unitsSHA256": "56b8763507804661fcdb8aeb301096bf3c73f5bc1434fa2e24082fd5cd5b98f0",
+    "adminCatalogSHA256": "a7ce99ff3e96de022f44c1fc4ed01703b6dc9dfbea92ed447f6f2d74d0ae59cf"
+  },
+  "releasePreparation": {
+    "source": "bc9027fdced217c8b46deabd3d6a81668df52fe9",
+    "version": "Alpha 1.79.21",
+    "checks": "Version defaults synchronized across login/package/lock/release/server/container/compose/deploy/isolatedQA/workflow. Two current metadata/history suites391checks pass5.201s; scoped lint/shell syntax/whitespace pass. Independent JSDOM raw-byte audit against20/077 retains all455prior entries exactly,456total/10initial/45lazy pages; prior aggregateSHA256dcb7ebabb89441e5fd9fdb496d992c6fbeb4e2a4d49a23dfeb693feafff6b54c. All539non-root dependency lock entries exact. No compiler/publication artifact or current combined native acceptance claimed yet.",
+    "metadataSHA256": "667aa830a04733c72d587f5fa66447027c0b2f2e9712e9344dc1a6d115698705",
+    "gate": "20 final live QA occupies native runner. Await root20 terminal/native/live/public acceptance, then final combined21 native/visual check, fresh normal remote reconciliation and exact publisher for final HEAD before any normal21 push. No overlapping deployments or use of historical ff profiles to certify market geometry."
+  },
+  "combinedAcceptance": {
+    "source": "e8836cd798f2cc1c47517293aa4ae43233972bdc; normal merge of corrected20/e5989112, runtime utility/market unchanged",
+    "checks": "Four distinct actual System Chrome AMD RADV cases pass1.9m/retries0: populated Earth/town High1280 and Low390 with18named views/120real RAF samples each, plus equipped fourteen-slot Fighter/HUD/actual dressed Ilyra town High/Low. All original frame/draw/triangle budgets retained; resource counts stable after repeat traversal.",
+    "high": { "maxMedianMs": 16.8, "maxP95Ms": 33.4, "maxCalls": 240, "maxTriangles": 245636, "stableGeometries": 275, "stableTextures": 82, "stablePrograms": 86 },
+    "low": { "maxMedianMs": 16.7, "maxP95Ms": 16.8, "maxCalls": 109, "maxTriangles": 78990, "stableGeometries": 257, "stableTextures": 69, "stablePrograms": 60 },
+    "review": "Root inspects current equipped High market/well captures: barrels, chest/crates, winding bucket and separated bench slats are above their supporting surfaces at ordinary camera. Retain Low captures. Broad world composition and other procedural silhouettes remain incomplete; no PoE/Diablo parity, real-phone, four-browser-party or final art approval.",
+    "artifacts": "/home/aeml/.local/share/eidolon-town-utility-combined-native-20261009",
+    "logSHA256": "2a70bc9b233a6e66d99f8dadeee5ed624a460f086e31b3b6a60fedb9bc1e278f",
+    "cleanup": "Owned local4190 server closed automatically; native checks ended before corrected20 native CI occupancy. Production services and ongoing soak unchanged.",
+    "delivery": "Prepared21 still not public. Original20 failed live QA retained; corrected20 CI37954540092 must receive own terminal/public acceptance before normal21 publication. Fresh reconciliation and exact publisher for final HEAD remain required."
+  },
+  "delivery": "Own corrected20 CI37954540092/native/live/exact public acceptance remains required before another normal push. Original20 CI37948468016 failed, not accepted. Group bounded refinements rather than deploying each prop. Full modern art/character fit/combat, raised/equipped-party/device,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch requirements remain open."
+}

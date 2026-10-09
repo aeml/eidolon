@@ -4,6 +4,7 @@ import { LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { applyWorldSurfaceDetail } from './WorldSurfaceDetail.js';
 import { createProceduralTownResident } from './ProceduralTownActors.js';
 import { batchPosedTownResident } from './PosedTownResidentBatches.js';
+import { createLanternholdBenchPlank, createLanternholdWellBucket } from './LanternholdUtilityGeometry.js';
 
 export function createLanternholdCourtyards({ quality = 'high' } = {}) {
     const group = new THREE.Group(); group.name = 'Lanternhold communal courtyards';
@@ -45,9 +46,18 @@ export function createLanternholdCourtyards({ quality = 'high' } = {}) {
                 width: Math.max(top, bottom) * 2, depth: Math.max(top, bottom) * 2, height });
         };
         const bench = (x, z) => {
-            box('wood', x, .9, z, 4.4, .25, 1.1, true);
+            // Retain the existing seat's solid envelope; narrow gaps and worn
+            // edges describe actual timber construction without new obstacles.
+            footprints.push({ siteId: site.id, x: site.x + x, y: .9, z: site.z + z,
+                width: 4.4, height: .25, depth: 1.1 });
+            for (const offset of [-.38, 0, .38]) {
+                part(createLanternholdBenchPlank(4.4, .25, .34), 'wood', x, .9, z + offset);
+            }
             for (const end of [-1.6, 1.6]) box('stone', x + end, .42, z, .6, .84, .9);
-            box('wood', x, 1.65, z - .5, 4.4, .8, .14);
+            for (const y of [1.415, 1.885]) {
+                part(createLanternholdBenchPlank(4.4, .33, .14), 'wood', x, y, z - .5);
+            }
+            for (const end of [-1.6, 1.6]) box('wood', x + end, 1.43, z - .5, .14, 1.24, .16);
         };
         // Flat inlaid paving follows the existing town floor rather than
         // introducing a raised lip or a new walkable-height rule.
@@ -71,8 +81,24 @@ export function createLanternholdCourtyards({ quality = 'high' } = {}) {
                 part(new THREE.TorusGeometry(.6, .09, 5, 14), 'metal', side * 2.9, 3.8, 0, [0, Math.PI / 2, 0]);
             }
             box('wood', 0, 5.6, 0, 6.6, .35, .45);
-            cylinder('wood', 0, 3.85, 0, .04, .04, 3.4);
-            cylinder('wood', 0, 2.3, 0, .45, .35, .7);
+            // The rope reaches a winding drum and a metal bail, not a solid
+            // wooden cylinder hanging straight from the support beam.
+            part(new THREE.CylinderGeometry(.22, .22, 5.9, radial), 'wood', 0, 4.7, 0, [0, 0, Math.PI / 2]);
+            for (const x of [-.5, .5]) {
+                part(new THREE.CylinderGeometry(.29, .29, .08, radial), 'metal', x, 4.7, 0, [0, 0, Math.PI / 2]);
+            }
+            for (let i = -3; i <= 3; i++) {
+                part(new THREE.TorusGeometry(.235, .027, 4, radial), 'wood', i * .065, 4.7, 0, [0, Math.PI / 2, 0]);
+            }
+            cylinder('wood', 0, 3.865, .235, .035, .035, 1.67);
+            part(createLanternholdWellBucket(quality), 'wood', 0, 2.3, .235);
+            for (const y of [2.02, 2.59]) {
+                const radius = .35 + (y - 1.95) / .7 * .1;
+                part(new THREE.TorusGeometry(radius + .006, .025, 4, radial), 'metal', 0, y, .235, [Math.PI / 2, 0, 0]);
+            }
+            part(new THREE.TorusGeometry(.4, .03, 4, radial, Math.PI), 'metal', 0, 2.63, .235);
+            box('metal', 3.03, 4.38, 0, .1, .64, .12);
+            part(new THREE.CylinderGeometry(.08, .08, .42, radial), 'wood', 3.21, 4.08, 0, [0, 0, Math.PI / 2]);
             for (const x of [-5.5, 5.5]) bench(x, 5.5);
             cylinder('wood', 6, .6, -3, .8, .7, 1.2, true);
             part(new THREE.TorusGeometry(.82, .055, 4, radial), 'metal', 6, 1.08, -3, [Math.PI / 2, 0, 0]);
