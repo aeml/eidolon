@@ -7,7 +7,7 @@ import { LoginModerationUI } from './ui/LoginModerationUI.js';
 import { credentialTokenChange } from './core/CredentialToken.js';
 import { PublicEmailRecoveryUI } from './ui/EmailRecoveryUI.js';
 import { mountDataPrivacyNotices } from './ui/DataPrivacyNotice.js';
-import { gameStartupFailureMessage } from './core/GraphicsStartup.js';
+import { gameStartupFailureMessage, gameStartupFailureKind } from './core/GraphicsStartup.js';
 
 const recoveryHandoff = window.__eidolonRecoveryHandoff;
 delete window.__eidolonRecoveryHandoff;
@@ -447,6 +447,7 @@ const bootLogin = async () => {
 
     const startGame = async (type) => {
         let sessionGame;
+        let startupPhase = 'preparation';
         try {
             const isMultiplayer = true; // Always multiplayer
             const serverAddress = serverAddressInput ? serverAddressInput.value : '';
@@ -462,6 +463,8 @@ const bootLogin = async () => {
             if (gameStartupStatus) {
                 gameStartupStatus.hidden = true;
                 gameStartupStatus.textContent = '';
+                delete gameStartupStatus.dataset.failureKind;
+                delete gameStartupStatus.dataset.startupPhase;
             }
             
             loginModeration?.dispose(); loginModeration = null;
@@ -480,7 +483,9 @@ const bootLogin = async () => {
             }
             // Pass username and socket to GameEngine
             // Login must not wait for the entire renderer/world/actor graph.
+            startupPhase = 'engine-module';
             const { GameEngine } = await import('./core/GameEngine.js');
+            startupPhase = 'engine-construction';
             window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket, serverTerrainProfile);
 
             // Wire session-resume / reconnect callbacks into the network layer.
@@ -553,6 +558,7 @@ const bootLogin = async () => {
             }
             
             console.log("Calling loadGame...");
+            startupPhase = 'world-load';
             await sessionGame.loadGame((progress, text) => {
                 if (window.game !== sessionGame || sessionGame.isDestroyed) return;
                 loadingBarFill.style.width = `${progress}%`;
@@ -584,6 +590,8 @@ const bootLogin = async () => {
             // The auth panel is hidden after login. Keep startup guidance in
             // the shared header so both returning and new players can see it.
             if (gameStartupStatus) {
+                gameStartupStatus.dataset.startupPhase = startupPhase;
+                gameStartupStatus.dataset.failureKind = gameStartupFailureKind(error);
                 gameStartupStatus.textContent = gameStartupFailureMessage(error);
                 gameStartupStatus.hidden = false;
                 gameStartupStatus.focus();

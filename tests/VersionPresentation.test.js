@@ -23,6 +23,8 @@ test('1.79.11 records integrated regional art without claiming full modern-art c
     const start = html.indexOf('data-version="1.79.11"'), previous = html.indexOf('data-version="1.79.10"');
     expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
     for (const text of ['layered needle boughs', 'folded leaves', 'connected crooked branches',
+        'non-sensitive phase and category', 'without exposing raw errors or account details',
+        'not automatic retries', 'every startup failure is resolved',
         'grounded side forks', 'Tree counts', 'Earth placements', '1,111 plants', '617 on Low',
         'new visual-only scenery', 'all 24 groundcover beds', 'releases old buffers',
         'Original scene performance limits', 'not the 1.80 feature freeze', 'full 1.87',

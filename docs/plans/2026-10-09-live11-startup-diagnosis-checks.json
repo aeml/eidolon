@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "live11 deployment completed but mandatory live QA failed; local diagnostics qualified, cause still unresolved",
+  "commit": "8a57420eb5d0a28de2113e82cc40638d9aaa18da",
+  "ci": {
+    "run": 37874149991,
+    "conclusion": "failure",
+    "verification": "After authorized Luna terminal notice, root independently verifies exact head/completed failure and all ten job conclusions. Client/Server/all three Browser Smoke/predeploy/input/Pages/SSH jobs succeed; Live Release and Character QA fails anonymous/persistent-character step. Optional wider predeploy gallery/GPU/full gameplay, live four-class animation and subsequent live recovery are skipped, not passes.",
+    "actualSummary": "Six live cases pass, authenticated case fails both attempts, Water dungeon case is flaky then passes. Verdant dungeon completes in213.31seconds. Auth failures report playerReadyfalse/firstStateReceivedfalse/socketState, queuedMessages and frameCountnull. Those observations do not identify whether module import, constructor failure or session recovery removed the engine. Do not claim general outage, sole GPU contention, root cause or resolved gameplay.",
+    "artifacts": "Owned eidolon-live-11-failed-iCKePKGE contains downloaded sanitized live-browser-evidence; original hosted failure unchanged. No rerun/cancel/gate bypass or later-version public push."
+  },
+  "independentProbe": "Actual deployed public GameEngine module imports in887.7ms and constructor succeeds74.9ms in ordinary System Chrome hardware mode, no request/page failures. Read-only anonymous constructor probe, no credentials/account registration, loadGame or network connect; not authenticated gameplay or pipeline acceptance. Browser destroyed after probe. Public11/8a front/back/database/clean checkout and four selected actual publisher bytes already verified in ordered-release precheck receipt; that is not terminal acceptance.",
+  "localDiagnosticScope": "Record only constant startup stage and failure category on the existing in-page alert. Categories distinguish graphics unavailable, module download, module export and unknown, with no raw messages/URLs/account identifiers/credentials. Existing friendly messages, auth/world flow and successful renderer options unchanged. Shared QA diagnostic now captures engine presence, login visibility and this metadata while retaining original authoritative state/socket checks and deadlines. No new automatic retries or suppressed failures. Not a fix claim.",
+  "qualification": "GraphicsStartup actual suite15pass0.626s, including nine diagnostic category/privacy cases. Three actual native local synthetic-auth bootstrap cases pass6.0s: engine download aborted, constructor graphics exception, world-load exception; real main.js catches all, shows original in-page alert, restores start screen, records exact phase/category and does not expose raw fixture detail. No real accounts/server traffic. Scoped lint/whitespace pass. Initial describe-local recording override is invalid Playwright configuration; zero tests run, retained failed log, removed override without changing existing recording policy. Original tests/gates still required.",
+  "proof": {
+    "graphicsStartupSHA256": "f548b080656d92820016b62becf8307edf6f5c295406ef8796a9dc0b2ec71667",
+    "mainSHA256": "74761168287e8a33afeffbd759338dfa017c244e0d371a4cff5e3599d7d2a711",
+    "qaHelperSHA256": "d8a4a9eb6d9deffc3ad3b673c884a15dc3ef9ca9865a7ba46b1f0b4b880e42e8",
+    "nativeDiagnosticLogSHA256": "c3749832646e01efe3ed549b05a85df6c428aaf9ee7863937e8c967c6fcc105c"
+  },
+  "remaining": "Diagnostics stay local, no new push yet; add truthful current11 patch-note wording before any publication. Identify the actual live startup cause with bounded evidence, qualify correction and normally reconcile remote before new11 push/own CI/public acceptance. Prepared12-17 now inherit8a normally but remain queued behind acceptance. Air-surface change stays local/unqualified. Full original roadmap/modern art/F1-F5/party/device/owner/operations/rights/beta/launch scope remains active; no raised activation or final art claim."
+}
