@@ -147,3 +147,35 @@ test('air albedo and packed roughness sample the same slate and scree coverage',
         }
     } finally { material.map.dispose(); material.dispose(); }
 });
+
+test('Air slate has shallow interrupted riven faces without complete paving outlines or raised material hills', () => {
+    const seed = PROCEDURAL_TERRAIN_DEFINITIONS.air.seed;
+    let fractured = 0, shelteredEdges = 0, faces = 0, minimum = Infinity, maximum = -Infinity;
+    for (let y = 0; y < 256; y += 3) for (let x = 0; x < 256; x += 3) {
+        const surface = sampleElementalTerrain(x, y, 'air', seed);
+        for (const key of ['fracture', 'plate']) {
+            expect(Number.isFinite(surface[key])).toBe(true);
+            expect(surface[key]).toBeGreaterThanOrEqual(0);
+            expect(surface[key]).toBeLessThanOrEqual(1);
+        }
+        minimum = Math.min(minimum, surface.height); maximum = Math.max(maximum, surface.height);
+        if (surface.fracture > .2) fractured++;
+        if (surface.plate > .65) faces++;
+        if (surface.cover > .9) {
+            shelteredEdges++;
+            expect(surface.fracture).toBeLessThan(.16);
+            expect(surface.plate).toBeLessThan(.27);
+        }
+    }
+    expect(fractured).toBeGreaterThan(50); expect(faces).toBeGreaterThan(100);
+    expect(shelteredEdges).toBeGreaterThan(100);
+    expect(maximum - minimum).toBeLessThan(.075);
+});
+
+test('Air fragment descriptors remain bounded/deterministic when another seed is sampled', () => {
+    const seed = PROCEDURAL_TERRAIN_DEFINITIONS.air.seed;
+    const initial = sampleElementalTerrain(137.25, 62.75, 'air', seed);
+    expect(sampleElementalTerrain(137.25, 62.75, 'air', seed ^ 0x3951)).not.toEqual(initial);
+    expect(sampleElementalTerrain(137.25, 62.75, 'air', seed)).toEqual(initial);
+    expect(sampleElementalTerrain(137.25 + 256, 62.75 - 256, 'air', seed)).toEqual(initial);
+});

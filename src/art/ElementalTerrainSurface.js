@@ -17,6 +17,55 @@ function noise(x, y, cells, seed) {
     return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
 }
 
+let slatePointSeed, slatePoints;
+function slateFragmentPoints(seed) {
+    if (slatePoints && slatePointSeed === seed) return slatePoints;
+    // One bounded immutable descriptor set, not a pixel/seed cache. The same
+    // The same 64 fracture seeds serve albedo, normals and roughness.
+    const points = new Float64Array(8 * 8 * 8);
+    for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) {
+        const at = (y * 8 + x) * 8;
+        const angle = (hash(x, y, seed ^ 0x18a3) - .5) * .7;
+        points.set([
+            .08 + hash(x, y, seed ^ 0x639a) * .84,
+            .08 + hash(x, y, seed ^ 0x184b) * .84,
+            .38 + hash(x, y, seed ^ 0x42a9) * .4,
+            .14 + hash(x, y, seed ^ 0x75b1) * .18,
+            Math.cos(angle), Math.sin(angle), hash(x, y, seed ^ 0x49b7),
+            hash(x, y, seed ^ 0x837b) > .22 ? 1 : 0
+        ], at);
+    }
+    slatePointSeed = seed; slatePoints = points; return points;
+}
+
+function slateFragments(x, y, seed) {
+    const turn = Math.PI * 2 / 256, size = 32;
+    const px = x + Math.sin(y * turn * 2) * 5 + Math.sin((x * 2 + y) * turn) * 2;
+    const py = y + Math.sin(x * turn * 3) * 3;
+    const cx = Math.floor(px / size), cy = Math.floor(py / size);
+    const points = slateFragmentPoints(seed);
+    let exposure = 0, fracture = 0, tone = 0;
+    for (let ox = -1; ox <= 1; ox++) for (let oy = -1; oy <= 1; oy++) {
+        const ix = cx + ox, iy = cy + oy, wx = wrap(ix, 8), wy = wrap(iy, 8);
+        const at = (wy * 8 + wx) * 8;
+        if (!points[at + 7]) continue;
+        const dx = px / size - ix - points[at], dy = py / size - iy - points[at + 1];
+        const along = dx * points[at + 4] + dy * points[at + 5];
+        const across = -dx * points[at + 5] + dy * points[at + 4];
+        const length = points[at + 2], width = points[at + 3];
+        // Isolated, worn exposures leave dust/rock between them. Nearest-site
+        // ownership painted complete cells, which still resembled paving.
+        const shape = Math.max(Math.abs(along) / length, Math.abs(across) / width,
+            (along / length + Math.abs(across) / width) * .72);
+        const face = 1 - smooth(.45, 1.05, shape);
+        if (face > exposure) { exposure = face; tone = points[at + 6]; }
+        const split = (1 - smooth(.007, .033, Math.abs(across + along * .17))) *
+            (1 - smooth(.22, .66, Math.abs(along) / length)) * face;
+        fracture = Math.max(fracture, split);
+    }
+    return { exposure, fracture, tone };
+}
+
 function sampleWindWornSlate(x, y, seed) {
     const turn = Math.PI * 2 / 256;
     const grit = noise(x, y, 43, seed ^ 0x493f);
@@ -30,16 +79,24 @@ function sampleWindWornSlate(x, y, seed) {
     // Keep the physical bedding directional and its color contrast restrained.
     const drift = noise(x + Math.sin(y * turn * 2) * 7, y * 4, 3, seed ^ 0x1491);
     const cover = smooth(.32, .7, drift + (noise(x, y, 11, seed ^ 0x529b) - .5) * .12);
-    const mineral = .24 + grit * .15 + strata * .19;
-    const dark = [58, 57, 64], light = [100, 98, 107], dust = [123, 120, 131];
+    const fragment = slateFragments(x, y, seed);
+    // Recesses break up beneath weathering/deposits. Never outline every
+    // cellular face: a complete black network reads as manufactured paving.
+    const fracture = fragment.fracture * smooth(.24, .7, weathering) * (1 - cover * .94);
+    const plate = fragment.exposure * (1 - cover * .82);
+    const mineral = .23 + plate * (.025 + fragment.tone * .18) + grit * .08 + strata * .045 + weathering * .045;
+    const dark = [56, 59, 66], light = [110, 113, 122], dust = [125, 119, 126];
     const grain = hash(Math.floor(x), Math.floor(y), seed ^ 0xab3);
     const color = dark.map((value, i) => {
-        const rock = value + (light[i] - value) * mineral;
-        return Math.round(rock + (dust[i] - rock) * cover * .18 + (grain - .5) * 1.5);
+        const rock = (value + (light[i] - value) * mineral) * (1 - fracture * .05);
+        return Math.round(rock + (dust[i] - rock) * cover * .3 + (grain - .5) * 1.2);
     });
-    return { color, cover, strata,
-        height: .24 + strata * .038 + grit * .018 + cover * .026,
-        roughness: .73 + cover * .2 + grit * .018 };
+    return { color, cover, strata, fracture, plate,
+        // Shallow flaked faces replace the broad embossed washboard. The
+        // same fractured/deposited field drives color, relief and roughness;
+        // neither stains nor whole plate tones become false terrain hills.
+        height: .24 + strata * .005 + grit * .008 + plate * .011 - fracture * .006 + cover * .013,
+        roughness: .76 + cover * .17 + grit * .012 - fracture * .015 + plate * .02 };
 }
 
 function sampleWeatheredIce(x, y, seed) {

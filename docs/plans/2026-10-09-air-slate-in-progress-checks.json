@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "status": "local Air surface work in progress; not qualified, versioned, pushed or live",
+  "base": "3ecf2620f75f045012f35ac6bcd4fa4d1bc76ad6",
+  "scope": "Air-only registered surface field and descriptive motif. Isolated eroded slate exposures and short interrupted fissures share existing albedo, normal and roughness maps. Shallow relief replaces stronger directional embossing. One private 4096-byte descriptor set is reused for the current seed; no unbounded pixel/seed cache. No additional textures, draw calls, geometry, lights, collision, placement, actors, gameplay or dependency changes. Current version remains17; no release18 acceptance is claimed.",
+  "unitChecks": "Refined ElementalTerrainSurface and ProceduralRealmTerrain actual suites:40pass139.477s. Include exact canonical High/Low registration, periodic sampling, alternate-seed determinism, bounded physical fields and unchanged Water/Fire surface digests. Scoped lint and git diff whitespace pass. Standalone non-JSDOM7396point sample takes51.738ms; this is CPU sampler observation, not game frame qualification.",
+  "visualReview": "First iteration passed39units and two native presentation cases but root rejected its paving-like appearance. Revised actual High east-passage/travel screenshots show reduced paving and restrained, shallow geology. Improvement is subtle at ordinary game zoom; broad gray ground, route-scale variety, density, landmark silhouettes and full modern-ARPG cohesion remain unfinished. Do not claim final art approval.",
+  "failedRefinedNative": "Original-budget High1280 presentation fails weatherkeepers-bivouac median33.3ms against20ms; p95 reaches50ms. Low390 does not run after fail-fast. Original failure/profile/trace/video retained. Before/after resources remain198geometries/51textures/49programs and maximum127calls/173269triangles. Deployment predeploy character QA launched another native Chrome GPU/renderer while this run was in progress; overlap is observed, not proof that it alone caused the failure. This is not a pass or a waived budget. Repeat only the two affected native presentation cases after shared character QA has finished; no campaign/raid/full-world replay required.",
+  "proof": {
+    "surfaceSHA256": "a25c769ba76c9e5bd663c3c3b5ffea7d8f344fb10ff394f004c30ee4757d9db2",
+    "terrainFactorySHA256": "63408f88d9857cb7db14525012ea1215792c29d00ed7001cce7b88e332feef77",
+    "surfaceTestsSHA256": "e1f79d8b7d153ffa2458e2e453846b0fc8185ab58b6253c7612759e1d5ecb198",
+    "refinedUnitsLogSHA256": "c7d3f0d25571c8e48e8806816baebc6e1d8c6d127d2def75601361268b09cca4",
+    "rejectedInitialNativeLogSHA256": "99bc2df13b76f96f14ef8e926d5ac45fdfc207eb87ac0b018774286b3c58517c",
+    "failedRefinedNativeLogSHA256": "0a90c3c4bd36eb9be09ef7221a80a0164623462a841932dbe875ffe5bdea8981"
+  },
+  "artifacts": "Owned eidolon-air-slate-native-initial-20261009 and eidolon-air-slate-native-refined-20261009 with matching logs; refined units log eidolon-air-slate-surface-refined-units-20261009.log. Worktree eidolon-air-slate-release-WU2VBYzB preserves prepared17 base and all452patch entries unchanged. Original dirty user worktree untouched.",
+  "delivery": "11/8a57420e CI37874149991 has Client/Server/all three browser shards green per delegated read-only observation; predeploy character QA still running, not terminal/root accepted. Luna retains exact deployment monitoring. No later public push. Individual12-17 ordered acceptance and normal fresh remote reconciliation remain required; this surface stays local until original native gates pass and the combined visual scope is reviewed. Full roadmap/art/F1-F5/party/device/owner/operations/rights/beta/launch goal remains active."
+}
