@@ -24,7 +24,7 @@ Fighter pilot or remove approved authored models.
   preserves remote. Authorized Luna watches exact CI; root must accept its
   terminal/public scope before13. Expected five-file publisher outputs are in
   `docs/plans/2026-10-09-release1-79-12-publisher.json`. No real notice sent.
-- Current pushed corrective11 is **dc77fb46 / CI37898805331**, independently
+- Accepted corrective11 is **dc77fb46 / CI37898805331**, independently
   accepted: all ten required jobs and final live QA pass. Root independently
   reads all six native case titles/6passed1.4m, then rechecks five actual public
   publisher hashes, matching frontend/backend/Alpha1.79.11 identity, IPv4 TLS
@@ -41,9 +41,10 @@ Fighter pilot or remove approved authored models.
   Root verified terminal gates/public identity/bytes before12. Expected
   five-file publisher proof and7queued reconciliation are in
   `docs/plans/2026-10-09-corrective11-native-route-publisher.json`.
-  Root public precheck07:57UTC now matches all five expected dc77 publication
+  Earlier root public precheck07:57UTC matches all five expected dc77 publication
   hashes, exact frontend/backend identity and valid IPv4 TLS/database readiness.
-  Final live QA remains in progress; not release acceptance or authority to12.
+  At that earlier observation live QA was in progress; later08:00terminal/public
+  acceptance above supersedes its pending state, not its measured bytes.
 - Historical accepted predecessor: **1.79.10 / d3a3b9f7**, CI37864085950.
   Later served source is not thereby accepted. Corrective11 **5bd725b9** deployed,
   but **CI37884472930 failed** live loot setup: valid NECK/GLOVES equipment was
@@ -161,13 +162,20 @@ Fighter pilot or remove approved authored models.
  449older notes retained. Normal clean merges carry it into16-18. No art/assets,
   gameplay/budgets or public rollout change. Shared receipt in those branches:
   `docs/plans/2026-10-09-party-input-render-checks.json`.
-- Opt-in CPU caller diagnostic9c7f8340 is ready in the owned
-  `eidolon-party-callers-4YGldqgB` worktree: four focused checks pass0.685s,
-  scoped lint passes. It preserves actual callers behind recursive searches,
-  exports only local source metadata, not raw profiles/session URLs, and runs
-  after the existing timed sample. No runtime optimization or performance gain
-  claimed yet. Current CI Chrome still owns the renderer; run one isolated
-  current18 observer sample after it exits, then act on measured callers.
+- Actual CPU caller diagnostic9c7f8340 identifies CasinoController.beforeUpdate
+  as313221of327292recursive-search self-microseconds in current18. Qualified
+  d1fdf47b avoids absent interior scans and reuses connected owned roots.
+  Forty-six focused checks, full casino five-game/two-floor/three-visit native
+  lifecycle21.5s and one-renderer/three-peer party/save48.35s pass. Candidate
+  search leaves top24functions/top16caller chains, not proof of zero elsewhere;
+  unit counters prove zero outside-world scans. Frame33.3/50ms stays slow,
+  population29→30 means no controlled FPS claim. Folded into prepared15, not
+  a new microversion; three15suites427pass5.68s, all449older notes exact.
+  Normal16→17→18 merges retain source/note and seven-case native routing.
+  Future already had a simple outside guard; reconcile without duplicating it,
+  retaining the qualified helper/cleanup (canonical47checks pass2.784s).
+  Receipts `2026-10-09-party-cpu-caller-diagnostic.json` and
+  `2026-10-09-casino-scene-search-checks.json` preserve scoped evidence.
 - Existing nightly **37880032315/dc7** was independently confirmed running
   on the separate soak runner and remains untouched. Its concurrent host-load
   contribution to Air timings is unproven. Do not cancel/restart it or claim
@@ -242,7 +250,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   branch `work/alpha-1-79-startup-bundle-current-20261009`, pusheddc77fb46.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, localf1b71841/1.79.18;
+  branch `work/alpha-1-79-air-cypress-current-20261009`, local9739675d/1.79.18;
   art/terrain source0e319ac0 retained; targeted shared CPU/input9272a3f8, party evidence and corrected publication
   names are retained by normal reconciliation, not a new art qualification.
 - Ordered queued release worktrees and last clean heads:
@@ -252,10 +260,10 @@ qualification never proves a later tree, full visual approval or public rollout.
   | 1.79.12 (pushed, CI pending) | `eidolon-operations-release-U0VLQ4j8` | `1255aade` |
   | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `e7369fce` |
   | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `3e0b1a1f` |
-  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `adf83270` |
-  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `8b1a814d` |
-  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `e5165158` |
-  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `f1b71841` |
+  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `071171a2` |
+  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `884216bb` |
+  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `d3075900` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `9739675d` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
