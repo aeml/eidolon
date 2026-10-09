@@ -350,6 +350,7 @@
                     <span class="start-version-row__label">Alpha 1.79.11</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
+                <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
             </div>
 
             <div id="start-flow-panel" class="start-flow-panel">
@@ -783,6 +784,7 @@
                 <div class="patch-note-entry" data-version="1.79.11">
                     <h3 class="patch-note-entry__title">Alpha 1.79.11 (elemental landscapes and mineral formations)</h3>
                     <ul class="patch-note-entry__list">
+                        <li>If WebGL 2 is unavailable or blocked, entering the world returns to login with hardware-acceleration and browser/device guidance. The message appears in the page, never a browser alert. Successful renderer creation and browser security settings are unchanged.</li>
                         <li>Login now shows only the latest ten patch notes. Load more notes fetches the next ten on demand; the complete history is retained. Login startup no longer waits for the full game-engine dependency graph and also initializes if the document-ready event has already fired.</li>
                         <li>Fixed Firefox login startup: register the dependency import map before loading any modules, while preserving private recovery-link scrubbing before analytics starts.</li>
                         <li>Water and Air conifers have layered needle boughs instead of solid cones. Drowned willows have folded leaves and hanging shoots; Fire snags have connected crooked branches and attached ember tips.</li>

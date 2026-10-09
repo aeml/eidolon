@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared11 graphics failure guidance: actual Firefox login works but
+headless context creation fails before four-class renderer qualification. Keep
+that failure open; no forced software/context/security workaround. Failure-only
+owned message appears in shared visible/focused header, not hidden auth panel.
+425focused cases, three native login/failure-path cases and one normal Chrome
+3D/loot case pass;445older notes exactly retained.111116byte login/10initial/
+44lazy pages. [Evidence](2026-10-09-graphics-startup-checks.json).
+Notlive; accept corrected10/d3a3b9f7/run37864085950 first. Prepared12-15 must
+inherit Go/login/guidance before publishing; preserve later renderer work.
+Full F1-F5/modern-art/world/party/device/human/owner/beta/launch scope stays open.
+
 Requested login pagination is staged on prepared1.79.11: ten initial notes,
 explicit ten-entry older pages, all446 preserved; initial HTML about86% smaller.
 Login defers the engine/catalog and tolerates a late document-ready event.

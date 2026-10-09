@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 prepared11 startup guidance:** Retain corrected10/d3a3b9f7.
+Actual Firefox login works; local headless 3D context creation still fails and
+is not qualified. Add lightweight failure-only graphics guidance without
+changing successful rendering, vendor/browser settings or authentication.
+Show it in the shared header because login panel is hidden after authentication.
+425 focused checks, three Chrome/Firefox login/failure-path cases and one normal
+Chrome 3D/loot case pass. Retain failed diagnostics and initial hidden-input
+test timeout. All445 prior notes exact,446total/10initial/44lazy,111116bytes.
+[Evidence](docs/plans/2026-10-09-graphics-startup-checks.json).
+11 stays local until corrected10 CI/public acceptance; then fresh remote
+reconciliation and its own publication gates. Prepared12-15 must inherit this
+fix/Go1.27.2 without overwriting their later renderer improvements. Full goal,
+modern art/F1-F5/party/device/human/owner/beta/launch scope remains unfinished.
+
 **Current requested login improvement:** Prepared1.79.11 now paginates notes:
 ten initial, ten more per click, all446 entries retained.817493to110462bytes.
 Login defers the engine/catalog and handles an already-fired ready event.
