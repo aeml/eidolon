@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { moveByGroundClick, readPlayerState, useVerdantQAWaypoint } from './helpers.js';
 import { profileGameplayScene } from './scene-performance.js';
+import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 
 // Explicit disposable-game diagnosis. Instrument only untimed renders; retain
 // the normal loop/animation/network for profiles and real movement input.
@@ -44,7 +45,8 @@ export async function captureActualSceneRenderDiagnosis(page, testInfo) {
                         .sort((a, b) => b.color + b.shadow + b.other - a.color - a.shadow - a.other) };
             } finally { renderer.renderBufferDirect = original; }
         });
-        const scene = { label, profile, attribution }; scenes.push(scene);
+        const cpu = process.env.EIDOLON_TERRAIN_SCENE_CPU_PROFILE === '1' ? await captureSceneCPU(page, label, testInfo) : null;
+        const scene = { label, profile, attribution, cpu }; scenes.push(scene);
         await writeFile(testInfo.outputPath('actual-scene-diagnosis.json'), JSON.stringify({ scenes }, null, 2));
         scene.paired = process.env.EIDOLON_TERRAIN_RIG_PAIR === '1' ? await profileOwnedRigPair(page, label, testInfo) : null;
         await writeFile(testInfo.outputPath('actual-scene-diagnosis.json'), JSON.stringify({ scenes }, null, 2));
@@ -100,7 +102,8 @@ export async function captureActualSceneRenderDiagnosis(page, testInfo) {
 // player with independent unbatched constructor leaves. Only reviewed merged
 // sibling leaves are exchanged; hitboxes, actor state and network stay live.
 async function profileOwnedRigPair(page, label, testInfo) {
-    const census = await page.evaluate(async () => {
+    const surfacePair = process.env.EIDOLON_TERRAIN_RIG_SURFACE_PAIR === '1';
+    const census = await page.evaluate(async surfacePair => {
         const town = await import('/src/art/ProceduralTownActors.js');
         const enemies = await import('/src/art/ProceduralLegacyEnemies.js');
         const roots = [];
@@ -111,14 +114,15 @@ async function profileOwnedRigPair(page, label, testInfo) {
         const records = [];
         for (const root of roots) {
             const type = root.userData.proceduralActorType;
-            const source = type === 'InfernoTitan' ? enemies.createProceduralInfernoTitan() : town.createProceduralTownActor(type);
+            const source = type === 'InfernoTitan' ? enemies.createProceduralInfernoTitan({ batch: surfacePair }) : town.createProceduralTownActor(type, { batch: surfacePair });
             root.traverse(part => {
-                if (!part.userData.humanoidBatchSources) return;
-                const leaves = part.userData.humanoidBatchSources.map(name => {
+                if (!part.userData.humanoidBatchSources || surfacePair && !part.userData.rigidSurfaceBatch) return;
+                const names = surfacePair ? part.userData.rigidSurfaceReferenceNames : part.userData.humanoidBatchSources;
+                const leaves = names.map(name => {
                     const original = source.getObjectByName(name);
                     if (!original || original.parent.name !== part.parent.name) throw new Error('Unmatched live rigid pivot');
                     const leaf = original.clone(false);
-                    leaf.material = part.material;
+                    if (!part.userData.rigidSurfaceBatch) leaf.material = part.material;
                     return leaf;
                 });
                 records.push({ parent: part.parent, combined: part, leaves, root });
@@ -132,7 +136,7 @@ async function profileOwnedRigPair(page, label, testInfo) {
             switchVariant(reference) {
                 // Retain existing Skeleton/humanoid instancing in the control.
                 // Only reviewed new families temporarily leave the instance roster.
-                for (const root of roots) {
+                if (!surfacePair) for (const root of roots) {
                     root.userData.humanoidRenderBatches = reference ? undefined : originalBatches.get(root);
                     if (!reference) instanceRenderer.register(root);
                 }
@@ -144,8 +148,9 @@ async function profileOwnedRigPair(page, label, testInfo) {
             } };
         return { roots: roots.map(root => ({ type: root.userData.proceduralActorType, id: root.userData.entityId,
             ...root.userData.humanoidRenderBatches })), mergedGroups: records.length,
-            referenceLeaves: records.reduce((sum, record) => sum + record.leaves.length, 0) };
-    });
+            referenceLeaves: records.reduce((sum, record) => sum + record.leaves.length, 0),
+            referenceRepresentation: surfacePair ? 'Previous strict rigid constructor batches and existing instances retained' : 'Original unbatched leaves; only new families leave the instance roster' };
+    }, surfacePair);
     const profiles = [];
     try {
         for (const reference of [true, false, false, true]) {
@@ -159,5 +164,38 @@ async function profileOwnedRigPair(page, label, testInfo) {
             delete window.__actualRigidPair;
         });
     }
-    return { scope: 'ABBA normal-loop180-frame live source-leaf/constructor-batch-plus-reviewed-instance comparison; same registered actor roots and animation pivots. Server population continues naturally. No teleport, hidden content, imported player replacement or manual mixer.', census, profiles };
+    return { scope: surfacePair ? 'ABBA normal-loop180-frame live previous rigid versus packed PBR surface comparison; previous instance behavior preserved. Same actor roots/animation pivots; population remains live.' : 'ABBA normal-loop180-frame live source-leaf/constructor-batch-plus-reviewed-instance comparison; same registered actor roots and animation pivots. Server population continues naturally. No teleport, hidden content, imported player replacement or manual mixer.', census, profiles };
+}
+
+// Retain only source/function identities and bounded callers. The profiling
+// interval is separate from all180-frame reports and its overhead is excluded.
+async function captureSceneCPU(page, label, testInfo) {
+    const session = await page.context().newCDPSession(page);
+    await page.evaluate(() => {
+        const controller = window.game.renderSystem.foliageShadowInfluence, cache = controller.boundsCache;
+        const originalGet = cache.get, owned = Object.hasOwn(cache, 'get');
+        const counters = { lookups: 0, misses: 0 };
+        const get = function (object) {
+            counters.lookups++; const value = originalGet.call(this, object);
+            if (!value) counters.misses++; return value;
+        };
+        cache.get = get;
+        window.__sceneBoundsCacheProbe = { counters,
+            read: () => ({ ...counters, mapChanged: controller.boundsCache !== cache }),
+            restore() { if (cache.get === get) { if (owned) cache.get = originalGet; else delete cache.get; } } };
+    });
+    try {
+        await session.send('Profiler.enable');
+        await session.send('Profiler.start');
+        await page.waitForTimeout(3_000);
+        const { profile } = await session.send('Profiler.stop');
+        const result = { scope: 'Three-second normal live game CPU sample; source/function identities and bounded callers only, no raw profile/account arguments. Separate from frame measurements.',
+            ...summarizePartyCPUProfile(profile, new URL(page.url()).origin),
+            foliageCache: await page.evaluate(() => window.__sceneBoundsCacheProbe.read()) };
+        await writeFile(testInfo.outputPath(`${label}-cpu-functions.json`), JSON.stringify(result, null, 2));
+        return result;
+    } finally {
+        await page.evaluate(() => { window.__sceneBoundsCacheProbe.restore(); delete window.__sceneBoundsCacheProbe; });
+        try { await session.send('Profiler.disable'); } finally { await session.detach(); }
+    }
 }

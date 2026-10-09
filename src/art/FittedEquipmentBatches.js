@@ -148,3 +148,6 @@ export function batchFittedEquipment(parts, { surfaceAttributes = false } = {}) 
     }
     return [...parts, ...batches];
 }
+
+// Shared exact flat PBR attribute shader; callers own any derived material.
+export { surfaceMaterial as createFlatSurfaceMaterial };

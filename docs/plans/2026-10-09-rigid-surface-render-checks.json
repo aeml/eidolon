@@ -1,0 +1,2640 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-09T21:40:32.812828+00:00",
+  "classification": "PROGRESS: retained private incremental opaque PBR rig consolidation; corrected previous controls, native appearance and lifetime proof, real connected scene CPU evidence. Full goal remains active; no public release.",
+  "baseCommit": "2e3cf1b370f8db24f0982c71bcde89c37dcba037",
+  "ownedWorktree": "/home/aeml/.local/share/eidolon-town-frame-cost-20261009",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "acceptedCI": 37967212738,
+    "receipt": "2026-10-09-ready22-actor-publisher.json",
+    "scope": "Existing accepted public baseline only; not rerun or replaced by these local checks."
+  },
+  "implementation": {
+    "families": [
+      "DwarfSalesman",
+      "QuestNPC",
+      "DungeonNPC",
+      "RespecNPC",
+      "InfernoTitan"
+    ],
+    "behavior": "After existing exact-material constructor batches, merge eligible opaque stock MeshStandard siblings within the same animated pivot, preserving all triangles, UVs, transformed positions/inverse-transpose normals and Float32 per-piece linear diffuse/roughness/emissive-times-intensity/metalness. Reuse the already-qualified fitted-equipment flat PBR shader without changing fitted gear behavior.",
+    "restrictions": "Constructor-owned immutable recipes only. No cross-pivot/directly animated leaf merge; no textures, material arrays, transparent pieces, vertex colors, custom callbacks/depth/distance/clipping, morphs, skins, partial draw ranges, interleaved attributes or unsupported matrices. Unknown pieces retain ordinary rendering. Factory shader material ownership requires WeakMap identity and unchanged compile/cache callbacks; cloned and foreign shaders remain excluded from actor instancing. Existing shear/normal/visibility/shadow/lifetime guards remain active.",
+    "scalarGeometryGroups": "Three 0.181.2 WebGLRenderer projectObject uses geometry.groups only for material arrays; scalar material renders the complete geometry. Preserve those ignored groups as complete source triangles, allow merging, and retain the scalar two-box72-vertex regression. Array materials stay excluded.",
+    "ownership": "MeshFactory selects packed surfaces only for these five families in the private candidate. Source recipes, original supplied class/equipment assets, collision, server authority, animation tracks, rewards and balances remain intact. Shared legacy constructor buffers remain retained; additional packed buffers are explicit.",
+    "sourceHashes": {
+      "src/art/RigidSurfaceBatches.js": "1cb5792222ae9edbfb340a34e3931a9ddfe1df183bd52e277847d482dee6b1cc",
+      "src/art/ActorInstanceBatches.js": "81fd656aa9bb8a9028abdaa935004686e834d2b0eaa5b9da2d007ec2083e0089",
+      "src/art/FittedEquipmentBatches.js": "98148088d02e05826894bfa8c1c8c41aba1452a8e25e59329df6c9a954085622",
+      "src/art/ProceduralTownActors.js": "565bd84f65f923646519fb7885be793c6bd5fcf542282f3bb48461b13d3ce304",
+      "src/art/ProceduralLegacyEnemies.js": "7ec74f9ddb70f825e6c3da113df9843a03ddd66182f865b7113e4e54b65eff48",
+      "src/utils/MeshFactory.js": "0564229e786d9a522d51ef848e973f650e594c05b78799075667691496b65f95",
+      "tests/RigidSurfaceBatches.test.js": "c3637c4c18a80122a0254f4151bb3900f968df936c6632b29221d4eb1766287c",
+      "tests/HumanoidRenderBatches.test.js": "6ca89e6146e04ee79066cd31a3d53183c4880feba55cc80bfe40e5eefae5c793",
+      "tests/e2e/rigid-surface-batches.spec.js": "c3d1ab97c71a44c9a1a51c15aa9f6fc7b5d86e561247a44091d5cf6f72be8ae8",
+      "tests/e2e/actual-scene-render-diagnosis.js": "8a72c8ae9e674e66f30a47b261fde66e1549776ea44550a45f954bb1e2571d59",
+      "tests/e2e/terrain-equipped-party.spec.js": "88e0790585d851dc6f2e45511aeb115c984de7dc2b9aca79e0542aecc20ee62d",
+      "tests/e2e/rigid-surface-lifetime.spec.js": "5dae335f3989903f3d2233e3a7aebac93069925b6015740d25302bd303228997"
+    },
+    "frozenLiveSourceCheck": "Every captured source hash before connected followup still matches final runtime and diagnosis helper. Lifetime fixture alone was strengthened after its first run to record native backend and require the injected throw to be observed; two final cases rerun."
+  },
+  "units": {
+    "suites": 6,
+    "checks": 157,
+    "seconds": 13.926,
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/eidolon-rigid-surfaces-production-units.log",
+      "sha256": "1f99bbd4855710307115b73e2f9783c336ebcd75a06f2ee6cbc2c621f688a3ec"
+    },
+    "coverage": "All five constructors, every supplied procedural clip, exact world triangle/normal/UV/PBR preservation, immutable recipe reuse, scalar geometry groups, unsupported appearance cases, trusted callback identity, independent instances and production pooling. Existing Humanoid/Fitted/Town/Legacy/ActorInstance suites remain included."
+  },
+  "nativeAppearance": {
+    "tests": 10,
+    "poseQualityComparisons": 28,
+    "seconds": 21.3,
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/eidolon-rigid-surface-native-qualified.log",
+      "sha256": "6d667494d62e257fcb0952c9157212fbbe936f77f8955275f407f276ee6521c3"
+    },
+    "evidenceDirectory": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009",
+    "scope": "Eight independently posed actors per variant on High and Low; previous strict rigid batches and existing actor instances retained in reference. Titan Idle/Walk/Run/Attack/Death plus stretched Attack; service Idle/stretched Idle. Same camera/light/floor and original strict pixel gates.",
+    "maxMeanChannelDelta": 0.00034898750538560965,
+    "maxFractionOfPixelsAboveEightChannels": 9.694097371822491e-06,
+    "allTriangleCountsEqual": true,
+    "allVisibilityRestored": true,
+    "unsafeShearedInstances": 0,
+    "limitations": "Tiny nonzero channel changes occur; this is strict threshold equivalence, not zero-difference imagery, full art approval, live group battle or physical-device acceptance.",
+    "comparisons": [
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-high-13fbd-d-color-and-shadow-surfaces/DungeonNPC-surface-comparison.json",
+          "sha256": "aea7e006810301a882f240b530ebf364a088cda56dd0ae9e49b73959f40978a0"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 84,
+            "afterCalls": 60,
+            "beforeTriangles": 20193,
+            "afterTriangles": 20193,
+            "meanError": 5.277897457992245e-05,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedIdle",
+            "shearedLeaves": 272,
+            "unsafeInstances": 0,
+            "beforeCalls": 398,
+            "afterCalls": 200,
+            "beforeTriangles": 20193,
+            "afterTriangles": 20193,
+            "meanError": 9.694097371822491e-05,
+            "changed": 2.1542438604049977e-06,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-high-32edb-d-color-and-shadow-surfaces/QuestNPC-surface-comparison.json",
+          "sha256": "faea7b4e8e4935cd9d3d3a65f8ec28dce9d2787f90d7bba8a7e4819f8262e100"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 82,
+            "afterCalls": 60,
+            "beforeTriangles": 20801,
+            "afterTriangles": 20801,
+            "meanError": 0.00034898750538560965,
+            "changed": 9.694097371822491e-06,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedIdle",
+            "shearedLeaves": 272,
+            "unsafeInstances": 0,
+            "beforeCalls": 398,
+            "afterCalls": 200,
+            "beforeTriangles": 20801,
+            "afterTriangles": 20801,
+            "meanError": 3.769926755708746e-05,
+            "changed": 0,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-high-6af7c-d-color-and-shadow-surfaces/InfernoTitan-surface-comparison.json",
+          "sha256": "922120d7bd0b38bd7fe85ae010fa72105850d42da2a87fd8e14c5e77c2ea3359"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 72,
+            "afterCalls": 51,
+            "beforeTriangles": 21569,
+            "afterTriangles": 21569,
+            "meanError": 5.385609651012495e-06,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "Walk",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 72,
+            "afterCalls": 51,
+            "beforeTriangles": 21569,
+            "afterTriangles": 21569,
+            "meanError": 0,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "Run",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 72,
+            "afterCalls": 51,
+            "beforeTriangles": 21569,
+            "afterTriangles": 21569,
+            "meanError": 1.0771219302024989e-06,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "Attack",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 72,
+            "afterCalls": 51,
+            "beforeTriangles": 21569,
+            "afterTriangles": 21569,
+            "meanError": 1.0771219302024989e-06,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "Death",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 72,
+            "afterCalls": 51,
+            "beforeTriangles": 21569,
+            "afterTriangles": 21569,
+            "meanError": 0,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedAttack",
+            "shearedLeaves": 592,
+            "unsafeInstances": 0,
+            "beforeCalls": 641,
+            "afterCalls": 393,
+            "beforeTriangles": 21569,
+            "afterTriangles": 21569,
+            "meanError": 1.5079707022834985e-05,
+            "changed": 0,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-high-70fc6-d-color-and-shadow-surfaces/DwarfSalesman-surface-comparison.json",
+          "sha256": "f19721bdb6bae4893799b29913809fe3a6b0f7acf8c4e0baf5c632f0f5b3fdbe"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 84,
+            "afterCalls": 58,
+            "beforeTriangles": 20577,
+            "afterTriangles": 20577,
+            "meanError": 5.493321844032744e-05,
+            "changed": 2.1542438604049977e-06,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedIdle",
+            "shearedLeaves": 280,
+            "unsafeInstances": 0,
+            "beforeCalls": 414,
+            "afterCalls": 200,
+            "beforeTriangles": 20577,
+            "afterTriangles": 20577,
+            "meanError": 5.062473071951745e-05,
+            "changed": 1.0771219302024989e-06,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-high-adc98-d-color-and-shadow-surfaces/RespecNPC-surface-comparison.json",
+          "sha256": "f40d29affc7fca4a93c12c2caf397b76c7ee9699f13bb1f850102381d41ce55a"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 149,
+            "afterCalls": 127,
+            "beforeTriangles": 21377,
+            "afterTriangles": 21377,
+            "meanError": 5.3856096510124945e-05,
+            "changed": 1.0771219302024989e-06,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedIdle",
+            "shearedLeaves": 360,
+            "unsafeInstances": 0,
+            "beforeCalls": 470,
+            "afterCalls": 288,
+            "beforeTriangles": 21377,
+            "afterTriangles": 21377,
+            "meanError": 7.970702283498492e-05,
+            "changed": 2.1542438604049977e-06,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-low--010c9-d-color-and-shadow-surfaces/DwarfSalesman-surface-comparison.json",
+          "sha256": "92ae49718ea35b43e14a52a11fb90377ef775e55a78e83d8bc5c5950a0aedd28"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 44,
+            "afterCalls": 31,
+            "beforeTriangles": 11130,
+            "afterTriangles": 11130,
+            "meanError": 3.231365790607497e-05,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedIdle",
+            "shearedLeaves": 280,
+            "unsafeInstances": 0,
+            "beforeCalls": 216,
+            "afterCalls": 109,
+            "beforeTriangles": 11130,
+            "afterTriangles": 11130,
+            "meanError": 2.6928048255062473e-05,
+            "changed": 0,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-low--17fd7-d-color-and-shadow-surfaces/InfernoTitan-surface-comparison.json",
+          "sha256": "a9ac37a11180950a2b5123272046c03a536d552b4feb855e612054e76434c57c"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 34,
+            "afterCalls": 23,
+            "beforeTriangles": 11858,
+            "afterTriangles": 11858,
+            "meanError": 2.1542438604049977e-06,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "Walk",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 34,
+            "afterCalls": 23,
+            "beforeTriangles": 11858,
+            "afterTriangles": 11858,
+            "meanError": 0,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "Run",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 34,
+            "afterCalls": 23,
+            "beforeTriangles": 11858,
+            "afterTriangles": 11858,
+            "meanError": 0,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "Attack",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 34,
+            "afterCalls": 23,
+            "beforeTriangles": 11858,
+            "afterTriangles": 11858,
+            "meanError": 0,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "Death",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 34,
+            "afterCalls": 23,
+            "beforeTriangles": 11858,
+            "afterTriangles": 11858,
+            "meanError": 0,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedAttack",
+            "shearedLeaves": 592,
+            "unsafeInstances": 0,
+            "beforeCalls": 362,
+            "afterCalls": 234,
+            "beforeTriangles": 11858,
+            "afterTriangles": 11858,
+            "meanError": 9.694097371822491e-06,
+            "changed": 0,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-low--2fd8e-d-color-and-shadow-surfaces/QuestNPC-surface-comparison.json",
+          "sha256": "128455050cbf8a872eb4a59ea70f5def951a571f82ffc2aea3b0db658ab699ca"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 43,
+            "afterCalls": 32,
+            "beforeTriangles": 11242,
+            "afterTriangles": 11242,
+            "meanError": 5.1701852649719945e-05,
+            "changed": 1.0771219302024989e-06,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedIdle",
+            "shearedLeaves": 272,
+            "unsafeInstances": 0,
+            "beforeCalls": 208,
+            "afterCalls": 109,
+            "beforeTriangles": 11242,
+            "afterTriangles": 11242,
+            "meanError": 1.8311072813442482e-05,
+            "changed": 0,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-low--66e74-d-color-and-shadow-surfaces/DungeonNPC-surface-comparison.json",
+          "sha256": "e7be4e78e91a1262a5340c5158b21f740e2df2fbc655ce10570112fc732629af"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 44,
+            "afterCalls": 32,
+            "beforeTriangles": 10938,
+            "afterTriangles": 10938,
+            "meanError": 4.093063334769496e-05,
+            "changed": 0,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedIdle",
+            "shearedLeaves": 272,
+            "unsafeInstances": 0,
+            "beforeCalls": 208,
+            "afterCalls": 109,
+            "beforeTriangles": 10938,
+            "afterTriangles": 10938,
+            "meanError": 7.001292546316242e-05,
+            "changed": 0,
+            "visibilityRestored": true
+          }
+        ]
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-native-qualified-20261009/rigid-surface-batches-low--b42df-d-color-and-shadow-surfaces/RespecNPC-surface-comparison.json",
+          "sha256": "9767ba23e9e4ecd3d815b830897c6c4a6b9eb4e246c8f3b4658c1b3893764459"
+        },
+        "rows": [
+          {
+            "state": "Idle",
+            "shearedLeaves": 0,
+            "unsafeInstances": 0,
+            "beforeCalls": 109,
+            "afterCalls": 98,
+            "beforeTriangles": 12106,
+            "afterTriangles": 12106,
+            "meanError": 5.493321844032744e-05,
+            "changed": 1.0771219302024989e-06,
+            "visibilityRestored": true
+          },
+          {
+            "state": "StretchedIdle",
+            "shearedLeaves": 360,
+            "unsafeInstances": 0,
+            "beforeCalls": 280,
+            "afterCalls": 189,
+            "beforeTriangles": 12106,
+            "afterTriangles": 12106,
+            "meanError": 5.1701852649719945e-05,
+            "changed": 1.0771219302024989e-06,
+            "visibilityRestored": true
+          }
+        ]
+      }
+    ]
+  },
+  "nativeLifetime": {
+    "tests": 2,
+    "seconds": 5.4,
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/eidolon-rigid-surface-lifetime-native-final.log",
+      "sha256": "d55b7089eaa342f541fa64bdde4d28a817ec3e14c23435c304374902ad7303e2"
+    },
+    "scope": "High and Low production MeshFactory twenty-rig pooling after shared geometry/program warm-up, four repeated allocation/retirement cycles each. Require actual injected render failure, all source visibility restored, no actor instances or registered roots after retirement, exact stable geometry/texture/program counters and no browser errors.",
+    "limitations": "Shared family geometry/programs intentionally persist. Stable counters do not measure byte-accurate VRAM, sustained devices or every world transition.",
+    "results": [
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-lifetime-native-final-20261009/rigid-surface-lifetime-hig-f815d-d-GPU-recipes-remain-stable/lifetime.json",
+          "sha256": "35395eac2436f0a18073054f0d93dc9674175611d28057d5c92e058d581fea4e"
+        },
+        "result": {
+          "scope": "Four native repeated pooled20-rig allocation/retirement cycles after warming shared family buffers and programs. Counter stability is not byte-accurate VRAM or sustained device proof.",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "warm": {
+            "active": {
+              "geometries": 85,
+              "textures": 18,
+              "programs": 17,
+              "buckets": 83,
+              "registeredRoots": 20
+            },
+            "retired": {
+              "geometries": 85,
+              "textures": 18,
+              "programs": 17,
+              "buckets": 0,
+              "registeredRoots": 0
+            },
+            "restoredAfterFailure": true,
+            "injectedFailureObserved": false
+          },
+          "cycles": [
+            {
+              "active": {
+                "geometries": 85,
+                "textures": 18,
+                "programs": 17,
+                "buckets": 83,
+                "registeredRoots": 20
+              },
+              "retired": {
+                "geometries": 85,
+                "textures": 18,
+                "programs": 17,
+                "buckets": 0,
+                "registeredRoots": 0
+              },
+              "restoredAfterFailure": true,
+              "injectedFailureObserved": false
+            },
+            {
+              "active": {
+                "geometries": 85,
+                "textures": 18,
+                "programs": 17,
+                "buckets": 83,
+                "registeredRoots": 20
+              },
+              "retired": {
+                "geometries": 85,
+                "textures": 18,
+                "programs": 17,
+                "buckets": 0,
+                "registeredRoots": 0
+              },
+              "restoredAfterFailure": true,
+              "injectedFailureObserved": true
+            },
+            {
+              "active": {
+                "geometries": 85,
+                "textures": 18,
+                "programs": 17,
+                "buckets": 83,
+                "registeredRoots": 20
+              },
+              "retired": {
+                "geometries": 85,
+                "textures": 18,
+                "programs": 17,
+                "buckets": 0,
+                "registeredRoots": 0
+              },
+              "restoredAfterFailure": true,
+              "injectedFailureObserved": false
+            },
+            {
+              "active": {
+                "geometries": 85,
+                "textures": 18,
+                "programs": 17,
+                "buckets": 83,
+                "registeredRoots": 20
+              },
+              "retired": {
+                "geometries": 85,
+                "textures": 18,
+                "programs": 17,
+                "buckets": 0,
+                "registeredRoots": 0
+              },
+              "restoredAfterFailure": true,
+              "injectedFailureObserved": false
+            }
+          ]
+        }
+      },
+      {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-rigid-surface-lifetime-native-final-20261009/rigid-surface-lifetime-low-f6b10-d-GPU-recipes-remain-stable/lifetime.json",
+          "sha256": "1a1a416c228a495ebab0c737492595d987284c448a55cc657af40055bcd2315e"
+        },
+        "result": {
+          "scope": "Four native repeated pooled20-rig allocation/retirement cycles after warming shared family buffers and programs. Counter stability is not byte-accurate VRAM or sustained device proof.",
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "warm": {
+            "active": {
+              "geometries": 84,
+              "textures": 4,
+              "programs": 6,
+              "buckets": 83,
+              "registeredRoots": 20
+            },
+            "retired": {
+              "geometries": 84,
+              "textures": 4,
+              "programs": 6,
+              "buckets": 0,
+              "registeredRoots": 0
+            },
+            "restoredAfterFailure": true,
+            "injectedFailureObserved": false
+          },
+          "cycles": [
+            {
+              "active": {
+                "geometries": 84,
+                "textures": 4,
+                "programs": 6,
+                "buckets": 83,
+                "registeredRoots": 20
+              },
+              "retired": {
+                "geometries": 84,
+                "textures": 4,
+                "programs": 6,
+                "buckets": 0,
+                "registeredRoots": 0
+              },
+              "restoredAfterFailure": true,
+              "injectedFailureObserved": false
+            },
+            {
+              "active": {
+                "geometries": 84,
+                "textures": 4,
+                "programs": 6,
+                "buckets": 83,
+                "registeredRoots": 20
+              },
+              "retired": {
+                "geometries": 84,
+                "textures": 4,
+                "programs": 6,
+                "buckets": 0,
+                "registeredRoots": 0
+              },
+              "restoredAfterFailure": true,
+              "injectedFailureObserved": true
+            },
+            {
+              "active": {
+                "geometries": 84,
+                "textures": 4,
+                "programs": 6,
+                "buckets": 83,
+                "registeredRoots": 20
+              },
+              "retired": {
+                "geometries": 84,
+                "textures": 4,
+                "programs": 6,
+                "buckets": 0,
+                "registeredRoots": 0
+              },
+              "restoredAfterFailure": true,
+              "injectedFailureObserved": false
+            },
+            {
+              "active": {
+                "geometries": 84,
+                "textures": 4,
+                "programs": 6,
+                "buckets": 83,
+                "registeredRoots": 20
+              },
+              "retired": {
+                "geometries": 84,
+                "textures": 4,
+                "programs": 6,
+                "buckets": 0,
+                "registeredRoots": 0
+              },
+              "restoredAfterFailure": true,
+              "injectedFailureObserved": false
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "correctedPreviousCandidateControl": {
+    "evidenceDirectory": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm",
+    "terminal": {
+      "artifact": {
+        "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/party-terminal.json",
+        "sha256": "9b8b17ced1f9a3021befd000da2209bc7cc7b262c8f5835bda687b497f40eb1b"
+      },
+      "exitCode": 0,
+      "startedUnix": 1791580303.7515578,
+      "finishedUnix": 1791580484.0830655
+    },
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/party-final.log",
+      "sha256": "527bc1d16ee810404a9310bdc903c98675ca30c8c0b14a8ec4050d4094477ba7"
+    },
+    "normalProfiles": [
+      {
+        "label": "actual-town",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.29999999999927,
+        "frameP95Ms": 50,
+        "frameP99Ms": 50.099999999998545,
+        "framesOver33ms": 69,
+        "cpuLoopMedianMs": 29,
+        "cpuLoopP95Ms": 44.900000005960464,
+        "drawCallsMedian": 640,
+        "trianglesMedian": 334076,
+        "geometries": 278,
+        "textures": 163,
+        "activeEntities": 161,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      {
+        "label": "actual-verdant-approach",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.299999999995634,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 50,
+        "framesOver33ms": 39,
+        "cpuLoopMedianMs": 23.399999976158142,
+        "cpuLoopP95Ms": 32.80000001192093,
+        "drawCallsMedian": 360,
+        "trianglesMedian": 186633,
+        "geometries": 393,
+        "textures": 237,
+        "activeEntities": 32,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      }
+    ],
+    "comparisons": {
+      "actual-town": {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-rig-pair.json",
+          "sha256": "b4e2228a2c6832d0f07b9c4774e049d1f9c975403eb40e077a32b96934672981"
+        },
+        "census": {
+          "roots": [
+            {
+              "type": "DwarfSalesman",
+              "id": "merchant-1",
+              "sourceMeshes": 45,
+              "drawMeshes": 35
+            },
+            {
+              "type": "DwarfSalesman",
+              "id": "chronicle-witness-dain",
+              "sourceMeshes": 45,
+              "drawMeshes": 35
+            },
+            {
+              "type": "DungeonNPC",
+              "id": "chronicle-witness-selen",
+              "sourceMeshes": 42,
+              "drawMeshes": 34
+            },
+            {
+              "type": "QuestNPC",
+              "id": "quest-npc-1",
+              "sourceMeshes": 43,
+              "drawMeshes": 34
+            },
+            {
+              "type": "DwarfSalesman",
+              "id": "vip-cosmetic-vendor",
+              "sourceMeshes": 45,
+              "drawMeshes": 35
+            },
+            {
+              "type": "RespecNPC",
+              "id": "respec-npc-1",
+              "sourceMeshes": 46,
+              "drawMeshes": 39
+            },
+            {
+              "type": "DungeonNPC",
+              "id": "dungeon-npc-1",
+              "sourceMeshes": 42,
+              "drawMeshes": 34
+            },
+            {
+              "type": "RespecNPC",
+              "id": "chronicle-witness-mara",
+              "sourceMeshes": 46,
+              "drawMeshes": 39
+            },
+            {
+              "type": "QuestNPC",
+              "id": "chronicle-witness-hessa",
+              "sourceMeshes": 43,
+              "drawMeshes": 34
+            }
+          ],
+          "mergedGroups": 40,
+          "referenceLeaves": 118
+        },
+        "profiles": [
+          {
+            "reference": true,
+            "label": "actual-town-source",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.29999999999927,
+            "frameP95Ms": 50,
+            "frameP99Ms": 50.099999999998545,
+            "framesOver33ms": 59,
+            "cpuLoopMedianMs": 27.80000001192093,
+            "cpuLoopP95Ms": 37.5,
+            "drawCallsMedian": 893,
+            "trianglesMedian": 331618,
+            "geometries": 293,
+            "textures": 163,
+            "activeEntities": 161,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": false,
+            "label": "actual-town-batched",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 50,
+            "frameP99Ms": 50.099999999998545,
+            "framesOver33ms": 54,
+            "cpuLoopMedianMs": 28.299999982118607,
+            "cpuLoopP95Ms": 37.900000005960464,
+            "drawCallsMedian": 640,
+            "trianglesMedian": 334076,
+            "geometries": 293,
+            "textures": 163,
+            "activeEntities": 161,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": false,
+            "label": "actual-town-batched",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 50,
+            "frameP99Ms": 50.099999999998545,
+            "framesOver33ms": 63,
+            "cpuLoopMedianMs": 28,
+            "cpuLoopP95Ms": 40.5,
+            "drawCallsMedian": 640,
+            "trianglesMedian": 334076,
+            "geometries": 293,
+            "textures": 163,
+            "activeEntities": 161,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": true,
+            "label": "actual-town-source",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 50,
+            "frameP99Ms": 50,
+            "framesOver33ms": 55,
+            "cpuLoopMedianMs": 26.69999998807907,
+            "cpuLoopP95Ms": 38.30000001192093,
+            "drawCallsMedian": 893,
+            "trianglesMedian": 331618,
+            "geometries": 293,
+            "textures": 163,
+            "activeEntities": 161,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          }
+        ]
+      },
+      "actual-verdant-approach": {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-rig-pair.json",
+          "sha256": "1b475851d7886668deed940d40dfc29cb729a377bfc25d73e171eee742bcbf6b"
+        },
+        "census": {
+          "roots": [
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-0",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-23",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-54",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-216",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-180",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-176",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-249",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-177",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-60",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-126",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-257",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-253",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-5",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-183",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-152",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-109",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-248",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-237",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-36",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-280",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-26",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-206",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-233",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-104",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-112",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-1",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-209",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-208",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-156",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-103",
+              "sourceMeshes": 77,
+              "drawMeshes": 46
+            }
+          ],
+          "mergedGroups": 420,
+          "referenceLeaves": 1350
+        },
+        "profiles": [
+          {
+            "reference": true,
+            "label": "actual-verdant-approach-source",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 50,
+            "frameP99Ms": 50.10000000000582,
+            "framesOver33ms": 49,
+            "cpuLoopMedianMs": 25.80000001192093,
+            "cpuLoopP95Ms": 38.39999997615814,
+            "drawCallsMedian": 1073,
+            "trianglesMedian": 173973,
+            "geometries": 405,
+            "textures": 237,
+            "activeEntities": 31,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": false,
+            "label": "actual-verdant-approach-batched",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.19999999999709,
+            "frameP95Ms": 33.40000000000873,
+            "frameP99Ms": 50,
+            "framesOver33ms": 31,
+            "cpuLoopMedianMs": 22.80000001192093,
+            "cpuLoopP95Ms": 32.900000005960464,
+            "drawCallsMedian": 340,
+            "trianglesMedian": 186291,
+            "geometries": 407,
+            "textures": 237,
+            "activeEntities": 31,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": false,
+            "label": "actual-verdant-approach-batched",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 16.70000000001164,
+            "frameP95Ms": 33.40000000000873,
+            "frameP99Ms": 33.40000000000873,
+            "framesOver33ms": 28,
+            "cpuLoopMedianMs": 21.600000023841858,
+            "cpuLoopP95Ms": 29.5,
+            "drawCallsMedian": 352,
+            "trianglesMedian": 187745,
+            "geometries": 407,
+            "textures": 237,
+            "activeEntities": 31,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": true,
+            "label": "actual-verdant-approach-source",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 33.40000000000873,
+            "frameP99Ms": 50,
+            "framesOver33ms": 53,
+            "cpuLoopMedianMs": 25.80000001192093,
+            "cpuLoopP95Ms": 35.80000001192093,
+            "drawCallsMedian": 1184,
+            "trianglesMedian": 176221,
+            "geometries": 407,
+            "textures": 237,
+            "activeEntities": 31,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          }
+        ]
+      }
+    },
+    "cpu": {
+      "actual-town": {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-cpu-functions.json",
+          "sha256": "4a3bed0c09666c761c72f638d16d0746d18eba2d685ff77ea00d1e6e76c92454"
+        },
+        "topSelfFunctions": [
+          {
+            "source": "",
+            "name": "(program)",
+            "line": 0,
+            "samples": 61,
+            "selfMicros": 544305
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814,
+            "samples": 142,
+            "selfMicros": 190912
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "intersectsObject",
+            "line": 26581,
+            "samples": 152,
+            "selfMicros": 177653
+          },
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "FoliageShadowInfluence.visit",
+            "line": 105,
+            "samples": 115,
+            "selfMicros": 150684
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 8914,
+            "samples": 109,
+            "selfMicros": 142963
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354,
+            "samples": 101,
+            "selfMicros": 135020
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "multiplyMatrices",
+            "line": 11917,
+            "samples": 80,
+            "selfMicros": 98460
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "beginFrame",
+            "line": 110,
+            "samples": 60,
+            "selfMicros": 95441
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "getProgram",
+            "line": 17132,
+            "samples": 70,
+            "selfMicros": 91108
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "getParameters",
+            "line": 7009,
+            "samples": 64,
+            "selfMicros": 82967
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "setProgram",
+            "line": 17279,
+            "samples": 63,
+            "selfMicros": 77765
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.renderBufferDirect",
+            "line": 16193,
+            "samples": 62,
+            "selfMicros": 75512
+          }
+        ],
+        "foliageCache": null
+      },
+      "actual-verdant-approach": {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-cpu-functions.json",
+          "sha256": "3f7e277886be8ffc747f3d233e37aaf7af14b4d69cf79925a8e27f3cfd0dbe67"
+        },
+        "topSelfFunctions": [
+          {
+            "source": "",
+            "name": "(program)",
+            "line": 0,
+            "samples": 99,
+            "selfMicros": 362237
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814,
+            "samples": 148,
+            "selfMicros": 213171
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "clone",
+            "line": 9669,
+            "samples": 140,
+            "selfMicros": 193553
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "intersectsObject",
+            "line": 26581,
+            "samples": 143,
+            "selfMicros": 189942
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 8914,
+            "samples": 130,
+            "selfMicros": 176168
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354,
+            "samples": 131,
+            "selfMicros": 173923
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "beginFrame",
+            "line": 110,
+            "samples": 117,
+            "selfMicros": 156282
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "multiplyMatrices",
+            "line": 11917,
+            "samples": 78,
+            "selfMicros": 105800
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrix",
+            "line": 14335,
+            "samples": 55,
+            "selfMicros": 80965
+          },
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "beginFrame",
+            "line": 175,
+            "samples": 55,
+            "selfMicros": 72400
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "determinant",
+            "line": 11983,
+            "samples": 53,
+            "selfMicros": 64991
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.renderBufferDirect",
+            "line": 16193,
+            "samples": 50,
+            "selfMicros": 64542
+          }
+        ],
+        "foliageCache": null
+      }
+    },
+    "artifacts": [
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-movement-animation.json",
+        "sha256": "b74c1c2a4d66904fd8f7be29f92a43899837393838cfcab05dc7605d781202f5"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-scene-diagnosis.json",
+        "sha256": "efda61f1bc1b21588f2714f8ae8465fa5a470ac9cb9390ffad23cb688132db6e"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-cpu-functions.json",
+        "sha256": "4a3bed0c09666c761c72f638d16d0746d18eba2d685ff77ea00d1e6e76c92454"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-rig-pair.json",
+        "sha256": "b4e2228a2c6832d0f07b9c4774e049d1f9c975403eb40e077a32b96934672981"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-cpu-functions.json",
+        "sha256": "3f7e277886be8ffc747f3d233e37aaf7af14b4d69cf79925a8e27f3cfd0dbe67"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-rig-pair.json",
+        "sha256": "1b475851d7886668deed940d40dfc29cb729a377bfc25d73e171eee742bcbf6b"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town.png",
+        "sha256": "9fcb7d5d4d2ff5e218c72efeb80047dfcae8b9db275ad5a889eecbcab2c9361a"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach.png",
+        "sha256": "a482c94c0c35da0a0718de003b32ea886ebe9681eb816045388869ba263ca2d6"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-it4Dz6Dm/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/single-renderer-equipped-party-high.png",
+        "sha256": "64c14d31f2f1008c29deed417d067798ef7d820f2188cd66007528064770be3f"
+      }
+    ]
+  },
+  "correctedPreviousCandidateConclusion": "Unlike the earlier2e receipt, this control preserves pre-existing Skeleton/humanoid instances and withdraws only five new families. Town source893 draws versus640, but CPU27.8/26.7ms versus28.3/28.0ms and33.3/50ms pacing shows no attributable town CPU gain from previous batching alone. Approach source1073/1184 versus340/352 draws and25.8/25.8 versus22.8/21.6ms CPU indicates a local gain. Population varies live; aggregate bounds increase submitted triangles. Original globally disabled control remains historical and is not retrospectively repaired.",
+  "incrementalPackedCandidate": {
+    "evidenceDirectory": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF",
+    "terminal": {
+      "artifact": {
+        "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/party-terminal.json",
+        "sha256": "bb7d910e949a847eb6266a7c41856c80b562bf908e28f54d33796c8f57aab1ae"
+      },
+      "exitCode": 0,
+      "startedUnix": 1791581365.767367,
+      "finishedUnix": 1791581507.4390538
+    },
+    "log": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/party-final.log",
+      "sha256": "a76126bec4b6a5052e92ea509606bb6565ac4dc705d3008c2a51893c2c1c1b3b"
+    },
+    "normalProfiles": [
+      {
+        "label": "actual-town",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.29999999999927,
+        "frameP95Ms": 50,
+        "frameP99Ms": 50.100000000000364,
+        "framesOver33ms": 60,
+        "cpuLoopMedianMs": 27,
+        "cpuLoopP95Ms": 39,
+        "drawCallsMedian": 485,
+        "trianglesMedian": 329132,
+        "geometries": 277,
+        "textures": 160,
+        "activeEntities": 159,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      {
+        "label": "actual-verdant-approach",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 16.700000000004366,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 50,
+        "framesOver33ms": 24,
+        "cpuLoopMedianMs": 19.299999982118607,
+        "cpuLoopP95Ms": 32.599999994039536,
+        "drawCallsMedian": 181,
+        "trianglesMedian": 168803,
+        "geometries": 402,
+        "textures": 234,
+        "activeEntities": 26,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      }
+    ],
+    "comparisons": {
+      "actual-town": {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-rig-pair.json",
+          "sha256": "fb09a0293e71308bd72295d5eec4c6760cad49fc1e59b5b3d8d0d1cd6bcb9fb7"
+        },
+        "census": {
+          "roots": [
+            {
+              "type": "DwarfSalesman",
+              "id": "vip-cosmetic-vendor",
+              "sourceMeshes": 45,
+              "drawMeshes": 18,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "QuestNPC",
+              "id": "quest-npc-1",
+              "sourceMeshes": 43,
+              "drawMeshes": 18,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "DungeonNPC",
+              "id": "chronicle-witness-selen",
+              "sourceMeshes": 42,
+              "drawMeshes": 18,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "DungeonNPC",
+              "id": "dungeon-npc-1",
+              "sourceMeshes": 42,
+              "drawMeshes": 18,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "RespecNPC",
+              "id": "chronicle-witness-mara",
+              "sourceMeshes": 46,
+              "drawMeshes": 24,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "RespecNPC",
+              "id": "respec-npc-1",
+              "sourceMeshes": 46,
+              "drawMeshes": 24,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "QuestNPC",
+              "id": "chronicle-witness-hessa",
+              "sourceMeshes": 43,
+              "drawMeshes": 18,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "DwarfSalesman",
+              "id": "merchant-1",
+              "sourceMeshes": 45,
+              "drawMeshes": 18,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "DwarfSalesman",
+              "id": "chronicle-witness-dain",
+              "sourceMeshes": 45,
+              "drawMeshes": 18,
+              "surfaceAttributes": true
+            }
+          ],
+          "mergedGroups": 102,
+          "referenceLeaves": 247,
+          "referenceRepresentation": "Previous strict rigid constructor batches and existing instances retained"
+        },
+        "profiles": [
+          {
+            "reference": true,
+            "label": "actual-town-source",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 66.60000000000218,
+            "frameP99Ms": 83.39999999999782,
+            "framesOver33ms": 80,
+            "cpuLoopMedianMs": 30.5,
+            "cpuLoopP95Ms": 58.80000001192093,
+            "drawCallsMedian": 640,
+            "trianglesMedian": 329240,
+            "geometries": 315,
+            "textures": 160,
+            "activeEntities": 159,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": false,
+            "label": "actual-town-batched",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 50,
+            "frameP99Ms": 50.099999999998545,
+            "framesOver33ms": 66,
+            "cpuLoopMedianMs": 27.200000017881393,
+            "cpuLoopP95Ms": 39.80000001192093,
+            "drawCallsMedian": 505,
+            "trianglesMedian": 329132,
+            "geometries": 315,
+            "textures": 160,
+            "activeEntities": 159,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": false,
+            "label": "actual-town-batched",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 50,
+            "frameP99Ms": 50,
+            "framesOver33ms": 51,
+            "cpuLoopMedianMs": 26,
+            "cpuLoopP95Ms": 39.5,
+            "drawCallsMedian": 497,
+            "trianglesMedian": 328872,
+            "geometries": 315,
+            "textures": 160,
+            "activeEntities": 159,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": true,
+            "label": "actual-town-source",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 33.30000000000291,
+            "frameP95Ms": 50,
+            "frameP99Ms": 66.69999999999709,
+            "framesOver33ms": 73,
+            "cpuLoopMedianMs": 30,
+            "cpuLoopP95Ms": 41.39999997615814,
+            "drawCallsMedian": 640,
+            "trianglesMedian": 329240,
+            "geometries": 315,
+            "textures": 160,
+            "activeEntities": 159,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          }
+        ]
+      },
+      "actual-verdant-approach": {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-rig-pair.json",
+          "sha256": "e62aa2e1a596b39a82deddcfd09ce3a6f40f532767565c13e93a413883c11297"
+        },
+        "census": {
+          "roots": [
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-39",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-139",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-193",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-235",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-54",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-167",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-117",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-253",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-173",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-265",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-103",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-49",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-120",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-69",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-188",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-97",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-271",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-266",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-291",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-166",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-180",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-172",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-63",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            },
+            {
+              "type": "InfernoTitan",
+              "id": "InfernoTitan-272",
+              "sourceMeshes": 77,
+              "drawMeshes": 30,
+              "surfaceAttributes": true
+            }
+          ],
+          "mergedGroups": 336,
+          "referenceLeaves": 720,
+          "referenceRepresentation": "Previous strict rigid constructor batches and existing instances retained"
+        },
+        "profiles": [
+          {
+            "reference": true,
+            "label": "actual-verdant-approach-source",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 16.70000000001164,
+            "frameP95Ms": 33.40000000000873,
+            "frameP99Ms": 33.40000000000873,
+            "framesOver33ms": 28,
+            "cpuLoopMedianMs": 21.5,
+            "cpuLoopP95Ms": 30.30000001192093,
+            "drawCallsMedian": 198,
+            "trianglesMedian": 166865,
+            "geometries": 422,
+            "textures": 234,
+            "activeEntities": 25,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": false,
+            "label": "actual-verdant-approach-batched",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 16.69999999999709,
+            "frameP95Ms": 33.39999999999418,
+            "frameP99Ms": 33.40000000000873,
+            "framesOver33ms": 18,
+            "cpuLoopMedianMs": 18.5,
+            "cpuLoopP95Ms": 25.600000023841858,
+            "drawCallsMedian": 174,
+            "trianglesMedian": 168313,
+            "geometries": 422,
+            "textures": 234,
+            "activeEntities": 25,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": false,
+            "label": "actual-verdant-approach-batched",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 16.69999999999709,
+            "frameP95Ms": 33.39999999999418,
+            "frameP99Ms": 33.40000000000873,
+            "framesOver33ms": 13,
+            "cpuLoopMedianMs": 18.700000017881393,
+            "cpuLoopP95Ms": 26.099999994039536,
+            "drawCallsMedian": 182,
+            "trianglesMedian": 169193,
+            "geometries": 422,
+            "textures": 234,
+            "activeEntities": 23,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          },
+          {
+            "reference": true,
+            "label": "actual-verdant-approach-source",
+            "frames": 180,
+            "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+            "viewport": {
+              "width": 1280,
+              "height": 844,
+              "pixelRatio": 1
+            },
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+            "visibility": "visible",
+            "frameMedianMs": 16.69999999999709,
+            "frameP95Ms": 33.39999999999418,
+            "frameP99Ms": 33.40000000000873,
+            "framesOver33ms": 20,
+            "cpuLoopMedianMs": 19.900000005960464,
+            "cpuLoopP95Ms": 28.200000017881393,
+            "drawCallsMedian": 242,
+            "trianglesMedian": 169145,
+            "geometries": 422,
+            "textures": 234,
+            "activeEntities": 23,
+            "previewFramesDuringSample": 0,
+            "previewGeometries": 0,
+            "previewTextures": 0
+          }
+        ]
+      }
+    },
+    "cpu": {
+      "actual-town": {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-cpu-functions.json",
+          "sha256": "597bb3f2f2afb8f72e2ddfe5ceb5e66a5d0490a122808b31f35b0da5428cd319"
+        },
+        "topSelfFunctions": [
+          {
+            "source": "",
+            "name": "(program)",
+            "line": 0,
+            "samples": 77,
+            "selfMicros": 537764
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "intersectsObject",
+            "line": 26581,
+            "samples": 137,
+            "selfMicros": 184298
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 8914,
+            "samples": 124,
+            "selfMicros": 170855
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814,
+            "samples": 120,
+            "selfMicros": 160495
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354,
+            "samples": 95,
+            "selfMicros": 144588
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "multiplyMatrices",
+            "line": 11917,
+            "samples": 65,
+            "selfMicros": 107583
+          },
+          {
+            "source": "",
+            "name": "bindVertexArray",
+            "line": 0,
+            "samples": 58,
+            "selfMicros": 90444
+          },
+          {
+            "source": "",
+            "name": "(idle)",
+            "line": 0,
+            "samples": 48,
+            "selfMicros": 89320
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrix",
+            "line": 14335,
+            "samples": 43,
+            "selfMicros": 73037
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "WebGLRenderer.renderBufferDirect",
+            "line": 16193,
+            "samples": 55,
+            "selfMicros": 69052
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "getParameters",
+            "line": 7009,
+            "samples": 54,
+            "selfMicros": 68335
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "beginFrame",
+            "line": 111,
+            "samples": 38,
+            "selfMicros": 63893
+          }
+        ],
+        "foliageCache": {
+          "lookups": 189630,
+          "misses": 0,
+          "mapChanged": false
+        }
+      },
+      "actual-verdant-approach": {
+        "artifact": {
+          "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-cpu-functions.json",
+          "sha256": "373e5682cbca92244b3b1aca921eeef71486e5dffd77c0f636cd3300a364d2c6"
+        },
+        "topSelfFunctions": [
+          {
+            "source": "",
+            "name": "(program)",
+            "line": 0,
+            "samples": 143,
+            "selfMicros": 474135
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "projectObject",
+            "line": 16814,
+            "samples": 190,
+            "selfMicros": 251899
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "intersectsObject",
+            "line": 26581,
+            "samples": 155,
+            "selfMicros": 209518
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrixWorld",
+            "line": 14354,
+            "samples": 149,
+            "selfMicros": 201635
+          },
+          {
+            "source": "/vendor/three/build/three.module.js",
+            "name": "renderObject",
+            "line": 8914,
+            "samples": 129,
+            "selfMicros": 172438
+          },
+          {
+            "source": "/src/core/FoliageShadowInfluence.js",
+            "name": "FoliageShadowInfluence.visit",
+            "line": 105,
+            "samples": 96,
+            "selfMicros": 135227
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "multiplyMatrices",
+            "line": 11917,
+            "samples": 71,
+            "selfMicros": 106405
+          },
+          {
+            "source": "/src/art/ActorInstanceBatches.js",
+            "name": "beginFrame",
+            "line": 111,
+            "samples": 69,
+            "selfMicros": 99318
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "updateMatrix",
+            "line": 14335,
+            "samples": 67,
+            "selfMicros": 92966
+          },
+          {
+            "source": "",
+            "name": "(idle)",
+            "line": 0,
+            "samples": 39,
+            "selfMicros": 89080
+          },
+          {
+            "source": "/vendor/three/build/three.core.js",
+            "name": "applyMatrix4",
+            "line": 10571,
+            "samples": 35,
+            "selfMicros": 50728
+          },
+          {
+            "source": "",
+            "name": "bindVertexArray",
+            "line": 0,
+            "samples": 32,
+            "selfMicros": 50533
+          }
+        ],
+        "foliageCache": {
+          "lookups": 260064,
+          "misses": 0,
+          "mapChanged": false
+        }
+      }
+    },
+    "artifacts": [
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-movement-animation.json",
+        "sha256": "795c6058afb2917bedf73a1f9cb2be441d3ea7331debee3a7075ed0b65f04317"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-scene-diagnosis.json",
+        "sha256": "1f70ffe39dd9917c2d2af58a1a256bfbddd9719857c211de46b99ec7288b1bcf"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-cpu-functions.json",
+        "sha256": "597bb3f2f2afb8f72e2ddfe5ceb5e66a5d0490a122808b31f35b0da5428cd319"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town-rig-pair.json",
+        "sha256": "fb09a0293e71308bd72295d5eec4c6760cad49fc1e59b5b3d8d0d1cd6bcb9fb7"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-cpu-functions.json",
+        "sha256": "373e5682cbca92244b3b1aca921eeef71486e5dffd77c0f636cd3300a364d2c6"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach-rig-pair.json",
+        "sha256": "e62aa2e1a596b39a82deddcfd09ce3a6f40f532767565c13e93a413883c11297"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-town.png",
+        "sha256": "2c0bde0ed916f55e25c0934562e58b2496f6f602012bc50d7c5688b4f62e8219"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-verdant-approach.png",
+        "sha256": "7e74cde123d42945e3de61fa81be9ac10fe45af139e38676b46df0a5ebfc3891"
+      },
+      {
+        "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/single-renderer-equipped-party-high.png",
+        "sha256": "f5905d59466f1e34870258c01723fad853dc184109e2de88f48c6c568aa03b8c"
+      }
+    ]
+  },
+  "incrementalConclusion": "ABBA compares the previous strict rigid representation against current packed PBR surfaces with all reviewed and pre-existing instancing enabled. Town reference640draws/CPU30.5,30.0ms versus candidate505,497draws/CPU27.2,26.0ms; all159entities. Town33.3ms frame median and50ms candidate p95 still fail full budgets. Approach source198,242draws/CPU21.5,19.9ms versus174,182draws/CPU18.5,18.7ms; live populations25 then23. All paired approach frame medians16.7ms and reported p9533.4ms, including reference, so no stable frame-pacing improvement or formal strict gate acceptance. Whole-scene submitted triangles differ with aggregate culling and naturally live poses/population, while all source geometry triangles remain intact.",
+  "party": {
+    "terminalExit": 0,
+    "browserSeconds": 129.67,
+    "goRaceSeconds": 130.742,
+    "scope": "One native GPU browser and three connected normal party sockets, authored Fighter/Cleric/Rogue/Wizard with fourteen saved equipment slots each on local raised terrain. Party membership, gear and authoritative saved states pass. Not four interactive browsers, campaign completion, raid clear, physical-phone playtest or global performance acceptance.",
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.30000000000291,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50.10000000000582,
+      "framesOver33ms": 68,
+      "cpuLoopMedianMs": 27.899999976158142,
+      "cpuLoopP95Ms": 39.30000001192093,
+      "drawCallsMedian": 456,
+      "trianglesMedian": 549343,
+      "geometries": 575,
+      "textures": 380,
+      "activeEntities": 30,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "safeDiagnosticArtifact": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/safe-party-diagnostics.json",
+      "sha256": "830e027ca63aa296e0a1c96effe451484f3f0ebc28120505bd4326bc5b3a00db"
+    },
+    "conclusion": "High30entity party33.3ms median/50ms p95,456draws/549343triangles fails unchanged whole-game20ms median/33.4ms p95/350draw/250000triangle limits. Different live population/resources from prior20entity fixture prevents attribution of cross-run timing or resource growth to this incremental change."
+  },
+  "actualMotion": {
+    "artifact": {
+      "path": "/home/aeml/.local/share/eidolon-terrain-save-evidence-ZB14CZHF/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/actual-movement-animation.json",
+      "sha256": "795c6058afb2917bedf73a1f9cb2be441d3ea7331debee3a7075ed0b65f04317"
+    },
+    "normalFrameSamples": 28,
+    "movingSamples": 14,
+    "clip": "Sword_Run",
+    "effectiveScale": 2.5,
+    "expectedScale": 2.5,
+    "changedBones": [
+      "spine_01",
+      "spine_02",
+      "spine_03",
+      "thigh_l",
+      "calf_l",
+      "foot_l",
+      "thigh_r",
+      "calf_r",
+      "foot_r"
+    ],
+    "scope": "Normal ground-click14m motion; no forced pose/mixer advancement. Confirms prior weapon-profile calibration remains effective, not full gait/contact/art acceptance."
+  },
+  "cpuInvestigation": {
+    "finding": "Three-second same-origin source/function and bounded caller samples identify renderer scene projection, frustum tests, live world-matrix updates, shadow/render submissions and actor-instance preparation. No raw CDP profiles/account arguments retained.",
+    "foliageCache": "Narrow diagnostic wrapper only during separate CPU sample counts town189630/approach260064bounds lookups, zero misses, unchanged WeakMap. Wrapper restored in finally. Refutes repeated bounds cloning in these intervals; baseline V8 clone-attribution hotspot alone does not prove cache churn. Do not change cache or claim allocation repair from that sample.",
+    "foliageRevisions": {
+      "frames": 93,
+      "visits": 221898,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    },
+    "nextInvestigation": "Measured repeated foliage traversal despite zero view/shadow revision changes is a lead for a safe static-scene proof cache, requiring complete dynamic/light/wind/filter/camera invalidation and strict native shadow equivalence. Remaining supplied gear/body cost, whole-scene triangles and actual town/party budgets stay open."
+  },
+  "resourceCensus": {
+    "artifact": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/resource-census.json",
+      "sha256": "f1cab0f20f2209367f2c315e462669a990d1a179a623e3a7459b8377a10e9385"
+    },
+    "script": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/resource-census.mjs",
+      "sha256": "b525db05f41e7e56b568530de79ffef8bb2ed534865c1959fac6ed6993a350c4"
+    },
+    "result": {
+      "scope": "CPU raw buffer census of unique current strict and packed recipe geometry, plus eight-actor instance attribute capacity. Legacy source/strict cached geometry remains retained; packed geometry is additional shared storage. Counts and raw CPU bytes are not GPU VRAM or full scene memory. Global totals deduplicate shared family geometry; per-family sums must not be treated as global allocation.",
+      "rows": [
+        {
+          "type": "DwarfSalesman",
+          "strict": {
+            "meshes": 35,
+            "triangles": 1295,
+            "uniqueGeometries": 28,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 80274,
+            "surfaceAttributeBytes": 0
+          },
+          "packed": {
+            "meshes": 18,
+            "triangles": 1295,
+            "uniqueGeometries": 15,
+            "uniqueMaterials": 5,
+            "uniqueRawAttributeIndexBytes": 193136,
+            "surfaceAttributeBytes": 92256
+          },
+          "eightActorInstances": {
+            "buckets": 14,
+            "instances": 136,
+            "rawAllocatedMatrixAttributeBytes": 8704
+          }
+        },
+        {
+          "type": "QuestNPC",
+          "strict": {
+            "meshes": 34,
+            "triangles": 1309,
+            "uniqueGeometries": 27,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 76946,
+            "surfaceAttributeBytes": 0
+          },
+          "packed": {
+            "meshes": 18,
+            "triangles": 1309,
+            "uniqueGeometries": 16,
+            "uniqueMaterials": 6,
+            "uniqueRawAttributeIndexBytes": 191984,
+            "surfaceAttributeBytes": 83616
+          },
+          "eightActorInstances": {
+            "buckets": 15,
+            "instances": 136,
+            "rawAllocatedMatrixAttributeBytes": 8704
+          }
+        },
+        {
+          "type": "DungeonNPC",
+          "strict": {
+            "meshes": 34,
+            "triangles": 1271,
+            "uniqueGeometries": 28,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 70950,
+            "surfaceAttributeBytes": 0
+          },
+          "packed": {
+            "meshes": 18,
+            "triangles": 1271,
+            "uniqueGeometries": 16,
+            "uniqueMaterials": 5,
+            "uniqueRawAttributeIndexBytes": 200816,
+            "surfaceAttributeBytes": 96096
+          },
+          "eightActorInstances": {
+            "buckets": 15,
+            "instances": 136,
+            "rawAllocatedMatrixAttributeBytes": 8704
+          }
+        },
+        {
+          "type": "RespecNPC",
+          "strict": {
+            "meshes": 39,
+            "triangles": 1385,
+            "uniqueGeometries": 30,
+            "uniqueMaterials": 9,
+            "uniqueRawAttributeIndexBytes": 78050,
+            "surfaceAttributeBytes": 0
+          },
+          "packed": {
+            "meshes": 24,
+            "triangles": 1385,
+            "uniqueGeometries": 19,
+            "uniqueMaterials": 6,
+            "uniqueRawAttributeIndexBytes": 184712,
+            "surfaceAttributeBytes": 78240
+          },
+          "eightActorInstances": {
+            "buckets": 17,
+            "instances": 152,
+            "rawAllocatedMatrixAttributeBytes": 9728
+          }
+        },
+        {
+          "type": "InfernoTitan",
+          "strict": {
+            "meshes": 46,
+            "triangles": 1482,
+            "uniqueGeometries": 33,
+            "uniqueMaterials": 7,
+            "uniqueRawAttributeIndexBytes": 99896,
+            "surfaceAttributeBytes": 0
+          },
+          "packed": {
+            "meshes": 30,
+            "triangles": 1482,
+            "uniqueGeometries": 22,
+            "uniqueMaterials": 6,
+            "uniqueRawAttributeIndexBytes": 205084,
+            "surfaceAttributeBytes": 90432
+          },
+          "eightActorInstances": {
+            "buckets": 22,
+            "instances": 240,
+            "rawAllocatedMatrixAttributeBytes": 15360
+          }
+        }
+      ],
+      "global": {
+        "strict": {
+          "uniqueGeometries": 85,
+          "uniqueRawAttributeIndexBytes": 261822
+        },
+        "packed": {
+          "uniqueGeometries": 76,
+          "uniqueRawAttributeIndexBytes": 952164
+        },
+        "newlyPacked": {
+          "uniqueGeometries": 51,
+          "uniqueRawAttributeIndexBytes": 881280
+        },
+        "combinedCurrentAndReference": {
+          "uniqueGeometries": 136,
+          "uniqueRawAttributeIndexBytes": 1143102
+        }
+      }
+    },
+    "tradeoff": "Fifty-one additional shared packed geometries total881280raw attribute bytes across five deduplicated families; two vec4Float32PBR attributes add32bytes per packed vertex and indexed source copies expand to complete triangles. Current strict and packed references together136geometries/1143102raw bytes; older unbatched recipe buffers also persist outside that union. Not VRAM, full runtime memory or per-actor cost."
+  },
+  "copiedPublicationBundle": {
+    "artifact": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/bundle-result.json",
+      "sha256": "87c20a8c45d40da6581d8b24acbd210e97f1b95945289064fe99ec515934b4ac"
+    },
+    "result": {
+      "bundledModules": 428,
+      "bytes": 3282410,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    },
+    "engine": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/bundle/site/src/core/GameEngine.bundle.js",
+      "sha256": "4753ea553b41c8f244aee96c5b68ca99c2e1c2394bd30531100c98beb812ab62"
+    },
+    "scope": "Copied source only, existing unmodified esbuild0.28.2 bundler and Node24;428modules/3282410bytes/21shared login modules. No original/shared dependency mutation or source bundling. Compared with previous3275720bytes, publication engine adds6690bytes. No actual public deployment acceptance."
+  },
+  "review": "Root viewed actual town, Verdant forecourt and supplied four-class party HUD captures. Equipped silhouettes, ground/shadows and UI remain present. Blocky repeated NPC/architecture, repeating terrain details, overlapping long QA party names and broader world/combat composition remain partial quality; native equivalence does not close Q/CB.",
+  "retainedDevelopmentResults": [
+    "Initial restriction rejected all geometries with groups, unnecessarily preventing scalar BoxGeometry merging. Initial10native cases passed30.2s with smaller gains; preserve them as superseded prototype evidence. Reviewed Three scalar-group behavior, added meaningful72-vertex unit and reran final native appearance.",
+    "Initial lifetime2cases passed7.6s but did not explicitly require observed injected throw or record native renderer. Strengthened fixture and reran only these2cases; final both pass5.4s.",
+    "First ad-hoc CPU census used obsolete batch.mesh shape and failed TypeError before a result. Correct retained script reads current InstancedMesh values directly and completed; no runtime code change or previous failed census acceptance."
+  ],
+  "cleanup": "Independent no-listener checks confirm owned4190/18189disposable QA and4192native fixture servers exited. Fixture cleanup removed only its disposable database. Owned vendor symlink removed before commit. Original dirty workspace, production, accounts, terrain profile and separate long soak unchanged.",
+  "longSoakReadOnly": {
+    "artifact": {
+      "path": "/home/aeml/.local/share/eidolon-town-frame-checks-20261009/surface-followup/eidolon-run-37880032315-20261009T213025Z.json",
+      "sha256": "1bc58e65beb586db87202c309b2933ab09dafc402f9937027ac01a727c8ad92c"
+    },
+    "result": {
+      "observed_at_utc": "2026-10-09T21:30:24Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "html_url": "https://github.com/aeml/eidolon/actions/runs/37880032315",
+        "updated_at": "2026-10-09T03:36:16Z"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "started_at": "2026-10-09T03:36:15Z",
+          "completed_at": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 4
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null,
+              "number": 6
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null,
+              "number": 7
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null,
+              "number": 11
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null,
+              "number": 12
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null,
+              "number": 13
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null,
+              "number": 14
+            }
+          ]
+        }
+      ]
+    },
+    "scope": "Luna single read-only observation21:30:24UTC, exact37880032315attempt1/dc7d22f2 in_progress; multiplayer step6running, evidence upload pending. Historical snapshot, no terminal acceptance, restart or cancellation."
+  },
+  "remaining": "Complete inherited1.11–1.99 objective remains active: Q/CB modern-world/actor/fit/combat/art, actual equipped whole-game High/Low budgets and supported devices, compatible raised client/server/profile activation and rollback, F1–F5 promise/threat/capacity/policy/catalog freeze, operations1.81–1.86/recovery/support/rights, consolidation1.87–1.89, owner-approved1.90beta/cohort, findings1.91–1.98, final1.99launch acceptance and evidence/operations handoff. Human campaign/pacing and physical-phone party/dungeon playtest remain owner-deferred. Preserve valid unchanged evidence; no campaign/soak repeats, hidden content, weaker budgets, commerce/access/rights/recovery/staffing decisions or fabricated approvals.",
+  "remainingRegister": "2026-10-09-release-readiness-remaining.md",
+  "finalChecks": {
+    "scopedESLint": "All eleven changed JavaScript files pass --max-warnings=0.",
+    "whitespace": "git diff --check passes.",
+    "evidenceIntegrity": "All twelve runtime/fixture source hashes and52referenced artifact SHA256records validated.",
+    "selection": "Retain qualified private incremental change with explicit current party/town failures and resource tradeoffs; no global performance or modern-art acceptance."
+  }
+}

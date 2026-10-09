@@ -1,104 +1,108 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-09T21:09:41.902969+00:00",
-  "classification": "progress: actual scene/animation diagnosis identifies measured costs; private weapon-profile calibration and reviewed NPC/Titan constructor/instance integration,117units14native tests and actual four-class/save evidence; performance gaps and control limitation retained; no public release",
-  "qualifiedRuntime": "private source over e0b6e4dc9f252edb1fd8bbe4f435974b87de9e44; scoped runtime hashes in2026-10-09-actual-rig-render-checks.json, full gates remain open",
+  "recordedUTC": "2026-10-09T21:41:23.692958+00:00",
+  "classification": "progress: private opaque same-pivot rig PBR consolidation qualifies157units/28native comparisons/finalHighLow GPU lifetime and real connected party/save evidence; corrected control now measured, incremental CPU gains and full performance failures retained; no public release",
+  "qualifiedRuntime": "private source over2e3cf1b370f8db24f0982c71bcde89c37dcba037; exact frozen source hashes in2026-10-09-rigid-surface-render-checks.json; full goal/gates active",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-09T20:39:33Z",
+    "readOnlyObservationUTC": "2026-10-09T21:30:24Z",
     "result": {
-      "conclusion": "",
-      "databaseId": 37880032315,
-      "headSha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+      "observed_at_utc": "2026-10-09T21:30:24Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "html_url": "https://github.com/aeml/eidolon/actions/runs/37880032315",
+        "updated_at": "2026-10-09T03:36:16Z"
+      },
       "jobs": [
         {
-          "completedAt": "0001-01-01T00:00:00Z",
-          "conclusion": "",
-          "databaseId": 113657358646,
           "name": "100-client authoritative-state soak",
-          "startedAt": "2026-10-09T03:36:15Z",
           "status": "in_progress",
+          "conclusion": null,
+          "started_at": "2026-10-09T03:36:15Z",
+          "completed_at": null,
           "steps": [
             {
-              "conclusion": "success",
               "name": "Set up job",
-              "number": 1,
-              "status": "completed"
+              "status": "completed",
+              "conclusion": "success",
+              "number": 1
             },
             {
-              "conclusion": "success",
               "name": "Initialize containers",
-              "number": 2,
-              "status": "completed"
+              "status": "completed",
+              "conclusion": "success",
+              "number": 2
             },
             {
-              "conclusion": "success",
               "name": "Checkout",
-              "number": 3,
-              "status": "completed"
+              "status": "completed",
+              "conclusion": "success",
+              "number": 3
             },
             {
-              "conclusion": "success",
               "name": "Setup Go",
-              "number": 4,
-              "status": "completed"
-            },
-            {
+              "status": "completed",
               "conclusion": "success",
+              "number": 4
+            },
+            {
               "name": "Setup Node.js",
-              "number": 5,
-              "status": "completed"
+              "status": "completed",
+              "conclusion": "success",
+              "number": 5
             },
             {
-              "conclusion": "",
               "name": "Run multiplayer soak",
-              "number": 6,
-              "status": "in_progress"
+              "status": "in_progress",
+              "conclusion": null,
+              "number": 6
             },
             {
-              "conclusion": "",
               "name": "Upload soak evidence",
-              "number": 7,
-              "status": "pending"
+              "status": "pending",
+              "conclusion": null,
+              "number": 7
             },
             {
-              "conclusion": "",
               "name": "Post Setup Node.js",
-              "number": 11,
-              "status": "pending"
+              "status": "pending",
+              "conclusion": null,
+              "number": 11
             },
             {
-              "conclusion": "",
               "name": "Post Setup Go",
-              "number": 12,
-              "status": "pending"
+              "status": "pending",
+              "conclusion": null,
+              "number": 12
             },
             {
-              "conclusion": "",
               "name": "Post Checkout",
-              "number": 13,
-              "status": "pending"
+              "status": "pending",
+              "conclusion": null,
+              "number": 13
             },
             {
-              "conclusion": "",
               "name": "Stop containers",
-              "number": 14,
-              "status": "pending"
+              "status": "pending",
+              "conclusion": null,
+              "number": 14
             }
-          ],
-          "url": "https://github.com/aeml/eidolon/actions/runs/37880032315/job/113657358646"
+          ]
         }
-      ],
-      "status": "in_progress"
+      ]
     },
-    "status": "Last read-only observation in_progress, no terminal acceptance/cancel/restart. Do not infer current live status from this historical checkpoint."
+    "status": "Last read-only observation in_progress, step6running/uploadpending. Historical snapshot; no terminal acceptance/cancel/restart."
   },
-  "nextRequiredResult": "Improve convincing code-owned ground material morphology/composition at gameplay scale, while continuing measured renderer/simulation work. Native technical equivalence or quieter grain alone does not establish modern-art acceptance. Full original goal remains active.",
-  "currentReceipt": "docs/plans/2026-10-09-actual-rig-render-checks.json",
-  "actualSceneControl": "Town ABBA globally disabled previous Skeleton instances; no solely attributable new-work claim. Revised selective reference not yet connected-validated.",
-  "previousGoalTurnClassification": "progress: owned e0b6e4dc ground/understory composition, exact native/fallback evidence and normal-input41step route/movie changed source and acceptance evidence; full objective remains open",
-  "nextAction": "Diagnose measured town CPU and full supplied equipped-party frame/draw/triangle budgets. Use corrected selective control before attributing new-family gains; keep native appearance, source ownership and exact supplied assets."
+  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1–F5, beta or launch acceptance.",
+  "currentReceipt": "docs/plans/2026-10-09-rigid-surface-render-checks.json",
+  "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
+  "previousGoalTurnClassification": "progress: actual scene/animation diagnosis identifies measured costs; private weapon-profile calibration and reviewed NPC/Titan constructor/instance integration,117units14native tests and actual four-class/save evidence; performance gaps and control limitation retained; no public release",
+  "nextAction": "Investigate observed repeated foliage traversal with stable view/shadow revisions, complete invalidation and native shadow equivalence; continue supplied equipped-party renderer/matrix/triangle and town costs without hiding content or weakening gates. Coherent physical ground/world/combat art and entire inherited roadmap remain active."
 }

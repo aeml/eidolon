@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { batchHumanoidRenderParts } from './HumanoidRenderBatches.js';
+import { batchRigidSurfaceParts } from './RigidSurfaceBatches.js';
 import { createTailoredTorsoGeometry, createPairedEyesGeometry } from './ProceduralGarmentGeometry.js';
 
 const GEOMETRIES = new Map();
@@ -714,7 +715,7 @@ function installRestPoseReset(root) {
     };
 }
 
-export function createProceduralTownActor(type, { batch = false } = {}) {
+export function createProceduralTownActor(type, { batch = false, surfaceAttributes = false } = {}) {
     const definition = TOWN_ACTOR_DEFINITIONS[type];
     if (!definition) throw new Error(`Unknown procedural town actor type: ${type}`);
 
@@ -734,7 +735,10 @@ export function createProceduralTownActor(type, { batch = false } = {}) {
     root.userData.sharedGeometry = true;
     root.userData.bounds = definition.bounds;
     root.userData.animations = [createIdleClip(definition)];
-    if (batch) batchHumanoidRenderParts(root);
+    if (batch) {
+        batchHumanoidRenderParts(root);
+        if (surfaceAttributes) batchRigidSurfaceParts(root);
+    }
     installRestPoseReset(root);
     return root;
 }

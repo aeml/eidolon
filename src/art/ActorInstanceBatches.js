@@ -1,3 +1,4 @@
+import { isOwnedRigidSurfaceMaterial } from './RigidSurfaceBatches.js';
 import { DynamicDrawUsage, Group, InstancedMesh, Material, Matrix4, Object3D } from 'three';
 
 const inside = (part, ancestor, visible = false) => {
@@ -39,7 +40,7 @@ function supportsInstanceNormals(matrix) {
 }
 
 const eligible = part => candidate(part) && part.material.visible && !part.material.transparent && !part.material.alphaHash &&
-    part.material.onBeforeCompile === Material.prototype.onBeforeCompile && !part.customDepthMaterial && !part.customDistanceMaterial &&
+    (part.material.onBeforeCompile === Material.prototype.onBeforeCompile || isOwnedRigidSurfaceMaterial(part.material)) && !part.customDepthMaterial && !part.customDistanceMaterial &&
     part.onBeforeRender === Object3D.prototype.onBeforeRender && part.onAfterRender === Object3D.prototype.onAfterRender &&
     part.onBeforeShadow === Object3D.prototype.onBeforeShadow && part.onAfterShadow === Object3D.prototype.onAfterShadow &&
     !Object.keys(part.geometry.morphAttributes).length && part.matrixWorld.determinant() > 0 &&

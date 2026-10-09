@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 current full-scope checkpoint:** Public1.79.22/exact30a8b603
+is accepted with all ten CI jobs, mandatory native/live evidence and public
+assets/identities/readyDB. The held terrain milestone now includes qualified
+private opaque NPC/Titan surface consolidation over2e3cf1b3:157units,
+28native pose comparisons and High/Low lifetime checks pass. Incremental town
+CPU improves30→26–27ms; town and current fully equipped party still fail the
+unchanged whole-game budgets. Corrected prior controls and resource costs are
+retained in [the receipt](docs/plans/2026-10-09-rigid-surface-render-checks.json).
+No new version, public push, profile or access activation. Full inherited
+1.11–1.99, modern-art/Q/CB, raised-party/device, F1–F5, operations, owner/human/
+rights/beta/launch and final handoff scope remains active. Use the
+[remaining register](docs/plans/2026-10-09-release-readiness-remaining.md);
+earlier delivery checkpoints below are historical, not current queues.
+
 **October9 superseding delivery checkpoint:** Corrected19/293/CI37941972587
 passes all ten jobs; root public bytes/front-back/ready DB match14:49:52UTC.
 Combine larger irregular worn streets into still-unpublished20 rather than

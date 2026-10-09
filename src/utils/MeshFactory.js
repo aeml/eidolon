@@ -789,19 +789,19 @@ export class MeshFactory {
         }
 
         if (type === 'DwarfSalesman') {
-            return createProceduralDwarfSalesman({ batch: true });
+            return createProceduralDwarfSalesman({ batch: true, surfaceAttributes: true });
         }
 
         if (type === 'QuestNPC') {
-            return createProceduralQuestNPC({ batch: true });
+            return createProceduralQuestNPC({ batch: true, surfaceAttributes: true });
         }
 
         if (type === 'DungeonNPC') {
-            return createProceduralDungeonNPC({ batch: true });
+            return createProceduralDungeonNPC({ batch: true, surfaceAttributes: true });
         }
 
         if (type === 'RespecNPC') {
-            return createProceduralRespecNPC({ batch: true });
+            return createProceduralRespecNPC({ batch: true, surfaceAttributes: true });
         }
 
         if (type === 'Skeleton') {
@@ -815,7 +815,7 @@ export class MeshFactory {
         } else if (type === 'Construct') {
             return createProceduralConstruct();
         } else if (type === 'InfernoTitan') {
-            return createProceduralInfernoTitan({ batch: true });
+            return createProceduralInfernoTitan({ batch: true, surfaceAttributes: true });
         } else if (type === 'RootboundWarden') {
             return createProceduralRootboundWarden();
         } else if (type === 'BriarMatron') {

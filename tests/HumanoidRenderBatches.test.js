@@ -248,7 +248,7 @@ test.each(serviceCases)('%s owned rigid batching preserves all surfaces, animati
     const count = getHumanoidBatchGeometryCount();
     const production = await MeshFactory.createMeshForType(type);
     expect(getHumanoidBatchGeometryCount()).toBe(count);
-    expect(production.userData.humanoidRenderBatches).toEqual(batched.userData.humanoidRenderBatches);
+    expect(production.userData.humanoidRenderBatches).toEqual(make({ batch: true, surfaceAttributes: true }).userData.humanoidRenderBatches);
     const child = visibleMeshes(batched).find(mesh => !mesh.matrixAutoUpdate);
     const restMatrix = child.matrix.clone(); child.visible = false; child.position.x += 10; child.updateMatrix();
     MeshFactory.releaseMesh(type, batched);
