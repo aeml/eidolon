@@ -10,6 +10,20 @@ retained, all446prior entries byte-identical; versions synchronized. See
 ordered1.79.9–1.79.11 acceptance precedes this release. Full1.80/F1-F5,
 modern-art and operator/device/human/owner/beta/launch gates remain open.
 
+**October9 prepared11 startup guidance:** Retain corrected10/d3a3b9f7.
+Actual Firefox login works; local headless 3D context creation still fails and
+is not qualified. Add lightweight failure-only graphics guidance without
+changing successful rendering, vendor/browser settings or authentication.
+Show it in the shared header because login panel is hidden after authentication.
+425 focused checks, three Chrome/Firefox login/failure-path cases and one normal
+Chrome 3D/loot case pass. Retain failed diagnostics and initial hidden-input
+test timeout. All445 prior notes exact,446total/10initial/44lazy,111116bytes.
+[Evidence](docs/plans/2026-10-09-graphics-startup-checks.json).
+11 stays local until corrected10 CI/public acceptance; then fresh remote
+reconciliation and its own publication gates. Prepared12-15 must inherit this
+fix/Go1.27.2 without overwriting their later renderer improvements. Full goal,
+modern art/F1-F5/party/device/human/owner/beta/launch scope remains unfinished.
+
 **Current requested login improvement:** Prepared1.79.11 now paginates notes:
 ten initial, ten more per click, all446 entries retained.817493to110462bytes.
 Login defers the engine/catalog and handles an already-fired ready event.
@@ -31,6 +45,32 @@ Earlier status notes below are historical; no completion/freeze gate is waived.
 Preserve all approved supplied class/item GLBs and animations; the obsolete
 procedural-only language below does not authorize removing them. Full modern-art
 contract and authoritative numbered roadmap remain active.
+
+**October9 security correction for unaccepted1.79.10:** Run37861950511/head
+6ed016b7 terminates failure: nine newly reported reachable Go1.27.1 standard-
+library advisories, all fixed in1.27.2. Client/all three browser shards pass;
+downstream deployment/QA skip, not pass. Leave run intact, never bypass scan.
+Align every API/monitor/CI/isolated build pin to1.27.2; modules/locks/gameplay/
+art unchanged. Exact strict scan now0reachable, module verification, two race
+packages, actual API/monitor builds and412locked-client checks pass. Retain
+initial stale shared Node-link failure; fresh owned npmci fixes fixture only.
+Only current unaccepted10note changed, all444older entries byte-identical.
+[Evidence](docs/plans/2026-10-09-go1272-security-checks.json).
+Corrected10 needs new CI/public acceptance; last accepted9/7114aad6. Prepared
+11 contains requested login/Firefox fix;12-15 and full original roadmap/art/
+F1-F5/party/device/human/owner/beta/launch gates remain open and goal active.
+
+**Accepted public1.79.9:** Exact7114aad6/run37842726678 passes all ten
+mandatory jobs. Root independently verifies public front/back identities,
+healthy DB, clean production checkout and four exact exported file bytes,
+including actual ordered CSS bundle. Optional broader steps skipped, not passed.
+Original timed-out/failed37791738441 attempts retained; corrected-source QA
+preserves runtime targeting and original manual loot/save gates. See
+[public receipt](docs/plans/2026-10-08-release1-79-9-public-checks.json).
+Next prepared1.79.10 may publish after fresh remote reconciliation; then1.79.11
+login/Firefox and prepared12–14. No optional batching answer yet, so preserve
+ordered release acceptance. Full original roadmap/art/F1-F5/device/owner/launch
+scope remains active; earlier pending states below are historical.
 
 **October8 corrected1.79.9 publication QA:** Previous37791738441 attempt1
 times out after6h browser install; attempt2 fails manual loot acquisition because

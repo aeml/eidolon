@@ -434,7 +434,8 @@ For local Firefox QA, use port4173 or4192, not its restricted port4190.
   acknowledged activity storage gate each send; uncertain replies never resend.
   No service-stop, email, data or retention changes. Locally prepared, not live;
   operator tabletop, ownership and complete freeze/operations gates remain open.
-  Inherited regional needle boughs, hanging
+  Inherited Go1.27.2 security correction with unchanged vulnerability gates
+  and dependencies, regional needle boughs, hanging
   Water willow foliage, connected Fire snags, rooted mineral formations and
   retained-population travel stands. Air landmarks gain visual-only leafy
   heath; regional tree/groundcover detail now switches without a reload.
