@@ -1,0 +1,12 @@
+{
+  "status": "Staged environment candidate, not deployed or final modern-art acceptance",
+  "scope": "Flood Shelter, Cold Kiln and Observatory evidence books now have curved closed paper stacks and writing following the fold. Two meshes replace ten page/line meshes:8fewer color submissions per book,40more stored triangles (160versus120) excluding shadow passes. Existing material/texture set, desk, binding, marker, restoration, colliders and interaction bounds unchanged; no new per-frame work.",
+  "checks": "Initial geometry/site34tests passed2.289s. Final analytic paper normals retain sharp stack edges;35tests passed2.568s, including finite deterministic bounded geometry, continuous top normals, lifecycle/colliders/inspection/restoration. Scoped lint/whitespace passed. Counts overlap, not69unique tests.",
+  "native": "Actual System Chrome:15-landmark gallery and populated Water/Fire High1280/Low390 presentation3cases passed34.0s, retries0. Final normal-only refinement rechecked15-landmark gallery1pass4.4s. Root inspected Water/Fire book closeups. Original30000triangle gallery cap and all interaction/assertion scopes retained. Untimed art fixtures, not FPS, full equipped party, physical phone or whole-game acceptance. Close-up tessellation/self-shadow appearance and desk/binding detail still merit final art review.",
+  "artifacts": [
+    "/home/aeml/.local/share/eidolon-chronicle-folded-book-native-20261009",
+    "/home/aeml/.local/share/eidolon-chronicle-folded-book-final-native-20261009",
+    "/home/aeml/.local/share/eidolon-chronicle-folded-book-final-units-20261009.log"
+  ],
+  "delivery": "Owned raised-current branch only; same source selected narrowly into canonical preparation. Not added to queued14-18, no new version/push/profile activation. Full modern world/art/F/beta/launch goal remains active."
+}
