@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Private camp-grounding and dressing candidate; focused checks pass, native visual/performance review pending",
+  "status": "Private camp-grounding and dressing candidate; focused checks and scoped native review pass, not pushed or accepted live",
   "source": "bf35cdc0; based on prepared19 fa47c57c, not a public update",
   "changes": "Replace the floating leather box with the existing folded/rolled Low bedroll geometry, grounded by its true minimum; lower hearth ring onto town surface, add two physically stacked logs in existing timber batch. Register feathered charcoal wear beneath the actual fifteen rotated hearths using the existing town-mask alpha channel. No decals, extra textures, draws, dynamic work, blockers or gameplay changes.",
   "verification": "Three full focused suites17checks pass8.655s; changed world-registration case1pass15.324s/23unselected. Five-file lint and whitespace pass.17 source parts per camp/255total, existing9material batches;19740raw field triangles versus16440 on19 (+3300). One additional cached geometry, no material added. Original placements, retired picking bounds and walking blockers retained.",
@@ -9,6 +9,14 @@
     "world": "779e0cfdd8070401882ef7a806d885a6d9e6cf90c1d1ce7ce725064260d7ba10"
   },
   "retainedTrials": "First full two-suite run11pass/2fail: actual Low cylinder minimum left bedroll above grounding tolerance, cache gains one geometry. Correct geometry origin rather than widening grounding test. Partial name-filter trial7pass/1fail/29unselected initializes fewer lazily created caches, so its order-sensitive aggregate cache assertion is not used as acceptance. Full affected suites pass after final stacking correction.",
-  "next": "Current18 live CI owns native browser. After its terminal acceptance, inspect changed equipped High/Low camps plus two populated Earth/town profiles using unchanged frame/draw/triangle/resource caps; shader compilation and actual presentation still need proof. Keep this separate from pushed18 and prepared19. No unrelated campaign/soak replay.",
+  "nativeQualification": {
+    "scope": "Actual production RenderSystem with System Chrome AMD Vulkan1.4.318/RADV:4distinct cases pass1.5m/retries0. Two populated Earth/town profiles (18timed views/120samples each) plus two fourteen-slot supplied Fighter/HUD town cases atHigh1280/Low390. Original frame/draw/triangle/resource gates retained; no fake clock, budget tolerance or population reduction.",
+    "profiles": "High maximum16.7ms median/33.4ms p95/240calls/245636triangles; Low16.7/16.8/109/78990. Warmed geometries/textures/programs unchanged (High275/82/86,Low256/69/60). Named solo render scope, not sustained party/device/campaign performance.",
+    "review": "Root viewed original equipped High/Low camp captures: hearth grounded, blended charcoal visible. First camp hides bedroll behind tent; second actual placement at unchanged camera/zoom first obscured by hero. Stand hero beside rather than before bedroll, preserving all original views; final same two cases pass15.2s. Root views final High/Low bedroll captures: folded/rolled grounded bed readable, paths and outfit retained. Broad sparse floors/prop repetition and final modern-world composition still need work. Earlier15.4s rerun retained, not counted as additional distinct cases.",
+    "nativeLogSHA256": "b847428725887995bf087f5b6ddc93ce5dc70cd9293227917abe90d375679f23",
+    "finalBedrollLogSHA256": "df20ead79cf0038fb384a154fd899a8fbeab131e6364b217a04381e48a52d46f",
+    "artifacts": "/home/aeml/.local/share/eidolon-camp-dressing-native-20261009, eidolon-camp-dressing-bedroll-native-20261009 and eidolon-camp-dressing-bedroll-final-native-20261009 with corresponding logs. Root starts after18 terminal/public acceptance;19 still hosted, no native CI overlap; ongoing soak/services untouched, not an isolated-host claim."
+  },
+  "next": "Own19 terminal/native/live/public acceptance required before any further push. Fold qualified camp work into the next appropriately scoped milestone with version/cumulative notes and fresh normal reconciliation; no unrelated campaign/soak replay. Public raised terrain still disabled.",
   "remaining": "Full modern-world art, raised/equipped-party/device, freeze F1-F5 and1.81-1.99/owner/human/rights/operations/beta/launch remain open. This does not fill every town clearing or prove final aesthetic quality."
 }

@@ -103,6 +103,19 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
         });
         expect(camp).toEqual({ camps: 15, batches: 9 });
         await page.screenshot({ path: testInfo.outputPath('town-pilgrim-camp.png'), style: '#perf-overlay { visibility: hidden !important; }' });
+        // The first camp's real rotation hides its bedroll behind the tent.
+        // Keep that view and inspect a second actual placement at the same
+        // ordinary camera/zoom; never rotate/strip the camp just for a capture.
+        await page.evaluate(async () => {
+            const { createLanternholdCampPlacements } = await import('/src/art/ProceduralLanternholdArchitecture.js');
+            const { render, hero } = window.__courtReview;
+            const placement = createLanternholdCampPlacements(0, 200)[3];
+            // Stand beside, not in front of, the bedroll under inspection.
+            hero.position.set(placement.x + 6, 0, placement.z + 2); hero.mesh.position.copy(hero.position);
+            render.setCameraTarget(hero.position); render.updateEnvironmentLighting(hero.position, 0);
+            render.render(); render.render();
+        });
+        await page.screenshot({ path: testInfo.outputPath('town-pilgrim-bedroll.png'), style: '#perf-overlay { visibility: hidden !important; }' });
         expect(failures).toEqual([]);
     });
 }
