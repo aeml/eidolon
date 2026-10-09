@@ -18,6 +18,13 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Accepted public15/0ac75025/CI37922288706 attempt1 SUCCESS: all ten jobs;
+  native6regional/1celebration/2class-Ilyra/4disposable smoke and live8cases6m,
+  town/rest2cases1.5m, party1case50.1s pass. Four optional steps skip, not pass.
+  Root five publisher hashes/frontend/backend/verifiedIPv4HTTPS/ready DB match
+  11:50:48.427UTC.16 local timing qualification can now reconcile and ship with
+  own gates. Full modern-world/raised/F1-F5/1.81–1.99 goal remains open.
+
 - Prepared16 woodland hold cleared on exact6c242a1c: corrected decimal RAF
   helper, unchanged art/runtime and original limits; native High/Low2cases1.3m,
   18views120samples each pass. High max16.7median/33.4p95/242calls/245947tri;
