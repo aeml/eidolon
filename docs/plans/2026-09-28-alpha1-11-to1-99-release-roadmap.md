@@ -1,5 +1,19 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 actual startup download correction: prior dc7 attempt2 fails mandatory
+live engine entry; nginx records two matching static JS408 responses, upstream
+cause unproven. Publication-only lazy bundle5bd725b9 consolidates412modules and
+preserves shared session identity/source/vendor/asset URLs.438affected checks,
+native four-class construction and unchanged445older notes/512lock entries
+qualify locally; own CI37884472930 running/Luna terminal-only, not accepted.
+All queued12-17 normally inherit the fix with exact predecessor histories;
+417module17graph compiles, no later public push. Air candidatee7450bff Low
+native passes but two High views fail original20ms median cap; retain failure,
+no retry/cap relaxation or release18. Root-reviewed images still show sparse
+stylized scenery requiring fuller modern-ARPG composition. [Receipt](2026-10-09-startup-bundle-and-air-review-progress.json).
+All original modern-world/F1-F5/party/device/owner/operations/rights/beta/launch
+gates stay open. Earlier retry/pending statements below are historical.
+
 October9 exact11/dc7 CI37879564669 attempt1 terminal SSH TCP timeout; all tests/
 predeploy/input/Pages passed, liveQA skipped. Root confirmed DNS/currentpublicIPv4,
 listening sshd/localpublic22 and fresh origin exactdc7, then deliberately retried

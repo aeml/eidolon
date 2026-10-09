@@ -18,6 +18,28 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Corrective11 **5bd725b9** is normally pushed after fresh remote reconciliation;
+  exact CI **37884472930** is in progress with authorized Luna terminal-only
+  monitoring. Prior dc7 attempt2 deployed but failed mandatory live engine-module
+  entry; two release-matched static JavaScript HTTP408 responses establish the
+  download failure, not its upstream cause. Publication-only bundling consolidates
+  412 modules/3,086,706 bytes, preserving lazy login, shared session identity,
+  vendors/source/assets and security.438affected checks and actual published
+  four-class native constructors pass; not authenticated-world/public acceptance.
+  All445old raw notes and512old dependency lock entries remain unchanged.
+
+- All six queued12-17 normally inherit5bd725b9, with no conflicts, clean trees
+  and exact predecessor-note preservation (447through452total). Heads are
+  6478d47c/6429f5c4/d2e8bed5/d49ab8af/89dc3405/adc79772. The actual417module
+  stage17 graph compiles with retained shared imports. No later public push.
+  Air candidate **e7450bff** inherits17 but remains unqualified: native Low
+  passes; High fails20ms median at two views (33.2/33.3ms). Original limits stay.
+  Root reviews High cypress and Low travel images; scenery still needs fuller
+  modern composition, not merely technical compliance. No repeat or release18.
+  [Current evidence](docs/plans/2026-10-09-startup-bundle-and-air-review-progress.json).
+  Full art/F1-F5/party/device/operations/rights/owner/beta/launch scope stays open.
+  Older retry/pending statements below are historical, not current acceptance.
+
 - Corrective11/dc7 **CI37879564669 attempt1 failed only at hosted SSH TCP
   connection timeout**, before deployment commands ran. All tests/predeploy,
   input validation and Pages succeeded; live QA skipped, not accepted. Root
