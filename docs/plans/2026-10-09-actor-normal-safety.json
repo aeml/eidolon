@@ -1,5 +1,12 @@
 {
-  "status": "Implemented privately; focused units and four distinct native High/Low pixel comparisons qualified; ordered publication pending",
+  "status": "Alpha1.79.22 prepared privately; focused units and four distinct native High/Low pixel comparisons qualified; ordered publication pending",
+  "releasePreparation": {
+    "version": "Alpha 1.79.22",
+    "checks": "Six focused suites469cases pass12.384s; scoped lint/whitespace pass. Version labels and new notes synchronized. All456 prior raw notes exact,457total/ten initially/45lazy pages.539 non-root dependency lock entries exact.",
+    "unitLogSHA256": "657001d886dead900e5b4e802db0ae831cd038b427ebf41fa5c8d377baafbf9c",
+    "historySHA256": "dd6f7b2eb5270d53f6a160532639c126372227e3c34a939488cfa616c2456028",
+    "gate": "21/541 attempt2 native, inputs, Pages and SSH pass; actual live QA active under Luna. No next push until root terminal/live/public and retained-evidence acceptance. Current actor runtime remains exact b86, not new gameplay/model changes."
+  },
   "source": "b86df009",
   "base": "Public21/541c2eda; isolated owned worktree, no staged raised-world or unrelated user changes",
   "reproduction": "A parent scaled2/1/1 and child rotated45degrees has positive determinant but nonorthogonal world columns. Pinned Three defaultnormal_vertex explicitly does not support shear for instances. Its instance-normal approximation differs from the correct inverse transpose by more than0.5 in the reproduced normalized vector. Original actor batcher admits the mesh: regression fails1case with23passing before correction.",

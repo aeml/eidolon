@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.21</span>
+                    <span class="start-version-row__label">Alpha 1.79.22</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,17 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.21" data-notes-pages="45" data-notes-total="456">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.22" data-notes-pages="45" data-notes-total="457">
+                <div class="patch-note-entry" data-version="1.79.22">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.22 (Actor lighting correctness)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Procedural fallback characters and Skeletons retain correct surface lighting when a stretched animation hierarchy produces shear. Unsupported transforms use the original mesh renderer rather than the instance shader’s inaccurate normal approximation; normal rotations and ordinary nonuniform scale retain batching.</li>
+                        <li>Live animation and equipment transforms remain responsive. Original materials, triangles, visibility and shadow behavior are retained, including returning to batching when a pose becomes supported again.</li>
+                        <li>Focused native High/Low comparisons cover Skeletons and ten fully equipped procedural characters spanning all four classes. Existing pixel, triangle and visibility limits remain unchanged. Unsupported poses intentionally retain original draw counts; this is a correctness fix, not a frame-rate claim.</li>
+                        <li>Supplied rigged GLBs, fitted equipment, gameplay, rewards and saved progress remain unchanged. Full modern-world art, equipped-party and physical-device qualification remain ongoing; raised terrain is still disabled by default.</li>
+                        <li>Full prior patch history is retained; login shows ten notes initially with Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.21">
                     <h3 class="patch-note-entry__title">Alpha 1.79.21 (Working town details)</h3>
                     <ul class="patch-note-entry__list">
@@ -891,16 +901,6 @@
                         <li>Both public endpoint settings default to empty. Paired configuration is checked before replacing the game service; invalid or incomplete public settings fail closed. Existing installed monitoring remains local-only until an operator explicitly configures and restarts the matching monitor artifact.</li>
                         <li>The existing alert recipients, three-failure/two-success debounce, reminder limits, email provider and retention remain unchanged. The operator guide explains same-artifact rollback and release-transition qualification before enabling public alerts.</li>
                         <li>No account wipe, schema migration, retention, economy, quest or Dark Realm access changes. Full 1.80 freeze, operations ownership, off-machine backup, modern-art and beta gates remain open. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.12">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.12 (administrator maintenance and incident notices)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Admins can prepare maintenance, incident-update and recovery notices in Administration, review the exact public text and explicitly send it to connected players across all areas.</li>
-                        <li>Notices require current durable administrator authority and successful activity storage, checked again before queueing. Plain text, UTC update times, bounded requests and the existing activity retention protect this route.</li>
-                        <li>Missing acknowledgements never resend automatically. History records admission only, not guaranteed delivery; disconnected players do not receive old transient notices.</li>
-                        <li>The operator guide includes safe incident triage, communication, escalation and reopening procedures. This tool does not stop the game, restart services, send email or change player progress.</li>
-                        <li>No account wipe, schema migration, retention, economy, quest or Dark Realm access changes. Original 1.80 feature-freeze and full modern-art, operations and beta gates remain open. Full prior patch history is preserved through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

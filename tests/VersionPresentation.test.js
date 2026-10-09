@@ -4,7 +4,18 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.21';
+const currentVersion = '1.79.22';
+
+test('1.79.22 records scoped actor normal correctness without claiming final art or speedup', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.22"'), previous = html.indexOf('data-version="1.79.21"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['produces shear', 'original mesh renderer', 'ordinary nonuniform scale',
+        'returning to batching', 'Unsupported poses intentionally retain original draw counts',
+        'not a frame-rate claim', 'Supplied rigged GLBs', 'saved progress remain unchanged',
+        'raised terrain is still disabled', 'Full prior patch history', 'ten notes initially',
+        'Load more notes']) expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.21 records working town details without claiming final art or party qualification', () => {
     const html = readIndexWithPatchHistory();

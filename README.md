@@ -429,7 +429,13 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.21`, working town details:
+- Current source version: `Alpha 1.79.22`, actor lighting correctness:
+  stretched procedural animation hierarchies retain the original normal-matrix
+  renderer when instancing cannot preserve their lighting. Ordinary rotations
+  and nonuniform scale still batch; supplied rigged models remain unchanged.
+  Native High/Low comparisons retain original pixel, triangle and visibility
+  limits. Unsupported poses keep original draw counts, not a claimed speedup.
+  Retains working town details:
   an open bucket, winding drum and crank make the communal well readable as
   working equipment; courtyard benches have separated beveled timber slats.
   Market casks, chest and stacked crates meet their actual supporting surfaces.
