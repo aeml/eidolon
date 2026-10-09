@@ -6,6 +6,7 @@ import { createLappedSlateRoof, createDormerGable } from './LanternholdRoofGeome
 import { createLanternholdArchPanel, createLanternholdArchFrame } from './LanternholdFacadeGeometry.js';
 import { createLanternholdCanopy } from './LanternholdCanopyGeometry.js';
 import { createLanternholdTentCanvas, createLanternholdTentFrame } from './LanternholdTentGeometry.js';
+import { createAirBedroll } from './AirCampGeometry.js';
 
 const GEOMETRIES = new Map();
 const MATERIALS = new Map();
@@ -148,7 +149,14 @@ const SHAPES = Object.freeze({
     archFrame: geometry('lanternhold-arch-frame', createLanternholdArchFrame),
     tentCanvas: geometry('lanternhold-tent-canvas', createLanternholdTentCanvas),
     tentEntrance: geometry('lanternhold-tent-entrance', () => createLanternholdTentCanvas({ entrance: true })),
-    tentFrame: geometry('lanternhold-tent-frame', createLanternholdTentFrame)
+    tentFrame: geometry('lanternhold-tent-frame', createLanternholdTentFrame),
+    // Reuse the existing folded/rolled construction at its bounded Low mesh
+    // density. Town's fifteen camps remain in their existing material batches.
+    campBedroll: geometry('lanternhold-camp-bedroll', () => {
+        const roll = createAirBedroll('low');
+        roll.translate(0, -roll.boundingBox.min.y, 0);
+        return roll;
+    })
 });
 
 function createMaterials() {
@@ -489,10 +497,17 @@ function createCamp(root) {
     addMesh(root, 'camp:tent-ridge', SHAPES.tentFrame, MATERIAL_SET.timber, { position: [-.55, 0, -.45] });
     addMesh(root, 'camp:open-tent-flap', SHAPES.tentEntrance, MATERIAL_SET.cloth, { position: [-.55, 0, -.45] });
     addMesh(root, 'camp:oathfire-ring', SHAPES.torus, MATERIAL_SET.stone, {
-        position: [2.35, 0.25, 1.9],
+        position: [2.35, 0.107, 1.9],
         rotation: [Math.PI / 2, 0, 0],
         scale: [1.25, 1.25, 1.25]
     });
+    for (const [index, yaw] of [0, Math.PI / 2].entries()) {
+        addMesh(root, `camp:hearth-log:${index}`, SHAPES.cylinder, MATERIAL_SET.timber, {
+            position: [2.35, .135 + index * .055, 1.9],
+            rotation: [Math.PI / 2, 0, yaw],
+            scale: [.22, .95, .22]
+        });
+    }
     for (const [index, [x, z, scale]] of [[2.05, 1.82, 0.9], [2.52, 1.72, 0.72], [2.34, 2.18, 0.78]].entries()) {
         addMesh(root, `camp:oathfire:${index}`, SHAPES.octahedron, MATERIAL_SET.ember, {
             position: [x, 0.67, z],
@@ -501,7 +516,11 @@ function createCamp(root) {
             receiveShadow: false
         });
     }
-    box(root, 'camp:bedroll', MATERIAL_SET.leather, [2.4, 0.22, 0.85], [-2.15, 0.24, 1.95], [0, -0.25, 0]);
+    addMesh(root, 'camp:bedroll', SHAPES.campBedroll, MATERIAL_SET.leather, {
+        position: [-2.15, .02, 1.95],
+        rotation: [0, Math.PI / 2 - .25, 0],
+        scale: [.85 / 2.5, .65, 2.4 / 3.8]
+    });
     box(root, 'camp:road-standard', MATERIAL_SET.timber, [0.16, 4.5, 0.16], [2.65, 2.25, -2.35]);
     box(root, 'camp:split-oath-banner', MATERIAL_SET.cloth, [1.2, 1.75, 0.08], [2.02, 3.62, -2.35], [0, 0, -0.12]);
     box(root, 'camp:lantern-post', MATERIAL_SET.timber, [.12, 2.12, .12], [-2.75, 1.06, -2.65]);

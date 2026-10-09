@@ -31,6 +31,35 @@ function visibleMeshes(root) {
 }
 
 describe('procedural Lanternhold architecture', () => {
+    test('pilgrim hearth and folded bedroll meet the town ground without changing the camp footprint or batches', () => {
+        const camp = createProceduralLanternholdStructure('camp');
+        camp.updateMatrixWorld(true);
+        const ground = .025 - .005; // Town surface minus the existing field origin.
+        const ring = new THREE.Box3().setFromObject(camp.getObjectByName('camp:oathfire-ring'));
+        const bedroll = camp.getObjectByName('camp:bedroll');
+        const bed = new THREE.Box3().setFromObject(bedroll);
+        expect(ring.min.y).toBeGreaterThanOrEqual(ground - .001);
+        expect(ring.min.y).toBeLessThan(ground + .01);
+        expect(bed.min.y).toBeGreaterThanOrEqual(ground - .001);
+        expect(bed.min.y).toBeLessThan(ground + .01);
+        expect(bedroll.geometry.attributes.position.count / 3).toBeLessThan(200);
+        expect(bedroll.geometry.attributes.position.count / 3).toBeGreaterThan(100);
+        for (const index of [0, 1]) {
+            const log = new THREE.Box3().setFromObject(camp.getObjectByName(`camp:hearth-log:${index}`));
+            expect(log.min.y).toBeGreaterThanOrEqual(ground - .001);
+            expect(log.min.x).toBeGreaterThan(ring.min.x);
+            expect(log.max.x).toBeLessThan(ring.max.x);
+            expect(log.min.z).toBeGreaterThan(ring.min.z);
+            expect(log.max.z).toBeLessThan(ring.max.z);
+        }
+        const placements = createLanternholdCampPlacements(0, 200);
+        const field = createProceduralLanternholdCampField(placements);
+        expect(placements).toHaveLength(15);
+        expect(field.children).toHaveLength(9);
+        const triangles = field.children.reduce((sum, mesh) =>
+            sum + (mesh.geometry.index?.count ?? mesh.geometry.attributes.position.count) / 3 * mesh.count, 0);
+        expect(triangles).toBeLessThanOrEqual(20000);
+    });
     test('camp canvas and entrance share physical cloth detail without new material buckets', () => {
         const camp = createProceduralLanternholdStructure('camp');
         for (const name of ['camp:grave-road-tent', 'camp:open-tent-flap']) {
@@ -128,7 +157,7 @@ describe('procedural Lanternhold architecture', () => {
         first.position.set(20, 3, -5);
         expect(second.position.toArray()).toEqual([0, 0, 0]);
         expect(getProceduralLanternholdCacheMetrics()).toEqual({
-            geometries: 21,
+            geometries: 22,
             materials: 15,
             structures: 7
         });
@@ -155,7 +184,7 @@ describe('procedural Lanternhold architecture', () => {
         expect(campField.userData).toEqual(expect.objectContaining({
             proceduralTownCampField: true,
             instanceCount: 15,
-            sourceMeshCount: 225,
+            sourceMeshCount: 255,
             drawMeshCount: 9
         }));
         expect(campField.children).toHaveLength(9);

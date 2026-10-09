@@ -1,6 +1,20 @@
 import * as THREE from 'three';
 import { createTownCompositionMask, sampleLanternholdGround } from '../src/art/TownGroundComposition.js';
 import { createProceduralTerrainMaterial } from '../src/art/ProceduralRealmTerrain.js';
+import { createLanternholdCampPlacements } from '../src/art/ProceduralLanternholdArchitecture.js';
+
+test('charcoal wear follows every actual rotated camp hearth and leaves service paths unchanged', () => {
+    const camps = createLanternholdCampPlacements(0, 200);
+    for (const camp of camps) {
+        const point = (x, z) => [camp.x + Math.cos(camp.rotation) * x + Math.sin(camp.rotation) * z,
+            camp.z - Math.sin(camp.rotation) * x + Math.cos(camp.rotation) * z];
+        expect(sampleLanternholdGround(...point(2.35, 1.9)).hearth).toBe(1);
+        expect(sampleLanternholdGround(...point(-.55, -.45)).hearth).toBe(0);
+        expect(sampleLanternholdGround(...point(4.35, 1.9)).hearth).toBe(0);
+    }
+    for (const [x, z] of [[0, 200], [-28, 210], [0, 182], [23, 166]])
+        expect(sampleLanternholdGround(x, z).hearth).toBe(0);
+});
 
 test('connected town surfaces retain paved service courts and gates, with unpaved quiet edges', () => {
     for (const [x, z] of [[0, 100], [0, 300], [-100, 200], [100, 200], [0, 200],
@@ -43,6 +57,9 @@ test('town composition preserves depth, geometry and shared albedo ownership', (
     material.onBeforeCompile(shader);
     expect(shader.uniforms.townComposition.value).toBe(mask);
     expect(shader.uniforms.townCourt.value).toBe(paving.color);
+    expect(material.customProgramCacheKey()).toBe('eidolon-town-ground-composition-v3');
+    expect(shader.fragmentShader).toContain('vec4 townWear = texture2D(townComposition');
+    expect(shader.fragmentShader).toContain('vec3(.48, .44, .40), townWear.a');
     expect(shader.fragmentShader).toContain('mix(townEarth, diffuseColor.rgb, townWear.r)');
     expect(shader.fragmentShader).toContain('mix(townFlatNormal, normal, townWear.r)');
     expect(shader.vertexShader).not.toContain('transformed +=');
