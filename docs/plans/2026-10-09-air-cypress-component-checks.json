@@ -55,5 +55,16 @@
     },
     "artifacts": "/home/aeml/.local/share/eidolon-air-vane-chart-visual-20261009 and matching.log (SHA256088cfc02f419c2df58eddc3addfaca2bd3a2c793a80464542f31b37fa671a294); earlier eidolon-air-vane-visual-20261009 retained; eidolon-air-vane-units-20261009.log; eidolon-air-chart-table-units-20261009.log; eidolon-air-chart-legs-units-20261009.log; preservation log SHA256d8bdf71c38a230d154610b1aeeb437117b746d2949b6b0f0c83a8a804fd651f6"
   },
+  "campRevision": {
+    "implementation": "Air courier shelves gain grounded timber uprights/bracing inside their original3x4m solids. Four bivouac bedrolls become gently padded/folded canvas with rolled head ends instead of solid boxes, within original2.6x4x0.4m envelopes. Baked edge/fold/end colors join the already-existing windbreak canvas batch, removing the old separate bedroll cloth batch at that site. No extra materials, textures, shader passes, dynamic work, colliders, interactions or source-asset edits; other recipe branches unchanged.",
+    "checks": "Three selected actual tests pass14.951s: two new High/Low finite UV/unit-normal/color/grounding/envelope/triangle-budget cases plus original Air route/hazard/server-footprint/material-batch case (overlap, not an extra distinct new case). Seven unselected. Scoped three-file eslint/whitespace pass. Actual final419module publication graph compiles3170993bytes/shared21, not native bundled-world or release acceptance.",
+    "visual": "Initial three tests and14.4s native Low case pass, but root rejects its very bright paper-like bedroll appearance. Revised canvas pigmentation/combined batch then passes one native Low presentation case12.3s/retries0; root directly reviews both final bivouac and courier sorting-bay images. Bedrolls are subdued cloth with visible rolled ends; shelving has supports. Improvement remains modest in a sparse/stylized world, not final modern scene approval. Profiling is disabled in both visual runs: original High failure remains open, no new frame/party/physical-device certification.",
+    "sourceHashes": {
+      "src/art/AirCampGeometry.js": "3cda943fe80a38ab055b897c6bedc79fd5f956ae9b89e26ba7f29b4e0f6bdd3a",
+      "src/art/ProceduralElementalLocations.js": "046b36cfe15d985edd695d9254906d1560c8e39d413d6562fd999501a6e211e2",
+      "tests/AirCampGeometry.test.js": "d7f3fb73fcaade26ba251750aa1da2fc89d4fb30e704d22d0f60f18f5757e54d"
+    },
+    "artifacts": "/home/aeml/.local/share/eidolon-air-camp-final-visual-20261009 and matching.log (SHA25698b063ade29bc8339e5738973745653884e2909ccfb4ed1023a1819c116aa2e7); final units log SHA2568887b2b57d46953b4a5e30b262f3af6d157c8dcba5a290f7e4936f99190647f7. Initial eidolon-air-camp-visual-20261009 and units log remain retained despite technical passes because appearance was rejected. No new public version or profile activation."
+  },
   "remaining": "Investigate the native High frame regression without weakening original caps or repeatedly replaying unchanged scenes; actual quality-swap checks and broader scene/combat/equipment/party/device/world-art/full-roadmap gates remain. Existing versions/patch-note history unchanged; no version18 yet. Source is not selected into the canonical future tree or deployed."
 }

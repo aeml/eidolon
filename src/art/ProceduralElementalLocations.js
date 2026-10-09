@@ -12,6 +12,7 @@ import { createHorizonRing, createWindVaneNeedle } from './AirLandmarkGeometry.j
 import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
 import { createElementalGroundCover, createAirPassageGroundCover } from './ElementalGroundCover.js';
 import { createAirWindbreakSail } from './AirCanvasGeometry.js';
+import { createAirBedroll } from './AirCampGeometry.js';
 
 // Original regional compositions; scene ownership and material batches match
 // the Earth kit, but silhouettes/working spaces are specific to each realm.
@@ -200,10 +201,16 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                 rope([[x, 4.8, -7], [x + side * 2, 2, -9], [x + side * 3, .1, -10]], .09, 'iron');
                 if (site.recipe === 'courier-exchange') {
                     for (let shelf = 0; shelf < 3; shelf++) box('wood', x - side * 2, .6 + shelf * .8, 4, 3, .15, 4);
+                    for (const end of [-1, 1]) {
+                        for (const edge of [-1, 1]) box('wood', x - side * 2 + end * 1.2, 1.15,
+                            4 + edge * 1.5, .16, 2.3, .16);
+                        beam([x - side * 2 + end * 1.2, .3, 2.5],
+                            [x - side * 2 + end * 1.2, .3, 5.5], .07);
+                    }
                     footprint(x - side * 2, 1.2, 4, 3, 2.4, 4);
                     for (let i = 0; i < 4; i++) box('cloth', x - side * 2, .9, 2.8 + i * .8, 1.5, .45, .6);
                 } else {
-                    for (const z of [-4, 4]) box('cloth', x - side * 3, .2, z, 2.6, .4, 4);
+                    for (const z of [-4, 4]) part(createAirBedroll(quality), 'canvas', x - side * 3, 0, z);
                     box('stone', x - side * 2, .55, -8, 5, 1.1, 1.5, true);
                 }
             }
