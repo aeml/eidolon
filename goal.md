@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Prepared21/7217394c now includes corrected20 through normal merge and passes
+  final combined native review: four distinct cases1.9m,18timed views, equipped
+  High/Low town and actual dressed Ilyra. Root reviews market/well captures on
+  both viewports. Existing frame/draw/triangle limits unchanged; repeated
+  resources stable. Well/benches/casks and corrected chest/crate grounding are
+  qualified together, not per-prop deployments. Exact424module publisher is
+  retained in ready21-utility receipt; clean source/fresh remote reconciled.
+  normal21 push waits for exact corrected20 CI37954540092 acceptance. Luna
+  watches that deployment sparsely. No long campaign/soak replay or mutation.
+
 - Corrected20/e5989112 normally pushed: QA-only wait for confirmed damage AND
   wounded replicated HP within the unchanged deadline. Focused public journey
   passes54.3s: real damage, Fireball/mana use, recall/healing, rested aura/bank

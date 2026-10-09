@@ -3,6 +3,7 @@
   "status": "Normally pushed QA-only correction; exact successor CI and own final acceptance pending",
   "version": "Alpha 1.79.20",
   "head": "e59891126671b7710cdcaa3f5ed37122734f57cc",
+  "ci": { "run": 37954540092, "attempt": 1, "head": "e59891126671b7710cdcaa3f5ed37122734f57cc", "status": "in_progress", "conclusion": null, "monitor": "Authorized Luna watch_deploy_1795_1008, sparse terminal/actionable reports; no retry/cancel" },
   "scope": "Only town-rest test ordering changed. Confirm hostile damage AND an actual alive/wounded replicated resource snapshot within the original15-second deadline. Retain strict HP, Fireball, mana, recall, town healing, buff banking/aura and relog assertions. Runtime, rewards, regeneration, version and cumulative notes unchanged.",
   "focusedLiveCheck": {
     "source": "Exact successor test against public deployed077 game; ordinary fresh Wizard, no health/buff/teleport/grant mutation",

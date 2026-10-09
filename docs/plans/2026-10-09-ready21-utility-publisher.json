@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "Prepared and qualified, NOT pushed; corrected20 acceptance required first",
+  "version": "Alpha 1.79.21",
+  "head": "7217394c6005fa66b2ca0945c6e29d7defe6763d",
+  "worktree": "/home/aeml/.local/share/eidolon-town-utility-20261009",
+  "scope": "Grouped working town details: winding well/bucket, beveled bench slats/back supports, provision casks/iron hoops and properly supported chest/crates. No new walk/picking envelope, rewards, accounts, services, permission or terrain-profile change. Corrected20 QA ordering normally merged. Version21 synchronized;456notes retain all455previous raw entries; all539non-root lock entries exact.",
+  "qualification": "Full current utility/market suites16checks, catalog check and391metadata checks pass. Four distinct native AMD RADV cases pass1.9m/retries0 with18timed views/120RAF each and equipped town High/Low. Original limits unchanged; resources stable. Root views current equipped market/well High and Low captures. See town-utility-checks.json for exact scope and retained historical checks. Not real-phone/party performance/final modern-art approval.",
+  "reconciliation": "Fresh fetch/normal merge reports up to date with corrected20/e5989112. Clean prepared source. No public21 push yet. Recheck remote immediately before publication; new source HEAD requires new publisher.",
+  "publisher": {
+    "fixture": "/tmp/eidolon-21-utility-publisher-YLAfGfg0",
+    "compiler": "Byte-identical qualified compiler/locked esbuild0.28.2; actual committed source archive.424modules/3259392bytes/21shared login modules;402of896versioned runtime files.",
+    "expectedSHA256": {
+      "index.html": "05a933719bace9f9c9ddfd51d41ddd6f9563e5c694645fab6541bc4e41de258d",
+      "src/main.js": "73df40b7a5c844597ee1748bc2c4194c011469b5fb9120a47a3be74d7244a2ba",
+      "src/core/GameEngine.bundle.js": "299f3c1e2ad2ab1037c6ef52c861c9de8f016bb54dbcf42fa1b363646b268be4",
+      "src/styles/index.css": "74ffdfb38d5786b6c963079d0cb03afa83e090a4db19e1d352d0904afff8fce9",
+      "release.json": "789377d295ac14b5e3ddcdc2c687242ca220cd6d4d2da4223a9376d40f4ef1d7"
+    }
+  },
+  "gate": "Wait for own terminal corrected20 CI37954540092/native/live/exact public acceptance. Then fresh normal reconciliation, normal21 push, authorized sparse Luna watch and root own terminal/native/live/public acceptance. Original20 failed CI retained; skipped optional steps not passes. No soak/retry/cancel or original dirty worktree mutation. Full roadmap goal remains active."
+}
