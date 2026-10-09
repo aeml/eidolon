@@ -168,6 +168,7 @@ function installRestPoseReset(root) {
             object.quaternion.copy(quaternion);
             object.scale.copy(scale);
             object.visible = visible;
+            if (!object.matrixAutoUpdate) object.updateMatrix();
         });
         root.updateMatrixWorld(true);
     };
@@ -1058,7 +1059,7 @@ function createInfernoTitanClips() {
     ];
 }
 
-export function createProceduralInfernoTitan() {
+export function createProceduralInfernoTitan({ batch = false } = {}) {
     const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS.InfernoTitan;
     const p = definition.palette;
     const materials = {
@@ -1137,7 +1138,7 @@ export function createProceduralInfernoTitan() {
     addMesh(censer, 'InfernoTitan_CenserCoal', geometry('titan-censer-coal', () => new THREE.OctahedronGeometry(0.17, 0)), materials.ember,
         { position: [0, -1.28, 0.25], castShadow: false });
 
-    return finalizeEnemy(root, 'InfernoTitan', createInfernoTitanClips());
+    return finalizeEnemy(root, 'InfernoTitan', createInfernoTitanClips(), { batch });
 }
 
 export function createProceduralLegacyEnemy(type) {

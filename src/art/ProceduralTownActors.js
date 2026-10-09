@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { batchHumanoidRenderParts } from './HumanoidRenderBatches.js';
 import { createTailoredTorsoGeometry, createPairedEyesGeometry } from './ProceduralGarmentGeometry.js';
 
 const GEOMETRIES = new Map();
@@ -707,12 +708,13 @@ function installRestPoseReset(root) {
             object.quaternion.copy(quaternion);
             object.scale.copy(scale);
             object.visible = visible;
+            if (!object.matrixAutoUpdate) object.updateMatrix();
         });
         root.updateMatrixWorld(true);
     };
 }
 
-export function createProceduralTownActor(type) {
+export function createProceduralTownActor(type, { batch = false } = {}) {
     const definition = TOWN_ACTOR_DEFINITIONS[type];
     if (!definition) throw new Error(`Unknown procedural town actor type: ${type}`);
 
@@ -732,24 +734,25 @@ export function createProceduralTownActor(type) {
     root.userData.sharedGeometry = true;
     root.userData.bounds = definition.bounds;
     root.userData.animations = [createIdleClip(definition)];
+    if (batch) batchHumanoidRenderParts(root);
     installRestPoseReset(root);
     return root;
 }
 
-export function createProceduralDwarfSalesman() {
-    return createProceduralTownActor('DwarfSalesman');
+export function createProceduralDwarfSalesman(options) {
+    return createProceduralTownActor('DwarfSalesman', options);
 }
 
-export function createProceduralQuestNPC() {
-    return createProceduralTownActor('QuestNPC');
+export function createProceduralQuestNPC(options) {
+    return createProceduralTownActor('QuestNPC', options);
 }
 
-export function createProceduralDungeonNPC() {
-    return createProceduralTownActor('DungeonNPC');
+export function createProceduralDungeonNPC(options) {
+    return createProceduralTownActor('DungeonNPC', options);
 }
 
-export function createProceduralRespecNPC() {
-    return createProceduralTownActor('RespecNPC');
+export function createProceduralRespecNPC(options) {
+    return createProceduralTownActor('RespecNPC', options);
 }
 
 // Ordinary townsfolk use the established adult proportions, without a service

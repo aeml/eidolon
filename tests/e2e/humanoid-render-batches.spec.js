@@ -163,7 +163,9 @@ for (const quality of ['high', 'low']) test(`resonance plaza batches preserve re
 // A bounded renderer equivalence check, not party/network or frame-time QA.
 for (const [label, types, minimumSaved] of [
     ['four-class', ['Fighter', 'Rogue', 'Wizard', 'Cleric'], 63],
-    ['skeleton', ['Skeleton'], 17]
+    ['skeleton', ['Skeleton'], 17],
+    ['town-services', ['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC'], 30],
+    ['inferno-titan', ['InfernoTitan'], 20]
 ]) for (const quality of ['high', 'low']) test(`${label} rigid batches preserve rendered poses: ${quality}`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -174,6 +176,7 @@ for (const [label, types, minimumSaved] of [
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const factories = await import('/src/art/ProceduralHumanoid.js');
         const enemies = await import('/src/art/ProceduralLegacyEnemies.js');
+        const town = await import('/src/art/ProceduralTownActors.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(quality === 'low');
@@ -186,7 +189,7 @@ for (const [label, types, minimumSaved] of [
         render.entityGroup.add(original, batched);
         const place = (mesh, index) => mesh.position.set(index % 2 ? 3 : -3, 0, index < 2 ? -3 : 3);
         for (const [index, type] of types.entries()) {
-            const make = (type === 'Skeleton' ? enemies : factories)[`createProcedural${type}`];
+            const make = (['Skeleton', 'InfernoTitan'].includes(type) ? enemies : types.includes('QuestNPC') ? town : factories)[`createProcedural${type}`];
             const meshes = [make(), await MeshFactory.createMeshForType(type)];
             meshes.forEach((mesh, variant) => {
                 place(mesh, index);
@@ -210,7 +213,7 @@ for (const [label, types, minimumSaved] of [
         // The first render includes reflection-environment preparation. Warm
         // both variants so the comparison measures their steady draw counts.
         capture(false); capture(true);
-        for (const state of ['Idle', 'Run', 'Attack', 'Death']) {
+        for (const state of (types.includes('QuestNPC') ? ['Idle'] : types.includes('InfernoTitan') ? ['Idle', 'Walk', 'Run', 'Attack', 'Death'] : ['Idle', 'Run', 'Attack', 'Death'])) {
             const mixers = [...original.children, ...batched.children].map(mesh => {
                 const mixer = new THREE.AnimationMixer(mesh);
                 mixer.clipAction(mesh.userData.animations.find(clip => clip.name === state)).play();

@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-09T19:54:51.509064+00:00",
-  "classification": "progress: two measured/reviewed experiments rejected, actual connected-party frame/save evidence changes next action; no runtime selection or public release",
-  "qualifiedRuntime": "8e6cdb8f5c3a2bc165443233f4a3cf3cc128647e",
+  "recordedUTC": "2026-10-09T21:09:41.902969+00:00",
+  "classification": "progress: actual scene/animation diagnosis identifies measured costs; private weapon-profile calibration and reviewed NPC/Titan constructor/instance integration,117units14native tests and actual four-class/save evidence; performance gaps and control limitation retained; no public release",
+  "qualifiedRuntime": "private source over e0b6e4dc9f252edb1fd8bbe4f435974b87de9e44; scoped runtime hashes in2026-10-09-actual-rig-render-checks.json, full gates remain open",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-09T19:54:51.509064+00:00",
+    "readOnlyObservationUTC": "2026-10-09T20:39:33Z",
     "result": {
       "conclusion": "",
       "databaseId": 37880032315,
@@ -92,11 +92,13 @@
           "url": "https://github.com/aeml/eidolon/actions/runs/37880032315/job/113657358646"
         }
       ],
-      "status": "in_progress",
-      "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      "status": "in_progress"
     },
-    "snapshotSHA256": "a34b73b9cf4f9ef1b36e6977388a5893b4d2fd89ab518560473e1c1d7f55ce70",
-    "scope": "Exact old dc7 100-client authoritative-state run is currently in_progress; no cancellation, restart or terminal acceptance. Not High GPU/device performance evidence."
+    "status": "Last read-only observation in_progress, no terminal acceptance/cancel/restart. Do not infer current live status from this historical checkpoint."
   },
-  "nextRequiredResult": "Improve convincing code-owned ground material morphology/composition at gameplay scale, while continuing measured renderer/simulation work. Native technical equivalence or quieter grain alone does not establish modern-art acceptance. Full original goal remains active."
+  "nextRequiredResult": "Improve convincing code-owned ground material morphology/composition at gameplay scale, while continuing measured renderer/simulation work. Native technical equivalence or quieter grain alone does not establish modern-art acceptance. Full original goal remains active.",
+  "currentReceipt": "docs/plans/2026-10-09-actual-rig-render-checks.json",
+  "actualSceneControl": "Town ABBA globally disabled previous Skeleton instances; no solely attributable new-work claim. Revised selective reference not yet connected-validated.",
+  "previousGoalTurnClassification": "progress: owned e0b6e4dc ground/understory composition, exact native/fallback evidence and normal-input41step route/movie changed source and acceptance evidence; full objective remains open",
+  "nextAction": "Diagnose measured town CPU and full supplied equipped-party frame/draw/triangle budgets. Use corrected selective control before attributing new-family gains; keep native appearance, source ownership and exact supplied assets."
 }

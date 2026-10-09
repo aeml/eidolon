@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { jest } from '@jest/globals';
+import { createProceduralTownActor, TOWN_ACTOR_TYPES } from '../src/art/ProceduralTownActors.js';
 import { ActorInstanceBatches } from '../src/art/ActorInstanceBatches.js';
-import { createProceduralSkeleton, createProceduralImp } from '../src/art/ProceduralLegacyEnemies.js';
+import { createProceduralSkeleton, createProceduralImp, createProceduralInfernoTitan } from '../src/art/ProceduralLegacyEnemies.js';
 
 function fixture() {
     const scene = new THREE.Scene(), geometry = new THREE.BoxGeometry(), material = new THREE.MeshStandardMaterial();
@@ -74,10 +75,13 @@ test('rotated nonuniform scale without shear remains instanceable', () => {
     } finally { f.instances.dispose(); }
 });
 
-test.each(['Idle', 'Walk', 'Run', 'Attack', 'Death'])('reviewed Skeleton instances retain independent %s pivot transforms and visibility', state => {
+const reviewedCases = [['Skeleton', createProceduralSkeleton], ['InfernoTitan', createProceduralInfernoTitan],
+    ...TOWN_ACTOR_TYPES.map(type => [type, options => createProceduralTownActor(type, options)])];
+test.each(reviewedCases.flatMap(([type, make]) => (TOWN_ACTOR_TYPES.includes(type) ? ['Idle'] : ['Idle', 'Walk', 'Run', 'Attack', 'Death'])
+    .map(state => [type, state, make])))('reviewed %s instances retain independent %s pivot transforms and visibility', (type, state, make) => {
     const scene = new THREE.Scene();
     const roots = [0, 1, 2].map(index => {
-        const root = createProceduralSkeleton({ batch: true });
+        const root = make({ batch: true });
         root.position.x = index * 4;
         const mixer = new THREE.AnimationMixer(root);
         mixer.clipAction(root.userData.animations.find(clip => clip.name === state)).play();
@@ -115,7 +119,9 @@ test.each(['Idle', 'Walk', 'Run', 'Attack', 'Death'])('reviewed Skeleton instanc
 
 test('unbatched Skeleton, unreviewed enemy and supplied actor do not enter the rigid instance roster', () => {
     const scene = new THREE.Scene();
-    scene.add(createProceduralSkeleton(), createProceduralImp());
+    scene.add(createProceduralSkeleton(), createProceduralImp(), createProceduralInfernoTitan(), ...TOWN_ACTOR_TYPES.map(type => createProceduralTownActor(type)));
+    const unreviewed = createProceduralTownActor('QuestNPC', { batch: true });
+    unreviewed.userData.proceduralActorType = 'UnreviewedService'; scene.add(unreviewed);
     const supplied = new THREE.Group(); supplied.userData.authoredClass = 'Fighter';
     supplied.add(new THREE.SkinnedMesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial()));
     scene.add(supplied);

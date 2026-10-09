@@ -249,6 +249,35 @@ describe('Actor animation state machine', () => {
         actor.dispose();
     });
 
+    test.each(['Sword_Run', 'Sword_Run_Dual', 'Sword_Walk'])('movement calibration reaches resolved %s without changing ability playback', resolved => {
+        const actor = animatedActor();
+        const logical = resolved.includes('Walk') ? 'Walk' : 'Run';
+        actor.mesh.userData.resolveAnimationName = name => name === logical ? resolved : name;
+        actor.animations[resolved] = actor.mixer.clipAction(clip(resolved, 1));
+        actor.isRunning = logical === 'Run';
+        actor.playAnimation(logical);
+        expect(actor.currentAction).toBe(actor.animations[resolved]);
+        expect(actor.syncMovementAnimationSpeed(9)).toBe(true);
+        expect(actor.currentAction.getEffectiveTimeScale()).toBeCloseTo(1.5);
+        actor.scaleAnimSpeed = false;
+        expect(actor.syncMovementAnimationSpeed(9)).toBe(true);
+        expect(actor.currentAction.getEffectiveTimeScale()).toBe(1);
+        actor.playAnimation('Attack', false, true);
+        actor.currentAction.setEffectiveTimeScale(.8);
+        expect(actor.syncMovementAnimationSpeed(9)).toBe(false);
+        expect(actor.currentAction.getEffectiveTimeScale()).toBe(.8);
+        actor.dispose();
+    });
+
+    test('movement calibration falls back to the generic action when its profile clip is absent', () => {
+        const actor = animatedActor();
+        actor.mesh.userData.resolveAnimationName = name => name === 'Run' ? 'Missing_Run' : name;
+        actor.playAnimation('Run');
+        expect(actor.syncMovementAnimationSpeed(9)).toBe(true);
+        expect(actor.currentAction.getEffectiveTimeScale()).toBeCloseTo(1.5);
+        actor.dispose();
+    });
+
     test('an orphaned moving snapshot converges to idle instead of running in place', () => {
         const actor = animatedActor();
         actor.state = 'MOVING';

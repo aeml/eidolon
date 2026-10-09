@@ -547,7 +547,12 @@ export class Actor extends Entity {
 
     syncMovementAnimationSpeed(speed = this.stats?.speed) {
         const movementName = this.getMovementAnimationName(this.isRunning);
-        if (!movementName || this.currentAction !== this.animations[movementName]) return false;
+        if (!movementName) return false;
+        const resolvedName = this.mesh?.userData.resolveAnimationName?.(movementName, {
+            restart: false, currentName: this.currentAnimationName
+        }) || movementName;
+        const movementAction = this.animations[resolvedName] || this.animations[movementName];
+        if (!movementAction || this.currentAction !== movementAction) return false;
         this.currentAction.setEffectiveTimeScale?.(
             this.scaleAnimSpeed ? this.getMovementAnimationTimeScale(speed) : 1.0
         );

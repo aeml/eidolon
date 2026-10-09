@@ -9,11 +9,13 @@ const inside = (part, ancestor, visible = false) => {
 };
 
 // Supplied/skinned actors and unreviewed enemy families retain their original
-// path. The constructor-batched Skeleton owns immutable leaves below live
-// animation pivots, just like the existing procedural humanoid fallback.
+// path. Only these reviewed constructor-batched service/enemy rigs own
+// immutable leaves below live animation pivots like the humanoid fallback.
+const reviewedTownTypes = new Set(['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']);
 const ownedRigidActor = root => root?.userData.proceduralHumanoid ||
-    (root?.userData.proceduralEnemyFamily === true && root.userData.proceduralActorType === 'Skeleton' &&
-        Boolean(root.userData.humanoidRenderBatches));
+    (Boolean(root?.userData.humanoidRenderBatches) &&
+        ((root.userData.proceduralEnemyFamily === true && ['Skeleton', 'InfernoTitan'].includes(root.userData.proceduralActorType)) ||
+        (root.userData.proceduralTownActor === true && reviewedTownTypes.has(root.userData.proceduralActorType))));
 
 const candidate = part => part.isMesh && !part.isInstancedMesh && !part.isSkinnedMesh && !part.children.length &&
     part.material?.isMeshStandardMaterial && !Array.isArray(part.material) && part.geometry?.attributes.position;
