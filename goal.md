@@ -18,6 +18,14 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Separate camp dressing atbf35cdc0 grounds the hearth ring and folded Low
+  bedroll, stacks firewood and bakes charcoal into the existing mask alpha.
+  18 focused checks pass; same15 placements/9draw batches, +3300raw triangles.
+  Not pushed; native High/Low equipped/populated review waits for18 live QA.
+  Private raised branch normally merges prepared19 at444937a3 without runtime
+  conflicts: five runtime differences remain the scoped rock shader and atlas
+  modules. Public raised activation and combined raised acceptance stay open.
+
 - Normally pushed18/81702abb/CI37935111832 after own17 exact acceptance and
   fresh fetch/normal reconciliation, unchanged publisher head and current17
   ancestry retained.399 metadata checks/five expected bytes stay exact. Luna
