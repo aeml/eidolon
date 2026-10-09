@@ -312,13 +312,18 @@ export async function loginAndEnterWorld(page, credentials) {
         )), { timeout: 30_000 }).toBe(true);
     } catch (error) {
         const diagnostic = await page.evaluate(() => ({
+            enginePresent: Boolean(window.game),
             playerReady: Boolean(window.game?.player?.position),
             firstStateReceived: Boolean(window.game?._firstStateReceived),
             socketState: window.game?.network?.socket?.readyState ?? null,
             queuedMessages: window.game?.network?.messageQueue?.length ?? null,
             frameCount: window.game?.frameCount ?? null,
             visibility: document.visibilityState,
-            focused: document.hasFocus()
+            focused: document.hasFocus(),
+            startupFailureVisible: document.getElementById('game-startup-status')?.hidden === false,
+            startupPhase: document.getElementById('game-startup-status')?.dataset.startupPhase ?? null,
+            startupFailureKind: document.getElementById('game-startup-status')?.dataset.failureKind ?? null,
+            loginVisible: document.getElementById('login-panel')?.getClientRects().length > 0
         }));
         throw new Error(`The rendered world did not receive authoritative state: ${JSON.stringify(diagnostic)}`, {
             cause: error
