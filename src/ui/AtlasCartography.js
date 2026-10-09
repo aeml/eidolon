@@ -2,9 +2,9 @@ import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { PROCEDURAL_FOLIAGE_RECIPES, createProceduralFoliagePlacements } from '../data/worldFoliage.js';
 import { EARTH_PATHS } from '../data/worldPopulation.js';
 import { WATER_PATHS, FIRE_PATHS, AIR_PATHS } from '../data/elementalPopulation.js';
-import { drawAtlasFoliageGlyph } from './AtlasFoliageGlyphs.js';
 import { resolveWorldElevationProfile } from '../data/worldElevation.js';
 import { drawAtlasTerrainRelief } from './AtlasTerrainRelief.js';
+import { drawAtlasFoliageGlyph } from './AtlasFoliageGlyphs.js';
 
 const PATHS = Object.freeze({ earth: EARTH_PATHS, water: WATER_PATHS, fire: FIRE_PATHS, air: AIR_PATHS });
 
