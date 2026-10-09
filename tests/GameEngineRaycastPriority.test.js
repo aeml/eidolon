@@ -233,4 +233,25 @@ describe('GameEngine raycast target priority', () => {
         expect(engine.getRaycastMeshForEntity({ mesh })).toBe(hitbox);
         expect(engine.getRaycastMeshForEntity({})).toBeNull();
     });
+
+    test('owned actor proxies avoid repeated rig searches and invalidate on detachment or mesh replacement', () => {
+        const engine = Object.create(GameEngine.prototype);
+        const actor = new Actor('cached-proxy', actorConfig);
+        actor.setMesh(new THREE.Group());
+        const first = actor.interactionHitbox, originalMesh = actor.mesh;
+        const search = jest.spyOn(originalMesh, 'getObjectByName');
+        for (let i = 0; i < 100; i++) expect(engine.getRaycastMeshForEntity(actor)).toBe(first);
+        expect(search).not.toHaveBeenCalled();
+        first.removeFromParent();
+        expect(engine.getRaycastMeshForEntity(actor)).toBe(originalMesh);
+        expect(search).toHaveBeenCalledTimes(1);
+        actor.setMesh(new THREE.Group());
+        expect(actor.interactionHitbox).not.toBe(first);
+        expect(engine.getRaycastMeshForEntity(actor)).toBe(actor.interactionHitbox);
+        actor.interactionHitbox.userData.entityId = 'another-owner';
+        const replacementSearch = jest.spyOn(actor.mesh, 'getObjectByName');
+        engine.getRaycastMeshForEntity(actor);
+        expect(replacementSearch).toHaveBeenCalledTimes(1);
+        search.mockRestore(); replacementSearch.mockRestore(); actor.dispose();
+    });
 });

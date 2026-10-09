@@ -450,6 +450,7 @@ export class Actor extends Entity {
             mesh.add(hitbox);
         }
         hitbox.userData.entityId = this.id;
+        this.interactionHitbox = hitbox;
 
         // Setup Animation Mixer if mesh has animations
         if (mesh.userData.animations && mesh.userData.animations.length > 0) {
@@ -2193,6 +2194,7 @@ export class Actor extends Entity {
         this.pendingRemoteAbilityAnimation = null;
         this.animations = {};
         this.mixer = null;
+        this.interactionHitbox = null;
         clearEquipmentVisuals(this.mesh);
         super.dispose();
     }
