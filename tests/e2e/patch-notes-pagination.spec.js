@@ -5,6 +5,44 @@ const isGameDependency = url => url.includes('/src/core/GameEngine.js')
     || url.includes('/vendor/three/') || url.includes('/src/utils/MeshCatalog.js')
     || url.includes('/src/assets/authoredEquipment.generated.js');
 
+test.describe('startup failure diagnostic phases', () => {
+    // Synthetic authentication only; no real account or credentials.
+    for (const [phase, kind] of [['engine-module', 'module-download'],
+        ['engine-construction', 'graphics-unavailable'], ['world-load', 'unknown']]) {
+        test(`startup reports ${phase} without exposing raw errors`, async ({ page }) => {
+            await page.route('**/src/core/GameEngine.js*', route => phase === 'engine-module'
+                ? route.abort('connectionfailed')
+                : route.fulfill({ contentType: 'text/javascript', body: `
+                    export class GameEngine {
+                        constructor() {
+                            ${phase === 'engine-construction' ? "const e = new Error('private fixture detail'); e.code = 'WEBGL2_UNAVAILABLE'; throw e;" : 'this.network = {};'}
+                        }
+                        async loadGame() { throw new Error('private fixture detail'); }
+                    }
+                ` }));
+            await page.routeWebSocket(/\/ws(?:\?|$)/, socket => socket.onMessage(data => {
+                if (JSON.parse(data).type === 'login') socket.send(JSON.stringify({
+                    type: 'login_success', payload: { hasCharacter: true, characterType: 'Fighter' }
+                }));
+            }));
+            await page.goto('/', { waitUntil: 'domcontentloaded' });
+            await expect.poll(() => page.evaluate(() => document.documentElement.dataset.eidolonReady)).toBe('true');
+            await page.locator('#auth-username').fill('startup-diagnostic-fixture');
+            await page.locator('#auth-password').fill('synthetic-only');
+            await page.locator('#btn-login').click();
+            await page.locator('#btn-play-character').click();
+            const status = page.locator('#game-startup-status');
+            await expect(status).toBeVisible();
+            await expect(status).toHaveAttribute('data-startup-phase', phase);
+            await expect(status).toHaveAttribute('data-failure-kind', kind);
+            await expect(status).not.toContainText('private fixture detail');
+            if (phase === 'engine-module') await expect(status).toContainText('Reload the page');
+            await expect(page.locator('#start-screen')).toBeVisible();
+            await expect(page.locator('#loading-screen')).toBeHidden();
+        });
+    }
+});
+
 test('login loads ten notes without the game engine; older pages load only on demand and retry cleanly', async ({ page }) => {
     const archives = [], engines = [];
     page.on('request', request => {

@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 scoped11 startup recovery:**8a/run37874149991 fails mandatory live
+auth entry; original cause remains unknown. Nine jobs green/six live cases pass,
+including Verdant dungeon; Water case flaky then passes. Bounded unmodified
+public fresh-Wizard registration/login/world entry succeeds with authoritative
+state/open socket; no admin grants or existing-player mutation. Not universal
+outage or failed-run acceptance. Safe phase/category diagnostics and known
+module-error page-reload guidance qualify415focused units/four native cases7.1s;
+all445older raw notes exact, current11 note truthful, versions unchanged.
+[Evidence](docs/plans/2026-10-09-release1-79-11-startup-recovery-checks.json).
+Fresh normal reconciliation/new same-version CI/public acceptance required;
+12-17 remain queued. Full original roadmap/art/F1-F5/party/device/owner gates open.
+Earlier pending/precheck statements below are historical.
+
 **October9 qualified16 Skeleton render supplement:** Reuse existing cross-actor
 opaque batches only for reviewed constructor-batched Skeletons; supplied skins,
 other families, live poses/materials/hitboxes/shadows and eligibility unchanged.
