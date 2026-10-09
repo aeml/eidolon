@@ -18,17 +18,37 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
-- Corrected11/e259 run37870274115 is now terminal failure, independently
-  verified after Luna notice. Client/Server/Smoke2/3 succeed; Smoke1 has50pass
-  and two High regional quality-switch cases exceeding120s twice. Downstream
-  deployment skips, not passes; accepted public10 remains healthy/exact/DBready.
-  Split High GPU cover draws into bounded disjoint groups while preserving all
-  twelve phases, every site and original checks/limits; qualification in progress.
+- Prepared17 **3ecf2620f75f045012f35ac6bcd4fa4d1bc76ad6** selectively integrates
+  staged Air passage onto current16:2022High/1093Low heath/scree/86cells and
+  retained-tree road framing. Preserve all supplied assets/current renderer/
+  Earth5.5cells, other realms' exact placements, paths/hazards/portal aprons.
+  Eight affected suites424pass, tooling30 and exact-arithmetic11pass (overlap);
+  six native cases/18timed views plus new High software roadside case pass
+  original limits. Highmax173269tri/127calls/33.3p95; Low48768/56/16.7.
+  First timestamp cancellation failure kept; exact reported-decimal arithmetic,
+  no duration rounding or budget tolerance, still rejects actual excesses.
+  Every451old raw note exact,452total/ten initial/45lazy;17labels synchronized.
+  Actual captures modest; broad gray floors/sparse travel/cohesion still open.
+  [Current-base qualification](docs/plans/2026-10-09-release1-79-17-checks.json).
+  Same QA partitions/timestamp helper selected here,30future checks pass0.817s;
+  no full-future GPU qualification, version downgrade or raised-world activation.
+  Local-only: individual11-16 acceptance and fresh remote reconciliation precede17.
+
+- Corrected11 **8a57420eb5d0a28de2113e82cc40638d9aaa18da** normally pushed after
+  fresh fetch/merge. CI **37874149991** pending, Luna terminal-only monitoring.
+  Six disjoint High software cases pass10.8m on four pinned CPU cores/retries0;
+  all16Water/Fire+8Air sites draw through all twelve phases, ownership/counts/
+  resources and original120s/device limits retained.19browser-plan checks pass.
+  [Correction evidence](docs/plans/2026-10-09-regional-cover-partition-checks.json).
+  Deliberate two-core diagnostic fails and remains retained, not reclassified.
+  Prior e259/run37870274115 terminal failure independently verified after Luna:
+  Client/Server/Smoke2/3 succeed; two High cases exceed120s twice,50otherSmoke1
+  pass. Downstream deployment skips. Accepted public10 remains healthy/exact.
   Normal local12-16 merges now59490933/ba23026b/cde55b56/a392e27f/d3d71b3e,
   with unchanged runtime/versions/history and393focused+8bootstrap checks pass.
   [Ordered-merge evidence](docs/plans/2026-10-09-ordered-release-qa-reconciliation-checks.json).
-  Air passage17 isolated integration started, not yet qualified/committed/live.
-  Full goal remains active; no later publication before11 own acceptance.
+  All later candidates must normally inherit the new accepted11 QA/docs before
+  publication. Full goal remains active; no later push before11 own acceptance.
 
 - Prepared16 supplement **f6d3ec3d** qualifies previously staged Skeleton
   cross-actor rendering on the corrected current base, now explicitly requiring
@@ -474,10 +494,9 @@ and its evidence remains. No cancellation question is currently outstanding.
 Luna monitors each new deployment read-only until terminal completion; an
 observation timeout is not a failure or authority to retry/cancel.
 
-1. Correct and qualify the11 hosted quality-review bottleneck after exact
-   run37870274115 failure; fresh-fetch/reconcile and publish the scoped correction.
-   Accept its own mandatory CI/public identity before individually publishing
-   prepared12-16 in order. Complete selective17 Air-passage integration meanwhile.
+1. Accept or diagnose exact11/8a57420e/run37874149991, then fresh-fetch/normal
+   reconcile and individually publish/accept prepared12-17 in order.17is locally
+   qualified, not live. Continue broader modern-world cohesion work while CI runs.
    Never promote the entire future branch or overlap release pushes.
 2. Finish the complete modern world/art work, not just these woodland changes:
    coherent town/realm/landmark/dungeon scenery, material scale, useful populated

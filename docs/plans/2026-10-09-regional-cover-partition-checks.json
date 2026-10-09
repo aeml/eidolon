@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.11",
+  "status": "qualified local QA correction; replacement release requires own mandatory CI/public acceptance",
+  "failedRun": {
+    "id": 37870274115,
+    "head": "e259f0151d6725d152aeaf3ba5dcb645fb6a0ff4",
+    "conclusion": "failure",
+    "rootVerification": "After Luna terminal notice, root independently reads exact completed head/result/jobs and failed-job logs. Client/Server/Smoke2/Smoke3 pass. Smoke1 has50pass and two High regional quality-switch cases exceeding120s on both attempts. Predeploy/input/deploy/live/Pages skip, not pass. Original failed run and artifacts retained; no rerun/cancel or promotion."
+  },
+  "correction": "QA only: disjoint High cover groups of four sites, each independently owned production-renderer fixture performs all twelve continuous high/low/original phases. Every original cover identity/material/placement/count/bound is checked in every phase; every site's replacement buffers are still uploaded/drawn in all twelve phases across the group union. All sixteen Water/Fire and eight Air sites retained. Low keeps complete review; presentation/input/profile views, original120s timeout, runtime geometry/performance budgets, browser policies and mandatory gates unchanged. Avoid evaluating disposal after the page already closes. No runtime, package/dependency, version, note or player-data changes.",
+  "qualification": {
+    "browser": "Actual CI=1 bundled Chromium, one worker, retries0, fail-fast enabled, constrained to four existing CPU cores: all six High quality-switch groups pass10.8m. Independent saved-report union proves16unique Water/Fire and8unique Air sites,12phases each, no overlap/omission, actual draws and stable warmed geometry/texture/program counts. This is software-rendered fixture correctness, not native timing, physical-device or full-game qualification.",
+    "units": "Actual BrowserSmokePlan suite19pass0.875s. Complete required command/file partition is unchanged; unchanged previous auth/unit/art qualifications remain in their receipts, not replayed or added into a distinct total.",
+    "lint": "Scoped ESLint and git diff whitespace pass. Only one browser QA file and evidence/progress docs changed; all446notes/current labels/runtime/pins/dependencies remain unchanged.",
+    "retainedTwoCPUFailure": "Deliberately restricted two-core diagnostic exceeded120s. Trace shows setup5.58s, synchronous page-side quality method19.46s but its recorded API completion waits roughly151s for earlier graphics/capture work. Assertions only resume after the deadline; the final screenshot fails after context teardown. Stopped only this owned local run after the first failure: one failed/one interrupted/four not run, exit130, not pass. Its log/trace/video/reports remain; no claim that arbitrary two-core software rendering meets120s. Four-core run is separate, not an edited or reclassified result."
+  },
+  "proof": {
+    "regionalFixtureSHA256": "5b7d548f54cbb6dbd13ca0c7a95d0145bf541323fe5e490cb1090f71d40a9840",
+    "fourCPUQualificationLogSHA256": "8cdd12d965b738831ab12a25a27e74c064de6df9c269407ad21e165f4d37a159",
+    "twoCPUFailedLogSHA256": "3b732d7a2f61c93f7f52d17a705cccc51dcd95ee534def37abccd034cab3fc28",
+    "unitLogSHA256": "5fc7400bf2aa8a050bfef8427c9c0c839053e8294c3b705827acd999ca0dc98e"
+  },
+  "artifacts": "Task-owned eidolon-regional-ci-cover-batches-four-cpu-20261009 and matching log; failed/interrupted eidolon-regional-ci-cover-batches-20261009 and matching log retained. Public10/d3a3b9f7 healthy/exact/DBready over verified TLS/forced IPv4 at02:02UTC; IPv6 owner-deferred and unqualified.",
+  "delivery": "Fresh fetch/normal remote reconciliation before new11 push; Luna terminal-only monitoring then root independent mandatory/public acceptance. Individually reconcile/promote12-16 afterward; local17 Air passage remains unqualified until its changed native/software review finishes. Full original roadmap/modern-art/F1-F5/party/device/human/owner/operations/rights/beta/launch remains open."
+}

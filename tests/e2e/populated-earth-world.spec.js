@@ -4,17 +4,20 @@ import { collectBrowserFailures } from './helpers.js';
 
 // Bounded production-renderer scene review, not campaign or network coverage.
 for (const elemental of ['earth', 'water-fire', 'air']) for (const [quality, width] of [['high', 1280], ['low', 390]])
-for (const review of elemental === 'earth' ? ['presentation'] : ['presentation', 'quality']) {
-    // Hosted software rendering must not combine the full scenery/input
-    // review and twelve GPU quality-switch phases in one120s case. Separate
-    // owned fixtures retain every view, cycle, assertion and original limit.
-    test(`populated ${elemental === 'air' ? 'Air' : elemental === 'water-fire' ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px${review === 'quality' ? ' quality switches' : ''}`, async ({ page, baseURL }, testInfo) => {
+for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
+    ...Array.from({ length: quality === 'high' ? (elemental === 'air' ? 3 : 4) : 1 }, (_, index) => index)]) {
+    // Each high-quality software-rendered case uploads/draws at most four
+    // distinct cover sites through all twelve continuous switch phases.
+    // The disjoint cases cover every original site, with no removed checks
+    // or increased timeout. Low-quality cases retain their complete review.
+    test(`populated ${elemental === 'air' ? 'Air' : elemental === 'water-fire' ? 'Water and Fire' : 'Earth and town'}: ${quality} at ${width}px${review === 'presentation' ? '' : ` quality switches${quality === 'high' ? (elemental === 'air' && review === 2 ? ' passage cells' : ` cover batch ${review + 1}`) : ''}`}`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height: 844 });
         await page.goto('/', { waitUntil: 'networkidle' });
-        const locations = await page.evaluate(async ({ quality, mobile, elemental }) => {
+        const locations = await page.evaluate(async ({ quality, mobile, elemental, review }) => {
             const THREE = await import('three');
+            const { renderFrameInterval } = await import('/tests/e2e/renderFrameInterval.js');
             const { RenderSystem } = await import('/src/core/RenderSystem.js');
             const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
@@ -232,6 +235,15 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                     });
                     if (covers.length !== (elemental === 'air' ? 8 : 16)) throw new Error('Missing production cover beds');
                     if (elemental === 'air' && roadside.length !== 86) throw new Error('Missing cell-batched Air passage dressing');
+                    covers.sort((a, b) => a.mesh.userData.elementalGroundCover.site.id.localeCompare(b.mesh.userData.elementalGroundCover.site.id));
+                    const coverBatches = quality === 'high' ? covers.length / 4 : 1;
+                    const drawnCovers = quality === 'high' ? covers.slice(review * 4, (review + 1) * 4) : covers;
+                    const passageReview = elemental === 'air' && (quality !== 'high' || review === 2);
+                    const passageViews = passageReview ? ['air-travel-stands', 'air-east-passage', 'air-west-passage'] : [];
+                    if (!Number.isInteger(coverBatches) || drawnCovers.length !== (quality === 'high' ? (elemental === 'air' && review === 2 ? 0 : 4) : covers.length) ||
+                        new Set(covers.map(original => original.mesh.userData.elementalGroundCover.site.id)).size !== covers.length) {
+                        throw new Error('Incomplete or overlapping regional cover partition');
+                    }
                     const phases = [];
                     const resources = () => ({ geometries: render.renderer.info.memory.geometries,
                         textures: render.renderer.info.memory.textures, programs: render.renderer.info.programs.length });
@@ -256,7 +268,10 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                             let coverPlants = 0, coverTriangles = 0;
                             for (const original of covers) {
                                 const mesh = original.mesh, cover = mesh.userData.elementalGroundCover;
-                                visit(cover.site.id); // Upload/draw actual replacement buffers at their landmark.
+                                // Every original cover is checked in every phase;
+                                // across disjoint cases every replacement buffer
+                                // is also uploaded/drawn at its actual landmark.
+                                if (drawnCovers.includes(original)) visit(cover.site.id);
                                 if (cover.quality !== next || mesh.material !== original.material || mesh.parent !== original.parent ||
                                     !mesh.matrix.equals(original.matrix) || mesh.castShadow || !mesh.receiveShadow ||
                                     !Number.isFinite(mesh.geometry.boundingSphere.radius) || mesh.geometry.boundingSphere.radius <= 0) {
@@ -282,7 +297,10 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                                     }
                                     passagePlants += mesh.userData.plantCount;
                                 }
-                                for (const view of ['air-travel-stands', 'air-east-passage', 'air-west-passage']) visit(view);
+                                // Air's new roadside buffers receive their own
+                                // bounded High draw case; all86cell identities
+                                // and counts remain checked in every phase/case.
+                                for (const view of passageViews) visit(view);
                                 visit(`${id}-bough-review`);
                             }
                             phases.push({ quality: next, triangles, calls: render.renderer.info.render.calls,
@@ -295,7 +313,9 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                     return { id, phases, beforeRepeat, afterRepeat: resources(), restoredQuality: render.graphicsQuality,
                         instanceCount: group.userData.instanceCount, batchCount: group.children.length,
                         partsPerCell: new Set(group.children.map(mesh => mesh.name)).size,
-                        cells: new Set(group.children.map(mesh => mesh.userData.foliageCell)).size, coverBeds: covers.length };
+                        cells: new Set(group.children.map(mesh => mesh.userData.foliageCell)).size, coverBeds: covers.length,
+                        coverBatches, drawnPassageViews: passageViews,
+                        drawnCoverIds: drawnCovers.map(original => original.mesh.userData.elementalGroundCover.site.id) };
                 },
                 reviewWind() {
                     visit('first-grove-arch');
@@ -442,7 +462,7 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                         const now = await new Promise(resolve => requestAnimationFrame(resolve));
                         const start = performance.now();
                         world.updateTownPresentation(1 / 60, engine.player.position); render.render();
-                        if (i >= 30) { frameTimes.push(now - previous); cpuTimes.push(performance.now() - start); }
+                        if (i >= 30) { frameTimes.push(renderFrameInterval(now, previous)); cpuTimes.push(performance.now() - start); }
                         previous = now;
                     }
                     const percentile = (values, p) => values.sort((a, b) => a - b)[Math.floor((values.length - 1) * p)];
@@ -468,7 +488,7 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                 render.clearInstanceScene(); render.dispose();
             } };
             return sites.map(s => s.id);
-        }, { quality, mobile: width < 600, elemental });
+        }, { quality, mobile: width < 600, elemental, review });
         try {
             if (review === 'presentation') {
             const breakdown = [];
@@ -566,13 +586,18 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                 }
             }
             }
-            if (review === 'quality') {
+            if (review !== 'presentation') {
                 const swaps = await page.evaluate(() => window.__populatedWorld.reviewRegionalQuality());
                 expect(swaps.restoredQuality).toBe(quality);
                 expect(swaps.instanceCount).toBe(elemental === 'air' ? 90 : 100);
                 expect(swaps.partsPerCell).toBe(elemental === 'air' ? 3 : 4);
                 expect(swaps.batchCount).toBe(swaps.partsPerCell * swaps.cells);
                 expect(swaps.coverBeds).toBe(elemental === 'air' ? 8 : 16);
+                expect(swaps.coverBatches).toBe(quality === 'high' ? (elemental === 'air' ? 2 : 4) : 1);
+                expect(swaps.drawnCoverIds).toHaveLength(quality === 'high' ? (elemental === 'air' && review === 2 ? 0 : 4) : swaps.coverBeds);
+                expect(new Set(swaps.drawnCoverIds).size).toBe(swaps.drawnCoverIds.length);
+                expect(swaps.drawnPassageViews).toEqual(elemental === 'air' && (quality !== 'high' || review === 2)
+                    ? ['air-travel-stands', 'air-east-passage', 'air-west-passage'] : []);
                 expect(swaps.phases).toHaveLength(12);
                 expect(swaps.afterRepeat).toEqual(swaps.beforeRepeat);
                 const high = swaps.phases.find(phase => phase.quality === 'high').triangles;
@@ -596,6 +621,6 @@ for (const review of elemental === 'earth' ? ['presentation'] : ['presentation',
                 await page.screenshot({ path: testInfo.outputPath('regional-quality-restored.png') });
             }
             expect(failures, failures.join('\n')).toEqual([]);
-        } finally { await page.evaluate(() => window.__populatedWorld.dispose()); }
+        } finally { if (!page.isClosed()) await page.evaluate(() => window.__populatedWorld.dispose()); }
     });
 }

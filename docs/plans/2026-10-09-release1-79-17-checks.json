@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.17",
+  "base": "d3d71b3ee71e7c3be64b247c15886a8e416477c3",
+  "status": "qualified selective local component; not pushed or live",
+  "scope": "Select only staged Air-passage groundcover, procedural location ownership, retained-population cypress framing and their changed checks from future3ecd30b7 onto prepared16. Preserve current GraphicsStartup renderer delegate, filmic surfaces, strict Skeleton batching, Earth5.5cell size, provided class/item/motion assets and gameplay. No whole-future renderer promotion. Air gets2022High/1093Low heath/scree objects in86stable32m cells, same existing cover material/receive shadows/no cast shadows or colliders. All individual Low plants are exact High objects; road/site/hazard/portal clearances cover the whole conservative footprint. Existing90cypresses and75storm formations keep counts/all nonposition fields.",
+  "preservation": {
+    "earthPlacementSHA256": "53d8919b8eeb2790eae58220a1b331d94f60cae56a0404dbac45d97aec9583c2",
+    "waterPlacementSHA256": "b59c1d2fd48fa657935a6631cb3a3c045ebc32be0720269a3bf0f12e46817732",
+    "firePlacementSHA256": "0119b378e90dd2e7648b28552853cc35c425f5f7ff9ba1791d35ea3680bf2bfa",
+    "method": "Independently import the actual Git-base worldFoliage module with only its relative import URLs resolved against its original directory, then compare all per-recipe placements to current. Earth/Water/Fire byte-identical, all Air nonposition fields unchanged. Current renderer/batching/understory independently byte-identical to base. Asset/data/terrain/gameplay sources not changed. Lockfile differs only in its two version labels."
+  },
+  "qualification": {
+    "units": "Eight actual selected suites (six Air/elemental/foliage suites, VersionPresentation and PatchNotesPagination):424pass83.572s on two pinned CPU cores. Two nonexistent initial selector names are not counted. Actual ToolingBaseline/ToolingYamlDependency/BrowserSmokePlan:30pass1.12s. Exact timestamp helper:11pass0.604s. These overlap with inherited receipts and are not a new full-project/unique-total claim.",
+    "native": "Actual System Chrome149/AMD Radeon RADV, normal unchanged hardware policy, retries0: High1280 and Low390 presentation plus High two landmark-cover groups/one roadside draw group and full Low quality-switch review,6pass2.0m. Eighteen timed views,120RAF samples each, unchanged geometry/frame/draw/triangle limits. All eight landmark sites and three real travel views draw replacement buffers in twelve continuous quality phases, all86road cells retain materials/parents/transforms/counts/bounds. Warmed geometry/texture/program counts stable.",
+    "high": { "views": 9, "samples": 1080, "maxMedianMs": 16.7, "maxP95Ms": 33.3, "maxCalls": 127, "maxTriangles": 173269, "resources": { "geometries": 198, "textures": 51, "programs": 49 } },
+    "low": { "views": 9, "samples": 1080, "maxMedianMs": 16.7, "maxP95Ms": 16.7, "maxCalls": 56, "maxTriangles": 48768, "resources": { "geometries": 187, "textures": 37, "programs": 29 } },
+    "software": "Actual CI=1 bundled Chromium/four pinned CPU cores/retries0, new High roadside twelve-phase GPU/resource case passes1.4m. Scoped changed-path check, not a replay of unchanged Water/Fire or full hosted workflow.",
+    "visual": "Root inspects actual High east-passage/travel and Low travel captures. Broken heath/scree and retained-tree road framing are modest improvements. Broad gray floor fields, sparse travel silhouettes, greater geological/foliage variety and broader modern-ARPG cohesion remain unfinished; no final modern-art, equipped-party, raid or physical-device certificate.",
+    "lint": "All changed source/unit/browser files pass scoped ESLint and git diff whitespace. Existing client preparation populates only this task-owned vendor directory; locked shared dependencies/original dirty worktree untouched."
+  },
+  "retainedFailures": "First High native case fails strict p95 with33.400000000001455 versus33.4; five remaining cases not run. Retain original log, trace, video, profile and screenshots. QA-only exact decimal subtraction of reported RAF timestamps fixes binary cancellation, with no budget tolerance, duration rounding, dropped samples or runtime change. Unit explicitly proves33.4001/33.401/33.5 still exceed the unchanged33.4limit. Initial numeric test chose an undershoot pair, fails one assertion/nine others pass; corrected to a reproduced overshoot pair, original log retained. Final native run is separate and measured max33.3, not a reclassified failure or claimed timing improvement.",
+  "history": "Independent all-child JSDOM/archive Git-base audit proves every451prior raw entry exact;452total/ten initial/45lazy. Login/package/root lock/package entry/release/Go/Docker/Compose/deploy/CI/isolated QA labels synchronized17; all older16 notes unchanged. No dependencies, account/schema/currency/permissions changed.",
+  "proof": {
+    "groundCoverSHA256": "ff0851899678f66a5463e3f39629173024c113c520931b4f83d827fe7c6ade98",
+    "locationsSHA256": "8a3df7da4d402c158b185b24fc047dc64cee311696080a77052241b0fed4b9e4",
+    "foliageSHA256": "125757508bc6dcc892d53d506891b5420a9ea5f410462a8408d9827176e0a94d",
+    "regionalFixtureSHA256": "86f05ed09dcbc63e278df511ea07cb60956682f8268c5065b87871ecbe970bca",
+    "timestampHelperSHA256": "0f7cfc0ed7cd47b4cefdc44c83c299bac3d14780f72a0da8688e1c5de5ac522b",
+    "nativeLogSHA256": "6853ba201c608941f955bfc0c68868622762d5a384e9846beb35898a247803a2",
+    "failedNativeLogSHA256": "700298253e5af7370075748debb002a1ce540d7ea7f62fac68dc89eb28b394ca",
+    "softwareLogSHA256": "8834843befe8f3679b622e36ad7586a669766982ec9c18d46cbb0a870b31ea2e",
+    "componentUnitsLogSHA256": "664a14a166a3ca99fd7ebdd48791850631dac9cd2fc6107cbd786af5003a31a7",
+    "toolingUnitsLogSHA256": "2fb3f0a2fdd6f26876d6acd1de5fa15407fce49ac72c4de33569c43e7bc432e2",
+    "arithmeticUnitsLogSHA256": "40e4dbbc3e92193691f6bad7e5f7ff0946f018bebe75dbc9fdf7dbf588cf55b0"
+  },
+  "artifacts": "Task-owned eidolon-air-passage-integration-native-final-20261009, eidolon-air-passage-integration-software-20261009 and matching logs; original failed eidolon-air-passage-integration-native-20261009 and arithmetic log retained. Earlier staged source receipt2026-10-08-air-passage-composition-checks remains historical; this is new current-base qualification.",
+  "delivery": "Local-only.11 correction8a57420eb5d0a28de2113e82cc40638d9aaa18da normally pushed after fresh fetch/merge, own CI37874149991 pending/Luna terminal-only watch. Root independently verifies mandatory CI/public acceptance before individual12-16 and then17 promotion. This17 candidate manually contains exact new11 QA partition plus its Air roadside changes, but parent is prepared16: fresh normal accepted-remote reconciliation still required before publication. Full original roadmap/modern art/F1-F5/equipped-party/device/human/owner/operations/rights/beta/launch remains open; public raised terrain disabled."
+}

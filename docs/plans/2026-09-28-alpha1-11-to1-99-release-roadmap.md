@@ -1,5 +1,22 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared17/3ecf2620 selectively integrates staged Air-passage heath/
+scree/retained-tree framing onto current16.424focused/30tooling/11exact timing
+checks pass with overlap; six native cases18timed views and one new High
+software roadside case pass original limits. High173269tri/127calls/33.3p95,
+Low48768/56/16.7;451old notes exact. First float cancellation failure retained,
+exact decimal timestamps not rounding/tolerance; genuine excesses still fail.
+Actual captures modest, broad gray terrain/travel coherence unfinished.
+[Receipt](2026-10-09-release1-79-17-checks.json). Local-only, no raised activation;
+same QA/timing helper selected into future,30units pass, no full-future GPU claim.
+11 correction8a57420e normally pushed after fresh reconciliation, new exact
+CI37874149991 pending/Luna terminal-only monitoring. Six High software groups
+pass on four pinned cores/retries0, every site/twelve phases/original checks
+kept; deliberate two-core diagnostic remains failed. [Evidence](2026-10-09-regional-cover-partition-checks.json).
+Own11 acceptance before individual12-17; full numbered/modern-art/F1-F5/
+party/device/human/owner/operations/rights/beta/launch scope remains active.
+Earlier pending/qualification statements below remain historical.
+
 October9 root verifies11/e259/run37870274115 terminal failure after Luna notice:
 Client/Server/Smoke2/3 pass; two High regional quality-switch cases exceed120s
 twice,50other Smoke1 cases pass. All downstream deployment gates skip, not pass.

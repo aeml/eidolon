@@ -11,7 +11,7 @@
   },
   "scope": "Normal ordered local merges carry deferred-entry session fixture readiness/import-barrier checks and split regional QA into12-16. Preserve both progress blocks in two12 documentation conflicts. All later merges resolve normally. Independent Git/path audits show only QA/docs changes: runtime, supplied bodies/items/animations, Go1.27.2 pins, dependencies, current labels and all raw notes unchanged. No version downgrade, public push, production mutation or whole-future integration.",
   "history": "Independent all-entry JSDOM/archive audits and version/pin/YAML checks pass for all five candidates:447/448/449/450/451 total notes, ten initial each. All e259 ancestors, all worktrees clean at recording.",
-  "units": "Actual12 VersionPresentation, patch pagination, RuntimeVersionPins and GitHubWorkflowYaml suites:393pass2.407s. This supplements unchanged per-component receipts, not a replay or additional full-art qualification.",
+  "units": "Actual12 VersionPresentation, PatchNotesPagination, ToolingBaseline (runtime pins) and ToolingYamlDependency suites:393pass2.407s. This supplements unchanged per-component receipts, not a replay or additional full-art qualification.",
   "browser": "Actual12 System Chrome bootstrap/password/session synthetic socket fixtures:8pass9.9s with credential recordings off; no persistent accounts/world claim.",
   "proof": {
     "unitsLogSHA256": "40189c25739fe793c6cfd84cd6ada348f8b0838755780ac966354808d7036c0c",
