@@ -1,5 +1,13 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 accepted public10/d3a3b9f7/run37864085950: root verifies all ten mandatory
+jobs and exact front/back/DB/clean production/four exported bytes at00:55:02Z.
+Optional broader steps skip, not pass; initial failed security run retained.
+[Receipt](2026-10-09-release1-79-10-public-checks.json).11now pushedc3a45083/
+CI37867222336 after fresh remote reconciliation, Luna terminal-only monitoring.
+11not accepted/live yet.12-15 require ordered accepted remote reconciliation;
+all original modern-art/F1-F5/device/owner/human/operations/beta/launch gates open.
+
 October9 prepared12-15 normally inherit11/0cac2b16 and corrected Go1.27.2:
 12/50d61be9,13/88fc7fd5,14/510d8aaf,15/e07a46d7. Preserve complete progress
 records, original supplied art and later filmic/static renderer work. Four

@@ -18,6 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- October9 **public1.79.10 accepted d3a3b9f7**: corrected37864085950 completes
+  success, all ten mandatory jobs. Root independently verifies terminal exact
+  head, front/back identities/DB/clean production and four actual publisher
+  outputs at00:55:02Z. Broader optional steps skip, not pass; initial security
+  failure retained. [Receipt](docs/plans/2026-10-09-release1-79-10-public-checks.json).
+  Prepared11 now pushed **c3a450831da09f0922581d47b901a04255728e38** after fresh
+  fetch/reconcile, own CI **37867222336** running. Authorized Luna terminal-only
+  monitor resumed; no poll-driven retries or gate bypass.11 not accepted/live
+  yet.12-15 retain updated security/login and need accepted remote reconciliation
+  before individual publication. Full art/F1-F5/world/party/device/human/owner/
+  operations/rights/beta/launch scope stays active, no full completion claim.
+
 - October9 prepared12-15 now inherit corrected Go1.27.2 and11/0cac2b16 login/
   visible failure guidance via normal ordered merges:12/50d61be9,13/88fc7fd5,
   14/510d8aaf,15/e07a46d7. Full conflicting progress records preserved; models/
