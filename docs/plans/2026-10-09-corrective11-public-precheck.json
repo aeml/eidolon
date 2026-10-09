@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "source": "fd7bb300d522b3fe37b2e9f00c2b1b7a775f50e5",
+  "version": "Alpha 1.79.11",
+  "status": "Public identity and five transformed bytes match; mandatory CI live gameplay remains pending",
+  "checkedAt": "2026-10-09T06:05:44.842Z",
+  "publisher": "Fresh copied tree from clean exact fd7 source, compiler412modules/3086706bytes/shared21, then actual version-pages-runtime.mjs rewriting398of884files and bundling CSS. Expected bytes are from the transformed publishing tree, not editable raw sources. Fixture/tmp/eidolon-fd7-publisher-3Hf6hhfZ.",
+  "transport": "Ordinary DNS, forced IPv4, normal certificate verification; no hosts override or insecure TLS. Owner-deferred IPv6 remains unqualified.",
+  "publicMatches": {
+    "index.html": "66c9ecb3bba8d4e68de052155b8569366c9c8027d40ac3c1a1c91078d41aaafe",
+    "src/main.js": "52873627dd47c6adc4e816d995d7b07a69ba896385803cff37e81b54310d12ee",
+    "src/core/GameEngine.bundle.js": "fcedcd0adfd9b3983f82059fc9d22ada0e30fbb0d46d57e2ad3c79ff253d99c3",
+    "src/styles/index.css": "065a3a4c74b801edee31fadaecc11dcd8d058077788619a2ff22c91c61f05435",
+    "release.json": "0ce186ea370cf9578205fbc59a4fd620cfa8467bbe4a340fe480bcd8885ea005"
+  },
+  "health": "At2026-10-09T06:06:05.291Z backend reports status=ok/database=ready, exact fd7 commit/Alpha1.79.11, matching frontend manifest. Initial local precheck incorrectly expected a nonexistent databaseReady boolean and exited1 despite matching bytes; reading canonical health schema and checking database=ready corrected that diagnostic assumption. No backend or test deadline/assertion was changed.",
+  "ci": "37888678907 independently shows nine successful required jobs; final Live Release and Character QA is still in progress. Authorized Luna monitors terminal status. No next public push or blanket release acceptance inferred."
+}

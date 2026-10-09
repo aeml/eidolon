@@ -30,6 +30,10 @@ Fighter pilot or remove approved authored models.
   `/root/watch_deploy_1795_1008` owns terminal-only monitoring. Root must still
   verify all required terminal gates, transformed publisher bytes and live
   frontend/backend identity/TLS/database before publishing12.
+- Exact fd7 frontend/backend identity, valid IPv4 TLS/database readiness and
+  five actual transformed publisher files independently match at06:05–06:06UTC.
+  Nine CI jobs succeed; final live gameplay remains in progress. This is not
+  release acceptance. [Public precheck](docs/plans/2026-10-09-corrective11-public-precheck.json).
 - Corrective11 bundles412engine modules only in the copied publishing tree.
   Login stays lazy, shared credentials/session module identity and import-map
   vendors remain, editable sources stay intact.438affected checks/native
@@ -137,18 +141,19 @@ qualification never proves a later tree, full visual approval or public rollout.
   branch `work/alpha-1-79-startup-bundle-current-20261009`, pushedfd7bb300.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, local0e319ac0/1.79.18.
+  branch `work/alpha-1-79-air-cypress-current-20261009`, local5e78ab4b/1.79.18;
+  art/runtime source0e319ac0 unchanged by the subsequent party evidence commit.
 - Ordered queued release worktrees and last clean heads:
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
   | --- | --- | --- |
-  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `3d56b5b9` |
+  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `fd4884e7` |
   | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `bf690620` |
   | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `0e6c1a5a` |
   | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `6135a833` |
   | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `cb78814c` |
   | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `4e086eab` |
-  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `0e319ac0` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `5e78ab4b` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
