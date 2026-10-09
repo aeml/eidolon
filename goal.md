@@ -589,6 +589,10 @@ observation timeout is not a failure or authority to retry/cancel.
    combat. Reviewed scenes still have broad brown-green floor fields, repeated
    prop silhouettes and limited formation variety. Technical passes are not
    modern-ARPG art approval or a claim of Diablo/PoE production equivalence.
+   Equipment inspection finds compatible fitted gear already shares exact
+   ordered-bone/inverse skeletons and eligible opaque batches. Do not add a
+   duplicate rig-sharing layer or alter supplied rigs on speculation; use the
+   retained matched equipped-party scene to identify the remaining hot work.
 3. Complete and deliver staged raised-Earth terrain/outcrop compatibility,
    renderer changes and all-family wearable derivatives only after their
    applicable rendering/placement/movement/effects/returning-save and equipped
