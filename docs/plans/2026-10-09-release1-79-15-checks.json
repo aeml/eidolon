@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.15",
+  "base": "Prepared1.79.14/c90805f7; select owned matrix and foliage registry/cache components from reviewed canonical875c4f4a, no whole future branch merge",
+  "status": "locally-qualified-not-pushed-or-live",
+  "scope": "Cache exact unchanged local composition only for six owned scene containers and registered foliage groups, plus fixed local transforms for generated groundcover. Registered foliage avoids unrelated rig/building traversal. World bounds and frustum results invalidate on exact bounds/matrix/camera/light/filter changes; current visibility/material/child eligibility remains live. Actors, bones, skinned/instanced animation methods are not replaced. Restore owned hooks/listeners on detach/disposal, preserving later hooks.",
+  "unchanged": "High groundcover cell size5.5, geometry/density/placement, shadow/filter margins, exposure/lights, quality limits, original frame/draw/triangle budgets, collisions, gameplay, economy, permissions, saves and provided source assets. No public raised-world activation.",
+  "units": "Initial five affected suites65pass25.394s includes EarthUnderstory/ShadowViewCoverage. Final five renderer/version/pagination suites429pass2.963s, overlapping cases are not added. Scoped ESLint and whitespace pass. All twelve version/default locations synchronized; lockfile only two version labels.",
+  "retainedFailure": "Initial raised-preview High exceeds unchanged350draw/250000triangle budgets (364-372draws,289101-319555triangles); Low passes and native frame/pixel checks pass. Fixture incorrectly generates scenery into a newly nested actor-group child, bypassing the production environment registry. Correct only that fixture to GameEngine's direct instanceEnvironmentGroup attachment; no observer widening, runtime workaround, geometry reduction or budget relaxation. Logs and failed artifacts retained.",
+  "nativeRaisedPreview": "Changed fixture passes2cases31.2s on System Chrome actual AMD Vulkan/RADV. Six120-frame profiles retain all original limits. High woodland313draws/246960triangles, outer239/214749, west228/222365; medians andp95 about16.7-16.8ms. Surface-culling and omitted-shadow comparisons show0changed pixels; existing batching equivalence remains below its original threshold. Bare Fighter and isolated elevation only, not equipped-party or raised-production proof.",
+  "nativePublicStyle": "Flat production-style Earth/town High1280 and Low390 pass2cases1.1m with original frame/draw/triangle budgets, ordinary actor animation/contact/recovery, shader wind/reduced-motion equivalence and repeated resource counts. High well163draws/170986triangles, tradingroof207/205537;120samples/view. No connected party, full equipped-world or physical-phone claim. Root inspected service-court and Low grove-wind images; this optimization preserves presentation, not final modern-art approval.",
+  "patchHistory": "Independent raw Git HEAD index/archive versus current index/archive audit:450total entries,10initial,44lazy pages; all449older entries byte-identical. No historical note rewritten or omitted.",
+  "logSHA256": {
+    "initialNativeFailed": "f1b131e73f676c6a36d545eef1f870eca4bc12a3458011b668bb671c9c76ed15",
+    "ownedEnvironmentNative": "cd2a42fd3576117ebfe604258575628b404601ff0c7185423dc1bf2295c82145",
+    "flatNative": "20a298e27352e7363c4f4c1d4498f4c6847550b6ec71268dda7f602e0daa960f",
+    "finalUnits": "f162e5479e6d7dd4c72a20bbc28a3c2146b3c52d27aa5d1c96b2cd1d428ad473"
+  },
+  "artifactDirectory": "/home/aeml/.local/share/eidolon-render-current-checks-KP1ZItjC",
+  "delivery": "Last independently accepted public release1.79.9/7114aad6. Pushed1.79.10/6ed016b7 has own CI37861950511 pending; authorized Luna monitors terminal-only. Prepared11 contains requested ten-note/login defer/Firefox fix;12-14 and15 still await ordered publication, fresh remote reconciliation and their own CI/exact public acceptance. Never discard other website-agent work or touch dirty original worktree.",
+  "remaining": "Full original1.11-1.99 roadmap,1.80F1-F5, modern character/world/environment polish, equipped-party/device/frame qualification, human campaign/pacing, owner/operator/rights/closed-beta/launch gates remain open. Goal active; no final-art, freeze, full roadmap or beta claim."
+}

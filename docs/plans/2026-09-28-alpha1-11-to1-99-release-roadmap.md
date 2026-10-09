@@ -1,5 +1,18 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared1.79.15/50f08f90 selectively integrates exact owned matrix
+and foliage registry/bounds/frustum caching onto reconciled14/c90805f7.
+Actors/bones/wind/transforms and all geometry/shadow/quality limits unchanged.
+Incorrect actor-child world attachment in raised fixture first fails High
+draw budgets; direct production environment attachment fixes only the fixture.
+Both native preview and both flat town/Earth cases now pass unchanged limits,
+final429focused checks pass; all449older notes byte-identical. Bare actor scope
+is not equipped-party/device or final modern-art acceptance. Not live, ordered
+publication/fresh remote/CI/public gates still required. Last accepted9, pushed
+10pending, prepared11 includes requested login/Firefox fix. Full original scope,
+F1-F5/art/device/human/owner/beta/launch gates remain unchanged.
+[Receipt](2026-10-09-release1-79-15-checks.json).
+
 Staged supplied gear now has shared generated cloth/leather/wood/metal surfaces,
 preserving authored colors/textures/magic and compatible batching.104focused
 checks, paired actual eight-outfit reference/candidate with identical draws/

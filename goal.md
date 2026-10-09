@@ -18,6 +18,20 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- October9 prepared1.79.15 clean50f08f90888850c8fa03df5806528ca1a4f24422
+  in `/home/aeml/.local/share/eidolon-render-current-jdPpzQnN`, based on14/c908.
+  Exact owned-container matrix and foliage registry/bounds/frustum caches;
+  animated actors/bones, transforms, wind, geometry/density/shadows, High5.5cell
+  and original limits unchanged. Initial raised fixture exceeds High draw
+  budget because it attaches world under an actor child rather than production's
+  direct environment; correct fixture only, retaining failure artifacts.
+  Two preview cases31.2s and two flat town/Earth cases1.1m now pass; final429
+  focused checks2.963s, scoped lint/whitespace/raw449prior-note audit pass.
+  Native scopes have bare actors, not equipped-party/physical-phone acceptance.
+  Root reviewed bounded images. Not pushed/live; ordered earlier acceptance,
+  fresh remote reconciliation and own CI/public gates remain required.
+  [Evidence](docs/plans/2026-10-09-release1-79-15-checks.json).
+
 - Accepted public1.79.9 exact7114aad6fc5039befc292297d7c477414638c63e;
   own37842726678 all ten required jobs successful. Root confirms exact public
   front/back/healthy DB, tracked-clean production and four byte-identical actual
