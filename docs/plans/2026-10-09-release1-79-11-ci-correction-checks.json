@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.11",
+  "status": "qualified local QA-only correction; replacement publication still requires own CI/public acceptance",
+  "failedRun": {
+    "id": 37867222336,
+    "head": "c3a450831da09f0922581d47b901a04255728e38",
+    "conclusion": "failure",
+    "scope": "Root independently verifies terminal exact head/result and completed job logs after Luna terminal report. Server/Client/Smoke2 pass. Smoke3 four password-receipt cases read window.game.network before the dynamically imported engine exists. Smoke1 regional Water/Fire High and Air High exceed120s twice. Six downstream predeploy/input/deploy/live/Pages gates skip, not pass. Original run/artifacts retained, no rerun/cancel/gate bypass."
+  },
+  "correction": "QA only. Password and session-recovery fixtures wait for owned transport callbacks, not merely hidden login. Add two deterministic module-import barriers proving successful and uncertain credential receipts are consumed by auth while the engine is absent, then transferred without bearer tokens in the UI queue. Separate full regional presentation/input review and twelve-phase quality/resource switching into independently owned cases in the same already-mandatory file; retain every original view, cycle, GPU cover draw, identity/resource/input assertion and120s per-case timeout. No runtime/material/browser/CI gate/version/dependency changes.",
+  "qualification": {
+    "units": "Three actual selected suites BrowserSmokePlan, PasswordChangeUI and NetworkManager:91pass0.691s. No claim for two nonexistent names in the initial selector.",
+    "authBrowser": "Actual System Chrome/bootstrap/NetworkManager with synthetic socket/lightweight engine fixtures: six password cases and two session-recovery cases,8pass9.9s. No real-account or world-rendering claim. Credential recordings disabled.",
+    "regionalBrowser": "Actual CI=1 bundled Chromium browser/configuration with retries0: Water/Fire High presentation+quality and Air High presentation+quality,4pass3.7m. All12 switch phases retained per quality case, original resource/count/placement assertions pass. No native performance/device certificate; original opt-in frame/triangle/draw budgets unchanged.",
+    "retainedFailure": "First local duplicate-cover-site assumption was wrong: each cover mesh represents a distinct site's internally combined beds. That experiment still times out/fails its added count assertion; fully removed. Original12-phase render sequence restored, split fixtures instead. Both initial logs/artifacts retained.",
+    "lint": "Scoped ESLint for all three modified browser files and git diff whitespace pass. Existing446notes/ten initial/44archives and all source/login/server versions unchanged."
+  },
+  "proof": {
+    "passwordFixtureSHA256": "18eb7fbebff05e9b364590390f0ab55e80d25b6e3409942b7188507ce70274a1",
+    "sessionFixtureSHA256": "42999bbc7625be4f5b260783a40bcc18248a418886d62c6e504a92eb5a7b0289",
+    "regionalFixtureSHA256": "f446abc4f934ca0198856bead5d857c42e9384fc6f57191c359478a01e719f37",
+    "authBrowserLogSHA256": "009997caa732511083f1bf6c53f3976d59213edfd5658b31a0e9423133230b09",
+    "unitsLogSHA256": "4d8b5492ebbe88f8a1aaf758cc598ae7b2469e320fd33e73d3b1533cd25140b1",
+    "regionalBrowserLogSHA256": "ca93e98a29ac42866215d2f66f3b283e9d543cc5f340897f729661c5518c469a"
+  },
+  "artifacts": "Task-owned /home/aeml/.local/share/eidolon-deferred-entry-auth-qa-20261009 and matching QA/unit logs; eidolon-regional-ci-split-qa-20261009 and matching log. Failed eidolon-regional-ci-render-qa-20261009 retained.",
+  "delivery": "Public front/back remain accepted1.79.10/d3a3b9f7, verified healthy DB/exact manifest again01:30UTC over normal verified TLS/forced IPv4. Fresh fetch and normal remote reconciliation before replacement11 push; Luna terminal-only CI watch, then root independent acceptance. No later12-16 publication before11 own acceptance. Full original roadmap/F1-F5/modern art/party/device/human/owner/operations/rights/beta/launch remains open."
+}

@@ -5,7 +5,7 @@ import { openGame } from './helpers.js';
 // traffic, even on failure. Persistence was checked by separate backend tests.
 test.use({ screenshot: 'off', trace: 'off', video: 'off' });
 
-for (const mode of ['closed-help', 'world-handoff', 'blocked-storage', 'uncertain']) {
+for (const mode of ['closed-help', 'world-handoff', 'blocked-storage', 'uncertain', 'import-gap', 'import-gap-uncertain']) {
     test(`password receipt keeps session token coherent: ${mode}`, async ({ page }) => {
         const blocked = mode === 'blocked-storage';
         await page.setViewportSize({ width: blocked ? 390 : 1280, height: 844 });
@@ -14,7 +14,13 @@ for (const mode of ['closed-help', 'world-handoff', 'blocked-storage', 'uncertai
                 throw new DOMException('Storage unavailable', 'SecurityError');
             };
         });
-        await page.route('**/src/core/GameEngine.js*', route => route.fulfill({ contentType: 'text/javascript', body: `
+        const importGap = mode.startsWith('import-gap');
+        let engineRequested = false, releaseEngine;
+        const engineBarrier = new Promise(resolve => { releaseEngine = resolve; });
+        await page.route('**/src/core/GameEngine.js*', async route => {
+            engineRequested = true;
+            if (importGap) await engineBarrier;
+            await route.fulfill({ contentType: 'text/javascript', body: `
             import { NetworkManager } from '/src/core/NetworkManager.js';
             export class GameEngine {
                 constructor(type, mobile, multiplayer, address, username, socket) {
@@ -23,7 +29,8 @@ for (const mode of ['closed-help', 'world-handoff', 'blocked-storage', 'uncertai
                 }
                 async loadGame(progress) { progress(100, 'Ready'); }
                 destroy() { this.isDestroyed = true; }
-            }` }));
+            }` });
+        });
         let activeSocket, requestId, changes = 0;
         await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
             activeSocket = socket;
@@ -59,21 +66,36 @@ for (const mode of ['closed-help', 'world-handoff', 'blocked-storage', 'uncertai
         }));
         expect(fits).toBe(true);
         await page.locator('#btn-close-report-header').click();
-        const handoff = mode === 'world-handoff' || blocked;
+        const handoff = mode === 'world-handoff' || blocked || importGap;
         if (handoff) {
             await page.locator('#btn-play-character').click();
             await expect(page.locator('#start-screen')).toBeHidden();
+            if (importGap) {
+                await expect.poll(() => engineRequested).toBe(true);
+                expect(await page.evaluate(() => Boolean(window.game))).toBe(false);
+            } else {
+                await expect.poll(() => page.evaluate(() => typeof window.game?.network?.getResumeToken)).toBe('function');
+            }
         }
-        const uncertain = mode === 'uncertain';
+        const uncertain = mode === 'uncertain' || mode === 'import-gap-uncertain';
         activeSocket.send(JSON.stringify({ type: 'password_change_result', payload: {
             requestId, success: !uncertain, message: uncertain ? 'Change not confirmed.' : 'Password changed.',
             ...(uncertain ? { resumeInvalidated: true } : { resumeToken: 'b'.repeat(64) })
         } }));
         if (!blocked) await expect.poll(() => page.evaluate(() => localStorage.getItem('eidolon_resume_token'))).toBe(uncertain ? null : 'b'.repeat(64));
+        if (importGap) {
+            // The auth transport must consume this receipt while the engine
+            // module is still absent, then hand its RAM token to the new one.
+            expect(await page.evaluate(() => Boolean(window.game))).toBe(false);
+            releaseEngine();
+        }
         if (!handoff) {
             await page.locator('#btn-play-character').click();
             await expect(page.locator('#start-screen')).toBeHidden();
         }
+        // Hiding login begins asynchronous entry; it does not mean the engine
+        // and its transport callbacks have been constructed yet.
+        await expect.poll(() => page.evaluate(() => typeof window.game?.network?.getResumeToken)).toBe('function');
         await expect.poll(() => page.evaluate(() => window.game.network.getResumeToken())).toBe(uncertain ? null : 'b'.repeat(64));
         expect(changes).toBe(1);
         // Token consumption is owned by the current transport, not by a form
