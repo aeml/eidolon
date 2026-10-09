@@ -1,0 +1,17 @@
+{
+  "status": "Staged windbreak mounting correction; scoped regression and native equipped views pass",
+  "scope": "Air courier exchange/weather bivouac only: remove whole-panel -0.1rad tilt and move sail center3m to3.25m. Existing14x3.5m cloth top corners now match5m support spar/posts, bottom corners1.5m. Static folds, materials, indices, meshes and all collision/interaction footprints unchanged.",
+  "regression": "Actual production merged-canvas corner assertions fail for both High and Low before correction:3existing cases pass/2new cases fail16.071s. Corrected raised five cases pass15.977s; canonical five pass15.749s. No weakening old frame thickness/finite normals/material/footprint checks.",
+  "native": "System Chrome AMD RADV: actual supplied14-slot equipped Wizard/HUD, High1280x900/Low390x844 Air presentation2cases pass12.0s/retries0. Ordinary browser/shader failure collection clean. Root inspects both bivouac captures: top edge meets spar rather than crossing it. Untimed fixture, not sustained FPS/party/device/final modern-art approval.",
+  "preservation": {
+    "beforeAndAfter": "Raised complete Air meshes138 both qualities;350388High/112004Low raw triangles. High/Low exact unchanged walk-footprint JSON SHA256 below; horizontal site centers/roaming/story/portals/game rules untouched.",
+    "walkFootprintsSHA256": "3a7c9fb10764a02c4cf70285a673e41e4df46758ecafd1d4143fce433444ba77"
+  },
+  "evidence": {
+    "beforeLogSHA256": "4239dd2823f28655bfa9307dd03fb812756dfd4c500d7452de6f3c2628e6d484",
+    "raisedAfterLogSHA256": "287ed80251782d60772bfd722a11b2467ad68462e8c33bbe1f0e7becad24a242",
+    "nativeLogSHA256": "ea0e41448cd320b076071848701814902d8d299e0e4fdd829fecca9e290402d9",
+    "artifacts": "/home/aeml/.local/share/eidolon-air-windbreak-mount-native-20261009 and matching.log"
+  },
+  "delivery": "Narrow same pose/test change in owned raised and canonical staging trees; canonical retains different older Air prop geometry, so raised mesh/triangle counts are not whole canonical scene equivalence. Not inserted into prepared/pushed17/18; no microversion/public profile activation. Full modern-art/F1-F5/1.81-1.99 and equipped-party/device/owner gates remain."
+}

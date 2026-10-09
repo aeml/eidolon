@@ -38,3 +38,28 @@ test('camp canvases share one scene-owned material and keep unchanged High/Low w
         RenderSystem.prototype.disposeObjectResources.call({}, scene);
     }
 });
+
+test.each(['high', 'low'])('%s mounted windbreak corners meet the actual frame rather than floating above it', quality => {
+    const scene = createElementalLocations('air', { quality });
+    try {
+        for (const name of ['couriers-exchange:canvas', 'weatherkeepers-bivouac:canvas']) {
+            const canvas = scene.getObjectByName(name);
+            expect(canvas).toBeDefined();
+            const positions = canvas.geometry.attributes.position;
+            const hasCorner = (x, y, z) => {
+                for (let i = 0; i < positions.count; i++) {
+                    if (Math.abs(positions.getX(i) - x) < 1e-5 &&
+                        Math.abs(positions.getY(i) - y) < 1e-5 &&
+                        Math.abs(positions.getZ(i) - z) < 1e-5) return true;
+                }
+                return false;
+            };
+            // These are the baked local positions of the two existing5m
+            // posts/top spar. Corners at1.5m keep the original open lower bay.
+            for (const x of [-12, 12]) for (const z of [-7, 7]) {
+                expect(hasCorner(x, 5, z)).toBe(true);
+                expect(hasCorner(x, 1.5, z)).toBe(true);
+            }
+        }
+    } finally { RenderSystem.prototype.disposeObjectResources.call({}, scene); }
+});
