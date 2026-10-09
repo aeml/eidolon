@@ -18,6 +18,20 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Current-line raised-world preparation now has clean30a0deb0 in owned
+  `eidolon-raised-world-rollout-20261009-V4BWRffv`, based on queued18/73f19f60.
+  Select only qualified terrain atlas/route into current glyph-equipped map;
+  no whole future/held16 merge or public activation/new microversion.41focused
+  map checks7.712s,22routing checks0.752s,3Firefox2D cases24.9s and5exact
+  configured-world/flat-entry race tests1.854s pass. Ten authority/data/key
+  rendering source files independently byte-identical to canonicalc8b228a1.
+  Existing real saves/checkpoints remain scoped retained evidence, not reruns.
+  See [rollout preparation](docs/plans/2026-10-09-raised-current-rollout-preparation.json).
+  Current equipped/raised frame and broader party/device/cohesive-art/compatible
+  activation gates remain. Public stays flat; no owner-deferred gate claimed.
+- Queued15 fresh normal fetch/merge now7fe83817 incorporates pushed14/b6;
+  runtime/art/assets/index/native tests/workflow/compiler unchanged from
+  qualified2bca9889. No unaffected replay.14 still needs own acceptance before15.
 - Pushed **1.79.14 /b6aeee03 /CI37911224822 attempt1** after own13 acceptance,
   two fresh normal fetch/reconciliations and384metadata checks. Remote resolves
   exactb6; originally qualified art/runtime/native-test/workflow bytes unchanged.
@@ -306,7 +320,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   | 1.79.12 (accepted) | `eidolon-operations-release-U0VLQ4j8` | `1255aade` |
   | 1.79.13 (accepted) | `eidolon-public-monitor-release-XpKvF87O` | `ebdfd4e8` |
   | 1.79.14 (pushed, CI pending) | `eidolon-character-dungeon-release-llOMKtuQ` | `b6aeee03` |
-  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `2bca9889` |
+  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `7fe83817` |
   | 1.79.16 (held candidate; qualified reference54c1634a) | `eidolon-masonry-release-CkTEzcx0` | `1dceefd5` |
   | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `baa610f4` |
   | 1.79.18 | `eidolon-air-cypress-release-20261009` | `73f19f60` |
