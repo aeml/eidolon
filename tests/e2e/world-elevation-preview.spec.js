@@ -366,13 +366,24 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                     mesh.getMatrixAt(i, matrix);
                     const variant = mesh.name.split(':').at(-1);
                     const key = `${Math.floor(matrix.elements[12] / 16)}:${Math.floor(matrix.elements[14] / 16)}:${variant}`;
-                    if (!cells.has(key)) cells.set(key, { source: mesh, matrices: [] });
+                    if (!cells.has(key)) cells.set(key, { source: mesh, matrices: [], colors: [] });
                     cells.get(key).matrices.push(matrix.clone());
+                    // The retained production tint is part of the unchanged
+                    // scene, not a batching difference. Copy its exact buffer.
+                    if (mesh.instanceColor) {
+                        const color = new THREE.Color(); mesh.getColorAt(i, color);
+                        cells.get(key).colors.push(color);
+                    }
                 }
-                for (const { source, matrices } of cells.values()) {
+                for (const { source, matrices, colors } of cells.values()) {
                     const mesh = new THREE.InstancedMesh(source.geometry, source.material, matrices.length);
                     mesh.receiveShadow = true; mesh.castShadow = false;
                     matrices.forEach((matrix, i) => mesh.setMatrixAt(i, matrix));
+                    if (source.instanceColor) {
+                        if (colors.length !== matrices.length) throw new Error('Rebatched foliage lost its production tints');
+                        colors.forEach((color, i) => mesh.setColorAt(i, color));
+                        mesh.instanceColor.needsUpdate = true;
+                    }
                     mesh.instanceMatrix.needsUpdate = true; mesh.computeBoundingBox();
                     mesh.boundingBox.expandByVector(new THREE.Vector3(WOODLAND_WIND_REACH * 1.4, 0, WOODLAND_WIND_REACH * 1.4));
                     mesh.boundingSphere = mesh.boundingBox.getBoundingSphere(new THREE.Sphere());
