@@ -1,5 +1,17 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 staged First Grove masonry refines curved vault stones, two-face
+carved borders and worn pier corners with original batches/materials/solids.
+Keep original1000/200geometry caps and native frame/draw/triangle limits.
+First green but flat capture is refined; final15affected checks and native
+High/Low town/Earth two cases pass. Root reviews both: modest component change,
+not final scene/world/modern-ARPG or equipped-party/device approval. Not versioned
+or public; integrate selectively after ordered earlier release acceptance.
+[Scope](2026-10-09-grove-masonry-checks.json). Future worktree also retains the
+corrected1.27.2toolchain pins, unchanged strict scan0reachable, verified modules
+and15focused geometry/pin checks. Widened terrain/party fixtures preserved.
+Full numbered scope/F1-F5/art/raised/party/device/human/owner/beta/launch unchanged.
+
 October9 corrected1.79.10/d3a3b9f7 is pushed, CI37864085950 running and Luna
 monitors terminal-only. Old37861950511/6ed016b7 ends security failure: nine
 reachable Go1.27.1 standard-library advisories, all fixed1.27.2. Client/browser

@@ -100,6 +100,15 @@ presentation gap, not sparse room composition, regional prop quality, complete
 dungeon/raid art, connected combat, device or modern-ARPG acceptance. See
 [scope and reviewed captures](../plans/2026-10-08-dungeon-flagstones-checks.json).
 
+October9 staged First Grove review: curved vault stones, shallow carved lips
+on both faces and worn pier corners preserve original solids, materials and
+batches. Reject the first green but flat capture; revised High/Low town/Earth
+views retain original geometry and scene limits. Root reviewed both at ordinary
+gameplay zoom. The detail change is modest: large floor fields, repeated prop/
+vegetation silhouettes and overall landmark/realm composition remain unfinished.
+Not final world/modern-art approval, equipped-party/device qualification or a
+public release. [Evidence](../plans/2026-10-09-grove-masonry-checks.json).
+
 | User-provided model scope | Code/integration work owned by implementation |
 | --- | --- |
 | Fighter, Rogue, Wizard and Cleric bodies/base appearances | Actor import/validation, rig/animation integration, equipment anchors, material assignment, previews, LOD/resource budgets, local/remote appearance and fallback behavior |

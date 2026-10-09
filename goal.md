@@ -18,6 +18,25 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- October9 staged First Grove masonry component **46740f0** in isolated
+  `/home/aeml/.local/share/eidolon-grove-masonry-4f0ao4OD`, selected onto this
+  future worktree at282757ec. Curved vault, shallow two-face carved lips and
+  worn pier corners reuse original material/batches and authoritative solids;
+  832vault triangles/176per course retain old1000/200caps. First green capture
+  still looked flat and was refined, not accepted as finished art. Final15
+  affected cases, stronger eight-case geometry repeat, lint/whitespace and
+  native High/Low Earth/town2cases1.1m pass original scene limits. Root reviews
+  both captures: modest detail change, not final landmark/world approval.
+  [Scope and limits](docs/plans/2026-10-09-grove-masonry-checks.json).
+  Component not versioned/pushed; ordered10/11 and12-15 acceptance still precedes
+  next properly reconciled world candidate. Bare actor proof is not equipped-
+  party/device coverage. Full art/F1-F5/1.81-1.99 scope stays active.
+  Carry corrected Go1.27.2 into future-worktree pins/instructions and stronger
+  pin regression without overwriting its widened party/terrain fixtures.
+  Module verification, exact strict scan0reachable and15focused canonical
+  geometry/pin tests0.562s pass; no runtime or dependency changes. Earlier
+  prepared branches must still reconcile before public publication.
+
 - October9 corrected1.79.10 now pushed **d3a3b9f7567e08870587f38dc11fc9547c139240**,
   own CI **37864085950** running; Luna monitors terminal-only. Prior37861950511/
   6ed016b7 finishes failure: nine reachable Go1.27.1 standard-library advisories,

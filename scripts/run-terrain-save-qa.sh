@@ -55,7 +55,7 @@ fi
 echo "Terrain save evidence: ${terrain_evidence}"
 echo "Terrain save source: $(git rev-parse HEAD) (current working tree)"
 echo "Terrain save scenario: ${terrain_scenario}"
-GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go -C server build -race \
+GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go -C server build -race \
   -ldflags="-X main.buildCommit=${terrain_binary_name}" -o "${terrain_binary}" .
 # No authentication-bearing production URI is read. Only synthetic saves exist
 # in this disposable database; Docker publishes its port on loopback only.
@@ -77,7 +77,7 @@ EIDOLON_RESOURCE_MONGO_URI="mongodb://127.0.0.1:${terrain_mongo_port}" \
 EIDOLON_RESOURCE_BINARY="${terrain_binary}" \
 EIDOLON_TERRAIN_BROWSER_EVIDENCE="${terrain_evidence}" \
 EIDOLON_TERRAIN_PARTY_RENDER_MODE="$([[ "${terrain_scenario}" == connected-party-observer ]] && echo single-renderer || echo four-browser)" \
-GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 \
+GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 \
   go -C server test -race -p 2 -count=1 -timeout="${terrain_timeout}" -v \
     -run "${terrain_test}" . \
     2>&1 | tee "${terrain_evidence}/terrain-save.log"

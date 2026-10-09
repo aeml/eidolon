@@ -38,9 +38,16 @@ describe('tooling baseline', () => {
         expect(fs.readFileSync(path.join(repoRoot, '.nvmrc'), 'utf8').trim()).toBe('24');
         expect(packageJson.engines.node).toBe('>=24.0.0 <25.0.0');
         expect(workflow).toContain("node-version: '24'");
-        expect(workflow).toContain("go-version: '1.27.1'");
-        expect(goMod).toContain('go 1.27.1');
-        expect(dockerfile).toContain('ARG GO_VERSION=1.27.1');
+        expect(workflow).toContain("go-version: '1.27.2'");
+        expect(goMod).toContain('go 1.27.2');
+        expect(dockerfile).toContain('ARG GO_VERSION=1.27.2');
+        const compose = fs.readFileSync(path.join(repoRoot, 'server', 'docker-compose.yml'), 'utf8');
+        expect(compose.match(/GO_VERSION: 1\.27\.2/g)).toHaveLength(2);
+        expect(fs.readFileSync(path.join(repoRoot, 'scripts', 'run-isolated-character-qa.sh'), 'utf8'))
+            .toContain('--build-arg GO_VERSION=1.27.2');
+        const terrainQA = fs.readFileSync(path.join(repoRoot, 'scripts', 'run-terrain-save-qa.sh'), 'utf8');
+        expect(terrainQA.match(/GOTOOLCHAIN=go1\.27\.2/g)).toHaveLength(2);
+        expect(workflow).toContain('go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./...');
         expect(dockerignore).toContain('.env');
     });
 

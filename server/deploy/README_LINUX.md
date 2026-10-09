@@ -85,8 +85,9 @@ forge lines or copy secrets into that route. Useful error categories remain;
 ordinary application errors and durable account/admin audit are not sampled by
 this helper. It is not a disk quota or a review of every logging category.
 
-The prepared1.72 dependency patch aligns module, hosted CI, container and
-isolated-QA builds on Go1.27.1. It keeps Mongo's existing1.x API, with driver1.17.7,
+The1.79.10 security correction aligns module, hosted CI, container and
+isolated-QA builds on Go1.27.2 after the October8 standard-library advisories.
+The1.72 dependency patch keeps Mongo's existing1.x API, with driver1.17.7,
 WebSocket1.5.3, x/crypto0.56.0, x/text0.41.0 and compress1.18.7 plus their resolved
 transitives. `go mod verify` and pinned govulncheck1.8.0 run inside the existing
 server CI job. The final source scan reported no called vulnerable functions;
@@ -497,7 +498,7 @@ Disruptive reboot/recovery rehearsals require their own maintenance approval.
 From `server/`, with the `nginx` executable available:
 
 ```bash
-GOTOOLCHAIN=go1.27.1 GOMAXPROCS=2 go test -p 2 -race . \
+GOTOOLCHAIN=go1.27.2 GOMAXPROCS=2 go test -p 2 -race . \
   -run '^Test(TLSSetup|CanonicalNginxProxy|MigrationOrigins)' -count=1 -timeout=35s
 ```
 
