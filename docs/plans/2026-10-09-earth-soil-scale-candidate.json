@@ -1,0 +1,17 @@
+{
+  "status": "Staged material refinement, not deployed or final art/performance acceptance",
+  "base": "148166c6; current-source raised-world preparation after queued18 and exact14 QA corrections",
+  "change": "Earth ground composition v12 uses the existing roughly17cm grit instead of the roughly70cm litter field for soil aggregates, retaining fallen-leaf silhouettes. Derivative-aware aggregate contrast/relief fade together when subpixel. Smaller soil reflectance range and less extreme canopy darkening remove camouflage-like dirt blotches in reviewed gameplay-camera views. No new fetches, maps, geometry, shaders outside this material, lights, solids, population, equipment, saves or production profile change.",
+  "verification": "Three actual ground-composition/trail/understory suites22pass66.305s; scoped lint/whitespace pass. Existing six-fetch/two-owned-map, High/Low registration, normal/roughness, relief/depth/ownership/disposal and route/placement assertions retained. No new campaign/party/soak replay.",
+  "native": "Baseline two equipped populated raised-world cases pass30.7s; candidate same cases pass26.9s, retries0, System Chrome AMD Vulkan/RADV, High1280x844/Low390x844. Actual14 supplied equipment models/no fallback, movement/jump/picking/projectile/area/impact/beam/attached-effect checks and original surface/shadow pixel comparisons pass. Six road-view calls/triangles exactly unchanged: High260/220515,345/245110,271/212899; Low132/73350,100/65723,103/67456. Surface culling zero changed pixels at both qualities. Neither run enabled timed-profile flag; shorter test duration is not an FPS improvement claim. Original performance targets/timeouts unchanged.",
+  "review": "Root inspected baseline and candidate High grove/woodland road plus candidate Low grove. Smaller-scale dirt texture improves material identity; road remains clear and equipped actor/abilities visible. Moss pattern, repeated plant clumps, broad open composition and rock silhouettes still need work. Browser390 viewport is not physical-phone acceptance.",
+  "evidence": {
+    "baseline": "/home/aeml/.local/share/eidolon-raised-current-equipped-diagnostic-20261009",
+    "baselineLogSHA256": "4c9c6d8909650e1d7627d31b07eb5c07cd9861ea0d5fa1a8af5fa6258daf1eb7",
+    "candidate": "/home/aeml/.local/share/eidolon-raised-current-soil-candidate-20261009",
+    "candidateLogSHA256": "7818f93edd5b72fba5064ba98f56f68800c9f9e7aa7c7d7ed1fe9dca36662b36",
+    "src/art/EarthGroundComposition.js": "bf20af6f64be44a15da8a917f5ff068ff44ce238a9e8e8f9947bcd0499a86562",
+    "tests/EarthGroundComposition.test.js": "2032d4c65bf77313da935a68118d1ea7c4b0801f4ccaf03eb461095d944e5234"
+  },
+  "next": "Keep ordered corrected14 CI/public acceptance and queued15-18 gates. Do not silently add this candidate to queued releases, activate raised terrain or advance a version. Strict timed populated/equipped raised-world and held woodland qualification still open; retain full modern-art/F1-F5/1.81-1.99 goal. No unrelated services stopped or production data modified."
+}

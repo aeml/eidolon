@@ -31,11 +31,20 @@ Fighter pilot or remove approved authored models.
   held16/430fdbbf,17/1c036a73,18/2075bb4b,raised148166c6 and future46f123be;
   original guards/catalog verified byte-identical before selection. No new
   version, broad future merge or reopened unaffected graphics qualification.
-- Raised branch148166c6 adds opt-in full14-slot equipped Fighter to its existing
-  two-case preview, retaining original world/input/shadow/pixel/resource/frame
-  limits. Linted/collected2cases, not executed/passed natively. Owner asked once
-  whether to cancel actual ongoing Nightly37880032315 consuming~4cores; no
-  answer/cancel yet. Do not stop unrelated services or repeat contended timing.
+- Raised current branch now **c745fbb6**: actual High/Low equipped populated
+  preview passes30.7s with all14 supplied Fighter wearables/no fallback, normal
+  movement/effects/grounding and original pixel/shadow/resource checks. Timed
+  profile flag deliberately off; not a frame-rate pass. Root inspects actual
+  images and narrows Earth dirt aggregates from the litter's70cm field to the
+  existing17cm grit, with subpixel contrast/relief filtering and quieter canopy
+  darkening. Same two native cases pass26.9s; all six road-view draw/triangle
+  counts unchanged. Three affected suites22pass66.305s, lint/whitespace pass.
+  Exact source/tests selected into this future branch after byte verification;
+  queued14-18 untouched, no new version/push or terrain activation. See
+  [soil candidate](docs/plans/2026-10-09-earth-soil-scale-candidate.json).
+  Moss/clump/composition/art and strict timed raised/party/device gates remain.
+  Owner asked once about cancelling Nightly37880032315 consuming~4cores;
+  no answer/cancel yet. No unrelated services stopped or contended timing replay.
 - Current-line raised-world preparation now has clean30a0deb0 in owned
   `eidolon-raised-world-rollout-20261009-V4BWRffv`, based on queued18/73f19f60.
   Select only qualified terrain atlas/route into current glyph-equipped map;
