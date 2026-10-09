@@ -79,6 +79,26 @@ test('public realm destinations and readings agree with built scenes without rev
     expect(getAtlasWorldLocations({ currentInstanceId: 'private-run' })).toEqual([]);
 });
 
+test('observatory chart tables have grounded legs inside their existing blocking footprint', () => {
+    const scene = createElementalLocations('air', { quality: 'low' });
+    try {
+        const site = scene.children.find(root => root.userData.locationId === 'open-observatory');
+        const wood = site.getObjectByName('open-observatory:wood');
+        const positions = wood.geometry.attributes.position;
+        for (const side of [-1, 1]) for (const end of [-1, 1]) for (const edge of [-1, 1]) {
+            const x = side * 18 + end * 2, z = 17 + edge * .65;
+            let grounded = false, reachesTop = false;
+            for (let i = 0; i < positions.count; i++) {
+                if (Math.abs(positions.getX(i) - x) > .1 || Math.abs(positions.getZ(i) - z) > .1) continue;
+                if (Math.abs(positions.getY(i)) < .001) grounded = true;
+                if (Math.abs(positions.getY(i) - 1.25) < .001) reachesTop = true;
+            }
+            expect({ grounded, reachesTop }).toEqual({ grounded: true, reachesTop: true });
+        }
+        expect(site.children.filter(mesh => mesh.name.endsWith(':wood'))).toHaveLength(1);
+    } finally { RenderSystem.prototype.disposeObjectResources.call({}, scene); }
+});
+
 test.each([['water', WATER_PATHS], ['fire', FIRE_PATHS], ['air', AIR_PATHS]])('%s scenery solids clear paths and hazards at both qualities', (realm, paths) => {
     const high = createElementalLocations(realm), low = createElementalLocations(realm, { quality: 'low' });
     expect(high.userData.walkFootprints).toEqual(low.userData.walkFootprints);

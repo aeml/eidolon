@@ -8,7 +8,7 @@ import { FOLIAGE_HAZARD_CLEARINGS } from '../data/worldFoliage.js';
 import { createTideRibStone, createTideRibPier, createWreckPlank, wreckHullHalfWidth, createWreckRib,
     createTornWreckSail, weatherWreckWood } from './WaterLandmarkGeometry.js';
 import { createKilnArchBeam } from './FireLandmarkGeometry.js';
-import { createHorizonRing } from './AirLandmarkGeometry.js';
+import { createHorizonRing, createWindVaneNeedle } from './AirLandmarkGeometry.js';
 import { createKilnFurnaceGeometry, createKilnDryingRackGeometry, createKilnYardPaving } from './KilnWorkshopGeometry.js';
 import { createElementalGroundCover, createAirPassageGroundCover } from './ElementalGroundCover.js';
 import { createAirWindbreakSail } from './AirCanvasGeometry.js';
@@ -134,11 +134,25 @@ export function createElementalLocations(realm, { quality = 'high' } = {}) {
                 const x = side * 18, z = site.recipe === 'chart-court' ? 12 : -19;
                 box('stone', x, .45, z, 3, .9, 3, true);
                 cylinder('iron', x, 3.8, z, .13, .2, 7);
-                beam([x - 2, 7, z], [x + 2, 7, z], .13, 'iron');
-                part(new THREE.ConeGeometry(.6, 1.5, 3), 'accent', x + 2, 7, z, [0, 0, -Math.PI / 2]);
-                part(new THREE.TorusGeometry(1.8, .1, 5, radial * 2), 'iron', x, 4.4, z, [0, .6, 0]);
+                cylinder('iron', x, 7, z, .27, .27, .45);
+                part(createWindVaneNeedle(), 'accent', x, 7, z);
+                part(createHorizonRing(1.8, quality), 'iron', x, 4.4, z, [0, .6, 0]);
+                // Solid overhead ring and graduations, with the central shaft
+                // acting as its bearing. The original stone footprint remains.
+                for (let i = 0; i < 12; i++) {
+                    const angle = i / 12 * Math.PI * 2, radius = 1.65;
+                    part(new THREE.BoxGeometry(.055, i % 3 === 0 ? .2 : .11, .16), 'accent',
+                        x + Math.sin(angle) * radius * Math.cos(.6), 4.4 + Math.cos(angle) * radius,
+                        z - Math.sin(angle) * radius * Math.sin(.6), [0, .6, -angle]);
+                }
                 if (site.recipe === 'chart-court') {
                     box('wood', x, 1.4, z + 5, 5, .3, 2, true);
+                    for (const end of [-1, 1]) {
+                        for (const edge of [-1, 1]) box('wood', x + end * 2, .625, z + 5 + edge * .65,
+                            .18, 1.25, .18);
+                        beam([x + end * 2, .42, z + 4.35], [x + end * 2, .42, z + 5.65], .08);
+                    }
+                    beam([x - 2, .42, z + 5], [x + 2, .42, z + 5], .09);
                     box('cloth', x, 1.57, z + 5, 3.8, .04, 1.5);
                     for (let i = 0; i < 4; i++) box('iron', x - 1.4 + i * .9, 1.6, z + 5, .03, .03, 1.3);
                 }

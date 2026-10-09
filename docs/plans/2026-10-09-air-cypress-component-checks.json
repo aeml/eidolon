@@ -42,5 +42,18 @@
     "visualLogSHA256": "4bd105061c514277cc37487de50ff3545ad797e2b03aca9ea4f8b39edddf2cf5",
     "artifacts": "/home/aeml/.local/share/eidolon-air-dust-visual-20261009 and matching.log; eidolon-air-dust-field-units-20261009.log and eidolon-air-dust-maps-units-20261009.log retained"
   },
+  "instrumentRevision": {
+    "implementation": "Only chart-court/vane-array props: forged thin bevelled spear/tail weathercocks replace cone arrows/crossbars; visible central bearings and graduated flat instrument bands replace tubular rings. Existing two overhead materials and merged batches retained; new silhouette fits original arrow envelope. Floating observatory chart tabletops gain eight grounded legs and low bracing inside existing tabletop solids. No new collision footprints, source coordinates, story interactions, material keys, shaders, textures or dynamic vane animation.",
+    "checks": "Four selected needle/ring/Air path-footprint tests pass14.084s; six unselected then. After adding table legs, the original Air path-footprint case passes13.752s again (overlap, not a new distinct test); one new actual grounded-leg test passes3.883s, seven unselected. Five distinct affected checks total; original path/hazard/material-batch/server-generated collision fixtures unchanged. Scoped four-file lint and whitespace pass. Actual candidate418module publication graph compiles3169295bytes with21shared login modules and unchanged external dependencies.",
+    "preservation": "Independent generated-geometry/matrix/material/shadow comparison before final chart-leg addition proves all eight Water and eight Fire location groups, six other Air locations and Air passage group exact at High/Low; all three realm footprint arrays exact. The later six-line leg addition is confined to excluded chart-court. Initial data-URL audit fails before comparisons because bare Three imports cannot resolve from a data URL; corrected harness resolves all imports to original module URLs and passes. No production workaround or source-loader change.",
+    "visual": "Actual native Low presentation passes12.8s before legs and14.4s after/retries0. Root directly inspects both observatory images: instrument arrow/collar and calibrated band are readable, and table legs remove the floating tabletop. Improved regional props, not full modern scene approval. Profiling disabled; original High frame failure remains unresolved and no new frame/party/phone certificate is claimed.",
+    "sourceHashes": {
+      "src/art/AirLandmarkGeometry.js": "6ec995a90fcb3d42581609cc4fa1bcfda94a8dc5793aa19227c44878a4da95f7",
+      "src/art/ProceduralElementalLocations.js": "c9f099e099b5a36dea956dcc00cfc9c7806af21b3b68eb9207044ce5ddd0aeaf",
+      "tests/AirLandmarkGeometry.test.js": "3839d3764a701e699ad6302665f42cf562a667db58a19982aadee087c90a8c73",
+      "tests/ElementalPopulation.test.js": "a5b5b79dd72979d05dd817422dd4baf24b2b7776b17807ff1e874b22bfade0d9"
+    },
+    "artifacts": "/home/aeml/.local/share/eidolon-air-vane-chart-visual-20261009 and matching.log (SHA256088cfc02f419c2df58eddc3addfaca2bd3a2c793a80464542f31b37fa671a294); earlier eidolon-air-vane-visual-20261009 retained; eidolon-air-vane-units-20261009.log; eidolon-air-chart-table-units-20261009.log; eidolon-air-chart-legs-units-20261009.log; preservation log SHA256d8bdf71c38a230d154610b1aeeb437117b746d2949b6b0f0c83a8a804fd651f6"
+  },
   "remaining": "Investigate the native High frame regression without weakening original caps or repeatedly replaying unchanged scenes; actual quality-swap checks and broader scene/combat/equipment/party/device/world-art/full-roadmap gates remain. Existing versions/patch-note history unchanged; no version18 yet. Source is not selected into the canonical future tree or deployed."
 }
