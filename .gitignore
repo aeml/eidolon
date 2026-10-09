@@ -6,6 +6,7 @@ public/
 playwright-report/
 test-results/
 rest-render-results/
+native-visual-evidence/
 .playwright/
 *.pem
 *.key
