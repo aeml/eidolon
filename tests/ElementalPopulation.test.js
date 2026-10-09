@@ -97,13 +97,20 @@ test.each([['water', WATER_PATHS], ['fire', FIRE_PATHS], ['air', AIR_PATHS]])('%
         }
     }
     for (const scene of [high, low]) {
-        expect(scene.children).toHaveLength(8);
+        const locations = scene.children.filter(root => root.userData.locationId);
+        expect(locations).toHaveLength(8);
+        expect(scene.children).toHaveLength(realm === 'air' ? 9 : 8);
+        if (realm === 'air') {
+            const passage = scene.getObjectByName('Air passage heath and scree');
+            expect(passage.children).toHaveLength(86);
+            expect(passage.children.every(mesh => mesh.userData.airPassageGroundCover && !mesh.castShadow && mesh.receiveShadow)).toBe(true);
+        }
         // Preserve the original structure budget, separately allowing exactly
         // one opaque, shadow-receiving groundcover batch per location.
-        expect(scene.children.every(root => root.children.length >= 3 &&
+        expect(locations.every(root => root.children.length >= 3 &&
             root.children.filter(mesh => !mesh.name.endsWith(':ground-cover')).length <= 7)).toBe(true);
-        expect(scene.children.every(root => root.children.filter(mesh => mesh.name.endsWith(':ground-cover')).length === 1)).toBe(true);
-        for (const root of scene.children) {
+        expect(locations.every(root => root.children.filter(mesh => mesh.name.endsWith(':ground-cover')).length === 1)).toBe(true);
+        for (const root of locations) {
             const apron = root.getObjectByName(`${root.userData.locationId}:ground-wear`);
             expect(apron).toBeDefined(); expect(apron.material.depthWrite).toBe(false);
             expect(apron.position.y).toBeLessThan(.035); // stays below the authored path overlay

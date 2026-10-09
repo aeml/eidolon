@@ -429,7 +429,11 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.16`, a curved First Grove vault with
+- Current source version: `Alpha 1.79.17`, visual-only broken Air passage heath,
+  scree and retained-population gale cypress road framing. High/Low placement
+  subsets and existing path/site/hazard/portal clearances remain required.
+  Other realms, supplied actors/equipment and gameplay stay unchanged.
+  Also retains a curved First Grove vault with
   carved stone lips and worn bonded pier courses at the Grove and Bastion.
   Original walking clearances and scenery budgets stay unchanged; this is
   incremental landmark work, not final modern-world or beta qualification.

@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared17 selectively integrates staged Air-passage heath/scree and
+existing-tree framing onto16, no whole-future renderer/version promotion.
+424focused/30tooling/11timestamp checks pass with overlap; six native cases,
+18timed views and one new High software roadside case pass original budgets.
+Highmax173269tri/127calls/33.3p95; Low48768/56/16.7. All451older raw notes
+exact,452total/ten initial/45lazy. Retain initial numerical-boundary failure;
+exact reported-decimal timestamp subtraction, no rounding or raised limit.
+Reviewed art modest, broader world cohesion unfinished. [Receipt](2026-10-09-release1-79-17-checks.json).
+Local-only;11/8a57420e/run37874149991 pending own acceptance, then ordered
+12-16/fresh17 reconciliation. Full numbered/art/F1-F5/party/device/beta/launch open.
+
 October9 prepared16 qualified Skeleton cross-actor batches preserve exact
 independent animations/surfaces/shadows/hitboxes and borrowed resources; supplied
 skins/other families unchanged.486units/four native comparisons/two world cases

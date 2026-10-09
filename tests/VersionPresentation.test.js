@@ -4,7 +4,20 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.16';
+const currentVersion = '1.79.17';
+
+test('1.79.17 records bounded Air passage composition without claiming full environment or device acceptance', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.17"'), previous = html.indexOf('data-version="1.79.16"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['roadside heath and scree', 'receive shadows', 'without adding solid obstacles',
+        'Existing gale cypresses', 'Tree counts', 'stable identities', 'scale and rotation',
+        'portal approaches', 'deterministic placement subsets', 'owning scene groups',
+        'Earth, Water and Fire placements', 'saved player data remain unchanged',
+        'Original frame, draw and triangle limits', 'not final modern-world',
+        'equipped-party', 'Raised terrain remains disabled', 'Full prior patch history'])
+        expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.16 describes worn bounded masonry without claiming whole-world completion', () => {
     const html = readIndexWithPatchHistory();

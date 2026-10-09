@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 prepared17 Air passage:** select staged visual-only heath/scree and
+retained-tree framing onto current16, preserving supplied assets/current
+renderer/Earth5.5cells.424focused/30tooling/11exact-arithmetic checks pass with
+overlap. Six native cases/18timed views and changed High software roadside case
+pass original limits; Highmax173269tri/127calls/33.3p95, Low48768/56/16.7.
+Every451older raw note exact,452total/ten initial/45lazy;17labels synchronized.
+First floating-subtraction boundary failure retained; exact decimal timestamp
+arithmetic, not budget tolerance or rounding, preserves genuine excess failures.
+Actual captures modest, broad gray travel/world-art cohesion still unfinished.
+[Receipt](docs/plans/2026-10-09-release1-79-17-checks.json).
+Notpushed/live.11/8a57420e/run37874149991 pending/Luna terminal-only watch;
+own acceptance then ordered12-16/fresh17 remote reconciliation required.
+Full original goal and every remaining art/F1-F5/party/device/beta/launch gate active.
+
 **October9 qualified16 Skeleton render supplement:** Reuse existing cross-actor
 opaque batches only for reviewed constructor-batched Skeletons; supplied skins,
 other families, live poses/materials/hitboxes/shadows and eligibility unchanged.
