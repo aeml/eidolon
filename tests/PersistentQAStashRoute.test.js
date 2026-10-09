@@ -20,6 +20,10 @@ afterEach(() => { window.game = previousGame; });
 
 function harness(mode) {
     const original = JSON.parse(JSON.stringify(gear));
+    if (mode === 'neck' || mode === 'gloves') {
+        original.type = mode === 'neck' ? 'NECK' : 'GLOVES';
+        original.slot = mode;
+    }
     const quest = { id: 'chronicle-item-keep', type: 'RELIC', stack: 3 };
     const player = { inventory: [original, quest], stash: [null, { id: 'already-stored', extra: { keep: true } }],
         equipment: { mainHand: { id: 'worn-weapon' } }, gold: 345 };
@@ -49,15 +53,15 @@ function harness(mode) {
     return { page, player, clicks, original, quest };
 }
 
-test.each(['normal', 'pending-earned'])('ordinary right-click storage preserves invested gear and pre-existing contents: %s', async mode => {
-    const { page, player, clicks, quest } = harness(mode);
-    expect(await storePersistentQALootSpare(page)).toEqual(gear);
+test.each(['normal', 'pending-earned', 'neck', 'gloves'])('ordinary right-click storage preserves invested gear and pre-existing contents: %s', async mode => {
+    const { page, player, clicks, quest, original } = harness(mode);
+    expect(await storePersistentQALootSpare(page)).toEqual(original);
     expect(recall).toHaveBeenCalledWith(page, { allowRespawn: false });
     expect(open).toHaveBeenCalledWith(page);
     expect(clicks[0]).toEqual({ selector: '.stash-browser-item[data-source="inventory"][data-slot-index="0"]', options: { button: 'right' } });
     expect(clicks.at(-1).selector).toBe('#btn-close-stash');
     expect(player.inventory).toContainEqual(quest);
-    expect(player.stash).toContainEqual(gear);
+    expect(player.stash).toContainEqual(original);
 });
 
 test.each(['no-space', 'rejected', 'lost-metadata', 'lost-stash', 'lost-quest', 'gold-changed'])(
