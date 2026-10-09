@@ -18,6 +18,12 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Accepted live18/81702abb/CI37935111832 attempt1 SUCCESS: all ten jobs;
+  native7quality/1celebration/2class/4smoke, live8/town-rest2/party1 pass.
+  Four optional steps skipped, not passed. Root after-terminal public hashes
+  and frontend/backend/ready DB match13:48:56.804UTC. Fresh normal19
+  reconciliation and own19 publication/acceptance remain required.
+
 - Separate camp dressing atbf35cdc0 grounds the hearth ring and folded Low
   bedroll, stacks firewood and bakes charcoal into the existing mask alpha.
   18 focused checks pass; same15 placements/9draw batches, +3300raw triangles.

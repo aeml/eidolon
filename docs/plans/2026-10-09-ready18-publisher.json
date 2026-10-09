@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "PUSHED exact Alpha1.79.18 /81702abb /CI37935111832 in progress; own public acceptance pending",
+  "status": "ACCEPTED exact Alpha1.79.18 /81702abb /CI37935111832 attempt1 SUCCESS",
   "candidate": {
     "version": "Alpha 1.79.18",
     "head": "81702abb6e0c953d523b8299b5bf540dffb18424",
@@ -22,6 +22,10 @@
     },
     "scope": "Five selected transformed runtime files, not a hash certificate for all binary assets. A changed head after the final fresh reconciliation requires a new publisher build/expected identities."
   },
-  "deliveryGate": "Root independently accepts exact17 terminal CI/native/live/five transformed public bytes and matching frontend/backend/ready DB at13:09:46.562UTC. Fresh origin/master fetch and normal reconciliation keep exact81702abb unchanged, preserve17 ancestry and clean worktree; normal master1ecfeb20..81702abb push succeeds. Own18 CI37935111832 is running under approved Luna terminal/actionable monitoring. Root18 CI/native/live/public acceptance required before next push. No force/website overwrite/dirty original modification/overlapping deployment. New combined art/canvas/tents/raised/operations changes remain separate and unpublished.",
+  "deliveryGate": "Root independently accepts exact17 before normal18 push. Root then independently verifies terminal18 attempt1 SUCCESS and all ten jobs. Native AMD Vulkan1.4.318/RADV:7quality cases1.3m,1celebration4.4s,2class12.4s,4smoke1.5m; live8cases5.6m,town/rest2cases1.4m,party1case52.7s. Four optional animation-gallery/rested-GPU/full-character/four-class-remote steps skipped, not passed; no skipped jobs or failed steps. Sanitization succeeds. After-terminal verified HTTPS/ordinary DNS/forcedIPv4 checks13:48:56.804UTC match frontend/backend exact18,readyDB and all five expected transformed bytes. Own19 push permitted after fresh normal remote reconciliation, with its own acceptance still required. No force/website overwrite/dirty original modification/overlapping deployment or raised activation.",
+  "ciLogSHA256": {
+    "native": "3e62b8986ee0057843fb1e746f869b647d702a5186e49959f5961133f99dcc43",
+    "live": "5766491e4c7947e164364d93a1dd15672c5bf7d2e4d39b9feabd767db9d16acb"
+  },
   "remaining": "Full roadmap, integrated modern art, raised-terrain/equipped-party/device gates,1.80 F1-F5,1.81-1.99, owner/human rights/operations/beta/launch decisions remain open. No source/page count substitutes for those gates."
 }
