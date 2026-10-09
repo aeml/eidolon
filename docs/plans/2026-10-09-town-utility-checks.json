@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Qualified local town utility refinement; not published or a final modern-art approval",
+  "status": "Well/bench slice qualified atff682107; market follow-up unit/catalog checked but integrated native review pending. Not published or final modern-art approval",
   "source": "ff682107aa5b0eabc7b6e28bf0fffaf71289db1a, based on pushed20/07743ba7. Runtime unchanged after these checks; version/release preparation still required before any future push.",
   "scope": "Existing communal well gains an open thick-walled bucket, iron bands/bail, winding drum/rope and crank. Three existing courtyard benches gain separated beveled slats and back supports. Preserve13exact walk footprints,31render meshes/29unique geometries/18materials, batch ownership and ordinary motion/reduced-motion behavior. Raw courtyard triangles High4652to8732,Low3404to6260. No new material/draw/texture or per-frame work, service/reward/collision/account/terrain-profile change. Review harness uses the actual delivered dressed Ilyra instead of an inaccurate bare player Wizard proxy; no runtime NPC replacement.",
   "checks": "Two full affected unit suites6checks pass21.092s; scoped lint/whitespace pass. Four distinct System Chrome production scene cases pass1.9m/retries0: populated Earth/town High1280/Low390 plus equipped fourteen-slot Fighter/HUD town High/Low. Both populated cases explicitly profile9named views each/120real RAF samples each. Original High20median/33.4p95/350calls/250000tri and Low33.4/50/200/85000 gates unchanged. Profile artifacts record actual AMD Vulkan1.4.318/RADV RENOIR; separate exact same launch-policy GPU probe also passes. No nonexistent verify-browser-gpu spec counted as a test: the probe is scripts/verify-browser-gpu.mjs.",
@@ -12,6 +12,13 @@
     "units": "9628a2eb11cf16bcc452981826de9c0047d69ef9eab6427fdba582f1900c1460",
     "native": "dcf408a0af2caefcf39c8124cee1a6fca063599ac3892672bbe54c07cfac1354",
     "gpu": "a0f50fdc33fe6c5d58ac71e577cb3a80ccdfd8ed6b0a25a17741b29448c6efce"
+  },
+  "marketFollowup": {
+    "source": "9e400a8a2233d6ea000e86994cdf2ec12aeb5fc7",
+    "scope": "Two bulged provision casks with iron hoops under the existing canopy; ground casks/rear chest on actual plinth top and upper crate on lower crate top. Same existing wood/iron material batches, picking/walking envelopes; shared geometry cache22to23, materials15unchanged. No live NPC/role/reward/collision change.",
+    "checks": "Two current complete affected unit suites16checks pass1.722s after precise grounding; lint/whitespace pass. Read-only actual-client admin landing catalog --check passes with existing catalog untouched. Initial15checks at earlier partially sunk cask placement retained as historical, not final-grounding proof. Current combined native/frame/visual acceptance still required after20 live QA; prior ff images/profiles cannot certify new market geometry.",
+    "unitsSHA256": "56b8763507804661fcdb8aeb301096bf3c73f5bc1434fa2e24082fd5cd5b98f0",
+    "adminCatalogSHA256": "a7ce99ff3e96de022f44c1fc4ed01703b6dc9dfbea92ed447f6f2d74d0ae59cf"
   },
   "delivery": "Own20 CI37948468016/native/live/exact public acceptance remains required before another normal push. Group this bounded refinement with further relevant work rather than deploying every individual prop. Full modern art/character fit/combat, raised/equipped-party/device,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch requirements remain open. Do not promote unrelated private operations or terrain candidates."
 }
