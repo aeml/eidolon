@@ -58,6 +58,19 @@ retained, all446prior entries byte-identical; versions synchronized. See
 ordered1.79.9–1.79.11 acceptance precedes this release. Full1.80/F1-F5,
 modern-art and operator/device/human/owner/beta/launch gates remain open.
 
+**October9 bounded High cover QA:** e259/run37870274115 terminal failure,
+root independently verified after Luna notice; Client/Server/Smoke2/3 pass,
+two High quality-switch cases time out twice. All downstream deployment skips.
+Disjoint four-cover fixtures retain all16Water/Fire+8Air sites/twelve phases,
+all identities/counts/resources and original120s/performance limits. Six actual
+software Chromium cases pass10.8m on four constrained cores, no retries;
+19browser-plan checks pass. Deliberate two-core diagnostic fails, preserved,
+not physical/native performance acceptance. Runtime/version/notes unchanged.
+[Receipt](docs/plans/2026-10-09-regional-cover-partition-checks.json).
+Fresh normal reconciliation/new11 CI/public acceptance precedes12-16 releases;
+17 Air-passage integration local-only. Full original scope remains active.
+Older pending/acceptance statements below are historical.
+
 **October9 corrected11 CI fixtures:** c3a45083/run37867222336 terminal failure:
 password checks read deferred engine too early; two hosted regional reviews
 exceed120s. Downstream deployment skips; public10 remains healthy/exact.
