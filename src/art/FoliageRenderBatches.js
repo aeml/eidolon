@@ -6,6 +6,7 @@ import { createConiferBoughGeometry } from './ProceduralConiferBoughs.js';
 import { createWillowCurtainGeometry } from './WillowCurtainGeometry.js';
 import { createElementalConiferGeometry } from './ElementalConiferGeometry.js';
 import { createDrownedWillowGeometry } from './DrownedWillowGeometry.js';
+import { updateSpatialWoodlandQuality } from './SpatialWoodlandBatches.js';
 
 const BATCHES = new Map();
 const LOW_CROWNS = new Map();
@@ -112,6 +113,7 @@ export function updateFoliageRenderQuality(root, quality) {
             group.userData.foliageQuality === level) return;
         const parts = new Map(getFoliageRenderBatches(group.userData.foliageId, level).map(part => [part.name, part]));
         for (const mesh of group.children) {
+            if (updateSpatialWoodlandQuality(mesh, parts)) continue;
             const part = parts.get(mesh.name);
             if (!part || mesh.geometry === part.geometry) continue;
             mesh.geometry = part.geometry;

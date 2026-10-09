@@ -15,6 +15,7 @@ import {
 } from '../art/ProceduralRealmFoliage.js';
 import { computeFoliageCellBounds, getFoliageRenderBatches } from '../art/FoliageRenderBatches.js';
 import { createEarthUnderstory } from '../art/EarthUnderstory.js';
+import { batchSpatialWoodlandCells } from '../art/SpatialWoodlandBatches.js';
 import {
     LANTERNHOLD_STRUCTURE_DEFINITIONS,
     createLanternholdCampPlacements,
@@ -78,6 +79,7 @@ export class WorldGenerator {
         // multi-draw submits each plant separately; retain established cells
         // on those devices rather than increasing their draw-call budget.
         this.understorySpatialBatches = options.understorySpatialBatches !== false;
+        this.woodlandSpatialBatches = options.woodlandSpatialBatches === true;
         this.crystalSanctum = null;
         this.townCourtyards = null;
         this.reducedMotionQuery = createMotionPreference();
@@ -197,6 +199,9 @@ export class WorldGenerator {
                     else { instance.computeBoundingBox(); instance.computeBoundingSphere(); }
                     group.add(instance);
                 }
+            }
+            if (this.woodlandSpatialBatches && recipe.region === 'earth') {
+                batchSpatialWoodlandCells(group, getFoliageRenderBatches(recipe.id, 'high'), parts);
             }
             if (!shouldAttach()) return false;
             colliders.forEach((collider) => this.collisionManager.addCollider(collider));

@@ -1,6 +1,7 @@
 import { BasicShadowMap, Frustum, Matrix4, PCFShadowMap, PCFSoftShadowMap, Vector3 } from 'three';
 import { SHADOW_RECEIVER_MIN_HEIGHT } from './ShadowViewCoverage.js';
 import { cacheUnchangedLocalMatrix } from './UnchangedLocalMatrix.js';
+import { isSpatialWoodlandBatch } from '../art/SpatialWoodlandBatches.js';
 
 // Bound the actual shader lookup footprint in world units. PCF offsets reach
 // radius texels; PCFSoft reaches two texels and ignores radius. An extra texel
@@ -103,7 +104,7 @@ export class FoliageShadowInfluence {
             group.addEventListener('childremoved', this.onRemoved);
         }
         this.visit = object => {
-            if (!object.isInstancedMesh || !object.boundingBox || object.frustumCulled === false) return;
+            if (!(object.isInstancedMesh || isSpatialWoodlandBatch(object)) || !object.boundingBox || object.frustumCulled === false) return;
             const groundCover = object.parent?.userData.earthUnderstory && !object.castShadow && object.userData.windBoundsIncluded;
             const shadowCaster = this.shadowActive && object.castShadow && object.parent?.userData.proceduralFoliage &&
                 object.parent.userData.region === 'earth';
@@ -227,7 +228,7 @@ export class FoliageShadowInfluence {
                     this.shadowActive && root.userData.proceduralFoliage && root.userData.region === 'earth';
                 for (const child of root.children) {
                     if (!child.visible) continue;
-                    if (child.isInstancedMesh && !child.children.length) {
+                    if ((child.isInstancedMesh || isSpatialWoodlandBatch(child)) && !child.children.length) {
                         if (directEligible) this.visit(child);
                     } else child.traverseVisible(this.visit);
                 }
