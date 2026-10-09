@@ -8,7 +8,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
-    const result = await page.evaluate(async quality => {
+    const result = await page.evaluate(async ({ quality, equipped }) => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { WOODLAND_WIND_REACH } = await import('/src/art/WoodlandWindMaterial.js');
@@ -53,7 +53,27 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
         const actor = new Actor('elevation-preview', {});
         engine.player = actor; actor.gameEngine = engine;
         actor.position.copy(focus).setY(0); // Exercise grounding of an old level-ground position.
-        actor.setMesh(await MeshFactory.createMeshForType('Fighter'));
+        actor.setMesh(await MeshFactory.createMeshForType('Fighter', { quality }));
+        if (equipped) {
+            // Opt-in prepared outfit, not campaign/party or earned gear proof.
+            // Keep the complete legal fourteen-slot supplied Fighter loadout.
+            const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
+            const outfit = { head: 'Iron Helm', chest: 'Plate Mail', legs: 'Plate Greaves', feet: 'Iron Boots',
+                gloves: 'Iron Gauntlets', shoulders: 'Steel Pauldrons', belt: 'Plated Girdle', mainHand: 'Iron Sword',
+                offHand: 'Wooden Shield', ring1: 'Ruby Ring', ring2: 'Silver Ring', neck: 'Necklace',
+                trinket1: 'Amulet of Power', trinket2: 'Orb of Mana' };
+            actor.syncEquipmentVisuals(Object.fromEntries(Object.entries(outfit).map(([slot, name], index) => {
+                const item = BASE_ITEMS.find(base => base.name === name);
+                if (!item) throw new Error(`Missing equipped-preview item ${name}`);
+                return [slot, { ...item, id: `raised-preview-${slot}`, baseName: name, level: 75,
+                    rarity: index % 2 ? 'Uncommon' : 'Rare', stats: { strength: 12, vitality: 8 } }];
+            })));
+            await actor.mesh.userData.equipmentReady;
+            if (actor.mesh.userData.equipmentVisualItemCount !== 14 || actor.mesh.userData.equipmentVisualMissing?.length ||
+                actor.mesh.userData.equipmentVisualFallback?.length) {
+                throw new Error('Raised-world pilot did not bind all14 supplied wearable models');
+            }
+        }
         actor.update(0); actor.resetTransformInterpolation(); actor.render(1);
         render.entityGroup.add(actor.mesh);
         // Exercise production generation, not fixture-only placement matrices.
@@ -455,7 +475,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
                 understory.children.forEach(mesh => { mesh.frustumCulled = true; });
             }
         };
-        return { treeCount, treeDraws, pathDraws, raisedPathTriangles, groundHeight: focus.y, pickedError: picked.distanceTo(focus),
+        return { equipped, equipmentItems: actor.mesh.userData.equipmentVisualItemCount || 0,
+            treeCount, treeDraws, pathDraws, raisedPathTriangles, groundHeight: focus.y, pickedError: picked.distanceTo(focus),
             attachedDraws, understoryCost, outcropDraws,
             beamDraws, beamParts: beamParts.length,
             impactDraws, impactSurfaceError,
@@ -466,7 +487,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             movementError, jumpError, walked, jumpStarted, landed: !engine.playerJumpState && actor.state === 'IDLE',
             surfaceError: picked.distanceTo(visibleSurface), calls: render.renderer.info.render.calls,
             triangles: render.renderer.info.render.triangles, maxGrade: field.maxGrade };
-    }, quality);
+    }, { quality, equipped: process.env.EIDOLON_E2E_RAISED_EQUIPMENT === '1' });
+    if (process.env.EIDOLON_E2E_RAISED_EQUIPMENT === '1') expect(result.equipmentItems).toBe(14);
     await testInfo.attach('elevation-preview', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
     console.log(`[understory ${quality}] ${JSON.stringify(result.understoryCost)}`);
     expect(result.understoryCost.calls).toBeGreaterThan(0);
