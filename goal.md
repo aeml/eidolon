@@ -89,10 +89,18 @@ Fighter pilot or remove approved authored models.
   targeted Healing Light and fresh gear/bag/membership/EP saves. Owned disposable
   database removed; production untouched. Root reviewed post-login image.
   Shared-GPU180frame sample is slow:66.6ms median/83.4ms p95/542draws/542736triangles.
-  This is functional/save evidence, **not a performance pass**. Low party is not
-  run on this source; physical devices/campaign/public terrain remain open.
-  CI Chrome is now active, so no competing native run was started. Scoped receipt
+  This is functional/save evidence, **not a performance pass**. Scoped receipt
   is `docs/plans/2026-10-09-equipped-party-high-checks.json` in the18 branch.
+- After CI Chrome exits, current reconciled18/c82 Low four-browser equivalent
+  passes96.18s, including all four saved gear/bags/membership/EP. Art and gameplay
+  inputs are unchanged by the f1 merge. Root reviews post-login Low image and
+  independently verifies disposable database cleanup; production untouched.
+  Shared-GPU180frame sample49.9ms median/83.4ms p95/215draws/143598triangles is
+  still slow; different active population means no controlled High/Low FPS claim.
+  Both quality modes now have functional/save evidence, not sustained standalone
+  device performance, final art, campaign or public raised-profile approval.
+  Receipt `docs/plans/2026-10-09-equipped-party-low-checks.json` is in18;
+  subsequent evidence-only commit7fb93177 leaves tested code unchanged.
 - Existing nightly **37880032315/dc7** was independently confirmed running
   on the separate soak runner and remains untouched. Its concurrent host-load
   contribution to Air timings is unproven. Do not cancel/restart it or claim
@@ -156,7 +164,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   branch `work/alpha-1-79-startup-bundle-current-20261009`, pushedf1ca948d.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, localc82ba3dc/1.79.18;
+  branch `work/alpha-1-79-air-cypress-current-20261009`, local7fb93177/1.79.18;
   art/runtime source0e319ac0 unchanged; party evidence and corrected publication
   names are retained by normal reconciliation, not a new art qualification.
 - Ordered queued release worktrees and last clean heads:
@@ -169,7 +177,7 @@ qualification never proves a later tree, full visual approval or public rollout.
   | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `a88e97b1` |
   | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `39098884` |
   | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `33d351f7` |
-  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `c82ba3dc` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `7fb93177` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
