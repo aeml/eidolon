@@ -261,13 +261,27 @@ export class CasinoController {
         if (!this.dialogue.open) this.dialogue.showModal();
     }
 
+    casinoRoot(name, key, lookup = true) {
+        const scene = this.engine.renderSystem.scene, cached = this[key];
+        let ancestor = cached;
+        if (cached?.name === name) {
+            while (ancestor && ancestor !== scene) ancestor = ancestor.parent;
+            if (ancestor === scene) return cached;
+        }
+        this[key] = null;
+        // An interior does not exist in the ordinary world. Do not recursively
+        // search every forest/actor each frame for a deliberately absent root.
+        // Missing roots are not cached: the next valid casino frame may install it.
+        return lookup ? (this[key] = scene.getObjectByName(name) || null) : null;
+    }
+
     updateDoorHover() {
         const engine = this.engine;
         this.hoverHint = null;
         if (this.hoveredDoor) this.hoveredDoor.material.emissive.setHex(0x000000);
         this.hoveredDoor = null;
         if (this.active || this.dialogue.open || engine.currentInstanceId || !engine.player) return null;
-        const door = engine.renderSystem.scene.getObjectByName('lanternhold-casino-shell')?.userData.casinoDoor;
+        const door = this.casinoRoot('lanternhold-casino-shell', 'shellRoot')?.userData.casinoDoor;
         if (!door || !engine.inputManager?.mouse) return null;
         this.raycaster.setFromCamera(engine.inputManager.mouse, engine.renderSystem.camera);
         if (!this.raycaster.intersectObject(door, true).length) return null;
@@ -288,7 +302,7 @@ export class CasinoController {
         this.pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
         this.raycaster.setFromCamera(this.pointer, engine.renderSystem.camera);
         const inside = engine.currentInstanceId === CASINO_INSTANCE;
-        const shell = engine.renderSystem.scene.getObjectByName(inside ? 'lanternhold-casino-interior' : 'lanternhold-casino-shell');
+        const shell = this.casinoRoot(inside ? 'lanternhold-casino-interior' : 'lanternhold-casino-shell', inside ? 'interiorRoot' : 'shellRoot');
         const targets = inside ? (this.floor === 'vip' ? [shell?.userData.casinoStairs] : [shell?.userData.casinoGuard, shell?.userData.casinoExit]) : !engine.currentInstanceId ? [shell?.userData.casinoDoor] : [];
         const hit = this.raycaster.intersectObjects(targets.filter(Boolean), true)[0];
         if (hit) {
@@ -368,7 +382,7 @@ export class CasinoController {
                 else for (const box of this.furnitureColliders || []) if (!colliders.includes(box)) engine.collisionManager.addCollider(box);
             }
         }
-        const floors = engine.renderSystem.scene.getObjectByName('lanternhold-casino-interior')?.userData.floors;
+        const floors = this.casinoRoot('lanternhold-casino-interior', 'interiorRoot', overworld)?.userData.floors;
         if (floors) { floors.public.visible = !upstairs; floors.vip.visible = upstairs; }
         if (this.furniture?.userData.vipFloor) this.furniture.userData.vipFloor.visible = upstairs;
         if (this.furniture?.userData.publicFloor) this.furniture.userData.publicFloor.visible = !upstairs;
@@ -504,6 +518,7 @@ export class CasinoController {
     dispose() {
         if (this.disposed) return;
         this.disposed = true;
+        this.shellRoot = null; this.interiorRoot = null;
         this.closeDoorDialogue();
         if (this.active) this.exitView();
         this.clearActorPresentation();
