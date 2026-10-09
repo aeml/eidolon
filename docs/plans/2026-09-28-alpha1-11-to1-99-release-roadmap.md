@@ -46,6 +46,17 @@ earlier releases still need acceptance. This is a1.83 code foundation, not
 operator/tabletop or1.80/F1-F5/final-art/device/beta/launch acceptance. Original
 numbered requirements, dependencies and complete scope below remain unchanged.
 
+October9 prepared11 graphics failure guidance: actual Firefox login works but
+headless context creation fails before four-class renderer qualification. Keep
+that failure open; no forced software/context/security workaround. Failure-only
+owned message appears in shared visible/focused header, not hidden auth panel.
+425focused cases, three native login/failure-path cases and one normal Chrome
+3D/loot case pass;445older notes exactly retained.111116byte login/10initial/
+44lazy pages. [Evidence](2026-10-09-graphics-startup-checks.json).
+Notlive; accept corrected10/d3a3b9f7/run37864085950 first. Prepared12-15 must
+inherit Go/login/guidance before publishing; preserve later renderer work.
+Full F1-F5/modern-art/world/party/device/human/owner/beta/launch scope stays open.
+
 Requested login pagination is staged on prepared1.79.11: ten initial notes,
 explicit ten-entry older pages, all446 preserved; initial HTML about86% smaller.
 Login defers the engine/catalog and tolerates a late document-ready event.
@@ -65,6 +76,26 @@ all prior history preserved. [Integration](2026-10-08-release1-79-11-checks.json
 Not pushed/live: pending1.79.9 needs acceptance, then1.79.10 publication/acceptance
 before1.79.11. Earlier status entries are historical; full numbered requirements,
 F1-F5/1.87/environment/device/beta/launch and owner/human gates remain unchanged.
+
+October9 unaccepted1.79.10 security correction: CI37861950511/6ed016b7 ends
+failure on nine reachable Go1.27.1 standard-library advisories, fixed1.27.2.
+Client/all three browser shards pass; five downstream QA/deploy gates skip.
+Upgrade all build pins without changing dependencies, art, gameplay or gates.
+Strict scan0reachable, actual patched API/monitor builds, module verification,
+two race packages and412fresh-locked-client checks pass. Retain failed CI/local
+Node-link fixture evidence; only current unaccepted note updated,444historical
+entries byte-identical. [Receipt](2026-10-09-go1272-security-checks.json).
+New corrected10 still requires own CI/public acceptance before requested11
+login/Firefox fix and prepared12-15. Last accepted9, full numbered scope and
+F1-F5/art/party/device/human/operations/rights/beta/launch gates remain open.
+
+Accepted1.79.9/7114aad6: own37842726678 all ten mandatory jobs succeed; root
+confirms exact public front/back/healthy DB, clean production and four exported
+file bytes including ordered bundled CSS. Optional broader steps skipped, not
+passed. Earlier failed37791738441 attempts retained. Next prepared1.79.10 has
+its own ordered publication/live gate, then1.79.11 login/Firefox and12–14.
+[Public evidence](2026-10-08-release1-79-9-public-checks.json). Full original
+numbered roadmap/F1-F5/modern-art/party/device/owner/human/beta/launch unchanged.
 
 October8 corrected1.79.9 QA permits a bounded distinct hostile pack to be
 defeated through real combat before earned-loot pointer acquisition. Original

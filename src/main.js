@@ -7,6 +7,7 @@ import { LoginModerationUI } from './ui/LoginModerationUI.js';
 import { credentialTokenChange } from './core/CredentialToken.js';
 import { PublicEmailRecoveryUI } from './ui/EmailRecoveryUI.js';
 import { mountDataPrivacyNotices } from './ui/DataPrivacyNotice.js';
+import { gameStartupFailureMessage } from './core/GraphicsStartup.js';
 
 const recoveryHandoff = window.__eidolonRecoveryHandoff;
 delete window.__eidolonRecoveryHandoff;
@@ -136,6 +137,7 @@ const bootLogin = async () => {
     const btnLogin = document.getElementById('btn-login');
     const btnRegister = document.getElementById('btn-register');
     const authStatus = document.getElementById('auth-status');
+    const gameStartupStatus = document.getElementById('game-startup-status');
     const loginPanel = document.getElementById('login-panel');
     
     let authSocket = null;
@@ -457,6 +459,10 @@ const bootLogin = async () => {
             }
 
             console.log(`User selected: ${type}, Multiplayer: ${isMultiplayer}`);
+            if (gameStartupStatus) {
+                gameStartupStatus.hidden = true;
+                gameStartupStatus.textContent = '';
+            }
             
             loginModeration?.dispose(); loginModeration = null;
             startScreen.classList.add('hidden');
@@ -573,8 +579,15 @@ const bootLogin = async () => {
             console.error("Failed to start game:", error);
             loadingScreen.style.display = 'none';
             startScreen.classList.remove('hidden');
-            authStatus.textContent = 'The game could not start. Please try again.';
+            authStatus.textContent = gameStartupFailureMessage(error);
             authStatus.style.color = '#ff4444';
+            // The auth panel is hidden after login. Keep startup guidance in
+            // the shared header so both returning and new players can see it.
+            if (gameStartupStatus) {
+                gameStartupStatus.textContent = gameStartupFailureMessage(error);
+                gameStartupStatus.hidden = false;
+                gameStartupStatus.focus();
+            }
         }
     };
 

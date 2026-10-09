@@ -29,7 +29,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        GO_VERSION: 1.27.1
+        GO_VERSION: 1.27.2
         BUILD_COMMIT: ${EIDOLON_BUILD_COMMIT:-development}
         BUILD_VERSION: ${EIDOLON_BUILD_VERSION:-Alpha 1.79.14}
     restart: unless-stopped
@@ -67,7 +67,7 @@ services:
       dockerfile: Dockerfile
       target: monitor
       args:
-        GO_VERSION: 1.27.1
+        GO_VERSION: 1.27.2
     restart: unless-stopped
     network_mode: host
     read_only: true
