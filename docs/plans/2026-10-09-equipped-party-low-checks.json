@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "source": "c82ba3dc7c7650b2135a93bf86cd9ff66ded00ca",
+  "status": "Four-browser Low functional and save check passed; performance remains open",
+  "fixture": "Same isolated four-class fourteen-slot Uncommon/Rare party scenario as the recorded High check, with explicit Low quality. Owned loopback Mongo/race Go server and raised Earth only; production accounts/database/env untouched. Source retains normal f1 publication-name correction; art/actor/terrain/gameplay inputs are unchanged from the recorded High candidate.",
+  "result": "Actual Go test PASS96.18s/97.250s total; Playwright1passed1.5m/retries0 and1intentionally skipped single-renderer observer. All four real browser logins/party invitations/acceptance/ordinary movement, independently owned correctly grounded equipped local/remote rigs, Fireball server damage and visible targeted Healing Light server healing pass. All four fresh disconnect saves preserve gear, inventory, membership and EP.",
+  "measurement": {
+    "scope": "Leader180frame sample, four actual Chrome processes on one shared AMD RADV RENOIR GPU. Not independent physical devices or a performance-budget pass; population differs from High, so do not infer a controlled quality-only FPS improvement",
+    "viewport": { "width": 1280, "height": 844, "pixelRatio": 1 },
+    "frameMedianMs": 49.89999999999418,
+    "frameP95Ms": 83.39999999999418,
+    "drawCallsMedian": 215,
+    "trianglesMedian": 143598,
+    "geometries": 353,
+    "textures": 153,
+    "activeEntities": 27
+  },
+  "visual": "Root reviews actual post-login Low party image: four equipped classes, enemies and effects readable, but sparse/repeated terrain and slow measured frames remain. No modern-ARPG art approval inferred.",
+  "artifacts": {
+    "directory": "/home/aeml/.local/share/eidolon-terrain-save-evidence-dAQk91ci",
+    "wrapperLogSHA256": "69f6c57eedb27eed258c225da89e1d7ac1f21a2e116d878007ba77737253c3af"
+  },
+  "cleanup": "Independent Docker name-filter check finds no remaining fixture container after successful test and wrapper completion; only disposable synthetic data removed. No production deletion.",
+  "limitations": "No standalone sustained party performance, dungeon/raid/campaign clear, physical-device/phone evidence, public raised-profile activation or release acceptance. This runs editable-source browser route, not the copied production bundle. Original budgets/assertions unchanged. Full roadmap remains active."
+}
