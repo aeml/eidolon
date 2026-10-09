@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Prepared grouped camp release20/17ff2aae: grounded bedding/hearth/firewood,
+  charcoal and compacted actual entrance-to-hearth paths in existing mask.
+  Final16affected checks/390metadata checks/two native equipped town cases pass;
+  actual-client admin catalog still matches. All454earlier raw notes and539
+  non-root lock entries retained;455total/ten initial. Exact422module publisher
+  recorded in ready20. Fresh remote still293,6ahead/0remote-only, clean candidate.
+  Corrected19 hosted tests pass and native predeploy starts; Luna watches.
+  No20push before own19 acceptance/fresh normal remote reconciliation; full art/
+  party/device/raised/freeze/beta/launch requirements stay active.
+
 - Current private raised19/323324e5 connected four-class observer/save check
   passes54.36s: one actual GPU renderer plus three authenticated peers, each
   independently fitted with fourteen legal class-focused slots and saved gear.

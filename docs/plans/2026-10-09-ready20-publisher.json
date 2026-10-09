@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "PREPARED locally, not pushed or accepted live; corrected19 own acceptance required first",
+  "candidate": {
+    "version": "Alpha 1.79.20",
+    "head": "17ff2aae51aec9598ad3870083c383582767e382",
+    "worktree": "/home/aeml/.local/share/eidolon-camp-dressing-CCweYcej",
+    "previousReleaseCandidate": "293fbfa19b1d9affe111608e13fb279db2f5919a"
+  },
+  "scope": "Grouped town camp grounding/dressing: folded bedroll, grounded hearth, stacked firewood, existing-mask charcoal and compacted actual tent-to-hearth paths. Same15campplacements/ninebatches/navigation; no new decal/draw/texture or per-frame mask work. Version20 synchronized across login/source/server/build defaults;455total/10initial/45lazy notes, all454prior raw entries and539non-root lock entries exact. Authored assets/classes/combat/rewards/saved progress/permissions retained; no raised activation or whole future branch promotion.",
+  "verification": "Two actual full affected unit suites16checks pass10.934s;390metadata/history checks pass4.413s. Actual-client admin-landing generator read-only --check matches existing corrected19 catalog, no regenerated changes needed. Final two native System Chrome equipped town High1280/Low390 cases pass22.1s/retries0; root reviews final hearth/phone-size bedroll captures, owned4190closed. Existing four distinct populated-world/town budget cases and initial failed trials retained in candidate camp-dressing receipt. This final mask-only update adds no geometry/material/shader work and is not sustained party/device/final-art approval. No unrelated campaign/soak replay.",
+  "logsSHA256": {
+    "units": "c14d1b63dabd56eee658e46d59a710a9832ba0cd26f8be25b66a83e662655074",
+    "metadata": "4c707a6519c2beca152cbd85505a3b200af6f47f7aab3062ffe67ed7387057a2",
+    "adminCatalog": "a7ce99ff3e96de022f44c1fc4ed01703b6dc9dfbea92ed447f6f2d74d0ae59cf",
+    "finalNative": "5d78149072d894bbddf38e84d5d5f2ef1a1c255c51b89c0e5a45e3feb313abe8"
+  },
+  "reconciliation": "Read-only fresh origin/master fetch still293fbfa1; candidate6ahead/0remote-only and clean. Corrected19 native predeploy underway; no further public push yet. Fresh normal remote reconciliation required again immediately before20 push, retaining any other website work. Changed candidate HEAD requires rebuilding exact publisher expectations.",
+  "publisher": {
+    "fixture": "/tmp/eidolon-20-ready-publisher-j2h8uVI7",
+    "compiler": "Byte-identical qualified publication compiler, actual committed17ff2aae source archive plus generated vendor.422modules/3255459bytes/21shared login modules;402of894versioned runtime files.",
+    "expectedSHA256": {
+      "index.html": "e885f31799a7a6ff4f717acedeae10172c0c58bda4d849182843446e1f5430be",
+      "src/main.js": "1b083282f7ad2fc1d33a178d5f116147f5f54ec3c707f6c16310ca9bb6555ce9",
+      "src/core/GameEngine.bundle.js": "b98eeb370c2224b2fc418c7a47d7f69d7484d978dca33ac698d00c3142448c21",
+      "src/styles/index.css": "4900fec79ba0cece2776a8ab75f141309c89d5c00733eac4548ea500dbcbd74d",
+      "release.json": "13b7369aeb8ef9827de92598e1a4489e6ae01025ac1152940336731fd8228aca"
+    },
+    "scope": "Five selected transformed files, not all binary assets. Do not modify the committed candidate after this build and reuse its old expected identities."
+  },
+  "deliveryGate": "Luna monitors exact corrected19 CI37941972587; root independently accepts terminal/native/live/public19 before any normal20 push. Then own20 CI/native/live/public acceptance. No force push, dirty original worktree edit, website overwrite, overlapping deployment, automatic retry/cancel or public terrain-profile mutation.",
+  "remaining": "Full modern-world composition remains visibly sparse/repetitive; raised/equipped-party/device qualification,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch gates remain open. A scoped polished camp or successful check does not complete the goal."
+}
