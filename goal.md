@@ -18,6 +18,16 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Current private raised19/323324e5 connected four-class observer/save check
+  passes54.36s: one actual GPU renderer plus three authenticated peers, each
+  independently fitted with fourteen legal class-focused slots and saved gear.
+  High180frame busy-host diagnostic33.4median/50.1p95,547calls/540291tri;
+  not party performance acceptance. Existing actor instancing reduces matched
+  untimed draws911 to543. CPU sample identifies repeated foliage checks;
+  preserve live bounds/flags and original budgets rather than skip correctness.
+  Owned fixture/database/ports cleaned; production and ongoing soak unchanged.
+  Receipt: `docs/plans/2026-10-09-raised19-connected-party-checks.json`.
+
 - Corrected19/293fbfa1/CI37941972587 normally pushed after original19 CI
   terminal failure. Sole stale generated admin landing catalog fixed:15 camp
   vertical bounds+.655m, every other geometry field retained. Current1client,
@@ -499,13 +509,13 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Accept or diagnose pushed17 after authorized Luna
+1. Accept or diagnose corrected pushed19/293fbfa1/CI37941972587 after authorized Luna
    terminal notice; independently verify required native/live jobs, public
    frontend/backend identity and actual five transformed publisher bytes.
-   Accepted16/98cef7c7 and earlier releases retain exact historical failures and
+   Accepted18/81702abb and earlier releases retain exact historical failures and
    corrections; stale older pending entries above are chronological records,
    not current status. Then fresh-fetch/normal reconcile and individually
-   publish/accept prepared18; private preparation can proceed while
+   publish/accept the grouped camp follow-up; private preparation can proceed while
    the prior release runs, but public push requires its own acceptance and a
    fresh normal remote reconciliation. Never promote the whole future branch, overlap pushes, rerun
    unchanged successful tests or infer acceptance from a running job. Continue

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "Current raised19 connected-party/save functional scope passed; performance diagnosis only, not public activation or a frame-budget certificate",
+  "source": "323324e51785ac9b8895f3d86d56a5738e5632a4; clean private raised worktree normally merged corrected19/293fbfa1",
+  "command": "Explicit connected-party-observer/high scenario via scripts/run-terrain-save-qa.sh; actual System Chrome/AMD Vulkan1.4.318 RADV, Go1.27.2 race binary, disposable loopback Mongo7.0.14",
+  "result": "TestTerrainActualEquippedBrowserParty passed54.36s, package55.432s. One actual renderer with three normal authenticated socket peers; all four class-focused Rare/Uncommon fourteen-slot outfits independently rigged/grounded. Normal disconnect preserves each class equipment, bag, EP and party saves. This scenario is not the separate four-browser Fireball/healing test, sustained combat, natural campaign or phone qualification.",
+  "frameDiagnostic": {
+    "scope": "180 actual frames at High1280x844; host load29.89/28.83/23.42 at launch, ongoing soak/services unchanged. Not a clean-host benchmark or a new party budget.",
+    "medianMs": 33.39999999999782,
+    "p95Ms": 50.099999999998545,
+    "p99Ms": 66.60000000000218,
+    "cpuLoopMedianMs": 35.900000005960464,
+    "cpuLoopP95Ms": 48.29999998211861,
+    "drawCallsMedian": 547,
+    "trianglesMedian": 540291,
+    "activeEntities": 26,
+    "previewFrames": 0
+  },
+  "untimedAttribution": "Existing actor instances reduce matched same-scene submissions911 to543 while triangles535203 to540303; do not add another rig-sharing layer or infer a frame-time speedup. Three-second opt-in CPU sampling runs after timed frames: foliage visit547993us/418samples, beginFrame119799us/86samples;80 observed frames713760visits,0view/0shadow revisions. Live mutable bounds/flags checks cannot simply be omitted; this identifies hot work, not its completed fix.",
+  "evidence": "/home/aeml/.local/share/eidolon-terrain-save-evidence-C662vKXk; browser.log0600 and reviewed post-login artifacts. Do not publish raw authenticated traces or fixture account details.",
+  "logsSHA256": {
+    "browser": "44761f8ab8b3ed10aadd6bc7b8c07ecff66070ce4c07de3c1965a5edc5cc8189",
+    "save": "31abb6d6bb66c46157238b5655ff9a87e188f18b5a6910982654c06c08ed56bd"
+  },
+  "cleanup": "Root collected terminal exit0 and independently observed no remaining terrain fixture container and no4190/18189 listener. Only the disposable fixture database was removed by its owned cleanup; production, existing soak, accounts, profiles, monitor and services untouched.",
+  "remaining": "Corrected19 own CI/native/live/public acceptance; fuller equipped-party/device performance, modern world art, deliberate raised activation/rollback,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch gates remain open. Existing solo six-road native budgets remain exact; this diagnostic neither replaces nor relaxes them."
+}
