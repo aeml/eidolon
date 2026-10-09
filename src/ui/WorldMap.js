@@ -156,7 +156,7 @@ export class WorldMap {
             this.canvas.before(body); body.append(this.canvas);
         }
         this.ctx = this.canvas.getContext('2d');
-        this.cartography = new AtlasCartography({ mobile: this.isMobile });
+        this.cartography = new AtlasCartography({ mobile: this.isMobile, terrainProfile: gameEngine.terrainProfile });
 
         this.visitedChunks = new Set();
         this.chunkSize = 50; // Match CONSTANTS.SCENE.CHUNK_SIZE
