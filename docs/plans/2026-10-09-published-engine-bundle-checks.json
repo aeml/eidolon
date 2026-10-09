@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.11",
+  "base": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+  "status": "qualified publication-only startup candidate; CI/public acceptance pending",
+  "failure": "37879564669 attempt1 fails SSH before deployment. One deliberate failed-job-only retry succeeds in nine jobs but attempt2 Live Release and Character QA fails authenticated entry. Safe diagnostics identify engine-module/module-download, no engine/player/state/socket. At 2026-10-09T04:06:39Z nginx access records release-matched PhoenixSentinel.js and ViewportLayout.js HTTP408. The upstream cause is not established. Seven other live cases pass; four-class/recovery and optional broader steps skip, not pass. Earlier failed runs remain retained.",
+  "scope": "Exact esbuild0.28.2 development dependency; only copied Pages publishing tree is bundled before existing runtime versioning. Editable source and source archive remain intact. Engine remains lazy behind login. Static login graph overlap is externalized to preserve shared credential/session singleton identity; Three and addons remain import-map dependencies. Whitespace-only minification, no identifier/property mangling. Unsafe source symlinks, repeated bundling and unexpected import.meta.url depth fail before rewriting main. No auth, saves, roles, wallets, combat, art geometry or browser-security changes; no runtime retries or budget relaxation.",
+  "units": "Six selected actual npm-test suites438pass8.178s: GameEngineBundle, PagesRuntimeVersioning, BrowserSmokePlan, GraphicsStartup, VersionPresentation, PatchNotesPagination. Includes actual compilation, original source preservation, shared credential set/clear and release/asset URLs after real publisher versioning. Overlaps prior checks, not full-project count. Initial Node-environment fixture fails setup before any tests because shared setup expects DOM; retained and corrected by spawning the actual Node compiler from the established DOM harness, without altering global setup.",
+  "browser": "Actual copied/bundled/versioned publication fixture passes one native System Chrome case8.9s/retries0: login has no engine/Three fetch; dynamically importing the published engine adds exactly one application module; Fighter/Rogue/Wizard/Cleric constructors each create renderer/network/UI and destroy cleanly; no browser errors. No authentication, world load or socket participation; not Firefox3D, party, physical device or frame-budget certification. Initial total-module fixture assertion incorrectly includes independent preexisting login scripts and fails after successful constructors; retained. Corrected assertion measures exact world-import phase delta of one, not a raised performance cap.",
+  "artifacts": {
+    "finalPostNotesUnits": "/home/aeml/.local/share/eidolon-game-bundle-units-publication-20261009.log (same438 checks pass7.468s; not additional distinct checks)",
+    "units": "/home/aeml/.local/share/eidolon-game-bundle-units-integrated-20261009.log",
+    "initialUnitSetupFailure": "/home/aeml/.local/share/eidolon-game-bundle-units-20261009.log",
+    "native": "/home/aeml/.local/share/eidolon-game-bundle-native-final-20261009",
+    "initialNativeFixtureFailure": "/home/aeml/.local/share/eidolon-game-bundle-native-20261009"
+  },
+  "proof": {
+    "compiledModules": 412,
+    "sharedLoginModules": 21,
+    "bundleBytesBeforeReleaseVersioning": 3086706,
+    "bundleSHA256BeforeReleaseVersioning": "f154222f0ed7d37b5cd10ebf96eb5640deafa7740eee5083e0213430a81360dc",
+    "all445OlderRawEntriesSHA256": "22732acc02e317572e896c42af390291a4463ff798b445088ecfc76fd6282273",
+    "history": "446 notes total; all445older entries and all44archive files unchanged. Initial audit accidentally counted the Load more controls as one note; corrected by excluding the controls, preserving every legacy unclassed archive entry.",
+    "lock": "All512existing non-root lock package entries unchanged; only the pinned compiler and its optional platform packages are added.",
+    "lint": "All three new compiler/unit/browser files pass scoped eslint; git diff --check passes."
+  },
+  "delivery": "Only current11 note changes; full prior history and version labels remain. Fresh fetch and normal reconciliation before corrective same-version push. Authorized Luna monitors exact new deployment, root independently verifies terminal required gates and transformed publisher bytes/public identities. Prepared12-17 must inherit this change and each earn ordered acceptance. Full original roadmap and modern-art/F1-F5/party/device/owner/operations/rights/beta/launch goal remain open; ordinary public raised terrain remains disabled. Existing nightly soak is untouched."
+}

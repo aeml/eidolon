@@ -1,5 +1,17 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 corrective11 publication bundle: dc7/run37879564669 attempt1 SSH
+fails; its single failed-job-only retry deploys but mandatory live startup
+fails at engine-module download. Release-matched nginx static JavaScript
+HTTP408 evidence establishes a download failure, not its upstream cause.
+Consolidate the copied engine only, keeping lazy login, shared session modules,
+original sources, import-map vendors and versioned asset URLs.438affected
+checks and native four-class construction pass; not authenticated-world or
+public acceptance. [Evidence](2026-10-09-published-engine-bundle-checks.json).
+Fresh normal reconciliation/new11 acceptance precedes individual12-17.
+Original modern-art, F1-F5, party/device, owner, beta and launch gates remain
+open. Earlier status statements below are historical.
+
 October9 corrective11 startup recovery candidate: retained8a/run37874149991
 live-auth failure has unknown cause, nine jobs/six other live cases succeed.
 Unmodified public fresh-Wizard registration/login/authoritative-world entry
