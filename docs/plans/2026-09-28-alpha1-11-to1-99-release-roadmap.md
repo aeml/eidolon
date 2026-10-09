@@ -1,5 +1,15 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 prepared12-15 normally inherit11/0cac2b16 and corrected Go1.27.2:
+12/50d61be9,13/88fc7fd5,14/510d8aaf,15/e07a46d7. Preserve complete progress
+records, original supplied art and later filmic/static renderer work. Four
+adjacent history audits pass;12's414 and15's461focused cases pass with overlap,
+plus actual compiled-monitor TLS transition/restart race9.985s onGo1.27.2.
+[Reconciliation](2026-10-09-prepared-release-reconciliation-checks.json).
+No public monitor activation, campaign/device replay, beta/art/freeze claim.
+Preliminary public10 identity/bytes/DB pass; its final CI gate still pending.
+11-15 remain local and need individual fresh remote reconciliation/publication.
+
 October9 prepared11/0cac2b16 has visible/focused shared-header startup guidance
 for unavailable WebGL. Actual Firefox login works; headless Firefox 3D context
 still fails before four-class qualification.425focused cases, three native

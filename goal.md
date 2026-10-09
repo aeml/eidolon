@@ -18,6 +18,20 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 8, 2026
 
+- October9 prepared12-15 now inherit corrected Go1.27.2 and11/0cac2b16 login/
+  visible failure guidance via normal ordered merges:12/50d61be9,13/88fc7fd5,
+  14/510d8aaf,15/e07a46d7. Full conflicting progress records preserved; models/
+  art and later filmic/static-cache renderer work unchanged. Adjacent raw-history
+  audits retain all446/447/448/449older notes.12pin/login/version414cases and
+  15affected renderer/login/pin461cases pass (overlap, not a summed total).
+  Actual compiled-monitor TLS mismatch/recovery/restart onGo1.27.2 passes race
+  test9.985s; no production mail/activation. Task-owned old dependency links
+  moved recoverably; original shared directory untouched.
+  [Evidence](docs/plans/2026-10-09-prepared-release-reconciliation-checks.json).
+  Preliminary public10 front/back/DB/four exported bytes pass00:49:52Z; wait
+  own CI final gate.11-15 notlive and every publication needs fresh remote
+  reconciliation. Full original roadmap/art/F1-F5/device/owner/launch stays open.
+
 - October9 prepared11 now **0cac2b16**: lightweight unavailable-WebGL guidance
   in a visible/focused shared header, not the hidden authenticated login panel.
   Actual Firefox login and pagination pass; headless Firefox 3D context fails

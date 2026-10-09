@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "status": "prepared releases reconciled locally; not public acceptance",
+  "heads": {
+    "1.79.11": "0cac2b16",
+    "1.79.12": "50d61be9",
+    "1.79.13": "88fc7fd5712af10272d72aa5fd4aec0af4e70f76",
+    "1.79.14": "510d8aaf53364d9a9301540057ba67fd10887a89",
+    "1.79.15": "e07a46d7dc909000c57f34e7f9e8d8aac77ce2bf"
+  },
+  "scope": "Normal ordered local merges carry corrected Go1.27.2 and prepared11 login pagination/Firefox import-map fix/visible startup guidance into12-15. Preserve both full progress blocks at README/goal/roadmap conflicts; current12 version plus inherited security summary.13-15 merge automatically. No forced history, publication, gameplay/player data change, website overwrite or future-branch wholesale promotion.",
+  "preservation": "Source-art/model/equipment catalogs remain byte-identical to each qualified prior14/15 candidate.15 RenderSystem differs from its qualified50f08f only by the pure helper import and exact-options renderer delegate; original filmic/materials/static-matrix/foliage cache improvements remain. No unaffected scene/party/campaign replay.",
+  "history": [
+    {
+      "version": "1.79.12",
+      "prior": 446,
+      "total": 447
+    },
+    {
+      "version": "1.79.13",
+      "prior": 447,
+      "total": 448
+    },
+    {
+      "version": "1.79.14",
+      "prior": 448,
+      "total": 449
+    },
+    {
+      "version": "1.79.15",
+      "prior": 449,
+      "total": 450
+    }
+  ],
+  "historyResult": "Independent exact raw full-DOM plus Git-reference archive audits pass each adjacent release; every prior note byte-identical. Current release labels and archive directories preserved. No repagination necessary.",
+  "units": "Prepared12 six pin/YAML/version/pagination/helper/startup suites414pass3.181s. Prepared15 nine affected renderer/matrix/foliage/pin/version/login suites461pass3.967s. These overlap and are not added to a distinct total. They supplement the existing per-component receipts, not a new full-art/device/party qualification.",
+  "monitor": "Actual compiled-monitor release-mismatch/recovery/restart fixture rerun on Go1.27.2 passes9.985s with race detection. Local sequential TLS fixtures only; no production env/Postmark/recipient/service mutation. Does not activate public checks on the managed monitor.",
+  "proof": {
+    "operationsUnitsSHA256": "fbb74f6123658012aa9f2a41db37b8a1528b46d4e10e184614a0dedfe3053439",
+    "rendererUnitsSHA256": "18e58733c867d6d4250bb03768a8758f54bf2a57f55ce7feb16d23e77dc3b08b",
+    "compiledMonitorRaceSHA256": "4bb4c3639e5e636fd883d3d9caa51ebeb58b1b7dced6681abba6a734c1ce9ff5"
+  },
+  "dependencies": "Move only each task-owned previous node_modules symlink to an explicit recoverable path outside its worktree, then link to corrected10's fresh locked install. Never change shared original dependencies or lockfiles.",
+  "delivery": "11 remains local until corrected10/d3a3b9f7/run37864085950 own mandatory/public acceptance. Preliminary00:49:52Z public10 front/back/DB and four actual-publisher outputs pass, but CI final gate still pending at recording. All releases require fresh fetch/reconciliation and own publication gates; do not batch or claim later candidates live. Full original roadmap/modern-art/F1-F5/world/equipped-party/device/human/owner/beta/launch scope remains active."
+}
