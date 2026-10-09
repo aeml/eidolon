@@ -40,7 +40,11 @@ Fighter pilot or remove approved authored models.
   modules. Public raised activation and combined raised acceptance stay open.
   Existing exact decimal frame helper now reused in its preview without
   duration rounding/tolerance;11helper checks pass. Current14-slot equipped
-  High/Low raised-world profile launched separately ataaa34514, result pending.
+  High/Low raised-world native cases pass37.6s at5d1c52b3 after the old
+  rebatching fixture is corrected to preserve exact per-plant tint buffers.
+  Six120-sample road profiles retain original limits: High max344calls/244630tri,
+  Low132/73350; culled/unculled pixels identical. No party/device/final-art or
+  public raised activation claim; retained failure and scope in raised19 receipt.
 
 - Normally pushed18/81702abb/CI37935111832 after own17 exact acceptance and
   fresh fetch/normal reconciliation, unchanged publisher head and current17
