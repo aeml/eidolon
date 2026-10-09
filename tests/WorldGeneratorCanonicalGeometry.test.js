@@ -440,7 +440,13 @@ describe('WorldGenerator shadow setup', () => {
         expect(earthSolids).toBe(27);
         const elemental = generator.scene.add.mock.calls[2];
         expect(elemental.map(group => group.name)).toEqual(['water authored locations', 'fire authored locations', 'air authored locations', 'Water authored paths', 'Fire authored paths', 'Air authored paths']);
-        expect(elemental.slice(0, 3).map(group => group.children.length)).toEqual([8, 8, 8]);
+        expect(elemental.slice(0, 3).map(group => group.children.length)).toEqual([8, 8, 9]);
+        // Air still has exactly eight locations. Its ninth child is the
+        // existing non-solid passage cover, not a new authoritative site.
+        expect(elemental[2].children.filter(child => child.name.startsWith('air-location:'))).toHaveLength(8);
+        const passage = elemental[2].getObjectByName('Air passage heath and scree');
+        expect(passage.children).toHaveLength(86);
+        expect(passage.children.every(mesh => mesh.userData.airPassageGroundCover && !mesh.castShadow && mesh.receiveShadow)).toBe(true);
         const worldSolids = earthSolids + cart.userData.walkFootprints.length
             + elemental.slice(0, 3).reduce((sum, group) => sum + group.userData.walkFootprints.length, 0);
         expect(worldSolids).toBe(129);

@@ -1,0 +1,9 @@
+{
+  "status": "Prepared test-only registration correction; not a new public release",
+  "finding": "A raised-current four-suite candidate run37pass/1fail81.146s expects8 Air children but receives9. HEAD source already appends Air passage heath and scree, and HEAD guard still expects[8,8,8] before tent edits. Existing ElementalPopulation separately expects9/eight sites+86non-solid passage cells. Tents cannot create an Air root; no Air source or population mutation accompanies this correction.",
+  "correction": "Keep exact Water8/Fire8/Air9 root counts, independently require exactly8 named Air locations and exactly86 known passage-cover cells with expected shadow/ownership flags. Retain exact129 world solids, collider counts/door/walk bounds,15camps/9batches and stable-front shadows. Do not remove coverage or change caps.",
+  "verification": "Changed actual ordinary WorldGenerator town-registration case1pass17.183s;23 unrelated cases unselected. Prior37passes preserved, not a second full-run pass. Same narrow test selected into17/18/raised/canonical whose inspected actual sources already append the passage root. No new whole-tree native/campaign/performance equivalence claim.",
+  "failedLogSHA256": "01fcc23f7cf3a5f0e6b55b4fe28d5b41c1acea6bcc48542459a45eb7e8879d5a",
+  "log": "/home/aeml/.local/share/eidolon-air-passage-world-registration-units-20261009.log",
+  "delivery": "Public14 accepted,15 live QA ongoing,16 local timing qualified. These17/18 tests will receive own ordered CI/public acceptance before shipping. No production runtime/terrain/version changes."
+}
