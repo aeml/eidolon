@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "local Air route-cohesion component; focused CPU checks pass; final native visual/frame review pending",
+  "status": "local Air route-cohesion component; units and native Low pass; native High frame gate fails; not qualified for publication",
   "base": "69cac7a54de1bfb940b9b9fec6f7a6fe25cf97ea",
   "scope": "Air only: gale cypress connected curved timber, overlapping forks and three shallow buttresses replace the cylinder/root cone. Existing upper-axis crown/conductor attachment positions retained; crowns modestly broadened and all fixed parts grown vertically 1.35x. UV-bound existing pine bark detail on stock opaque material. Slate's existing three registered maps now tile at roughly nine metres rather than thirty: repeat224/176, unchanged image bytes/sampler. No supplied asset, collision, gameplay, dependency, light or extra texture changes. Three existing High/Low foliage material batches retained.",
   "checks": {
@@ -18,5 +18,17 @@
     "src/art/ProceduralRealmTerrain.js": "ac6c6ecb985f7c996031fb037eb7fa46add5c35d730b38ec823b9c515b60e995",
     "tests/ProceduralRealmTerrain.test.js": "abdf8d0c6ace4348539c38fb39146912d674270b8383dca48042c1fb76733b71"
   },
-  "remaining": "Native images plus original presentation/frame/resource and quality-swap checks when host GPU is free; reconcile current17 ancestry before public release; complete broader scene/combat/equipment/party/device/world-art and full-roadmap gates. Existing versions/patch-note history unchanged; no version18 yet."
+  "nativeReview": {
+    "sourceAtRun": "a9a9df97b3b8bd379addfc2971c545f0eaba1797",
+    "result": "Actual native System Chrome two-case run/retries0 completes1.5m: one High fails, one Low passes. No automatic retry or relaxed caps. Both have nine timed views and stable before/after resources. A concurrent existing 100-client nightly soak and unrelated host load were observed; their causal contribution is unproven and they were untouched.",
+    "high": "Horizon orrery33.2ms and bivouac33.3ms medians exceed the existing20ms cap. Maxp95 33.4ms,127draws,176877triangles; resources199geometries/51textures/50programs before and after. Failed performance gate is retained, not accepted despite other limits passing.",
+    "low": "All original assertions pass: maxmedian16.7ms/p95 16.8ms,58draws,49798triangles;188geometries/37textures/30programs before and after. This390px desktop-browser fixture is not a physical phone qualification.",
+    "visual": "Root directly reviewed High cypress and Low travel-stand images after the ground-scale change. Connected rooted trunks and smaller slate pattern are visible; landscapes remain sparse, stylized and rhythmically textured, not a finished modern ARPG scene. Broader composition/material work remains.",
+    "artifacts": "/home/aeml/.local/share/eidolon-air-cypress-native-final-20261009 and matching.log; the earlier deliberately interrupted attempt remains separate and unpassed",
+    "logSHA256": "b97424aab7e41764f2d800be19d8efc07713125c810e3d16b43ef5ae33c1249e",
+    "highProfileSHA256": "d448e7ef22722394176fc91e8ac9714fb5e7536856c3406529b92f54743ee33f",
+    "lowProfileSHA256": "5d9094f936d3d847233dea8b5b5b5a1fdc946eb8f2fad72c21f88a803dd53b26"
+  },
+  "reconciliation": "Normal merge9824699948ba156af83efcbdd106fc3f300c306e inherits updated17/adc79772 and corrective11/5bd725b9 publication bundle. No runtime art/test changes during that merge; current source hashes above remain exact. Public11 CI37884472930 is Luna-monitored; individual12-17 remain queued pending acceptance.",
+  "remaining": "Investigate the native High frame regression without weakening original caps or repeatedly replaying unchanged scenes; actual quality-swap checks and broader scene/combat/equipment/party/device/world-art/full-roadmap gates remain. Existing versions/patch-note history unchanged; no version18 yet. Source is not selected into the canonical future tree or deployed."
 }
