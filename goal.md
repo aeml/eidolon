@@ -33,10 +33,14 @@ Fighter pilot or remove approved authored models.
 - Separate camp dressing atbf35cdc0 grounds the hearth ring and folded Low
   bedroll, stacks firewood and bakes charcoal into the existing mask alpha.
   18 focused checks pass; same15 placements/9draw batches, +3300raw triangles.
-  Not pushed; native High/Low equipped/populated review waits for18 live QA.
+  Native4distinct cases/18timed views pass with unchanged limits; final equipped
+  High/Low bedroll views reviewed. Not pushed, awaits own19 acceptance.
   Private raised branch normally merges prepared19 at444937a3 without runtime
   conflicts: five runtime differences remain the scoped rock shader and atlas
   modules. Public raised activation and combined raised acceptance stay open.
+  Existing exact decimal frame helper now reused in its preview without
+  duration rounding/tolerance;11helper checks pass. Current14-slot equipped
+  High/Low raised-world profile launched separately ataaa34514, result pending.
 
 - Normally pushed18/81702abb/CI37935111832 after own17 exact acceptance and
   fresh fetch/normal reconciliation, unchanged publisher head and current17
