@@ -10,6 +10,28 @@ retained, all446prior entries byte-identical; versions synchronized. See
 ordered1.79.9–1.79.11 acceptance precedes this release. Full1.80/F1-F5,
 modern-art and operator/device/human/owner/beta/launch gates remain open.
 
+**October9 corrected11 CI fixtures:** c3a45083/run37867222336 terminal failure:
+password checks read deferred engine too early; two hosted regional reviews
+exceed120s. Downstream deployment skips; public10 remains healthy/exact.
+QA-only callback readiness and two controlled import-gap receipt cases pass;
+six password/two session cases8pass9.9s, three focused units91pass. Separate
+regional presentation and12-phase quality checks: four CI-style High cases
+pass3.7m, every view/cycle/assertion and120s limit retained. Initial incorrect
+duplicate-cover experiment retained then removed. Runtime/version/notes unchanged.
+[Receipt](docs/plans/2026-10-09-release1-79-11-ci-correction-checks.json).
+Fresh remote reconciliation and new11 CI/public acceptance still required;
+ordered12-16 and full original roadmap/art/F1-F5/party/device gates remain open.
+
+**October9 accepted public1.79.10:** Corrected d3a3b9f7/run37864085950
+finishes success. Root independently verifies all ten mandatory jobs, exact
+front/back identity/healthy DB/clean production and four actual publisher bytes
+at00:55:02Z. Optional broader QA skipped, not passed; initial security failure
+retained. [Receipt](docs/plans/2026-10-09-release1-79-10-public-checks.json).
+11 login/Firefox/guidance/regional art may now publish after fresh remote
+reconciliation, then own CI/public acceptance.12-15 already inherit11/Go1.27.2
+locally; every release still needs ordered acceptance. Full original roadmap,
+modern art/F1-F5/party/device/human/owner/beta/launch scope remains unfinished.
+
 **October9 prepared11 startup guidance:** Retain corrected10/d3a3b9f7.
 Actual Firefox login works; local headless 3D context creation still fails and
 is not qualified. Add lightweight failure-only graphics guidance without
