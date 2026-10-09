@@ -816,7 +816,7 @@
                 <div class="patch-note-entry" data-version="1.79.11">
                     <h3 class="patch-note-entry__title">Alpha 1.79.11 (elemental landscapes and mineral formations)</h3>
                     <ul class="patch-note-entry__list">
-                        <li>World entry downloads a consolidated game engine instead of hundreds of separate game modules. Login still loads independently; shared session state, original editable sources and release-versioned assets are preserved.</li>
+                        <li>World entry downloads a consolidated game engine instead of hundreds of separate game modules. Login still loads independently; shared session state, gameplay class names, original editable sources and release-versioned assets are preserved.</li>
                         <li>Startup failures retain a non-sensitive phase and category for diagnostics, without exposing raw errors or account details. Interrupted module downloads and incompatible module exports now recommend reloading the page. This is recovery guidance, not automatic retries or a claim that every startup failure is resolved.</li>
                         <li>If WebGL 2 is unavailable or blocked, entering the world returns to login with hardware-acceleration and browser/device guidance. The message appears in the page, never a browser alert. Successful renderer creation and browser security settings are unchanged.</li>
                         <li>Login now shows only the latest ten patch notes. Load more notes fetches the next ten on demand; the complete history is retained. Login startup no longer waits for the full game-engine dependency graph and also initializes if the document-ready event has already fired.</li>

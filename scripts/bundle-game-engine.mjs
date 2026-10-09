@@ -25,7 +25,9 @@ export async function bundleGameEngine(root) {
 
     const options = { absWorkingDir: destination, bundle: true, platform: 'browser',
         format: 'esm', target: 'es2022', packages: 'external', write: false,
-        metafile: true, minifyWhitespace: true, legalComments: 'inline', logLevel: 'silent' };
+        // Gameplay uses constructor.name for actor types, equipment and skills.
+        // Bundling renames colliding identifiers even without identifier minification.
+        metafile: true, minifyWhitespace: true, keepNames: true, legalComments: 'inline', logLevel: 'silent' };
     // Login and game must not acquire separate credential/session singletons.
     // Discover the entire static login graph, excluding its lazy engine entry;
     // any overlap remains an import of the original, already-cached module.
