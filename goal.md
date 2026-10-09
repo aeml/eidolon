@@ -162,6 +162,11 @@ Fighter pilot or remove approved authored models.
  449older notes retained. Normal clean merges carry it into16-18. No art/assets,
   gameplay/budgets or public rollout change. Shared receipt in those branches:
   `docs/plans/2026-10-09-party-input-render-checks.json`.
+- Future terrain now also retains that exact foliage/proxy implementation
+  as6eca9481: all six pre-change files match its original predecessor, clean
+  source-only selection. Four actual affected suites73checks pass2.846s,
+  scoped lint/whitespace pass. This closes an integration omission, not another
+  public version or a new party/terrain performance qualification.
 - Actual CPU caller diagnostic9c7f8340 identifies CasinoController.beforeUpdate
   as313221of327292recursive-search self-microseconds in current18. Qualified
   d1fdf47b avoids absent interior scans and reuses connected owned roots.

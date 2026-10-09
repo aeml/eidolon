@@ -31,5 +31,11 @@
     "recursive_search_self_micros": 307110,
     "interpretation": "Still slow. Population differs from baseline20 and earlier38 entities, so no controlled FPS gain claimed. Recursive object search remains substantial: do not claim the actor proxy change eliminated all search cost. Future CPU evidence should include caller chains."
   },
-  "delivery_plan": "Fold into already prepared1.79.15 rendering milestone rather than create another release for this small patch. Its five existing affected source/test files are byte-identical to d04aa7c6 before this change. Current18 native evidence is scoped, not a claim of a new15 performance qualification; later trees inherit by normal reconciliation. Strict original gates remain unchanged."
+  "delivery_plan": "Fold into already prepared1.79.15 rendering milestone rather than create another release for this small patch. Its five existing affected source/test files are byte-identical to d04aa7c6 before this change. Current18 native evidence is scoped, not a claim of a new15 performance qualification; later trees inherit by normal reconciliation. Strict original gates remain unchanged.",
+  "future_selection": {
+    "source_commit": "6eca9481",
+    "basis": "All six selected source/test files in the future terrain branch were byte-identical to the original 9272a3f8 predecessor. Normal source-only cherry-pick is clean; no whole-branch merge or unrelated current-release changes.",
+    "checks": "Four actual suites pass73 checks in2.846s: FoliageShadowInfluence, GameEngineRaycastPriority, ActorAnimationState and RenderSystemShadowCoverage. Six-file lint and whitespace pass. The initial invocation used two nonexistent test filenames and failed discovery; it is not counted as a successful run or a runtime failure.",
+    "limit": "Reuses the recorded exact native parity evidence for unchanged foliage implementation. No new future-world FPS, image, party capacity or full terrain approval claimed."
+  }
 }
