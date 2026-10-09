@@ -1,0 +1,11 @@
+{
+  "status": "Implemented and unit-qualified privately; native pixel comparison and ordered publication pending",
+  "source": "b86df009",
+  "base": "Public21/541c2eda; isolated owned worktree, no staged raised-world or unrelated user changes",
+  "reproduction": "A parent scaled2/1/1 and child rotated45degrees has positive determinant but nonorthogonal world columns. Pinned Three defaultnormal_vertex explicitly does not support shear for instances. Its instance-normal approximation differs from the correct inverse transpose by more than0.5 in the reproduced normalized vector. Original actor batcher admits the mesh: regression fails1case with23passing before correction.",
+  "correction": "Per-frame actor eligibility now requires orthogonal nondegenerate affine columns. Unsupported leaves retain original mesh/material/geometry and normal-matrix rendering. Ordinary rotated nonuniform scale still batches; changing the parent back and forth immediately follows live transforms. No pose baking, new render layer, model replacement, gameplay or saved-data change.",
+  "verification": "ActorInstanceBatches, HumanoidRenderBatches and FoliageRenderBatches:3suites71cases pass6.567s; scoped ESLint/whitespace pass. Adds shear/projective/degenerate fallback and live restoration coverage. Existing High/Low Skeleton pixel comparisons gain one stretched Attack pose without changing original mean-error/changed-pixel/triangle/visibility assertions or skipping ordinary states.",
+  "beforeLogSHA256": "d1f5ca5a52f3e46392d26b6b5d644a18ea5ceabee3fdfda2e163e6d7009f7877",
+  "unitLogSHA256": "fd83cbf8222a1f91c279c6d3ebfb0149e760a1c289901a69990c36ee5fcfd925",
+  "remaining": "Actual native High/Low pixel comparison must pass once the release GPU runner is free. Public21 CI37960034584 remains in progress; no next release before its terminal/live/public/evidence acceptance. This is a rendering correctness repair, not a frame-time improvement, complete modern-art approval or full-roadmap completion. No long campaign/soak repeat or mutation. Include truthful notes and synchronized version only when preparing its real release candidate."
+}
