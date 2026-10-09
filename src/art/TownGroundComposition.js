@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { LANTERNHOLD_COURTYARDS } from '../data/worldPopulation.js';
 import { WORLD_REGIONS } from '../data/worldGeography.js';
 import { createLanternholdPavingMaps } from './LanternholdPaving.js';
+import { createLanternholdCampPlacements } from './ProceduralLanternholdArchitecture.js';
 
 // Surface composition, not navigation data: branches connect service courts
 // and gate approaches, bending around the casino and larger service buildings.
@@ -23,6 +24,11 @@ const COURTS = [
 ];
 const clamp = value => Math.max(0, Math.min(1, value));
 const smooth = (lo, hi, value) => { const t = clamp((value - lo) / (hi - lo)); return t * t * (3 - 2 * t); };
+// Reuse the actual immutable town placement/rotation field. Bake into the
+// existing mask, not fifteen decals, extra textures or per-frame updates.
+const CAMPS = createLanternholdCampPlacements(0, 200).map(camp => ({
+    ...camp, cos: Math.cos(camp.rotation), sin: Math.sin(camp.rotation)
+}));
 
 export function sampleLanternholdGround(x, z) {
     let paving = 0, traffic = 0;
@@ -39,8 +45,29 @@ export function sampleLanternholdGround(x, z) {
         const distance = Math.hypot((x - court.x) / court.rx, (z - court.z) / court.rz);
         paving = Math.max(paving, 1 - smooth(.8, 1.15, distance + weather * .025));
     }
+    let hearth = 0, campTraffic = 0;
+    for (const camp of CAMPS) {
+        const dx = x - camp.x, dz = z - camp.z;
+        // Skip distant sites before rotating into their local hearth space.
+        if (Math.abs(dx) > 5 || Math.abs(dz) > 5) continue;
+        const lx = dx * camp.cos - dz * camp.sin;
+        const lz = dx * camp.sin + dz * camp.cos;
+        const distance = Math.hypot(lx - 2.35, lz - 1.9);
+        hearth = Math.max(hearth, 1 - smooth(.35, 1.8 + weather * .12, distance));
+        // Wear follows the tent entrance and the walk to its actual hearth,
+        // not a repeated circle around every prop. Bake into the existing
+        // traffic channel; preserve roads, paving, geometry and navigation.
+        // Canvas is centred at(-.55,-.45), with its opening1.47m forward.
+        const tentDistance = Math.hypot((lx + .55) / 1.7, (lz + .45) / 2.1);
+        const pathX = 2.9, pathZ = .88;
+        const t = clamp(((lx + .55) * pathX + (lz - 1.02) * pathZ) / (pathX * pathX + pathZ * pathZ));
+        const pathDistance = Math.hypot(lx + .55 - pathX * t, lz - 1.02 - pathZ * t);
+        campTraffic = Math.max(campTraffic, 1 - smooth(.68, 1.15, tentDistance),
+            1 - smooth(.3, .95 + weather * .05, pathDistance));
+    }
+    traffic = Math.max(traffic, campTraffic * .72);
     const damp = (1 - traffic) * (.35 + .25 * weather);
-    return { paving, traffic, damp };
+    return { paving, traffic, damp, hearth, campTraffic };
 }
 
 export function createTownCompositionMask(quality = 'high') {
@@ -52,7 +79,7 @@ export function createTownCompositionMask(quality = 'high') {
         const at = (y * size + x) * 4;
         data[at] = Math.round(sample.paving * 255);
         data[at + 1] = Math.round(sample.traffic * 255);
-        data[at + 2] = Math.round(sample.damp * 255); data[at + 3] = 255;
+        data[at + 2] = Math.round(sample.damp * 255); data[at + 3] = Math.round(sample.hearth * 255);
     }
     const texture = new THREE.DataTexture(data, size, size);
     texture.name = 'Lanternhold connected courts and worn verges';
@@ -73,7 +100,7 @@ export function applyTownGroundComposition(material, soilTexture, quality = 'hig
             region.maxX - region.minX, region.maxZ - region.minZ) }
     };
     material.userData.townGroundComposition = { mask, soilTexture, paving };
-    material.customProgramCacheKey = () => 'eidolon-town-ground-composition-v2';
+    material.customProgramCacheKey = () => 'eidolon-town-ground-composition-v3';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, uniforms);
         shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec2 vTownGround;')
@@ -86,7 +113,7 @@ export function applyTownGroundComposition(material, soilTexture, quality = 'hig
             uniform sampler2D townCourtSurface;
             uniform vec4 townBounds;
         `).replace('#include <map_fragment>', `#include <map_fragment>
-            vec3 townWear = texture2D(townComposition, (vTownGround - townBounds.xy) / townBounds.zw).rgb;
+            vec4 townWear = texture2D(townComposition, (vTownGround - townBounds.xy) / townBounds.zw);
             vec3 townEarth = texture2D(townSoil, vTownGround * .11).rgb;
             townEarth *= mix(.85, 1.08, townWear.g);
             diffuseColor.rgb = mix(townEarth, diffuseColor.rgb, townWear.r);
@@ -96,6 +123,9 @@ export function applyTownGroundComposition(material, soilTexture, quality = 'hig
             vec4 courtSurface = texture2D(townCourtSurface, courtUV);
             float courtWeight = courtColor.a * townWear.r;
             diffuseColor.rgb = mix(diffuseColor.rgb, courtColor.rgb, courtWeight);
+            // Flush, feathered charcoal wear under the real hearths. Retain
+            // the existing soil detail/lighting rather than a black disk.
+            diffuseColor.rgb *= mix(vec3(1.), vec3(.48, .44, .40), townWear.a);
         `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
             roughnessFactor = mix(.98, roughnessFactor, townWear.r);
             roughnessFactor = mix(roughnessFactor, courtSurface.a, courtWeight);

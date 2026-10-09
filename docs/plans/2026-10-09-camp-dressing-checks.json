@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "status": "Private grouped Alpha1.79.20 candidate; focused checks and scoped native review pass, not pushed or accepted live",
+  "source": "bf35cdc0; based on prepared19 fa47c57c, not a public update",
+  "changes": "Replace the floating leather box with the existing folded/rolled Low bedroll geometry, grounded by its true minimum; lower hearth ring onto town surface, add two physically stacked logs in existing timber batch. Register feathered charcoal wear beneath the actual fifteen rotated hearths using the existing town-mask alpha channel. No decals, extra textures, draws, dynamic work, blockers or gameplay changes.",
+  "verification": "Three full focused suites17checks pass8.655s; changed world-registration case1pass15.324s/23unselected. Five-file lint and whitespace pass.17 source parts per camp/255total, existing9material batches;19740raw field triangles versus16440 on19 (+3300). One additional cached geometry, no material added. Original placements, retired picking bounds and walking blockers retained.",
+  "logsSHA256": {
+    "units": "64552e26686350dbc15e0805957cbe1e373e5d0cf66e5f154444176dd3a90a07",
+    "world": "779e0cfdd8070401882ef7a806d885a6d9e6cf90c1d1ce7ce725064260d7ba10"
+  },
+  "retainedTrials": "First full two-suite run11pass/2fail: actual Low cylinder minimum left bedroll above grounding tolerance, cache gains one geometry. Correct geometry origin rather than widening grounding test. Partial name-filter trial7pass/1fail/29unselected initializes fewer lazily created caches, so its order-sensitive aggregate cache assertion is not used as acceptance. Full affected suites pass after final stacking correction.",
+  "nativeQualification": {
+    "scope": "Actual production RenderSystem with System Chrome AMD Vulkan1.4.318/RADV:4distinct cases pass1.5m/retries0. Two populated Earth/town profiles (18timed views/120samples each) plus two fourteen-slot supplied Fighter/HUD town cases atHigh1280/Low390. Original frame/draw/triangle/resource gates retained; no fake clock, budget tolerance or population reduction.",
+    "profiles": "High maximum16.7ms median/33.4ms p95/240calls/245636triangles; Low16.7/16.8/109/78990. Warmed geometries/textures/programs unchanged (High275/82/86,Low256/69/60). Named solo render scope, not sustained party/device/campaign performance.",
+    "review": "Root viewed original equipped High/Low camp captures: hearth grounded, blended charcoal visible. First camp hides bedroll behind tent; second actual placement at unchanged camera/zoom first obscured by hero. Stand hero beside rather than before bedroll, preserving all original views; final same two cases pass15.2s. Root views final High/Low bedroll captures: folded/rolled grounded bed readable, paths and outfit retained. Broad sparse floors/prop repetition and final modern-world composition still need work. Earlier15.4s rerun retained, not counted as additional distinct cases.",
+    "nativeLogSHA256": "b847428725887995bf087f5b6ddc93ce5dc70cd9293227917abe90d375679f23",
+    "finalBedrollLogSHA256": "df20ead79cf0038fb384a154fd899a8fbeab131e6364b217a04381e48a52d46f",
+    "artifacts": "/home/aeml/.local/share/eidolon-camp-dressing-native-20261009, eidolon-camp-dressing-bedroll-native-20261009 and eidolon-camp-dressing-bedroll-final-native-20261009 with corresponding logs. Root starts after18 terminal/public acceptance;19 still hosted, no native CI overlap; ongoing soak/services untouched, not an isolated-host claim."
+  },
+  "campTrafficFollowup": {
+    "source": "Based on688ebfb0 normal corrected19 merge. Final TownGroundComposition.js SHA256913fbde72926d8b24e40259ce6872df6f1b5131cabef5d9cb87cfc74c7bcf2b2; test7288cb3eaa28f5a148da73832827509b8bf2b9ff61dbd41d01d41dd1d5fe3412. Source commit recorded separately in publisher receipt after commit.",
+    "change": "Bake compacted tent floors and paths from each real entrance(-.55,1.02) to hearth(2.35,1.9) into the existing traffic channel. Same mask size, textures, material/shader, geometry, draw count, XZ placement and navigation. Damp follows the resulting traffic; no new runtime update or cached state.",
+    "checks": "Two actual full affected suites16checks pass10.934s;390metadata/history checks pass4.413s. Read-only actual-client admin-landing generator --check passes with existing corrected19 catalog, no regeneration needed. Scoped ESLint, bash syntax and whitespace pass. Initial metadata run389pass/1fail reveals remaining build defaults; synchronize workflow/container/deploy/isolated-QA defaults, never weaken assertion.",
+    "native": "Two actual System Chrome High1280/Low390 equipped town cases pass22.1s/retries0 after final entrance registration. Root reviews final hearth and phone-size bedroll captures. Earlier23.0s captures retained, not counted as two more distinct cases. Existing four distinct populated-world/town budget cases remain source-scoped in nativeQualification above; no unchanged 18-view/party/campaign replay. Final mask-only change does not establish final aesthetic quality or sustained performance.",
+    "notes": "Version20 synchronized across login/package/root lock/manifest/server/container/deploy/workflow/isolated-QA/README.455total/10initial/45lazy pages. Independent raw-JSDOM audit confirms all454 prior notes exactly unchanged; aggregate raw-entry SHA2566e70699ef4ed26ac6f0769f588c370edafad52e3a7393f5a524aaa41e92456ed. All539non-root lock entries unchanged.",
+    "logsSHA256": {
+      "units": "c14d1b63dabd56eee658e46d59a710a9832ba0cd26f8be25b66a83e662655074",
+      "metadata": "4c707a6519c2beca152cbd85505a3b200af6f47f7aab3062ffe67ed7387057a2",
+      "adminCatalog": "a7ce99ff3e96de022f44c1fc4ed01703b6dc9dfbea92ed447f6f2d74d0ae59cf",
+      "finalNative": "5d78149072d894bbddf38e84d5d5f2ef1a1c255c51b89c0e5a45e3feb313abe8"
+    },
+    "artifacts": "/home/aeml/.local/share/eidolon-camp20-final-native-20261009; owned4190 is closed after terminal success. Final scene retains broad sparse floor fields and primitive props; coherent modern-world composition still open. No production/soak/services/player data changed."
+  },
+  "next": "Own corrected19/293fbfa1/CI37941972587 terminal/native/live/public acceptance required before any further push. Then fresh normal remote reconciliation and exact20 publisher before normal push and its own acceptance. No whole-future-branch promotion or unrelated campaign/soak replay. Public raised terrain still disabled.",
+  "remaining": "Full modern-world art, raised/equipped-party/device, freeze F1-F5 and1.81-1.99/owner/human/rights/operations/beta/launch remain open. This does not fill every town clearing or prove final aesthetic quality."
+}

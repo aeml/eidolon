@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "status": "Qualified combined camps and worn streets candidate20; not yet pushed or accepted live",
+  "source": "ea3933c04c8bf0f85e9f64cf83a61f933b248bdd art source, normally fast-forwarded into prepared20. Only current unshipped20 note/README/metadata assertion expands afterward; runtime files unchanged. TownStreetStone.js SHA2563b6063cbb080ce2cb10b41581c790b4dac28a5344d5a4b8c029a2803fbbf00c5; ProceduralRealmTerrain.js daff41e8f5c46415f46fb9a9bf3a8c081e6efe0bd49c344419e685e98f920ad6.",
+  "scope": "Group existing grounded bedroll/hearth/firewood and baked camp charcoal/traffic with irregular larger street slabs, not another micro-release/CI cycle. New periodic sampler uses unequal courses/rotated slab runs/chipped corners/short cleaves shared by albedo, height and roughness. Existing material repeat/resolutions/maps/ownership, geometry/collision/paths and shader samples remain. Central Fourfold court remains unchanged. High/Low slab and joint footprints match exactly.",
+  "units": "First full2suite run27pass/1fail150.517s: town wrap seam7.544 versus original3.610 gate. Preserve original assertion, move field phase so tile edge crosses faces instead of an entire course joint. Final two affected suites6current street/town checks pass39.099s;22unselected are not new passes. Prior16camp checks retain unchanged camp inputs. Current390version/history checks pass6.045s; scoped lint/whitespace pass. Admin collision catalog matches actual client builders as recorded in prior camp receipt; material-only street change cannot alter its unchanged geometry builders.",
+  "native": {
+    "scope": "Actual System Chrome AMD Vulkan1.4.318/RADV: four distinct production scene cases pass1.0m, including equipped fourteen-slot Fighter/HUD High1280 and Low390 town views. First invocation intentionally not treated as timed qualification: profiling flag absent. Two same populated Earth/town cases then pass1.5m with explicit profile flag and all original assertions; not six distinct cases.",
+    "views": "Nine named town/Earth views per quality,120realRAF samples each,18total. Original High20median/33.4p95/350calls/250000tri and Low33.4/50/200/85000 retained; no duration tolerance, population reduction or clock replacement.",
+    "high": { "maxMedianMs": 16.7, "maxP95Ms": 33.4, "maxCalls": 240, "maxTriangles": 245636, "stableGeometries": 275, "stableTextures": 82, "stablePrograms": 86 },
+    "low": { "maxMedianMs": 16.7, "maxP95Ms": 16.8, "maxCalls": 109, "maxTriangles": 78990, "stableGeometries": 256, "stableTextures": 69, "stablePrograms": 60 },
+    "review": "Root compares retained17ff High smithy capture with final combined view at identical gameplay camera/outfit/layout: bigger unequal worn slabs replace the fine brick grid; central court remains distinct, service walkways and character readable. Final phone-size camp capture retains grounded hearth/canvas and clear controls. Faceted/repeated props and broad sparse floor fields remain; this is not final modern-ARPG aesthetic, party or physical-device approval.",
+    "artifacts": "/home/aeml/.local/share/eidolon-camp-streets20-native-20261009 and eidolon-camp-streets20-profile-native-20261009. Commands start only after19 terminal CI. Root collects both exit0 and independently confirms owned4190closed. Ongoing soak/services untouched; busy host, not isolated sustained performance or causal speedup."
+  },
+  "history": "All454 previously shipped raw entries exact against corrected19/293;455total/10initial/45lazy pages. Raw prior aggregateSHA2566e70699ef4ed26ac6f0769f588c370edafad52e3a7393f5a524aaa41e92456ed. All539non-root lock entries unchanged; version20 defaults synchronized. New20 note may expand because it has not shipped, never revise prior history.",
+  "logsSHA256": {
+    "firstFailedUnits": "fbbe7a1ffdd1cd7c99e10c7c8a05fe9f02479c4734b0830ef2966dca6814e554",
+    "finalStreetUnits": "454c128720908e23777bcc834ad9934b3bfa91890e432bc402a284324ae93411",
+    "metadata": "46a2c17db1f6f46e20a21312f3ef79a6990bd974c4cafc43cd1322f13ececb3e",
+    "nativePresentation": "15ae7e97eebd0b016abc7a2c3e5baf3cc12cdbe918554a6b30edc230e3ad36f4",
+    "nativeProfile": "7afc0f16b83d1529b00d4a240642d1eda3390e1b082fc0e94fa6f398ab452383"
+  },
+  "delivery": "Exact corrected19/293/CI37941972587 accepted by root14:49:52.738UTC after all ten jobs plus public identities/readyDB/five bytes. Fresh normal remote reconciliation and new exact publisher required for combined20; original unpushed17ff camp-only publisher is historical, not valid for a changed head. Own20 CI/native/live/public acceptance required after push.",
+  "remaining": "Full modern world/character fit/combat, raised profile/equipped-party/device,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch gates stay open. No account, asset-license, gameplay/reward, service/soak/provider or public terrain-profile change."
+}

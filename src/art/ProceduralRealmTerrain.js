@@ -3,6 +3,7 @@ import { getRegionTheme } from './darkFantasyTheme.js';
 import { applyTownGroundComposition } from './TownGroundComposition.js';
 import { applyEarthGroundComposition } from './EarthGroundComposition.js';
 import { sampleElementalTerrain } from './ElementalTerrainSurface.js';
+import { sampleTownStreetStone } from './TownStreetStone.js';
 
 function terrainDefinition(id, region, label, motif, seed, surface) {
     return Object.freeze({ id, region, label, motif, seed, surface: Object.freeze(surface) });
@@ -16,7 +17,7 @@ export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     ),
     town: terrainDefinition(
         'lanternhold-vigil-stone', 'town', 'Lanternhold',
-        'hand-set weathered cobbles, softened mortar, chipped corners, and quiet lichen stains', 0x14a7b0d3,
+        'irregular worn flagstones, softened mortar, chipped corners, short fractures, and quiet lichen stains', 0x14a7b0d3,
         { roughness: 0.94, metalness: 0.02, repeat: [28, 28], tint: 0xe0d8ca }
     ),
     water: terrainDefinition(
@@ -135,34 +136,23 @@ function sampleEarth(x, y, _size, definition) {
 }
 
 function townStoneShape(x, y, size, definition) {
-    // Canonical texel coordinates keep Low's stones the same physical size.
-    // Eight columns / sixteen rows wrap exactly, including the offset bond.
-    const px = x * 256 / size;
-    const py = y * 256 / size;
-    const row = Math.floor(py / 16);
-    const shiftedX = px + (row % 2) * 16 + Math.sin(py * Math.PI / 128) * 0.7;
-    const localX = ((shiftedX % 32) + 32) % 32;
-    const localY = py % 16;
-    const stoneX = ((Math.floor(shiftedX / 32) % 8) + 8) % 8;
-    const stoneNoise = hash2d(stoneX, row, definition.seed);
-    const dx = Math.min(localX, 32 - localX);
-    const dy = Math.min(localY, 16 - localY);
-    const cornerCut = 1.1 + stoneNoise * 1.3;
-    const edge = Math.min(dx, dy, (dx + dy - cornerCut) * 0.707);
-    return { px, py, stoneNoise, edge };
+    return sampleTownStreetStone(x, y, size, definition.seed);
 }
 
 function sampleTown(x, y, size, definition, palette) {
-    const { px, py, stoneNoise, edge } = townStoneShape(x, y, size, definition);
+    const { px, py, stoneNoise, edge, fracture } = townStoneShape(x, y, size, definition);
     const wear = hash2d(Math.floor(px), Math.floor(py), definition.seed ^ 0x9f31);
     const stain = Math.sin(px * Math.PI / 128) * Math.cos(py * Math.PI / 64);
     const stone = mixColor(palette.ground, palette.midtone, 0.17 + stoneNoise * 0.16 + wear * 0.05 + stain * 0.035);
     const joint = mixColor(palette.shadow, palette.ground, 0.53);
     // A soft bevel/joint, rather than an oversized black grid. The only bright
     // oath marks now belong to world landmarks, not a repeating floor stamp.
-    const coverage = Math.max(0, Math.min(1, (edge - 0.45) / (256 / size)));
+    // A canonical edge field keeps even the joint texels registered on Low;
+    // texture mip filtering, not a different layout, handles distant detail.
+    const coverage = Math.max(0, Math.min(1, edge - 0.45));
     const bevel = 0.89 + Math.min(1, Math.max(0, edge) / 2.6) * 0.11;
-    return stone.map((channel, index) => Math.round(joint[index] + (channel * bevel - joint[index]) * coverage));
+    return stone.map((channel, index) => Math.round(joint[index] +
+        (channel * bevel * (1 - fracture * .12) - joint[index]) * coverage));
 }
 
 function sampleWater(x, y, _size, definition) {
@@ -267,11 +257,11 @@ function createTerrainSurfaceMaps(key, quality) {
         for (let x = 0; x < canonicalSize; x++) {
             const index = y * canonicalSize + x;
             if (key === 'town') {
-                const { edge, stoneNoise } = townStoneShape(x, y, canonicalSize, definition);
+                const { edge, stoneNoise, fracture } = townStoneShape(x, y, canonicalSize, definition);
                 const bevel = THREE.MathUtils.clamp((edge - .3) / 2.8, 0, 1);
                 const coverage = bevel * bevel * (3 - 2 * bevel);
-                height[index] = .06 + coverage * (.55 + stoneNoise * .12);
-                roughness[index] = .98 - coverage * (.20 + stoneNoise * .06);
+                height[index] = .06 + coverage * (.55 + stoneNoise * .12 - fracture * .04);
+                roughness[index] = .98 - coverage * (.20 + stoneNoise * .06 - fracture * .025);
             } else if (key === 'earth') {
                 const broad = periodicNoise(x, y, 8, definition.seed);
                 const grit = periodicNoise(x, y, 32, definition.seed ^ 0x5184);
