@@ -153,6 +153,17 @@ Fighter pilot or remove approved authored models.
   contribution to Air timings is unproven. Do not cancel/restart it or claim
   capacity completion from its existence. Owner-deferred campaign/phone checks
   remain deferred, not passed.
+- Staged atlas component **ce5c4e1a**, selected into future terrain as7e6ad8b1,
+  maps the actual server-selected profile: smooth canonical hillshade, exact
+  triangle-derived3m contours and18registered rock footprints only on the rocks
+  profile. Flat/live and other realm tiles retain their actual geography.
+  Fifty focused checks and22routing checks pass;8distinct desktop/mobile
+  browser cases pass36.7s (final2legend cases rerun9.1s, not extra distinct
+  coverage). Root rejects initial faceted shading and views final screenshots.
+  Existing cached CPU tiles/disposal/waypoints/interiors remain. New cases enter
+  existing mandatory interface routing. Not public terrain activation, final
+  art, physical-phone or party qualification. Scoped receipt:
+  `docs/plans/2026-10-09-atlas-terrain-relief-checks.json`.
 
 ## Remaining scope and next work
 
@@ -229,6 +240,9 @@ qualification never proves a later tree, full visual approval or public rollout.
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
   public acceptance. Recovery/freeze worktrees remain separate.
+- Owned atlas source: `/home/aeml/.local/share/eidolon-atlas-relief-XKsLzhuX`,
+  ce5c4e1a/source and05bb48f5/CI routing; selected narrowly into future terrain,
+  not merged wholesale into public queue and no extra microversion.
 - Before publishing: fetch and reconcile latest master, preserve ancestry and
   the website work, no force/reset. Apply patches for local source edits.
 - Verify proportionately: changed behavior/integration only; reuse unchanged
