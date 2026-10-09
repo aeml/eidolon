@@ -18,6 +18,12 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Staged understory growth habits retain exact13,087 High/7,439 Low plant
+  placements and existing path/wind envelope.14 focused units pass38.105s;
+  equipped native High/Low2cases pass23.5s. Root gameplay-view review shows
+  modest reduction in repeated silhouettes, not final modern art. Timed profile
+  off; queued15–18 and public terrain unchanged. See growth-habits receipt.
+
 - **Pushed1.79.15 /0ac75025 /CI37922288706** after own14 acceptance and
   fresh normal fetch/merge; unchanged prepared publisher bytes remain valid.
   Luna exact-run watch, root acceptance required before16. No new microversion
