@@ -18,6 +18,19 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Current pushed corrective11 is **dc77fb46 / CI37898805331**, independently
+  verified running and exact master. Restores the complete original graphics
+  review after two duplicate-draw experiments fail resource equality; no
+  assertion, timeout, rendering body, asset, runtime or note change promoted.
+  Routes six trusted-release High review cases to required native predeploy;
+  all6 pass1.4m on independently verified AMD Vulkan/RADV,63routing/compiler
+  checks pass7.919s. Hosted presentation/Low/other tests remain, PR/foreign/
+  non-release refs keep original hosted coverage. Both deploy jobs still depend
+  on native predeploy through release-inputs. Hosted six skips are pending
+  native coverage, not passes. Authorized Luna watches exact new run/head.
+  Root must verify terminal gates/public identity/bytes before12. Expected
+  five-file publisher proof and7queued reconciliation are in
+  `docs/plans/2026-10-09-corrective11-native-route-publisher.json`.
 - Last independently accepted release: **1.79.10 / d3a3b9f7**, CI37864085950.
   Later served source is not thereby accepted. Corrective11 **5bd725b9** deployed,
   but **CI37884472930 failed** live loot setup: valid NECK/GLOVES equipment was
@@ -51,7 +64,11 @@ Fighter pilot or remove approved authored models.
   including retries. Six subsequent predeploy/publication/live gates skip,
   not pass. Logs provide no in-test callsite. Root retains anonymous failure
   artifacts and runs one focused software-rendered reproduction, not all six
-  cases/campaigns. No retry, timeout relaxation or public12 push.
+  cases/campaigns. No retry, timeout relaxation or public12 push. Subsequent
+  retained trace locates the reviewRegionalQuality call; a local original
+  software case passes1.7m, so hosted timeout is not universally reproduced.
+  Two duplicate-draw experiments fail resource equality and are abandoned;
+  original checks pass on native hardware under the new mandatory dc77 gate.
 - Corrective11 bundles412engine modules only in the copied publishing tree.
   Login stays lazy, shared credentials/session module identity and import-map
   vendors remain, editable sources stay intact.438affected checks/native
@@ -143,7 +160,7 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Diagnose corrective11/f1ca948d/CI37892701200's six software cover timeouts after authorized Luna
+1. Accept or diagnose corrective11/dc77fb46/CI37898805331 after authorized Luna
    terminal notice; independently verify required jobs, public identities and
    actual transformed publisher bytes. Prior dc7 attempt2 fails engine-module
    download with matching static HTTP408 evidence; upstream cause remains
@@ -191,23 +208,23 @@ qualification never proves a later tree, full visual approval or public rollout.
   Preserve unrelated user/website-agent changes.
 - Current corrective11:
   `/home/aeml/.local/share/eidolon-startup-bundle-release-20261009`;
-  branch `work/alpha-1-79-startup-bundle-current-20261009`, pushedf1ca948d.
+  branch `work/alpha-1-79-startup-bundle-current-20261009`, pusheddc77fb46.
 - Air composition:
   `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`;
-  branch `work/alpha-1-79-air-cypress-current-20261009`, local3b28131e/1.79.18;
+  branch `work/alpha-1-79-air-cypress-current-20261009`, localf1b71841/1.79.18;
   art/terrain source0e319ac0 retained; targeted shared CPU/input9272a3f8, party evidence and corrected publication
   names are retained by normal reconciliation, not a new art qualification.
 - Ordered queued release worktrees and last clean heads:
 
   | Version | Worktree under `/home/aeml/.local/share/` | Head |
   | --- | --- | --- |
-  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `fdb5a335` |
-  | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `06e43cee` |
-  | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `25d51c02` |
-  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `235077cc` |
-  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `b74bb06c` |
-  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `e6a429d7` |
-  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `3b28131e` |
+  | 1.79.12 | `eidolon-operations-release-U0VLQ4j8` | `e89769d2` |
+  | 1.79.13 | `eidolon-public-monitor-release-XpKvF87O` | `e7369fce` |
+  | 1.79.14 | `eidolon-character-dungeon-release-llOMKtuQ` | `3e0b1a1f` |
+  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `adf83270` |
+  | 1.79.16 | `eidolon-masonry-release-CkTEzcx0` | `8b1a814d` |
+  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `e5165158` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `f1b71841` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not

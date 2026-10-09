@@ -1,0 +1,17 @@
+{
+  "head": "dc77fb46dfae3abc880ae2a7142c7c56046348cf",
+  "ci": 37898805331,
+  "status": "Pushed/running; expected selected publication bytes, not public acceptance",
+  "fixture": "/tmp/eidolon-dc77-publisher-kHRnHb",
+  "scope": "Clean committed index/src/vendor/sw/release copied into a new owned tree. Actual compiler and stylesheet/URL publisher applied with exact dc77 release identity. Five selected outputs only; no asset-tree or authenticated-world certificate. This CI-only routing patch leaves runtime, assets, login and notes source unchanged from f1.",
+  "compile": { "modules": 412, "bytes": 3154006, "shared_login_modules": 21 },
+  "sha256": {
+    "index.html": "eb9929d623ac8a11e779a92576838a39523388a2877f2b05206db9580f2cfbe0",
+    "src/main.js": "71be06e5b6514aa194f4c546f5910f483e5506763cf879e851a36812edfd6a63",
+    "src/core/GameEngine.bundle.js": "e356176d85ced955773976e4c93594f40e5dc7548700925755de6aee0b7edd22",
+    "src/styles/index.css": "b1a17d8fc1b0681cb7f09f61004f30a1c90f9ba3aac9c2172b0ffbc072202b1c",
+    "release.json": "3d73f1b19a9470a67cdd2bd21a1d667706af7460a689455f9ddeb91f25f878ec"
+  },
+  "delivery_gates": "Authorized Luna watches exact CI/head. Root must independently verify all required terminal jobs, mandatory six-case native step, live identity/TLS/health.database=ready and these selected transformed bytes. Hosted six pending-native skips are not passes. No public12-18 push until acceptance.",
+  "later_prepared_branches": "All12-18 normally merge dc77.17/18 retain their added Air passage case and broaden the mandatory native selector to all High quality-switch reviews: seven actual discovered cases (four Water/Fire, two Air cover, one Air passage). Both updated routing units7pass and scoped lint pass. This prevents a seventh hosted-pending case being omitted from native execution. Existing source/note versions and assertions preserved; no later delivery claim."
+}
