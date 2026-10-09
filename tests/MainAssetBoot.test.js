@@ -12,9 +12,11 @@ jest.unstable_mockModule('../src/assets/StylesheetBoot.js', () => ({
     ensureGameStylesReady: jest.fn(async () => true)
 }));
 
+let mockStartupError = null;
 jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
     GameEngine: class MockGameEngine {
         constructor() {
+            if (mockStartupError) throw mockStartupError;
             this.uiManager = {
                 handleEscape: jest.fn(),
                 onFullscreenChange: null,
@@ -30,6 +32,7 @@ jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
 describe('asset persistence boot wiring', () => {
     // Each test builds a new document; production boot runs once per module.
     beforeEach(() => {
+        mockStartupError = null;
         // Retire the prior fixture's detached active screen before mounting
         // a new page; its old window listener must not act as a second session.
         document.getElementById('start-screen')?.classList.remove('hidden');
@@ -51,6 +54,7 @@ describe('asset persistence boot wiring', () => {
             <button id="btn-login"></button>
             <button id="btn-register"></button>
             <div id="auth-status"></div>
+            <p id="game-startup-status" tabindex="-1" hidden></p>
             <div id="login-panel"></div>
             <div id="class-selection-container"></div>
             <button class="class-btn" data-type="Fighter"></button>
@@ -130,6 +134,37 @@ describe('asset persistence boot wiring', () => {
         expect(patchNotesScreen.style.display).toBe('flex');
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(patchNotesScreen.style.display).toBe('none');
+    });
+
+    test('unavailable graphics restores login with actionable in-page guidance, not a browser alert', async () => {
+        buildStartDom(); installBrowserMocks(); window.game = null;
+        const sockets = [];
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() { this.readyState = 1; sockets.push(this); }
+            send() {}
+        }
+        Object.defineProperty(globalThis, 'WebSocket', { configurable: true, value: MockWebSocket });
+        const { GRAPHICS_UNAVAILABLE_MESSAGE } = await import('../src/core/GraphicsStartup.js');
+        mockStartupError = Object.assign(new Error('masked renderer failure'), { code: 'WEBGL2_UNAVAILABLE' });
+        const errorLog = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const alert = jest.spyOn(window, 'alert').mockImplementation(() => {});
+        try {
+            await import('../src/main.js');
+            window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
+            document.getElementById('btn-login').click();
+            sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { hasCharacter: false } }) });
+            document.querySelector('.class-btn').click();
+            await new Promise(resolve => setTimeout(resolve, 0));
+            expect(document.getElementById('auth-status').textContent).toBe(GRAPHICS_UNAVAILABLE_MESSAGE);
+            expect(document.getElementById('login-panel').style.display).toBe('none');
+            expect(document.getElementById('game-startup-status').hidden).toBe(false);
+            expect(document.getElementById('game-startup-status').textContent).toBe(GRAPHICS_UNAVAILABLE_MESSAGE);
+            expect(document.activeElement.id).toBe('game-startup-status');
+            expect(document.getElementById('start-screen').classList.contains('hidden')).toBe(false);
+            expect(document.getElementById('loading-screen').style.display).toBe('none');
+            expect(alert).not.toHaveBeenCalled();
+        } finally { errorLog.mockRestore(); alert.mockRestore(); }
     });
 
     test('shows returning-player first steps guidance when login succeeds with an existing character', async () => {

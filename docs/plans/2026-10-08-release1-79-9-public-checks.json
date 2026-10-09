@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T23:53:08.494Z",
+  "version": "Alpha 1.79.9",
+  "commit": "7114aad6fc5039befc292297d7c477414638c63e",
+  "status": "ordinary-ci-deployment-live-qa-and-independent-public-identity-passed",
+  "ci": {
+    "run": 37842726678,
+    "conclusion": "success",
+    "scope": "Authorized Luna reports terminal success; root independently verifies exact head and all ten mandatory jobs successful: Client, Server, three Browser Smoke shards, Predeploy, production inputs, SSH, Pages, Live QA. Live anonymous/persistent-character and town recovery/Well Rested steps succeed. Optional broader predeploy gallery/GPU lifecycle/full-character and live four-class animation steps skipped, not passed.",
+    "retainedFailure": "37791738441 attempt1 times out after6h browser install; attempt2 fails predeploy manual loot acquisition with three living Skeletons after two-blocker QA cap. Downstream deploy/live gates skipped. Corrected source retains runtime hostile priority and every pointer/manual exact-quantity/save gate; bounded8distinct real-combat blockers and15min install deadline, no gate bypass. New-source37842726678 accepted; original failures retained."
+  },
+  "public": {
+    "transport": "Ordinary DNS with IPv4 and verified HTTPS; no resolver/TLS override. Owner-deferred IPv6 issue not qualified by this check.",
+    "frontend": {"version":"Alpha 1.79.9","commit":"7114aad6fc5039befc292297d7c477414638c63e"},
+    "backend": {"version":"Alpha 1.79.9","commit":"7114aad6fc5039befc292297d7c477414638c63e","status":"ok","database":"ready"},
+    "productionCheckout": "Root confirms tracked-clean /home/aeml/eidolon at exact7114aad6.",
+    "selectedPublishedBytes": {
+      "index.html":"aafc930d2a366c098f115f64bfedf9be13e2f0b7dc153dab73934cc5106d58b6",
+      "src/art/WoodlandBarkMaterial.js":"e1ffdf70fef754c09b65121c13a441bbab6b068bd5cbecb3a71ebe4f8845ff67",
+      "src/art/WoodlandUnderstoryGeometry.js":"1828a1f9f6986a88a46b94d00453781160c795d88d1906bac14129d7586b686e",
+      "src/styles/index.css":"4d641305bf6381fecea23b8e4f7e3ad3d2925183d578d14e10b70f33f0b8d233"
+    },
+    "method": "Actual publisher rewriteHtml/rewriteJavaScript/rewriteCss outputs compared byte-for-byte with served files. Ordered bundleGameStyles executes only on a disposable copied styles directory; actual bundled served CSS matches. Selected output checks, not an all-assets audit."
+  },
+  "remaining": "Next prepared1.79.10 needs its own ordinary CI/public acceptance, then1.79.11 login pagination/Firefox. Prepared12–14 remain local. Full original roadmap/F1-F5/modern-art/equipped-party/device/human/operator/rights/beta/launch gates stay open. No raised-profile/monitor activation or final art claim."
+}

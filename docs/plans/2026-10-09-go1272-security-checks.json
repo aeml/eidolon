@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "version": "Alpha 1.79.10",
+  "status": "corrected-candidate-locally-qualified-awaits-new-ci-and-public-acceptance",
+  "retainedFailedRun": {"id":37861950511,"head":"6ed016b7911687f5cd378263c956a59149f7e02e","conclusion":"failure","cause":"Pinned Go1.27.1: nine reachable standard-library advisories all fixed in1.27.2. Client and all three Browser Smoke shards pass; Server vulnerability gate fails. Five downstream QA/deployment/public jobs skip, not pass. Original run left intact until terminal; no rerun/cancel/gate bypass."},
+  "advisories": ["GO-2026-6617","GO-2026-6613","GO-2026-6612","GO-2026-6611","GO-2026-6610","GO-2026-6608","GO-2026-6607","GO-2026-6605","GO-2026-6603"],
+  "primarySource": "https://go.dev/doc/devel/release#go1.27.2 — official October8 security patch; CI govulncheck exact found/fixed versions agree",
+  "scope": "Upgrade module minimum, hosted CI, API/monitor Docker and Compose builds, isolated character and terrain-save QA and current operator instructions to Go1.27.2. Regression checks cover every declared build pin and retain unchanged pinned govulncheck1.8.0 command. No module dependency/version, go.sum, npm lock, gameplay, saves, economy, authority, retention or art change. Add accurate security line only to still-unaccepted1.79.10 note.",
+  "verification": {
+    "toolchain": "Downloaded through ordinary verified Go toolchain distribution; actual go version go1.27.2 linux/amd64",
+    "modules": "go mod verify: all modules verified; go.sum and npm lock unchanged",
+    "scan": "Exact CI command using patched toolchain: zero reachable vulnerabilities, zero imported-package advisories, one uncalled required-module advisory; strict check passes",
+    "race": "internal/operations6.373s and cmd/monitor7.021s pass with Go1.27.2 race detector",
+    "binaries": "Actual trimpath builds of API and monitor both succeed; go version -m confirms go1.27.2 in each. Owned output /home/aeml/.local/share/eidolon-go1272-build-QailGEtB; no production execution",
+    "container": "Official golang:1.27.2-alpine manifest available for linux/amd64; Compose parser passes with empty env/no interpolation. Not a container runtime/deployment claim",
+    "client": "Fresh locked npm ci, six focused baseline/repro/YAML/version/CI suites412pass1.809s; scoped ESLint, shell syntax and whitespace pass",
+    "history": "Independent full direct-history-child raw-source audit (not just modern class selector):445total entries, all444older entries byte-identical; only current unaccepted10 note adds security line"
+  },
+  "retainedLocalAttempt": "Initial local412case run has411pass/one YAML dependency mismatch because reused node_modules link resolves legacy js-yaml3.15.2 rather than locked4.3.2. Move only task-owned symlink aside reversibly, never change shared directory. Fresh npm ci exact lock resolves discrepancy; full focused repeat passes. No dependency/test expectation downgrade. Npm reports0vulnerabilities; pending optional install scripts not approved.",
+  "logSHA256": {
+    "vulnerability": "b5ae54ddcfa4cb39e85f84ad2d9e43556bd817c480eaab2a71bab63bfc29353b",
+    "race": "5cc4566b433941b5b76e755f993f7cf6d89acc16631b0e95c40ee7d388a18bf3",
+    "lockedClient": "93dcd0f8e17a1958a28fd7c7089c6dae6d6e07720223c9cfb1b9fc8d9f81c389",
+    "containerManifest": "3aa7d898f15ebc11843f895db35c23e574d4a550cedd064858a01d39e47d34df"
+  },
+  "delivery": "Fresh remote master remains6ed016b7. Publish corrected10 only after old run terminal, then authorized Luna monitors new run terminal-only. Own mandatory CI, exact front/back/healthy production and publisher bytes required before11. Existing9/7114aad6 remains last accepted; prepared11 login/Firefox and12-15 later components remain local. Original dirty worktree and other-agent website changes untouched.",
+  "remaining": "Full roadmap1.80F1-F5/modern-art/raised-production/equipped-party/device/human/operator/rights/closed-beta/launch gates stay open; goal active. Security scan is not full threat-model acceptance."
+}

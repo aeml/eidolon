@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createRendererWithGraphicsError } from './GraphicsStartup.js';
 import { prefersReducedMotion } from './MotionPreference.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -76,12 +77,12 @@ export class RenderSystem {
         // Firefox Optimization: alpha: false (we have a background), stencil: false (unused)
         const isFirefox = /firefox/i.test(navigator.userAgent);
         
-        this.renderer = new THREE.WebGLRenderer({ 
+        this.renderer = createRendererWithGraphicsError({
             antialias: !this.isMobile && !isFirefox, // Disable AA on Firefox for performance
             powerPreference: "high-performance",
             alpha: false,
             stencil: false
-        });
+        }, options => new THREE.WebGLRenderer(options));
         
         // Optimization: Cap pixel ratio to save fill rate on high DPI screens
         // Firefox: Cap at 1.0 to ensure smooth framerate

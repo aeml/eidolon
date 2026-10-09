@@ -53,6 +53,14 @@
     letter-spacing: 0.08em;
 }
 
+.game-startup-status {
+    max-width: 60ch;
+    margin: 16px auto 0;
+    color: #ffb7a6;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
 .start-version-row__link {
     color: var(--entry-gold);
     cursor: pointer;
