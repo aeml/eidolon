@@ -18,6 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+-20 CI37948468016: hosted tests, native predeploy, inputs, SSH and Pages
+  have passed; final live QA now runs under Luna's sparse watch. Root own
+  terminal/native/live/public acceptance still required. GPU checks stopped
+  for the occupied runner. Local utility branch qualifies well/bench slice
+  ff682107 (six unit checks/four distinct native cases/18timed views); market
+  follow-up9e400a8a adds casks and corrects sunk chest/crates,16unit checks and
+  actual-client collision catalog pass. New combined native review still open;
+  no per-prop public push, no final modern-art/party/device approval.
+  Private raised branch normally merges20 at2facf51e, not new qualification.
+  A bounded comparison-helper experiment is41percent slower and fully removed;
+  original foliage source restored, no performance fix claimed. Full goal open.
+
 - Grouped20/07743ba7 normally pushed after own corrected19 acceptance and
   fresh fetch/normal reconciliation; CI37948468016 attempt1 underway under
   authorized sparse Luna watch. Four distinct combined native cases pass;

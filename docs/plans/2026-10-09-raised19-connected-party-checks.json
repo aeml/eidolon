@@ -17,6 +17,7 @@
     "previewFrames": 0
   },
   "untimedAttribution": "Existing actor instances reduce matched same-scene submissions911 to543 while triangles535203 to540303; do not add another rig-sharing layer or infer a frame-time speedup. Three-second opt-in CPU sampling runs after timed frames: foliage visit547993us/418samples, beginFrame119799us/86samples;80 observed frames713760visits,0view/0shadow revisions. Live mutable bounds/flags checks cannot simply be omitted; this identifies hot work, not its completed fix.",
+  "discardedOctober9Experiment": "After normal20 merge2facf51e, an explicit six-bound/sixteen-matrix-component helper replaces nested equality methods in a private controller-only experiment. Node24/9000live-checked cells,100warm frames and six alternating150-frame rounds: original median4.36164ms, candidate6.16894ms (~41percent slower). Fully remove the experiment and independently verify original controller bytes restored. No new real-browser/party performance acceptance, public change, skipped live checks, or repeated long campaign/soak. Raised source now includes20 camp/streets via normal merge; older19 evidence retains its exact-source scope.",
   "evidence": "/home/aeml/.local/share/eidolon-terrain-save-evidence-C662vKXk; browser.log0600 and reviewed post-login artifacts. Do not publish raw authenticated traces or fixture account details.",
   "logsSHA256": {
     "browser": "44761f8ab8b3ed10aadd6bc7b8c07ecff66070ce4c07de3c1965a5edc5cc8189",
