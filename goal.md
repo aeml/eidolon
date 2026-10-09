@@ -18,6 +18,14 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Combined visual update isolated atf11d7541 in
+  `eidolon-integrated-world-release-P5ph9TBy`: narrow current18 selection of
+  town tents/cloth, soil/growth, Fire floor/supports, lore books, mounts and
+  measured foliage-array optimization.144 focused checks and422module compile
+  pass; experimental rock-v6/raised activation and other future ops excluded.
+  Version/notes/public delivery and combined native review remain pending;
+  live17 owns browser runner. Own17 then18 acceptance precedes later push.
+
 - Correct Air windbreak mounting: real High/Low merged-corner regression
   fails before and passes after; five scoped units per tree and two equipped
   native views pass. No footprint/mesh/triangle cost changes. Private raised
