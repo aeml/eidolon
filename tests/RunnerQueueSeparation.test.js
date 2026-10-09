@@ -87,6 +87,27 @@ test('ordinary CI stays hosted and GPU acceptance is not replaced with software 
     expect(ci).toContain('npm run test:e2e:isolated');
 });
 
+test('heavy release graphics cases transfer only to an identical trusted mandatory native gate', () => {
+    const hosted = ci.split('  browser-smoke:\n')[1].split('  predeploy-character:')[0];
+    const native = ci.split('  predeploy-character:\n')[1].split('  release-inputs:')[0];
+    const pending = hosted.match(/EIDOLON_E2E_NATIVE_COVERAGE_PENDING: \$\{\{ (.+) \}\}/)?.[1];
+    expect(pending).toBe(native.match(/^ {4}if: (.+)$/m)?.[1]);
+    const step = native.split('      - name: Run required native High regional quality-switch coverage\n')[1]
+        ?.split('      - name:')[0];
+    expect(step).toBeDefined(); expect(step).not.toMatch(/^\s+if:/m);
+    expect(step).toContain("EIDOLON_E2E_NATIVE_COVERAGE_PENDING: 'false'");
+    expect(step).toContain('EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome');
+    expect(step).toContain('tests/e2e/populated-earth-world.spec.js --grep "high at 1280px quality switches"');
+    expect(step).toContain('--workers=1 --retries=0');
+    expect(step).not.toContain('--pass-with-no-tests');
+    const inputs = ci.split('  release-inputs:\n')[1].split('  deploy:')[0];
+    expect(inputs.match(/^ {4}needs: (.+)$/m)?.[1]).toContain('predeploy-character');
+    for (const job of ['deploy', 'deploy-server']) {
+        const body = ci.split(`  ${job}:\n`)[1]?.split(/\n {2}[a-z][a-z-]*:\n/)[0];
+        expect(body.match(/^ {4}needs: (.+)$/m)?.[1]).toContain('release-inputs');
+    }
+});
+
 test('the soak remains trusted-branch only and uses an isolated dynamic database port', () => {
     expect(soak).toContain("if: github.repository == 'aeml/eidolon'");
     expect(soak).toContain("github.event_name == 'schedule'");
