@@ -1,5 +1,12 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 local Air-cypress component5e4c6cdc adds connected rooted/forked timber,
+fuller mature crowns and existing UV bark with the same three material batches.
+Five affected suites29pass5.895s; all nine planting arrays and other eight
+archetypes independently unchanged. Native images/original frame-resource caps
+and quality-switch review pending an idle GPU; exact11 CI37879564669 remains
+Luna-owned. No release18, source selection or final-art/party/device acceptance.
+
 October9 all local12-17 normally inherit new corrective11/dc7, clean/ancestor
 checks pass; only document-header conflicts, both full blocks preserved. Actual
 all-child/raw archive chain audit proves all446through451predecessor notes exact,

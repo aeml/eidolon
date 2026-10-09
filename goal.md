@@ -18,6 +18,17 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Air cypress route-cohesion work is saved locally at **5e4c6cdc** in
+  `/home/aeml/.local/share/eidolon-air-cypress-release-20261009`: rooted,
+  forked mature trunks, fuller crowns and existing UV-bound bark. Five affected
+  suites29pass5.895s; independent comparison proves all nine planting arrays
+  and the other eight archetypes unchanged; scoped lint passes. Native images,
+  original frame/resource limits and quality switches remain pending while
+  Luna monitors startup-correction CI37879564669. No source selected into this
+  future tree, new release18 or public/art/party acceptance claimed. Next: use
+  an idle GPU for bounded actual Air review, reconcile current17 ancestry, then
+  carry only qualified changes into the combined route-cohesion release.
+
 - All local12-17 now normally inherit corrective11/dc7, clean/exact ancestor:
   edac4774/a8c2cdb6/7c598677/e3bb076d/2000c7aa/1058d657.
   Only document-header conflicts, both complete blocks retained. Independent
