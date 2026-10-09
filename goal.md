@@ -18,6 +18,18 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Local Air-surface refinement **f26d8e5f** in owned
+  `eidolon-air-slate-release-WU2VBYzB` remains **unqualified**, not release18.
+  Forty affected unit checks pass; first green visual attempt rejected as paving.
+  Revised actual High captures are subtle, not final modern art. Native High
+  fails median33.3ms against20ms; Low not run. Retain original failure. Shared
+  predeploy QA started another GPU browser during this run; observed overlap is
+  not proof of sole cause. Repeat only two affected native cases after that QA
+  finishes, then review combined scope before versioning. No budgets loosened.
+  [Evidence](docs/plans/2026-10-09-air-slate-in-progress-checks.json).
+  Deployment11 Client/Server/all three smoke shards green per Luna observation;
+  character predeploy still running, not terminal/root accepted. No later push.
+
 - Prepared17 **3ecf2620f75f045012f35ac6bcd4fa4d1bc76ad6** selectively integrates
   staged Air passage onto current16:2022High/1093Low heath/scree/86cells and
   retained-tree road framing. Preserve all supplied assets/current renderer/

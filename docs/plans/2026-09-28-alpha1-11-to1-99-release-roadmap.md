@@ -1,5 +1,16 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 local Air-surface refinement f26d8e5f is **not qualified or release18**.
+Forty affected units pass; first green capture rejected as paving. Revised actual
+High images are subtle; broader route-scale modern cohesion remains unfinished.
+Native High fails20ms median gate at33.3ms; Low not run. Retain original failure;
+shared predeploy QA browser overlap observed, not proven sole cause. Check only
+the two affected cases after shared QA finishes, without relaxing budgets.
+[Evidence](2026-10-09-air-slate-in-progress-checks.json).
+11/8a/run37874149991 Client/Server/three smoke shards green per Luna; character
+predeploy running, no terminal/root acceptance or later public push. Ordered
+12-17 publication and all full-roadmap/art/F1-F5/party/device/owner gates remain.
+
 October9 prepared17/3ecf2620 selectively integrates staged Air-passage heath/
 scree/retained-tree framing onto current16.424focused/30tooling/11exact timing
 checks pass with overlap; six native cases18timed views and one new High
