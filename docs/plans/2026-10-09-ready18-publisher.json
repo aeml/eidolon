@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "Prepared and normally reconciled; not pushed or accepted live",
+  "status": "PUSHED exact Alpha1.79.18 /81702abb /CI37935111832 in progress; own public acceptance pending",
   "candidate": {
     "version": "Alpha 1.79.18",
     "head": "81702abb6e0c953d523b8299b5bf540dffb18424",
@@ -22,6 +22,6 @@
     },
     "scope": "Five selected transformed runtime files, not a hash certificate for all binary assets. A changed head after the final fresh reconciliation requires a new publisher build/expected identities."
   },
-  "deliveryGate": "17 exact1ecfeb20 CI37930673270 is running under approved Luna terminal-only monitoring. Root must independently accept required native/live jobs and exact public17 bytes/frontend/backend/ready DB before fresh-fetch/normal-reconcile/push18.18 then needs its own exact CI/public acceptance. Public16 is accepted. New canvas/tents/future raised/operations changes remain staged separately.",
+  "deliveryGate": "Root independently accepts exact17 terminal CI/native/live/five transformed public bytes and matching frontend/backend/ready DB at13:09:46.562UTC. Fresh origin/master fetch and normal reconciliation keep exact81702abb unchanged, preserve17 ancestry and clean worktree; normal master1ecfeb20..81702abb push succeeds. Own18 CI37935111832 is running under approved Luna terminal/actionable monitoring. Root18 CI/native/live/public acceptance required before next push. No force/website overwrite/dirty original modification/overlapping deployment. New combined art/canvas/tents/raised/operations changes remain separate and unpublished.",
   "remaining": "Full roadmap, integrated modern art, raised-terrain/equipped-party/device gates,1.80 F1-F5,1.81-1.99, owner/human rights/operations/beta/launch decisions remain open. No source/page count substitutes for those gates."
 }
