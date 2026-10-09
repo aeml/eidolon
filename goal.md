@@ -41,6 +41,10 @@ Fighter pilot or remove approved authored models.
   five actual transformed publisher files independently match at06:05–06:06UTC.
   Nine CI jobs succeed; final live gameplay remains in progress. This is not
   release acceptance. [Public precheck](docs/plans/2026-10-09-corrective11-public-precheck.json).
+- Exact f1 transformed publisher outputs are prepared for final comparison:
+ 412modules/3154006bytes/shared21; expected hashes and owned fixture path are in
+ [the publisher receipt](docs/plans/2026-10-09-corrective11-name-publisher.json).
+ This is not delivery or authenticated-world acceptance.
 - Corrective11 bundles412engine modules only in the copied publishing tree.
   Login stays lazy, shared credentials/session module identity and import-map
   vendors remain, editable sources stay intact.438affected checks/native

@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "source": "f1ca948df4e96afe5125999c2e4673c662d05498",
+  "ci": 37892701200,
+  "status": "Expected transformed publisher bytes prepared; not public acceptance",
+  "fixture": "/tmp/eidolon-f1ca-publisher-kvMbYDuS",
+  "compiler": { "bundledModules": 412, "bytes": 3154006, "sharedLoginModules": 21 },
+  "transformation": "Copied exact clean source, compiler with keepNames then actual runtime URL rewrite/CSS bundling398of884files. Name preservation adds67300bytes before URL rewrite compared with fd7, without changing modules or shared identity. No original budget changes.",
+  "expectedSHA256": {
+    "index.html": "3e976ce9e3dd60f49eb999dc9564666082582cdf84a1848dc0c990db6cbccf31",
+    "src/main.js": "51593b84aa0cdf7e4d0eb4ec47143fb41391918a63b9a7004be29be5544273a5",
+    "src/core/GameEngine.bundle.js": "a50e0be22498e14375ea3a48a4e7517a29d994f3fd0b0249c3776e23f59b8149",
+    "src/styles/index.css": "eb95e8eaa780efef71cc8ad0b4b0ad0babd4222b8615e7e9bf4c81957a3c81de",
+    "release.json": "04c19c4bd95ce0112881b460798e6e51faeaf95ef49b30de44b100f0d8be87f5"
+  },
+  "required": "After exact terminal CI, compare actual public files to these transformed bytes, validate frontend/backend exact commit/version and backend status=ok/database=ready over normal valid IPv4 TLS. Deferred IPv6 remains separate. Only then accept or diagnose11 and proceed to freshly reconciled12."
+}
