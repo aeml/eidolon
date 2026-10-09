@@ -1,5 +1,5 @@
 {
-  "status": "Implemented and unit-qualified privately; native pixel comparison and ordered publication pending",
+  "status": "Implemented privately; focused units and four distinct native High/Low pixel comparisons qualified; ordered publication pending",
   "source": "b86df009",
   "base": "Public21/541c2eda; isolated owned worktree, no staged raised-world or unrelated user changes",
   "reproduction": "A parent scaled2/1/1 and child rotated45degrees has positive determinant but nonorthogonal world columns. Pinned Three defaultnormal_vertex explicitly does not support shear for instances. Its instance-normal approximation differs from the correct inverse transpose by more than0.5 in the reproduced normalized vector. Original actor batcher admits the mesh: regression fails1case with23passing before correction.",
@@ -7,5 +7,13 @@
   "verification": "ActorInstanceBatches, HumanoidRenderBatches and FoliageRenderBatches:3suites71cases pass6.567s; scoped ESLint/whitespace pass. Adds shear/projective/degenerate fallback and live restoration coverage. Existing High/Low Skeleton pixel comparisons gain one stretched Attack pose without changing original mean-error/changed-pixel/triangle/visibility assertions or skipping ordinary states.",
   "beforeLogSHA256": "d1f5ca5a52f3e46392d26b6b5d644a18ea5ceabee3fdfda2e163e6d7009f7877",
   "unitLogSHA256": "fd83cbf8222a1f91c279c6d3ebfb0149e760a1c289901a69990c36ee5fcfd925",
-  "remaining": "Actual native High/Low pixel comparison must pass once the release GPU runner is free. Public21 CI37960034584 remains in progress; no next release before its terminal/live/public/evidence acceptance. This is a rendering correctness repair, not a frame-time improvement, complete modern-art approval or full-roadmap completion. No long campaign/soak repeat or mutation. Include truthful notes and synchronized version only when preparing its real release candidate."
+  "native": {
+    "source": "fa7f545c and test-assertion-only01997d82; runtime exact b86df009 verified with git diff --exit-code",
+    "result": "First four-case run20.5s: two Skeleton High/Low cases passed; two full-kit fallback cases failed solely because the newly added unsupported pose incorrectly expected fewer draws. Retain every original supported-pose strict draw-reduction and pixel/triangle/visibility assertion; change only the new unsupported pose to require exact original draws. Two corrected full-kit High/Low cases pass11.8s, retries0. Four distinct actual native cases covered, not one invented combined all-pass run.",
+    "observations": "All ordinary full-kit poses retain fewer calls, exact triangles and visibility. Initial measured max High mean pixel delta0.001543/changed fraction0.000030, Low0.000833/0.0000065, inside original0.1/0.001 limits. Deliberately unsupported StretchedAttack exact0pixel difference, unchanged1982High/984Low calls and triangles; no draw-saving or FPS claim for fallback. Corrected capture retained separately.",
+    "driver": "Same installed System Chrome/hardware launch policy; standalone qualified verifier after tests reports actual Google/AMD ANGLE Vulkan1.4.318 RADV. No software flags, lowered limits, hidden models or authored-class instancing. Port4191 and browser closed; generated vendor symlink removed, clean owned tree.",
+    "firstLogSHA256": "c64c9d26e57e5ca058fef7215e6a0ea512c7cb105d5f2761427f728f40aedf7f",
+    "correctedLogSHA256": "6cf7ab0ddd5942095415d0fb317e2ed5a9d4e381428a2f54caaec07fe7769620"
+  },
+  "remaining": "Public21 CI37960034584 attempt1 failed on actual network-change module aborts; one evidence-backed failed-jobs rerun explicitly requested after root diagnosis. No next release before its own terminal/live/public/evidence acceptance. This is a rendering correctness repair, not a frame-time improvement, complete modern-art approval or full-roadmap completion. No long campaign/soak repeat or mutation. Include truthful notes and synchronized version only when preparing its real release candidate."
 }
