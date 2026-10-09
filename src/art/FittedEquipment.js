@@ -227,7 +227,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
     const state = owners.get(root); if (!state) return { supported: false };
     const actorClass = root.userData.authoredClass; state.actorClass = actorClass;
     const active = Object.fromEntries(Object.entries(equipment).filter(([slot, item]) => isActiveEquipment(slot, item, actorClass)));
-    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${equipmentVisualSignature(active)}`;
+    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${root.userData.fittedEquipmentSurfaceBatching !== false}:${equipmentVisualSignature(active)}`;
     if (!force && signature === root.userData.equipmentVisualSignature) return { supported: true, changed: false };
     const epoch = ++state.epoch; root.userData.equipmentVisualSignature = signature;
     root.userData.updateWeaponProfile?.(active);
@@ -268,7 +268,8 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
             coverRobeUnderlayers(state, selection, staged);
             // Exact surfaces and native comparisons pass for compatible opaque
             // pieces. False retains the original path for diagnostic comparisons.
-            if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged);
+            if (root.userData.fittedEquipmentBatching !== false) staged = batchFittedEquipment(staged,
+                { surfaceAttributes: root.userData.fittedEquipmentSurfaceBatching !== false });
         } catch (error) {
             disposeParts(staged);
             if (state.epoch === epoch) root.userData.equipmentVisualSignature = '';

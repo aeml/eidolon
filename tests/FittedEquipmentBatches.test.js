@@ -263,6 +263,82 @@ test('merges identical opaque surfaces without changing source buffers, bones or
     expect(batch.castShadow).toBe(true);
 });
 
+test('surface batches retain distinct source PBR values and exact partial-rig inverse matrices in motion', () => {
+    const { root, parts, bones } = fixture();
+    parts[1].material.color.set('#915823'); parts[1].material.roughness = .83; parts[1].material.metalness = .24;
+    parts[1].material.emissive.set('#116699'); parts[1].material.emissiveIntensity = 2.5;
+    const inverse = parts[1].skeleton.boneInverses.map(matrix => matrix.clone()); inverse[1].elements[12] += .13;
+    // Partial skins may list the same actor's live bones in another order.
+    parts[1].skeleton = new THREE.Skeleton([bones[1], bones[0]], [inverse[1], inverse[0]]);
+    const sourceIndices = parts.map(part => [...part.geometry.attributes.skinIndex.array]);
+    const result = batchFittedEquipment(parts, { surfaceAttributes: true }), batch = result.at(-1);
+    expect(result).toHaveLength(3); expect(batch.skeleton).not.toBe(parts[0].skeleton);
+    expect(batch.skeleton.bones).toHaveLength(3); expect(batch.material.userData.fittedSurfaceAttributes).toBe(true);
+    root.add(batch);
+    let offset = 0;
+    for (const part of parts) {
+        const count = part.geometry.attributes.position.count;
+        for (let vertex = 0; vertex < count; vertex++) {
+            const attribute = batch.geometry.attributes.fittedDiffuseRoughness;
+            expect([0, 1, 2, 3].map(channel => attribute.getComponent(vertex + offset, channel)))
+                .toEqual(Array.from(new Float32Array([...part.material.color.toArray(), part.material.roughness])));
+            const glow = batch.geometry.attributes.fittedEmissiveMetalness;
+            expect([0, 1, 2, 3].map(channel => glow.getComponent(vertex + offset, channel)))
+                .toEqual(Array.from(new Float32Array([...part.material.emissive.toArray().map(value => value * part.material.emissiveIntensity), part.material.metalness])));
+            for (const channel of [0, 1, 2, 3]) {
+                const original = part.geometry.attributes.skinIndex.getComponent(vertex, channel);
+                const current = batch.geometry.attributes.skinIndex.getComponent(vertex + offset, channel);
+                expect(batch.skeleton.bones[current]).toBe(part.skeleton.bones[original]);
+                expect(batch.skeleton.boneInverses[current].equals(part.skeleton.boneInverses[original])).toBe(true);
+            }
+        }
+        offset += count;
+    }
+    for (const angle of [0, .4, -.7]) {
+        bones[1].rotation.z = angle; root.position.set(2, 0, -3); root.scale.set(1.2, .8, 1.1); root.updateMatrixWorld(true);
+        expect(surface(batch).map(vertex => vertex.position)).toEqual(parts.flatMap(surface).map(vertex => vertex.position));
+    }
+    parts.forEach((part, i) => expect([...part.geometry.attributes.skinIndex.array]).toEqual(sourceIndices[i]));
+    const shader = { vertexShader: THREE.ShaderLib.standard.vertexShader, fragmentShader: THREE.ShaderLib.standard.fragmentShader };
+    batch.material.onBeforeCompile(shader);
+    expect(shader.vertexShader).toContain('flat varying vec4 vFittedDiffuseRoughness');
+    expect(shader.fragmentShader).toContain('vec4 diffuseColor = vec4( vFittedDiffuseRoughness.rgb, opacity );');
+    expect(shader.fragmentShader).toContain('roughnessFactor *= vFittedDiffuseRoughness.a;');
+    expect(shader.fragmentShader).toContain('metalnessFactor *= vFittedEmissiveMetalness.a;');
+    batch.geometry.dispose(); batch.skeleton.dispose(); batch.material.dispose();
+});
+
+test.each([
+    ['unowned bones', part => { part.skeleton.bones = part.skeleton.bones.map(bone => bone.clone()); }],
+    ['invalid inverse', part => { part.skeleton.boneInverses[0].elements[0] = NaN; }],
+    ['invalid joint index', part => { part.geometry.attributes.skinIndex.setX(0, 99); }],
+    ['vertex colors', part => { part.material.vertexColors = true; }],
+    ['nonfinite roughness', part => { part.material.roughness = NaN; }],
+    ['custom shader', part => { part.material.onBeforeCompile = () => {}; }],
+    ['foreign texture', part => { part.material.normalMap = new THREE.Texture(); }]
+])('surface batching conservatively preserves the %s boundary', (_, change) => {
+    const { parts } = fixture(); change(parts[1]);
+    expect(batchFittedEquipment(parts, { surfaceAttributes: true })).toEqual(parts);
+    expect(parts.every(part => part.visible)).toBe(true);
+});
+
+test('equip-generation cleanup releases union rigs, derived buffers and owned materials once while retaining cached sources', async () => {
+    const current = skeletonSharingFixture(true);
+    current.root.userData.fittedEquipmentBatching = true;
+    current.root.userData.fittedEquipmentSurfaceBatching = true;
+    const sourceGeometry = current.sourceScene.children[0].geometry;
+    const cachedGeometry = jest.spyOn(sourceGeometry, 'dispose'), cachedSkeleton = jest.spyOn(current.source, 'dispose');
+    const bodySkeleton = jest.spyOn(current.body, 'dispose');
+    applyFittedEquipment(current.root, current.equipment); await current.root.userData.equipmentReady;
+    const batch = current.gear().find(part => part.material.userData.fittedSurfaceAttributes);
+    expect(batch).toBeDefined(); expect(batch.skeleton.bones).toHaveLength(3);
+    const geometry = jest.spyOn(batch.geometry, 'dispose'), skeleton = jest.spyOn(batch.skeleton, 'dispose'), material = jest.spyOn(batch.material, 'dispose');
+    clearFittedEquipment(current.root); clearFittedEquipment(current.root);
+    expect(geometry).toHaveBeenCalledTimes(1); expect(skeleton).toHaveBeenCalledTimes(1); expect(material).toHaveBeenCalledTimes(1);
+    expect(cachedGeometry).not.toHaveBeenCalled(); expect(cachedSkeleton).not.toHaveBeenCalled(); expect(bodySkeleton).not.toHaveBeenCalled();
+    jest.restoreAllMocks();
+});
+
 test.each([
     ['color', part => part.material.color.set('#123456')],
     ['potency emission', part => { part.material.emissiveIntensity = 2; }],

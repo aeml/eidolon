@@ -52,10 +52,11 @@ function readPartyTerrain(ids) {
     const actors = ids.map(id => {
         const actor = id === game.player.id ? game.player : game.remotePlayers.get(id);
         const root = actor?.mesh, authority = window.__equippedTerrainParty.states[id];
-        let ownedBones = true, independentBones = true;
+        let ownedBones = true, independentBones = true, surfaceBatches = 0;
         const bones = new Set();
         root?.traverse(child => {
             for (const bone of child.skeleton?.bones || []) bones.add(bone);
+            if (child.material?.userData.fittedSurfaceAttributes) surfaceBatches++;
         });
         for (const bone of bones) {
             ownedBones &&= root.getObjectByProperty('uuid', bone.uuid) === bone;
@@ -67,7 +68,7 @@ function readPartyTerrain(ids) {
             bodyQuality: root?.userData.authoredQuality, items: root?.userData.equipmentVisualItemCount,
             missing: root?.userData.equipmentVisualMissing?.length || 0,
             fallback: root?.userData.equipmentVisualFallback?.length || 0,
-            bodyFallback: Boolean(root?.userData.assetFallback), bones: bones.size, ownedBones, independentBones,
+            bodyFallback: Boolean(root?.userData.assetFallback), bones: bones.size, ownedBones, independentBones, surfaceBatches,
             ground: actor?.position && field?.sample(actor.position.x, actor.position.z),
             playerError: actor?.position && field ? Math.abs(actor.position.y - field.sample(actor.position.x, actor.position.z)) : Infinity,
             meshError: root && field ? Math.abs(root.position.y - field.sample(root.position.x, root.position.z)) : Infinity,
@@ -304,6 +305,7 @@ test('single native renderer observes three live equipped party socket peers on 
         expect(party.actors.map(actor => actor.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
         expect(party.groundCover.plants).toBeGreaterThan(0);
         expect(party.groundCover.spatialBatches).toBe(party.groundCover.multiDrawAvailable);
+        expect(party.actors.every(entry => entry.surfaceBatches > 0), 'Actual connected class outfits must use the qualified surface submissions').toBe(true);
         // Untimed draw attribution at the renderer boundary. Per-object hooks
         // would disable eligible ActorInstanceBatches, distorting this evidence.
         const draws = await page.evaluate(() => {
@@ -415,6 +417,34 @@ test('single native renderer observes three live equipped party socket peers on 
                 scope: 'Same connected game scene; exact predecessor versus conservative swept-volume scene projection. Actors/AI/clocks stay live. No physical-device or busy-battle certificate.'
             }, null, 2), contentType: 'application/json' });
             console.log('[paired-foliage-projection-profile]', JSON.stringify(phases));
+        }
+        if (process.env.EIDOLON_TERRAIN_PARTY_FITTED_SURFACE_COMPARE === '1') {
+            const phases = [];
+            const select = async mode => page.evaluate(async mode => {
+                const game = window.game;
+                const actors = [game.player, ...[...game.remotePlayers.values()].filter(actor => actor.mesh?.userData.fittedEquipment)];
+                if (actors.length !== 4) throw new Error('Surface comparison requires four live fitted class roots');
+                for (const actor of actors) {
+                    actor.mesh.userData.fittedEquipmentSurfaceBatching = mode === 'candidate';
+                    actor.syncEquipmentVisuals(actor.equipment, { force: true });
+                }
+                await Promise.all(actors.map(actor => actor.mesh.userData.equipmentReady));
+                for (const actor of actors) {
+                    if (actor.mesh.userData.equipmentVisualItemCount !== 14 || actor.mesh.userData.equipmentVisualMissing?.length)
+                        throw new Error('Comparison altered the full outfit');
+                }
+                for (let i = 0; i < 20; i++) await new Promise(resolve => requestAnimationFrame(resolve));
+            }, mode);
+            try {
+                for (const mode of ['previous', 'candidate', 'candidate', 'previous']) {
+                    await select(mode);
+                    phases.push({ mode, ...await profileGameplayScene(page, `paired-fitted-surface-${mode}`) });
+                }
+            } finally { await select('candidate'); }
+            await testInfo.attach('paired-fitted-surface-profile', { body: JSON.stringify({ phases,
+                scope: 'Same connected normal four-class/three-peer scene; exact original fitted surfaces versus qualified attribute submissions. Full outfits preserved and live actors/AI/game clocks retained. No physical-device or busy-battle certificate.'
+            }, null, 2), contentType: 'application/json' });
+            console.log('[paired-fitted-surface-profile]', JSON.stringify(phases));
         }
         if (process.env.EIDOLON_TERRAIN_PARTY_CPU_PROFILE === '1') {
             // Opt-in diagnosis AFTER the frame sample, never part of its timing.
