@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "status": "bounded opt-in diagnostic implemented; actual caller attribution pending an available native renderer",
+  "base": "f1b71841e5b0328a8f1b9d0db7dc24178c938ad9",
+  "purpose": "Previous real three-second party samples show substantial recursive object search after the owned actor proxy change, but flat self-time cannot identify its caller. Preserve caller chains before choosing another runtime cache or renderer change.",
+  "change": "Existing post-frame CDP sample remains opt-in and three seconds. Summary keeps top24 functions plus top16 sampled caller chains, each bounded to12 collapsed frames. Recursive repeats collapse without losing the actual non-recursive caller. Self-time is counted once, not inflated into inclusive time.",
+  "privacy": "Only matching local origin /src/ and /vendor/ source paths survive; URL origins, queries, fragments, non-source paths, foreign/extension/data sources and raw profiles are not exported. No arguments, account/chat/session payload or automatic recordings added.",
+  "checks": "One actual suite,4focused checks pass0.685s: recursive caller retention, separate actor/input callers, source URL filtering, empty/missing/cyclic/invalid-delta safety. Three affected files lint and whitespace pass.",
+  "runtime": "No production/game code, assets, gameplay, timing budgets, version, public push or default test behavior changes. CI's current production QA Chrome owns the renderer; do not compete or restart it. A diagnostic implementation is not an actual attribution or performance pass.",
+  "next": "Once current live QA exits, run one isolated current18 single-renderer/three-peer party with the existing explicit CPU flag. Use measured caller chains to target the expensive live source path; preserve party saves/grounding and disposable cleanup. Avoid repeating the campaign or guessing additional caches."
+}
