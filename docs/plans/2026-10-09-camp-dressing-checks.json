@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "status": "Private camp-grounding and dressing candidate; focused checks pass, native visual/performance review pending",
+  "source": "bf35cdc0; based on prepared19 fa47c57c, not a public update",
+  "changes": "Replace the floating leather box with the existing folded/rolled Low bedroll geometry, grounded by its true minimum; lower hearth ring onto town surface, add two physically stacked logs in existing timber batch. Register feathered charcoal wear beneath the actual fifteen rotated hearths using the existing town-mask alpha channel. No decals, extra textures, draws, dynamic work, blockers or gameplay changes.",
+  "verification": "Three full focused suites17checks pass8.655s; changed world-registration case1pass15.324s/23unselected. Five-file lint and whitespace pass.17 source parts per camp/255total, existing9material batches;19740raw field triangles versus16440 on19 (+3300). One additional cached geometry, no material added. Original placements, retired picking bounds and walking blockers retained.",
+  "logsSHA256": {
+    "units": "64552e26686350dbc15e0805957cbe1e373e5d0cf66e5f154444176dd3a90a07",
+    "world": "779e0cfdd8070401882ef7a806d885a6d9e6cf90c1d1ce7ce725064260d7ba10"
+  },
+  "retainedTrials": "First full two-suite run11pass/2fail: actual Low cylinder minimum left bedroll above grounding tolerance, cache gains one geometry. Correct geometry origin rather than widening grounding test. Partial name-filter trial7pass/1fail/29unselected initializes fewer lazily created caches, so its order-sensitive aggregate cache assertion is not used as acceptance. Full affected suites pass after final stacking correction.",
+  "next": "Current18 live CI owns native browser. After its terminal acceptance, inspect changed equipped High/Low camps plus two populated Earth/town profiles using unchanged frame/draw/triangle/resource caps; shader compilation and actual presentation still need proof. Keep this separate from pushed18 and prepared19. No unrelated campaign/soak replay.",
+  "remaining": "Full modern-world art, raised/equipped-party/device, freeze F1-F5 and1.81-1.99/owner/human/rights/operations/beta/launch remain open. This does not fill every town clearing or prove final aesthetic quality."
+}
