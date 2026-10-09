@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "Prepared and normally reconciled; not pushed or accepted live",
+  "candidate": {
+    "version": "Alpha 1.79.18",
+    "head": "81702abb6e0c953d523b8299b5bf540dffb18424",
+    "worktree": "/home/aeml/.local/share/eidolon-air-cypress-release-20261009",
+    "previousRelease": "1ecfeb20d4ad4b261c59e565d9b4d37451dc6ae8"
+  },
+  "reconciliation": "Fresh origin/master fetch and normal no-fast-forward merge from prepared135f5f1d. Qualified16 woodland normals/tint/resource disposal and current decimal frame helper retained byte-identically to remote17. No force push, dirty original tree modification, whole future graphics promotion or overlapping public deployment.",
+  "verification": "Current three suites VersionPresentation/PatchNotesPagination/RenderFrameInterval:399 checks pass2.966s. Version18 synchronized;453 cumulative notes/10 initial/45 lazy archive pages. Existing scoped Air18 art/native/quality-switch and connected-party evidence remains source-bound in its component receipt; no unchanged native/campaign replay for metadata reconciliation. git diff --check and clean worktree pass.",
+  "unitLogSHA256": "518bb8ff0b631573f121e1bf59e6fb333a0dfa821f95bd135e43ae41c86dd035",
+  "publisher": {
+    "fixture": "/tmp/eidolon-18-ready-publisher-qxOg4i7P",
+    "compiler": "Byte-identical qualified publication compiler from startup-bundle owned tree; actual committed81702abb source archive plus vendor.420 bundled modules/3243674 bytes/21 shared login modules;402of892 versioned runtime files.",
+    "expectedSHA256": {
+      "index.html": "9f5605aab63dd68300331d8ed8f17d3711bc353b816c28efb7e7e37f9b052fa2",
+      "src/main.js": "31ab7351bb992c1c7e196db189b982ae62560bb6846de3d2e620d646b8352e1b",
+      "src/core/GameEngine.bundle.js": "c4ed68221e1ba062e26b7919caddfcad87780eddff326dca629d98415f2f70f8",
+      "src/styles/index.css": "733a3e928c16840b6d6462dc16472a5946fa697574f80f95ebf760563ccc9b7c",
+      "release.json": "d787b3db46f5e2d603dc7ec71d6d809c9f1261239472d3eeeca5ea5e4f34f7fc"
+    },
+    "scope": "Five selected transformed runtime files, not a hash certificate for all binary assets. A changed head after the final fresh reconciliation requires a new publisher build/expected identities."
+  },
+  "deliveryGate": "17 exact1ecfeb20 CI37930673270 is running under approved Luna terminal-only monitoring. Root must independently accept required native/live jobs and exact public17 bytes/frontend/backend/ready DB before fresh-fetch/normal-reconcile/push18.18 then needs its own exact CI/public acceptance. Public16 is accepted. New canvas/tents/future raised/operations changes remain staged separately.",
+  "remaining": "Full roadmap, integrated modern art, raised-terrain/equipped-party/device gates,1.80 F1-F5,1.81-1.99, owner/human rights/operations/beta/launch decisions remain open. No source/page count substitutes for those gates."
+}

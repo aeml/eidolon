@@ -40,13 +40,11 @@ Fighter pilot or remove approved authored models.
   checks and actual418module publisher qualify. Fresh fetch before public push;
   own17 acceptance before18. Full original roadmap/art/raised/F/owner gates stay.
 
-- Shared town/elemental canvas candidate adds physical filtered thread detail
-  to existing tents/banners/sails without new maps, geometry or simulation.
-  Source/integration checks pass; actual GPU compilation and gameplay/close-up
-  visual review pending, not accepted art or shipped code. Native release16
-  passes6regional/1celebration/2class/4smoke cases and both deploy jobs; five
-  exact public bytes/identities/ready DB match12:24:48UTC. Final live job
-  113815958571 still running; own16 acceptance required before17. See receipts.
+- Prepared18 normally reconciled with remote17 at81702abb; qualified16
+  woodland/resource/decimal source retained.399 current metadata/history/frame
+  checks pass2.966s; actual420module publisher and five expected hashes recorded
+  in ready18 receipt. Not pushed; own17 acceptance and fresh reconciliation
+  required first. No new canvas/tent/raised-profile work included.
 
 - Current disposable equipped-party CPU caller sample isolates repeated foliage
   checks; functional/save check passes, measured party frames remain slow.
@@ -432,13 +430,13 @@ The complete six-part scope below is unchanged. Component evidence and all
 superseded observations are preserved in the history archives; historical
 qualification never proves a later tree, full visual approval or public rollout.
 
-1. Publish then accept or diagnose prepared17 after authorized Luna
+1. Accept or diagnose pushed17 after authorized Luna
    terminal notice; independently verify required native/live jobs, public
    frontend/backend identity and actual five transformed publisher bytes.
    Accepted16/98cef7c7 and earlier releases retain exact historical failures and
    corrections; stale older pending entries above are chronological records,
    not current status. Then fresh-fetch/normal reconcile and individually
-   publish/accept prepared17-18 in order; private preparation can proceed while
+   publish/accept prepared18; private preparation can proceed while
    the prior release runs, but public push requires its own acceptance and a
    fresh normal remote reconciliation. Never promote the whole future branch, overlap pushes, rerun
    unchanged successful tests or infer acceptance from a running job. Continue
