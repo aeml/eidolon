@@ -18,6 +18,14 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Prepared16 woodland hold cleared on exact6c242a1c: corrected decimal RAF
+  helper, unchanged art/runtime and original limits; native High/Low2cases1.3m,
+  18views120samples each pass. High max16.7median/33.4p95/242calls/245947tri;
+  Low16.7/16.8/109/67958; warmed resources stable. Lower host contention/no
+  active Chrome before launch, ongoing soak unchanged. No FPS gain/party/device
+  claim. Historical failures retained.15 CI/public acceptance still required
+  before normal reconciliation, publisher preparation and own16 deployment.
+
 - Staged Earth rock joints preserve collision/geometry and reuse existing
   mineral fields without new maps/noise calls. Initial contour-like appearance
   rejected in root review despite technical passes; final inclined joints pass
@@ -371,8 +379,8 @@ qualification never proves a later tree, full visual approval or public rollout.
    Accepted14/90fca2f1 and earlier releases retain exact historical failures and
    corrections; stale older pending entries above are chronological records,
    not current status. Then fresh-fetch/normal reconcile and individually
-   publish/accept prepared16-18 in order;16 remains held for strict timed
-   qualification. Never promote the whole future branch, overlap pushes, rerun
+   publish/accept prepared16-18 in order;16's local timing hold now cleared,
+   own CI/public acceptance still required. Never promote the whole future branch, overlap pushes, rerun
    unchanged successful tests or infer acceptance from a running job. Continue
    integrated modern-world work while CI runs.
 2. Finish the complete modern world/art work, not just these woodland changes:
