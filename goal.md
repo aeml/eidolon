@@ -18,6 +18,13 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Accepted exact public17/1ecfeb20/CI37930673270 attempt1 SUCCESS: all ten
+  jobs pass; seven native quality cases plus celebration/class/smoke, live8
+  plus town/rest2 and party1. Four optional steps skipped, not passed. Root
+  five actual publisher hashes/frontend/backend/ready DB match13:09:46UTC
+  after terminal completion. Fresh normal18 reconciliation remains81702abb;
+  ordered18 public push now permitted with its own subsequent acceptance.
+
 - Combined visual update isolated atf11d7541 in
   `eidolon-integrated-world-release-P5ph9TBy`: narrow current18 selection of
   town tents/cloth, soil/growth, Fire floor/supports, lore books, mounts and
