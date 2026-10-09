@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "Normally pushed; own20 CI/native/live/public acceptance pending",
+  "candidate": {
+    "version": "Alpha 1.79.20",
+    "head": "07743ba7e3feb8f3270286600d7baa24044762b0",
+    "worktree": "/home/aeml/.local/share/eidolon-camp-dressing-CCweYcej",
+    "previousAcceptedRelease": "293fbfa19b1d9affe111608e13fb279db2f5919a"
+  },
+  "scope": "One grouped release: grounded camp bedding/hearth/firewood, existing-mask charcoal and compacted entrance-to-hearth traffic, plus larger irregular chipped town flagstones sharing exact High/Low albedo/height/roughness footprints. Existing placements, collision, central Fourfold court, texture resolutions/repeat, shader samples and navigation retained. No class/assets/combat/rewards/accounts/permissions/provider/service/soak or public terrain-profile changes.",
+  "verification": "Current combined four distinct native AMD RADV production cases pass1.0m/retries0. Two same populated Earth/town cases explicitly profiled afterward:18named views/120real RAF samples each pass unchanged original budgets1.5m/retries0; these are extensions, not six distinct cases. High max16.7median/33.4p95/240draws/245636tri; Low16.7/16.8/109/78990. Repeated resource counts stable. Street seam failure retained and corrected without relaxing gate; final six affected street checks pass,22unselected not new passes. Prior16camp checks retain unchanged camp inputs;390current metadata checks pass. Actual-client admin catalog unchanged. Scoped lint/syntax/whitespace pass. Busy shared host, not sustained party/device/final-art qualification.",
+  "history": "455total notes/10initial/45lazy pages. All454 previously shipped raw entries exact against corrected19; prior aggregate SHA2566e70699ef4ed26ac6f0769f588c370edafad52e3a7393f5a524aaa41e92456ed. All539non-root lock entries exact. Version20 defaults synchronized. Historical camp-only17ff publisher is explicitly superseded and cannot certify077.",
+  "reconciliation": "Root independently accepted corrected19 CI37941972587/native/live/exact public files and front-back identities/ready DB14:49:52.738UTC. Immediately before20 publication, fresh fetch and normal merge report origin293/8ahead/0remote-only/clean; normal push293..077 succeeds. Dirty original worktree and concurrent website work untouched; no force push.",
+  "ci": { "run": 37948468016, "attempt": 1, "head": "07743ba7e3feb8f3270286600d7baa24044762b0", "status": "in_progress", "conclusion": null },
+  "publisher": {
+    "fixture": "/tmp/eidolon-20-integrated-publisher-8TuM04vK",
+    "compiler": "Byte-identical qualified publication compiler/locked esbuild0.28.2; actual committed077 source archive plus generated vendor.423modules/3256884bytes/21shared login modules;402of895versioned runtime files.",
+    "expectedSHA256": {
+      "index.html": "e414af42b376716f366e041c8a8efbdfdc4433389a6bc483bf7b5193c2053031",
+      "src/main.js": "14c86a1f17255ae7cf1a2aa9fa4c5fb75454429629d3e826e9fcd5f4e14943a8",
+      "src/core/GameEngine.bundle.js": "bb84145cad0765db273f343ed8331a1fa14088d7dd1ec4dc2e27cb8acdf66229",
+      "src/styles/index.css": "334d82ef6b5810be16a67429e96d3679b25a38e9f5c3e72abbd3f108db1d330f",
+      "release.json": "84674ffb58cfbc65432fcdea5f8ea642be438ee161a84f2baf3c0f34b89e36c5"
+    },
+    "scope": "Five selected transformed files, not all binary assets. Changed head requires a new exact publisher, never reuse historical expectations."
+  },
+  "deliveryGate": "Authorized Luna monitors exact20 run terminal/actionable state sparsely. Root independently accepts own20 CI/jobs/actual native and live scopes/exact public five files/frontend-backend identities/ready DB. Optional skipped steps are not passes. No next public release before this acceptance, no retry/cancel or ongoing soak mutation.",
+  "remaining": "Full modern-world composition, character fit/combat, raised/equipped-party/device qualification,1.80F1-F5,1.81-1.99 and owner/human/rights/operations/beta/launch gates remain open. Scoped polished camps/streets or successful component checks do not complete the goal."
+}
