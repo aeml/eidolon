@@ -51,6 +51,21 @@ test('editable repository is never a publishing destination', async () => {
     await expect(bundleGameEngine(process.cwd())).rejects.toThrow('copied publication tree');
 });
 
+test('publication preserves gameplay class names when separate modules have colliding identifiers', async () => {
+    const root = await fixture();
+    await writeFile(path.join(root, 'src/ui/Skeleton.js'), 'export class Skeleton { constructor(){this.kind="rig";} }');
+    await writeFile(path.join(root, 'src/core/Skeleton.js'), 'export class Skeleton { constructor(){this.kind="enemy";} }');
+    await writeFile(path.join(root, 'src/core/GameEngine.js'),
+        "import {Skeleton as Rig} from '../ui/Skeleton.js'; import {Skeleton as Enemy} from './Skeleton.js'; export class GameEngine { actors(){return [new Rig(),new Enemy()]} }");
+    await bundleGameEngine(root);
+    await versionPagesRuntime(root, 'namesfixture20261009');
+    const entry = pathToFileURL(path.join(root, 'src/main.js')).href;
+    const { stdout } = await execute(process.execPath, ['--input-type=module', '-e',
+        `const login=await import(${JSON.stringify(entry)}); const {GameEngine}=await login.enter();
+        console.log(JSON.stringify(new GameEngine().actors().map(actor=>({kind:actor.kind,name:actor.constructor.name}))));`]);
+    expect(JSON.parse(stdout)).toEqual([{ kind: 'rig', name: 'Skeleton' }, { kind: 'enemy', name: 'Skeleton' }]);
+});
+
 test('linked source tree is rejected without modifying its original', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'eidolon-engine-linked-')); fixtures.push(root);
     await symlink(path.join(process.cwd(), 'src'), path.join(root, 'src'));
