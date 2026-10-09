@@ -1,7 +1,7 @@
 {
   "head": "b6aeee03878760092c4cf323b9668ea6648ec99f",
   "ci": 37911224822,
-  "status": "Pushed; own mandatory CI/native/live/public acceptance pending",
+  "status": "Historical failed14 attempt:37911224822 terminalfailure; neither deployment ran. Corrected0384/CI37913862221 pending separately",
   "prepublication": "Independent exact13/ebdf/run37906851626 acceptance and five public selected hashes/front+back identity/IPv4 TLS/DBready09:24:46Z. Fresh fetch/normal merge068608b4 retains remote and website ancestry, source/art/assets/index/native tests/workflow/compiler unchanged vsqualified3e0b1a1f.384version/pagination checks4.523s. Documentation-onlyb6 commit, second freshfetch/merge already up to date, normalpush/master independently resolves exactb6. No force/reset, original dirty worktree or whole future branch promotion.",
   "fixture": "/tmp/eidolon-14-final-publisher-uqKIAk",
   "build": "Fresh committed index/src/sw/release plus actual locked generated vendor; byte-identical qualified compiler pinned0.28.2, actual publisher.416modules3218768bytes/21shared login modules;402/888files versioned. Earlier068prepublication fixture retained separately; its commit-specific hashes are not finalb6 hashes. Binary assets not copied into this selected-byte fixture; full asset publication is CI responsibility, not certified here.",

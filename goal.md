@@ -18,6 +18,24 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Corrected same-version14 **0384b0a0 /CI37913862221 attempt1** pushed after
+  original37911224822/b6 terminalfailure. Root reproduces472 rejected derivative
+  files, audits exact pinned catalog/source/output hashes and actual old robe
+  shorts expectation. Four focused suites402pass5.030s; updated browser case
+  lint/collection only, execution pending. Runtime/art/assets/publisher bytes
+  unchanged; fresh normal remote reconciliation/master exact0384. Public13
+  remains healthy09:51:11UTC, no failed14 deployment/rollback. Luna exact-run
+  terminal watch; root acceptance before15. New five-file expected publisher:
+  [corrected14](docs/plans/2026-10-09-corrected14-publisher.json).
+  Exact same two QA corrections propagated narrowly to15/fa136fb0,
+  held16/430fdbbf,17/1c036a73,18/2075bb4b,raised148166c6 and future46f123be;
+  original guards/catalog verified byte-identical before selection. No new
+  version, broad future merge or reopened unaffected graphics qualification.
+- Raised branch148166c6 adds opt-in full14-slot equipped Fighter to its existing
+  two-case preview, retaining original world/input/shadow/pixel/resource/frame
+  limits. Linted/collected2cases, not executed/passed natively. Owner asked once
+  whether to cancel actual ongoing Nightly37880032315 consuming~4cores; no
+  answer/cancel yet. Do not stop unrelated services or repeat contended timing.
 - Current-line raised-world preparation now has clean30a0deb0 in owned
   `eidolon-raised-world-rollout-20261009-V4BWRffv`, based on queued18/73f19f60.
   Select only qualified terrain atlas/route into current glyph-equipped map;
@@ -32,10 +50,11 @@ Fighter pilot or remove approved authored models.
 - Queued15 fresh normal fetch/merge now7fe83817 incorporates pushed14/b6;
   runtime/art/assets/index/native tests/workflow/compiler unchanged from
   qualified2bca9889. No unaffected replay.14 still needs own acceptance before15.
-- Pushed **1.79.14 /b6aeee03 /CI37911224822 attempt1** after own13 acceptance,
+- Historical first14 push **b6aeee03 /CI37911224822 attempt1** after own13 acceptance,
   two fresh normal fetch/reconciliations and384metadata checks. Remote resolves
   exactb6; originally qualified art/runtime/native-test/workflow bytes unchanged.
-  Required CI/native/live/public acceptance pending; Luna watches terminal-only.
+  That exact run later fails Client and Browser2; Server/Browser1/Browser3 pass,
+  all downstream native/validation/deploy/live jobs skip. Not accepted/live.
   Actual five-file publisher expectations/416module compiler proof are in
   [14 publisher record](docs/plans/2026-10-09-release1-79-14-publisher.json).
   No15push before own14 acceptance. Future graphics not wholesale promoted.
@@ -319,11 +338,11 @@ qualification never proves a later tree, full visual approval or public rollout.
   | --- | --- | --- |
   | 1.79.12 (accepted) | `eidolon-operations-release-U0VLQ4j8` | `1255aade` |
   | 1.79.13 (accepted) | `eidolon-public-monitor-release-XpKvF87O` | `ebdfd4e8` |
-  | 1.79.14 (pushed, CI pending) | `eidolon-character-dungeon-release-llOMKtuQ` | `b6aeee03` |
-  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `7fe83817` |
-  | 1.79.16 (held candidate; qualified reference54c1634a) | `eidolon-masonry-release-CkTEzcx0` | `1dceefd5` |
-  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `baa610f4` |
-  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `73f19f60` |
+  | 1.79.14 (corrected, CI pending) | `eidolon-character-dungeon-release-llOMKtuQ` | `0384b0a0` |
+  | 1.79.15 | `eidolon-render-current-jdPpzQnN` | `fa136fb0` |
+  | 1.79.16 (held candidate; qualified reference54c1634a) | `eidolon-masonry-release-CkTEzcx0` | `430fdbbf` |
+  | 1.79.17 | `eidolon-air-passage-release-KzBO8WOW` | `1c036a73` |
+  | 1.79.18 | `eidolon-air-cypress-release-20261009` | `2075bb4b` |
 
 - Future graphics: `/home/aeml/.local/share/eidolon-release-1792-wzYSrZ2Y`,
   branch `work/alpha-1-87-floor-current-20261008`. Qualified staged work is not
