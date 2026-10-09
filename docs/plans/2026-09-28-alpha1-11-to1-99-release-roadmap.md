@@ -1,5 +1,17 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October9 bounded High cover QA: root verifies11/e259/run37870274115 failure;
+Server/Client/Smoke2/3 pass, two High quality-switch cases exceed120s twice.
+Downstream deployment skips. Six disjoint four-cover software cases pass10.8m
+on four constrained cores/retries0; union covers all16Water/Fire+8Air sites in
+all twelve phases. All ownership/resource/count/original timeout/budget checks
+remain;19browser-plan cases pass, runtime/version/notes unchanged. Deliberate
+two-core failure retained, not reclassified or physical-device acceptance.
+[Evidence](2026-10-09-regional-cover-partition-checks.json).
+Public10 remains accepted/healthy; fresh normal reconciliation/new11 own
+acceptance before ordered12-16.17Air passage local-only, full scope stays open.
+Earlier pending statements below are historical, not current live acceptance.
+
 October9 corrected11 QA: originalc3a45083/run37867222336 fails premature engine
 reads and two software regional120s cases; deployment skips, public10 healthy.
 Actual transport readiness and controlled import-gap credential receipts pass
