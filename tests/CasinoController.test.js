@@ -11,6 +11,58 @@ const table = { id: 'public-blackjack', name: 'Lanternhold Blackjack', game: 'bl
     seats: [{ x: -4.3, z: 173.2, rotation: Math.PI, exitX: -4.3, exitZ: 174.4 }], minimumPlayers: 1 };
 const seat = { tableId: table.id, seat: 0, sessionId: 'private-token', exitX: -4.3, exitZ: 174.4, ready: false };
 
+test('ordinary world frames never recursively search for the absent casino interior', () => {
+    const { engine, controller } = setup();
+    engine.currentInstanceId = '';
+    const search = jest.spyOn(engine.renderSystem.scene, 'getObjectByName');
+    for (let i = 0; i < 100; i++) controller.beforeUpdate(1 / 60);
+    expect(search).not.toHaveBeenCalled(); controller.dispose();
+});
+
+test('floor references are reused, missing interiors recover, and replaced scenes never retain stale roots', () => {
+    const { engine, controller } = setup(), scene = engine.renderSystem.scene;
+    const search = jest.spyOn(scene, 'getObjectByName');
+    controller.beforeUpdate(1 / 60); expect(search).toHaveBeenCalledTimes(1);
+    const makeInterior = () => {
+        const interior = new THREE.Group(); interior.name = 'lanternhold-casino-interior';
+        interior.userData.floors = { public: new THREE.Group(), vip: new THREE.Group() };
+        return interior;
+    };
+    const interior = makeInterior(), wrapper = new THREE.Group(); wrapper.add(interior); scene.add(wrapper);
+    controller.beforeUpdate(1 / 60); expect(search).toHaveBeenCalledTimes(2);
+    for (let i = 0; i < 100; i++) controller.beforeUpdate(1 / 60);
+    expect(search).toHaveBeenCalledTimes(2);
+    controller.floor = 'vip'; controller.beforeUpdate(1 / 60);
+    expect(interior.userData.floors.vip.visible).toBe(true); expect(interior.userData.floors.public.visible).toBe(false);
+    engine.currentInstanceId = ''; controller.beforeUpdate(1 / 60);
+    expect(interior.userData.floors.vip.visible).toBe(false); expect(interior.userData.floors.public.visible).toBe(true);
+    expect(search).toHaveBeenCalledTimes(2);
+    // An ancestor detached from the current scene invalidates the reference.
+    wrapper.removeFromParent(); engine.currentInstanceId = 'lanternhold-casino';
+    const replacement = makeInterior(); scene.add(replacement); controller.beforeUpdate(1 / 60);
+    expect(controller.interiorRoot).toBe(replacement); expect(search).toHaveBeenCalledTimes(3);
+    const newScene = new THREE.Scene(), newest = makeInterior(); newScene.add(newest);
+    engine.renderSystem.scene = newScene; controller.beforeUpdate(1 / 60);
+    expect(controller.interiorRoot).toBe(newest);
+    controller.dispose(); expect(controller.interiorRoot).toBeNull(); expect(controller.shellRoot).toBeNull();
+});
+
+test('door hover reuses its owned shell and reacquires the door after shell replacement', () => {
+    const { engine, controller } = setup(); engine.currentInstanceId = '';
+    engine.inputManager.mouse = new THREE.Vector2();
+    const shell = new THREE.Group(); shell.name = 'lanternhold-casino-shell';
+    const door = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial()); shell.userData.casinoDoor = door; shell.add(door);
+    engine.renderSystem.scene.add(shell);
+    const search = jest.spyOn(engine.renderSystem.scene, 'getObjectByName');
+    jest.spyOn(controller.raycaster, 'intersectObject').mockReturnValue([{ object: door }]);
+    for (let i = 0; i < 100; i++) expect(controller.updateDoorHover().dungeonName).toBe('Lanternhold Casino');
+    expect(search).toHaveBeenCalledTimes(1);
+    shell.removeFromParent(); const replacement = shell.clone(); replacement.userData.casinoDoor = replacement.children[0];
+    engine.renderSystem.scene.add(replacement); controller.updateDoorHover();
+    expect(controller.hoveredDoor).toBe(replacement.children[0]); expect(search).toHaveBeenCalledTimes(2);
+    controller.dispose(); door.geometry.dispose(); door.material.dispose();
+});
+
 test('authored seating is reapplied after animation and restored on exit or mesh replacement', () => {
     const { engine, controller } = setup();
     const make = () => {
