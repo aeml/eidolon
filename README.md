@@ -429,7 +429,13 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.19`, combined town and regional refinement:
+- Current source version: `Alpha 1.79.20`, grounded pilgrim camp dressing:
+  folded bedrolls meet the ground, hearth stones and stacked firewood make
+  physical contact, and charcoal and compacted footpaths follow all fifteen
+  actual rotated camps. Ground wear reuses the existing texture mask; no decals,
+  extra draws, textures or per-frame work. Earlier regional qualification is
+  retained, not a claim of complete world art or equipped-party performance.
+  Retains combined town and regional refinement:
   grounded folded tents, filtered cloth, finer soil, varied growth habits,
   worn basalt supports, quieter Fire ground and curved lore books. Reuse
   frame-local foliage restoration arrays without dropping scenery. Original

@@ -45,8 +45,7 @@ export function sampleLanternholdGround(x, z) {
         const distance = Math.hypot((x - court.x) / court.rx, (z - court.z) / court.rz);
         paving = Math.max(paving, 1 - smooth(.8, 1.15, distance + weather * .025));
     }
-    const damp = (1 - traffic) * (.35 + .25 * weather);
-    let hearth = 0;
+    let hearth = 0, campTraffic = 0;
     for (const camp of CAMPS) {
         const dx = x - camp.x, dz = z - camp.z;
         // Skip distant sites before rotating into their local hearth space.
@@ -55,8 +54,20 @@ export function sampleLanternholdGround(x, z) {
         const lz = dx * camp.sin + dz * camp.cos;
         const distance = Math.hypot(lx - 2.35, lz - 1.9);
         hearth = Math.max(hearth, 1 - smooth(.35, 1.8 + weather * .12, distance));
+        // Wear follows the tent entrance and the walk to its actual hearth,
+        // not a repeated circle around every prop. Bake into the existing
+        // traffic channel; preserve roads, paving, geometry and navigation.
+        // Canvas is centred at(-.55,-.45), with its opening1.47m forward.
+        const tentDistance = Math.hypot((lx + .55) / 1.7, (lz + .45) / 2.1);
+        const pathX = 2.9, pathZ = .88;
+        const t = clamp(((lx + .55) * pathX + (lz - 1.02) * pathZ) / (pathX * pathX + pathZ * pathZ));
+        const pathDistance = Math.hypot(lx + .55 - pathX * t, lz - 1.02 - pathZ * t);
+        campTraffic = Math.max(campTraffic, 1 - smooth(.68, 1.15, tentDistance),
+            1 - smooth(.3, .95 + weather * .05, pathDistance));
     }
-    return { paving, traffic, damp, hearth };
+    traffic = Math.max(traffic, campTraffic * .72);
+    const damp = (1 - traffic) * (.35 + .25 * weather);
+    return { paving, traffic, damp, hearth, campTraffic };
 }
 
 export function createTownCompositionMask(quality = 'high') {

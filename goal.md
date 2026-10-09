@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October9 current checkpoint (supersedes older pending entries below):**
+Public18/81702abb accepted after all ten CI jobs and exact public bytes/healthy
+identities. Original19/fa47 CI fails stale camp admin vertical data and does not
+deploy; corrected19/293fbfa1/CI37941972587 is running, own final acceptance still
+required. Private20 groups grounded bedroll/hearth/firewood, charcoal and
+compacted tent-to-hearth paths, retaining all fifteen placements/nine batches.
+Focused checks and equipped native High/Low town views pass; not pushed.
+Current raised four-class one-renderer saves pass, but its busy-host party
+timing is diagnostic, not performance acceptance. Full modern art, raised
+activation/equipped-party/device,1.80 F1-F5,1.81-1.99 and owner/human/rights/
+operations/beta/launch requirements remain active. No whole-future-branch
+promotion, overlapping push, account wipe or public terrain-profile change.
+
 **October9 publication-only startup bundle:** dc7/run37879564669 attempt1
 fails external deployment SSH; one failed-job-only retry deploys but attempt2
 fails mandatory live engine-module entry. Nginx records two release-matched

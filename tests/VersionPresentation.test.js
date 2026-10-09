@@ -4,7 +4,19 @@ import path from 'path';
 import { buildBrowserSmokePlan } from '../scripts/browser-smoke-plan.mjs';
 
 const repoRoot = path.resolve(process.cwd());
-const currentVersion = '1.79.19';
+const currentVersion = '1.79.20';
+
+test('1.79.20 records grounded camp dressing without claiming complete world or party acceptance', () => {
+    const html = readIndexWithPatchHistory();
+    const start = html.indexOf('data-version="1.79.20"'), previous = html.indexOf('data-version="1.79.19"');
+    expect(start).toBeGreaterThanOrEqual(0); expect(start).toBeLessThan(previous);
+    for (const text of ['folded leather bedrolls', 'firewood stacks physically', 'actual rotated hearth',
+        'compacted ground', 'existing ground mask', 'no decals', '15 camp placements',
+        'nine material batches', '3,300 raw triangles', 'not final modern-world art',
+        'equipped-party', 'Raised terrain remains disabled by default', 'saved progress remain unchanged',
+        'Full prior patch history', 'ten notes initially', 'Load more notes'])
+        expect(html.slice(start, previous)).toContain(text);
+});
 
 test('1.79.19 records combined grounded scenery without claiming full-world or party acceptance', () => {
     const html = readIndexWithPatchHistory();

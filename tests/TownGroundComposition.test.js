@@ -3,6 +3,23 @@ import { createTownCompositionMask, sampleLanternholdGround } from '../src/art/T
 import { createProceduralTerrainMaterial } from '../src/art/ProceduralRealmTerrain.js';
 import { createLanternholdCampPlacements } from '../src/art/ProceduralLanternholdArchitecture.js';
 
+test('compacted camp ground follows tent entrances and their real rotated hearth paths', () => {
+    for (const camp of createLanternholdCampPlacements(0, 200)) {
+        const point = (x, z) => [camp.x + Math.cos(camp.rotation) * x + Math.sin(camp.rotation) * z,
+            camp.z - Math.sin(camp.rotation) * x + Math.cos(camp.rotation) * z];
+        for (const local of [[-.55, -.45], [-.55, 1.02], [.9, 1.46], [2.35, 1.9]]) {
+            const sample = sampleLanternholdGround(...point(...local));
+            expect(sample.campTraffic).toBe(1);
+            expect(sample.traffic).toBeGreaterThanOrEqual(.72);
+            expect(sample.damp).toBeLessThanOrEqual(.28 * .6);
+        }
+        expect(sampleLanternholdGround(...point(-3.5, -3.5)).campTraffic).toBe(0);
+        expect(sampleLanternholdGround(...point(4.35, 1.9)).campTraffic).toBe(0);
+    }
+    for (const [x, z] of [[0, 200], [-28, 210], [0, 182], [23, 166]])
+        expect(sampleLanternholdGround(x, z).campTraffic).toBe(0);
+});
+
 test('charcoal wear follows every actual rotated camp hearth and leaves service paths unchanged', () => {
     const camps = createLanternholdCampPlacements(0, 200);
     for (const camp of camps) {
