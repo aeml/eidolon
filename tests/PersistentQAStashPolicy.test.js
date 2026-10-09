@@ -9,9 +9,28 @@ test('storage preserves invested/rare gear rather than expanding the sale policy
     expect(state.inventory[0]).toBe(item);
     expect(state.stash).toEqual([]);
 });
+test.each([['NECK', 'neck'], ['GLOVES', 'gloves']])(
+    'canonical %s equipment remains eligible for reversible storage', (type, slot) => {
+        const item = Object.freeze({ ...gear('legacy-spare'), type, slot });
+        const state = { inventory: [item], equipment: {}, stash: [] };
+        expect(planPersistentQAStashSpare(state)).toEqual({ index: 0, item });
+        expect(state.inventory[0]).toBe(item);
+        expect(state.stash).toEqual([]);
+    }
+);
+test('a full gem/material bag with canonical neck and glove spares can free a slot', () => {
+    const inventory = Array.from({ length: 20 }, (_, index) => ({
+        id: `valuable-${index}`, type: 'GEM', slot: 'gem', stack: 25, maxStack: 99
+    }));
+    inventory.push(...Array.from({ length: 5 }, (_, index) => ({
+        ...gear(`spare-${index}`), type: index < 2 ? 'NECK' : 'GLOVES', slot: index < 2 ? 'neck' : 'gloves'
+    })));
+    expect(planPersistentQAStashSpare({ inventory, equipment: {}, stash: Array(9).fill(null) }))
+        .toEqual({ index: 20, item: inventory[20] });
+});
 test.each([
     { id: 'chronicle-item-story' }, { type: 'RELIC' }, { type: 'MATERIAL' },
-    { slot: 'unknown' }, { maxStack: 99 }, { stack: 2 }
+    { slot: 'unknown' }, { type: undefined }, { maxStack: 99 }, { stack: 2 }
 ])('quests, unknown gear and stack-merging cases are not moved: %j', extra => {
     expect(planPersistentQAStashSpare({ inventory: [{ ...gear('spare'), ...extra }], equipment: {}, stash: [] })).toBeNull();
 });
