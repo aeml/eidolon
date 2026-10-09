@@ -18,6 +18,21 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- **Current11 delivery gate failed:** root independently confirms exact
+  8a/run37874149991 terminal failure after Luna notice. Nine jobs green, live
+  authenticated entry fails before an engine/state/socket is observable; Water
+  entry flaky, six cases including Verdant dungeon pass. Later recovery skipped.
+  Public11 is deployed/HTTP healthy, not accepted; public10 is the last accepted
+  release, not the currently served version. No later publication authorized.
+  Actual anonymous public engine import/constructor succeeds887.7/74.9ms; not
+  authenticated gameplay or root-cause proof. Local diagnostic commit0460b1d9
+  records only safe constant startup phase/category;15units and three real
+  synthetic-auth main.js failure paths pass. Not pushed or a fix claim.
+  [Failure and diagnostics](docs/plans/2026-10-09-live11-startup-diagnosis-checks.json).
+  Next: identify actual startup cause with bounded diagnostic evidence, qualify
+  correction, truthful11 notes/fresh remote reconciliation, then own CI/public
+  acceptance before12-17. Earlier pending/precheck statements are historical.
+
 - All local12-17 now normally inherit freshly fetched8a through predecessor
   merges:630d7b9c/53bacc3d/e40fe2fd/86b69a38/e4cc23d4/a6e52157.
   Independently tracked-clean/ancestor/range checks preserve every runtime,
@@ -526,7 +541,9 @@ and its evidence remains. No cancellation question is currently outstanding.
 Luna monitors each new deployment read-only until terminal completion; an
 observation timeout is not a failure or authority to retry/cancel.
 
-1. Accept or diagnose exact11/8a57420e/run37874149991, then fresh-fetch/normal
+1. Diagnose terminal failed11/8a57420e/run37874149991 using local0460b1d9 safe
+   startup diagnostics; qualify correction and truthful notes before any new
+   current11 publication. Then require own CI/public acceptance and fresh-fetch/normal
    reconcile and individually publish/accept prepared12-17 in order.17is locally
    qualified, not live. Continue broader modern-world cohesion work while CI runs.
    Never promote the entire future branch or overlap release pushes.

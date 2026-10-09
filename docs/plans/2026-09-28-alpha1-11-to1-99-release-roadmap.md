@@ -1,5 +1,17 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+**Current11 gate failed:** root verifies8a/run37874149991 terminal failure;
+nine jobs green, live authenticated entry fails before observable engine/state,
+Water case flaky and six others including Verdant dungeon pass. Subsequent
+recovery skipped. Public11 deployed/HTTP healthy, not accepted;10last accepted
+is historical, not current public version. No later push. Anonymous actual
+public import/constructor passes, not auth/root-cause proof. Local0460b1d9 safe
+startup diagnostics pass15units/three synthetic-auth failure cases; not pushed
+or a claimed fix. [Evidence](2026-10-09-live11-startup-diagnosis-checks.json).
+Identify actual cause, qualify correction/truthful11 notes/fresh remote merge,
+then own CI/public acceptance before12-17. Full original scope remains active.
+Earlier pending/precheck statements below remain historical.
+
 October9 normal fresh8a reconciliation rolls through local12-17; all runtime,
 assets/current labels/complete histories/dependencies unchanged.17 QA conflict
 resolution preserves exact qualified fixture. Public11 front/back/DB/clean
