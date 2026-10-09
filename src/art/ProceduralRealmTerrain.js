@@ -32,7 +32,9 @@ export const PROCEDURAL_TERRAIN_DEFINITIONS = Object.freeze({
     air: terrainDefinition(
         'stormcrown-slate', 'air', 'Stormcrown Reach',
         'wind-scoured fractured slate, shallow riven faces, interrupted mineral bedding, and pale scree deposits', 0xc3841dd9,
-        { roughness: 0.93, metalness: 0.03, repeat: [68, 54], tint: 0xd1cdd8 }
+        // A roughly nine-metre tile keeps flakes/dust at ground-material
+        // scale, rather than stretching one washboard field across the view.
+        { roughness: 0.93, metalness: 0.03, repeat: [224, 176], tint: 0xd1cdd8 }
     ),
     ocean: terrainDefinition(
         'eidolic-blackwater', 'water', 'The Eidolic Deep',

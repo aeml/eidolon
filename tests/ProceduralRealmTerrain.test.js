@@ -6,10 +6,25 @@ import {
     getProceduralTerrainMetrics
 } from '../src/art/ProceduralRealmTerrain.js';
 import { getRegionTheme } from '../src/art/darkFantasyTheme.js';
+import { WORLD_REGIONS } from '../src/data/worldGeography.js';
 
 const TERRAIN_KEYS = Object.freeze(['earth', 'town', 'water', 'fire', 'air', 'ocean', 'sky']);
 
 describe('procedural dark-fantasy realm terrain', () => {
+    test('Air slate uses ground-material scale rather than view-sized bedding', () => {
+        const { minX, maxX, minZ, maxZ } = WORLD_REGIONS.air;
+        const repeat = PROCEDURAL_TERRAIN_DEFINITIONS.air.surface.repeat;
+        const tile = [(maxX - minX - 1.5) / repeat[0], (maxZ - minZ - 1.5) / repeat[1]];
+        for (const span of tile) {
+            expect(span).toBeGreaterThan(8);
+            expect(span).toBeLessThan(10);
+        }
+        // Eight seeded fracture cells per tile: exposed flakes are roughly
+        // a metre across, not the size of a building or the whole play view.
+        expect(tile[0] / 8 * .38 * 2).toBeGreaterThan(.8);
+        expect(tile[0] / 8 * .78 * 2).toBeLessThan(1.8);
+    });
+
     test.each(['town', 'earth', 'water', 'fire', 'air'])('%s relief and roughness are deterministic, linear and registered across quality', (key) => {
         const high = createProceduralTerrainMaterial(key);
         const duplicate = createProceduralTerrainMaterial(key);
