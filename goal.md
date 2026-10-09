@@ -18,6 +18,19 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Fresh public Firefox login/pagination case passes5.4s: interactive login,
+  ten initial entries, no eager archive/game dependencies, one requested page
+  adds the next ten. Strict HTTPS unchanged; anonymous only. Public13 identity
+  and backend ready database independently rechecked this turn.
+- Current16 **6c242a1c** selects existing17 exact decimal RAF subtraction and
+  identical11 boundary tests (pass0.434s). Actual excesses still fail unchanged
+  budgets; no rounding/tolerance/runtime change. Candidate remains held pending
+  fresh timed qualification, not a reclassification of historical failure.
+- Fire populated native High/Low review now2pass24.1s/22views each; picking/
+  clearance preserved and draw/triangle maxima remain inside original limits.
+  Timed profiling off, no FPS acceptance. Canonical narrow Fire selection
+  separately15 selected tests pass17.245s/31unselected. See candidate receipt.
+
 - Same-version14 test-only correction **90fca2f1 /CI37918281583** pushed after
   fresh fetch/normal merge. Luna monitors terminal results; root must verify
   deployment before15. Actual five-file publisher bytes are retained in the
