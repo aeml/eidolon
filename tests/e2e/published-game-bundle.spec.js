@@ -1,0 +1,72 @@
+import { expect, test } from '@playwright/test';
+import { cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
+import { createServer } from 'node:http';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { bundleGameEngine } from '../../scripts/bundle-game-engine.mjs';
+import { versionPagesRuntime } from '../../scripts/version-pages-runtime.mjs';
+import { collectBrowserFailures } from './helpers.js';
+
+const release = 'bundlefixture20261009';
+let root, server, origin, metadata;
+test.beforeAll(async () => {
+    root = await mkdtemp(path.join(tmpdir(), 'eidolon-published-engine-'));
+    for (const filename of ['src', 'assets', 'vendor', 'index.html', 'release.json', 'sw.js'])
+        await cp(path.resolve(filename), path.join(root, filename), { recursive: true });
+    metadata = await bundleGameEngine(root);
+    await versionPagesRuntime(root, release);
+    const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
+        '.ttf': 'font/ttf', '.glb': 'model/gltf-binary', '.png': 'image/png', '.svg': 'image/svg+xml', '.webp': 'image/webp' };
+    server = createServer(async (request, response) => {
+        const pathname = new URL(request.url, 'http://localhost').pathname;
+        const filename = path.resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
+        if (!filename.startsWith(`${root}${path.sep}`)) { response.writeHead(403).end(); return; }
+        try {
+            if (!(await stat(filename)).isFile()) throw new Error('Not a file');
+            response.writeHead(200, { 'Content-Type': types[path.extname(filename)] || 'application/octet-stream',
+                'Cache-Control': 'no-store' });
+            response.end(await readFile(filename));
+        } catch { response.writeHead(404).end(); }
+    });
+    await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+    origin = `http://127.0.0.1:${server.address().port}`;
+});
+test.afterAll(async () => {
+    if (server) await new Promise(resolve => server.close(resolve));
+    if (root) await rm(root, { recursive: true, force: true });
+});
+
+test('actual published engine stays lazy at login and constructs each class from the bounded module graph', async ({ page }) => {
+    const failures = collectBrowserFailures(page, origin), modules = new Set();
+    page.on('request', request => {
+        const url = new URL(request.url());
+        if (url.pathname.endsWith('.js')) modules.add(url.pathname);
+    });
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    await expect(page.locator('#auth-username')).toBeVisible();
+    expect([...modules].some(file => file.includes('GameEngine') || file.includes('/vendor/three/'))).toBe(false);
+    const loginModules = new Set([...modules].filter(file => file.startsWith('/src/')));
+    const result = await page.evaluate(async release => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const result = [];
+        for (const character of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
+            const game = new GameEngine(character, false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+            try {
+                result.push({ character, renderer: Boolean(game.renderSystem?.renderer),
+                    network: Boolean(game.network), ui: Boolean(game.uiManager) });
+            } finally { game.destroy(); }
+        }
+        return result;
+    }, release);
+    expect(result).toEqual(['Fighter', 'Rogue', 'Wizard', 'Cleric'].map(character =>
+        ({ character, renderer: true, network: true, ui: true })));
+    expect(metadata.bundledModules).toBeGreaterThan(350);
+    // Shared login imports retain their one module instance; independent game
+    // entities/UI/art/data arrive through one bundle, not hundreds of requests.
+    const applicationModules = [...modules].filter(file => file.startsWith('/src/'));
+    expect(applicationModules.filter(file => !loginModules.has(file)))
+        .toEqual(['/src/core/GameEngine.bundle.js']);
+    expect(applicationModules).toContain('/src/core/GameEngine.bundle.js');
+    expect(applicationModules.some(file => file.startsWith('/src/entities/'))).toBe(false);
+    expect(failures, failures.join('\n')).toEqual([]);
+});
