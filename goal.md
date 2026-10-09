@@ -18,6 +18,21 @@ Fighter pilot or remove approved authored models.
 
 ## Current verified state — October 9, 2026
 
+- Current14 CI37918281583 now passes hosted gates, mandatory native predeploy,
+  release-input validation and both deployments. Native6regional/1celebration/
+  2equipment and4isolated smoke pass, including actual manual inventory pickup.
+  Final live-character job113788452137 still running; not accepted before it
+  finishes and exact public files/backend are verified.15 remains queued.
+- Prepared15 **0ac75025** freshly retains pushed14, unchanged qualified runtime
+  after merge;385 version/history checks pass3.632s. Actual publisher418modules
+  and five expected bytes are in the ready15 receipt; not pushed/live.
+- Staged book-prop refinement **aa7455a7** on raised current and **ce80fc70**
+  here shapes folded pages/writing on three evidence landmarks, eight fewer
+  mesh submissions each with no new maps/materials or collider changes.
+  35 geometry/site checks pass2.568s; native15-landmark plus populated High/Low
+  cases pass34s, final normal-only gallery4.4s. Close-up shading/detail remains
+  a final art-review gap. Queued releases untouched; see candidate receipt.
+
 - Fresh public Firefox login/pagination case passes5.4s: interactive login,
   ten initial entries, no eager archive/game dependencies, one requested page
   adds the next ten. Strict HTTPS unchanged; anonymous only. Public13 identity
