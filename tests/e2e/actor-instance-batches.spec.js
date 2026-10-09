@@ -142,16 +142,20 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural
         capture(false); capture(true);
         let image, failureRestored = false;
         try {
-            for (const state of ['Idle', 'Run', 'Attack', 'Cast', 'Death', 'Stealth', 'FarRealmIdle']) {
+            for (const state of ['Idle', 'Run', 'Attack', 'Cast', 'Death', 'Stealth', 'FarRealmIdle', 'StretchedAttack']) {
                 // Real instance coordinates are far from town. Compare both
                 // paths there too, without masking position precision errors.
                 const offset = state === 'FarRealmIdle' ? new THREE.Vector3(50000, 0, 20000) : new THREE.Vector3();
-                models.forEach(({ mesh, position }) => mesh.position.copy(position).add(offset));
+                models.forEach(({ mesh, position }) => {
+                    mesh.position.copy(position).add(offset);
+                    mesh.scale.set(...(state === 'StretchedAttack' ? [1.7, .8, 1.1] : [1, 1, 1]));
+                });
                 floor.position.copy(offset);
                 render.setCameraTarget(offset.clone().add(new THREE.Vector3(0, 1, 0)));
                 render.updateEnvironmentLighting(offset, 0);
                 const mixers = models.map(({ mesh }) => {
-                    const mixer = new THREE.AnimationMixer(mesh), clip = mesh.userData.animations.find(clip => clip.name === (['Stealth', 'FarRealmIdle'].includes(state) ? 'Idle' : state));
+                    const animation = state === 'StretchedAttack' ? 'Attack' : ['Stealth', 'FarRealmIdle'].includes(state) ? 'Idle' : state;
+                    const mixer = new THREE.AnimationMixer(mesh), clip = mesh.userData.animations.find(clip => clip.name === animation);
                     mixer.clipAction(clip).play(); mixer.update(.37); return mixer;
                 });
                 const rogues = models.filter(model => model.type === 'Rogue');
@@ -169,7 +173,9 @@ for (const quality of ['high', 'low']) test(`${quality}: ten equipped procedural
                     visibilityRestored: [...visibility].every(([part, visible]) => part.visible === visible) });
                 if (state === 'Stealth') rogues.forEach(restoreActorStealthAppearance);
                 mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); });
-                models.forEach(({ mesh, position }) => { mesh.userData.resetPose(); mesh.position.copy(position); });
+                models.forEach(({ mesh, position }) => {
+                    mesh.userData.resetPose(); mesh.position.copy(position); mesh.scale.set(1, 1, 1);
+                });
             }
             floor.position.set(0, 0, 0);
             render.setCameraTarget(new THREE.Vector3(0, 1, 0));
