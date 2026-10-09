@@ -13,10 +13,13 @@ vec2 woodlandBend() {
     vec2 direction = normalize(vec2(.86, .5));
     #ifdef USE_INSTANCING
         anchor = (modelMatrix * instanceMatrix * vec4(0., 0., 0., 1.)).xyz;
-        // Rotate the common breeze into each randomly rotated plant's local
-        // frame. Uniform instance scale is retained by the ordinary pipeline.
-        direction = vec2(dot(normalize(instanceMatrix[0].xz), direction),
-                         dot(normalize(instanceMatrix[2].xz), direction));
+        // Undo horizontal stretch as well as rotation. Different growth habits
+        // must still share one breeze; retain the original maximum wind reach.
+        vec2 woodlandStretch = vec2(length(instanceMatrix[0].xz), length(instanceMatrix[2].xz));
+        vec2 woodlandSafeStretch = max(woodlandStretch, vec2(.001));
+        direction = vec2(dot(instanceMatrix[0].xz / woodlandSafeStretch.x, direction),
+                         dot(instanceMatrix[2].xz / woodlandSafeStretch.y, direction));
+        direction *= min(woodlandStretch.x, woodlandStretch.y) / woodlandSafeStretch;
     #endif
     float phase = dot(anchor.xz, vec2(.09, .055));
     float gust = .65 + .35 * sin(woodlandTime * .3141592654 - phase * .3);
@@ -49,7 +52,7 @@ export function createWoodlandWindMaterial({ now = () => performance.now() / 100
             .replace('#include <begin_vertex>', `#include <begin_vertex>
                 transformed.xz += woodlandOffset * woodlandHeight * woodlandHeight;`);
     };
-    material.customProgramCacheKey = () => 'woodland-rooted-wind-v1';
+    material.customProgramCacheKey = () => 'woodland-rooted-wind-v2';
     material.userData.woodlandWind = true;
     return material;
 }
