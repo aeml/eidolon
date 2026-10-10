@@ -1,0 +1,757 @@
+{
+  "recordedUTC": "2026-10-10T23:05:39.105689+00:00",
+  "source": "9fe14c1999036780740e9f6c51e23b4fe7f9c0ae",
+  "runtime": "1f87c0b7",
+  "runtimeSHA256": {
+    "src/art/ProceduralLanternholdArchitecture.js": "849132f0c1e33b3b16e652cc77ab328a50dea2bdc57f0b83dbc9c5d82e29a3d8",
+    "src/world/WorldGenerator.js": "a1d9fa0147d5e59a87ded9b4bd9cae0892e5d6402868f08aec59fa1cd38e5b63",
+    "src/core/GameEngine.js": "377d01faa52f643f10f1ac974a3e9d755987c09a8982fb0a0dca15788cb74110",
+    "src/core/GameEngineNetworkMessages.js": "f050f3734a50ccded9a9db607bfc132c0ab37b29bd9c97a394ce242dd59794aa"
+  },
+  "selectedIntoHeld": false,
+  "public": false,
+  "focused": {
+    "uniquePassed": 52,
+    "unchangedExistingPassed": 48,
+    "newPassed": 4,
+    "initialHarnessFailure": "50passed/1failed because QA called nonexistent WorldGenerator.dispose; product unchanged; corrected4new checks pass"
+  },
+  "native": {
+    "stats": {
+      "total": 2,
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "maxRetry": 0
+  },
+  "nativeCases": [
+    {
+      "quality": "high",
+      "exactRGBComparisons": 21,
+      "referenceAgainExact": true,
+      "camps": 15,
+      "materialBuckets": 9,
+      "ownedBytes": 171552,
+      "lifetimes": [
+        {
+          "cycle": 0,
+          "baseline": {
+            "geometries": 19,
+            "textures": 18
+          },
+          "during": {
+            "geometries": 28,
+            "textures": 36
+          },
+          "after": {
+            "geometries": 19,
+            "textures": 18
+          }
+        },
+        {
+          "cycle": 1,
+          "baseline": {
+            "geometries": 19,
+            "textures": 18
+          },
+          "during": {
+            "geometries": 28,
+            "textures": 36
+          },
+          "after": {
+            "geometries": 19,
+            "textures": 18
+          }
+        },
+        {
+          "cycle": 2,
+          "baseline": {
+            "geometries": 19,
+            "textures": 18
+          },
+          "during": {
+            "geometries": 28,
+            "textures": 36
+          },
+          "after": {
+            "geometries": 19,
+            "textures": 18
+          }
+        },
+        {
+          "cycle": 3,
+          "baseline": {
+            "geometries": 19,
+            "textures": 18
+          },
+          "during": {
+            "geometries": 28,
+            "textures": 36
+          },
+          "after": {
+            "geometries": 19,
+            "textures": 18
+          }
+        }
+      ],
+      "centerControl": {
+        "view": {
+          "label": "town-center",
+          "x": -1.25,
+          "z": 200,
+          "zoom": 15
+        },
+        "reference": {
+          "calls": 32,
+          "triangles": 39017
+        },
+        "candidate": {
+          "calls": 23,
+          "triangles": 8109
+        },
+        "changedRGB": 0,
+        "unstableRGB": 0,
+        "maximumChannelError": 0
+      }
+    },
+    {
+      "quality": "low",
+      "exactRGBComparisons": 21,
+      "referenceAgainExact": true,
+      "camps": 15,
+      "materialBuckets": 9,
+      "ownedBytes": 171552,
+      "lifetimes": [
+        {
+          "cycle": 0,
+          "baseline": {
+            "geometries": 18,
+            "textures": 4
+          },
+          "during": {
+            "geometries": 27,
+            "textures": 22
+          },
+          "after": {
+            "geometries": 18,
+            "textures": 4
+          }
+        },
+        {
+          "cycle": 1,
+          "baseline": {
+            "geometries": 18,
+            "textures": 4
+          },
+          "during": {
+            "geometries": 27,
+            "textures": 22
+          },
+          "after": {
+            "geometries": 18,
+            "textures": 4
+          }
+        },
+        {
+          "cycle": 2,
+          "baseline": {
+            "geometries": 18,
+            "textures": 4
+          },
+          "during": {
+            "geometries": 27,
+            "textures": 22
+          },
+          "after": {
+            "geometries": 18,
+            "textures": 4
+          }
+        },
+        {
+          "cycle": 3,
+          "baseline": {
+            "geometries": 18,
+            "textures": 4
+          },
+          "during": {
+            "geometries": 27,
+            "textures": 22
+          },
+          "after": {
+            "geometries": 18,
+            "textures": 4
+          }
+        }
+      ],
+      "centerControl": {
+        "view": {
+          "label": "town-center",
+          "x": -1.25,
+          "z": 200,
+          "zoom": 15
+        },
+        "reference": {
+          "calls": 10,
+          "triangles": 19742
+        },
+        "candidate": {
+          "calls": 1,
+          "triangles": 2
+        },
+        "changedRGB": 0,
+        "unstableRGB": 0,
+        "maximumChannelError": 0
+      }
+    }
+  ],
+  "publication": {
+    "publication": {
+      "stats": {
+        "total": 3,
+        "expected": 3,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "evidence": [
+        {
+          "quality": "high",
+          "result": {
+            "enabled": true,
+            "groups": 5,
+            "extension": true,
+            "restored": true,
+            "draws": 104,
+            "singletons": true,
+            "orcPackedMeshes": 23,
+            "orcPackedSurfaces": true,
+            "campAutomaticallySelected": true,
+            "campCount": 15,
+            "campBuckets": 9,
+            "campBatched": true,
+            "campGeometryDisposals": 9,
+            "campTextureDisposals": 18,
+            "disposed": true
+          },
+          "engineSHA256": "d058ed87d8f481329042a27530df589044fbe307d9456457040f7b53d6a46542"
+        },
+        {
+          "quality": "low",
+          "result": {
+            "enabled": true,
+            "groups": 5,
+            "extension": true,
+            "restored": true,
+            "draws": 58,
+            "singletons": true,
+            "orcPackedMeshes": 23,
+            "orcPackedSurfaces": true,
+            "campAutomaticallySelected": true,
+            "campCount": 15,
+            "campBuckets": 9,
+            "campBatched": true,
+            "campGeometryDisposals": 9,
+            "campTextureDisposals": 18,
+            "disposed": true
+          },
+          "engineSHA256": "d058ed87d8f481329042a27530df589044fbe307d9456457040f7b53d6a46542"
+        }
+      ]
+    },
+    "publication-visible": {
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "evidence": [
+        {
+          "quality": "high",
+          "result": {
+            "enabled": true,
+            "groups": 5,
+            "extension": true,
+            "restored": true,
+            "draws": 60,
+            "actorDraws": 104,
+            "campCalls": 18,
+            "campTriangles": 7836,
+            "singletons": true,
+            "orcPackedMeshes": 23,
+            "orcPackedSurfaces": true,
+            "campAutomaticallySelected": true,
+            "campCount": 15,
+            "campBuckets": 9,
+            "campBatched": true,
+            "campGeometryDisposals": 9,
+            "campTextureDisposals": 18,
+            "disposed": true
+          },
+          "engineSHA256": "d058ed87d8f481329042a27530df589044fbe307d9456457040f7b53d6a46542"
+        },
+        {
+          "quality": "low",
+          "result": {
+            "enabled": true,
+            "groups": 5,
+            "extension": true,
+            "restored": true,
+            "draws": 20,
+            "actorDraws": 58,
+            "campCalls": 9,
+            "campTriangles": 2580,
+            "singletons": true,
+            "orcPackedMeshes": 23,
+            "orcPackedSurfaces": true,
+            "campAutomaticallySelected": true,
+            "campCount": 15,
+            "campBuckets": 9,
+            "campBatched": true,
+            "campGeometryDisposals": 9,
+            "campTextureDisposals": 18,
+            "disposed": true
+          },
+          "engineSHA256": "d058ed87d8f481329042a27530df589044fbe307d9456457040f7b53d6a46542"
+        }
+      ]
+    }
+  },
+  "publicationEngineSHA256": "d058ed87d8f481329042a27530df589044fbe307d9456457040f7b53d6a46542",
+  "actual": {
+    "low": {
+      "terminal": {
+        "source": "07e54f950498b3c8ad46f7436063e75afa9dfccb",
+        "quality": "low",
+        "exitCode": 0,
+        "startedUnix": 1791672976.2231643,
+        "finishedUnix": 1791673092.592024
+      },
+      "native": {
+        "stats": {
+          "total": 2,
+          "expected": 1,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": true
+        },
+        "maxRetry": 0
+      },
+      "routeFrames": 431,
+      "routeObservations": 49,
+      "routeProfiles": [
+        {
+          "label": "town-start",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 163,
+            "trianglesMedian": 83366,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "activeEntitiesMin": 161,
+            "activeEntitiesMax": 162
+          }
+        },
+        {
+          "label": "earth-road",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 91,
+            "trianglesMedian": 36071,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "activeEntitiesMin": 77,
+            "activeEntitiesMax": 77
+          }
+        },
+        {
+          "label": "woodland-cut",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 118,
+            "trianglesMedian": 45021,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "activeEntitiesMin": 32,
+            "activeEntitiesMax": 32
+          }
+        },
+        {
+          "label": "bastion-approach",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 56,
+            "trianglesMedian": 26381,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "activeEntitiesMin": 27,
+            "activeEntitiesMax": 28
+          }
+        }
+      ],
+      "comparison": {
+        "quality": "low",
+        "automaticNativeSelection": true,
+        "camps": 15,
+        "buckets": 9,
+        "fullOriginalTriangleInventory": 19740,
+        "reference": {
+          "calls": 172,
+          "triangles": 103108
+        },
+        "candidate": {
+          "calls": 163,
+          "triangles": 83368
+        },
+        "changedRGB": 0,
+        "unstableRGB": 0,
+        "restored": true,
+        "scope": "Synchronous frozen actual town scene after fixed60warmup+180startup frames. All15original camps/nine material buckets, source geometry, deterministic transforms and live shadow/material settings; ordinary default selected automatically by real renderer capability. Original instancing/selected/reference again. Source reference can warm additional borrowed GPU caches; not a timing or zero-VRAM claim. Original uninstrumented route/party gates remain authoritative."
+      },
+      "normalPartyBudget": {
+        "maximumDraws": 200,
+        "maximumTriangles": 85000,
+        "maximumFrameMedianMs": 20,
+        "maximumFrameP95Ms": 33.4
+      },
+      "normalPartyProfile": {
+        "frames": 180,
+        "drawCallsMedian": 149,
+        "trianglesMedian": 76853,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 38,
+        "activeEntitiesMax": 40
+      },
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "fourClass14SlotSavedCustodyPassed": true,
+      "census": {
+        "town-submission-frames.json": {
+          "frames": 12,
+          "allCallsAndTrianglesAccountedFor": true,
+          "hooksRestored": true,
+          "calls": [
+            163,
+            163,
+            163,
+            163,
+            163,
+            163,
+            163,
+            163,
+            163,
+            163,
+            163,
+            163
+          ],
+          "triangles": [
+            83368,
+            83368,
+            83368,
+            83368,
+            83368,
+            83368,
+            83368,
+            83368,
+            83368,
+            83368,
+            83368,
+            83368
+          ]
+        },
+        "party-submission-frames.json": {
+          "frames": 12,
+          "allCallsAndTrianglesAccountedFor": true,
+          "hooksRestored": true,
+          "calls": [
+            148,
+            148,
+            148,
+            148,
+            148,
+            148,
+            148,
+            148,
+            148,
+            148,
+            148,
+            148
+          ],
+          "triangles": [
+            76897,
+            76897,
+            76897,
+            76897,
+            76897,
+            76897,
+            76897,
+            76897,
+            76897,
+            76897,
+            76897,
+            76945
+          ]
+        }
+      }
+    },
+    "high": {
+      "terminal": {
+        "source": "07e54f950498b3c8ad46f7436063e75afa9dfccb",
+        "quality": "high",
+        "exitCode": 0,
+        "startedUnix": 1791673092.5923297,
+        "finishedUnix": 1791673196.8847072
+      },
+      "native": {
+        "stats": {
+          "total": 2,
+          "expected": 1,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": true
+        },
+        "maxRetry": 0
+      },
+      "routeFrames": 463,
+      "routeObservations": 49,
+      "routeProfiles": [
+        {
+          "label": "town-start",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 338,
+            "trianglesMedian": 198283,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "activeEntitiesMin": 156,
+            "activeEntitiesMax": 156
+          }
+        },
+        {
+          "label": "earth-road",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 167,
+            "trianglesMedian": 89844,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7,
+            "activeEntitiesMin": 73,
+            "activeEntitiesMax": 73
+          }
+        },
+        {
+          "label": "woodland-cut",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 239,
+            "trianglesMedian": 141502,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "activeEntitiesMin": 31,
+            "activeEntitiesMax": 32
+          }
+        },
+        {
+          "label": "bastion-approach",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 118,
+            "trianglesMedian": 67671,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8,
+            "activeEntitiesMin": 37,
+            "activeEntitiesMax": 38
+          }
+        }
+      ],
+      "comparison": {
+        "quality": "high",
+        "automaticNativeSelection": true,
+        "camps": 15,
+        "buckets": 9,
+        "fullOriginalTriangleInventory": 19740,
+        "reference": {
+          "calls": 347,
+          "triangles": 229479
+        },
+        "candidate": {
+          "calls": 338,
+          "triangles": 198283
+        },
+        "changedRGB": 0,
+        "unstableRGB": 0,
+        "restored": true,
+        "scope": "Synchronous frozen actual town scene after fixed60warmup+180startup frames. All15original camps/nine material buckets, source geometry, deterministic transforms and live shadow/material settings; ordinary default selected automatically by real renderer capability. Original instancing/selected/reference again. Source reference can warm additional borrowed GPU caches; not a timing or zero-VRAM claim. Original uninstrumented route/party gates remain authoritative."
+      },
+      "normalPartyBudget": {
+        "maximumDraws": 350,
+        "maximumTriangles": 250000,
+        "maximumFrameMedianMs": 20,
+        "maximumFrameP95Ms": 33.4
+      },
+      "normalPartyProfile": {
+        "frames": 180,
+        "drawCallsMedian": 282,
+        "trianglesMedian": 191390,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 27,
+        "activeEntitiesMax": 29
+      },
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "fourClass14SlotSavedCustodyPassed": true,
+      "census": {
+        "town-submission-frames.json": {
+          "frames": 12,
+          "allCallsAndTrianglesAccountedFor": true,
+          "hooksRestored": true,
+          "calls": [
+            338,
+            338,
+            338,
+            338,
+            338,
+            338,
+            338,
+            338,
+            338,
+            338,
+            338,
+            338
+          ],
+          "triangles": [
+            198283,
+            198283,
+            198283,
+            198283,
+            198283,
+            198283,
+            198283,
+            198283,
+            198283,
+            198283,
+            198283,
+            198283
+          ]
+        },
+        "party-submission-frames.json": {
+          "frames": 12,
+          "allCallsAndTrianglesAccountedFor": true,
+          "hooksRestored": true,
+          "calls": [
+            272,
+            272,
+            272,
+            272,
+            272,
+            272,
+            272,
+            272,
+            272,
+            272,
+            272,
+            272
+          ],
+          "triangles": [
+            170687,
+            170687,
+            170687,
+            170687,
+            170687,
+            170687,
+            170687,
+            170687,
+            170687,
+            170687,
+            170687,
+            170687
+          ]
+        }
+      }
+    }
+  },
+  "decision": "Qualified private camp component; combined candidate remains unselected pending representative fight/dungeon/device and retained counterexample review. Stock per-object camera/shadow clipping keeps all15camps/nine material buckets, every source vertex/attribute/material hook and deterministic placement/collider. Native42exactRGB/reference-again controls,8replacement cycles and171552owned derivative bytes per field. Runtime gates native multi-draw capability at both world construction paths; unsupported/default factory paths keep original instancing. Actual High/Low all8route stops and twofour-class14slot Go-race saved parties pass original350/200draw,250000/85000triangle,20msmedian/33.4p95 gates. Actual frozen townHigh347\u2192338draws,229479\u2192198283triangles;Low172\u2192163draws,103108\u219283368triangles,exactRGB0both. Two actual copied-publication visible camp checks verify source factory/automaticcapability/actor singleton+DemonOrc defaults and9geometry/18texture disposals; prior3publication checks separately include lazy4class construction, same engine hash. Current newHighparty282draw sample is a different population and does not causally clear previous361draw failure. Earlier Lowtown103102/103110 fail retained with causal camp-only removal of19740offscreen submissions; Lowwoodland83\u219290draw counterexample and historical failures retained. No FPS, zero-VRAM, universal-world-budget, modern-art/device/beta/launch approval or public release claim. Full goal active; no campaign/soak replay.",
+  "sanitization": {
+    "observedPreparedAccountsRedacted": 8,
+    "plainFilesScanned": 73,
+    "embeddedEntriesScanned": 10,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled"
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-camp-instance-checks-20261010",
+    "inventorySHA256": "1ac5f899045562a3ac955d7956815af34eb9d53be4a9b18270717919dc369271",
+    "inventoryEntries": 986,
+    "frozen": true
+  }
+}

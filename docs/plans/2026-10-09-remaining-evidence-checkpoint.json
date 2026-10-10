@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T22:48:28.498842+00:00",
+  "recordedUTC": "2026-10-10T23:06:22.085908+00:00",
   "classification": "Progress: public29 jump/aura/admin fixes accepted. Qualified automatic same-cell actor multi-draw and conservative instance clipping selected only into held integration695cee4a. Ordinary candidate High/Low sampled budgets and integrated source/publication technical checks pass. New real movement route town400/woodland468draw failures keep whole-world acceptance open.",
   "qualifiedRuntime": "Held695cee4a selects three qualified actor runtime files from5e3c4d3f/d2a82c66, with prior e8 default lazy geometry/conservative actor shadows and accepted public29 motion/admin. Private rigid-handgear pilot remains excluded. Not published.",
   "rejectedSourceCommits": [
@@ -98,11 +98,11 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Keep DemonOrc/singleton candidates private and unselected; original held runtime695cee4a/public29 unchanged. Diagnose source-preserving camp per-instance frustum clipping and reviewed Ilyra derivatives from settled Lowtown103110triangle contributor census (Ilyra31289,camps19740,Fighter15219;workerpending0). Retain Highparty361drawFAIL350, Lowtown103102/103110triFAIL85000, Lowwoodland83\u219290draw counterexample and historical failures. Qualify unchanged ordinary-world budgets and exact publication before selecting/publishing a coherent milestone. No source/content hiding, target waiver, campaign or soak replay. Continue full world/art/contact/combat/device/operations/freeze/beta/launch/handoff scope.",
+  "nextRequiredResult": "Continue on private camp candidate9fe14c19: source-preserving camp clipping is qualified(52focused,42exactRGB native,8route samples passing original gates,2Go-race saved parties,expanded exact-publication actual renders/disposal). Keep held695cee4a/public29 unchanged until coherent integration and remaining gate review. Capture actual equipped normal-input fight and first-dungeon moving sequence with original dynamic-population/frame budgets; retain prior Highparty361draw failure and Lowwoodland83\u219290draw counterexample rather than substituting new populations as causal clearance. Finish full world/art/contact/combat/device/operations/F1\u2013F5/beta/launch/handoff scope. No content hiding, target waiver, campaign/soak replay or public release.",
   "currentReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Keep DemonOrc/singleton candidates private and unselected; original held runtime695cee4a/public29 unchanged. Diagnose source-preserving camp per-instance frustum clipping and reviewed Ilyra derivatives from settled Lowtown103110triangle contributor census (Ilyra31289,camps19740,Fighter15219;workerpending0). Retain Highparty361drawFAIL350, Lowtown103102/103110triFAIL85000, Lowwoodland83\u219290draw counterexample and historical failures. Qualify unchanged ordinary-world budgets and exact publication before selecting/publishing a coherent milestone. No source/content hiding, target waiver, campaign or soak replay. Continue full world/art/contact/combat/device/operations/freeze/beta/launch/handoff scope.",
+  "nextAction": "Continue on private camp candidate9fe14c19: source-preserving camp clipping is qualified(52focused,42exactRGB native,8route samples passing original gates,2Go-race saved parties,expanded exact-publication actual renders/disposal). Keep held695cee4a/public29 unchanged until coherent integration and remaining gate review. Capture actual equipped normal-input fight and first-dungeon moving sequence with original dynamic-population/frame budgets; retain prior Highparty361draw failure and Lowwoodland83\u219290draw counterexample rather than substituting new populations as causal clearance. Finish full world/art/contact/combat/device/operations/F1\u2013F5/beta/launch/handoff scope. No content hiding, target waiver, campaign/soak replay or public release.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -2222,5 +2222,25 @@
     "highPartyDraws": 361,
     "lowTownTriangles": 103110,
     "pendingTownGeometryJobs": 0
+  },
+  "campInstanceFrustum": {
+    "source": "9fe14c1999036780740e9f6c51e23b4fe7f9c0ae",
+    "runtime": "1f87c0b7",
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-camp-instance-frustum-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-camp-instance-checks-20261010",
+      "inventorySHA256": "1ac5f899045562a3ac955d7956815af34eb9d53be4a9b18270717919dc369271",
+      "inventoryEntries": 986,
+      "frozen": true
+    },
+    "exactNativeComparisons": 42,
+    "actualRouteProfilesPassed": 8,
+    "fourClassSavedPartiesPassed": 2,
+    "ownedBytesPerField": 171552,
+    "allCampsRetained": 15,
+    "highTownTriangles": 198283,
+    "lowTownTriangles": 83366,
+    "earlierCounterexamplesRetained": true
   }
 }
