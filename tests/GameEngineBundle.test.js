@@ -88,10 +88,13 @@ test('unexpected import.meta.url depth fails before publishing altered main', as
 test('actual game graph compiles while login state and Three remain external', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'eidolon-engine-actual-')); fixtures.push(root);
     await cp('src', path.join(root, 'src'), { recursive: true });
+    await cp('vendor', path.join(root, 'vendor'), { recursive: true });
     const originalMain = await readFile('src/main.js', 'utf8');
     const result = await bundleGameEngine(root);
     expect(result.bundledModules).toBeGreaterThan(350);
-    expect(result.externalImports.length).toBeLessThan(25);
+    expect(result.externalImports.length).toBeLessThan(12);
+    expect(result.externalImports.some(name => name.startsWith('three/addons/'))).toBe(false);
+    expect(result.vendorModules).toContain('vendor/three/examples/jsm/loaders/GLTFLoader.js');
     expect(result.externalImports).toEqual(expect.arrayContaining(['three', './CredentialToken.js', './GraphicsStartup.js']));
     expect(await readFile('src/main.js', 'utf8')).toBe(originalMain);
     const main = await readFile(path.join(root, 'src/main.js'), 'utf8');
@@ -116,4 +119,47 @@ test.each(['missing', 'duplicate', 'unsupported'])('publication rejects %s recov
     await writeFile(main, source);
     await expect(bundleGameEngine(root)).rejects.toThrow('one bounded recovery');
     expect(await readFile(main, 'utf8')).toBe(source);
+});
+
+test('bundled copied add-ons retain the shared Three identity and exact license', async () => {
+    const root = await fixture();
+    await cp('vendor', path.join(root, 'vendor'), { recursive: true });
+    await symlink(path.join(process.cwd(), 'node_modules'), path.join(root, 'node_modules'));
+    await writeFile(path.join(root, 'src/main.js'),
+        "export {BoxGeometry} from 'three'; export const enter=()=>import('./core/GameEngine.js'); export const retry=()=>import('./core/GameEngine.js?startupRetry=1');");
+    await writeFile(path.join(root, 'src/core/GameEngine.js'),
+        "import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js'; export class GameEngine {geometry(){return new RoundedBoxGeometry()}}");
+    const result = await bundleGameEngine(root);
+    expect(result.externalImports).toEqual(['three']);
+    expect(result.vendorModules).toContain('vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js');
+    expect(await readFile(path.join(root, 'src/core/GameEngine.bundle.js'), 'utf8'))
+        .toContain(await readFile('vendor/three/LICENSE', 'utf8'));
+    await versionPagesRuntime(root, 'addonidentity20261010');
+    const url = pathToFileURL(path.join(root, 'src/main.js')).href;
+    const { stdout } = await execute(process.execPath, ['--input-type=module', '-e',
+        `const login=await import(${JSON.stringify(url)}); const {GameEngine}=await login.enter();
+        const {GameEngine:Recovered}=await login.retry(); console.log(JSON.stringify([
+        new GameEngine().geometry() instanceof login.BoxGeometry,new Recovered().geometry() instanceof login.BoxGeometry]));`]);
+    expect(JSON.parse(stdout)).toEqual([true, true]);
+});
+
+test.each(['version', 'entry-link', 'nested-link', 'escape'])('unsafe %s add-on input cannot alter the publication entry', async kind => {
+    const root = await fixture();
+    await cp('vendor', path.join(root, 'vendor'), { recursive: true });
+    const addon = 'three/addons/geometries/RoundedBoxGeometry.js';
+    await writeFile(path.join(root, 'src/core/GameEngine.js'),
+        `import {RoundedBoxGeometry} from '${kind === 'escape' ? 'three/addons/../../../../src/core/GameEngine.js' : addon}'; export class GameEngine {geometry(){return new RoundedBoxGeometry()}}`);
+    if (kind === 'version') await writeFile(path.join(root, 'vendor/manifest.json'), '{"three":"0.0.0"}');
+    if (kind === 'entry-link') {
+        const filename = path.join(root, 'vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js');
+        await rm(filename); await symlink(path.join(process.cwd(), 'vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js'), filename);
+    }
+    if (kind === 'nested-link') {
+        await writeFile(path.join(root, 'src/core/GameEngine.js'), "import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js'; export class GameEngine {loader(){return new GLTFLoader()}}");
+        const filename = path.join(root, 'vendor/three/examples/jsm/utils/BufferGeometryUtils.js');
+        await rm(filename); await symlink(path.join(process.cwd(), 'vendor/three/examples/jsm/utils/BufferGeometryUtils.js'), filename);
+    }
+    const original = await readFile(path.join(root, 'src/main.js'), 'utf8');
+    await expect(bundleGameEngine(root)).rejects.toThrow(kind === 'version' ? 'vendor version' : kind === 'escape' ? 'Unsupported Three' : 'must be copied');
+    expect(await readFile(path.join(root, 'src/main.js'), 'utf8')).toBe(original);
 });
