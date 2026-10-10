@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T17:23:37.618181+00:00",
+  "recordedUTC": "2026-10-10T17:52:21.637827+00:00",
   "classification": "Alpha1.79.27/a9d6fc9b deployed and release checks accepted: trusted public click-to-landing1429.7ms, endpoints0; all8assets/identities/database match; required CI38064138468 attempt1 succeeded. Native8expected/1skip/0unexpected/0flake, retry0; separate recovery2+1 pass. Optional routes remain skipped, original failures retained. Full original goal stays active.",
-  "qualifiedRuntime": "Held private runtime byte-identical to fa2f7075: qualified raised terrain and supplied High, 1.3s total-jump correction, Low understory and default lazy gameplay geometry ownership. Tooling44e0c67c builds worker in normal preparation. Actor view/shadow pilots remain off. Public27 remains independently deployed and verified; High350draw/device/combat/art/full-roadmap gates stay open.",
+  "qualifiedRuntime": "Held/private integration e8eec1b9 includes qualified default lazy geometry, supplied High and Low scenery,1.3s jump and conservative rigid shadow influence owned by actor batching. Frame-only castShadow restored on return/error/disposal; supplied skins and unknown deformation/light paths retain originals. High sampled budget passes, Low202draw failure remains open. High view/shadow-geometry pilots stay off; optional Lowview378a79a2 is isolated and unselected. Public27 remains accepted unchanged; all whole-game/art/device/original-roadmap gates remain active.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -101,9 +101,9 @@
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
   "currentReceipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: rigid hand-equipment coverage qualified on actual High/Low with exact32close/64gallery controls and copied immutable/offline worker. Retained Low85056 triangle failure led to quality-specific two-section vegetation preserving7439plants, every root/tip/fern leaflet, transforms/tints/wind and byte-exact High recipe. Actual Low80382triangles/158draws/16.7median16.8p95 passes sampled limits, exact14slot saves and moving checks; same frozen scenery comparison independently saves3248triangles. Both candidates/evidence frozen and fast-forwarded into private integration011fddda; default remains null/public27 unchanged. Full goal stays active.",
-  "nextAction": "Reduce measured High shadow submissions without losing visible shadows or hiding actors: untimed attribution has112OpaqueActorInstances,48unbatchedSkeleton and33Imp shadow draws, including zero color draws for Imp. Qualify conservative directional shadow-influence rejection with full current-pose/deformation and unknown-light fallback, exact frozen pixels/normal motion and existing350draw target. Prior view pilot remains unselected; avoid unsafe matrix skips or lucky-population reruns.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-default-geometry-startup-qualification.json",
+  "previousGoalTurnClassification": "progress: default lazy geometry ownership implemented and functionally qualified with 87 focused checks, 14 native passes/2 skips/no retries, real High/Low party and exact four-class14slot persistence. Normal client preparation now builds required worker, proven from missing artifact. Ordinary-selected only in held private milestone. Low38entity sample175draws/84361triangles/16.7ms passes; High39entity417draws fails350 target despite191783triangles/16.7ms passing. No full-game/device/art acceptance or public mutation.",
+  "nextAction": "Inspect actual Low actor-batch draw topology and source grouping before implementing submission consolidation. Cell/material/geometry splits must be attributed; retain exact current world/normal transforms, original64unit float32 origins, source assets, visibility and all200draw/85000triangle limits. Qualify a candidate with real same-scene draw reduction, strict native pixels and actual moving equipped-party/save proof; do not rerun unchanged Low for population luck. Then full moving town/Earth/fight/dungeon-approach art/combat/device work remains active.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
     "preparedNotSelected": true,
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: default lazy geometry ownership implemented and functionally qualified with 87 focused checks, 14 native passes/2 skips/no retries, real High/Low party and exact four-class14slot persistence. Normal client preparation now builds required worker, proven from missing artifact. Ordinary-selected only in held private milestone. Low38entity sample175draws/84361triangles/16.7ms passes; High39entity417draws fails350 target despite191783triangles/16.7ms passing. No full-game/device/art acceptance or public mutation.",
+  "currentGoalTurnClassification": "progress: conservative rigid shadow influence implemented, exact native-qualified and selected only in held private milestone e8eec1b9. DefaultHigh180frames324draws/176626triangles/16.7ms median+p95 passes sampled limits; frozen390-to330draw RGB exact, original skins/shadows/content retained. ActualLow202draws fails200,79857triangles/16.7ms pass. SubsequentLowview378a79a2 passes90units/11native checks and exact pixels/2588triangle reduction, but154draws unchanged; strict actual native draw-gain assertion fails before final profile/save. Candidate kept unselected; original failure retained, no retry/waiver/public mutation.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1749,5 +1749,61 @@
     "wholeGameAccepted": false,
     "inventorySHA256": "691d3a1091edeab06ff6c9495ec096163defd2f28957a442bd4b65fd7a64a92d",
     "workerPreparationInventorySHA256": "a27335c99fb0d715aba14750baeb0f9edf1ee83b73ef11c55ae7b69c3ec9b2a7"
+  },
+  "actorShadowInfluence": {
+    "receipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
+    "source": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+    "selectedOnlyPrivately": true,
+    "published": false,
+    "focusedUnits": 89,
+    "nativeDefaultPasses": 9,
+    "nativeDefaultExactPixelPairs": 34,
+    "defaultHigh": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 11.900000005960464,
+      "cpuLoopP95Ms": 15.5,
+      "drawCallsMedian": 324,
+      "trianglesMedian": 176626,
+      "geometries": 466,
+      "textures": 292,
+      "activeEntitiesMin": 33,
+      "activeEntitiesMax": 33
+    },
+    "defaultLow": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 8.5,
+      "cpuLoopP95Ms": 10.600000023841858,
+      "drawCallsMedian": 202,
+      "trianglesMedian": 79857,
+      "geometries": 414,
+      "textures": 267,
+      "activeEntitiesMin": 30,
+      "activeEntitiesMax": 31
+    },
+    "currentHighDrawTargetPass": true,
+    "currentLowDrawTargetPass": false,
+    "wholeQualityAccepted": false,
+    "inventorySHA256": "6571931292cac7ae8d408156b3a95986bb99e39f6757762dd0e3952d4f0c5c43",
+    "heldNormalPreparationPass": true,
+    "heldSetupFailureRetained": "Owned dependency symlink lacked esbuild; repointed only that symlink to already validated current tree. Exact worker and source runtime verified; separate3-entry preparation evidence in selected receipt."
+  },
+  "unselectedLowActorView": {
+    "receipt": "docs/plans/2026-10-10-low-actor-view-unselected.json",
+    "source": "378a79a2c6bd59409813f01dc43351e6daeb0402",
+    "selected": false,
+    "nativeFunctionalPasses": 11,
+    "focusedUnits": 90,
+    "actualNativeFailure": "No draw reduction154-to154, exact RGB and86238-to83650triangles; strict actual draw-gain failure retained before final profile/save.",
+    "actualFinalProfile": null,
+    "actualFinalPartySavePassed": false,
+    "inventorySHA256": "12e39d8899cc46a4eff80c244f8292f47282b7097d69cc075a50bb78d5a15b89"
   }
 }

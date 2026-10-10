@@ -1,0 +1,2712 @@
+{
+  "recordedUTC": "2026-10-10T17:41:56.222803+00:00",
+  "source": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+  "base": "82a32131",
+  "prototypeSources": [
+    "d17fa72f",
+    "d9a4132d"
+  ],
+  "sourcePins": {
+    "src/art/ActorInstanceBatches.js": "cc54235afa49cc0167befee56a6108d1b37a90fac71f8a565cb8bae4d5fb0c50",
+    "src/art/ActorShadowInfluence.js": "7a00a4cf8a6183c5cfb818eef1e679e7553e768115d7c837b6d51859ec149277",
+    "src/core/RenderSystem.js": "7125dc7825d652903b195d8960ab136dfcff013adb6e7e09aa68cbda263fa498",
+    "tests/ActorShadowInfluence.test.js": "69374315414c04421d1e29dc052c3a4aedc45295cb41dd521785b9240fb6a793",
+    "tests/RenderSystemActorInstances.test.js": "b7d2e6ba51bb2840c22886c0f99aade018f42925bade95124eb189cbd41f5c5b",
+    "tests/e2e/actor-shadow-influence-pilot.js": "54ebbb60af6650292a3415a4326db3e9c531d7e9b646ea9a716de2ae17761089",
+    "tests/e2e/actor-shadow-influence.spec.js": "777edc52eda46559ddd88f4e3e6b7f5c56e1d501ddde99a2369d4e6f127f7075",
+    "tests/e2e/engine-session-lifetime.spec.js": "4d6f769071475e34a2cb556d9b4d8c5ffab1c6ad35b19b2f06786467b167fd30",
+    "tests/e2e/gameplay-geometry-party.js": "1ec4c827fcc4aea150c851983f8ac39b30e15d7f54fc1b99b1badf4a8eb84bc0",
+    "tests/e2e/terrain-equipped-party.spec.js": "4f89573887ecc4a3f35085ac5e9d9edb048cd50b95584ece7d579cb102e593ba"
+  },
+  "status": "Default conservative rigid actor shadow influence functionally qualified privately. Actual default High324draw/176626triangle/16.7ms sample passes; Low202draw fails200 while79857triangles/16.7ms pass. No public or whole-game/device/art acceptance.",
+  "implementation": "RenderSystem asks its actor-batch owner to own/dispose a shadow-influence policy. After normal batching and current scene/camera matrix updates, rigid procedural leaves and current float32 whole-instance bounds reject only when outside the camera and every known directional shadow ray swept to existing minimum receiver -8, including filter/bias padding and raised receivers. Only castShadow changes, restored on return/error/disposal; color visibility, source geometry, supplied skins and content remain intact. Actual visible-light scan catches late/nested unknown lights; unknown/deformed/custom paths conservatively retain original shadows. Low skips all light/bounds work when shadows are disabled.",
+  "unchanged": "Original supplied GLBs/equipment/source geometry, geometry-delivery algorithms and worker44618fbd, actor view policy null, original shadow-only simplification off, server/economy/saves/jump1.3s, dependencies and all established limits unchanged.",
+  "units": {
+    "passingDistinct": 89,
+    "suites": 4,
+    "seconds": 1.086,
+    "initialFocusedPassing": 83,
+    "lint": "10 changed files and diff check pass"
+  },
+  "retainedFailures": "Initial prototype native2pass2fail: all34 pixel comparisons exact, but Low tests incorrectly demanded shadow omissions when Low shadows are disabled. Corrected test requires zero omissions/light scans and unchanged draws; Low2pass5.49s. All default9native checks pass37.4s with exact RGB gate unchanged; no retries or waiver.",
+  "native": [
+    {
+      "label": "native",
+      "stats": {
+        "total": 4,
+        "expected": 2,
+        "unexpected": 2,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": false
+      },
+      "attempts": [
+        {
+          "title": "high: Skeleton shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "high: Imp shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: Skeleton shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "failed",
+          "retry": 0
+        },
+        {
+          "title": "low: Imp shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "failed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "native-low-corrected",
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "low: Skeleton shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: Imp shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "native-default",
+      "stats": {
+        "total": 9,
+        "expected": 9,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "high: Skeleton shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "high: Imp shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: Skeleton shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: Imp shadow influence preserves exact visible surfaces and incoming shadows",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "high: three retired engines release their own HUD, map listeners and GPU contexts",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: three retired engines release their own HUD, map listeners and GPU contexts",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "high: repeated town, dungeon, casino floors, gear and death return to warmed resources",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "low: repeated town, dungeon, casino floors, gear and death return to warmed resources",
+          "status": "passed",
+          "retry": 0
+        },
+        {
+          "title": "actual published engine stays lazy at login and constructs each class from the bounded module graph",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "party-high",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "party-high-default",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    },
+    {
+      "label": "party-low-default",
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "attempts": [
+        {
+          "title": "connected equipped four-class party shares raised ground, fitted outfits, Fireball draws and targeted healing",
+          "status": "skipped",
+          "retry": 0
+        },
+        {
+          "title": "single native renderer observes three live equipped party socket peers on raised ground",
+          "status": "passed",
+          "retry": 0
+        }
+      ]
+    }
+  ],
+  "defaultNativeChecks": 9,
+  "defaultExactPixelPairs": 34,
+  "nativeControls": [
+    {
+      "quality": "high",
+      "type": "Skeleton",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 384,
+            "triangles": 14717
+          },
+          "candidate": {
+            "calls": 204,
+            "triangles": 7463,
+            "stats": {
+              "omitted": 180,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 507
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 141,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 80,
+              "checkedBatches": 76,
+              "unknownShadow": false,
+              "lightScanNodes": 293
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 121,
+            "triangles": 17039
+          },
+          "candidate": {
+            "calls": 105,
+            "triangles": 14933,
+            "stats": {
+              "omitted": 40,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "UnknownPointShadow",
+          "source": {
+            "calls": 301,
+            "triangles": 53489
+          },
+          "candidate": {
+            "calls": 301,
+            "triangles": 53489,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": true,
+              "lightScanNodes": 270
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 24
+        },
+        {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 24
+        },
+        {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 24
+        },
+        {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 24
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "high",
+      "type": "Imp",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 496,
+            "triangles": 9665
+          },
+          "candidate": {
+            "calls": 449,
+            "triangles": 8713,
+            "stats": {
+              "omitted": 220,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "UnknownPointShadow",
+          "source": {
+            "calls": 1003,
+            "triangles": 20401
+          },
+          "candidate": {
+            "calls": 1003,
+            "triangles": 20401,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": true,
+              "lightScanNodes": 743
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 38,
+          "textures": 18,
+          "programs": 20
+        },
+        {
+          "geometries": 38,
+          "textures": 18,
+          "programs": 20
+        },
+        {
+          "geometries": 38,
+          "textures": 18,
+          "programs": 20
+        },
+        {
+          "geometries": 38,
+          "textures": 18,
+          "programs": 20
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "Imp",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 112,
+            "triangles": 2138
+          },
+          "candidate": {
+            "calls": 112,
+            "triangles": 2138,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 37,
+          "textures": 4,
+          "programs": 5
+        },
+        {
+          "geometries": 37,
+          "textures": 4,
+          "programs": 5
+        },
+        {
+          "geometries": 37,
+          "textures": 4,
+          "programs": 5
+        },
+        {
+          "geometries": 37,
+          "textures": 4,
+          "programs": 5
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "Skeleton",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 69,
+            "triangles": 2612
+          },
+          "candidate": {
+            "calls": 69,
+            "triangles": 2612,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 34,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 34,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 34,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 34,
+          "textures": 4,
+          "programs": 7
+        }
+      ],
+      "failureRestored": true
+    }
+  ],
+  "sessionRetirement": [
+    [
+      {
+        "before": {
+          "geometries": 30,
+          "textures": 41
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 177384,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "shadowBefore": {
+          "roots": 1,
+          "omitted": 20,
+          "checkedBatches": 8,
+          "unknownShadow": false,
+          "lightScanNodes": 145
+        },
+        "shadowRetired": true,
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      },
+      {
+        "before": {
+          "geometries": 30,
+          "textures": 41
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 177384,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "shadowBefore": {
+          "roots": 1,
+          "omitted": 20,
+          "checkedBatches": 8,
+          "unknownShadow": false,
+          "lightScanNodes": 145
+        },
+        "shadowRetired": true,
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      },
+      {
+        "before": {
+          "geometries": 30,
+          "textures": 41
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 177384,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "shadowBefore": {
+          "roots": 1,
+          "omitted": 20,
+          "checkedBatches": 8,
+          "unknownShadow": false,
+          "lightScanNodes": 145
+        },
+        "shadowRetired": true,
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      }
+    ],
+    [
+      {
+        "before": {
+          "geometries": 29,
+          "textures": 27
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 164556,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "shadowBefore": {
+          "roots": 1,
+          "omitted": 0,
+          "checkedBatches": 0,
+          "unknownShadow": false,
+          "lightScanNodes": 0
+        },
+        "shadowRetired": true,
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      },
+      {
+        "before": {
+          "geometries": 29,
+          "textures": 27
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 164556,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "shadowBefore": {
+          "roots": 1,
+          "omitted": 0,
+          "checkedBatches": 0,
+          "unknownShadow": false,
+          "lightScanNodes": 0
+        },
+        "shadowRetired": true,
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      },
+      {
+        "before": {
+          "geometries": 29,
+          "textures": 27
+        },
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 0,
+          "workerCacheBytes": 164556,
+          "workerCacheEntries": 19,
+          "valid": true,
+          "restored": true
+        },
+        "shadowBefore": {
+          "roots": 1,
+          "omitted": 0,
+          "checkedBatches": 0,
+          "unknownShadow": false,
+          "lightScanNodes": 0
+        },
+        "shadowRetired": true,
+        "geometryRetired": true,
+        "minimaps": 1,
+        "retiredMinimaps": 0,
+        "retiredTooltips": 0,
+        "mapOwnerCleared": true,
+        "mapListenersAborted": true,
+        "playerInactive": true,
+        "canvasDetached": true,
+        "contextLost": true,
+        "socketOpen": true,
+        "instancesRetired": true
+      }
+    ]
+  ],
+  "sceneResourceCycles": [
+    [
+      {
+        "cycle": 0,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 24,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 121,
+        "textures": 81,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 40,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 51,
+        "textures": 67,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 72,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 75,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 72,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 82,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 119,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 122,
+        "textures": 82,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 135,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 52,
+        "textures": 68,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 167,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 75,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 167,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 82,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 214,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 122,
+        "textures": 82,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 230,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 52,
+        "textures": 68,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 262,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 75,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 16,
+          "workerStarted": true,
+          "cacheHits": 262,
+          "workerCacheBytes": 397284,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 82,
+        "textures": 60,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      }
+    ],
+    [
+      {
+        "cycle": 0,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 26,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 90,
+        "textures": 67,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 44,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 47,
+        "textures": 53,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 80,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 44,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 0,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 80,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 50,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 131,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 91,
+        "textures": 68,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 149,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 48,
+        "textures": 54,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 185,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 44,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 1,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 185,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 50,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "town-death",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 236,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 91,
+        "textures": 68,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "dungeon",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 254,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 48,
+        "textures": 54,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "casino-public",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 290,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 44,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      },
+      {
+        "cycle": 2,
+        "label": "casino-vip",
+        "geometry": {
+          "roots": 1,
+          "entries": 18,
+          "workerStarted": true,
+          "cacheHits": 290,
+          "workerCacheBytes": 368376,
+          "workerCacheEntries": 30,
+          "valid": true,
+          "restored": true
+        },
+        "geometries": 50,
+        "textures": 46,
+        "playerRenderOwned": true,
+        "chunks": 1,
+        "activeActors": 1,
+        "playerTracked": true,
+        "playerAttached": true,
+        "hiddenHitbox": true
+      }
+    ]
+  ],
+  "parties": {
+    "party-high": {
+      "source": "d9a4132d4abcbfe3b51a9503c8fdd13d991c1ca0",
+      "defaultOwned": false,
+      "frameSummary": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 33.2,
+        "cpuLoopMedianMs": 16.299999982118607,
+        "cpuLoopP95Ms": 21,
+        "drawCallsMedian": 317,
+        "trianglesMedian": 167910,
+        "geometries": 461,
+        "textures": 287,
+        "activeEntitiesMin": 35,
+        "activeEntitiesMax": 35
+      },
+      "budget": {
+        "maximumDraws": 350,
+        "maximumTriangles": 250000,
+        "drawsPass": true,
+        "trianglesPass": true,
+        "frameMedianPass": true,
+        "frameP95Pass": true,
+        "wholeQualityAccepted": false
+      },
+      "shadowComparison": {
+        "reference": {
+          "calls": 417,
+          "triangles": 364471,
+          "restored": true,
+          "stats": null
+        },
+        "candidate": {
+          "calls": 317,
+          "triangles": 351172,
+          "restored": true,
+          "stats": {
+            "omitted": 548,
+            "checkedBatches": 220,
+            "unknownShadow": false,
+            "lightScanNodes": 4155
+          }
+        },
+        "referenceAgain": {
+          "calls": 417,
+          "triangles": 364471,
+          "restored": true,
+          "stats": null
+        },
+        "image": {
+          "width": 1280,
+          "height": 844,
+          "frozenRenderClock": true,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        },
+        "roots": 33,
+        "cpu": {
+          "scope": "Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.",
+          "blocks": [
+            {
+              "enabled": false,
+              "milliseconds": [
+                10.599999994039536,
+                10,
+                9.799999982118607,
+                10,
+                9,
+                9.900000005960464,
+                8.900000005960464,
+                15.400000005960464,
+                13,
+                13.699999988079071,
+                9.900000005960464,
+                10.300000011920929
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                16,
+                13.099999994039536,
+                12.5,
+                11.100000023841858,
+                10.099999994039536,
+                10.199999988079071,
+                9.800000011920929,
+                12.799999982118607,
+                17.600000023841858,
+                14.699999988079071,
+                12.199999988079071,
+                9
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                10.5,
+                11.299999982118607,
+                13.100000023841858,
+                12.699999988079071,
+                16.400000005960464,
+                11.599999994039536,
+                14.400000005960464,
+                11.5,
+                10.400000005960464,
+                19.099999994039536,
+                15.799999982118607,
+                14.300000011920929
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                11.599999994039536,
+                9.400000005960464,
+                10.199999988079071,
+                15.5,
+                14.800000011920929,
+                14.900000005960464,
+                10,
+                11.099999994039536,
+                12.800000011920929,
+                13,
+                20.899999976158142,
+                18.30000001192093
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                11.099999994039536,
+                11.5,
+                12.900000005960464,
+                16,
+                19,
+                21.399999976158142,
+                12.200000017881393,
+                13.599999994039536,
+                13.400000005960464,
+                15.5,
+                15.299999982118607,
+                17.200000017881393
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                13.5,
+                11.699999988079071,
+                11.5,
+                12.900000005960464,
+                13.300000011920929,
+                18.400000005960464,
+                18.799999982118607,
+                12.700000017881393,
+                10.399999976158142,
+                11.300000011920929,
+                11.699999988079071,
+                11.5
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                12.099999994039536,
+                10.300000011920929,
+                9.199999988079071,
+                9.800000011920929,
+                11.899999976158142,
+                14.100000023841858,
+                17.299999982118607,
+                16.200000017881393,
+                12.899999976158142,
+                10.5,
+                10.5,
+                10.300000011920929
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                15.5,
+                15.899999976158142,
+                13.400000005960464,
+                12.800000011920929,
+                12.400000005960464,
+                12,
+                18.69999998807907,
+                20.400000005960464,
+                20.799999982118607,
+                11.700000017881393,
+                13,
+                10.099999994039536
+              ],
+              "restored": true
+            }
+          ],
+          "reference": {
+            "frames": 48,
+            "median": 13,
+            "p95": 20.799999982118607
+          },
+          "candidate": {
+            "frames": 48,
+            "median": 12.199999988079071,
+            "p95": 18.400000005960464
+          }
+        },
+        "quality": "high",
+        "zoom": 15
+      },
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 3451.699999988079,
+        "body": {
+          "sources": 4
+        },
+        "rigid": {
+          "sources": 21,
+          "originalTriangles": 19014,
+          "candidateTriangles": 9362
+        },
+        "installed": {
+          "registered": 65,
+          "originalTriangles": 200156,
+          "candidateTriangles": 63186
+        },
+        "stats": {
+          "requested": 203,
+          "installed": 81,
+          "stale": 1,
+          "fallback": 14,
+          "failed": 0,
+          "cacheHits": 22,
+          "rejected": 0,
+          "maxCopiedBytes": 3075480,
+          "workerCacheBytes": 857472,
+          "workerCacheEntries": 68
+        }
+      },
+      "movement": {
+        "normalGroundClicks": 3,
+        "samples": 102,
+        "postLoginFrames": 31,
+        "gearSlots": 14,
+        "allRestored": true,
+        "shadowRestored": false
+      },
+      "drawAttribution": [
+        {
+          "name": "Equipped Wizard",
+          "color": 26,
+          "shadow": 21,
+          "triangles": 34980
+        },
+        {
+          "name": "Equipped Cleric",
+          "color": 25,
+          "shadow": 21,
+          "triangles": 33010
+        },
+        {
+          "name": "OpaqueActorInstances",
+          "color": 24,
+          "shadow": 20,
+          "triangles": 12420
+        },
+        {
+          "name": "Equipped Fighter",
+          "color": 23,
+          "shadow": 20,
+          "triangles": 33214
+        },
+        {
+          "name": "Equipped Rogue",
+          "color": 22,
+          "shadow": 18,
+          "triangles": 29932
+        },
+        {
+          "name": "EnvironmentGroup",
+          "color": 19,
+          "shadow": 6,
+          "triangles": 23237
+        },
+        {
+          "name": "Mesh",
+          "color": 1,
+          "shadow": 15,
+          "triangles": 17
+        },
+        {
+          "name": "Canonical terrain tiles",
+          "color": 8,
+          "shadow": 0,
+          "triangles": 1024
+        },
+        {
+          "name": "ProceduralSkeleton",
+          "color": 8,
+          "shadow": 0,
+          "triangles": 66
+        },
+        {
+          "name": "ProceduralEidolicBlackwater",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralRealmTerrain:water",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "ProceduralRealmTerrain:air",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "Points",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 46.666666666666664
+        }
+      ],
+      "actualServerMongoTerminal": [
+        "--- PASS: TestTerrainActualEquippedBrowserParty (41.43s)",
+        "PASS",
+        "ok  \teidolon-server\t42.477s"
+      ]
+    },
+    "party-high-default": {
+      "source": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+      "defaultOwned": true,
+      "frameSummary": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 11.900000005960464,
+        "cpuLoopP95Ms": 15.5,
+        "drawCallsMedian": 324,
+        "trianglesMedian": 176626,
+        "geometries": 466,
+        "textures": 292,
+        "activeEntitiesMin": 33,
+        "activeEntitiesMax": 33
+      },
+      "budget": {
+        "maximumDraws": 350,
+        "maximumTriangles": 250000,
+        "drawsPass": true,
+        "trianglesPass": true,
+        "frameMedianPass": true,
+        "frameP95Pass": true,
+        "wholeQualityAccepted": false
+      },
+      "shadowComparison": {
+        "reference": {
+          "calls": 390,
+          "triangles": 366977,
+          "restored": true,
+          "stats": null
+        },
+        "candidate": {
+          "calls": 330,
+          "triangles": 354887,
+          "restored": true,
+          "stats": {
+            "omitted": 356,
+            "checkedBatches": 148,
+            "unknownShadow": false,
+            "lightScanNodes": 3845
+          }
+        },
+        "referenceAgain": {
+          "calls": 390,
+          "triangles": 366977,
+          "restored": true,
+          "stats": null
+        },
+        "image": {
+          "width": 1280,
+          "height": 844,
+          "frozenRenderClock": true,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        },
+        "roots": 29,
+        "cpu": {
+          "scope": "Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.",
+          "blocks": [
+            {
+              "enabled": false,
+              "milliseconds": [
+                10.599999994039536,
+                11.099999994039536,
+                10.800000011920929,
+                10.199999988079071,
+                10.5,
+                10.600000023841858,
+                13.199999988079071,
+                17.30000001192093,
+                15.699999988079071,
+                11.199999988079071,
+                11.600000023841858,
+                9.399999976158142
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                15.599999994039536,
+                16.200000017881393,
+                12.599999994039536,
+                9.400000005960464,
+                9.400000005960464,
+                9.799999982118607,
+                8.700000017881393,
+                11.299999982118607,
+                13.800000011920929,
+                14.400000005960464,
+                11.899999976158142,
+                7.9000000059604645
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                8.5,
+                9,
+                14.200000017881393,
+                15.199999988079071,
+                14.300000011920929,
+                9.900000005960464,
+                10,
+                9,
+                10.799999982118607,
+                14.099999994039536,
+                15,
+                11.600000023841858
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                8.699999988079071,
+                7.800000011920929,
+                9.099999994039536,
+                12.799999982118607,
+                13.900000005960464,
+                13.400000005960464,
+                9.5,
+                7.5999999940395355,
+                8.200000017881393,
+                8.199999988079071,
+                12.800000011920929,
+                13.299999982118607
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                8.700000017881393,
+                7.9000000059604645,
+                8.899999976158142,
+                9.200000017881393,
+                12.699999988079071,
+                15,
+                13.300000011920929,
+                7.699999988079071,
+                8.599999994039536,
+                7.700000017881393,
+                9.599999994039536,
+                11.5
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                8.900000005960464,
+                9.200000017881393,
+                9.299999982118607,
+                7.9000000059604645,
+                9.900000005960464,
+                15.799999982118607,
+                11.600000023841858,
+                14.699999988079071,
+                9.800000011920929,
+                7.899999976158142,
+                9.200000017881393,
+                8.599999994039536
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                12.599999994039536,
+                7.699999988079071,
+                9.300000011920929,
+                7.9000000059604645,
+                8.799999982118607,
+                12.099999994039536,
+                14.100000023841858,
+                12.399999976158142,
+                11.400000005960464,
+                8,
+                9.099999994039536,
+                8.200000017881393
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                16.099999994039536,
+                11.599999994039536,
+                8.699999988079071,
+                9.600000023841858,
+                8.5,
+                7.5999999940395355,
+                9,
+                12.099999994039536,
+                11.199999988079071,
+                12.900000005960464,
+                11.200000017881393,
+                9.399999976158142
+              ],
+              "restored": true
+            }
+          ],
+          "reference": {
+            "frames": 48,
+            "median": 10.599999994039536,
+            "p95": 15.699999988079071
+          },
+          "candidate": {
+            "frames": 48,
+            "median": 9.900000005960464,
+            "p95": 15.599999994039536
+          }
+        },
+        "quality": "high",
+        "zoom": 15
+      },
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 2315.2000000178814,
+        "body": {
+          "sources": 4
+        },
+        "rigid": {
+          "sources": 21,
+          "originalTriangles": 19014,
+          "candidateTriangles": 9362
+        },
+        "installed": {
+          "registered": 65,
+          "originalTriangles": 200156,
+          "candidateTriangles": 63138
+        },
+        "stats": {
+          "requested": 203,
+          "installed": 81,
+          "stale": 1,
+          "fallback": 14,
+          "failed": 0,
+          "cacheHits": 22,
+          "rejected": 0,
+          "maxCopiedBytes": 3075480,
+          "workerCacheBytes": 856896,
+          "workerCacheEntries": 68
+        }
+      },
+      "movement": {
+        "normalGroundClicks": 3,
+        "samples": 106,
+        "postLoginFrames": 32,
+        "gearSlots": 14,
+        "allRestored": true,
+        "shadowRestored": true
+      },
+      "drawAttribution": [
+        {
+          "name": "OpaqueActorInstances",
+          "color": 24,
+          "shadow": 32,
+          "triangles": 21184
+        },
+        {
+          "name": "Equipped Wizard",
+          "color": 26,
+          "shadow": 21,
+          "triangles": 34696
+        },
+        {
+          "name": "Equipped Cleric",
+          "color": 25,
+          "shadow": 21,
+          "triangles": 33130
+        },
+        {
+          "name": "Equipped Fighter",
+          "color": 23,
+          "shadow": 20,
+          "triangles": 33170
+        },
+        {
+          "name": "Equipped Rogue",
+          "color": 22,
+          "shadow": 18,
+          "triangles": 30044
+        },
+        {
+          "name": "EnvironmentGroup",
+          "color": 20,
+          "shadow": 6,
+          "triangles": 24611
+        },
+        {
+          "name": "Mesh",
+          "color": 1,
+          "shadow": 15,
+          "triangles": 17
+        },
+        {
+          "name": "ProceduralSkeleton",
+          "color": 10,
+          "shadow": 0,
+          "triangles": 80
+        },
+        {
+          "name": "Canonical terrain tiles",
+          "color": 6,
+          "shadow": 0,
+          "triangles": 768
+        },
+        {
+          "name": "ProceduralEidolicBlackwater",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralRealmTerrain:water",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "ProceduralRealmTerrain:air",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "Points",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 46.666666666666664
+        }
+      ],
+      "actualServerMongoTerminal": [
+        "--- PASS: TestTerrainActualEquippedBrowserParty (33.50s)",
+        "PASS",
+        "ok  \teidolon-server\t34.540s"
+      ]
+    },
+    "party-low-default": {
+      "source": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+      "defaultOwned": true,
+      "frameSummary": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "cpuLoopMedianMs": 8.5,
+        "cpuLoopP95Ms": 10.600000023841858,
+        "drawCallsMedian": 202,
+        "trianglesMedian": 79857,
+        "geometries": 414,
+        "textures": 267,
+        "activeEntitiesMin": 30,
+        "activeEntitiesMax": 31
+      },
+      "budget": {
+        "maximumDraws": 200,
+        "maximumTriangles": 85000,
+        "drawsPass": false,
+        "trianglesPass": true,
+        "frameMedianPass": true,
+        "frameP95Pass": true,
+        "wholeQualityAccepted": false
+      },
+      "shadowComparison": null,
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 212.59999999403954,
+        "body": {
+          "sources": 4
+        },
+        "rigid": {
+          "sources": 27,
+          "originalTriangles": 9940,
+          "candidateTriangles": 6584
+        },
+        "installed": {
+          "registered": 71,
+          "originalTriangles": 123345,
+          "candidateTriangles": 57441
+        },
+        "stats": {
+          "requested": 294,
+          "installed": 90,
+          "stale": 4,
+          "fallback": 6,
+          "failed": 0,
+          "cacheHits": 27,
+          "rejected": 0,
+          "maxCopiedBytes": 2920472,
+          "workerCacheBytes": 1096500,
+          "workerCacheEntries": 71
+        }
+      },
+      "movement": {
+        "normalGroundClicks": 3,
+        "samples": 82,
+        "postLoginFrames": 25,
+        "gearSlots": 14,
+        "allRestored": true,
+        "shadowRestored": true
+      },
+      "drawAttribution": [
+        {
+          "name": "OpaqueActorInstances",
+          "color": 48,
+          "shadow": 0,
+          "triangles": 8925
+        },
+        {
+          "name": "Equipped Cleric",
+          "color": 26,
+          "shadow": 0,
+          "triangles": 14981
+        },
+        {
+          "name": "Equipped Wizard",
+          "color": 26,
+          "shadow": 0,
+          "triangles": 15820
+        },
+        {
+          "name": "Equipped Fighter",
+          "color": 23,
+          "shadow": 0,
+          "triangles": 15219
+        },
+        {
+          "name": "Equipped Rogue",
+          "color": 23,
+          "shadow": 0,
+          "triangles": 13821
+        },
+        {
+          "name": "EnvironmentGroup",
+          "color": 16,
+          "shadow": 0,
+          "triangles": 7375
+        },
+        {
+          "name": "ProceduralSkeleton",
+          "color": 10,
+          "shadow": 0,
+          "triangles": 70
+        },
+        {
+          "name": "Canonical terrain tiles",
+          "color": 8,
+          "shadow": 0,
+          "triangles": 1024
+        },
+        {
+          "name": "Mesh",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralEidolicBlackwater",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralRealmTerrain:water",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "ProceduralRealmTerrain:air",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "Actor ground contacts",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 60
+        }
+      ],
+      "actualServerMongoTerminal": [
+        "--- PASS: TestTerrainActualEquippedBrowserParty (25.95s)",
+        "PASS",
+        "ok  \teidolon-server\t26.991s"
+      ]
+    }
+  },
+  "serverMarkers": {
+    "party-high": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "party-high-default": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "party-low-default": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    }
+  },
+  "worker": {
+    "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "bytes": 137178
+  },
+  "privacy": {
+    "preparedAccounts": 12,
+    "plainAndEmbeddedMembersScanned": 259,
+    "actualIdentifiersRemaining": 0,
+    "automaticCredentialedRecordings": "off",
+    "deliberatePixels": "Post-login game PNG/JPEG retain synthetic fixture display names. No password-entry or credentialed session recordings. Anonymous native fixtures have no registered accounts. Disposable databases destroyed."
+  },
+  "visualReview": "Prototype High moving/HUD PNG inspected: supplied four-class outfits, visible enemy shadows and roof/tree/rock shadows remain readable. Same-frame RGB controls exact. Broad soil transitions, conspicuous angular outcrop surfaces, procedural enemies and crowded synthetic labels remain modern-art work; not final art approval. Default High and Low moving/HUD images also inspected. Supplied equipment and source lighting remain readable; Low shadows stay disabled. Large angular outcrops, broad ground patches, long fixture labels and a floating lighting-control panel remain presentation gaps. Individual HUD counters are not replacements for the independent180-frame profiles.",
+  "nextAction": "Address current Low202draw failure without lucky-population reruns: measured procedural instance color submissions are48 plus10 unbatched Skeleton calls in an untimed attribution. Reuse qualified rigid camera bounds on Low with shadows disabled, preserving original normals/instance origin and all incoming-shadow rules when shadows are active. Require strict frozen RGB, native motion/lifetime and actual equipped-party/save proof at unchanged200draw target. Then qualify the ordinary moving equipped/HUD town to Earth to fight to dungeon approach, representative combat and modern-art gaps.",
+  "limits": "Source-specific prototype and final default samples are independent populations. Frozen comparisons establish exact pixels and draw savings; ABBA submission samples show local timing only, not causal whole-frame FPS improvement. Native one-renderer/three live peers and four-class14slot Mongo custody do not substitute for physical phones, uninterrupted human campaign, four independent GPU clients, capacity, 24hsoak, F1-F5/beta/launch or full original1.11-1.99 scope. Public27 trusted1429.7ms jump remains accepted; no public mutation this turn.",
+  "evidence": "/home/aeml/.local/share/eidolon-actor-shadow-influence-checks-20261010",
+  "inventorySHA256": "6571931292cac7ae8d408156b3a95986bb99e39f6757762dd0e3952d4f0c5c43",
+  "inventoryEntries": 259,
+  "filesIncludingInventory": 260,
+  "selection": {
+    "recordedUTC": "2026-10-10T17:52:21.637827+00:00",
+    "selectedOnlyPrivately": true,
+    "published": false,
+    "heldCommit": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+    "privateIntegration": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+    "method": "Fast-forward exact e8eec1b9 into held and private integration; isolated later378a79a2 Low color hypothesis remains unselected. ActualHigh sampled limits pass, actualLow202draw failure remains open.",
+    "localPreparation": {
+      "recordedUTC": "2026-10-10T17:53:27.292449+00:00",
+      "source": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+      "runtimeByteExact": true,
+      "initialFailure": "Owned held node_modules symlink still pointed at older dependency tree missing esbuild. npm preparation exit1 before worker build; log retained.",
+      "correction": "Repointed only owned ignored node_modules symlink to already validated current dependency tree; no dependency installation/shared tree/user workspace mutation.",
+      "oldDependencySymlink": "/home/aeml/.local/share/eidolon-air-cypress-release-20261009/node_modules",
+      "currentDependencySymlink": "/home/aeml/.local/share/eidolon-gameplay-geometry-delivery-20261010/node_modules",
+      "normalPreparationExit": 0,
+      "workerSHA256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+      "workerBytes": 137178,
+      "sourceRuntimeChanges": false,
+      "nativeEvidenceReused": "Actual e8eec1b9 native/save qualification unchanged; no redundant browser/server campaign.",
+      "evidence": "/home/aeml/.local/share/eidolon-shadow-held-integration-checks-20261010",
+      "inventoryEntries": 3,
+      "inventorySHA256": "40e485e5e588c17e35cb9dacfe1ca69d14065df222c401163c1bfee77dd6277a"
+    }
+  }
+}

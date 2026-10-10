@@ -1,0 +1,2006 @@
+{
+  "recordedUTC": "2026-10-10T17:50:30.741010+00:00",
+  "source": "378a79a2c6bd59409813f01dc43351e6daeb0402",
+  "base": "e8eec1b951fbfdf9e4f4d0039353af4b3f12feeb",
+  "selected": false,
+  "published": false,
+  "sourcePins": {
+    "src/art/ActorInstanceBatches.js": "e0494d3339240739cfaa4058b6a291cb6ea96a20e46f3896a49c132d3702e24d",
+    "tests/ActorShadowInfluence.test.js": "b3e7c967e0194069e1cfa1fca7ebe0882fedcdff51dde55fea2c0297489c7dc1",
+    "tests/e2e/actor-instance-view.spec.js": "ac6e706487c4efef4d2297a4fde63e300b1acbb8314fbeeb3543680f018b0703",
+    "tests/e2e/actor-shadow-influence.spec.js": "f705d40720448db390a659be35412045722b7d18fa75ebbd0afcd8ba78d8f1fa",
+    "tests/e2e/gameplay-geometry-party.js": "d77b2eeaa6c76aa8a43c3c31287d997bc30b0e15a2f9ad75e91426e4e890acb1",
+    "tests/e2e/low-actor-view.js": "d7e45a7a5cab44a6c081c243dc732b35d1c815647a1e983b32aab973564cb953",
+    "tests/e2e/terrain-equipped-party.spec.js": "44c34e4dd5e28637a4147663b5e084d57fdc0d998938929509873f076ea5d0ba"
+  },
+  "status": "Low camera-culling followup remains unselected: exact pixels and2588triangle saving but154draws unchanged; does not address prior202draw failure. Original actual native assertion failure retained without retry or waiver.",
+  "implementation": "Reuse qualified owned ActorInstanceView rigid camera bounds only when renderer shadows disabled, before batching. Original instance shader/origin preserved, supplied skins and all source geometry retained. Frame-only leaf visibility restores on normal/error paths. High path unchanged; separately rechecked18High exact pixel pairs.",
+  "units": {
+    "distinctPassing": 90,
+    "suites": 4,
+    "seconds": 1.12,
+    "lint": "All7changed files and diff check pass"
+  },
+  "native": [
+    {
+      "label": "native-default",
+      "stats": {
+        "total": 9,
+        "expected": 9,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      }
+    },
+    {
+      "label": "native-high-unchanged",
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      }
+    }
+  ],
+  "pixelPairs": 66,
+  "controls": [
+    {
+      "quality": "low",
+      "type": "QuestNPC",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 20,
+            "triangles": 5238
+          },
+          "candidate": {
+            "calls": 20,
+            "triangles": 2812,
+            "stats": {
+              "checked": 170,
+              "culled": 136,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedIdle",
+          "source": {
+            "calls": 31,
+            "triangles": 3480
+          },
+          "candidate": {
+            "calls": 31,
+            "triangles": 2812,
+            "stats": {
+              "checked": 60,
+              "culled": 48,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 20,
+            "triangles": 5238
+          },
+          "candidate": {
+            "calls": 20,
+            "triangles": 2812,
+            "stats": {
+              "checked": 170,
+              "culled": 136,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 22,
+            "triangles": 5430
+          },
+          "candidate": {
+            "calls": 22,
+            "triangles": 2868,
+            "stats": {
+              "checked": 170,
+              "culled": 135,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 25,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 25,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 25,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 25,
+          "textures": 4,
+          "programs": 9
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "InfernoTitan",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 23,
+            "triangles": 5930
+          },
+          "candidate": {
+            "calls": 23,
+            "triangles": 2966,
+            "stats": {
+              "checked": 300,
+              "culled": 240,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 23,
+            "triangles": 5930
+          },
+          "candidate": {
+            "calls": 23,
+            "triangles": 2966,
+            "stats": {
+              "checked": 300,
+              "culled": 240,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 23,
+            "triangles": 5930
+          },
+          "candidate": {
+            "calls": 23,
+            "triangles": 2966,
+            "stats": {
+              "checked": 300,
+              "culled": 240,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 23,
+            "triangles": 5930
+          },
+          "candidate": {
+            "calls": 23,
+            "triangles": 2966,
+            "stats": {
+              "checked": 300,
+              "culled": 240,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 23,
+            "triangles": 5930
+          },
+          "candidate": {
+            "calls": 23,
+            "triangles": 2966,
+            "stats": {
+              "checked": 300,
+              "culled": 240,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 60,
+            "triangles": 3022
+          },
+          "candidate": {
+            "calls": 60,
+            "triangles": 2966,
+            "stats": {
+              "checked": 10,
+              "culled": 8,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 23,
+            "triangles": 5930
+          },
+          "candidate": {
+            "calls": 23,
+            "triangles": 2966,
+            "stats": {
+              "checked": 300,
+              "culled": 240,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 23,
+            "triangles": 5930
+          },
+          "candidate": {
+            "calls": 23,
+            "triangles": 3166,
+            "stats": {
+              "checked": 300,
+              "culled": 241,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 31,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 31,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 31,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 31,
+          "textures": 4,
+          "programs": 7
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "Skeleton",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 25,
+            "triangles": 5102
+          },
+          "candidate": {
+            "calls": 25,
+            "triangles": 2552,
+            "stats": {
+              "checked": 340,
+              "culled": 272,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 25,
+            "triangles": 5102
+          },
+          "candidate": {
+            "calls": 25,
+            "triangles": 2552,
+            "stats": {
+              "checked": 340,
+              "culled": 272,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 25,
+            "triangles": 5102
+          },
+          "candidate": {
+            "calls": 25,
+            "triangles": 2552,
+            "stats": {
+              "checked": 340,
+              "culled": 272,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 25,
+            "triangles": 5102
+          },
+          "candidate": {
+            "calls": 25,
+            "triangles": 2552,
+            "stats": {
+              "checked": 340,
+              "culled": 272,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 25,
+            "triangles": 5102
+          },
+          "candidate": {
+            "calls": 25,
+            "triangles": 2552,
+            "stats": {
+              "checked": 340,
+              "culled": 272,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 68,
+            "triangles": 2600
+          },
+          "candidate": {
+            "calls": 68,
+            "triangles": 2552,
+            "stats": {
+              "checked": 10,
+              "culled": 8,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 25,
+            "triangles": 5102
+          },
+          "candidate": {
+            "calls": 25,
+            "triangles": 2552,
+            "stats": {
+              "checked": 340,
+              "culled": 272,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 25,
+            "triangles": 5102
+          },
+          "candidate": {
+            "calls": 25,
+            "triangles": 2586,
+            "stats": {
+              "checked": 340,
+              "culled": 272,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 33,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 33,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 33,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 33,
+          "textures": 4,
+          "programs": 7
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "Skeleton",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 69,
+            "triangles": 2612
+          },
+          "candidate": {
+            "calls": 69,
+            "triangles": 2612,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 26,
+            "triangles": 5114
+          },
+          "candidate": {
+            "calls": 26,
+            "triangles": 5114,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 34,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 34,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 34,
+          "textures": 4,
+          "programs": 7
+        },
+        {
+          "geometries": 34,
+          "textures": 4,
+          "programs": 7
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "DungeonNPC",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 20,
+            "triangles": 5086
+          },
+          "candidate": {
+            "calls": 20,
+            "triangles": 2736,
+            "stats": {
+              "checked": 170,
+              "culled": 136,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedIdle",
+          "source": {
+            "calls": 31,
+            "triangles": 3404
+          },
+          "candidate": {
+            "calls": 31,
+            "triangles": 2736,
+            "stats": {
+              "checked": 60,
+              "culled": 48,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 20,
+            "triangles": 5086
+          },
+          "candidate": {
+            "calls": 20,
+            "triangles": 2736,
+            "stats": {
+              "checked": 170,
+              "culled": 136,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 22,
+            "triangles": 5278
+          },
+          "candidate": {
+            "calls": 22,
+            "triangles": 2964,
+            "stats": {
+              "checked": 170,
+              "culled": 134,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 25,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 25,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 25,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 25,
+          "textures": 4,
+          "programs": 9
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "Imp",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 108,
+            "triangles": 2066
+          },
+          "candidate": {
+            "calls": 108,
+            "triangles": 2066,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 112,
+            "triangles": 2138
+          },
+          "candidate": {
+            "calls": 112,
+            "triangles": 2138,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 0
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 37,
+          "textures": 4,
+          "programs": 5
+        },
+        {
+          "geometries": 37,
+          "textures": 4,
+          "programs": 5
+        },
+        {
+          "geometries": 37,
+          "textures": 4,
+          "programs": 5
+        },
+        {
+          "geometries": 37,
+          "textures": 4,
+          "programs": 5
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "DwarfSalesman",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 19,
+            "triangles": 5182
+          },
+          "candidate": {
+            "calls": 19,
+            "triangles": 2784,
+            "stats": {
+              "checked": 170,
+              "culled": 136,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedIdle",
+          "source": {
+            "calls": 31,
+            "triangles": 3452
+          },
+          "candidate": {
+            "calls": 31,
+            "triangles": 2784,
+            "stats": {
+              "checked": 60,
+              "culled": 48,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 19,
+            "triangles": 5182
+          },
+          "candidate": {
+            "calls": 19,
+            "triangles": 2784,
+            "stats": {
+              "checked": 170,
+              "culled": 136,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 21,
+            "triangles": 5374
+          },
+          "candidate": {
+            "calls": 21,
+            "triangles": 3152,
+            "stats": {
+              "checked": 170,
+              "culled": 133,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 24,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 24,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 24,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 24,
+          "textures": 4,
+          "programs": 9
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "low",
+      "type": "RespecNPC",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 38,
+            "triangles": 5542
+          },
+          "candidate": {
+            "calls": 38,
+            "triangles": 3028,
+            "stats": {
+              "checked": 190,
+              "culled": 152,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedIdle",
+          "source": {
+            "calls": 51,
+            "triangles": 3696
+          },
+          "candidate": {
+            "calls": 51,
+            "triangles": 3028,
+            "stats": {
+              "checked": 60,
+              "culled": 48,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 38,
+            "triangles": 5542
+          },
+          "candidate": {
+            "calls": 38,
+            "triangles": 3028,
+            "stats": {
+              "checked": 190,
+              "culled": 152,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 40,
+            "triangles": 5734
+          },
+          "candidate": {
+            "calls": 40,
+            "triangles": 3086,
+            "stats": {
+              "checked": 190,
+              "culled": 153,
+              "boundsBuilt": 0,
+              "lightScanNodes": 0,
+              "unknownShadow": false
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 28,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 28,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 28,
+          "textures": 4,
+          "programs": 9
+        },
+        {
+          "geometries": 28,
+          "textures": 4,
+          "programs": 9
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "high",
+      "type": "Imp",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 563,
+            "triangles": 11241
+          },
+          "candidate": {
+            "calls": 299,
+            "triangles": 5745,
+            "stats": {
+              "omitted": 264,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 496,
+            "triangles": 9665
+          },
+          "candidate": {
+            "calls": 449,
+            "triangles": 8713,
+            "stats": {
+              "omitted": 220,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 742
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "UnknownPointShadow",
+          "source": {
+            "calls": 1003,
+            "triangles": 20401
+          },
+          "candidate": {
+            "calls": 1003,
+            "triangles": 20401,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": true,
+              "lightScanNodes": 743
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 38,
+          "textures": 18,
+          "programs": 20
+        },
+        {
+          "geometries": 38,
+          "textures": 18,
+          "programs": 20
+        },
+        {
+          "geometries": 38,
+          "textures": 18,
+          "programs": 20
+        },
+        {
+          "geometries": 38,
+          "textures": 18,
+          "programs": 20
+        }
+      ],
+      "failureRestored": true
+    },
+    {
+      "quality": "high",
+      "type": "Skeleton",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "samples": [
+        {
+          "state": "Idle",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Walk",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Run",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Attack",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "Death",
+          "source": {
+            "calls": 121,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 60,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "StretchedAttack",
+          "source": {
+            "calls": 384,
+            "triangles": 14717
+          },
+          "candidate": {
+            "calls": 204,
+            "triangles": 7463,
+            "stats": {
+              "omitted": 180,
+              "checkedBatches": 0,
+              "unknownShadow": false,
+              "lightScanNodes": 507
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "FarRealmIdle",
+          "source": {
+            "calls": 141,
+            "triangles": 17219
+          },
+          "candidate": {
+            "calls": 61,
+            "triangles": 9965,
+            "stats": {
+              "omitted": 80,
+              "checkedBatches": 76,
+              "unknownShadow": false,
+              "lightScanNodes": 293
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "CellBoundaryIdle",
+          "source": {
+            "calls": 121,
+            "triangles": 17039
+          },
+          "candidate": {
+            "calls": 105,
+            "triangles": 14933,
+            "stats": {
+              "omitted": 40,
+              "checkedBatches": 80,
+              "unknownShadow": false,
+              "lightScanNodes": 269
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0,
+          "visibilityRestored": true
+        },
+        {
+          "state": "UnknownPointShadow",
+          "source": {
+            "calls": 301,
+            "triangles": 53489
+          },
+          "candidate": {
+            "calls": 301,
+            "triangles": 53489,
+            "stats": {
+              "omitted": 0,
+              "checkedBatches": 0,
+              "unknownShadow": true,
+              "lightScanNodes": 270
+            }
+          },
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        }
+      ],
+      "lifetime": [
+        {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 24
+        },
+        {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 24
+        },
+        {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 24
+        },
+        {
+          "geometries": 35,
+          "textures": 18,
+          "programs": 24
+        }
+      ],
+      "failureRestored": true
+    }
+  ],
+  "actualParty": {
+    "nativeStats": {
+      "total": 2,
+      "expected": 0,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": false
+    },
+    "exitCode": 1,
+    "paired": {
+      "reference": {
+        "calls": 154,
+        "triangles": 86238,
+        "restored": true,
+        "stats": null
+      },
+      "candidate": {
+        "calls": 154,
+        "triangles": 83650,
+        "restored": true,
+        "stats": {
+          "checked": 714,
+          "culled": 648,
+          "boundsBuilt": 0,
+          "lightScanNodes": 0,
+          "unknownShadow": false
+        }
+      },
+      "referenceAgain": {
+        "calls": 154,
+        "triangles": 86238,
+        "restored": true,
+        "stats": null
+      },
+      "image": {
+        "width": 1280,
+        "height": 844,
+        "frozenRenderClock": true,
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "maximumChannel": 0
+      },
+      "cpu": {
+        "scope": "Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.",
+        "blocks": [
+          {
+            "enabled": false,
+            "milliseconds": [
+              6.800000011920929,
+              7.300000011920929,
+              5.699999988079071,
+              6.300000011920929,
+              6.699999988079071,
+              5.9000000059604645,
+              7.199999988079071,
+              6.4000000059604645,
+              6.5999999940395355,
+              7.0999999940395355,
+              5.4000000059604645,
+              6.5
+            ],
+            "restored": true
+          },
+          {
+            "enabled": true,
+            "milliseconds": [
+              6.700000017881393,
+              5.799999982118607,
+              5.800000011920929,
+              5.5,
+              5.0999999940395355,
+              5.700000017881393,
+              5.899999976158142,
+              5.200000017881393,
+              5.699999988079071,
+              5.5999999940395355,
+              5.200000017881393,
+              5.799999982118607
+            ],
+            "restored": true
+          },
+          {
+            "enabled": true,
+            "milliseconds": [
+              5.699999988079071,
+              5.300000011920929,
+              4.899999976158142,
+              6.100000023841858,
+              6.899999976158142,
+              5.600000023841858,
+              6.299999982118607,
+              5.5999999940395355,
+              5.600000023841858,
+              6.399999976158142,
+              6.600000023841858,
+              6.399999976158142
+            ],
+            "restored": true
+          },
+          {
+            "enabled": false,
+            "milliseconds": [
+              6.9000000059604645,
+              5.799999982118607,
+              6.0999999940395355,
+              6.800000011920929,
+              6.0999999940395355,
+              7.300000011920929,
+              5.799999982118607,
+              5.600000023841858,
+              6.199999988079071,
+              5.300000011920929,
+              5.299999982118607,
+              6.4000000059604645
+            ],
+            "restored": true
+          },
+          {
+            "enabled": false,
+            "milliseconds": [
+              6.200000017881393,
+              5.299999982118607,
+              5.4000000059604645,
+              6.5,
+              5.4000000059604645,
+              5.800000011920929,
+              5.399999976158142,
+              5.100000023841858,
+              6.799999982118607,
+              6.0999999940395355,
+              5.9000000059604645,
+              5.5999999940395355
+            ],
+            "restored": true
+          },
+          {
+            "enabled": true,
+            "milliseconds": [
+              6.899999976158142,
+              7,
+              6.9000000059604645,
+              6.0999999940395355,
+              7.100000023841858,
+              8,
+              6.399999976158142,
+              6.700000017881393,
+              6.0999999940395355,
+              6.699999988079071,
+              5.600000023841858,
+              5.5
+            ],
+            "restored": true
+          },
+          {
+            "enabled": true,
+            "milliseconds": [
+              5.199999988079071,
+              6.699999988079071,
+              6,
+              6.200000017881393,
+              5.9000000059604645,
+              5.299999982118607,
+              5.5999999940395355,
+              6.600000023841858,
+              5.5999999940395355,
+              5.4000000059604645,
+              6.199999988079071,
+              6.300000011920929
+            ],
+            "restored": true
+          },
+          {
+            "enabled": false,
+            "milliseconds": [
+              6.199999988079071,
+              6.200000017881393,
+              5.799999982118607,
+              7.5,
+              7.5,
+              7.200000017881393,
+              7.699999988079071,
+              7.800000011920929,
+              7.199999988079071,
+              5.699999988079071,
+              6,
+              6.300000011920929
+            ],
+            "restored": true
+          }
+        ],
+        "reference": {
+          "frames": 48,
+          "median": 6.200000017881393,
+          "p95": 7.5
+        },
+        "candidate": {
+          "frames": 48,
+          "median": 5.9000000059604645,
+          "p95": 7
+        }
+      },
+      "quality": "low",
+      "zoom": 15
+    },
+    "observedFailure": "Strict draw-gain hypothesis expected candidate<154, received154. RGB exact and repeat stable; no draw reduction. Failure occurs before following motion/frame-profile/final server-Mongo custody checks, which are unexecuted and not claimed.",
+    "completePartySavePassed": false,
+    "actual180FrameProfile": null
+  },
+  "previousDefaultLowFailure": {
+    "source": "e8eec1b9",
+    "draws": 202,
+    "target": 200,
+    "triangles": 79857,
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 16.7,
+    "receipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json"
+  },
+  "serverMarkers": {
+    "WARNING: DATA RACE": 0,
+    "panic:": 0,
+    "fatal error:": 0,
+    "Worker panic:": 0,
+    "Recovered from panic in Update:": 0
+  },
+  "privacy": {
+    "preparedAccounts": 4,
+    "plainAndEmbeddedMembersScanned": 68,
+    "actualIdentifiersRemaining": 0,
+    "credentialedAutomaticRecordings": "off",
+    "database": "Disposable owned DB removed by harness; no public mutations."
+  },
+  "decision": "Keep source378a79a2 isolated. Select separately qualified e8eec1b9 shadow policy only; its High324draw/176626triangles/16.7ms sample passes but Low202draw failure remains open. A useful triangle or local0.3ms submission difference is not a substitute for the required draw-budget result.",
+  "nextAction": "Inspect actual Low actor-batch draw topology and source grouping before implementing submission consolidation. Cell/material/geometry splits must be attributed; retain exact current world/normal transforms, original64unit float32 origins, source assets, visibility and all200draw/85000triangle limits. Qualify a candidate with real same-scene draw reduction, strict native pixels and actual moving equipped-party/save proof; do not rerun unchanged Low for population luck. Then full moving town/Earth/fight/dungeon-approach art/combat/device work remains active.",
+  "limits": "Bounded candidate rejection, not whole-project progress through readiness. No actual final source party profile/save success, no physical-device/campaign/soak/F1-F5/beta/launch acceptance. Public27 trusted1429.7ms jump remains accepted unchanged.",
+  "evidence": "/home/aeml/.local/share/eidolon-low-actor-view-checks-20261010",
+  "inventorySHA256": "12e39d8899cc46a4eff80c244f8292f47282b7097d69cc075a50bb78d5a15b89",
+  "inventoryEntries": 69,
+  "filesIncludingInventory": 70
+}

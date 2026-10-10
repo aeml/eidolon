@@ -23,24 +23,35 @@ full original goal, physical-device and art acceptance remain open.
 [Terminal report and frozen evidence](2026-10-10-public27-terminal-verification.json).
 
 
-The held private milestone now selects default lazy gameplay geometry ownership
-at runtime source **fa2f7075**, with normal worker preparation **44e0c67c**.
-Actual cold/returning published worker, offline reuse, worker exception fallback,
-quality reload, three High/Low retired engines, warmed scene cycles and transport
-recoveries pass. Real server/Mongo High/Low four-class14-slot party saves pass.
-There are87 distinct passing focused checks and14 native passes/2 skips, retry0;
-original mock failure remains retained. Low38-entity ordinary moving sample:
-175draws/84361triangles/16.7ms median+p95 passes sampled limits. High39-entity
-sample: **417draws fails350**,191783triangles/16.7ms median+p95 passes those
-sampled limits. Earlier334draw High evidence describes an independent22-entity
-population and cannot close the current draw gap. Default ownership is selected
-privately; public27 is unchanged. Normal preparation recreates the exact worker
-from a missing-artifact state; preflight rejects missing workers before binary,
-DB or accounts. [Startup, fallback, lifetime and actual-party evidence](2026-10-10-default-geometry-startup-qualification.json).
-Next implementation targets measured High shadow submissions with conservative
-current-pose influence bounds, original/unknown-light fallback, exact visible
-shadow/color controls and unchanged350draw target. Existing view/shadow pilots
-remain off. Combat, supported devices, final art and the full roadmap stay open.
+The held private milestone now selects **e8eec1b9 conservative rigid actor shadow
+influence**, alongside default lazy geometry and normal worker preparation.
+Current rigid pivot and float32 instance bounds omit only shadow submissions
+whose complete padded directional-light volume cannot reach the visible camera.
+Supplied skins, custom deformation and unknown light paths retain originals;
+source geometry and color visibility stay intact.89 focused checks,9 default
+native checks/34 exact RGB pairs, High/Low three-session retirement, warmed
+scene cycles and actual four-class14-slot server/Mongo saves pass. Original
+Low test expectation failure is retained; Low shadows are disabled and perform
+zero shadow/light work. Actual High33-entity180-frame sample **324draws,
+176626triangles,16.7ms median+p95** passes sampled limits. Same-frame default
+shadow control390→330draws has zero changed/unstable pixels. Independent
+prototype417→317 control is also exact; no causal FPS claim across populations.
+[Qualified shadow evidence](2026-10-10-actor-shadow-influence-qualification.json).
+
+**Low remains open:** the current30–31entity180-frame sample has **202draws,
+failing200**, while79857triangles and16.7ms median+p95 pass. Earlier175draw
+Low evidence describes another population and cannot replace this failure.
+A following Low rigid camera policy378a79a2 passes90 focused checks and11native
+functional checks with exact pixels, but the actual frozen comparison remains
+154→154draws despite86238→83650triangles. Its strict draw-gain assertion fails
+before the next motion/frame profile/final Mongo custody; these did not execute.
+The candidate stays unselected, original failure retained, no retry or waiver.
+[Unselected Low hypothesis](2026-10-10-low-actor-view-unselected.json).
+Next: inspect actual Low batch draw topology and consolidate measured submissions
+while preserving exact world/normal transforms,64-unit float32 origins and all
+content. Require same-scene draw reduction and actual moving-party/save proof
+at unchanged limits; then continue ordinary town/Earth/fight/dungeon-approach
+art/combat/device work. Public27 and its1429.7ms jump remain unchanged.
 
 The following source-specific receipts retain their historical state; later
 selection above supersedes their default-null and held-unchanged descriptions.

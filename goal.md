@@ -266,3 +266,34 @@ High shadow-draw reduction with conservative current-pose influence, exact
 visible shadows and unknown-light fallback; preserve350draw target. Combat,
 devices, art, every original1.11–1.99 requirement and owner-deferred campaign/
 phone feedback remain active. See default-geometry-startup-qualification.
+
+
+Conservative actor shadow influence e8eec1b9 now ordinarily selected only in
+held/private integration.89 focused checks and9 default native checks/34exact
+RGB pairs pass; High/Low retired owners release roots/listeners/caches and
+warmed scene transitions remain stable. Actual default High33entity180frames
+324draws/176626triangles/16.7msmedian+p95 passes sampled limits. Frozen same
+scene390→330draws RGB0, source repeats exact; independent prototype417→317
+also exact. Original supplied skins/source geometry/color remain intact;
+unknown/deformed/light paths keep original shadows. Actual four-class14slot
+Mongo saves pass. Frozen259-entry inventory6571931292cac7ae8d408156b3a95986bb99e39f6757762dd0e3952d4f0c5c43.
+Actual defaultLow30–31entities202draws fails200,79857triangles/16.7ms pass.
+Preserve this failure; older175draw Low window is not universal acceptance.
+Following Low rigid color-view378a79a2 remains unselected:90focused/11native
+functional pass, exact RGB and2588triangle reduction, but154→154draws unchanged.
+Strict actual native draw-gain assertion fails before following motion/profile/
+final save; no acceptance claimed for these unexecuted steps.69-entry frozen
+inventory12e39d8899cc46a4eff80c244f8292f47282b7097d69cc075a50bb78d5a15b89.
+No public mutation. Next: attribute actual Low batch splits and qualify meaningful
+submission consolidation with exact transforms/64unit float32 origins and source
+assets preserved; retain200draw/85000triangle limits and native real-party saves.
+Then full ordinary equipped/HUD town/Earth/fight/dungeon approach, representative
+combat, art and supported devices remain active. Every original1.11–1.99 item,
+owner-deferred campaign/phone feedback, failed24hsoak/F1–F5/beta/launch/handoff
+remains open. See actor-shadow-influence-qualification and low-actor-view-unselected.
+
+Held normal preparation initially found its older dependency symlink lacked
+esbuild. Original setup failure retained; only owned ignored symlink repointed
+to already validated current tree, then normal npm preparation passes and exact
+worker44618fbd/source runtime verified. Separate3-entry integration inventory
+40e485e5e588c17e35cb9dacfe1ca69d14065df222c401163c1bfee77dd6277a.
