@@ -58,6 +58,77 @@ test('disabled shadows skip the light scan and retain filter-padded geometry at 
     f.mesh.position.set(11.00005, 5, 0); f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
 });
 
+test('settled scene geometry does not repeat light discovery, while late nested lights remain authoritative', () => {
+    const f = fixture(), empty = new THREE.Group(); f.scene.add(empty);
+    for (let i = 0; i < 2000; i++) empty.add(new THREE.Object3D());
+    f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    f.begin(); expect(f.view.stats.lightScanNodes).toBeLessThanOrEqual(3);
+    const point = new THREE.PointLight(); point.castShadow = true;
+    const nested = new THREE.Group(); empty.children[0].add(nested); nested.add(point);
+    f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    nested.visible = false; f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    nested.visible = true; f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    point.castShadow = false; f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    point.castShadow = true; point.removeFromParent(); f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    nested.add(point); f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    empty.clear(); f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    f.view.dispose();
+});
+
+test('reentrant child events and same-scene reparenting retain late casting lights', () => {
+    const f = fixture(), first = new THREE.Group(), second = new THREE.Group(); f.scene.add(first, second);
+    let injected = false;
+    first.addEventListener('childadded', () => {
+        if (injected) return;
+        injected = true;
+        const point = new THREE.PointLight(); point.castShadow = true; second.add(point);
+    });
+    f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    first.add(new THREE.Group()); f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    second.clear(); f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    const subtree = new THREE.Group(), point = new THREE.PointLight(); point.castShadow = true;
+    subtree.add(point); first.add(subtree);
+    first.addEventListener('childremoved', event => { if (event.child === subtree) second.add(subtree); });
+    first.remove(subtree); f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    subtree.clear(); f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    f.view.dispose();
+});
+
+test('hidden light ancestry, typed-light flags and live shadow settings match current traversal', () => {
+    const f = fixture(), outer = new THREE.Group(), inner = new THREE.Group();
+    outer.add(inner); f.scene.add(outer); inner.add(f.light);
+    f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    f.light.position.set(800, 100, 0); f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    outer.visible = false; f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    outer.visible = true; f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    f.light.isLight = false; f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    f.light.isLight = true; f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    f.light.castShadow = false; f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    f.light.castShadow = true; f.light.shadow.mapSize.x = 0; f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    f.view.dispose();
+});
+
+test('custom visibility traversal conservatively uses its actual visible lights', () => {
+    const f = fixture(), custom = new THREE.Group(), point = new THREE.PointLight(); point.castShadow = true;
+    custom.traverseVisible = visitor => { visitor(custom); visitor(point); };
+    f.scene.add(custom); f.begin(); expect(f.view.rejects(f.mesh)).toBe(false);
+    f.scene.remove(custom); f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    f.view.dispose();
+});
+
+test('scene switches, shadows-off and disposal release owned listeners while retaining other owners', () => {
+    const f = fixture(), other = new THREE.Scene(), listener = jest.fn();
+    f.scene.addEventListener('childadded', listener); f.begin(); const first = f.view.lightMembership;
+    f.view.beginFrame(f.renderer, other, f.camera); expect(first.nodes.size).toBe(0);
+    f.scene.add(new THREE.Group()); expect(listener).toHaveBeenCalledTimes(1);
+    const second = f.view.lightMembership;
+    f.renderer.shadowMap.enabled = false; f.view.beginFrame(f.renderer, other, f.camera);
+    expect(second.nodes.size).toBe(0); expect(f.view.lightMembership).toBeNull(); expect(f.view.stats.lightScanNodes).toBe(0);
+    f.renderer.shadowMap.enabled = true; f.begin(); const third = f.view.lightMembership;
+    f.view.dispose(); f.view.dispose(); expect(third.nodes.size).toBe(0);
+    expect(f.scene.hasEventListener('childadded', listener)).toBe(true);
+});
+
 test.each(['reversed-depth', 'array-camera', 'override-material'])('%s view conservatively retains the ordinary path', kind => {
     const f = fixture();
     if (kind === 'reversed-depth') Object.defineProperty(f.camera, 'reversedDepth', { value: true });

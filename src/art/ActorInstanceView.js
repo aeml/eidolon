@@ -1,6 +1,7 @@
 import { Box3, Frustum, Material, Matrix4, Object3D, Vector3, WebGLCoordinateSystem } from 'three';
 import { isOwnedRigidSurfaceMaterial } from './RigidSurfaceBatches.js';
 import { getShadowFilterWorldPadding, shadowInfluenceIntersectsFrustum } from '../core/FoliageShadowInfluence.js';
+import { SceneLightMembership } from './SceneLightMembership.js';
 
 const finiteBox = box => !box.isEmpty() && Number.isFinite(box.min.x) && Number.isFinite(box.min.y) &&
     Number.isFinite(box.min.z) && Number.isFinite(box.max.x) && Number.isFinite(box.max.y) && Number.isFinite(box.max.z);
@@ -20,6 +21,10 @@ export class ActorInstanceView {
     beginFrame(renderer, scene, camera) {
         this.valid = false; this.shadows.length = 0; this.shadowConservative = false;
         this.stats = { checked: 0, culled: 0, boundsBuilt: 0, lightScanNodes: 0, unknownShadow: false };
+        if (this.lightMembership && (this.lightMembership.scene !== scene || !this.enabled || this.disposed ||
+            renderer?.shadowMap?.enabled !== true)) {
+            this.lightMembership.dispose(); this.lightMembership = null;
+        }
         if (!this.enabled || this.disposed || !renderer || !camera || camera.isArrayCamera || camera.reversedDepth || scene.overrideMaterial ||
             camera.coordinateSystem !== WebGLCoordinateSystem ||
             ![...camera.projectionMatrix.elements, ...camera.matrixWorldInverse.elements].every(Number.isFinite)) return;
@@ -32,7 +37,8 @@ export class ActorInstanceView {
         if (renderer.shadowMap?.enabled !== true) { this.shadowConservative = true; this.stats.unknownShadow = true; return; }
         // Inspect the actual visible light set, including late/nested lights.
         // An unrecognized casting light keeps all original casting leaves.
-        scene.traverseVisible(object => {
+        if (!this.lightMembership) this.lightMembership = new SceneLightMembership(scene);
+        this.lightMembership.forEachVisible(object => {
             this.stats.lightScanNodes++;
             if (!object.isLight || !object.castShadow || this.shadowConservative) return;
             const padding = object.isDirectionalLight ? getShadowFilterWorldPadding(object.shadow,
@@ -45,6 +51,10 @@ export class ActorInstanceView {
             for (const plane of frustum.planes) plane.constant += padding;
             this.shadows.push({ sun: this.sun.clone(), frustum });
         });
+        this.stats.lightMembershipNodes = this.lightMembership.nodes.size;
+        this.stats.lightMembershipBuilds = this.lightMembership.builds;
+        this.stats.lightVisibilityChecks = this.lightMembership.visibilityChecks;
+        this.stats.lightMembershipFallback = this.lightMembership.fallback;
         this.stats.unknownShadow = this.shadowConservative;
     }
 
@@ -83,5 +93,6 @@ export class ActorInstanceView {
     dispose() {
         this.disposed = true; this.enabled = false; this.valid = false;
         this.bounds = new WeakMap(); this.shadows.length = 0;
+        this.lightMembership?.dispose(); this.lightMembership = null;
     }
 }
