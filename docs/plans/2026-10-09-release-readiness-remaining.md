@@ -42,6 +42,16 @@ sale/stash assertions, fresh login and direct Mongo custody/metadata checks.
 These controls remain valid within scope; they do not establish or repair the
 original live cause. Diagnose that discrepancy before a successor publication.
 
+New private diagnostic1c7cbd90 reproduces a legitimate +175 difference after a
+correct fresh wallet baseline: freeing a bag slot through sale/stash delivers a
+retained actual level40 elite-ambush/fortune1 room award. Four Go-race controls
+pass with exact saved receipt/one feedback, original equipment/bag/stash custody
+and no repeated award. Real admission/dispatch/recovery/filesystem journal,
+modeled storage only; no browser/Mongo or original public-cause conclusion.
+[Boundary evidence](2026-10-10-gold-room-reward-boundary.json). Product and strict
+assertions remain unchanged; observe actual reward provenance before selecting
+a repair or publishing another version.
+
 Separate private integration **14d4ea1f** ordinarily merges held9d724663 with
 public26, preserving held art/model/render/movement bytes and default inactive
 geometry.469checks/6suites, focused wallet/ability Go-race and actual raised-world

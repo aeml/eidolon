@@ -1,0 +1,52 @@
+{
+  "recordedUTC": "2026-10-10T14:25:48.002760+00:00",
+  "commit": "1c7cbd9031b7232276f907da7aec0e8235e664a8",
+  "basePublic26": "77859697a71329facd0584a95167c80eac392398",
+  "sourceSHA256": "899b5727fe59a7a76e4829b0452f059a60ff8a6512ce2082132b390a06c02e57",
+  "status": "Qualified diagnostic only; product/economy/helpers/assertions unchanged; not published.",
+  "checks": "4 Go-race subcases pass0.61s/package1.671s through real Client.handleMessage, read-only correlated wallet, vendor/stash dispatch, deferred room recovery and filesystem save journal, using modeled immutable storage.",
+  "controls": [
+    {
+      "action": "sale",
+      "pendingRoom": false,
+      "freshGold": 99,
+      "actionGold": 3,
+      "earnedGold": 0,
+      "finalGold": 102
+    },
+    {
+      "action": "sale",
+      "pendingRoom": true,
+      "freshGold": 99,
+      "actionGold": 3,
+      "earnedGold": 175,
+      "finalGold": 277
+    },
+    {
+      "action": "stash",
+      "pendingRoom": false,
+      "freshGold": 99,
+      "actionGold": 0,
+      "earnedGold": 0,
+      "finalGold": 99
+    },
+    {
+      "action": "stash",
+      "pendingRoom": true,
+      "freshGold": 99,
+      "actionGold": 0,
+      "earnedGold": 175,
+      "finalGold": 274
+    }
+  ],
+  "earnedAmount": "Actual level40 elite-ambush room with fortune1 produces175Gold plus one frozen item; amount not assigned to wallet or fabricated as a reply. Full bag keeps complete award pending before baseline.",
+  "proof": "Fresh read exactly matches pre-action balance; freeing one slot then delivers recorded earned175Gold with one feedback event and matching whole-character durable receipt. Exact original equipment/24other items and stash item preserved. Repeated requests add no Gold/award.",
+  "limits": "This reproduces a legitimate +175 difference after a correct fresh baseline, contradicting the assumption that bag work is always the only credit. It does NOT establish that the actual public25/26 account had this entitlement. No native browser, actual Mongo, production-log or full-roadmap evidence claimed. Original required live failures remain failures.",
+  "initialCompileError": "First diagnostic build failed because an existing helper returns decoded Message objects; corrected its use before executing the four cases. Initial log retained, no runtime assertion waived.",
+  "next": "Use bounded disposable real-server/native evidence to observe Gold/room-credit provenance with unchanged strict assertions; original live cause remains open until source evidence identifies it.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-gold-room-reward-boundary-checks-20261010",
+    "inventoryEntries": 4,
+    "inventorySHA256": "3980c684282ed4a02d12f676a14c34f8c6a79f7f31ed40bda94212c53132e59a"
+  }
+}

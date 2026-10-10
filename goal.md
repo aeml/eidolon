@@ -165,6 +165,13 @@ stages skipped. See `docs/plans/2026-10-10-public26-terminal-verification.json`.
 Original economic cause remains unproven; diagnose before another publication.
 No manual reruns/cancels/waivers or public24/25/26product merge into held.
 
+Private diagnostic1c7cbd90 proves a fresh wallet read can be correct while
+ordinary sale/stash bag work then delivers separately earned room Gold:
+four Go-race controls pass, actual level40/elite-ambush/fortune1 award175,
+exact saved receipt/feedback/custody and no repeated award. Product unchanged;
+modeled storage/filesystem journal, no native/Mongo/public-cause inference.
+See `docs/plans/2026-10-10-gold-room-reward-boundary.json`.
+
 Separate private world/maintenance integration14d4ea1f ordinarily merges held
 9d724663 and exact public26, retaining held art/models/render/movement bytes.
 469checks/6suites and focused Go-race checks pass; actual copied/versioned
