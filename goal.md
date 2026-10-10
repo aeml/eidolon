@@ -164,3 +164,12 @@ Prepare cumulative Alpha1.79.27 and independently verify deployment and unchange
 required gates. Earlier failures stay retained. No raised/body/geometry/shadow
 pilots selected. Full original1.11–1.99scope, art/device/owner/F1–F5/failed24hsoak/
 beta/launch/handoff remain active; this maintenance milestone is not completion.
+
+Release27 first CI38062443230 failed before deployment: a missed published-bundle
+assertion still required flight>=1500ms, whereas new1.3s flight actually landed
+in1393.7/1425.2ms (configured retry1447.1/1339.9), endpoints0. Server/client/other
+shards passed. Deployment/live QA skipped. Corrected only that assertion to the
+same1300–1550ms as source fixture; actual copied/versioned bundle native1pass7s
+with1356.4ms15FPS/1318.8ms60FPS, endpoints0. No runtime/economic changes or manual
+CI rerun. Follow-up ordinary publication retains undeployed candidate version27.
+Full original goal and all unresolved gates remain active.

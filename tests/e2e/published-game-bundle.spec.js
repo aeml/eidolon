@@ -161,8 +161,8 @@ test('published engine reaches the jump destination in real elapsed time at low 
     expect(result.errors).toEqual([]);
     expect(result.samples.map(sample => sample.fps)).toEqual([15, 60]);
     for (const sample of result.samples) {
-        expect(sample.elapsedMs).toBeGreaterThanOrEqual(1500);
-        expect(sample.elapsedMs).toBeLessThan(1750);
+        expect(sample.elapsedMs).toBeGreaterThanOrEqual(1300);
+        expect(sample.elapsedMs).toBeLessThan(1550);
         expect(sample.positionError).toBeLessThan(0.01);
         expect(sample.renderError).toBeLessThan(0.01);
     }
