@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"eidolon-server/internal/database"
+	"eidolon-server/internal/game"
 )
 
 func TestMaintenanceActualPublishedLoginAndJump(t *testing.T) {
@@ -40,7 +41,14 @@ func TestMaintenanceActualPublishedLoginAndJump(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	address, stop := compatStartServer(t, binary, uri, 17925, "-save-journal-dir", t.TempDir())
+	args := []string{"-save-journal-dir", t.TempDir()}
+	if profile := os.Getenv("EIDOLON_MAINTENANCE_TERRAIN_PROFILE"); profile != "" {
+		if profile != game.RaisedEarthTerrainProfile {
+			t.Fatal("unknown maintenance terrain profile")
+		}
+		args = append(args, "-terrain-profile", profile)
+	}
+	address, stop := compatStartServer(t, binary, uri, 17925, args...)
 	root, err := filepath.Abs("..")
 	if err != nil {
 		t.Fatal(err)
