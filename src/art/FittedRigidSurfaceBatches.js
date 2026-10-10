@@ -3,9 +3,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { hasTrustedEquipmentSurfaceMaps } from './AuthoredEquipmentSurfaces.js';
 import { createFlatSurfaceMaterial } from './FittedEquipmentBatches.js';
 
-function keyFor(mesh, serialization) {
+function keyFor(mesh, serialization, animatedTargets) {
     const geometry = mesh.geometry, material = mesh.material;
     if (!mesh.isMesh || mesh.isSkinnedMesh || mesh.isInstancedMesh || mesh.children.length || !mesh.visible ||
+        animatedTargets.has(mesh.name) || animatedTargets.has(mesh.uuid) ||
         Array.isArray(material) || material?.type !== 'MeshStandardMaterial' ||
         material.transparent || material.opacity !== 1 || !material.visible || material.vertexColors ||
         material.alphaTest || material.alphaHash || material.alphaMap || material.displacementMap || material.clippingPlanes ||
@@ -37,14 +38,14 @@ function keyFor(mesh, serialization) {
         mesh.renderOrder, mesh.layers.mask, mesh.frustumCulled]);
 }
 
-export function batchFittedRigidSurfaces(root) {
+export function batchFittedRigidSurfaces(root, { animatedTargets = new Set() } = {}) {
     const parents = []; root.traverse(node => { if (node.children.length) parents.push(node); });
     const serialization = { textures: {}, images: {} };
     let saved = 0;
     for (const parent of parents) {
         const buckets = new Map();
         for (const mesh of parent.children) {
-            const key = keyFor(mesh, serialization);
+            const key = keyFor(mesh, serialization, animatedTargets);
             if (!key) continue;
             if (!buckets.has(key)) buckets.set(key, []);
             buckets.get(key).push(mesh);

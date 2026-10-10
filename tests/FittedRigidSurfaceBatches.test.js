@@ -85,3 +85,10 @@ test('rejects indices crossing materials and nonconstant surface values', () => 
     source.attributes.fittedDiffuseRoughness.array[4] += .1;
     expect(() => gameplayRigidIndices(source)).toThrow('one flat material');
 });
+
+
+test('keeps explicitly animated source nodes separate beneath their existing pivots', () => {
+    const { root, sources } = fixture();
+    expect(batchFittedRigidSurfaces(root, { animatedTargets: new Set([sources[0].name]) })).toBe(0);
+    expect(root.children).toEqual(sources); expect(sources.every(source => source.visible)).toBe(true);
+});

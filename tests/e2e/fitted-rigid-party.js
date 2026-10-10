@@ -3,6 +3,7 @@ import { writeFile } from 'node:fs/promises';
 
 export async function prepareFittedRigidParty(page, testInfo) {
     const installed = await page.evaluate(async () => {
+        const THREE = await import('three');
         const { batchFittedRigidSurfaces } = await import('/src/art/FittedRigidSurfaceBatches.js');
         const game = window.game, owner = game.renderSystem.actorGameplayGeometry;
         const actors = [game.player, ...game.remotePlayers.values()].filter(actor => actor.mesh?.userData.authoredClass);
@@ -14,7 +15,9 @@ export async function prepareFittedRigidParty(page, testInfo) {
                 if (node.userData.authoredEquipment && ['mainHand', 'offHand'].includes(node.userData.slot)) mounts.push(node);
             });
             for (const mount of mounts) {
-                saved += batchFittedRigidSurfaces(mount);
+                const animatedTargets = new Set((actor.mesh.userData.animations || []).flatMap(clip =>
+                    clip.tracks.map(track => THREE.PropertyBinding.parseTrackName(track.name).nodeName)));
+                saved += batchFittedRigidSurfaces(mount, { animatedTargets });
                 mount.traverse(mesh => {
                     if (!mesh.name.startsWith('FittedRigidBatch_')) return;
                     const sources = mesh.userData.fittedBatchSources.map(name => mesh.parent.children.find(child => child.name === name));

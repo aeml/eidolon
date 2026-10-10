@@ -172,7 +172,7 @@ function bindParts(state, gltf, slot, item, catalog, look, skeletons, staged) {
         instanceMaterials(root, item, look); parts.push(root); staged.push(root);
         // Explicit private pilot until native material/derivative equivalence
         // and complete scene budgets qualify this path.
-        if (state.rigidSurfaceBatching && !gltf.animations?.length) batchFittedRigidSurfaces(root);
+        if (state.rigidSurfaceBatching && !gltf.animations?.length) batchFittedRigidSurfaces(root, { animatedTargets: state.animatedTargets });
         root.userData.fittedParent = socket;
     } else {
         const targets = new Map(state.body.skeleton.bones.map((bone, i) => [bone.name, { bone, inverse: state.body.skeleton.boneInverses[i] }]));
@@ -236,6 +236,8 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
     if (!force && signature === root.userData.equipmentVisualSignature) return { supported: true, changed: false };
     const epoch = ++state.epoch; root.userData.equipmentVisualSignature = signature;
     state.rigidSurfaceBatching = root.userData.fittedRigidSurfaceBatching === true;
+    state.animatedTargets = new Set((root.userData.animations || []).flatMap(clip =>
+        clip.tracks.map(track => THREE.PropertyBinding.parseTrackName(track.name).nodeName)));
     root.userData.updateWeaponProfile?.(active);
     const requested = Object.entries(active).flatMap(([slot, item]) => {
         const descriptor = resolveEquipmentVisualDescriptor(item);
