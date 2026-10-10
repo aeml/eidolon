@@ -74,3 +74,18 @@ test.each(['different-count', 'instanced', 'invalid-index', 'all-vertices'])('un
         expect(candidate.index.array).toEqual(indices); expect(candidate.index.array).not.toBe(indices);
     } finally { source.dispose(); candidate.dispose(); }
 });
+
+test.each([false, true])('distinct interleaved views keep their source rows (full=%s)', full => {
+    const source = sourceGeometry(), values = new Float32Array(84);
+    for (let i = 0; i < values.length; i++) values[i] = i + 0.25;
+    const first = new THREE.InterleavedBuffer(values.subarray(0, 42), 7);
+    const second = new THREE.InterleavedBuffer(values.subarray(42), 7);
+    source.setAttribute('normal', new THREE.InterleavedBufferAttribute(first, 3, 0));
+    source.setAttribute('color', new THREE.InterleavedBufferAttribute(second, 3, 4));
+    const indices = new Uint32Array(full ? [3, 1, 2, 0, 4, 5] : [3, 1, 2]), candidate = clonePreparedGeometry(source, indices);
+    try {
+        for (const name of ['normal', 'color']) for (let i = 0; i < indices.length; i++)
+            expect(rawRow(candidate.attributes[name], candidate.index.array[i])).toEqual(rawRow(source.attributes[name], indices[i]));
+        expect(candidate.attributes.normal.data.array.buffer).not.toBe(candidate.attributes.color.data.array.buffer);
+    } finally { source.dispose(); candidate.dispose(); }
+});
