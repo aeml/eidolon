@@ -57,6 +57,7 @@ export class ActorInstanceBatches {
         this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
         this.enabled = true;
         this.viewFilter = null;
+        this.shadowFilter = null;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
         scene.traverse(root => this.register(root));
         this.watchedGroups = [...new Set(watchedGroups)];
@@ -157,10 +158,12 @@ export class ActorInstanceBatches {
                 batch.removeFromParent(); batch.dispose(); this.batches.delete(key);
             }
             this.group.visible = used.size > 0;
+            this.shadowFilter?.beginFrame(renderer, this.scene, camera, this.batches.values());
         } catch (error) { this.endFrame(); throw error; }
     }
 
     endFrame() {
+        this.shadowFilter?.endFrame();
         this.hidden.forEach(part => { part.visible = true; }); this.hidden.length = 0;
         this.group.visible = false;
     }
