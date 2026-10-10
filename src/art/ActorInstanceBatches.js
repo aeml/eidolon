@@ -1,5 +1,5 @@
 import { isOwnedRigidSurfaceMaterial } from './RigidSurfaceBatches.js';
-import { DynamicDrawUsage, Group, InstancedMesh, Material, Matrix4, Object3D } from 'three';
+import { DynamicDrawUsage, Group, InstancedMesh, Material, Object3D } from 'three';
 
 const inside = (part, ancestor, visible = false) => {
     for (let node = part; node; node = node.parent) {
@@ -54,7 +54,7 @@ export class ActorInstanceBatches {
         this.scene = scene;
         this.group = new Group(); this.group.name = 'OpaqueActorInstances'; this.group.visible = false;
         scene.add(this.group);
-        this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
+        this.batches = new Map(); this.hidden = [];
         this.enabled = true;
         this.viewFilter = null;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
@@ -146,10 +146,10 @@ export class ActorInstanceBatches {
                 // A leaf can straddle its root's cell boundary. Filtering the
                 // first member must not change the original float32 origin.
                 const sourceWorld = eligibleParts[0].matrixWorld.elements;
-                batch.matrixWorld.makeTranslation(Math.floor((sourceWorld[12] + 32) / 64) * 64, 0,
-                    Math.floor((sourceWorld[14] + 32) / 64) * 64);
-                this.inverse.copy(batch.matrixWorld).invert();
-                parts.forEach((part, index) => batch.setMatrixAt(index, this.matrix.multiplyMatrices(this.inverse, part.matrixWorld)));
+                const originX = Math.floor((sourceWorld[12] + 32) / 64) * 64;
+                const originZ = Math.floor((sourceWorld[14] + 32) / 64) * 64;
+                batch.matrixWorld.makeTranslation(originX, 0, originZ);
+                parts.forEach((part, index) => this.writeCellMatrix(batch, index, part, originX, originZ));
                 batch.instanceMatrix.needsUpdate = true; batch.computeBoundingSphere();
                 for (const part of parts) { this.hidden.push(part); part.visible = false; }
             }
@@ -158,6 +158,17 @@ export class ActorInstanceBatches {
             }
             this.group.visible = used.size > 0;
         } catch (error) { this.endFrame(); throw error; }
+    }
+
+    writeCellMatrix(batch, index, part, originX, originZ) {
+        // The batch world matrix is translation-only. Preserve the complete
+        // eligible affine linear transform, including nonuniform scale.
+        const world = part.matrixWorld.elements, values = batch.instanceMatrix.array, offset = index * 16;
+        values.set(world, offset);
+        // Subtract in double precision before storing the relative float32
+        // translation; subtracting from the rounded attribute loses gear fit.
+        values[offset + 12] = world[12] - originX;
+        values[offset + 14] = world[14] - originZ;
     }
 
     endFrame() {

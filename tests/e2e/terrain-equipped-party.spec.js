@@ -452,6 +452,20 @@ test('single native renderer observes three live equipped party socket peers on 
             for (const row of [paired.reference, paired.candidate, paired.referenceAgain, ...paired.cpu.blocks]) expect(row.restored).toBe(true);
             recordPeerLiveness('actor-view-prepared');
         }
+        if (process.env.EIDOLON_E2E_ACTOR_CELL_TRANSLATION_COMPARE === '1') {
+            const paired = await page.evaluate(async () => {
+                const { compareActorCellTranslation } = await import('/tests/e2e/actor-cell-translation-comparison.js');
+                return compareActorCellTranslation(window.game.renderSystem, true);
+            });
+            await writeFile(testInfo.outputPath('actor-cell-party.json'), JSON.stringify(paired, null, 2));
+            console.log('[actor-cell-party]', JSON.stringify(paired));
+            expect(paired.image.changedChannels).toBe(0); expect(paired.image.unstableChannels).toBe(0);
+            expect(paired.matrices.matrixDifferences).toBe(0);
+            expect(paired.matrices.coefficients).toBeGreaterThan(0);
+            expect(paired.reference).toEqual(paired.candidate); expect(paired.reference).toEqual(paired.again);
+            for (const block of paired.cpu.blocks) expect(block.restored).toBe(true);
+            recordPeerLiveness('actor-cell-prepared');
+        }
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
