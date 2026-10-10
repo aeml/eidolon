@@ -1,0 +1,104 @@
+import { writeFile } from 'node:fs/promises';
+import { expect, test } from '@playwright/test';
+import { collectBrowserFailures, credentialsFromEnvironment, loginAndEnterWorld, projectGroundOffset } from './helpers.js';
+
+test.use({ trace: 'off', screenshot: 'off', video: 'off' });
+
+test('live long jump and walking aura stay aligned in about 1.5 seconds total', async ({ page, baseURL }, testInfo) => {
+    test.skip(process.env.EIDOLON_E2E_JUMP_TIMING !== '1', 'Explicit fresh live jump acceptance');
+    const failures = collectBrowserFailures(page, baseURL);
+    await loginAndEnterWorld(page, credentialsFromEnvironment());
+    await page.waitForFunction(() => Boolean(window.game?.player?.mesh?.parent));
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    await page.waitForFunction(() => window.game?.player?.wellRestedSeconds >= 8 && window.game.player.attachedStatusEffects.has('well_rested'));
+    await page.screenshot({ path: testInfo.outputPath('before-jump.png') });
+    let target;
+    for (const [x, z] of [[27, 0], [-27, 0], [0, 27], [0, -27]]) {
+        const availableDistance = await page.evaluate(({ x, z }) => {
+            const game = window.game, start = game.player.position, end = start.clone();
+            end.x += x; end.z += z;
+            game.collisionManager?.constrainRockMovementDestination?.(start, end, game.player.radius || 0);
+            game.collisionManager?.constrainToDungeonWalkableArea?.(end, game.player.radius || 0);
+            return Math.hypot(end.x - start.x, end.z - start.z);
+        }, { x, z });
+        if (availableDistance < 20.25) continue;
+        const candidate = await projectGroundOffset(page, x, z, { allowScaling: false });
+        if (candidate?.canvas) { target = candidate; break; }
+    }
+    expect(target, 'A full long-jump destination must be visible on the canvas').toBeTruthy();
+    await page.evaluate(() => {
+        const record = window.__jumpTiming = { frames: 0, acceptedDuration: null, history: [], auraSamples: 0, maxAuraError: 0, phaseBacksteps: 0 };
+        const canvas = window.game.renderSystem.renderer.domElement;
+        const clicked = event => {
+            if (!event.isTrusted || !event.ctrlKey || event.button !== 0) return;
+            record.clickedAt = performance.now();
+            canvas.removeEventListener('pointerdown', clicked, true);
+        };
+        canvas.addEventListener('pointerdown', clicked, true);
+        const sample = () => {
+            const game = window.game, jump = game.playerJumpState, now = performance.now();
+            if (jump) {
+                record.startedAt ??= now;
+                record.frames++;
+                record.history.push({ elapsedMs: now - record.clickedAt, elapsed: jump.elapsed, progress: jump.progress, serverDriven: jump.serverDriven });
+                const aura = game.player.attachedStatusEffects.get('well_rested');
+                if (aura) { record.auraSamples++; record.maxAuraError = Math.max(record.maxAuraError, aura.group.position.distanceTo(game.player.mesh.position)); }
+                if (record.previousProgress !== undefined && jump.visualProgress < record.previousProgress - 1e-6) record.phaseBacksteps++;
+                record.previousProgress = jump.visualProgress;
+                record.distance = Math.hypot(jump.end.x - jump.start.x, jump.end.z - jump.start.z);
+                record.end = { x: jump.end.x, z: jump.end.z };
+                if (jump.serverDriven) record.acceptedDuration = jump.duration;
+            } else if (record.startedAt && game.player.state !== 'JUMPING') {
+                record.positionError = Math.hypot(game.player.position.x - record.end.x, game.player.position.z - record.end.z);
+                record.renderError = Math.hypot(game.player.mesh.position.x - record.end.x, game.player.mesh.position.z - record.end.z);
+                record.elapsedMs = now - record.clickedAt;
+                record.observedFlightMs = now - record.startedAt;
+                canvas.removeEventListener('pointerdown', clicked, true);
+                return;
+            }
+            if (!record.startedAt || now - record.startedAt < 5_000) requestAnimationFrame(sample);
+            else canvas.removeEventListener('pointerdown', clicked, true);
+        };
+        requestAnimationFrame(sample);
+    });
+    await page.keyboard.down('Control');
+    try { await page.mouse.click(target.x, target.y); }
+    finally { await page.keyboard.up('Control'); }
+    await expect.poll(() => page.evaluate(() => window.__jumpTiming.elapsedMs), { timeout: 6_000 }).toBeGreaterThan(0);
+    const result = await page.evaluate(() => window.__jumpTiming);
+    await writeFile(testInfo.outputPath('connected-jump-timing.json'), JSON.stringify(result, null, 2));
+    await testInfo.attach('connected-jump-timing', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
+    expect(Number.isFinite(result.clickedAt), 'Total time starts at the trusted native Ctrl-click').toBe(true);
+    expect(result.distance).toBeGreaterThanOrEqual(20.25);
+    expect(result.acceptedDuration).toBeCloseTo(1.3, 6);
+    expect(result.elapsedMs).toBeGreaterThan(1_250);
+    expect(result.elapsedMs).toBeLessThan(1_600);
+    expect(result.auraSamples).toBeGreaterThan(3);
+    expect(result.maxAuraError).toBeLessThan(1e-5);
+    expect(result.phaseBacksteps).toBe(0);
+    expect(result.positionError).toBeLessThan(.1);
+    expect(result.renderError).toBeLessThan(.1);
+    await page.screenshot({ path: testInfo.outputPath('after-jump.png') });
+    const walkStart = await page.evaluate(() => ({ x: window.game.player.position.x, z: window.game.player.position.z }));
+    const walkTarget = await projectGroundOffset(page, 4, 0, { allowScaling: false });
+    expect(walkTarget?.canvas).toBe(true);
+    const walking = page.evaluate(() => new Promise(resolve => {
+        const started = performance.now();
+        const record = { movingSamples: 0, maxAuraError: 0 };
+        const sample = () => {
+            const actor = window.game.player, aura = actor.attachedStatusEffects.get('well_rested');
+            if (actor.state === 'MOVING' && aura) { record.movingSamples++; record.maxAuraError = Math.max(record.maxAuraError, aura.group.position.distanceTo(actor.mesh.position)); }
+            if (performance.now() - started >= 1200) { resolve(record); return; }
+            requestAnimationFrame(sample);
+        };
+        requestAnimationFrame(sample);
+    }));
+    await page.mouse.click(walkTarget.x, walkTarget.y);
+    const walk = await walking;
+    const walkDistance = await page.evaluate(start => Math.hypot(window.game.player.position.x - start.x, window.game.player.position.z - start.z), walkStart);
+    await writeFile(testInfo.outputPath('walking-aura.json'), JSON.stringify({ ...walk, walkDistance }, null, 2));
+    expect(walk.movingSamples).toBeGreaterThan(3);
+    expect(walk.maxAuraError).toBeLessThan(1e-5);
+    expect(walkDistance).toBeGreaterThan(1);
+    expect(failures, failures.join('\n')).toEqual([]);
+});
