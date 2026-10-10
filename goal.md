@@ -199,3 +199,13 @@ See `docs/plans/2026-10-10-actor-shadow-connected-gameplay.json`.
 Prior bf2039bf isolated32units/12native/70RGB proof remains valid within scope.
 No performance/art/device selection inferred. Full original1.11–1.99objective,
 failed24hsoak, art/device/owner/F1–F5/beta/launch/handoff gates remain open.
+
+Latest corrective milestone: the owner repeated approximately1.5second TOTAL
+jump time. Candidate1.3second server/client flight qualifies1504.9ms normal and
+1459.9ms15FPS, exact endpoints/fresh-login/Mongo custody. Actual public26
+one-run provenance38061055843 proves separate earned175roomGold after exactsale;
+read-only QA ledger now checks those separate credits exactly, with all loss/
+extraGold controls and actual prior-credit/custody receipts retained.
+Combined Alpha1.79.27/392c4a79 pushed; exact CI38062443230 is in progress.
+Verify actual deployment/assets/one public jump/required native gates without
+reruns or waivers. Full original1.11–1.99 goal and all remaining gates stay open.

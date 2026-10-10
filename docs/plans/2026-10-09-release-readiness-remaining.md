@@ -24,6 +24,24 @@ Actual report7passed/1unexpected/1skipped; required later recovery and optional
 four-class stages skipped. Exact frontend/backend/database/eight assets match.
 [Terminal26 evidence and limits](2026-10-10-public26-terminal-verification.json).
 
+Corrective **Alpha1.79.27/392c4a79** is now pushed as one combined milestone;
+exact unchanged CI38062443230 attempt1 is in progress. The owner repeated the
+approximately1.5second TOTAL requirement. Server/client1.3second flight reserves
+latency: actual copied publication1504.9ms normal/1459.9ms15FPS, exact endpoints,
+fresh login/Mongo custody;96client checks and focused Go-race pass.
+[Candidate and evidence](2026-10-10-jump-total-time-release27.json).
+
+Actual one-run live diagnostic38061055843 now establishes the observed public26
+sale cause: fresh387855 + exact1500sale →389355, separate room175 →389530,
+one sale and complete trace/decodeErrors0. Original helper then rejects the
+legitimate final balance. No pacing, packet changes or retries; original26 CI
+remains failed. [Actual provenance](2026-10-10-live-gold-provenance.json).
+Candidate QA requires exact baseline + transaction credit + separately observed
+own-room credits; unexpected/invalid/repeated/other-owner Gold still fails.
+Actual room and preceding-credit browser/server/Mongo cases pass with custody,
+XP and immutable receipts. Exact public27 assets, fresh jump and required live
+gates remain pending. No full-roadmap, device/art/soak/beta acceptance.
+
 Previous required25 CI`38051193149` attempt1 failed
 live Gold/stash gameplay assertions after nine other jobs succeed. The initial
 exact sale-credit check expects384489 but receives384731; the configured retry
@@ -60,7 +78,7 @@ select the post-award schedule; every original packet, client loop and strict
 helper stays intact. Initial unpaced sale/stash counterexamples and a different
 sale's pre-award completion establish timing sensitivity; their diagnostic
 failures remain frozen separately. [Native boundary and limits](2026-10-10-gold-room-reward-native-boundary.json).
-Original public cause still requires its own observed provenance.
+The later actual provenance above establishes the observed public26 sale cause; this private boundary alone did not.
 
 Separate private integration **14d4ea1f** ordinarily merges held9d724663 with
 public26, preserving held art/model/render/movement bytes and default inactive
@@ -88,8 +106,8 @@ the lost connections. No restart/cancel or replacement soak was performed.
 | --- | --- | --- |
 | Connected party names | Actual High one-renderer/three-live-peer scene retains7visible22px labels, all owned/chosen and0overlapping pairs. Native23.1s/Go-race31.152s save check pass; four-renderer alternative skipped. Screenshot suspicion not reproduced; product unchanged | Retain bounded existing layout; transient/HUD, supported-device and overall UI/art acceptance remain open. [Scoped proof](2026-10-10-connected-party-nameplates.json) |
 | Optional shadow view | Private5c5494ef explicit owner, defaultOFF;36units, one actual equipped High native/Go-race save check and exactRGB pass.390→362same-scene draws; synchronous submission regresses;720real frames all16.7ms medians | Keep disabled/unselected: no stable FPS gain and wholeHigh350draw/250k triangle gates remain open. [Connected proof and limits](2026-10-10-actor-shadow-connected-gameplay.json) |
-| Current release | Corrective26/77859697 pushed; CI38056289769 attempt1 in progress. Prior25 requested jump independently verified, original live Gold/stash failure retained | Inspect exact26 CI/native outcomes and independently verify eight public assets, identities/database before another publication. No rerun/waiver. [Qualified repair](2026-10-10-vendor-gold-synchronization.json) |
-| User-requested jump speed | Deployed25 elapsed-time correction fixes low-FPS flight stretching. Fresh ordinary actual public27unit jump1648.6ms from trusted Ctrl-click to landing, observedflight1582.9ms, authoritative1.5s/endpoints0; one native pass, no retries/recordings | Requested jump independently verified; refresh loads new release. Full release remains unaccepted due separate Gold/stash assertions. Existing local15FPS qualification retained; no all-device/art/beta claim. [Verification](2026-10-10-jump-wall-clock-public-verification.json) |
+| Current release | Corrective27/392c4a79 pushed; exact CI38062443230 attempt1 in progress. Original26/25 failed gates retained; observed26sale cause now established | Verify exact deployment, eight prepared assets, identities/database, one bounded public jump and unchanged required native outcomes. No retry/waiver. [Candidate](2026-10-10-jump-total-time-release27.json) |
+| User-requested jump speed | Owner repeated approximately1.5s TOTAL. Candidate1.3s flight qualifies actual connected1504.9ms normal/1459.9ms15FPS, endpoints0, fresh login/direct Mongo custody | Actual public27 landing and deployment pending. Earlier public25 measured1648.6ms at1.5s flight and is retained. No physical-device/art acceptance. [Candidate](2026-10-10-jump-total-time-release27.json) |
 | Vendor/stash release qualification | Private d76413a4 two native ordinary/one-second FIFO-delayed cases pass50.6s; public24-byte-exact Go-race server and Mongo savedGold1175/EP43/23bag/2stash/exactequipment checks pass57.350s.3485existing product inputs unchanged. Existing helper waits exact175credit before stash snapshot; original stash equality retained | Two baseline controls failed their assumed old-balance observation: real delivery publishedGold first. Preserve both; native does not reproduce originalGoldcause. Controlled unit counterexample remains valid. [Qualification and limits](2026-10-10-vendor-stash-browser-qualification.json). Original live startup/Gold and failedCI remain unaccepted; deployed25current live Gold/stash assertions fail despite original175-credit qualification; diagnose the uncovered boundary without relaxing equality |
 | Gold boundary investigation | Private8c9aa236 actual preceding sales under FIFO delayed delivery reproduce242Gold overshoot and175Gold crossing stash snapshot. Sale native case passes within a failed two-case diagnostic; corrected selected stash native/Go-race/Mongo passes exact1175Gold/43EP/custody. Initial harness failures retained;2727production files unchanged | Original live cause remains unproven. Fresh correlated baseline repair is qualified in both controlled cases, including strict persisted custody; corrective26 gates are pending. No release acceptance. [Counterexamples and limits](2026-10-10-vendor-preexisting-credit-counterexamples.json) |
 | Jump/startup corrective release | Five client inputs qualified locally and exact final publication verified live. Corrected ability/frame serialization passes full Server Tests; client/all3browser shards/predeploy/input/deploy jobs pass | Current25 live Gold/stash fails in both configured attempts; original recovery/Gold causes remain open. No private renderer/terrain/body/geometry pilots included. [Failure and bounded jump proof](2026-10-10-jump-wall-clock-public-verification.json) |
