@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October 10 owner-requested jump pacing:** Long jumps now use a 1.5-second
+client/server flight cap; nearby hops remain quick. Focused race/input/release
+checks and an owned real Ctrl-click check qualify the bounded timing change.
+Initial wall-time and fixture failures remain retained; browser stalls can still
+delay display. [Candidate and limits](docs/plans/2026-10-10-jump-speed-release.json).
+Publish/accept this gameplay fix separately from unselected terrain/render pilots.
+The full inherited roadmap and all remaining gates remain active.
+
 **October9 superseding delivery checkpoint:** Corrected19/293/CI37941972587
 passes all ten jobs; root public bytes/front-back/ready DB match14:49:52UTC.
 Combine larger irregular worn streets into still-unpublished20 rather than

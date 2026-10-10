@@ -1,0 +1,51 @@
+{
+  "status": "Prepared user-requested gameplay fix; publication and exact terminal CI/public acceptance pending.",
+  "version": "Alpha 1.79.23",
+  "predecessor": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+  "scope": "Owner requested approximately 1.5 seconds total jump time. Both client prediction and authoritative server now cap travel at 1.5 seconds instead of 3. Nearby short hops keep the existing 0.46-second minimum and distance scaling. Arc height, endpoint/collision constraints, recovery, save/economy and transport policy are unchanged. Future private terrain/render pilots are excluded.",
+  "checks": {
+    "client": "Six suites, 469 checks passed in 11.841s on the publication working tree; four jump/input suites 77 checks also passed on held source. Scoped ESLint and whitespace passed.",
+    "server": "Focused Jump/Grounding/TownRecovery checks passed under Go1.27.2 race in internal/game (12.910s) and server root (2.430s). Held source same focused checks passed (8.378s/1.775s). Full unchanged package suite not repeated.",
+    "native": {
+      "acceptedDuration": 1.5,
+      "elapsedMs": 1641,
+      "frames": 26,
+      "distance": 26.966157155164755,
+      "positionError": 0,
+      "renderError": 0
+    },
+    "nativeMethod": "Owned disposable authenticated server and Mongo, native Chrome, real Ctrl-click to unobscured full 27-unit destination. Wait for the asynchronously loaded actor mesh and two rendering frames before measuring. No production account or database used. Focused route jump-speed is opt-in; not represented as full gameplay/device qualification.",
+    "retainedAttempts": "Attempt1 accepted1.5s but displayed landing2179.2ms, failing1850ms wall threshold. Diagnostic attempt2 displayed1785.2ms and passed, including a565.8ms RAF gap and burst of server packets. Attempt3 landed1664.8ms but fixture read mesh before model ready, failing undefined renderError. Final fixture explicitly waits for model readiness; final timing above passed unchanged1850ms wall threshold. All originals retained; no guarantee against browser stalls.",
+    "publisher": {
+      "bundledModules": 424,
+      "bytes": 3259956,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    },
+    "compilerRepair": "Initial publisher failed because shared node_modules lacks esbuild. Installed exact locked esbuild0.28.2 into isolated private compiler prefix and copied the byte-identical compiler script; successful build of copied publication inputs. No shared dependency write."
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-jump-speed-checks-20261010",
+  "sourcePinsSHA256": "cfb6747f942c54d21e0c109fb0e7b8af952123f305c2139a48d8cc5fee87841b",
+  "limits": "Frame stalls can still delay display. High performance, modern art, physical devices, full inherited Alpha1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff gates remain open. Prior 24-hour soak remains failed and is not restarted or waived."
+}
