@@ -3,8 +3,10 @@
 **October10 local-matrix invalidation:** Three unchanged-TRS divergences are
 repaired for the private opt-in container cache.63focused checks and eight native
 exact color/shadow controls pass, including manual-world semantics and retained
-static-child skip behavior. Extra comparison/copy cost and whole-party High frame
-limits remain unqualified. [Frozen correctness evidence](docs/plans/2026-10-10-local-matrix-invalidation.json).
+static-child skip behavior. Post-repair actual race/save/party and exact RGB pass;
+High270draws/168891triangles,33.3median/33.4p95ms still fails median20ms.
+Population differs; extra comparison/copy cost remains unattributed. [Party
+limits](docs/plans/2026-10-10-matrix-equipped-party-checks.json). [Frozen correctness evidence](docs/plans/2026-10-10-local-matrix-invalidation.json).
 No public activation, soak waiver or narrower completion; full inherited scope
 remains active.
 

@@ -856,8 +856,9 @@
     },
     "inventorySHA256": "dcca50150f221d25c6eb3a82eef0ef9b59e3bd5fa188d2f4409ea9d5d12cdb40",
     "extraComparisonCopyCost": "unmeasured",
-    "wholeEquippedPartyFrames": "not rerun after repair",
-    "publicActivation": false
+    "wholeEquippedPartyFrames": "Actual post-repairHigh270draws/168891triangles,33.3median/33.4p95ms; median fails20ms. Race/save/party and exact RGB pass,28entities differs from prior35; no cross-run gain claim.",
+    "publicActivation": false,
+    "partyReceipt": "docs/plans/2026-10-10-matrix-equipped-party-checks.json"
   },
   "jumpSpeedRelease": {
     "sourceCommit": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
