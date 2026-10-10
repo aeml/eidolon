@@ -69,11 +69,11 @@ test('published login recovers one interrupted engine download and constructs on
     expect(requests).toEqual([`?release=${release}`, `?startupRetry=1&release=${release}`]);
     const state = await page.evaluate(() => {
         const game = window.game;
-        const state = { className: game.constructor.name, defaultGeometryInactive: game.renderSystem.actorGameplayGeometry === null,
+        const state = { className: game.constructor.name, defaultGeometryOwned: Boolean(game.renderSystem.actorGameplayGeometry),
             errorHidden: document.getElementById('game-startup-status').hidden };
         game.destroy(); return state;
     });
-    expect(state).toEqual({ className: 'GameEngine', defaultGeometryInactive: true, errorHidden: true });
+    expect(state).toEqual({ className: 'GameEngine', defaultGeometryOwned: true, errorHidden: true });
     expect(constructions).toBe(1);
     await testInfo.attach('published-module-download-recovery', { body: JSON.stringify({ requests, constructions, state }), contentType: 'application/json' });
 });
@@ -159,14 +159,14 @@ test('published geometry owner loads its immutable worker, retires streamed root
     const startup = await page.evaluate(async release => {
         const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
         const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
-        const render = game.renderSystem, defaultInactive = render.actorGameplayGeometry === null;
-        render.setActorGameplayGeometryEnabled(true);
+        const render = game.renderSystem, defaultOwned = Boolean(render.actorGameplayGeometry),
+            workerDeferred = render.actorGameplayGeometry.delivery.worker === null;
         const actor = game.createRemotePlayer('Player', 'owned-worker-fighter', 'Fighter'); actor.gameEngine = game;
         await actor.ensureMesh(); render.add(actor.mesh);
         window.__publishedGeometry = { game, actor, owner: render.actorGameplayGeometry };
-        return { defaultInactive, authored: actor.mesh.userData.authoredClass };
+        return { defaultOwned, workerDeferred, authored: actor.mesh.userData.authoredClass };
     }, release);
-    expect(startup).toEqual({ defaultInactive: true, authored: 'Fighter' });
+    expect(startup).toEqual({ defaultOwned: true, workerDeferred: true, authored: 'Fighter' });
     await page.waitForFunction(() => {
         const { delivery, pass } = window.__publishedGeometry.owner;
         if (delivery.failed) throw Error('Published geometry worker failed');
@@ -180,17 +180,28 @@ test('published geometry owner loads its immutable worker, retires streamed root
     }, workerURL)).toBe(true);
     const lifecycle = await page.evaluate(() => {
         const { game, actor, owner } = window.__publishedGeometry;
-        const before = { roots: owner.delivery.roots.size, entries: owner.pass.entries.size };
+        const before = { roots: owner.delivery.roots.size, entries: owner.pass.entries.size, cacheHits: owner.delivery.stats.cacheHits };
         actor.mesh.removeFromParent();
         const retired = !owner.delivery.roots.has(actor.mesh) && [...owner.pass.entries.values()].every(row => row.root !== actor.mesh);
         game.renderSystem.add(actor.mesh);
         const reattached = owner.delivery.roots.has(actor.mesh);
-        actor.dispose(); game.destroy(); delete window.__publishedGeometry;
-        return { before, retired, reattached, disposed: owner.disposed && owner.delivery.disposed,
-            rootsAfter: owner.delivery.roots.size, jobsAfter: owner.delivery.jobs.size, entriesAfter: owner.pass.entries.size };
+        return { before, retired, reattached };
     });
+    await page.waitForFunction(() => {
+        const { delivery, pass } = window.__publishedGeometry.owner;
+        if (delivery.failed) throw Error('Returning geometry worker failed');
+        return !delivery.active && !delivery.jobs.size && pass.entries.size > 0;
+    });
+    Object.assign(lifecycle, await page.evaluate(() => {
+        const { game, actor, owner } = window.__publishedGeometry;
+        const returning = { entries: owner.pass.entries.size, cacheHits: owner.delivery.stats.cacheHits };
+        actor.dispose(); game.destroy(); delete window.__publishedGeometry;
+        return { returning, disposed: owner.disposed && owner.delivery.disposed,
+            rootsAfter: owner.delivery.roots.size, jobsAfter: owner.delivery.jobs.size, entriesAfter: owner.pass.entries.size };
+    }));
     expect(lifecycle.retired && lifecycle.reattached && lifecycle.disposed).toBe(true);
     expect([lifecycle.rootsAfter, lifecycle.jobsAfter, lifecycle.entriesAfter]).toEqual([0, 0, 0]);
+    expect(lifecycle.returning.cacheHits).toBeGreaterThan(lifecycle.before.cacheHits);
     await context.setOffline(true);
     const offline = [];
     try {
@@ -214,6 +225,45 @@ test('published geometry owner loads its immutable worker, retires streamed root
     await testInfo.attach('published-geometry-worker', { body: JSON.stringify({ startup, worker: metadata.worker,
         workerURL, lifecycle, offline }, null, 2), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
+});
+
+test.describe('default geometry worker fallback', () => {
+    test.use({ serviceWorkers: 'block' });
+    test('actual published worker exception keeps the game and original model usable', async ({ page }, testInfo) => {
+        const failures = collectBrowserFailures(page, origin), workerURLs = [];
+        page.on('worker', worker => workerURLs.push(worker.url()));
+        await page.route('**/ActorGameplayGeometryWorker.*.js?*', route => route.fulfill({ contentType: 'text/javascript',
+            body: 'self.onmessage = () => { throw Error("intentional geometry worker failure"); };' }));
+        await page.goto(origin, { waitUntil: 'networkidle' });
+        await page.evaluate(async release => {
+            const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+            const game = new GameEngine('Fighter', false, true, '', 'synthetic-fallback-only', null, 'flat-v1');
+            const actor = game.createRemotePlayer('Player', 'fallback-fighter', 'Fighter'); actor.gameEngine = game;
+            await actor.ensureMesh(); game.renderSystem.add(actor.mesh);
+            window.__workerFallback = { game, actor, owner: game.renderSystem.actorGameplayGeometry };
+        }, release);
+        await page.waitForFunction(() => window.__workerFallback.owner.delivery.failed);
+        const result = await page.evaluate(() => {
+            const { game, actor, owner } = window.__workerFallback, render = game.renderSystem;
+            render.setCameraTarget(actor.position);
+            const original = render.renderer.render, before = [];
+            actor.mesh.traverse(mesh => { if (mesh.isMesh) before.push([mesh, mesh.geometry]); });
+            render.render();
+            const result = { owned: owner === render.actorGameplayGeometry, failed: owner.delivery.failed,
+                entries: owner.pass.entries.size, jobs: owner.delivery.jobs.size, queue: owner.delivery.queue.length,
+                originalGeometry: before.every(([mesh, geometry]) => mesh.geometry === geometry),
+                rendererWrapped: render.renderer.render === original,
+                calls: render.renderer.info.render.calls, failures: owner.delivery.stats.failed };
+            actor.dispose(); game.destroy(); delete window.__workerFallback;
+            return { ...result, retired: owner.disposed && !owner.delivery.roots.size && !owner.pass.entries.size };
+        });
+        expect(workerURLs).toEqual([`${origin}/${metadata.worker.output}?release=${release}`]);
+        expect(result.failed && result.owned && result.originalGeometry && result.rendererWrapped && result.retired).toBe(true);
+        expect([result.entries, result.jobs, result.queue, result.failures]).toEqual([0, 0, 0, 1]);
+        expect(result.calls).toBeGreaterThan(0);
+        expect(failures.filter(message => !message.includes('intentional geometry worker failure'))).toEqual([]);
+        await testInfo.attach('default-worker-fallback', { body: JSON.stringify({ result, workerURLs, expectedFailures: failures }), contentType: 'application/json' });
+    });
 });
 
 test('published engine reaches the jump destination in real elapsed time at low FPS', async ({ page }, testInfo) => {

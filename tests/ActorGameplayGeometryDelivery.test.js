@@ -44,7 +44,28 @@ test('source remains visible while the worker owns only copied buffers', () => {
 
 test('unloaded actor placeholders do not allocate work or listeners', () => {
     const f = fixture(); f.delivery.track(null); f.delivery.track(undefined); pump();
-    expect(f.delivery.roots.size).toBe(0); expect(f.sent).toHaveLength(0); f.dispose();
+    expect(f.delivery.roots.size).toBe(0); expect(f.sent).toHaveLength(0);
+    expect(f.delivery.worker).toBeNull(); f.dispose(); expect(f.worker.terminate).not.toHaveBeenCalled();
+});
+
+test('worker construction failure preserves originals with no automatic restart', () => {
+    const workerFactory = jest.fn(() => { throw Error('Worker unavailable'); });
+    const f = fixture({ workerFactory });
+    expect(workerFactory).not.toHaveBeenCalled(); f.delivery.track(f.root); pump();
+    expect(workerFactory).toHaveBeenCalledTimes(1); expect(f.delivery.failed).toBe(true);
+    expect(f.delivery.jobs.size).toBe(0); expect(f.delivery.queue).toHaveLength(0);
+    f.draw(); expect(f.mesh.geometry).toBe(f.source);
+    f.root.dispatchEvent({ type: 'equipmentvisualschanged' }); pump();
+    expect(workerFactory).toHaveBeenCalledTimes(1); f.dispose();
+});
+
+test('a worker failure retires already prepared candidates without disposing source geometry', () => {
+    const f = fixture(); f.delivery.track(f.root); pump(); f.reply();
+    const candidate = f.pass.entries.get(f.mesh).candidate;
+    const retired = jest.spyOn(candidate, 'dispose'), source = jest.spyOn(f.source, 'dispose');
+    f.listeners.get('error')(); f.draw();
+    expect(retired).toHaveBeenCalledTimes(1); expect(source).not.toHaveBeenCalled();
+    expect(f.pass.entries.size).toBe(0); expect(f.mesh.geometry).toBe(f.source); f.dispose();
 });
 
 test('appearance changes use originals while translucent and reacquire after restoration', () => {

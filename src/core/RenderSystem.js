@@ -155,9 +155,11 @@ export class RenderSystem {
         };
         this.scene.onAfterRender = () => this.foliageShadowInfluence.endFrame();
         this.actorInstances = null;
-        // Prepared policy stays disabled until complete frame/device/art gates.
+        // Original close geometry stays live; prepare bounded derivatives only
+        // after an eligible actor arrives. Unsupported workers retain originals.
         this.actorGameplayGeometry = null;
         this.setActorInstancesEnabled(true);
+        this.setActorGameplayGeometryEnabled(true);
         this.sceneryVisibility = new SceneryVisibility();
         this.sceneryFocus = null;
         // Cross-light the fixed isometric view: one visible face catches the

@@ -66,9 +66,9 @@ for (const [index, fps] of [60, 15].entries()) {
         expect(requests).toEqual(index ? [`?release=${release}`, `?startupRetry=1&release=${release}`] : [`?release=${release}`]);
         expect(await page.evaluate(() => ({ authored: window.game.player.mesh.userData.authoredClass,
             firstState: window.game._firstStateReceived, socket: window.game.network.socket.readyState,
-            defaultGeometryInactive: window.game.renderSystem.actorGameplayGeometry === null &&
+            defaultGeometryOwned: Boolean(window.game.renderSystem.actorGameplayGeometry) &&
                 typeof window.game.renderSystem.setActorGameplayGeometryEnabled === 'function' })))
-            .toEqual({ authored: 'Fighter', firstState: true, socket: 1, defaultGeometryInactive: true });
+            .toEqual({ authored: 'Fighter', firstState: true, socket: 1, defaultGeometryOwned: true });
         let target;
         for (const [x, z] of [[27, 0], [-27, 0], [0, 27], [0, -27]]) {
             const point = await projectGroundOffset(page, x, z, { allowScaling: false });

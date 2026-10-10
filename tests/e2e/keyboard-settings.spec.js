@@ -1,13 +1,19 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
-test('graphics detail offers an optional reload and the saved Low body loads after acceptance', async ({ page, baseURL }) => {
+test('graphics detail offers an optional reload and the saved Low body loads after acceptance', async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/', { waitUntil: 'networkidle' });
     await page.evaluate(() => localStorage.removeItem('eidolon.graphicsQuality'));
-    const boot = () => page.evaluate(async () => {
+    const ownership = [], workers = [], closed = [];
+    page.on('worker', worker => { if (worker.url().includes('ActorGameplayGeometryWorker')) {
+        workers.push(worker.url()); worker.on('close', () => closed.push(worker.url()));
+    } });
+    const boot = async () => {
+        const state = await page.evaluate(async () => {
+        const { waitForGeometryOwner } = await import('/tests/e2e/geometry-owner-observation.js');
         const { UIManager } = await import('/src/ui/UIManager.js');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { UIBindings } = await import('/src/core/UIBindings.js');
@@ -19,10 +25,14 @@ test('graphics detail offers an optional reload and the saved Low body loads aft
         entity.gameEngine = engine;
         new UIBindings(engine).bindConstructorCallbacks();
         await entity.ensureMesh(); render.entityGroup.add(entity.mesh); render.render();
+        const geometry = await waitForGeometryOwner(render);
         ui.showHUD(); ui.toggleSettings();
         window.__detailReview = { ui, render, entity };
-        return { body: entity.mesh.userData.authoredQuality, quality: render.graphicsQuality };
+        return { body: entity.mesh.userData.authoredQuality, quality: render.graphicsQuality, geometry };
     });
+        ownership.push(state);
+        const { geometry: _geometry, ...body } = state; return body;
+    };
     const state = () => page.evaluate(() => ({ body: window.__detailReview.entity.mesh.userData.authoredQuality,
         quality: window.__detailReview.render.graphicsQuality, saved: localStorage.getItem('eidolon.graphicsQuality') }));
     expect(await boot()).toEqual({ body: 'high', quality: 'high' });
@@ -47,6 +57,12 @@ test('graphics detail offers an optional reload and the saved Low body loads aft
     expect(await boot()).toEqual({ body: 'low', quality: 'low' });
     expect(await state()).toEqual({ body: 'low', quality: 'low', saved: 'low' });
     await page.evaluate(() => { const { ui, render, entity } = window.__detailReview; ui.dispose(); entity.dispose(); render.dispose(); });
+    await expect.poll(() => closed.length).toBe(2); expect(workers).toHaveLength(2);
+    for (const state of ownership) {
+        expect(state.geometry.workerStarted && state.geometry.valid && state.geometry.restored).toBe(true);
+        expect(state.geometry.entries).toBeGreaterThan(0);
+    }
+    await testInfo.attach('quality-reload-geometry-ownership', { body: JSON.stringify({ ownership, workers, closed }), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
 });
 

@@ -47,14 +47,9 @@ export class ActorGameplayGeometryDelivery {
             if (reason === 'generation-changed' && this.roots.has(entry.root)) this.request(entry.mesh);
         };
         pass.retireListeners.add(this.retired);
-        try {
-            this.worker = workerFactory();
-            this.message = event => this.complete(event.data);
-            this.error = () => this.fail();
-            this.worker.addEventListener('message', this.message);
-            this.worker.addEventListener('error', this.error);
-            this.worker.addEventListener('messageerror', this.error);
-        } catch { this.fail(); }
+        this.workerFactory = workerFactory; this.worker = null;
+        this.message = event => this.complete(event.data);
+        this.error = () => this.fail();
     }
 
     track(root) {
@@ -128,6 +123,12 @@ export class ActorGameplayGeometryDelivery {
             try {
                 const payload = copyGameplayGeometry(job.generation, this.maxSourceBytes);
                 if (!payload) { this.cancel(mesh); this.stats.fallback++; continue; }
+                if (!this.worker) {
+                    this.worker = this.workerFactory();
+                    this.worker.addEventListener('message', this.message);
+                    this.worker.addEventListener('error', this.error);
+                    this.worker.addEventListener('messageerror', this.error);
+                }
                 this.active = job; this.stats.maxCopiedBytes = Math.max(this.stats.maxCopiedBytes, payload.bytes);
                 this.timer = setTimeout(() => this.fail(), this.timeoutMs);
                 this.worker.postMessage({ id: job.id, kind: payload.kind, source: payload.source }, payload.transfers);
@@ -166,6 +167,7 @@ export class ActorGameplayGeometryDelivery {
         this.worker?.terminate(); this.active = null;
         for (const mesh of this.jobs.keys()) this.cancel(mesh);
         this.queue.length = 0;
+        for (const mesh of this.pass.entries.keys()) this.pass.unregister(mesh, 'worker-failed');
     }
 
     dispose() {
