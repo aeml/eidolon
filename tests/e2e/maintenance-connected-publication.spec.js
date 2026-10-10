@@ -138,7 +138,8 @@ for (const [index, fps] of [60, 15].entries()) {
             expect(Math.min(...jump.frameTimes.slice(1).map((time, i) => time - jump.frameTimes[i]))).toBeGreaterThan(65);
         }
         expect(jump.distance).toBeGreaterThanOrEqual(20.25);
-        expect(jump.acceptedDuration).toBe(1.3);
+        // JumpDuration crosses the protobuf float32 wire boundary.
+        expect(jump.acceptedDuration).toBeCloseTo(1.3, 6);
         expect(jump.elapsedMs).toBeGreaterThan(1250);
         expect(jump.elapsedMs).toBeLessThan(1600);
         expect(jump.positionError).toBeLessThan(.1);
