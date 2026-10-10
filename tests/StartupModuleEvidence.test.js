@@ -14,8 +14,8 @@ const fixture = () => {
 
 test('known first-party module errors retain fixed network code and path without query, host or raw text', () => {
     const { page, evidence } = fixture();
-    page.emit('requestfailed', request());
-    page.emit('response', { request: () => request(), status: () => 503 });
+    const req = request(); page.emit('request', req); page.emit('requestfailed', req);
+    page.emit('response', { request: () => req, status: () => 503 });
     expect(evidence.snapshot()).toEqual({ observed: 2, dropped: 0, failures: [
         { module, kind: 'request', code: 'net::ERR_CONNECTION_CLOSED' }, { module, kind: 'http', status: 503 }
     ] });
@@ -30,25 +30,29 @@ test.each([
 ])('unknown routes, credentials and non-module requests cannot enter startup diagnostics %#', (url, options) => {
     const { page, evidence } = fixture();
     const req = request(url, options);
+    page.emit('request', req);
     page.emit('requestfailed', req); page.emit('response', { request: () => req, status: () => 403 });
     expect(evidence.snapshot()).toEqual({ observed: 0, dropped: 0, failures: [] });
 });
 
-test.each(['private credential failure', 'net::ERR_PRIVATE secret', '', 'net::ERR_' + 'A'.repeat(65)])(
+test.each(['private credential failure', 'net::ERR_PRIVATE secret', 'net::ERR_PRIVATE_TOKEN', '', 'net::ERR_' + 'A'.repeat(65)])(
     'arbitrary browser failure text is replaced by a constant category %#', error => {
         const { page, evidence } = fixture();
-        const req = request(); req.failure = () => ({ errorText: error }); page.emit('requestfailed', req);
+        const req = request(); req.failure = () => ({ errorText: error });
+        page.emit('request', req); page.emit('requestfailed', req);
         expect(evidence.snapshot().failures[0].code).toBe('unknown');
     });
 
 test.each([200, 399, 600, NaN, Infinity, '503', 503.5])('only actual HTTP error status codes are retained: %s', status => {
-    const { page, evidence } = fixture(); page.emit('response', { request: () => request(), status: () => status });
+    const { page, evidence } = fixture(); const req = request(); page.emit('request', req);
+    page.emit('response', { request: () => req, status: () => status });
     expect(evidence.snapshot().observed).toBe(0);
 });
 
 test('evidence is bounded, copied on read, reset per document and released on close', () => {
     const { page, evidence } = fixture();
-    for (let i = 0; i < 19; i++) page.emit('response', { request: () => request(), status: () => 500 + i });
+    const req = request(); page.emit('request', req);
+    for (let i = 0; i < 19; i++) page.emit('response', { request: () => req, status: () => 500 + i });
     expect(evidence.snapshot().observed).toBe(19); expect(evidence.snapshot().dropped).toBe(11);
     expect(evidence.snapshot().failures).toHaveLength(8); expect(evidence.snapshot().failures[0].status).toBe(511);
     evidence.snapshot().failures[0].module = '/private';
@@ -57,4 +61,14 @@ test('evidence is bounded, copied on read, reset per document and released on cl
     page.emit('close'); evidence.dispose();
     expect(page.listenerCount('requestfailed')).toBe(0); expect(page.listenerCount('response')).toBe(0);
     expect(page.listenerCount('close')).toBe(0);
+    expect(page.listenerCount('request')).toBe(0);
+});
+
+test('late failures from the abandoned document cannot contaminate the next startup', () => {
+    const { page, evidence } = fixture(), old = request(), current = request();
+    page.emit('request', old); evidence.reset();
+    page.emit('requestfailed', old); page.emit('response', { request: () => old, status: () => 503 });
+    expect(evidence.snapshot().observed).toBe(0);
+    page.emit('request', current); page.emit('requestfailed', current);
+    expect(evidence.snapshot().observed).toBe(1);
 });
