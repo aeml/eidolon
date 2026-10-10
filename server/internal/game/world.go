@@ -149,6 +149,10 @@ func (sm *SpatialMap) nearbyType(x, z, radius float64, instanceID string, kind E
 }
 
 type World struct {
+	// Cast handlers use World.Mu and their own target-lock boundaries. Frame
+	// workers release World.Mu and use actor locks, so the complete cast must
+	// finish before workers can inspect or mutate its caster and recipients.
+	abilityFrameMu         sync.Mutex
 	dungeonCombatRewardMu  sync.Mutex
 	dungeonCombatRewards   map[string]pendingDungeonCombatReward
 	dungeonRoomRewardMu    sync.Mutex
