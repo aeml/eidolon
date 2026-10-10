@@ -147,18 +147,20 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-Alpha1.79.25/d15a882e is deployed and exact assets/identities/database readiness
-verified. Requested elapsed-time jump fix independently measures1648.6ms from
-real click to landing, authoritative flight1.5s and exact endpoints.
-Required CI38051193149 nevertheless fails separate live Gold/stash assertions;
-original preceding transaction/root cause remains unproven and failures retained.
+Public Alpha1.79.26/77859697 remains deployed with matching assets and database
+readiness; required CI38056289769 remains failed. Actual one-run diagnostic
+38061055843 proves its observed sale failure: fresh387855Gold + exact1500sale
+then separate earned175room award =389530. No retries, packet changes or pacing.
 
-Corrective Alpha1.79.26 selects a qualified correlated read-only wallet baseline
-before persistent QA sale/stash snapshots. Strict exact Gold/custody/save checks,
-request limits and generic browser failure policy stay intact. Real disposable
-Go-race/server/browser/Mongo qualifies both preceding242/175Gold cases, with
-exact savedGold1417/1175,EP43,gear/bag/stash metadata and fresh-login preservation.
-See `docs/plans/2026-10-10-vendor-gold-synchronization.json`.
-Deployment and unchanged required live gates remain pending. No raised/body/
-geometry/shadow pilots selected; full original1.11–1.99scope, failed24hsoak,
-art/device/owner/F1–F5/beta/launch/handoff acceptance remains active.
+The owner repeated the approximately1.5second TOTAL jump requirement. Corrective
+candidate uses1.3second server/client flight to reserve latency; actual copied
+publication measures1504.9ms at normal cadence and1459.9ms at15FPS, exact endpoints,
+fresh-login position and Mongo custody.96focused client checks and Go-race pass.
+Candidate QA accounts for separately observed earned room credits exactly,
+retaining loss/extra-Gold controls, protected gear and wallet request limits.
+Actual room175 and preceding242/175Gold browser/server/Mongo proofs pass.
+
+Prepare cumulative Alpha1.79.27 and independently verify deployment and unchanged
+required gates. Earlier failures stay retained. No raised/body/geometry/shadow
+pilots selected. Full original1.11–1.99scope, art/device/owner/F1–F5/failed24hsoak/
+beta/launch/handoff remain active; this maintenance milestone is not completion.
