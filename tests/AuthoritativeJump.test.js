@@ -133,6 +133,21 @@ describe('authoritative jump flow', () => {
         jumpStartX: 0, jumpStartY: 0, jumpStartZ: 0, jumpTargetX: 27, jumpTargetY: 0, jumpTargetZ: 0,
         jumpDuration: 1.3, jumpHeight: 10, jumpProgress: progress });
 
+    test('jump takes over a rendered movement correction without replaying it after landing', () => {
+        const engine = createEngineHarness();
+        engine.player.position.set(5, 0, 0);
+        engine.player.mesh.position.set(4.5, 0, 0);
+        engine.playerCorrectionVisualState = { displayPosition: new THREE.Vector3(4.5, 0, 0), elapsed: 0, duration: .18 };
+        engine.startPlayerJump(new THREE.Vector3(27, 0, 0));
+        engine.applyPlayerJumpVisuals();
+        expect(engine.player.mesh.position.x).toBe(4.5);
+        engine.updatePlayerJump(1.3);
+        engine.applyPlayerJumpVisuals();
+        engine.applyPlayerCorrectionVisuals();
+        expect(engine.player.mesh.position.x).toBe(27);
+        expect(engine.playerCorrectionVisualState).toBeNull();
+    });
+
     test('accepting a predicted trajectory preserves the takeoff clock and animation', () => {
         const engine = createEngineHarness();
         engine.startPlayerJump(new THREE.Vector3(27, 0, 0));
