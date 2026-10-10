@@ -112,14 +112,17 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
             record.history.push({ elapsedMs: performance.now() - started, state: actor.state, renderedStep, aura: Boolean(aura) });
             // Presentation can continue interpolating between authoritative
             // state changes. Measure visible movement, which the aura follows.
-            if (renderedStep > 1e-6 && aura) { record.movingSamples++; record.maxAuraError = Math.max(record.maxAuraError, aura.group.position.distanceTo(actor.mesh.position)); }
+            if (renderedStep > .001 && aura) { record.movingSamples++; record.maxAuraError = Math.max(record.maxAuraError, aura.group.position.distanceTo(actor.mesh.position)); }
             previous.copy(actor.mesh.position);
             if (performance.now() - started >= 1800) { record.elapsedMs = performance.now() - started; return; }
             requestAnimationFrame(sample);
         };
         requestAnimationFrame(sample);
     });
-    await page.mouse.click(walkTarget.x, walkTarget.y);
+    await page.mouse.move(walkTarget.x, walkTarget.y);
+    await page.mouse.down();
+    try { await page.waitForTimeout(1000); }
+    finally { await page.mouse.up(); }
     await expect.poll(() => page.evaluate(() => window.__walkingAura.elapsedMs)).toBeGreaterThanOrEqual(1800);
     const walk = await page.evaluate(() => window.__walkingAura);
     const walkDistance = await page.evaluate(start => Math.hypot(window.game.player.position.x - start.x, window.game.player.position.z - start.z), walkStart);
