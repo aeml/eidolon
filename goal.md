@@ -156,13 +156,13 @@ The prior owned execution notes are preserved byte-for-byte in
 Historical procedural-only art instructions in that archive do not override
 the supplied-model preservation and modern-ARPG requirements above.
 
-Previous goal turn classification: **no progress** toward the full objective.
-The immediately preceding jump-status turn rechecked unchanged public24 without
-changing the broader next action. This turn revalidated the owned state and made
-**progress**:90focused checks,80strict native controls and actual default High
-four-class/race/save evidence reject a cell-matrix optimization, while retained
-draw attribution redirects work to the dominant equipped color/shadow geometry.
-This does not accept the release or complete the full goal.
+Previous goal turn classification: **progress**. It rejected a cell-matrix
+prototype after measured native/actual-game timing and identified the dominant
+equipped color/shadow submissions. This turn made **progress** by preparing a
+render-owned supplied body/gear lifecycle:123focused checks,64native controls
+including32exact close views, and actual High/Low moving-HUD/race/save checks.
+The module is staged privately and unused by RenderSystem; no performance,
+modern-art, release or full-goal acceptance is implied.
 
 - Accepted bounded jump release23/2e519bb0 caps client/server travel at1.5s;
   a real Ctrl-click check landed in1.641s including display overhead.
@@ -191,10 +191,19 @@ This does not accept the release or complete the full goal.
   unchanged campaign/long soak. Human pacing and physical-phone evidence remain
   owner-deferred; missing policies or approvals are not implicitly granted.
 
-Next: preserve the original startup/Gold failures and keep24unaccepted; use
-bounded request evidence at the next real failure. Continue the full roadmap and
-modern-art work by qualifying the existing supplied body/equipment/color/shadow
-policies together in actual moving/HUD gameplay. The default High scene still
-fails original frame, draw and triangle budgets; no content hiding or target
-reduction. [Cell-matrix rejection and geometry attribution](docs/plans/2026-10-10-actor-cell-translation-unselected.json).
-No successor public push, prototype selection or24merge into held source occurred.
+Prepared26d475d7/df766240 adds projected-pixel hysteresis, exact close-source
+restoration, nested-preview/failure cleanup and stale-generation retirement for
+supplied body/gear indices. Default High297draws/192648triangles meets geometry
+but33.3ms median fails; default Low150draws/82366triangles/16.7median/33.3p95
+meets this bounded scene. Close-source fallback remains over geometry targets.
+New gear correctly uses originals; production derivative delivery/cache and
+reacquisition remain unfinished. Both submission controls include lifecycle
+validation; timings are mixed and do not prove installation gain.
+[Preparation, failures and limits](docs/plans/2026-10-10-gameplay-geometry-lifecycle-preparation.json).
+
+Next: preserve original startup/Gold and soak failures; keep24unaccepted. Finish
+generation-specific delivery and deliberate integration of the prepared geometry
+policy, then qualify controller-absent reference, actual High and close/default
+High/Low budgets, supported devices and moving art. Continue every inherited
+roadmap, gameplay, operations, rights, owner/human/beta/launch/handoff requirement.
+No public activation, successor push, failed-gate waiver or24merge occurred.

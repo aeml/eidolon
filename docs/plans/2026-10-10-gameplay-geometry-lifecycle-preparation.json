@@ -1,0 +1,468 @@
+{
+  "recordedUTC": "2026-10-10T08:23:41.540754+00:00",
+  "status": "Private prepared controller and explicit QA integration; not installed by RenderSystem, not public or accepted as whole-game performance/art.",
+  "sourceCommit": "26d475d7b097e04cd461e17d350fac27a355a745",
+  "preparedIntegrationCommit": "df766240c09c2827ba8ddebda499ab1088f34558",
+  "sourceChanges": "One unused ActorGameplayGeometry module, weak ownership of the existing fitted PBR shader/key pair, unit and explicit native/party QA. No source GLB, gear, animation, catalog, runtime import/selection, gameplay authority, version, release or workflow change.",
+  "behavior": [
+    "Own independent cloned attribute/morph/index storage, including delivered interleaved layouts. Indices reference only existing source vertices.",
+    "Select reduced whole-render color/ordinary-shadow geometry by projected drawing-buffer pixels with42/47hysteresis; close views and other-camera previews use originals. Always restore originals after rendering, including nested previews and failures.",
+    "Retire stale geometry/material/rig/bone/inverse membership/bind/storage-version/root/quality generations, including when selection is disabled. Dispose only owned candidates. Newly fitted gear falls back to original until a fresh candidate is provided."
+  ],
+  "focused": {
+    "tests": 123,
+    "suites": 5,
+    "seconds": 1.743
+  },
+  "native": {
+    "tests": 1,
+    "elapsedSeconds": 45.6,
+    "poseZoomControls": 64,
+    "exactCloseControls": 32,
+    "farApproximateControls": 32,
+    "independentLowHighSuppliedClasses": 8,
+    "registeredMeshes": 88,
+    "sourceCandidateTriangles": [
+      305113,
+      105961
+    ],
+    "lifecycle": {
+      "before": 88,
+      "afterEquip": 83,
+      "noStaleAfterEquip": true,
+      "detachedRetired": true,
+      "baseline": {
+        "geometries": 161,
+        "textures": 95,
+        "programs": 15
+      },
+      "cycles": [
+        {
+          "geometries": 161,
+          "textures": 95,
+          "programs": 15
+        },
+        {
+          "geometries": 161,
+          "textures": 95,
+          "programs": 15
+        },
+        {
+          "geometries": 161,
+          "textures": 95,
+          "programs": 15
+        },
+        {
+          "geometries": 161,
+          "textures": 95,
+          "programs": 15
+        }
+      ],
+      "originalsRestored": true
+    },
+    "visualScope": "Viewed High Wizard source/candidate gameplay-size pair and actual High frames10/18 plus Low frame10. Gear silhouette/trim/weapon identity remain readable in these views; limited actor-motion/HUD context, not final modern-art approval or four-player combat."
+  },
+  "actual": {
+    "high": {
+      "scope": "One hardware renderer, three real authenticated synthetic socket peers, four supplied classes/14slots, normal movement and HUD before independent180-frame sample. Actor view policy explicit; no separate depth simplification. Four-browser mode skipped, not passed.",
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791619559.987962,
+        "finishedUnix": 1791619663.289303
+      },
+      "host": {
+        "loadAverage": [
+          20.66748046875,
+          20.20703125,
+          20.982421875
+        ],
+        "cpuCount": 16,
+        "commit": "26d475d7b097e04cd461e17d350fac27a355a745",
+        "scope": "Private combined body/gear render-owned controller and explicit actor-view filter; ordinary shadows, selected supplied bodies, same-scene reference timing, normal-input moving HUD clip. No separate depth/body/color pilot or cross-run gain"
+      },
+      "installed": {
+        "registered": 44,
+        "thresholds": {
+          "enterPixels": 42,
+          "exitPixels": 47
+        },
+        "originalTriangles": 181142,
+        "candidateTriangles": 53600
+      },
+      "pairedImages": [
+        {
+          "zoom": 5,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "source": {
+            "calls": 261,
+            "triangles": 420251,
+            "swaps": 0,
+            "restored": true
+          },
+          "candidate": {
+            "calls": 261,
+            "triangles": 420251,
+            "swaps": 0,
+            "restored": true
+          },
+          "again": {
+            "calls": 261,
+            "triangles": 420251,
+            "swaps": 0,
+            "restored": true
+          }
+        },
+        {
+          "zoom": 15,
+          "changedChannels": 36387,
+          "unstableChannels": 0,
+          "source": {
+            "calls": 292,
+            "triangles": 442699,
+            "swaps": 0,
+            "restored": true
+          },
+          "candidate": {
+            "calls": 292,
+            "triangles": 187615,
+            "swaps": 44,
+            "restored": true
+          },
+          "again": {
+            "calls": 292,
+            "triangles": 442699,
+            "swaps": 0,
+            "restored": true
+          }
+        }
+      ],
+      "hysteresis": [
+        {
+          "pixels": 45,
+          "reduced": false,
+          "restored": true,
+          "swaps": 0
+        },
+        {
+          "pixels": 41,
+          "reduced": true,
+          "restored": true,
+          "swaps": 44
+        },
+        {
+          "pixels": 45,
+          "reduced": true,
+          "restored": true,
+          "swaps": 44
+        },
+        {
+          "pixels": 48,
+          "reduced": false,
+          "restored": true,
+          "swaps": 0
+        },
+        {
+          "pixels": 45,
+          "reduced": false,
+          "restored": true,
+          "swaps": 0
+        },
+        {
+          "pixels": 30,
+          "reduced": true,
+          "restored": true,
+          "swaps": 44
+        }
+      ],
+      "submission": {
+        "reference": {
+          "frames": 48,
+          "median": 19.5,
+          "p95": 31
+        },
+        "candidate": {
+          "frames": 48,
+          "median": 18.5,
+          "p95": 29.599999994039536
+        }
+      },
+      "frameProfile": {
+        "quality": "high",
+        "label": "single-renderer-equipped-raised-party-high",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.299999999995634,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 33.400000000001455,
+        "framesOver33ms": 40,
+        "cpuLoopMedianMs": 24.900000005960464,
+        "cpuLoopP95Ms": 30,
+        "drawCallsMedian": 297,
+        "trianglesMedian": 192648,
+        "geometries": 444,
+        "textures": 293,
+        "activeEntities": 32,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "motion": {
+        "samples": 74,
+        "movingSamples": 21,
+        "frames": 23,
+        "allGear14AndSourceRestored": true
+      },
+      "fourClassRaceAndFourteenSlotSavesPassed": true,
+      "budgetResult": "Geometry meets original limits; median33.3ms and rawp95above33.4fail original High timing."
+    },
+    "low": {
+      "scope": "One hardware renderer, three real authenticated synthetic socket peers, four supplied classes/14slots, normal movement and HUD before independent180-frame sample. Actor view policy explicit; no separate depth simplification. Four-browser mode skipped, not passed.",
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791619707.7100177,
+        "finishedUnix": 1791619785.5879998
+      },
+      "host": {
+        "loadAverage": [
+          21.7294921875,
+          21.44189453125,
+          21.353515625
+        ],
+        "cpuCount": 16,
+        "commit": "26d475d7b097e04cd461e17d350fac27a355a745",
+        "scope": "Private combined body/gear render-owned controller and explicit actor-view filter; ordinary shadows, selected supplied bodies, same-scene reference timing, normal-input moving HUD clip. No separate depth/body/color pilot or cross-run gain"
+      },
+      "installed": {
+        "registered": 44,
+        "thresholds": {
+          "enterPixels": 42,
+          "exitPixels": 47
+        },
+        "originalTriangles": 113405,
+        "candidateTriangles": 51311
+      },
+      "pairedImages": [
+        {
+          "zoom": 5,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "source": {
+            "calls": 139,
+            "triangles": 131227,
+            "swaps": 0,
+            "restored": true
+          },
+          "candidate": {
+            "calls": 139,
+            "triangles": 131227,
+            "swaps": 0,
+            "restored": true
+          },
+          "again": {
+            "calls": 139,
+            "triangles": 131227,
+            "swaps": 0,
+            "restored": true
+          }
+        },
+        {
+          "zoom": 15,
+          "changedChannels": 18031,
+          "unstableChannels": 0,
+          "source": {
+            "calls": 150,
+            "triangles": 142971,
+            "swaps": 0,
+            "restored": true
+          },
+          "candidate": {
+            "calls": 150,
+            "triangles": 80877,
+            "swaps": 44,
+            "restored": true
+          },
+          "again": {
+            "calls": 150,
+            "triangles": 142971,
+            "swaps": 0,
+            "restored": true
+          }
+        }
+      ],
+      "hysteresis": [
+        {
+          "pixels": 45,
+          "reduced": false,
+          "restored": true,
+          "swaps": 0
+        },
+        {
+          "pixels": 41,
+          "reduced": true,
+          "restored": true,
+          "swaps": 44
+        },
+        {
+          "pixels": 45,
+          "reduced": true,
+          "restored": true,
+          "swaps": 44
+        },
+        {
+          "pixels": 48,
+          "reduced": false,
+          "restored": true,
+          "swaps": 0
+        },
+        {
+          "pixels": 45,
+          "reduced": false,
+          "restored": true,
+          "swaps": 0
+        },
+        {
+          "pixels": 30,
+          "reduced": true,
+          "restored": true,
+          "swaps": 44
+        }
+      ],
+      "submission": {
+        "reference": {
+          "frames": 48,
+          "median": 11,
+          "p95": 14.800000011920929
+        },
+        "candidate": {
+          "frames": 48,
+          "median": 12.300000011920929,
+          "p95": 19.399999976158142
+        }
+      },
+      "frameProfile": {
+        "quality": "low",
+        "label": "single-renderer-equipped-raised-party-low",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 16.69999999999709,
+        "frameP95Ms": 33.299999999995634,
+        "frameP99Ms": 33.39999999999418,
+        "framesOver33ms": 3,
+        "cpuLoopMedianMs": 15.700000017881393,
+        "cpuLoopP95Ms": 19.599999994039536,
+        "drawCallsMedian": 150,
+        "trianglesMedian": 82366,
+        "geometries": 397,
+        "textures": 270,
+        "activeEntities": 33,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "motion": {
+        "samples": 87,
+        "movingSamples": 27,
+        "frames": 25,
+        "allGear14AndSourceRestored": true
+      },
+      "fourClassRaceAndFourteenSlotSavesPassed": true,
+      "budgetResult": "Defaultzoom15bounded sample meets original Low limits; no broader zoom/device/encounter approval."
+    }
+  },
+  "originalTargets": {
+    "high": {
+      "medianMs": 20,
+      "p95Ms": 33.4,
+      "calls": 350,
+      "triangles": 250000
+    },
+    "low": {
+      "medianMs": 33.4,
+      "p95Ms": 50,
+      "calls": 200,
+      "triangles": 85000
+    }
+  },
+  "timingLimit": "Both source and reduced ABBA arms include controller lifecycle validation. These isolate index selection, not exact installation overhead against an absent controller. High19.5/31.0 to18.5/29.6ms; Low11.0/14.8 to12.3/19.4ms is mixed. No broad faster-frame claim.",
+  "retainedFailures": [
+    {
+      "attempt": 1,
+      "nativeFailure": "Registration rejected delivered interleaved attributes; independent clone and underlying data/version support added; probe retained."
+    },
+    {
+      "attempt": 2,
+      "nativeFailure": "Disabled controller retained a detached root. Validation/retirement now runs while selection disabled; new regression covers it."
+    },
+    {
+      "scope": "party High preflight",
+      "failure": "Supervisor typo misnamed quality environment key; stopped before fixture began; corrected supervisor and original receipt retained."
+    }
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-gameplay-geometry-lifecycle-checks-20261010",
+    "files": 246,
+    "inventorySHA256": "52b2ecfeb14fe42965f4644de224b96159dfece196f1f7154543ce96944ef274",
+    "permissions": "directories700/files600; no symlinks; inventory excludes itself"
+  },
+  "public": {
+    "observation": {
+      "observedUTC": "2026-10-10T08:13:49.454877+00:00",
+      "normalTLS": true,
+      "frontend": {
+        "httpStatus": 200,
+        "version": "Alpha 1.79.24",
+        "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+        "status": null,
+        "database": null
+      },
+      "backend": {
+        "httpStatus": 200,
+        "version": "Alpha 1.79.24",
+        "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+        "status": "ok",
+        "database": "ready"
+      },
+      "bundle": {
+        "status": 200,
+        "sha256": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a",
+        "expected": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a",
+        "matches": true
+      }
+    },
+    "ci": {
+      "observedUTC": "2026-10-10T08:13:49Z",
+      "id": 38030283856,
+      "head_sha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "html_url": "https://github.com/aeml/eidolon/actions/runs/38030283856"
+    },
+    "accepted": false,
+    "noCIRerunOrSuccessorPushOr24Merge": true
+  },
+  "remaining": [
+    "Runtime import/installation remains off. Node QA currently prepares exact live masked body/fitted-gear derivatives; shipping/off-thread delivery, bounded cache and new-gear/reconnect/quality/stealth reacquisition remain unfinished.",
+    "New generations correctly fall back to full source; this is not automatic new-generation optimization.",
+    "High whole-frame cost, exact controller-absent performance control, broader realm/encounter/support-device/resource/art acceptance remain open.",
+    "Original public24 mandatory startup failure, flaky175Gold finding and failed24hsoak remain open. No CI rerun, successor release, public profile/access change or owner-deferred playtest substitution.",
+    "Defaultzoom15Low meets this one bounded scene, not all zooms: close source fallback submitsHigh420251/Low131227triangles, above unchanged250000/85000world targets; close timing was not qualified.",
+    "Shipping delivery must key derivatives to exact coverage-masked body and fitted-gear generations. Base GLB indices must not be reused across a changed coverage mask.",
+    "All inherited1.11\u20131.99, Q/CB/F1\u2013F5, modern moving art/world/combat/UI, devices, operations/rights/owner/human/beta/launch/handoff work remains active."
+  ]
+}
