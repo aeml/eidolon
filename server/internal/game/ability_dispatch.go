@@ -29,6 +29,8 @@ func (w *World) GetAbilityCooldownSnapshot(playerID string) (map[string]float64,
 }
 
 func (w *World) PerformAbility(playerID string, targetX, targetZ float64, targetID string, skillName string) AbilityResult {
+	w.abilityFrameMu.Lock()
+	defer w.abilityFrameMu.Unlock()
 	w.Mu.Lock()
 	defer w.Mu.Unlock()
 

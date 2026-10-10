@@ -21,7 +21,8 @@ test.beforeAll(async () => {
     await writeFile(index, (await readFile(index, 'utf8')).replace(
         /(<input type="hidden" id="server-address" value=")[^"]+(">)/,
         (_match, prefix, suffix) => `${prefix}${process.env.EIDOLON_E2E_WS_URL}${suffix}`));
-    await writeFile(path.join(root, 'release.json'), JSON.stringify({ commit: release, version: 'Alpha 1.79.24' }));
+    const manifest = path.join(root, 'release.json');
+    await writeFile(manifest, JSON.stringify({ ...JSON.parse(await readFile(manifest, 'utf8')), commit: release }));
     metadata = await bundleGameEngine(root);
     await versionPagesRuntime(root, release);
     const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',

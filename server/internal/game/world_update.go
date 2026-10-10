@@ -23,6 +23,8 @@ func (w *World) updateFrame(dt float64, restNow time.Time) {
 	if dt <= 0 || !finiteCoordinate(dt) {
 		return
 	}
+	w.abilityFrameMu.Lock()
+	defer w.abilityFrameMu.Unlock()
 	w.UpdatePvP(time.Now())
 	// Note: We do NOT hold w.Mu during the main update loop to allow parallelism.
 	// However, we need to snapshot the entity list safely.
