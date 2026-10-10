@@ -129,6 +129,73 @@ function createEngineHarness() {
 }
 
 describe('authoritative jump flow', () => {
+    test.each([15, 20, 30, 60, 144])('a long jump arrives in 1.5 seconds at %i rendered frames per second', fps => {
+        const engine = createEngineHarness();
+        engine.lastTime = 0;
+        engine.accumulator = 0;
+        engine.fixedTimeStep = 1 / 60;
+        engine.isDestroyed = true; // Drive the real loop with controlled frame timestamps.
+        engine.render = jest.fn();
+        engine.cameraLocked = true;
+        const movementTicks = [];
+        const update = engine.update.bind(engine);
+        engine.update = (dt, advanceJumpVisuals) => {
+            movementTicks.push(dt);
+            update(dt, advanceJumpVisuals);
+        };
+        engine.startPlayerJump(new THREE.Vector3(27, 0, 0));
+        const initialState = engine.playerJumpState;
+        const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+        try {
+            for (let frame = 1; engine.playerJumpState && frame <= fps * 2; frame++) {
+                engine.loop(frame * 1000 / fps);
+            }
+            if (consoleError.mock.calls.length) throw consoleError.mock.calls[0][1];
+            expect(consoleError).not.toHaveBeenCalled();
+            expect(initialState.elapsed).toBe(1.5);
+            expect(engine.lastTime).toBeGreaterThanOrEqual(1.5);
+            expect(engine.lastTime).toBeLessThanOrEqual(1.5 + 1 / fps + 1e-9);
+            expect(engine.playerJumpState).toBeNull();
+            expect(engine.player.position.x).toBe(27);
+            expect(movementTicks.every(dt => dt === 1 / 60)).toBe(true);
+        } finally {
+            consoleError.mockRestore();
+        }
+    });
+
+    test('a stalled tab completes flight without replaying movement catch-up', () => {
+        const engine = createEngineHarness();
+        Object.assign(engine, { lastTime: 0, accumulator: 0, fixedTimeStep: 1 / 60, isDestroyed: true });
+        engine.update = jest.fn();
+        engine.render = jest.fn();
+        engine.startPlayerJump(new THREE.Vector3(27, 0, 0));
+        const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+        try {
+            engine.loop(2000);
+            expect(engine.playerJumpState).toBeNull();
+            expect(engine.player.position.x).toBe(27);
+            expect(engine.update).not.toHaveBeenCalled();
+            expect(engine.render).toHaveBeenCalledTimes(1);
+        } finally { log.mockRestore(); }
+    });
+
+    test('observers finish an accepted landing in real time at 15 FPS', () => {
+        const engine = createEngineHarness();
+        Object.assign(engine, { lastTime: 0, accumulator: 0, fixedTimeStep: 1 / 60, isDestroyed: true });
+        engine.update = jest.fn();
+        engine.render = jest.fn();
+        const peer = {
+            position: new THREE.Vector3(27, 0, 0),
+            jumpVisualState: { start: new THREE.Vector3(), end: new THREE.Vector3(27, 0, 0),
+                duration: 1.5, elapsed: 0, height: 10, serverDriven: true, landingPending: true,
+                hasAuthoritativeTrajectory: true, displayPosition: new THREE.Vector3() }
+        };
+        engine.remotePlayers.set('peer', peer);
+        for (let frame = 1; frame <= 23; frame++) engine.loop(frame * 1000 / 15);
+        expect(peer.jumpVisualState).toBeNull();
+        expect(peer.position.x).toBe(27);
+    });
+
     test('stale self state cannot cancel a locally predicted basic-attack animation', () => {
         const engine = createEngineHarness();
         engine.player.state = 'ATTACKING';
