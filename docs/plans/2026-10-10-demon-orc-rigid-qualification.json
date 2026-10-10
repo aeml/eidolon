@@ -1,0 +1,255 @@
+{
+  "recordedUTC": "2026-10-10T22:34:18.948995+00:00",
+  "source": "af0bfd0a100498b0ddb47dc8c4577ef32405850d",
+  "runtime": "7cf1373e7e640d204431f5882e75cad49b8fca9a",
+  "runtimeSHA256": {
+    "src/art/ProceduralLegacyEnemies.js": "0143ccf889b1bb14c20127143d8382f4d52b3b2128e665bd60c499292c8b9842",
+    "src/art/ActorInstanceBatches.js": "a35abe14d3b8efa4b319bd31dcf885a456e7398c7210b040c7cba7a7e3586079",
+    "src/utils/MeshFactory.js": "b16f629e5cb6f1429649824936ff660ff6e89bf89e9e7adca26ea5b9e4787194"
+  },
+  "selectedIntoHeld": false,
+  "public": false,
+  "focused": {
+    "suites": 7,
+    "passed": 167
+  },
+  "native": {
+    "first": {
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "poses": 16,
+      "originalSurfaceComparisons": 32,
+      "maximumDeliveredMeanError": 0.0009360189573459715,
+      "maximumDeliveredChangedFraction": 1.1848341232227488e-05
+    },
+    "pool": {
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "poses": 16,
+      "originalSurfaceComparisons": 32,
+      "maximumDeliveredMeanError": 0.0009360189573459715,
+      "maximumDeliveredChangedFraction": 1.1848341232227488e-05
+    }
+  },
+  "sanitization": {
+    "observedPreparedAccountsRedacted": 2,
+    "preparedAccountsPerFixture": 4,
+    "onlyFirstAccountLoggedInPerFailedRoute": true,
+    "plainFilesScanned": 58,
+    "embeddedEntriesScanned": 8,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled"
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-demon-orc-rigid-checks-20261010",
+    "inventorySHA256": "f585334a2e688cdad8015c140119f8a85854749ad4bd53784a7d6522016a86a3",
+    "inventoryEntries": 822,
+    "frozen": true
+  },
+  "scope": "Private reviewed DemonOrc constructor/pivot batching and existing actor instancing/multi-draw. Every1202body triangles, PBR factors, animation bank, live pivots,20pose bounds, gameplay metadata and pooling retained;55raw meshes\u219223packed meshes. Latest native16poses/32source comparisons pass unchanged existing rigid thresholds0.1mean error/0.001fractiondelta>8; no exact-pixel claim. Same-frozen actual corrected raw-source view398\u2192241draws,129848\u2192133004submitted triangles,meanError0.0001416,0pixelsdelta>8,101changedpixels,referenceAgain0; consolidation can submit additional partially visible triangles within originalHigh250000target. Initial live comparison omitted runtime NameTags/hitboxes and failed visual gates; corrected includes them and exact1202body inventories. Original invalid helper triangle-no-increase expectation corrected to exact full inventory plus unchanged quality budget, not a triangle-gain claim. High route completes withwoodland244/road160/approach142draw pass, but town400FAIL350; triangle/frame budgets all pass. No final party/save proof, actualLow route or publication for this source. Singleton follow-up is a separate private candidate; full original world/art/device/soak/freeze/beta/launch/handoff scope remains active.",
+  "metadata": {
+    "raw": {
+      "meshes": 55,
+      "triangles": 1202
+    },
+    "selected": {
+      "meshes": 23,
+      "triangles": 1202
+    },
+    "animationBanksExact": true,
+    "gameplayMetadataExact": true,
+    "passedPoseBoundsSamples": 20
+  },
+  "actualHigh": {
+    "high-route": {
+      "terminal": {
+        "source": "3d6ece7a0b6428da98efd88ab7942eb147323724",
+        "exitCode": 1,
+        "startedUnix": 1791671036.131464,
+        "finishedUnix": 1791671110.9912138
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "profiles": [
+        {
+          "label": "town-start",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 400,
+            "trianglesMedian": 229511,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8
+          }
+        },
+        {
+          "label": "earth-road",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 161,
+            "trianglesMedian": 107350,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8
+          }
+        }
+      ],
+      "routeFrames": 294,
+      "routeObservations": 33,
+      "finalFourClassPartyAndGoRaceSavesExecuted": false,
+      "comparison": {
+        "roots": 31,
+        "original": {
+          "calls": 494,
+          "triangles": 132026
+        },
+        "candidate": {
+          "calls": 231,
+          "triangles": 138256
+        },
+        "meanError": 0.2645160693127962,
+        "changed": 0.0018735189573459716,
+        "exactChanges": 58430,
+        "unstable": 0,
+        "restored": true,
+        "scope": "Same synchronous frozen actual woodland view. Original raw constructors temporarily reproduce every live root and named animation-pivot transform; originals/packed/default delivery/originals again. No camera, authority, animation clock, material or geometry mutation. Temporary source roots removed and original visibility restored. Existing rigid-surface tolerance, not exact pixels. Untimed diagnostic; original raw geometry may warm additional borrowed GPU caches. Separate route profiles carry unchanged budgets."
+      }
+    },
+    "high-reference-corrected": {
+      "terminal": {
+        "source": "af0bfd0a100498b0ddb47dc8c4577ef32405850d",
+        "exitCode": 1,
+        "startedUnix": 1791671296.114311,
+        "finishedUnix": 1791671380.005672
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "profiles": [
+        {
+          "label": "town-start",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 400,
+            "trianglesMedian": 229559,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7
+          }
+        },
+        {
+          "label": "earth-road",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 160,
+            "trianglesMedian": 107386,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7
+          }
+        },
+        {
+          "label": "woodland-cut",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 244,
+            "trianglesMedian": 134392,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.8
+          }
+        },
+        {
+          "label": "bastion-approach",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "profile": {
+            "frames": 180,
+            "drawCallsMedian": 142,
+            "trianglesMedian": 77295,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 16.7
+          }
+        }
+      ],
+      "routeFrames": 454,
+      "routeObservations": 49,
+      "finalFourClassPartyAndGoRaceSavesExecuted": false,
+      "comparison": {
+        "roots": 30,
+        "original": {
+          "calls": 398,
+          "triangles": 129848
+        },
+        "candidate": {
+          "calls": 241,
+          "triangles": 133004
+        },
+        "meanError": 0.0001416247037914692,
+        "changed": 0,
+        "exactChanges": 101,
+        "unstable": 0,
+        "restored": true,
+        "scope": "Same synchronous frozen actual woodland view. Original raw constructors temporarily reproduce every live root, named animation pivot and runtime auxiliary attachment; originals/packed/default delivery/originals again. No camera, authority, animation clock, material or geometry mutation. Temporary source roots removed and original visibility restored. Exact full body triangle inventories and existing rigid-surface pixel tolerance retained. Submitted triangles can increase when a consolidated primitive intersects a pass whose separate source parts were culled; candidate must still pass the original quality triangle budget. Untimed diagnostic, not a triangle-gain claim; original raw geometry may warm additional borrowed GPU caches. Separate route profiles carry all unchanged budgets.",
+        "bodyInventories": 30,
+        "allBodyInventories1202": true
+      }
+    }
+  }
+}

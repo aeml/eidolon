@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T22:17:52.106932+00:00",
+  "recordedUTC": "2026-10-10T22:48:28.498842+00:00",
   "classification": "Progress: public29 jump/aura/admin fixes accepted. Qualified automatic same-cell actor multi-draw and conservative instance clipping selected only into held integration695cee4a. Ordinary candidate High/Low sampled budgets and integrated source/publication technical checks pass. New real movement route town400/woodland468draw failures keep whole-world acceptance open.",
   "qualifiedRuntime": "Held695cee4a selects three qualified actor runtime files from5e3c4d3f/d2a82c66, with prior e8 default lazy geometry/conservative actor shadows and accepted public29 motion/admin. Private rigid-handgear pilot remains excluded. Not published.",
   "rejectedSourceCommits": [
@@ -98,11 +98,11 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
+  "nextRequiredResult": "Keep DemonOrc/singleton candidates private and unselected; original held runtime695cee4a/public29 unchanged. Diagnose source-preserving camp per-instance frustum clipping and reviewed Ilyra derivatives from settled Lowtown103110triangle contributor census (Ilyra31289,camps19740,Fighter15219;workerpending0). Retain Highparty361drawFAIL350, Lowtown103102/103110triFAIL85000, Lowwoodland83\u219290draw counterexample and historical failures. Qualify unchanged ordinary-world budgets and exact publication before selecting/publishing a coherent milestone. No source/content hiding, target waiver, campaign or soak replay. Continue full world/art/contact/combat/device/operations/freeze/beta/launch/handoff scope.",
   "currentReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: implemented private per-instance stock frustum clipping,74focused and48exact native comparisons including24whole-bucket controls pass. ActualLow40entity135draw/78808triangle/16.7median16.8p95 and Go-race four-class14slot saves pass. Initial animated fixture lacked partial buckets; spread-out actors added while preserving strict visual and reduction gates. Separate normal-startup default d2a82c66 passes99focused/eightnative and two default pool/fallback checks; first High paired helper failed strict triangle-gain assertion despite exactRGB/12draw improvement/equal triangles. Retained failure; normal automatic default qualification now enforces original whole-frame budgets without manual comparison installation. High/Low startup runs pending.",
-  "nextAction": "Implement an isolated reviewed DemonOrc constructor/pivot batching candidate, preserving every geometry/material/animation/contact/reset/pool path and unsupported fallback, because actual woodland original DemonOrc leaves account for356\u2013362draws. Qualify native source surfaces/shadows/poses, actual ordinary route and original350/200draw/250000/85000triangle/20median33.4p95 budgets before selecting. Then address measured town singleton service-NPC and courtyard contributors. No foliage/content hiding, public release, target waiver, campaign or soak replay. Continue remaining world/art/contact/combat/device/operations/freeze/beta/launch/handoff scope.",
+  "previousGoalTurnClassification": "progress",
+  "nextAction": "Keep DemonOrc/singleton candidates private and unselected; original held runtime695cee4a/public29 unchanged. Diagnose source-preserving camp per-instance frustum clipping and reviewed Ilyra derivatives from settled Lowtown103110triangle contributor census (Ilyra31289,camps19740,Fighter15219;workerpending0). Retain Highparty361drawFAIL350, Lowtown103102/103110triFAIL85000, Lowwoodland83\u219290draw counterexample and historical failures. Qualify unchanged ordinary-world budgets and exact publication before selecting/publishing a coherent milestone. No source/content hiding, target waiver, campaign or soak replay. Continue full world/art/contact/combat/device/operations/freeze/beta/launch/handoff scope.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: automatic actor default delivery selected privately and source/publication/motion/lifecycle qualified. New ordinary town/Earth/Verdant route reveals High town400/woodland468draw failures.24actual-render diagnostic frames attribute every call: original DemonOrc leaves356\u2013362draws dominate woodland; singleton service NPCs/courtyard contribute town. No additional family optimization selected, world performance/art/device/full original goal remain open.",
+  "currentGoalTurnClassification": "progress",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -2193,5 +2193,34 @@
     },
     "inventorySHA256": "aef171c69669ff13cccba958f63050de45f8f158d259178757b049b1a7e34188",
     "limits": "Diagnostic intervals establish identity only; different population cannot waive prior town400/woodland468High350 failures. No new runtime/family/default selection."
+  },
+  "demonOrcRigidCandidate": {
+    "source": "af0bfd0a100498b0ddb47dc8c4577ef32405850d",
+    "runtime": "7cf1373e7e640d204431f5882e75cad49b8fca9a",
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-demon-orc-rigid-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-demon-orc-rigid-checks-20261010",
+      "inventorySHA256": "f585334a2e688cdad8015c140119f8a85854749ad4bd53784a7d6522016a86a3",
+      "inventoryEntries": 822,
+      "frozen": true
+    }
+  },
+  "singletonActorCandidate": {
+    "source": "f8e994d058adeafa8a6e2057604b2b0fb12953ce",
+    "runtime": "75a4403f65a4bb5600c11be9484c54d017a71864",
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-singleton-actor-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-singleton-actor-checks-20261010",
+      "inventorySHA256": "c5445b130db8550c004f66d1ef365a62dfce197b2d5aba01032d5f190a776614",
+      "inventoryEntries": 891,
+      "frozen": true
+    },
+    "nativePassed": 12,
+    "focusedPassed": 105,
+    "highPartyDraws": 361,
+    "lowTownTriangles": 103110,
+    "pendingTownGeometryJobs": 0
   }
 }

@@ -32,27 +32,39 @@ pass with16.7median16.8p95 and real Go-race four-class14slot saves. Those startu
 frame samples are modular-client evidence; publication tests cover a separate
 bundle. No cross-population FPS gain or universal-budget claim.
 
-**Whole-world performance remains open.** The integrated fourteen-slot Fighter
-completed ordinary ground input town→gate→Earth→woodland→Verdant approach with
-actual HUD,444post-login moving frames and49grounded observations. Four180frame
-High samples retain original350draw/250000triangle/20msmedian/33.4p95 limits:
-town400draw and woodland468draw FAIL; Earth road190 and Verdant approach145
-pass. All four triangle/frame budgets pass. The strict route gate fails before
-party assembly/final saved custody; no retry or waiver.
-[Retained route failure](2026-10-10-actor-default-moving-route-qualification.json).
-Next: qualify a source-preserving reduction of the measured DemonOrc and town
-service-NPC submissions.24untimed actual renders account for every call and
-restore their hooks: a different woodland population has550–556draws, of which
-original unbatched DemonOrc leaves contribute225shadow and131–137color draws.
-Town355–400draws includes27Respec/24Quest color,12Respec/18Quest shadow and
-29courtyard shadow submissions. The current factory deliberately leaves
-DemonOrc outside the reviewed rigid batching contract; review and qualify that
-family before selection. No additional runtime/family change is selected.
-The later ordinary four-class14slot Go-race party passes its separate sample:
-298draw/216290triangles/16.7median16.8p95. It does not clear the route failures.
-[Submission attribution](2026-10-10-town-woodland-submission-qualification.json). Historical High389draw,Low202draw,
-Low87602triangle and fully-visible pairedHigh no-triangle-gain failures remain
-retained. Different successful populations do not erase them.
+**Whole-world performance remains open.** The selected runtime's original
+ordinary route retains town400draw/woodland468draw failures against350; original
+Low202draw/87602triangle and High389draw failures also remain retained.
+[Original route](2026-10-10-actor-default-moving-route-qualification.json),
+[original attribution](2026-10-10-town-woodland-submission-qualification.json).
+
+**New DemonOrc/singleton candidate remains private and unselected.** Reviewed
+DemonOrc packing preserves all1202source triangles, PBR/UV/normals, original
+animation/gameplay metadata,20pose bounds and pooling:55raw meshes→23packed.
+167focused checks and latest16native poses/32surface controls pass existing
+visual thresholds. Corrected actual High raw-source control398→241draws;
+town400draw still FAILS. Initial control missing runtime attachments failed and
+is retained. [DemonOrc evidence](2026-10-10-demon-orc-rigid-qualification.json).
+
+The combined singleton candidate adds105focused checks and12native passes,
+including60single-actor pose/shadow comparisons across seven reviewed families.
+Existing0.1mean/0.001changed-pixel thresholds pass;13/60are exact, not all.
+All four actual High route stops pass unchanged gates:town347/road207/
+woodland231/approach125draws. Later High party361draw FAILS350. Low route town
+103102triangles FAILS85000; Low frozen woodland83→90draws is a retained
+counterexample despite exact pixels. Three separate normal four-class14slot
+Go-race/Mongo party checks pass their sampled budgets/saved custody; different
+populations do not clear these failures. No retry or waiver.
+
+A new fixed60warmup+180frame Low town sample confirms103110triangles,172draws,
+16.7median16.8p95;12following untimed renders have worker pending0 and18selected
+geometry entries throughout. The earlier immediate12frame census sampled asset
+loading and entity streaming; it cannot establish steady-state attribution.
+Settled contributors:Ilyra31289triangles,camp field19740,Fighter15219.
+Next: isolate conservative per-instance camp clipping and reviewed NPC geometry
+without losing content, source assets, motion/material identity or fallback.
+Exact candidate publication and full-world/device/art gates remain open.
+[Combined candidate and retained failures](2026-10-10-singleton-actor-qualification.json).
 
 The full modern-art/world/contact/combat, supported-browser/device/accessibility,
 save/security/operations/support/notices, F1–F5 freeze, closed-beta, launch and
@@ -69,6 +81,7 @@ linked original receipts preserve failures and their precise scopes.
 | Work | Current evidence and status | Next required result / owner |
 | --- | --- | --- |
 | Automatic actor cell delivery | Selected privately as695cee4a:99focused,12native integrated/48exactRGB,3actual-publication checks pass; candidate modular High265draw/176732triangles,Low149draw/79962triangles,16.7median16.8p95 sampled limits and four-class14slot Go-race saves pass | Whole-world budgets remain open: actual ordinary route town400draw/woodland468draw FAIL350; original Low202/Low87602/High389 failures retained. No public release. [Default integration](2026-10-10-actor-default-integration-qualification.json), [route failure](2026-10-10-actor-default-moving-route-qualification.json) |
+| DemonOrc and singleton delivery | Private75a4403f;167DemonOrc/105singleton focused checks, latest32DemonOrc surface controls and12combined native passes qualify bounded paths. All4High route stops pass; Highparty361draw and Lowtown103102/103110tri FAIL original gates; Low83→90draw counterexample retained | Keep unselected. Reduce measured camp/Ilyra cost without source/content loss, qualify whole-world original budgets and exact publication. [Evidence](2026-10-10-singleton-actor-qualification.json) |
 | Low vegetation detail margin | Private011fddda keeps every7439plants, all leaf roots/tips/fern leaflets, exact placement/tints and wind bounds with two Low ribbon sections. Sedge80→48/fern231→217triangles; High position/color/normal SHA256 goldens and spatial copies unchanged.24distinct focused checks pass after retained old expected-recipe test failure; actual Low1native pass1skip27.9s/retry0, exact four-class14slot movement/Mongo saves | Actual180frames158draws/80382triangles/16.7msmedian16.8msp95 pass sampled Low limits. Same-scene prior/current scenery independently saves3248triangles with158draws and exact plant transforms/tints; ordinary/close visual differences inspected. Private integration now exact011fddda; default null/public27 unchanged. Qualify cold/returning default startup, worker fallback, settings replacement and session/resource lifetime before activation; wider combat/device/art gates stay open. [Frozen evidence](2026-10-10-low-understory-detail-qualification.json) |
 | Rigid supplied equipment geometry | Private09fba6f8/de9c9a15 extends the existing optional owner to original-vertex hand gear, preserving source GLBs, attributes, mounts and close originals.86focused checks, immutable/offline worker,64native gallery controls/32exact close, actual High/Low normal movement and four-class14slot Mongo saves pass. Corrected QA-only pool assertion retains11skinned+10rigid; first failure and selector setup failure retained. Private integration fast-forwarded to exactde9; public27 unchanged | Same frozen scene saves3356Low/19304High rendered triangles. Actual Low179draws/85056triangles/16.7msmedian+p95 still fails85000. High334draws/181569triangles/16.7ms passes sampled limits only. Keep default null; build meaningful Low scenery margin without losing plants/leaves or altering High/wind bounds, then finish wider representative/device/art/activation gates. [Frozen evidence and limits](2026-10-10-rigid-equipment-geometry-qualification.json) |
 | Connected party names | Actual High one-renderer/three-live-peer scene retains7visible22px labels, all owned/chosen and0overlapping pairs. Native23.1s/Go-race31.152s save check pass; four-renderer alternative skipped. Screenshot suspicion not reproduced; product unchanged | Retain bounded existing layout; transient/HUD, supported-device and overall UI/art acceptance remain open. [Scoped proof](2026-10-10-connected-party-nameplates.json) |
