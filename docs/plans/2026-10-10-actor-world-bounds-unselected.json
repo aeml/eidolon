@@ -1,0 +1,185 @@
+{
+  "status": "Unselected prototype; do not merge its runtime into the qualified renderer.",
+  "codeCommit": "26659ce364dc9465ffeae7f30d010cda198959cf",
+  "baseCommit": "39f13a09",
+  "change": "Cache per-leaf world boxes by exact matrix values and immutable local-box identity from the existing position attribute/version contract; eligibility/camera/every live shadow remain current. No light-membership index or public change.",
+  "checks": {
+    "baseline": "Old helper repeats settled world-box transform and fails new warm-reuse ceiling;26cases pass.",
+    "focused": "104checks/4suites passed, including direct world writes, overflow/recovery, shared geometry, reparenting and source replacement; existing camera/light/deformation/ownership guards preserved.",
+    "native": "12cases/70strict color-shadow pairs zero changed/unstable RGB, four stable resource cycles per case and draw-failure restoration. High and Low included.",
+    "party": "Actual High one-renderer/three-socket-peer four-class race/save scope passed,14-slot saves preserved. Four-browser skipped. No new actual Low party repeated for unselected cache; Low native and original qualified Low evidence remain source-scoped."
+  },
+  "sameSceneComparison": {
+    "scope": "Same scene: previous recomputed world bounds versus exact world-box reuse; synchronous ABBA submission only, not whole-frame pacing.",
+    "reference": {
+      "calls": 271,
+      "triangles": 157144,
+      "restored": true,
+      "stats": {
+        "checked": 816,
+        "culled": 714,
+        "boundsBuilt": 0,
+        "lightScanNodes": 4668,
+        "unknownShadow": false
+      }
+    },
+    "candidate": {
+      "calls": 271,
+      "triangles": 157144,
+      "restored": true,
+      "stats": {
+        "checked": 816,
+        "culled": 714,
+        "boundsBuilt": 0,
+        "worldBoundsBuilt": 0,
+        "worldBoundsReused": 816,
+        "lightScanNodes": 4668,
+        "unknownShadow": false
+      }
+    },
+    "referenceAgain": {
+      "calls": 271,
+      "triangles": 157144,
+      "restored": true,
+      "stats": {
+        "checked": 816,
+        "culled": 714,
+        "boundsBuilt": 0,
+        "lightScanNodes": 4668,
+        "unknownShadow": false
+      }
+    },
+    "changedChannels": 0,
+    "unstableChannels": 0,
+    "blocks": [
+      {
+        "enabled": false,
+        "milliseconds": [
+          15.199999988079071,
+          24,
+          18.100000023841858,
+          18.799999982118607,
+          16,
+          19.200000017881393,
+          21.5,
+          28.599999994039536,
+          21.799999982118607,
+          17.80000001192093,
+          18.099999994039536,
+          18
+        ],
+        "restored": true
+      },
+      {
+        "enabled": true,
+        "milliseconds": [
+          26.600000023841858,
+          27.599999994039536,
+          17.299999982118607,
+          20.400000005960464,
+          20,
+          17.30000001192093,
+          17.299999982118607,
+          16.100000023841858,
+          21.599999994039536,
+          26.400000005960464,
+          16.599999994039536,
+          17.69999998807907
+        ],
+        "restored": true
+      },
+      {
+        "enabled": true,
+        "milliseconds": [
+          17.400000005960464,
+          18.900000005960464,
+          28.299999982118607,
+          25.30000001192093,
+          14.099999994039536,
+          17.69999998807907,
+          19,
+          16.600000023841858,
+          16.5,
+          24.69999998807907,
+          21.69999998807907,
+          17.400000005960464
+        ],
+        "restored": true
+      },
+      {
+        "enabled": false,
+        "milliseconds": [
+          15.5,
+          16,
+          19,
+          25.30000001192093,
+          22.30000001192093,
+          15.599999994039536,
+          18.5,
+          16.19999998807907,
+          17.200000017881393,
+          18,
+          29.599999994039536,
+          17
+        ],
+        "restored": true
+      }
+    ],
+    "cpu": {
+      "reference": {
+        "frames": 24,
+        "median": 18.100000023841858,
+        "p95": 28.599999994039536
+      },
+      "candidate": {
+        "frames": 24,
+        "median": 18.900000005960464,
+        "p95": 27.599999994039536
+      }
+    }
+  },
+  "wholeFrameProfile": {
+    "quality": "high",
+    "label": "single-renderer-equipped-raised-party-high",
+    "frames": 180,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 33.299999999995634,
+    "frameP95Ms": 33.400000000001455,
+    "frameP99Ms": 50,
+    "framesOver33ms": 46,
+    "cpuLoopMedianMs": 25,
+    "cpuLoopP95Ms": 35.30000001192093,
+    "drawCallsMedian": 271,
+    "trianglesMedian": 157144,
+    "geometries": 482,
+    "textures": 300,
+    "activeEntities": 36,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0,
+    "worldBounds": {
+      "scope": "Last actor-policy frame counters after each sampled game loop; sampled after CPU timer, not an allocation or VRAM measure.",
+      "frames": 180,
+      "built": 145329,
+      "reused": 1551,
+      "builtMedian": 815,
+      "reusedMedian": 1
+    }
+  },
+  "liveHitFraction": 0.010559640522875818,
+  "decision": "Frozen same-scene world boxes reuse816/816, but native submission median18.1\u219218.9ms worsens whilep9528.6\u219227.6ms improves. Actual animated180frames build145329/reuse1551 boxes, only1.06%hits; median815builds/1reuse per frame. Additional per-leaf Matrix4/Box3/record and compare/copy work is poorly amortized. Retain prior scratch-box transform instead of selecting this cache.",
+  "limits": "High33.3median/33.4p95ms fails20ms median and rawp9533.400000000001455 exceeds exact33.4.271draws/157144triangles passes geometry.36entities and varying shared-host load prohibit cross-run gain/regression attribution. No device, whole moving-art or final roadmap acceptance. Public24/922753a7 excludes prototype; full inherited objective and failed24hsoak remain open.",
+  "next": "Consider direct affine world-box projection preserving exact corner arithmetic, without retaining per-actor cache; require differential finite/overflow/shear/matrix controls and actual full-game measurements before any selection.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-actor-world-bounds-checks-20261010",
+    "inventorySHA256": "39e54017ee185838e74b24d0eeaad277c62067ff4305e5eecf866ec2a6d237f8",
+    "files": 73
+  }
+}

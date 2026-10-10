@@ -1,3 +1,12 @@
+**October10 actor world-box cache left unselected:**26659ce3 passes104focused
+checks,70strict native pairs and actual High four-class/race/save scope. Frozen
+same-scene count/RGBA controls match; median18.1→18.9ms worsens andp9528.6→27.6ms
+improves. Actual animation rebuilds145329/reuses1551boxes in180frames,1.06%hits;
+median815builds/1reuse. Retain original scratch-box projection and live light
+scan. High33.3median still fails20ms; no new Low party repetition for unselected
+cache. See docs/plans/2026-10-10-actor-world-bounds-unselected.json. Public24 CI
+still pending acceptance; jump cap1.5s and full inherited goal/failed24hsoak remain.
+
 **October10 light-membership prototype left unselected:** b90d1ac5 passes
 107focused checks,70strict native pairs and actual High four-class/race/save
 scope. Same-scene old/indexed RGBA/counts match; submission median17.3→16.7ms
