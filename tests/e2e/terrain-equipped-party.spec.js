@@ -7,6 +7,7 @@ import { prepareShadowGeometryPilot, selectSimplifiedShadowGeometry } from './sh
 import { prepareGameplayColorPilot } from './gameplay-color-lod-pilot.js';
 import { prepareGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
 import { prepareActorInstanceViewPilot } from './actor-instance-view-pilot.js';
+import { measurePartyMatrixOwners } from './party-matrix-observation.js';
 import { captureGameplayGeometryParty } from './gameplay-geometry-party.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
@@ -705,6 +706,13 @@ test('single native renderer observes three live equipped party socket peers on 
                     expect(restored, 'Diagnostic wrappers must restore their owned controller methods').toBe(true);
                 } finally { await session.detach(); }
             }
+        }
+        if (process.env.EIDOLON_TERRAIN_PARTY_MATRIX_OWNERS === '1') {
+            const matrixOwners = await measurePartyMatrixOwners(page);
+            expect(matrixOwners.restored).toBe(true);
+            await testInfo.attach('diagnostic-matrix-owners', {
+                body: JSON.stringify(matrixOwners, null, 2), contentType: 'application/json'
+            });
         }
         if (process.env.EIDOLON_TERRAIN_UNDERSTORY_PREPARATION === '1') {
             await captureUnderstoryPreparation(page, `equipped-party-${quality}`, testInfo);
