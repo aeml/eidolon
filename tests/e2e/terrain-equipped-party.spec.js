@@ -729,6 +729,7 @@ test('single native renderer observes three live equipped party socket peers on 
     } finally {
         await page.evaluate(() => {
             window.__actorInstanceViewPilot?.dispose(); delete window.__actorInstanceViewPilot;
+            if (window.__gameplayGeometryLifecycle?.runtime) window.game.renderSystem.setActorGameplayGeometryEnabled(false);
             window.__gameplayGeometryLifecycle?.delivery?.dispose();
             window.__gameplayGeometryLifecycle?.pass.dispose(); delete window.__gameplayGeometryLifecycle;
             window.__shadowGeometryPilot?.pass.dispose(); delete window.__shadowGeometryPilot;

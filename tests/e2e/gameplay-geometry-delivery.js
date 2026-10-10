@@ -10,15 +10,18 @@ const idle = async page => {
 };
 
 export async function prepareGameplayGeometryDelivery(page) {
-    await page.evaluate(async () => {
+    const owned = process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_RUNTIME_OWNER === '1';
+    await page.evaluate(async owned => {
         const { ActorGameplayGeometry } = await import('/src/core/ActorGameplayGeometry.js');
         const { ActorGameplayGeometryDelivery } = await import('/src/core/ActorGameplayGeometryDelivery.js');
         const game = window.game, render = game.renderSystem;
-        const pass = new ActorGameplayGeometry(render.renderer, render.scene, render.camera);
-        const delivery = new ActorGameplayGeometryDelivery(pass);
-        window.__gameplayGeometryLifecycle = { pass, delivery, started: performance.now() };
-        for (const actor of [game.player, ...game.remotePlayers.values()]) delivery.track(actor.mesh);
-    });
+        if (owned) render.setActorGameplayGeometryEnabled(true);
+        const runtime = owned ? render.actorGameplayGeometry : null;
+        const pass = runtime?.pass || new ActorGameplayGeometry(render.renderer, render.scene, render.camera);
+        const delivery = runtime?.delivery || new ActorGameplayGeometryDelivery(pass);
+        window.__gameplayGeometryLifecycle = { runtime, pass, delivery, started: performance.now() };
+        if (!runtime) for (const actor of [game.player, ...game.remotePlayers.values()]) delivery.track(actor.mesh);
+    }, owned);
     await page.waitForFunction(() => {
         const delivery = window.__gameplayGeometryLifecycle.delivery;
         if (delivery.failed) throw Error('Geometry worker failed');
@@ -36,23 +39,29 @@ export async function prepareGameplayGeometryDelivery(page) {
 }
 
 export async function captureGameplayGeometryDelivery(page, testInfo) {
-    await page.evaluate(async () => {
+    const owned = process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_RUNTIME_OWNER === '1';
+    await page.evaluate(async owned => {
         const THREE = await import('three'), qa = window.__classGear;
         const { ActorGameplayGeometry } = await import('/src/core/ActorGameplayGeometry.js');
         const { ActorGameplayGeometryDelivery } = await import('/src/core/ActorGameplayGeometryDelivery.js');
         const oldCamera = qa.camera;
         qa.camera = new THREE.OrthographicCamera(-24, 24, 15, -15, .1, 2000);
-        const pass = new ActorGameplayGeometry(qa.renderer, qa.scene, qa.camera);
-        const delivery = new ActorGameplayGeometryDelivery(pass);
-        const state = window.__geometryDelivery = { pass, delivery, oldCamera, frames: 0, stopped: false, started: performance.now() };
+        let runtime;
+        if (owned) {
+            const { ActorGameplayGeometryRuntime } = await import('/src/core/ActorGameplayGeometryRuntime.js');
+            runtime = new ActorGameplayGeometryRuntime(qa.renderer, qa.scene, qa.camera, [qa.scene]);
+        }
+        const pass = runtime?.pass || new ActorGameplayGeometry(qa.renderer, qa.scene, qa.camera);
+        const delivery = runtime?.delivery || new ActorGameplayGeometryDelivery(pass);
+        const state = window.__geometryDelivery = { runtime, pass, delivery, oldCamera, frames: 0, stopped: false, started: performance.now() };
         const animate = () => {
             if (state.stopped) return;
             state.frames++; qa.sample('Run', (performance.now() - state.started) / 1000);
             requestAnimationFrame(animate);
         };
         requestAnimationFrame(animate);
-        for (const entry of qa.actors) delivery.track(entry.root);
-    });
+        if (!runtime) for (const entry of qa.actors) delivery.track(entry.root);
+    }, owned);
     try {
         await idle(page);
         const initial = await page.evaluate(() => {
@@ -170,12 +179,43 @@ export async function captureGameplayGeometryDelivery(page, testInfo) {
             stats: { ...window.__geometryDelivery.delivery.stats } }));
         expect(afterStealth.registered).toBe(initial.registered);
         expect(afterStealth.stats.cacheHits).toBeGreaterThan(reattached.stats.cacheHits);
-        await writeFile(testInfo.outputPath('gameplay-geometry-delivery.json'), JSON.stringify({ initial, samples, changed, restored, detached, reattached, faded, afterStealth,
+        let replacement = null;
+        if (owned) {
+            await page.evaluate(async () => {
+                const qa = window.__classGear, state = window.__geometryDelivery;
+                const entry = qa.actors.find(row => row.type === 'Fighter' && row.quality === 'high');
+                const oldRoot = entry.root; oldRoot.removeFromParent();
+                const retired = !state.delivery.roots.has(oldRoot);
+                qa.MeshFactory.releaseMesh('Fighter', oldRoot);
+                const root = await qa.MeshFactory.createMeshForType('Fighter', { quality: 'low' });
+                const actor = new entry.actor.constructor('runtime-replacement-fighter', {}); actor.meshType = 'Fighter'; actor.setMesh(root);
+                actor.syncEquipmentVisuals(entry.gear); await root.userData.equipmentReady; qa.scene.add(root);
+                state.replacement = { entry, oldRoot, actor, root, retired };
+            });
+            await idle(page);
+            replacement = await page.evaluate(async () => {
+                const qa = window.__classGear, state = window.__geometryDelivery, row = state.replacement;
+                const installed = [...state.pass.entries.values()].filter(entry => entry.root === row.root);
+                const proof = { oldRetired: row.retired, quality: row.root.userData.authoredQuality,
+                    installed: installed.length, valid: installed.every(entry => state.pass.valid(entry)) };
+                row.actor.dispose();
+                const returned = await qa.MeshFactory.createMeshForType('Fighter', { quality: 'high' });
+                proof.samePoolRootReturned = returned === row.oldRoot;
+                row.entry.actor.setMesh(returned); row.entry.root = returned;
+                row.entry.actor.syncEquipmentVisuals(row.entry.gear); await returned.userData.equipmentReady; qa.scene.add(returned);
+                return proof;
+            });
+            await idle(page);
+            expect(replacement.oldRetired && replacement.valid && replacement.samePoolRootReturned).toBe(true);
+            expect(replacement.quality).toBe('low'); expect(replacement.installed).toBe(11);
+            expect(await page.evaluate(() => window.__geometryDelivery.pass.entries.size)).toBe(initial.registered);
+        }
+        await writeFile(testInfo.outputPath('gameplay-geometry-delivery.json'), JSON.stringify({ runtimeOwned: owned, replacement, initial, samples, changed, restored, detached, reattached, faded, afterStealth,
             scope: 'Actual worker delivery for supplied High/Low four-class bodies/fitted gear;32 pose/zoom controls including16 exact close; rapid gear changes, exact-source cache reuse, detach/reattach. No default runtime activation, controller-absent frame timing, physical device, campaign or final-art certificate.' }, null, 2));
     } finally {
         await page.evaluate(() => {
             const state = window.__geometryDelivery, qa = window.__classGear;
-            state.stopped = true; state.delivery.dispose(); state.pass.dispose();
+            state.stopped = true; state.runtime?.dispose(); state.delivery.dispose(); state.pass.dispose();
             qa.camera = state.oldCamera; delete window.__geometryDelivery; qa.sample('CombatIdle');
         });
     }

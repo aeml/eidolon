@@ -26,8 +26,15 @@ export function copyGameplayGeometry(generation, maxBytes) {
     return { kind: body ? 'body' : 'color', source, bytes, transfers };
 }
 
+export function gameplayGeometryWorkerURL(moduleURL = import.meta.url) {
+    const current = new URL(moduleURL), worker = new URL('./ActorGameplayGeometryWorker.bundle.js', current);
+    const release = current.searchParams.get('release');
+    if (release) worker.searchParams.set('release', release);
+    return worker;
+}
+
 export class ActorGameplayGeometryDelivery {
-    constructor(pass, { workerFactory = () => new Worker(new URL('./ActorGameplayGeometryWorker.bundle.js', import.meta.url), { type: 'module' }),
+    constructor(pass, { workerFactory = () => new Worker(gameplayGeometryWorkerURL(), { type: 'module' }),
         maxSourceBytes = 16 * 1024 * 1024, maxJobs = 2048, timeoutMs = 30_000 } = {}) {
         if (!Number.isSafeInteger(maxSourceBytes) || maxSourceBytes < 1 || !Number.isSafeInteger(maxJobs) || maxJobs < 1 ||
             !Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new Error('Bounded delivery limits required');

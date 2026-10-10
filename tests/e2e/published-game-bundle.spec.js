@@ -74,3 +74,69 @@ test('actual published engine stays lazy at login and constructs each class from
     expect(applicationModules.some(file => file.startsWith('/src/entities/'))).toBe(false);
     expect(failures, failures.join('\n')).toEqual([]);
 });
+
+test('published geometry owner loads its immutable worker, retires streamed roots and reuses the exact cached worker offline', async ({ page, context }, testInfo) => {
+    test.setTimeout(180_000);
+    const failures = collectBrowserFailures(page, origin), workers = [];
+    page.on('worker', worker => workers.push(worker.url()));
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+    const startup = await page.evaluate(async release => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        const render = game.renderSystem, defaultInactive = render.actorGameplayGeometry === null;
+        render.setActorGameplayGeometryEnabled(true);
+        const actor = game.createRemotePlayer('Player', 'owned-worker-fighter', 'Fighter'); actor.gameEngine = game;
+        await actor.ensureMesh(); render.add(actor.mesh);
+        window.__publishedGeometry = { game, actor, owner: render.actorGameplayGeometry };
+        return { defaultInactive, authored: actor.mesh.userData.authoredClass };
+    }, release);
+    expect(startup).toEqual({ defaultInactive: true, authored: 'Fighter' });
+    await page.waitForFunction(() => {
+        const { delivery, pass } = window.__publishedGeometry.owner;
+        if (delivery.failed) throw Error('Published geometry worker failed');
+        return !delivery.active && !delivery.jobs.size && pass.entries.size > 0;
+    }, null, { timeout: 90_000 });
+    const workerURL = `${origin}/${metadata.worker.output}?release=${release}`;
+    expect(workers).toEqual([workerURL]);
+    await expect.poll(() => page.evaluate(async workerURL => {
+        for (const key of await caches.keys()) if (await (await caches.open(key)).match(workerURL)) return true;
+        return false;
+    }, workerURL)).toBe(true);
+    const lifecycle = await page.evaluate(() => {
+        const { game, actor, owner } = window.__publishedGeometry;
+        const before = { roots: owner.delivery.roots.size, entries: owner.pass.entries.size };
+        actor.mesh.removeFromParent();
+        const retired = !owner.delivery.roots.has(actor.mesh) && [...owner.pass.entries.values()].every(row => row.root !== actor.mesh);
+        game.renderSystem.add(actor.mesh);
+        const reattached = owner.delivery.roots.has(actor.mesh);
+        actor.dispose(); game.destroy(); delete window.__publishedGeometry;
+        return { before, retired, reattached, disposed: owner.disposed && owner.delivery.disposed,
+            rootsAfter: owner.delivery.roots.size, jobsAfter: owner.delivery.jobs.size, entriesAfter: owner.pass.entries.size };
+    });
+    expect(lifecycle.retired && lifecycle.reattached && lifecycle.disposed).toBe(true);
+    expect([lifecycle.rootsAfter, lifecycle.jobsAfter, lifecycle.entriesAfter]).toEqual([0, 0, 0]);
+    await context.setOffline(true);
+    let offline;
+    try {
+        offline = await page.evaluate(workerURL => new Promise((resolve, reject) => {
+            const worker = new Worker(workerURL, { type: 'module' });
+            const timer = setTimeout(() => { worker.terminate(); reject(Error('Offline worker timeout')); }, 15_000);
+            worker.onerror = () => { clearTimeout(timer); worker.terminate(); reject(Error('Offline worker failed')); };
+            worker.onmessage = ({ data }) => { clearTimeout(timer); worker.terminate(); resolve({ id: data.id,
+                indices: data.indices?.length, error: data.error || null }); };
+            const attribute = (array, itemSize) => ({ array: new Float32Array(array), itemSize });
+            worker.postMessage({ id: 7, kind: 'color', source: { index: new Uint32Array([0, 1, 2, 0, 2, 3]), attributes: {
+                position: attribute([0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0], 3),
+                normal: attribute([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1], 3),
+                skinIndex: attribute(new Float32Array(16), 4),
+                skinWeight: attribute([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], 4)
+            } } });
+        }), workerURL);
+    } finally { await context.setOffline(false); }
+    expect(offline.id).toBe(7); expect(offline.error).toBeNull(); expect(offline.indices).toBeGreaterThan(0);
+    await testInfo.attach('published-geometry-worker', { body: JSON.stringify({ startup, worker: metadata.worker,
+        workerURL, lifecycle, offline }, null, 2), contentType: 'application/json' });
+    expect(failures, failures.join('\n')).toEqual([]);
+});

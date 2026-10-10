@@ -3,9 +3,19 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { moveByGroundClick } from './helpers.js';
 import { prepareGameplayGeometryLifecycle } from './gameplay-geometry-lifecycle.js';
 import { prepareGameplayGeometryDelivery } from './gameplay-geometry-delivery.js';
+import { profileGameplayScene } from './scene-performance.js';
 
 export async function captureGameplayGeometryParty(page, testInfo) {
     const automatic = process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY === '1';
+    let absentReference = null;
+    if (automatic && process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_RUNTIME_OWNER === '1') {
+        expect(await page.evaluate(() => window.game.renderSystem.actorGameplayGeometry === null)).toBe(true);
+        absentReference = await profileGameplayScene(page, 'equipped-party-before-geometry-owner-allocation');
+        await writeFile(testInfo.outputPath('geometry-owner-absent-reference.json'), JSON.stringify({
+            controllerAllocated: false, deliveryAllocated: false, ownedCandidatesAllocated: false, profile: absentReference,
+            scope: 'Independent real-frame window before installing this owner. Other selected scene policies retained; world/network continue normally. Compare population and time-window differences; no paired causal installation/memory gain.'
+        }, null, 2));
+    }
     const preparation = automatic ? await prepareGameplayGeometryDelivery(page) : await prepareGameplayGeometryLifecycle(page, 'game');
     expect(preparation.body.sources).toBe(4);
     const paired = await page.evaluate(automatic => {
@@ -114,7 +124,7 @@ export async function captureGameplayGeometryParty(page, testInfo) {
     } finally {
         await session.send('Page.stopScreencast'); await session.detach(); await Promise.all(writes);
         motion = await page.evaluate(() => { const observation = window.__geometryMotion; observation.stop(); delete window.__geometryMotion; return observation.samples; });
-        await writeFile(testInfo.outputPath('gameplay-geometry-party.json'), JSON.stringify({ preparation, paired, frames, motion,
+        await writeFile(testInfo.outputPath('gameplay-geometry-party.json'), JSON.stringify({ absentReference, preparation, paired, frames, motion,
             scope: 'Prepared four-class actual party, combined whole-render body/gear indices and separately explicit actor view policy; normal ground clicks and HUD clip before independent180-frame sample. No separate shadow simplification, earned campaign, physical-device or final art acceptance.' }, null, 2));
     }
     expect(motion.some(row => row.state === 'MOVING' && row.animation === 'Run' && row.swaps > 0)).toBe(true);

@@ -1,4 +1,5 @@
 import { build } from 'esbuild';
+import { buildGameplayGeometryWorker } from './build-gameplay-geometry-worker.mjs';
 import { lstat, readFile, realpath, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -31,6 +32,7 @@ export async function bundleGameEngine(root) {
     // Login and game must not acquire separate credential/session singletons.
     // Discover the entire static login graph, excluding its lazy engine entry;
     // any overlap remains an import of the original, already-cached module.
+    const worker = await buildGameplayGeometryWorker(destination);
     const login = await build({ ...options, entryPoints: [main], external: [engine] });
     const shared = new Set(Object.keys(login.metafile.inputs).map(input => path.resolve(destination, input)));
     const bundled = await build({ ...options, entryPoints: [engine], outfile: output,
@@ -59,7 +61,7 @@ export async function bundleGameEngine(root) {
     }
     await writeFile(output, result.contents);
     await writeFile(main, source.replace(ENGINE_IMPORT, "import('./core/GameEngine.bundle.js')"));
-    return { bundledModules: Object.keys(bundled.metafile.inputs).length,
+    return { worker, bundledModules: Object.keys(bundled.metafile.inputs).length,
         bytes: result.contents.byteLength, sharedLoginModules: shared.size,
         externalImports: [...new Set(metadata.imports.map(entry => entry.path))].sort() };
 }

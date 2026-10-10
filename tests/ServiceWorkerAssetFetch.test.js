@@ -8,7 +8,7 @@ const originalCaches = globalThis.caches;
 const originalFetch = globalThis.fetch;
 
 beforeAll(async () => {
-    globalThis.self = { addEventListener: (name, handler) => listeners.set(name, handler) };
+    globalThis.self = { location: { origin: 'https://example.test' }, addEventListener: (name, handler) => listeners.set(name, handler) };
     globalThis.caches = { open: jest.fn() };
     globalThis.fetch = jest.fn();
     await import('../src/assets/sw-asset-cache.js');
@@ -27,8 +27,8 @@ afterAll(() => {
     globalThis.fetch = originalFetch;
 });
 
-function request({ method = 'GET', signal = {} } = {}) {
-    const event = { request: { url: 'https://example.test/assets/body.glb?v=hash', method, signal },
+function request({ method = 'GET', signal = {}, url = 'https://example.test/assets/body.glb?v=hash' } = {}) {
+    const event = { request: { url, method, signal },
         respondWith: jest.fn(), waitUntil: jest.fn() };
     listeners.get('fetch')(event);
     return { event, result: event.respondWith.mock.calls[0]?.[0] };
@@ -106,4 +106,25 @@ test('HTTP failure responses remain failures and are never cached or retried', a
 test('does not intercept or replay non-GET asset requests', () => {
     expect(request({ method: 'POST' }).event.respondWith).not.toHaveBeenCalled();
     expect(fetch).not.toHaveBeenCalled();
+});
+
+
+test('immutable same-origin worker responses keep exact release cache keys', async () => {
+    const url = 'https://example.test/game/src/core/ActorGameplayGeometryWorker.0123456789abcdef.js?release=abcdef123';
+    const first = request({ url }); await first.result;
+    expect(cache.match).toHaveBeenCalledWith(first.event.request);
+    expect(cache.put).toHaveBeenCalledWith(first.event.request, { cached: true });
+    cache.match.mockImplementation(async request => request.url === url ? response : undefined);
+    const again = request({ url }); expect(await again.result).toBe(response);
+    const next = request({ url: url.replace('abcdef123', 'newrelease456') }); await next.result;
+    expect(fetch.mock.calls.map(([request]) => request.url)).toEqual([url, next.event.request.url]);
+});
+
+test.each([
+    'https://elsewhere.test/src/core/ActorGameplayGeometryWorker.0123456789abcdef.js?release=abcdef123',
+    'https://example.test/src/core/ActorGameplayGeometryWorker.0123456789abcdef.js',
+    'https://example.test/src/core/ActorGameplayGeometryWorker.bundle.js?release=abcdef123',
+    'https://example.test/src/core/GameEngine.bundle.js?release=abcdef123'
+])('does not put unrelated/unversioned JavaScript into the asset cache: %s', url => {
+    expect(request({ url }).event.respondWith).not.toHaveBeenCalled();
 });
