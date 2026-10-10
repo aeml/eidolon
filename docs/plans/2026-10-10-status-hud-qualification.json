@@ -1,0 +1,237 @@
+{
+  "recordedUTC": "2026-10-10T23:57:43.294021+00:00",
+  "classification": "progress",
+  "privateSource": "aebc87abc4426bc97aea0cbe177ee3ccf37694ac",
+  "runtimeCommit": "34c2ba82",
+  "heldSource": "ae675ba2291960521209d71a696681a56e692330",
+  "selectedRuntimeCommit": "27bf88a8",
+  "selectedIntoHeld": true,
+  "published": false,
+  "productFiles": [
+    "src/art/StatusEffectIcons.js",
+    "src/ui/Minimap.js",
+    "src/ui/PhoneStatusUI.js",
+    "src/styles/hud.css",
+    "src/styles/phone-status.css"
+  ],
+  "productSHA256": {
+    "src/art/StatusEffectIcons.js": "55b6503a36d705428a1e6703a49baca9971712fc4b88fa4ef53e0a451624bec2",
+    "src/ui/Minimap.js": "c92966efad1a55a54fa08082905ef7125aec0e0a44398d6a83e030fbfc3bcc48",
+    "src/ui/PhoneStatusUI.js": "0c11e90feb5ae2613a8fe1510eb21f546616a8d53f5f52627da6a439849a777a",
+    "src/styles/hud.css": "320d3a8d20e2457e24f3c389cfe741ecfaa284cc66a7c6379f5e878c30c11e4f",
+    "src/styles/phone-status.css": "576181fb6d1baffcbd03487fc1fba5438d352dc2857e376346aecf66b574f1d8"
+  },
+  "integration": "Ordinary cherry-picks34c2ba82/2e5a8014/aebc87ab onto clean0567d370. Adjacent terrain-party QA conflict resolved by retaining exactly31new status-review lines, excluding unselected camp/town census block. Five HUD product files byte-identical; no server/assets/core/entities/world/package changes or selection of camp/DemonOrc/singleton runtime.",
+  "diagnosis": {
+    "retainedBeforeImage": "/home/aeml/.local/share/eidolon-equipped-fight-dungeon-checks-20261010/high-authored-dungeon/eidolon-terrain-save-evidence-pZ706SOO/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/first-dungeon-entry.png",
+    "retainedBeforeSHA256": "157ef46eda927b6f330ae9472f9533aa0659e972ecc1399e3f4bdb2621bf1ad5",
+    "finding": "Actual equipped first-dungeon review showed an emoji-dependent missing-glyph square and a mostly empty status tray. Original row reserves132px even for one buff. Original desktop renderer rebuilds buttons every displayed countdown tick, has no focus tooltip, and leaves hover tooltip visible after expiry. Original modules fail4of33new/current checks;29unchanged pass."
+  },
+  "implementation": "Leaf module draws every21current tracked actor status with distinct fixed SVG paths, plus reviewed extra statuses and shape-distinct positive/negative fallbacks. No text glyphs, external resources or geometry-builder imports. Both minimap and phone text keep names/timers/details; unknown metadata stays literal. Desktop keeps keyed buttons/SVGs through timer updates, keyboard focus opens live clamped tooltip, Escape dismisses, expiry removes tooltip. One actual buff tray is62pxwide. Phone adds24px symbol beside existing title without changing reading/control budgets.",
+  "focused": {
+    "uniquePassed": 33,
+    "baselineFailed": 4,
+    "baselinePassed": 29,
+    "selectedHeldPassed": 33,
+    "strengthenedPhoneTextNodeCheck": "12existing phone checks pass; not additional unique checks"
+  },
+  "trackedStatusCoverage": {
+    "trackedStatuses": 21,
+    "ids": [
+      "well_rested",
+      "iron_fortress",
+      "guardian_roar",
+      "blessing_resolve",
+      "divine_intervention",
+      "blessing_zeal",
+      "spell_focus",
+      "time_warp",
+      "invulnerable",
+      "arcane_shield",
+      "vanish",
+      "last_stand",
+      "berserker_edge",
+      "swift",
+      "weak_point",
+      "mark_weakness",
+      "bleed",
+      "poison",
+      "root",
+      "slow",
+      "spirit_guardians"
+    ],
+    "allHaveDistinctFontIndependentShapes": true,
+    "scope": "Current actor-derived status registry coverage, not browser/art/device acceptance"
+  },
+  "native": {
+    "native-first": {
+      "terminal": {
+        "source": "34c2ba8228612358d6870f2edc6f6912b36072b8",
+        "exitCode": 0,
+        "startUnix": 1791676124.0578914,
+        "endUnix": 1791676137.655604
+      },
+      "stats": {
+        "total": 9,
+        "expected": 9,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "publicationProof": []
+    },
+    "publication": {
+      "terminal": {
+        "source": "2e5a80144cebba4e045b6d4ff0aed911534ead99",
+        "exitCode": 0,
+        "startUnix": 1791676307.7472386,
+        "endUnix": 1791676312.1851313
+      },
+      "stats": {
+        "total": 1,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "publicationProof": [
+        {
+          "result": {
+            "desktop": {
+              "sameButton": true,
+              "focused": true,
+              "sameSymbol": true,
+              "symbolCount": 1,
+              "textGlyphs": "",
+              "width": 62,
+              "tooltip": "Well Rested \u2022 98.5s left / 100s \u2022 +10% all stats \u00b7 +25% enemy-kill XP only",
+              "describedBy": "minimap-buff-tooltip"
+            },
+            "mobile": {
+              "visible": true,
+              "symbolCount": 1,
+              "details": "Status effectsCloseNo active effects. New buffs and debuffs will appear here.Buff98.5s leftWell Rested+10% all stats \u00b7 +25% enemy-kill XP only"
+            },
+            "expired": {
+              "desktopIcons": 0,
+              "tooltipHidden": true,
+              "phoneRows": 0
+            }
+          },
+          "engineSHA256": "d738f9c91af9dbc2431ccc489290430a1035c1939624f89801902e466ccd8e25",
+          "scope": "Actual copied/versioned game bundle UI construction; synthetic status metadata, no server/gameplay/device claim"
+        }
+      ]
+    },
+    "held-publication": {
+      "terminal": {
+        "source": "ae675ba2291960521209d71a696681a56e692330",
+        "exitCode": 0,
+        "startUnix": 1791676493.498959,
+        "endUnix": 1791676498.8467402
+      },
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "publicationProof": [
+        {
+          "result": {
+            "desktop": {
+              "sameButton": true,
+              "focused": true,
+              "sameSymbol": true,
+              "symbolCount": 1,
+              "textGlyphs": "",
+              "width": 62,
+              "tooltip": "Well Rested \u2022 98.5s left / 100s \u2022 +10% all stats \u00b7 +25% enemy-kill XP only",
+              "describedBy": "minimap-buff-tooltip"
+            },
+            "mobile": {
+              "visible": true,
+              "symbolCount": 1,
+              "details": "Status effectsCloseNo active effects. New buffs and debuffs will appear here.Buff98.5s leftWell Rested+10% all stats \u00b7 +25% enemy-kill XP only"
+            },
+            "expired": {
+              "desktopIcons": 0,
+              "tooltipHidden": true,
+              "phoneRows": 0
+            }
+          },
+          "engineSHA256": "bea1f3019a0247b5db289a83b0d080dcd3b8fb8f50d843aa34516e4ef4276d12",
+          "scope": "Actual copied/versioned game bundle UI construction; synthetic status metadata, no server/gameplay/device claim"
+        }
+      ]
+    }
+  },
+  "nativePassed": 13,
+  "skipped": 1,
+  "actualSavedCharacter": {
+    "before": {
+      "label": "Well Rested (0m 01s / 2h \u00b7 Resting \u00b7 +1s each second)",
+      "seconds": 1.0544670489999999,
+      "width": 62
+    },
+    "after": {
+      "sameButton": true,
+      "focused": true,
+      "tooltipVisible": true,
+      "tooltip": "Well Rested \u2022 0m 02s / 2h \u00b7 Resting \u00b7 +1s each second \u2022 +10% all stats \u00b7 +25% enemy-kill XP only. Safe zones restore 10% health and mana per second. No time earned or spent while offline.",
+      "seconds": 1.1992005999999997,
+      "equippedItems": 14,
+      "hp": 482
+    },
+    "scope": "Normal authenticated saved Fighter in actual town with14equipped slots; real server-earned WellRested timer, native focus/tooltip stability. No buff/stat/time writes."
+  },
+  "actualSavedParty": {
+    "native": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "maxRetry": 0,
+    "fourClass14SlotGoRaceCustodyPassed": true,
+    "profile": {
+      "frames": 180,
+      "drawCallsMedian": 296,
+      "trianglesMedian": 165530,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7
+    },
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    }
+  },
+  "sanitization": {
+    "observedPreparedAccounts": 4,
+    "plainFilesScanned": 45,
+    "embeddedEntriesScanned": 10,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled; explicit post-login screenshot includes synthetic actor label"
+  },
+  "limits": "Staged HUD change, no deployment/version/access change. Native desktop1024/1280 and phone360/390portrait,844/568landscape are browser layouts, not physical-device acceptance. Connected proof uses private camp rendering context; its actual296draw165530tri16.7median/p95 is one sampled party, not causal clearance of historical361draw/384combat peak or Low83\u219290draw counterexamples. Selected held exact publication independently passes status UI and lazy four-class construction; private rigid/camp runtime remains unselected. No performance/FPS gain, final modern-art/contact/audio/Lowcombat/off-road-return/failed24hsoak/F1\u2013F5/beta/launch/handoff completion claim. Prior frozen evidence unchanged; full goal active.",
+  "next": "Resume measured dynamic combat/party peak attribution and source-preserving improvements, normal collision-aware off-road return, Lowcombat/devices and code-owned world/interior/material polish. Keep supplied GLBs, all population/geometry/materials and original budgets; publish a coherent milestone after its complete qualification, without campaign/soak replay.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-status-hud-checks-20261010",
+    "inventoryEntries": 58,
+    "files": 59,
+    "inventorySHA256": "3f79342c055821903e571b2cd2c854dd8685eba9958966ac01048515aebc1107",
+    "frozen": true
+  }
+}

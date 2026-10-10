@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T23:40:50.624051+00:00",
+  "recordedUTC": "2026-10-10T23:58:33.424726+00:00",
   "classification": "Progress: public29 jump/aura/admin fixes accepted. Qualified automatic same-cell actor multi-draw and conservative instance clipping selected only into held integration695cee4a. Ordinary candidate High/Low sampled budgets and integrated source/publication technical checks pass. New real movement route town400/woodland468draw failures keep whole-world acceptance open.",
-  "qualifiedRuntime": "Held695cee4a selects three qualified actor runtime files from5e3c4d3f/d2a82c66, with prior e8 default lazy geometry/conservative actor shadows and accepted public29 motion/admin. Private rigid-handgear pilot remains excluded. Not published.",
+  "qualifiedRuntime": "Held695cee4a selects three qualified actor runtime files from5e3c4d3f/d2a82c66, with prior e8 default lazy geometry/conservative actor shadows and accepted public29 motion/admin. Private rigid-handgear pilot remains excluded. Not published. Independent HUD27bf88a8 now selected on heldae675ba2: font-independent21status icons, keyed desktop controls/live keyboard tooltips and phone symbols. No new core/entities/world/server/assets/package changes or private camp/DemonOrc/singleton selection. Exact held copied bundle status/lazy four-class checks pass; not published.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -99,10 +99,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Causal dynamic combat/party peak attribution and source-preserving improvement, normal collision-aware return from off-road fight, Lowcombat and representative devices. Retain High361/384draw and Low83\u219290draw counterexamples, independent dungeon-entry scope and original budgets. No whole-world/art/F1\u2013F5/beta/launch/handoff completion claim.",
-  "currentReceipt": "docs/plans/2026-10-10-equipped-fight-first-dungeon-qualification.json",
+  "currentReceipt": "docs/plans/2026-10-10-status-hud-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Investigate retained combat/party dynamic draw peaks and normal collision-aware return from off-road combat; qualify Lowcombat and representative devices, preserve supplied GLBs/all geometry/materials/population and unchanged targets. Keep combined rendering runtime unselected until coherent integration/gate decision. Continue full original goal; no campaign/soak replay.",
+  "nextAction": "Resume measured dynamic combat/party peak attribution and source-preserving improvements, normal collision-aware off-road return, Lowcombat/devices and code-owned world/interior/material polish. Keep supplied GLBs, all population/geometry/materials and original budgets; publish a coherent milestone after its complete qualification, without campaign/soak replay.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -2265,5 +2265,29 @@
     "lowCombat": "unexecuted",
     "combinedOffRoadReturn": "failed; not waived",
     "modernArtOrDeviceApproval": false
+  },
+  "statusHudPresentation": {
+    "privateSource": "aebc87abc4426bc97aea0cbe177ee3ccf37694ac",
+    "heldSource": "ae675ba2291960521209d71a696681a56e692330",
+    "runtime": "27bf88a8",
+    "selected": true,
+    "published": false,
+    "receipt": "docs/plans/2026-10-10-status-hud-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-status-hud-checks-20261010",
+      "inventoryEntries": 58,
+      "files": 59,
+      "inventorySHA256": "3f79342c055821903e571b2cd2c854dd8685eba9958966ac01048515aebc1107",
+      "frozen": true
+    },
+    "focusedUniquePassed": 33,
+    "originalModuleFailuresRetained": 4,
+    "nativePassed": 13,
+    "nativeSkipped": 1,
+    "knownTrackedStatusSymbols": 21,
+    "actualTrayWidth": 62,
+    "heldEngineSHA256": "bea1f3019a0247b5db289a83b0d080dcd3b8fb8f50d843aa34516e4ef4276d12",
+    "actualSavedFourClassPartyPassed": true,
+    "scope": "HUD-only stage. Actual saved-character/party uses private camp context; exact selected held publication separately qualified. No universal performance/art/device or release claim."
   }
 }
