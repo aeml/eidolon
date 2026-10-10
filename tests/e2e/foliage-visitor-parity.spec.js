@@ -150,7 +150,10 @@ test('cached container invalidation matches ordinary Three color and shadows', a
             const scenarios = [
                 ['manual-to-auto', [node => { node.position.x = 3; }, node => { node.matrixAutoUpdate = false; node.matrix.makeTranslation(20, 0, 0); node.matrixWorldNeedsUpdate = true; }, node => { node.matrixAutoUpdate = true; }]],
                 ['direct-world-write', [node => { node.matrixAutoUpdate = true; node.position.x = 3; }, node => { node.matrixWorld.makeTranslation(99, 0, 0); }]],
-                ['restore-world-auto', [node => { node.position.x = 3; }, node => { node.matrixWorldAutoUpdate = false; node.position.x = 7; }, node => { node.matrixWorldAutoUpdate = true; }]]
+                ['restore-world-auto', [node => { node.position.x = 3; }, node => { node.matrixWorldAutoUpdate = false; node.position.x = 7; }, node => { node.matrixWorldAutoUpdate = true; }]],
+                ['manual-child-local', [node => { node.position.x = 3; node.children[1].matrix.makeTranslation(5, 2, 2); node.children[1].matrixWorldNeedsUpdate = true; }, node => { node.children[1].matrix.makeTranslation(22, 2, 2); }]],
+                ['manual-child-world', [node => { node.children[1].matrix.makeTranslation(5, 2, 2); node.children[1].matrixWorldNeedsUpdate = true; }, node => { node.children[1].matrixWorld.makeTranslation(99, 2, 2); }]],
+                ['manual-group-world', [node => { node.matrixAutoUpdate = false; node.matrix.makeTranslation(7, 0, 0); node.matrixWorldNeedsUpdate = true; }, node => { node.matrixWorld.makeTranslation(88, 0, 0); }]]
             ];
             for (const [name, steps] of scenarios) {
                 for (const [step, mutate] of steps.entries()) {
@@ -168,7 +171,7 @@ test('cached container invalidation matches ordinary Three color and shadows', a
     });
     await testInfo.attach('matrix-invalidation-native', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
     expect(result.graphics).not.toMatch(/swiftshader|llvmpipe|software/i);
-    expect(result.reports).toHaveLength(8);
+    expect(result.reports).toHaveLength(14);
     for (const report of result.reports) expect(report).toMatchObject({ changedChannels: 0, unstableChannels: 0, worldEqual: true });
     expect(failures, failures.join('\n')).toEqual([]);
 });
