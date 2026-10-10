@@ -10,16 +10,17 @@ const finiteBox = box => !box.isEmpty() && Number.isFinite(box.min.x) && Number.
 // every known, filter-padded incoming shadow are outside the actual camera.
 export class ActorInstanceView {
     constructor() {
-        this.enabled = true; this.bounds = new WeakMap();
+        this.enabled = true; this.bounds = new WeakMap(); this.worldBounds = new WeakMap();
         this.projection = new Matrix4(); this.frustum = new Frustum();
-        this.world = new Box3(); this.sun = new Vector3(); this.target = new Vector3();
+        this.sun = new Vector3(); this.target = new Vector3();
         this.shadows = []; this.valid = false;
         this.stats = {};
     }
 
     beginFrame(renderer, scene, camera) {
         this.valid = false; this.shadows.length = 0; this.shadowConservative = false;
-        this.stats = { checked: 0, culled: 0, boundsBuilt: 0, lightScanNodes: 0, unknownShadow: false };
+        this.stats = { checked: 0, culled: 0, boundsBuilt: 0, worldBoundsBuilt: 0, worldBoundsReused: 0,
+            lightScanNodes: 0, unknownShadow: false };
         if (!this.enabled || this.disposed || !renderer || !camera || camera.isArrayCamera || camera.reversedDepth || scene.overrideMaterial ||
             camera.coordinateSystem !== WebGLCoordinateSystem ||
             ![...camera.projectionMatrix.elements, ...camera.matrixWorldInverse.elements].every(Number.isFinite)) return;
@@ -73,15 +74,29 @@ export class ActorInstanceView {
             this.bounds.set(geometry, cached); this.stats.boundsBuilt++;
         }
         if (!cached.valid) return false;
-        this.world.copy(cached.box).applyMatrix4(part.matrixWorld);
-        if (!finiteBox(this.world) || this.frustum.intersectsBox(this.world)) return false;
-        if (part.castShadow && this.shadows.some(shadow => shadowInfluenceIntersectsFrustum(this.world, shadow.sun, shadow.frustum))) return false;
+        // Cache only the exact world box. Eligibility, camera and every live
+        // light/shadow decision are still checked for each current frame.
+        // Local-box identity changes whenever the existing source/version
+        // contract rebuilds geometry bounds; matrix equality includes direct
+        // writes, animation, reparenting and manual-world control.
+        let world = this.worldBounds.get(part);
+        if (!world) {
+            world = { local: null, matrix: new Matrix4(), box: new Box3() };
+            this.worldBounds.set(part, world);
+        }
+        if (world.local !== cached.box || !world.matrix.equals(part.matrixWorld)) {
+            world.local = cached.box; world.matrix.copy(part.matrixWorld);
+            world.box.copy(cached.box).applyMatrix4(part.matrixWorld);
+            world.valid = finiteBox(world.box); this.stats.worldBoundsBuilt++;
+        } else this.stats.worldBoundsReused++;
+        if (!world.valid || this.frustum.intersectsBox(world.box)) return false;
+        if (part.castShadow && this.shadows.some(shadow => shadowInfluenceIntersectsFrustum(world.box, shadow.sun, shadow.frustum))) return false;
         this.stats.culled++;
         return true;
     }
 
     dispose() {
         this.disposed = true; this.enabled = false; this.valid = false;
-        this.bounds = new WeakMap(); this.shadows.length = 0;
+        this.bounds = new WeakMap(); this.worldBounds = new WeakMap(); this.shadows.length = 0;
     }
 }

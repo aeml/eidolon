@@ -98,6 +98,37 @@ test('private local bounds reuse unchanged source data and immediately follow ve
     expect(f.mesh.geometry.boundingBox).toBeNull();
 });
 
+test('settled rigid world bounds are reused while direct matrix writes remain immediate', () => {
+    const f = fixture(); f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    const apply = jest.spyOn(THREE.Box3.prototype, 'applyMatrix4');
+    try {
+        f.begin(); expect(f.view.rejects(f.mesh)).toBe(true); expect(apply).not.toHaveBeenCalled();
+        f.mesh.matrixWorld.makeTranslation(0, 5, 0);
+        expect(f.view.rejects(f.mesh)).toBe(false); expect(apply).toHaveBeenCalledTimes(1);
+        f.mesh.matrixWorld.makeTranslation(100, 5, 0);
+        expect(f.view.rejects(f.mesh)).toBe(true); expect(apply).toHaveBeenCalledTimes(2);
+        f.mesh.matrixWorld.elements[0] = 1e308;
+        f.mesh.matrixWorld.elements[4] = 1e308;
+        expect(f.view.rejects(f.mesh)).toBe(false);
+        f.mesh.matrixWorld.makeTranslation(100, 5, 0);
+        expect(f.view.rejects(f.mesh)).toBe(true);
+    } finally { apply.mockRestore(); f.view.dispose(); }
+});
+
+test('shared geometry retains independent world bounds through reparenting and source replacement', () => {
+    const f = fixture(), second = new THREE.Mesh(f.mesh.geometry, f.mesh.material), parent = new THREE.Group();
+    second.position.set(0, 5, 0); second.castShadow = true; f.scene.add(second, parent);
+    f.begin(); expect(f.view.rejects(f.mesh)).toBe(true); expect(f.view.rejects(second)).toBe(false);
+    parent.position.x = -100; parent.add(f.mesh); f.begin();
+    expect(f.view.rejects(f.mesh)).toBe(false); expect(f.view.rejects(second)).toBe(false);
+    parent.position.x = 0; f.begin(); expect(f.view.rejects(f.mesh)).toBe(true);
+    const replacement = f.mesh.geometry.attributes.position.clone();
+    for (let i = 0; i < replacement.count; i++) replacement.setX(i, replacement.getX(i) - 100);
+    f.mesh.geometry.setAttribute('position', replacement); f.begin();
+    expect(f.view.rejects(f.mesh)).toBe(false); expect(f.view.rejects(second)).toBe(true);
+    f.view.dispose();
+});
+
 test.each(['displacement', 'custom-depth', 'custom-render', 'custom-shader', 'morph', 'skinned', 'child', 'always-visible', 'invalid-position', 'projective'])('%s geometry keeps its normal rendering path', kind => {
     const f = fixture();
     if (kind === 'displacement') f.mesh.material.displacementMap = new THREE.Texture();

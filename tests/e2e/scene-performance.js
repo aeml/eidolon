@@ -1,12 +1,13 @@
 /** Optional real-game profiling; no account state or network commands changed. */
 export async function profileGameplayScene(page, label) {
-    return page.evaluate((label) => new Promise((resolve, reject) => {
+    return page.evaluate(({ label, observeWorldBounds }) => new Promise((resolve, reject) => {
         const game = window.game;
         const renderer = game?.renderSystem?.renderer;
         if (!renderer || game.isDestroyed) { reject(new Error('A live game is required for profiling')); return; }
         const originalLoop = game.loop;
         const originalReset = renderer.info.autoReset;
         const samples = [];
+        const boundsSamples = [];
         let warmup = 60;
         let previous = null;
         let firstPreviewFrame = null;
@@ -36,7 +37,15 @@ export async function profileGameplayScene(page, label) {
                 activeEntities: game.activeEntitiesCache?.length || 0,
                 previewFramesDuringSample: (preview?.renderer?.info.render.frame || 0) - (firstPreviewFrame || 0),
                 previewGeometries: preview?.renderer?.info.memory.geometries || 0,
-                previewTextures: preview?.renderer?.info.memory.textures || 0
+                previewTextures: preview?.renderer?.info.memory.textures || 0,
+                ...(observeWorldBounds ? { worldBounds: {
+                    scope: 'Last actor-policy frame counters after each sampled game loop; sampled after CPU timer, not an allocation or VRAM measure.',
+                    frames: boundsSamples.length,
+                    built: boundsSamples.reduce((sum, row) => sum + row.built, 0),
+                    reused: boundsSamples.reduce((sum, row) => sum + row.reused, 0),
+                    builtMedian: percentile(boundsSamples.map(row => row.built), .5),
+                    reusedMedian: percentile(boundsSamples.map(row => row.reused), .5)
+                } } : {})
             });
         };
         renderer.info.autoReset = false;
@@ -55,8 +64,12 @@ export async function profileGameplayScene(page, label) {
             if (warmup-- > 0) return;
             if (firstPreviewFrame === null) firstPreviewFrame = game.uiManager.characterPreview?.renderer?.info.render.frame || 0;
             samples.push({ intervalMs, cpuMs, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles });
+            if (observeWorldBounds) {
+                const stats = game.renderSystem.actorInstances?.viewFilter?.stats;
+                boundsSamples.push({ built: stats?.worldBoundsBuilt || 0, reused: stats?.worldBoundsReused || 0 });
+            }
             if (samples.length === 180) finish();
         };
         timer = setTimeout(() => finish(new Error(`Scene profile timed out after ${samples.length} samples`)), 45_000);
-    }), label);
+    }), { label, observeWorldBounds: process.env.EIDOLON_E2E_WORLD_BOUNDS_COMPARE === '1' });
 }

@@ -1,6 +1,6 @@
 // Explicit QA selection of an otherwise unselected frame-owned policy.
 export async function prepareActorInstanceViewPilot(page) {
-    return page.evaluate(async () => {
+    return page.evaluate(async ({ compareWorldBounds }) => {
         const { ActorInstanceView } = await import('/src/art/ActorInstanceView.js');
         const render = window.game.renderSystem, instances = render.actorInstances;
         if (!instances?.enabled || window.__actorInstanceViewPilot) throw Error('Actor view pilot requires one current instancing owner');
@@ -64,14 +64,63 @@ export async function prepareActorInstanceViewPilot(page) {
                 const times = blocks.filter(block => block.enabled === enabled).flatMap(block => block.milliseconds).sort((a, b) => a - b);
                 return { frames: times.length, median: times[Math.floor(times.length / 2)], p95: times[Math.ceil(times.length * .95) - 1] };
             };
+            let worldBoundsComparison = null;
+            if (compareWorldBounds) {
+                const { ActorInstanceView: ReferenceView } = await import('/src/art/ActorInstanceView.reference.js');
+                const referenceView = new ReferenceView();
+                const drawBounds = indexed => {
+                    instances.viewFilter = indexed ? view : referenceView; render.render();
+                    return { calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+                        restored: restored(), stats: { ...(indexed ? view : referenceView).stats } };
+                };
+                const captureBounds = indexed => {
+                    const counts = drawBounds(indexed); context.drawImage(canvas, 0, 0);
+                    return { ...counts, pixels: context.getImageData(0, 0, copy.width, copy.height).data };
+                };
+                try {
+                    let old, indexed, again;
+                    try {
+                        Object.defineProperty(performance, 'now', { configurable: true, value: () => frozenTime });
+                        drawBounds(false); drawBounds(true); drawBounds(false);
+                        old = captureBounds(false); indexed = captureBounds(true); again = captureBounds(false);
+                    } finally {
+                        if (nowDescriptor) Object.defineProperty(performance, 'now', nowDescriptor);
+                        else delete performance.now;
+                    }
+                    let changed = 0, unstable = 0;
+                    for (let i = 0; i < old.pixels.length; i++) {
+                        changed += old.pixels[i] !== indexed.pixels[i] ? 1 : 0;
+                        unstable += old.pixels[i] !== again.pixels[i] ? 1 : 0;
+                    }
+                    if (changed || unstable || old.calls !== indexed.calls || old.triangles !== indexed.triangles ||
+                        old.calls !== again.calls || old.triangles !== again.triangles) throw Error('World bounds comparison differs');
+                    const measured = [];
+                    for (const enabled of [false, true, true, false]) {
+                        drawBounds(enabled); drawBounds(enabled);
+                        const milliseconds = [];
+                        for (let frame = 0; frame < 12; frame++) {
+                            const start = realNow(); drawBounds(enabled); milliseconds.push(realNow() - start);
+                        }
+                        measured.push({ enabled, milliseconds, restored: restored() });
+                    }
+                    const summarizeBounds = enabled => {
+                        const values = measured.filter(block => block.enabled === enabled).flatMap(block => block.milliseconds).sort((a, b) => a - b);
+                        return { frames: values.length, median: values[Math.floor(values.length / 2)], p95: values[Math.ceil(values.length * .95) - 1] };
+                    };
+                    worldBoundsComparison = { scope: 'Same scene: previous recomputed world bounds versus exact world-box reuse; synchronous ABBA submission only, not whole-frame pacing.',
+                        reference: strip(old), candidate: strip(indexed), referenceAgain: strip(again), changedChannels: changed,
+                        unstableChannels: unstable, blocks: measured, cpu: { reference: summarizeBounds(false), candidate: summarizeBounds(true) } };
+                } finally { referenceView.dispose(); select(true); }
+            }
             return { reference: strip(reference), candidate: strip(candidate), referenceAgain: strip(referenceAgain),
                 image: { width: copy.width, height: copy.height, frozenRenderClock: true, changedChannels, unstableChannels, maximumChannel },
                 cpu: { scope: 'Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.',
-                    blocks, reference: summarize(false), candidate: summarize(true) }, quality: render.graphicsQuality, zoom: render.currentZoom };
+                    blocks, reference: summarize(false), candidate: summarize(true) }, worldBoundsComparison,
+                quality: render.graphicsQuality, zoom: render.currentZoom };
         } catch (error) {
             dispose(); delete window.__actorInstanceViewPilot; throw error;
         } finally {
             if (!view.disposed) select(true);
         }
-    });
+    }, { compareWorldBounds: process.env.EIDOLON_E2E_WORLD_BOUNDS_COMPARE === '1' });
 }
