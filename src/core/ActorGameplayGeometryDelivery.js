@@ -20,6 +20,8 @@ export function copyGameplayGeometry(generation, maxBytes) {
     if (!body && morphs.length) return null;
     const source = { attributes: Object.fromEntries(Object.entries(geometry.attributes).map(([name, attr]) => [name, copyAttribute(attr)])),
         index: new Uint32Array(geometry.index.array), morphTargetsRelative: geometry.morphTargetsRelative, ...(rigid ? { quality: generation.quality } : {}) };
+    if (rigid && geometry.userData.fittedRigidSurfacePartitions) source.rigidSurfacePartitions =
+        geometry.userData.fittedRigidSurfacePartitions.map(part => ({ ...part }));
     if (body) source.morphTargets = geometry.morphAttributes.position.map((attr, index) => ({
         position: copyAttribute(attr), normal: copyAttribute(geometry.morphAttributes.normal[index]) }));
     const transfers = [source.index.buffer, ...Object.values(source.attributes).map(attr => attr.array.buffer),

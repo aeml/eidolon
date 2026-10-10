@@ -180,3 +180,20 @@ test('rigid mount work carries its quality without fabricated skin attributes an
         expect(f.pass.entries.has(mesh)).toBe(false);
     } finally { f.dispose(); }
 });
+
+
+test('rigid surface partition metadata is copied for workers and invalidates changed generations', () => {
+    const f = fixture();
+    try {
+        const mount = new THREE.Group(); Object.assign(mount.userData, { authoredEquipment: true, fittedItem: 'iron-sword', slot: 'mainHand' });
+        const geometry = new THREE.PlaneGeometry(), mesh = new THREE.Mesh(geometry, f.mesh.material);
+        geometry.userData.fittedRigidSurfacePartitions = [{ vertexStart: 0, vertexCount: 4, indexStart: 0, indexCount: 6 }];
+        mount.add(mesh); f.root.add(mount);
+        const generation = f.pass.capture(mesh), payload = copyGameplayGeometry(generation, 4096);
+        expect(payload.source.rigidSurfacePartitions).toEqual(geometry.userData.fittedRigidSurfacePartitions);
+        expect(payload.source.rigidSurfacePartitions).not.toBe(geometry.userData.fittedRigidSurfacePartitions);
+        geometry.userData.fittedRigidSurfacePartitions[0].indexCount = 3;
+        expect(payload.source.rigidSurfacePartitions[0].indexCount).toBe(6);
+        expect(f.pass.current(generation)).toBe(false);
+    } finally { f.dispose(); }
+});

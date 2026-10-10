@@ -18,13 +18,21 @@ const sameAttribute = (attribute, saved) => {
 const snapshot = geometry => ({ index: captureAttribute(geometry.index),
     attributes: Object.entries(geometry.attributes).map(([name, attribute]) => [name, captureAttribute(attribute)]),
     morphs: Object.entries(geometry.morphAttributes).map(([name, attributes]) => [name, attributes.map(captureAttribute)]),
-    relative: geometry.morphTargetsRelative });
+    relative: geometry.morphTargetsRelative,
+    rigidSurfacePartitions: geometry.userData.fittedRigidSurfacePartitions,
+    partitionRanges: geometry.userData.fittedRigidSurfacePartitions?.map(part =>
+        [part.vertexStart, part.vertexCount, part.indexStart, part.indexCount]) });
 const unchanged = (geometry, saved) => geometry.index && sameAttribute(geometry.index, saved.index) &&
     Object.keys(geometry.attributes).length === saved.attributes.length && saved.attributes.every(([name, attr]) =>
         geometry.attributes[name] && sameAttribute(geometry.attributes[name], attr)) &&
     Object.keys(geometry.morphAttributes).length === saved.morphs.length && saved.morphs.every(([name, attrs]) =>
         geometry.morphAttributes[name]?.length === attrs.length && attrs.every((attr, index) => sameAttribute(geometry.morphAttributes[name][index], attr))) &&
-    geometry.morphTargetsRelative === saved.relative && !geometry.groups.length &&
+    geometry.morphTargetsRelative === saved.relative &&
+    geometry.userData.fittedRigidSurfacePartitions === saved.rigidSurfacePartitions &&
+    (!saved.partitionRanges || saved.rigidSurfacePartitions.length === saved.partitionRanges.length &&
+        saved.rigidSurfacePartitions.every((part, i) => part.vertexStart === saved.partitionRanges[i][0] &&
+            part.vertexCount === saved.partitionRanges[i][1] && part.indexStart === saved.partitionRanges[i][2] &&
+            part.indexCount === saved.partitionRanges[i][3])) && !geometry.groups.length &&
     geometry.drawRange.start === 0 && geometry.drawRange.count === Infinity;
 const under = (mesh, ancestor) => {
     for (let node = mesh; node; node = node.parent) if (node === ancestor) return true;

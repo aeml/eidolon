@@ -5,6 +5,7 @@ import { isActiveEquipment } from '../core/EquipmentSlots.js';
 import { COSMETIC_CATALOGUE, SEASON_COSMETIC_CATALOGUE } from '../data/cosmetics.generated.js';
 import { batchFittedEquipment } from './FittedEquipmentBatches.js';
 import { applyAuthoredEquipmentSurface } from './AuthoredEquipmentSurfaces.js';
+import { batchFittedRigidSurfaces } from './FittedRigidSurfaceBatches.js';
 
 const owners = new WeakMap();
 const ownedMaterials = new WeakMap();
@@ -169,6 +170,9 @@ function bindParts(state, gltf, slot, item, catalog, look, skeletons, staged) {
         const socket = state.scene.getObjectByName(grip.socket);
         new THREE.Matrix4().fromArray(grip.localMatrix).decompose(root.position, root.quaternion, root.scale);
         instanceMaterials(root, item, look); parts.push(root); staged.push(root);
+        // Explicit private pilot until native material/derivative equivalence
+        // and complete scene budgets qualify this path.
+        if (state.rigidSurfaceBatching && !gltf.animations?.length) batchFittedRigidSurfaces(root);
         root.userData.fittedParent = socket;
     } else {
         const targets = new Map(state.body.skeleton.bones.map((bone, i) => [bone.name, { bone, inverse: state.body.skeleton.boneInverses[i] }]));
@@ -228,9 +232,10 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
     const state = owners.get(root); if (!state) return { supported: false };
     const actorClass = root.userData.authoredClass; state.actorClass = actorClass;
     const active = Object.fromEntries(Object.entries(equipment).filter(([slot, item]) => isActiveEquipment(slot, item, actorClass)));
-    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${root.userData.fittedEquipmentSurfaceBatching !== false}:${equipmentVisualSignature(active)}`;
+    const signature = `${root.userData.authoredQuality}:${root.userData.fittedEquipmentLOD !== false}:${root.userData.fittedEquipmentSurfaceBatching !== false}:${root.userData.fittedRigidSurfaceBatching === true}:${equipmentVisualSignature(active)}`;
     if (!force && signature === root.userData.equipmentVisualSignature) return { supported: true, changed: false };
     const epoch = ++state.epoch; root.userData.equipmentVisualSignature = signature;
+    state.rigidSurfaceBatching = root.userData.fittedRigidSurfaceBatching === true;
     root.userData.updateWeaponProfile?.(active);
     const requested = Object.entries(active).flatMap(([slot, item]) => {
         const descriptor = resolveEquipmentVisualDescriptor(item);

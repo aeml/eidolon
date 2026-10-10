@@ -8,7 +8,7 @@ const cache = new Map(), maxBytes = 16 * 1024 * 1024, maxEntries = 128;
 let cacheBytes = 0;
 async function keyOf(kind, source) {
     const buffers = [source.index], layout = { version: 'supplied-indices-v1-.006-.12-collars', kind,
-        relative: source.morphTargetsRelative, ...(kind === 'rigid' ? { rigidVersion: 'boundary-collars-v1', quality: source.quality } : {}), attributes: [], morphs: [] };
+        relative: source.morphTargetsRelative, ...(kind === 'rigid' ? { rigidVersion: 'boundary-collars-v1', quality: source.quality, partitions: source.rigidSurfacePartitions } : {}), attributes: [], morphs: [] };
     const append = (attrs, output) => {
         for (const name of Object.keys(attrs).sort()) {
             const { itemSize, array } = attrs[name];

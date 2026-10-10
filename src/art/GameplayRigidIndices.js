@@ -5,7 +5,12 @@ await MeshoptSimplifier.ready;
 // Index-only derivatives of delivered rigid hand equipment. Every referenced
 // row remains an exact source row. Weighted UV/normal/tangent error constrains
 // appearance; independent edge validation rejects new cracks or lost borders.
-export function gameplayRigidIndices(source, { error = .006, ratio = .12, normalWeight = .15 } = {}) {
+export function gameplayRigidIndices(source, options = {}) {
+    if (source?.rigidSurfacePartitions) return partitionedRigidIndices(source, options);
+    return singleRigidIndices(source, options);
+}
+
+function singleRigidIndices(source, { error = .006, ratio = .12, normalWeight = .15 } = {}) {
     const attrs = source?.attributes, input = source?.index, position = attrs?.position;
     if (!(input instanceof Uint32Array) || !input.length || input.length % 3 ||
         !(position?.array instanceof Float32Array) || position.itemSize !== 3 ||
@@ -80,4 +85,49 @@ export function gameplayRigidIndices(source, { error = .006, ratio = .12, normal
     }
     return { indices, error, ratio, normalWeight, inputTriangles: input.length / 3, candidateTriangles: indices.length / 3,
         protectedBoundaryPositions: fixed.size, protectedSourceTriangles: exact.length / 3, repairRounds, reportedError };
+}
+
+// Each batch retains its source primitive's rows, local extent and topology.
+// Simplifying each partition independently reproduces its existing derivative
+// exactly; surfaces never become adjacent or share collapse candidates.
+function partitionedRigidIndices(source, options) {
+    const parts = source.rigidSurfacePartitions, attrs = source.attributes, input = source.index;
+    const count = attrs?.position?.array?.length / 3;
+    if (!Array.isArray(parts) || parts.length < 2 || !(input instanceof Uint32Array) ||
+        !Number.isSafeInteger(count) || count < 1 ||
+        Object.keys(attrs).some(name => !['position', 'normal', 'uv', 'tangent', 'fittedDiffuseRoughness', 'fittedEmissiveMetalness'].includes(name)))
+        throw Error('Invalid rigid surface partitions');
+    let vertexStart = 0, indexStart = 0;
+    const indices = [], results = [];
+    for (const part of parts) {
+        if (part.vertexStart !== vertexStart || part.indexStart !== indexStart ||
+            !Number.isSafeInteger(part.vertexCount) || part.vertexCount < 1 ||
+            !Number.isSafeInteger(part.indexCount) || part.indexCount < 3 || part.indexCount % 3 ||
+            vertexStart + part.vertexCount > count || indexStart + part.indexCount > input.length)
+            throw Error('Invalid rigid surface partition range');
+        for (const name of ['fittedDiffuseRoughness', 'fittedEmissiveMetalness']) {
+            const attr = attrs[name];
+            if (attr?.itemSize !== 4 || !(attr.array instanceof Float32Array) || attr.array.length !== count * 4)
+                throw Error('Invalid rigid flat surface');
+            for (let i = vertexStart * 4; i < (vertexStart + part.vertexCount) * 4; i++)
+                if (!Number.isFinite(attr.array[i]) || attr.array[i] !== attr.array[vertexStart * 4 + i % 4])
+                    throw Error('Rigid surface partition must retain one flat material');
+        }
+        const localIndex = input.slice(indexStart, indexStart + part.indexCount);
+        for (let i = 0; i < localIndex.length; i++) {
+            if (localIndex[i] < vertexStart || localIndex[i] >= vertexStart + part.vertexCount)
+                throw Error('Rigid index crosses material partition');
+            localIndex[i] -= vertexStart;
+        }
+        const attributes = Object.fromEntries(Object.entries(attrs).filter(([name]) =>
+            !name.startsWith('fitted')).map(([name, attr]) => [name, {
+            itemSize: attr.itemSize, array: attr.array.slice(vertexStart * attr.itemSize, (vertexStart + part.vertexCount) * attr.itemSize)
+        }]));
+        const result = singleRigidIndices({ attributes, index: localIndex }, options);
+        for (const index of result.indices) indices.push(index + vertexStart);
+        results.push({ ...result, indices: undefined });
+        vertexStart += part.vertexCount; indexStart += part.indexCount;
+    }
+    if (vertexStart !== count || indexStart !== input.length) throw Error('Incomplete rigid surface partitions');
+    return { indices: new Uint32Array(indices), partitions: results };
 }
