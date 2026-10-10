@@ -1,6 +1,7 @@
 import { access, copyFile, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildGameplayGeometryWorker } from './build-gameplay-geometry-worker.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const vendorRoot = path.join(repoRoot, 'vendor');
@@ -41,3 +42,4 @@ await writeFile(
 );
 
 console.log(`Prepared browser runtime dependencies in ${path.relative(repoRoot, vendorRoot)}/`);
+console.log(JSON.stringify(await buildGameplayGeometryWorker(repoRoot)));
