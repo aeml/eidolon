@@ -1,0 +1,222 @@
+{
+  "status": "Unselected prototype; do not merge its runtime into the held qualified renderer or publish it.",
+  "codeCommit": "b90d1ac5218064442a013d9ced134bdd35824792",
+  "baseCommit": "0cf763ac813ab4165d75f000520c13706686f3a9",
+  "hypothesis": "Replace repeated full-scene visible-light discovery with event-maintained typed Light membership, while reevaluating live ancestry/visibility/castShadow/target/filter state.",
+  "contract": "Uses stock Three add/remove/attach/clear and type/hierarchy methods fixed at construction. Custom methods present at registration fall back to full traversal. Arbitrary later type/hierarchy monkeypatches or direct child-array mutation are not a qualified contract; this extra ownership constraint is not silently treated as full invalidation.",
+  "checks": {
+    "baseline": "Old helper visits2005nodes and fails new settled-discovery ceiling;25other cases pass.",
+    "focused": "107checks/4suites passed, including late nested point lights, live ancestry/cast/target/filter flags, reentrant child event rebuild, reparenting, scene replacement, shadows-off and listener ownership cleanup.",
+    "native": "12native actor cases/70strict color-shadow pairs zero changed/unstable RGB; four stable resource cycles per case and draw-failure restoration. Low included.",
+    "party": "Actual High one-renderer/three-socket-peer four-class race/save check passed, fourteen-slot saves preserved. Four-browser case skipped. New actual Low party not repeated: prototype is not selected, Low native and unit shadows-off coverage passed; old qualified Low remains source-scoped."
+  },
+  "sameSceneComparison": {
+    "scope": "Same scene: previous full light scan versus indexed light membership; synchronous ABBA submission only, not whole-frame pacing.",
+    "reference": {
+      "calls": 274,
+      "triangles": 162468,
+      "restored": true,
+      "stats": {
+        "checked": 714,
+        "culled": 514,
+        "boundsBuilt": 0,
+        "lightScanNodes": 4075,
+        "unknownShadow": false
+      }
+    },
+    "candidate": {
+      "calls": 274,
+      "triangles": 162468,
+      "restored": true,
+      "stats": {
+        "checked": 714,
+        "culled": 514,
+        "boundsBuilt": 0,
+        "lightScanNodes": 3,
+        "unknownShadow": false,
+        "lightMembershipNodes": 6058,
+        "lightMembershipBuilds": 1,
+        "lightVisibilityChecks": 6,
+        "lightMembershipFallback": false
+      }
+    },
+    "referenceAgain": {
+      "calls": 274,
+      "triangles": 162468,
+      "restored": true,
+      "stats": {
+        "checked": 714,
+        "culled": 514,
+        "boundsBuilt": 0,
+        "lightScanNodes": 4075,
+        "unknownShadow": false
+      }
+    },
+    "changedChannels": 0,
+    "unstableChannels": 0,
+    "blocks": [
+      {
+        "enabled": false,
+        "milliseconds": [
+          15.300000011920929,
+          16.400000005960464,
+          16.799999982118607,
+          17.900000005960464,
+          18.900000005960464,
+          14,
+          17.30000001192093,
+          24.099999994039536,
+          18.099999994039536,
+          18.5,
+          15.699999988079071,
+          16.5
+        ],
+        "restored": true
+      },
+      {
+        "enabled": true,
+        "milliseconds": [
+          24.299999982118607,
+          23.5,
+          15.800000011920929,
+          17.599999994039536,
+          14.199999988079071,
+          16.5,
+          11,
+          15,
+          24.600000023841858,
+          20.899999976158142,
+          13.5,
+          16.900000005960464
+        ],
+        "restored": true
+      },
+      {
+        "enabled": true,
+        "milliseconds": [
+          11.399999976158142,
+          13.100000023841858,
+          23.099999994039536,
+          22.400000005960464,
+          14.099999994039536,
+          14.099999994039536,
+          13.400000005960464,
+          14.199999988079071,
+          17.400000005960464,
+          23.400000005960464,
+          22.69999998807907,
+          16.700000017881393
+        ],
+        "restored": true
+      },
+      {
+        "enabled": false,
+        "milliseconds": [
+          12.599999994039536,
+          14,
+          19.5,
+          23.700000017881393,
+          18.400000005960464,
+          15.5,
+          15.5,
+          14,
+          18.19999998807907,
+          16.19999998807907,
+          21.5,
+          21.200000017881393
+        ],
+        "restored": true
+      }
+    ],
+    "cpu": {
+      "reference": {
+        "frames": 24,
+        "median": 17.30000001192093,
+        "p95": 23.700000017881393
+      },
+      "candidate": {
+        "frames": 24,
+        "median": 16.700000017881393,
+        "p95": 24.299999982118607
+      }
+    }
+  },
+  "wholeFrameProfile": {
+    "quality": "high",
+    "label": "single-renderer-equipped-raised-party-high",
+    "frames": 180,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 16.700000000004366,
+    "frameP95Ms": 33.400000000001455,
+    "frameP99Ms": 33.400000000001455,
+    "framesOver33ms": 24,
+    "cpuLoopMedianMs": 20.599999994039536,
+    "cpuLoopP95Ms": 26.399999976158142,
+    "drawCallsMedian": 275,
+    "trianglesMedian": 162546,
+    "geometries": 486,
+    "textures": 297,
+    "activeEntities": 26,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0
+  },
+  "isolatedPreparation": {
+    "scope": "Node-only isolated beginFrame diagnostic, 5,104 ordinary nodes, no renderer submission, animation, GPU or whole-game pacing. Cold membership registration cost explicit; not a device or production gain.",
+    "cold": [
+      {
+        "name": "reference",
+        "milliseconds": 1.625323999999992,
+        "stats": {
+          "checked": 0,
+          "culled": 0,
+          "boundsBuilt": 0,
+          "lightScanNodes": 5104,
+          "unknownShadow": false
+        }
+      },
+      {
+        "name": "candidate",
+        "milliseconds": 11.381056999999998,
+        "stats": {
+          "checked": 0,
+          "culled": 0,
+          "boundsBuilt": 0,
+          "lightScanNodes": 2,
+          "unknownShadow": false,
+          "lightMembershipNodes": 5104,
+          "lightMembershipBuilds": 1,
+          "lightVisibilityChecks": 4,
+          "lightMembershipFallback": false
+        }
+      }
+    ],
+    "reference": {
+      "frames": 1000,
+      "medianMs": 0.18155300000000807,
+      "p95Ms": 0.2802899999999795
+    },
+    "candidate": {
+      "frames": 1000,
+      "medianMs": 0.004758999999978641,
+      "p95Ms": 0.01410699999999565
+    },
+    "membershipNodes": 5104,
+    "ownedListenerEntries": 10208
+  },
+  "decision": "Same-scene hardware ABBA submission median17.3\u219216.7ms improves0.6ms butp9523.7\u219224.3ms worsens. Discovery4075\u21923visible lights, but6058watched nodes require12116listener entries. Node-only phase diagnostic0.182\u21920.0048ms median is real in that synthetic scope, while cold first preparation1.63\u219211.38ms and10208listener entries increase. This does not establish an overall native frame gain worth the graph-registration/ownership complexity; retain prior full live light scan.",
+  "limits": "Ordinary High180frames16.7median/33.4p95ms,275draws/162546triangles,26entities. Rawp9533.400000000001455 exceeds exact33.4; no waiver. Different population and shared-host load forbid cross-run matrix/index gain claims. Modern moving art, physical devices, full original roadmap and failed24hsoak remain open. Public24/922753a7 excludes this prototype.",
+  "next": "Investigate measured actor projection/world-bounds work with exact matrix/geometry/camera/light invalidation and lower ownership cost; preserve all source actors, surfaces, shadows, content and original budgets.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-actor-shadow-light-index-checks-20261010",
+    "files": 77,
+    "inventorySHA256": "fd1f24c48c6424847ddbcd89b8310a51ab4954a38c8e6d3b65dc9b1bd755ffbc"
+  }
+}

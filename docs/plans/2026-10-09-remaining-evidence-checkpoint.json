@@ -1,12 +1,13 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T06:10:50.264237+00:00",
+  "recordedUTC": "2026-10-10T06:29:23.953527+00:00",
   "classification": "Public23 jump cap accepted. Original unsafe matrix cache was already public23, correcting earlier private-only descriptions; conservative6553fec1 correction passes80focused/14native/High-and-Low party-save scopes and prepares isolated24release. High full-frame and Low triangle budgets still fail. Full inherited gates and failed24hsoak remain open.",
   "qualifiedRuntime": "Private qualified6fbffd34 renderer plus four selected supplied High v3body paths; all originals/oldHigh/Low retained. Public/client/server now Alpha1.79.23 for authorized jump duration only; profile/access and private renderer/terrain/diagnostic activation unchanged. Scope correction: original cache was already public23; only newer partialfix/pilots were private.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
-    "dd354331f8a32ff1d874ce891f9e9587daa3193d"
+    "dd354331f8a32ff1d874ce891f9e9587daa3193d",
+    "b90d1ac5218064442a013d9ced134bdd35824792"
   ],
   "longSoak": {
     "readOnlyObservationUTC": "2026-10-10T04:02:31Z",
@@ -966,5 +967,21 @@
       "files": 74,
       "inventorySHA256": "5bba256821386499c6207f207a37af0d1c5da9117b2ced33cdc7152a4ffc546c"
     }
+  },
+  "unselectedActorLightMembership": {
+    "codeCommit": "b90d1ac5218064442a013d9ced134bdd35824792",
+    "receipt": "docs/plans/2026-10-10-actor-light-membership-unselected.json",
+    "decision": "Same-scene hardware ABBA submission median17.3\u219216.7ms improves0.6ms butp9523.7\u219224.3ms worsens. Discovery4075\u21923visible lights, but6058watched nodes require12116listener entries. Node-only phase diagnostic0.182\u21920.0048ms median is real in that synthetic scope, while cold first preparation1.63\u219211.38ms and10208listener entries increase. This does not establish an overall native frame gain worth the graph-registration/ownership complexity; retain prior full live light scan.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-actor-shadow-light-index-checks-20261010",
+      "files": 77,
+      "inventorySHA256": "fd1f24c48c6424847ddbcd89b8310a51ab4954a38c8e6d3b65dc9b1bd755ffbc"
+    }
+  },
+  "public24Pending": {
+    "head": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "run": 38030283856,
+    "status": "in_progress; no deployment acceptance yet",
+    "scope": "Conservative stock-world-force correction only;552focused/14native/60populated timed views passed. Original unsafe cache was already public23; scope labels corrected. Jump1.5s retained."
   }
 }

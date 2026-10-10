@@ -1,3 +1,14 @@
+**October10 light-membership prototype left unselected:** b90d1ac5 passes
+107focused checks,70strict native pairs and actual High four-class/race/save
+scope. Same-scene old/indexed RGBA/counts match; submission median17.3→16.7ms
+butp9523.7→24.3ms worsens.6058watched nodes/12116listeners and construction-time
+graph assumptions add cost/ownership complexity. Node-only discovery gain is
+not an overall frame acceptance. Retain prior full live light scan; no new Low
+party repetition for this unselected prototype. Qualified renderer unchanged.
+Public24/922753a7 correction is pushed, CI38030283856 still in progress; do not
+claim deployment acceptance. Jump1.5s retained. Full inherited goal and failed
+24hsoak remain open. See docs/plans/2026-10-10-actor-light-membership-unselected.json.
+
 **October10 conservative matrix world-force correction qualified:** Original unsafe
 cache was already in public23/2e519bb0; previous private-only descriptions were
 incorrect. Preserve frozen originals and supersede their scope with the source
