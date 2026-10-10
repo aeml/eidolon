@@ -36,11 +36,12 @@ export async function renderAnimatedActorCells({ quality, perInstanceFrustum = f
         };
         let image, failureRestored = false;
         try {
-            for (const state of ['Idle', 'Run', 'Attack', 'Death', 'FarRealmRun', 'ShearedAttack']) {
+            for (const state of ['Idle', 'Run', 'Attack', 'Death', 'FarRealmRun', 'WideBucketRun', 'ShearedAttack']) {
                 const offset = state === 'FarRealmRun' ? new THREE.Vector3(50000, 0, 20000) : new THREE.Vector3();
                 const mixers = models.map(({ mesh, position }, i) => {
                     mesh.position.copy(position).add(offset); mesh.scale.set(...(state === 'ShearedAttack' ? [1.7, .8, 1.1] : [1, 1, 1]));
-                    const name = state === 'FarRealmRun' ? 'Run' : state === 'ShearedAttack' ? 'Attack' : state;
+                    if (state === 'WideBucketRun' && i < 9) mesh.position.x += (Math.floor(i / 3) - 1) * 24;
+                    const name = ['FarRealmRun', 'WideBucketRun'].includes(state) ? 'Run' : state === 'ShearedAttack' ? 'Attack' : state;
                     const clip = mesh.userData.animations.find(clip => clip.name === name) || mesh.userData.animations.find(clip => clip.name === 'Idle');
                     const mixer = new THREE.AnimationMixer(mesh); mixer.clipAction(clip).play(); mixer.update(.2 + i * .073); return mixer;
                 });
