@@ -242,3 +242,27 @@ public27 and held runtime unchanged. Next: actual cold/returning default startup
 worker fallback, quality replacement and session/resource lifetime qualification
 before activation; representative combat/device/final-art gates stay open.
 See low-understory-detail-qualification. Full original goal remains active.
+
+
+Default geometry startup fa2f7075 is now functionally qualified and ordinarily
+merged into the held private milestone (cb4cd6c8; tooling41f595cc). RenderSystem
+owns bounded delivery by default; worker starts only at first valid source,
+originals remain visible and worker failure retires prepared copies.87distinct
+focused checks pass;14native passes/2skips/retry0 cover immutable/offline worker,
+actual worker exception, quality reload, High/Low session/resource lifetime,
+scene cycles and transport recovery plus actual server/Mongo four-class14slot
+parties. Original test-mock failure retained. Default Low38entity180frame sample
+175draws/84361triangles/16.7msmedian+p95 passes; High39entity417draws fails350,
+191783triangles/16.7msmedian+p95 pass those sampled limits. Never substitute
+prior22entity334draw High sample for this actual failure. Null view/shadow pilots
+stay off. Normal npm preparation now builds the exact worker (44e0c67c), proven
+from missing artifact with preflight rejection before binary/DB/accounts.
+Runtime evidence133-entry inventory691d3a1091edeab06ff6c9495ec096163defd2f28957a442bd4b65fd7a64a92d;
+separate tooling5-entry inventorya27335c99fb0d715aba14750baeb0f9edf1ee83b73ef11c55ae7b69c3ec9b2a7.
+Held runtime byte-exactfa2; private integration44e0c67c; no public mutation.
+Public27 release identity, Movement and engine bundle were read-only rechecked,
+all hashes match; trusted public1429.7ms jump proof remains valid. Next: measured
+High shadow-draw reduction with conservative current-pose influence, exact
+visible shadows and unknown-light fallback; preserve350draw target. Combat,
+devices, art, every original1.11–1.99 requirement and owner-deferred campaign/
+phone feedback remain active. See default-geometry-startup-qualification.

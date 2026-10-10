@@ -22,6 +22,29 @@ skipped; actual public jump has separate proof. Exact release checks accepted;
 full original goal, physical-device and art acceptance remain open.
 [Terminal report and frozen evidence](2026-10-10-public27-terminal-verification.json).
 
+
+The held private milestone now selects default lazy gameplay geometry ownership
+at runtime source **fa2f7075**, with normal worker preparation **44e0c67c**.
+Actual cold/returning published worker, offline reuse, worker exception fallback,
+quality reload, three High/Low retired engines, warmed scene cycles and transport
+recoveries pass. Real server/Mongo High/Low four-class14-slot party saves pass.
+There are87 distinct passing focused checks and14 native passes/2 skips, retry0;
+original mock failure remains retained. Low38-entity ordinary moving sample:
+175draws/84361triangles/16.7ms median+p95 passes sampled limits. High39-entity
+sample: **417draws fails350**,191783triangles/16.7ms median+p95 passes those
+sampled limits. Earlier334draw High evidence describes an independent22-entity
+population and cannot close the current draw gap. Default ownership is selected
+privately; public27 is unchanged. Normal preparation recreates the exact worker
+from a missing-artifact state; preflight rejects missing workers before binary,
+DB or accounts. [Startup, fallback, lifetime and actual-party evidence](2026-10-10-default-geometry-startup-qualification.json).
+Next implementation targets measured High shadow submissions with conservative
+current-pose influence bounds, original/unknown-light fallback, exact visible
+shadow/color controls and unchanged350draw target. Existing view/shadow pilots
+remain off. Combat, supported devices, final art and the full roadmap stay open.
+
+The following source-specific receipts retain their historical state; later
+selection above supersedes their default-null and held-unchanged descriptions.
+
 Previous public26 failure remains retained:
 
 **The prior release was unaccepted:** required26 CI`38056289769` attempt1 completed
@@ -33,7 +56,7 @@ four-class stages skipped. Exact frontend/backend/database/eight assets match.
 [Terminal26 evidence and limits](2026-10-10-public26-terminal-verification.json).
 
 Corrective **Alpha1.79.27/a9d6fc9b** follow-up is pushed; exact unchanged
-CI38064138468 attempt1 is in progress. First392 candidate failed before
+CI38064138468 attempt1 completed success. First392 candidate failed before
 deployment due to missed published-bundle1500ms minimum. Corrected1300–1550ms
 assertion qualifies native1pass7s,1356.4/1318.8ms at15/60FPS, endpoints0.
 [Failure and qualified correction](2026-10-10-release27-published-timing-correction.json). The owner repeated the
@@ -50,8 +73,8 @@ remains failed. [Actual provenance](2026-10-10-live-gold-provenance.json).
 Candidate QA requires exact baseline + transaction credit + separately observed
 own-room credits; unexpected/invalid/repeated/other-owner Gold still fails.
 Actual room and preceding-credit browser/server/Mongo cases pass with custody,
-XP and immutable receipts. Exact public27 assets and fresh jump now pass; required live
-gates remain pending. No full-roadmap, device/art/soak/beta acceptance.
+XP and immutable receipts. Exact public27 assets, fresh jump and required live
+gates pass as recorded above. No full-roadmap, device/art/soak/beta acceptance.
 
 Previous required25 CI`38051193149` attempt1 failed
 live Gold/stash gameplay assertions after nine other jobs succeed. The initial
