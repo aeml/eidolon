@@ -16,7 +16,7 @@ function fixture() {
     }
     files.set(source.replace('.glb', '-runtime.manifest.json'), Buffer.from(JSON.stringify(baseline)));
     return { selection: { schemaVersion: 1, characters: { Fighter: { source: { file: source, sha256: hash(bytes) }, variants } } },
-        characters: { Fighter: { reference: source } }, read: file => {
+        files, characters: { Fighter: { reference: source } }, read: file => {
             if (!files.has(file)) throw new Error('Unexpected file read');
             return files.get(file);
         } };
@@ -25,6 +25,31 @@ function fixture() {
 test('validates selected and retained derivatives against their immutable original', () => {
     const { selection, characters, read } = fixture();
     expect(characterRuntimeSelection(selection, characters, read)).toBe(selection.characters);
+});
+
+function withPrevious() {
+    const f = fixture(), file = 'assets/archetypes/Fighter/fighter-runtime-body-v1-high.glb';
+    f.files.set(file, Buffer.from('retained-high'));
+    f.selection.characters.Fighter.previousVariants = { high: [{ file, sha256: hash(f.files.get(file)) }], low: [] };
+    return f;
+}
+
+test('retained intermediate selection is validated alongside current and original paths', () => {
+    const f = withPrevious();
+    expect(characterRuntimeSelection(f.selection, f.characters, f.read)).toBe(f.selection.characters);
+});
+
+test.each([
+    ['missing quality', row => { delete row.previousVariants.low; }, /quality roster/],
+    ['invalid list', row => { row.previousVariants.high = {}; }, /must be arrays/],
+    ['hash mismatch', row => { row.previousVariants.high[0].sha256 = '0'.repeat(64); }, /hash mismatch/],
+    ['unsafe path', row => { row.previousVariants.high[0].file = 'assets/archetypes/Fighter/../Rogue/rogue.glb'; }, /Unsafe/],
+    ['duplicate history', row => { row.previousVariants.high.push(row.previousVariants.high[0]); }, /Duplicate/],
+    ['current selection reused', row => { row.previousVariants.high = [row.variants.high]; }, /Duplicate/],
+    ['baseline reused', row => { const v = row.variants.high; row.previousVariants.high = [{ file: v.baselineFile, sha256: v.baselineSHA256 }]; }, /Duplicate/]
+])('rejects retained %s before catalog generation', (_name, mutate, error) => {
+    const f = withPrevious(); mutate(f.selection.characters.Fighter);
+    expect(() => characterRuntimeSelection(f.selection, f.characters, f.read)).toThrow(error);
 });
 
 test.each([

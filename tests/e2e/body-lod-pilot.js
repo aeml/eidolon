@@ -19,8 +19,9 @@ export async function installBodyLodPilot(page) {
             const variant = receipt.variants[quality], file = fs.realpathSync(variant.file);
             const legacyFile = `assets/archetypes/${actorClass}/${actorClass.toLowerCase()}-runtime-${quality}.glb`;
             const selected = selection.characters[actorClass].variants[quality];
+            const previous = selection.characters[actorClass].previousVariants?.[quality]?.find(v => v.file === variant.baselineFile);
             const baselineHash = variant.baselineFile === selected.file ? selected.sha256
-                : variant.baselineFile === legacyFile ? manifest.variants[quality].sha256 : null;
+                : previous?.sha256 || (variant.baselineFile === legacyFile ? manifest.variants[quality].sha256 : null);
             if (!baselineHash || baselineHash !== variant.baselineSHA256 ||
                 hash(fs.readFileSync(variant.baselineFile)) !== variant.baselineSHA256 ||
                 hash(fs.readFileSync(selected.file)) !== selected.sha256) throw new Error('Reviewed body baseline mismatch');

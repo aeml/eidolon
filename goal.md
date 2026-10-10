@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 revised High body selection:** Exact reviewed endpoint-basis bodies
+now select four additive v3High paths in the owned private milestone:123204→81216
+body triangles. Low/source/motion/gear/all priorHigh files retain exact bytes.
+61units, eight selected GLTF/source proofs, native56pose/eight-outfit gallery,
+16versioned files cached and freshly parsed/rendered offline, and ordinary
+selected-path four-class race/save check pass. Selected captures72/72RGB match
+preparation. Actual High436draws/458642scene/405078equipped-root triangles still
+fail unchanged350/250000limits;16.7/16.8ms frame sample and33entities do not prove
+controlled CPU gain. Public1.79.22/profile/access unchanged; final modern-art/
+whole-game High/Low/device/raised activation open. [Selection and limitations](docs/plans/2026-10-10-body-morph-selection.json).
+Continue full inherited1.11–1.99/art/Q/CB/F1–F5/operations/rights/owner/human/beta/
+launch/handoff; no narrower completion or public microrelease.
+
+
 **October10 supplied-body morph basis preparation:** Preserve every moving blink
 vertex and constrain all normal morph endpoints instead of locking normal-only
 deltas. Revised High bodies123204→81216triangles; all four Low files remain

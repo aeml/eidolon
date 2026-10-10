@@ -1,0 +1,3147 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T00:28:45.539003+00:00",
+  "classification": "Qualified private selection of reviewed supplied High body morph endpoint derivatives at four additive paths, with all previous versions retained. Native/cache/source/ordinary selected-path party/save checks pass. Whole-game draw/triangle, modern-art/support-device and full roadmap acceptance remain open.",
+  "baseCommit": "595028443b18032b09169339622ace925a287a3d",
+  "previousGoalTurnClassification": "Progress:59502844 committed reproducible morph endpoint preparation, explicit coarse-trial rejection, native/source/party evidence; clean guarded fast-forward into held milestone.",
+  "worktree": "/home/aeml/.local/share/eidolon-body-morph-selection-20261010",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-body-morph-selection-checks-20261010",
+  "preparationReceipt": "docs/plans/2026-10-10-body-morph-basis-preparation.json",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "ciRun": 37967212738,
+    "unchanged": true,
+    "scope": "No new public push/deployment/version/profile/access/commerce change or owner approval. Held candidate remains private."
+  },
+  "selection": {
+    "manifest": "assets/archetypes/runtime-selection.json",
+    "schemaVersion": 1,
+    "entries": [
+      {
+        "actorClass": "Fighter",
+        "high": {
+          "bytes": 5855108,
+          "sha256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+          "triangles": 38546,
+          "meshTriangles": {
+            "Fighter_Body": 20482,
+            "Fighter_Brows": 192,
+            "Fighter_ClothSeams": 1920,
+            "Fighter_Eye_l": 960,
+            "Fighter_Eye_r": 960,
+            "Fighter_Hair": 2256,
+            "Fighter_Iris_l": 960,
+            "Fighter_Iris_r": 960,
+            "Fighter_Pupil_l": 960,
+            "Fighter_Pupil_r": 960,
+            "Fighter_Undershorts": 7936
+          },
+          "joints": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "skinnedMeshes": [
+            "Fighter_Body",
+            "Fighter_Brows",
+            "Fighter_ClothSeams",
+            "Fighter_Eye_l",
+            "Fighter_Eye_r",
+            "Fighter_Hair",
+            "Fighter_Iris_l",
+            "Fighter_Iris_r",
+            "Fighter_Pupil_l",
+            "Fighter_Pupil_r",
+            "Fighter_Undershorts"
+          ],
+          "morphTargets": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 11,
+          "externalDependencies": [],
+          "maximumTextureSize": 1024,
+          "ratio": 0.2,
+          "maximumSimplificationError": 0.002,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb",
+          "bodyTriangles": 20482,
+          "baselineFile": "assets/archetypes/Fighter/fighter-runtime-high.glb",
+          "baselineSHA256": "fda495c5e7fe60dc2d79b644c0ee6acb868a6a36e3bf9c69792418f0b0a10bc5",
+          "algorithm": "morph-basis",
+          "maximumError": 0.002,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "morphBasisWeight": 0.5,
+          "morphAttributeChannels": 18,
+          "lockedMorphVertices": 2167,
+          "reportedError": 0.001219642348587513
+        },
+        "low": {
+          "file": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+          "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+          "bytes": 3680212
+        },
+        "retainedProtectedHigh": {
+          "file": "assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb",
+          "sha256": "4c36254cb53208323e65e0b4d7d0ee2b6634db14ef2b8f4d2524fd729b0540ae",
+          "bytes": 6712312
+        }
+      },
+      {
+        "actorClass": "Rogue",
+        "high": {
+          "bytes": 4768692,
+          "sha256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+          "triangles": 52934,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "StealthIdle",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 9,
+          "externalDependencies": [],
+          "maximumTextureSize": 1024,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb",
+          "bodyTriangles": 20026,
+          "baselineFile": "assets/archetypes/Rogue/rogue-runtime-high.glb",
+          "baselineSHA256": "1da90eb1906730046be0cb3a03beac1881d92fd0cee33805a78b85ea37a5c9ef",
+          "algorithm": "morph-basis",
+          "maximumError": 0.002,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Rogue_Body": 20026,
+            "Rogue_Brows": 192,
+            "Rogue_Eye_l": 528,
+            "Rogue_Eye_r": 528,
+            "Rogue_Hair": 5352,
+            "Rogue_Iris_l": 528,
+            "Rogue_Iris_r": 528,
+            "Rogue_Pupil_l": 528,
+            "Rogue_Pupil_r": 528,
+            "Rogue_Scalp": 1300,
+            "Rogue_Undershorts": 7088,
+            "Rogue_Undershorts_Seams": 2016,
+            "Rogue_Undertop": 10864,
+            "Rogue_Undertop_Seams": 2928
+          },
+          "ratio": 0.2,
+          "morphBasisWeight": 0.5,
+          "morphAttributeChannels": 18,
+          "lockedMorphVertices": 2057,
+          "reportedError": 0.0009296021889895201
+        },
+        "low": {
+          "file": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+          "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+          "bytes": 4017940
+        },
+        "retainedProtectedHigh": {
+          "file": "assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb",
+          "sha256": "8bc912a249103a3f279be70496e63d8181292b7ab46fbc89bbc37e44cf206d8f",
+          "bytes": 5546784
+        }
+      },
+      {
+        "actorClass": "Wizard",
+        "high": {
+          "bytes": 3796088,
+          "sha256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+          "triangles": 39312,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "Channel",
+            "CombatIdle",
+            "Death",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 7,
+          "externalDependencies": [],
+          "maximumTextureSize": 1024,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb",
+          "bodyTriangles": 20680,
+          "baselineFile": "assets/archetypes/Wizard/wizard-runtime-high.glb",
+          "baselineSHA256": "facb882f8a68ab69c715113cf45cab03611e59cc8ec1b6854dfaf1188bc2f5aa",
+          "algorithm": "morph-basis",
+          "maximumError": 0.002,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Wizard_Body": 20680,
+            "Wizard_Brows": 192,
+            "Wizard_Eye_l": 528,
+            "Wizard_Eye_r": 528,
+            "Wizard_Hair": 3344,
+            "Wizard_Iris_l": 528,
+            "Wizard_Iris_r": 528,
+            "Wizard_Pupil_l": 528,
+            "Wizard_Pupil_r": 528,
+            "Wizard_Scalp": 2248,
+            "Wizard_Undershorts": 7664,
+            "Wizard_Undershorts_Seams": 2016
+          },
+          "ratio": 0.2,
+          "morphBasisWeight": 0.5,
+          "morphAttributeChannels": 18,
+          "lockedMorphVertices": 2055,
+          "reportedError": 0.0009451441001147032
+        },
+        "low": {
+          "file": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+          "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+          "bytes": 3215076
+        },
+        "retainedProtectedHigh": {
+          "file": "assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb",
+          "sha256": "6c4c56be8339d3bd7271f39c64216f014211ed457e4364b426649595d121109e",
+          "bytes": 4575428
+        }
+      },
+      {
+        "actorClass": "Cleric",
+        "high": {
+          "bytes": 4771400,
+          "sha256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+          "triangles": 54098,
+          "bones": [
+            53
+          ],
+          "animations": [
+            "Attack",
+            "Block",
+            "Cast",
+            "CombatIdle",
+            "Death",
+            "Heal",
+            "Hit",
+            "Idle",
+            "Jump",
+            "JumpLand",
+            "JumpLoop",
+            "JumpStart",
+            "Run",
+            "Walk"
+          ],
+          "sockets": [
+            "socket_back",
+            "socket_belt",
+            "socket_chest",
+            "socket_footL",
+            "socket_footR",
+            "socket_head",
+            "socket_mainHand",
+            "socket_offHand",
+            "socket_shoulderL",
+            "socket_shoulderR"
+          ],
+          "morphs": [
+            "Blink_L",
+            "Blink_R"
+          ],
+          "images": 9,
+          "externalDependencies": [],
+          "maximumTextureSize": 1024,
+          "errors": 0,
+          "warnings": 0,
+          "file": "assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb",
+          "bodyTriangles": 20028,
+          "baselineFile": "assets/archetypes/Cleric/cleric-runtime-high.glb",
+          "baselineSHA256": "b0d77d7e0d3214860878ad61a8032146ad66b07c5079f8a6366db92291fc5eea",
+          "algorithm": "morph-basis",
+          "maximumError": 0.002,
+          "gltfErrors": 0,
+          "gltfWarnings": 0,
+          "meshTriangles": {
+            "Cleric_Body": 20028,
+            "Cleric_Brows": 192,
+            "Cleric_Eye_l": 528,
+            "Cleric_Eye_r": 528,
+            "Cleric_Hair": 5518,
+            "Cleric_Iris_l": 528,
+            "Cleric_Iris_r": 528,
+            "Cleric_Pupil_l": 528,
+            "Cleric_Pupil_r": 528,
+            "Cleric_Scalp": 2088,
+            "Cleric_Undershorts": 7008,
+            "Cleric_Undershorts_Seams": 2112,
+            "Cleric_Undertop": 10864,
+            "Cleric_Undertop_Seams": 3120
+          },
+          "ratio": 0.2,
+          "morphBasisWeight": 0.5,
+          "morphAttributeChannels": 18,
+          "lockedMorphVertices": 2055,
+          "reportedError": 0.0009294839692302048
+        },
+        "low": {
+          "file": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+          "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+          "bytes": 4061680
+        },
+        "retainedProtectedHigh": {
+          "file": "assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb",
+          "sha256": "deb1613081222e60a32d6b199fcabc646e294d85ab4054100e136af978965ca7",
+          "bytes": 5561764
+        }
+      }
+    ],
+    "highBodyTrianglesBefore": 123204,
+    "highBodyTrianglesAfter": 81216,
+    "reductionPercent": 34.08006233563846,
+    "selectedHighBytes": 19191288,
+    "retainedProtectedHighBytes": 22396288,
+    "originalRuntimeHighBytesRetained": 25179328,
+    "lowBytesExactRetained": 14974908,
+    "additionalRepositoryAndPublicationAssetBytes": 19191288,
+    "policy": "Four new v3High files equal reviewed detailed preparation bytes. Four v2High, four originalHigh, all original source/Low/motion/gear assets remain byte-identical. previousCharacters retains original baselines; retainedCharacters records intermediate High paths without automatic fallback."
+  },
+  "catalog": {
+    "generator": "scripts/generate-authored-equipment.mjs",
+    "validatedPreviousHistory": "Optional class previousVariants requires exact high/low roster, array values, safe class-local paths and full-file SHA256. Selected/baseline/history duplicate paths reject. Entire selection validates before output write. Original source/baseline identities remain mandatory.",
+    "versionedPathsBefore": 740,
+    "versionedPathsAfter": 744,
+    "overridesIncludingIlyra": 745,
+    "pathVersionOrder": "Generated traversal includes selected, item, original baseline and intermediate retained paths; versions assigned by explicit path lookup, not record insertion order.",
+    "idempotence": {
+      "beforeSHA256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+      "afterSHA256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+      "exitCode": 0
+    },
+    "realNegativeCliCases": [
+      {
+        "case": "missing-class",
+        "exitCode": 1,
+        "outputSentinelUnchanged": true
+      },
+      {
+        "case": "unsafe-path",
+        "exitCode": 1,
+        "outputSentinelUnchanged": true
+      },
+      {
+        "case": "bad-selected-hash",
+        "exitCode": 1,
+        "outputSentinelUnchanged": true
+      },
+      {
+        "case": "bad-retained-hash",
+        "exitCode": 1,
+        "outputSentinelUnchanged": true
+      },
+      {
+        "case": "duplicate-retained",
+        "exitCode": 1,
+        "outputSentinelUnchanged": true
+      },
+      {
+        "case": "missing-retained-quality",
+        "exitCode": 1,
+        "outputSentinelUnchanged": true
+      }
+    ],
+    "diagnosticCompatibility": {
+      "candidateVariants": 8,
+      "routesRegistered": 1,
+      "classification": "Hash/path/source validation and route registration only; not new routed native review."
+    },
+    "migrationGuard": "Exactly four new supplied-class v3High paths added to existing explicit delivery exceptions; original zero unrelated legacy-model limits and source/motion/gear contracts remain intact."
+  },
+  "focusedValidation": {
+    "suites": 7,
+    "tests": 61,
+    "seconds": 2.52,
+    "log": "focused-tests.log",
+    "coverage": "Runtime selection18cases including8new history tests, actual744catalog hash/version coverage and selected topology, asset versioning, migration guard, Fighter, fitted item coverage and morph-basis properties.",
+    "lint": {
+      "exitCode": 0,
+      "files": [
+        "scripts/lib/character-runtime-selection.mjs",
+        "scripts/generate-authored-equipment.mjs",
+        "tests/CharacterRuntimeSelection.test.js",
+        "tests/AuthoredAssetCatalog.test.js",
+        "tests/AssetVersioning.test.js",
+        "tests/ProceduralArtMigrationGuard.test.js",
+        "tests/e2e/character-selection-cache.spec.js",
+        "tests/e2e/body-lod-pilot.js"
+      ]
+    },
+    "gltf": [
+      {
+        "actorClass": "Fighter",
+        "quality": "high",
+        "file": "assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb",
+        "sha256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+        "bytes": 5855108,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Fighter",
+        "quality": "low",
+        "file": "assets/archetypes/Fighter/fighter-runtime-low.glb",
+        "sha256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+        "bytes": 3680212,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Rogue",
+        "quality": "high",
+        "file": "assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb",
+        "sha256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+        "bytes": 4768692,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Rogue",
+        "quality": "low",
+        "file": "assets/archetypes/Rogue/rogue-runtime-low.glb",
+        "sha256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+        "bytes": 4017940,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Wizard",
+        "quality": "high",
+        "file": "assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb",
+        "sha256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+        "bytes": 3796088,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Wizard",
+        "quality": "low",
+        "file": "assets/archetypes/Wizard/wizard-runtime-low.glb",
+        "sha256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+        "bytes": 3215076,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Cleric",
+        "quality": "high",
+        "file": "assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb",
+        "sha256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+        "bytes": 4771400,
+        "errors": 0,
+        "warnings": 0
+      },
+      {
+        "actorClass": "Cleric",
+        "quality": "low",
+        "file": "assets/archetypes/Cleric/cleric-runtime-low.glb",
+        "sha256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+        "bytes": 4061680,
+        "errors": 0,
+        "warnings": 0
+      }
+    ],
+    "allVertexSource": {
+      "classification": "Independent all-vertex source-subset proof. Checks raw typed values including all morph semantics, component type and normalization; SHA256 per vertex. Does not prove re-triangulated surface/pose/image equivalence.",
+      "rows": [
+        {
+          "actorClass": "Fighter",
+          "quality": "high",
+          "sourceSHA256": "dcb48696059094dc5d79e8539fd9368b9932ebb8f3bc57d14b1c4098caae2a3a",
+          "candidateSHA256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+          "vertices": 22107,
+          "allVertexPositionNormalUVSkinAndMorphRawBytesMatchOriginalVertex": true
+        },
+        {
+          "actorClass": "Fighter",
+          "quality": "low",
+          "sourceSHA256": "dcb48696059094dc5d79e8539fd9368b9932ebb8f3bc57d14b1c4098caae2a3a",
+          "candidateSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+          "vertices": 21088,
+          "allVertexPositionNormalUVSkinAndMorphRawBytesMatchOriginalVertex": true
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "high",
+          "sourceSHA256": "f3cee5ce0564c2c14f201e35e296c4e91556b76702701bc70db9a9919f70d9c9",
+          "candidateSHA256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+          "vertices": 21647,
+          "allVertexPositionNormalUVSkinAndMorphRawBytesMatchOriginalVertex": true
+        },
+        {
+          "actorClass": "Rogue",
+          "quality": "low",
+          "sourceSHA256": "f3cee5ce0564c2c14f201e35e296c4e91556b76702701bc70db9a9919f70d9c9",
+          "candidateSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+          "vertices": 20709,
+          "allVertexPositionNormalUVSkinAndMorphRawBytesMatchOriginalVertex": true
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "high",
+          "sourceSHA256": "130d4d06573861e4accd2eac9bccb8b9b409949ebb2b8f07438b60199a821841",
+          "candidateSHA256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+          "vertices": 22036,
+          "allVertexPositionNormalUVSkinAndMorphRawBytesMatchOriginalVertex": true
+        },
+        {
+          "actorClass": "Wizard",
+          "quality": "low",
+          "sourceSHA256": "130d4d06573861e4accd2eac9bccb8b9b409949ebb2b8f07438b60199a821841",
+          "candidateSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+          "vertices": 21028,
+          "allVertexPositionNormalUVSkinAndMorphRawBytesMatchOriginalVertex": true
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "high",
+          "sourceSHA256": "3957360ca8bdf931ada2b48164fb7c917d8b1872737fa1ea79b13feac6d1ee7f",
+          "candidateSHA256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+          "vertices": 21683,
+          "allVertexPositionNormalUVSkinAndMorphRawBytesMatchOriginalVertex": true
+        },
+        {
+          "actorClass": "Cleric",
+          "quality": "low",
+          "sourceSHA256": "3957360ca8bdf931ada2b48164fb7c917d8b1872737fa1ea79b13feac6d1ee7f",
+          "candidateSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+          "vertices": 20662,
+          "allVertexPositionNormalUVSkinAndMorphRawBytesMatchOriginalVertex": true
+        }
+      ]
+    },
+    "allVertexScope": "Eight selected files/170960serialized body vertices retain raw original base attributes and all morph bytes; source-subset proof does not prove surface/pose equivalence. Existing prepared moving-vertex proof8334 applies because selected High hashes are identical."
+  },
+  "bundle": {
+    "exitCode": 0,
+    "actualBuild": {
+      "bundledModules": 428,
+      "bytes": 3283652,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    },
+    "originalMainBeforeSHA256": "74761168287e8a33afeffbd759338dfa017c244e0d371a4cff5e3599d7d2a711",
+    "originalMainAfterSHA256": "74761168287e8a33afeffbd759338dfa017c244e0d371a4cff5e3599d7d2a711",
+    "bundleSHA256": "5ba7838c2e1841935946b65a8cd21076398f56d46fb62979aff5a5c40aa8f9a4"
+  },
+  "native": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791591812.1844878,
+      "finishedUnix": 1791591848.7945318
+    },
+    "casesPassed": 5,
+    "gallery": "Normal selected URLs with no pilot routes: eight High/Low14slot outfits, mixed movement/strike/cast/alternating Rogue strikes, stealth, independent rigs/pool reuse, three preview types;56bare/open/both/left/right/partial blink/backrun/sideattack samples with every posed body vertex finite.",
+    "sourceAndRouteScope": "Gallery BODY_COMPARE only adds captures and blocks workers in that file. Production cache test and selected-path real-party check use normal service workers. No BODY_PILOT or WEARABLE_PILOT routes.",
+    "colorPassCostsIncludingFloor": {
+      "scope": "Separate untimed native gallery draw census. Eight fully fitted High/Low class outfits, color pass only; actual game shadow/party timing recorded separately. Normal selected runtime geometry.",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "variants": [
+        {
+          "type": "Fighter",
+          "quality": "high",
+          "items": 14,
+          "calls": 26,
+          "trianglesIncludingFloor": 59320,
+          "meshes": [
+            {
+              "name": "FittedBatch_iron-helm__legendary__Fighter001",
+              "triangles": 29681,
+              "vertices": 28152,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Fighter_Body",
+              "triangles": 9103,
+              "vertices": 22107,
+              "skinned": true,
+              "morphTargets": [
+                "position",
+                "normal"
+              ],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_plate-greaves__legendary__Fighter_1",
+              "triangles": 7374,
+              "vertices": 6060,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "legs",
+                "feet",
+                "gloves"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "FittedBatch_iron-helm__legendary__Fighter001_2",
+              "triangles": 3470,
+              "vertices": 4342,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "iron-sword__legendary_3",
+              "triangles": 1580,
+              "vertices": 1864,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Eye_l",
+              "triangles": 960,
+              "vertices": 482,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Eye_r",
+              "triangles": 960,
+              "vertices": 482,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Pupil_l",
+              "triangles": 960,
+              "vertices": 482,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Pupil_r",
+              "triangles": 960,
+              "vertices": 482,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Iris_l",
+              "triangles": 960,
+              "vertices": 604,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Iris_r",
+              "triangles": 960,
+              "vertices": 1721,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_4",
+              "triangles": 444,
+              "vertices": 417,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_1",
+              "triangles": 320,
+              "vertices": 620,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_4",
+              "triangles": 300,
+              "vertices": 432,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_5",
+              "triangles": 262,
+              "vertices": 308,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_6",
+              "triangles": 156,
+              "vertices": 228,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_2",
+              "triangles": 124,
+              "vertices": 104,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_1",
+              "triangles": 92,
+              "vertices": 256,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_5",
+              "triangles": 88,
+              "vertices": 180,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_2",
+              "triangles": 60,
+              "vertices": 112,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_3",
+              "triangles": 60,
+              "vertices": 128,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_amulet-of-power__legendary__Fighter001_2",
+              "triangles": 48,
+              "vertices": 72,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "ActorInteractionHitbox",
+              "triangles": 12,
+              "vertices": 24,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            }
+          ]
+        },
+        {
+          "type": "Fighter",
+          "quality": "low",
+          "items": 14,
+          "calls": 23,
+          "trianglesIncludingFloor": 33019,
+          "meshes": [
+            {
+              "name": "FittedBatch_iron-helm__standard__Fighter001",
+              "triangles": 15139,
+              "vertices": 16734,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Fighter_Body",
+              "triangles": 6688,
+              "vertices": 21088,
+              "skinned": true,
+              "morphTargets": [
+                "position",
+                "normal"
+              ],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_plate-greaves__standard__Fighter_1",
+              "triangles": 2752,
+              "vertices": 2708,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "legs",
+                "feet",
+                "gloves",
+                "belt"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "iron-sword__standard_3",
+              "triangles": 1030,
+              "vertices": 1258,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Eye_l",
+              "triangles": 960,
+              "vertices": 482,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Eye_r",
+              "triangles": 960,
+              "vertices": 482,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Pupil_l",
+              "triangles": 960,
+              "vertices": 482,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Pupil_r",
+              "triangles": 960,
+              "vertices": 482,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Iris_l",
+              "triangles": 960,
+              "vertices": 604,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Iris_r",
+              "triangles": 960,
+              "vertices": 1721,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_ruby-ring__standard__Fighter001_2",
+              "triangles": 406,
+              "vertices": 467,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "ring1",
+                "neck",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "wooden-shield__standard_4",
+              "triangles": 250,
+              "vertices": 331,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Fighter_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_5",
+              "triangles": 156,
+              "vertices": 228,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__standard_2",
+              "triangles": 120,
+              "vertices": 100,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__standard_1",
+              "triangles": 92,
+              "vertices": 256,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_1",
+              "triangles": 60,
+              "vertices": 120,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_2",
+              "triangles": 60,
+              "vertices": 122,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_3",
+              "triangles": 60,
+              "vertices": 120,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_amulet-of-power__standard__Fighter001_2",
+              "triangles": 48,
+              "vertices": 72,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "ActorInteractionHitbox",
+              "triangles": 12,
+              "vertices": 24,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            }
+          ]
+        },
+        {
+          "type": "Rogue",
+          "quality": "high",
+          "items": 14,
+          "calls": 25,
+          "trianglesIncludingFloor": 51939,
+          "meshes": [
+            {
+              "name": "FittedBatch_leather-cap__legendary__Rogue001",
+              "triangles": 16730,
+              "vertices": 14088,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "FittedBatch_leather-cap__legendary__Rogue001_1",
+              "triangles": 13898,
+              "vertices": 13836,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Rogue_Body",
+              "triangles": 9185,
+              "vertices": 21647,
+              "skinned": true,
+              "morphTargets": [
+                "position",
+                "normal"
+              ],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_leather-cap__legendary__Rogue001_2",
+              "triangles": 3592,
+              "vertices": 4372,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "steel-dagger__legendary_3",
+              "triangles": 1580,
+              "vertices": 1864,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_3",
+              "triangles": 1580,
+              "vertices": 1864,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_leather-tunic__legendary__Rogue_3",
+              "triangles": 644,
+              "vertices": 668,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "chest",
+                "feet"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Rogue_Eye_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Eye_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Pupil_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Pupil_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Iris_l",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Iris_r",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_4",
+              "triangles": 300,
+              "vertices": 432,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "steel-dagger__legendary_4",
+              "triangles": 256,
+              "vertices": 335,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "steel-dagger__legendary_2",
+              "triangles": 124,
+              "vertices": 104,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_2",
+              "triangles": 124,
+              "vertices": 104,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "steel-dagger__legendary_1",
+              "triangles": 92,
+              "vertices": 256,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_1",
+              "triangles": 92,
+              "vertices": 256,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "steel-dagger__legendary_5",
+              "triangles": 88,
+              "vertices": 180,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__legendary_5",
+              "triangles": 88,
+              "vertices": 180,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "ActorInteractionHitbox",
+              "triangles": 12,
+              "vertices": 24,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            }
+          ]
+        },
+        {
+          "type": "Rogue",
+          "quality": "low",
+          "items": 14,
+          "calls": 21,
+          "trianglesIncludingFloor": 28485,
+          "meshes": [
+            {
+              "name": "FittedBatch_leather-cap__standard__Rogue001",
+              "triangles": 7813,
+              "vertices": 7605,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "FittedBatch_leather-cap__standard__Rogue001_1",
+              "triangles": 6924,
+              "vertices": 7882,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Rogue_Body",
+              "triangles": 6832,
+              "vertices": 20709,
+              "skinned": true,
+              "morphTargets": [
+                "position",
+                "normal"
+              ],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "steel-dagger__standard_3",
+              "triangles": 1042,
+              "vertices": 1270,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__standard_3",
+              "triangles": 1030,
+              "vertices": 1258,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Eye_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Eye_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Pupil_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Pupil_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Iris_l",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Iris_r",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_leather-tunic__standard__Rogue_3",
+              "triangles": 446,
+              "vertices": 524,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "chest",
+                "feet",
+                "belt"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "FittedBatch_ruby-ring__standard__Rogue_3",
+              "triangles": 408,
+              "vertices": 468,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "ring1",
+                "neck",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Rogue_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Rogue_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "steel-dagger__standard_2",
+              "triangles": 120,
+              "vertices": 100,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__standard_2",
+              "triangles": 120,
+              "vertices": 100,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "steel-dagger__standard_1",
+              "triangles": 92,
+              "vertices": 256,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "iron-sword__standard_1",
+              "triangles": 92,
+              "vertices": 256,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "ActorInteractionHitbox",
+              "triangles": 12,
+              "vertices": 24,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            }
+          ]
+        },
+        {
+          "type": "Wizard",
+          "quality": "high",
+          "items": 14,
+          "calls": 27,
+          "trianglesIncludingFloor": 54952,
+          "meshes": [
+            {
+              "name": "Wizard_Body",
+              "triangles": 14568,
+              "vertices": 22036,
+              "skinned": true,
+              "morphTargets": [
+                "position",
+                "normal"
+              ],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_silk-hood__legendary__Wizard001",
+              "triangles": 11982,
+              "vertices": 10586,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "FittedBatch_silk-hood__legendary__Wizard001_1",
+              "triangles": 11602,
+              "vertices": 11889,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "wooden-staff__legendary_4",
+              "triangles": 4032,
+              "vertices": 3528,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_silk-hood__legendary__Wizard001_2",
+              "triangles": 4004,
+              "vertices": 4940,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "spell-tome__legendary_3",
+              "triangles": 1100,
+              "vertices": 1506,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__legendary_5",
+              "triangles": 1088,
+              "vertices": 1142,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_sandals__legendary__Wizard_2",
+              "triangles": 728,
+              "vertices": 748,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "feet",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "wooden-staff__legendary_6",
+              "triangles": 658,
+              "vertices": 737,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-staff__legendary_3",
+              "triangles": 646,
+              "vertices": 682,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Eye_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Eye_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Pupil_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Pupil_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Iris_l",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Iris_r",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-staff__legendary_5",
+              "triangles": 488,
+              "vertices": 308,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-staff__legendary_2",
+              "triangles": 230,
+              "vertices": 271,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-staff__legendary_1",
+              "triangles": 104,
+              "vertices": 90,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__legendary_2",
+              "triangles": 56,
+              "vertices": 112,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__legendary_6",
+              "triangles": 44,
+              "vertices": 88,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__legendary_1",
+              "triangles": 28,
+              "vertices": 62,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__legendary_4",
+              "triangles": 28,
+              "vertices": 64,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "ActorInteractionHitbox",
+              "triangles": 12,
+              "vertices": 24,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            }
+          ]
+        },
+        {
+          "type": "Wizard",
+          "quality": "low",
+          "items": 14,
+          "calls": 24,
+          "trianglesIncludingFloor": 32342,
+          "meshes": [
+            {
+              "name": "Wizard_Body",
+              "triangles": 12443,
+              "vertices": 21028,
+              "skinned": true,
+              "morphTargets": [
+                "position",
+                "normal"
+              ],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_silk-hood__standard__Wizard001_1",
+              "triangles": 6834,
+              "vertices": 7663,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "FittedBatch_silk-hood__standard__Wizard001",
+              "triangles": 5589,
+              "vertices": 5777,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "wooden-staff__standard_4",
+              "triangles": 2128,
+              "vertices": 2464,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Eye_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Eye_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Pupil_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Pupil_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Iris_l",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Iris_r",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__standard_3",
+              "triangles": 498,
+              "vertices": 870,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_ruby-ring__standard__Wizard_3",
+              "triangles": 406,
+              "vertices": 470,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "ring1",
+                "neck",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "FittedBatch_sandals__standard__Wizard_2",
+              "triangles": 400,
+              "vertices": 467,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "feet",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Wizard_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Wizard_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-staff__standard_2",
+              "triangles": 168,
+              "vertices": 216,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-staff__standard_3",
+              "triangles": 128,
+              "vertices": 180,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__standard_2",
+              "triangles": 56,
+              "vertices": 112,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-staff__standard_5",
+              "triangles": 44,
+              "vertices": 84,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__standard_1",
+              "triangles": 28,
+              "vertices": 56,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "spell-tome__standard_4",
+              "triangles": 28,
+              "vertices": 56,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-staff__standard_1",
+              "triangles": 26,
+              "vertices": 36,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "ActorInteractionHitbox",
+              "triangles": 12,
+              "vertices": 24,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            }
+          ]
+        },
+        {
+          "type": "Cleric",
+          "quality": "high",
+          "items": 14,
+          "calls": 25,
+          "trianglesIncludingFloor": 52244,
+          "meshes": [
+            {
+              "name": "FittedBatch_iron-helm__legendary__Cleric001",
+              "triangles": 19325,
+              "vertices": 18861,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Cleric_Body",
+              "triangles": 9111,
+              "vertices": 21683,
+              "skinned": true,
+              "morphTargets": [
+                "position",
+                "normal"
+              ],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_robes__legendary__Cleric_1",
+              "triangles": 7730,
+              "vertices": 7144,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "chest",
+                "feet",
+                "gloves"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "FittedBatch_iron-helm__legendary__Cleric001_2",
+              "triangles": 4338,
+              "vertices": 5531,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "cleric-mace__legendary_2",
+              "triangles": 3072,
+              "vertices": 2592,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_leather-pants__legendary__Cleric_1",
+              "triangles": 2148,
+              "vertices": 3353,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "legs",
+                "belt",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "cleric-mace__legendary_1",
+              "triangles": 770,
+              "vertices": 1043,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "cleric-mace__legendary_4",
+              "triangles": 758,
+              "vertices": 673,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Eye_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Eye_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Pupil_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Pupil_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Iris_l",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Iris_r",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_4",
+              "triangles": 444,
+              "vertices": 417,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_1",
+              "triangles": 320,
+              "vertices": 620,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_5",
+              "triangles": 262,
+              "vertices": 308,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_6",
+              "triangles": 156,
+              "vertices": 228,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "cleric-mace__legendary_3",
+              "triangles": 124,
+              "vertices": 104,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_2",
+              "triangles": 60,
+              "vertices": 112,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__legendary_3",
+              "triangles": 60,
+              "vertices": 128,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "ActorInteractionHitbox",
+              "triangles": 12,
+              "vertices": 24,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            }
+          ]
+        },
+        {
+          "type": "Cleric",
+          "quality": "low",
+          "items": 14,
+          "calls": 24,
+          "trianglesIncludingFloor": 28686,
+          "meshes": [
+            {
+              "name": "FittedBatch_iron-helm__standard__Cleric001",
+              "triangles": 9944,
+              "vertices": 10937,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "head",
+                "chest",
+                "legs",
+                "feet",
+                "gloves",
+                "shoulders",
+                "belt",
+                "ring1",
+                "ring2",
+                "neck",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Cleric_Body",
+              "triangles": 6715,
+              "vertices": 20662,
+              "skinned": true,
+              "morphTargets": [
+                "position",
+                "normal"
+              ],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_robes__standard__Cleric_1",
+              "triangles": 3864,
+              "vertices": 4011,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "chest",
+                "feet",
+                "gloves",
+                "belt"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "cleric-mace__standard_2",
+              "triangles": 1728,
+              "vertices": 1872,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_leather-pants__standard__Cleric_1",
+              "triangles": 1269,
+              "vertices": 1999,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "legs",
+                "belt",
+                "trinket1",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "Cleric_Eye_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Eye_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Pupil_l",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Pupil_r",
+              "triangles": 528,
+              "vertices": 323,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Iris_l",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Iris_r",
+              "triangles": 528,
+              "vertices": 290,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "FittedBatch_ruby-ring__standard__Cleric_3",
+              "triangles": 404,
+              "vertices": 462,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": true,
+              "slots": [
+                "ring1",
+                "neck",
+                "trinket2"
+              ],
+              "surfaceBatch": true
+            },
+            {
+              "name": "cleric-mace__standard_1",
+              "triangles": 262,
+              "vertices": 424,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_4",
+              "triangles": 250,
+              "vertices": 331,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "cleric-mace__standard_4",
+              "triangles": 224,
+              "vertices": 156,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "Cleric_Brows",
+              "triangles": 192,
+              "vertices": 124,
+              "skinned": true,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_5",
+              "triangles": 156,
+              "vertices": 228,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "cleric-mace__standard_3",
+              "triangles": 124,
+              "vertices": 104,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_1",
+              "triangles": 60,
+              "vertices": 120,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_2",
+              "triangles": 60,
+              "vertices": 122,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "wooden-shield__standard_3",
+              "triangles": 60,
+              "vertices": 120,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            },
+            {
+              "name": "ActorInteractionHitbox",
+              "triangles": 12,
+              "vertices": 24,
+              "skinned": false,
+              "morphTargets": [],
+              "fitted": false,
+              "slots": [],
+              "surfaceBatch": false
+            }
+          ]
+        }
+      ]
+    },
+    "productionCache": {
+      "evidence": "native/results/character-selection-cache--63d7a-on-cache-and-render-offline/character-selection-cache.json",
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "uniqueVersionedFiles": 16,
+      "coldAndOfflineRigs": 16,
+      "servedAndCachedFullSHA256Equal": true,
+      "offlineFreshGLTFParse": true,
+      "offlineDrawTriangleSkinRowsEqualCold": true,
+      "glErrors": 0,
+      "fallbacks": 0,
+      "scope": "Selected8, originalHigh4, retainedv2High4 all served/cached/hash-verified and rendered cold, then again after clearing MeshFactory scene/inflight cache offline. Does not prove deployed old-client compatibility, eviction policy, unsupported hardware or VRAM headroom."
+    },
+    "cacheResilienceCasesPassed": 3,
+    "selectedVsPreparedImages": {
+      "file": "png-comparisons.json",
+      "images": 72,
+      "exactRGB": 72,
+      "lowBareAndBlinkImages": 28,
+      "lowExactRGB": 28,
+      "scope": "Exact reviewed prepared geometry at new selected paths; not equivalence to prior v2 geometry or final-art acceptance."
+    },
+    "rootReview": "Selected FighterHigh open face, WizardHigh partial blink and actual four-class equipped HUD inspected. Source-supplied recognizable class/gear presentation and prepared shapes retained at this scoped review; modern-art/Q/CB/world/animation/device finish remains open.",
+    "comparisonFailureRetained": "First detached descriptive-comparison child ended before producing result; missing authoritative PID confirmed. Empty log and PID retained, then terminal-recording supervisor completed exit0. Main/native/party runs were not restarted."
+  },
+  "actualParty": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791591881.637568,
+      "finishedUnix": 1791591955.499668
+    },
+    "goRaceTest": "TestTerrainActualEquippedBrowserParty PASS45.65s. Supervisor terminal exit0 after73.8621s.",
+    "evidence": "/home/aeml/.local/share/eidolon-body-morph-selection-checks-20261010/eidolon-terrain-save-evidence-wVZiePpa",
+    "scope": "One native high-quality observer plus three connected socket peers, four supplied classes,14slots/3sockets, raised profile and preserved saves/gear/party membership/inventory/EP. Normal service worker and selected URLs; no substitution routes.",
+    "selectedRuntimeProof": {
+      "selected": [
+        {
+          "name": "Fighter",
+          "path": "./assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb",
+          "expectedPath": "./assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb",
+          "url": "http://127.0.0.1:4190/assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb?v=86f49ec116e36b4e",
+          "expectedVersion": "86f49ec116e36b4e",
+          "expectedSHA256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+          "cachedSHA256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+          "cachedOriginalBodyTriangles": 20482,
+          "expectedBodyTriangles": 20482,
+          "liveMaskedBodyTriangles": 9103
+        },
+        {
+          "name": "Cleric",
+          "path": "./assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb",
+          "expectedPath": "./assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb",
+          "url": "http://127.0.0.1:4190/assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb?v=154b3a7ca0a93b24",
+          "expectedVersion": "154b3a7ca0a93b24",
+          "expectedSHA256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+          "cachedSHA256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+          "cachedOriginalBodyTriangles": 20028,
+          "expectedBodyTriangles": 20028,
+          "liveMaskedBodyTriangles": 9281
+        },
+        {
+          "name": "Rogue",
+          "path": "./assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb",
+          "expectedPath": "./assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb",
+          "url": "http://127.0.0.1:4190/assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb?v=152a5349bc78bab1",
+          "expectedVersion": "152a5349bc78bab1",
+          "expectedSHA256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+          "cachedSHA256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+          "cachedOriginalBodyTriangles": 20026,
+          "expectedBodyTriangles": 20026,
+          "liveMaskedBodyTriangles": 9185
+        },
+        {
+          "name": "Wizard",
+          "path": "./assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb",
+          "expectedPath": "./assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb",
+          "url": "http://127.0.0.1:4190/assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb?v=af4b3a845155a502",
+          "expectedVersion": "af4b3a845155a502",
+          "expectedSHA256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+          "cachedSHA256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+          "cachedOriginalBodyTriangles": 20680,
+          "expectedBodyTriangles": 20680,
+          "liveMaskedBodyTriangles": 14568
+        }
+      ],
+      "bodyResponses": [
+        {
+          "url": "http://127.0.0.1:4190/assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb?v=86f49ec116e36b4e",
+          "status": 200,
+          "fromServiceWorker": true
+        },
+        {
+          "url": "http://127.0.0.1:4190/assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb?v=152a5349bc78bab1",
+          "status": 200,
+          "fromServiceWorker": true
+        },
+        {
+          "url": "http://127.0.0.1:4190/assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb?v=154b3a7ca0a93b24",
+          "status": 200,
+          "fromServiceWorker": true
+        },
+        {
+          "url": "http://127.0.0.1:4190/assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb?v=af4b3a845155a502",
+          "status": 200,
+          "fromServiceWorker": true
+        }
+      ]
+    },
+    "hashScope": "For four observed selected GET responses, read existing CacheAPI clones without an extra fetch; full SHA256 and source body triangles match manifest, live masked triangles positive and bounded by source.",
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.799999999999272,
+      "frameP99Ms": 33.29999999999927,
+      "framesOver33ms": 1,
+      "cpuLoopMedianMs": 15.800000011920929,
+      "cpuLoopP95Ms": 19.5,
+      "drawCallsMedian": 436,
+      "trianglesMedian": 458642,
+      "geometries": 510,
+      "textures": 412,
+      "activeEntities": 33,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "untimedEquippedRoots": [
+      {
+        "name": "Equipped Wizard",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 93692
+      },
+      {
+        "name": "Equipped Cleric",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 105496
+      },
+      {
+        "name": "Equipped Fighter",
+        "color": 23,
+        "shadow": 20,
+        "triangles": 110174
+      },
+      {
+        "name": "Equipped Rogue",
+        "color": 22,
+        "shadow": 18,
+        "triangles": 95716
+      }
+    ],
+    "equippedRootTriangles": 405078,
+    "budgets": {
+      "frameMedianLimitMs": 20,
+      "frameP95LimitMs": 33.4,
+      "drawLimit": 350,
+      "triangleLimit": 250000,
+      "rawFrameSample": "pass",
+      "drawAndTriangle": "fail",
+      "wholeLowAndSupportedDevices": "open"
+    },
+    "skipped": "Four simultaneous native renderer scenario skipped, not passed. No new Low actual-party/device acceptance.",
+    "limits": "33active entities and changed scene populations/animation/view do not establish controlled CPU attribution against other receipts. Untimed equipped-root counts are separate from180frame profile; CPU loop timers are not GPU timings or VRAM measurements."
+  },
+  "longSoak": {
+    "readOnlySnapshot": {
+      "observed_at_utc": "2026-10-10T00:21:33Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "updated_at": "2026-10-09T03:36:16Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null
+            }
+          ]
+        }
+      ]
+    },
+    "action": "One delegated read-only observation00:21:33UTC:run37880032315attempt1 exactdc7d22f2 stillin_progress. Upload pending, no restart/cancel/acceptance; stale after timestamp."
+  },
+  "cleanup": {
+    "recordedUTC": "2026-10-10T00:27:13.752952+00:00",
+    "ownedSupervisorsAbsent": [
+      1465956,
+      1475040,
+      1489474
+    ],
+    "ownedPortsAbsent": [
+      4190,
+      4192,
+      18189
+    ],
+    "ownedVendorSymlinkRemoved": true,
+    "ignoredNodeModulesSymlinkRetained": true,
+    "sharedDependencyAndPlayerStateUnchanged": true
+  },
+  "retainedEvidence": {
+    "artifactInventory": "artifact-inventory.json",
+    "entries": 663,
+    "sha256": "b8921c83b6af756a7aca5a4d3c07e70b0543e4debf8502c80ad02ce8dba6d3b1",
+    "sourceHashes": "final-source-hashes.json",
+    "sourceFiles": 34,
+    "privacy": "Owned directories0700/files0600 or executable0700. Shared dependencies/vendor untouched; negative-fixture/model/dependency links retained as links. No credentials in tracked receipt."
+  },
+  "decision": "Select exact reviewed revised High bytes only in owned private milestone. Source-original/previous/Low contracts retained. Full High scene436draws/458642triangles remains above350/250000; no release/modern-art/device acceptance.",
+  "next": "Continue dominant gear/eye/actor/scene costs with supplied surfaces, motion, bones, morphs, all item slots and silhouettes intact. Finish unchanged High/Low whole-game/device/art, compatible raised client/server/profile rollout/rollback, F1\u2013F5 and all inherited1.11\u20131.99/operations/rights/owner/human/beta/admission/launch/handoff requirements before completion."
+}

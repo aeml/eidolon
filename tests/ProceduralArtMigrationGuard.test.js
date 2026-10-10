@@ -21,18 +21,22 @@ const stagedCharacterExports = new Set([
     'assets/archetypes/Fighter/fighter.glb',
     'assets/archetypes/Fighter/fighter-runtime-high.glb',
     'assets/archetypes/Fighter/fighter-runtime-body-v2-high.glb',
+    'assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb',
     'assets/archetypes/Fighter/fighter-runtime-low.glb',
     'assets/archetypes/Wizard/wizard.glb',
     'assets/archetypes/Wizard/wizard-runtime-high.glb',
     'assets/archetypes/Wizard/wizard-runtime-body-v2-high.glb',
+    'assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb',
     'assets/archetypes/Wizard/wizard-runtime-low.glb',
     'assets/archetypes/Cleric/cleric.glb',
     'assets/archetypes/Cleric/cleric-runtime-high.glb',
     'assets/archetypes/Cleric/cleric-runtime-body-v2-high.glb',
+    'assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb',
     'assets/archetypes/Cleric/cleric-runtime-low.glb',
     'assets/archetypes/Rogue/rogue.glb',
     'assets/archetypes/Rogue/rogue-runtime-high.glb',
     'assets/archetypes/Rogue/rogue-runtime-body-v2-high.glb',
+    'assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb',
     'assets/archetypes/Rogue/rogue-runtime-low.glb'
 ]);
 // Owner-requested equipment delivery: exact catalog names, tiers and character

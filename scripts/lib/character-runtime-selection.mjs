@@ -36,6 +36,21 @@ export function characterRuntimeSelection(selection, characters, readBytes) {
             verify(baselineFile, variant.baselineSHA256, name);
             verify(variant.file, variant.sha256, name);
         }
+        if (row.previousVariants !== undefined) {
+            if (JSON.stringify(Object.keys(row.previousVariants || {}).sort()) !== JSON.stringify(['high', 'low'])) {
+                throw new Error('Previous character quality roster mismatch');
+            }
+            const retained = new Set(Object.values(row.variants).flatMap(variant => [variant.file, variant.baselineFile]));
+            for (const quality of ['high', 'low']) {
+                const variants = row.previousVariants[quality];
+                if (!Array.isArray(variants)) throw new Error('Previous character variants must be arrays');
+                for (const variant of variants) {
+                    verify(variant?.file, variant?.sha256, name);
+                    if (retained.has(variant.file)) throw new Error('Duplicate previous character path');
+                    retained.add(variant.file);
+                }
+            }
+        }
     }
     return selection.characters;
 }

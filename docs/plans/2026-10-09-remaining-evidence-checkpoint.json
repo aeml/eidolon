@@ -1,17 +1,17 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T00:20:07.060606+00:00",
-  "classification": "Opt-in supplied-body morph endpoint basis preparation. More detailed High trial retained for future immutable selection; initial coarser High/Low trial rejected for visible neck/shoulder faceting. No runtime/catalog/asset/public selection. Full inherited roadmap and whole-scene/device/art/owner/launch gates remain open.",
-  "qualifiedRuntime": "Qualified6fbffd3435e1798841a56ab120e938db3d512e34 rendering implementation plus protected High body selection in current receipt. Runtime intentionally changes only Fighter catalog authority and generated four selected High paths/versions; assets add four exact prepared High GLBs and selection manifest. Server/package/public version/profile/access remain unchanged.",
+  "recordedUTC": "2026-10-10T00:28:45.539003+00:00",
+  "classification": "Qualified private selection of reviewed supplied High body morph endpoint derivatives at four additive paths, with all previous versions retained. Native/cache/source/ordinary selected-path party/save checks pass. Whole-game draw/triangle, modern-art/support-device and full roadmap acceptance remain open.",
+  "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-10T00:01:36Z",
+    "readOnlyObservationUTC": "2026-10-10T00:21:33Z",
     "result": {
-      "observed_at_utc": "2026-10-10T00:01:36Z",
+      "observed_at_utc": "2026-10-10T00:21:33Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -86,14 +86,14 @@
         }
       ]
     },
-    "action": "Read-only delegated snapshot; no restart/cancel/acceptance. Stale after timestamp."
+    "action": "One read-only delegated snapshot; no restart/cancel/acceptance. Stale after timestamp."
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-09-body-lod-integration.json",
+  "currentReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Opt-in largest-layer wearable preparation preserves exact reviewed trim/secondary regions and passes native/source/party/save checks; modest savings, unselected. Full inherited roadmap and whole-scene/device/art/owner/launch gates remain open.",
+  "previousGoalTurnClassification": "Progress:59502844 body morph preparation and rejection evidence committed into held milestone.",
   "nextAction": "Continue dominant fit/material-coordinated body/gear/eye and actual scene submission costs. Preserve supplied art, exact source attributes/bones/morph/attachment/animation contracts and unchanged High/Low budgets. Full modern art/Q/CB, equipped-party/support-device, raised compatible activation/rollback/F1-F5, operations/rights/owner-policy/human-playtest/beta/admission/launch/final-handoff scope remains active; no public microrelease.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-09-body-lod-integration.json",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
     "preparedNotSelected": true,
@@ -118,7 +118,7 @@
   },
   "bodyMorphBasisPreparation": {
     "receipt": "docs/plans/2026-10-10-body-morph-basis-preparation.json",
-    "preparedNotSelected": true,
+    "preparedNotSelected": false,
     "highBodyTriangles": [
       123204,
       81216
@@ -132,6 +132,25 @@
     "actualHighSceneTriangles": 466590,
     "actualHighDrawCalls": 460,
     "actualHighRawP95Ms": 33.30000000000291,
+    "wholeHighBudget": "fail",
+    "wholeLowDeviceAndFinalArt": "open",
+    "selectionReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
+    "status": "Detailed High bytes now selected at immutable v3paths in current private milestone; initial coarse trial remains rejected, Low exact fallback retained."
+  },
+  "bodyMorphBasisSelection": {
+    "receipt": "docs/plans/2026-10-10-body-morph-selection.json",
+    "selectedOnlyInHeldPrivateMilestone": true,
+    "highBodyTriangles": [
+      123204,
+      81216
+    ],
+    "lowExactReviewedBytes": true,
+    "versionedFilesCachedAndFreshParsedOffline": 16,
+    "nativeGalleryPoses": 56,
+    "actualHighSceneTriangles": 458642,
+    "actualHighDrawCalls": 436,
+    "actualHighRawP95Ms": 16.799999999999272,
+    "actualHighEquippedRootTriangles": 405078,
     "wholeHighBudget": "fail",
     "wholeLowDeviceAndFinalArt": "open"
   }
