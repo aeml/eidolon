@@ -1,3 +1,4 @@
+import { compareCampScene } from './camp-scene-comparison.js';
 import { prepareActorCellMultiDrawParty } from './actor-cell-multidraw-party.js';
 import { capturePartySubmissionFrames } from './party-submission-frames.js';
 import { captureActorSubmissionCensus } from './actor-submission-census.js';
@@ -300,6 +301,7 @@ test('single native renderer observes three live equipped party socket peers on 
             await writeFile(testInfo.outputPath('initial-town-profile.json'), JSON.stringify({ report,
                 scope: 'Fixed60warmup+180real startup frames before diagnostic instrumentation; unchanged camera, settings, assets and authority. Diagnostic only; original strict route and party budget gates remain authoritative.' }, null, 2));
             await capturePartySubmissionFrames(page, testInfo, 'town-submission-frames.json');
+            if (process.env.EIDOLON_E2E_CAMP_COMPARE === '1') await compareCampScene(page, testInfo);
         }
         if (process.env.EIDOLON_TERRAIN_ART_ROUTE === '1') await captureEarthMovingRoute(page, testInfo);
         if (process.env.EIDOLON_TERRAIN_RENDER_DIAGNOSTIC === '1') await captureActualSceneRenderDiagnosis(page, testInfo);
