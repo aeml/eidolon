@@ -69,11 +69,13 @@ test('published login recovers one interrupted engine download and constructs on
     expect(requests).toEqual([`?release=${release}`, `?startupRetry=1&release=${release}`]);
     const state = await page.evaluate(() => {
         const game = window.game;
-        const state = { className: game.constructor.name, defaultGeometryInactive: game.renderSystem.actorGameplayGeometry === null,
+        const state = { className: game.constructor.name,
+            geometryOwnerAbsent: !('actorGameplayGeometry' in game.renderSystem) &&
+                typeof game.renderSystem.setActorGameplayGeometryEnabled === 'undefined',
             errorHidden: document.getElementById('game-startup-status').hidden };
         game.destroy(); return state;
     });
-    expect(state).toEqual({ className: 'GameEngine', defaultGeometryInactive: true, errorHidden: true });
+    expect(state).toEqual({ className: 'GameEngine', geometryOwnerAbsent: true, errorHidden: true });
     expect(constructions).toBe(1);
     await testInfo.attach('published-module-download-recovery', { body: JSON.stringify({ requests, constructions, state }), contentType: 'application/json' });
 });
