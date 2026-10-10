@@ -7,7 +7,7 @@ export async function renderAnimatedActorCells({ quality, perInstanceFrustum = f
         document.getElementById('start-screen').style.display = 'none';
         const render = new RenderSystem(quality === 'low'); render.setGraphicsQuality(quality);
         const owner = render.actorInstances;
-        owner.multiDraw = new ActorInstanceMultiDraw(owner.group);
+        owner.multiDraw ||= new ActorInstanceMultiDraw(owner.group);
         owner.multiDraw.perInstanceFrustum = perInstanceFrustum;
         if (!render.renderer.extensions.has('WEBGL_multi_draw')) throw Error('Actual native multi-draw extension required');
         const floor = new THREE.Mesh(new THREE.PlaneGeometry(240, 240), new THREE.MeshStandardMaterial({ color: 0x4a4842, roughness: 1 }));

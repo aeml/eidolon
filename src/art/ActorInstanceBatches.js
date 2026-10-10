@@ -1,3 +1,4 @@
+import { ActorInstanceMultiDraw } from './ActorInstanceMultiDraw.js';
 import { isOwnedRigidSurfaceMaterial } from './RigidSurfaceBatches.js';
 import { ActorShadowInfluence } from './ActorShadowInfluence.js';
 import { DynamicDrawUsage, Group, InstancedMesh, Material, Matrix4, Object3D } from 'three';
@@ -51,12 +52,13 @@ const eligible = part => candidate(part) && part.material.visible && !part.mater
 // update/input/gear/stealth logic can run. Geometry/materials remain borrowed.
 // Standard instance attributes, never per-piece GPU matrix/indirection textures.
 export class ActorInstanceBatches {
-    constructor(scene, watchedGroups = [scene], { shadowInfluence = false } = {}) {
+    constructor(scene, watchedGroups = [scene], { shadowInfluence = false, multiDraw = false, instanceFrustum = false } = {}) {
         this.scene = scene;
         this.group = new Group(); this.group.name = 'OpaqueActorInstances'; this.group.visible = false;
         scene.add(this.group);
         this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
-        this.enabled = true; this.multiDraw = null;
+        this.enabled = true; this.multiDraw = multiDraw ? new ActorInstanceMultiDraw(this.group) : null;
+        if (this.multiDraw) this.multiDraw.perInstanceFrustum = instanceFrustum;
         this.viewFilter = null;
         this.shadowFilter = shadowInfluence ? new ActorShadowInfluence(scene, watchedGroups) : null;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
