@@ -401,7 +401,7 @@ go build -trimpath ./...
 
 Notes:
 
-- `npm ci` runs `prepare:client`, which copies locked Three.js and protobuf runtimes from `node_modules` into ignored `vendor/`. Production no longer depends on a runtime CDN.
+- `npm ci` runs `prepare:client`, which copies locked Three.js and protobuf runtimes into ignored `vendor/` and builds the local gameplay geometry worker. Publication gives that worker an immutable content hash. Production no longer depends on a runtime CDN.
 - The browser client remains static ES modules; there is no application bundle.
 - Local end-to-end runs can point the test-only static server at an isolated backend with `EIDOLON_E2E_WS_URL=ws://127.0.0.1:<port>/ws`; production HTML is never rewritten.
 - Credentialed browser QA uses `EIDOLON_E2E_USERNAME` and `EIDOLON_E2E_PASSWORD`. Set `EIDOLON_E2E_FULL_GAMEPLAY=1` only for a dedicated QA character that may level, fight, loot, and enter a dungeon. Optional `_SECONDARY` variables enable the two-browser route.
