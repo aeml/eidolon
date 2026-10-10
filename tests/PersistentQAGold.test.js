@@ -133,3 +133,19 @@ test('the sixth read respects the unchanged five-per-ten-second server allowance
     reply({}); await pending;
     expect(jest.getTimerCount()).toBe(0);
 });
+
+test('slow replies keep the next burst outside the server window', async () => {
+    const { page, game, commands, reply } = harness();
+    for (let index = 0; index < 5; index++) {
+        const pending = waitForPersistentQAGoldBaseline(page);
+        await jest.advanceTimersByTimeAsync(index === 0 ? 1000 : 0);
+        game.player.gold = 1242; reply({}); await pending;
+    }
+    const pending = waitForPersistentQAGoldBaseline(page);
+    await jest.advanceTimersByTimeAsync(10_099);
+    expect(commands).toHaveLength(5);
+    await jest.advanceTimersByTimeAsync(1);
+    expect(commands).toHaveLength(6);
+    reply({}); await pending;
+    expect(jest.getTimerCount()).toBe(0);
+});
