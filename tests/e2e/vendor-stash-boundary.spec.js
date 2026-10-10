@@ -1,26 +1,17 @@
 import { expect, test } from '@playwright/test';
-import { readFileSync } from 'node:fs';
-import { createHash } from 'node:crypto';
-import { pathToFileURL } from 'node:url';
 import { collectBrowserFailures, freePersistentQALootSlot, loginAndEnterWorld } from './helpers.js';
 import { storePersistentQALootSpare } from './persistent-qa-stash.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
-for (const policy of ['baseline', 'current']) {
-    test(`real vendor credit precedes stash snapshot with ${policy} helper`, async ({ page, baseURL }, testInfo) => {
+for (const delivery of ['ordinary', 'delayed']) {
+    test(`real vendor credit and stash persist with ${delivery} delivery`, async ({ page, baseURL }, testInfo) => {
         test.skip(process.env.EIDOLON_E2E_VENDOR_STASH_BOUNDARY !== '1', 'Explicit disposable database fixture only');
         const accounts = JSON.parse(process.env.EIDOLON_E2E_VENDOR_STASH_ACCOUNTS);
-        const credentials = accounts[policy === 'baseline' ? 0 : 1];
-        const baseline = process.env.EIDOLON_E2E_VENDOR_BASELINE_HELPERS;
-        expect(createHash('sha256').update(readFileSync(baseline)).digest('hex')).toBe('f40a42973d548a59bef92e1cc3b8a87f0ca356b62d60b4730b58211ffd662f29');
-        const freeSlot = policy === 'baseline'
-            ? (await import(pathToFileURL(baseline).href)).freePersistentQALootSlot
-            : freePersistentQALootSlot;
-        // Preserve actual frame ordering. After the ordinary vendor bag JSON,
-        // delay the next binary state and every subsequent message together.
-        // This makes the existing split acknowledgement deterministic without
-        // changing server balances, inventing packets or reordering delivery.
+        const credentials = accounts[delivery === 'ordinary' ? 0 : 1];
+        // Delay the next state and all subsequent messages together. Preserve
+        // actual ordering: the state may precede the vendor bag acknowledgement.
+        // The controlled unit test separately exercises bag-before-Gold order.
         let saleSeen = false, holding = false, delayed = false, timer, pendingSale;
         const pending = [];
         let saleCommands = 0;
@@ -29,10 +20,10 @@ for (const policy of ['baseline', 'current']) {
             socket.onMessage(message => {
                 if (typeof message === 'string' && JSON.parse(message).type === 'sell') {
                     saleCommands++;
-                    // Dispatch immediately after a real state frame so the
-                    // bag acknowledgement can precede its next Gold snapshot.
-                    pendingSale = message;
-                    return;
+                    if (delivery === 'delayed') {
+                        pendingSale = message;
+                        return;
+                    }
                 }
                 server.send(message);
             });
@@ -63,14 +54,12 @@ for (const policy of ['baseline', 'current']) {
             const initial = await read();
             expect(initial.gold).toBe(1000);
             expect(initial.inventory).toHaveLength(25);
-            await freeSlot(page);
+            await freePersistentQALootSlot(page);
             const atReturn = await read();
             expect(atReturn.inventory).toEqual(initial.inventory.slice(1));
-            expect(atReturn.gold).toBe(policy === 'baseline' ? 1000 : 1175);
+            expect(atReturn.gold).toBe(1175);
             expect(saleCommands).toBe(1);
-            // Both controls settle before the real stash action; the baseline
-            // return above proves its missing barrier, not a server Gold bug.
-            await expect.poll(async () => (await read()).gold).toBe(1175);
+            expect(delayed).toBe(delivery === 'delayed');
             const stored = await storePersistentQALootSpare(page);
             const after = await read();
             expect(after.gold).toBe(1175);
@@ -80,7 +69,7 @@ for (const policy of ['baseline', 'current']) {
             await loginAndEnterWorld(page, credentials);
             expect(await read()).toEqual(after);
             expect(failures, failures.join('\n')).toEqual([]);
-            await testInfo.attach('vendor-stash-boundary', { body: JSON.stringify({ policy, delayMs: 1000,
+            await testInfo.attach('vendor-stash-boundary', { body: JSON.stringify({ delivery, delayMs: delivery === 'delayed' ? 1000 : 0,
                 saleCommands, delayed, initialGold: initial.gold, goldAtHelperReturn: atReturn.gold,
                 finalGold: after.gold, finalInventory: after.inventory.length, finalStash: after.stash.length,
                 freshLoginExact: true, scope: 'Prepared disposable full bag, real server and ordered delayed state. Original live175Gold failure cause remains unproven.' }), contentType: 'application/json' });

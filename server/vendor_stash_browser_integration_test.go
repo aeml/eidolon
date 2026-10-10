@@ -18,9 +18,8 @@ import (
 func TestVendorStashActualBrowserCreditBoundary(t *testing.T) {
 	repo, uri, binary := resourceJournalIntegration(t)
 	node, evidence := os.Getenv("EIDOLON_VENDOR_BROWSER_NODE"), os.Getenv("EIDOLON_VENDOR_BROWSER_EVIDENCE")
-	baseline := os.Getenv("EIDOLON_VENDOR_BASELINE_HELPERS")
-	if !filepath.IsAbs(node) || !filepath.IsAbs(evidence) || !filepath.IsAbs(baseline) {
-		t.Fatal("requires absolute Node, owned evidence and original helper paths")
+	if !filepath.IsAbs(node) || !filepath.IsAbs(evidence) {
+		t.Fatal("requires absolute Node and owned evidence paths")
 	}
 	type account struct {
 		Username string `json:"username"`
@@ -57,7 +56,7 @@ func TestVendorStashActualBrowserCreditBoundary(t *testing.T) {
 	cmd := exec.CommandContext(ctx, node, "node_modules/@playwright/test/cli.js", "test", "tests/e2e/vendor-stash-boundary.spec.js", "--workers=1", "--retries=0", "--output="+filepath.Join(evidence, "browser-results"))
 	cmd.Dir = root
 	cmd.Env = append(os.Environ(), "EIDOLON_E2E_VENDOR_STASH_BOUNDARY=1", "EIDOLON_E2E_VENDOR_STASH_ACCOUNTS="+string(encoded),
-		"EIDOLON_E2E_VENDOR_BASELINE_HELPERS="+baseline, "EIDOLON_E2E_USERNAME="+accounts[0].Username, "EIDOLON_E2E_PASSWORD="+accounts[0].Password,
+		"EIDOLON_E2E_USERNAME="+accounts[0].Username, "EIDOLON_E2E_PASSWORD="+accounts[0].Password,
 		"EIDOLON_E2E_USERNAME_SECONDARY="+accounts[1].Username, "EIDOLON_E2E_PASSWORD_SECONDARY="+accounts[1].Password,
 		"EIDOLON_E2E_REGISTER=0", "EIDOLON_E2E_BROWSER_PATH=/usr/bin/google-chrome", "EIDOLON_E2E_WEB_PORT=4191", "EIDOLON_E2E_BASE_URL=http://127.0.0.1:4191",
 		"EIDOLON_E2E_REUSE_SERVER=0", "EIDOLON_E2E_WS_URL=ws://"+address+"/ws", "EIDOLON_E2E_BACKEND_ORIGIN_IP=", "EIDOLON_E2E_HEADLESS=1", "CI=", "PLAYWRIGHT_NO_COPY_PROMPT=1")
@@ -89,5 +88,5 @@ func TestVendorStashActualBrowserCreditBoundary(t *testing.T) {
 			t.Fatal("vendor/stash/fresh-login save changed exact Gold, EP or item custody", err)
 		}
 	}
-	t.Log("real ordered vendor credit, baseline missing barrier, corrected helper, exact stash and fresh-login saves verified")
+	t.Log("real ordinary/delayed vendor credit, exact stash and fresh-login saves verified")
 }
