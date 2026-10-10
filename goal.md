@@ -1,5 +1,15 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October 10 High frame attribution:** The exact equipped-party observer passes
+save/party checks and same-scene zero-RGB controls; High300draws/166785triangles
+fits geometry limits, but33.4median/66.6p95ms still fails frame limits. Post-timing
+sampling identifies projection/bounds/shadow/matrix and optional light-scan
+work, under substantial shared-host load. No runtime repair or cross-run gain
+claim. [Frozen evidence and limits](docs/plans/2026-10-10-high-frame-attribution.json).
+Owner-requested1.5-second jumps are separately committed/published as
+Alpha1.79.23 at2e519bb0, awaiting their own terminal acceptance. Full inherited
+scope and all remaining gates stay active; the24-hour soak remains failed.
+
 **October 10 failed-soak transport diagnostics:** Run 37880032315, attempt 1
 at `dc7d22f2`, completed failure; evidence upload succeeded. Seven read errors and
 only 20.2538 minutes of common 100-client coverage leave the 24-hour gate failed.
