@@ -1,3 +1,4 @@
+import { prepareActorCellMultiDrawParty } from './actor-cell-multidraw-party.js';
 import { capturePartySubmissionFrames } from './party-submission-frames.js';
 import { captureActorSubmissionCensus } from './actor-submission-census.js';
 import { expect, test } from '@playwright/test';
@@ -478,6 +479,7 @@ test('single native renderer observes three live equipped party socket peers on 
             await captureGameplayGeometryParty(page, testInfo);
             recordPeerLiveness('geometry-lifecycle-prepared');
         }
+        if (process.env.EIDOLON_E2E_ACTOR_CELL_MULTI_DRAW === '1') await prepareActorCellMultiDrawParty(page, testInfo);
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
@@ -487,6 +489,24 @@ test('single native renderer observes three live equipped party socket peers on 
         expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(report.drawCallsMedian).toBeGreaterThan(0);
         recordPeerLiveness('profile-complete');
+        if (process.env.EIDOLON_E2E_DEFAULT_ACTOR_MULTI_DRAW === '1') {
+            const startup = await page.evaluate(() => {
+                const render = window.game.renderSystem, owner = render.actorInstances, multi = owner?.multiDraw;
+                return { selectedAutomatically: Boolean(owner?.enabled && multi?.enabled && multi.perInstanceFrustum),
+                    groups: multi?.entries.size || 0, extension: render.renderer.extensions.has('WEBGL_multi_draw'),
+                    restored: !owner?.hidden.length && !multi?.hidden.length && !owner?.group.visible && !multi?.group.visible };
+            });
+            const budget = { maximumDraws: quality === 'high' ? 350 : 200, maximumTriangles: quality === 'high' ? 250000 : 85000,
+                maximumFrameMedianMs: 20, maximumFrameP95Ms: 33.4 };
+            await writeFile(testInfo.outputPath('default-actor-cell-startup.json'), JSON.stringify({ startup, budget,
+                profile: report, scope: 'Normal compiled game startup and untouched selected default; no manual multi-draw installation or rigid handgear pilot. One native renderer and three socket peers, ordinary generated-world population. Exact original quality budgets; final saved accounts checked by owned Go-race harness.' }, null, 2));
+            expect(startup.selectedAutomatically).toBe(true); expect(startup.groups).toBeGreaterThan(0);
+            expect(startup.extension).toBe(true); expect(startup.restored).toBe(true);
+            expect(report.drawCallsMedian).toBeLessThanOrEqual(budget.maximumDraws);
+            expect(report.trianglesMedian).toBeLessThanOrEqual(budget.maximumTriangles);
+            expect(report.frameMedianMs).toBeLessThanOrEqual(budget.maximumFrameMedianMs);
+            expect(report.frameP95Ms).toBeLessThanOrEqual(budget.maximumFrameP95Ms);
+        }
         if (process.env.EIDOLON_E2E_PARTY_SUBMISSION_FRAMES === '1') await capturePartySubmissionFrames(page, testInfo);
         for (const peer of peers) { expect(peer.socket.readyState, JSON.stringify(peer.closes)).toBe(1); expect(peer.errors).toEqual([]); }
         const party = await page.evaluate(readPartyTerrain, ids);
