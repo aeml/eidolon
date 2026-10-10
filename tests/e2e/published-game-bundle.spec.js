@@ -6,6 +6,7 @@ import path from 'node:path';
 import { bundleGameEngine } from '../../scripts/bundle-game-engine.mjs';
 import { versionPagesRuntime } from '../../scripts/version-pages-runtime.mjs';
 import { collectBrowserFailures } from './helpers.js';
+import { measureJumpWallClock } from './jump-clock-observation.js';
 
 const release = 'bundlefixture20261009';
 let root, server, origin, metadata;
@@ -72,5 +73,23 @@ test('actual published engine stays lazy at login and constructs each class from
         .toEqual(['/src/core/GameEngine.bundle.js']);
     expect(applicationModules).toContain('/src/core/GameEngine.bundle.js');
     expect(applicationModules.some(file => file.startsWith('/src/entities/'))).toBe(false);
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
+
+test('published engine reaches the jump destination in real elapsed time at low FPS', async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(measureJumpWallClock, { publishedRelease: release });
+    await testInfo.attach('published-jump-wall-clock', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
+    expect(result.errors).toEqual([]);
+    expect(result.samples.map(sample => sample.fps)).toEqual([15, 60]);
+    for (const sample of result.samples) {
+        expect(sample.elapsedMs).toBeGreaterThanOrEqual(1500);
+        expect(sample.elapsedMs).toBeLessThan(1750);
+        expect(sample.positionError).toBeLessThan(0.01);
+        expect(sample.renderError).toBeLessThan(0.01);
+    }
     expect(failures, failures.join('\n')).toEqual([]);
 });
