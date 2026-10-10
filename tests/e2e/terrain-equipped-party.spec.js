@@ -752,6 +752,7 @@ test('single native renderer observes three live equipped party socket peers on 
                     if (!actor.mesh?.visible || !actor.isActive) continue;
                     actor.mesh.traverse(tag => {
                         if (tag.name !== 'NameTag' || !tag.visible) return;
+                        for (let parent = tag.parent; parent; parent = parent.parent) if (!parent.visible) return;
                         const point = tag.getWorldPosition(actor.position.clone()).project(camera);
                         const scale = tag.getWorldScale(actor.position.clone());
                         const height = scale.y / span * viewport.height;
