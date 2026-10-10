@@ -1,3 +1,4 @@
+import { prepareFittedRigidParty } from './fitted-rigid-party.js';
 import { captureActorSubmissionCensus } from './actor-submission-census.js';
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
@@ -477,6 +478,7 @@ test('single native renderer observes three live equipped party socket peers on 
             await captureGameplayGeometryParty(page, testInfo);
             recordPeerLiveness('geometry-lifecycle-prepared');
         }
+        if (process.env.EIDOLON_E2E_FITTED_RIGID_SURFACES === '1') await prepareFittedRigidParty(page, testInfo);
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
