@@ -741,6 +741,40 @@ test('single native renderer observes three live equipped party socket peers on 
         if (process.env.EIDOLON_TERRAIN_UNDERSTORY_PREPARATION === '1') {
             await captureUnderstoryPreparation(page, `equipped-party-${quality}`, testInfo);
         }
+        if (process.env.EIDOLON_E2E_PARTY_NAMEPLATE_DIAGNOSTIC === '1') {
+            const labels = await page.evaluate(() => {
+                const game = window.game, camera = game.renderSystem.camera;
+                const viewport = { width: innerWidth, height: innerHeight };
+                const span = (camera.top - camera.bottom) / camera.zoom;
+                const active = game.chunkManager.getActiveEntities();
+                const rows = [];
+                for (const actor of active) {
+                    if (!actor.mesh?.visible || !actor.isActive) continue;
+                    actor.mesh.traverse(tag => {
+                        if (tag.name !== 'NameTag' || !tag.visible) return;
+                        const point = tag.getWorldPosition(actor.position.clone()).project(camera);
+                        const scale = tag.getWorldScale(actor.position.clone());
+                        const height = scale.y / span * viewport.height;
+                        rows.push({ id: actor.id, owned: tag === actor.nameTag,
+                            chosen: game.nameplatePresentation.visibleIds.has(actor.id),
+                            x: (point.x + 1) * viewport.width / 2, y: (1 - point.y) * viewport.height / 2,
+                            width: height * tag.material.map.image.width / tag.material.map.image.height, height });
+                    });
+                }
+                return { viewport, suspended: game.nameplatePresentation.suspended,
+                    chosenCount: game.nameplatePresentation.visibleIds.size, rows };
+            });
+            await writeFile(testInfo.outputPath('party-nameplate-diagnostic.json'), JSON.stringify(labels, null, 2));
+            expect(labels.suspended).toBe(false);
+            expect(labels.rows.length).toBeGreaterThan(0);
+            for (const row of labels.rows) { expect(row.owned).toBe(true); expect(row.chosen).toBe(true); }
+            for (let i = 0; i < labels.rows.length; i++) for (let j = i + 1; j < labels.rows.length; j++) {
+                const a = labels.rows[i], b = labels.rows[j];
+                expect(Math.abs(a.x - b.x) >= (a.width + b.width) / 2 ||
+                    Math.abs(a.y - b.y) >= (a.height + b.height) / 2,
+                'Actual visible party name tags must not overlap').toBe(true);
+            }
+        }
         await page.screenshot({ path: testInfo.outputPath(`single-renderer-equipped-party-${quality}.png`) });
         if (bodyPilot) {
             const substitution = bodyPilot.read(), classes = substitution.requested.filter(row => row.quality === quality).map(row => row.actorClass).sort();
