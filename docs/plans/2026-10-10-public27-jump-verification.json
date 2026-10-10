@@ -1,0 +1,126 @@
+{
+  "recordedUTC": "2026-10-10T15:58:10.778633+00:00",
+  "version": "Alpha 1.79.27",
+  "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+  "run": 38064138468,
+  "deployed": true,
+  "exactAssetsAndIdentitiesVerified": true,
+  "nativeStats": {
+    "total": 1,
+    "expected": 1,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "ok": true
+  },
+  "jump": {
+    "elapsedMs": 1429.7000000178814,
+    "acceptedDuration": 1.2999999523162842,
+    "distance": 26.966157155164755,
+    "positionError": 0,
+    "renderError": 0,
+    "frames": 39
+  },
+  "account": "fresh ordinary Fighter registration; credentials sanitized before archive",
+  "retries": 0,
+  "measurement": "Trusted native Ctrl-click through actual server-accepted logical and rendered landing",
+  "privacy": {
+    "plainAndEmbeddedMembersScanned": 10,
+    "actualAccountIdentifiersRemaining": 0,
+    "sanitizer": "Existing process-env credential sanitizer completed successfully before archive",
+    "recordings": "off"
+  },
+  "limits": "Public jump and exact deployment proof only. Required full CI/live character/recovery outcomes remain separate and pending. Approximate total depends on network/device latency. No full project/art/device/soak/beta/launch acceptance.",
+  "ciStatus": "in_progress",
+  "requiredCIPassed": false,
+  "releaseGateAccepted": false,
+  "evidence": {
+    "publicJumpDirectory": "/home/aeml/.local/share/eidolon-release27-followup-checks-20261010/live-jump",
+    "inventoryEntries": 9,
+    "inventorySHA256": "6f9a71498d550ef0f6a962e53b4d19449f6d9964b87e97720887383ba2e30bc5",
+    "releaseRoot": "/home/aeml/.local/share/eidolon-release27-followup-checks-20261010",
+    "releaseRootFrozen": false
+  },
+  "assets": {
+    "recordedUTC": "2026-10-10T15:57:11.125829+00:00",
+    "allEightMatch": true,
+    "files": {
+      "index.html": {
+        "status": 200,
+        "url": "https://play.eidolonrealms.com/index.html?release=a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+        "bytes": 108223,
+        "sha256": "17dd43e23cc40aa5c385f4d61c6cd108871897d09764907a41b9615239e42f2b",
+        "matchesExpected": true
+      },
+      "release.json": {
+        "status": 200,
+        "url": "https://play.eidolonrealms.com/release.json?release=a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+        "bytes": 89,
+        "sha256": "c41ed3127480ee4702593f3d2f56fe6efe21be1c1bb0ac172df2625c36f03915",
+        "matchesExpected": true
+      },
+      "src/main.js": {
+        "status": 200,
+        "url": "https://play.eidolonrealms.com/src/main.js?release=a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+        "bytes": 28947,
+        "sha256": "686dce6af3b0d89ca76b70d125b35271767756d78bc2f7d9eadc35e7140edd0f",
+        "matchesExpected": true
+      },
+      "src/core/GameEngine.bundle.js": {
+        "status": 200,
+        "url": "https://play.eidolonrealms.com/src/core/GameEngine.bundle.js?release=a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+        "bytes": 3376253,
+        "sha256": "5b10414decaef184e9ca5cc811c36dd3ce3c18dd40adf0cd7c85a016d305c4ad",
+        "matchesExpected": true
+      },
+      "src/core/GameEngineRuntime.js": {
+        "status": 200,
+        "url": "https://play.eidolonrealms.com/src/core/GameEngineRuntime.js?release=a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+        "bytes": 60486,
+        "sha256": "23ce9bb24a58e613b59ff6b8d4ab0a9ae09e40333de777f8927566dba3608bcc",
+        "matchesExpected": true
+      },
+      "src/core/GameEngineMovement.js": {
+        "status": 200,
+        "url": "https://play.eidolonrealms.com/src/core/GameEngineMovement.js?release=a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+        "bytes": 60998,
+        "sha256": "aa6b3afc4f6822e4e491c568a3c0e9ca153f0266ba45356bfaa06e6a6c99cc21",
+        "matchesExpected": true
+      },
+      "src/core/EngineModuleLoader.js": {
+        "status": 200,
+        "url": "https://play.eidolonrealms.com/src/core/EngineModuleLoader.js?release=a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+        "bytes": 698,
+        "sha256": "c7239423ffd2ea878f53308647c4ef9c98fd77598a9eb85633ff632fb3c273a5",
+        "matchesExpected": true
+      },
+      "src/styles/index.css": {
+        "status": 200,
+        "url": "https://play.eidolonrealms.com/src/styles/index.css?release=a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+        "bytes": 251361,
+        "sha256": "1ff83638d8e7bd5ef7444f2ad3454629e978fa0b69b4ccdebf8d0389dae6d526",
+        "matchesExpected": true
+      }
+    }
+  },
+  "frontend": {
+    "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+    "version": "Alpha 1.79.27"
+  },
+  "backend": {
+    "version": "Alpha 1.79.27",
+    "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+    "status": "ok",
+    "database": "ready"
+  },
+  "preflightFailure": {
+    "directory": "/home/aeml/.local/share/eidolon-release27-followup-checks-20261010/live-jump-preflight-failure",
+    "cause": "Missing local vendor inventory before navigation/login/registration/jump; dependency copied, no gameplay assertion changes. Original failed native setup retained."
+  },
+  "optionalPrivateTiming": {
+    "source": "511edfaa",
+    "bodyIdenticalToActualPublicProbe": true,
+    "separateNativeExecution": false,
+    "published": false
+  }
+}

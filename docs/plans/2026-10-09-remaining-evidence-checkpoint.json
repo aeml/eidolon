@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T15:38:50.294276+00:00",
-  "classification": "Corrective27 follow-up a9d6fc9b, CI38064138468 attempt1 in progress after proven first candidate predeploy stale timing assertion failure. Public remains verified26; requested1.5s total locally qualified, public27 verification pending. Actual observed public26sale room-credit cause established; original failed gates retained.",
+  "recordedUTC": "2026-10-10T15:59:10.589872+00:00",
+  "classification": "Alpha1.79.27/a9d6fc9b deployed and actual public trusted Ctrl-click\u2192landing1429.7ms verified, endpoints0; all8assets/identities/database match. Required live character/recovery CI38064138468 still in progress; original failures retained. Full original goal stays active.",
   "qualifiedRuntime": "Held private renderer/supplied High v3 and prepared geometry controller/delivery retained, geometry owner default null. No public24/25product merge. Public25 jump correction independently verified; required live Gold/stash gate and full original roadmap acceptance remain open.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -1374,15 +1374,17 @@
     "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
   },
   "currentPublicVerification": {
-    "receipt": "docs/plans/2026-10-10-public26-terminal-verification.json",
-    "commit": "77859697a71329facd0584a95167c80eac392398",
-    "ci": 38056289769,
-    "jumpFixRetained": true,
+    "receipt": "docs/plans/2026-10-10-public27-jump-verification.json",
+    "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+    "ci": 38064138468,
+    "jumpTotalTimeVerified": true,
+    "totalMs": 1429.7,
     "allEightAssetsMatch": true,
     "identitiesAndDatabaseMatch": true,
     "requiredCIPassed": false,
     "releaseAccepted": false,
-    "inventorySHA256": "6fd711a168018cc8f722db58b485c53d0e479fbc43d1ab38654723a6ce445cc7"
+    "ciStatus": "in_progress",
+    "publicJumpInventorySHA256": "6f9a71498d550ef0f6a962e53b4d19449f6d9964b87e97720887383ba2e30bc5"
   },
   "actorInstanceShadowViewPrototype": {
     "receipt": "docs/plans/2026-10-10-actor-instance-shadow-view.json",
@@ -1487,7 +1489,7 @@
     "attempt": 1,
     "status": "in_progress",
     "conclusion": null,
-    "deployed": false,
+    "deployed": true,
     "requiredGateAccepted": false,
     "privateClickToLandingMs": {
       "normal": 1504.9,
@@ -1505,7 +1507,10 @@
       "evidence": "/home/aeml/.local/share/eidolon-release27-checks-20261010",
       "inventorySHA256": "81f550f3a39598f0b92929f75ddb50baf751f5c929213a56a056824fc515a82e"
     },
-    "correctionReceipt": "docs/plans/2026-10-10-release27-published-timing-correction.json"
+    "correctionReceipt": "docs/plans/2026-10-10-release27-published-timing-correction.json",
+    "publicClickToLandingMs": 1429.7,
+    "publicJumpVerified": true,
+    "publicVerification": "docs/plans/2026-10-10-public27-jump-verification.json"
   },
   "worldTotalJumpIntegration": {
     "commit": "ddadf7c9d0c157298150ba28d77bba7c902c0389",
@@ -1531,7 +1536,18 @@
       "merge": "72038fb3",
       "optionalTrustedInputTiming": "511edfaa",
       "runtimeByteIdenticalToQualified": true,
-      "optionalNativeProof": "pending public acceptance with same body; not counted as pass"
+      "optionalNativeProof": "Exactly matching public acceptance body passed1429.7ms with endpoints0; optional enclosing test not separately executed/published."
     }
+  },
+  "previousPublicVerification26": {
+    "receipt": "docs/plans/2026-10-10-public26-terminal-verification.json",
+    "commit": "77859697a71329facd0584a95167c80eac392398",
+    "ci": 38056289769,
+    "jumpFixRetained": true,
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "requiredCIPassed": false,
+    "releaseAccepted": false,
+    "inventorySHA256": "6fd711a168018cc8f722db58b485c53d0e479fbc43d1ab38654723a6ce445cc7"
   }
 }

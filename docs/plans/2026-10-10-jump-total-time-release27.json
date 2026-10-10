@@ -1,6 +1,6 @@
 {
   "recordedUTC": "2026-10-10T15:08:27.994972+00:00",
-  "status": "ordinary follow-up a9d6fc9b pushed after first candidate failed before deployment; new exact CI in progress; public verification pending",
+  "status": "deployed; exact public assets/identities/database and trusted total jump verified; required live CI pending",
   "version": "Alpha 1.79.27",
   "publicPredecessor": "77859697a71329facd0584a95167c80eac392398",
   "ownerRequest": "Approximately1.5seconds TOTAL click-to-landing jump time.",
@@ -62,5 +62,10 @@
     "evidence": "/home/aeml/.local/share/eidolon-release27-checks-20261010",
     "inventorySHA256": "81f550f3a39598f0b92929f75ddb50baf751f5c929213a56a056824fc515a82e"
   },
-  "correctionReceipt": "docs/plans/2026-10-10-release27-published-timing-correction.json"
+  "correctionReceipt": "docs/plans/2026-10-10-release27-published-timing-correction.json",
+  "deployed": true,
+  "publicJumpTotalMs": 1429.7,
+  "publicVerification": "docs/plans/2026-10-10-public27-jump-verification.json",
+  "requiredCIPassed": false,
+  "releaseGateAccepted": false
 }

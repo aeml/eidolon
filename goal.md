@@ -147,7 +147,7 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-Public Alpha1.79.26/77859697 remains the latest verified deployment: matching
+Previous public Alpha1.79.26/77859697 retained matching
 normal-TLS frontend/backend/database and eight public assets. Required
 CI38056289769 nevertheless failed live Gold/stash; later recovery/optional
 four-class steps skipped. Earlier failed releases stay retained, never waived.
@@ -168,17 +168,21 @@ published-bundle test incorrectly retained minimum1500ms. Actual new flight
 landed1393.7/1425.2ms, configured retry1447.1/1339.9ms, endpoints0. Corrected only
 that test to same1300–1550ms as source fixture; native1pass7s,1356.4ms15FPS and
 1318.8ms60FPS, endpoints0. Follow-up a9d6fc9b ordinary-pushed; exact unchanged
-CI38064138468 attempt1 is in progress. Version27 is not yet deployed. Verify
-both deployments, eight assets, identities/database, one trusted public jump
-and actual required native outcomes; no manual reruns, cancellations or waivers.
+CI38064138468 attempt1 is in progress. Both27 deployments now succeeded;
+normal-TLS identities/database and all eight actual assets match. One actual
+trusted public27 Ctrl-click lands in1429.7ms, accepted1.3s, distance26.966,
+logical/render errors0; native1pass/no gameplay retries/flakes/skips. A preceding
+missing local vendor setup failed before navigation/registration/jump, retained
+and corrected without gameplay changes. Public jump requirement is verified.
+Required full live character/recovery outcomes remain pending; no manual reruns, cancellations or waivers.
 See release27-published-timing-correction receipt.
 
 Private world integration ddadf7c9 qualifies actual raised-world normal1511.8ms/
 15FPS1411.7ms,2native/128focused pass, endpoints0 and exact fresh saves. Geometry
 owner null, held art/render/runtime unchanged except intended1.3s Movement cap.
 Follow-up private72038fb3 carries the test correction with runtime identical;
-511edfaa updates optional connected timing to trusted click, pending public proof
-using the same acceptance body. Nothing selected or publicly rolled out here.
+511edfaa updates optional connected timing to trusted click; its exactly matching
+acceptance body passed on public27, with no separate optional execution claimed. Nothing selected or publicly rolled out here.
 See world-total-jump-integration receipt. Existing geometry/shadow pilots remain
 unselected/defaultOFF; whole-High/device/art acceptance stays open.
 
