@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 remaining matrix contract:** Read-only ordinary-Three comparison
+finds three further divergences for unflagged manual descendant local/world
+writes under cached automatic ancestors. Prior root/native/party checks remain
+scoped; general matrix semantics and performance acceptance stay open. [Negative
+evidence and next boundary](docs/plans/2026-10-10-local-matrix-descendant-diagnosis.json).
+Keep cache private, qualify complete invalidation or conservative fallback before
+extending/activation; published jump23 excludes it. Full inherited scope active.
+
 **October10 local-matrix invalidation:** Three unchanged-TRS divergences are
 repaired for the private opt-in container cache.63focused checks and eight native
 exact color/shadow controls pass, including manual-world semantics and retained

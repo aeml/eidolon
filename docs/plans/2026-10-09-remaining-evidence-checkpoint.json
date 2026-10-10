@@ -858,7 +858,9 @@
     "extraComparisonCopyCost": "unmeasured",
     "wholeEquippedPartyFrames": "Actual post-repairHigh270draws/168891triangles,33.3median/33.4p95ms; median fails20ms. Race/save/party and exact RGB pass,28entities differs from prior35; no cross-run gain claim.",
     "publicActivation": false,
-    "partyReceipt": "docs/plans/2026-10-10-matrix-equipped-party-checks.json"
+    "partyReceipt": "docs/plans/2026-10-10-matrix-equipped-party-checks.json",
+    "remainingContract": "Unflagged manual descendant local/world mutations diverge when automatic ancestors skip implicit force; private cache not generally qualified. No repair yet.",
+    "descendantDiagnosisReceipt": "docs/plans/2026-10-10-local-matrix-descendant-diagnosis.json"
   },
   "jumpSpeedRelease": {
     "sourceCommit": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
