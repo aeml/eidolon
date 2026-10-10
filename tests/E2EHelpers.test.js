@@ -31,9 +31,10 @@ describe('persistent QA bag rotation with earned deliveries', () => {
     const spare = id => ({ id, type: 'ARMOR', slot: 'head', rarity: 'Common', value: 1 });
     const harness = (inventory, pending = [], rejectSale = false) => {
         const sales = [];
-        window.game = { player: { inventory, equipment: {} }, uiManager: { inventory: { onSellItem: index => {
+        window.game = { player: { inventory, equipment: {}, gold: 345 }, uiManager: { inventory: { onSellItem: index => {
             sales.push(inventory[index].id);
             if (rejectSale) return;
+            window.game.player.gold += Math.max(1, inventory[index].value || 1) * Math.max(1, inventory[index].stack || 1);
             inventory.splice(index, 1);
             inventory.push(pending.shift() || null);
         } } } };
@@ -54,7 +55,7 @@ describe('persistent QA bag rotation with earned deliveries', () => {
         expect(sales).toEqual(['spare-2', 'spare-3', 'spare-4']);
         expect(bag.filter(item => item?.id)).toHaveLength(24);
         expect(bag).toEqual(expect.arrayContaining([invested, protectedQuest, firstEarned, secondEarned]));
-        expect(playwrightExpect.poll).toHaveBeenCalledTimes(3);
+        expect(playwrightExpect.poll).toHaveBeenCalledTimes(6);
     });
     test('a rejected sale fails on that exact item, without retrying another obsolete index', async () => {
         const { page, sales } = harness(Array.from({ length: 25 }, (_, index) => spare(`spare-${index}`)), [], true);
@@ -92,6 +93,40 @@ describe('persistent QA bag rotation with earned deliveries', () => {
             Array.from({ length: 26 }, (_, index) => ({ ...spare(`earned-${index}`), potency: 7 })));
         await expect(freePersistentQALootSlot(page)).rejects.toThrow();
         expect(sales).toHaveLength(25);
+    });
+    test('inventory acknowledgement before the 175-Gold state update cannot cross the stash snapshot', async () => {
+        const bag = Array.from({ length: 25 }, (_, index) => ({ ...spare(`invested-${index}`), potency: 7 }));
+        bag[0] = { ...spare('sold-first'), value: 175 };
+        const { page, sales } = harness(bag, [{ ...spare('earned-pending'), potency: 7 }]);
+        const sell = window.game.uiManager.inventory.onSellItem;
+        window.game.uiManager.inventory.onSellItem = index => { sell(index); window.game.player.gold = 345; };
+        playwrightExpect.poll = jest.fn(observe => ({ toBe: async expected => {
+            if (typeof expected === 'number') {
+                expect(await observe()).toBe(345);
+                expect(expected).toBe(520);
+                window.game.player.gold = 520; // Later authoritative state packet.
+            }
+            expect(await observe()).toBe(expected);
+        } }));
+        const storeSpare = jest.fn(async () => {
+            expect(window.game.player.gold).toBe(520);
+            const item = bag[0]; bag[0] = null; return item;
+        });
+        expect(await freePersistentQALootSlot(page, { storeSpare })).toHaveLength(1);
+        expect(sales).toEqual(['sold-first']); expect(storeSpare).toHaveBeenCalledTimes(1);
+    });
+    test.each(['missing', 'extra'])('a %s vendor credit fails before another action', async kind => {
+        const { page, sales } = harness(Array.from({ length: 25 }, (_, index) => spare(`spare-${index}`)));
+        const sell = window.game.uiManager.inventory.onSellItem;
+        window.game.uiManager.inventory.onSellItem = index => {
+            sell(index); window.game.player.gold += kind === 'missing' ? -1 : 1;
+        };
+        await expect(freePersistentQALootSlot(page)).rejects.toThrow(); expect(sales).toHaveLength(1);
+    });
+    test('unrepresentable sale credit fails before sending a vendor command', async () => {
+        const bag = Array.from({ length: 25 }, (_, index) => ({ ...spare(`spare-${index}`), value: Number.MAX_SAFE_INTEGER }));
+        const { page, sales } = harness(bag);
+        await expect(freePersistentQALootSlot(page)).rejects.toThrow('exactly representable'); expect(sales).toHaveLength(0);
     });
 });
 

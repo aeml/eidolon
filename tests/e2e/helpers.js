@@ -7,6 +7,7 @@ import { isHostilePointerInterception } from '../primaryClickEvidence.js';
 import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
 import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile, acquirePointerWithBoundedCombat } from './loot-pointer-observation.js';
+import { observeStartupModules } from './startup-module-evidence.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -15,6 +16,7 @@ import {
 export { productionWebSocketURL } from '../../src/core/serverAddress.js';
 import { productionWebSocketURL } from '../../src/core/serverAddress.js';
 const browserFailureState = new WeakMap();
+const startupModuleEvidence = new WeakMap();
 
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -46,6 +48,8 @@ function discardRecoveredWebSocketFailures(page, startIndex = 0) {
 export function collectBrowserFailures(page, baseURL) {
     const failures = [];
     browserFailureState.set(page, failures);
+    startupModuleEvidence.get(page)?.dispose();
+    startupModuleEvidence.set(page, observeStartupModules(page, baseURL));
     const firstPartyOrigin = new URL(baseURL).origin;
     const successfulResponses = new Set();
     const canceledAssetFailures = new Map();
@@ -158,6 +162,7 @@ export async function openGame(page, options = {}) {
         : '/';
     for (let attempt = 0; attempt < attempts; attempt += 1) {
         const failureStart = browserFailureState.get(page)?.length || 0;
+        startupModuleEvidence.get(page)?.reset();
         try {
             response = await page.goto(gameDocument, {
                 waitUntil: options.waitUntil || 'domcontentloaded',
@@ -325,6 +330,7 @@ export async function loginAndEnterWorld(page, credentials) {
             startupFailureKind: document.getElementById('game-startup-status')?.dataset.failureKind ?? null,
             loginVisible: document.getElementById('login-panel')?.getClientRects().length > 0
         }));
+        diagnostic.moduleFailures = startupModuleEvidence.get(page)?.snapshot() ?? null;
         throw new Error(`The rendered world did not receive authoritative state: ${JSON.stringify(diagnostic)}`, {
             cause: error
         });
@@ -1511,7 +1517,7 @@ export async function freePersistentQALootSlot(page, { storeSpare } = {}) {
     // bypass persistence or repeatedly submit the same obsolete index.
     for (let rotation = 0; rotation < 25; rotation += 1) {
         if ((await readPlayerState(page)).inventoryCount < 25) return storedItems;
-        const soldItemId = await page.evaluate(() => {
+        const sale = await page.evaluate(() => {
             const game = window.game;
             const equipmentSlots = new Set([
                 'head', 'chest', 'legs', 'feet', 'gloves', 'shoulders',
@@ -1530,18 +1536,29 @@ export async function freePersistentQALootSlot(page, { storeSpare } = {}) {
                 });
             if (!candidates.length || typeof game?.uiManager?.inventory?.onSellItem !== 'function') return null;
             const { item, index } = candidates[0];
+            const value = item.value > 0 ? item.value : 1, stack = item.stack > 0 ? item.stack : 1;
+            const expectedGold = game.player.gold + value * stack;
+            if (![value, stack, game.player.gold, expectedGold].every(Number.isSafeInteger) || game.player.gold < 0) {
+                throw new Error('QA vendor credit must be an exactly representable Gold amount');
+            }
             game.uiManager.inventory.onSellItem(index);
-            return item.id;
+            return { itemId: item.id, expectedGold };
         });
-        if (soldItemId === null && typeof storeSpare === 'function') {
+        if (sale === null && typeof storeSpare === 'function') {
             storedItems.push(await storeSpare(page));
             continue;
         }
-        expect(soldItemId, 'Full QA bag needs ordinary spare gear; protected/invested items are not discarded').not.toBeNull();
+        expect(sale, 'Full QA bag needs ordinary spare gear; protected/invested items are not discarded').not.toBeNull();
         await expect.poll(() => page.evaluate(id =>
-            (window.game?.player?.inventory || []).some(item => item?.id === id), soldItemId), {
+            (window.game?.player?.inventory || []).some(item => item?.id === id), sale.itemId), {
             timeout: 15_000, message: 'The exact vendor item must leave the authoritative bag before another sale'
         }).toBe(false);
+        // Vendor JSON acknowledges the bag before a state packet publishes
+        // Gold. Do not let that earlier sale's delayed credit cross the next
+        // stash snapshot, whose exact unchanged-Gold assertion stays intact.
+        await expect.poll(() => page.evaluate(() => window.game?.player?.gold), {
+            timeout: 15_000, message: 'The exact vendor Gold credit must arrive before another sale or stash deposit'
+        }).toBe(sale.expectedGold);
     }
     await expect.poll(async () => (await readPlayerState(page)).inventoryCount, {
         timeout: 15_000, message: 'Bounded QA vendor rotation must leave room after earned deliveries'
