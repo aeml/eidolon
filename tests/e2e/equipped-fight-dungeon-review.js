@@ -133,6 +133,12 @@ export async function captureEarthFight(page, testInfo, sample, screenshot) {
 }
 
 export async function captureFirstDungeon(page, testInfo, walkTo, screenshot, sample) {
+    // Refresh the existing defensive skill through ordinary input before
+    // moving past the actual populated approach; no health/cooldown mutation.
+    if (await page.evaluate(() => window.game.player.ironFortressTimer <= 0)) {
+        await page.keyboard.press('4');
+        await expect.poll(() => page.evaluate(() => window.game.player.ironFortressTimer)).toBeGreaterThan(0);
+    }
     // Follow the existing authored Bastion road around its solid western wall.
     for (const [x, z] of [[725, 200], [755, 260], [800, 270], [800, 242]]) await walkTo(x, z);
     let pointer;

@@ -1,3 +1,4 @@
+import { planVisibleGroundStepInPage } from '../groundInputProjection.js';
 import { beginFightReview, captureEarthFight, captureFirstDungeon, finishFightReview } from './equipped-fight-dungeon-review.js';
 import { expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -105,8 +106,10 @@ export async function captureEarthMovingRoute(page, testInfo) {
                 const before = await readPlayerState(page), distance = Math.hypot(x - before.x, z - before.z);
                 if (distance < .6) return;
                 const fraction = Math.min(18, distance) / distance;
-                const targetX = before.x + (x - before.x) * fraction, targetZ = before.z + (z - before.z) * fraction;
-                await moveByGroundClick(page, targetX - before.x, targetZ - before.z, { moveOnly: true,
+                const visible = await page.evaluate(planVisibleGroundStepInPage, { dx: (x - before.x) * fraction, dz: (z - before.z) * fraction });
+                expect(visible, 'Plan an unobscured prefix before constructing the strict arrival target').toBeTruthy();
+                const targetX = before.x + visible.dx, targetZ = before.z + visible.dz;
+                await moveByGroundClick(page, visible.dx, visible.dz, { moveOnly: true,
                     requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false, minimumDistance: .1,
                     arrival: { x: targetX, z: targetZ, radius: .6, instanceId: before.instanceId } });
                 await expect.poll(async () => {
