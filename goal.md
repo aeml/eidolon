@@ -1,5 +1,21 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 gameplay body index pilot:** Full supplied blink endpoints and every
+referenced bone are constrained; exact collars retain protected tangent/UV/skin
+seams. Unmasked High81216→35602/Low73094→34902triangles; actual masked
+High42137→16923/Low32856→16532.60focused checks,8CLI guards,48source audit,
+two336pair native galleries/112exact close controls each and finalHigh/Low
+four-class race/save checks pass. Two peer-close attempts retained; identical
+JSON source transport fixes QA capture without changing liveness policy.
+High208455triangles meets250000but378draws/33.4median/66.7p95ms fail;Low90850
+still exceeds85000. Large owned raw copies/startup, bake/mask/continuous-zoom/
+lifecycle/cache/device/moving-art gates remain open. Unselected experiment;
+qualified e47runtime/public1.79.22/profile/access unchanged. [Pilot, retained
+failures and limits](docs/plans/2026-10-10-gameplay-body-lod-pilot.json).
+Continue measured High submissions/frame cost, Low remaining source geometry
+and full inherited1.11–1.99/art/Q/CB/F1–F5/operations/rights/owner/human/beta/
+launch/handoff. No narrower completion or public microrelease.
+
 **October10 gameplay-camera color pilot:** Exact supplied gear/eye indices,
 separate PBR regions and full bone channels reduce High152558→66832 and
 Low77910→41010triangles in eight-outfit gallery; body/blink/close-up source stays

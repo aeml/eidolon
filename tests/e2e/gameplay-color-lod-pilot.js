@@ -4,7 +4,10 @@ import { createHash } from 'node:crypto';
 import { gameplayColorIndices } from '../../scripts/lib/gameplay-color-indices.mjs';
 
 export async function prepareGameplayColorPilot(page, kind = 'gallery', error = .006, sourceOutput = null) {
-    const sources = await page.evaluate(kind => {
+    const started = performance.now();
+    // Preserve exact numeric inputs without per-number protocol objects that
+    // can stall the live socket peers during this unmeasured QA preparation.
+    const sources = JSON.parse(await page.evaluate(kind => {
         const qa = window.__classGear, game = window.game;
         const actors = kind === 'gallery' ? qa.actors : [game.player, ...game.remotePlayers.values()].map(actor => ({ root: actor.mesh }));
         const meshes = new Map();
@@ -34,10 +37,10 @@ export async function prepareGameplayColorPilot(page, kind = 'gallery', error = 
             }
         };
         const values = attr => Array.from({ length: attr.count * attr.itemSize }, (_, i) => attr.getComponent(Math.floor(i / attr.itemSize), i % attr.itemSize));
-        return [...meshes.values()].map(({ mesh, source, quality }) => ({ id: mesh.uuid, name: mesh.name, quality,
+        return JSON.stringify([...meshes.values()].map(({ mesh, source, quality }) => ({ id: mesh.uuid, name: mesh.name, quality,
             attributes: Object.fromEntries(Object.entries(source.attributes).map(([name, attr]) => [name, { itemSize: attr.itemSize, array: values(attr) }])),
-            index: Array.from(source.index.array) }));
-    }, kind);
+            index: Array.from(source.index.array) })));
+    }, kind));
     if (!sources.length) throw new Error('No supplied fitted gear/eye color sources');
     if (sourceOutput) await writeFile(sourceOutput, JSON.stringify(sources));
     const derivatives = sources.map(source => {
@@ -59,7 +62,7 @@ export async function prepareGameplayColorPilot(page, kind = 'gallery', error = 
             entry.candidate = geometry;
         }
     }, derivatives);
-    return { sources: sources.length, error, derivatives };
+    return { sources: sources.length, error, wallPreparationMilliseconds: performance.now() - started, derivatives };
 }
 
 export async function captureGameplayColorPilot(page, testInfo) {

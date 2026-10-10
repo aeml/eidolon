@@ -9,7 +9,10 @@ function accessor(array, width) {
 }
 
 export async function prepareShadowGeometryPilot(page, kind = 'gallery', maximumError = .006) {
-    const sources = await page.evaluate(async kind => {
+    const started = performance.now();
+    // Transport the same raw numeric depth inputs as one string so normal
+    // peer I/O can run during this unmeasured QA preparation.
+    const sources = JSON.parse(await page.evaluate(async kind => {
         const { ActorShadowGeometry, createOwnedShadowGeometry } = await import('/src/core/ActorShadowGeometry.js');
         const qa = window.__classGear, game = window.game;
         const renderer = kind === 'gallery' ? qa.renderer : game.renderSystem.renderer;
@@ -31,11 +34,11 @@ export async function prepareShadowGeometryPilot(page, kind = 'gallery', maximum
         window.__shadowGeometryPilot = { pass, meshes, createOwnedShadowGeometry, examined, rejected };
         const values = attribute => Array.from({ length: attribute.count * attribute.itemSize },
             (_, index) => attribute.getComponent(Math.floor(index / attribute.itemSize), index % attribute.itemSize));
-        return [...pass.entries.values()].map(({ mesh, source }) => ({ id: mesh.uuid, name: mesh.name,
+        return JSON.stringify([...pass.entries.values()].map(({ mesh, source }) => ({ id: mesh.uuid, name: mesh.name,
             position: values(source.attributes.position), joints: values(source.attributes.skinIndex),
             weights: values(source.attributes.skinWeight), indices: Array.from(source.index.array),
-            morphs: (source.morphAttributes.position || []).map(values) }));
-    }, kind);
+            morphs: (source.morphAttributes.position || []).map(values) })));
+    }, kind));
     if (!sources.length) throw new Error('No actual supplied High shadow geometry registered');
     const derivatives = sources.map(source => {
         const position = accessor(new Float32Array(source.position), 3), joints = accessor(new Uint16Array(source.joints), 4);
@@ -54,7 +57,7 @@ export async function prepareShadowGeometryPilot(page, kind = 'gallery', maximum
             sourceTriangles: source.indices.length / 3, candidateTriangles: indices.length / 3, indices: Array.from(indices),
             preparationMilliseconds, ...details };
     });
-    return { sources: sources.length, derivatives };
+    return { sources: sources.length, wallPreparationMilliseconds: performance.now() - started, derivatives };
 }
 
 export async function selectSimplifiedShadowGeometry(page, derivatives) {

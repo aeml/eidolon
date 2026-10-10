@@ -5,6 +5,7 @@ import { installBodyLodPilot } from './body-lod-pilot.js';
 import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
 import { prepareShadowGeometryPilot, selectSimplifiedShadowGeometry } from './shadow-geometry-pilot.js';
 import { prepareGameplayColorPilot } from './gameplay-color-lod-pilot.js';
+import { prepareGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -99,6 +100,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
     expect(process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT, 'Wearable diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT, 'Shadow geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT, 'Color geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
+    expect(process.env.EIDOLON_E2E_GAMEPLAY_BODY_PILOT, 'Body geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     test.setTimeout(230_000);
     expect(process.env.EIDOLON_E2E_WS_URL).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');
@@ -240,6 +242,12 @@ test('single native renderer observes three live equipped party socket peers on 
     const quality = process.env.EIDOLON_TERRAIN_PARTY_QUALITY;
     expect(['high', 'low']).toContain(quality);
     const failures = collectBrowserFailures(page, baseURL), peers = [];
+    let peerStage = 'joining';
+    const peerLiveness = [];
+    const recordPeerLiveness = stage => {
+        peerStage = stage;
+        peerLiveness.push({ stage, readyStates: peers.map(peer => peer.socket.readyState) });
+    };
     const wearablePilot = await installWearableAttributePilot(page);
     const bodyPilot = await installBodyLodPilot(page);
     const bodySelection = process.env.EIDOLON_TERRAIN_BODY_SELECTION === '1'
@@ -278,8 +286,10 @@ test('single native renderer observes three live equipped party socket peers on 
         await page.keyboard.press('o');
         await expect(page.locator('#social-window')).toBeVisible();
         for (const account of accounts.slice(1)) {
-            const peer = { socket: new globalThis.WebSocket(url), messages: [], errors: [] };
+            const peer = { socket: new globalThis.WebSocket(url), messages: [], errors: [], closes: [], openedAt: performance.now() };
             peers.push(peer);
+            peer.socket.addEventListener('close', event => peer.closes.push({ stage: peerStage, code: event.code,
+                clean: event.wasClean, elapsedMilliseconds: performance.now() - peer.openedAt }));
             peer.socket.addEventListener('error', () => peer.errors.push('isolated socket transport error'));
             peer.socket.addEventListener('message', event => {
                 // Binary replication is consumed normally by the native browser.
@@ -324,6 +334,36 @@ test('single native renderer observes three live equipped party socket peers on 
         }, { timeout: 30_000 }).toBe(true);
         await expect(page.locator('#esc-menu')).toBeHidden();
         for (const peer of peers) expect(peer.socket.readyState).toBe(1);
+        recordPeerLiveness('preparation-start');
+        if (process.env.EIDOLON_E2E_GAMEPLAY_BODY_PILOT === '1') {
+            const preparation = await prepareGameplayBodyPilot(page, 'game', .006, testInfo.outputPath('gameplay-body-sources.json'));
+            expect(preparation.sources).toBe(4);
+            const paired = await page.evaluate(() => {
+                const render = window.game.renderSystem, pilot = window.__gameplayBodyPilot;
+                if (render.currentZoom < 10) throw new Error('Actual body pilot requires gameplay-size projection');
+                const capture = enabled => {
+                    pilot.select(enabled); render.render();
+                    return { calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+                };
+                try {
+                    return { reference: capture(false), candidate: capture(true), referenceAgain: capture(false),
+                        quality: render.graphicsQuality, zoom: render.currentZoom,
+                        ownedBufferBytes: [...pilot.meshes.values()].reduce((sum, entry) => sum + entry.candidate.index.array.byteLength +
+                            Object.values(entry.candidate.attributes).reduce((total, attr) => total + attr.array.byteLength, 0) +
+                            Object.values(entry.candidate.morphAttributes).flat().reduce((total, attr) => total + attr.array.byteLength, 0), 0) };
+                } finally { pilot.select(true); }
+            });
+            await writeFile(testInfo.outputPath('gameplay-body-party.json'), JSON.stringify({
+                scope: 'Explicit gameplay-size body index experiment in one connected renderer; full raw skin and both blink targets retained. Ordinary assets and worker. Synchronous count control before independent gear/eye and shadow preparations. No continuous LOD, device or final art acceptance.',
+                preparation, paired
+            }, null, 2));
+            expect(paired.referenceAgain.triangles).toBe(paired.reference.triangles);
+            expect(paired.candidate.triangles).toBeLessThan(paired.reference.triangles);
+            console.log('[gameplay-body-party]', JSON.stringify({ paired,
+                sourceTriangles: preparation.derivatives.reduce((sum, row) => sum + row.sourceTriangles, 0),
+                candidateTriangles: preparation.derivatives.reduce((sum, row) => sum + row.candidateTriangles, 0) }));
+            recordPeerLiveness('body-prepared');
+        }
         if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT === '1') {
             const preparation = await prepareGameplayColorPilot(page, 'game', .006, testInfo.outputPath('gameplay-color-sources.json'));
             const paired = await page.evaluate(() => {
@@ -349,6 +389,7 @@ test('single native renderer observes three live equipped party socket peers on 
             console.log('[gameplay-color-party]', JSON.stringify({ paired,
                 sourceTriangles: preparation.derivatives.reduce((sum, row) => sum + row.sourceTriangles, 0),
                 candidateTriangles: preparation.derivatives.reduce((sum, row) => sum + row.candidateTriangles, 0) }));
+            recordPeerLiveness('gear-prepared');
         }
         if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1') {
             expect(quality, 'Shadow geometry pilot requires actual High shadows').toBe('high');
@@ -391,13 +432,16 @@ test('single native renderer observes three live equipped party socket peers on 
             expect(paired.candidate.swaps).toBeGreaterThan(0);
             expect(paired.referenceAgain.triangles).toBe(paired.reference.triangles);
             expect(paired.candidate.triangles).toBeLessThan(paired.reference.triangles);
+            recordPeerLiveness('shadow-prepared');
         }
+        recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
         expect(report.visibility).toBe('visible');
         expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(report.drawCallsMedian).toBeGreaterThan(0);
-        for (const peer of peers) { expect(peer.socket.readyState).toBe(1); expect(peer.errors).toEqual([]); }
+        recordPeerLiveness('profile-complete');
+        for (const peer of peers) { expect(peer.socket.readyState, JSON.stringify(peer.closes)).toBe(1); expect(peer.errors).toEqual([]); }
         const party = await page.evaluate(readPartyTerrain, ids);
         expect(party.actors.map(actor => actor.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
         if (bodySelection) {
@@ -638,8 +682,12 @@ test('single native renderer observes three live equipped party socket peers on 
         await page.evaluate(() => {
             window.__shadowGeometryPilot?.pass.dispose(); delete window.__shadowGeometryPilot;
             window.__gameplayColorPilot?.dispose(); delete window.__gameplayColorPilot;
+            window.__gameplayBodyPilot?.dispose(); delete window.__gameplayBodyPilot;
             window.game?.destroy?.();
         }).catch(() => {});
+        await writeFile(testInfo.outputPath('party-peer-liveness.json'), JSON.stringify({
+            stages: peerLiveness, beforeCleanupReadyStates: peers.map(peer => peer.socket.readyState), closes: peers.map(peer => peer.closes)
+        }, null, 2));
         for (const peer of peers) peer.socket.close();
     }
 });

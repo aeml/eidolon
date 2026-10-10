@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T02:00:28.875815+00:00",
-  "classification": "Unselected supplied-gear/eye color index pilot at gameplay-size orthographic projection. Native72pose/zoom comparisons,24exact close controls, source/material audit, four resource cycles and actualHigh/Low party/save checks pass. High420draws/253753triangles andLow102800triangles still fail unchanged whole-game limits; full inherited roadmap remains active.",
+  "recordedUTC": "2026-10-10T02:48:59.177416+00:00",
+  "classification": "Unselected source-index gameplay body pilot with full supplied blink/bone basis and exact repaired seam collars.60focused checks,8CLI guards,48source audit, two336pair native reviews and actualHigh/Low race/save observers pass. High208455triangles meets250000but378draws/33.4median/66.7p95 fail;Low90850triangles exceeds85000. Full inherited roadmap remains active.",
   "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,9 +9,9 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-10T01:36:11Z",
+    "readOnlyObservationUTC": "2026-10-10T02:03:02Z",
     "result": {
-      "observed_at_utc": "2026-10-10T01:36:11Z",
+      "observed_at_utc": "2026-10-10T02:03:02Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -21,6 +21,9 @@
         "updated_at": "2026-10-09T03:36:16Z",
         "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
       },
+      "authoritative_state_job": "in_progress",
+      "run_multiplayer_soak_step": "in_progress",
+      "evidence_upload": "pending",
       "jobs": [
         {
           "name": "100-client authoritative-state soak",
@@ -86,13 +89,13 @@
         }
       ]
     },
-    "action": "One delegated read-only snapshot, stale thereafter; no restart/cancel/completion/acceptance."
+    "action": "One delegated read-only snapshot; stale thereafter. No retry/restart/cancel/terminal or acceptance claim."
   },
-  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-gameplay-color-lod-pilot.json",
+  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1–F5, beta or launch acceptance.",
+  "currentReceipt": "docs/plans/2026-10-10-gameplay-body-lod-pilot.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Progress:35954b31 retained opt-in shadow-only pilot/native/party/save evidence; full budgets failed and production activation stayed off.",
-  "nextAction": "Prepare gameplay-camera body indices with exact supplied position/normal blink endpoints and every referenced bone constrained; retain full close-up bodies and supplied raw attributes. Investigate actual High depth/actor submission costs while preserving every source surface and supported fallback. Qualify continuous zoom/hysteresis, active equip/mask/pool/reconnect/respawn, bake/cache/startup and whole High/Low/support-device/moving-art/contact/combat behavior before production integration. Keep full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff active; no public microrelease.",
+  "previousGoalTurnClassification": "Progress:15ca4edd retained opt-in supplied gear/eye color pilot with native/source/resource/actualHighLow/save evidence; full budgets failed and production activation stayed off.",
+  "nextAction": "Investigate measured High submission/frame cost and Low remaining fitted/rigid/scene geometry, with controlled source-equivalent comparisons and full source material/skin/blink/slot preservation. Bake compact immutable geometry/LOD data instead of synchronous QA preparation/raw buffer duplication, qualify coverage masks, continuous zoom/hysteresis, active equip/pool/reconnect/respawn, cold/offline/returning cache, targeting/contact/combat and whole High/Low/support-device/moving-art gates. Continue full inherited1.11–1.99/art/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff; no narrower completion or public microrelease.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -305,5 +308,42 @@
       "low": 32856
     },
     "continuousLifecycleDeviceArt": "open"
+  },
+  "gameplayBodyPilot": {
+    "receipt": "docs/plans/2026-10-10-gameplay-body-lod-pilot.json",
+    "preparedNotSelected": true,
+    "maskedBodyTriangles": {
+      "high": [
+        42137,
+        16923
+      ],
+      "low": [
+        32856,
+        16532
+      ]
+    },
+    "nativePoseZoomPairsPerRun": 336,
+    "exactCloseControlsPerRun": 112,
+    "sourceAuditInputs": 48,
+    "actualFinalPartySavePassed": {
+      "high": true,
+      "low": true
+    },
+    "highActualLimitsMet": {
+      "frameMedianMs": false,
+      "frameP95Ms": false,
+      "drawCallsMedian": false,
+      "trianglesMedian": true
+    },
+    "lowActualLimitsMet": {
+      "frameMedianMs": true,
+      "frameP95Ms": true,
+      "drawCallsMedian": true,
+      "trianglesMedian": false
+    },
+    "firstTwoHighPeerCloseFailuresRetained": true,
+    "qaTransportOnlyRepair": true,
+    "newRuntimeActivation": false,
+    "fullRoadmapRemainsActive": true
   }
 }
