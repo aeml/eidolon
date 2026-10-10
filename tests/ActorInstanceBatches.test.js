@@ -201,3 +201,40 @@ test('reuses unchanged roster and detects material, geometry, revision, cell and
     f.scene.add(f.actors[1].root); f.actors[1].mesh.geometry = f.geometry;
     f.instances.register(f.actors[1].root); f.begin(); expect(f.instances.batches.size).toBe(1); f.instances.dispose();
 });
+
+test('frame storage follows live visibility, transforms and filter order without retaining source parts', () => {
+    const f = fixture(), storage = [f.instances.eligibleParts, f.instances.selectedParts, f.instances.used];
+    try {
+        f.begin();
+        expect([...f.instances.batches.values()][0].count).toBe(2);
+        f.instances.endFrame(); f.actors[1].root.visible = false; f.begin();
+        expect(f.instances.batches.size).toBe(0); expect(f.actors[0].mesh.visible).toBe(true);
+        f.instances.endFrame(); f.actors[1].root.visible = true;
+        const visited = [];
+        f.instances.viewFilter = { beginFrame() {}, rejects(part) { visited.push(part); return part === f.actors[0].mesh; } };
+        f.actors[0].mesh.position.x = 32.125; f.actors[1].mesh.position.x = 32.875; f.begin();
+        expect(visited).toEqual(f.actors.map(actor => actor.mesh));
+        const batch = [...f.instances.batches.values()][0], matrix = new THREE.Matrix4();
+        expect(batch.count).toBe(1); expect(batch.matrixWorld.elements[12]).toBe(64);
+        batch.getMatrixAt(0, matrix); matrix.premultiply(batch.matrixWorld);
+        expect(matrix.elements).toEqual(f.actors[1].mesh.matrixWorld.elements);
+        expect(f.instances.eligibleParts).toBe(storage[0]); expect(f.instances.selectedParts).toBe(storage[1]); expect(f.instances.used).toBe(storage[2]);
+        expect(storage[0]).toHaveLength(0); expect(storage[1]).toHaveLength(0); expect(storage[2].size).toBe(0);
+    } finally { f.instances.dispose(); }
+    f.actors.forEach(({ mesh }) => expect(mesh.visible).toBe(true));
+});
+
+test('a throwing filter restores already-hidden sources and releases scratch references before the next frame', () => {
+    const f = fixture();
+    try {
+        f.instances.viewFilter = { beginFrame() {}, rejects(part) {
+            if (part === f.actors[1].mesh) throw Error('filter failure');
+            return true;
+        } };
+        expect(() => f.begin()).toThrow('filter failure');
+        f.actors.forEach(({ mesh }) => expect(mesh.visible).toBe(true));
+        expect(f.instances.hidden).toHaveLength(0); expect(f.instances.group.visible).toBe(false);
+        expect(f.instances.eligibleParts).toHaveLength(0); expect(f.instances.selectedParts).toHaveLength(0); expect(f.instances.used.size).toBe(0);
+        f.instances.viewFilter = null; f.begin(); expect([...f.instances.batches.values()][0].count).toBe(2);
+    } finally { f.instances.dispose(); }
+});

@@ -22,6 +22,7 @@ import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
+import { compareActorFrameStorage } from './actor-frame-storage-comparison.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', serviceWorkers:
     process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' || process.env.EIDOLON_E2E_BODY_LOD_PILOT ||
@@ -441,6 +442,21 @@ test('single native renderer observes three live equipped party socket peers on 
             expect(paired.referenceAgain.triangles).toBe(paired.reference.triangles);
             expect(paired.candidate.triangles).toBeLessThan(paired.reference.triangles);
             recordPeerLiveness('shadow-prepared');
+        }
+        if (process.env.EIDOLON_E2E_ACTOR_FRAME_STORAGE_COMPARE === '1') {
+            const paired = await compareActorFrameStorage(page, true);
+            await writeFile(testInfo.outputPath('actor-frame-storage-party.json'), JSON.stringify(paired, null, 2));
+            expect(paired.image.changedChannels).toBe(0); expect(paired.image.unstableChannels).toBe(0);
+            expect(paired.candidate.calls).toBe(paired.reference.calls);
+            expect(paired.candidate.triangles).toBe(paired.reference.triangles);
+            expect(paired.referenceAgain).toEqual(paired.reference);
+            expect(paired.reference.batches).toBeGreaterThan(0);
+            for (const row of [paired.reference, paired.candidate, ...paired.cpu.blocks, ...paired.phases]) expect(row.restored).toBe(true);
+            expect(paired.phases).toHaveLength(4);
+            for (const { profile } of paired.phases) {
+                expect(profile.frames).toBe(180); expect(profile.visibleFrames).toBe(180); expect(profile.restored).toBe(true);
+            }
+            recordPeerLiveness('actor-frame-storage-compared');
         }
         if (process.env.EIDOLON_E2E_ACTOR_INSTANCE_VIEW_PILOT === '1') {
             const paired = await prepareActorInstanceViewPilot(page);

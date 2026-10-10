@@ -56,6 +56,8 @@ export class ActorInstanceBatches {
         scene.add(this.group);
         this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
         this.enabled = true;
+        // Refilled from live eligibility each frame; never a visibility/pose cache.
+        this.eligibleParts = []; this.selectedParts = []; this.used = new Set();
         this.viewFilter = null;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
         scene.traverse(root => this.register(root));
@@ -114,15 +116,22 @@ export class ActorInstanceBatches {
         if (this.disposed || !this.enabled) return;
         this.refreshRoster();
         this.viewFilter?.beginFrame(renderer, this.scene, camera);
-        const used = new Set();
+        const { used, eligibleParts, selectedParts } = this;
+        used.clear();
         this.group.matrixWorld.copy(this.scene.matrixWorld);
         try {
             for (const [key, entries] of this.buckets) {
-                const eligibleParts = entries.filter(entry => inside(entry.part, this.scene, true) && eligible(entry.part)).map(entry => entry.part);
-                const parts = this.viewFilter ? eligibleParts.filter(part => {
-                    if (!this.viewFilter.rejects(part)) return true;
-                    this.hidden.push(part); part.visible = false; return false;
-                }) : eligibleParts;
+                eligibleParts.length = 0; selectedParts.length = 0;
+                for (const { part } of entries) {
+                    if (inside(part, this.scene, true) && eligible(part)) eligibleParts.push(part);
+                }
+                // Finish eligibility before the optional filter changes any
+                // visibility, preserving the original source order and origin.
+                const parts = this.viewFilter ? selectedParts : eligibleParts;
+                if (this.viewFilter) for (const part of eligibleParts) {
+                    if (!this.viewFilter.rejects(part)) selectedParts.push(part);
+                    else { this.hidden.push(part); part.visible = false; }
+                }
                 // Preserve the existing instance shader for a retained single
                 // member of an originally eligible bucket. Changing it to a
                 // direct draw can introduce normal/position rounding changes.
@@ -149,7 +158,9 @@ export class ActorInstanceBatches {
                 batch.matrixWorld.makeTranslation(Math.floor((sourceWorld[12] + 32) / 64) * 64, 0,
                     Math.floor((sourceWorld[14] + 32) / 64) * 64);
                 this.inverse.copy(batch.matrixWorld).invert();
-                parts.forEach((part, index) => batch.setMatrixAt(index, this.matrix.multiplyMatrices(this.inverse, part.matrixWorld)));
+                for (let index = 0; index < parts.length; index++) {
+                    batch.setMatrixAt(index, this.matrix.multiplyMatrices(this.inverse, parts[index].matrixWorld));
+                }
                 batch.instanceMatrix.needsUpdate = true; batch.computeBoundingSphere();
                 for (const part of parts) { this.hidden.push(part); part.visible = false; }
             }
@@ -158,10 +169,12 @@ export class ActorInstanceBatches {
             }
             this.group.visible = used.size > 0;
         } catch (error) { this.endFrame(); throw error; }
+        finally { eligibleParts.length = 0; selectedParts.length = 0; used.clear(); }
     }
 
     endFrame() {
-        this.hidden.forEach(part => { part.visible = true; }); this.hidden.length = 0;
+        for (const part of this.hidden) part.visible = true;
+        this.hidden.length = 0;
         this.group.visible = false;
     }
 
