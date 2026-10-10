@@ -53,12 +53,13 @@ const eligible = part => candidate(part) && part.material.visible && !part.mater
 // Base buckets use standard instance attributes. Optional multi-draw owns
 // additional copied geometry and matrix/indirection textures.
 export class ActorInstanceBatches {
-    constructor(scene, watchedGroups = [scene], { shadowInfluence = false, multiDraw = false, instanceFrustum = false } = {}) {
+    constructor(scene, watchedGroups = [scene], { shadowInfluence = false, multiDraw = false, instanceFrustum = false, batchSingletons = false } = {}) {
         this.scene = scene;
         this.group = new Group(); this.group.name = 'OpaqueActorInstances'; this.group.visible = false;
         scene.add(this.group);
         this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
-        this.enabled = true; this.multiDraw = multiDraw ? new ActorInstanceMultiDraw(this.group) : null;
+        this.enabled = true; this.batchSingletons = batchSingletons;
+        this.multiDraw = multiDraw ? new ActorInstanceMultiDraw(this.group) : null;
         if (this.multiDraw) this.multiDraw.perInstanceFrustum = instanceFrustum;
         this.viewFilter = null;
         this.shadowFilter = shadowInfluence ? new ActorShadowInfluence(scene, watchedGroups) : null;
@@ -128,10 +129,10 @@ export class ActorInstanceBatches {
                     if (!this.viewFilter.rejects(part)) return true;
                     this.hidden.push(part); part.visible = false; return false;
                 }) : eligibleParts;
-                // Preserve the existing instance shader for a retained single
-                // member of an originally eligible bucket. Changing it to a
-                // direct draw can introduce normal/position rounding changes.
-                if (eligibleParts.length < 2 || !parts.length) continue;
+                // Reviewed singleton leaves can join same-cell multi-draw
+                // across different geometries. Keep the same instance path
+                // when the extension falls back or membership changes.
+                if ((!this.batchSingletons && eligibleParts.length < 2) || !parts.length) continue;
                 let batch = this.batches.get(key);
                 if (batch && batch.instanceMatrix.count < parts.length) {
                     batch.removeFromParent(); batch.dispose(); this.batches.delete(key); batch = null;

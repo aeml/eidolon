@@ -18,6 +18,7 @@ function fixture() {
 test('verified batching is enabled by default and cannot be reactivated after retirement', () => {
     const render = new RenderSystem(false);
     expect(render.actorInstances).not.toBeNull(); expect(render.actorInstances.enabled).toBe(true);
+    expect(render.actorInstances.batchSingletons).toBe(true);
     const shadow = render.actorInstances.shadowFilter;
     const multiDraw = render.actorInstances.multiDraw;
     expect(multiDraw).not.toBeNull(); expect(multiDraw.enabled).toBe(true); expect(multiDraw.perInstanceFrustum).toBe(true);
@@ -34,7 +35,8 @@ test('actual entity-group streaming registers, retires and re-registers models',
         expect(f.render.actorInstances.roots.size).toBe(2); f.begin();
         expect(f.render.actorInstances.batches.size).toBe(1); f.render.actorInstances.endFrame();
         f.roots[1].removeFromParent(); expect(f.render.actorInstances.roots.size).toBe(1); f.begin();
-        expect(f.render.actorInstances.batches.size).toBe(0); f.render.actorInstances.endFrame();
+        expect(f.render.actorInstances.batches.size).toBe(1);
+        expect([...f.render.actorInstances.batches.values()][0].count).toBe(1); f.render.actorInstances.endFrame();
         f.render.add(f.roots[1]); f.begin(); expect(f.render.actorInstances.batches.size).toBe(1);
     } finally { f.render.dispose(); }
 });

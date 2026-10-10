@@ -78,6 +78,22 @@ test('rotated nonuniform scale without shear remains instanceable', () => {
 const reviewedCases = [['Skeleton', createProceduralSkeleton], ['InfernoTitan', createProceduralInfernoTitan],
     ['DemonOrc', createProceduralDemonOrc],
     ...TOWN_ACTOR_TYPES.map(type => [type, options => createProceduralTownActor(type, options)])];
+
+test('selected singleton buckets survive two-to-one membership and retire only their owned buffers', () => {
+    const f = fixture(); f.instances.batchSingletons = true;
+    const geometry = jest.spyOn(f.geometry, 'dispose'), material = jest.spyOn(f.material, 'dispose');
+    try {
+        f.begin(); const batch = [...f.instances.batches.values()][0], release = jest.spyOn(batch, 'dispose');
+        f.instances.endFrame(); f.actors[1].root.removeFromParent(); f.begin();
+        expect([...f.instances.batches.values()]).toEqual([batch]); expect(batch.count).toBe(1);
+        expect(f.instances.hidden).toEqual([f.actors[0].mesh]);
+        f.instances.endFrame(); expect(f.actors[0].mesh.visible).toBe(true);
+        f.actors[0].root.removeFromParent(); f.begin();
+        expect(f.instances.batches.size).toBe(0); expect(release).toHaveBeenCalledTimes(1);
+        expect(geometry).not.toHaveBeenCalled(); expect(material).not.toHaveBeenCalled();
+    } finally { f.instances.dispose(); jest.restoreAllMocks(); }
+});
+
 test.each(reviewedCases.flatMap(([type, make]) => (TOWN_ACTOR_TYPES.includes(type) ? ['Idle'] : ['Idle', 'Walk', 'Run', 'Attack', 'Death'])
     .map(state => [type, state, make])))('reviewed %s instances retain independent %s pivot transforms and visibility', (type, state, make) => {
     const scene = new THREE.Scene();

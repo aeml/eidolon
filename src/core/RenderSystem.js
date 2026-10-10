@@ -1059,7 +1059,7 @@ export class RenderSystem {
     setActorInstancesEnabled(enabled) {
         if (this._disposed) return;
         if (enabled && !this.actorInstances) {
-            this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true });
+            this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true, batchSingletons: true });
         } else if (!enabled && this.actorInstances) {
             this.actorInstances.dispose(); this.actorInstances = null;
         }
