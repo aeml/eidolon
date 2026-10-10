@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T12:15:43.285232+00:00",
-  "classification": "Progress: first25run38050260227 hits server DATA RACE before deployment. Local16worker dungeon recovery reproduces State conflict;6fb97aeb serializes complete casts/realtime frames. Focused Go-race scope52.240s/dispatch2.414s, actual16worker dungeon29.73s and publication/login/jump/Mongo45.51s pass. Corrected25/d15a882e pushed, CI38051193149 pending serialized behind first. Live24remains expected; no acceptance/waiver/privateproductmerge.",
+  "recordedUTC": "2026-10-10T12:21:30.894242+00:00",
+  "classification": "Progress: first25run38050260227 hits server DATA RACE before deployment. Local16worker dungeon recovery reproduces State conflict;6fb97aeb serializes complete casts/realtime frames. Focused Go-race scope52.240s/dispatch2.414s, actual16worker dungeon29.73s and publication/login/jump/Mongo45.51s pass. Corrected25/d15a882e pushed, CI38051193149 in progress after first terminalfailure. Live24remains expected; no acceptance/waiver/privateproductmerge.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3selection retained; prepared geometry controller/delivery now statically reachable through an explicit RenderSystem setter, default owner null. Immutable worker built from copied publication sources with exact version cache and MIT notice. No public activation or24merge. Public24transform deployed but original required startup/Gold and failed24hsoak remain unresolved.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "Progress: first25run38050260227 hits server DATA RACE before deployment. Local16worker dungeon recovery reproduces State conflict;6fb97aeb serializes complete casts/realtime frames. Focused Go-race scope52.240s/dispatch2.414s, actual16worker dungeon29.73s and publication/login/jump/Mongo45.51s pass. Corrected25/d15a882e pushed, CI38051193149 pending serialized behind first. Live24remains expected; no acceptance/waiver/privateproductmerge.",
+  "currentGoalTurnClassification": "Progress: first25run38050260227 hits server DATA RACE before deployment. Local16worker dungeon recovery reproduces State conflict;6fb97aeb serializes complete casts/realtime frames. Focused Go-race scope52.240s/dispatch2.414s, actual16worker dungeon29.73s and publication/login/jump/Mongo45.51s pass. Corrected25/d15a882e pushed, CI38051193149 in progress after first terminalfailure. Live24remains expected; no acceptance/waiver/privateproductmerge.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1354,11 +1354,11 @@
       "version": "Alpha 1.79.25",
       "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
       "ci": 38051193149,
-      "status": "Corrected revision pushed, pending serialized CI; not live-verified",
+      "status": "Corrected revision pushed, CI in progress; public still24",
       "initialAttempt": {
         "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
         "ci": 38050260227,
-        "status": "Server step failed DATA RACE; remaining browsers active at last read; deployment prerequisites unmet"
+        "status": "Terminal failure; Client Tests and all3browser shards succeeded, all deployments skipped due server race"
       },
       "heldIntegration": "Docs only; no public24/25product merge into held."
     }

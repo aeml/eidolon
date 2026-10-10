@@ -147,8 +147,9 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-Corrected Alpha1.79.25/d15a882e is ordinary-pushed; CI38051193149 pending
-behind initial25run38050260227, which hit a server DATA RACE before deployment.
+Corrected Alpha1.79.25/d15a882e is ordinary-pushed; CI38051193149 in progress.
+Initial25run38050260227 terminalfailed on a server DATA RACE before deployment;
+client/all3browser shards passed, all deployments skipped. Public remains24.
 Local16worker real dungeon recovery reproduced ability State access versus
 parallel frame workers.6fb97aeb serializes whole casts/frames while preserving
 actor locks. Focused Go-race scope52.240s and dispatch2.414s pass; real16worker
