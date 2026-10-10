@@ -429,7 +429,10 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.23`, long jumps arrive within 1.5 seconds.
+- Current source version: `Alpha 1.79.24`, reliable manual scene transforms.
+  Normal world updates are retained while unchanged local composition stays cached.
+- Previous maintenance: `Alpha 1.79.23`, jump travel capped at 1.5 seconds.
+  Frame/network stalls can delay displayed landing.
 - Previous milestone: `Alpha 1.79.22`, actor lighting correctness:
   stretched procedural animation hierarchies retain the original normal-matrix
   renderer when instancing cannot preserve their lighting. Ordinary rotations

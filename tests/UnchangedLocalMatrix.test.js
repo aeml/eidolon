@@ -46,12 +46,106 @@ test('unsafe node/custom methods are left untouched and teardown never overwrite
     expect(cacheUnchangedLocalMatrix(custom)).toBeNull();
     const group = new THREE.Group(), update = group.updateMatrix, world = group.updateMatrixWorld;
     const restore = cacheUnchangedLocalMatrix(group);
-    expect(group._listeners.childadded).toHaveLength(1);
     restore(); restore(); expect(group.updateMatrix).toBe(update); expect(group.updateMatrixWorld).toBe(world);
-    expect(group._listeners.childadded).toHaveLength(0);
-    const restoreAgain = cacheUnchangedLocalMatrix(group), wrapper = group.updateMatrixWorld;
-    const later = jest.fn(function(force) { return wrapper.call(this, force); });
-    group.updateMatrixWorld = later; restoreAgain();
-    expect(group.updateMatrixWorld).toBe(later); group.position.x = 23; group.updateMatrixWorld();
+    const restoreAgain = cacheUnchangedLocalMatrix(group), wrapper = group.updateMatrix;
+    const later = jest.fn(function() { return wrapper.call(this); });
+    group.updateMatrix = later; restoreAgain();
+    expect(group.updateMatrix).toBe(later); group.position.x = 23; group.updateMatrixWorld();
     expect(group.matrixWorld.elements[12]).toBe(23);
 });
+
+
+test.each([
+    ['manual local matrix followed by automatic TRS', [
+        node => { node.position.x = 3; },
+        node => { node.matrixAutoUpdate = false; node.matrix.makeTranslation(20, 0, 0); node.matrixWorldNeedsUpdate = true; },
+        node => { node.matrixAutoUpdate = true; }
+    ]],
+    ['direct world write with automatic TRS', [
+        node => { node.position.x = 3; },
+        node => { node.matrixWorld.makeTranslation(99, 0, 0); }
+    ]],
+    ['world updates re-enabled without a new TRS edit', [
+        node => { node.position.x = 3; },
+        node => { node.matrixWorldAutoUpdate = false; node.position.x = 7; },
+        node => { node.matrixWorldAutoUpdate = true; }
+    ]]
+])('cached groups preserve Three invalidation through %s', (_name, steps) => {
+    const ordinary = new THREE.Group(), cached = new THREE.Group();
+    const ordinaryChild = new THREE.Object3D(), cachedChild = new THREE.Object3D();
+    ordinaryChild.matrixAutoUpdate = cachedChild.matrixAutoUpdate = false;
+    ordinaryChild.matrix.makeTranslation(2, 4, 6); cachedChild.matrix.copy(ordinaryChild.matrix);
+    ordinary.add(ordinaryChild); cached.add(cachedChild);
+    const restore = cacheUnchangedLocalMatrix(cached);
+    try {
+        for (const mutate of steps) {
+            mutate(ordinary); mutate(cached);
+            ordinary.updateMatrixWorld(); cached.updateMatrixWorld();
+            expect(cached.matrix.elements).toEqual(ordinary.matrix.elements);
+            expect(cached.matrixWorld.elements).toEqual(ordinary.matrixWorld.elements);
+            expect(cachedChild.matrixWorld.elements).toEqual(ordinaryChild.matrixWorld.elements);
+        }
+    } finally { restore(); }
+});
+
+test('manual local/world control keeps ordinary explicit invalidation semantics', () => {
+    const ordinary = new THREE.Group(), cached = new THREE.Group();
+    const restore = cacheUnchangedLocalMatrix(cached);
+    const steps = [
+        node => { node.matrixAutoUpdate = false; node.matrix.makeTranslation(3, 0, 0); node.matrixWorldNeedsUpdate = true; },
+        node => { node.matrix.makeTranslation(22, 0, 0); },
+        node => { node.matrixWorld.makeTranslation(99, 0, 0); },
+        node => { node.matrixWorldAutoUpdate = false; node.matrixWorld.makeTranslation(77, 0, 0); },
+        node => { node.matrixWorldAutoUpdate = true; },
+        node => { node.matrixWorldNeedsUpdate = true; }
+    ];
+    try {
+        for (const mutate of steps) {
+            mutate(ordinary); mutate(cached);
+            ordinary.updateMatrixWorld(); cached.updateMatrixWorld();
+            expect(cached.matrix.elements).toEqual(ordinary.matrix.elements);
+            expect(cached.matrixWorld.elements).toEqual(ordinary.matrixWorld.elements);
+        }
+    } finally { restore(); }
+});
+
+test('unchanged composition is cached while ordinary world-force propagation stays live', () => {
+    const group = new THREE.Group(), child = new THREE.Object3D();
+    child.matrixAutoUpdate = false; child.matrix.makeTranslation(2, 4, 6); group.add(child);
+    const compose = jest.spyOn(group.matrix, 'compose'), multiply = jest.spyOn(child.matrixWorld, 'multiplyMatrices');
+    const restore = cacheUnchangedLocalMatrix(group);
+    try {
+        group.updateMatrixWorld(); compose.mockClear(); multiply.mockClear();
+        group.updateMatrixWorld();
+        expect(compose).not.toHaveBeenCalled(); expect(multiply).toHaveBeenCalledTimes(1);
+        child.matrix.makeTranslation(22, 4, 6); group.updateMatrixWorld();
+        expect(child.matrixWorld.elements[12]).toBe(22);
+        group.position.x = 9; group.updateMatrixWorld();
+        expect(compose).toHaveBeenCalledTimes(1); expect(multiply).toHaveBeenCalledTimes(3);
+        expect(child.matrixWorld.elements[12]).toBe(31);
+    } finally { restore(); compose.mockRestore(); multiply.mockRestore(); }
+});
+
+test.each(['manual-child-local', 'manual-child-world', 'manual-group-world'])(
+    '%s without a dirty flag still receives ordinary ancestor force', kind => {
+        const build = cached => {
+            const scene = new THREE.Scene(), group = new THREE.Group(), child = new THREE.Object3D();
+            scene.add(group); group.add(child);
+            child.matrixAutoUpdate = false; child.matrix.makeTranslation(3, 0, 0);
+            if (kind === 'manual-group-world') { group.matrixAutoUpdate = false; group.matrix.makeTranslation(7, 0, 0); }
+            const restores = cached ? [scene, group].map(cacheUnchangedLocalMatrix) : [];
+            scene.updateMatrixWorld(); scene.updateMatrixWorld();
+            return { scene, group, child, restores };
+        };
+        const ordinary = build(false), cached = build(true);
+        try {
+            for (const f of [ordinary, cached]) {
+                if (kind === 'manual-child-local') f.child.matrix.makeTranslation(22, 0, 0);
+                if (kind === 'manual-child-world') f.child.matrixWorld.makeTranslation(99, 0, 0);
+                if (kind === 'manual-group-world') f.group.matrixWorld.makeTranslation(88, 0, 0);
+                f.scene.updateMatrixWorld();
+            }
+            expect(cached.group.matrixWorld.elements).toEqual(ordinary.group.matrixWorld.elements);
+            expect(cached.child.matrixWorld.elements).toEqual(ordinary.child.matrixWorld.elements);
+        } finally { cached.restores.forEach(restore => restore()); }
+    });

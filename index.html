@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.23</span>
+                    <span class="start-version-row__label">Alpha 1.79.24</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,15 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.23" data-notes-pages="45" data-notes-total="458">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.24" data-notes-pages="45" data-notes-total="459">
+                <div class="patch-note-entry" data-version="1.79.24">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.24 (Reliable scene transforms)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Corrected stale scene-object positions during scene updates, including attached objects.</li>
+                        <li>Jump travel retains its 1.5-second cap. Saved progress, collision, character models and equipment remain unchanged.</li>
+                        <li>Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.23">
                     <h3 class="patch-note-entry__title">Alpha 1.79.23 (Faster jumps)</h3>
                     <ul class="patch-note-entry__list">
@@ -887,18 +895,6 @@
                         <li>Generated groundcover keeps its fixed local transform while shader wind and live instance transforms remain active. Detached scenery and disposed renderers restore their original methods and remove owned listeners.</li>
                         <li>Geometry, density, shadows, cell sizes, filter margins, quality settings, collisions, gameplay and frame budgets remain unchanged. Raised terrain remains disabled in the public world; final equipped-party, device, modern-art and feature-freeze qualification remain open.</li>
                         <li>No account wipe, schema migration, economy or permission change. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.14">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.14 (character surfaces and constructed dungeon interiors)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>All 252 supplied wearable fits now have registered High/Low detail selections. Reduced copies preserve source identities, rigging and fit; 32 unchanged variants reuse originals. Missing copies fall back to the registered original and record the affected slot. Supplied source assets remain unchanged.</li>
-                        <li>Supplied equipment gains shared cloth, leather, wood and metal surface detail while preserving authored textures, colors and magical accents. Only eligible materials with usable UVs receive the generated maps; compatible equipment still batches together.</li>
-                        <li>Robes and skirts hide enclosed underwear and body hips. Robes also mask fully concealed upper trouser armor without removing visible lower legs, crossing triangles or exposed skirt waistbands. Outfit changes restore the original layers; supplied GLBs and other characters are unchanged.</li>
-                        <li>The game world and character preview now share filmic highlight handling. Existing lighting, exposure, quality controls and passes are retained.</li>
-                        <li>Dungeon vigils have stepped feet, profiled shafts and forged cages; reliquary coffers gain vaulted lids and straps, and restorative fonts have hollow basins. Existing shared materials and room batching are reused.</li>
-                        <li>All five dungeon themes have varied, worn flagstones with registered physical surface detail. Compact room markers leave the combat floor readable while preserving objective, reward, cleared-room and exit feedback. Floors stay flat; collisions, layout, encounter and reward rules are unchanged.</li>
-                        <li>This is an integrated polish pass, not final modern-art approval or the 1.80 feature freeze. Raised terrain, equipped-party/device qualification and full 1.87 remain staged. No account wipe, schema migration or economy change. Full prior patch history is preserved through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

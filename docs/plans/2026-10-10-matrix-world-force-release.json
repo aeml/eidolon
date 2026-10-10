@@ -1,0 +1,162 @@
+{
+  "status": "Prepared isolated maintenance release; normal publication and own exact CI/public acceptance pending.",
+  "version": "Alpha 1.79.24",
+  "predecessor": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+  "diagnosis": "The original local-matrix cache already exists in public23 RenderSystem and FoliageShadowInfluence. Earlier private-only descriptions were incorrect. Exact public helper fails8/11 new cases, including manual descendants that write no dirty flag, direct world writes and auto/manual mode changes. Original frozen receipts are retained and superseded by this audit.",
+  "change": "Cache only unchanged local TRS composition; retain updateMatrix dirty side effect and stock Three world traversal/force propagation. Manual descendants refresh normally. Bone/skinned/instance hooks remain untouched; teardown preserves later owner hooks. Previous unsafe static-child world-multiply skip removed; no performance improvement claimed.",
+  "scope": "Only transform helper changes game behavior. Jump prediction/authoritative world and timing-route source remain byte-exact to23: travel cap1.5s. Private terrain/art/body/actor-filter/diagnostic pilots excluded; original cache was already public. Saves, authority, collisions, balance and Gold/EP unchanged.",
+  "checks": {
+    "publicBaseline": "8failed3passed against original public helper; baseline log retained.",
+    "focused": "552passed/11suites in8.005s. Initial mistaken invocation of3nonexistent suite names and subsequent stale child-world-skip fixture failure retained; fixture now verifies skipped local composition plus ordinary child-world refresh. Scoped ESLint and whitespace passed.",
+    "native": "Native AMD ANGLE Vulkan: all14 ordinary/cached/ordinary stages have equal world matrices and zero changed/unstable RGBA channels, including manual descendants and color/shadows. Explicit opt-in test, not standard CI or live test.",
+    "populated": [
+      {
+        "case": "populated-earth-world-popu-1478c-rth-and-town-high-at-1280px",
+        "quality": "high",
+        "views": 9,
+        "maxima": {
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 240,
+          "triangles": 245636
+        },
+        "limits": {
+          "median": 20,
+          "p95": 33.4,
+          "calls": 350,
+          "triangles": 250000
+        },
+        "stableResources": true
+      },
+      {
+        "case": "populated-earth-world-popu-41144-ter-and-Fire-high-at-1280px",
+        "quality": "high",
+        "views": 12,
+        "maxima": {
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 108,
+          "triangles": 196707
+        },
+        "limits": {
+          "median": 20,
+          "p95": 33.4,
+          "calls": 350,
+          "triangles": 250000
+        },
+        "stableResources": true
+      },
+      {
+        "case": "populated-earth-world-populated-Air-high-at-1280px",
+        "quality": "high",
+        "views": 9,
+        "maxima": {
+          "median": 16.7,
+          "p95": 33.4,
+          "calls": 110,
+          "triangles": 180781
+        },
+        "limits": {
+          "median": 20,
+          "p95": 33.4,
+          "calls": 350,
+          "triangles": 250000
+        },
+        "stableResources": true
+      },
+      {
+        "case": "populated-earth-world-populated-Air-low-at-390px",
+        "quality": "low",
+        "views": 9,
+        "maxima": {
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 50,
+          "triangles": 50678
+        },
+        "limits": {
+          "median": 33.4,
+          "p95": 50,
+          "calls": 200,
+          "triangles": 85000
+        },
+        "stableResources": true
+      },
+      {
+        "case": "populated-earth-world-populated-Earth-and-town-low-at-390px",
+        "quality": "low",
+        "views": 9,
+        "maxima": {
+          "median": 16.7,
+          "p95": 16.8,
+          "calls": 109,
+          "triangles": 78990
+        },
+        "limits": {
+          "median": 33.4,
+          "p95": 50,
+          "calls": 200,
+          "triangles": 85000
+        },
+        "stableResources": true
+      },
+      {
+        "case": "populated-earth-world-populated-Water-and-Fire-low-at-390px",
+        "quality": "low",
+        "views": 12,
+        "maxima": {
+          "median": 16.7,
+          "p95": 16.7,
+          "calls": 43,
+          "triangles": 61420
+        },
+        "limits": {
+          "median": 33.4,
+          "p95": 50,
+          "calls": 200,
+          "triangles": 85000
+        },
+        "stableResources": true
+      }
+    ],
+    "populatedResult": "6passed/60timedviews in4.5min; every original High20/33.4ms/350calls/250000triangles and Low33.4/50ms/200calls/85000triangles ceiling met, resource repeat stable. Scene fixture only, not full equipped-party/device/art acceptance.",
+    "notes": "459entries; all458prior entries byte-exact.",
+    "publisher": {
+      "bundledModules": 424,
+      "bytes": 3259359,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    },
+    "compiler": "Exact locked esbuild0.28.2 copied from prior frozen qualified private prefix, byte-identical build script; restored executable permissions on new copy only. Shared dependencies and frozen source untouched."
+  },
+  "privateQualification": {
+    "code": "6553fec14bed1042f0533488b350e6df1a873026",
+    "receipt": "docs/plans/2026-10-10-matrix-world-force-checks.json",
+    "evidence": "/home/aeml/.local/share/eidolon-matrix-world-force-checks-20261010",
+    "inventorySHA256": "5bba256821386499c6207f207a37af0d1c5da9117b2ced33cdc7152a4ffc546c",
+    "limits": "80focused/14native/actual High-and-Low party-race-save scopes passed. High33.3median exceeds20ms;Low89808triangles exceeds85000. Private pilots/population/host differences prohibit cross-run matrix gain claims."
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-matrix-world-force-release-checks-20261010",
+  "limits": "Physical devices, complete moving art/equipped combat, original full Alpha1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff remain open. Failed24hsoak37880032315 remains failed; no restart, waiver or unchanged long replacement performed."
+}

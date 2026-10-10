@@ -155,11 +155,11 @@ test('stationary shadow decisions skip plane math and invalidate on live light/f
 
 test('detaching a registered root through an unwatched container restores its owned matrix hooks', () => {
     const s = fixture(), wrapper = new THREE.Group(); s.scene.add(wrapper); wrapper.add(s.group);
-    const original = s.group.updateMatrixWorld;
+    const original = s.group.updateMatrix, originalWorld = s.group.updateMatrixWorld;
     const controller = new FoliageShadowInfluence(s.scene, [s.scene]);
-    expect(s.group.updateMatrixWorld).not.toBe(original);
+    expect(s.group.updateMatrix).not.toBe(original); expect(s.group.updateMatrixWorld).toBe(originalWorld);
     wrapper.remove(s.group); controller.beginFrame(s.scene, s.camera, s.light);
-    expect(s.group.updateMatrixWorld).toBe(original); expect(controller.matrixRestorers.size).toBe(0);
+    expect(s.group.updateMatrix).toBe(original); expect(controller.matrixRestorers.size).toBe(0);
     controller.dispose(); s.controller.dispose();
 });
 

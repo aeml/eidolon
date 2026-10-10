@@ -1,5 +1,14 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 scene-transform correction:** The original matrix cache is present
+in accepted public2e519bb0; earlier blanket private-only labels were incorrect.
+Unchanged local composition now retains ordinary world-dirty/force propagation,
+including manual descendants and update flags. Alpha1.79.24 is preparing as an
+isolated correctness release; private terrain/render pilots are excluded.
+The full inherited roadmap, modern art, original budgets, failed24-hour soak and
+all owner/device/operations/beta/launch/handoff gates remain active. Own exact
+CI/deployment/public acceptance is still required.
+
 **October 10 owner-requested jump pacing:** Long jumps now use a 1.5-second
 client/server flight cap; nearby hops remain quick. Focused race/input/release
 checks and an owned real Ctrl-click check qualify the bounded timing change.
