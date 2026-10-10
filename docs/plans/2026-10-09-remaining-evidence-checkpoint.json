@@ -102,7 +102,7 @@
   "currentReceipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: actor scratch-storage candidate3aea15aa implemented and actual native-qualified, rejected after slower fixed-scene results. Current Low geometry-owner check qualified actual movement/four-class saves after retained missing-worker failure and QA-only guard eeed562f/11df89b4. Low175draws/16.7ms frames pass sampled limits,89377triangles fails85000; default remains null. Exact original rigid weapon census10604triangles changes next work. Evidence frozen, full goal stays active.",
-  "nextAction": "Create measured Low scenery geometry margin while preserving every plant/leaf, original supplied models, High recipe, ordinary gameplay visibility and full wind bounds. Low median85056 remains failed; do not rerun unchanged to obtain a lucky population. Retain High334draws/181569triangles sampled pass; broader support-device/art/representative combat/default activation remains open.",
+  "nextAction": "Qualify geometry-owner default startup and session/resource lifetime on this integrated High/Low candidate: cold/returning cache, worker failure fallback, quality replacement and reconnect/disposal. Existing actual optional owner and unchanged High sampled limits pass; do not treat one Low scene as whole-device/combat/art acceptance. Preserve all original1.11\u20131.99 requirements and owner-deferred playtests.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: bounded original-vertex rigid equipment path09fba6f8/de9c9a15 implemented and actual High/Low movement/save/publication/offline qualified. First obsolete native pool assertion and no-test selector setup failures retained; exact32close/64gallery controls pass. Same-scene rigid reduction Low3356/High19304 rendered triangles. Current Low85056 remains above85000; sampled High334draws/181569triangles/16.7ms passes. Qualified private integration fast-forwarded, default remains null; frozen evidence retained. Full goal stays active.",
+  "currentGoalTurnClassification": "progress: rigid hand-equipment coverage qualified on actual High/Low with exact32close/64gallery controls and copied immutable/offline worker. Retained Low85056 triangle failure led to quality-specific two-section vegetation preserving7439plants, every root/tip/fern leaflet, transforms/tints/wind and byte-exact High recipe. Actual Low80382triangles/158draws/16.7median16.8p95 passes sampled limits, exact14slot saves and moving checks; same frozen scenery comparison independently saves3248triangles. Both candidates/evidence frozen and fast-forwarded into private integration011fddda; default remains null/public27 unchanged. Full goal stays active.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1664,5 +1664,38 @@
     "evidence": "/home/aeml/.local/share/eidolon-rigid-equipment-geometry-checks-20261010",
     "inventorySHA256": "b8d227aad6ecddc913b3a2cbe76f5b1a3d1b6a914251cf8ddfdc405dddcbea78",
     "limits": "One renderer and three ordinary live peers per High/Low run with exact four-class14slot inventory/EP/party/logout saves. Normal movement, not four independent GPU clients, physical phone, natural battle budget, campaign or whole-game acceptance. Different evolving native windows do not prove causal FPS/CPU gains. No public release, full-goal/F1-F5/soak/beta/launch completion."
+  },
+  "lowUnderstoryDetail": {
+    "receipt": "docs/plans/2026-10-10-low-understory-detail-qualification.json",
+    "source": "011fddda712d101474f76be347f598c62b671ee5",
+    "privateIntegration": "011fddda712d101474f76be347f598c62b671ee5",
+    "defaultActivated": false,
+    "published": false,
+    "distinctUnitChecks": 24,
+    "native": "1pass1skip27.9s; retry0",
+    "actualLow": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "cpuLoopMedianMs": 9.099999994039536,
+      "cpuLoopP95Ms": 11.399999976158142,
+      "drawCallsMedian": 158,
+      "trianglesMedian": 80382,
+      "geometries": 432,
+      "textures": 282,
+      "activeEntitiesMin": 31,
+      "activeEntitiesMax": 31
+    },
+    "sampledLowLimitsPass": true,
+    "wholeLowAccepted": false,
+    "sameSceneSceneryTrianglesSaved": 3248,
+    "plantCount": 7439,
+    "HighBuffersByteExact": true,
+    "priorHighNativeReused": "de9c9a15 sampled334draws/181569triangles/16.7ms; not new High native execution",
+    "evidence": "/home/aeml/.local/share/eidolon-low-understory-detail-checks-20261010",
+    "inventorySHA256": "f58c7be7e33088755dc132e08f3c0bc927935682d677e8ace53e70bb6f834170",
+    "limits": "One renderer/three normal live peers, exact four-class14slot inventory/EP/party/logout saves and normal clicks. No physical-phone substitute, campaign/soak/beta/launch/full-project acceptance. Public27 jump unchanged and verified; held art runtime remains separate until milestone selection."
   }
 }

@@ -225,3 +225,20 @@ integration fast-forwarded to exactde9c9a15; default remains null and public27
 unchanged. Next: meaningful Low scenery margin preserving plants/leaves, High
 recipe and wind bounds; wider device/combat/art/activation gates remain open.
 See rigid-equipment-geometry-qualification. Full original goal remains active.
+
+Latest Low detail011fddda closes sampled geometry margin with every7439plants
+retained: two ribbon sections, sedge80-to48/fern231-to217triangles, all roots/
+tips/fern leaflets and exact transforms/tints/wind bounds. High position/color/
+normal SHA256 goldens and spatial geometry remain byte-exact.24distinct units
+pass across retained first obsolete expected-recipe failure and corrected4test
+spatial suite. Actual Low1native pass1skip27.9s/allretry0,180frames158draws/
+80382triangles/16.7msmedian16.8msp95 passes sampled normal-gameplay limits.
+Independent same-scene prior/current vegetation saves3248triangles at158draws;
+all7439plant transforms/tints exact, zoom15and5visual differences inspected.
+Frozen76-entry inventory f58c7be7e33088755dc132e08f3c0bc927935682d677e8ace53e70bb6f834170.
+Private integration fast-forwarded to exact011fddda. Prior de9High sampled pass
+is reused only for unchanged High behavior. Default geometry remains null;
+public27 and held runtime unchanged. Next: actual cold/returning default startup,
+worker fallback, quality replacement and session/resource lifetime qualification
+before activation; representative combat/device/final-art gates stay open.
+See low-understory-detail-qualification. Full original goal remains active.
