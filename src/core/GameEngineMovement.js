@@ -626,9 +626,9 @@ class GameEngineMovementMethods {
 
     getJumpTravelDuration(distance = 0) {
         const safeDistance = Math.max(0, Number(distance) || 0);
-        // Match the authoritative three-second flight cap. Short hops retain
+        // Match the authoritative 1.5-second flight cap. Short hops retain
         // their quick travel and observers use the server's accepted duration.
-        return Math.max(0.46, Math.min(3, safeDistance / 13.5));
+        return Math.max(0.46, Math.min(1.5, safeDistance / 13.5));
     }
 
     getJumpArcHeight(distance = 0) {
