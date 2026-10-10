@@ -1,0 +1,20 @@
+{
+  "status": "Prospective arithmetic diagnostic only; no runtime selection, public change or native frame claim.",
+  "recordedUTC": "2026-10-10T06:55:42.249802+00:00",
+  "sourceLibrary": "Pinned Three0.181.2 from owned held dependencies; current ActorInstanceView already guards finite affine bottom row0,0,0,1 and finite local box.",
+  "correctness": {
+    "cases": 32780,
+    "finiteExact": 32777,
+    "invalidConservative": 3,
+    "failures": []
+  },
+  "timing": "Eight Node ABBA blocks,32768boxes each: ordinary7.48\u201310.96ms, prospective1.72\u20135.09ms. JIT/host/GC variation explicit; processCPU counters include process threads. Not browser, moving-game or device performance.",
+  "next": "Implement a narrowly scoped owned candidate preserving selected-corner multiplication/addition order, retain all nonfinite/projective conservative behavior, differential-check negative scale/shear/transforms and validate native High/Low imagery plus actual equipped-party moving frames before selection. Do not revive rejected whole-box/light indexes.",
+  "evidence": {
+    "path": "/home/aeml/.local/share/eidolon-affine-world-box-diagnostic-20261010",
+    "files": 4,
+    "inventorySHA256": "d2d064caa5900bb5603f6601e85b29bf9f927681e51fc5209d0ab5edb01e84bd"
+  },
+  "limits": "Standalone seeded Node arithmetic diagnostic only. Original source/private rendering choice/public24, full inherited gates and failed24hsoak unchanged. Owned implementation0dbe93f4 now qualifying separately; no selection inferred.",
+  "implementationFollowup": "Owned0dbe93f4 passes110focused/70native/High actual party-save scope but direct ordinary/affine ABBA21.5/29.7\u219223.8/35ms gives no native gain. Unselected; see2026-10-10-actor-affine-bounds-unselected.json."
+}

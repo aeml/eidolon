@@ -1,3 +1,27 @@
+**October10 public24 acceptance FAILED:**922753a7 is deployed with corrected
+stock world-force propagation and byte-exact1.5s jump source. CI38030283856
+attempt1 has9successful jobs, but required live expiry test fails before
+engine/player/state at module-download startup. Another persistent-stash gold
+assertion381847→382022 passed retry, remains flaky. Causes unknown. Normal-TLS
+identities/readiness/six hashes and manual14stage public matrix/RGBA controls
+pass;3fresh anonymous bundle imports succeed, not a failed-gate waiver. Retain
+originals/digests; no rerun, artifact deletion, successor push or24merge into
+held source. Last bounded accepted23/jump proof remains. See
+[failed release](docs/plans/2026-10-10-matrix-world-force-public-failure.json).
+Investigate bounded startup/download and gold evidence without weakening gates.
+
+**October10 affine arithmetic candidate left unselected:**0dbe93f4 passes110
+focused checks,70exact native pairs and actual High four-class/race/14-slot saves.
+Direct same-scene ordinary21.5/29.7ms versus affine23.8/35ms supplies no measured
+scene submission gain;262calls/147536triangles and RGBA exact. Node-only32780
+cases and arithmetic gain do not establish browser/frame benefit. Keep original
+scratch-box projection/live light scan; no new actual Low party repeat for
+unselected code. High33.3median still fails20ms. See
+[decision](docs/plans/2026-10-10-actor-affine-bounds-unselected.json) and
+[diagnostic](docs/plans/2026-10-10-affine-world-box-diagnostic.json).
+Full inherited goal, art/device/operations/owner/launch gates and failed24hsoak
+remain open; no narrower completion.
+
 **October10 actor world-box cache left unselected:**26659ce3 passes104focused
 checks,70strict native pairs and actual High four-class/race/save scope. Frozen
 same-scene count/RGBA controls match; median18.1→18.9ms worsens andp9528.6→27.6ms

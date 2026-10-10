@@ -1,14 +1,15 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T06:38:23.938428+00:00",
-  "classification": "Public23 jump cap accepted. Original unsafe matrix cache was already public23, correcting earlier private-only descriptions; conservative6553fec1 correction passes80focused/14native/High-and-Low party-save scopes and prepares isolated24release. High full-frame and Low triangle budgets still fail. Full inherited gates and failed24hsoak remain open.",
-  "qualifiedRuntime": "Private qualified6fbffd34 renderer plus four selected supplied High v3body paths; all originals/oldHigh/Low retained. Public/client/server now Alpha1.79.23 for authorized jump duration only; profile/access and private renderer/terrain/diagnostic activation unchanged. Scope correction: original cache was already public23; only newer partialfix/pilots were private.",
+  "recordedUTC": "2026-10-10T07:03:46.680347+00:00",
+  "classification": "Exact24/922753a7 is deployed but CI38030283856 attempt1 FAILED mandatory live expiry startup. Engine/player/state never existed, module-download cause unknown; separate gold equality failure passed retry and remains flaky. Public23 jump acceptance retained;1.5s source byte-exact in24. Manual public14stage transforms and six hashes pass, not a waiver. Affine/light-index/world-box prototypes unselected; full inherited gates/failed24hsoak open.",
+  "qualifiedRuntime": "Private qualified renderer and supplied High v3body selection unchanged, conservative matrix6553 qualified privately. Public24 transform correction deployed but not accepted; no merge of24 into held branch yet. Private terrain/body/actor-filter/transport pilots and rejected light/world-box/affine prototypes not publicly activated. Jump source in24 byte-exact to accepted23,1.5s cap; profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
     "dd354331f8a32ff1d874ce891f9e9587daa3193d",
     "b90d1ac5218064442a013d9ced134bdd35824792",
-    "26659ce364dc9465ffeae7f30d010cda198959cf"
+    "26659ce364dc9465ffeae7f30d010cda198959cf",
+    "0dbe93f4066434b19bf8d5de637f0c0625e25ea3"
   ],
   "longSoak": {
     "readOnlyObservationUTC": "2026-10-10T04:02:31Z",
@@ -97,10 +98,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-high-frame-attribution.json",
+  "currentReceipt": "docs/plans/2026-10-10-matrix-world-force-public-failure.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Progress: bounded High attribution and private matrix correctness repair94ecf926; jump fix separately published2e519bb0. No whole-frame gain or long-session acceptance.",
-  "nextAction": "Repair or conservatively fall back for private manual-descendant invalidation before cache extension/activation. Measure High scene/bounds/shadow/light-scan and matrix costs with original budgets and recorded host conditions; no cross-run gain or frame certificate. Keep failed soak and initial live startup-download finding open; no unchanged long-run restart or failure waiver. Preserve supplied actors/gear/foliage/rig/blink/material/geometry, compact bake/coverage/zoom/lifecycle/cache/device/moving art and all inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements.",
+  "previousGoalTurnClassification": "Progress: independent exact public24 verification and explicit14stage native control, retained failed mandatory live startup and flaky gold; no acceptance waiver. Affine candidate has110focused/70native/actual High party-save proof but no measured gain, left unselected.",
+  "nextAction": "Investigate concrete module-download startup failures and persistent-stash gold delta from retained24 evidence without weakening recovery/economy assertions. Keep24deployed/unaccepted, no successor push or merge until acceptance is resolved; no CI rerun/delete/unchanged long-soak restart. Continue measured High costs, compact bake/coverage/zoom/lifecycle/cache/device/moving art and all inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements. Retain ordinary box transform/live light scan.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -962,7 +963,7 @@
       "low": "Median16.7/p9533.4ms and162calls pass;89808triangles fails85000."
     },
     "limits": "Different populations28/40, varying shared-host load21.7\u201328.8 on16CPUs and private geometry/body/actor-filter pilots prohibit cross-run matrix performance attribution. No physical-device, full moving art, production or final roadmap acceptance. Failed24hsoak unchanged.",
-    "status": "Private conservative correction qualified narrowly; isolated public maintenance release is preparing.",
+    "status": "Private narrow correction qualified; isolated24deployed but mandatory live acceptance failed. Seepublic24Failed.",
     "evidence": {
       "path": "/home/aeml/.local/share/eidolon-matrix-world-force-checks-20261010",
       "files": 74,
@@ -979,12 +980,6 @@
       "inventorySHA256": "fd1f24c48c6424847ddbcd89b8310a51ab4954a38c8e6d3b65dc9b1bd755ffbc"
     }
   },
-  "public24Pending": {
-    "head": "922753a72dd127eb2fffa6e2e5892235cd549318",
-    "run": 38030283856,
-    "status": "in_progress; no deployment acceptance yet",
-    "scope": "Conservative stock-world-force correction only;552focused/14native/60populated timed views passed. Original unsafe cache was already public23; scope labels corrected. Jump1.5s retained."
-  },
   "unselectedActorWorldBounds": {
     "codeCommit": "26659ce364dc9465ffeae7f30d010cda198959cf",
     "receipt": "docs/plans/2026-10-10-actor-world-bounds-unselected.json",
@@ -993,6 +988,39 @@
       "root": "/home/aeml/.local/share/eidolon-actor-world-bounds-checks-20261010",
       "inventorySHA256": "39e54017ee185838e74b24d0eeaad277c62067ff4305e5eecf866ec2a6d237f8",
       "files": 73
+    }
+  },
+  "public24Failed": {
+    "head": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "run": 38030283856,
+    "attempt": 1,
+    "status": "completed failure;9jobs success/mandatory live QA failure",
+    "receipt": "docs/plans/2026-10-10-matrix-world-force-public-failure.json",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-matrix-world-force-release-checks-20261010",
+      "files": 2919,
+      "inventorySHA256": "edf101c1f63b0e38d365dbfbef1032cf40ef0f3c19cc2973aa3680725f5ebd69"
+    },
+    "failure": "Required expiry journey never got engine/player/state because module-download failed. Persistent stash gold equality expected381847/received382022 passed retry, remains flaky. Cause unknown; no rerun.",
+    "boundedControls": "Normal TLS frontend/backend/readiness and six asset hashes exact. Manual14stage raw-helper world/RGBA exact;3fresh anonymous published-bundle imports succeeded, broad probe invocationexit1 on /g/collect aborted requests retained. These do not pass failed recovery gate."
+  },
+  "affineArithmeticDiagnostic": {
+    "receipt": "docs/plans/2026-10-10-affine-world-box-diagnostic.json",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-affine-world-box-diagnostic-20261010",
+      "files": 4,
+      "inventorySHA256": "d2d064caa5900bb5603f6601e85b29bf9f927681e51fc5209d0ab5edb01e84bd"
+    },
+    "status": "32780Node arithmetic cases, not frame/device proof; source unchanged."
+  },
+  "unselectedActorAffineBounds": {
+    "codeCommit": "0dbe93f4066434b19bf8d5de637f0c0625e25ea3",
+    "receipt": "docs/plans/2026-10-10-actor-affine-bounds-unselected.json",
+    "decision": "Direct same-scene synchronous ABBA ordinary21.5median/29.7p95 versus affine23.8/35ms does not establish a gain; both statistics are worse in this shared-host scope. Node-only arithmetic gain did not translate into a measured full-scene benefit. Do not select or claim a general causal regression; retain prior transform. No new actual Low party repetition for an unselected candidate; Low native cases passed.",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-actor-affine-bounds-checks-20261010",
+      "files": 71,
+      "inventorySHA256": "80df76f102992353d93ccd775042da4115c462f26b671de126c78794dc3b50e5"
     }
   }
 }
