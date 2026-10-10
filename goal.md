@@ -147,15 +147,16 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-Corrective Alpha1.79.25/3ac476e6 is ordinary-pushed, CI38050260227 pending.
-Real copied/versioned publication and disposable Go-race server qualify normal
-and interrupted-entry login,1.5s authoritative flight (1.684/1.756s click-to-land),
-exact logical/render landing, fresh login and Mongo Gold/EP/bag/gear preservation.
-197 existing product checks reused;407version/publication checks pass.
-`docs/plans/2026-10-10-maintenance-connected-jump.json` records evidence/limits.
+Corrected Alpha1.79.25/d15a882e is ordinary-pushed; CI38051193149 pending
+behind initial25run38050260227, which hit a server DATA RACE before deployment.
+Local16worker real dungeon recovery reproduced ability State access versus
+parallel frame workers.6fb97aeb serializes whole casts/frames while preserving
+actor locks. Focused Go-race scope52.240s and dispatch2.414s pass; real16worker
+dungeon recovery29.73s and publication/login/jump/Mongo45.51s pass.
+Click-to-land1.651/1.830s with1.5s authoritative flight and exact landing/saves.
+`docs/plans/2026-10-10-ability-frame-serialization.json` retains scope/failed proof.
 
-Public24failedCI and original network/Gold causes remain retained; corrective25
-must pass its own unchanged required live gates and exact asset/readiness checks.
-No held renderer/terrain/body/geometry pilots are included; no24/25 product merge
-into this held candidate. Next finish exact deployment and real public jump
-verification. Full original objective and all remaining acceptance gates stay active.
+Next finish corrected required CI, exact public identities/assets/DB and fresh
+ordinary live jump. No CIretry/cancel/waiver. Public24/25source remains unmerged
+in this held renderer/terrain candidate; original24startup/Gold and failedsoak
+remain retained. Full original objective and remaining acceptance stay active.
