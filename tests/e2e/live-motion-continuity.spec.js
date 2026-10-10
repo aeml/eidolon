@@ -80,15 +80,33 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
     expect(result.renderError).toBeLessThan(.1);
     await page.screenshot({ path: testInfo.outputPath('after-jump.png') });
     const walkStart = await page.evaluate(() => ({ x: window.game.player.position.x, z: window.game.player.position.z }));
-    const walkTarget = await projectGroundOffset(page, 4, 0, { allowScaling: false });
-    expect(walkTarget?.canvas).toBe(true);
+    let walkTarget;
+    for (const [x, z] of [[12, 0], [-12, 0], [0, 12], [0, -12]]) {
+        const clear = await page.evaluate(({ x, z }) => {
+            const game = window.game, start = game.player.position, end = start.clone();
+            end.x += x; end.z += z;
+            game.collisionManager?.constrainRockMovementDestination?.(start, end, game.player.radius || 0);
+            game.collisionManager?.constrainToDungeonWalkableArea?.(end, game.player.radius || 0);
+            return Math.hypot(end.x - start.x, end.z - start.z) >= 10;
+        }, { x, z });
+        if (!clear) continue;
+        const candidate = await projectGroundOffset(page, x, z, { allowScaling: false });
+        if (candidate?.canvas) { walkTarget = candidate; break; }
+    }
+    expect(walkTarget?.canvas, 'A visible clear walking path must provide multiple rendered samples').toBe(true);
     const walking = page.evaluate(() => new Promise(resolve => {
         const started = performance.now();
-        const record = { movingSamples: 0, maxAuraError: 0 };
+        const record = { movingSamples: 0, maxAuraError: 0, history: [] };
+        let previous = window.game.player.mesh.position.clone();
         const sample = () => {
             const actor = window.game.player, aura = actor.attachedStatusEffects.get('well_rested');
-            if (actor.state === 'MOVING' && aura) { record.movingSamples++; record.maxAuraError = Math.max(record.maxAuraError, aura.group.position.distanceTo(actor.mesh.position)); }
-            if (performance.now() - started >= 1200) { resolve(record); return; }
+            const renderedStep = actor.mesh.position.distanceTo(previous);
+            record.history.push({ elapsedMs: performance.now() - started, state: actor.state, renderedStep, aura: Boolean(aura) });
+            // Presentation can continue interpolating between authoritative
+            // state changes. Measure visible movement, which the aura follows.
+            if (renderedStep > 1e-6 && aura) { record.movingSamples++; record.maxAuraError = Math.max(record.maxAuraError, aura.group.position.distanceTo(actor.mesh.position)); }
+            previous.copy(actor.mesh.position);
+            if (performance.now() - started >= 1800) { resolve(record); return; }
             requestAnimationFrame(sample);
         };
         requestAnimationFrame(sample);
