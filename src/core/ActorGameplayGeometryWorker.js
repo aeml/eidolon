@@ -1,5 +1,6 @@
-import { gameplayBodyIndices } from '../../scripts/lib/gameplay-body-indices.mjs';
-import { gameplayColorIndices } from '../../scripts/lib/gameplay-color-indices.mjs';
+// Register the message listener before awaiting the WASM-backed algorithms.
+// A first job arriving during compilation must not be lost.
+let algorithms;
 
 // Session-local bounded cache. SHA-256 covers exact decoded attributes, source
 // indices (including body coverage), morph order and the algorithm/options.
@@ -26,6 +27,8 @@ async function keyOf(kind, source) {
 self.addEventListener('message', async ({ data: { id, kind, source } }) => {
     try {
         if (!['body', 'color'].includes(kind)) throw new Error('Unsupported geometry kind');
+        algorithms ||= Promise.all([import('../art/GameplayBodyIndices.js'), import('../art/GameplayColorIndices.js')]);
+        const [{ gameplayBodyIndices }, { gameplayColorIndices }] = await algorithms;
         const key = await keyOf(kind, source);
         let row = cache.get(key), cacheHit = Boolean(row);
         if (row) { cache.delete(key); cache.set(key, row); }
