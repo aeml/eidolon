@@ -210,3 +210,18 @@ Default owner remains null. Rigid supplied weapon source census10604triangles
 identifies bounded coverage next; preserve close detail and original GLBs.
 Guard carried privately as11df89b4 with runtime identical511edfaa. See
 world-geometry-low-qualification. Full unchanged gates remain active.
+
+Rigid equipment09fba6f8/de9c9a15 now qualifies actual supplied High/Low hand
+gear through the existing optional owner:86focused checks, copied immutable
+worker/offline cases,64gallery controls/32exact close and normal moving/save
+parties. QA-only pool assertion correction retains11skinned+10rigid pieces;
+original native failure and no-test selector setup failure retained. Frozen
+evidence inventory b8d227aad6ecddc913b3a2cbe76f5b1a3d1b6a914251cf8ddfdc405dddcbea78.
+Same frozen scene rigid-only saves3356Low/19304High rendered triangles. Actual
+Low180frames179draws/85056triangles/16.7msmedian+p95 still fails85000triangle
+limit; do not rerun unchanged for a lucky population. High334draws/181569tris/
+16.7ms passes sampled limits, with ordinary shadows and no view pilot. Private
+integration fast-forwarded to exactde9c9a15; default remains null and public27
+unchanged. Next: meaningful Low scenery margin preserving plants/leaves, High
+recipe and wind bounds; wider device/combat/art/activation gates remain open.
+See rigid-equipment-geometry-qualification. Full original goal remains active.

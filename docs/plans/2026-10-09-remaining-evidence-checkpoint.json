@@ -101,8 +101,8 @@
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
   "currentReceipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: exact public27 required terminal native attempts and deployment assets accepted; evidence frozen; full goal stays active.",
-  "nextAction": "Implement bounded original rigid-equipment geometry coverage for the existing owner, using measured supplied staff/mace/dagger/sword parts, exact source/material/UV seams/transforms, close-detail and lifecycle protection. Validate actual HighLow moving/HUD budgets; preserve original GLBs, default-null geometry and optional shadow/view OFF until qualified. Avoid more array/matrix microprototypes or unchanged campaigns/soaks.",
+  "previousGoalTurnClassification": "progress: actor scratch-storage candidate3aea15aa implemented and actual native-qualified, rejected after slower fixed-scene results. Current Low geometry-owner check qualified actual movement/four-class saves after retained missing-worker failure and QA-only guard eeed562f/11df89b4. Low175draws/16.7ms frames pass sampled limits,89377triangles fails85000; default remains null. Exact original rigid weapon census10604triangles changes next work. Evidence frozen, full goal stays active.",
+  "nextAction": "Create measured Low scenery geometry margin while preserving every plant/leaf, original supplied models, High recipe, ordinary gameplay visibility and full wind bounds. Low median85056 remains failed; do not rerun unchanged to obtain a lucky population. Retain High334draws/181569triangles sampled pass; broader support-device/art/representative combat/default activation remains open.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: actor scratch-storage candidate3aea15aa implemented and actual native-qualified, rejected after slower fixed-scene results. Current Low geometry-owner check qualified actual movement/four-class saves after retained missing-worker failure and QA-only guard eeed562f/11df89b4. Low175draws/16.7ms frames pass sampled limits,89377triangles fails85000; default remains null. Exact original rigid weapon census10604triangles changes next work. Evidence frozen, full goal stays active.",
+  "currentGoalTurnClassification": "progress: bounded original-vertex rigid equipment path09fba6f8/de9c9a15 implemented and actual High/Low movement/save/publication/offline qualified. First obsolete native pool assertion and no-test selector setup failures retained; exact32close/64gallery controls pass. Same-scene rigid reduction Low3356/High19304 rendered triangles. Current Low85056 remains above85000; sampled High334draws/181569triangles/16.7ms passes. Qualified private integration fast-forwarded, default remains null; frozen evidence retained. Full goal stays active.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1614,5 +1614,55 @@
     },
     "rigidSourceDeclaredTriangles": 10604,
     "limits": "Actual Low one renderer/3normal socket peers and exact14slot saves; no physical-device/wholebudget/art/public acceptance."
+  },
+  "boundedRigidEquipment": {
+    "receipt": "docs/plans/2026-10-10-rigid-equipment-geometry-qualification.json",
+    "source": "de9c9a15af4849bade095208e564bc3bad83eec5",
+    "implementationSource": "09fba6f8d6ea4098d3db32405e0d60437911a0b3",
+    "privateIntegration": "de9c9a15af4849bade095208e564bc3bad83eec5",
+    "defaultActivated": false,
+    "published": false,
+    "native": "Original2pass1fail; QA-only correction1pass; actualLow1pass1skip/High1pass1skip; all retry0. No-test selector setup failure retained.",
+    "galleryControls": 64,
+    "exactCloseControls": 32,
+    "sameSceneRigidTriangleSavings": {
+      "low": 3356,
+      "high": 19304
+    },
+    "actualLow": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 8.300000011920929,
+      "cpuLoopP95Ms": 10.099999994039536,
+      "drawCallsMedian": 179,
+      "trianglesMedian": 85056,
+      "geometries": 434,
+      "textures": 282,
+      "activeEntitiesMin": 30,
+      "activeEntitiesMax": 30
+    },
+    "actualHigh": {
+      "frames": 180,
+      "visibleFrames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "cpuLoopMedianMs": 10.899999976158142,
+      "cpuLoopP95Ms": 13.800000011920929,
+      "drawCallsMedian": 334,
+      "trianglesMedian": 181569,
+      "geometries": 474,
+      "textures": 299,
+      "activeEntitiesMin": 22,
+      "activeEntitiesMax": 22
+    },
+    "wholeLowAccepted": false,
+    "sampledHighLimitsPass": true,
+    "evidence": "/home/aeml/.local/share/eidolon-rigid-equipment-geometry-checks-20261010",
+    "inventorySHA256": "b8d227aad6ecddc913b3a2cbe76f5b1a3d1b6a914251cf8ddfdc405dddcbea78",
+    "limits": "One renderer and three ordinary live peers per High/Low run with exact four-class14slot inventory/EP/party/logout saves. Normal movement, not four independent GPU clients, physical phone, natural battle budget, campaign or whole-game acceptance. Different evolving native windows do not prove causal FPS/CPU gains. No public release, full-goal/F1-F5/soak/beta/launch completion."
   }
 }
