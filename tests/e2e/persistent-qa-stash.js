@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { planPersistentQAStashSpare } from '../persistentQAStashPolicy.js';
 import { returnToTown } from './helpers.js';
 import { openEarnedStash } from './earned-stash-storage.js';
+import { waitForPersistentQAGoldBaseline } from './persistent-qa-gold.js';
 
 export async function storePersistentQALootSpare(page) {
     await returnToTown(page, { allowRespawn: false });
@@ -9,6 +10,7 @@ export async function storePersistentQALootSpare(page) {
         if (await page.locator(screen).isVisible()) await page.locator(close).click();
     }
     await openEarnedStash(page);
+    await waitForPersistentQAGoldBaseline(page);
     const read = () => page.evaluate(() => {
         const player = window.game.player;
         return { inventory: player.inventory, stash: player.stash,

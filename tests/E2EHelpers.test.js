@@ -10,6 +10,8 @@ import {
 } from './e2e/browserLaunchPolicy.js';
 
 const playwrightExpect = jest.fn();
+const synchronizeGold = jest.fn(async () => {});
+jest.unstable_mockModule('./e2e/persistent-qa-gold.js', () => ({ waitForPersistentQAGoldBaseline: synchronizeGold }));
 jest.unstable_mockModule('@playwright/test', () => ({ expect: playwrightExpect }));
 const { collectBrowserFailures, openGame, returnToTown, jumpByGroundClick, settlePointerRaycast, waitForPersistedPickup, freePersistentQALootSlot } = await import('./e2e/helpers.js');
 
@@ -17,6 +19,7 @@ describe('persistent QA bag rotation with earned deliveries', () => {
     let previousGame;
     beforeEach(() => {
         previousGame = window.game;
+        synchronizeGold.mockClear();
         playwrightExpect.mockImplementation(actual => ({ not: { toBeNull: () => expect(actual).not.toBeNull() } }));
         playwrightExpect.poll = jest.fn(observe => ({
             toBe: async expected => expect(await observe()).toBe(expected),
@@ -71,6 +74,7 @@ describe('persistent QA bag rotation with earned deliveries', () => {
         const { page, sales } = harness([...Array.from({ length: 24 }, (_, index) => spare(`spare-${index}`)), null]);
         await freePersistentQALootSlot(page);
         expect(sales).toEqual([]);
+        expect(synchronizeGold).not.toHaveBeenCalled();
     });
     test('explicit reversible storage fallback rechecks capacity and returns retained gear for fresh-login proof', async () => {
         const bag = Array.from({ length: 25 }, (_, index) => ({ ...spare(`invested-${index}`), potency: 7 }));

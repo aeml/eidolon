@@ -8,6 +8,7 @@ import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
 import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile, acquirePointerWithBoundedCombat } from './loot-pointer-observation.js';
 import { observeStartupModules } from './startup-module-evidence.js';
+import { waitForPersistentQAGoldBaseline } from './persistent-qa-gold.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -1512,6 +1513,8 @@ async function readCombatDiagnostic(page, targetId) {
 
 export async function freePersistentQALootSlot(page, { storeSpare } = {}) {
     const storedItems = [];
+    if ((await readPlayerState(page)).inventoryCount < 25) return storedItems;
+    await waitForPersistentQAGoldBaseline(page);
     // Already-earned deliveries can legitimately occupy a sold item's slot.
     // Verify each exact sale, then re-read the bag; never delete pending loot,
     // bypass persistence or repeatedly submit the same obsolete index.

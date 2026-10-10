@@ -40,6 +40,7 @@ func readEPResult(t *testing.T, c *Client) struct {
 	Success, Pending bool
 	EP, Gold         int
 	ID               string
+	ReadID           string
 	PlayerID         string
 } {
 	t.Helper()
@@ -47,6 +48,7 @@ func readEPResult(t *testing.T, c *Client) struct {
 		Success, Pending bool
 		EP, Gold         int
 		ID               string
+		ReadID           string
 		PlayerID         string
 	}
 	select {
@@ -66,6 +68,27 @@ func readEPResult(t *testing.T, c *Client) struct {
 
 func epRequest() Message {
 	return Message{Type: MsgExchangeGoldForEP, Payload: json.RawMessage(`{"id":"` + epHandlerID + `","amount":2,"confirmed":true}`)}
+}
+
+func TestEPWalletCorrelatedReadsNeverSpendOrSave(t *testing.T) {
+	c, committer, _ := epWalletFixture(t)
+	t.Cleanup(world.StopBackground)
+	before := world.GetEntityCopy(c.playerID)
+	for _, payload := range []string{`{"readID":"fresh-baseline","id":"pending-exchange","amount":2,"confirmed":true}`, `{}`} {
+		c.handleEPWallet(Message{Type: MsgGetEPWallet, Payload: json.RawMessage(payload)})
+		result := readEPResult(t, c)
+		var request struct{ ReadID string }
+		json.Unmarshal([]byte(payload), &request)
+		if result.ID != "" || result.ReadID != request.ReadID || result.PlayerID != c.playerID || !result.Success || result.Pending || result.Gold != before.Gold || result.EP != before.EP {
+			t.Fatal("read did not return its own unchanged authoritative balances", result)
+		}
+	}
+	c.handleEPWallet(Message{Type: MsgGetEPWallet, Payload: json.RawMessage(`{"readID":42}`)})
+	messages := drainSentMessages(c.send)
+	after := world.GetEntityCopy(c.playerID)
+	if len(messages) != 1 || messages[0].Type != MsgError || after.Gold != before.Gold || after.EP != before.EP || len(committer.ids) != 0 {
+		t.Fatal("invalid/read-only wallet request spent, saved, or acknowledged a snapshot")
+	}
 }
 
 func TestEPWalletSavesDebitCreditAndReceiptTogether(t *testing.T) {
