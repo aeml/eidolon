@@ -2,11 +2,13 @@ import { expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { moveByGroundClick } from './helpers.js';
 import { prepareGameplayGeometryLifecycle } from './gameplay-geometry-lifecycle.js';
+import { prepareGameplayGeometryDelivery } from './gameplay-geometry-delivery.js';
 
 export async function captureGameplayGeometryParty(page, testInfo) {
-    const preparation = await prepareGameplayGeometryLifecycle(page, 'game');
+    const automatic = process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY === '1';
+    const preparation = automatic ? await prepareGameplayGeometryDelivery(page) : await prepareGameplayGeometryLifecycle(page, 'game');
     expect(preparation.body.sources).toBe(4);
-    const paired = await page.evaluate(() => {
+    const paired = await page.evaluate(automatic => {
         const render = window.game.renderSystem, pass = window.__gameplayGeometryLifecycle.pass;
         const originalZoom = render.currentZoom, now = performance.now.bind(performance);
         const descriptor = Object.getOwnPropertyDescriptor(performance, 'now');
@@ -49,18 +51,26 @@ export async function captureGameplayGeometryParty(page, testInfo) {
             render.setZoom(originalZoom); pass.enabled = true;
         }
         for (const selected of [false, true, true, false, false, true, true, false]) {
-            draw(selected); draw(selected); const milliseconds = [];
-            for (let i = 0; i < 12; i++) { const start = now(); draw(selected); milliseconds.push(now() - start); }
-            blocks.push({ selected, milliseconds, restored: restored() });
+            // Bypass only this controller for the source submission arm. The
+            // original renderer wrapper stack still runs; no lifecycle scan.
+            const owner = render.renderer.render;
+            try {
+                if (automatic && !selected) render.renderer.render = pass.original;
+                draw(selected); draw(selected); const milliseconds = [];
+                for (let i = 0; i < 12; i++) { const start = now(); draw(selected); milliseconds.push(now() - start); }
+                blocks.push({ selected, controllerBypassed: automatic && !selected, milliseconds, restored: restored() });
+            } finally { render.renderer.render = owner; }
         }
         pass.enabled = true;
         const summarize = selected => {
             const times = blocks.filter(row => row.selected === selected).flatMap(row => row.milliseconds).sort((a, b) => a - b);
             return { frames: times.length, median: times[Math.floor(times.length / 2)], p95: times[Math.ceil(times.length * .95) - 1] };
         };
-        return { samples, transitions, cpu: { scope: 'Same-scene source/combined body+gear ABBA submission; real clock,48samples per path; not whole-frame pacing.',
+        return { samples, transitions, cpu: { scope: automatic
+            ? 'Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.'
+            : 'Same-scene source/combined body+gear ABBA submission; both include lifecycle validation. Real clock,48samples per path; not whole-frame pacing.',
             reference: summarize(false), candidate: summarize(true), blocks } };
-    });
+    }, automatic);
     expect(paired.samples[0].changedChannels).toBe(0);
     expect(paired.samples[0].candidate.swaps).toBe(0);
     expect(paired.samples[1].candidate.triangles).toBeLessThan(paired.samples[1].source.triangles);

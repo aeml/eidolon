@@ -54,20 +54,30 @@ export class ActorGameplayGeometry {
             throw new Error('One orthographic gameplay geometry owner and ordered pixel thresholds required');
         this.renderer = renderer; this.scene = scene; this.camera = camera;
         this.enterPixels = enterPixels; this.exitPixels = exitPixels;
-        this.entries = new Map(); this.enabled = true; this.disposed = false;
+        this.entries = new Map(); this.retireListeners = new Set(); this.enabled = true; this.disposed = false;
         this.active = []; this.reduced = false; this.lastSwaps = 0;
         this.original = renderer.render;
         this.wrapper = (...args) => this.render(args);
         renderer.render = this.wrapper; owners.set(renderer, this);
     }
 
-    register(mesh, indices) {
+    capture(mesh) {
         const source = mesh.geometry, root = actorRoot(mesh);
-        if (source === this.entries.get(mesh)?.candidate) return false;
         if (this.disposed || !root || !under(root, this.scene) || !mesh.isSkinnedMesh || !mesh.skeleton || !opaque(mesh) ||
             !source?.isBufferGeometry || !source.index || source.index.isInterleavedBufferAttribute || source.groups.length ||
             source.drawRange.start !== 0 || source.drawRange.count !== Infinity ||
-            !['position', 'normal', 'skinIndex', 'skinWeight'].every(name => source.attributes[name])) return false;
+            !['position', 'normal', 'skinIndex', 'skinWeight'].every(name => source.attributes[name])) return null;
+        return { mesh, source, root, quality: root.userData.authoredQuality,
+            revision: root.userData.equipmentVisualRevision,
+            material: mesh.material, skeleton: mesh.skeleton, bones: mesh.skeleton.bones.slice(),
+            inverses: mesh.skeleton.boneInverses.slice(), bindMode: mesh.bindMode,
+            bindMatrix: mesh.bindMatrix.elements.slice(), sourceState: snapshot(source) };
+    }
+
+    register(mesh, indices) {
+        const generation = this.capture(mesh);
+        if (!generation || mesh.geometry === this.entries.get(mesh)?.candidate) return false;
+        const { source } = generation;
         if (!(indices instanceof Uint32Array) || !indices.length || indices.length % 3 || indices.length > source.index.count)
             throw new Error('Prepared bounded triangle indices required');
         const referenced = new Set(source.index.array);
@@ -80,33 +90,35 @@ export class ActorGameplayGeometry {
                 storage(attr).array === storage(candidate.morphAttributes[name][index]).array));
         if (shared) { candidate.dispose(); throw new Error('Prepared geometry must own independent attribute storage'); }
         this.unregister(mesh);
-        const entry = { mesh, source, candidate, root, quality: root.userData.authoredQuality,
-            material: mesh.material, skeleton: mesh.skeleton, bones: mesh.skeleton.bones.slice(),
-            inverses: mesh.skeleton.boneInverses.slice(),
-            bindMode: mesh.bindMode, bindMatrix: mesh.bindMatrix.elements.slice(),
-            sourceState: snapshot(source), candidateState: snapshot(candidate) };
-        entry.retire = () => this.unregister(mesh);
+        const entry = { ...generation, candidate, candidateState: snapshot(candidate) };
+        entry.retire = () => this.unregister(mesh, 'source-disposed');
         source.addEventListener('dispose', entry.retire); this.entries.set(mesh, entry);
         return true;
     }
 
-    valid(entry) {
+    current(entry) {
         const { mesh, root } = entry;
-        return this.entries.get(mesh) === entry && mesh.geometry === entry.source && under(mesh, root) && under(root, this.scene) &&
-            actorRoot(mesh) === root && root.userData.authoredQuality === entry.quality && mesh.material === entry.material &&
+        return !this.disposed && mesh.geometry === entry.source && under(mesh, root) && under(root, this.scene) &&
+            actorRoot(mesh) === root && root.userData.authoredQuality === entry.quality &&
+            root.userData.equipmentVisualRevision === entry.revision && mesh.material === entry.material &&
             mesh.skeleton === entry.skeleton && mesh.skeleton.bones.length === entry.bones.length &&
             entry.bones.every((bone, index) => mesh.skeleton.bones[index] === bone) &&
             mesh.skeleton.boneInverses.length === entry.inverses.length &&
             entry.inverses.every((matrix, index) => mesh.skeleton.boneInverses[index] === matrix) &&
             mesh.bindMode === entry.bindMode && mesh.bindMatrix.elements.every((value, index) => value === entry.bindMatrix[index]) &&
-            unchanged(entry.source, entry.sourceState) && unchanged(entry.candidate, entry.candidateState);
+            unchanged(entry.source, entry.sourceState);
     }
 
-    unregister(mesh) {
+    valid(entry) {
+        return this.entries.get(entry.mesh) === entry && this.current(entry) && unchanged(entry.candidate, entry.candidateState);
+    }
+
+    unregister(mesh, reason = 'unregistered') {
         const entry = this.entries.get(mesh);
         if (!entry) return;
         if (mesh.geometry === entry.candidate) mesh.geometry = entry.source;
         this.entries.delete(mesh); entry.source.removeEventListener('dispose', entry.retire); entry.candidate.dispose();
+        for (const listener of this.retireListeners) listener(entry, reason);
     }
 
     restore(entries) {
@@ -123,7 +135,7 @@ export class ActorGameplayGeometry {
                 else if (pixels <= this.enterPixels) this.reduced = true;
                 else if (pixels >= this.exitPixels) this.reduced = false;
                 for (const entry of this.entries.values()) {
-                    if (!this.valid(entry)) { this.unregister(entry.mesh); continue; }
+                    if (!this.valid(entry)) { this.unregister(entry.mesh, 'generation-changed'); continue; }
                     if (!this.enabled || !this.reduced || !opaque(entry.mesh)) continue;
                     entry.mesh.geometry = entry.candidate; this.active.push(entry);
                 }
