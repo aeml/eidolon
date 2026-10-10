@@ -27,6 +27,10 @@ if [[ "${terrain_scenario}" == connected-party* ]]; then
       exit 1
     fi
   done
+  if [[ "${EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY:-}" == 1 ]] && ! [[ -r src/core/ActorGameplayGeometryWorker.bundle.js ]]; then
+    echo "Connected geometry QA needs its local worker; run node scripts/build-gameplay-geometry-worker.mjs in this checkout." >&2
+    exit 1
+  fi
   if ss -ltn | grep -Eq ':4190[[:space:]]'; then
     echo "Connected party QA web port4190 is occupied; refusing reuse." >&2
     exit 1
