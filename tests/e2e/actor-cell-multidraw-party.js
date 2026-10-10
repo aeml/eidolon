@@ -2,11 +2,13 @@ import { expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 
 export async function prepareActorCellMultiDrawParty(page, testInfo) {
-    const proof = await page.evaluate(async () => {
+    const perInstanceFrustum = process.env.EIDOLON_E2E_ACTOR_INSTANCE_FRUSTUM === '1';
+    const proof = await page.evaluate(async perInstanceFrustum => {
         const { ActorInstanceMultiDraw } = await import('/src/art/ActorInstanceMultiDraw.js');
         const render = window.game.renderSystem, owner = render.actorInstances;
         if (!owner?.enabled || owner.multiDraw) throw Error('One existing actor instance owner required');
         owner.multiDraw = new ActorInstanceMultiDraw(owner.group);
+        owner.multiDraw.perInstanceFrustum = perInstanceFrustum;
         const frozen = performance.now(), descriptor = Object.getOwnPropertyDescriptor(performance, 'now');
         const canvas = render.renderer.domElement, copy = document.createElement('canvas');
         copy.width = canvas.width; copy.height = canvas.height;
@@ -36,18 +38,19 @@ export async function prepareActorCellMultiDrawParty(page, testInfo) {
             const strip = ({ pixels: _pixels, ...counts }) => counts;
             owner.multiDraw.enabled = true;
             return { reference: strip(reference), candidate: strip(candidate), referenceAgain: strip(again),
-                changedRGB, unstableRGB, allocated,
+                changedRGB, unstableRGB, allocated, perInstanceFrustum,
                 restored: !owner.hidden.length && !owner.multiDraw.hidden.length && !owner.group.visible && !owner.multiDraw.group.visible,
-                scope: 'Same frozen actual four-class party; stock multi-draw on existing exact cell origins/materials/geometry/float32 matrices with original whole-bucket per-camera culling and color/shadow ordering. Candidate selected only for following private normal180frame profile. No production/default enablement or historical performance waiver.' };
+                scope: 'Same frozen actual four-class party; stock multi-draw on existing exact cell origins/materials/geometry/float32 matrices with original whole-bucket per-camera culling and color/shadow ordering, plus explicitly flagged stock per-instance clipping when recorded. Candidate selected only for following private normal180frame profile. No production/default enablement or historical performance waiver.' };
         } finally {
             owner.multiDraw.enabled = true;
             if (descriptor) Object.defineProperty(performance, 'now', descriptor); else delete performance.now;
         }
-    });
+    }, perInstanceFrustum);
     await writeFile(testInfo.outputPath('actor-cell-multidraw-party.json'), JSON.stringify(proof, null, 2));
     expect(proof.changedRGB).toBe(0); expect(proof.unstableRGB).toBe(0); expect(proof.restored).toBe(true);
     expect(proof.candidate.calls).toBeLessThan(proof.reference.calls);
-    expect(proof.candidate.triangles).toBe(proof.reference.triangles);
+    if (perInstanceFrustum) expect(proof.candidate.triangles).toBeLessThan(proof.reference.triangles);
+    else expect(proof.candidate.triangles).toBe(proof.reference.triangles);
     expect(proof.referenceAgain.geometries).toBe(proof.reference.geometries);
     expect(proof.referenceAgain.textures).toBe(proof.reference.textures);
 }
