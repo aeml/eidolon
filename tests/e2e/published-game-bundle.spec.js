@@ -10,6 +10,25 @@ import { measureJumpWallClock } from './jump-clock-observation.js';
 
 const release = 'bundlefixture20261009';
 let root, server, origin, metadata;
+async function enterPublishedFixture(page) {
+    await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
+        socket.onMessage(data => {
+            if (JSON.parse(data).type === 'login') socket.send(JSON.stringify({
+                type: 'login_success', payload: { hasCharacter: true, characterType: 'Fighter', terrainProfile: 'flat-v1' }
+            }));
+        });
+    });
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    await page.locator('#auth-username').fill('fixture-only');
+    await page.locator('#auth-password').fill('fixture-only');
+    await page.locator('#btn-login').click();
+    await expect(page.locator('#btn-play-character')).toBeVisible();
+    // Two same-turn clicks must share the in-flight start, not just its import.
+    await page.evaluate(() => {
+        document.getElementById('btn-play-character').click();
+        document.getElementById('btn-play-character').click();
+    });
+}
 test.beforeAll(async () => {
     root = await mkdtemp(path.join(tmpdir(), 'eidolon-published-engine-'));
     for (const filename of ['src', 'assets', 'vendor', 'index.html', 'release.json', 'sw.js'])
@@ -36,6 +55,60 @@ test.afterAll(async () => {
     if (server) await new Promise(resolve => server.close(resolve));
     if (root) await rm(root, { recursive: true, force: true });
 });
+
+test('published login recovers one interrupted engine download and constructs only one engine', async ({ page }, testInfo) => {
+    const requests = [];
+    await page.route('**/src/core/GameEngine.bundle.js?*', route => {
+        requests.push(new URL(route.request().url()).search);
+        return requests.length === 1 ? route.abort('connectionclosed') : route.continue();
+    });
+    let constructions = 0;
+    page.on('console', message => { if (message.text() === 'Calling loadGame...') constructions++; });
+    await enterPublishedFixture(page);
+    await expect.poll(() => page.evaluate(() => Boolean(window.game?.renderSystem?.renderer))).toBe(true);
+    expect(requests).toEqual([`?release=${release}`, `?startupRetry=1&release=${release}`]);
+    const state = await page.evaluate(() => {
+        const game = window.game;
+        const state = { className: game.constructor.name, defaultGeometryInactive: game.renderSystem.actorGameplayGeometry === null,
+            errorHidden: document.getElementById('game-startup-status').hidden };
+        game.destroy(); return state;
+    });
+    expect(state).toEqual({ className: 'GameEngine', defaultGeometryInactive: true, errorHidden: true });
+    expect(constructions).toBe(1);
+    await testInfo.attach('published-module-download-recovery', { body: JSON.stringify({ requests, constructions, state }), contentType: 'application/json' });
+});
+
+for (const kind of ['persistent-download', 'evaluation', 'export', 'dependency-download']) {
+    test(`published login exposes ${kind} after bounded recovery`, async ({ page }, testInfo) => {
+        const requests = []; let dependencyFailures = 0;
+        await page.route('**/src/core/GameEngine.bundle.js?*', route => {
+            requests.push(new URL(route.request().url()).search);
+            if (kind === 'persistent-download') return route.abort('connectionclosed');
+            if (kind === 'evaluation') return route.fulfill({ contentType: 'text/javascript', body: 'throw new TypeError("fixture initialization error"); export class GameEngine {}' });
+            if (kind === 'export') return route.fulfill({ contentType: 'text/javascript', body:
+                `import {missingFixtureExport} from './GraphicsStartup.js?release=${release}'; export class GameEngine {}` });
+            return route.continue();
+        });
+        if (kind === 'dependency-download') await page.route('**/vendor/three/build/three.module.js*', route => {
+            dependencyFailures++; return route.abort('connectionclosed');
+        });
+        await enterPublishedFixture(page);
+        const status = page.locator('#game-startup-status');
+        await expect(status).toBeVisible();
+        const failureKind = ['persistent-download', 'dependency-download'].includes(kind) ? 'module-download' : kind === 'export' ? 'module-export' : 'unknown';
+        await expect(status).toHaveAttribute('data-failure-kind', failureKind);
+        await expect(status).toHaveAttribute('data-startup-phase', 'engine-module');
+        await expect(page.locator('#start-screen')).not.toHaveClass(/hidden/);
+        expect(await page.evaluate(() => Boolean(window.game))).toBe(false);
+        const expected = ['persistent-download', 'dependency-download'].includes(kind) ? 2 : 1;
+        expect(requests).toHaveLength(expected);
+        if (kind === 'dependency-download') expect(dependencyFailures).toBe(1);
+        await page.locator('#btn-play-character').click();
+        await expect(status).toBeVisible();
+        expect(requests).toHaveLength(expected);
+        await testInfo.attach(`published-module-${kind}`, { body: JSON.stringify({ requests, dependencyFailures, failureKind, enginePresent: false }), contentType: 'application/json' });
+    });
+}
 
 test('actual published engine stays lazy at login and constructs each class from the bounded module graph', async ({ page }) => {
     const failures = collectBrowserFailures(page, origin), modules = new Set();
