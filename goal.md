@@ -1,5 +1,13 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 local-matrix invalidation:** Three unchanged-TRS divergences are
+repaired for the private opt-in container cache.63focused checks and eight native
+exact color/shadow controls pass, including manual-world semantics and retained
+static-child skip behavior. Extra comparison/copy cost and whole-party High frame
+limits remain unqualified. [Frozen correctness evidence](docs/plans/2026-10-10-local-matrix-invalidation.json).
+No public activation, soak waiver or narrower completion; full inherited scope
+remains active.
+
 **October 10 High frame attribution:** The exact equipped-party observer passes
 save/party checks and same-scene zero-RGB controls; High300draws/166785triangles
 fits geometry limits, but33.4median/66.6p95ms still fails frame limits. Post-timing

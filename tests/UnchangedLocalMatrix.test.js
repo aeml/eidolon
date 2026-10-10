@@ -55,3 +55,71 @@ test('unsafe node/custom methods are left untouched and teardown never overwrite
     expect(group.updateMatrixWorld).toBe(later); group.position.x = 23; group.updateMatrixWorld();
     expect(group.matrixWorld.elements[12]).toBe(23);
 });
+
+
+test.each([
+    ['manual local matrix followed by automatic TRS', [
+        node => { node.position.x = 3; },
+        node => { node.matrixAutoUpdate = false; node.matrix.makeTranslation(20, 0, 0); node.matrixWorldNeedsUpdate = true; },
+        node => { node.matrixAutoUpdate = true; }
+    ]],
+    ['direct world write with automatic TRS', [
+        node => { node.position.x = 3; },
+        node => { node.matrixWorld.makeTranslation(99, 0, 0); }
+    ]],
+    ['world updates re-enabled without a new TRS edit', [
+        node => { node.position.x = 3; },
+        node => { node.matrixWorldAutoUpdate = false; node.position.x = 7; },
+        node => { node.matrixWorldAutoUpdate = true; }
+    ]]
+])('cached groups preserve Three invalidation through %s', (_name, steps) => {
+    const ordinary = new THREE.Group(), cached = new THREE.Group();
+    const ordinaryChild = new THREE.Object3D(), cachedChild = new THREE.Object3D();
+    ordinaryChild.matrixAutoUpdate = cachedChild.matrixAutoUpdate = false;
+    ordinaryChild.matrix.makeTranslation(2, 4, 6); cachedChild.matrix.copy(ordinaryChild.matrix);
+    ordinary.add(ordinaryChild); cached.add(cachedChild);
+    const restore = cacheUnchangedLocalMatrix(cached);
+    try {
+        for (const mutate of steps) {
+            mutate(ordinary); mutate(cached);
+            ordinary.updateMatrixWorld(); cached.updateMatrixWorld();
+            expect(cached.matrix.elements).toEqual(ordinary.matrix.elements);
+            expect(cached.matrixWorld.elements).toEqual(ordinary.matrixWorld.elements);
+            expect(cachedChild.matrixWorld.elements).toEqual(ordinaryChild.matrixWorld.elements);
+        }
+    } finally { restore(); }
+});
+
+test('manual local/world control keeps ordinary explicit invalidation semantics', () => {
+    const ordinary = new THREE.Group(), cached = new THREE.Group();
+    const restore = cacheUnchangedLocalMatrix(cached);
+    const steps = [
+        node => { node.matrixAutoUpdate = false; node.matrix.makeTranslation(3, 0, 0); node.matrixWorldNeedsUpdate = true; },
+        node => { node.matrixWorld.makeTranslation(99, 0, 0); },
+        node => { node.matrixWorldAutoUpdate = false; node.matrixWorld.makeTranslation(77, 0, 0); },
+        node => { node.matrixWorldAutoUpdate = true; },
+        node => { node.matrixWorldNeedsUpdate = true; }
+    ];
+    try {
+        for (const mutate of steps) {
+            mutate(ordinary); mutate(cached);
+            ordinary.updateMatrixWorld(); cached.updateMatrixWorld();
+            expect(cached.matrix.elements).toEqual(ordinary.matrix.elements);
+            expect(cached.matrixWorld.elements).toEqual(ordinary.matrixWorld.elements);
+        }
+    } finally { restore(); }
+});
+
+test('unchanged cached containers still avoid forcing settled manual children', () => {
+    const group = new THREE.Group(), child = new THREE.Object3D();
+    child.matrixAutoUpdate = false; child.matrix.makeTranslation(2, 4, 6); group.add(child);
+    const multiply = jest.spyOn(child.matrixWorld, 'multiplyMatrices');
+    const restore = cacheUnchangedLocalMatrix(group);
+    try {
+        group.updateMatrixWorld(); multiply.mockClear();
+        group.updateMatrixWorld(); expect(multiply).not.toHaveBeenCalled();
+        group.position.x = 9; group.updateMatrixWorld();
+        expect(multiply).toHaveBeenCalledTimes(1);
+        expect(child.matrixWorld.elements[12]).toBe(11);
+    } finally { restore(); multiply.mockRestore(); }
+});

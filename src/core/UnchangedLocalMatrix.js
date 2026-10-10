@@ -10,8 +10,9 @@ export function cacheUnchangedLocalMatrix(object) {
         object.updateMatrixWorld !== Object3D.prototype.updateMatrixWorld) return null;
     const update = object.updateMatrix, world = object.updateMatrixWorld;
     const position = object.position.clone(), quaternion = object.quaternion.clone(), scale = object.scale.clone();
-    const matrix = object.matrix.clone();
+    const matrix = object.matrix.clone(), worldMatrix = object.matrixWorld.clone();
     let active = true, valid = false, parent = object.parent;
+    let autoLocal = object.matrixAutoUpdate, autoWorld = object.matrixWorldAutoUpdate;
     function updateLocal() {
         if (!active || this !== object) return update.call(this);
         if (!this.matrixAutoUpdate || !valid || !position.equals(this.position) ||
@@ -22,16 +23,21 @@ export function cacheUnchangedLocalMatrix(object) {
         }
     }
     function updateWorld(force) {
-        if (active && this === object) {
-            // Reparenting and direct manual matrix writes also remain live for
-            // containers which intentionally disable automatic TRS composition.
-            if (parent !== this.parent || (!this.matrixAutoUpdate && !matrix.equals(this.matrix))) {
-                this.matrixWorldNeedsUpdate = true;
-            }
-            parent = this.parent;
-            if (!this.matrixAutoUpdate) matrix.copy(this.matrix);
+        if (!active || this !== object) return world.call(this, force);
+        // A manual matrix is not a cached TRS composition. Restoring either
+        // automatic flag must rebuild even when the TRS values stay unchanged.
+        if (autoLocal !== this.matrixAutoUpdate) valid = false;
+        if (parent !== this.parent ||
+            (this.matrixAutoUpdate && (autoWorld !== this.matrixWorldAutoUpdate || !worldMatrix.equals(this.matrixWorld))) ||
+            (!this.matrixAutoUpdate && !matrix.equals(this.matrix))) {
+            this.matrixWorldNeedsUpdate = true;
         }
-        return world.call(this, force);
+        parent = this.parent;
+        autoLocal = this.matrixAutoUpdate; autoWorld = this.matrixWorldAutoUpdate;
+        if (!this.matrixAutoUpdate) matrix.copy(this.matrix);
+        const result = world.call(this, force);
+        worldMatrix.copy(this.matrixWorld);
+        return result;
     }
     const added = event => { event.child.matrixWorldNeedsUpdate = true; };
     object.updateMatrix = updateLocal; object.updateMatrixWorld = updateWorld;

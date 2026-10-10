@@ -1,0 +1,16 @@
+{
+  "status": "Private correctness repair qualified by focused differential and native color/shadow controls; not published or performance qualified.",
+  "base": "f9478c0e1829bb9066e9530b83b9df5e79e36152",
+  "scope": "Owned opt-in Scene/Group local-matrix cache now invalidates across automatic local/world flags and direct world writes. Manual local/world control, reparenting, teardown and unchanged static-child multiply avoidance remain live. Actor/bone/skinned-mesh methods are not replaced.",
+  "reproduction": "Three unchanged-TRS cases diverged from ordinary Three: manual local20 restored to automatic remained20 instead of3; direct automatic world99 remained99 instead of3; re-enabling world-auto remained3 instead of7. Added differential tests failed all three before repair (three older checks passed).",
+  "checks": {
+    "focused": "63 passed in1.475s across UnchangedLocalMatrix, FoliageShadowInfluence, ActorInstanceView; scoped ESLint and whitespace passed. Earlier61-check pass retained before explicit manual-world controls.",
+    "native": "Final native Chrome AMD ANGLE Vulkan RADV RENOIR: eight stages of manual-to-auto, direct-world-write and restore-world-auto exact color/shadow comparisons; zero changed/unstable RGBA channels and exact world matrices. One test2.6s/total4.8s. Earlier native8-control pass retained before manual-world refinement. Opt-in EIDOLON_E2E_MATRIX_INVALIDATION route; standard CI skips it.",
+    "ownedCleanup": "Port4196 free and zero matching fixture workers at final collection."
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-local-matrix-invalidations-checks-20261010",
+  "inventorySHA256": "dcca50150f221d25c6eb3a82eef0ef9b59e3bd5fa188d2f4409ea9d5d12cdb40",
+  "artifacts": 14,
+  "sourcePins": 5643,
+  "limits": "Extra world-matrix comparison/copy cost is unmeasured. No new full equipped-party/frame/device/performance certificate. Prior High33.4median/66.6p95 failure and failed24-hour soak stay failed. Public Alpha1.79.23 jump release excludes this private repair. Full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/device/operations/rights/owner/human/beta/launch/handoff remains active."
+}
