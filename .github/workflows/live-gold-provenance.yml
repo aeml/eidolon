@@ -1,0 +1,57 @@
+name: Bounded live Gold provenance diagnostic
+
+on:
+  push:
+    branches: [work/gold-provenance-diagnostic-20261010]
+    paths: [.github/workflows/live-gold-provenance.yml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-gold-provenance-20261010
+  cancel-in-progress: false
+
+jobs:
+  observe:
+    if: github.repository == 'aeml/eidolon'
+    runs-on: [self-hosted, linux, x64, eidolon-live-browser]
+    timeout-minutes: 10
+    env:
+      EIDOLON_E2E_BASE_URL: ${{ vars.EIDOLON_LIVE_BASE_URL || 'https://play.eidolonrealms.com' }}
+      EIDOLON_E2E_WS_URL: ${{ vars.EIDOLON_LIVE_WS_URL || 'wss://server.eidolonrealms.com/ws' }}
+      EIDOLON_E2E_HEALTH_URL: ${{ vars.EIDOLON_LIVE_HEALTH_URL || 'https://server.eidolonrealms.com/healthz' }}
+      EIDOLON_E2E_USERNAME: ${{ secrets.EIDOLON_E2E_USERNAME }}
+      EIDOLON_E2E_PASSWORD: ${{ secrets.EIDOLON_E2E_PASSWORD }}
+      EIDOLON_E2E_CLASS: ${{ secrets.EIDOLON_E2E_CLASS }}
+      EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
+      EIDOLON_E2E_BACKEND_ORIGIN_IP: ${{ secrets.EIDOLON_E2E_BACKEND_ORIGIN_IP }}
+      EIDOLON_EXPECTED_COMMIT: 77859697a71329facd0584a95167c80eac392398
+      EIDOLON_E2E_GOLD_PROVENANCE_ONCE: '1'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Install and verify system Chrome
+        run: |
+          npm ci
+          test -x /usr/bin/google-chrome
+          sg render -c 'npm run verify:browser-gpu'
+      - name: Observe the existing live QA boundary once
+        run: sg render -c 'npx playwright test tests/e2e/live-gold-provenance.spec.js --workers=1 --retries=0'
+      - name: Sanitize actual evidence
+        id: sanitize
+        if: ${{ always() }}
+        run: node scripts/sanitize-playwright-artifacts.mjs gold-provenance-evidence playwright-report test-results
+      - name: Upload actual diagnostic evidence
+        if: ${{ !cancelled() && steps.sanitize.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: live-gold-provenance-${{ github.sha }}
+          path: |
+            gold-provenance-evidence/
+            playwright-report/
+            test-results/
+          if-no-files-found: error
+          retention-days: 14
