@@ -25,7 +25,9 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
         }, { x, z });
         if (availableDistance < 20.25) continue;
         const candidate = await projectGroundOffset(page, x, z, { allowScaling: false });
-        if (candidate?.canvas) { target = candidate; break; }
+        const gameCanvas = candidate?.canvas && await page.evaluate(({ x, y }) =>
+            document.elementFromPoint(x, y) === window.game.renderSystem.renderer.domElement, candidate);
+        if (gameCanvas) { target = candidate; break; }
     }
     expect(target, 'A full long-jump destination must be visible on the canvas').toBeTruthy();
     await page.evaluate(() => {
@@ -73,9 +75,14 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
     await page.keyboard.down('Control');
     try { await page.mouse.click(target.x, target.y); }
     finally { await page.keyboard.up('Control'); }
-    await expect.poll(() => page.evaluate(() => window.__jumpTiming.elapsedMs), { timeout: 6_000 }).toBeGreaterThan(0);
+    try {
+        await expect.poll(() => page.evaluate(() => window.__jumpTiming.elapsedMs), { timeout: 6_000 }).toBeGreaterThan(0);
+    } finally {
+        const diagnostic = await page.evaluate(() => ({ ...window.__jumpTiming, state: window.game.player.state,
+            logical: window.game.player.position.toArray(), rendered: window.game.player.mesh.position.toArray() }));
+        await writeFile(testInfo.outputPath('connected-jump-timing.json'), JSON.stringify({ target, ...diagnostic }, null, 2));
+    }
     const result = await page.evaluate(() => window.__jumpTiming);
-    await writeFile(testInfo.outputPath('connected-jump-timing.json'), JSON.stringify(result, null, 2));
     await testInfo.attach('connected-jump-timing', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
     expect(Number.isFinite(result.clickedAt), 'Total time starts at the trusted native Ctrl-click').toBe(true);
     expect(result.distance).toBeGreaterThanOrEqual(20.25);
@@ -109,7 +116,9 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
         }, { x, z });
         if (!clear) continue;
         const candidate = await projectGroundOffset(page, x, z, { allowScaling: false });
-        if (candidate?.canvas) { walkTarget = candidate; break; }
+        const gameCanvas = candidate?.canvas && await page.evaluate(({ x, y }) =>
+            document.elementFromPoint(x, y) === window.game.renderSystem.renderer.domElement, candidate);
+        if (gameCanvas) { walkTarget = candidate; break; }
     }
     expect(walkTarget?.canvas, 'A visible clear walking path must provide multiple rendered samples').toBe(true);
     await page.evaluate(() => {
