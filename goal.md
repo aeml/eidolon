@@ -196,3 +196,17 @@ read errors; no replacement/restart or explanation claimed. Owner-deferred
 campaign/phone feedback, every outstanding original1.11–1.99 requirement,
 art/device/owner/F1–F5/beta/launch/handoff remain active. The remaining-evidence
 register and linked receipts retain detailed boundaries and prior outcomes.
+
+Actor scratch-storage3aea15aa remains unselected after69focused, exact High/Low
+pose and actualHighparty/save checks: synchronous CPU reference9.0/9.85ms
+versus10.6/11.35ms candidate gives no gain.720real frames16.7msmedians have
+changing draws/population; no causal frame claim. See actor-frame-storage-unselected.
+Current Low geometry-owner first failed due missing local compiled worker;
+original failure retained. QA-only eeed562f guard verifies rejection before DB/
+accounts; prior byte-exact worker prepared. Corrected native1pass1skip26.0s,
+actual four-class14slot saves exact. Low180frames16.7msmedian/p95,175draws pass
+sampled limits but89377triangles fails85000; frozen scene85491 also fails.
+Default owner remains null. Rigid supplied weapon source census10604triangles
+identifies bounded coverage next; preserve close detail and original GLBs.
+Guard carried privately as11df89b4 with runtime identical511edfaa. See
+world-geometry-low-qualification. Full unchanged gates remain active.

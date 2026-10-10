@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T16:11:00.339483+00:00",
+  "recordedUTC": "2026-10-10T16:26:53.029148+00:00",
   "classification": "Alpha1.79.27/a9d6fc9b deployed and release checks accepted: trusted public click-to-landing1429.7ms, endpoints0; all8assets/identities/database match; required CI38064138468 attempt1 succeeded. Native8expected/1skip/0unexpected/0flake, retry0; separate recovery2+1 pass. Optional routes remain skipped, original failures retained. Full original goal stays active.",
   "qualifiedRuntime": "Held private renderer/supplied High v3 and prepared geometry controller/delivery retained, geometry owner default null. No public24/25product merge. Public25 jump correction independently verified; required live Gold/stash gate and full original roadmap acceptance remain open.",
   "rejectedSourceCommits": [
@@ -101,8 +101,8 @@
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
   "currentReceipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: private bounded entry-module recovery48f35293,89checks and5final actual published-login cases. Browser failure cache diagnosed; one same-release recovery/one construction verified. Persistent/dependency/evaluation/export failures remain visible; original live gate/soak failures retained.",
-  "nextAction": "Continue coherent held world/art/performance milestone from current actual High attribution; preserve supplied characters/equipment and unchanged whole-game budgets. Geometry/shadow pilots remain unselected. Reuse valid evidence; no repeat unchanged campaign/soak or physical-phone substitution.",
+  "previousGoalTurnClassification": "progress: exact public27 required terminal native attempts and deployment assets accepted; evidence frozen; full goal stays active.",
+  "nextAction": "Implement bounded original rigid-equipment geometry coverage for the existing owner, using measured supplied staff/mace/dagger/sword parts, exact source/material/UV seams/transforms, close-detail and lifecycle protection. Validate actual HighLow moving/HUD budgets; preserve original GLBs, default-null geometry and optional shadow/view OFF until qualified. Avoid more array/matrix microprototypes or unchanged campaigns/soaks.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: actual27 required terminal run/native attempts inspected, eight assets/public jump verified, evidence frozen and current records reconciled. Full original goal remains active.",
+  "currentGoalTurnClassification": "progress: actor scratch-storage candidate3aea15aa implemented and actual native-qualified, rejected after slower fixed-scene results. Current Low geometry-owner check qualified actual movement/four-class saves after retained missing-worker failure and QA-only guard eeed562f/11df89b4. Low175draws/16.7ms frames pass sampled limits,89377triangles fails85000; default remains null. Exact original rigid weapon census10604triangles changes next work. Evidence frozen, full goal stays active.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1562,5 +1562,57 @@
     "requiredCIPassed": false,
     "releaseAccepted": false,
     "inventorySHA256": "6fd711a168018cc8f722db58b485c53d0e479fbc43d1ab38654723a6ce445cc7"
+  },
+  "unselectedActorFrameStorage": {
+    "receipt": "docs/plans/2026-10-10-actor-frame-storage-unselected.json",
+    "source": "3aea15aa4ce91d64829e563621e0a4eeb222e210",
+    "selected": false,
+    "published": false,
+    "native": "2anonymousHighLowpass4.3s; actualHighparty1pass1skip38.5s,Go44.24s/package45.285s",
+    "units": 69,
+    "fixedSceneSubmissionMediansMs": {
+      "reference": [
+        9.0,
+        9.85
+      ],
+      "candidate": [
+        10.6,
+        11.35
+      ]
+    },
+    "realFrames": 720,
+    "wholeFrameMedianMsAllPhases": 16.7,
+    "pixelDifferences": 0,
+    "decision": "Keep prior ordinary batching; no measured gain. FullHighdraw/triangle gates remain open."
+  },
+  "currentLowGeometryOwner": {
+    "receipt": "docs/plans/2026-10-10-world-geometry-low-qualification.json",
+    "source": "511edfaa",
+    "qualifiedNativeSource": "eeed562f",
+    "currentPrivateIntegration": "11df89b4a81140fa65ca3c2f3d89a0e187645745",
+    "native": "1pass1skip26.0s; all retry0; original failure retained",
+    "wholeLowAccepted": false,
+    "defaultActivated": false,
+    "actualInstalled": {
+      "frames": 180,
+      "medianMs": 16.7,
+      "p95Ms": 16.7,
+      "draws": 175,
+      "triangles": 89377
+    },
+    "fixedScene": {
+      "draws": 176,
+      "sourceTriangles": 147783,
+      "candidateTriangles": 85491,
+      "closePixelDifferences": 0
+    },
+    "runtimePrepared": {
+      "sources": 4,
+      "registered": 44,
+      "failed": 0,
+      "rejected": 0
+    },
+    "rigidSourceDeclaredTriangles": 10604,
+    "limits": "Actual Low one renderer/3normal socket peers and exact14slot saves; no physical-device/wholebudget/art/public acceptance."
   }
 }
