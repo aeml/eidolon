@@ -453,7 +453,7 @@ test('single native renderer observes three live equipped party socket peers on 
             for (const row of [paired.reference, paired.candidate, paired.referenceAgain, ...paired.cpu.blocks]) expect(row.restored).toBe(true);
             recordPeerLiveness('actor-view-prepared');
         }
-        if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1') {
+        if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1' || process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY === '1') {
             await captureGameplayGeometryParty(page, testInfo);
             recordPeerLiveness('geometry-lifecycle-prepared');
         }
@@ -729,6 +729,7 @@ test('single native renderer observes three live equipped party socket peers on 
     } finally {
         await page.evaluate(() => {
             window.__actorInstanceViewPilot?.dispose(); delete window.__actorInstanceViewPilot;
+            window.__gameplayGeometryLifecycle?.delivery?.dispose();
             window.__gameplayGeometryLifecycle?.pass.dispose(); delete window.__gameplayGeometryLifecycle;
             window.__shadowGeometryPilot?.pass.dispose(); delete window.__shadowGeometryPilot;
             window.__gameplayColorPilot?.dispose(); delete window.__gameplayColorPilot;

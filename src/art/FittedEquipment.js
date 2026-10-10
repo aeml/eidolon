@@ -212,6 +212,7 @@ export function clearFittedEquipment(root) {
     root.userData.equipmentVisualItemCount = 0; root.userData.equipmentVisualPartCount = 0;
     root.userData.equipmentVisualFallback = [];
     root.userData.updateWeaponProfile?.({});
+    root.dispatchEvent({ type: 'equipmentvisualschanged' });
 }
 
 export function resolveFittedEquipmentModel(catalog, tier, actorClass, quality, original = false) {
@@ -287,6 +288,7 @@ export function applyFittedEquipment(root, equipment = {}, { force = false } = {
         root.userData.equipmentVisualRevision = (root.userData.equipmentVisualRevision || 0) + 1;
         if (missing.length) root.userData.equipmentVisualSignature = ''; // Allow retry, never cache failure as success.
         root.updateMatrixWorld(true);
+        root.dispatchEvent({ type: 'equipmentvisualschanged' });
     }).catch(error => {
         console.warn('Fitted equipment unavailable', error);
         if (state.epoch === epoch) root.userData.equipmentVisualSignature = '';

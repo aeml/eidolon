@@ -40,3 +40,6 @@ coverage/
 # Local experiments, backups, downloaded authoring tools and QA scratch files.
 # The final Blender sources, equipment scripts and reviewer are explicitly tracked.
 output/
+
+# Explicit, staged worker build; generated output is not source.
+src/core/ActorGameplayGeometryWorker.bundle.js
