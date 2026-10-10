@@ -172,6 +172,16 @@ exact saved receipt/feedback/custody and no repeated award. Product unchanged;
 modeled storage/filesystem journal, no native/Mongo/public-cause inference.
 See `docs/plans/2026-10-10-gold-room-reward-boundary.json`.
 
+Follow-up a69cd244 now qualifies that separate-earned175Gold path through
+actual native/browser/server/Mongo:2native pass43.4s, Go-race48.10s/pkg49.161s,
+freshGold1000, exact final1178sale/1175stash,EP43,earnedXP,original14slot gear,
+exact bag/stash/frozen-item metadata and completed immutable reward receipts.
+Only diagnostic host reads select the post-award schedule; all packets/client
+loops/balances/predicates remain ordinary. Prior unpaced native failure/pass
+schedules and observer harness failure remain retained, not waived. Actual
+public cause still unproven. See
+`docs/plans/2026-10-10-gold-room-reward-native-boundary.json`.
+
 Separate private world/maintenance integration14d4ea1f ordinarily merges held
 9d724663 and exact public26, retaining held art/models/render/movement bytes.
 469checks/6suites and focused Go-race checks pass; actual copied/versioned

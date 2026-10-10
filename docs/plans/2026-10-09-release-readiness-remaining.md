@@ -52,6 +52,16 @@ modeled storage only; no browser/Mongo or original public-cause conclusion.
 assertions remain unchanged; observe actual reward provenance before selecting
 a repair or publishing another version.
 
+Follow-up a69cd244 qualifies this boundary through actual browser/server/Mongo:
+2native pass43.4s and Go-race48.10s/package49.161s; exact final1178sale/1175stash,
+EP43, earnedXP, original14-slot equipment, exact bag/stash/frozen-item metadata
+and completed immutable saved reward receipts. Host balance reads explicitly
+select the post-award schedule; every original packet, client loop and strict
+helper stays intact. Initial unpaced sale/stash counterexamples and a different
+sale's pre-award completion establish timing sensitivity; their diagnostic
+failures remain frozen separately. [Native boundary and limits](2026-10-10-gold-room-reward-native-boundary.json).
+Original public cause still requires its own observed provenance.
+
 Separate private integration **14d4ea1f** ordinarily merges held9d724663 with
 public26, preserving held art/model/render/movement bytes and default inactive
 geometry.469checks/6suites, focused wallet/ability Go-race and actual raised-world

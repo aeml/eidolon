@@ -1,0 +1,127 @@
+{
+  "recordedUTC": "2026-10-10T14:41:26.660762+00:00",
+  "commit": "a69cd244e298d97875c04480c1dd7577e8cb22e1",
+  "basePublic26": "77859697a71329facd0584a95167c80eac392398",
+  "status": "Qualified controlled post-award browser/server/Mongo diagnostic only. No product/helper/assertion or public release changed.",
+  "sourcePins": {
+    "server/vendor_room_reward_boundary_test.go": "899b5727fe59a7a76e4829b0452f059a60ff8a6512ce2082132b390a06c02e57",
+    "server/vendor_room_reward_browser_integration_test.go": "420234b4916491d0cbeac211feb4b090511b0da82e70921362597f6e1bba0058",
+    "tests/e2e/vendor-room-reward-boundary.spec.js": "a099334cc2da4267eccdcd44ac8e140ec9e36e03f0e3487309046de4fe7922f7"
+  },
+  "nativeStats": {
+    "total": 2,
+    "expected": 2,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "ok": true
+  },
+  "native": "2pass43.4s; sale27.0s/stash15.3s; zero retries/flaky/skips/unexpected.",
+  "GoBrowserMongo": "pass48.10s/package49.161s; exact savedGold1178/1175, EP43, expected earnedXP, original14slot equipment, exact inventory/stash arrays and frozen awarded-item metadata, empty buyback/boss queue, immutable completed room fingerprints and durable receipts, recent logout.",
+  "actualReceipts": [
+    {
+      "action": "sale",
+      "expectedGoldWithoutAward": 1003,
+      "observedFreshWallet": 1000,
+      "earnedRoomGold": 175,
+      "finalGold": 1178,
+      "strictHelperRejected": true,
+      "error": "The exact vendor Gold credit must arrive before another sale or stash deposit\n\nThe exact vendor Gold credit must arrive before another sale or stash deposit\n\nexpect(received).toBe(expected) // Object.is equality\n\nExpected: 1003\nReceived: 1178\n\nCall Log:\n- Timeout 15000ms exceeded while waiting on the predicate",
+      "observation": {
+        "messages": [
+          {
+            "type": "ep_wallet_result",
+            "gold": 1000,
+            "ep": 43,
+            "readID": "479e8026-28d5-4ff1-8498-b25670b540cd"
+          },
+          {
+            "type": "room_clear_reward",
+            "gold": 175,
+            "roomIndex": 1
+          }
+        ],
+        "commands": [
+          {
+            "type": "get_ep_wallet",
+            "readID": "479e8026-28d5-4ff1-8498-b25670b540cd"
+          },
+          {
+            "type": "sell",
+            "itemId": "room-gold-sale"
+          }
+        ],
+        "forwardsOriginalMessages": true
+      },
+      "freshLoginExact": true,
+      "hostReadSchedule": "After bag command, balance-containing host evaluations wait for ordinarily replicated earned Gold. No client loop, packet, balance, predicate or FIFO change.",
+      "scope": "Prepared saved account and immutable server-calculated room entitlement. Actual ordinary browser/server/Mongo delivery; no packets, balances or queues changed. Original public failure cause remains unproven."
+    },
+    {
+      "action": "stash",
+      "expectedGoldWithoutAward": 1000,
+      "observedFreshWallet": 1000,
+      "earnedRoomGold": 175,
+      "finalGold": 1175,
+      "strictHelperRejected": true,
+      "error": "expect(received).toBe(expected) // Object.is equality\n\nExpected: 1000\nReceived: 1175",
+      "observation": {
+        "messages": [
+          {
+            "type": "ep_wallet_result",
+            "gold": 1000,
+            "ep": 43,
+            "readID": "f53ee0d3-b9ad-4a57-ba45-6acae9be9076"
+          },
+          {
+            "type": "room_clear_reward",
+            "gold": 175,
+            "roomIndex": 1
+          }
+        ],
+        "commands": [
+          {
+            "type": "get_ep_wallet",
+            "readID": "f53ee0d3-b9ad-4a57-ba45-6acae9be9076"
+          },
+          {
+            "type": "stash_deposit",
+            "itemId": "room-gold-keep-0"
+          }
+        ],
+        "forwardsOriginalMessages": true
+      },
+      "freshLoginExact": true,
+      "hostReadSchedule": "After bag command, balance-containing host evaluations wait for ordinarily replicated earned Gold. No client loop, packet, balance, predicate or FIFO change.",
+      "scope": "Prepared saved account and immutable server-calculated room entitlement. Actual ordinary browser/server/Mongo delivery; no packets, balances or queues changed. Original public failure cause remains unproven."
+    }
+  ],
+  "schedule": "Only diagnostic host reads containing balances after a bag command wait for ordinarily replicated final earned Gold. No timed drain, client-loop/predicate/balance change, packet mutation or FIFO reordering. This selects the post-award read schedule; it does not claim every unpaced run fails.",
+  "originalCause": "Actual public25/26 cause remains unproven. Initial unpaced sale and later unpaced stash each independently reproduced the same strict +175 failure; a different unpaced sale returned before the award. Their actual failures/limits remain frozen separately.",
+  "priorDiagnosticRuns": [
+    {
+      "directory": "/home/aeml/.local/share/eidolon-gold-room-reward-native-checks-20261010",
+      "stats": "1native sale pass/1stash cleanup failure; no final Mongo assertions",
+      "inventorySHA256": "efe4cd7bdfa0e3a1d62087422f6698cda67d4b20a56fcb8db68f10404f14352b"
+    },
+    {
+      "directory": "/home/aeml/.local/share/eidolon-gold-room-reward-native-fixed-checks-20261010",
+      "stats": "1native stash pass/1unpaced sale rejection-expectation failure; no final Mongo assertions",
+      "inventorySHA256": "7fc854494c483f1da82540e471716d7d4ee2486ff9f06f2b45e7359b5947e89d"
+    }
+  ],
+  "serverMarkers": {
+    "WARNING: DATA RACE": 0,
+    "panic:": 0,
+    "fatal error:": 0,
+    "Worker panic:": 0,
+    "Recovered from panic in Update:": 0
+  },
+  "privacy": "2prepared saved accounts sanitized before immediate HTML archive and final plaintext/embedded ZIP scan; recordings off. No ordinary registration or full campaign/device/art/release acceptance.",
+  "next": "Capture an instrumented bounded instance of the actual live QA boundary with original strict assertions; distinguish legitimate earned credits from stale replication or an economic bug before selecting a repair.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-gold-room-reward-post-award-checks-20261010",
+    "inventoryEntries": 13,
+    "inventorySHA256": "465359aa600be79b75b94406aece41ab26f5efeecc74f5a75f6a0b88fbafd26a"
+  }
+}
