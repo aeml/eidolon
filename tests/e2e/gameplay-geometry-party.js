@@ -76,7 +76,7 @@ export async function captureGameplayGeometryParty(page, testInfo) {
             const times = blocks.filter(row => row.selected === selected).flatMap(row => row.milliseconds).sort((a, b) => a - b);
             return { frames: times.length, median: times[Math.floor(times.length / 2)], p95: times[Math.ceil(times.length * .95) - 1] };
         };
-        return { samples, transitions, cpu: { scope: automatic
+        return { samples, transitions, actorViewFilterAllocated: Boolean(render.actorInstances?.viewFilter), cpu: { scope: automatic
             ? 'Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.'
             : 'Same-scene source/combined body+gear ABBA submission; both include lifecycle validation. Real clock,48samples per path; not whole-frame pacing.',
             reference: summarize(false), candidate: summarize(true), blocks } };
@@ -125,7 +125,7 @@ export async function captureGameplayGeometryParty(page, testInfo) {
         await session.send('Page.stopScreencast'); await session.detach(); await Promise.all(writes);
         motion = await page.evaluate(() => { const observation = window.__geometryMotion; observation.stop(); delete window.__geometryMotion; return observation.samples; });
         await writeFile(testInfo.outputPath('gameplay-geometry-party.json'), JSON.stringify({ absentReference, preparation, paired, frames, motion,
-            scope: 'Prepared four-class actual party, combined whole-render body/gear indices and separately explicit actor view policy; normal ground clicks and HUD clip before independent180-frame sample. No separate shadow simplification, earned campaign, physical-device or final art acceptance.' }, null, 2));
+            scope: 'Prepared four-class actual party, combined whole-render body/gear indices; optional actor view allocation is recorded in paired metadata. Normal ground clicks and HUD clip precede the independent180-frame sample. No separate shadow simplification, earned campaign, physical-device or final art acceptance.' }, null, 2));
     }
     expect(motion.some(row => row.state === 'MOVING' && row.animation === 'Run' && row.swaps > 0)).toBe(true);
     expect(new Set(motion.filter(row => row.state === 'MOVING').map(row => row.actionTime)).size).toBeGreaterThan(2);
