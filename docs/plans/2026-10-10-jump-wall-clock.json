@@ -1,0 +1,60 @@
+{
+  "status": "Implemented and locally verified private jump timing correction; not published.",
+  "recordedUTC": "2026-10-10T09:35:03.645272+00:00",
+  "sourceCommit": "45ef41113ef0fa12b5e6bb5664430aca846f5683",
+  "baseCommit": "f584495102228b56b0b2ea3a3858444670576e1c",
+  "scope": "Owner reports jump travel still feels slow and requests approximately 1.5 seconds total travel. Existing live client/server cap is already 1.5 seconds, but the render loop caps elapsed simulation time at 1/30 second per frame. At 15 FPS, the old loop advances flight by only one simulated second over two real seconds. Flight visuals now advance once per rendered frame with uncapped elapsed time; fixed movement updates remain bounded and skip duplicate flight advancement. Large-lag recovery also advances existing flight before rendering. Local authoritative-display smoothing uses elapsed time to retain its 60 Hz response at lower frame rates.",
+  "checks": {
+    "unit": "86 checks / 4 suites pass in2.727s: AuthoritativeJump, GameEngineCtrlClickJump, GameEngineMovementSmoothness, WorldGrounding. Actual loop/update/local jump tested at15/20/30/60/144FPS; observer accepted landing at15FPS and stalled-tab flight completion verified. Ordinary movement still uses fixed capped ticks. Scoped ESLint and whitespace pass.",
+    "baselineRegression": "New15FPS test run against byte-exact original runtime fails: after two real seconds, flight elapsed is0.9999999999999997 rather than1.5. One expected regression failure;44other omitted tests not passes. Patched runtime restored byte-exact afterward.",
+    "native": {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 23,
+          "elapsedMs": 1547.7999999821186,
+          "maxFrameGapMs": 68,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 90,
+          "elapsedMs": 1524.5,
+          "maxFrameGapMs": 31.699999994039445,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    },
+    "nativeMethod": "Prepared empty local stage, real GameEngine constructor/update/loop/render, supplied Fighter GLB, actual Chrome RAF at deliberate15FPS and ordinary60FPS requested cadence. Both position and rendered mesh endpoint errors0. No server/authentication/account/public mutations; not a populated-world/device/production network qualification.",
+    "retainedFixtureFailures": "Initial unit fixture lacked required update services; transplant to full existing harness exposed missing cameraLocked setting. These fixture failures are retained, corrected, and all final86checks pass. Native first attempt passed."
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-jump-wall-clock-checks-20261010",
+  "inventorySHA256": "bc703d5f672264ba270f23655688ddc3b5a4986cbdb63e34d080c38cd87e9991",
+  "inventoryFiles": 19,
+  "public": {
+    "recordedUTC": "2026-10-10T09:34:03.117682+00:00",
+    "frontend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24"
+    },
+    "backend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24",
+      "status": "ok",
+      "database": "ready"
+    },
+    "engineSHA256": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a",
+    "ci": {
+      "conclusion": "failure",
+      "head_sha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "html_url": "https://github.com/aeml/eidolon/actions/runs/38030283856",
+      "id": 38030283856,
+      "run_attempt": 1,
+      "status": "completed"
+    }
+  },
+  "limits": "Live24still runs the prior capped loop. User live-versus-local context unanswered; this establishes a reproducible low-FPS cause, not the exact user-device diagnosis. Browser stalls can postpone the next rendered frame; server acceptance/latency still controls authoritative landing. No successor push,24merge, gate waiver, CIretry or version change. Required live gate and24hour soak failures retained. Geometry runtime owner remains default null and all full1.11\u20131.99/modernart/gameplay/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements remain active."
+}
