@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T00:28:45.539003+00:00",
-  "classification": "Qualified private selection of reviewed supplied High body morph endpoint derivatives at four additive paths, with all previous versions retained. Native/cache/source/ordinary selected-path party/save checks pass. Whole-game draw/triangle, modern-art/support-device and full roadmap acceptance remain open.",
+  "recordedUTC": "2026-10-10T00:57:15.544068+00:00",
+  "classification": "Count-only supplied-geometry diagnosis and reusable shadow feasibility inspector. No derived models or runtime selection; original color geometry and qualified private e47 selection unchanged. Native shadow/pose/lifetime/full-scene/device/art and complete inherited roadmap gates remain open.",
   "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,9 +9,9 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-10T00:21:33Z",
+    "readOnlyObservationUTC": "2026-10-10T00:32:52Z",
     "result": {
-      "observed_at_utc": "2026-10-10T00:21:33Z",
+      "observed_at_utc": "2026-10-10T00:32:52Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -86,13 +86,13 @@
         }
       ]
     },
-    "action": "One read-only delegated snapshot; no restart/cancel/acceptance. Stale after timestamp."
+    "action": "One read-only delegated snapshot this goal turn, stale after00:32:52UTC. Still in_progress at that observation; no restart/cancel/completion/acceptance inferred."
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
+  "currentReceipt": "docs/plans/2026-10-10-shadow-geometry-feasibility.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Progress:59502844 body morph preparation and rejection evidence committed into held milestone.",
-  "nextAction": "Continue dominant fit/material-coordinated body/gear/eye and actual scene submission costs. Preserve supplied art, exact source attributes/bones/morph/attachment/animation contracts and unchanged High/Low budgets. Full modern art/Q/CB, equipped-party/support-device, raised compatible activation/rollback/F1-F5, operations/rights/owner-policy/human-playtest/beta/admission/launch/final-handoff scope remains active; no public microrelease.",
+  "previousGoalTurnClassification": "Progress:e47d7480 selected reviewed High morph-basis bodies privately, with source/native/cache/ordinary-party/save proof; unchanged whole-game draw/triangle limits still fail.",
+  "nextAction": "Prepare reproducible depth indices from the selected supplied geometry, then an opt-in renderer experiment with explicit pass-only ownership and finally restoration. Preserve current masks/morphs/live skeleton/gear/stealth/material-alpha/displacement fallbacks, pool/equip/reconnect cleanup. Review actual moving shadows and ordinary equipped/HUD High/Low scenes with original draw/triangle/frame limits. Keep close-up color geometry intact. Full inherited roadmap/art/Q/CB/F1\u2013F5/operations/owner/beta/launch/handoff remains active; no public microrelease.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -153,5 +153,29 @@
     "actualHighEquippedRootTriangles": 405078,
     "wholeHighBudget": "fail",
     "wholeLowDeviceAndFinalArt": "open"
+  },
+  "shadowGeometryFeasibility": {
+    "receipt": "docs/plans/2026-10-10-shadow-geometry-feasibility.json",
+    "state": "counts only; no models/runtime selected",
+    "selectedRuntimeBase": "e47d748038115216eb5255f760b552d307d81f0a",
+    "sourceFilesPerScreen": 256,
+    "primitivesPerScreen": 875,
+    "finalErrors": [
+      0.006,
+      0.012,
+      0.024
+    ],
+    "partitionedOver32Primitives": 28,
+    "maximumPartitionActiveBones": 32,
+    "defaultBareCharacters": [
+      184890,
+      58514
+    ],
+    "defaultWholeWearableCatalog": [
+      769432,
+      271280
+    ],
+    "nativePoseShadowLifetimeAndWholeGame": "open",
+    "lowShadowPathUnchanged": true
   }
 }

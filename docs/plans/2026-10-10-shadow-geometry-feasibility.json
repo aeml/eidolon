@@ -1,0 +1,685 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T00:57:15.544068+00:00",
+  "classification": "Count-only supplied-geometry diagnosis and reusable shadow feasibility inspector. No derived models or runtime selection; original color geometry and qualified private e47 selection unchanged. Native shadow/pose/lifetime/full-scene/device/art and complete inherited roadmap gates remain open.",
+  "baseCommit": "e47d748038115216eb5255f760b552d307d81f0a",
+  "previousGoalTurnClassification": "Progress:e47d7480 selected reviewed High morph-basis bodies privately, with source/native/cache/ordinary-party/save proof; unchanged whole-game draw/triangle limits still fail.",
+  "worktree": "/home/aeml/.local/share/eidolon-wearable-skin-basis-20261010",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-wearable-skin-basis-checks-20261010",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "ciRun": 37967212738,
+    "unchanged": true,
+    "scope": "No push, version, production mutation, client/server/profile/access activation, commerce or owner approval."
+  },
+  "scope": {
+    "changed": [
+      "scripts/inspect-shadow-lod.mjs",
+      "this receipt",
+      "goal checkpoint",
+      "remaining register"
+    ],
+    "unchanged": [
+      "src",
+      "assets",
+      "server",
+      "package.json",
+      "package-lock.json",
+      "service worker",
+      "selected catalogs",
+      "all prior assets"
+    ],
+    "newDerivedModels": 0,
+    "newRuntimeSelection": false,
+    "nativePartyCampaignRerun": false,
+    "reason": "Only offline count analysis and bookkeeping changed. Previous selected-path native/cache/party/source evidence remains scoped to e47 and does not qualify a shadow implementation."
+  },
+  "skinPenaltyScreen": {
+    "inputs": "12 legendary chest fits: Plate Mail, Robes and Leather Tunic across four supplied classes. Count the largest named main layer; retain reviewed secondary counts and cap each whole fit at its reviewed High/Low count.",
+    "rows": 96,
+    "normalWeight": 0.05,
+    "uvWeight": 0.1,
+    "ratios": {
+      "high": 0.04,
+      "low": 0.02
+    },
+    "errors": {
+      "high": 0.002,
+      "low": 0.006
+    },
+    "aggregates": [
+      {
+        "quality": "high",
+        "skinWeight": 0.1,
+        "baseline": 99859,
+        "chosen": 86455
+      },
+      {
+        "quality": "high",
+        "skinWeight": 0.05,
+        "baseline": 99859,
+        "chosen": 85485
+      },
+      {
+        "quality": "high",
+        "skinWeight": 0.025,
+        "baseline": 99859,
+        "chosen": 84999
+      },
+      {
+        "quality": "high",
+        "skinWeight": 0,
+        "baseline": 99859,
+        "chosen": 84683
+      },
+      {
+        "quality": "low",
+        "skinWeight": 0.1,
+        "baseline": 58627,
+        "chosen": 50289
+      },
+      {
+        "quality": "low",
+        "skinWeight": 0.05,
+        "baseline": 58627,
+        "chosen": 49829
+      },
+      {
+        "quality": "low",
+        "skinWeight": 0.025,
+        "baseline": 58627,
+        "chosen": 49705
+      },
+      {
+        "quality": "low",
+        "skinWeight": 0,
+        "baseline": 58627,
+        "chosen": 49647
+      }
+    ],
+    "decision": "Reject weakening skin penalty. Removing the entire 0.1 bone interpolation penalty only saves another1772 High/642 Low triangles in this subset; no GLBs or native qualification attempted."
+  },
+  "vertexUpdateScreen": {
+    "rows": 96,
+    "all96CountsMatchIndexOnly": true,
+    "quality": [
+      {
+        "quality": "high",
+        "minimumSkinWeight": -0.2791922390460968,
+        "maximumOmittedSkinWeight": 0.2977853797492571,
+        "maximumSkinSumError": 7.854621071601287e-05
+      },
+      {
+        "quality": "low",
+        "minimumSkinWeight": -0.41178610920906067,
+        "maximumOmittedSkinWeight": 0.4714901199185988,
+        "maximumSkinSumError": 7.854621071601287e-05
+      }
+    ],
+    "decision": "Reject simplifyWithUpdate here. All96 triangle counts equal index-only; even skinWeight0.1 creates negative bone weights and nonzero omitted influences beyond four. No clamping/pruning/weight dropping, assets or runtime conversion attempted."
+  },
+  "eyeScreen": {
+    "rows": 48,
+    "quality": [
+      {
+        "quality": "high",
+        "before": 15264,
+        "after": 13940
+      },
+      {
+        "quality": "low",
+        "before": 15264,
+        "after": 10584
+      }
+    ],
+    "inputs": "Six eye/iris/pupil meshes across four current High/Low actors. One constant canonical skin blend per mesh; source normal/tangent0.25/UV0.1, LockBorder only, exact surviving attributes.",
+    "ratios": {
+      "high": 0.2,
+      "low": 0.08
+    },
+    "errors": {
+      "high": 0.002,
+      "low": 0.006
+    },
+    "decision": "Deprioritize High strict eye LOD:1324 fewer color triangles in all four classes is insufficient for the whole-scene gap. Low saves4680 but still requires actual art/motion and broader geometry work. No derived files or runtime selection."
+  },
+  "shadowScreen": {
+    "tool": "scripts/inspect-shadow-lod.mjs",
+    "command": "node scripts/inspect-shadow-lod.mjs <new absolute JSON> [maximumShadowError=.006]",
+    "inputs": "4 current selected High character files plus252 current reviewed High wearable variants;256 hash-pinned files and875 primitives represented per screen. Bare character/catalog totals, not actual masked/equipped party submissions.",
+    "algorithm": {
+      "ratio": 0.06,
+      "flags": [
+        "LockBorder",
+        "Permissive"
+      ],
+      "vertexUpdate": false,
+      "prune": false,
+      "sloppy": false,
+      "colorAttributes": "Remove normals/UV/color-only data from an analysis-only in-memory document before overwrite:false weld. No GLB/material/runtime write.",
+      "skin": "Canonical full bone-blend error weight0.1. Four52-active-bone bodies and24 gloves with34 active bones exceed32 channels; deterministic triangle bone-union groups each<=32 constrain every referenced bone. Lock shared group vertices and coincident positions with conflicting skin blends.",
+      "morph": "Fix every nonzero position-morph vertex. Check exact source position/canonical skin/all position-morph signatures for protected vertices, including every shared partition vertex. Equivalent duplicate depth signatures may replace vertex indices; normal morphs remain untouched in runtime color assets.",
+      "unsupported": "All7 unsupported/nonopaque primitives retain exact original triangle counts; no invisible omissions."
+    },
+    "finalScreens": [
+      {
+        "error": 0.006,
+        "aggregate": {
+          "character": {
+            "files": 4,
+            "before": 184890,
+            "after": 58514
+          },
+          "equipment": {
+            "files": 252,
+            "before": 769432,
+            "after": 271280
+          }
+        },
+        "primitives": 875,
+        "unsupportedExactCounts": 7,
+        "partitionedPrimitives": 28,
+        "largestPartitionBoneCount": 32,
+        "lockedDepthSignatures": 6116,
+        "bodies": [
+          {
+            "actorClass": "Fighter",
+            "triangles": 20482,
+            "candidateTriangles": 4112,
+            "lockedDepthSignaturesVerified": 1530,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 15816,
+                  "candidateTriangles": 3834
+                },
+                {
+                  "activeBones": 25,
+                  "inputTriangles": 4666,
+                  "candidateTriangles": 278
+                }
+              ],
+              "sharedVertexLocks": 59
+            }
+          },
+          {
+            "actorClass": "Rogue",
+            "triangles": 20026,
+            "candidateTriangles": 4368,
+            "lockedDepthSignaturesVerified": 1530,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 13694,
+                  "candidateTriangles": 3990
+                },
+                {
+                  "activeBones": 27,
+                  "inputTriangles": 6332,
+                  "candidateTriangles": 378
+                }
+              ],
+              "sharedVertexLocks": 96
+            }
+          },
+          {
+            "actorClass": "Wizard",
+            "triangles": 20680,
+            "candidateTriangles": 4144,
+            "lockedDepthSignaturesVerified": 1528,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 14847,
+                  "candidateTriangles": 3795
+                },
+                {
+                  "activeBones": 26,
+                  "inputTriangles": 5833,
+                  "candidateTriangles": 349
+                }
+              ],
+              "sharedVertexLocks": 100
+            }
+          },
+          {
+            "actorClass": "Cleric",
+            "triangles": 20028,
+            "candidateTriangles": 4364,
+            "lockedDepthSignaturesVerified": 1528,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 14445,
+                  "candidateTriangles": 4031
+                },
+                {
+                  "activeBones": 26,
+                  "inputTriangles": 5583,
+                  "candidateTriangles": 333
+                }
+              ],
+              "sharedVertexLocks": 99
+            }
+          }
+        ]
+      },
+      {
+        "error": 0.012,
+        "aggregate": {
+          "character": {
+            "files": 4,
+            "before": 184890,
+            "after": 52470
+          },
+          "equipment": {
+            "files": 252,
+            "before": 769432,
+            "after": 170926
+          }
+        },
+        "primitives": 875,
+        "unsupportedExactCounts": 7,
+        "partitionedPrimitives": 28,
+        "largestPartitionBoneCount": 32,
+        "lockedDepthSignatures": 6116,
+        "bodies": [
+          {
+            "actorClass": "Fighter",
+            "triangles": 20482,
+            "candidateTriangles": 3818,
+            "lockedDepthSignaturesVerified": 1530,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 15816,
+                  "candidateTriangles": 3540
+                },
+                {
+                  "activeBones": 25,
+                  "inputTriangles": 4666,
+                  "candidateTriangles": 278
+                }
+              ],
+              "sharedVertexLocks": 59
+            }
+          },
+          {
+            "actorClass": "Rogue",
+            "triangles": 20026,
+            "candidateTriangles": 4154,
+            "lockedDepthSignaturesVerified": 1530,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 13694,
+                  "candidateTriangles": 3776
+                },
+                {
+                  "activeBones": 27,
+                  "inputTriangles": 6332,
+                  "candidateTriangles": 378
+                }
+              ],
+              "sharedVertexLocks": 96
+            }
+          },
+          {
+            "actorClass": "Wizard",
+            "triangles": 20680,
+            "candidateTriangles": 3892,
+            "lockedDepthSignaturesVerified": 1528,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 14847,
+                  "candidateTriangles": 3543
+                },
+                {
+                  "activeBones": 26,
+                  "inputTriangles": 5833,
+                  "candidateTriangles": 349
+                }
+              ],
+              "sharedVertexLocks": 100
+            }
+          },
+          {
+            "actorClass": "Cleric",
+            "triangles": 20028,
+            "candidateTriangles": 4162,
+            "lockedDepthSignaturesVerified": 1528,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 14445,
+                  "candidateTriangles": 3829
+                },
+                {
+                  "activeBones": 26,
+                  "inputTriangles": 5583,
+                  "candidateTriangles": 333
+                }
+              ],
+              "sharedVertexLocks": 99
+            }
+          }
+        ]
+      },
+      {
+        "error": 0.024,
+        "aggregate": {
+          "character": {
+            "files": 4,
+            "before": 184890,
+            "after": 49056
+          },
+          "equipment": {
+            "files": 252,
+            "before": 769432,
+            "after": 130504
+          }
+        },
+        "primitives": 875,
+        "unsupportedExactCounts": 7,
+        "partitionedPrimitives": 28,
+        "largestPartitionBoneCount": 32,
+        "lockedDepthSignatures": 6116,
+        "bodies": [
+          {
+            "actorClass": "Fighter",
+            "triangles": 20482,
+            "candidateTriangles": 3692,
+            "lockedDepthSignaturesVerified": 1530,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 15816,
+                  "candidateTriangles": 3414
+                },
+                {
+                  "activeBones": 25,
+                  "inputTriangles": 4666,
+                  "candidateTriangles": 278
+                }
+              ],
+              "sharedVertexLocks": 59
+            }
+          },
+          {
+            "actorClass": "Rogue",
+            "triangles": 20026,
+            "candidateTriangles": 4088,
+            "lockedDepthSignaturesVerified": 1530,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 13694,
+                  "candidateTriangles": 3710
+                },
+                {
+                  "activeBones": 27,
+                  "inputTriangles": 6332,
+                  "candidateTriangles": 378
+                }
+              ],
+              "sharedVertexLocks": 96
+            }
+          },
+          {
+            "actorClass": "Wizard",
+            "triangles": 20680,
+            "candidateTriangles": 3800,
+            "lockedDepthSignaturesVerified": 1528,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 14847,
+                  "candidateTriangles": 3451
+                },
+                {
+                  "activeBones": 26,
+                  "inputTriangles": 5833,
+                  "candidateTriangles": 349
+                }
+              ],
+              "sharedVertexLocks": 100
+            }
+          },
+          {
+            "actorClass": "Cleric",
+            "triangles": 20028,
+            "candidateTriangles": 4058,
+            "lockedDepthSignaturesVerified": 1528,
+            "activeBones": 52,
+            "partition": {
+              "groups": [
+                {
+                  "activeBones": 32,
+                  "inputTriangles": 14445,
+                  "candidateTriangles": 3725
+                },
+                {
+                  "activeBones": 26,
+                  "inputTriangles": 5583,
+                  "candidateTriangles": 333
+                }
+              ],
+              "sharedVertexLocks": 99
+            }
+          }
+        ]
+      }
+    ],
+    "earlierOptimisticScreens": "Retained unpartitioned outputs explicitly omit dense bone interpolation on over32 primitives. The final partitioned inspector supersedes those optimistic counts; no such omission remains in final counts.",
+    "auditCorrection": "An initial index-identity audit rejected seven removed locked indices in the first body group. Investigation found coincident retained alternatives. Final per-group and per-primitive audit checks full depth signatures, not only positions or vertex IDs, and passes all256 files at each of three errors. The failed index-only audit and diagnostic remain retained.",
+    "limitations": [
+      "No generated shadow mesh/index asset, native shadow pixel/silhouette or animated fit result.",
+      "Skin error penalties and fixed signatures do not bound every animated interior surface or all poses.",
+      "Relative Meshopt errors0.006/0.012/0.024 are analysis settings, not approved shadow pixel thresholds.",
+      "Catalog/bare totals cannot be projected directly onto an equipped masked party, shadow visibility or whole-scene frame time.",
+      "Low currently disables shadows; this High-only direction does not close Low85000-triangle limits.",
+      "No draw-call, CPU, VRAM, cache, lifecycle, support-device or modern-art acceptance."
+    ],
+    "nextQualification": "Prepare reproducible depth indices from the selected supplied geometry, then an opt-in renderer experiment with explicit pass-only ownership and finally restoration. Preserve current masks/morphs/live skeleton/gear/stealth/material-alpha/displacement fallbacks, pool/equip/reconnect cleanup. Review actual moving shadows and ordinary equipped/HUD High/Low scenes with original draw/triangle/frame limits. Keep close-up color geometry intact."
+  },
+  "checks": {
+    "finalLint": {
+      "exit": 0,
+      "log": "lint-partition-final.log"
+    },
+    "migrationGuard": {
+      "suitesPassed": 1,
+      "testsPassed": 6,
+      "log": "migration-guard-partition-final.log"
+    },
+    "finalCLIRejectedWithoutWrite": [
+      {
+        "case": "relative",
+        "exit": 1,
+        "noOutputWritten": true,
+        "sentinelUnchanged": true,
+        "started": 1791593663.2333827,
+        "finished": 1791593663.3731773
+      },
+      {
+        "case": "existing",
+        "exit": 1,
+        "noOutputWritten": true,
+        "sentinelUnchanged": true,
+        "started": 1791593663.373182,
+        "finished": 1791593663.5046
+      },
+      {
+        "case": "nan",
+        "exit": 1,
+        "noOutputWritten": true,
+        "sentinelUnchanged": true,
+        "started": 1791593663.5046043,
+        "finished": 1791593663.6402361
+      },
+      {
+        "case": "zero",
+        "exit": 1,
+        "noOutputWritten": true,
+        "sentinelUnchanged": true,
+        "started": 1791593663.64024,
+        "finished": 1791593663.7711394
+      },
+      {
+        "case": "negative",
+        "exit": 1,
+        "noOutputWritten": true,
+        "sentinelUnchanged": true,
+        "started": 1791593663.7711582,
+        "finished": 1791593663.8981113
+      },
+      {
+        "case": "over-limit",
+        "exit": 1,
+        "noOutputWritten": true,
+        "sentinelUnchanged": true,
+        "started": 1791593663.8981137,
+        "finished": 1791593664.0240815
+      },
+      {
+        "case": "missing-parent",
+        "exit": 1,
+        "noOutputWritten": true,
+        "sentinelUnchanged": true,
+        "started": 1791593664.0240836,
+        "finished": 1791593664.155705
+      }
+    ],
+    "finalPositiveScreens": {
+      "count": 3,
+      "filesPerScreen": 256,
+      "primitivesPerScreen": 875,
+      "errors": [
+        0.006,
+        0.012,
+        0.024
+      ],
+      "allFullSourcePinsAndDepthSignatureAuditsPass": true
+    },
+    "sourceHashesVerified": 521,
+    "terminals": "All final positive screen/lint/test terminals exit0; owned supervisors absent, no vendor link. See scope-and-terminal-verification.json.",
+    "retainedFailures": [
+      "migration-guard-final.log: wrong test filename,0 tests; corrected actual migration guard then final source both pass6.",
+      "shadow-partition-audited-006.log and shadow-partition-diagnosis.log: initial stricter index-identity assertion rejected coincident equivalent indices; final exact semantic audit passes."
+    ],
+    "noSkippedChecksCountedAsPass": true
+  },
+  "artifacts": {
+    "inventory": "artifact-inventory.json",
+    "files": 105,
+    "inventorySHA256": "45e68fd0f74ed81b1836c6e4aa6de0e7a26ce4b47042a1ec3c72cc84308c0120",
+    "sourceHashes": "source-hashes.json",
+    "sourcePins": 521,
+    "permissions": "Owned evidence directories0700/files0600; node_modules symlink identified and not followed. No shared dependencies or original user worktree edited."
+  },
+  "soak": {
+    "snapshot": {
+      "observed_at_utc": "2026-10-10T00:32:52Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "updated_at": "2026-10-09T03:36:16Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null
+            }
+          ]
+        }
+      ]
+    },
+    "action": "One read-only delegated snapshot this goal turn, stale after00:32:52UTC. Still in_progress at that observation; no restart/cancel/completion/acceptance inferred."
+  },
+  "remaining": "Current actual selected High436draws/458642scene/405078equipped-root triangles remain above350/250000. Continue full inherited1.11\u20131.99, modern-art/Q/CB, actual High/Low/device budgets, compatible raised rollout/rollback, F1\u2013F5, operations/rights/owner-policy/human-playtest/beta/admission/launch and final handoff. No narrowed completion or public microrelease."
+}

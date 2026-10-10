@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 shadow geometry diagnosis:** Weaker skin penalties and vertex relocation
+are rejected for small/no count benefit and invalid relocated weights. A count-only
+inspector constrains every bone through <=32-bone triangle partitions, retaining
+exact protected position/skin/blink signatures. Default High bare characters
+184890→58514/catalog wearables769432→271280 are feasibility counts, not actual
+party savings or shadow acceptance. Three256-file screens, CLI guards and6migration
+checks pass. No GLB/runtime/public/profile/access change; qualified e47selection
+retained. [Diagnosis and limits](docs/plans/2026-10-10-shadow-geometry-feasibility.json).
+Next qualify pass-only depth geometry, moving shadows, lifecycle and actual whole
+High/Low/device budgets. Full inherited1.11–1.99/art/Q/CB/F1–F5/operations/owner/
+human/beta/launch/handoff remains active; no narrower completion.
+
+
 **October10 revised High body selection:** Exact reviewed endpoint-basis bodies
 now select four additive v3High paths in the owned private milestone:123204→81216
 body triangles. Low/source/motion/gear/all priorHigh files retain exact bytes.
