@@ -1,3 +1,4 @@
+import { prepareActorCellMultiDrawParty } from './actor-cell-multidraw-party.js';
 import { capturePartySubmissionFrames } from './party-submission-frames.js';
 import { prepareFittedRigidParty } from './fitted-rigid-party.js';
 import { captureActorSubmissionCensus } from './actor-submission-census.js';
@@ -480,6 +481,7 @@ test('single native renderer observes three live equipped party socket peers on 
             recordPeerLiveness('geometry-lifecycle-prepared');
         }
         if (process.env.EIDOLON_E2E_FITTED_RIGID_SURFACES === '1') await prepareFittedRigidParty(page, testInfo);
+        if (process.env.EIDOLON_E2E_ACTOR_CELL_MULTI_DRAW === '1') await prepareActorCellMultiDrawParty(page, testInfo);
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);

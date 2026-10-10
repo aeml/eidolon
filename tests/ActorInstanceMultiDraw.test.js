@@ -105,3 +105,20 @@ test('replacing an attribute without changing its version refreshes the copied g
         expect([...f.owner.entries.values()][0].mesh).not.toBe(previous);
     } finally { f.owner.dispose(); }
 });
+
+test('color pass keeps original depth sorting while shadow pass keeps scene order', () => {
+    const f = fixture();
+    try {
+        f.sources.forEach((source, index) => {
+            source.matrixWorld.identity();
+            for (let i = 0; i < 2; i++) source.setMatrixAt(i, new THREE.Matrix4().makeTranslation(0, 0, index ? -5 : -7));
+            source.computeBoundingSphere();
+        });
+        f.begin(); const { mesh, sourceSlots } = [...f.owner.entries.values()][0];
+        const list = () => sourceSlots.flatMap(({ source, slots }) => slots.slice(0, source.count).map(index => ({ index })));
+        const color = list(); mesh.customSort(color, f.camera);
+        expect(color.map(v => v.index)).toEqual([...sourceSlots[1].slots.slice(0, 2), ...sourceSlots[0].slots.slice(0, 2)]);
+        const shadow = list(); mesh.customSort(shadow, f.camera.clone());
+        expect(shadow.map(v => v.index)).toEqual([...sourceSlots[0].slots.slice(0, 2), ...sourceSlots[1].slots.slice(0, 2)]);
+    } finally { f.owner.dispose(); }
+});

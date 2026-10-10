@@ -42,7 +42,7 @@ for (const quality of ['high', 'low']) test(`${quality}: actor cell multi-draw p
                 geometries: render.renderer.info.memory.geometries, textures: render.renderer.info.memory.textures,
                 restored: !owner.hidden.length && !owner.group.visible && !owner.multiDraw.hidden.length && !owner.multiDraw.group.visible };
         };
-        let image;
+        let image, failureRestored = false;
         try {
             for (const state of ['Idle', 'Run', 'Attack', 'Death', 'FarRealmRun', 'ShearedAttack']) {
                 const offset = state === 'FarRealmRun' ? new THREE.Vector3(50000, 0, 20000) : new THREE.Vector3();
@@ -79,12 +79,22 @@ for (const quality of ['high', 'low']) test(`${quality}: actor cell multi-draw p
                 mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); });
                 models.forEach(({ mesh }) => mesh.userData.resetPose());
             }
+            const visibility = new Map(); models.forEach(({ mesh }) => mesh.traverse(part => visibility.set(part, part.visible)));
+            const previous = floor.onBeforeRender, failure = Error('Prepared multi-draw render failure');
+            let observedFailure = false, hiddenDuringFailure = false;
+            owner.multiDraw.enabled = true;
+            floor.onBeforeRender = () => { hiddenDuringFailure = owner.multiDraw.hidden.length > 0; throw failure; };
+            try { render.render(); } catch (error) { if (error !== failure) throw error; observedFailure = true; }
+            finally { floor.onBeforeRender = previous; }
+            failureRestored = observedFailure && hiddenDuringFailure && !owner.hidden.length && !owner.multiDraw.hidden.length &&
+                !owner.group.visible && !owner.multiDraw.group.visible && [...visibility].every(([part, value]) => part.visible === value);
+            capture(true);
         } finally {
             render.setActorInstancesEnabled(false);
             models.forEach(({ type, mesh }) => { mesh.removeFromParent(); MeshFactory.releaseMesh(type, mesh); });
             floor.removeFromParent(); render.disposeObjectResources(floor); render.dispose();
         }
-        return { reports, image };
+        return { reports, image, failureRestored };
     }, quality);
     await writeFile(testInfo.outputPath('actor-cell-multidraw.json'), JSON.stringify(result.reports, null, 2));
     await writeFile(testInfo.outputPath('actor-cell-multidraw.png'), Buffer.from(result.image.split(',')[1], 'base64'));
@@ -96,5 +106,6 @@ for (const quality of ['high', 'low']) test(`${quality}: actor cell multi-draw p
         for (const phase of [row.before, row.after, row.again]) expect(phase.restored).toBe(true);
         expect(row.again.geometries).toBe(row.before.geometries); expect(row.again.textures).toBe(row.before.textures);
     }
+    expect(result.failureRestored).toBe(true);
     expect(failures, failures.join('\n')).toEqual([]);
 });
