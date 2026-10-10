@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T19:13:51.940225+00:00",
+  "recordedUTC": "2026-10-10T19:46:41.540259+00:00",
   "classification": "Alpha1.79.27/a9d6fc9b deployed and release checks accepted: trusted public click-to-landing1429.7ms, endpoints0; all8assets/identities/database match; required CI38064138468 attempt1 succeeded. Native8expected/1skip/0unexpected/0flake, retry0; separate recovery2+1 pass. Optional routes remain skipped, original failures retained. Full original goal stays active.",
   "qualifiedRuntime": "Held1e60f126 retains e8eec1b9 default lazy geometry and conservative rigid actor shadows, plus motion/aura/admin corrections and qualified complete tuck/landing envelopes. High sampled budget passes, actualLow202draw failure remains. Lowview378a79a2 stays unselected.",
   "rejectedSourceCommits": [
@@ -102,7 +102,7 @@
   "currentReceipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: conservative rigid shadow influence implemented, exact native-qualified and selected only in held private milestone e8eec1b9. DefaultHigh180frames324draws/176626triangles/16.7ms median+p95 passes sampled limits; frozen390-to330draw RGB exact, original skins/shadows/content retained. ActualLow202draws fails200,79857triangles/16.7ms pass. SubsequentLowview378a79a2 passes90units/11native checks and exact pixels/2588triangle reduction, but154draws unchanged; strict actual native draw-gain assertion fails before final profile/save. Candidate kept unselected; original failure retained, no retry/waiver/public mutation.",
-  "nextAction": "Finish exact public29 CI38078784320, then verify both deployments,8served asset hashes,frontend/backend identities,database readiness and fresh trusted jump/walking aura acceptance. Public28 release gates verified; both insufficient walking samples retained and not accepted. Continue private Low submission reduction from actual census while29 runs; no further public push before29 verification. Full original art/device/soak/beta/launch scope remains open.",
+  "nextAction": "Attribute actual High389draw submissions and representative Low202draw context before selecting private rigid batching; qualify its ordinary startup/pool/lifecycle and full supported-device/whole-game equipped world/contact/combat budgets with unchanged RGB, draw and triangle gates. Preserve all failed evidence. Public29 requested fixes verified; no further motion release necessary. Original art/device/owner-deferred campaign/failed24hsoak/F1\u2013F5/beta/launch/handoff remain open.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: owner-priority jump/aura/admin corrections implemented and qualified.182 focused client checks,401 release-default/history checks (overlap), focused Go-race population/history/paging checks and9 public-source/bundle native checks pass. Public28/77a48916 pushed; CI38076277436 in progress, no deployment/acceptance inferred. Additional four-class midair tuck discontinuity reproduced and corrected privately with73 focused checks and2 native checks; staged for publication after28 is verified. Original failures retained.",
+  "currentGoalTurnClassification": "progress: user-requested jump/aura/admin fixes accepted live at exact public29/12e5e3c4,CI38078784320 success attempt1;8native pass1skip0flake0retry plus3recovery pass. Normal TLS8assets,frontend/backend/database match. Trusted native jump1396.8ms,path/backsteps/aura/endpoints0;walking88genuine frames,auraerror0. Real-Mongo classification fixture1pass0skip and6configured QA identities excluded. Full original goal remains unfinished; private rigid batching stays unselected with High389draw failure and historical Low202failure open.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1374,17 +1374,22 @@
     "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
   },
   "currentPublicVerification": {
-    "receipt": "docs/plans/2026-10-10-public28-terminal-qualification.json",
-    "version": "Alpha 1.79.28",
-    "commit": "77a48916be49184a04ecceeb979c75668d1972b8",
-    "ci": 38076277436,
+    "receipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
+    "version": "Alpha 1.79.29",
+    "commit": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "ci": 38078784320,
     "requiredCIPassed": true,
     "releaseAccepted": true,
+    "requestedMotionAndAdminFixesAccepted": true,
     "allEightAssetsMatch": true,
     "identitiesAndDatabaseMatch": true,
-    "totalMs": 1426.300000011921,
-    "walkingAccepted": false,
-    "releaseInventorySHA256": "0858d66501ca2e97a1ac0ec68b2b803049bf211e48e8cac635613a580d0b680d"
+    "totalMs": 1396.7999999821186,
+    "walkingAccepted": true,
+    "walkingFrames": 88,
+    "maxWalkingAuraError": 0,
+    "phaseBacksteps": 0,
+    "maxRenderedPathError": 0,
+    "releaseInventorySHA256": "740010fcdfbff1d58707d822cbe14e128359711e99ffaed9f54bd2610b0b1ee3"
   },
   "actorInstanceShadowViewPrototype": {
     "receipt": "docs/plans/2026-10-10-actor-instance-shadow-view.json",
@@ -1797,8 +1802,8 @@
   "motionAdminCorrections": {
     "receipt": "docs/plans/2026-10-10-motion-admin-qualification.json",
     "privateRuntime": "fd852472",
-    "publicRelease": "77a48916be49184a04ecceeb979c75668d1972b8",
-    "ci": 38076277436,
+    "publicRelease": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "ci": 38078784320,
     "status": "completed",
     "deployed": true,
     "accepted": true,
@@ -1806,7 +1811,7 @@
     "configuredAutomationRosterExplicit": true,
     "auraFinalRenderedTransform": true,
     "flightSeconds": 1.3,
-    "terminalReceipt": "docs/plans/2026-10-10-public28-terminal-qualification.json",
+    "terminalReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
     "allSixConfiguredQAAccountsExcluded": true
   },
   "jumpPoseContinuity": {
@@ -1816,7 +1821,9 @@
     "publicCandidateRuntime": "57f8386b",
     "focusedPassed": 73,
     "nativePassed": 2,
-    "published": false
+    "published": true,
+    "publicRelease": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "accepted": true
   },
   "jumpCorrectionHandoff": {
     "receipt": "docs/plans/2026-10-10-jump-correction-handoff-qualification.json",
@@ -1830,9 +1837,10 @@
     "publicReleaseChecksPassed": 466,
     "nativePassed": 3,
     "ci": 38078784320,
-    "status": "in_progress",
-    "deployed": false,
-    "accepted": false
+    "status": "completed",
+    "deployed": true,
+    "accepted": true,
+    "terminalReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json"
   },
   "actualSubmissionCensus": {
     "receipt": "docs/plans/2026-10-10-actual-actor-submission-census.json",
@@ -1890,7 +1898,11 @@
     "publicPassed": 477,
     "nativePassed": 3,
     "retries": 0,
-    "inventorySHA256": "5bbffe3378e56f33a7eed6f03a518595204acb56e069468cfe43a8afafdd0714"
+    "inventorySHA256": "5bbffe3378e56f33a7eed6f03a518595204acb56e069468cfe43a8afafdd0714",
+    "publicRelease": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "accepted": true,
+    "publicBacksteps": 0,
+    "publicPathError": 0
   },
   "adminOwnedMongo": {
     "receipt": "docs/plans/2026-10-10-admin-owned-mongo-qualification.json",
@@ -1935,5 +1947,18 @@
       "sameSceneDrawsAfter": 320
     },
     "remaining": "High389draw failure and historical Low202draw failure remain open. Different population/view prevents substituting Low166 sample. Actual scoped draw savings qualified; no default selection, startup/pool lifecycle or whole-game performance acceptance."
+  },
+  "previousPublicVerification28": {
+    "receipt": "docs/plans/2026-10-10-public28-terminal-qualification.json",
+    "version": "Alpha 1.79.28",
+    "commit": "77a48916be49184a04ecceeb979c75668d1972b8",
+    "ci": 38076277436,
+    "requiredCIPassed": true,
+    "releaseAccepted": true,
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "totalMs": 1426.300000011921,
+    "walkingAccepted": false,
+    "releaseInventorySHA256": "0858d66501ca2e97a1ac0ec68b2b803049bf211e48e8cac635613a580d0b680d"
   }
 }
