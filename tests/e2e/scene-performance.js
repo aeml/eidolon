@@ -3,7 +3,7 @@ import { renderFrameInterval } from './renderFrameInterval.js';
 const observers = new WeakMap();
 
 /** Optional real-game profiling; no account state or network commands changed. */
-export function observeGameplayScene(game, label) {
+export function observeGameplayScene(game, label, { warmupFrames = 60, activity = false } = {}) {
     return new Promise((resolve, reject) => {
         const renderer = game?.renderSystem?.renderer;
         if (!renderer || game.isDestroyed || typeof game.loop !== 'function') { reject(new Error('A live game is required for profiling')); return; }
@@ -13,7 +13,18 @@ export function observeGameplayScene(game, label) {
         const renderInfo = renderer.info;
         const originalReset = renderInfo.autoReset;
         const samples = [];
-        let warmup = 60;
+        if (!Number.isInteger(warmupFrames) || warmupFrames < 0 || warmupFrames > 60) {
+            reject(new Error('A fixed0–60frame QA warmup is required')); return;
+        }
+        let warmup = warmupFrames;
+        const actor = game.player, hand = actor?.mesh?.getObjectByProperty('isBone', true);
+        const observeActivity = () => ({ localState: actor?.state, localClip: actor?.currentAction?.getClip?.().name,
+            localClipTime: actor?.currentAction?.time, localHp: actor?.stats?.hp,
+            position: actor?.position.toArray(), meshPosition: actor?.mesh?.position.toArray(),
+            bone: hand?.quaternion.toArray(), aliveHostiles: (game.activeEntitiesCache || []).filter(entity =>
+                entity.isActive && entity.state !== 'DEAD' && game.isHostileActorTarget?.(entity)).length,
+            attackingHostiles: (game.activeEntitiesCache || []).filter(entity =>
+                entity.isActive && entity.state === 'ATTACKING' && game.isHostileActorTarget?.(entity)).length });
         let previous = null;
         let firstPreviewFrame = null;
         let timer, closed = false;
@@ -38,7 +49,7 @@ export function observeGameplayScene(game, label) {
                 const gl = renderer.getContext();
                 const debug = gl.getExtension('WEBGL_debug_renderer_info');
                 resolve({
-                    label, frames: samples.length, intervalMethod: 'exact-reported-decimal', restored: true,
+                    label, warmupFrames, activityObserved: activity, observedBone: hand?.name, frames: samples.length, intervalMethod: 'exact-reported-decimal', restored: true,
                     frameSamples: samples, visibleFrames: samples.filter(sample => sample.visibility === 'visible').length,
                     rawFrameMedianMs: percentile(raw, .5), rawFrameP95Ms: percentile(raw, .95), rawFrameP99Ms: percentile(raw, .99),
                     renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
@@ -78,10 +89,12 @@ export function observeGameplayScene(game, label) {
             const rawIntervalMs = previous === null ? 0 : time - previous;
             const intervalMs = previous === null ? 0 : renderFrameInterval(time, previous);
             previous = time;
+            if (previousTime === null && warmupFrames === 0) return result;
             if (warmup-- > 0) return result;
             if (firstPreviewFrame === null) firstPreviewFrame = game.uiManager.characterPreview?.renderer?.info.render.frame || 0;
             samples.push({ time, previousTime, rawIntervalMs, intervalMs, cpuMs, visibility: document.visibilityState, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
-                activeEntities: this.activeEntitiesCache?.length || 0 });
+                activeEntities: this.activeEntitiesCache?.length || 0,
+                ...(activity ? { activity: observeActivity() } : {}) });
             if (samples.length === 180) finish();
             return result;
         }
@@ -93,9 +106,9 @@ export function observeGameplayScene(game, label) {
     });
 }
 
-export async function profileGameplayScene(page, label) {
-    return page.evaluate(async label => {
+export async function profileGameplayScene(page, label, options = {}) {
+    return page.evaluate(async ({ label, options }) => {
         const { observeGameplayScene } = await import('/tests/e2e/scene-performance.js');
-        return observeGameplayScene(window.game, label);
-    }, label);
+        return observeGameplayScene(window.game, label, options);
+    }, { label, options });
 }

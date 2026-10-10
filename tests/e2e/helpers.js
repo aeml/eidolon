@@ -1899,7 +1899,7 @@ export async function zoomOutForPortal(page) {
     expect(await page.evaluate(() => window.game?.renderSystem?.currentZoom)).toBeGreaterThan(startingZoom);
 }
 
-async function projectVerdantEntrance(page, candidate = 0) {
+export async function projectVerdantEntrance(page, candidate = 0) {
     return page.evaluate(candidate => {
         const game = window.game;
         let entrance = null;

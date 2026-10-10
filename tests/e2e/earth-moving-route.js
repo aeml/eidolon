@@ -1,3 +1,4 @@
+import { beginFightReview, captureEarthFight, captureFirstDungeon, finishFightReview } from './equipped-fight-dungeon-review.js';
 import { expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { moveByGroundClick, readPlayerState } from './helpers.js';
@@ -17,13 +18,33 @@ export async function captureEarthMovingRoute(page, testInfo) {
     const captureOptions = { format: 'jpeg', quality: 70, maxWidth: 1280, maxHeight: 844, everyNthFrame: 6 };
     const started = performance.now();
     let recording = false;
+    const fightReview = process.env.EIDOLON_E2E_FIGHT_DUNGEON_REVIEW === '1';
+    let previousAutoLoot, fightEvidence;
+    const sample = async (label, options = {}) => {
+        const resume = recording;
+        if (resume) { recording = false; await session.send('Page.stopScreencast'); }
+        try {
+            const report = await profileGameplayScene(page, label, options);
+            const quality = await page.evaluate(() => window.game.renderSystem.graphicsQuality);
+            const budget = { draws: quality === 'high' ? 350 : 200, triangles: quality === 'high' ? 250000 : 85000,
+                frameMedianMs: 20, frameP95Ms: 33.4 };
+            await writeFile(testInfo.outputPath(`${label}-profile.json`), JSON.stringify({ label, quality, budget, report }, null, 2));
+            expect(report.frames).toBe(180); expect(report.visibleFrames).toBe(180); expect(report.restored).toBe(true);
+            expect(report.drawCallsMedian).toBeLessThanOrEqual(budget.draws);
+            expect(report.trianglesMedian).toBeLessThanOrEqual(budget.triangles);
+            expect(report.frameMedianMs).toBeLessThanOrEqual(budget.frameMedianMs);
+            expect(report.frameP95Ms).toBeLessThanOrEqual(budget.frameP95Ms);
+            return report;
+        } finally { if (resume) { await session.send('Page.startScreencast', captureOptions); recording = true; } }
+    };
     const observe = () => page.evaluate(() => {
         const game = window.game, player = game?.player, render = game?.renderSystem;
         if (!player || game.isDestroyed || document.querySelector('#login-panel')?.getClientRects().length)
             throw new Error('Visual route must stay inside actual post-login gameplay');
         return { x: player.position.x, y: player.position.y, z: player.position.z,
             state: player.state, meshY: player.mesh.position.y, hp: player.stats.hp,
-            terrain: game.terrainElevation?.sample(player.position.x, player.position.z) ?? 0,
+            terrain: game.currentInstanceId ? 0 : game.terrainElevation?.sample(player.position.x, player.position.z) ?? 0,
+            instanceType: game.currentInstanceType || 'overworld',
             calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
             equippedItems: player.mesh.userData.equipmentVisualItemCount,
             profile: game.terrainProfile, visibility: document.visibilityState };
@@ -62,7 +83,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
         }
     };
     session.on('Page.screencastFrame', event => {
-        if (recording && frames.length < 900) {
+        if (recording && frames.length < (fightReview ? 1800 : 900)) {
             const name = `frame-${String(frames.length).padStart(4, '0')}.jpg`;
             frames.push({ name, timestamp: event.metadata.timestamp });
             writes.push(writeFile(`${folder}/${name}`, Buffer.from(event.data, 'base64'), { mode: 0o600 }));
@@ -73,11 +94,28 @@ export async function captureEarthMovingRoute(page, testInfo) {
         await expect.poll(() => page.evaluate(() => window.game?.player?.mesh?.userData.equipmentVisualItemCount)).toBe(14);
         const initial = await readPlayerState(page);
         expect(Math.hypot(initial.x + 1.25, initial.z - 200)).toBeLessThan(1);
+        if (fightReview) previousAutoLoot = await beginFightReview(page);
         await screenshot('town-start');
         recording = true;
         await session.send('Page.startScreencast', captureOptions);
         // Votive Market at(30,200) occupies the direct line from the plaza.
         // Walk its northern side, then return to the real east gate road.
+        const walkTo = async (x, z) => {
+            for (let step = 0; step < 30; step++) {
+                const before = await readPlayerState(page), distance = Math.hypot(x - before.x, z - before.z);
+                if (distance < .6) return;
+                const fraction = Math.min(18, distance) / distance;
+                const targetX = before.x + (x - before.x) * fraction, targetZ = before.z + (z - before.z) * fraction;
+                await moveByGroundClick(page, targetX - before.x, targetZ - before.z, { moveOnly: true,
+                    requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false, minimumDistance: .1,
+                    arrival: { x: targetX, z: targetZ, radius: .6, instanceId: before.instanceId } });
+                await expect.poll(async () => {
+                    const state = await readPlayerState(page);
+                    return state.state === 'IDLE' && Math.hypot(state.x - targetX, state.z - targetZ) < .6;
+                }, { timeout: 7000 }).toBe(true);
+            }
+            throw Error('Bounded authored-road movement did not reach the requested stop');
+        };
         for (const [label, x, z] of [['north-court', 0, 186], ['market-pass', 60, 186], ['east-street', 60, 200],
             ['east-gate', 120, 200], ['earth-road', 240, 200], ['woodland-cut', 470, 200], ['bastion-approach', 760, 200]]) {
             while (true) {
@@ -101,7 +139,12 @@ export async function captureEarthMovingRoute(page, testInfo) {
                 observations.push({ label: 'normal-input-step', elapsedMs: performance.now() - started, ...state });
             }
             await screenshot(label);
+            if (fightReview && label === 'woodland-cut') {
+                await captureEarthFight(page, testInfo, sample, screenshot);
+                await walkTo(x, z);
+            }
         }
+        if (fightReview) await captureFirstDungeon(page, testInfo, walkTo, screenshot, sample);
 
     } finally {
         recording = false;
@@ -109,8 +152,13 @@ export async function captureEarthMovingRoute(page, testInfo) {
         finally { await session.detach(); await Promise.all(writes); }
         await writeFile(testInfo.outputPath('moving-route.json'), JSON.stringify({
             scope: 'Prepared level30 Fighter, normal ground-input continuous town→gate→Earth road→Verdant approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.',
-            frames, observations, profiles, elapsedMs: performance.now() - started
+            fightAndDungeonReview: fightReview, frames, observations, profiles, elapsedMs: performance.now() - started
         }, null, 2));
+        if (fightReview && previousAutoLoot !== undefined) fightEvidence = await finishFightReview(page, testInfo, previousAutoLoot);
+    }
+    if (fightReview) {
+        expect(fightEvidence.hooksRestored).toBe(true);
+        expect(fightEvidence.damage.some(d => d.localSource && d.amount > 0)).toBe(true);
     }
     expect(frames.length).toBeGreaterThan(20);
     if (process.env.EIDOLON_E2E_ROUTE_BUDGETS === '1') {
