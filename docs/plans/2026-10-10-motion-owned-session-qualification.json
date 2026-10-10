@@ -1,0 +1,66 @@
+{
+  "recordedUTC": "2026-10-10T19:26:18.651126+00:00",
+  "terminal": {
+    "exitCode": 0,
+    "seconds": 38.247952461242676,
+    "commit": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "qaSource": "3a14ba41",
+    "database": "owned disposable synthetic only; removed",
+    "server": "actual Go race build",
+    "client": "exact copied public29 bundle",
+    "retries": 0
+  },
+  "scope": "Exact public29 copied bundle with actual Go-race server, new ordinary Fighter and owned disposable Mongo. All recordings disabled; explicit post-login game screenshots only; credentials sanitized. Private acceptance, not public proof.",
+  "connected-jump-timing.json": {
+    "target": {
+      "x": 887.9788641725784,
+      "y": 705.6445587226269,
+      "world": {
+        "x": 23.69474737780474,
+        "y": 0,
+        "z": 210.33245267385743
+      },
+      "scale": 1,
+      "visible": true,
+      "canvas": true,
+      "blockedBy": null
+    },
+    "frames": 58,
+    "acceptedDuration": 1.2999999523162842,
+    "auraSamples": 58,
+    "maxAuraError": 0,
+    "phaseBacksteps": 0,
+    "maxRenderedPathError": 0,
+    "clickedAt": 14974.59999999404,
+    "startedAt": 15038.799999982119,
+    "previousProgress": 1,
+    "distance": 26.941422735495323,
+    "end": {
+      "x": 23.633014678955078,
+      "z": 210.32839965820312
+    },
+    "positionError": 0,
+    "renderError": 0,
+    "elapsedMs": 1452.9000000059605,
+    "observedFlightMs": 1388.7000000178814,
+    "state": "IDLE",
+    "logical": [
+      23.633014678955078,
+      0,
+      210.32839965820312
+    ],
+    "rendered": [
+      23.633014678955078,
+      0,
+      210.32839965820312
+    ]
+  },
+  "walking-aura.json": {
+    "movingSamples": 87,
+    "maxAuraError": 0,
+    "elapsedMs": 1801.9000000059605,
+    "walkDistance": 20.768000825246048
+  },
+  "qualified": true,
+  "diagnosis": "Original cardinal27unit destination intersected a static collider and provided one genuine walking step followed by tiny correction frames. Planner now requires the actual gameplay canvas, a collision-free endpoint and sampled clear walking path among16directions. Sustained native walking yields87genuine movement samples. Strict jump/alignment/endpoints retained."
+}

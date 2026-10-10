@@ -1891,5 +1891,23 @@
     "nativePassed": 3,
     "retries": 0,
     "inventorySHA256": "5bbffe3378e56f33a7eed6f03a518595204acb56e069468cfe43a8afafdd0714"
+  },
+  "adminOwnedMongo": {
+    "receipt": "docs/plans/2026-10-10-admin-owned-mongo-qualification.json",
+    "actualMongoPassed": 1,
+    "race": true,
+    "skipped": 0,
+    "inventorySHA256": "c56a2cd722ca93198e4e98be3e9710b999ccdba0de626723be1b34bdb5295c99",
+    "productionMutation": false
+  },
+  "motionOwnedSession": {
+    "receipt": "docs/plans/2026-10-10-motion-owned-session-qualification.json",
+    "client": "exact public29 copied bundle",
+    "totalMs": 1452.9000000059605,
+    "maxRenderedPathError": 0,
+    "movingFrames": 87,
+    "walkingAuraError": 0,
+    "inventorySHA256": "48fb22ae6afeb18e0c27f941c6d4c8fb8d6a3c98a6302de29e87cb6083b795c8",
+    "publicAcceptance": false
   }
 }
