@@ -737,7 +737,7 @@ class GameEngineMovementMethods {
 
         // Every envelope starts and ends at the unmodified pose. The old
         // takeoff branch started fully squashed and jumped at its boundary.
-        const anticipation = Math.sin(Math.PI * Math.min(1, progress / .12)) * styleProfile.anticipation;
+        const anticipation = Math.sin(Math.PI * Math.min(1, progress / .12)) ** 2 * styleProfile.anticipation;
         const airborneLift = Math.sin(progress * Math.PI) * styleProfile.stretch;
         const tuckStrength = Math.sin(progress * Math.PI) ** 2
             * THREE.MathUtils.lerp(styleProfile.tuck, styleProfile.untuck, THREE.MathUtils.smoothstep(progress, .4, .6));
@@ -758,7 +758,7 @@ class GameEngineMovementMethods {
                 return;
             }
 
-            const impact = Math.sin(landingT * Math.PI) * landingVisual.impact;
+            const impact = Math.sin(landingT * Math.PI) ** 2 * landingVisual.impact;
             const squash = styleProfile.squash * impact;
             mesh.scale.x *= 1 + squash * 0.85;
             mesh.scale.z *= 1 + squash * 0.85;
@@ -865,16 +865,15 @@ class GameEngineMovementMethods {
         // Land upright for every class, with zero angular speed at both ends.
         const turns = Math.round(styleProfile.flip / (Math.PI * 2));
         const flipAmount = THREE.MathUtils.smoothstep(progress, 0, 1) * turns * Math.PI * 2;
-        const rollAmount = Math.sin(progress * Math.PI * 2) * styleProfile.roll;
-        const tuckPitch = progress < 0.45
-            ? THREE.MathUtils.smoothstep(progress, 0.06, 0.3) * styleProfile.tuck
-            : -THREE.MathUtils.smoothstep(progress, 0.72, 0.9)
-                * (1 - THREE.MathUtils.smoothstep(progress, 0.9, 1.0))
-                * styleProfile.landingLean;
+        const rollAmount = Math.sin(progress * Math.PI * 2) * Math.sin(progress * Math.PI) * styleProfile.roll;
+        const tuckPitch = THREE.MathUtils.smoothstep(progress, .06, .3)
+            * (1 - THREE.MathUtils.smoothstep(progress, .3, .6)) * styleProfile.tuck
+            - THREE.MathUtils.smoothstep(progress, .72, .9)
+            * (1 - THREE.MathUtils.smoothstep(progress, .9, 1)) * styleProfile.landingLean;
         let landingPitch = 0;
         if (jumpState?.landingVisual) {
             const landingT = this.getJumpLandingProgress(jumpState.landingVisual);
-            landingPitch = -Math.sin(landingT * Math.PI) * styleProfile.landingLean * jumpState.landingVisual.impact;
+            landingPitch = -(Math.sin(landingT * Math.PI) ** 2) * styleProfile.landingLean * jumpState.landingVisual.impact;
         }
         const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), flipAmount + tuckPitch + landingPitch);
         const rollQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAmount);

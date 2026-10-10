@@ -200,6 +200,16 @@ describe('authoritative jump flow', () => {
         expect(peer.jumpLandingVisual).toBeNull();
     });
 
+    test.each(['Fighter', 'Rogue', 'Cleric', 'Wizard'])('%s has no midair tuck discontinuity', className => {
+        const engine = createEngineHarness();
+        const actor = engine.player;
+        actor.constructor = { name: className };
+        engine.applyEntityJumpVisuals(actor, { progress: .4499, visualHeight: 8 });
+        const before = actor.mesh.quaternion.clone();
+        engine.applyEntityJumpVisuals(actor, { progress: .4501, visualHeight: 8 });
+        expect(actor.mesh.quaternion.angleTo(before)).toBeLessThan(.01);
+    });
+
     test.each(['Fighter', 'Rogue', 'Cleric', 'Wizard'])('%s jump root pose is continuous at takeoff and landing', className => {
         const engine = createEngineHarness();
         const actor = engine.player;
