@@ -8,13 +8,14 @@ This register supplements the [89-milestone roadmap](2026-09-28-alpha1-11-to1-99
 It preserves carried requirements from 1.11 onward; it does not replace them
 with a smaller 1.80–1.99 objective or certify unchecked gates.
 
-The public baseline accepted at 18:14 UTC is Alpha 1.79.22,
-`30a8b6038df9e071eef0f57564ae94087d1a0b11`: all ten CI jobs completed
-successfully on attempt1; required native/live checks and retained artifacts
-were independently inspected, and frontend/backend identities, database readiness
-and six public file hashes agree. Optional scopes remain skipped, not passed.
-See the [exact acceptance receipt](2026-10-09-ready22-actor-publisher.json).
-Actions run `37967212738` was not restarted or cancelled. The separate 24-hour
+The current public baseline is Alpha1.79.23, exact
+`2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9`: all ten CI jobs in
+`38026431419` attempt1 succeeded, front/back identities and ready DB match,
+and all six publisher asset hashes agree. One live startup module download failed
+before gameplay and passed retry; original failure retained, precise cause unknown.
+Optional scopes and the new opt-in live timing assertion remain skipped. Native
+timing evidence is disposable. [Bounded jump acceptance](2026-10-10-jump-speed-public-acceptance.json)
+supersedes [accepted22](2026-10-09-ready22-actor-publisher.json). No restart/cancel. The separate 24-hour
 soak `37880032315`, attempt 1 at `dc7d22f2`, completed **failure** on October 10;
 evidence upload succeeded. Seven read errors and only 20.2538 minutes of common
 100-client coverage fail acceptance. All 1,440 ready minute samples do not explain
@@ -22,10 +23,10 @@ the lost connections. No restart/cancel or replacement soak was performed.
 
 | Work | Current evidence and status | Next required result / owner |
 | --- | --- | --- |
-| Current release | 1.79.22 deployed/verified at exact30a8b603 with all ten CI jobs successful | Reuse accepted22 scope; the next coherent milestone needs its own exact CI/live/assets/readiness acceptance / implementation |
-| User-requested jump speed | Alpha1.79.23/source2e519bb0 published; client prediction and authoritative travel capped at1.5s, short hops retain distance scaling.469focused client checks and focused Go race passed; final disposable native landing1.641s/endpoints exact, earlier stall/fixture attempts retained | Exact CI38026431419 attempt1 and deployed identities/readiness/six assets pending. Private renderer/terrain/diagnostic pilots excluded. [Source/native receipt](2026-10-10-jump-speed-release.json) / implementation |
+| Current release | 1.79.23 deployed/verified at exact2e519bb0 with all ten CI jobs successful; initial live startup-download failure retained, retry passed | Reuse bounded jump scope; startup finding/full inherited gates remain open. Next coherent milestone requires its own exact acceptance / implementation |
+| User-requested jump speed | Alpha1.79.23/source2e519bb0 published; client prediction and authoritative travel capped at1.5s, short hops retain distance scaling.469focused client checks and focused Go race passed; final disposable native landing1.641s/endpoints exact, earlier stall/fixture attempts retained | Exact CI38026431419 attempt1/all ten jobs and deployed identities/readiness/six assets verified. Live report7expected/1flaky/1skip/0unexpected; startup download first failure retained. [Acceptance](2026-10-10-jump-speed-public-acceptance.json). Private renderer/terrain/diagnostic pilots excluded. [Source/native receipt](2026-10-10-jump-speed-release.json) / implementation |
 | High frame attribution | Exact equipped-party native observer:300draws/166785triangles passes geometry ceilings,33.4median/66.6p95ms fails frame limits. Post-timing3s sampling points to projection/bounds/shadow/matrix and4553-node optional light scan; substantial shared-host load retained | Measure safe scene/matrix/light-scan changes with complete invalidation; no cross-run gain or device/art acceptance. [Frozen attribution](2026-10-10-high-frame-attribution.json) / implementation |
-| Private local-matrix invalidation | Three ordinary-Three divergences repaired at94ecf926;63focused checks and eight exact native color/shadow controls pass, explicit manual-world semantics and static-child skip retained | Post-repair equipped-party/race/save and exact RGB pass;High270draws/168891triangles,33.3median/33.4p95ms still fails median20ms. Population28 differs from prior35, so no cross-run gain; isolate comparison/copy cost and finish frame/device gates. [Party check](2026-10-10-matrix-equipped-party-checks.json). No public activation. [Frozen controls](2026-10-10-local-matrix-invalidation.json) / implementation |
+| Private local-matrix invalidation | Three ordinary-Three divergences repaired at94ecf926;63focused checks and eight exact native color/shadow controls pass, explicit manual-world semantics and static-child skip retained | Post-repair equipped-party/race/save and exact RGB pass;High270draws/168891triangles,33.3median/33.4p95ms still fails median20ms. Population28 differs from prior35, so no cross-run gain; isolate comparison/copy cost and finish frame/device gates. [Party check](2026-10-10-matrix-equipped-party-checks.json). Unflagged manual descendant writes still diverge; [negative evidence](2026-10-10-local-matrix-descendant-diagnosis.json) requires conservative fallback or complete invalidation. No public activation. [Frozen controls](2026-10-10-local-matrix-invalidation.json) / implementation |
 | Long-soak failure and transport diagnosis | Run 37880032315 failed with 7 read errors; min 32,327 frames/1,222,837 ms per client independently fails the 432,000 frames/77,760,000 ms requirements. All 1,440 health samples ready, max 340 goroutines/155,593,816 heap bytes, no broadcast drops; transport cause unknown. Private additive first-observed closure counters and real socket/race regressions address missing diagnostics | Keep failure open. Counters are prospective evidence, not a repair or 24-hour acceptance. Include with a coherent milestone, qualify exact deployed server/live behavior, investigate concrete closure evidence without relaxing queues/timeouts/acceptance or restarting unchanged long runs. [Failure and diagnostics receipt](2026-10-10-soak-transport-diagnostics.json) / implementation |
 | Raised terrain and atlas | Retained raised candidate `33f536c4` including staged rollout guards; functional save/profile/grounding, equipped solo road budgets and atlas receipts exist. Production activation held | Integrate this candidate deliberately; finish coherent art and equipped-party/device qualification, then matching client/server/profile rollout and compatible return-to-flat verification / implementation |
 | Terrain rollout guards | New owned candidate validates profile before mutations, passes it to preflights and checks initialized-world health. Focused race and real-process HTTP/login checks passed; **staged, not deployed** | Include with the coherent terrain milestone and obtain its own exact deployment acceptance; [receipt](2026-10-09-terrain-rollout-readiness-checks.json) / implementation |

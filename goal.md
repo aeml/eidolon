@@ -5,7 +5,11 @@ client/server flight cap; nearby hops remain quick. Focused race/input/release
 checks and an owned real Ctrl-click check qualify the bounded timing change.
 Initial wall-time and fixture failures remain retained; browser stalls can still
 delay display. [Candidate and limits](docs/plans/2026-10-10-jump-speed-release.json).
-Publish/accept this gameplay fix separately from unselected terrain/render pilots.
+Accepted at exact2e519bb0/CI38026431419 attempt1 with all ten jobs successful,
+normal-TLS identities/ready DB and six publisher hashes exact. One live startup
+module-download failure passed retry; retained, with cause unknown. [Deployment
+and bounded acceptance](docs/plans/2026-10-10-jump-speed-public-acceptance.json).
+Unselected terrain/render pilots remain private.
 The full inherited roadmap and all remaining gates remain active.
 
 **October10 remaining matrix contract:** Read-only ordinary-Three comparison
@@ -33,7 +37,7 @@ sampling identifies projection/bounds/shadow/matrix and optional light-scan
 work, under substantial shared-host load. No runtime repair or cross-run gain
 claim. [Frozen evidence and limits](docs/plans/2026-10-10-high-frame-attribution.json).
 Owner-requested1.5-second jumps are separately committed/published as
-Alpha1.79.23 at2e519bb0, awaiting their own terminal acceptance. Full inherited
+Alpha1.79.23 at2e519bb0, now accepted within the bounded jump receipt. Full inherited
 scope and all remaining gates stay active; the24-hour soak remains failed.
 
 **October 10 failed-soak transport diagnostics:** Run 37880032315, attempt 1

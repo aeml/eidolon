@@ -1,0 +1,221 @@
+{
+  "status": "Accepted bounded jump-speed release; retained initial live startup failure means this is not a clean startup certificate.",
+  "recordedUTC": "2026-10-10T05:53:47.513598+00:00",
+  "sourceCommit": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+  "version": "Alpha 1.79.23",
+  "predecessor": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+  "scope": "Owner requested approximately 1.5 seconds total jump time. Both client prediction and authoritative server now cap travel at 1.5 seconds instead of 3. Nearby short hops keep the existing 0.46-second minimum and distance scaling. Arc height, endpoint/collision constraints, recovery, save/economy and transport policy are unchanged. Future private terrain/render pilots are excluded.",
+  "ci": {
+    "run": {
+      "id": 38026431419,
+      "head_sha": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/aeml/eidolon/actions/runs/38026431419",
+      "created_at": "2026-10-10T05:07:24Z",
+      "updated_at": "2026-10-10T05:48:12Z"
+    },
+    "jobs": [
+      {
+        "name": "Server Tests (Go)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 2/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 3/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Client Tests (Jest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Browser Smoke (Playwright 1/3)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Predeploy Character QA (System Chrome)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Validate Production QA Inputs",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Deploy Server (SSH)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Deploy to GitHub Pages",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "Live Release and Character QA",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "terminalAllTenSuccess": true
+  },
+  "nativeReports": {
+    "regionalQuality": "7 expected/0 unexpected/0 flaky/0 skipped",
+    "celebration": "1 expected/0 unexpected/0 flaky/0 skipped",
+    "authoredEquipment": "2 expected/0 unexpected/0 flaky/0 skipped",
+    "disposableReleaseSmoke": "4 expected/1 skipped; jump timing opt-in skipped by standard workflow"
+  },
+  "liveReport": {
+    "expected": 7,
+    "flaky": 1,
+    "skipped": 1,
+    "unexpected": 0,
+    "initialFailure": "Login/move/UI/reconnect test failed31.375s during engine-module download before engine/player/first state existed. Retry1 passed25.706s; initial failure retained. No jump executed in failed startup; precise download failure cause unknown.",
+    "recovery": "Mandatory live town recovery/Well Rested workflow step passed; fresh registrations, natural expiry/reconnect and two-player High/Low auras route completed under script no-retry policy.",
+    "timingTest": "New1.5s wall-time assertion is opt-in and was not run on production. Timing evidence is disposable native check below; live version/source/assets identify deployment."
+  },
+  "optionalScopes": "Predeploy deterministic animation gallery, Well Rested rendering/GPU lifecycle and full-character gameplay skipped per full_stabilization condition. Live four-class/remote-animation skipped. Skips remain unqualified, not passes.",
+  "jumpChecks": {
+    "client": "Six suites, 469 checks passed in 11.841s on the publication working tree; four jump/input suites 77 checks also passed on held source. Scoped ESLint and whitespace passed.",
+    "server": "Focused Jump/Grounding/TownRecovery checks passed under Go1.27.2 race in internal/game (12.910s) and server root (2.430s). Held source same focused checks passed (8.378s/1.775s). Full unchanged package suite not repeated.",
+    "native": {
+      "acceptedDuration": 1.5,
+      "elapsedMs": 1641,
+      "frames": 26,
+      "distance": 26.966157155164755,
+      "positionError": 0,
+      "renderError": 0
+    },
+    "nativeMethod": "Owned disposable authenticated server and Mongo, native Chrome, real Ctrl-click to unobscured full 27-unit destination. Wait for the asynchronously loaded actor mesh and two rendering frames before measuring. No production account or database used. Focused route jump-speed is opt-in; not represented as full gameplay/device qualification.",
+    "retainedAttempts": "Attempt1 accepted1.5s but displayed landing2179.2ms, failing1850ms wall threshold. Diagnostic attempt2 displayed1785.2ms and passed, including a565.8ms RAF gap and burst of server packets. Attempt3 landed1664.8ms but fixture read mesh before model ready, failing undefined renderError. Final fixture explicitly waits for model readiness; final timing above passed unchanged1850ms wall threshold. All originals retained; no guarantee against browser stalls.",
+    "publisher": {
+      "bundledModules": 424,
+      "bytes": 3259956,
+      "sharedLoginModules": 21,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ]
+    },
+    "compilerRepair": "Initial publisher failed because shared node_modules lacks esbuild. Installed exact locked esbuild0.28.2 into isolated private compiler prefix and copied the byte-identical compiler script; successful build of copied publication inputs. No shared dependency write."
+  },
+  "public": {
+    "atUTC": "2026-10-10T05:37:08.026199+00:00",
+    "head": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+    "version": "Alpha 1.79.23",
+    "normalTLS": true,
+    "assets": {
+      "index.html": {
+        "sha256": "ad3283eb9446f43643082dfa0ac12aaa3541df57800861b001858ac016f2742c",
+        "bytes": 113781,
+        "httpStatus": 200,
+        "expected": "ad3283eb9446f43643082dfa0ac12aaa3541df57800861b001858ac016f2742c",
+        "matches": true
+      },
+      "src/main.js": {
+        "sha256": "3aa4a82873a2d7a3599b347cc9ab2caf111b6939172546f5357e00e662a462b2",
+        "bytes": 28461,
+        "httpStatus": 200,
+        "expected": "3aa4a82873a2d7a3599b347cc9ab2caf111b6939172546f5357e00e662a462b2",
+        "matches": true
+      },
+      "src/core/GameEngine.bundle.js": {
+        "sha256": "b646383bf199ffe58ed71751e192b9aaefe3c727f7e4825ee01c4caa6ef625f6",
+        "bytes": 3262014,
+        "httpStatus": 200,
+        "expected": "b646383bf199ffe58ed71751e192b9aaefe3c727f7e4825ee01c4caa6ef625f6",
+        "matches": true
+      },
+      "src/styles/index.css": {
+        "sha256": "83eb444b4a7e5bf16fea13469985b1be56e7815bc73e070625d1ca6236a8f6d8",
+        "bytes": 251361,
+        "httpStatus": 200,
+        "expected": "83eb444b4a7e5bf16fea13469985b1be56e7815bc73e070625d1ca6236a8f6d8",
+        "matches": true
+      },
+      "release.json": {
+        "sha256": "9eab122bb5acfb22b26c228cb30cadcd1934eccad1f2de8e4d1a381c15c556e9",
+        "bytes": 89,
+        "httpStatus": 200,
+        "expected": "9eab122bb5acfb22b26c228cb30cadcd1934eccad1f2de8e4d1a381c15c556e9",
+        "matches": true,
+        "identity": {
+          "commit": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+          "version": "Alpha 1.79.23"
+        }
+      },
+      "assets/notices/index.html": {
+        "sha256": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d",
+        "bytes": 3475,
+        "httpStatus": 200,
+        "expected": "233700903f8a31db3d73cae219e915c8b0e31882296342df1aefde64f51e003d",
+        "matches": true
+      }
+    },
+    "health": {
+      "version": "Alpha 1.79.23",
+      "commit": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+      "status": "ok",
+      "database": "ready",
+      "httpStatus": 200
+    },
+    "allSixMatch": true,
+    "identityReady": true
+  },
+  "artifactDigests": {
+    "verified_at_utc": "2026-10-10T05:51:14Z",
+    "artifacts": [
+      {
+        "artifact_id": 11660283622,
+        "name": "predeploy-character-evidence.zip",
+        "bytes": 9572458,
+        "expected_api_sha256": "99a13cb5688783d6dee72ccac26c8dcab8ecebaa860fd6009b81fc402b02d7ca",
+        "downloaded_sha256": "99a13cb5688783d6dee72ccac26c8dcab8ecebaa860fd6009b81fc402b02d7ca",
+        "digest_match": true
+      },
+      {
+        "artifact_id": 11660634669,
+        "name": "live-browser-evidence.zip",
+        "bytes": 12375459,
+        "expected_api_sha256": "14bce8a9305b32230afb5475eceb3854e1c1619a0eca2c2128cc6edf1acc77d3",
+        "downloaded_sha256": "14bce8a9305b32230afb5475eceb3854e1c1619a0eca2c2128cc6edf1acc77d3",
+        "digest_match": true
+      }
+    ],
+    "all_digests_match": true
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-jump-speed-checks-20261010",
+  "frozenArtifacts": 2682,
+  "inventorySHA256": "9ec6338d3ce37afc90d8834e999235ca3d4e830c67d2d2b4ecc2ebe84ee62750",
+  "integration": "Fresh ordinary fetch confirmed public master2e519bb0; normal merge into full private milestone15fa7f01 preserved both goal headers and all private scope. No public docs microrelease or force push.",
+  "limits": "Frame stalls can delay displayed landing beyond1.5s; final disposable native observed1.641s with endpoint errors0 and earlier failed attempts retained. Initial live startup download failed then passed retry, cause unknown. No modern-art, physical-device, High-frame, full-game or long-session certificate. Private renderer/terrain/transport diagnostics excluded from this release; failed24-hour soak and full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/device/operations/rights/owner/human/beta/launch/handoff remain open."
+}

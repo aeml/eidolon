@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T05:24:38.209712+00:00",
-  "classification": "High equipped-party attribution retained: geometry passes,33.4median/66.6p95ms frames fail. Three private container invalidation divergences repaired/qualified with63focused and8exact native controls; new whole-party performance not certified. Owner-requested1.5s jump source2e519bb0/Alpha1.79.23 published with CI38026431419 still pending terminal/live acceptance. Full inherited scope remains open; prior24-hour soak remains failed.",
-  "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
+  "recordedUTC": "2026-10-10T05:53:47.513598+00:00",
+  "classification": "Public Alpha1.79.23 jump cap accepted at exact2e519bb0/CI38026431419 attempt1/all10jobs success, front/back/ready DB and six asset hashes exact; initial live startup download failure retained then retry passed. Private High frame/matrix/terrain/art/full inherited work remains open; unflagged manual descendant matrix divergences still require repair. Failed24-hour soak remains failed.",
+  "qualifiedRuntime": "Private qualified6fbffd34 renderer plus four selected supplied High v3body paths; all originals/oldHigh/Low retained. Public/client/server now Alpha1.79.23 for authorized jump duration only; profile/access and private renderer/terrain/diagnostic activation unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -98,7 +98,7 @@
   "currentReceipt": "docs/plans/2026-10-10-high-frame-attribution.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "Progress: bounded High attribution and private matrix correctness repair94ecf926; jump fix separately published2e519bb0. No whole-frame gain or long-session acceptance.",
-  "nextAction": "Finish exact jump2e519bb0 CI/live/assets/readiness acceptance, then merge accepted public source normally into held milestone. Continue actual equipped-party High scene/bounds/shadow/light-scan and repaired matrix costs with explicit invalidation, original budgets and recorded host conditions. Keep failed soak open; no unchanged replacement run or failure waiver. Preserve supplied actors/gear/foliage/rig/blink/material/geometry, compact bake/coverage/zoom/lifecycle/cache/device/moving art and all inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements.",
+  "nextAction": "Repair or conservatively fall back for private manual-descendant invalidation before cache extension/activation. Measure High scene/bounds/shadow/light-scan and matrix costs with original budgets and recorded host conditions; no cross-run gain or frame certificate. Keep failed soak and initial live startup-download finding open; no unchanged long-run restart or failure waiver. Preserve supplied actors/gear/foliage/rig/blink/material/geometry, compact bake/coverage/zoom/lifecycle/cache/device/moving art and all inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -867,9 +867,11 @@
     "version": "Alpha1.79.23",
     "run": 38026431419,
     "attempt": 1,
-    "status": "published; terminal CI/live/public identity and six-hash acceptance pending",
+    "status": "deployed/verified; all10CIjobs successful; live7expected/1flaky/1skip/0unexpected, initial startup failure retained",
     "nativeElapsedMs": 1641,
     "acceptedJumpSeconds": 1.5,
-    "privateRenderTerrainDiagnosticPilotsExcluded": true
+    "privateRenderTerrainDiagnosticPilotsExcluded": true,
+    "acceptanceReceipt": "docs/plans/2026-10-10-jump-speed-public-acceptance.json",
+    "inventorySHA256": "9ec6338d3ce37afc90d8834e999235ca3d4e830c67d2d2b4ecc2ebe84ee62750"
   }
 }
