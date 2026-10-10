@@ -11,7 +11,8 @@ const idle = async page => {
 
 export async function prepareGameplayGeometryDelivery(page) {
     const owned = process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_RUNTIME_OWNER === '1';
-    await page.evaluate(async owned => {
+    const compactProof = process.env.EIDOLON_E2E_COMPACT_GEOMETRY_COMPARE === '1';
+    await page.evaluate(async ({ owned, compactProof }) => {
         const { ActorGameplayGeometry } = await import('/src/core/ActorGameplayGeometry.js');
         const { ActorGameplayGeometryDelivery } = await import('/src/core/ActorGameplayGeometryDelivery.js');
         const game = window.game, render = game.renderSystem;
@@ -20,15 +21,25 @@ export async function prepareGameplayGeometryDelivery(page) {
         const pass = runtime?.pass || new ActorGameplayGeometry(render.renderer, render.scene, render.camera);
         const delivery = runtime?.delivery || new ActorGameplayGeometryDelivery(pass);
         window.__gameplayGeometryLifecycle = { runtime, pass, delivery, started: performance.now() };
+        if (compactProof) {
+            const state = window.__gameplayGeometryLifecycle;
+            state.legacyIndices = new Map(); state.originalRegister = pass.register;
+            pass.register = function (mesh, indices) {
+                const installed = state.originalRegister.call(this, mesh, indices);
+                if (installed) state.legacyIndices.set(mesh, { source: mesh.geometry, indices: indices.slice() });
+                return installed;
+            };
+        }
         if (!runtime) for (const actor of [game.player, ...game.remotePlayers.values()]) delivery.track(actor.mesh);
-    }, owned);
+    }, { owned, compactProof });
     await page.waitForFunction(() => {
         const delivery = window.__gameplayGeometryLifecycle.delivery;
         if (delivery.failed) throw Error('Geometry worker failed');
         return !delivery.active && delivery.jobs.size === 0 && delivery.queue.length === 0;
     }, null, { timeout: 90_000 });
     return page.evaluate(() => {
-        const { pass, delivery, started } = window.__gameplayGeometryLifecycle;
+        const state = window.__gameplayGeometryLifecycle, { pass, delivery, started } = state;
+        if (state.originalRegister) pass.register = state.originalRegister;
         return { method: 'automatic-worker-exact-source-cache', milliseconds: performance.now() - started,
             body: { sources: [...pass.entries.values()].filter(row => /_Body$/.test(row.mesh.name)).length },
             installed: { registered: pass.entries.size,
