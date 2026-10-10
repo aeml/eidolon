@@ -1,0 +1,354 @@
+{
+  "recordedUTC": "2026-10-10T21:48:08.180086+00:00",
+  "source": "bcbc7147f4064939c0281b7cfcc6afcb8ebf11d9",
+  "runtime": "702a2755; connected source9a93a779 has identical runtime; later commits QA only",
+  "selected": false,
+  "productDefault": false,
+  "publication": "None; isolated opt-in private pilot only",
+  "focused": {
+    "suites": 3,
+    "passed": 71
+  },
+  "nativeSurfaceProof": {
+    "passed": 2,
+    "retries": 0,
+    "comparisons": 12,
+    "rgbError": 0,
+    "equalTriangles": true,
+    "failureCleanup": "Injected mid-render failure restores all source visibility and owned groups; next render works",
+    "resourceCleanup": "Every reference-again returns native geometry/texture counters to baseline; borrowed assets never disposed"
+  },
+  "nativeRecordedPopulationProof": {
+    "acceptedHighFromOriginalInvocation": true,
+    "acceptedLowFromCorrectedInvocation": true,
+    "sourceBuckets": 72,
+    "instances": 238,
+    "origins": 3,
+    "comparisons": 10,
+    "rgbError": 0,
+    "rows": [
+      {
+        "quality": "high",
+        "rows": [
+          {
+            "cellZ": -128,
+            "zoom": 18,
+            "far": false,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 76,
+              "triangles": 8480
+            },
+            "candidate": {
+              "calls": 61,
+              "triangles": 8480
+            }
+          },
+          {
+            "cellZ": -192,
+            "zoom": 18,
+            "far": false,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 148,
+              "triangles": 17405
+            },
+            "candidate": {
+              "calls": 112,
+              "triangles": 17405
+            }
+          },
+          {
+            "cellZ": -256,
+            "zoom": 18,
+            "far": false,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 100,
+              "triangles": 11030
+            },
+            "candidate": {
+              "calls": 78,
+              "triangles": 11030
+            }
+          },
+          {
+            "cellZ": -192,
+            "zoom": 26,
+            "far": false,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 148,
+              "triangles": 17405
+            },
+            "candidate": {
+              "calls": 112,
+              "triangles": 17405
+            }
+          },
+          {
+            "cellZ": -192,
+            "zoom": 18,
+            "far": true,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 148,
+              "triangles": 17405
+            },
+            "candidate": {
+              "calls": 112,
+              "triangles": 17405
+            }
+          }
+        ]
+      },
+      {
+        "quality": "low",
+        "rows": [
+          {
+            "cellZ": -128,
+            "zoom": 18,
+            "far": false,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 1,
+              "triangles": 2
+            },
+            "candidate": {
+              "calls": 1,
+              "triangles": 2
+            }
+          },
+          {
+            "cellZ": -192,
+            "zoom": 18,
+            "far": false,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 62,
+              "triangles": 8027
+            },
+            "candidate": {
+              "calls": 44,
+              "triangles": 8027
+            }
+          },
+          {
+            "cellZ": -256,
+            "zoom": 18,
+            "far": false,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 25,
+              "triangles": 2552
+            },
+            "candidate": {
+              "calls": 18,
+              "triangles": 2552
+            }
+          },
+          {
+            "cellZ": -192,
+            "zoom": 26,
+            "far": false,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 73,
+              "triangles": 8927
+            },
+            "candidate": {
+              "calls": 52,
+              "triangles": 8927
+            }
+          },
+          {
+            "cellZ": -192,
+            "zoom": 18,
+            "far": true,
+            "changedRGB": 0,
+            "unstableRGB": 0,
+            "reference": {
+              "calls": 62,
+              "triangles": 8027
+            },
+            "candidate": {
+              "calls": 44,
+              "triangles": 8027
+            }
+          }
+        ]
+      }
+    ],
+    "emptyLowCell": "One floor-only view has exact1call2triangles on both paths; no actor draws exist to consolidate. Original impossible gain assertion retained as failed; corrected negative-control requirement does not relax rendering/performance targets."
+  },
+  "scope": "Private same-origin multi-draw for existing generated actor instance buffers. Original source geometry/material identity, float32matrix rows, whole-bucket camera frustum test and original color-depth versus shadow-scene order are preserved. Stock matrix/indirection textures are newly owned and explicitly counted. All supplied class rigs and fourteen-slot equipment/saves preserved. Actual High242draws/162655triangles/16.7median+p95 passes this sampled context; actualLow178draws passes200 but87602triangles FAILS85000. HistoricalHigh389draw andLow202draw failures remain retained; different populations/views do not substitute for representative changed-runtime acceptance. Ordinary default/startup/pool/dynamic-membership/full-device performance remain open. No production publication or default selection; full original art/device/failed24hsoak/F1\u2013F5/beta/launch/handoff goal remains active.",
+  "failuresRetained": [
+    "Initial unit fixture grouped BoxGeometry and nonfluent Three API assumptions",
+    "Initial native2fail: color sorted by id rather than original depth; corrected runtime produces exact RGB",
+    "Recorded-population initial1pass1fail: Low floor-only cell cannot have draw reduction; exact empty-view control added",
+    "Incorrect anchored Playwright grep found no tests; corrected selector ran one Low test, no retry",
+    "Actual connected Low87602triangle median exceeds85000"
+  ],
+  "sanitization": {
+    "preparedAccounts": 8,
+    "plainFilesScanned": 89,
+    "embeddedEntriesScanned": 15,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled"
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-actor-cell-multidraw-checks-20261010",
+  "inventorySHA256": "57c09dbeeb090266d08dc2113600350bd42a4ca069227e86aedb355d3fbc8854",
+  "connectedParty": {
+    "low": {
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791668507.818986,
+        "finishedUnix": 1791668543.2178442,
+        "commit": "9a93a779e00596590b3423daa3c593a678875ce3"
+      },
+      "actualNative": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "goRace": true,
+      "markers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "sameSceneMultiDrawComparison": {
+        "reference": {
+          "calls": 195,
+          "triangles": 87584,
+          "geometries": 447,
+          "textures": 282
+        },
+        "candidate": {
+          "calls": 174,
+          "triangles": 87584,
+          "geometries": 475,
+          "textures": 338
+        },
+        "referenceAgain": {
+          "calls": 195,
+          "triangles": 87584,
+          "geometries": 447,
+          "textures": 282
+        },
+        "changedRGB": 0,
+        "unstableRGB": 0,
+        "allocated": {
+          "groups": 28,
+          "geometryBytes": 549696,
+          "matrixTextureBytes": 44288,
+          "indirectTextureBytes": 2292
+        },
+        "restored": true,
+        "scope": "Same frozen actual four-class party; stock multi-draw on existing exact cell origins/materials/geometry/float32 matrices with original whole-bucket per-camera culling and color/shadow ordering. Candidate selected only for following private normal180frame profile. No production/default enablement or historical performance waiver."
+      },
+      "sampledDrawBudget": 200,
+      "sampledDrawBudgetPassed": true,
+      "sampledTriangleBudget": 85000,
+      "sampledTriangleBudgetPassed": false,
+      "performanceAccepted": false,
+      "profile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 178,
+        "trianglesMedian": 87602,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "activeEntitiesMin": 37,
+        "activeEntitiesMax": 37
+      }
+    },
+    "high": {
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791668436.9928007,
+        "finishedUnix": 1791668478.5460706,
+        "commit": "9a93a779e00596590b3423daa3c593a678875ce3"
+      },
+      "actualNative": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "goRace": true,
+      "markers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "sameSceneMultiDrawComparison": {
+        "reference": {
+          "calls": 256,
+          "triangles": 162659,
+          "geometries": 473,
+          "textures": 293
+        },
+        "candidate": {
+          "calls": 244,
+          "triangles": 162659,
+          "geometries": 494,
+          "textures": 335
+        },
+        "referenceAgain": {
+          "calls": 256,
+          "triangles": 162659,
+          "geometries": 473,
+          "textures": 293
+        },
+        "changedRGB": 0,
+        "unstableRGB": 0,
+        "allocated": {
+          "groups": 21,
+          "geometryBytes": 404160,
+          "matrixTextureBytes": 29184,
+          "indirectTextureBytes": 1640
+        },
+        "restored": true,
+        "scope": "Same frozen actual four-class party; stock multi-draw on existing exact cell origins/materials/geometry/float32 matrices with original whole-bucket per-camera culling and color/shadow ordering. Candidate selected only for following private normal180frame profile. No production/default enablement or historical performance waiver."
+      },
+      "sampledDrawBudget": 350,
+      "sampledDrawBudgetPassed": true,
+      "sampledTriangleBudget": 250000,
+      "sampledTriangleBudgetPassed": true,
+      "performanceAccepted": false,
+      "profile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 242,
+        "trianglesMedian": 162655,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "activeEntitiesMin": 29,
+        "activeEntitiesMax": 29
+      }
+    }
+  }
+}

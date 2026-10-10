@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T21:41:10.292356+00:00",
-  "classification": "Progress: user-requested motion/aura/admin fixes verified at exact public29/12e5e3c4. Full original release-readiness goal remains active. Current turn attributes actual High submissions and develops an isolated opt-in same-cell multi-draw candidate; not selected or published.",
+  "recordedUTC": "2026-10-10T21:49:07.157004+00:00",
+  "classification": "Progress: exact public29 motion/admin fixes accepted; private same-cell actor multi-draw now technically qualified with actual High/Low saved parties,71focused checks and22exact native image comparisons. ActualLow87602triangle failure prevents selection. Full original goal remains active.",
   "qualifiedRuntime": "Held6db97317 retains e8eec1b9 default lazy geometry/conservative actor shadows and verified public29 motion/admin fixes. Actual historical Low202draw failure remains open. Private rigid surfaces10098530 and same-cell multi-draw9a93a779 remain isolated, unselected and unpublished.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -102,7 +102,7 @@
   "currentReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: user-requested jump/aura/admin fixes accepted live at exact public29/12e5e3c4,CI38078784320 success attempt1;8native pass1skip0flake0retry plus3recovery pass. Normal TLS8assets,frontend/backend/database match. Trusted native jump1396.8ms,path/backsteps/aura/endpoints0;walking88genuine frames,auraerror0. Real-Mongo classification fixture1pass0skip and6configured QA identities excluded. Full original goal remains unfinished; private rigid batching stays unselected with High389draw failure and historical Low202failure open.",
-  "nextAction": "Finish private same-cell multi-draw actual connected High/Low/cold-returning/pool/lifecycle/resource qualification and compare strict RGB, triangles and original whole-bucket culling/order. Preserve earlier High389/350 and Low202/200 failures until representative changed-runtime evidence resolves them. No default selection/publication before required proof; full original art/device/failed24hsoak/F1\u2013F5/beta/launch/handoff scope unchanged.",
+  "nextAction": "Attribute actual Low87602triangle cost and qualify bounded geometry/visibility improvements with exact RGB, supplied silhouettes/equipment, current poses, source float32 matrices and unchanged85000triangle/200draw limits. Existing stock BatchedMesh can test conservative per-instance camera clipping separately from the now-qualified whole-original-bucket path; keep the latter as the reference and preserve strict visual gates. Then default/startup/pool/dynamic memberships and representative crowded High/Low/device/world/contact/combat proof are still required. Historical High389/Low202 failures remain retained. Public29 unchanged; art/device/owner-deferred campaigns/failed24hsoak/F1\u2013F5/beta/launch/handoff remain open.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: twelve actual live frame submissions fully accounted for, source c61c6f51, owned real-Mongo/Go-race four-class fourteen-slot saved party passes. New random-world profile differs from earlier failedHigh389 and cannot waive it. Same-cell material/geometry attribution yields private stock multi-draw candidate; first native pixel failures retained and depth/scene sort correction yields12exact native pose comparisons, unchanged triangles and draw reduction. Failure cleanup and real connected candidate proof in progress.",
+  "currentGoalTurnClassification": "progress: completed actual live submission attribution and implemented/corrected an isolated same-cell actor multi-draw candidate. Original color-depth/shadow-scene ordering bug reproduced by nativeRGB failures and fixed without changing strict0 gate.71focused,12animated/far/sheared native comparisons,10recorded238instance/72bucket/3origin views preserve exactRGB and triangles; owned resources return and injected failure restores original visibility. Actual four-class fourteen-slot Go-race parties pass both qualities. High242draw/162655triangles/16.7median+p95 sampled limits pass; Low178draw passes200 but87602triangles FAIL85000. Candidate stays unselected/unpublished; all original scope open.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -2025,5 +2025,54 @@
     },
     "finding": "Every submitted draw is accounted for. New random world has24color instance buckets at one cell origin versus prior72at three; lower sample does not clear historicalHigh389 orLow202 failures. Same-origin different geometries share materials:7+7+2+2+2+3+1=24buckets across7groups. Next private opt-in stock BatchedMesh pilot preserves each original cell origin, float32matrix, source geometry/material and per-camera whole-bucket frustum decision while consolidating different geometries. No cross-origin rounding or changed culling policy.",
     "limits": "Attribution diagnostic, not whole-game performance acceptance or publication/default selection. Twelve instrumented frames excluded from normal180frame timing sample. Original modern-art/device/soak/beta/launch/handoff goal remains open."
+  },
+  "actorCellMultiDraw": {
+    "source": "bcbc7147f4064939c0281b7cfcc6afcb8ebf11d9",
+    "runtime": "702a2755; connected9a93a779 identical runtime",
+    "selected": false,
+    "public": false,
+    "defaultEnabled": false,
+    "receipt": "docs/plans/2026-10-10-actor-cell-multidraw-qualification.json",
+    "inventorySHA256": "57c09dbeeb090266d08dc2113600350bd42a4ca069227e86aedb355d3fbc8854",
+    "focusedPassed": 71,
+    "nativeAnimatedCases": 12,
+    "nativeRecordedPopulationCases": 10,
+    "rgbError": 0,
+    "trianglesExact": true,
+    "nativeFrameFailureCleanup": true,
+    "nativeResourceCountersReturned": true,
+    "actualGoRaceFourClassFourteenSlotSaves": {
+      "high": true,
+      "low": true
+    },
+    "actualHigh": {
+      "drawCallsMedian": 242,
+      "trianglesMedian": 162655,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "sameSceneBefore": 256,
+      "sameSceneAfter": 244,
+      "sameSceneTriangles": 162659,
+      "sameSceneRGBError": 0,
+      "ownedGeometryBytes": 404160,
+      "ownedMatrixTextureBytes": 29184,
+      "ownedIndirectTextureBytes": 1640
+    },
+    "actualLow": {
+      "drawCallsMedian": 178,
+      "trianglesMedian": 87602,
+      "triangleLimit": 85000,
+      "triangleBudgetPassed": false,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "sameSceneBefore": 195,
+      "sameSceneAfter": 174,
+      "sameSceneTriangles": 87584,
+      "sameSceneRGBError": 0,
+      "ownedGeometryBytes": 549696,
+      "ownedMatrixTextureBytes": 44288,
+      "ownedIndirectTextureBytes": 2292
+    },
+    "remaining": "Actual Low87602triangles exceeds85000; historical High389draw andLow202draw failures retained. Native rendering equivalence and measured submissions qualified, but ordinary default/startup/pool/dynamic membership/representative whole-game/device acceptance remains open. No runtime selected into held branch or public29."
   }
 }
