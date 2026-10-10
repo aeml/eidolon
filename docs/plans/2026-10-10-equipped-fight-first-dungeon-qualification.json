@@ -1,0 +1,516 @@
+{
+  "recordedUTC": "2026-10-10T23:40:06.938755+00:00",
+  "classification": "progress",
+  "source": "ca9e1c5bc5a6e390d33cd03a6e5a8ed9142797d0",
+  "base": "9fe14c1999036780740e9f6c51e23b4fe7f9c0ae",
+  "runtimeIdenticalToCampCandidate": true,
+  "changedFiles": [
+    "server/terrain_browser_party_integration_test.go",
+    "tests/ScenePerformanceObservation.test.js",
+    "tests/e2e/earth-moving-route.js",
+    "tests/e2e/equipped-fight-dungeon-review.js",
+    "tests/e2e/helpers.js",
+    "tests/e2e/scene-performance.js"
+  ],
+  "selectedIntoHeld": false,
+  "published": false,
+  "focused": {
+    "uniqueChecksPassed": 41,
+    "sceneProfilerAndIntervals": 29,
+    "groundProjectionExisting": 12,
+    "nativeBrowserPlannerImportAndDOMCheckPassed": true
+  },
+  "phases": {
+    "high-first": {
+      "terminal": {
+        "source": "68c10b556ada363e48f60ce9209bd25e4e0c2715",
+        "quality": "high",
+        "exitCode": 1,
+        "startedUnix": 1791674034.1951795,
+        "finishedUnix": 1791674120.48136
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "routeFrames": 479,
+      "routeObservations": 33,
+      "elapsedMs": 50940.611961999995,
+      "sanitization": {
+        "observedPreparedAccounts": 1,
+        "plaintextFilesScanned": 12,
+        "embeddedEntriesScanned": 2,
+        "remainingPreparedNames": 0,
+        "serverMarkers": {
+          "WARNING: DATA RACE": 0,
+          "panic:": 0,
+          "fatal error:": 0,
+          "Worker panic:": 0,
+          "Recovered from panic in Update:": 0
+        },
+        "native": {
+          "total": 2,
+          "expected": 0,
+          "unexpected": 1,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": false
+        },
+        "maxRetry": 0
+      },
+      "result": "Basic-attack-only attempt died (retained frame0478 HP0/1095). Cleanup lost message-hook ownership after shared pointer diagnostic wrapped the recorder, hiding the original error. No final party or save proof. Both failures retained; no product balance claim."
+    },
+    "high-kit-corrected": {
+      "terminal": {
+        "source": "b66d0e66bf34e6589daf3d23ae42a38f0bae2292",
+        "quality": "high",
+        "exitCode": 1,
+        "startUnix": 1791674720.2719405,
+        "endUnix": 1791674819.177409
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "routeFrames": 623,
+      "routeObservations": 50,
+      "elapsedMs": 68850.648607,
+      "sanitization": {
+        "observedPreparedAccounts": 1,
+        "plaintextFilesScanned": 17,
+        "embeddedEntriesScanned": 2,
+        "remainingPreparedNames": 0,
+        "serverMarkers": {
+          "WARNING: DATA RACE": 0,
+          "panic:": 0,
+          "fatal error:": 0,
+          "Worker panic:": 0,
+          "Recovered from panic in Update:": 0
+        },
+        "native": {
+          "total": 2,
+          "expected": 0,
+          "unexpected": 1,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": false
+        },
+        "maxRetry": 0
+      },
+      "result": "Two kit fights and180frame combat profile passed; the subsequent road click projected onto a HUD button and sent no movement. Overall native/Go harness failed; party/save checks unexecuted."
+    },
+    "high-visible-road": {
+      "terminal": {
+        "source": "3ed46d0058927249d31ddc1e400e39e641140027",
+        "quality": "high",
+        "exitCode": 1,
+        "startUnix": 1791674879.7181976,
+        "endUnix": 1791674949.12087
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "routeFrames": 422,
+      "routeObservations": 34,
+      "elapsedMs": 48672.969786999995,
+      "sanitization": {
+        "observedPreparedAccounts": 1,
+        "plaintextFilesScanned": 17,
+        "embeddedEntriesScanned": 2,
+        "remainingPreparedNames": 0,
+        "serverMarkers": {
+          "WARNING: DATA RACE": 0,
+          "panic:": 0,
+          "fatal error:": 0,
+          "Worker panic:": 0,
+          "Recovered from panic in Update:": 0
+        },
+        "native": {
+          "total": 2,
+          "expected": 0,
+          "unexpected": 1,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": false
+        },
+        "maxRetry": 0
+      },
+      "result": "Two kit fights and combat profile passed; QA passed a planner with an unbound dependency into browser evaluate. ReferenceError retained. Corrected module import subsequently verified in native browser. Party/save unexecuted."
+    },
+    "high-browser-planner": {
+      "terminal": {
+        "source": "a1df2aeea4eae561e4eb36090be337cf6ae475af",
+        "quality": "high",
+        "exitCode": 1,
+        "startUnix": 1791675037.7155294,
+        "endUnix": 1791675116.337151
+      },
+      "native": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maxRetry": 0,
+      "routeFrames": 440,
+      "routeObservations": 34,
+      "elapsedMs": 52551.206216,
+      "sanitization": {
+        "observedPreparedAccounts": 1,
+        "plaintextFilesScanned": 17,
+        "embeddedEntriesScanned": 2,
+        "remainingPreparedNames": 0,
+        "serverMarkers": {
+          "WARNING: DATA RACE": 0,
+          "panic:": 0,
+          "fatal error:": 0,
+          "Worker panic:": 0,
+          "Recovered from panic in Update:": 0
+        },
+        "native": {
+          "total": 2,
+          "expected": 0,
+          "unexpected": 1,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": false
+        },
+        "maxRetry": 0
+      },
+      "result": "Two kit fights and combat profile passed; return from off-road combat position crossed a real rock. Strict path check refused input (attempts empty). Combined fight-to-dungeon sequence remains failed. Independent authored-road dungeon qualification does not erase this case."
+    },
+    "high-authored-dungeon": {
+      "terminal": {
+        "source": "ca9e1c5bc5a6e390d33cd03a6e5a8ed9142797d0",
+        "quality": "high",
+        "exitCode": 0,
+        "startUnix": 1791675254.3002777,
+        "endUnix": 1791675364.488467
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "routeFrames": 557,
+      "routeObservations": 49,
+      "elapsedMs": 65688.366736,
+      "sanitization": {
+        "observedPreparedAccounts": 4,
+        "plaintextFilesScanned": 15,
+        "embeddedEntriesScanned": 2,
+        "remainingPreparedNames": 0,
+        "serverMarkers": {
+          "WARNING: DATA RACE": 0,
+          "panic:": 0,
+          "fatal error:": 0,
+          "Worker panic:": 0,
+          "Recovered from panic in Update:": 0
+        },
+        "native": {
+          "total": 2,
+          "expected": 1,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": true
+        },
+        "maxRetry": 0
+      },
+      "result": "Independent authored-road dungeon entry/movement/Recall and actual four-class14slot Go-race save custody passed"
+    },
+    "low-authored-dungeon": {
+      "terminal": {
+        "source": "ca9e1c5bc5a6e390d33cd03a6e5a8ed9142797d0",
+        "quality": "low",
+        "exitCode": 0,
+        "startUnix": 1791675394.0693805,
+        "endUnix": 1791675486.251385
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0,
+      "routeFrames": 528,
+      "routeObservations": 49,
+      "elapsedMs": 60822.979617,
+      "sanitization": {
+        "observedPreparedAccounts": 4,
+        "plaintextFilesScanned": 15,
+        "embeddedEntriesScanned": 2,
+        "remainingPreparedNames": 0,
+        "serverMarkers": {
+          "WARNING: DATA RACE": 0,
+          "panic:": 0,
+          "fatal error:": 0,
+          "Worker panic:": 0,
+          "Recovered from panic in Update:": 0
+        },
+        "native": {
+          "total": 2,
+          "expected": 1,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 1,
+          "ok": true
+        },
+        "maxRetry": 0
+      },
+      "result": "Independent authored-road dungeon entry/movement/Recall and actual four-class14slot Go-race save custody passed"
+    }
+  },
+  "combat": {
+    "high-kit-corrected": {
+      "quality": "high",
+      "kills": 2,
+      "attempts": [
+        {
+          "stage": "recorded-kit",
+          "samples": 25,
+          "endHP": 923,
+          "requestedTarget": "DemonOrc-284"
+        },
+        {
+          "stage": "profiled-kit",
+          "samples": 25,
+          "endHP": 756,
+          "requestedTarget": "DemonOrc-67"
+        }
+      ],
+      "activeFrames": 159,
+      "profile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 301,
+        "trianglesMedian": 155398,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 384,
+        "maximumTriangles": 171933,
+        "maximumFrameMs": 16.8
+      },
+      "acceptedSkills": [
+        "Charge",
+        "Iron Fortress",
+        "Shield Slam",
+        "Whirlwind"
+      ],
+      "hooksRestored": true,
+      "audioContextBefore": "running",
+      "audioContextAfter": "running",
+      "invokedAudioCues": [
+        "ability.fighter",
+        "combat.hit"
+      ],
+      "scope": "Two live overworld defeats using the prepared already-unlocked branchA Fighter kit through ordinary hotbar/pointer controls. No health/damage/cooldown changes. First kill recorded; second sampled without screencast.180real intervals with explicit0warmup after the already-warmed continuous route. Active frame count is explicit; a mixed attack/recovery sample cannot establish sustained combat or all-class balance/pacing."
+    },
+    "high-visible-road": {
+      "quality": "high",
+      "kills": 2,
+      "attempts": [
+        {
+          "stage": "recorded-kit",
+          "samples": 25,
+          "endHP": 1007,
+          "requestedTarget": "DemonOrc-157"
+        },
+        {
+          "stage": "profiled-kit",
+          "samples": 25,
+          "endHP": 663,
+          "requestedTarget": "DemonOrc-193"
+        }
+      ],
+      "activeFrames": 166,
+      "profile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 259,
+        "trianglesMedian": 116742,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 328,
+        "maximumTriangles": 142363,
+        "maximumFrameMs": 33.3
+      },
+      "acceptedSkills": [
+        "Charge",
+        "Iron Fortress",
+        "Shield Slam",
+        "Whirlwind"
+      ],
+      "hooksRestored": true,
+      "audioContextBefore": "running",
+      "audioContextAfter": "running",
+      "invokedAudioCues": [
+        "ability.fighter",
+        "combat.hit"
+      ],
+      "scope": "Two live overworld defeats using the prepared already-unlocked branchA Fighter kit through ordinary hotbar/pointer controls. No health/damage/cooldown changes. First kill recorded; second sampled without screencast.180real intervals with explicit0warmup after the already-warmed continuous route. Active frame count is explicit; a mixed attack/recovery sample cannot establish sustained combat or all-class balance/pacing."
+    },
+    "high-browser-planner": {
+      "quality": "high",
+      "kills": 2,
+      "attempts": [
+        {
+          "stage": "recorded-kit",
+          "samples": 25,
+          "endHP": 743,
+          "requestedTarget": "DemonOrc-271"
+        },
+        {
+          "stage": "profiled-kit",
+          "samples": 25,
+          "endHP": 574,
+          "requestedTarget": "DemonOrc-41"
+        }
+      ],
+      "activeFrames": 177,
+      "profile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 238,
+        "trianglesMedian": 126682,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 33.3,
+        "maximumDraws": 339,
+        "maximumTriangles": 173978,
+        "maximumFrameMs": 33.5
+      },
+      "acceptedSkills": [
+        "Charge",
+        "Iron Fortress",
+        "Shield Slam",
+        "Whirlwind"
+      ],
+      "hooksRestored": true,
+      "audioContextBefore": "running",
+      "audioContextAfter": "running",
+      "invokedAudioCues": [
+        "ability.fighter",
+        "combat.hit"
+      ],
+      "scope": "Two live overworld defeats using the prepared already-unlocked branchA Fighter kit through ordinary hotbar/pointer controls. No health/damage/cooldown changes. First kill recorded; second sampled without screencast.180real intervals with explicit0warmup after the already-warmed continuous route. Active frame count is explicit; a mixed attack/recovery sample cannot establish sustained combat or all-class balance/pacing."
+    }
+  },
+  "dungeons": {
+    "high": {
+      "dungeonProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 115,
+        "trianglesMedian": 51121,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 115,
+        "maximumTriangles": 51121,
+        "maximumFrameMs": 16.8
+      },
+      "partyProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 325,
+        "trianglesMedian": 230068,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "maximumDraws": 325,
+        "maximumTriangles": 300148,
+        "maximumFrameMs": 33.4
+      },
+      "fourClass14SlotSavedCustodyPassed": true,
+      "scope": "Normal real portal UI after continuous authored-road movement; prepared level30normal Verdant entry, equipment retained and first-room movement/real180frame sample. Not a dungeon clear, earned story progression, sustained dungeon combat or device/art approval.",
+      "hooksRestored": true
+    },
+    "low": {
+      "dungeonProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 57,
+        "trianglesMedian": 22463,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "maximumDraws": 57,
+        "maximumTriangles": 22463,
+        "maximumFrameMs": 16.8
+      },
+      "partyProfile": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "drawCallsMedian": 182,
+        "trianglesMedian": 78735,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "maximumDraws": 182,
+        "maximumTriangles": 78737,
+        "maximumFrameMs": 16.8
+      },
+      "fourClass14SlotSavedCustodyPassed": true,
+      "scope": "Normal real portal UI after continuous authored-road movement; prepared level30normal Verdant entry, equipment retained and first-room movement/real180frame sample. Not a dungeon clear, earned story progression, sustained dungeon combat or device/art approval.",
+      "hooksRestored": true
+    }
+  },
+  "retainedFailures": {
+    "high-first": "Basic-attack-only attempt died (retained frame0478 HP0/1095). Cleanup lost message-hook ownership after shared pointer diagnostic wrapped the recorder, hiding the original error. No final party or save proof. Both failures retained; no product balance claim.",
+    "high-kit-corrected": "Two kit fights and180frame combat profile passed; the subsequent road click projected onto a HUD button and sent no movement. Overall native/Go harness failed; party/save checks unexecuted.",
+    "high-visible-road": "Two kit fights and combat profile passed; QA passed a planner with an unbound dependency into browser evaluate. ReferenceError retained. Corrected module import subsequently verified in native browser. Party/save unexecuted.",
+    "high-browser-planner": "Two kit fights and combat profile passed; return from off-road combat position crossed a real rock. Strict path check refused input (attempts empty). Combined fight-to-dungeon sequence remains failed. Independent authored-road dungeon qualification does not erase this case."
+  },
+  "reusedEvidence": "Prior camp52focused/42exactRGB native/8ordinary route profiles/2saved parties/exact publication receipts remain frozen and valid; unchanged full campaigns, long soaks and motion/admin tests not rerun. Public29 owner-requested fixes remain accepted separately.",
+  "limits": "No new product change or release. Three High combat samples are mixed attack/recovery with159/166/177active frames, not180sustained attack frames or all-class balance/contact/pacing approval. First basic-only death and all4overall failed sequences retained. Six observed kit kills do not resolve general difficulty. Audio calls/context running are observations, not audibility/waveform/contact proof. Lowcombat unexecuted. First dungeon normal preparedlevel30entry/first-room movement/Recall only, not clear or earned story progression. High first combat maximum384draws and maximum33.5ms in another sample remain dynamic-peak counterexamples despite median/p95 acceptance; historical Highparty361draw and Lowwoodland83\u219290draw counterexamples remain. Current High325draw and Low182draw parties are different populations and do not causally clear them. Actual screenshots expose remaining environment/interior/legacy-enemy polish; no modern-art/device approval. Full world/art/animation/contact/combat/operations/F1\u2013F5/beta/launch/handoff scope stays open.",
+  "next": "Investigate retained combat/party dynamic draw peaks and normal collision-aware return from off-road combat; qualify Lowcombat and representative devices, preserve supplied GLBs/all geometry/materials/population and unchanged targets. Keep combined rendering runtime unselected until coherent integration/gate decision. Continue full original goal; no campaign/soak replay.",
+  "sanitization": {
+    "observedPreparedAccountOccurrences": 12,
+    "plainFilesScanned": 120,
+    "embeddedEntriesScanned": 12,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled; explicit post-login screenshots retain approved synthetic actor labels"
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-equipped-fight-dungeon-checks-20261010",
+    "inventoryEntries": 3230,
+    "files": 3231,
+    "inventorySHA256": "6decd5cc676542a770e5b8d10fd948fbf7d4cf7ee7b82453687919b7a46c59d6",
+    "frozen": true
+  }
+}

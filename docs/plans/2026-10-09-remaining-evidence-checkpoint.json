@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T23:06:22.085908+00:00",
+  "recordedUTC": "2026-10-10T23:40:50.624051+00:00",
   "classification": "Progress: public29 jump/aura/admin fixes accepted. Qualified automatic same-cell actor multi-draw and conservative instance clipping selected only into held integration695cee4a. Ordinary candidate High/Low sampled budgets and integrated source/publication technical checks pass. New real movement route town400/woodland468draw failures keep whole-world acceptance open.",
   "qualifiedRuntime": "Held695cee4a selects three qualified actor runtime files from5e3c4d3f/d2a82c66, with prior e8 default lazy geometry/conservative actor shadows and accepted public29 motion/admin. Private rigid-handgear pilot remains excluded. Not published.",
   "rejectedSourceCommits": [
@@ -98,11 +98,11 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Continue on private camp candidate9fe14c19: source-preserving camp clipping is qualified(52focused,42exactRGB native,8route samples passing original gates,2Go-race saved parties,expanded exact-publication actual renders/disposal). Keep held695cee4a/public29 unchanged until coherent integration and remaining gate review. Capture actual equipped normal-input fight and first-dungeon moving sequence with original dynamic-population/frame budgets; retain prior Highparty361draw failure and Lowwoodland83\u219290draw counterexample rather than substituting new populations as causal clearance. Finish full world/art/contact/combat/device/operations/F1\u2013F5/beta/launch/handoff scope. No content hiding, target waiver, campaign/soak replay or public release.",
-  "currentReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
+  "nextRequiredResult": "Causal dynamic combat/party peak attribution and source-preserving improvement, normal collision-aware return from off-road fight, Lowcombat and representative devices. Retain High361/384draw and Low83\u219290draw counterexamples, independent dungeon-entry scope and original budgets. No whole-world/art/F1\u2013F5/beta/launch/handoff completion claim.",
+  "currentReceipt": "docs/plans/2026-10-10-equipped-fight-first-dungeon-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Continue on private camp candidate9fe14c19: source-preserving camp clipping is qualified(52focused,42exactRGB native,8route samples passing original gates,2Go-race saved parties,expanded exact-publication actual renders/disposal). Keep held695cee4a/public29 unchanged until coherent integration and remaining gate review. Capture actual equipped normal-input fight and first-dungeon moving sequence with original dynamic-population/frame budgets; retain prior Highparty361draw failure and Lowwoodland83\u219290draw counterexample rather than substituting new populations as causal clearance. Finish full world/art/contact/combat/device/operations/F1\u2013F5/beta/launch/handoff scope. No content hiding, target waiver, campaign/soak replay or public release.",
+  "nextAction": "Investigate retained combat/party dynamic draw peaks and normal collision-aware return from off-road combat; qualify Lowcombat and representative devices, preserve supplied GLBs/all geometry/materials/population and unchanged targets. Keep combined rendering runtime unselected until coherent integration/gate decision. Continue full original goal; no campaign/soak replay.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -2242,5 +2242,28 @@
     "highTownTriangles": 198283,
     "lowTownTriangles": 83366,
     "earlierCounterexamplesRetained": true
+  },
+  "equippedFightFirstDungeon": {
+    "source": "ca9e1c5bc5a6e390d33cd03a6e5a8ed9142797d0",
+    "runtimeIdenticalToCampCandidate": true,
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-equipped-fight-first-dungeon-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-equipped-fight-dungeon-checks-20261010",
+      "inventoryEntries": 3230,
+      "files": 3231,
+      "inventorySHA256": "6decd5cc676542a770e5b8d10fd948fbf7d4cf7ee7b82453687919b7a46c59d6",
+      "frozen": true
+    },
+    "focusedChecksPassed": 41,
+    "highKitKills": 6,
+    "highCombatProfiles": 3,
+    "highLowFirstDungeonProfiles": 2,
+    "fourClassSavedPartiesPassed": 2,
+    "overallFailedPhasesRetained": 4,
+    "maximumObservedHighCombatDraws": 384,
+    "lowCombat": "unexecuted",
+    "combinedOffRoadReturn": "failed; not waived",
+    "modernArtOrDeviceApproval": false
   }
 }
