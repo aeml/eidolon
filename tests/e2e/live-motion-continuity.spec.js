@@ -19,6 +19,8 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
             end.x += x; end.z += z;
             game.collisionManager?.constrainRockMovementDestination?.(start, end, game.player.radius || 0);
             game.collisionManager?.constrainToDungeonWalkableArea?.(end, game.player.radius || 0);
+            const corrected = game.collisionManager?.checkCollision?.(end, game.player.radius || 0, start);
+            if (corrected && Math.hypot(corrected.x - end.x, corrected.z - end.z) > .05) return 0;
             return Math.hypot(end.x - start.x, end.z - start.z);
         }, { x, z });
         if (availableDistance < 20.25) continue;
@@ -95,7 +97,15 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
             end.x += x; end.z += z;
             game.collisionManager?.constrainRockMovementDestination?.(start, end, game.player.radius || 0);
             game.collisionManager?.constrainToDungeonWalkableArea?.(end, game.player.radius || 0);
-            return Math.hypot(end.x - start.x, end.z - start.z) >= 10;
+            if (Math.hypot(end.x - start.x, end.z - start.z) < 10) return false;
+            let previous = start.clone();
+            for (let step = 1; step <= 24; step++) {
+                const position = start.clone().lerp(end, step / 24);
+                const corrected = game.collisionManager?.checkCollision?.(position, game.player.radius || 0, previous);
+                if (corrected && Math.hypot(corrected.x - position.x, corrected.z - position.z) > .05) return false;
+                previous = position;
+            }
+            return true;
         }, { x, z });
         if (!clear) continue;
         const candidate = await projectGroundOffset(page, x, z, { allowScaling: false });
