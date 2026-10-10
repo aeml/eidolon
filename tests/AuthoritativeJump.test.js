@@ -129,7 +129,7 @@ function createEngineHarness() {
 }
 
 describe('authoritative jump flow', () => {
-    test.each([15, 20, 30, 60, 144])('a long jump arrives in 1.5 seconds at %i rendered frames per second', fps => {
+    test.each([15, 20, 30, 60, 144])('a long jump reserves network latency with 1.3-second flight at %i rendered frames per second', fps => {
         const engine = createEngineHarness();
         engine.lastTime = 0;
         engine.accumulator = 0;
@@ -152,9 +152,9 @@ describe('authoritative jump flow', () => {
             }
             if (consoleError.mock.calls.length) throw consoleError.mock.calls[0][1];
             expect(consoleError).not.toHaveBeenCalled();
-            expect(initialState.elapsed).toBe(1.5);
-            expect(engine.lastTime).toBeGreaterThanOrEqual(1.5);
-            expect(engine.lastTime).toBeLessThanOrEqual(1.5 + 1 / fps + 1e-9);
+            expect(initialState.elapsed).toBe(1.3);
+            expect(engine.lastTime).toBeGreaterThanOrEqual(1.3);
+            expect(engine.lastTime).toBeLessThanOrEqual(1.3 + 1 / fps + 1e-9);
             expect(engine.playerJumpState).toBeNull();
             expect(engine.player.position.x).toBe(27);
             expect(movementTicks.every(dt => dt === 1 / 60)).toBe(true);

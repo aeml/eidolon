@@ -138,9 +138,9 @@ for (const [index, fps] of [60, 15].entries()) {
             expect(Math.min(...jump.frameTimes.slice(1).map((time, i) => time - jump.frameTimes[i]))).toBeGreaterThan(65);
         }
         expect(jump.distance).toBeGreaterThanOrEqual(20.25);
-        expect(jump.acceptedDuration).toBe(1.5);
-        expect(jump.elapsedMs).toBeGreaterThan(1350);
-        expect(jump.elapsedMs).toBeLessThan(1850);
+        expect(jump.acceptedDuration).toBe(1.3);
+        expect(jump.elapsedMs).toBeGreaterThan(1250);
+        expect(jump.elapsedMs).toBeLessThan(1600);
         expect(jump.positionError).toBeLessThan(.1);
         expect(jump.renderError).toBeLessThan(.1);
         const faults = new Set(index ? [

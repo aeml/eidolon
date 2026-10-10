@@ -1598,9 +1598,9 @@ func (w *World) startPlayerJump(id string, x, y, z float64, context *string) boo
 	dx := x - e.X
 	dz := z - e.Z
 	travelDistance := math.Sqrt(dx*dx + dz*dz)
-	// Preserve quick short hops; longer click-to-jump flights arrive within
-	// 1.5 seconds from takeoff to landing.
-	duration := math.Max(0.46, math.Min(1.5, travelDistance/13.5))
+	// Preserve quick short hops and reserve 0.2 seconds of the requested
+	// 1.5-second total for command, replication and rendering latency.
+	duration := math.Max(0.46, math.Min(1.3, travelDistance/13.5))
 	height := math.Max(6.5, math.Min(16.5, travelDistance*0.38+4.2))
 
 	e.TargetX = x
