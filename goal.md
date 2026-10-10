@@ -153,21 +153,21 @@ and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
 Prior owned history remains byte-exact in the [archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md).
 Historical procedural-only instructions do not override supplied actors/modern ARPG.
 
-Previous goal turn: **progress**, private48f35293 bounded engine-entry recovery;
-89checks and5final published-login cases pass. One distinct same-release URL
-recovers an interrupted entry and rapid clicks construct once. Persistent and
-shared dependency failures stay visible; original live cause/gate remain open.
-[Recovery limits](docs/plans/2026-10-10-engine-module-recovery.json).
+Previous goal turn: **progress**, privatefa8168f0 consolidates15copied locked
+Three add-ons.32checks/8published cases/64paired native render controls pass;
+script responses48→31, decoded bodies146570B less. No measured startup-speed
+or original live-failure-cause claim. [Publishing](docs/plans/2026-10-10-published-vendor-addons.json).
 
-Current turn: **progress**, privatefa8168f0 publication bundles15copied locked
-Three add-ons, preserves core Three/session identities and exact MIT notice.
-32focused checks/8published cases/64paired equipped HighLow render controls pass.
-Page script responses48→31 and decoded script bodies146570B less; engine114569B
-larger. No measured startup-speed or original-failure-cause claim. Initial missing
-baseline compiler/nested-link fixture failures retained and corrected.
-[Publishing and limits](docs/plans/2026-10-10-published-vendor-addons.json).
-[Staged real-time jump](docs/plans/2026-10-10-jump-live24-bundle.json).
-[Geometry storage/frame limits](docs/plans/2026-10-10-prepared-geometry-compaction.json).
+Current turn: **progress**, private00742d44 QA-only gameplay frame evidence
+uses existing exact reported-decimal intervals, retaining raw timestamp pairs,
+CPU and owned restoration.27checks/3suites and actual High four-class/race/save
+pass;1080samples independently recomputed,3480product inputs byte-exact.
+Six exactp95 values33.4 meet unchanged33.4 boundary; real33.4001ms excess still
+fails. Draws fail; ABBA16.7ms both arms proves no FPS gain. Historical raw-only
+aggregates remain unchanged. [Evidence](docs/plans/2026-10-10-gameplay-frame-evidence.json).
+Owner again requests approximately1.5seconds total jump. Existing isolatedlive24
+elapsed-time fix measures1547.4ms at15FPS/1522.6ms at60FPS with exact endpoints,
+but is not deployed. [Staged jump](docs/plans/2026-10-10-jump-live24-bundle.json).
 
 - Public24/922753a7 still matches normalTLS frontend/backend; DBready.
   CI38030283856 attempt1 remains failed required expiry engine-module download;
@@ -185,13 +185,13 @@ baseline compiler/nested-link fixture failures retained and corrected.
 - Current whole-game High/Low/close/device/cold/heap and modern moving equipped
   HUD/world/combat acceptance remain open; sampled gallery equivalence is not
   broad art/beta acceptance. Synthetic long names overlap; final screenshot
-  heap380.1MB not qualified. Physical-phone/campaign feedback remains owner-deferred.
+  latest heap418.8MB not qualified. Physical-phone/campaign feedback remains owner-deferred.
 
-Next: current gameplay profiler uses raw binary RAF subtraction while other
-qualified scene tests use exact reported-decimal renderFrameInterval.js. Correct
-this inconsistency with timestamp-pair evidence and unchanged33.4ms threshold;
-actual excesses must still fail. Do not relabel historical raw-only aggregates.
-Then continue measured rigid-shadow/default submission using actual light
+Next: prioritize release qualification of requested1.5-second total jump.
+The elapsed-time fix is already implemented; resolve retained required startup/
+Gold release findings using staged diagnosis/recovery/publication evidence,
+without blind retries, waiver or successorpush while gate unresolved. Continue
+independent measured rigid-shadow/default submission using actual light
 membership, avoiding rejected full-scene indexes/caches. Finish remaining High/
 Low/close/cold-memory/support-device/moving-art and every original1.11–1.99
 content/gameplay/story/Dark Realm/economy/social/casino/UI/save/security/F1–F5/

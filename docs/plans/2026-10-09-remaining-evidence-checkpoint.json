@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T11:06:00.509058+00:00",
-  "classification": "progress: default-submission current High attribution, two actual four-class/race/save/native moving runs with fully absent/installed windows,7QA checks,90RAF restored owner-boundary matrix measurement;3478product inputs byte-exact, High frame/draw failures retained. No activation or publication.",
+  "recordedUTC": "2026-10-10T11:19:19.874798+00:00",
+  "classification": "progress: private00742d44 gameplay profiling uses existing exact reported-decimal timestamp arithmetic, preserves raw pairs/CPU and owned cleanup.27checks/3suites and actual High four-class/race/save pass;1080sample independent audit,3480product inputs byte-exact. Draw limits still fail; no FPS gain, historical reclassification or publication. Owner reiterates1.5s total jump; verified elapsed-time fix still staged, live24unchanged.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3selection retained; prepared geometry controller/delivery now statically reachable through an explicit RenderSystem setter, default owner null. Immutable worker built from copied publication sources with exact version cache and MIT notice. No public activation or24merge. Public24transform deployed but original required startup/Gold and failed24hsoak remain unresolved.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -102,7 +102,7 @@
   "currentReceipt": "docs/plans/2026-10-10-published-vendor-addons.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: private bounded entry-module recovery48f35293,89checks and5final actual published-login cases. Browser failure cache diagnosed; one same-release recovery/one construction verified. Persistent/dependency/evaluation/export failures remain visible; original live gate/soak failures retained.",
-  "nextAction": "Correct current gameplay scene profiler to use existing exact reported-decimal RAF interval helper; retain raw timestamp pairs and real excesses against unchanged targets, verify full observation/cleanup and actual current-world scope. Do not reinterpret old raw-only aggregates as passes. Then pursue measured rigid-shadow/default submission using actual renderer light list, preserving content and incoming shadows. Keep original live module/Gold/soak findings and strict release gates; staged jump correction, geometry default null, no successor push or24merge while required gate unresolved. Finish all original1.11\u20131.99/art/gameplay/HighLow/close/cold-memory/support-device/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff scope.",
+  "nextAction": "Prioritize requested1.5-second total jump: elapsed-time fix is already qualified on isolatedlive24base c7937f17; public24still lacks it. Resolve retained required startup/Gold release findings using staged diagnostics/recovery/publication evidence, without blind retries, waiver, successorpush or24merge while gate unresolved. Continue independent measured rigid-shadow/default submission using actual renderer light list, preserve content/incoming shadows and geometry default null. All original1.11\u20131.99/art/gameplay/HighLow/close/cold-memory/support-device/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff scope remains active.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: privatefa8168f0 publishing addon consolidation.32focused checks/8published engine cases/64exactRGBA equipped HighLow controls pass; page script responses48to31, decoded payload146570B less, engine114569B larger. Three/session identities and MIT preserved. No public change or original live-gate acceptance.",
+  "currentGoalTurnClassification": "progress: private00742d44 gameplay profiling uses existing exact reported-decimal timestamp arithmetic, preserves raw pairs/CPU and owned cleanup.27checks/3suites and actual High four-class/race/save pass;1080sample independent audit,3480product inputs byte-exact. Draw limits still fail; no FPS gain, historical reclassification or publication. Owner reiterates1.5s total jump; verified elapsed-time fix still staged, live24unchanged.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1319,5 +1319,12 @@
     "receipt": "docs/plans/2026-10-10-published-vendor-addons.json",
     "inventorySHA256": "02840d3a46ec4f99e894251c70409d11e08e3cca3a7c55e48590eb7cc87d3e02",
     "status": "Publishing add-on consolidation qualified and selected privately; no deployment or release acceptance."
+  },
+  "gameplayFrameEvidence": {
+    "sourceCommit": "00742d442865d02a937d31b7aa0f3bca26f0af1a",
+    "receipt": "docs/plans/2026-10-10-gameplay-frame-evidence.json",
+    "inventorySHA256": "6e9cdc100ea4fda9b5b72ae7fa48bcea284c9f72019715f27a1ceb1a40a993c0",
+    "status": "Gameplay profiler measurement corrected and qualified privately; no production change or deployment.",
+    "samplesAudited": 1080
   }
 }
