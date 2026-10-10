@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 import { RenderSystem } from '../src/core/RenderSystem.js';
 
 describe('RenderSystem scene groups', () => {
-    test('unchanged owned world branches do not force static foliage world matrices while actor animation remains live', () => {
+    test('unchanged owned branches cache local composition while preserving manual child and actor world updates', () => {
         const render = new RenderSystem(false), foliage = new THREE.Group();
         foliage.userData = { proceduralFoliage: true, region: 'earth' };
         const cell = new THREE.InstancedMesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial(), 1);
@@ -12,18 +12,23 @@ describe('RenderSystem scene groups', () => {
         const actor = new THREE.Group(), bone = new THREE.Bone(); actor.add(bone); render.entityGroup.add(actor);
         render.scene.updateMatrixWorld(true);
         const multiply = jest.spyOn(cell.matrixWorld, 'multiplyMatrices');
+        const compose = jest.spyOn(render.environmentGroup.matrix, 'compose');
         try {
             render.scene.updateMatrixWorld();
-            expect(multiply).not.toHaveBeenCalled();
+            expect(compose).not.toHaveBeenCalled();
+            expect(multiply).toHaveBeenCalledTimes(1);
+            cell.matrix.makeTranslation(2, 0, 0);
+            render.scene.updateMatrixWorld();
+            expect(cell.matrixWorld.elements[12]).toBe(2);
             actor.position.x = 7; bone.position.y = 3;
             render.scene.updateMatrixWorld();
             expect(bone.matrixWorld.elements[12]).toBe(7); expect(bone.matrixWorld.elements[13]).toBe(3);
             foliage.position.x = 5; render.environmentGroup.position.z = 9;
             render.scene.updateMatrixWorld();
-            expect(cell.matrixWorld.elements[12]).toBe(5); expect(cell.matrixWorld.elements[14]).toBe(9);
+            expect(cell.matrixWorld.elements[12]).toBe(7); expect(cell.matrixWorld.elements[14]).toBe(9);
             render.staticEnvironmentGroup.add(foliage); render.scene.updateMatrixWorld();
-            expect(cell.matrixWorld.elements[12]).toBe(5); expect(cell.matrixWorld.elements[14]).toBe(9);
-        } finally { multiply.mockRestore(); render.dispose(); }
+            expect(cell.matrixWorld.elements[12]).toBe(7); expect(cell.matrixWorld.elements[14]).toBe(9);
+        } finally { compose.mockRestore(); multiply.mockRestore(); render.dispose(); }
     });
 
     test.each([
