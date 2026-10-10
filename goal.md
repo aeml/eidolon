@@ -1,5 +1,22 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 actor view and incoming-shadow pilot:** Optional source-preserving
+filter passes91focused checks and70strict zero-RGB native comparisons, including
+animation, distant coordinates, cell boundaries, unknown lights and draw-failure
+restoration. Final High/Low four-class race/save observers retain three peers.
+Same-scene High419→296draws/181519→166891triangles; Low169→145/82117→75508,
+zero RGB changes. Ordinary High297draws/166903triangles passes geometry limits
+but33.4median/66.7p95ms fails frame limits. Low145draws/75762triangles/33.3median/
+50p95ms passes this desktop scene only; no phone/battle/full-game certificate.
+Rigid weapon seam/orientation trials yielded only12or192Low catalog triangle
+savings and remain count-only negative evidence. Filter stays null by default;
+qualified e47selection/public1.79.22/profile/access unchanged. [Pilot and limits](docs/plans/2026-10-10-actor-instance-view-pilot.json).
+Next measured High scene traversal/bounds/matrix/frame costs, compact bake/
+coverage/zoom/lifecycle/cache/device/moving-art and full inherited1.11–1.99/
+Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff. No narrower
+completion or public microrelease.
+
+
 **October10 gameplay gear seam collars:** Opt-in exact source collars replace
 whole-part fallbacks while retaining all protected raw signatures/PBR regions
 and full bones. Gallery High66832→39496/Low41010→33396; default/disabled

@@ -56,6 +56,7 @@ export class ActorInstanceBatches {
         scene.add(this.group);
         this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
         this.enabled = true;
+        this.viewFilter = null;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
         scene.traverse(root => this.register(root));
         this.watchedGroups = [...new Set(watchedGroups)];
@@ -70,7 +71,7 @@ export class ActorInstanceBatches {
             group.addEventListener('childremoved', this.onRemoved);
         }
         this.before = scene.onBeforeRender; this.after = scene.onAfterRender;
-        this.beforeHook = (...args) => { this.before.apply(scene, args); this.beginFrame(); };
+        this.beforeHook = (...args) => { this.before.apply(scene, args); this.beginFrame(args[0], args[2]); };
         this.afterHook = (...args) => { this.endFrame(); this.after.apply(scene, args); };
         scene.onBeforeRender = this.beforeHook; scene.onAfterRender = this.afterHook;
     }
@@ -108,22 +109,30 @@ export class ActorInstanceBatches {
         });
     }
 
-    beginFrame() {
+    beginFrame(renderer, camera) {
         this.endFrame();
         if (this.disposed || !this.enabled) return;
         this.refreshRoster();
+        this.viewFilter?.beginFrame(renderer, this.scene, camera);
         const used = new Set();
         this.group.matrixWorld.copy(this.scene.matrixWorld);
         try {
             for (const [key, entries] of this.buckets) {
-                const parts = entries.filter(entry => inside(entry.part, this.scene, true) && eligible(entry.part)).map(entry => entry.part);
-                if (parts.length < 2) continue;
+                const eligibleParts = entries.filter(entry => inside(entry.part, this.scene, true) && eligible(entry.part)).map(entry => entry.part);
+                const parts = this.viewFilter ? eligibleParts.filter(part => {
+                    if (!this.viewFilter.rejects(part)) return true;
+                    this.hidden.push(part); part.visible = false; return false;
+                }) : eligibleParts;
+                // Preserve the existing instance shader for a retained single
+                // member of an originally eligible bucket. Changing it to a
+                // direct draw can introduce normal/position rounding changes.
+                if (eligibleParts.length < 2 || !parts.length) continue;
                 let batch = this.batches.get(key);
                 if (batch && batch.instanceMatrix.count < parts.length) {
                     batch.removeFromParent(); batch.dispose(); this.batches.delete(key); batch = null;
                 }
                 if (!batch) {
-                    batch = new InstancedMesh(parts[0].geometry, parts[0].material, 2 ** Math.ceil(Math.log2(parts.length)));
+                    batch = new InstancedMesh(parts[0].geometry, parts[0].material, 2 ** Math.ceil(Math.log2(eligibleParts.length)));
                     batch.name = `ActorInstances_${parts[0].name}`;
                     batch.instanceMatrix.setUsage(DynamicDrawUsage); batch.matrixAutoUpdate = false;
                     batch.castShadow = parts[0].castShadow; batch.receiveShadow = parts[0].receiveShadow;
@@ -134,7 +143,9 @@ export class ActorInstanceBatches {
                 // Store small cell-relative float32 attributes. Full dungeon
                 // coordinates here discard fractional gear/animation offsets;
                 // the double-precision model-view transform owns the origin.
-                const sourceWorld = parts[0].matrixWorld.elements;
+                // A leaf can straddle its root's cell boundary. Filtering the
+                // first member must not change the original float32 origin.
+                const sourceWorld = eligibleParts[0].matrixWorld.elements;
                 batch.matrixWorld.makeTranslation(Math.floor((sourceWorld[12] + 32) / 64) * 64, 0,
                     Math.floor((sourceWorld[14] + 32) / 64) * 64);
                 this.inverse.copy(batch.matrixWorld).invert();

@@ -6,6 +6,7 @@ import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
 import { prepareShadowGeometryPilot, selectSimplifiedShadowGeometry } from './shadow-geometry-pilot.js';
 import { prepareGameplayColorPilot } from './gameplay-color-lod-pilot.js';
 import { prepareGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
+import { prepareActorInstanceViewPilot } from './actor-instance-view-pilot.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -101,6 +102,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
     expect(process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT, 'Shadow geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT, 'Color geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_GAMEPLAY_COLOR_COLLARS, 'Color seam collars currently qualify the single-renderer observer only').toBeUndefined();
+    expect(process.env.EIDOLON_E2E_ACTOR_INSTANCE_VIEW_PILOT, 'Actor view filtering currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_GAMEPLAY_BODY_PILOT, 'Body geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     test.setTimeout(230_000);
     expect(process.env.EIDOLON_E2E_WS_URL).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
@@ -435,6 +437,21 @@ test('single native renderer observes three live equipped party socket peers on 
             expect(paired.candidate.triangles).toBeLessThan(paired.reference.triangles);
             recordPeerLiveness('shadow-prepared');
         }
+        if (process.env.EIDOLON_E2E_ACTOR_INSTANCE_VIEW_PILOT === '1') {
+            const paired = await prepareActorInstanceViewPilot(page);
+            await writeFile(testInfo.outputPath('actor-view-party.json'), JSON.stringify({
+                scope: 'Optional actor view filtering in one actual connected renderer; exact frozen-clock RGB control and bounded CPU submission ABBA. Ordinary instancing, source geometry, assets and worker retained. No four-renderer or device acceptance.', paired
+            }, null, 2));
+            console.log('[actor-view-party]', JSON.stringify(paired));
+            expect(paired.image.changedChannels).toBe(0);
+            expect(paired.image.unstableChannels).toBe(0);
+            expect(paired.referenceAgain.triangles).toBe(paired.reference.triangles);
+            expect(paired.candidate.calls).toBeLessThanOrEqual(paired.reference.calls);
+            expect(paired.candidate.triangles).toBeLessThan(paired.reference.triangles);
+            expect(paired.candidate.stats.culled).toBeGreaterThan(0);
+            for (const row of [paired.reference, paired.candidate, paired.referenceAgain, ...paired.cpu.blocks]) expect(row.restored).toBe(true);
+            recordPeerLiveness('actor-view-prepared');
+        }
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
@@ -706,6 +723,7 @@ test('single native renderer observes three live equipped party socket peers on 
         console.log('[untimed-same-scene-instance-comparison]', JSON.stringify(pairedDraws));
     } finally {
         await page.evaluate(() => {
+            window.__actorInstanceViewPilot?.dispose(); delete window.__actorInstanceViewPilot;
             window.__shadowGeometryPilot?.pass.dispose(); delete window.__shadowGeometryPilot;
             window.__gameplayColorPilot?.dispose(); delete window.__gameplayColorPilot;
             window.__gameplayBodyPilot?.dispose(); delete window.__gameplayBodyPilot;

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T03:14:56.381835+00:00",
-  "classification": "Unselected exact source seam-collar repair for supplied gameplay gear/eyes; default operator stays byte-equivalent on160captured inputs.66focused checks,160source audit,72native pose/zoom pairs/24exact close controls/four resource cycles and actualHigh/Low race/save checks pass. High164532triangles meets250000but388draws/33.3median/50.1p95ms fail;Low90620still exceeds85000. Full inherited roadmap remains active.",
+  "recordedUTC": "2026-10-10T03:59:39.327780+00:00",
+  "classification": "Unselected actor view/shadow-influence filtering retains exact source surfaces and incoming shadows.91focused checks,70strict native RGB pairs and finalHigh/Low actual four-class race/save observers pass. High297draws/166903triangles meet limits but33.4median/66.7p95ms fail;Low145draws/75762triangles/33.3median/50p95 meets this desktop scene scope only. Full inherited roadmap remains active.",
   "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,9 +9,9 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-10T02:54:04Z",
+    "readOnlyObservationUTC": "2026-10-10T03:36:38Z",
     "result": {
-      "observed_at_utc": "2026-10-10T02:54:04Z",
+      "observed_at_utc": "2026-10-10T03:36:38Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -86,13 +86,13 @@
         }
       ]
     },
-    "noRestartCancelOrRetry": true
+    "action": "One bounded read-only monitor observation; no restart/cancel/soak substitution or success claim."
   },
-  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-gameplay-color-collars-pilot.json",
+  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1–F5, beta or launch acceptance.",
+  "currentReceipt": "docs/plans/2026-10-10-actor-instance-view-pilot.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Progress:15ca4edd retained opt-in supplied gear/eye color pilot with native/source/resource/actualHighLow/save evidence; full budgets failed and production activation stayed off.",
-  "nextAction": "Investigate measured High submission/frame cost and Low remaining fitted/rigid/scene geometry, with controlled source-equivalent comparisons and full source material/skin/blink/slot preservation. Bake compact immutable geometry/LOD data instead of synchronous QA preparation/raw buffer duplication, qualify coverage masks, continuous zoom/hysteresis, active equip/pool/reconnect/respawn, cold/offline/returning cache, targeting/contact/combat and whole High/Low/support-device/moving-art gates. Continue full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff; no narrower completion or public microrelease.",
+  "previousGoalTurnClassification": "Progress:e49fa50b retained opt-in exact gameplay gear collars with source/native/resource/HighLow/save evidence; full budgets failed. Default runtime and public baseline unchanged.",
+  "nextAction": "Investigate actual High frame CPU with measured scene traversal, bounds and world/local matrix attribution and complete invalidation. Low three-second profile points toward these same costs; no High timing claim is inferred from it. Preserve all actors, foliage, source geometry/material/rig/blink/slots, exact incoming shadows and unchanged budgets. Compact bake/coverage masks/continuous zoom/hysteresis/active equip-pool-reconnect-respawn/cold-offline-returning cache, actual targeting/contact/combat/moving art, whole High/Low/support-device and full inherited1.11–1.99/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff remain required. No narrower completion or public microrelease.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -434,5 +434,333 @@
     "newRuntimeActivation": false,
     "wholeHighLowBudgetsPass": false,
     "fullRoadmapRemainsActive": true
+  },
+  "actorInstanceViewPilot": {
+    "receipt": "docs/plans/2026-10-10-actor-instance-view-pilot.json",
+    "preparedNotSelected": true,
+    "nativeTests": 12,
+    "strictNativePairs": 70,
+    "focusedChecks": 91,
+    "actualHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.400000000001455,
+      "frameP95Ms": 66.69999999999709,
+      "frameP99Ms": 83.30000000000291,
+      "framesOver33ms": 108,
+      "cpuLoopMedianMs": 35.30000001192093,
+      "cpuLoopP95Ms": 58.099999994039536,
+      "drawCallsMedian": 297,
+      "trianglesMedian": 166903,
+      "geometries": 485,
+      "textures": 293,
+      "activeEntities": 28,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLow": {
+      "quality": "low",
+      "label": "single-renderer-equipped-raised-party-low",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.299999999995634,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50.10000000000582,
+      "framesOver33ms": 45,
+      "cpuLoopMedianMs": 22.400000005960464,
+      "cpuLoopP95Ms": 34.900000005960464,
+      "drawCallsMedian": 145,
+      "trianglesMedian": 75762,
+      "geometries": 380,
+      "textures": 254,
+      "activeEntities": 37,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLimitsMet": {
+      "high": {
+        "frameMedianMs": false,
+        "frameP95Ms": false,
+        "drawCallsMedian": true,
+        "trianglesMedian": true
+      },
+      "low": {
+        "frameMedianMs": true,
+        "frameP95Ms": true,
+        "drawCallsMedian": true,
+        "trianglesMedian": true
+      }
+    },
+    "sameSceneControl": {
+      "high": {
+        "reference": {
+          "calls": 419,
+          "triangles": 181519,
+          "restored": true,
+          "stats": null
+        },
+        "candidate": {
+          "calls": 296,
+          "triangles": 166891,
+          "restored": true,
+          "stats": {
+            "checked": 646,
+            "culled": 412,
+            "boundsBuilt": 0,
+            "lightScanNodes": 4193,
+            "unknownShadow": false
+          }
+        },
+        "referenceAgain": {
+          "calls": 419,
+          "triangles": 181519,
+          "restored": true,
+          "stats": null
+        },
+        "image": {
+          "width": 1280,
+          "height": 844,
+          "frozenRenderClock": true,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        },
+        "cpu": {
+          "scope": "Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.",
+          "blocks": [
+            {
+              "enabled": false,
+              "milliseconds": [
+                22.799999982118607,
+                22.200000017881393,
+                16.5,
+                18.5,
+                26,
+                20.399999976158142,
+                30,
+                65.5,
+                32,
+                21.700000017881393,
+                31,
+                47.79999998211861
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                44.69999998807907,
+                46.70000001788139,
+                28,
+                18.69999998807907,
+                33.69999998807907,
+                21.80000001192093,
+                26.900000005960464,
+                18.799999982118607,
+                28.80000001192093,
+                25.69999998807907,
+                18.400000005960464,
+                15.099999994039536
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                21.19999998807907,
+                22,
+                35.900000005960464,
+                19.799999982118607,
+                18.900000005960464,
+                15.300000011920929,
+                21.5,
+                24,
+                28.5,
+                34,
+                17.299999982118607,
+                17.700000017881393
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                23.799999982118607,
+                20.900000005960464,
+                25.30000001192093,
+                48.19999998807907,
+                27.599999994039536,
+                27.900000005960464,
+                23.400000005960464,
+                20.299999982118607,
+                18.80000001192093,
+                24.30000001192093,
+                30.19999998807907,
+                27.400000005960464
+              ],
+              "restored": true
+            }
+          ],
+          "reference": {
+            "frames": 24,
+            "median": 25.30000001192093,
+            "p95": 48.19999998807907
+          },
+          "candidate": {
+            "frames": 24,
+            "median": 22,
+            "p95": 44.69999998807907
+          }
+        },
+        "quality": "high",
+        "zoom": 15
+      },
+      "low": {
+        "reference": {
+          "calls": 169,
+          "triangles": 82117,
+          "restored": true,
+          "stats": null
+        },
+        "candidate": {
+          "calls": 145,
+          "triangles": 75508,
+          "restored": true,
+          "stats": {
+            "checked": 986,
+            "culled": 926,
+            "boundsBuilt": 0,
+            "lightScanNodes": 0,
+            "unknownShadow": false
+          }
+        },
+        "referenceAgain": {
+          "calls": 169,
+          "triangles": 82117,
+          "restored": true,
+          "stats": null
+        },
+        "image": {
+          "width": 1280,
+          "height": 844,
+          "frozenRenderClock": true,
+          "changedChannels": 0,
+          "unstableChannels": 0,
+          "maximumChannel": 0
+        },
+        "cpu": {
+          "scope": "Synchronous frozen-world ABBA submission timing; real clock; 2 warm renders then 12 measured renders per block. Not whole-frame pacing.",
+          "blocks": [
+            {
+              "enabled": false,
+              "milliseconds": [
+                20.200000017881393,
+                18.799999982118607,
+                21.599999994039536,
+                16.400000005960464,
+                13.5,
+                15.199999988079071,
+                17.599999994039536,
+                15.800000011920929,
+                14.5,
+                14.299999982118607,
+                13.600000023841858,
+                12.899999976158142
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                14.599999994039536,
+                15.900000005960464,
+                15.5,
+                14.599999994039536,
+                12.900000005960464,
+                17.400000005960464,
+                23.599999994039536,
+                15.300000011920929,
+                15.599999994039536,
+                14.300000011920929,
+                21.599999994039536,
+                19.400000005960464
+              ],
+              "restored": true
+            },
+            {
+              "enabled": true,
+              "milliseconds": [
+                22.19999998807907,
+                21.5,
+                19.5,
+                22.80000001192093,
+                23.099999994039536,
+                25.400000005960464,
+                22.69999998807907,
+                15.599999994039536,
+                15.900000005960464,
+                19.400000005960464,
+                13.5,
+                17.099999994039536
+              ],
+              "restored": true
+            },
+            {
+              "enabled": false,
+              "milliseconds": [
+                20.900000005960464,
+                21.19999998807907,
+                26.80000001192093,
+                21.599999994039536,
+                18.19999998807907,
+                28.900000005960464,
+                32.599999994039536,
+                22.900000005960464,
+                12.700000017881393,
+                14.5,
+                20.5,
+                36.5
+              ],
+              "restored": true
+            }
+          ],
+          "reference": {
+            "frames": 24,
+            "median": 18.799999982118607,
+            "p95": 32.599999994039536
+          },
+          "candidate": {
+            "frames": 24,
+            "median": 17.400000005960464,
+            "p95": 23.599999994039536
+          }
+        },
+        "quality": "low",
+        "zoom": 15
+      }
+    },
+    "rigidSourceDiagnosis": "Count-only Low savings12or192catalog triangles not useful; retained privately, no runtime/art selection.",
+    "evidence": {
+      "artifacts": 720,
+      "inventorySHA256": "e9d1423705e13188fbcc94a253abc7875a21b6c79e48ef8dc723530cab849a59"
+    }
   }
 }
