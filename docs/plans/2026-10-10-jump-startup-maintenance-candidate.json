@@ -1,0 +1,206 @@
+{
+  "status": "Isolated live24 maintenance candidate implemented and locally qualified; not versioned for publication or deployed.",
+  "recordedUTC": "2026-10-10T11:41:34.836176+00:00",
+  "sourceCommit": "c0d120a3f9065c3699e817f16de726cf1e201469",
+  "baseCommit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+  "worktree": "/home/aeml/.local/share/eidolon-jump-startup-maintenance-20261010",
+  "branch": "work/jump-startup-maintenance-20261010",
+  "implementation": "Five product inputs: uncapped elapsed-time flight/local display smoothing; bounded lazy module entry recovery with one distinct same-release URL and shared terminal outcome; copied locked Three add-ons bundled with exact MIT license, core Three/login singleton identities retained. No private geometry worker/owner, terrain, body selections or rendering prototypes. Diagnostic/vendor-credit QA retained.",
+  "integration": "Ordinary cherry-picks of live24 jump candidate plus170c41af/d1616fba QA,48f35293 startup andfa8168f0 publisher. Initial standalone d161 selection lacked parent-added files; aborted before selecting both170/d161. Resolved publisher conflicts by excluding private worker build/metadata and keeping exact recovery/add-on behavior. Source commits205f6b7d/a2c6ba90/c0d120a3 retain this adaptation.",
+  "sourceProof": {
+    "baseCommit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "sourceCommit": "a2c6ba90810be2c4a619f5585abdee993ff020ce",
+    "unchangedProductInputs": 3481,
+    "changedProductInputs": {
+      "scripts/bundle-game-engine.mjs": "e060080802fa8593e89288d9c4ae0d456e29504d24487dfa3a62b49d6dde3acf",
+      "src/core/EngineModuleLoader.js": "fd176c28e05443b1312ba1aca36f440cec5c823184b9b119ec9b974f86bebb84",
+      "src/core/GameEngineMovement.js": "3cd0c6c19630aa0e573cdb87d191286515fbef94316e524fe7f1fefb5d52a0dd",
+      "src/core/GameEngineRuntime.js": "d9e7ce99461e2f886735fdda9699ede02e814794927e0da829d3c7cbcf872458",
+      "src/main.js": "f8d98df9284721a7e3a394bab6ef28d3a9e9f1703d57a09359650f4a9003150d"
+    },
+    "unchangedScope": "Every asset, server, workflow, account/economy/save implementation and release identity remains byte-exact to live24. No terrain/geometry/private body selections or worker.",
+    "qualificationSourceCommit": "c0d120a3f9065c3699e817f16de726cf1e201469",
+    "sourcePins": {
+      "scripts/bundle-game-engine.mjs": "e060080802fa8593e89288d9c4ae0d456e29504d24487dfa3a62b49d6dde3acf",
+      "src/core/EngineModuleLoader.js": "fd176c28e05443b1312ba1aca36f440cec5c823184b9b119ec9b974f86bebb84",
+      "src/core/GameEngineMovement.js": "3cd0c6c19630aa0e573cdb87d191286515fbef94316e524fe7f1fefb5d52a0dd",
+      "src/core/GameEngineRuntime.js": "d9e7ce99461e2f886735fdda9699ede02e814794927e0da829d3c7cbcf872458",
+      "src/main.js": "f8d98df9284721a7e3a394bab6ef28d3a9e9f1703d57a09359650f4a9003150d",
+      "tests/AuthoritativeJump.test.js": "ca41dfcf3e0e57cf6a26c4161722b547290d345ed240f079d3347910e8d42e18",
+      "tests/E2EHelpers.test.js": "8f980cce9891aaafd0b2eba9773abf68a8df0a7c50f6291db94b60c8cd00d31d",
+      "tests/EngineModuleLoader.test.js": "b22f91644a71ab439536ceb12b5cf89254c7ddaabfac757a0ce1fe5cf50916b4",
+      "tests/GameEngineBundle.test.js": "7bf9f9cc288d4cca2e4eea718f1ba50aa2207e0113dcebaf2918799fd5b74a3f",
+      "tests/MainAssetBoot.test.js": "d7c861882eabace96e4a2fa6f16030855f3db090c94695f95a71d1cfe4833166",
+      "tests/StartupModuleEvidence.test.js": "46a20edfa38f9b1a19fd78e16475749ea916f138bfe3cb63c61c8ebd46654842",
+      "tests/e2e/helpers.js": "fa26c5a782aec2e3fea7cc8349d020a63b27ce3e57c50bbf34b14d4bda096af7",
+      "tests/e2e/jump-clock-observation.js": "46f9e287354551ed511248818c494eee7b1f1ef1d486e039a80770a5f4ed0a83",
+      "tests/e2e/jump-wall-clock.spec.js": "c5c5ac62669e096cc8993533ddbd7b17953ecc48b8569c1b59e26cda4139afd3",
+      "tests/e2e/published-addon-parity.spec.js": "78838d50a3cd5413e0d4d167a722c97ed03358761a81b822a643460ce5ef95eb",
+      "tests/e2e/published-game-bundle.spec.js": "08165f815f5962ca5da04db8614f2993872a6b6de404c5a8b8015f63bc159aad",
+      "tests/e2e/startup-module-evidence.js": "adec5f98dfb6ea75d4fb334ea975602b6f7a9aafd457af1c06529be0a6f78df1",
+      "tests/e2e/startup-module-evidence.spec.js": "e1ea5192f6dfa1498351b5ca731fbf272bb32b9fb11ba2666a4dcb2973703232"
+    }
+  },
+  "checks": {
+    "unit": "197checks/10suites pass5.902s; scoped ESLint and diff pass.",
+    "native": "Initial9cases8pass1failure51.7s. Recovery had succeeded, but private-field assertion expected null instead of no geometry owner. Adapted assertion requires absence of both owner and setter; only that changed case rerun,1pass8.1s. Retained initial report/trace. No automatic retries or skips. Eight other scopes remain source-byte-valid.",
+    "recovery": {
+      "requests": [
+        "?release=bundlefixture20261009",
+        "?startupRetry=1&release=bundlefixture20261009"
+      ],
+      "constructions": 1,
+      "state": {
+        "className": "GameEngine",
+        "geometryOwnerAbsent": true,
+        "errorHidden": true
+      }
+    },
+    "publishedJump": {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 23,
+          "elapsedMs": 1560.199999988079,
+          "maxFrameGapMs": 77,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 90,
+          "elapsedMs": 1523.800000011921,
+          "maxFrameGapMs": 32.40000001192084,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    },
+    "sourceJump": {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 23,
+          "elapsedMs": 1561.9000000059605,
+          "maxFrameGapMs": 81.40000000596046,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 91,
+          "elapsedMs": 1524.5999999940395,
+          "maxFrameGapMs": 16.799999999999727,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    },
+    "pairedPublishing": {
+      "capturesPerArm": 64,
+      "distinctHashes": 55,
+      "baseline": {
+        "bundledModules": 424,
+        "bytes": 3259567,
+        "sharedLoginModules": 22,
+        "externalImports": [
+          "../assets/ServiceWorkerBoot.js",
+          "../data/worldGeography.js",
+          "../ui/EmailRecoveryUI.js",
+          "../ui/OwnedEvents.js",
+          "../ui/PasswordChangeUI.js",
+          "../ui/ReportUI.js",
+          "../ui/reportTypes.js",
+          "./CredentialToken.js",
+          "./GraphicsStartup.js",
+          "three",
+          "three/addons/geometries/RoundedBoxGeometry.js",
+          "three/addons/loaders/GLTFLoader.js",
+          "three/addons/postprocessing/EffectComposer.js",
+          "three/addons/postprocessing/OutputPass.js",
+          "three/addons/postprocessing/RenderPass.js",
+          "three/addons/postprocessing/ShaderPass.js",
+          "three/addons/postprocessing/UnrealBloomPass.js",
+          "three/addons/shaders/FXAAShader.js",
+          "three/addons/utils/BufferGeometryUtils.js",
+          "three/addons/utils/SkeletonUtils.js"
+        ]
+      },
+      "candidate": {
+        "bundledModules": 439,
+        "bytes": 3374195,
+        "sharedLoginModules": 22,
+        "vendorModules": [
+          "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+          "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+          "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+          "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+          "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+          "vendor/three/examples/jsm/postprocessing/Pass.js",
+          "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+          "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+          "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+          "vendor/three/examples/jsm/shaders/CopyShader.js",
+          "vendor/three/examples/jsm/shaders/FXAAShader.js",
+          "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+          "vendor/three/examples/jsm/shaders/OutputShader.js",
+          "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+          "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+        ],
+        "externalImports": [
+          "../assets/ServiceWorkerBoot.js",
+          "../data/worldGeography.js",
+          "../ui/EmailRecoveryUI.js",
+          "../ui/OwnedEvents.js",
+          "../ui/PasswordChangeUI.js",
+          "../ui/ReportUI.js",
+          "../ui/reportTypes.js",
+          "./CredentialToken.js",
+          "./GraphicsStartup.js",
+          "three"
+        ]
+      },
+      "baselineScriptResponses": 48,
+      "candidateScriptResponses": 31,
+      "baselineDecodedScriptBytes": 5716676,
+      "candidateDecodedScriptBytes": 5570165,
+      "exactRGBAAndCounts": true
+    },
+    "reuse": "Vendor helper SHA matches finald161 and real-server d76413a4 ordinary/delayed credit,stash,fresh-login/Go-race save evidence. Server/assets/economy/save implementation byte-exact24; no unchanged rerun."
+  },
+  "public": {
+    "recordedUTC": "2026-10-10T11:40:22.493744+00:00",
+    "normalTLS": true,
+    "frontend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24"
+    },
+    "health": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24",
+      "status": "ok",
+      "database": "ready"
+    },
+    "engineSHA256": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a",
+    "ci": {
+      "run": 38030283856,
+      "attempt": 1,
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  },
+  "limits": "Source/compiled jump uses real browser cadence in empty supplied-Fighter stage, not actual populated server/physical-device proof. Paired equipped render equality is specific to64fixtures, not full moving modern-art acceptance. Fewer decoded bytes/requests do not prove compressed bytes, latency or FPS improvement. Recovery cannot fix a persistently failed shared core dependency; evaluation/export errors remain visible and un-retried. Strict browser resource-error policy remains unchanged; original live startup/Gold causes and failedCI/24hsoak remain open. No successor public push, CI rerun,24merge into held or user-workspace edits. Full original1.11\u20131.99 scope remains active.",
+  "next": "Qualify actual copied/versioned maintenance publication with normal real-server authenticated world entry and elapsed-time jump at slow frames, preserving exact accounts/assets/authority and existing acceptance limits; keep original failed release evidence and no blind rerun/waiver.",
+  "goalReconciliation": {
+    "originalGoalSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7",
+    "originalLines": 146,
+    "public24HistoricalGoalSHA256": "a98559c4b650a187efd01f1d64aca1f5e0c2301243d37cb2b2eb6ceccedd6f60",
+    "public24HistoricalLines": 2617,
+    "scope": "Retain historical public24goal byte-exact at original referenced docs/plans/2026-10-09-goal-history.md; replace candidate goal with complete146line owner objective plus concise local checkpoint. Supplied GLBs/modern ARPG requirements remain authoritative."
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-jump-startup-maintenance-checks-20261010",
+  "inventorySHA256": "d4d43b86e61b413810a65c617edadfc702fc4bc34d3dd4da1f82cfb66fb74a25",
+  "inventoryFiles": 66
+}
