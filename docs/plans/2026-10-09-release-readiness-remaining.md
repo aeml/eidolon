@@ -180,3 +180,12 @@ gear/bag/logout preserved. 128 focused checks pass. Geometry owner stays null;
 held art/render/runtime unchanged except intentional1.3s Movement cap. This is
 private and unselected; public27 CI/deployment remains separately pending.
 Receipt: `2026-10-10-world-total-jump-integration.json`.
+
+Public27 candidate392 CI38062443230 failed before deployment due to missed
+published-bundle minimum1500ms. Actual new flight landed1393.7/1425.2ms, then
+configured retry1447.1/1339.9ms, endpoints0. Original outcome/archive retained.
+Only that test now matches source fixture1300–1550ms: native1pass7s,1356.4ms15FPS
+and1318.8ms60FPS, endpoints0. Follow-up a9d6fc9b ordinary-pushed; new exact
+CI38064138468 is in progress, not a manual rerun. Runtime unchanged. Version27
+remains undeployed; verified public26 and failed required prior gates retained.
+Full original scope remains active; public deployment/jump proof pending.
