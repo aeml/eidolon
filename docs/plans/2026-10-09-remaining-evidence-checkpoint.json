@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T11:33:01.024330+00:00",
-  "classification": "progress: private d76413a4 two native ordinary/ordered-delayed vendor-stash cases pass50.6s and Go-race saved custody/Gold/EP check passes57.350s.3485public24product inputs unchanged. Two failed native baseline controls retained: actual ordering did not reproduce bag-before-Gold assumption. Existing unit delayed-credit counterexample remains valid, original live causes unproven; no deployment.",
+  "recordedUTC": "2026-10-10T11:41:34.836176+00:00",
+  "classification": "progress: isolated live24 candidate c0d120a3/3404c644 combines real-time jump, bounded entry recovery, copied add-on publication and QA diagnostics/vendor-credit barrier.197checks/10suites and nine qualified native scopes pass; initial8pass1wrong-private-field failure retained, only corrected absence-assertion case rerun1pass. Five product inputs only;3481existing inputs unchanged. No deployment/public24merge/failed-gate acceptance.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3selection retained; prepared geometry controller/delivery now statically reachable through an explicit RenderSystem setter, default owner null. Immutable worker built from copied publication sources with exact version cache and MIT notice. No public activation or24merge. Public24transform deployed but original required startup/Gold and failed24hsoak remain unresolved.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -102,7 +102,7 @@
   "currentReceipt": "docs/plans/2026-10-10-published-vendor-addons.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: private bounded entry-module recovery48f35293,89checks and5final actual published-login cases. Browser failure cache diagnosed; one same-release recovery/one construction verified. Persistent/dependency/evaluation/export failures remain visible; original live gate/soak failures retained.",
-  "nextAction": "Prepare and locally qualify one isolated live24 maintenance candidate combining already-reviewed real-time1.5s jump, bounded engine-entry recovery, copied-addon publication and exact vendor-credit QA barrier/diagnostics. Exclude held terrain/geometry/art prototypes; retain original failedCI/Gold/soak evidence and no public successor while required release gate unresolved. Native baseline controls did not prove liveGoldcause; do not force acknowledgement ordering or relabel them passes. Continue useful independent actual-light rigid-shadow/default submission and all original1.11\u20131.99/art/HighLow/device/gameplay/story/DarkRealm/economy/social/casino/UI/save/security/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff scope.",
+  "nextAction": "Qualify actual copied/versioned isolated maintenance publication against real disposable server for normal authenticated world entry, bounded root-module interruption recovery and slow-frame server-accepted1.5s jump with real input. Reuse valid byte-exact server/vendor/asset evidence; no unchanged full campaigns/soaks. Preserve original failedCI/Gold/soak and no successor public push while required release gate unresolved. Continue independent actual-light rigid-shadow/default submission and all original1.11\u20131.99/art/HighLow/device/gameplay/story/DarkRealm/economy/social/casino/UI/save/security/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff scope.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: private d76413a4 two native ordinary/ordered-delayed vendor-stash cases pass50.6s and Go-race saved custody/Gold/EP check passes57.350s.3485public24product inputs unchanged. Two failed native baseline controls retained: actual ordering did not reproduce bag-before-Gold assumption. Existing unit delayed-credit counterexample remains valid, original live causes unproven; no deployment.",
+  "currentGoalTurnClassification": "progress: isolated live24 candidate c0d120a3/3404c644 combines real-time jump, bounded entry recovery, copied add-on publication and QA diagnostics/vendor-credit barrier.197checks/10suites and nine qualified native scopes pass; initial8pass1wrong-private-field failure retained, only corrected absence-assertion case rerun1pass. Five product inputs only;3481existing inputs unchanged. No deployment/public24merge/failed-gate acceptance.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1333,5 +1333,12 @@
     "receipt": "docs/plans/2026-10-10-vendor-stash-browser-qualification.json",
     "inventorySHA256": "2f0fb40c6241f4cbe063017c8a5e46b823d7c04a2278b967f6951504493387ff",
     "status": "Private real-server vendor/stash qualification passes; public24 and original failed release unchanged."
+  },
+  "jumpStartupMaintenanceCandidate": {
+    "sourceCommit": "c0d120a3f9065c3699e817f16de726cf1e201469",
+    "documentationCommit": "3404c644629ec64b9534100b06213abee4226acb",
+    "receipt": "docs/plans/2026-10-10-jump-startup-maintenance-candidate.json",
+    "inventorySHA256": "d4d43b86e61b413810a65c617edadfc702fc4bc34d3dd4da1f82cfb66fb74a25",
+    "status": "Isolated live24 maintenance candidate implemented and locally qualified; not versioned for publication or deployed."
   }
 }

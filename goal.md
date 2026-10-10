@@ -153,18 +153,20 @@ and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
 Prior owned history remains byte-exact in the [archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md).
 Historical procedural-only instructions do not override supplied actors/modern ARPG.
 
-Previous goal turn: **progress**, private00742d44 retains exact reported-decimal
-frame intervals and raw timestamp pairs;27checks/current actual High party and
-1080sample audit pass. Draws still fail; no FPS gain or historical raw-only
-reclassification. [Frame evidence](docs/plans/2026-10-10-gameplay-frame-evidence.json).
+Previous goal turn: **progress**, d76413a4 real vendor/stash qualification:
+two native ordinary/FIFO-delayed cases and exact savedGold/EP/gear/bag/stash
+Go-race checks pass. Two failed baseline controls retained; real ordering did not
+reproduce assumed bag-before-Gold. [Qualification](docs/plans/2026-10-10-vendor-stash-browser-qualification.json).
 
-Current turn: **progress**, private d76413a4 real vendor/stash qualification:
-two native ordinary/one-second FIFO-delayed cases pass50.6s, Go-race integration
-and exact savedGold/EP/gear/bag/stash checks pass57.350s.3485existing public24
-product inputs unchanged; no production code changed. Two failed baseline
-controls retained: native ordering did not reproduce assumed bag-before-Gold.
-The controlled unit delayed-credit counterexample remains valid; original live
-175Gold failure cause remains unproven. [Qualification](docs/plans/2026-10-10-vendor-stash-browser-qualification.json).
+Current turn: **progress**, isolated live24 candidate c0d120a3/docs3404c644
+combines reviewed elapsed-time jump, bounded engine entry recovery, copied Three
+add-on publication and diagnostic/exact-credit QA.197checks/10suites and nine
+locally qualified native scopes pass. Initial private-owner null assertion failed;
+corrected to require owner/setter absent, only that case rerun. Five product
+inputs,3481existing inputs unchanged; no held terrain/body/geometry worker/owner.
+Compiled jump15FPS1560.2ms/60FPS1523.8ms, endpoints0;64equipped render pairs exact,
+scripts48→31. Original full owner goal restored in candidate with exact public24
+2617line history archived. [Candidate and limits](docs/plans/2026-10-10-jump-startup-maintenance-candidate.json).
 
 Owner again requests approximately1.5seconds total jump. Existing isolatedlive24
 elapsed-time fix measures1547.4ms at15FPS/1522.6ms at60FPS with exact endpoints,
@@ -188,14 +190,14 @@ but is not deployed. [Staged jump](docs/plans/2026-10-10-jump-live24-bundle.json
   broad art/beta acceptance. Synthetic long names overlap; final screenshot
   latest heap418.8MB not qualified. Physical-phone/campaign feedback remains owner-deferred.
 
-Next: prepare and locally qualify one isolated live24 maintenance candidate
-combining reviewed real-time jump, bounded engine-entry recovery, copied-addon
-publication and exact vendor-credit QA barrier/diagnostics. Exclude held terrain/
-geometry/art pilots. Preserve original failedCI/Gold/soak evidence; no public
-successor while required release gate unresolved. Do not force acknowledgement
-ordering or relabel failed native controls as passes. Continue useful independent
-actual-light rigid-shadow/default submission, remaining High/Low/close/cold-memory/
-support-device/moving-art and every original1.11–1.99 content/gameplay/story/Dark
-Realm/economy/social/casino/UI/save/security/F1–F5/CB/operations/rights/owner/human/
-beta/launch/handoff requirement. No unapproved access, commerce, destructive
-production or invented owner-policy decisions. Goal remains active.
+Next: qualify actual copied/versioned isolated maintenance publication against
+a real disposable server: normal authenticated world entry, bounded interrupted
+root recovery and slow-frame server-accepted1.5s jump with real input. Reuse
+valid server/vendor/asset evidence; no unchanged full campaign/soak. Retain failed
+CI/startup/Gold/soak findings and no successor public push while required gate
+unresolved. Continue useful independent actual-light rigid-shadow/default
+submission, remaining High/Low/close/cold-memory/support-device/moving-art and
+every original1.11–1.99 content/gameplay/story/DarkRealm/economy/social/casino/UI/
+save/security/F1–F5/CB/operations/rights/owner/human/beta/launch/handoff requirement.
+No unapproved access, commerce, destructive production or invented owner-policy
+decisions. Goal remains active.
