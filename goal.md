@@ -147,63 +147,49 @@ project is finished merely because the latest deployment is green.
 
 ## Current execution checkpoint — October 10
 
-The full objective above is authoritative. The handoff version and process
-identifiers in it are historical; current runtime and acceptance evidence live
-in the [remaining-work register](docs/plans/2026-10-09-release-readiness-remaining.md)
-and [evidence checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
-The prior owned execution notes are preserved byte-for-byte in
-[the held execution history](docs/plans/archive/2026-10-10-held-goal-execution-history.md).
-Historical procedural-only art instructions in that archive do not override
-the supplied-model preservation and modern-ARPG requirements above.
+The full146line owner objective above remains authoritative. Its handoff IDs
+are historical. Current evidence is in the [remaining-work register](docs/plans/2026-10-09-release-readiness-remaining.md)
+and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
+Prior owned history is preserved byte-exact in [the archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md);
+its procedural-only instructions do not override supplied-model/modern-ARPG requirements.
 
-Previous goal turn classification: **progress**. It rejected a cell-matrix
-prototype after measured native/actual-game timing and identified the dominant
-equipped color/shadow submissions. This turn made **progress** by preparing a
-render-owned supplied body/gear lifecycle:123focused checks,64native controls
-including32exact close views, and actual High/Low moving-HUD/race/save checks.
-The module is staged privately and unused by RenderSystem; no performance,
-modern-art, release or full-goal acceptance is implied.
+Previous goal turn: **no progress** toward the broad objective; it reverified
+the existing public1.5s jump cap. This turn: **progress**, preparing exact-source
+worker delivery with145focused checks,32native pose/zoom controls/16exact close,
+and actualHigh/Low four-class/14slot/movingHUD/race/save evidence. Private11be4c67
+is merged inactive; no default controller/delivery import or public activation.
+[Delivery, original failures and limits](docs/plans/2026-10-10-gameplay-geometry-worker-delivery.json).
 
-- Accepted bounded jump release23/2e519bb0 caps client/server travel at1.5s;
-  a real Ctrl-click check landed in1.641s including display overhead.
-- Public24/922753a7 is deployed, with byte-exact jump source and corrected
-  transform propagation, but CI38030283856 attempt1 failed mandatory live
-  expiry startup at engine-module/module-download. A separate stash Gold
-  equality failure passed retry and remains flaky. Neither cause was proven.
-  [Retained failure](docs/plans/2026-10-10-matrix-world-force-public-failure.json).
-- Private QA170c41af/d1616fba is selected as held4fc34f6a:91focused checks
-  and a routed native startup-failure control pass. Known-module diagnostics
-  retain fixed network codes/statuses, omit query/header/body/credential data,
-  and exclude failures from an abandoned document. Exact preceding vendor Gold
-  credit must arrive before another sale or stash snapshot. The original helper
-  fails a controlled175Gold-delayed boundary; original stash equality remains
-  exact. This does not prove the original live175Gold cause.
-- All3focused ordinary fresh-character public recovery/party tests pass on
-  unchanged24 with no gameplay retries. Startup download did not recur; its
-  cause is still unknown and original CI remains failed. No CI rerun, product
-  repair, failed-gate waiver, successor push or24merge into held source.
-  [Private diagnosis and limits](docs/plans/2026-10-10-live-failure-diagnostics.json).
-- Private light membership, world-box caching, affine arithmetic and cell-matrix experiments
-  remain unselected; whole-game High timing and Low geometry, moving art,
-  equipped/support-device and all inherited1.11–1.99/Q/CB/F1–F5/operations/
-  rights/owner/human/beta/launch/handoff gates remain open. Preserve originals.
-- Required24hsoak37880032315 remains failed. Do not restart it or substitute an
-  unchanged campaign/long soak. Human pacing and physical-phone evidence remain
-  owner-deferred; missing policies or approvals are not implicitly granted.
+- Accepted jump23/2e519bb0 caps client/server flight at1.5s; bounded realCtrlclick
+  landing was1.641s including display overhead.24jump source is unchanged.
+- Public24/922753a7 remains deployed and unaccepted. Fresh normalTLS frontend/
+  backend/bundle match,DBready, but CI38030283856 attempt1 is still failed at
+  mandatory live expiry engine-module/module-download startup. Separate175Gold
+  equality failed then passed retry; neither original cause is proven.
+  Private91check QA diagnosis/vendor sequencing remains selected, including
+  three fresh unchanged24recovery/party passes, without a CIrerun/waiver/24merge.
+  [Startup/Gold evidence](docs/plans/2026-10-10-live-failure-diagnostics.json).
+- Whole-render geometry preparation26d475d7 preserves complete source attributes,
+  skin/bones/blink/materials and exact close views, with four stable nativeGPU
+  cycles. New worker prepares live coverage/fitted sources, never transfers live
+  buffers, rejects stale generations and bounds pending/copy/cache/timeout work.
+  Outfit restore, detach/reattach and stealth restore each reacquire11cache hits
+  in the native gallery. Production actor/replacement/renderer and worker build/
+  version/offline delivery are still unfinished; default renderer does not use it.
+- Actual defaultHigh268calls/181443triangles/16.7median meets those targets, but
+  rawp9533.400000000001455 exceeds exact33.4. DefaultLow151/82828/16.7median/
+  33.400000000001455p95 meets this bounded scene. High/Low populations28/46 and
+  mixed source-bypass submission timing prohibit cross-run or broad gain claims.
+  Close originals still412792/129665triangles, over geometry targets. Supported
+  devices, memory, cold delivery and full moving modern-art remain unqualified.
+- Rejected light/world-box/affine/cell-matrix experiments remain unselected.
+  Required24hsoak37880032315 stays failed; no restart or substitute unchanged
+  campaign. Owner-deferred campaign/pacing and physical-phone feedback remain
+  missing human evidence. No commerce/access/retention/policy decisions implied.
 
-Prepared26d475d7/df766240 adds projected-pixel hysteresis, exact close-source
-restoration, nested-preview/failure cleanup and stale-generation retirement for
-supplied body/gear indices. Default High297draws/192648triangles meets geometry
-but33.3ms median fails; default Low150draws/82366triangles/16.7median/33.3p95
-meets this bounded scene. Close-source fallback remains over geometry targets.
-New gear correctly uses originals; production derivative delivery/cache and
-reacquisition remain unfinished. Both submission controls include lifecycle
-validation; timings are mixed and do not prove installation gain.
-[Preparation, failures and limits](docs/plans/2026-10-10-gameplay-geometry-lifecycle-preparation.json).
-
-Next: preserve original startup/Gold and soak failures; keep24unaccepted. Finish
-generation-specific delivery and deliberate integration of the prepared geometry
-policy, then qualify controller-absent reference, actual High and close/default
-High/Low budgets, supported devices and moving art. Continue every inherited
-roadmap, gameplay, operations, rights, owner/human/beta/launch/handoff requirement.
-No public activation, successor push, failed-gate waiver or24merge occurred.
+Next: preserve original public/Gold/soak failures; deliberately integrate actor
+and renderer ownership plus worker publication/cache/version lifecycle, then
+qualify absent installation/reference, High/close/default HighLow, devices,
+memory/cold delivery and moving art. Continue every original1.11–1.99/gameplay/
+Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff requirement. No
+successor push, public/profile activation, failed-gate waiver or24merge occurred.

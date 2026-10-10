@@ -1,0 +1,526 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T08:56:28.089768+00:00",
+  "status": "Prepared automatic worker delivery selected privately; no default controller/delivery import or activation. Full goal and release gates remain open.",
+  "sourceCommit": "11be4c673b840f9fc8b254715c6e45181563b539",
+  "integrationCommit": "4baabd9ef929faf1e20e6b1570f342be71dea452",
+  "scope": [
+    "One worker, one transferred source copy at a time; live Three buffers never transferred. At most2048pending generation references,16MiBdecoded source per job,30sworker timeout. Originals remain visible while pending, unsupported or failed.",
+    "Exact decoded source SHA-256 covers attributes, fitted factors, index/body coverage, independent blink morphs and fixed algorithm kind/options. Session-local LRU caps128entries/16MiBindices. No offline base-body indices substituted for a changed coverage mask.",
+    "Captured source/material/rig/root/quality/storage/revision generations reject late callbacks. Dispose/detach/untrack retire owned candidates. Fitted async completion/clear and changed stealth appearance notify tracked roots; restored gear and opacity reacquire exact-source cached indices.",
+    "Explicit worker build is self-contained133565bytes including meshoptimizer1.2.0 MIT license. Production build/version/cache/offline integration and actual actor/renderer root replacement lifetime are still unfinished."
+  ],
+  "focused": {
+    "tests": 145,
+    "suites": 7,
+    "seconds": 2.815,
+    "scopedLintAndWhitespace": "pass"
+  },
+  "native": {
+    "tests": 1,
+    "seconds": 50.3,
+    "controls": 32,
+    "exactCloseControls": 16,
+    "initial": {
+      "milliseconds": 10759.5,
+      "renderedFrames": 608,
+      "registered": 88,
+      "stats": {
+        "requested": 88,
+        "installed": 88,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 25,
+        "rejected": 0,
+        "maxCopiedBytes": 3058764,
+        "workerCacheBytes": 1162956,
+        "workerCacheEntries": 63
+      },
+      "sourceTriangles": 305113,
+      "reducedTriangles": 105961
+    },
+    "restoredOutfit": {
+      "beforeGear": {
+        "requested": 88,
+        "installed": 88,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 25,
+        "rejected": 0,
+        "maxCopiedBytes": 3058764,
+        "workerCacheBytes": 1162956,
+        "workerCacheEntries": 63
+      },
+      "stats": {
+        "requested": 110,
+        "installed": 110,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 43,
+        "rejected": 0,
+        "maxCopiedBytes": 3058764,
+        "workerCacheBytes": 1272552,
+        "workerCacheEntries": 67
+      },
+      "valid": true,
+      "registered": 88
+    },
+    "reattached": {
+      "registered": 88,
+      "stats": {
+        "requested": 121,
+        "installed": 121,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 54,
+        "rejected": 0,
+        "maxCopiedBytes": 3058764,
+        "workerCacheBytes": 1272552,
+        "workerCacheEntries": 67
+      }
+    },
+    "stealth": {
+      "faded": {
+        "noReducedStealth": true,
+        "valid": true
+      },
+      "restored": {
+        "registered": 88,
+        "stats": {
+          "requested": 132,
+          "installed": 132,
+          "stale": 0,
+          "fallback": 0,
+          "failed": 0,
+          "cacheHits": 65,
+          "rejected": 0,
+          "maxCopiedBytes": 3058764,
+          "workerCacheBytes": 1272552,
+          "workerCacheEntries": 67
+        }
+      }
+    },
+    "scope": "Eight supplied High/Low four-class outfits. Native animation keeps rendering during preparation;32 pose/zoom comparisons,16 exact close. Rapid async gear generations, restored coverage/cache, detach/reattach and actual stealth helpers. Existing fit/dual-wield/pool checks pass after delivery disposal. No physical-device or final-art approval."
+  },
+  "actualParty": {
+    "high": {
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 6285.5,
+        "body": {
+          "sources": 4
+        },
+        "installed": {
+          "registered": 44,
+          "originalTriangles": 181142,
+          "candidateTriangles": 53706
+        },
+        "stats": {
+          "requested": 44,
+          "installed": 44,
+          "stale": 0,
+          "fallback": 0,
+          "failed": 0,
+          "cacheHits": 0,
+          "rejected": 0,
+          "maxCopiedBytes": 2995424,
+          "workerCacheBytes": 644472,
+          "workerCacheEntries": 44
+        }
+      },
+      "profile": {
+        "quality": "high",
+        "label": "single-renderer-equipped-raised-party-high",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 16.69999999999709,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 33.5,
+        "framesOver33ms": 13,
+        "cpuLoopMedianMs": 19.099999994039536,
+        "cpuLoopP95Ms": 24.19999998807907,
+        "drawCallsMedian": 268,
+        "trianglesMedian": 181443,
+        "geometries": 442,
+        "textures": 302,
+        "activeEntities": 28,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "originalTargets": {
+        "medianMs": 20,
+        "p95Ms": 33.4,
+        "drawCalls": 350,
+        "triangles": 250000
+      },
+      "rawTargetChecks": {
+        "median": true,
+        "p95": false,
+        "calls": true,
+        "triangles": true
+      },
+      "paired": {
+        "samples": [
+          {
+            "zoom": 5,
+            "changedChannels": 0,
+            "unstableChannels": 0,
+            "source": {
+              "calls": 258,
+              "triangles": 412792,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 258,
+              "triangles": 412792,
+              "swaps": 0,
+              "restored": true
+            },
+            "again": {
+              "calls": 258,
+              "triangles": 412792,
+              "swaps": 0,
+              "restored": true
+            }
+          },
+          {
+            "zoom": 15,
+            "changedChannels": 31581,
+            "unstableChannels": 0,
+            "source": {
+              "calls": 272,
+              "triangles": 435540,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 272,
+              "triangles": 180668,
+              "swaps": 44,
+              "restored": true
+            },
+            "again": {
+              "calls": 272,
+              "triangles": 435540,
+              "swaps": 0,
+              "restored": true
+            }
+          }
+        ],
+        "transitions": [
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 41,
+            "reduced": true,
+            "restored": true,
+            "swaps": 44
+          },
+          {
+            "pixels": 45,
+            "reduced": true,
+            "restored": true,
+            "swaps": 44
+          },
+          {
+            "pixels": 48,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 30,
+            "reduced": true,
+            "restored": true,
+            "swaps": 44
+          }
+        ]
+      },
+      "submission": {
+        "scope": "Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.",
+        "reference": {
+          "frames": 48,
+          "median": 13.700000017881393,
+          "p95": 23.900000005960464
+        },
+        "candidate": {
+          "frames": 48,
+          "median": 15.599999994039536,
+          "p95": 22.599999994039536
+        }
+      },
+      "motionSamples": 86,
+      "clipFrames": 26
+    },
+    "low": {
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 5300.799999982119,
+        "body": {
+          "sources": 4
+        },
+        "installed": {
+          "registered": 44,
+          "originalTriangles": 113405,
+          "candidateTriangles": 51083
+        },
+        "stats": {
+          "requested": 44,
+          "installed": 44,
+          "stale": 0,
+          "fallback": 0,
+          "failed": 0,
+          "cacheHits": 0,
+          "rejected": 0,
+          "maxCopiedBytes": 2840900,
+          "workerCacheBytes": 612996,
+          "workerCacheEntries": 44
+        }
+      },
+      "profile": {
+        "quality": "low",
+        "label": "single-renderer-equipped-raised-party-low",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 16.69999999999709,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 33.400000000001455,
+        "framesOver33ms": 13,
+        "cpuLoopMedianMs": 18.099999994039536,
+        "cpuLoopP95Ms": 22.700000017881393,
+        "drawCallsMedian": 151,
+        "trianglesMedian": 82828,
+        "geometries": 401,
+        "textures": 279,
+        "activeEntities": 46,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "originalTargets": {
+        "medianMs": 33.4,
+        "p95Ms": 50,
+        "drawCalls": 200,
+        "triangles": 85000
+      },
+      "rawTargetChecks": {
+        "median": true,
+        "p95": true,
+        "calls": true,
+        "triangles": true
+      },
+      "paired": {
+        "samples": [
+          {
+            "zoom": 5,
+            "changedChannels": 0,
+            "unstableChannels": 0,
+            "source": {
+              "calls": 140,
+              "triangles": 129665,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 140,
+              "triangles": 129665,
+              "swaps": 0,
+              "restored": true
+            },
+            "again": {
+              "calls": 140,
+              "triangles": 129665,
+              "swaps": 0,
+              "restored": true
+            }
+          },
+          {
+            "zoom": 15,
+            "changedChannels": 18392,
+            "unstableChannels": 0,
+            "source": {
+              "calls": 156,
+              "triangles": 145327,
+              "swaps": 0,
+              "restored": true
+            },
+            "candidate": {
+              "calls": 156,
+              "triangles": 83005,
+              "swaps": 44,
+              "restored": true
+            },
+            "again": {
+              "calls": 156,
+              "triangles": 145327,
+              "swaps": 0,
+              "restored": true
+            }
+          }
+        ],
+        "transitions": [
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 41,
+            "reduced": true,
+            "restored": true,
+            "swaps": 44
+          },
+          {
+            "pixels": 45,
+            "reduced": true,
+            "restored": true,
+            "swaps": 44
+          },
+          {
+            "pixels": 48,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 45,
+            "reduced": false,
+            "restored": true,
+            "swaps": 0
+          },
+          {
+            "pixels": 30,
+            "reduced": true,
+            "restored": true,
+            "swaps": 44
+          }
+        ]
+      },
+      "submission": {
+        "scope": "Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.",
+        "reference": {
+          "frames": 48,
+          "median": 12.700000017881393,
+          "p95": 20.200000017881393
+        },
+        "candidate": {
+          "frames": 48,
+          "median": 13.599999994039536,
+          "p95": 17.799999982118607
+        }
+      },
+      "motionSamples": 78,
+      "clipFrames": 25
+    }
+  },
+  "actualPartyQualification": {
+    "perQuality": "One native GPU renderer plus three normal authenticated synthetic socket peers; focused Go -race fixture verifies four classes and preserved14slot saves.1browserpass/1four-browser skip per run; skip is not pass.",
+    "movement": "Three normal6unit ground-click legs, Run/action-time progress, actual HUD clips:High86motion samples/26frames;Low78/25. Originals restored and14gear items throughout.",
+    "timingLimits": "High28entities,Low46; do not infer cross-run gain from earlier larger/smaller scenes. Source ABBA arm bypasses controller wrapper and validation while candidate includes them; provider idle, its allocated candidates/cache still present.48submission samples each, no full installation/memory baseline. Both candidate submission medians are slower; p95 improves. Whole180frame profiles are separate.",
+    "originalTargets": "High20msmedian/33.4p95/350calls/250000triangles;Low33.4/50/200/85000. No budget or assertion changes. High raw p9533.400000000001455 exceeds exact33.4, even though median16.7andgeometry pass. Low bounded default scene meets targets. Close original fallback High412792/Low129665triangles exceeds geometry targets; close timing not qualified.",
+    "artReview": "Viewed actual High HUD screenshot: four supplied outfits/robe/staff/shield silhouettes and terrain remain visible in this sample. Long synthetic names overlap; no full moving-art, readability, phone or final ARPG-quality certificate.",
+    "memory": "Copy maximumHigh2995424/Low2840900bytes; worker index cache644472/612996bytes. Raw game heap screenshot near399MB is not qualified production memory."
+  },
+  "retainedFailures": [
+    {
+      "scope": "Initial focused units",
+      "result": "5existing retention-contract failures",
+      "correction": "Temporary current() refactor retired nonopaque hook/material fallback entries; restored the retained-candidate contract and gate pending-worker eligibility separately."
+    },
+    {
+      "scope": "Native attempts1/2",
+      "result": "After-equip valid assertion failed25.8s/31.8s",
+      "correction": "Added paused-render retirement; second failure identified notification attached to legacy fitter rather than supplied async fitter. Moved notification to committed FittedEquipment completion/clear and wait for actual fitting. Failed HTML/video/trace/source snapshots retained."
+    },
+    {
+      "scope": "Native attempt3",
+      "result": "Passed57.3s before stealth extension",
+      "correction": "Retained separately; final50.3s run includes actual stealth restore/cache."
+    },
+    {
+      "scope": "Initial actual High fixture",
+      "result": "Failed at delivery.track(null), no geometry profile",
+      "correction": "Ignore unloaded placeholders; regression and final native/actualHigh/Low pass. Failed report and isolated fixture artifacts retained."
+    }
+  ],
+  "publicObservation": {
+    "recordedUTC": "2026-10-10T08:51:28.247977+00:00",
+    "normalTLS": true,
+    "release": {
+      "url": "https://play.eidolonrealms.com/release.json",
+      "status": 200,
+      "sha256": "7b684ef34b8e9a014bd0270663a876334f15b3cbf98c168656f55afe21121fd8",
+      "identity": {
+        "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+        "version": "Alpha 1.79.24"
+      }
+    },
+    "health": {
+      "url": "https://server.eidolonrealms.com/healthz",
+      "status": 200,
+      "sha256": "98058dd8453096ca05665c3c061587886d37980ebd1f922e26d1fed816200c05",
+      "identity": {
+        "status": "ok",
+        "database": "ready",
+        "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+        "version": "Alpha 1.79.24"
+      }
+    },
+    "engine": {
+      "url": "https://play.eidolonrealms.com/src/core/GameEngine.bundle.js",
+      "status": 200,
+      "sha256": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a"
+    }
+  },
+  "publicCI": {
+    "conclusion": "failure",
+    "head_sha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "html_url": "https://github.com/aeml/eidolon/actions/runs/38030283856",
+    "id": 38030283856,
+    "run_attempt": 1,
+    "status": "completed"
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-gameplay-geometry-delivery-checks-20261010",
+    "files": 243,
+    "inventorySHA256": "31c23c88dfaa2ee0340c57fbb8e94f7bc1a2b16ea475ea7657d7d6a06540288e"
+  },
+  "previousGoalTurnClassification": "no progress: reverified existing public1.5s jump cap; no change to the broad objective or authoritative implementation.",
+  "thisGoalTurnClassification": "progress: exact-source automatic worker delivery, bounded cache, gear/detach/stealth reacquisition,145focused checks,32native controls and actualHigh/Low moving/save evidence; selected only as inactive prepared private source.",
+  "remaining": [
+    "Deliberate actor/setMesh/replacement/renderer lifecycle integration, release-matched worker build/URL/offline/version and failure handling qualification; preserve inactive defaults until qualified.",
+    "Fully absent installation/reference and full High/close/default HighLow/device/moving-art/cold preparation and memory qualification; no broad gain established.",
+    "Original public24startup/Gold failures, failed24hsoak, every inherited1.11\u20131.99/art/gameplay/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff gate. No rerun, successor push, public activation,24merge or waiver."
+  ]
+}

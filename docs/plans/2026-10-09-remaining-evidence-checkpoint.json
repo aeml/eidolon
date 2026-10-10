@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T08:23:41.540754+00:00",
-  "classification": "Public24 remains deployed but unaccepted: original required startup download failure is unresolved. New private QA repair waits for exact preceding vendor Gold credit; original helper fails controlled delayed-credit boundary.91focused checks and native failure control pass, with3fresh ordinary live recovery/party tests on unchanged24. No proof of original175Gold cause, no CI rerun or waiver. Full146line user goal restored as exact owned prefix; all inherited gates and failed24hsoak open.",
-  "qualifiedRuntime": "Private qualified renderer and supplied High v3body selection unchanged, conservative matrix6553 qualified privately. Public24 transform correction deployed but not accepted; no merge of24 into held branch yet. Private terrain/body/actor-filter/transport pilots and rejected light/world-box/affine prototypes not publicly activated. Jump source in24 byte-exact to accepted23,1.5s cap; profile/access unchanged. Prepared26d475d7/df766240 lifecycle API remains unused by the renderer; fitted-shader ownership bookkeeping adds no appearance change.",
+  "recordedUTC": "2026-10-10T08:56:28.089768+00:00",
+  "classification": "Private exact-generation worker delivery prepared and merged inactive:145focused checks,32native controls/16exact close, actualHigh/Low movement/race/save pass. Source controller-bypass submission medians are slower; no broad gain. DefaultLowboundedscene meets targets;High exactp95 andclosegeometry, fullintegration/device/art remain open. Public24stillfailed/unaccepted; all inheritedscope andfailedsoak retained.",
+  "qualifiedRuntime": "Private qualified renderer and supplied High v3body selection unchanged, conservative matrix6553 qualified privately. Public24 transform correction deployed but not accepted; no merge of24 into held branch yet. Private terrain/body/actor-filter/transport pilots and rejected light/world-box/affine prototypes not publicly activated. Jump source in24 byte-exact to accepted23,1.5s cap; profile/access unchanged. Prepared26d475d7/df766240 lifecycle API remains unused by the renderer; fitted-shader ownership bookkeeping adds no appearance change. Prepared11be4c67worker delivery also remains unused by runtime; only fitted-completion/clear and changed-stealth notifications are added to default source.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -99,10 +99,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-gameplay-geometry-lifecycle-preparation.json",
+  "currentReceipt": "docs/plans/2026-10-10-gameplay-geometry-worker-delivery.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: rejected the cell-matrix prototype using90focused/80strict native/defaultHighparty evidence and identified dominant equipped color/shadow geometry.",
-  "nextAction": "Preserve24failed startup/Gold findings and failed soak. Complete generation-specific derivative delivery/cache/reacquisition and deliberate runtime integration before activation; retain exact close detail. Qualify controller-absent reference, High and close/default High/Low budgets and moving/support-device art. Continue every inherited roadmap/operations/owner gate; no unchanged campaign/soak or public microrelease.",
+  "previousGoalTurnClassification": "no progress: reverified existing public1.5s jump cap; no change to the broad objective or authoritative implementation.",
+  "nextAction": "Keep24failed startup/Gold and failedsoak open. Deliberately bind staged delivery to actor/root replacement and renderer lifetime; qualify release-matched worker build/URL/offline/version fallback and fully absent installation/memory reference. Preserve supplied originals/close detail; qualify stable High and close/default HighLow, supported devices and moving modern-art budgets. Continue every inherited1.11\u20131.99/gameplay/operations/rights/owner/human/beta/launch/handoff requirement. No unchanged campaign/soak, public microrelease, waiver or24merge.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1099,5 +1099,83 @@
     "highWholeFrameStillFails": true,
     "productionDerivativeDeliveryMissing": true,
     "closeSourceGeometryStillOverTargets": true
+  },
+  "gameplayGeometryWorkerDelivery": {
+    "preparedNotSelected": true,
+    "sourceCommit": "11be4c673b840f9fc8b254715c6e45181563b539",
+    "integrationCommit": "4baabd9ef929faf1e20e6b1570f342be71dea452",
+    "receipt": "docs/plans/2026-10-10-gameplay-geometry-worker-delivery.json",
+    "unitTests": 145,
+    "nativeControls": 32,
+    "exactCloseControls": 16,
+    "productionActorBuildVersionIntegrationMissing": true,
+    "controllerBypassSubmissionBothMediansWorse": true,
+    "closeSourceGeometryStillOverTargets": true,
+    "actualHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 33.5,
+      "framesOver33ms": 13,
+      "cpuLoopMedianMs": 19.099999994039536,
+      "cpuLoopP95Ms": 24.19999998807907,
+      "drawCallsMedian": 268,
+      "trianglesMedian": 181443,
+      "geometries": 442,
+      "textures": 302,
+      "activeEntities": 28,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualHighRawTargetChecks": {
+      "median": true,
+      "p95": false,
+      "calls": true,
+      "triangles": true
+    },
+    "actualLow": {
+      "quality": "low",
+      "label": "single-renderer-equipped-raised-party-low",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 13,
+      "cpuLoopMedianMs": 18.099999994039536,
+      "cpuLoopP95Ms": 22.700000017881393,
+      "drawCallsMedian": 151,
+      "trianglesMedian": 82828,
+      "geometries": 401,
+      "textures": 279,
+      "activeEntities": 46,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLowRawTargetChecks": {
+      "median": true,
+      "p95": true,
+      "calls": true,
+      "triangles": true
+    }
   }
 }
