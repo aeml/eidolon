@@ -154,12 +154,13 @@ test('actual published engine stays lazy at login and constructs each class from
 for (const quality of ['high', 'low']) test(`published ${quality} actor defaults render generated roots and retire owned copies`, async ({ page }, testInfo) => {
     const failures = collectBrowserFailures(page, origin);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
     await page.goto(origin, { waitUntil: 'networkidle' });
     const result = await page.evaluate(async ({ release, quality }) => {
         const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
         const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
         const render = game.renderSystem, owner = render.actorInstances, multi = owner?.multiDraw, actors = [];
-        let result;
+        let result, campGeometryDisposals = 0, campTextureDisposals = 0;
         try {
             render.setGraphicsQuality(quality);
             for (let i = 0; i < 6; i++) {
@@ -167,21 +168,39 @@ for (const quality of ['high', 'low']) test(`published ${quality} actor defaults
                 actors.push(actor); await actor.ensureMesh();
                 actor.mesh.position.set(i % 3 * 3, 0, i < 3 ? 0 : 3); render.add(actor.mesh);
             }
+            const orc = game.createRemotePlayer('Enemy', 'published-demon-orc', 'DemonOrc');
+            actors.push(orc); await orc.ensureMesh(); orc.mesh.position.set(0, 0, 6); render.add(orc.mesh);
+            await game.worldGenerator.loadBuildings(0, 200);
+            const field = render.instanceEnvironmentGroup.getObjectByName('Lanternhold:Pilgrim Vigil Field');
+            for (const mesh of field.children) {
+                mesh.geometry.addEventListener('dispose', () => campGeometryDisposals++);
+                mesh._matricesTexture.addEventListener('dispose', () => campTextureDisposals++);
+                mesh._indirectTexture.addEventListener('dispose', () => campTextureDisposals++);
+            }
             render.render();
             result = { enabled: Boolean(owner?.enabled && multi?.enabled && multi.perInstanceFrustum),
                 groups: multi?.entries.size || 0, extension: render.renderer.extensions.has('WEBGL_multi_draw'),
                 restored: !owner.hidden.length && !multi.hidden.length && !owner.group.visible && !multi.group.visible,
-                draws: render.renderer.info.render.calls };
+                draws: render.renderer.info.render.calls, singletons: owner.batchSingletons,
+                orcPackedMeshes: orc.mesh.userData.humanoidRenderBatches?.drawMeshes,
+                orcPackedSurfaces: orc.mesh.userData.humanoidRenderBatches?.surfaceAttributes,
+                campAutomaticallySelected: game.worldGenerator.campInstanceFrustum,
+                campCount: field.userData.instanceCount, campBuckets: field.children.length,
+                campBatched: field.children.every(mesh => mesh.isBatchedMesh && mesh.perObjectFrustumCulled) };
         } finally {
             for (const actor of actors) actor.dispose();
             game.destroy();
         }
+        result.campGeometryDisposals = campGeometryDisposals; result.campTextureDisposals = campTextureDisposals;
         result.disposed = multi.disposed && multi.entries.size === 0 && multi.group.parent === null && owner.roots.size === 0;
         return result;
     }, { release, quality });
     await testInfo.attach('published-default-actor-owner', { body: JSON.stringify({ quality, result, engineSHA256: metadata.engineSHA256 }), contentType: 'application/json' });
     expect(result.enabled && result.extension && result.restored && result.disposed).toBe(true);
     expect(result.groups).toBeGreaterThan(0); expect(result.draws).toBeGreaterThan(0);
+    expect(result.singletons && result.orcPackedSurfaces && result.campAutomaticallySelected && result.campBatched).toBe(true);
+    expect(result.orcPackedMeshes).toBe(23); expect(result.campCount).toBe(15); expect(result.campBuckets).toBe(9);
+    expect(result.campGeometryDisposals).toBe(9); expect(result.campTextureDisposals).toBe(18);
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
