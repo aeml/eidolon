@@ -26,6 +26,57 @@ test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 test.describe('dedicated QA character', () => {
     test.skip(!hasCredentials, 'Set EIDOLON_E2E_USERNAME and EIDOLON_E2E_PASSWORD for character QA');
 
+    test('long Ctrl-click jump reaches its landing point in 1.5 seconds', async ({ page, baseURL }, testInfo) => {
+        test.skip(process.env.EIDOLON_E2E_JUMP_TIMING !== '1', 'Focused connected jump timing route');
+        const failures = collectBrowserFailures(page, baseURL);
+        await loginAndEnterWorld(page, credentials);
+        // Measure a visible actor after its asynchronous model has arrived.
+        await page.waitForFunction(() => Boolean(window.game?.player?.mesh?.parent));
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        let target;
+        for (const [x, z] of [[27, 0], [-27, 0], [0, 27], [0, -27]]) {
+            const candidate = await projectGroundOffset(page, x, z, { allowScaling: false });
+            if (candidate?.canvas) { target = candidate; break; }
+        }
+        expect(target, 'A full long-jump destination must be visible on the canvas').toBeTruthy();
+        await page.evaluate(() => {
+            const record = window.__jumpTiming = { frames: 0, acceptedDuration: null, history: [] };
+            const sample = () => {
+                const game = window.game;
+                const jump = game.playerJumpState;
+                const now = performance.now();
+                if (jump) {
+                    record.startedAt ??= now;
+                    record.frames++;
+                    record.history.push({ elapsedMs: now - record.startedAt, elapsed: jump.elapsed, progress: jump.progress, serverDriven: jump.serverDriven });
+                    record.distance = Math.hypot(jump.end.x - jump.start.x, jump.end.z - jump.start.z);
+                    record.end = { x: jump.end.x, z: jump.end.z };
+                    if (jump.serverDriven) record.acceptedDuration = jump.duration;
+                } else if (record.startedAt && game.player.state !== 'JUMPING') {
+                    record.positionError = Math.hypot(game.player.position.x - record.end.x, game.player.position.z - record.end.z);
+                    record.renderError = Math.hypot(game.player.mesh.position.x - record.end.x, game.player.mesh.position.z - record.end.z);
+                    record.elapsedMs = now - record.startedAt;
+                    return;
+                }
+                if (!record.startedAt || now - record.startedAt < 5_000) requestAnimationFrame(sample);
+            };
+            requestAnimationFrame(sample);
+        });
+        await page.keyboard.down('Control');
+        try { await page.mouse.click(target.x, target.y); }
+        finally { await page.keyboard.up('Control'); }
+        await expect.poll(() => page.evaluate(() => window.__jumpTiming.elapsedMs), { timeout: 6_000 }).toBeGreaterThan(0);
+        const result = await page.evaluate(() => window.__jumpTiming);
+        await testInfo.attach('connected-jump-timing', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
+        expect(result.distance).toBeGreaterThanOrEqual(20.25);
+        expect(result.acceptedDuration).toBe(1.5);
+        expect(result.elapsedMs).toBeGreaterThan(1_350);
+        expect(result.elapsedMs).toBeLessThan(1_850);
+        expect(result.positionError).toBeLessThan(.1);
+        expect(result.renderError).toBeLessThan(.1);
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+
     test('logs in, enters the world, moves, opens gameplay UI, and reconnects', async ({ page, baseURL }, testInfo) => {
         test.setTimeout(600_000);
         const failures = collectBrowserFailures(page, baseURL);

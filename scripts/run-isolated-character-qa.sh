@@ -213,7 +213,7 @@ capture_isolated_service_failure() {
 docker build \
   --build-arg GO_VERSION=1.27.2 \
   --build-arg "BUILD_COMMIT=${qa_build_commit}" \
-  --build-arg "BUILD_VERSION=Alpha 1.79.22" \
+  --build-arg "BUILD_VERSION=Alpha 1.79.23" \
   --tag "${SERVER_IMAGE}" server >/dev/null
 image_created=true
 
@@ -646,6 +646,9 @@ case "${EIDOLON_ISOLATED_QA_ROUTE:-all}" in
     # Test the public startup selection, not the legacy QA elevation switch.
     EIDOLON_E2E_TERRAIN_PROFILE="${EIDOLON_ISOLATED_QA_TERRAIN_PROFILE:-flat-v1}" \
       EIDOLON_E2E_CLASS=Wizard npx playwright test --retries=0 tests/e2e/terrain-profile-gameplay.spec.js
+    ;;
+  jump-speed)
+    EIDOLON_E2E_JUMP_TIMING=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js --grep "long Ctrl-click jump"
     ;;
   release-smoke)
     EIDOLON_E2E_FULL_GAMEPLAY=1 EIDOLON_E2E_PORTAL_ONLY=1 npx playwright test --retries=0 tests/e2e/authenticated.spec.js tests/e2e/inventory-quality-of-life.spec.js

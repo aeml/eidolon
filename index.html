@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.22</span>
+                    <span class="start-version-row__label">Alpha 1.79.23</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,15 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.22" data-notes-pages="45" data-notes-total="457">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.23" data-notes-pages="45" data-notes-total="458">
+                <div class="patch-note-entry" data-version="1.79.23">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.23 (Faster jumps)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Long Ctrl-click jumps now take at most 1.5 seconds from takeoff to the landing point, down from three seconds. Nearby short hops stay quick.</li>
+                        <li>Client prediction and the authoritative server share the new timing. Jump arcs, destination constraints and saved progress remain unchanged.</li>
+                        <li>Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.22">
                     <h3 class="patch-note-entry__title">Alpha 1.79.22 (Actor lighting correctness)</h3>
                     <ul class="patch-note-entry__list">
@@ -891,16 +899,6 @@
                         <li>Dungeon vigils have stepped feet, profiled shafts and forged cages; reliquary coffers gain vaulted lids and straps, and restorative fonts have hollow basins. Existing shared materials and room batching are reused.</li>
                         <li>All five dungeon themes have varied, worn flagstones with registered physical surface detail. Compact room markers leave the combat floor readable while preserving objective, reward, cleared-room and exit feedback. Floors stay flat; collisions, layout, encounter and reward rules are unchanged.</li>
                         <li>This is an integrated polish pass, not final modern-art approval or the 1.80 feature freeze. Raised terrain, equipped-party/device qualification and full 1.87 remain staged. No account wipe, schema migration or economy change. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.13">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.13 (optional public outage monitoring)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>The existing outage monitor can optionally check the public login page, frontend release manifest and backend health over normal HTTPS, in addition to its local API and database check.</li>
-                        <li>Public checks require matching frontend/backend/local release identities and a ready database, with bounded response sizes, one shared public deadline and no redirects or forced IPv4. These checks verify HTTP structure, not full browser gameplay or off-machine coverage.</li>
-                        <li>Both public endpoint settings default to empty. Paired configuration is checked before replacing the game service; invalid or incomplete public settings fail closed. Existing installed monitoring remains local-only until an operator explicitly configures and restarts the matching monitor artifact.</li>
-                        <li>The existing alert recipients, three-failure/two-success debounce, reminder limits, email provider and retention remain unchanged. The operator guide explains same-artifact rollback and release-transition qualification before enabling public alerts.</li>
-                        <li>No account wipe, schema migration, retention, economy, quest or Dark Realm access changes. Full 1.80 freeze, operations ownership, off-machine backup, modern-art and beta gates remain open. Full prior patch history is preserved through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">
