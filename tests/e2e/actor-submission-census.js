@@ -39,10 +39,10 @@ export async function captureActorSubmissionCensus(page, testInfo) {
                         materialStructure: structure,
                         candidateKey: JSON.stringify([parentID(mesh.parent), matrix, flags, layout, structure]) });
                 } else if (mesh.isInstancedMesh && mesh.parent === render.actorInstances?.group) {
-                    const bucket = [...render.actorInstances.batches].find(([, value]) => value.mesh === mesh);
+                    const bucket = [...render.actorInstances.batches].find(([, value]) => value === mesh);
                     rows.push({ kind: 'actor-instance-bucket', key: bucket?.[0], name: mesh.name, count: mesh.count,
                         geometry: geometry.uuid, material: material.uuid, attributes: geometryKey(geometry),
-                        indices: geometry.index?.count, localMatrix: mesh.matrix.toArray(),
+                        indices: geometry.index?.count, localMatrix: mesh.matrix.toArray(), worldMatrix: mesh.matrixWorld.toArray(),
                         instanceMatrices: Array.from(mesh.instanceMatrix.array.subarray(0, mesh.count * 16)) });
                 }
             }
