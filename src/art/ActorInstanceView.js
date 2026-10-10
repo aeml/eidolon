@@ -5,6 +5,21 @@ import { getShadowFilterWorldPadding, shadowInfluenceIntersectsFrustum } from '.
 const finiteBox = box => !box.isEmpty() && Number.isFinite(box.min.x) && Number.isFinite(box.min.y) &&
     Number.isFinite(box.min.z) && Number.isFinite(box.max.x) && Number.isFinite(box.max.y) && Number.isFinite(box.max.z);
 
+// Caller has verified finite affine input and a finite nonempty local box.
+// Select each coordinate's extremal corner while keeping Three's expression
+// order; overflow is still handled by the caller's conservative finite check.
+function transformAffineBox(box, matrix, target) {
+    const m = matrix.elements, low = box.min, high = box.max;
+    for (let axis = 0; axis < 3; axis++) {
+        const a = m[axis], b = m[axis + 4], c = m[axis + 8], t = m[axis + 12];
+        target.min.setComponent(axis,
+            a * (a < 0 ? high.x : low.x) + b * (b < 0 ? high.y : low.y) + c * (c < 0 ? high.z : low.z) + t);
+        target.max.setComponent(axis,
+            a * (a < 0 ? low.x : high.x) + b * (b < 0 ? low.y : high.y) + c * (c < 0 ? low.z : high.z) + t);
+    }
+    return target;
+}
+
 // Optional policy for the existing frame-owned actor batches. Production has
 // no policy selected. Reject only undeformed rigid leaves whose entire box and
 // every known, filter-padded incoming shadow are outside the actual camera.
@@ -73,7 +88,7 @@ export class ActorInstanceView {
             this.bounds.set(geometry, cached); this.stats.boundsBuilt++;
         }
         if (!cached.valid) return false;
-        this.world.copy(cached.box).applyMatrix4(part.matrixWorld);
+        transformAffineBox(cached.box, part.matrixWorld, this.world);
         if (!finiteBox(this.world) || this.frustum.intersectsBox(this.world)) return false;
         if (part.castShadow && this.shadows.some(shadow => shadowInfluenceIntersectsFrustum(this.world, shadow.sun, shadow.frustum))) return false;
         this.stats.culled++;

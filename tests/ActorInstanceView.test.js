@@ -135,3 +135,47 @@ test('instance ownership restores culled leaves, preserves a single retained ins
     } finally { instances.dispose(); f.view.dispose(); }
     expect(roots.every(({ part }) => part.visible)).toBe(true);
 });
+
+test('guarded affine projection exactly matches ordinary eight-corner bounds under scale, shear, cancellation and overflow', () => {
+    const f = fixture(); f.mesh.castShadow = false; f.begin();
+    const local = new THREE.Box3().setFromBufferAttribute(f.mesh.geometry.attributes.position);
+    const ordinary = new THREE.Box3();
+    let seed = 20261010, checked = 0, invalid = 0;
+    const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+    const finite = box => !box.isEmpty() && [...box.min.toArray(), ...box.max.toArray()].every(Number.isFinite);
+    const verify = () => {
+        ordinary.copy(local).applyMatrix4(f.mesh.matrixWorld);
+        const rejected = f.view.rejects(f.mesh);
+        if (finite(ordinary)) {
+            expect(f.view.world.equals(ordinary)).toBe(true); checked++;
+            expect(rejected).toBe(!f.view.frustum.intersectsBox(ordinary));
+        } else { expect(rejected).toBe(false); invalid++; }
+    };
+    for (let i = 0; i < 4096; i++) {
+        const magnitude = [Number.MIN_VALUE, 1e-6, 1, 1000, 1e100, 1e300, 1e308][i % 7];
+        f.mesh.matrixWorld.identity();
+        const m = f.mesh.matrixWorld.elements;
+        for (let axis = 0; axis < 3; axis++) {
+            m[axis] = (random() - .5) * magnitude;
+            m[axis + 4] = (random() - .5) * magnitude;
+            m[axis + 8] = (random() - .5) * magnitude;
+            m[axis + 12] = (random() - .5) * magnitude;
+        }
+        verify();
+    }
+    for (const a of [-Number.MAX_VALUE, -1, -0, 0, 1, Number.MAX_VALUE]) {
+        f.mesh.matrixWorld.set(a, -a, a, -0, 0, 1, 0, 50000, 0, 0, 1, -20000, 0, 0, 0, 1);
+        verify();
+    }
+    expect(checked).toBeGreaterThan(3000); expect(invalid).toBeGreaterThan(0);
+});
+
+test.each([3, 7, 11, 15])('non-affine bottom-row element %s retains its conservative path', index => {
+    const f = fixture(); f.begin(); f.mesh.matrixWorld.elements[index] = index === 15 ? 2 : .125;
+    expect(f.view.rejects(f.mesh)).toBe(false); expect(f.view.stats.checked).toBe(0);
+});
+
+test.each([NaN, Infinity, -Infinity])('nonfinite matrix value %s retains its conservative path', value => {
+    const f = fixture(); f.begin(); f.mesh.matrixWorld.elements[0] = value;
+    expect(f.view.rejects(f.mesh)).toBe(false); expect(f.view.stats.checked).toBe(0);
+});
