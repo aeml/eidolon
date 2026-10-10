@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 gameplay-camera color pilot:** Exact supplied gear/eye indices,
+separate PBR regions and full bone channels reduce High152558→66832 and
+Low77910→41010triangles in eight-outfit gallery; body/blink/close-up source stays
+exact.15focused checks,80-source independent audit,72native pose/zoom pairs,
+24exact close controls, four stable resource cycles and actualHigh/Low four-class
+race/save checks pass. Combined High180frames420draws/253753triangles still fails
+350/250000;Low102800still exceeds85000. Unselected QA experiment; current e47
+runtime/public1.79.22/profile/access unchanged. [Pilot and retained failures](docs/plans/2026-10-10-gameplay-color-lod-pilot.json).
+Next source-preserving gameplay body/endpoint/bone geometry and High submissions,
+continuous zoom/lifecycle/bake/cache, full High/Low/device/art gates. Full inherited
+1.11–1.99/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff remains active;
+no narrower completion or public microrelease.
+
+
 **October10 shadow-only renderer pilot:** An opt-in pass owns exact copied
 position/skin/blink buffers and restores source geometry before color draws.
 37unique focused checks, native16exact-index pixel comparisons,16descriptive

@@ -4,6 +4,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { installBodyLodPilot } from './body-lod-pilot.js';
 import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
 import { prepareShadowGeometryPilot, selectSimplifiedShadowGeometry } from './shadow-geometry-pilot.js';
+import { prepareGameplayColorPilot } from './gameplay-color-lod-pilot.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -97,6 +98,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
     expect(process.env.EIDOLON_E2E_BODY_LOD_PILOT, 'Body LOD diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT, 'Wearable diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT, 'Shadow geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
+    expect(process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT, 'Color geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     test.setTimeout(230_000);
     expect(process.env.EIDOLON_E2E_WS_URL).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');
@@ -322,6 +324,32 @@ test('single native renderer observes three live equipped party socket peers on 
         }, { timeout: 30_000 }).toBe(true);
         await expect(page.locator('#esc-menu')).toBeHidden();
         for (const peer of peers) expect(peer.socket.readyState).toBe(1);
+        if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT === '1') {
+            const preparation = await prepareGameplayColorPilot(page, 'game', .006, testInfo.outputPath('gameplay-color-sources.json'));
+            const paired = await page.evaluate(() => {
+                const render = window.game.renderSystem, pilot = window.__gameplayColorPilot;
+                if (render.currentZoom < 10) throw new Error('Actual color pilot requires gameplay-size projection');
+                const capture = enabled => {
+                    pilot.select(enabled); render.render();
+                    return { calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+                };
+                try {
+                    return { reference: capture(false), candidate: capture(true), referenceAgain: capture(false),
+                        quality: render.graphicsQuality, zoom: render.currentZoom,
+                        ownedBufferBytes: [...pilot.meshes.values()].reduce((sum, entry) => sum + entry.candidate.index.array.byteLength +
+                            Object.values(entry.candidate.attributes).reduce((total, attr) => total + attr.array.byteLength, 0), 0) };
+                } finally { pilot.select(true); }
+            });
+            await writeFile(testInfo.outputPath('gameplay-color-party.json'), JSON.stringify({
+                scope: 'Explicit gameplay-size color index pilot in one actual connected renderer. Ordinary assets and worker; synchronous counts include its ordinary shadow effect before any separate shadow pilot. No dynamic LOD, device or final art acceptance.',
+                preparation, paired
+            }, null, 2));
+            expect(paired.referenceAgain.triangles).toBe(paired.reference.triangles);
+            expect(paired.candidate.triangles).toBeLessThan(paired.reference.triangles);
+            console.log('[gameplay-color-party]', JSON.stringify({ paired,
+                sourceTriangles: preparation.derivatives.reduce((sum, row) => sum + row.sourceTriangles, 0),
+                candidateTriangles: preparation.derivatives.reduce((sum, row) => sum + row.candidateTriangles, 0) }));
+        }
         if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1') {
             expect(quality, 'Shadow geometry pilot requires actual High shadows').toBe('high');
             const preparation = await prepareShadowGeometryPilot(page, 'game');
@@ -609,6 +637,7 @@ test('single native renderer observes three live equipped party socket peers on 
     } finally {
         await page.evaluate(() => {
             window.__shadowGeometryPilot?.pass.dispose(); delete window.__shadowGeometryPilot;
+            window.__gameplayColorPilot?.dispose(); delete window.__gameplayColorPilot;
             window.game?.destroy?.();
         }).catch(() => {});
         for (const peer of peers) peer.socket.close();

@@ -4,6 +4,7 @@ import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
 import { installBodyLodPilot, captureBodyLodReview } from './body-lod-pilot.js';
 import { collectBrowserFailures } from './helpers.js';
 import { captureShadowGeometryPilot } from './shadow-geometry-pilot.js';
+import { captureGameplayColorPilot, captureGameplayColorResources } from './gameplay-color-lod-pilot.js';
 
 // Explicit routed-asset comparisons need both controls to bypass the service
 // worker, which would otherwise serve reviewed files outside page.route.
@@ -12,7 +13,7 @@ test.use({ serviceWorkers: process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_COMPARE ==
     process.env.EIDOLON_E2E_BODY_LOD_PILOT ? 'block' : 'allow' });
 
 test('all delivered classes use fitted gear, independent rigs and alternating Rogue strikes', async ({ page, baseURL }, testInfo) => {
-    if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1') test.setTimeout(180_000);
+    if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1' || process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT === '1') test.setTimeout(180_000);
     const failures = collectBrowserFailures(page, baseURL);
     const attributePilot = await installWearableAttributePilot(page);
     const bodyPilot = await installBodyLodPilot(page);
@@ -118,6 +119,10 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
             independent: actors.every(({ root }, i) => i % 2 === 0 || root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0] !== actors[i - 1].root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0]) };
     });
     if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1') await captureShadowGeometryPilot(page, testInfo);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT === '1') {
+        if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_RESOURCES_ONLY === '1') await captureGameplayColorResources(page, testInfo);
+        else await captureGameplayColorPilot(page, testInfo);
+    }
     if (process.env.EIDOLON_E2E_EQUIPPED_TRIANGLE_DIAGNOSIS === '1') {
         const census = await page.evaluate(() => {
             const { renderer, scene, camera, actors } = window.__classGear;

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T01:34:56.578551+00:00",
-  "classification": "Opt-in shadow-only supplied-geometry pilot qualified for scoped native parity/fallback/lifetime and actual single-renderer party/save checks. Unselected by production RenderSystem; whole-game draw/triangle, Low/device, dynamic lifecycle and final art/full-roadmap gates remain open.",
+  "recordedUTC": "2026-10-10T02:00:28.875815+00:00",
+  "classification": "Unselected supplied-gear/eye color index pilot at gameplay-size orthographic projection. Native72pose/zoom comparisons,24exact close controls, source/material audit, four resource cycles and actualHigh/Low party/save checks pass. High420draws/253753triangles andLow102800triangles still fail unchanged whole-game limits; full inherited roadmap remains active.",
   "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,9 +9,9 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-10T01:01:45Z",
+    "readOnlyObservationUTC": "2026-10-10T01:36:11Z",
     "result": {
-      "observed_at_utc": "2026-10-10T01:01:45Z",
+      "observed_at_utc": "2026-10-10T01:36:11Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -86,13 +86,13 @@
         }
       ]
     },
-    "action": "One read-only delegated observation; stale thereafter, no rerun/cancel/acceptance."
+    "action": "One delegated read-only snapshot, stale thereafter; no restart/cancel/completion/acceptance."
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-shadow-geometry-pilot.json",
+  "currentReceipt": "docs/plans/2026-10-10-gameplay-color-lod-pilot.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "bae95e04:count-only shadow feasibility; original selected e47 runtime unchanged.",
-  "nextAction": "Continue measured actor color-geometry and depth/draw submission costs at the actual gameplay camera, preserving close-up supplied surfaces and all live skeleton/morph/mask/gear/stealth paths. Shadow-only savings cannot meet the current full triangle limit by themselves. Qualify native moving/color/contact quality, active equip/pool/reconnect lifetimes, ordinary High/Low full scenes and supported devices before production integration. Full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff remains active; no public microrelease.",
+  "previousGoalTurnClassification": "Progress:35954b31 retained opt-in shadow-only pilot/native/party/save evidence; full budgets failed and production activation stayed off.",
+  "nextAction": "Prepare gameplay-camera body indices with exact supplied position/normal blink endpoints and every referenced bone constrained; retain full close-up bodies and supplied raw attributes. Investigate actual High depth/actor submission costs while preserving every source surface and supported fallback. Qualify continuous zoom/hysteresis, active equip/mask/pool/reconnect/respawn, bake/cache/startup and whole High/Low/support-device/moving-art/contact/combat behavior before production integration. Keep full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff active; no public microrelease.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -227,5 +227,83 @@
     "ownedBufferBytes": 9858200,
     "fullHighDrawTrianglePass": false,
     "LowAndDeviceQualification": "open"
+  },
+  "gameplayColorPilot": {
+    "receipt": "docs/plans/2026-10-10-gameplay-color-lod-pilot.json",
+    "productionSelected": false,
+    "nativeSamples": 72,
+    "closeRGBExactControls": 24,
+    "resourceCycles": 4,
+    "independentSourcesAudited": 80,
+    "gearEyeCounts": {
+      "high": [
+        152558,
+        66832
+      ],
+      "low": [
+        77910,
+        41010
+      ]
+    },
+    "actualHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.30000000000291,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 8,
+      "cpuLoopMedianMs": 17.299999982118607,
+      "cpuLoopP95Ms": 21.700000017881393,
+      "drawCallsMedian": 420,
+      "trianglesMedian": 253753,
+      "geometries": 479,
+      "textures": 292,
+      "activeEntities": 32,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLow": {
+      "quality": "low",
+      "label": "single-renderer-equipped-raised-party-low",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 16.799999999995634,
+      "frameP99Ms": 16.799999999999272,
+      "framesOver33ms": 0,
+      "cpuLoopMedianMs": 11.099999994039536,
+      "cpuLoopP95Ms": 15.200000017881393,
+      "drawCallsMedian": 156,
+      "trianglesMedian": 102800,
+      "geometries": 395,
+      "textures": 272,
+      "activeEntities": 25,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "wholeHighLowBudgetsPass": false,
+    "currentMaskedBodies": {
+      "high": 42137,
+      "low": 32856
+    },
+    "continuousLifecycleDeviceArt": "open"
   }
 }
