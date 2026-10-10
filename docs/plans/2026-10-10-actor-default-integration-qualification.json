@@ -1,0 +1,140 @@
+{
+  "recordedUTC": "2026-10-10T22:10:27.940986+00:00",
+  "source": "695cee4ac7539f8c3ae1711ea5bf2db3eac7ba2c",
+  "selectedIntoHeld": true,
+  "public": false,
+  "runtimeSHA256": {
+    "src/art/ActorInstanceMultiDraw.js": "09b55219719dddf6c3b7081f8069d218762d8ae20128ffdb1de6bc54aba6e4ec",
+    "src/art/ActorInstanceBatches.js": "f21a116db9ab7356ab4c31879f38bc6f1ac1f2cd4bc2ba9e0739970cf4b78b5a",
+    "src/core/RenderSystem.js": "ff551bdd2ef974ab3c4a87594790c53d5590d819e26bfbc4aae92421e4b5fe72"
+  },
+  "focused": {
+    "passed": 99,
+    "suites": 6
+  },
+  "lint": "pass",
+  "prepare": "pass",
+  "native": {
+    "total": 12,
+    "expected": 12,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "ok": true
+  },
+  "maxRetry": 0,
+  "exactRGBComparisons": 48,
+  "motion": [
+    {
+      "quality": "low",
+      "samples": [
+        {
+          "className": "Fighter",
+          "supplied": "Fighter",
+          "animationStarts": 1,
+          "maxAuraError": 0,
+          "maxClipPhaseError": 0,
+          "flightStepSpread": 1.0658141036401503e-14,
+          "contactAngle": 0,
+          "contactScaleError": 0,
+          "endpointError": 0,
+          "stillJumping": false
+        },
+        {
+          "className": "Rogue",
+          "supplied": "Rogue",
+          "animationStarts": 1,
+          "maxAuraError": 0,
+          "maxClipPhaseError": 0,
+          "flightStepSpread": 1.0658141036401503e-14,
+          "contactAngle": 0,
+          "contactScaleError": 0,
+          "endpointError": 0,
+          "stillJumping": false
+        },
+        {
+          "className": "Cleric",
+          "supplied": "Cleric",
+          "animationStarts": 1,
+          "maxAuraError": 0,
+          "maxClipPhaseError": 0,
+          "flightStepSpread": 1.0658141036401503e-14,
+          "contactAngle": 0,
+          "contactScaleError": 0,
+          "endpointError": 0,
+          "stillJumping": false
+        },
+        {
+          "className": "Wizard",
+          "supplied": "Wizard",
+          "animationStarts": 1,
+          "maxAuraError": 0,
+          "maxClipPhaseError": 0,
+          "flightStepSpread": 1.0658141036401503e-14,
+          "contactAngle": 0,
+          "contactScaleError": 0,
+          "endpointError": 0,
+          "stillJumping": false
+        }
+      ],
+      "errors": []
+    },
+    {
+      "quality": "high",
+      "samples": [
+        {
+          "className": "Fighter",
+          "supplied": "Fighter",
+          "animationStarts": 1,
+          "maxAuraError": 0,
+          "maxClipPhaseError": 0,
+          "flightStepSpread": 1.0658141036401503e-14,
+          "contactAngle": 0,
+          "contactScaleError": 0,
+          "endpointError": 0,
+          "stillJumping": false
+        },
+        {
+          "className": "Rogue",
+          "supplied": "Rogue",
+          "animationStarts": 1,
+          "maxAuraError": 0,
+          "maxClipPhaseError": 0,
+          "flightStepSpread": 1.0658141036401503e-14,
+          "contactAngle": 0,
+          "contactScaleError": 0,
+          "endpointError": 0,
+          "stillJumping": false
+        },
+        {
+          "className": "Cleric",
+          "supplied": "Cleric",
+          "animationStarts": 1,
+          "maxAuraError": 0,
+          "maxClipPhaseError": 0,
+          "flightStepSpread": 1.0658141036401503e-14,
+          "contactAngle": 0,
+          "contactScaleError": 0,
+          "endpointError": 0,
+          "stillJumping": false
+        },
+        {
+          "className": "Wizard",
+          "supplied": "Wizard",
+          "animationStarts": 1,
+          "maxAuraError": 0,
+          "maxClipPhaseError": 0,
+          "flightStepSpread": 1.0658141036401503e-14,
+          "contactAngle": 0,
+          "contactScaleError": 0,
+          "endpointError": 0,
+          "stillJumping": false
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "scope": "Three byte-identical qualified actor runtime files selected into held integration without the inherited private fitted-rigid handgear pilot. Prepared worker/vendor runtime, six focused suites, High/Low exact actor image controls, pool retirement/return, extension fallback and supplied four-class jump/aura motion pass. These are modular source-browser runs, not bundled publication runs. Original candidate startup artifacts use a compiled-game wording that is broader than their actual modular startup; startup and numeric samples remain valid only for the recorded modular client. No publication, universal budget, modern-art, physical-device, failed-soak, beta or full-goal acceptance.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-default-actor-integration-checks-20261010",
+  "inventorySHA256": "4dcd0b8161d4dd20d657b70bbfdfd3ba4f2569229bb94d5e0ff7bf1254ae8f43"
+}

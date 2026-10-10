@@ -1,0 +1,435 @@
+{
+  "recordedUTC": "2026-10-10T22:16:55.251409+00:00",
+  "source": "83a7c968d8fd4fcd685d6d48b8ed99e210b20f21",
+  "runtime": "695cee4a; later changes QA only",
+  "terminal": {
+    "source": "83a7c968d8fd4fcd685d6d48b8ed99e210b20f21",
+    "exitCode": 0,
+    "startedUnix": 1791670421.0909998,
+    "finishedUnix": 1791670503.2452292
+  },
+  "native": {
+    "total": 2,
+    "expected": 1,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 1,
+    "ok": true
+  },
+  "maxRetry": 0,
+  "scenes": {
+    "town-start": {
+      "actualFrames": 12,
+      "allCallsAccountedFor": true,
+      "hooksRestored": true,
+      "minimumCalls": 355,
+      "maximumCalls": 400,
+      "contributors": [
+        {
+          "family": "Lanternhold communal courtyards",
+          "pass": "shadow-0",
+          "minimumCalls": 29,
+          "maximumCalls": 29
+        },
+        {
+          "family": "ProceduralRespecNPC",
+          "pass": "color",
+          "minimumCalls": 27,
+          "maximumCalls": 27
+        },
+        {
+          "family": "ProceduralQuestNPC",
+          "pass": "color",
+          "minimumCalls": 24,
+          "maximumCalls": 24
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "minimumCalls": 23,
+          "maximumCalls": 23
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "shadow-0",
+          "minimumCalls": 20,
+          "maximumCalls": 20
+        },
+        {
+          "family": "ProceduralQuestNPC",
+          "pass": "shadow-0",
+          "minimumCalls": 18,
+          "maximumCalls": 18
+        },
+        {
+          "family": "Mesh",
+          "pass": "auxiliary",
+          "minimumCalls": 15,
+          "maximumCalls": 15
+        },
+        {
+          "family": "ProceduralRespecNPC",
+          "pass": "shadow-0",
+          "minimumCalls": 12,
+          "maximumCalls": 12
+        },
+        {
+          "family": "lanternhold-casino-shell",
+          "pass": "shadow-0",
+          "minimumCalls": 11,
+          "maximumCalls": 11
+        },
+        {
+          "family": "lanternhold-casino-shell",
+          "pass": "color",
+          "minimumCalls": 11,
+          "maximumCalls": 11
+        },
+        {
+          "family": "Lanternhold:Votive Market",
+          "pass": "shadow-0",
+          "minimumCalls": 10,
+          "maximumCalls": 10
+        },
+        {
+          "family": "Lanternhold:Ashen Smithy",
+          "pass": "shadow-0",
+          "minimumCalls": 10,
+          "maximumCalls": 10
+        },
+        {
+          "family": "OpaqueActorInstances",
+          "pass": "color",
+          "minimumCalls": 10,
+          "maximumCalls": 10
+        },
+        {
+          "family": "Lanternhold:Pilgrim Vigil Field",
+          "pass": "shadow-0",
+          "minimumCalls": 9,
+          "maximumCalls": 9
+        },
+        {
+          "family": "ProceduralDwarfSalesman",
+          "pass": "shadow-0",
+          "minimumCalls": 9,
+          "maximumCalls": 9
+        },
+        {
+          "family": "Lanternhold:Votive Market",
+          "pass": "color",
+          "minimumCalls": 9,
+          "maximumCalls": 9
+        },
+        {
+          "family": "Lanternhold:Ashen Smithy",
+          "pass": "color",
+          "minimumCalls": 9,
+          "maximumCalls": 9
+        },
+        {
+          "family": "Lanternhold:The Gilded Compact",
+          "pass": "color",
+          "minimumCalls": 9,
+          "maximumCalls": 9
+        },
+        {
+          "family": "Lanternhold:Pilgrim Vigil Field",
+          "pass": "color",
+          "minimumCalls": 9,
+          "maximumCalls": 9
+        },
+        {
+          "family": "Lanternhold:The Gilded Compact",
+          "pass": "shadow-0",
+          "minimumCalls": 8,
+          "maximumCalls": 8
+        },
+        {
+          "family": "Canonical terrain tiles",
+          "pass": "color",
+          "minimumCalls": 8,
+          "maximumCalls": 8
+        },
+        {
+          "family": "OpaqueActorInstances",
+          "pass": "shadow-0",
+          "minimumCalls": 7,
+          "maximumCalls": 7
+        },
+        {
+          "family": "ProceduralDwarfSalesman",
+          "pass": "color",
+          "minimumCalls": 7,
+          "maximumCalls": 7
+        },
+        {
+          "family": "ArchmageIlyra",
+          "pass": "color",
+          "minimumCalls": 25,
+          "maximumCalls": 25
+        },
+        {
+          "family": "Lanternhold planted street edges",
+          "pass": "shadow-0",
+          "minimumCalls": 6,
+          "maximumCalls": 6
+        },
+        {
+          "family": "FourfoldResonancePlaza",
+          "pass": "shadow-0",
+          "minimumCalls": 6,
+          "maximumCalls": 6
+        },
+        {
+          "family": "Lanternhold:Wayfarer Reliquary",
+          "pass": "shadow-0",
+          "minimumCalls": 6,
+          "maximumCalls": 6
+        },
+        {
+          "family": "Lanternhold planted street edges",
+          "pass": "color",
+          "minimumCalls": 6,
+          "maximumCalls": 6
+        },
+        {
+          "family": "Lanternhold:Oathfire Forge",
+          "pass": "shadow-0",
+          "minimumCalls": 5,
+          "maximumCalls": 5
+        },
+        {
+          "family": "EffectGroup",
+          "pass": "color",
+          "minimumCalls": 5,
+          "maximumCalls": 5
+        },
+        {
+          "family": "ArchmageIlyra",
+          "pass": "shadow-0",
+          "minimumCalls": 20,
+          "maximumCalls": 20
+        },
+        {
+          "family": "Earth authored paths",
+          "pass": "color",
+          "minimumCalls": 4,
+          "maximumCalls": 4
+        },
+        {
+          "family": "TownFence",
+          "pass": "shadow-0",
+          "minimumCalls": 3,
+          "maximumCalls": 3
+        },
+        {
+          "family": "ActorInstanceMultiDraw",
+          "pass": "shadow-0",
+          "minimumCalls": 2,
+          "maximumCalls": 2
+        },
+        {
+          "family": "FourfoldResonancePlaza",
+          "pass": "color",
+          "minimumCalls": 2,
+          "maximumCalls": 2
+        },
+        {
+          "family": "Mesh",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "ProceduralEidolicBlackwater",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "ProceduralRealmTerrain:water",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "ProceduralRealmTerrain:town",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "ActorInstanceMultiDraw",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "Points",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "TownFence",
+          "pass": "color",
+          "minimumCalls": 0,
+          "maximumCalls": 0
+        }
+      ]
+    },
+    "woodland-cut": {
+      "actualFrames": 12,
+      "allCallsAccountedFor": true,
+      "hooksRestored": true,
+      "minimumCalls": 550,
+      "maximumCalls": 556,
+      "contributors": [
+        {
+          "family": "ProceduralDemonOrc",
+          "pass": "shadow-0",
+          "minimumCalls": 225,
+          "maximumCalls": 225
+        },
+        {
+          "family": "ProceduralDemonOrc",
+          "pass": "color",
+          "minimumCalls": 131,
+          "maximumCalls": 137
+        },
+        {
+          "family": "foliage:earth:grave_pine",
+          "pass": "shadow-0",
+          "minimumCalls": 37,
+          "maximumCalls": 37
+        },
+        {
+          "family": "foliage:earth:ossuary_birch",
+          "pass": "shadow-0",
+          "minimumCalls": 29,
+          "maximumCalls": 29
+        },
+        {
+          "family": "foliage:earth:ossuary_birch",
+          "pass": "color",
+          "minimumCalls": 23,
+          "maximumCalls": 23
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "minimumCalls": 23,
+          "maximumCalls": 23
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "shadow-0",
+          "minimumCalls": 20,
+          "maximumCalls": 20
+        },
+        {
+          "family": "foliage:earth:grave_pine",
+          "pass": "color",
+          "minimumCalls": 19,
+          "maximumCalls": 19
+        },
+        {
+          "family": "Mesh",
+          "pass": "auxiliary",
+          "minimumCalls": 15,
+          "maximumCalls": 15
+        },
+        {
+          "family": "foliage:earth:mourning_willow",
+          "pass": "shadow-0",
+          "minimumCalls": 8,
+          "maximumCalls": 8
+        },
+        {
+          "family": "Gloamwood heath and fern beds",
+          "pass": "color",
+          "minimumCalls": 8,
+          "maximumCalls": 8
+        },
+        {
+          "family": "Canonical terrain tiles",
+          "pass": "color",
+          "minimumCalls": 4,
+          "maximumCalls": 4
+        },
+        {
+          "family": "Earth authored paths",
+          "pass": "color",
+          "minimumCalls": 2,
+          "maximumCalls": 2
+        },
+        {
+          "family": "Earth exposed rock shelves",
+          "pass": "shadow-0",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "Mesh",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "ProceduralEidolicBlackwater",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "ProceduralRealmTerrain:water",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "ProceduralRealmTerrain:air",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        },
+        {
+          "family": "Points",
+          "pass": "color",
+          "minimumCalls": 1,
+          "maximumCalls": 1
+        }
+      ]
+    }
+  },
+  "serverMarkers": {
+    "WARNING: DATA RACE": 0,
+    "panic:": 0,
+    "fatal error:": 0,
+    "Worker panic:": 0,
+    "Recovered from panic in Update:": 0
+  },
+  "fourClassFourteenSlotGoRaceSavesPassed": true,
+  "normalPartySample": {
+    "frames": 180,
+    "drawCallsMedian": 298,
+    "trianglesMedian": 216290,
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 16.8,
+    "activeEntitiesMin": 30,
+    "activeEntitiesMax": 31
+  },
+  "finding": "Woodland550\u2013556draws is dominated by unchanged original DemonOrc leaves:225shadow and131\u2013137color draws,356\u2013362total. Factory creates unbatched DemonOrc and family is deliberately outside reviewed actor-instance whitelist. Town355\u2013400draws includes27Respec/24Quest color and12Respec/18Quest shadow draws plus29courtyard shadow; singleton reviewed rigs retain original leaf draws when exact source buckets have fewer than two members. Diagnose these measured actor submissions before changing foliage or hiding world content. No additional family/default runtime is selected by this diagnostic.",
+  "scope": "Diagnostic follow-up to retained ordinary route town400/woodland468failures. Same ordinary ground-input route in a different generated population;24untimed actual renders account for every call and restore hooks. No route budget sampling in this diagnostic, no failure waiver, no causal cross-population gain. Later unchanged normal party profile298draw/216290triangles/16.7median16.8p95 and final real Go-race saves pass only their separate scope. Full-world/art/device/soak/freeze/beta/launch/handoff remain open.",
+  "sanitization": {
+    "preparedAccountsRedacted": 4,
+    "plainFilesScanned": 18,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled",
+    "explicitPostLoginMovingImages": true
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-town-woodland-submission-checks-20261010",
+  "inventorySHA256": "aef171c69669ff13cccba958f63050de45f8f158d259178757b049b1a7e34188"
+}

@@ -1,173 +1,81 @@
 # Release-readiness remaining work
 
-October 9 continuation of the full objective in the owner's root `goal.md`.
-This register supplements the [89-milestone roadmap](2026-09-28-alpha1-11-to1-99-release-roadmap.md),
+Current checkpoint: October 10, 2026. The full objective in the owner's
+`goal.md`, the [1.11–1.99 roadmap](2026-09-28-alpha1-11-to1-99-release-roadmap.md),
 [promise inventory](2026-09-28-1-11-gap-register.md),
 [freeze preparation](2026-10-06-release1-80-freeze-preparation.json) and
-[threat/exception ledger](2026-10-07-release1-80-threat-and-exception-ledger.md).
-It preserves carried requirements from 1.11 onward; it does not replace them
-with a smaller 1.80–1.99 objective or certify unchecked gates.
+[threat ledger](2026-10-07-release1-80-threat-and-exception-ledger.md) remain authoritative.
+Historical test receipts do not close unchecked requirements.
 
-Owner-priority follow-up: **Alpha1.79.28/77a48916** is pushed; exact CI38076277436
-is still in progress. Its jump prediction/trajectory/render clock, rested-aura
-attachment and explicit/legacy automation population filters are implemented
-and locally qualified (182 focused checks,401 overlapping release checks,
-Go-race filtering/paging checks and9 public-source/bundle native checks). Do
-not infer deployment or release acceptance yet. Final review additionally
-reproduced a midair tuck discontinuity for all four classes; the qualified
-correction1e60f126 is held locally (73 focused/2 native pass), awaiting completed
-verification of28 before a further publication. Both original failure archives
-remain retained. See motion-admin-qualification and jump-pose-continuity-qualification.
+**Live: Alpha1.79.29/12e5e3c4 is accepted.** Exact CI38078784320 succeeded on
+attempt1; frontend/backend/database and eight served asset hashes match.
+The requested jump, takeoff/landing, aura attachment and test-account filtering
+fixes are verified: trusted jump1396.8ms with zero measured backward steps,
+path/endpoint/aura error; sustained walking88frames with auraerror0; six QA
+identities excluded from real-player views and owned real-Mongo classification
+fixture1pass0skip.8required native passes/1skip plus3recovery passes, retry0.
+[Public29 terminal proof](2026-10-10-public29-terminal-qualification.json).
 
-The current deployed build is **Alpha1.79.27/a9d6fc9b**. Both deployment jobs
-succeeded; normal-TLS frontend/backend/database and all eight independently
-compared public assets match. A fresh ordinary Fighter's trusted27unit Ctrl-click
-lands in **1429.7ms total**, accepted1.3s, logical/render endpoint errors0;
-one actual native jump pass/no gameplay retries/flakes/skips. A local missing
-vendor setup failure occurred before navigation/registration/jump and is retained.
-[Actual public jump and deployment proof](2026-10-10-public27-jump-verification.json).
-Required CI38064138468 attempt1 completed success. Native live report has
-8expected/1skip/0unexpected/0flake, all retry0; separate rest/expiry2pass and
-two-player High/Low phone-emulation1pass. Optional jump/four-class routes stay
-skipped; actual public jump has separate proof. Exact release checks accepted;
-full original goal, physical-device and art acceptance remain open.
-[Terminal report and frozen evidence](2026-10-10-public27-terminal-verification.json).
+**Held private renderer:695cee4a selects qualified automatic same-cell actor
+multi-draw and conservative per-instance clipping**, with prior lazy geometry,
+worker preparation, e8 actor shadows and public29 motion/admin. Only three
+actor runtime files were selected; the private fitted-rigid handgear pilot stays
+excluded.99focused checks,12native integrated checks/48exactRGB comparisons,
+pooled-root return/disposal/fallback and four-class High/Low jump/aura continuity
+pass. Separate actual-publication tests3pass verify lazy four-class construction
+and High/Low automatic actor-owner activation/disposal.
+[Default startup](2026-10-10-default-actor-cell-qualification.json),
+[integration](2026-10-10-actor-default-integration-qualification.json),
+[publication](2026-10-10-actor-default-publication-qualification.json).
+Candidate High265draw/176732triangles and Low149draw/79962triangles sampled limits
+pass with16.7median16.8p95 and real Go-race four-class14slot saves. Those startup
+frame samples are modular-client evidence; publication tests cover a separate
+bundle. No cross-population FPS gain or universal-budget claim.
 
+**Whole-world performance remains open.** The integrated fourteen-slot Fighter
+completed ordinary ground input town→gate→Earth→woodland→Verdant approach with
+actual HUD,444post-login moving frames and49grounded observations. Four180frame
+High samples retain original350draw/250000triangle/20msmedian/33.4p95 limits:
+town400draw and woodland468draw FAIL; Earth road190 and Verdant approach145
+pass. All four triangle/frame budgets pass. The strict route gate fails before
+party assembly/final saved custody; no retry or waiver.
+[Retained route failure](2026-10-10-actor-default-moving-route-qualification.json).
+Next: qualify a source-preserving reduction of the measured DemonOrc and town
+service-NPC submissions.24untimed actual renders account for every call and
+restore their hooks: a different woodland population has550–556draws, of which
+original unbatched DemonOrc leaves contribute225shadow and131–137color draws.
+Town355–400draws includes27Respec/24Quest color,12Respec/18Quest shadow and
+29courtyard shadow submissions. The current factory deliberately leaves
+DemonOrc outside the reviewed rigid batching contract; review and qualify that
+family before selection. No additional runtime/family change is selected.
+The later ordinary four-class14slot Go-race party passes its separate sample:
+298draw/216290triangles/16.7median16.8p95. It does not clear the route failures.
+[Submission attribution](2026-10-10-town-woodland-submission-qualification.json). Historical High389draw,Low202draw,
+Low87602triangle and fully-visible pairedHigh no-triangle-gain failures remain
+retained. Different successful populations do not erase them.
 
-The held private milestone now selects **e8eec1b9 conservative rigid actor shadow
-influence**, alongside default lazy geometry and normal worker preparation.
-Current rigid pivot and float32 instance bounds omit only shadow submissions
-whose complete padded directional-light volume cannot reach the visible camera.
-Supplied skins, custom deformation and unknown light paths retain originals;
-source geometry and color visibility stay intact.89 focused checks,9 default
-native checks/34 exact RGB pairs, High/Low three-session retirement, warmed
-scene cycles and actual four-class14-slot server/Mongo saves pass. Original
-Low test expectation failure is retained; Low shadows are disabled and perform
-zero shadow/light work. Actual High33-entity180-frame sample **324draws,
-176626triangles,16.7ms median+p95** passes sampled limits. Same-frame default
-shadow control390→330draws has zero changed/unstable pixels. Independent
-prototype417→317 control is also exact; no causal FPS claim across populations.
-[Qualified shadow evidence](2026-10-10-actor-shadow-influence-qualification.json).
+The full modern-art/world/contact/combat, supported-browser/device/accessibility,
+save/security/operations/support/notices, F1–F5 freeze, closed-beta, launch and
+handoff requirements remain open. Owner-deferred full campaign pacing and actual
+physical-phone feedback remain deferred. Failed24hsoak37880032315 is retained;
+no restart/cancellation or substitute campaign. No beta/access/commerce/release
+approval is inferred. Original dirty repository is preserved; no new public
+push. Continue milestone-sized work in owned worktrees.
 
-**Low remains open:** the current30–31entity180-frame sample has **202draws,
-failing200**, while79857triangles and16.7ms median+p95 pass. Earlier175draw
-Low evidence describes another population and cannot replace this failure.
-A following Low rigid camera policy378a79a2 passes90 focused checks and11native
-functional checks with exact pixels, but the actual frozen comparison remains
-154→154draws despite86238→83650triangles. Its strict draw-gain assertion fails
-before the next motion/frame profile/final Mongo custody; these did not execute.
-The candidate stays unselected, original failure retained, no retry or waiver.
-[Unselected Low hypothesis](2026-10-10-low-actor-view-unselected.json).
-Next: inspect actual Low batch draw topology and consolidate measured submissions
-while preserving exact world/normal transforms,64-unit float32 origins and all
-content. Require same-scene draw reduction and actual moving-party/save proof
-at unchanged limits; then continue ordinary town/Earth/fight/dungeon-approach
-art/combat/device work. Public27 and its1429.7ms jump remain unchanged.
-
-The following source-specific receipts retain their historical state; later
-selection above supersedes their default-null and held-unchanged descriptions.
-
-Previous public26 failure remains retained:
-
-**The prior release was unaccepted:** required26 CI`38056289769` attempt1 completed
-failure after nine other jobs passed. Native live gameplay fails initial stash
-Gold385761→385936 and configured retry exact sale Gold386536→386711, both +175.
-Fresh correlated baselines pass, so the controlled FIFO repair is insufficient.
-Actual report7passed/1unexpected/1skipped; required later recovery and optional
-four-class stages skipped. Exact frontend/backend/database/eight assets match.
-[Terminal26 evidence and limits](2026-10-10-public26-terminal-verification.json).
-
-Corrective **Alpha1.79.27/a9d6fc9b** follow-up is pushed; exact unchanged
-CI38064138468 attempt1 completed success. First392 candidate failed before
-deployment due to missed published-bundle1500ms minimum. Corrected1300–1550ms
-assertion qualifies native1pass7s,1356.4/1318.8ms at15/60FPS, endpoints0.
-[Failure and qualified correction](2026-10-10-release27-published-timing-correction.json). The owner repeated the
-approximately1.5second TOTAL requirement. Server/client1.3second flight reserves
-latency: actual copied publication1504.9ms normal/1459.9ms15FPS, exact endpoints,
-fresh login/Mongo custody;96client checks and focused Go-race pass.
-[Candidate and evidence](2026-10-10-jump-total-time-release27.json).
-
-Actual one-run live diagnostic38061055843 now establishes the observed public26
-sale cause: fresh387855 + exact1500sale →389355, separate room175 →389530,
-one sale and complete trace/decodeErrors0. Original helper then rejects the
-legitimate final balance. No pacing, packet changes or retries; original26 CI
-remains failed. [Actual provenance](2026-10-10-live-gold-provenance.json).
-Candidate QA requires exact baseline + transaction credit + separately observed
-own-room credits; unexpected/invalid/repeated/other-owner Gold still fails.
-Actual room and preceding-credit browser/server/Mongo cases pass with custody,
-XP and immutable receipts. Exact public27 assets, fresh jump and required live
-gates pass as recorded above. No full-roadmap, device/art/soak/beta acceptance.
-
-Previous required25 CI`38051193149` attempt1 failed
-live Gold/stash gameplay assertions after nine other jobs succeed. The initial
-exact sale-credit check expects384489 but receives384731; the configured retry
-stash check expects384731 but receives384906. Root cause is not established.
-Required later town recovery and optional four-class live stages were skipped,
-not passed. No manual rerun, waiver or cancellation occurred; the later26 failure
-does not waive this earlier result.
-The initial25`3ac476e6` server race failed before deployment; the corrected server
-passes its complete CI after retained16worker reproduction/qualification.
-
-Corrective **Alpha1.79.26/77859697** is deployed but failed its required gate.
-The fresh correlated read-only Gold baseline helper
-passes both real preceding242/175Gold FIFO controls with unchanged exact
-sale/stash assertions, fresh login and direct Mongo custody/metadata checks.
-[Qualified correction and limits](2026-10-10-vendor-gold-synchronization.json).
-These controls remain valid within scope; they alone did not establish or repair
-the live cause. Later actual provenance and candidate exact-ledger repair are
-recorded above; required public27 gates now passed as recorded above.
-
-New private diagnostic1c7cbd90 reproduces a legitimate +175 difference after a
-correct fresh wallet baseline: freeing a bag slot through sale/stash delivers a
-retained actual level40 elite-ambush/fortune1 room award. Four Go-race controls
-pass with exact saved receipt/one feedback, original equipment/bag/stash custody
-and no repeated award. Real admission/dispatch/recovery/filesystem journal,
-modeled storage only; no browser/Mongo or original public-cause conclusion.
-[Boundary evidence](2026-10-10-gold-room-reward-boundary.json). This diagnostic alone preserved product and strict assertions. The later actual
-provenance above supports the candidate exact-ledger repair; original failures
-remain retained and required public27 gates now passed as recorded above.
-
-Follow-up a69cd244 qualifies this boundary through actual browser/server/Mongo:
-2native pass43.4s and Go-race48.10s/package49.161s; exact final1178sale/1175stash,
-EP43, earnedXP, original14-slot equipment, exact bag/stash/frozen-item metadata
-and completed immutable saved reward receipts. Host balance reads explicitly
-select the post-award schedule; every original packet, client loop and strict
-helper stays intact. Initial unpaced sale/stash counterexamples and a different
-sale's pre-award completion establish timing sensitivity; their diagnostic
-failures remain frozen separately. [Native boundary and limits](2026-10-10-gold-room-reward-native-boundary.json).
-The later actual provenance above establishes the observed public26 sale cause; this private boundary alone did not.
-
-Separate private integration **14d4ea1f** ordinarily merges held9d724663 with
-public26, preserving held art/model/render/movement bytes and default inactive
-geometry.469checks/6suites, focused wallet/ability Go-race and actual raised-world
-copied publication pass. Native60/15FPS click→landing1688.5/1617.9ms with
-accepted1.5s flight, zero endpoint error and fresh login/direct Mongo exact
-Gold/EP/equipment/bag/landing. Initial startup recovery constructs once; a
-separate fresh login intentionally constructs again. No public rollout or
-whole-High/device/art acceptance. [Integration evidence](2026-10-10-world-maintenance-integration.json).
-
-Previous24`922753a7`/CI`38030283856` failed startup and retained a Gold/stash
-flake; original causes remain unproven. Neither historical failure is waived.
-[Original failed release](2026-10-10-matrix-world-force-public-failure.json),
-[private diagnostic limits](2026-10-10-live-failure-diagnostics.json).
-Earlier bounded23`2e519bb0` acceptance and its retained initial startup failure
-remain historical [jump evidence](2026-10-10-jump-speed-public-acceptance.json).
-Public24/25 product remains unmerged into the held renderer/terrain branch.
-The separate 24-hour
-soak `37880032315`, attempt 1 at `dc7d22f2`, completed **failure** on October 10;
-evidence upload succeeded. Seven read errors and only 20.2538 minutes of common
-100-client coverage fail acceptance. All 1,440 ready minute samples do not explain
-the lost connections. No restart/cancel or replacement soak was performed.
+The table retains source-specific historical findings and requirements. The
+current state above supersedes older default-null/public-version descriptions;
+linked original receipts preserve failures and their precise scopes.
 
 | Work | Current evidence and status | Next required result / owner |
 | --- | --- | --- |
+| Automatic actor cell delivery | Selected privately as695cee4a:99focused,12native integrated/48exactRGB,3actual-publication checks pass; candidate modular High265draw/176732triangles,Low149draw/79962triangles,16.7median16.8p95 sampled limits and four-class14slot Go-race saves pass | Whole-world budgets remain open: actual ordinary route town400draw/woodland468draw FAIL350; original Low202/Low87602/High389 failures retained. No public release. [Default integration](2026-10-10-actor-default-integration-qualification.json), [route failure](2026-10-10-actor-default-moving-route-qualification.json) |
 | Low vegetation detail margin | Private011fddda keeps every7439plants, all leaf roots/tips/fern leaflets, exact placement/tints and wind bounds with two Low ribbon sections. Sedge80→48/fern231→217triangles; High position/color/normal SHA256 goldens and spatial copies unchanged.24distinct focused checks pass after retained old expected-recipe test failure; actual Low1native pass1skip27.9s/retry0, exact four-class14slot movement/Mongo saves | Actual180frames158draws/80382triangles/16.7msmedian16.8msp95 pass sampled Low limits. Same-scene prior/current scenery independently saves3248triangles with158draws and exact plant transforms/tints; ordinary/close visual differences inspected. Private integration now exact011fddda; default null/public27 unchanged. Qualify cold/returning default startup, worker fallback, settings replacement and session/resource lifetime before activation; wider combat/device/art gates stay open. [Frozen evidence](2026-10-10-low-understory-detail-qualification.json) |
 | Rigid supplied equipment geometry | Private09fba6f8/de9c9a15 extends the existing optional owner to original-vertex hand gear, preserving source GLBs, attributes, mounts and close originals.86focused checks, immutable/offline worker,64native gallery controls/32exact close, actual High/Low normal movement and four-class14slot Mongo saves pass. Corrected QA-only pool assertion retains11skinned+10rigid; first failure and selector setup failure retained. Private integration fast-forwarded to exactde9; public27 unchanged | Same frozen scene saves3356Low/19304High rendered triangles. Actual Low179draws/85056triangles/16.7msmedian+p95 still fails85000. High334draws/181569triangles/16.7ms passes sampled limits only. Keep default null; build meaningful Low scenery margin without losing plants/leaves or altering High/wind bounds, then finish wider representative/device/art/activation gates. [Frozen evidence and limits](2026-10-10-rigid-equipment-geometry-qualification.json) |
 | Connected party names | Actual High one-renderer/three-live-peer scene retains7visible22px labels, all owned/chosen and0overlapping pairs. Native23.1s/Go-race31.152s save check pass; four-renderer alternative skipped. Screenshot suspicion not reproduced; product unchanged | Retain bounded existing layout; transient/HUD, supported-device and overall UI/art acceptance remain open. [Scoped proof](2026-10-10-connected-party-nameplates.json) |
 | Current Low geometry-owner qualification | Runtime identical511edfaa; QA-only missing-worker guard eeed562f carried as11df89b4. Existing exact worker now prepared. Actual Low four supplied classes/14slots/3socket peers:1native pass1skip, saved custody exact,44geometry registrations/no errors; close RGB0, normal clicks/motion/HUD inspected | Low16.7msmedian/p95 and175draws pass sampled limits,89377triangles fails85000; same frozen scene85491 also fails. Default stays null. Original missing-worker native failure retained; no blind retry. Original rigid equipment census10604triangles identifies remaining bounded coverage. [Actual evidence and limits](2026-10-10-world-geometry-low-qualification.json) |
 | Actor frame scratch storage | Private3aea15aa reuses per-frame arrays/set while retaining live eligibility/order.69focused checks,10exact HighLow pose controls and actualHighparty pixel parity/save checks pass;720real frames all16.7msmedian | Keep unselected: fixed-scene submission medians9.0/9.85ms reference versus10.6/11.35ms candidate give no gain. Population/draw changes forbid causal frame comparison; wholeHighdraw/triangle/device/art gates stay open. [Decision](2026-10-10-actor-frame-storage-unselected.json) |
 | Optional shadow view | Private5c5494ef explicit owner, defaultOFF;36units, one actual equipped High native/Go-race save check and exactRGB pass.390→362same-scene draws; synchronous submission regresses;720real frames all16.7ms medians | Keep disabled/unselected: no stable FPS gain and wholeHigh350draw/250k triangle gates remain open. [Connected proof and limits](2026-10-10-actor-shadow-connected-gameplay.json) |
-| Current release | Corrective27/a9d6fc9b deployed; exact CI38064138468 attempt1 completed success. First392 failed before deployment on stale timing minimum, corrected and directly qualified. Original26/25 failed gates retained; observed26sale cause now established | Both deployments, eight assets, identities/database and actual1429.7ms public jump verified; required native outcomes passed retry0, optional routes skipped. No retry/waiver. [Candidate](2026-10-10-jump-total-time-release27.json) |
+| Current release | Alpha1.79.29/12e5e3c4 accepted: CI38078784320 success attempt1, normal TLS frontend/backend/database and8served hashes match; jump1396.8ms,zero backsteps/path/endpoints/aura error; walking88frames auraerror0; six configured QA identities excluded and real-Mongo fixture1pass0skip | Owner-requested motion/admin fixes complete. Full roadmap, held world/default renderer, art/devices/soak/freeze/beta/launch remain open. [Terminal public29 proof](2026-10-10-public29-terminal-qualification.json) |
 | User-requested jump speed | Owner repeated approximately1.5s TOTAL. Candidate1.3s flight qualifies actual connected1504.9ms normal/1459.9ms15FPS, endpoints0, fresh login/direct Mongo custody | Actual public27 landing/deployment verified1429.7ms total, endpoint errors0; required broader live CI passed retry0. Earlier public25 measured1648.6ms at1.5s flight and is retained. No physical-device/art acceptance. [Candidate](2026-10-10-jump-total-time-release27.json) |
 | Historical vendor/stash release qualification | Private d76413a4 two native ordinary/one-second FIFO-delayed cases pass50.6s; public24-byte-exact Go-race server and Mongo savedGold1175/EP43/23bag/2stash/exactequipment checks pass57.350s.3485existing product inputs unchanged. Existing helper waits exact175credit before stash snapshot; original stash equality retained | Two baseline controls failed their assumed old-balance observation: real delivery publishedGold first. Preserve both; native does not reproduce originalGoldcause. Controlled unit counterexample remains valid. [Qualification and limits](2026-10-10-vendor-stash-browser-qualification.json). Original live startup/Gold and failedCI remain unaccepted; deployed25current live Gold/stash assertions fail despite original175-credit qualification; diagnose the uncovered boundary without relaxing equality |
 | Historical Gold boundary investigation | Private8c9aa236 actual preceding sales under FIFO delayed delivery reproduce242Gold overshoot and175Gold crossing stash snapshot. Sale native case passes within a failed two-case diagnostic; corrected selected stash native/Go-race/Mongo passes exact1175Gold/43EP/custody. Initial harness failures retained;2727production files unchanged | At this earlier checkpoint, original live cause remained unproven. Fresh correlated baseline repair is qualified in both controlled cases, including strict persisted custody; corrective26 gates were pending and subsequently failed, retained above. Public27 current acceptance supersedes this historical status. [Counterexamples and limits](2026-10-10-vendor-preexisting-credit-counterexamples.json) |
@@ -226,42 +134,7 @@ the lost connections. No restart/cancel or replacement soak was performed.
 | Findings and 1.91–1.98 | Waiting on qualified beta/cohort evidence and remaining launch proofs; preparation may continue | Repro and resolve beta blockers, then data/security/economy/capacity/device/privacy/operations/final-content signoffs with named residual issues / implementation and owner |
 | 1.99 and handoff | **Not complete** | Exact approved candidate, synchronized versions/cumulative notes, live assets/readiness/account smoke, operating/support/recovery handoff and explicit owner go/no-go/public naming |
 
+
 Keep implemented, staged, pushed, deployed, verified and owner-approved states
-distinct. Do not rerun unchanged campaigns/soaks, lower established rendering
-budgets or classify skipped checks as passes. Unanswered owner decisions remain
-recorded dependencies; continue independent code-owned work without repeatedly
-asking for them. New work belongs in owned worktrees; preserve the original
-dirty repository and reconcile remote changes normally before publication.
-
-Private total-jump integration ddadf7c9 ordinarily merges public27 into qualified
-world/maintenance14d4ea1f. Actual earth-elevation-rocks-v1 copied publication:
-2native pass (36.51s Go/package37.555s), total1511.8ms normal/1411.7ms15FPS,
-logical/render endpoint errors0, separate fresh-login and exact Mongo economy/
-gear/bag/logout preserved. 128 focused checks pass. Geometry owner stays null;
-held art/render/runtime unchanged except intentional1.3s Movement cap. This is
-private and unselected; public27 is separately deployed and release-verified above.
-Receipt: `2026-10-10-world-total-jump-integration.json`.
-
-Public27 candidate392 CI38062443230 failed before deployment due to missed
-published-bundle minimum1500ms. Actual new flight landed1393.7/1425.2ms, then
-configured retry1447.1/1339.9ms, endpoints0. Original outcome/archive retained.
-Only that test now matches source fixture1300–1550ms: native1pass7s,1356.4ms15FPS
-and1318.8ms60FPS, endpoints0. Follow-up a9d6fc9b ordinary-pushed; new exact
-CI38064138468 completed success, not a manual rerun. Runtime unchanged. Version27
-is deployed and verified as recorded above; failed prior gates remain retained.
-Full original scope remains active; this release does not establish art/device/
-beta/launch acceptance.
-
-Public28/77a48916 CI38076277436 completed success, attempt1; normal TLS8assets exact, frontend/backend identity and database ready. Actual long jump1426.3ms, auraerror0, endpoints0;8native pass1skip0flake,3recovery pass. Read-only running-container check confirms6explicit test identities include all6QA identities. Two walking observations had insufficient moving samples (1,3;required>3), preserved as failures; walking acceptance remains open. Frozen receipt: `2026-10-10-public28-terminal-qualification.json`.
-
-Public29/12e5e3c4 ordinarily pushed after28 verification; CI38078784320 running. Includes qualified midair/landing correction fixes and newly reproduced acceptance-frame stale-position fix (1.661538unit backstep).85focused and477public checks;3native no-retry checks with production frame ordering passed. Exact29 deployment and live walking/jump acceptance pending. Receipt: `2026-10-10-jump-acceptance-render-qualification.json`. Full original requirements remain open.
-
-Private opt-in rigid handgear surface pilot10098530 remains unselected and unpublished.143focused checks and2native High/Low checks preserve156exact RGB pose comparisons and expanded derivative attribute rows. Actual connected four-class/14slot Go-race saves pass; frozen same-scene Low179→171draws and High336→320draws retain triangles/RGB. Normal High389draw median fails350; Low166sample differs from prior202failure and does not close it. Startup/default/pool and representative performance acceptance remain open. Frozen230-entry inventory0337337871705f469ff18be1bcae53f0f867c075b9cc0583e8f7129068f6cff7; receipt `2026-10-10-fitted-rigid-surface-pilot.json`. Runtime remains isolated in its private branch.
-
-2026-10-10 final scoped motion/admin receipt: Alpha1.79.29/12e5e3c41a3b4e897138973a7514fc8da7881bcb accepted live. Exact CI38078784320 success attempt1, all10jobs and required live steps pass;8native pass1skip0flake0retry plus3recovery pass. Normal TLS8served files match,frontend/backend identity and database ready. Trusted native jump1396.8ms with64aura samples,error0,phasebacksteps0,renderpatherror0,endpoints0; sustainedwalking88genuine frames,auraerror0,20.592units. Running configuration excludes6QA identities; owned real-Mongo population fixture1pass0skip verifies real/test/all paging and daily summaries. Frozen2888-entry inventory740010fcdfbff1d58707d822cbe14e128359711e99ffaed9f54bd2610b0b1ee3. See `2026-10-10-public29-terminal-qualification.json`. These owner-requested fixes are complete; full original roadmap remains unfinished, including held world/default geometry/shadows, unselected rigid batching with High389/350failure and historical Low202/200failure, art/devices/failed24hsoak/F1–F5/beta/launch/handoff. No additional public push.
-
-Actual party submission-frame diagnostic c61c6f51 accounts for every draw in12normal live renders after its uninstrumented180frame profile. New random world has24color/20shadow instance buckets in one cell; previous failedHigh389sample had72color buckets across3exact origins, with no same-geometry/material/origin merge available. New profile316draws/200392triangles/16.7median/33.3p95 differs and does not clear prior performance failures. Frozen58-entry inventory43d7ddeeb9b818afdad8e1b8ad88beec92e6a1aa6a28feb81d7e85a5705d8e0d. Private same-cell different-geometry multi-draw pilot9a93a779 is being qualified with unchanged origins/float32matrices/sourcegeometry and whole-bucket per-camera culling. Initial RGB failures retained; original color depth order versus shadow scene order correction gives12exact native pose comparisons, equal triangles and submission reduction. Not selected or published. See `2026-10-10-party-submission-frame-attribution.json`.
-
-Private same-cell actor multi-draw runtime702a2755/sourcebcbc7147 remains unselected and unpublished.71focused checks and12animated/far/sheared plus10recorded238instance/72bucket/3origin native comparisons preserve exactRGB and triangle counts. Initial native sort failures retained; original color depth order versus shadow scene order is now preserved. Native mid-frame failure cleanup and reference-again geometry/texture counters pass. Actual Go-race four-class14slot saved parties pass High/Low: frozen same-scene256→244/195→174draws retain162659/87584triangles andRGB0. NormalHigh242draws/162655triangles/16.7median+p95 passes this sample; Low178draws passes200, but87602triangles FAIL85000. Newly owned geometry404160/549696bytes and matrix+indirect textures30824/46580bytes are explicit, not zero-cost. Different populations cannot waive historicalHigh389draw/Low202draw failures. Frozen162-entry inventory57c09dbeeb090266d08dc2113600350bd42a4ca069227e86aedb355d3fbc8854; receipt `2026-10-10-actor-cell-multidraw-qualification.json`. Next: attribute and resolve Low triangle excess with strict visual/source/culling proof, then ordinary default/startup/pool/dynamic-membership and representative device/world/combat acceptance. Held/public runtimes unchanged; full original goal remains active.
-
-Per-instance frustum pilot e474d774/source59004143 passes74focused checks and48exact native controls/comparisons, including wide animated partial buckets, far coordinates and shadow passes; displaced/no-cull sources preserve reference. ActualLow40entities135draws/78808triangles/16.7median16.8p95 and four-class14slot owned Go-race saves pass; frozen same scene165→148draws,81418→78748triangles,RGB0. Frozen88-entry inventorya0738d060f92ac48e3de4fd6dbd653facee09bb53fdb227f45871fd1cf30eec2. Different population does not erase earlier performance failures. Separate ordinary startup default d2a82c66 qualifies99focused/eightnative plus two pooled-return/extension-fallback tests; first actualHigh paired helper fails overly broad strict triangle-gain assertion with no offscreen members despiteRGB0/draw gain/equal triangles. Failure retained; normal default High/Low budget qualification in progress with untouched selected source and original budgets, no manual install. See `2026-10-10-actor-instance-frustum-qualification.json`. Held/public runtime unchanged pending these gates.
+distinct. Preserve original budgets, skips and owner-deferred work. Reconcile
+remote changes ordinarily and verify each publication before another push.

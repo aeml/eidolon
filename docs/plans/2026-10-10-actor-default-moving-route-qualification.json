@@ -1,0 +1,124 @@
+{
+  "recordedUTC": "2026-10-10T22:12:58.753639+00:00",
+  "source": "c8df935f5aa4b0ceffdc0cfa69626b15e7b4a690",
+  "terminal": {
+    "source": "c8df935f5aa4b0ceffdc0cfa69626b15e7b4a690",
+    "exitCode": 1,
+    "startedUnix": 1791670136.1098397,
+    "finishedUnix": 1791670233.6880329
+  },
+  "native": {
+    "total": 2,
+    "expected": 0,
+    "unexpected": 1,
+    "flaky": 0,
+    "skipped": 1,
+    "ok": false
+  },
+  "maxRetry": 0,
+  "accepted": false,
+  "public": false,
+  "profiles": [
+    {
+      "label": "town-start",
+      "budget": {
+        "draws": 350,
+        "triangles": 250000,
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4
+      },
+      "profile": {
+        "frames": 180,
+        "drawCallsMedian": 400,
+        "trianglesMedian": 229563,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 155,
+        "activeEntitiesMax": 157
+      },
+      "drawBudgetPassed": false
+    },
+    {
+      "label": "earth-road",
+      "budget": {
+        "draws": 350,
+        "triangles": 250000,
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4
+      },
+      "profile": {
+        "frames": 180,
+        "drawCallsMedian": 190,
+        "trianglesMedian": 111336,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "activeEntitiesMin": 71,
+        "activeEntitiesMax": 72
+      },
+      "drawBudgetPassed": true
+    },
+    {
+      "label": "woodland-cut",
+      "budget": {
+        "draws": 350,
+        "triangles": 250000,
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4
+      },
+      "profile": {
+        "frames": 180,
+        "drawCallsMedian": 468,
+        "trianglesMedian": 131694,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 27,
+        "activeEntitiesMax": 27
+      },
+      "drawBudgetPassed": false
+    },
+    {
+      "label": "bastion-approach",
+      "budget": {
+        "draws": 350,
+        "triangles": 250000,
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4
+      },
+      "profile": {
+        "frames": 180,
+        "drawCallsMedian": 145,
+        "trianglesMedian": 74951,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.7,
+        "activeEntitiesMin": 29,
+        "activeEntitiesMax": 29
+      },
+      "drawBudgetPassed": true
+    }
+  ],
+  "postLoginScreencastFrames": 444,
+  "routeObservations": 49,
+  "routeElapsedMs": 62572.733971999995,
+  "ordinaryRouteCompleted": true,
+  "finalPartyAndSaveProofExecuted": false,
+  "serverMarkers": {
+    "WARNING: DATA RACE": 0,
+    "panic:": 0,
+    "fatal error:": 0,
+    "Worker panic:": 0,
+    "Recovered from panic in Update:": 0
+  },
+  "scope": "Integrated modular game, supplied fourteen-slot Fighter and actual HUD. Ordinary ground input completed town\u2192east gate\u2192Earth road\u2192woodland\u2192Verdant approach, no teleport or direct actor placement. Four180-frame native profiles at unchanged High350draw/250000triangle/20msmedian/33.4p95 budgets; screencast stopped during profiling. Town400draw and woodland468draw FAIL; road190 and approach145 pass; all triangles and frame intervals pass. Strict final assertion fails before party assembly and final Go-race saved custody. No retry, waiver, whole-world performance acceptance, art/device/campaign/beta/full-goal closure.",
+  "sanitization": {
+    "observedPreparedAccountsRedacted": 1,
+    "preparedFixtureAccounts": 4,
+    "loggedInPlayers": 1,
+    "plainFilesScanned": 20,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled",
+    "explicitPostLoginMovingImages": true
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-default-actor-moving-route-checks-20261010",
+  "inventorySHA256": "4ffbd61e6ca1c0f239c3f73b90c1494feb05994cf2889b09dcc488bbdc860fd7"
+}

@@ -1,0 +1,48 @@
+{
+  "recordedUTC": "2026-10-10T22:14:23.365126+00:00",
+  "source": "fd801fb95f280c5ce5b90713c84be4ded874e543",
+  "terminal": {
+    "source": "fd801fb95f280c5ce5b90713c84be4ded874e543",
+    "exitCode": 0,
+    "startedUnix": 1791670300.747252,
+    "finishedUnix": 1791670309.4882905
+  },
+  "native": {
+    "total": 3,
+    "expected": 3,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 0,
+    "ok": true
+  },
+  "maxRetry": 0,
+  "owners": [
+    {
+      "quality": "high",
+      "result": {
+        "enabled": true,
+        "groups": 3,
+        "extension": true,
+        "restored": true,
+        "draws": 74,
+        "disposed": true
+      },
+      "engineSHA256": "21816c7500e316ba916c984b45c37cb34efcd4e6a9fe653e3346d078119f942e"
+    },
+    {
+      "quality": "low",
+      "result": {
+        "enabled": true,
+        "groups": 3,
+        "extension": true,
+        "restored": true,
+        "draws": 44,
+        "disposed": true
+      },
+      "engineSHA256": "21816c7500e316ba916c984b45c37cb34efcd4e6a9fe653e3346d078119f942e"
+    }
+  ],
+  "scope": "Actual copied publication, real bundle and immutable URLs; lazy login and four-class construction, High/Low generated actor render and automatic actor buffer-owner disposal pass. Different bundled client from modular startup/frame profiles. No bundled world budgets, public deployment, modern-art/device/full-goal acceptance.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-default-actor-publication-checks-20261010",
+  "inventorySHA256": "97f0ab41a054a109434184afd7f82709254c8b7b58dfec544371bff4679c34e7"
+}
