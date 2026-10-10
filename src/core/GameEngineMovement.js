@@ -873,7 +873,7 @@ class GameEngineMovementMethods {
         let landingPitch = 0;
         if (jumpState?.landingVisual) {
             const landingT = this.getJumpLandingProgress(jumpState.landingVisual);
-            landingPitch = -Math.sin(landingT * Math.PI) ** 2 * styleProfile.landingLean * jumpState.landingVisual.impact;
+            landingPitch = -(Math.sin(landingT * Math.PI) ** 2) * styleProfile.landingLean * jumpState.landingVisual.impact;
         }
         const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), flipAmount + tuckPitch + landingPitch);
         const rollQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAmount);
