@@ -153,43 +153,45 @@ and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
 Prior owned history is preserved byte-exact in [the archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md);
 its procedural-only instructions do not override supplied-model/modern-ARPG requirements.
 
-Previous goal turn: **no progress** toward the broad objective; it reverified
-the existing public1.5s jump cap. This turn: **progress**, preparing exact-source
-worker delivery with145focused checks,32native pose/zoom controls/16exact close,
-and actualHigh/Low four-class/14slot/movingHUD/race/save evidence. Private11be4c67
-is merged inactive; no default controller/delivery import or public activation.
-[Delivery, original failures and limits](docs/plans/2026-10-10-gameplay-geometry-worker-delivery.json).
+Previous goal turn: **progress**, staged11be4c67automatic delivery with145checks,
+32native controls and actualHigh/Low moving/save evidence. This turn: **progress**,
+privatef63a8627renderer/group/reset/disposal ownership and immutable publication,
+release-keyed cache/offline execution,150checks,32native controls/16exact close,
+actualHighLowreplacement/pool reuse, and actualHigh moving/save plus an unallocated
+180frame reference. The default owner stays null; no public activation.
+[Current integration and limits](docs/plans/2026-10-10-gameplay-geometry-runtime-owner.json).
 
-- Accepted jump23/2e519bb0 caps client/server flight at1.5s; bounded realCtrlclick
-  landing was1.641s including display overhead.24jump source is unchanged.
-- Public24/922753a7 remains deployed and unaccepted. Fresh normalTLS frontend/
-  backend/bundle match,DBready, but CI38030283856 attempt1 is still failed at
-  mandatory live expiry engine-module/module-download startup. Separate175Gold
-  equality failed then passed retry; neither original cause is proven.
-  Private91check QA diagnosis/vendor sequencing remains selected, including
-  three fresh unchanged24recovery/party passes, without a CIrerun/waiver/24merge.
+- Public24/922753a7 still matches normalTLS frontend/backend/bundle,DBready.
+  CI38030283856 attempt1 remains failed required expiry engine-module download;
+  separate175Gold equality passed retry, original causes unknown. Private QA
+  diagnosis/vendor sequencing and three unchanged24recovery passes do not fix
+  the original failure. No rerun, successor push, waiver or24merge occurred.
   [Startup/Gold evidence](docs/plans/2026-10-10-live-failure-diagnostics.json).
-- Whole-render geometry preparation26d475d7 preserves complete source attributes,
-  skin/bones/blink/materials and exact close views, with four stable nativeGPU
-  cycles. New worker prepares live coverage/fitted sources, never transfers live
-  buffers, rejects stale generations and bounds pending/copy/cache/timeout work.
-  Outfit restore, detach/reattach and stealth restore each reacquire11cache hits
-  in the native gallery. Production actor/replacement/renderer and worker build/
-  version/offline delivery are still unfinished; default renderer does not use it.
-- Actual defaultHigh268calls/181443triangles/16.7median meets those targets, but
-  rawp9533.400000000001455 exceeds exact33.4. DefaultLow151/82828/16.7median/
-  33.400000000001455p95 meets this bounded scene. High/Low populations28/46 and
-  mixed source-bypass submission timing prohibit cross-run or broad gain claims.
-  Close originals still412792/129665triangles, over geometry targets. Supported
-  devices, memory, cold delivery and full moving modern-art remain unqualified.
-- Rejected light/world-box/affine/cell-matrix experiments remain unselected.
-  Required24hsoak37880032315 stays failed; no restart or substitute unchanged
-  campaign. Owner-deferred campaign/pacing and physical-phone feedback remain
-  missing human evidence. No commerce/access/retention/policy decisions implied.
+- Accepted23jump caps client/server flight at1.5s; bounded actualCtrlclick1.641s
+  includes display overhead.24jump source is unchanged; this turn did not edit it.
+- Geometry owner now follows bounded scene/entity-group events, not per-frame
+  roster scans or scenery/bone listeners. Reset/untrack/dispose releases owned
+  candidates/pending jobs; old roots cannot receive late results. High→Lowmodel
+  replacement and same Highpool root reacquisition pass. Source algorithms,
+  GLBs/gear/bones/blink/material attributes/collisions/authority are preserved.
+  Copied publication compiles a self-contained content-named worker with MIT
+  notice and exact engine-release URL; native cached execution works offline.
+  Other application JavaScript remains outside the asset-cache policy.
+- Current actualHigh with explicit actor-view QA pilot has unallocated reference
+  36entities/278calls/441160triangles/33.3median/33.400000000001455p95; installed
+  separate window35/293/191657/33.3/samep95. Geometry passes but High20msmedian
+  and exact33.4p95 do not. Same-scene source-bypass submission20.4/28.9→20.8/32.5
+  is slower; no causal whole-frame/memory gain established. Close originals
+  411701triangles still exceed250000; close RGBA remains exact. No new actualLow
+  owner timing: previous boundedLow evidence retained, not promoted. No-pilot
+  default renderer, cold delivery/memory/support-device/moving-art remain open.
+- Light/world-box/affine/cell-matrix rejections remain unselected. Required24h
+  soak37880032315 stays failed; no restart/substitute unchanged campaign. Deferred
+  campaign/pacing and physical-phone feedback remain missing owner evidence.
+  No commerce/access/retention/policy/rights/release decisions are implied.
 
-Next: preserve original public/Gold/soak failures; deliberately integrate actor
-and renderer ownership plus worker publication/cache/version lifecycle, then
-qualify absent installation/reference, High/close/default HighLow, devices,
-memory/cold delivery and moving art. Continue every original1.11–1.99/gameplay/
-Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff requirement. No
-successor push, public/profile activation, failed-gate waiver or24merge occurred.
+Next: keep default policy disabled; profile current High CPU costs, qualify
+absent/installed and no-optional-pilot default renderer, High/close/default
+HighLow, cold delivery/memory/devices/moving art. Continue every original1.11–1.99/
+gameplay/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff requirement.
+Preserve original public/Gold/soak failures; no failed-gate waiver or public push.

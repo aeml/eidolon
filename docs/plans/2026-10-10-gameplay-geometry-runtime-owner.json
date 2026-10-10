@@ -1,0 +1,319 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T09:22:13.024220+00:00",
+  "status": "Private explicit RenderSystem lifecycle and immutable publication integration selected; default geometry policy stays disabled. High timing/close/default-policy/device/art and full release gates remain open.",
+  "sourceCommit": "f63a862744fbffe7b623d499cd16c0b02d87ae0c",
+  "integrationCommit": "b7dc57b2efb0aa6afcab501995382764ed20af4c",
+  "previousGoalTurnClassification": "progress: staged11be4c67 exact-source worker delivery,145focused checks,32native controls and actualHigh/Low moving/save evidence.",
+  "thisGoalTurnClassification": "progress: renderer/scene ownership integration, immutable publication and offline cached worker execution,150focused checks,32native controls plus actualHighLowmodel/pool replacement, actualHigh moving/save and fully unallocated180frame reference. Default disabled; High timing/close/device/fullgoal remain open.",
+  "implementation": [
+    "RenderSystem explicit enable/disable owns one controller and delivery worker. Direct scene/entity-group events follow asynchronous arrivals, removals, pool reuse, replacement and ownership-group detachment. No per-frame added roster traversal or listeners on scenery/bones. Default constructor leaves owner null.",
+    "Scene reset releases tracked roots and owned derivatives, retaining the bounded worker cache for reentry; renderer disposal removes group listeners, cancels pending work and terminates the worker before graphics resources retire. Late callbacks cannot reattach to the old owner.",
+    "Authoring algorithms moved byte-exact into runtime source modules with old script APIs reexported. Publisher compiles only copied worker inputs; one self-contained134129byte file with full meshoptimizer1.2.0 MIT license and content-based name. Only copied delivery URL is rewritten; runtime adds engine release query.",
+    "Service worker caches only same-origin fingerprinted geometry worker GETs with a safe release ID, with exact request keys. Unversioned workers and unrelated app JS stay outside this asset policy. Public notices link to the byte-exact MIT license. Listener registration precedes asynchronous WASM/algorithm initialization, preserving the first pending job."
+  ],
+  "focused": {
+    "tests": 150,
+    "suites": 10,
+    "seconds": 6.541,
+    "scopedLintAndWhitespace": "pass"
+  },
+  "publication": {
+    "tests": 2,
+    "seconds": [
+      2.5,
+      3.8
+    ],
+    "totalSeconds": 12.2,
+    "observation": {
+      "startup": {
+        "defaultInactive": true,
+        "authored": "Fighter"
+      },
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.2504f5880f57633c.js",
+        "sha256": "2504f5880f57633cf1ac76430cb2ea73de292a34ff2f09f72cb11337b13bf51c",
+        "bytes": 134129,
+        "modules": 9,
+        "imports": []
+      },
+      "workerURL": "http://127.0.0.1:44335/src/core/ActorGameplayGeometryWorker.2504f5880f57633c.js?release=bundlefixture20261009",
+      "lifecycle": {
+        "before": {
+          "roots": 1,
+          "entries": 10
+        },
+        "retired": true,
+        "reattached": true,
+        "disposed": true,
+        "rootsAfter": 0,
+        "jobsAfter": 0,
+        "entriesAfter": 0
+      },
+      "offline": {
+        "id": 7,
+        "indices": 6,
+        "error": null
+      }
+    },
+    "scope": "Copied/versioned current game bundle stays lazy at login; four class/actor names and bounded graph preserved. Explicit compiled renderer owner loads actual supplied Fighter and immutable release worker, retires/retracks root and clears all roots/jobs/entries on destruction. Browser then runs same cached worker offline. Synthetic local engine only, no production login/startup certificate."
+  },
+  "nativeGallery": {
+    "tests": 1,
+    "seconds": 48.1,
+    "runtimeOwned": true,
+    "controls": 32,
+    "exactCloseControls": 16,
+    "initial": {
+      "milliseconds": 9871.800000011921,
+      "renderedFrames": 572,
+      "registered": 88,
+      "stats": {
+        "requested": 88,
+        "installed": 88,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 25,
+        "rejected": 0,
+        "maxCopiedBytes": 3058764,
+        "workerCacheBytes": 1162956,
+        "workerCacheEntries": 63
+      },
+      "sourceTriangles": 305113,
+      "reducedTriangles": 105961
+    },
+    "replacement": {
+      "oldRetired": true,
+      "quality": "low",
+      "installed": 11,
+      "valid": true,
+      "samePoolRootReturned": true
+    },
+    "afterStealth": {
+      "registered": 88,
+      "stats": {
+        "requested": 132,
+        "installed": 132,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 65,
+        "rejected": 0,
+        "maxCopiedBytes": 3058764,
+        "workerCacheBytes": 1272552,
+        "workerCacheEntries": 67
+      }
+    },
+    "scope": "All supplied High/Low four-class outfits, automatic group ownership, ordinary gear/cache/detach/stealth controls. High Fighter root returns to real pool, Low Fighter replacement receives11valid derivatives, same original High root is reacquired and rebound;88entries restored. Existing full fit/dual-wield/pool checks still pass. One initial fixture39.3s failure omitted required Actor stats argument; corrected fixture only, retained HTML/video/trace/source."
+  },
+  "actualHighParty": {
+    "absentReference": {
+      "label": "equipped-party-before-geometry-owner-allocation",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.29999999999927,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 49.89999999999782,
+      "framesOver33ms": 45,
+      "cpuLoopMedianMs": 25.5,
+      "cpuLoopP95Ms": 34.5,
+      "drawCallsMedian": 278,
+      "trianglesMedian": 441160,
+      "geometries": 399,
+      "textures": 289,
+      "activeEntities": 36,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "preparation": {
+      "method": "automatic-worker-exact-source-cache",
+      "milliseconds": 7256.800000011921,
+      "body": {
+        "sources": 4
+      },
+      "installed": {
+        "registered": 44,
+        "originalTriangles": 181142,
+        "candidateTriangles": 53570
+      },
+      "stats": {
+        "requested": 44,
+        "installed": 44,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 0,
+        "rejected": 0,
+        "maxCopiedBytes": 2995424,
+        "workerCacheBytes": 642840,
+        "workerCacheEntries": 44
+      }
+    },
+    "profile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.299999999995634,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 50,
+      "framesOver33ms": 43,
+      "cpuLoopMedianMs": 24.5,
+      "cpuLoopP95Ms": 33.19999998807907,
+      "drawCallsMedian": 293,
+      "trianglesMedian": 191657,
+      "geometries": 441,
+      "textures": 293,
+      "activeEntities": 35,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "closeAndDefault": [
+      {
+        "zoom": 5,
+        "changedChannels": 0,
+        "unstableChannels": 0,
+        "source": {
+          "calls": 243,
+          "triangles": 411701,
+          "swaps": 0,
+          "restored": true
+        },
+        "candidate": {
+          "calls": 243,
+          "triangles": 411701,
+          "swaps": 0,
+          "restored": true
+        },
+        "again": {
+          "calls": 243,
+          "triangles": 411701,
+          "swaps": 0,
+          "restored": true
+        }
+      },
+      {
+        "zoom": 15,
+        "changedChannels": 39895,
+        "unstableChannels": 0,
+        "source": {
+          "calls": 273,
+          "triangles": 443014,
+          "swaps": 0,
+          "restored": true
+        },
+        "candidate": {
+          "calls": 273,
+          "triangles": 187870,
+          "swaps": 44,
+          "restored": true
+        },
+        "again": {
+          "calls": 273,
+          "triangles": 443014,
+          "swaps": 0,
+          "restored": true
+        }
+      }
+    ],
+    "submission": {
+      "scope": "Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.",
+      "reference": {
+        "frames": 48,
+        "median": 20.400000005960464,
+        "p95": 28.899999976158142
+      },
+      "candidate": {
+        "frames": 48,
+        "median": 20.80000001192093,
+        "p95": 32.5
+      }
+    },
+    "motionSamples": 79,
+    "clipFrames": 25
+  },
+  "actualHighLimits": {
+    "fixture": "Normal disposable server/Mongo, focused Go -race test62.723s.1native browserpass/1four-browser skip, four supplied classes/14slot saves and normal ground-click motion79samples/25clipframes. No earned campaign or physical phone evidence.",
+    "policies": "Default camera/High quality on held raised world with separately explicit ActorInstanceView pilot1. The scene owner is explicitly enabled only by QA. This is not a no-pilot default-renderer or production activation certificate.",
+    "absentReference": "180real frames BEFORE allocating owner, delivery or candidates:36entities,278calls/441160triangles,33.3msmedian/33.400000000001455p95; CPUloop25.5/34.5. Actual provider-absent allocation reference, not merely disabled selection or wrapper bypass.",
+    "installed": "Separate180real frames:35entities,293calls/191657triangles,33.3median/33.400000000001455p95;CPUloop24.5/33.19999998807907. Independent windows/world evolution forbid causal frame/memory gain claims. Source-before allocation399geometries/289textures versus later441/293 not a controlled memory delta.",
+    "submission": "Same-scene wrapper-bypass source versus installed48samples/path:20.4median/28.9p95\u219220.8/32.5, both slower. Source arm still retains allocated candidate/cache memory; separate earlier unallocated reference above.",
+    "unchangedTargets": "High20msmedian/33.4p95/350calls/250000triangles: current geometry passes; median fails and rawp95exceeds exact target. Close source fallback411701triangles still fails geometry, exact RGBA source parity passes. No target/assertion changes or broad gain claim.",
+    "low": "No new actualLowwhole-frame run in this turn; supplied Low native poses/replacement pass. Previous11be4c67boundedLow151calls/82828triangles/16.7median/33.4p95 retained as scoped historical evidence, not new owner/default/device qualification.",
+    "artAndMemory": "Viewed current actual High HUD screenshot: supplied outfits and silhouettes remain visible, with synthetic long-name overlaps. Heap410.9MB screenshot is not production memory acceptance; no full moving modern-art or supported-device certificate."
+  },
+  "algorithmPreservation": {
+    "src/art/GameplayBodyIndices.js": {
+      "byteExactTo": "553fb7e0:scripts/lib/gameplay-body-indices.mjs",
+      "sha256": "c4e10ec3f4dac273789685d40de8860395b12ac17c1e045fc124f39dd4a2d652"
+    },
+    "src/art/GameplayColorIndices.js": {
+      "byteExactTo": "553fb7e0:scripts/lib/gameplay-color-indices.mjs",
+      "sha256": "fc52a481e984af783f433ca71e43a0a46ca90eab40f3ea52517d304004bf2241"
+    }
+  },
+  "publicObservation": {
+    "recordedUTC": "2026-10-10T09:17:36.173916+00:00",
+    "normalTLS": true,
+    "release": {
+      "url": "https://play.eidolonrealms.com/release.json",
+      "status": 200,
+      "sha256": "7b684ef34b8e9a014bd0270663a876334f15b3cbf98c168656f55afe21121fd8",
+      "identity": {
+        "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+        "version": "Alpha 1.79.24"
+      }
+    },
+    "health": {
+      "url": "https://server.eidolonrealms.com/healthz",
+      "status": 200,
+      "sha256": "0c67a191e7c072aa42fd08c0b47a6aafe96efba167b7a17a01e090a4e22e6efd",
+      "identity": {
+        "status": "ok",
+        "database": "ready",
+        "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+        "version": "Alpha 1.79.24"
+      }
+    },
+    "engine": {
+      "url": "https://play.eidolonrealms.com/src/core/GameEngine.bundle.js",
+      "status": 200,
+      "sha256": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a"
+    }
+  },
+  "publicCI": {
+    "conclusion": "failure",
+    "head_sha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "html_url": "https://github.com/aeml/eidolon/actions/runs/38030283856",
+    "id": 38030283856,
+    "run_attempt": 1,
+    "status": "completed"
+  },
+  "frozenEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-gameplay-geometry-runtime-owner-checks-20261010",
+    "files": 130,
+    "inventorySHA256": "bb307b3dc2b219472f7b4bbcbb5d9f84c2bb45fae6ddc0aa2267c13551bc47a2"
+  },
+  "remaining": [
+    "Keep default activation off; measure current High dominant CPU costs with fully absent and installed controls. Qualify no-optional-pilot default renderer, High and close/default HighLow, cold delivery, memory, supported devices and moving modern art while preserving source assets/detail.",
+    "Original public24startup/Gold and failed24hsoak causes remain open; no CIrerun, successor push,24merge, release waiver or terrain/access/profile change.",
+    "All original1.11\u20131.99/gameplay/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements remain. Deferred campaign/pacing and physical-phone feedback remain owner evidence; no substitute long campaign/soak."
+  ]
+}
