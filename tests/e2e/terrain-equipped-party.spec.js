@@ -8,6 +8,7 @@ import { prepareGameplayColorPilot } from './gameplay-color-lod-pilot.js';
 import { prepareGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
 import { prepareActorInstanceViewPilot } from './actor-instance-view-pilot.js';
 import { measurePartyMatrixOwners } from './party-matrix-observation.js';
+import { compareGameplayGeometryFrames } from './geometry-frame-comparison.js';
 import { captureGameplayGeometryParty } from './gameplay-geometry-party.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
@@ -706,6 +707,17 @@ test('single native renderer observes three live equipped party socket peers on 
                     expect(restored, 'Diagnostic wrappers must restore their owned controller methods').toBe(true);
                 } finally { await session.detach(); }
             }
+        }
+        if (process.env.EIDOLON_E2E_GEOMETRY_FRAME_ABBA === '1') {
+            const comparison = await compareGameplayGeometryFrames(page);
+            expect(comparison.restored).toBe(true);
+            for (const { profile, after } of comparison.phases) {
+                expect(profile.frames).toBe(180); expect(profile.visibility).toBe('visible');
+                expect(after.restored).toBe(true); expect(after.pending).toBe(0); expect(after.activeJob).toBe(false);
+                for (const field of ['registered', 'candidateStorageBytes', 'workerCacheBytes', 'workerCacheEntries', 'requested'])
+                    expect(after[field], field).toBe(comparison.initial[field]);
+            }
+            await testInfo.attach('geometry-real-frame-abba', { body: JSON.stringify(comparison, null, 2), contentType: 'application/json' });
         }
         if (process.env.EIDOLON_TERRAIN_PARTY_MATRIX_OWNERS === '1') {
             const matrixOwners = await measurePartyMatrixOwners(page);

@@ -53,7 +53,29 @@ export async function captureGameplayGeometryDelivery(page, testInfo) {
         }
         const pass = runtime?.pass || new ActorGameplayGeometry(qa.renderer, qa.scene, qa.camera);
         const delivery = runtime?.delivery || new ActorGameplayGeometryDelivery(pass);
-        const state = window.__geometryDelivery = { runtime, pass, delivery, oldCamera, frames: 0, stopped: false, started: performance.now() };
+        const state = window.__geometryDelivery = { runtime, pass, delivery, oldCamera, frames: 0, stopped: false, started: performance.now(),
+            legacy: new Map(), originalRegister: pass.register, originalRender: pass.original };
+        // QA-only old index-subset copies are disposed before leaving this
+        // gallery. They never become product-owned or source geometry.
+        pass.register = function (mesh, indices) {
+            const installed = state.originalRegister.call(this, mesh, indices);
+            if (installed) {
+                state.legacy.get(mesh)?.legacy.dispose();
+                const entry = this.entries.get(mesh), legacy = entry.source.clone();
+                legacy.setIndex(new THREE.BufferAttribute(indices.slice(), 1));
+                state.legacy.set(mesh, { legacy, candidate: entry.candidate });
+            }
+            return installed;
+        };
+        pass.original = function (...args) {
+            const selected = [];
+            if (state.useLegacy) for (const entry of pass.active) {
+                const previous = state.legacy.get(entry.mesh);
+                if (previous?.candidate === entry.candidate) { entry.mesh.geometry = previous.legacy; selected.push([entry, previous.legacy]); }
+            }
+            try { return state.originalRender.apply(this, args); }
+            finally { for (const [entry, legacy] of selected) if (entry.mesh.geometry === legacy) entry.mesh.geometry = entry.candidate; }
+        };
         const animate = () => {
             if (state.stopped) return;
             state.frames++; qa.sample('Run', (performance.now() - state.started) / 1000);
@@ -64,48 +86,62 @@ export async function captureGameplayGeometryDelivery(page, testInfo) {
     }, owned);
     try {
         await idle(page);
-        const initial = await page.evaluate(() => {
+        const initial = await page.evaluate(async () => {
+            const { geometryStorageBytes } = await import('/tests/e2e/geometry-frame-comparison.js');
             const state = window.__geometryDelivery; state.stopped = true;
             return { milliseconds: performance.now() - state.started, renderedFrames: state.frames,
                 registered: state.pass.entries.size, stats: { ...state.delivery.stats },
+                candidateStorageBytes: geometryStorageBytes([...state.pass.entries.values()].map(entry => entry.candidate)),
+                legacyStorageBytes: geometryStorageBytes([...state.legacy.values()].map(entry => entry.legacy)),
                 sourceTriangles: [...state.pass.entries.values()].reduce((sum, entry) => sum + entry.source.index.count / 3, 0),
                 reducedTriangles: [...state.pass.entries.values()].reduce((sum, entry) => sum + entry.candidate.index.count / 3, 0) };
         });
         expect(initial.registered).toBeGreaterThan(60); expect(initial.renderedFrames).toBeGreaterThan(5);
         expect(initial.stats.failed).toBe(0); expect(initial.stats.rejected).toBe(0);
         expect(initial.reducedTriangles).toBeLessThan(initial.sourceTriangles);
+        expect(initial.candidateStorageBytes).toBeLessThan(initial.legacyStorageBytes);
         const samples = [];
         for (const quality of ['high', 'low']) for (const actorClass of ['Fighter', 'Rogue', 'Wizard', 'Cleric']) {
-            for (const pose of ['CombatIdle', 'Run']) for (const zoom of [5, 15]) {
+            for (const pose of ['CombatIdle', 'Run', 'Attack', 'Blink']) for (const zoom of [5, 15]) {
                 const row = await page.evaluate(({ quality, actorClass, pose, zoom }) => {
-                    const qa = window.__classGear, { pass } = window.__geometryDelivery;
+                    const qa = window.__classGear, state = window.__geometryDelivery, { pass } = state;
                     const entry = qa.actors.find(row => row.type === actorClass && row.quality === quality);
                     for (const other of qa.actors) other.root.visible = other === entry;
                     Object.assign(qa.camera, { left: -zoom * 1.6, right: zoom * 1.6, top: zoom, bottom: -zoom });
                     qa.camera.position.copy(entry.root.position).add({ x: 0, y: 18, z: 24 });
                     qa.camera.lookAt(entry.root.position.clone().add({ x: 0, y: 1.8, z: 0 })); qa.camera.updateProjectionMatrix();
-                    qa.sample(pose, .3, Math.PI);
+                    qa.sample(pose === 'Blink' ? 'CombatIdle' : pose, pose === 'Attack' ? 14 / 30 : .3, Math.PI);
+                    if (pose === 'Blink') entry.root.traverse(mesh => {
+                        for (const [name, influence] of [['Blink_L', .75], ['Blink_R', .25]]) {
+                            const index = mesh.morphTargetDictionary?.[name];
+                            if (index !== undefined) mesh.morphTargetInfluences[index] = influence;
+                        }
+                    });
                     const canvas = qa.renderer.domElement, copy = document.createElement('canvas');
                     copy.width = canvas.width; copy.height = canvas.height;
                     const context = copy.getContext('2d', { willReadFrequently: true });
-                    const draw = enabled => {
+                    const draw = (enabled, legacy = false) => {
+                        state.useLegacy = legacy;
                         pass.enabled = enabled; qa.renderer.render(qa.scene, qa.camera); context.drawImage(canvas, 0, 0);
                         return { rgba: context.getImageData(0, 0, copy.width, copy.height).data,
                             calls: qa.renderer.info.render.calls, triangles: qa.renderer.info.render.triangles, swaps: pass.lastSwaps };
                     };
                     draw(false); draw(true); draw(false);
-                    const source = draw(false), reduced = draw(true), again = draw(false);
-                    let changedChannels = 0, unstableChannels = 0;
+                    const source = draw(false), reduced = draw(true), legacy = draw(true, true), legacyAgain = draw(true, true), again = draw(false);
+                    let changedChannels = 0, unstableChannels = 0, compactChangedChannels = 0, legacyUnstableChannels = 0;
                     for (let i = 0; i < source.rgba.length; i++) {
                         changedChannels += source.rgba[i] !== reduced.rgba[i] ? 1 : 0;
                         unstableChannels += source.rgba[i] !== again.rgba[i] ? 1 : 0;
+                        compactChangedChannels += legacy.rgba[i] !== reduced.rgba[i] ? 1 : 0;
+                        legacyUnstableChannels += legacy.rgba[i] !== legacyAgain.rgba[i] ? 1 : 0;
                     }
                     const strip = ({ rgba: _rgba, ...row }) => row;
                     return { quality, actorClass, pose, zoom, source: strip(source), reduced: strip(reduced),
-                        changedChannels, unstableChannels,
+                        changedChannels, unstableChannels, compactChangedChannels, legacyUnstableChannels,
                         restored: [...pass.entries.values()].every(entry => entry.mesh.geometry === entry.source) };
                 }, { quality, actorClass, pose, zoom });
                 expect(row.unstableChannels).toBe(0); expect(row.restored).toBe(true);
+                expect(row.compactChangedChannels).toBe(0); expect(row.legacyUnstableChannels).toBe(0);
                 expect(row.source.calls).toBe(row.reduced.calls);
                 if (zoom === 5) { expect(row.changedChannels).toBe(0); expect(row.reduced.swaps).toBe(0); }
                 else { expect(row.reduced.triangles).toBeLessThan(row.source.triangles); expect(row.reduced.swaps).toBeGreaterThan(0); }
@@ -211,11 +247,13 @@ export async function captureGameplayGeometryDelivery(page, testInfo) {
             expect(await page.evaluate(() => window.__geometryDelivery.pass.entries.size)).toBe(initial.registered);
         }
         await writeFile(testInfo.outputPath('gameplay-geometry-delivery.json'), JSON.stringify({ runtimeOwned: owned, replacement, initial, samples, changed, restored, detached, reattached, faded, afterStealth,
-            scope: 'Actual worker delivery for supplied High/Low four-class bodies/fitted gear;32 pose/zoom controls including16 exact close; rapid gear changes, exact-source cache reuse, detach/reattach. No default runtime activation, controller-absent frame timing, physical device, campaign or final-art certificate.' }, null, 2));
+            scope: 'Actual worker delivery for supplied High/Low four-class bodies/fitted gear;64 pose/zoom controls, all exact old-index-subset versus compact RGBA plus32 exact close originals. Includes independent blink, rapid gear changes/cache reuse, stealth, detach/reattach and pool replacement. Retained typed-array byte counts only, not whole-browser or peak memory. No default activation/device/campaign/final-art certificate.' }, null, 2));
     } finally {
         await page.evaluate(() => {
             const state = window.__geometryDelivery, qa = window.__classGear;
-            state.stopped = true; state.runtime?.dispose(); state.delivery.dispose(); state.pass.dispose();
+            state.stopped = true; state.pass.original = state.originalRender; state.pass.register = state.originalRegister;
+            state.runtime?.dispose(); state.delivery.dispose(); state.pass.dispose();
+            for (const row of state.legacy.values()) row.legacy.dispose();
             qa.camera = state.oldCamera; delete window.__geometryDelivery; qa.sample('CombatIdle');
         });
     }

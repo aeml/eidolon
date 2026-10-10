@@ -1,5 +1,6 @@
-import { BufferAttribute, Material, Object3D } from 'three';
+import { Material, Object3D } from 'three';
 import { isOwnedFittedSurfaceMaterial } from '../art/FittedEquipmentBatches.js';
+import { clonePreparedGeometry } from './PreparedGeometry.js';
 
 const owners = new WeakMap();
 const classes = new Set(['Fighter', 'Rogue', 'Wizard', 'Cleric']);
@@ -84,7 +85,7 @@ export class ActorGameplayGeometry {
         if ([...indices].some(index => !referenced.has(index))) throw new Error('Prepared index references a new source vertex');
         // Independent buffers: disposing shared geometry attributes would evict
         // the live source buffers from Three's GPU cache.
-        const candidate = source.clone(); candidate.setIndex(new BufferAttribute(indices.slice(), 1));
+        const candidate = clonePreparedGeometry(source, indices);
         const shared = Object.entries(source.attributes).some(([name, attr]) => storage(attr).array === storage(candidate.attributes[name]).array) ||
             Object.entries(source.morphAttributes).some(([name, attrs]) => attrs.some((attr, index) =>
                 storage(attr).array === storage(candidate.morphAttributes[name][index]).array));
