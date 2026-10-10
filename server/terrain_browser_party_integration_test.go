@@ -85,7 +85,11 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 		"EIDOLON_E2E_WEB_PORT=4190", "EIDOLON_E2E_BASE_URL=http://127.0.0.1:4190", "EIDOLON_E2E_REUSE_SERVER=0",
 		"EIDOLON_E2E_WS_URL=ws://"+address+"/ws", "EIDOLON_E2E_TERRAIN_PROFILE="+game.RaisedEarthTerrainProfile,
 		"EIDOLON_E2E_BACKEND_ORIGIN_IP=", "EIDOLON_E2E_HEADLESS=1", "CI=", "PLAYWRIGHT_NO_COPY_PROMPT=1")
-	log, err := os.OpenFile(filepath.Join(evidence, "browser.log"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	logs := filepath.Join(evidence, "browser-logs")
+	if err := os.Mkdir(logs, 0700); err != nil {
+		t.Fatal(err)
+	}
+	log, err := os.OpenFile(filepath.Join(logs, "browser.log"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -94,6 +98,22 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 	runErr := command.Run()
 	if err := log.Close(); err != nil {
 		t.Fatal(err)
+	}
+	// Sanitize the native HTML's embedded report ZIP as well as plain artifacts
+	// before the supervisor archives them, on success and failure alike. Each
+	// prepared account remains only in child-process environment variables.
+	scanCtx, scanCancel := context.WithTimeout(t.Context(), 30*time.Second)
+	defer scanCancel()
+	for _, account := range accounts {
+		scan := exec.CommandContext(scanCtx, node, "scripts/sanitize-playwright-artifacts.mjs",
+			"playwright-report", filepath.Join(evidence, "browser-results"), logs)
+		scan.Dir = root
+		scan.Env = append(os.Environ(), "EIDOLON_E2E_USERNAME="+account.Username, "EIDOLON_E2E_PASSWORD="+account.Password)
+		if output, err := scan.CombinedOutput(); err != nil {
+			t.Fatal("native party evidence sanitization failed", err)
+		} else {
+			t.Log(strings.TrimSpace(string(output)))
+		}
 	}
 	stop() // Flush normal browser disconnects before comparing stored gear.
 	if runErr != nil {
