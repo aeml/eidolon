@@ -12,8 +12,8 @@ import { bodyLodIndices } from './lib/body-lod-indices.mjs';
 // Simplify directly from the pinned original, avoiding compounded LOD error.
 const [actorClass, destination, mode = 'strict'] = process.argv.slice(2);
 if (!['Fighter', 'Rogue', 'Wizard', 'Cleric'].includes(actorClass) || !destination ||
-    !path.isAbsolute(destination) || !fs.statSync(destination).isDirectory() || fs.readdirSync(destination).length || !['strict', 'attributes'].includes(mode)) {
-    throw new Error('Usage: derive-body-lod-pilot.mjs <class> <existing empty absolute output directory> [strict|attributes]');
+    !path.isAbsolute(destination) || !fs.statSync(destination).isDirectory() || fs.readdirSync(destination).length || !['strict', 'attributes', 'morph-basis'].includes(mode)) {
+    throw new Error('Usage: derive-body-lod-pilot.mjs <class> <existing empty absolute output directory> [strict|attributes|morph-basis]');
 }
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const directory = `assets/archetypes/${actorClass}`, stem = actorClass.toLowerCase(), bodyName = `${actorClass}_Body`;
@@ -80,9 +80,18 @@ const exactTransforms = (file, referenceBytes) => {
     header.writeUInt32LE(12 + chunk.length + binary.length, 8); fs.writeFileSync(file, Buffer.concat([header, chunk, binary]));
 };
 const variants = {};
-for (const [quality, ratio, error] of [['high', .20, .002], ['low', .08, .006]]) {
-    const baselineFile = `${directory}/${stem}-runtime-${quality}.glb`, baselineBytes = fs.readFileSync(baselineFile);
-    if (hash(baselineBytes) !== manifest.variants[quality].sha256) throw new Error('Reviewed baseline differs from manifest');
+const selection = mode === 'morph-basis' ? JSON.parse(fs.readFileSync('assets/archetypes/runtime-selection.json')) : null;
+if (selection && (selection.schemaVersion !== 1 || selection.characters[actorClass]?.source.sha256 !== sourceHash)) throw new Error('Selected source identity differs');
+// The initial .12 High/.08 Low endpoint pilot exposed visible neck/shoulder
+// faceting. Use the more detailed .20 target and High positional bound for
+// both qualities; Low can retain its reviewed file through the count guard.
+for (const [quality, ratio, error] of mode === 'morph-basis'
+    ? [['high', .20, .002], ['low', .20, .002]] : [['high', .20, .002], ['low', .08, .006]]) {
+    const selected = selection?.characters[actorClass].variants[quality];
+    const baselineFile = selected?.file || `${directory}/${stem}-runtime-${quality}.glb`;
+    if (!new RegExp(`^assets/archetypes/${actorClass}/[a-z0-9-]+[.]glb$`).test(baselineFile)) throw new Error('Unsafe reviewed body path');
+    const baselineBytes = fs.readFileSync(baselineFile);
+    if (hash(baselineBytes) !== (selected?.sha256 || manifest.variants[quality].sha256)) throw new Error('Reviewed baseline differs from manifest');
     const baseline = await io.read(baselineFile), before = contract(baseline), body = bodyOf(baseline);
     const document = await io.read(source);
     await document.transform(weld({ overwrite: false }));
@@ -92,12 +101,13 @@ for (const [quality, ratio, error] of [['high', .20, .002], ['low', .08, .006]])
     for (const primitive of originalBody.listPrimitives()) {
         if (mode === 'strict') simplifyPrimitive(primitive, { simplifier: MeshoptSimplifier, ratio, error, lockBorder: true });
         else {
-            const candidate = bodyLodIndices(primitive, ratio, error), previous = primitive.getIndices();
+            const candidate = bodyLodIndices(primitive, ratio, error, mode === 'morph-basis' ? .5 : .25, mode === 'morph-basis'), previous = primitive.getIndices();
             primitive.setIndices(document.createAccessor(previous.getName()).setType('SCALAR').setBuffer(previous.getBuffer()).setArray(candidate.indices));
             if (previous.listParents().length === 1) previous.dispose();
             compactPrimitive(primitive);
             if (primitive.getAttribute('POSITION').getCount() <= 65534) primitive.getIndices().setArray(new Uint16Array(primitive.getIndices().getArray()));
-            details.push({ reportedError: candidate.reportedError, lockedMorphVertices: candidate.lockedMorphVertices });
+            details.push({ reportedError: candidate.reportedError, lockedMorphVertices: candidate.lockedMorphVertices,
+                morphBasis: candidate.morphBasis, attributeWidth: candidate.attributeWidth });
         }
     }
     const candidateTriangles = triangles(originalBody), cornerSHA256 = originalBody.listPrimitives().map(cornerDigest);

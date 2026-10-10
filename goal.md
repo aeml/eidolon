@@ -1,5 +1,18 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 supplied-body morph basis preparation:** Preserve every moving blink
+vertex and constrain all normal morph endpoints instead of locking normal-only
+deltas. Revised High bodies123204→81216triangles; all four Low files remain
+exact reviewed bytes. Coarser trial rejected for neck/shoulder faceting.44units,
+three native eight-outfit/56pose galleries,170960exact-source vertices and actual
+four-class race/save observer pass. Full High460draws/466590triangles and405076
+player-root triangles still fail unchanged limits;33entities do not establish
+CPU attribution. Prepared files remain outside runtime/assets/catalogs; public
+1.79.22/profile/access unchanged. [Preparation, limitations and retained failures](docs/plans/2026-10-10-body-morph-basis-preparation.json).
+Continue full inherited1.11–1.99/art/Q/CB/party/device/F1–F5/operations/rights/
+owner/human/beta/launch/handoff; no narrower completion or new release acceptance.
+
+
 **October9 material-layer wearable preparation:** Joint seam reduction is
 inapplicable:12sources have no shared positions between main/trim regions.
 Retaining reviewed secondary material triangles while reducing only the largest

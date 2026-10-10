@@ -259,11 +259,11 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
     });
     if (process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1') {
         const samples = await captureBodyLodReview(page, testInfo);
-        expect(samples).toHaveLength(32);
+        expect(samples).toHaveLength(process.env.EIDOLON_E2E_BODY_MORPH_BASIS_COMPARE === '1' ? 56 : 32);
         for (const sample of samples) {
             expect(sample.badVertices).toBe(0);
             expect(sample.morphNames).toEqual(['Blink_L', 'Blink_R']);
-            expect(sample.morphInfluences).toEqual([sample.blink, sample.blink]);
+            expect(sample.morphInfluences).toEqual([sample.blinkLeft, sample.blinkRight]);
         }
         await writeFile(testInfo.outputPath('body-lod-review.json'), JSON.stringify(samples, null, 2));
     }
