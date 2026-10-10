@@ -99,3 +99,21 @@ test('batch owner restores shadow flags on normal return, clear and filtering ex
     expect(f.mesh.castShadow).toBe(true); expect(instances.hidden).toHaveLength(0); expect(instances.group.visible).toBe(false);
     instances.shadowFilter = null; f.filter.dispose(); instances.dispose();
 });
+
+test('default Low color bounds follow camera, restore originals and leave High color batching intact', () => {
+    const f = fixture(); f.filter.dispose(); f.root.userData.proceduralHumanoid = true;
+    const second = f.mesh.clone(); second.position.x = 102; f.root.add(second);
+    const instances = new ActorInstanceBatches(f.scene, [f.scene, f.group], { shadowInfluence: true });
+    const begin = () => { f.scene.updateMatrixWorld(true); instances.beginFrame(f.renderer, f.camera); };
+    f.renderer.shadowMap.enabled = false;
+    begin(); expect(instances.batches.size).toBe(0); expect(f.mesh.visible).toBe(false);
+    expect(instances.shadowFilter.view.stats.lightScanNodes).toBe(0);
+    expect(instances.shadowFilter.view.stats.culled).toBe(2);
+    instances.endFrame(); expect(f.mesh.visible).toBe(true); expect(second.visible).toBe(true);
+    instances.lowColorViewEnabled = false; begin(); expect(instances.batches.size).toBe(1); instances.endFrame();
+    instances.lowColorViewEnabled = true;
+    f.camera.position.x = 100; f.camera.updateMatrixWorld(true); begin(); expect(instances.batches.size).toBe(1); instances.endFrame();
+    f.camera.position.x = 0; f.camera.updateMatrixWorld(true); f.renderer.shadowMap.enabled = true;
+    begin(); expect(instances.batches.size).toBe(1); expect([...instances.batches.values()][0].count).toBe(2);
+    instances.dispose(); expect(f.mesh.visible).toBe(true); expect(f.mesh.castShadow).toBe(true);
+});

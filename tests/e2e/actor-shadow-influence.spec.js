@@ -32,6 +32,9 @@ for (const quality of ['high', 'low']) for (const type of ['Skeleton', 'Imp']) {
             render.applyLightingPreset('town', true); render.updateEnvironmentLighting(new THREE.Vector3(), 0);
             const instances = render.actorInstances, view = instances.shadowFilter;
             if (!(view instanceof ActorShadowInfluence)) throw Error('Default shadow influence owner absent');
+            // Isolate the shadow policy; separate Low view comparisons retain
+            // the exact default color path and its bypassed source control.
+            instances.lowColorViewEnabled = false;
             const canvas = render.renderer.domElement, copy = document.createElement('canvas');
             copy.width = canvas.width; copy.height = canvas.height;
             const context = copy.getContext('2d', { willReadFrequently: true });

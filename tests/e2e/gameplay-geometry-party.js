@@ -177,6 +177,8 @@ export async function captureGameplayGeometryParty(page, testInfo) {
                 shadowOwned: Boolean(game.renderSystem.actorInstances.shadowFilter),
                 shadowRestored: game.renderSystem.actorInstances.shadowFilter?.omitted.length === 0,
                 shadowStats: { ...game.renderSystem.actorInstances.shadowFilter?.stats },
+                lowColorView: { enabled: game.renderSystem.actorInstances.lowColorViewEnabled,
+                    ...game.renderSystem.actorInstances.shadowFilter?.view.stats },
                 restored: !pass.active.length && [...pass.entries.values()].every(entry => entry.mesh.geometry === entry.source) });
             if (samples.length < 180) request = requestAnimationFrame(frame);
         };

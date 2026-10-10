@@ -29,6 +29,9 @@ for (const quality of ['high', 'low']) for (const type of ['Skeleton', 'InfernoT
             render.setZoom(18); render.setCameraTarget(new THREE.Vector3(0, 1, 0));
             render.applyLightingPreset('town', true); render.updateEnvironmentLighting(new THREE.Vector3(), 0);
             const view = new ActorInstanceView(), instances = render.actorInstances;
+            // Compare the qualified rigid view algorithm independently. Low's
+            // default owned selection is checked by the real-party comparison.
+            instances.lowColorViewEnabled = false;
             const canvas = render.renderer.domElement, copy = document.createElement('canvas');
             copy.width = canvas.width; copy.height = canvas.height;
             const context = copy.getContext('2d', { willReadFrequently: true });

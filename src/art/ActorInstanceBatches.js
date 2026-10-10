@@ -59,6 +59,7 @@ export class ActorInstanceBatches {
         this.enabled = true;
         this.viewFilter = null;
         this.shadowFilter = shadowInfluence ? new ActorShadowInfluence(scene, watchedGroups) : null;
+        this.lowColorViewEnabled = true;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
         scene.traverse(root => this.register(root));
         this.watchedGroups = [...new Set(watchedGroups)];
@@ -115,14 +116,19 @@ export class ActorInstanceBatches {
         this.endFrame();
         if (this.disposed || !this.enabled) return;
         this.refreshRoster();
-        this.viewFilter?.beginFrame(renderer, this.scene, camera);
+        // Low has no shadow pass. Reuse the owned live rigid camera bounds to
+        // avoid instances whose complete surface lies outside the color view.
+        // High keeps its original color path and separate incoming-shadow test.
+        const viewFilter = this.viewFilter || (this.lowColorViewEnabled && renderer?.shadowMap?.enabled === false
+            ? this.shadowFilter?.view : null);
+        viewFilter?.beginFrame(renderer, this.scene, camera);
         const used = new Set();
         this.group.matrixWorld.copy(this.scene.matrixWorld);
         try {
             for (const [key, entries] of this.buckets) {
                 const eligibleParts = entries.filter(entry => inside(entry.part, this.scene, true) && eligible(entry.part)).map(entry => entry.part);
-                const parts = this.viewFilter ? eligibleParts.filter(part => {
-                    if (!this.viewFilter.rejects(part)) return true;
+                const parts = viewFilter ? eligibleParts.filter(part => {
+                    if (!viewFilter.rejects(part)) return true;
                     this.hidden.push(part); part.visible = false; return false;
                 }) : eligibleParts;
                 // Preserve the existing instance shader for a retained single

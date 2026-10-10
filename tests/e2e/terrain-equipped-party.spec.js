@@ -8,6 +8,7 @@ import { prepareGameplayColorPilot } from './gameplay-color-lod-pilot.js';
 import { prepareGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
 import { prepareActorInstanceViewPilot } from './actor-instance-view-pilot.js';
 import { prepareActorShadowInfluencePilot } from './actor-shadow-influence-pilot.js';
+import { prepareLowActorView } from './low-actor-view.js';
 import { measurePartyMatrixOwners } from './party-matrix-observation.js';
 import { compareGameplayGeometryFrames } from './geometry-frame-comparison.js';
 import { captureGameplayGeometryParty } from './gameplay-geometry-party.js';
@@ -471,6 +472,20 @@ test('single native renderer observes three live equipped party socket peers on 
             expect(paired.candidate.stats.omitted).toBeGreaterThan(0);
             for (const row of [paired.reference, paired.candidate, paired.referenceAgain, ...paired.cpu.blocks]) expect(row.restored).toBe(true);
             recordPeerLiveness('actor-shadow-influence-prepared');
+        }
+        if (process.env.EIDOLON_E2E_LOW_ACTOR_VIEW_COMPARE === '1') {
+            const paired = await prepareLowActorView(page);
+            await writeFile(testInfo.outputPath('low-actor-view-party.json'), JSON.stringify({
+                scope: 'Default Low rigid camera policy against its bypassed arm; original actor instances, source geometry and float32 origins retained. Exact frozen RGB, real-clock ABBA and following actual moving180-frame party profile. High color and incoming shadows unchanged.', paired
+            }, null, 2));
+            expect(paired.image.changedChannels).toBe(0); expect(paired.image.unstableChannels).toBe(0);
+            expect(paired.referenceAgain.calls).toBe(paired.reference.calls);
+            expect(paired.referenceAgain.triangles).toBe(paired.reference.triangles);
+            expect(paired.candidate.calls).toBeLessThan(paired.reference.calls);
+            expect(paired.candidate.stats.culled).toBeGreaterThan(0);
+            expect(paired.candidate.stats.lightScanNodes).toBe(0);
+            for (const row of [paired.reference, paired.candidate, paired.referenceAgain, ...paired.cpu.blocks]) expect(row.restored).toBe(true);
+            recordPeerLiveness('low-actor-view-prepared');
         }
         if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1' || process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY === '1') {
             await captureGameplayGeometryParty(page, testInfo);
