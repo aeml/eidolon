@@ -201,3 +201,5 @@ foliage/other entities, not supplied-body math alone. Finish High/close/default
 HighLow/cold/memory/device/moving-art and every original1.11–1.99/gameplay/Q/CB/
 F1–F5/operations/rights/owner/human/beta/launch/handoff requirement. Preserve all
 original public/Gold/soak failures and staged jump fix; no waiver or public push.
+
+Jump follow-up: isolated live24 candidate `c7937f17` contains only the real-time flight correction in two production files;110focused checks and3native source/published-bundle tests pass. Built bundle lands at15FPS1547.4ms and60FPS1522.6ms, endpoint errors0. Live24still lacks this correction; release CI remains failed and no publication/waiver occurred. See `docs/plans/2026-10-10-jump-live24-bundle.json`. Prepared geometry3207fb56 remains unmerged pending final published/actualHigh qualification; final180checks and gallery passed/archived. Full original objective remains active.
