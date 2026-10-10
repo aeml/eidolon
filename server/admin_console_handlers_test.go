@@ -307,3 +307,26 @@ func TestAdminReadAuditDualOutageClosesConnectionAndRecovers(t *testing.T) {
 		t.Fatal("read audit not recovered", store.events)
 	}
 }
+
+func TestAdminConfiguredAutomationPopulation(t *testing.T) {
+	c, _ := adminReadFixture(t)
+	previous := adminTestUsernames
+	adminTestUsernames = []string{"automation.fixture", "automation.fixture-f"}
+	t.Cleanup(func() { adminTestUsernames = previous })
+	for _, account := range []string{"automation.fixture", "AUTOMATION.FIXTURE-F", "automationXfixture", "real-player"} {
+		id := "fixture-" + account
+		activeSessions[account] = &Client{username: account, playerID: id}
+		world.AddEntity(&game.Entity{ID: id, Type: game.TypePlayer})
+	}
+	real, _ := adminOnlinePage("")
+	tests, _ := adminOnlinePage("", "tests")
+	all, _ := adminOnlinePage("", "all")
+	if len(real) != 2 || len(tests) != 2 || len(all) != 4 {
+		t.Fatal("configured accounts misclassified")
+	}
+	adminRead(t, c, MsgAdminHistory, "")
+	store := adminActivities.(*fakeAdminActivityStore)
+	if !reflect.DeepEqual(store.query.TestAccounts, adminTestUsernames) {
+		t.Fatal("history lost configured roster")
+	}
+}

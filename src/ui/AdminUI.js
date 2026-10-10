@@ -49,7 +49,7 @@ export class AdminUI {
                 <div class="administration-filters" data-population-filters>
                     <label>Players<select data-population><option value="real">Real players</option>
                         <option value="all">All players</option><option value="tests">Test accounts only</option></select></label>
-                    <span>Test accounts are identified by reserved codex-, codexq-, codexqa-, loadtest- and resource-journal- prefixes. Nothing is deleted.</span>
+                    <span>Automation accounts are excluded from Real players. Choose Test accounts only or All players to inspect them. Nothing is deleted.</span>
                 </div>
                 <div class="administration-filters" data-report-filters hidden>
                     <label>Report status<select data-report-status><option value="open">Open</option>

@@ -2,7 +2,9 @@ package database
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"os"
+	"regexp"
 	"testing"
 	"time"
 
@@ -74,12 +76,12 @@ func TestAdminPopulationMongoDailyAndImmutableDuration(t *testing.T) {
 }
 
 func TestAdminPopulationReservedPrefixesAndCursor(t *testing.T) {
-	for _, account := range []string{"codex-a", "CODEX-b", "codexq-a", "codexqa-a", "loadtest-a", "resource-journal-a"} {
+	for _, account := range []string{"codex-a", "CODEX-b", "codexq-a", "codexqa-a", "loadtest-a", "resource-journal-a", "jump25-0123456789ab", "jump27-abcdef012345"} {
 		if !IsAdminTestAccount(account) || AdminPopulationIncludes(account, "") || !AdminPopulationIncludes(account, "tests") || !AdminPopulationIncludes(account, "all") {
 			t.Fatal("test population misclassified")
 		}
 	}
-	for _, account := range []string{"player", "my-codex-character", "administrator", "codex"} {
+	for _, account := range []string{"player", "my-codex-character", "administrator", "codex", "jump27-player", "jump27-abcdef0123456", "my-jump27-abcdef012345"} {
 		if IsAdminTestAccount(account) || !AdminPopulationIncludes(account, "real") || AdminPopulationIncludes(account, "tests") || AdminPopulationIncludes(account, "invalid") {
 			t.Fatal("real population misclassified")
 		}
@@ -128,5 +130,44 @@ func TestAdminDailyUTCDayAndClosedConnectionClipping(t *testing.T) {
 	}
 	if summarizeAdminDaily(events, "2026-10-04", start, end, false).Complete {
 		t.Fatal("partial totals marked complete")
+	}
+}
+
+func TestAdminPopulationConfiguredAccountsUseExactEscapedKeys(t *testing.T) {
+	accounts := []string{"automation.fixture", "automation.fixture-f"}
+	for _, account := range []string{"automation.fixture", "AUTOMATION.FIXTURE-F"} {
+		if AdminPopulationIncludes(account, "real", accounts...) || !AdminPopulationIncludes(account, "tests", accounts...) {
+			t.Fatal("configured test account classified as real")
+		}
+	}
+	for _, account := range []string{"automationXfixture", "automation.fixture-human", "owner", "jump27-player"} {
+		if !AdminPopulationIncludes(account, "real", accounts...) {
+			t.Fatal("unrelated account hidden")
+		}
+	}
+	now := time.Now().UTC()
+	for _, population := range []string{"real", "tests"} {
+		filter, err := adminActivityFilter(AdminActivityQuery{Population: population, TestAccounts: accounts}, now, 90)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var clauses bson.A
+		if population == "real" {
+			clauses = filter["$nor"].(bson.A)
+		} else {
+			clauses = filter["$and"].(bson.A)[0].(bson.M)["$or"].(bson.A)
+		}
+		pattern := clauses[0].(bson.M)["actor"].(primitive.Regex)
+		expression := regexp.MustCompile("(?i)" + pattern.Pattern)
+		for _, account := range []string{"automation.fixture", "AUTOMATION.FIXTURE-F", "codex-existing", "jump27-abcdef012345"} {
+			if !expression.MatchString(account) {
+				t.Fatal("history did not classify test account")
+			}
+		}
+		for _, account := range []string{"automationXfixture", "automation.fixture-human", "owner", "jump27-player"} {
+			if expression.MatchString(account) {
+				t.Fatal("history matched unrelated account")
+			}
+		}
 	}
 }

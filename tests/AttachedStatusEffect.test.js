@@ -30,6 +30,23 @@ function attachEngine(actor, quality = 'high') {
 }
 
 describe('attached status effect lifecycle', () => {
+    test('rested aura follows the final rendered transform on frames between simulation ticks', () => {
+        const actor = new Fighter('rested-render-fixture');
+        actor.mesh = new THREE.Group();
+        attachEngine(actor);
+        actor.wellRestedSeconds = 100;
+        actor.syncAttachedStatusEffects(1 / 60);
+        const effect = actor.attachedStatusEffects.get('well_rested');
+        const elapsed = effect.elapsed;
+        for (const x of [0.05, 0.1, 0.15, 0.2]) {
+            actor.mesh.position.set(x, .3, x * 2);
+            actor.syncPresentationTransform();
+            expect(effect.group.position.distanceTo(actor.mesh.position)).toBeLessThan(1e-9);
+            expect(effect.elapsed).toBe(elapsed);
+        }
+        actor.dispose();
+    });
+
     test('personal buff decoration stays subordinate without breaking healing, debuff or rested indicators', () => {
         for (const [key, definition] of Object.entries(PROCEDURAL_STATUS_EFFECT_DEFINITIONS)) {
             const root = createProceduralStatusEffect(key);

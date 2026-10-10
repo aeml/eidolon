@@ -203,6 +203,9 @@ class GameEngineMovementMethods {
             this.inputManager.isRightMouseDown = false;
         }
 
+        const takeoffRotation = this.player.mesh?.quaternion?.clone?.();
+        const takeoffOffset = this.player.mesh?.position?.clone?.().sub(start) || new THREE.Vector3();
+        takeoffOffset.y = 0;
         this.player.playJumpAnimation?.({
             duration,
             height,
@@ -220,7 +223,9 @@ class GameEngineMovementMethods {
             elapsed: 0,
             duration,
             height,
-            serverDriven: false
+            serverDriven: false,
+            takeoffRotation,
+            takeoffOffset
         };
         this.playerJumpLandingVisual = null;
         this.playerJumpVisualHeight = 0;
@@ -263,7 +268,7 @@ class GameEngineMovementMethods {
         if (!jumpState || !(jumpState.duration > 0)) return null;
 
         this.normalizeJumpVisualState(jumpState);
-        const elapsed = Math.min(jumpState.duration, Math.max(0, jumpState.elapsed || 0) + dt);
+        const elapsed = Math.min(jumpState.duration, Math.max(0, jumpState.elapsed || 0) + Math.max(0, dt));
         const progress = jumpState.duration > 0 ? elapsed / jumpState.duration : 1;
 
         jumpState.elapsed = elapsed;
@@ -275,7 +280,7 @@ class GameEngineMovementMethods {
     }
 
     isSameAuthoritativeJump(existingJump, start, end, duration) {
-        if (!existingJump?.serverDriven || !existingJump.start || !existingJump.end) return false;
+        if (!existingJump?.start || !existingJump.end) return false;
 
         const positionTolerance = 0.35;
         const durationTolerance = 0.075;
@@ -348,6 +353,9 @@ class GameEngineMovementMethods {
         const duration = Math.max(0.001, getJumpScalarField('jumpDuration', existingJump?.duration ?? this.getJumpTravelDuration(travelDistance || 0)));
         const isSameJump = this.isSameAuthoritativeJump(existingJump, start, end, duration)
             || (!hasJumpTrajectoryMetadata && !!existingJump?.serverDriven);
+        // Delta snapshots omit unchanged trajectory fields. Once accepted,
+        // keep the trajectory until this jump actually ends.
+        const hasAuthoritativeTrajectory = hasJumpTrajectoryMetadata || (isSameJump && existingJump?.hasAuthoritativeTrajectory === true);
         const jumpVector = new THREE.Vector3(end.x - start.x, 0, end.z - start.z);
         const jumpDistanceSq = jumpVector.lengthSq();
         const projectedProgress = jumpDistanceSq > 0.0001
@@ -368,7 +376,7 @@ class GameEngineMovementMethods {
             : previousProgress;
         const progress = entity !== this.player
             ? (isSameJump ? previousVisualProgress : 0)
-            : authoritativeProgress;
+            : (isSameJump && hasAuthoritativeTrajectory ? previousVisualProgress : authoritativeProgress);
         const inferredHeight = this.getJumpArcHeight(travelDistance);
         const height = getJumpScalarField('jumpHeight', existingJump?.height ?? inferredHeight);
         const baseY = getOverworldGroundHeight(this, currentPosition)
@@ -376,7 +384,7 @@ class GameEngineMovementMethods {
         const computedArcHeight = Math.sin(progress * Math.PI) * height;
         const replicatedArcHeight = Math.max(0, (pData.y ?? currentPosition.y) - baseY);
         const visualHeight = entity === this.player
-            ? Math.max(computedArcHeight, replicatedArcHeight)
+            ? (hasAuthoritativeTrajectory ? computedArcHeight : Math.max(computedArcHeight, replicatedArcHeight))
             : computedArcHeight;
         const previousDisplayPosition = existingJump?.displayPosition?.clone?.()
             || entity.mesh?.position?.clone?.()
@@ -398,8 +406,12 @@ class GameEngineMovementMethods {
                 height,
                 serverDriven: true,
                 visualHeight,
-                hasAuthoritativeTrajectory: hasJumpTrajectoryMetadata,
-                displayPosition
+                hasAuthoritativeTrajectory,
+                displayPosition,
+                takeoffRotation: isSameJump ? existingJump?.takeoffRotation : null,
+                takeoffOffset: isSameJump ? existingJump?.takeoffOffset : null,
+                landingPending: isSameJump && existingJump?.landingPending,
+                landingState: isSameJump ? existingJump?.landingState : null
             };
             this.normalizeJumpVisualState(this.playerJumpState, displayPosition);
             this.playerJumpState.visualHeight = visualHeight;
@@ -420,7 +432,7 @@ class GameEngineMovementMethods {
                 visualHeight,
                 authoritativeProgress,
                 serverDriven: true,
-                hasAuthoritativeTrajectory: hasJumpTrajectoryMetadata,
+                hasAuthoritativeTrajectory,
                 displayPosition,
                 landingVisual: entity.jumpLandingVisual || null
             };
@@ -441,7 +453,9 @@ class GameEngineMovementMethods {
         const landingEnd = entity.jumpVisualState.end?.clone?.() || entity.position?.clone?.();
 
         entity.jumpLandingVisual = {
+            positionFrom: landingEnd,
             startTime: Date.now(),
+            elapsed: 0,
             duration: 180,
             impact
         };
@@ -454,13 +468,23 @@ class GameEngineMovementMethods {
         if (!entity) return;
         if (entity === this.player) {
             if (this.playerJumpState?.serverDriven) {
+                // Replication can report contact before the presentation clock.
+                // Finish this same arc rather than snapping its last frames away.
+                if (this.playerJumpState.hasAuthoritativeTrajectory && this.getJumpVisualProgress(this.playerJumpState) < 1 - 1e-6) {
+                    this.playerJumpState.landingPending = true;
+                    if (this.player.state !== 'JUMPING') this.playerJumpState.landingState = this.player.state;
+                    this.player.state = 'JUMPING';
+                    return;
+                }
                 const landingEnd = this.playerJumpState.end?.clone() || this.player.position.clone();
+                const landingState = this.playerJumpState.landingState || (this.player.state === 'JUMPING' ? 'IDLE' : this.player.state);
                 const shouldConsumeQueuedJump = !!this.playerQueuedJump
                     && !!(this.inputManager?.keys?.control || this.inputManager?.keys?.meta)
                     && !!this.inputManager?.primaryMouseButtonDown;
                 this.player.position.copy(landingEnd);
                 this.player.position.y = landingEnd.y;
                 this.playerJumpState = null;
+                this.player.state = landingState;
                 this.player.clearJumpAnimation?.();
                 this.player.restoreAnimationForState?.(true);
                 this.playerJumpVisualHeight = 0;
@@ -469,6 +493,7 @@ class GameEngineMovementMethods {
                 this.renderSystem?.setCameraTarget?.(this.player.position);
                 this.playerJumpLandingVisual = {
                     startTime: Date.now(),
+                    elapsed: 0,
                     duration: 180,
                     impact: 0.85
                 };
@@ -488,7 +513,7 @@ class GameEngineMovementMethods {
         }
         if (entity.jumpVisualState) {
             const visualProgress = this.getJumpVisualProgress(entity.jumpVisualState);
-            if (visualProgress < 0.98) {
+            if (visualProgress < 1 - 1e-6) {
                 entity.jumpVisualState.landingPending = true;
                 return;
             }
@@ -513,6 +538,7 @@ class GameEngineMovementMethods {
         }
 
         for (const entity of entities) {
+            this.advanceJumpLandingVisual(entity?.jumpLandingVisual, dt);
             const jump = entity !== this.player ? entity?.jumpVisualState : null;
             if (!jump?.serverDriven || !(jump.duration > 0)) continue;
 
@@ -537,6 +563,7 @@ class GameEngineMovementMethods {
     }
 
     updatePlayerJump(dt) {
+        this.advanceJumpLandingVisual(this.playerJumpLandingVisual, dt);
         if (!this.playerJumpState || !this.player) return false;
 
         const jump = this.playerJumpState;
@@ -546,10 +573,12 @@ class GameEngineMovementMethods {
                 jump.displayPosition = this.player.position.clone();
             }
             const displayTarget = this.getAuthoritativeJumpDisplayTarget(this.player, jump) || this.player.position;
-            jump.displayPosition.lerp(displayTarget, 1 - Math.pow(0.65, Math.max(0, dt) * 60));
+            if (jump.hasAuthoritativeTrajectory) jump.displayPosition.copy(displayTarget);
+            else jump.displayPosition.lerp(displayTarget, 1 - Math.pow(0.65, Math.max(0, dt) * 60));
             jump.displayPosition.y = getOverworldGroundHeight(this, jump.displayPosition) ?? this.player.position.y;
             this.playerJumpVisualHeight = jump.visualHeight || 0;
             this.renderSystem?.setCameraTarget?.(jump.displayPosition);
+            if (jump.landingPending && this.getJumpVisualProgress(jump) >= 1 - 1e-6) this.clearAuthoritativeJumpState(this.player);
             return true;
         }
         if ((this.inputManager?.keys?.control || this.inputManager?.keys?.meta) && this.inputManager?.primaryMouseButtonDown) {
@@ -573,6 +602,7 @@ class GameEngineMovementMethods {
             this.playerJumpVisualHeight = 0;
             this.playerJumpLandingVisual = {
                 startTime: Date.now(),
+                elapsed: 0,
                 duration: 180,
                 impact: 0.9
             };
@@ -593,6 +623,17 @@ class GameEngineMovementMethods {
         }
 
         return true;
+    }
+
+    advanceJumpLandingVisual(landing, dt) {
+        if (Number.isFinite(landing?.elapsed)) landing.elapsed = Math.min(landing.duration, landing.elapsed + Math.max(0, dt) * 1000);
+    }
+
+    getJumpLandingProgress(landing) {
+        // Engine-owned landings share the flight/render clock. The fallback
+        // supports existing gallery callers that supply a start timestamp.
+        const elapsed = Number.isFinite(landing.elapsed) ? landing.elapsed : Date.now() - landing.startTime;
+        return Math.max(0, Math.min(1, elapsed / landing.duration));
     }
 
     getJumpStyleProfile(entity) {
@@ -661,6 +702,9 @@ class GameEngineMovementMethods {
 
         const clampedProgress = Math.max(0, Math.min(1, progress));
         const position = new THREE.Vector3().lerpVectors(jumpState.start, jumpState.end, clampedProgress);
+        if (jumpState.takeoffOffset) {
+            position.addScaledVector(jumpState.takeoffOffset, 1 - THREE.MathUtils.smoothstep(jumpState.elapsed || 0, 0, .12));
+        }
         position.y = getOverworldGroundHeight(this, position) ?? position.y;
         return position;
     }
@@ -691,29 +735,19 @@ class GameEngineMovementMethods {
 
         mesh.scale.copy(mesh.userData.baseScale);
 
-        const anticipationWindow = 0.12;
-        if (progress <= anticipationWindow) {
-            const anticipationT = 1 - (progress / anticipationWindow);
-            const anticipation = anticipationT * styleProfile.anticipation;
-            mesh.scale.x *= 1 + anticipation * 0.55;
-            mesh.scale.z *= 1 + anticipation * 0.55;
-            mesh.scale.y *= 1 - anticipation;
-            return;
-        }
-
+        // Every envelope starts and ends at the unmodified pose. The old
+        // takeoff branch started fully squashed and jumped at its boundary.
+        const anticipation = Math.sin(Math.PI * Math.min(1, progress / .12)) * styleProfile.anticipation;
         const airborneLift = Math.sin(progress * Math.PI) * styleProfile.stretch;
-        const tuckWindow = Math.max(0, Math.sin(progress * Math.PI));
-        const tuckStrength = progress < 0.5
-            ? THREE.MathUtils.smoothstep(progress, 0.12, 0.36) * styleProfile.tuck
-            : (1 - THREE.MathUtils.smoothstep(progress, 0.56, 0.88)) * styleProfile.untuck;
-        mesh.scale.x *= 1 - airborneLift * 0.2;
-        mesh.scale.z *= 1 + tuckStrength * 1.2 + airborneLift * 0.08;
-        mesh.scale.y *= 1 + airborneLift * 0.55 - tuckWindow * tuckStrength * 1.25;
+        const tuckStrength = Math.sin(progress * Math.PI) ** 2
+            * THREE.MathUtils.lerp(styleProfile.tuck, styleProfile.untuck, THREE.MathUtils.smoothstep(progress, .4, .6));
+        mesh.scale.x *= 1 + anticipation * .55 - airborneLift * .2;
+        mesh.scale.z *= 1 + anticipation * .55 + tuckStrength * 1.2 + airborneLift * .08;
+        mesh.scale.y *= 1 - anticipation + airborneLift * .55 - tuckStrength * 1.25;
 
         const landingVisual = jumpState?.landingVisual;
         if (landingVisual) {
-            const elapsed = Date.now() - landingVisual.startTime;
-            const landingT = Math.max(0, Math.min(1, elapsed / landingVisual.duration));
+            const landingT = this.getJumpLandingProgress(landingVisual);
             if (landingT >= 1) {
                 if (entity === this.player) {
                     this.playerJumpLandingVisual = null;
@@ -724,7 +758,7 @@ class GameEngineMovementMethods {
                 return;
             }
 
-            const impact = (1 - landingT) * landingVisual.impact;
+            const impact = Math.sin(landingT * Math.PI) * landingVisual.impact;
             const squash = styleProfile.squash * impact;
             mesh.scale.x *= 1 + squash * 0.85;
             mesh.scale.z *= 1 + squash * 0.85;
@@ -742,7 +776,7 @@ class GameEngineMovementMethods {
             return targetPosition;
         }
 
-        if (jumpState.hasAuthoritativeTrajectory && entity !== this.player) {
+        if (jumpState.hasAuthoritativeTrajectory) {
             return this.getJumpBasePositionAtProgress(jumpState) || targetPosition;
         }
 
@@ -777,6 +811,9 @@ class GameEngineMovementMethods {
 
     applyEntityJumpVisuals(entity, jumpState, options = {}) {
         if (!entity?.mesh) return;
+        if (!jumpState && entity !== this.player && entity.jumpLandingVisual) {
+            jumpState = { progress: 1, visualHeight: 0, landingVisual: entity.jumpLandingVisual };
+        }
 
         if (jumpState?.serverDriven) {
             if (!jumpState.displayPosition) {
@@ -798,8 +835,18 @@ class GameEngineMovementMethods {
             entity.mesh.position.copy(jumpState.displayPosition);
         } else {
             entity.mesh.position.copy(entity.position);
+            if (jumpState?.takeoffOffset) entity.mesh.position.addScaledVector(jumpState.takeoffOffset,
+                1 - THREE.MathUtils.smoothstep(jumpState.elapsed || 0, 0, .12));
+        }
+        if (jumpState?.landingVisual?.positionFrom) {
+            entity.mesh.position.lerpVectors(jumpState.landingVisual.positionFrom, entity.position,
+                THREE.MathUtils.smoothstep(this.getJumpLandingProgress(jumpState.landingVisual), 0, 1));
         }
         entity.mesh.quaternion.copy(entity.rotation);
+        if (jumpState?.takeoffRotation) {
+            entity.mesh.quaternion.copy(jumpState.takeoffRotation).slerp(entity.rotation,
+                THREE.MathUtils.smoothstep(jumpState.elapsed || 0, 0, .12));
+        }
 
         if (!jumpState) {
             if (entity.mesh.scale && entity.mesh.userData?.baseScale) {
@@ -815,7 +862,9 @@ class GameEngineMovementMethods {
 
         const progress = this.getJumpVisualProgress(jumpState);
         const styleProfile = this.getJumpStyleProfile(entity);
-        const flipAmount = progress * styleProfile.flip;
+        // Land upright for every class, with zero angular speed at both ends.
+        const turns = Math.round(styleProfile.flip / (Math.PI * 2));
+        const flipAmount = THREE.MathUtils.smoothstep(progress, 0, 1) * turns * Math.PI * 2;
         const rollAmount = Math.sin(progress * Math.PI * 2) * styleProfile.roll;
         const tuckPitch = progress < 0.45
             ? THREE.MathUtils.smoothstep(progress, 0.06, 0.3) * styleProfile.tuck
@@ -824,20 +873,24 @@ class GameEngineMovementMethods {
                 * styleProfile.landingLean;
         let landingPitch = 0;
         if (jumpState?.landingVisual) {
-            const landingElapsed = Date.now() - jumpState.landingVisual.startTime;
-            const landingT = Math.max(0, Math.min(1, landingElapsed / jumpState.landingVisual.duration));
-            landingPitch = -Math.sin((1 - landingT) * Math.PI * 0.5) * styleProfile.landingLean * jumpState.landingVisual.impact;
+            const landingT = this.getJumpLandingProgress(jumpState.landingVisual);
+            landingPitch = -Math.sin(landingT * Math.PI) * styleProfile.landingLean * jumpState.landingVisual.impact;
         }
         const flipQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), flipAmount + tuckPitch + landingPitch);
         const rollQuaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), rollAmount);
         entity.mesh.quaternion.multiply(flipQuaternion).multiply(rollQuaternion);
         this.applyJumpVisualScale(entity, jumpState, progress, styleProfile);
+        if (!jumpState.landingVisual && entity.syncJumpAnimationToVisualState?.(jumpState)) {
+            // Sample the supplied clip on the same render clock as the arc,
+            // including frames without a simulation tick.
+            entity.updateAnimationMixer?.(0);
+        }
     }
 
     applyRemoteJumpVisuals(options = {}) {
         const activeEntities = this.chunkManager?.getActiveEntities?.() || this.activeEntitiesCache || [];
         for (const entity of activeEntities) {
-            if (entity !== this.player && entity?.jumpVisualState) {
+            if (entity !== this.player && (entity?.jumpVisualState || entity?.jumpLandingVisual)) {
                 this.applyEntityJumpVisuals(entity, entity.jumpVisualState, options);
             }
         }

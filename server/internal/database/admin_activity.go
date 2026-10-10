@@ -55,11 +55,13 @@ type AdminActivity struct {
 }
 
 type AdminActivityQuery struct {
-	Before     string `json:"before"`
-	Actor      string `json:"actor"`
-	Action     string `json:"action"`
-	Population string `json:"population,omitempty"`
-	Day        string `json:"day,omitempty"`
+	// Server-owned roster; never accepted from an administration request.
+	TestAccounts []string `json:"-"`
+	Before       string   `json:"before"`
+	Actor        string   `json:"actor"`
+	Action       string   `json:"action"`
+	Population   string   `json:"population,omitempty"`
+	Day          string   `json:"day,omitempty"`
 }
 
 type AdminActivityPage struct {
@@ -178,7 +180,7 @@ func adminActivityFilter(query AdminActivityQuery, now time.Time, retentionDays 
 		return nil, errors.New("invalid activity filter")
 	}
 	filter := bson.M{"expires_at": bson.M{"$gt": now}, "at": bson.M{"$gt": now.Add(-time.Duration(retentionDays) * 24 * time.Hour)}}
-	if err := addAdminPopulationFilter(filter, query.Population); err != nil {
+	if err := addAdminPopulationFilter(filter, query.Population, query.TestAccounts...); err != nil {
 		return nil, err
 	}
 	if query.Day != "" {
@@ -254,7 +256,7 @@ func (db *DB) readAdminDaily(ctx context.Context, query AdminActivityQuery, now 
 	}
 	filter := bson.M{"expires_at": bson.M{"$gt": now}, "at": bson.M{"$gte": start, "$lte": now},
 		"action": bson.M{"$in": bson.A{"login", "disconnect"}}, "result": "success"}
-	if err := addAdminPopulationFilter(filter, query.Population); err != nil {
+	if err := addAdminPopulationFilter(filter, query.Population, query.TestAccounts...); err != nil {
 		return AdminDailyActivity{}, err
 	}
 	if query.Actor != "" {

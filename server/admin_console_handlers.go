@@ -38,6 +38,9 @@ type adminActivityStore interface {
 
 var adminActivities adminActivityStore
 
+// Explicit automation identity, independent of QA permissions or admin roles.
+var adminTestUsernames []string
+
 type adminReportStore interface {
 	ReadReportPage(database.ReportQuery) (database.ReportPage, error)
 }
@@ -269,7 +272,7 @@ func handleAdminRead(c *Client, msg Message) {
 			result.Authorized = false
 			return
 		}
-		page, err := adminActivities.ReadAdminActivity(database.AdminActivityQuery{Before: request.Before, Actor: request.Actor, Action: request.Action, Population: request.Population, Day: request.Day})
+		page, err := adminActivities.ReadAdminActivity(database.AdminActivityQuery{Before: request.Before, Actor: request.Actor, Action: request.Action, Population: request.Population, Day: request.Day, TestAccounts: adminTestUsernames})
 		if err != nil {
 			result.Authorized = false
 			result.Message = "Activity history unavailable or filter invalid. Refresh with valid filters."
@@ -358,7 +361,7 @@ func adminOnlinePage(after string, populations ...string) ([]adminOnlinePlayer, 
 	sessionsMu.Lock()
 	bindings := make([]binding, 0, len(activeSessions))
 	for account, client := range activeSessions {
-		if !database.AdminPopulationIncludes(account, population) {
+		if !database.AdminPopulationIncludes(account, population, adminTestUsernames...) {
 			continue
 		}
 		key := database.AdminActivityAccountKey(account)
