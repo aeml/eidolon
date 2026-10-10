@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { bundleGameEngine } from '../../scripts/bundle-game-engine.mjs';
@@ -34,6 +35,7 @@ test.beforeAll(async () => {
     for (const filename of ['src', 'assets', 'vendor', 'index.html', 'release.json', 'sw.js'])
         await cp(path.resolve(filename), path.join(root, filename), { recursive: true });
     metadata = await bundleGameEngine(root);
+    metadata.engineSHA256 = createHash('sha256').update(await readFile(path.join(root, 'src/core/GameEngine.bundle.js'))).digest('hex');
     await versionPagesRuntime(root, release);
     const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
         '.ttf': 'font/ttf', '.glb': 'model/gltf-binary', '.png': 'image/png', '.svg': 'image/svg+xml', '.webp': 'image/webp' };
@@ -146,6 +148,40 @@ test('actual published engine stays lazy at login and constructs each class from
         .toEqual(['/src/core/GameEngine.bundle.js']);
     expect(applicationModules).toContain('/src/core/GameEngine.bundle.js');
     expect(applicationModules.some(file => file.startsWith('/src/entities/'))).toBe(false);
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
+for (const quality of ['high', 'low']) test(`published ${quality} actor defaults render generated roots and retire owned copies`, async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, quality }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        const render = game.renderSystem, owner = render.actorInstances, multi = owner?.multiDraw, actors = [];
+        let result;
+        try {
+            render.setGraphicsQuality(quality);
+            for (let i = 0; i < 6; i++) {
+                const actor = game.createRemotePlayer('Enemy', `published-skeleton-${i}`, 'Skeleton');
+                actors.push(actor); await actor.ensureMesh();
+                actor.mesh.position.set(i % 3 * 3, 0, i < 3 ? 0 : 3); render.add(actor.mesh);
+            }
+            render.render();
+            result = { enabled: Boolean(owner?.enabled && multi?.enabled && multi.perInstanceFrustum),
+                groups: multi?.entries.size || 0, extension: render.renderer.extensions.has('WEBGL_multi_draw'),
+                restored: !owner.hidden.length && !multi.hidden.length && !owner.group.visible && !multi.group.visible,
+                draws: render.renderer.info.render.calls };
+        } finally {
+            for (const actor of actors) actor.dispose();
+            game.destroy();
+        }
+        result.disposed = multi.disposed && multi.entries.size === 0 && multi.group.parent === null && owner.roots.size === 0;
+        return result;
+    }, { release, quality });
+    await testInfo.attach('published-default-actor-owner', { body: JSON.stringify({ quality, result, engineSHA256: metadata.engineSHA256 }), contentType: 'application/json' });
+    expect(result.enabled && result.extension && result.restored && result.disposed).toBe(true);
+    expect(result.groups).toBeGreaterThan(0); expect(result.draws).toBeGreaterThan(0);
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
