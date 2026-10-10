@@ -31,6 +31,7 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
         };
         function observedDirect(camera, scene, geometry, material, object, group) {
             const before = renderer.info.render.calls;
+            const beforeTriangles = renderer.info.render.triangles;
             const result = direct.call(this, camera, scene, geometry, material, object, group);
             if (!rows) return result;
             let root = object;
@@ -44,7 +45,7 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
             if (!row) {
                 row = { family, pass, mesh: object.name, geometry: geometry.uuid, material: material.uuid,
                     sourceMaterial: Array.isArray(object.material) ? null : object.material?.uuid,
-                    type: object.type, submittedCalls: 0, callbacks: 0,
+                    type: object.type, submittedCalls: 0, submittedTriangles: 0, callbacks: 0,
                     instances: object.isInstancedMesh ? object.count : null,
                     origin: object.isInstancedMesh ? [object.matrixWorld.elements[12], object.matrixWorld.elements[13], object.matrixWorld.elements[14]] : null,
                     sourceKinds: object.parent === render.actorInstances?.group ? [...render.actorInstances.roots.keys()]
@@ -53,6 +54,7 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
                 rows.set(key, row);
             }
             row.submittedCalls += renderer.info.render.calls - before;
+            row.submittedTriangles += renderer.info.render.triangles - beforeTriangles;
             row.callbacks++;
             return result;
         }
@@ -81,6 +83,7 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
     expect(evidence.restored).toBe(true); expect(evidence.frames).toHaveLength(12);
     for (const frame of evidence.frames) {
         expect(frame.rows.reduce((total, row) => total + row.submittedCalls, 0)).toBe(frame.calls);
+        expect(frame.rows.reduce((total, row) => total + row.submittedTriangles, 0)).toBe(frame.triangles);
         expect(frame.calls).toBeGreaterThan(0);
     }
 }

@@ -292,6 +292,9 @@ test('single native renderer observes three live equipped party socket peers on 
         await page.setViewportSize({ width: 1280, height: 844 });
         await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
         await loginAndEnterWorld(page, accounts[0]);
+        if (process.env.EIDOLON_E2E_TOWN_SUBMISSIONS === '1') {
+            await capturePartySubmissionFrames(page, testInfo, 'town-submission-frames.json');
+        }
         if (process.env.EIDOLON_TERRAIN_ART_ROUTE === '1') await captureEarthMovingRoute(page, testInfo);
         if (process.env.EIDOLON_TERRAIN_RENDER_DIAGNOSTIC === '1') await captureActualSceneRenderDiagnosis(page, testInfo);
         await page.evaluate(observePartyTerrain);
@@ -489,6 +492,7 @@ test('single native renderer observes three live equipped party socket peers on 
         expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(report.drawCallsMedian).toBeGreaterThan(0);
         recordPeerLiveness('profile-complete');
+        if (process.env.EIDOLON_E2E_PARTY_SUBMISSION_FRAMES === '1') await capturePartySubmissionFrames(page, testInfo);
         if (process.env.EIDOLON_E2E_DEFAULT_ACTOR_MULTI_DRAW === '1') {
             const startup = await page.evaluate(() => {
                 const render = window.game.renderSystem, owner = render.actorInstances, multi = owner?.multiDraw;
@@ -507,7 +511,6 @@ test('single native renderer observes three live equipped party socket peers on 
             expect(report.frameMedianMs).toBeLessThanOrEqual(budget.maximumFrameMedianMs);
             expect(report.frameP95Ms).toBeLessThanOrEqual(budget.maximumFrameP95Ms);
         }
-        if (process.env.EIDOLON_E2E_PARTY_SUBMISSION_FRAMES === '1') await capturePartySubmissionFrames(page, testInfo);
         for (const peer of peers) { expect(peer.socket.readyState, JSON.stringify(peer.closes)).toBe(1); expect(peer.errors).toEqual([]); }
         const party = await page.evaluate(readPartyTerrain, ids);
         expect(party.actors.map(actor => actor.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);
