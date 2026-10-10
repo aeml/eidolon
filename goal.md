@@ -147,21 +147,18 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-Owner-requested low-frame-rate jump correction is prepared as Alpha 1.79.25.
-Real copied/versioned publication with a disposable Go-race server passes normal
-and interrupted-entry login, real long-jump input, exact landing, fresh login
-and Mongo save preservation. Click-to-landing measured 1.684/1.756 seconds;
-server flight duration is 1.5 seconds. Evidence is recorded in
-`docs/plans/2026-10-10-maintenance-connected-jump.json`.
+Alpha1.79.25/d15a882e is deployed and exact assets/identities/database readiness
+verified. Requested elapsed-time jump fix independently measures1648.6ms from
+real click to landing, authoritative flight1.5s and exact endpoints.
+Required CI38051193149 nevertheless fails separate live Gold/stash assertions;
+original preceding transaction/root cause remains unproven and failures retained.
 
-Public24 deployment identities/readiness match, but CI38030283856 remains failed.
-A corrective successor must pass its own required live gates; original failed
-evidence and unknown root/dependency cause are retained. No raised/geometry/body
-pilots selected. Full original roadmap and final acceptance remain active.
-
-The initial25CI38050260227 hit an ability/frame data race before deployment.
-Local16worker room recovery reproduces a State access conflict;6fb97aeb
-serializes full casts and realtime frames while preserving actor-lock boundaries.
-Focused Go-race checks and real16worker dungeon recovery plus both connected
-login/jump/save cases now pass. No first-run retry or failure waiver.
-See `docs/plans/2026-10-10-ability-frame-serialization.json`.
+Corrective Alpha1.79.26 selects a qualified correlated read-only wallet baseline
+before persistent QA sale/stash snapshots. Strict exact Gold/custody/save checks,
+request limits and generic browser failure policy stay intact. Real disposable
+Go-race/server/browser/Mongo qualifies both preceding242/175Gold cases, with
+exact savedGold1417/1175,EP43,gear/bag/stash metadata and fresh-login preservation.
+See `docs/plans/2026-10-10-vendor-gold-synchronization.json`.
+Deployment and unchanged required live gates remain pending. No raised/body/
+geometry/shadow pilots selected; full original1.11–1.99scope, failed24hsoak,
+art/device/owner/F1–F5/beta/launch/handoff acceptance remains active.

@@ -1,0 +1,61 @@
+{
+  "recordedUTC": "2026-10-10T13:33:00.906022+00:00",
+  "status": "Qualified synchronization repair selected for corrective26; deployment and unchanged required live gates pending.",
+  "sourceCommit": "9b252480dd8cf18a91f2d93c382d3c71e60e81f7",
+  "runtimeCommit": "551dbba9676ad604fcbfd56ca5a760ae4e08e616",
+  "baseCommit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+  "sourcePins": {
+    "server/ep_wallet_handlers.go": "05f2d0cc424860785a975cb444abf5400933f31fa1d2cb4f2e52a8700c792149",
+    "server/ep_wallet_handlers_test.go": "94aa39ea4d497eb3d75914b1d998a4db1b4f8c5af6338b4bf42d005b2ac26aff",
+    "server/vendor_preexisting_credit_integration_test.go": "d1365ed1acdb924e0d804e8fc1ce7384db7aebb9758ad9b029623fd1dc201030",
+    "tests/e2e/persistent-qa-gold.js": "1ef718bf6f37491188b044be1491e36a2fd613613a1604d9c61d966ee72b9eea",
+    "tests/e2e/helpers.js": "e54cc50b862ccc1f3726d1dfa5e2ff34ef0f94689f94329031159a8078c5f229",
+    "tests/e2e/persistent-qa-stash.js": "12e9d90e6d6637d3af14ef72065feba9b9849d48fffb85a15e0ef03938bcc4a9",
+    "tests/e2e/vendor-preexisting-credit.spec.js": "01552fd33fd647d0f0e854cc751ef6d6f7938482cbf435a7d270d5ee09c5c8de",
+    "tests/PersistentQAGold.test.js": "18c5660140584252d03c44b265597db8d889167b76358588e38a18cfcb60799a",
+    "tests/E2EHelpers.test.js": "cd13cc9c12af41b547c7d11c29c5a75fbfcd88c0352f9434776207ad0b492723",
+    "tests/PersistentQAStashRoute.test.js": "c723dddfdfdc7ca7b0058748e40c45310987bfe5140cfcae449c87be8a9a9a50"
+  },
+  "implementation": "The read-only existing wallet API optionally echoes readID, separate from exchange receipt id. Persistent QA matches fresh request/current owner and requires ordinary replicated Gold to equal that exact server snapshot before deriving a sale credit or stash invariant. Bounded15s receipt and exact-replication waits; no balance assignment, queue drain, retry, generic-browser-policy relaxation, sale/stash equality change or economic mutation change. Helper read pacing respects the unchanged5per10second policy, conservatively measured after responses.",
+  "negativeControls": "Frozen8c9aa236 preceding242/175Gold sales demonstrate old baselines1175versus1417 and1000versus1175 under actual FIFO delivery; native harness failures and earlier partial-scope results remain retained separately. These controlled schedules do NOT establish the original live cause.",
+  "checks": {
+    "client": "56checks across3suites pass0.656s; final Gold suite16checks pass0.481s after adding one response-latency guard.57distinct checks. Adjacent wallet/owner checks recorded separately.",
+    "GoWallet": "Go-race TestEPWallet* passes1.955s, including correlated read-only no-spend/no-save/malformed-read checks and existing exchange/save recovery tests.",
+    "native": "2pass36.8s; sale14.6s/stash20.7s, zero retries/flaky/skips/unexpected; strict generic browser failure lists empty.",
+    "GoBrowserMongo": "Pass42.11s/package43.162s. Both fresh document logins exact; direct Mongo savedGold1417/1175,EP43,equipment,exact bag/stash arrays/all original and pending-item metadata, no duplicate custody/buyback/pending loot, and logout after start.",
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "readSnapshots": [
+      {
+        "case": "sale",
+        "gold": 1242,
+        "ep": 43,
+        "reads": 1,
+        "finalGold": 1417
+      },
+      {
+        "case": "stash",
+        "gold": 1175,
+        "ep": 43,
+        "reads": 1,
+        "finalGold": 1175
+      }
+    ],
+    "lint": "Focused changed files pass; initial native-file edit had a parsing error and was corrected before any connected run; no runtime failure or waived assertion."
+  },
+  "scope": "One optional read-only response field and test synchronization only; no vendor/stash/spending/reward/persistence algorithms changed. Existing clients with uncorrelated reads retain the old response shape. Read IDs cannot acknowledge pending exchange IDs.",
+  "limits": "Current public25 required CI remains failed. Original live preceding transaction/root cause remains unproven. A successor must pass the unchanged required live tests; no rerun/waiver. Not full roadmap/art/device/soak/beta/launch acceptance.",
+  "privacy": "Credentials only process env; native records off; actual reports sanitized before immediate archive; sanitized server copy and final plaintext/embedded ZIP scan.",
+  "next": "Select the qualified correction into a synchronized corrective publication and run its unchanged gates; retain original failed release evidence.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-vendor-gold-sync-checks-20261010",
+    "inventoryEntries": 34,
+    "inventorySHA256": "a41371686b339dc0f5f7bcf1075f0e1829e868e3ef99f39f419aff075bd878ce"
+  },
+  "selectedPublicationVersion": "Alpha 1.79.26"
+}
