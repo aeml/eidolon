@@ -1,3 +1,4 @@
+import { capturePartySubmissionFrames } from './party-submission-frames.js';
 import { captureActorSubmissionCensus } from './actor-submission-census.js';
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
@@ -486,6 +487,7 @@ test('single native renderer observes three live equipped party socket peers on 
         expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(report.drawCallsMedian).toBeGreaterThan(0);
         recordPeerLiveness('profile-complete');
+        if (process.env.EIDOLON_E2E_PARTY_SUBMISSION_FRAMES === '1') await capturePartySubmissionFrames(page, testInfo);
         for (const peer of peers) { expect(peer.socket.readyState, JSON.stringify(peer.closes)).toBe(1); expect(peer.errors).toEqual([]); }
         const party = await page.evaluate(readPartyTerrain, ids);
         expect(party.actors.map(actor => actor.class).sort()).toEqual(['Cleric', 'Fighter', 'Rogue', 'Wizard']);

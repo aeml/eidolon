@@ -1,0 +1,65 @@
+{
+  "recordedUTC": "2026-10-10T21:37:05.675078+00:00",
+  "source": "c61c6f51c883cdd60e07481752eddbc7b4394aef",
+  "runtime": "10098530; QA-only diagnostic addition",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-party-submission-frames-checks-20261010",
+  "inventorySHA256": "43d7ddeeb9b818afdad8e1b8ad88beec92e6a1aa6a28feb81d7e85a5705d8e0d",
+  "actualNative": {
+    "total": 2,
+    "expected": 1,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 1,
+    "ok": true
+  },
+  "goRace": true,
+  "fourClassFourteenSlotPersistence": true,
+  "profile": {
+    "frames": 180,
+    "drawCallsMedian": 316,
+    "trianglesMedian": 200392,
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 33.3,
+    "activeEntitiesMin": 34,
+    "activeEntitiesMax": 35
+  },
+  "diagnostic": {
+    "frames": 12,
+    "allDrawCountsAccountedFor": true,
+    "frameDraws": [
+      273,
+      273,
+      273,
+      273,
+      273,
+      273,
+      273,
+      273,
+      273,
+      273,
+      273,
+      273
+    ],
+    "firstFramePassCounts": {
+      "shadow-0": 98,
+      "color": 160,
+      "auxiliary": 15
+    },
+    "firstFrameInstances": {
+      "color": 24,
+      "shadow": 20,
+      "cellOrigins": 1
+    },
+    "excludedFromTimingSample": true
+  },
+  "previousFailedHigh": {
+    "drawMedian": 389,
+    "limit": 350,
+    "source": "10098530",
+    "instanceColorBuckets": 72,
+    "origins": 3,
+    "exactSameGeometryMaterialOriginMergeSavings": 0
+  },
+  "finding": "Every submitted draw is accounted for. New random world has24color instance buckets at one cell origin versus prior72at three; lower sample does not clear historicalHigh389 orLow202 failures. Same-origin different geometries share materials:7+7+2+2+2+3+1=24buckets across7groups. Next private opt-in stock BatchedMesh pilot preserves each original cell origin, float32matrix, source geometry/material and per-camera whole-bucket frustum decision while consolidating different geometries. No cross-origin rounding or changed culling policy.",
+  "limits": "Attribution diagnostic, not whole-game performance acceptance or publication/default selection. Twelve instrumented frames excluded from normal180frame timing sample. Original modern-art/device/soak/beta/launch/handoff goal remains open."
+}

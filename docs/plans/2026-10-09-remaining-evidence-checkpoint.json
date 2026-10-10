@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T19:46:41.540259+00:00",
-  "classification": "Alpha1.79.27/a9d6fc9b deployed and release checks accepted: trusted public click-to-landing1429.7ms, endpoints0; all8assets/identities/database match; required CI38064138468 attempt1 succeeded. Native8expected/1skip/0unexpected/0flake, retry0; separate recovery2+1 pass. Optional routes remain skipped, original failures retained. Full original goal stays active.",
-  "qualifiedRuntime": "Held1e60f126 retains e8eec1b9 default lazy geometry and conservative rigid actor shadows, plus motion/aura/admin corrections and qualified complete tuck/landing envelopes. High sampled budget passes, actualLow202draw failure remains. Lowview378a79a2 stays unselected.",
+  "recordedUTC": "2026-10-10T21:41:10.292356+00:00",
+  "classification": "Progress: user-requested motion/aura/admin fixes verified at exact public29/12e5e3c4. Full original release-readiness goal remains active. Current turn attributes actual High submissions and develops an isolated opt-in same-cell multi-draw candidate; not selected or published.",
+  "qualifiedRuntime": "Held6db97317 retains e8eec1b9 default lazy geometry/conservative actor shadows and verified public29 motion/admin fixes. Actual historical Low202draw failure remains open. Private rigid surfaces10098530 and same-cell multi-draw9a93a779 remain isolated, unselected and unpublished.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -99,10 +99,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
+  "currentReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: conservative rigid shadow influence implemented, exact native-qualified and selected only in held private milestone e8eec1b9. DefaultHigh180frames324draws/176626triangles/16.7ms median+p95 passes sampled limits; frozen390-to330draw RGB exact, original skins/shadows/content retained. ActualLow202draws fails200,79857triangles/16.7ms pass. SubsequentLowview378a79a2 passes90units/11native checks and exact pixels/2588triangle reduction, but154draws unchanged; strict actual native draw-gain assertion fails before final profile/save. Candidate kept unselected; original failure retained, no retry/waiver/public mutation.",
-  "nextAction": "Attribute actual High389draw submissions and representative Low202draw context before selecting private rigid batching; qualify its ordinary startup/pool/lifecycle and full supported-device/whole-game equipped world/contact/combat budgets with unchanged RGB, draw and triangle gates. Preserve all failed evidence. Public29 requested fixes verified; no further motion release necessary. Original art/device/owner-deferred campaign/failed24hsoak/F1\u2013F5/beta/launch/handoff remain open.",
+  "previousGoalTurnClassification": "progress: user-requested jump/aura/admin fixes accepted live at exact public29/12e5e3c4,CI38078784320 success attempt1;8native pass1skip0flake0retry plus3recovery pass. Normal TLS8assets,frontend/backend/database match. Trusted native jump1396.8ms,path/backsteps/aura/endpoints0;walking88genuine frames,auraerror0. Real-Mongo classification fixture1pass0skip and6configured QA identities excluded. Full original goal remains unfinished; private rigid batching stays unselected with High389draw failure and historical Low202failure open.",
+  "nextAction": "Finish private same-cell multi-draw actual connected High/Low/cold-returning/pool/lifecycle/resource qualification and compare strict RGB, triangles and original whole-bucket culling/order. Preserve earlier High389/350 and Low202/200 failures until representative changed-runtime evidence resolves them. No default selection/publication before required proof; full original art/device/failed24hsoak/F1\u2013F5/beta/launch/handoff scope unchanged.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: user-requested jump/aura/admin fixes accepted live at exact public29/12e5e3c4,CI38078784320 success attempt1;8native pass1skip0flake0retry plus3recovery pass. Normal TLS8assets,frontend/backend/database match. Trusted native jump1396.8ms,path/backsteps/aura/endpoints0;walking88genuine frames,auraerror0. Real-Mongo classification fixture1pass0skip and6configured QA identities excluded. Full original goal remains unfinished; private rigid batching stays unselected with High389draw failure and historical Low202failure open.",
+  "currentGoalTurnClassification": "progress: twelve actual live frame submissions fully accounted for, source c61c6f51, owned real-Mongo/Go-race four-class fourteen-slot saved party passes. New random-world profile differs from earlier failedHigh389 and cannot waive it. Same-cell material/geometry attribution yields private stock multi-draw candidate; first native pixel failures retained and depth/scene sort correction yields12exact native pose comparisons, unchanged triangles and draw reduction. Failure cleanup and real connected candidate proof in progress.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1960,5 +1960,70 @@
     "totalMs": 1426.300000011921,
     "walkingAccepted": false,
     "releaseInventorySHA256": "0858d66501ca2e97a1ac0ec68b2b803049bf211e48e8cac635613a580d0b680d"
+  },
+  "partySubmissionFrames": {
+    "recordedUTC": "2026-10-10T21:37:05.675078+00:00",
+    "source": "c61c6f51c883cdd60e07481752eddbc7b4394aef",
+    "runtime": "10098530; QA-only diagnostic addition",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-party-submission-frames-checks-20261010",
+    "inventorySHA256": "43d7ddeeb9b818afdad8e1b8ad88beec92e6a1aa6a28feb81d7e85a5705d8e0d",
+    "actualNative": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "goRace": true,
+    "fourClassFourteenSlotPersistence": true,
+    "profile": {
+      "frames": 180,
+      "drawCallsMedian": 316,
+      "trianglesMedian": 200392,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 33.3,
+      "activeEntitiesMin": 34,
+      "activeEntitiesMax": 35
+    },
+    "diagnostic": {
+      "frames": 12,
+      "allDrawCountsAccountedFor": true,
+      "frameDraws": [
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273,
+        273
+      ],
+      "firstFramePassCounts": {
+        "shadow-0": 98,
+        "color": 160,
+        "auxiliary": 15
+      },
+      "firstFrameInstances": {
+        "color": 24,
+        "shadow": 20,
+        "cellOrigins": 1
+      },
+      "excludedFromTimingSample": true
+    },
+    "previousFailedHigh": {
+      "drawMedian": 389,
+      "limit": 350,
+      "source": "10098530",
+      "instanceColorBuckets": 72,
+      "origins": 3,
+      "exactSameGeometryMaterialOriginMergeSavings": 0
+    },
+    "finding": "Every submitted draw is accounted for. New random world has24color instance buckets at one cell origin versus prior72at three; lower sample does not clear historicalHigh389 orLow202 failures. Same-origin different geometries share materials:7+7+2+2+2+3+1=24buckets across7groups. Next private opt-in stock BatchedMesh pilot preserves each original cell origin, float32matrix, source geometry/material and per-camera whole-bucket frustum decision while consolidating different geometries. No cross-origin rounding or changed culling policy.",
+    "limits": "Attribution diagnostic, not whole-game performance acceptance or publication/default selection. Twelve instrumented frames excluded from normal180frame timing sample. Original modern-art/device/soak/beta/launch/handoff goal remains open."
   }
 }
