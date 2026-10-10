@@ -121,7 +121,13 @@ func TestActualBrowserFreshWalletThenEarnedRoomGold(t *testing.T) {
 		if err != nil || saved == nil || !saved.LastLogout.After(started) || saved.Gold != wantGold || saved.EP != fixture.EP || saved.XP != fixture.XP+op.Participants[0].XP ||
 			!reflect.DeepEqual(saved.Equipment, fixture.Equipment) || !reflect.DeepEqual(saved.Inventory, wantInventory) || !reflect.DeepEqual(saved.Stash, wantStash) ||
 			len(saved.Buyback) != 0 || len(saved.PendingBossLoot) != 0 || !database.DungeonRoomRewardCharacterReceiptMatches(saved, op) {
-			t.Fatal("room Gold diagnostic lost exact independent earned credit, original economy/gear/bag/stash or saved receipt", err)
+			if saved == nil {
+				t.Fatal("room Gold saved character missing", err)
+			}
+			t.Fatalf("room Gold exact save mismatch: err=%v Gold=%d/%d EP=%d/%d XP=%d/%d logout=%t equipment=%t inventory=%t stash=%t buyback=%d pendingBoss=%d receipt=%t",
+				err, saved.Gold, wantGold, saved.EP, fixture.EP, saved.XP, fixture.XP+op.Participants[0].XP,
+				saved.LastLogout.After(started), reflect.DeepEqual(saved.Equipment, fixture.Equipment), reflect.DeepEqual(saved.Inventory, wantInventory), reflect.DeepEqual(saved.Stash, wantStash),
+				len(saved.Buyback), len(saved.PendingBossLoot), database.DungeonRoomRewardCharacterReceiptMatches(saved, op))
 		}
 		record, err := repo.GetDungeonRoomReward(op.ID)
 		if err != nil || record == nil || record.State != database.DungeonRoomRewardComplete || record.Fingerprint != op.Fingerprint {

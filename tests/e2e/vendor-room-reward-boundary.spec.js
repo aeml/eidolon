@@ -45,13 +45,30 @@ for (const [index, action] of ['sale', 'stash'].entries()) {
         expect(before.gold).toBe(1000);
         expect(before.inventory).toHaveLength(25);
         recording = true;
-        let rejected;
-        try {
-            if (action === 'sale') await freePersistentQALootSlot(page);
-            else await storePersistentQALootSpare(page);
-        } catch (error) { rejected = error; }
         const expectedGoldWithoutAward = action === 'sale' ? 1003 : 1000;
         const finalGold = expectedGoldWithoutAward + 175;
+        // Select the post-award host-read schedule explicitly. The client
+        // loop and every original socket message proceed normally. Only the
+        // diagnostic's balance-containing reads wait for ordinary replication;
+        // the existing helpers still receive real values and keep exact checks.
+        const postAwardPage = new Proxy(page, { get(target, property) {
+            if (property !== 'evaluate') {
+                const value = Reflect.get(target, property);
+                return typeof value === 'function' ? value.bind(target) : value;
+            }
+            return async (fn, argument) => {
+                if (observation.commands.some(command => ['sell', 'stash_deposit'].includes(command.type)) &&
+                    String(fn).includes('gold')) {
+                    await page.waitForFunction(gold => window.game?.player?.gold === gold, finalGold, { timeout: 15_000 });
+                }
+                return page.evaluate(fn, argument);
+            };
+        } });
+        let rejected;
+        try {
+            if (action === 'sale') await freePersistentQALootSlot(postAwardPage);
+            else await storePersistentQALootSpare(postAwardPage);
+        } catch (error) { rejected = error; }
         const plainError = rejected ? stripVTControlCharacters(rejected.message) : undefined;
         // Retain the existing strict assertion as the observed counterexample.
         // The diagnostic passes only if it rejects this exact uncounted award.
@@ -77,6 +94,7 @@ for (const [index, action] of ['sale', 'stash'].entries()) {
         const receipt = { action, expectedGoldWithoutAward, observedFreshWallet: 1000,
             earnedRoomGold: 175, finalGold, strictHelperRejected: true, error: plainError,
             observation, freshLoginExact: true,
+            hostReadSchedule: 'After bag command, balance-containing host evaluations wait for ordinarily replicated earned Gold. No client loop, packet, balance, predicate or FIFO change.',
             scope: 'Prepared saved account and immutable server-calculated room entitlement. Actual ordinary browser/server/Mongo delivery; no packets, balances or queues changed. Original public failure cause remains unproven.' };
         await testInfo.attach('earned-room-gold-boundary', { body: JSON.stringify(receipt, null, 2), contentType: 'application/json' });
         await writeFile(path.join(process.env.EIDOLON_E2E_ROOM_GOLD_EVIDENCE, `room-gold-${action}.json`), JSON.stringify(receipt, null, 2));
