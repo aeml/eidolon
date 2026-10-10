@@ -161,9 +161,14 @@ release remains unaccepted. First25server-race failure and original24startup/Gol
 failures retained. No reruns/cancels/waivers or public24/25product merge into held.
 `docs/plans/2026-10-10-jump-wall-clock-public-verification.json` records scope.
 
-Next reproduce and repair that exact economic sequencing boundary with real
-disposable server/browser/Mongo proof and unchanged economy assertions. No
-successor push yet. Private bf2039bf shadow-view prototype (separate worktree)
+Private8c9aa236 real-server FIFO counterexamples reproduce242Gold overshoot
+and175Gold crossing a stash snapshot through preceding legitimate sales.
+Selected stash native/Go-race/Mongo passes; sale native case passes within an
+otherwise failed diagnostic suite. Original live cause and repair remain open;
+see `docs/plans/2026-10-10-vendor-preexisting-credit-counterexamples.json`.
+Next identify the actual preceding transaction/state baseline and qualify its
+synchronization repair with unchanged exact economy checks. No successor push.
+Private bf2039bf shadow-view prototype (separate worktree)
 passes32units/12native/70exact RGB controls, but remains unselected and still
 needs connected High/CPU/whole-frame proof. Full original1.11–1.99objective,
 failed24hsoak, art/device/owner/F1–F5/beta/launch/handoff gates remain open.

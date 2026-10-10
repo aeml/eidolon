@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T12:57:30.037965+00:00",
+  "recordedUTC": "2026-10-10T13:23:16.015317+00:00",
   "classification": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
   "qualifiedRuntime": "Held private renderer/supplied High v3 and prepared geometry controller/delivery retained, geometry owner default null. No public24/25product merge. Public25 jump correction independently verified; required live Gold/stash gate and full original roadmap acceptance remain open.",
   "rejectedSourceCommits": [
@@ -1387,5 +1387,16 @@
     "status": "Explicit private unselected prototype; no RenderSystem import or production integration",
     "checks": "32 units,12 native/70 exact RGB controls; no connected/CPU/whole-frame acceptance",
     "inventorySHA256": "6716fb0b2873516279d70a2ad6fc17a46c981e89f1a303d0934b122a3287fd91"
+  },
+  "vendorPreexistingCreditCounterexamples": {
+    "sourceCommit": "8c9aa23686b31daf614f9e1a1f723c7efe5c7067",
+    "receipt": "docs/plans/2026-10-10-vendor-preexisting-credit-counterexamples.json",
+    "evidence": {
+      "directory": "/home/aeml/.local/share/eidolon-vendor-gold-coherence-checks-20261010",
+      "inventoryEntries": 59,
+      "inventorySHA256": "f151554f2863af27b40d44ac246e6a1d42360f0d29b00b0b0d03a49594c61e92"
+    },
+    "status": "Private real-server FIFO preceding-sales reproduce242Gold overshoot and175Gold crossing stash snapshot. Sale native case passes in otherwise failed diagnostic suite; corrected selected stash native/Go-race/Mongo passes. Not original live root-cause proof or a repair. Required25CI remains failure; product inputs unchanged.",
+    "next": "Trace which real transaction or state snapshot precedes the live QA baseline. Qualify a source-specific synchronization repair with strict balances/custody/save checks before any successor release. A correlated read-only authoritative wallet baseline is one candidate, subject to the existing5requests/10s limit and exact owner/request matching; no timer-only settle or >= assertion."
   }
 }
