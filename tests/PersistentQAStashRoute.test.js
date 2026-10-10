@@ -27,13 +27,16 @@ function harness(mode) {
         original.slot = mode;
     }
     const quest = { id: 'chronicle-item-keep', type: 'RELIC', stack: 3 };
-    const player = { inventory: [original, quest], stash: [null, { id: 'already-stored', extra: { keep: true } }],
+    const player = { id: 'stash-test-owner', inventory: [original, quest], stash: [null, { id: 'already-stored', extra: { keep: true } }],
         equipment: { mainHand: { id: 'worn-weapon' } }, gold: 345 };
     if (mode === 'no-space') player.stash = Array.from({ length: 100 }, (_, index) => ({ id: `stored-${index}` }));
     const clicks = [];
-    window.game = { player };
+    window.game = { player, handleServerMessage: jest.fn() };
     const page = {
-        evaluate: async fn => JSON.parse(JSON.stringify(fn())),
+        evaluate: async (fn, arg) => {
+            const value = await fn(arg);
+            return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
+        },
         locator: selector => ({
             isVisible: async () => false,
             textContent: async () => `${player.stash.filter(item => item?.id).length} / 100`,
@@ -48,6 +51,10 @@ function harness(mode) {
                 if (mode === 'lost-stash') player.stash.shift();
                 if (mode === 'lost-quest') player.inventory[1] = null;
                 if (mode === 'gold-changed') player.gold++;
+                if (mode === 'earned-room-gold') {
+                    window.game.handleServerMessage({ type: 'room_clear_reward', payload: { playerId: player.id, gold: 175, roomIndex: 1, instanceType: 'verdant_bastion_catacombs' } });
+                    player.gold += 175;
+                }
                 if (mode === 'pending-earned') player.inventory[0] = { id: 'earned-pending', type: 'MATERIAL' };
             }
         })
@@ -55,7 +62,7 @@ function harness(mode) {
     return { page, player, clicks, original, quest };
 }
 
-test.each(['normal', 'pending-earned', 'neck', 'gloves'])('ordinary right-click storage preserves invested gear and pre-existing contents: %s', async mode => {
+test.each(['normal', 'pending-earned', 'earned-room-gold', 'neck', 'gloves'])('ordinary right-click storage preserves invested gear and pre-existing contents: %s', async mode => {
     const { page, player, clicks, quest, original } = harness(mode);
     expect(await storePersistentQALootSpare(page)).toEqual(original);
     expect(recall).toHaveBeenCalledWith(page, { allowRespawn: false });
