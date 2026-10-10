@@ -168,13 +168,18 @@ published-bundle test incorrectly retained minimum1500ms. Actual new flight
 landed1393.7/1425.2ms, configured retry1447.1/1339.9ms, endpoints0. Corrected only
 that test to same1300–1550ms as source fixture; native1pass7s,1356.4ms15FPS and
 1318.8ms60FPS, endpoints0. Follow-up a9d6fc9b ordinary-pushed; exact unchanged
-CI38064138468 attempt1 is in progress. Both27 deployments now succeeded;
+CI38064138468 attempt1 completed success. Both27 deployments succeeded;
 normal-TLS identities/database and all eight actual assets match. One actual
 trusted public27 Ctrl-click lands in1429.7ms, accepted1.3s, distance26.966,
 logical/render errors0; native1pass/no gameplay retries/flakes/skips. A preceding
 missing local vendor setup failed before navigation/registration/jump, retained
 and corrected without gameplay changes. Public jump requirement is verified.
-Required full live character/recovery outcomes remain pending; no manual reruns, cancellations or waivers.
+Required full live character/recovery outcomes passed: native8expected/1skip,
+0unexpected/0flake, all retry0; separate recovery2+1 pass. Optional connected
+jump/four-class routes remain skipped; actual public jump has separate proof.
+Exact release checks accepted, full goal remains open. Terminal native/archive
+inspection and frozen984-entry inventory retained in public27-terminal-verification.
+No manual reruns, cancellations or waivers.
 See release27-published-timing-correction receipt.
 
 Private world integration ddadf7c9 qualifies actual raised-world normal1511.8ms/

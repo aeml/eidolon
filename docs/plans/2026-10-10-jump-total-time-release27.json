@@ -1,6 +1,6 @@
 {
-  "recordedUTC": "2026-10-10T15:08:27.994972+00:00",
-  "status": "deployed; exact public assets/identities/database and trusted total jump verified; required live CI pending",
+  "recordedUTC": "2026-10-10T16:11:00.339483+00:00",
+  "status": "deployed; exact assets/identities/database, public total jump and required CI/live gates accepted",
   "version": "Alpha 1.79.27",
   "publicPredecessor": "77859697a71329facd0584a95167c80eac392398",
   "ownerRequest": "Approximately1.5seconds TOTAL click-to-landing jump time.",
@@ -46,7 +46,7 @@
     "versionChecks": 386,
     "evidence": "/home/aeml/.local/share/eidolon-earned-room-credit-checks-20261010",
     "inventorySHA256": "857302c04255478ce1c32c2145dffed4be317639d9d3a927a1d606c022d4bdc7",
-    "limits": "Private room proof selects post-award host reads without changing client loop or FIFO messages. Economy/save runtime unchanged. Required production gates pending."
+    "limits": "Private controlled room and preceding-credit evidence remains scoped; actual public27 persistent-character QA now passed retry0. Economy/save runtime unchanged."
   },
   "scope": "Only jump flight cap runtime changes. No raised/body/geometry/shadow pilots, budget waivers, manual CI reruns, access changes or account wipes. Full original1.11\u20131.99 goal, failed24hsoak, art/device/owner/F1\u2013F5/beta/launch/handoff stay open.",
   "goalOriginalPrefixSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7",
@@ -66,6 +66,9 @@
   "deployed": true,
   "publicJumpTotalMs": 1429.7,
   "publicVerification": "docs/plans/2026-10-10-public27-jump-verification.json",
-  "requiredCIPassed": false,
-  "releaseGateAccepted": false
+  "requiredCIPassed": true,
+  "releaseGateAccepted": true,
+  "ciStatus": "completed",
+  "ciConclusion": "success",
+  "terminalVerification": "docs/plans/2026-10-10-public27-terminal-verification.json"
 }

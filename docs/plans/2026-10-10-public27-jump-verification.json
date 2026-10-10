@@ -1,5 +1,5 @@
 {
-  "recordedUTC": "2026-10-10T15:58:10.778633+00:00",
+  "recordedUTC": "2026-10-10T16:11:00.339483+00:00",
   "version": "Alpha 1.79.27",
   "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
   "run": 38064138468,
@@ -30,16 +30,18 @@
     "sanitizer": "Existing process-env credential sanitizer completed successfully before archive",
     "recordings": "off"
   },
-  "limits": "Public jump and exact deployment proof only. Required full CI/live character/recovery outcomes remain separate and pending. Approximate total depends on network/device latency. No full project/art/device/soak/beta/launch acceptance.",
-  "ciStatus": "in_progress",
-  "requiredCIPassed": false,
-  "releaseGateAccepted": false,
+  "limits": "Public jump and exact release/deployment checks accepted. Native broad live report:8expected/1skip/0unexpected/0flake, all retry0; separate recovery2+1 pass. Optional jump case and four-class route remain skipped; separate real public jump passed. Approximate total varies with network/device latency. Full project/art/physical-device/soak/beta/launch acceptance remains open.",
+  "ciStatus": "completed",
+  "requiredCIPassed": true,
+  "releaseGateAccepted": true,
   "evidence": {
     "publicJumpDirectory": "/home/aeml/.local/share/eidolon-release27-followup-checks-20261010/live-jump",
     "inventoryEntries": 9,
     "inventorySHA256": "6f9a71498d550ef0f6a962e53b4d19449f6d9964b87e97720887383ba2e30bc5",
     "releaseRoot": "/home/aeml/.local/share/eidolon-release27-followup-checks-20261010",
-    "releaseRootFrozen": false
+    "releaseRootFrozen": true,
+    "releaseInventoryEntries": 984,
+    "releaseInventorySHA256": "a0b01efbf552bf84473865e316526286c3a0b0e07ef4773c42a90619570df5ad"
   },
   "assets": {
     "recordedUTC": "2026-10-10T15:57:11.125829+00:00",
@@ -122,5 +124,7 @@
     "bodyIdenticalToActualPublicProbe": true,
     "separateNativeExecution": false,
     "published": false
-  }
+  },
+  "ciConclusion": "success",
+  "terminalVerification": "docs/plans/2026-10-10-public27-terminal-verification.json"
 }
