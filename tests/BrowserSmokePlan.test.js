@@ -66,7 +66,7 @@ test('the interface family balances whole files across all existing jobs without
 
 test('integrated desktop presentation checks run once in the existing interface stage', () => {
     const stages = [1, 2, 3].flatMap(shard => buildBrowserSmokePlan(manifest, shard));
-    for (const file of ['desktop-combat-hud-layout', 'desktop-item-inspection', 'minimap-service-labels', 'keyboard-settings', 'phone-session-input', 'pvp-feedback', 'authored-fighter-pilot', 'cosmetic-vendor', 'public-event-presentation']) {
+    for (const file of ['desktop-combat-hud-layout', 'desktop-item-inspection', 'minimap-service-labels', 'status-effects-presentation', 'keyboard-settings', 'phone-session-input', 'pvp-feedback', 'authored-fighter-pilot', 'cosmetic-vendor', 'public-event-presentation']) {
         const owners = stages.filter(stage => stage.files.includes(`tests/e2e/${file}.spec.js`));
         expect(owners.map(stage => stage.name)).toEqual(['interface']);
     }
