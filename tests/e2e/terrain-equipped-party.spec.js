@@ -293,6 +293,12 @@ test('single native renderer observes three live equipped party socket peers on 
         await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
         await loginAndEnterWorld(page, accounts[0]);
         if (process.env.EIDOLON_E2E_TOWN_SUBMISSIONS === '1') {
+            // The shared profiler always observes60warmup+180real frames.
+            // Preserve this fixed startup interval even when assets/workers are
+            // still loading; never wait for favorable budget numbers.
+            const report = await profileGameplayScene(page, `initial-town-${quality}`);
+            await writeFile(testInfo.outputPath('initial-town-profile.json'), JSON.stringify({ report,
+                scope: 'Fixed60warmup+180real startup frames before diagnostic instrumentation; unchanged camera, settings, assets and authority. Diagnostic only; original strict route and party budget gates remain authoritative.' }, null, 2));
             await capturePartySubmissionFrames(page, testInfo, 'town-submission-frames.json');
         }
         if (process.env.EIDOLON_TERRAIN_ART_ROUTE === '1') await captureEarthMovingRoute(page, testInfo);

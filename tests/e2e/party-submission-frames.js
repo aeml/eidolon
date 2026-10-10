@@ -27,7 +27,7 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
             }
             if (error || !owned) reject(error || Error('Submission diagnostic lost hook ownership'));
             else resolve({ frames, lights: [...lights.values()], restored: true, quality: render.graphicsQuality,
-                zoom: render.currentZoom, scope: 'Twelve actual game renders after the normal180frame sample; live animation/network and camera unchanged. Instrumented interval establishes submission identity/counts only, never frame timing or performance acceptance. No per-object callbacks, visibility, render policy, materials, geometry or actor state changed.' });
+                zoom: render.currentZoom, scope: 'Twelve actual game renders at the caller-selected diagnostic point; live animation/network and camera unchanged. Instrumented interval establishes submission identity/counts only, never frame timing or performance acceptance. No per-object callbacks, visibility, render policy, materials, geometry or actor state changed.' });
         };
         function observedDirect(camera, scene, geometry, material, object, group) {
             const before = renderer.info.render.calls;
@@ -68,8 +68,13 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
             });
             try {
                 const result = draw.apply(this, args);
+                const owner = render.actorGameplayGeometry, pass = owner?.pass, delivery = owner?.delivery;
                 frames.push({ calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
-                    activeEntities: game.activeEntitiesCache?.length || 0, rows: [...rows.values()] });
+                    activeEntities: game.activeEntitiesCache?.length || 0,
+                    gameplayGeometry: { enabled: Boolean(pass?.enabled), reduced: Boolean(pass?.reduced),
+                        entries: pass?.entries.size || 0, lastSwaps: pass?.lastSwaps || 0,
+                        pending: delivery?.jobs.size || 0, stats: delivery ? { ...delivery.stats } : null },
+                    rows: [...rows.values()] });
                 rows = null;
                 if (frames.length === 12) finish();
                 return result;
