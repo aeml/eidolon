@@ -14,6 +14,17 @@ func (c *Client) handleEPWallet(msg Message) {
 		Amount    int    `json:"amount"`
 		Confirmed bool   `json:"confirmed"`
 	}
+	var read struct {
+		ID string `json:"readID"`
+	}
+	// Read-only callers may correlate the snapshot with a specific request.
+	// Amount/confirmation fields on this route never authorize an exchange.
+	if msg.Type == MsgGetEPWallet && len(msg.Payload) > 0 {
+		if json.Unmarshal(msg.Payload, &read) != nil {
+			c.sendError("Invalid wallet request")
+			return
+		}
+	}
 	success, pending, message := true, false, "EP cannot be converted back to Gold."
 	if msg.Type == MsgExchangeGoldForEP {
 		if json.Unmarshal(msg.Payload, &request) != nil || !request.Confirmed {
@@ -37,10 +48,14 @@ func (c *Client) handleEPWallet(msg Message) {
 	if snapshot == nil {
 		return
 	}
-	payload, _ := json.Marshal(map[string]interface{}{
+	response := map[string]interface{}{
 		"playerID": snapshot.ID,
 		"success":  success, "pending": pending, "message": message, "id": request.ID,
 		"ep": snapshot.EP, "gold": snapshot.Gold, "goldPerEP": database.GoldPerEP,
-	})
+	}
+	if read.ID != "" {
+		response["readID"] = read.ID
+	}
+	payload, _ := json.Marshal(response)
 	c.sendSafe(createMessage(MsgEPWalletResult, payload))
 }

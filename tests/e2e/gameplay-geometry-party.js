@@ -3,18 +3,18 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { moveByGroundClick } from './helpers.js';
 import { prepareGameplayGeometryLifecycle } from './gameplay-geometry-lifecycle.js';
 import { prepareGameplayGeometryDelivery } from './gameplay-geometry-delivery.js';
-import { profileGameplayScene } from './scene-performance.js';
 
 export async function captureGameplayGeometryParty(page, testInfo) {
     const automatic = process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY === '1';
-    let absentReference = null;
+    let absentReference = null, startupOwner = null;
     if (automatic && process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_RUNTIME_OWNER === '1') {
-        expect(await page.evaluate(() => window.game.renderSystem.actorGameplayGeometry === null)).toBe(true);
-        absentReference = await profileGameplayScene(page, 'equipped-party-before-geometry-owner-allocation');
-        await writeFile(testInfo.outputPath('geometry-owner-absent-reference.json'), JSON.stringify({
-            controllerAllocated: false, deliveryAllocated: false, ownedCandidatesAllocated: false, profile: absentReference,
-            scope: 'Independent real-frame window before installing this owner. Other selected scene policies retained; world/network continue normally. Compare population and time-window differences; no paired causal installation/memory gain.'
-        }, null, 2));
+        startupOwner = await page.evaluate(() => {
+            const owner = window.game.renderSystem.actorGameplayGeometry;
+            return owner ? { defaultOwned: true, workerStarted: Boolean(owner.delivery.worker),
+                roots: owner.delivery.roots.size, registered: owner.pass.entries.size, failed: Boolean(owner.delivery.failed) } : null;
+        });
+        expect(startupOwner?.defaultOwned && startupOwner.workerStarted && !startupOwner.failed).toBe(true);
+        expect(startupOwner.roots).toBe(4);
     }
     const preparation = automatic ? await prepareGameplayGeometryDelivery(page) : await prepareGameplayGeometryLifecycle(page, 'game');
     expect(preparation.body.sources).toBe(4);
@@ -61,7 +61,7 @@ export async function captureGameplayGeometryParty(page, testInfo) {
             const counts = draw(enabled, oldSubset); context.drawImage(canvas, 0, 0);
             return { ...counts, pixels: context.getImageData(0, 0, copy.width, copy.height).data };
         };
-        const samples = [], transitions = [], blocks = [];
+        const samples = [], transitions = [], blocks = [], rigidPairs = [];
         try {
             const frozen = now();
             Object.defineProperty(performance, 'now', { configurable: true, value: () => frozen });
@@ -77,6 +77,25 @@ export async function captureGameplayGeometryParty(page, testInfo) {
                 const strip = ({ pixels: _pixels, ...row }) => row;
                 samples.push({ zoom, changedChannels, unstableChannels, compactChangedChannels,
                     source: strip(source), candidate: strip(candidate), again: strip(again) });
+            }
+            if ([...pass.entries.values()].some(entry => entry.kind === 'rigid')) {
+                const allEntries = pass.entries, withoutRigid = new Map([...allEntries].filter(([, entry]) => entry.kind !== 'rigid'));
+                try {
+                    for (const zoom of [5, originalZoom]) {
+                        render.setZoom(zoom);
+                        pass.entries = withoutRigid; capture(true); const reference = capture(true), referencePNG = canvas.toDataURL('image/png');
+                        pass.entries = allEntries; capture(true); const candidate = capture(true), candidatePNG = canvas.toDataURL('image/png');
+                        pass.entries = withoutRigid; const repeat = capture(true);
+                        let changedChannels = 0, unstableChannels = 0;
+                        for (let i = 0; i < reference.pixels.length; i++) {
+                            changedChannels += reference.pixels[i] !== candidate.pixels[i] ? 1 : 0;
+                            unstableChannels += reference.pixels[i] !== repeat.pixels[i] ? 1 : 0;
+                        }
+                        const strip = ({ pixels: _pixels, ...row }) => row;
+                        rigidPairs.push({ zoom, reference: strip(reference), candidate: strip(candidate), repeat: strip(repeat),
+                            changedChannels, unstableChannels, referencePNG, candidatePNG });
+                    }
+                } finally { pass.entries = allEntries; }
             }
             render.setZoom(5); draw(true);
             for (const pixels of [45, 41, 45, 48, 45, 30]) {
@@ -107,11 +126,22 @@ export async function captureGameplayGeometryParty(page, testInfo) {
             const times = blocks.filter(row => row.selected === selected).flatMap(row => row.milliseconds).sort((a, b) => a - b);
             return { frames: times.length, median: times[Math.floor(times.length / 2)], p95: times[Math.ceil(times.length * .95) - 1] };
         };
-        return { samples, transitions, compactProof, actorViewFilterAllocated: Boolean(render.actorInstances?.viewFilter), cpu: { scope: automatic
+        return { samples, transitions, rigidPairs, compactProof, actorViewFilterAllocated: Boolean(render.actorInstances?.viewFilter), cpu: { scope: automatic
             ? 'Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.'
             : 'Same-scene source/combined body+gear ABBA submission; both include lifecycle validation. Real clock,48samples per path; not whole-frame pacing.',
             reference: summarize(false), candidate: summarize(true), blocks } };
     }, automatic);
+    for (const [index, row] of paired.rigidPairs.entries()) {
+        for (const variant of ['reference', 'candidate']) {
+            await writeFile(testInfo.outputPath(`rigid-${index}-${variant}.png`), Buffer.from(row[`${variant}PNG`].split(',')[1], 'base64'));
+            delete row[`${variant}PNG`];
+        }
+        expect(row.unstableChannels).toBe(0);
+        expect(row.candidate.calls).toBe(row.reference.calls);
+        expect(row.reference.restored && row.candidate.restored && row.repeat.restored).toBe(true);
+        if (index === 0) expect(row.changedChannels).toBe(0);
+        else expect(row.candidate.triangles).toBeLessThan(row.reference.triangles);
+    }
     expect(paired.samples[0].changedChannels).toBe(0);
     expect(paired.samples[0].candidate.swaps).toBe(0);
     expect(paired.samples[1].candidate.triangles).toBeLessThan(paired.samples[1].source.triangles);
@@ -161,7 +191,7 @@ export async function captureGameplayGeometryParty(page, testInfo) {
     } finally {
         await session.send('Page.stopScreencast'); await session.detach(); await Promise.all(writes);
         motion = await page.evaluate(() => { const observation = window.__geometryMotion; observation.stop(); delete window.__geometryMotion; return observation.samples; });
-        await writeFile(testInfo.outputPath('gameplay-geometry-party.json'), JSON.stringify({ absentReference, preparation, paired, frames, motion,
+        await writeFile(testInfo.outputPath('gameplay-geometry-party.json'), JSON.stringify({ startupOwner, absentReference, preparation, paired, frames, motion,
             scope: 'Prepared four-class actual party, combined whole-render body/gear indices; optional actor view allocation is recorded in paired metadata. Normal ground clicks and HUD clip precede the independent180-frame sample. No separate shadow simplification, earned campaign, physical-device or final art acceptance.' }, null, 2));
     }
     expect(motion.some(row => row.state === 'MOVING' && row.animation === 'Run' && row.swaps > 0)).toBe(true);

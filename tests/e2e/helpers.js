@@ -8,6 +8,8 @@ import { inventoryQuantity, pickupReceipt } from './lootPickupEvidence.js';
 import { hasFreshEntranceHover } from './entrance-pointer.js';
 import { armManualLootClickObservation, readLootPointerTarget, readLootBlockingHostile, acquirePointerWithBoundedCombat } from './loot-pointer-observation.js';
 import { observeStartupModules } from './startup-module-evidence.js';
+import { waitForPersistentQAGoldBaseline } from './persistent-qa-gold.js';
+import { beginPersistentQABagRewards, waitForPersistentQABagGold, endPersistentQABagRewards } from './persistent-qa-bag-rewards.js';
 import {
     isBenignCanceledAssetRequest,
     isIgnoredBrowserRequest
@@ -1510,13 +1512,10 @@ async function readCombatDiagnostic(page, targetId) {
     }, targetId);
 }
 
-export async function freePersistentQALootSlot(page, { storeSpare } = {}) {
-    const storedItems = [];
-    // Already-earned deliveries can legitimately occupy a sold item's slot.
-    // Verify each exact sale, then re-read the bag; never delete pending loot,
-    // bypass persistence or repeatedly submit the same obsolete index.
-    for (let rotation = 0; rotation < 25; rotation += 1) {
-        if ((await readPlayerState(page)).inventoryCount < 25) return storedItems;
+export async function sellPersistentQASpare(page) {
+    await waitForPersistentQAGoldBaseline(page);
+    const before = await beginPersistentQABagRewards(page);
+    try {
         const sale = await page.evaluate(() => {
             const game = window.game;
             const equipmentSlots = new Set([
@@ -1542,23 +1541,37 @@ export async function freePersistentQALootSlot(page, { storeSpare } = {}) {
                 throw new Error('QA vendor credit must be an exactly representable Gold amount');
             }
             game.uiManager.inventory.onSellItem(index);
-            return { itemId: item.id, expectedGold };
+            return { itemId: item.id, expectedGold, credit: value * stack };
         });
+        if (sale === null) return null;
+        await expect.poll(() => page.evaluate(id =>
+            (window.game?.player?.inventory || []).some(item => item?.id === id), sale.itemId), {
+            timeout: 15_000, message: 'The exact vendor item must leave the authoritative bag before another sale'
+        }).toBe(false);
+
+        const receipt = await waitForPersistentQABagGold(page, sale.credit);
+        expect(receipt.after.equipment).toEqual(before.equipment);
+        expect(receipt.after.inventory).toEqual(expect.arrayContaining(before.inventory.filter(item => item?.id && item.id !== sale.itemId)));
+        return { ...sale, receipt };
+    } finally {
+        await endPersistentQABagRewards(page);
+    }
+}
+
+export async function freePersistentQALootSlot(page, { storeSpare } = {}) {
+    const storedItems = [];
+    if ((await readPlayerState(page)).inventoryCount < 25) return storedItems;
+    // Already-earned deliveries can legitimately occupy a sold item's slot.
+    // Verify each exact sale, then re-read the bag; never delete pending loot,
+    // bypass persistence or repeatedly submit the same obsolete index.
+    for (let rotation = 0; rotation < 25; rotation += 1) {
+        if ((await readPlayerState(page)).inventoryCount < 25) return storedItems;
+        const sale = await sellPersistentQASpare(page);
         if (sale === null && typeof storeSpare === 'function') {
             storedItems.push(await storeSpare(page));
             continue;
         }
         expect(sale, 'Full QA bag needs ordinary spare gear; protected/invested items are not discarded').not.toBeNull();
-        await expect.poll(() => page.evaluate(id =>
-            (window.game?.player?.inventory || []).some(item => item?.id === id), sale.itemId), {
-            timeout: 15_000, message: 'The exact vendor item must leave the authoritative bag before another sale'
-        }).toBe(false);
-        // Vendor JSON acknowledges the bag before a state packet publishes
-        // Gold. Do not let that earlier sale's delayed credit cross the next
-        // stash snapshot, whose exact unchanged-Gold assertion stays intact.
-        await expect.poll(() => page.evaluate(() => window.game?.player?.gold), {
-            timeout: 15_000, message: 'The exact vendor Gold credit must arrive before another sale or stash deposit'
-        }).toBe(sale.expectedGold);
     }
     await expect.poll(async () => (await readPlayerState(page)).inventoryCount, {
         timeout: 15_000, message: 'Bounded QA vendor rotation must leave room after earned deliveries'

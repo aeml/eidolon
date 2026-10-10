@@ -1,4 +1,51 @@
 import { createWoodlandUnderstoryGeometry } from '../src/art/WoodlandUnderstoryGeometry.js';
+import { createHash } from 'node:crypto';
+
+test.each([
+    ['bracken', ['12a59b1f52aea48bb47f6bdb623a1e669457b0aa7ef1a61a90b5c3fbc0230e2e',
+        '27cf477bb214ff3ad74a7ee6942981074ac5344c9b8c2e9743a71b71eb937542',
+        'b2777c1c2fdfa09e7f58bfca5ec80775e105851329696c65c0b14d12126e7037']],
+    ['sedge', ['6003d7c03d0cca012fbb05c44b075f16efd0ab318b685e0959a9e6b247b4043f',
+        '716973847a69be12e23be3828a32c3ebe4a3cf71703414017b13e8ec76ac0e7f',
+        'e2f3abd273a90b5fd39a47971b5109d2aae56ad5c88b9dba8dcf04da95dd7c69']]
+])('%s High position, color and normal buffers retain the qualified recipe', (kind, hashes) => {
+    const geometry = createWoodlandUnderstoryGeometry(kind, { quality: 'high' });
+    try {
+        expect(['position', 'color', 'normal'].map(name => {
+            const array = geometry.attributes[name].array;
+            return createHash('sha256').update(new Uint8Array(array.buffer, array.byteOffset, array.byteLength)).digest('hex');
+        })).toEqual(hashes);
+    } finally { geometry.dispose(); }
+});
+
+test.each([['bracken', 7, 99, 93, 217], ['sedge', 16, 15, 9, 48]])(
+    '%s Low retains every leaf root, tip and fern leaflet with fewer ribbon faces', (kind, blades, highStride, lowStride, triangles) => {
+    const high = createWoodlandUnderstoryGeometry(kind), low = createWoodlandUnderstoryGeometry(kind, { quality: 'low' });
+    try {
+        expect(low.attributes.position.count / 3).toBe(triangles);
+        expect(low.attributes.position.count).toBe(blades * lowStride);
+        for (const name of ['position', 'color']) {
+            const old = high.attributes[name].array, current = low.attributes[name].array;
+            for (let blade = 0; blade < blades; blade++) {
+                for (const [h, l] of [[0, 0], [1, 1], [14, 8]]) {
+                    expect(current.slice((blade * lowStride + l) * 3, (blade * lowStride + l + 1) * 3))
+                        .toEqual(old.slice((blade * highStride + h) * 3, (blade * highStride + h + 1) * 3));
+                }
+            }
+        }
+        if (kind === 'bracken') for (const name of ['position', 'color', 'normal']) {
+            const old = high.attributes[name].array, current = low.attributes[name].array;
+            for (let blade = 0; blade < blades; blade++) {
+                expect(current.slice((blade * lowStride + 9) * 3, (blade + 1) * lowStride * 3))
+                    .toEqual(old.slice((blade * highStride + 15) * 3, (blade + 1) * highStride * 3));
+            }
+        }
+        const normals = low.attributes.normal;
+        for (let i = 0; i < normals.count; i++) expect(Math.hypot(normals.getX(i), normals.getY(i), normals.getZ(i))).toBeCloseTo(1, 5);
+        expect(low.boundingBox.min.y).toBeGreaterThanOrEqual(0);
+        expect(low.boundingBox.max.y).toBeLessThan(.75);
+    } finally { high.dispose(); low.dispose(); }
+});
 
 test.each(['bracken', 'sedge'])('%s has a low spreading silhouette, deterministic colors and a bounded instance cost', kind => {
     const geometry = createWoodlandUnderstoryGeometry(kind);

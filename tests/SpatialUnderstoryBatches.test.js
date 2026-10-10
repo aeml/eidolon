@@ -18,7 +18,7 @@ test.each(['high', 'low'])('%s sectors conserve exact recipe, transform and tint
         transform.updateMatrix(); matrix.fromArray(new Float32Array(transform.matrix.elements));
         expected.set(key(plant.variant, matrix), Array.from(new Float32Array(earthUnderstoryTint(plant).toArray())));
     }
-    const shapes = ['bracken', 'sedge'].map(createWoodlandUnderstoryGeometry);
+    const shapes = ['bracken', 'sedge'].map(kind => createWoodlandUnderstoryGeometry(kind, { quality }));
     try {
         expect(root.children.length).toBeLessThan(350);
         for (const mesh of root.children) {

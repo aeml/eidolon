@@ -34,6 +34,12 @@ const actorRoot = mesh => {
     for (let node = mesh; node; node = node.parent) if (classes.has(node.userData.authoredClass)) return node;
     return null;
 };
+const rigidEquipmentRoot = (mesh, root) => {
+    if (!mesh.isMesh || mesh.isSkinnedMesh || mesh.isInstancedMesh || mesh.children.length || mesh.skeleton) return null;
+    for (let node = mesh; node && node !== root; node = node.parent) if (node.userData.authoredEquipment === true &&
+        ['mainHand', 'offHand'].includes(node.userData.slot) && typeof node.userData.fittedItem === 'string' && node.userData.fittedItem) return node;
+    return null;
+};
 const opaque = mesh => {
     const material = mesh.material;
     return !Array.isArray(material) && material?.isMeshStandardMaterial && material.visible &&
@@ -64,15 +70,20 @@ export class ActorGameplayGeometry {
 
     capture(mesh) {
         const source = mesh.geometry, root = actorRoot(mesh);
-        if (this.disposed || !root || !under(root, this.scene) || !mesh.isSkinnedMesh || !mesh.skeleton || !opaque(mesh) ||
+        if (this.disposed || !root || !under(root, this.scene) || !opaque(mesh) ||
             !source?.isBufferGeometry || !source.index || source.index.isInterleavedBufferAttribute || source.groups.length ||
             source.drawRange.start !== 0 || source.drawRange.count !== Infinity ||
-            !['position', 'normal', 'skinIndex', 'skinWeight'].every(name => source.attributes[name])) return null;
-        return { mesh, source, root, quality: root.userData.authoredQuality,
-            revision: root.userData.equipmentVisualRevision,
-            material: mesh.material, skeleton: mesh.skeleton, bones: mesh.skeleton.bones.slice(),
-            inverses: mesh.skeleton.boneInverses.slice(), bindMode: mesh.bindMode,
-            bindMatrix: mesh.bindMatrix.elements.slice(), sourceState: snapshot(source) };
+            !['position', 'normal'].every(name => source.attributes[name])) return null;
+        const equipmentRoot = rigidEquipmentRoot(mesh, root);
+        const generation = { mesh, source, root, quality: root.userData.authoredQuality,
+            revision: root.userData.equipmentVisualRevision, material: mesh.material, sourceState: snapshot(source) };
+        if (equipmentRoot && source.attributes.uv && !Object.keys(source.morphAttributes).length &&
+            !source.attributes.skinIndex && !source.attributes.skinWeight) {
+            return { ...generation, kind: 'rigid', equipmentRoot, slot: equipmentRoot.userData.slot, item: equipmentRoot.userData.fittedItem };
+        }
+        if (!mesh.isSkinnedMesh || !mesh.skeleton || !source.attributes.skinIndex || !source.attributes.skinWeight) return null;
+        return { ...generation, kind: 'skinned', skeleton: mesh.skeleton, bones: mesh.skeleton.bones.slice(),
+            inverses: mesh.skeleton.boneInverses.slice(), bindMode: mesh.bindMode, bindMatrix: mesh.bindMatrix.elements.slice() };
     }
 
     register(mesh, indices) {
@@ -102,12 +113,15 @@ export class ActorGameplayGeometry {
         return !this.disposed && mesh.geometry === entry.source && under(mesh, root) && under(root, this.scene) &&
             actorRoot(mesh) === root && root.userData.authoredQuality === entry.quality &&
             root.userData.equipmentVisualRevision === entry.revision && mesh.material === entry.material &&
-            mesh.skeleton === entry.skeleton && mesh.skeleton.bones.length === entry.bones.length &&
-            entry.bones.every((bone, index) => mesh.skeleton.bones[index] === bone) &&
-            mesh.skeleton.boneInverses.length === entry.inverses.length &&
-            entry.inverses.every((matrix, index) => mesh.skeleton.boneInverses[index] === matrix) &&
-            mesh.bindMode === entry.bindMode && mesh.bindMatrix.elements.every((value, index) => value === entry.bindMatrix[index]) &&
-            unchanged(entry.source, entry.sourceState);
+            unchanged(entry.source, entry.sourceState) && (entry.kind === 'rigid'
+                ? rigidEquipmentRoot(mesh, root) === entry.equipmentRoot && entry.equipmentRoot.userData.slot === entry.slot &&
+                    entry.equipmentRoot.userData.fittedItem === entry.item && !Object.keys(entry.source.morphAttributes).length &&
+                    !entry.source.attributes.skinIndex && !entry.source.attributes.skinWeight
+                : mesh.isSkinnedMesh && mesh.skeleton === entry.skeleton && mesh.skeleton.bones.length === entry.bones.length &&
+                    entry.bones.every((bone, index) => mesh.skeleton.bones[index] === bone) &&
+                    mesh.skeleton.boneInverses.length === entry.inverses.length &&
+                    entry.inverses.every((matrix, index) => mesh.skeleton.boneInverses[index] === matrix) &&
+                    mesh.bindMode === entry.bindMode && mesh.bindMatrix.elements.every((value, index) => value === entry.bindMatrix[index]));
     }
 
     valid(entry) {

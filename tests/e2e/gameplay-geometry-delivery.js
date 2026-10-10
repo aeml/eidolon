@@ -42,6 +42,9 @@ export async function prepareGameplayGeometryDelivery(page) {
         if (state.originalRegister) pass.register = state.originalRegister;
         return { method: 'automatic-worker-exact-source-cache', milliseconds: performance.now() - started,
             body: { sources: [...pass.entries.values()].filter(row => /_Body$/.test(row.mesh.name)).length },
+            rigid: { sources: [...pass.entries.values()].filter(row => row.kind === 'rigid').length,
+                originalTriangles: [...pass.entries.values()].filter(row => row.kind === 'rigid').reduce((sum, row) => sum + row.source.index.count / 3, 0),
+                candidateTriangles: [...pass.entries.values()].filter(row => row.kind === 'rigid').reduce((sum, row) => sum + row.candidate.index.count / 3, 0) },
             installed: { registered: pass.entries.size,
                 originalTriangles: [...pass.entries.values()].reduce((sum, entry) => sum + entry.source.index.count / 3, 0),
                 candidateTriangles: [...pass.entries.values()].reduce((sum, entry) => sum + entry.candidate.index.count / 3, 0) },
@@ -244,7 +247,11 @@ export async function captureGameplayGeometryDelivery(page, testInfo) {
                 const qa = window.__classGear, state = window.__geometryDelivery, row = state.replacement;
                 const installed = [...state.pass.entries.values()].filter(entry => entry.root === row.root);
                 const proof = { oldRetired: row.retired, quality: row.root.userData.authoredQuality,
-                    installed: installed.length, valid: installed.every(entry => state.pass.valid(entry)) };
+                    installed: installed.length,
+                    skinned: installed.filter(entry => entry.kind === 'skinned').length,
+                    rigid: installed.filter(entry => entry.kind === 'rigid').length,
+                    rigidSlots: [...new Set(installed.filter(entry => entry.kind === 'rigid').map(entry => entry.slot))].sort(),
+                    valid: installed.every(entry => state.pass.valid(entry)) };
                 row.actor.dispose();
                 const returned = await qa.MeshFactory.createMeshForType('Fighter', { quality: 'high' });
                 proof.samePoolRootReturned = returned === row.oldRoot;
@@ -254,7 +261,11 @@ export async function captureGameplayGeometryDelivery(page, testInfo) {
             });
             await idle(page);
             expect(replacement.oldRetired && replacement.valid && replacement.samePoolRootReturned).toBe(true);
-            expect(replacement.quality).toBe('low'); expect(replacement.installed).toBe(11);
+            // This Legendary sword/shield fixture retains its original eleven
+            // skinned pieces and now also prepares ten rigid weapon primitives.
+            expect(replacement.quality).toBe('low'); expect(replacement.installed).toBe(21);
+            expect(replacement.skinned).toBe(11); expect(replacement.rigid).toBe(10);
+            expect(replacement.rigidSlots).toEqual(['mainHand', 'offHand']);
             expect(await page.evaluate(() => window.__geometryDelivery.pass.entries.size)).toBe(initial.registered);
         }
         await writeFile(testInfo.outputPath('gameplay-geometry-delivery.json'), JSON.stringify({ runtimeOwned: owned, replacement, initial, samples, changed, restored, detached, reattached, faded, afterStealth,

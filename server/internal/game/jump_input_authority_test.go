@@ -61,8 +61,8 @@ func TestNetworkJumpKeepsServerLandingHeightAndCannotRestartMidFlight(t *testing
 	}
 }
 
-func TestNetworkJumpTravelTimeScalesWithDistanceAndCapsAtOnePointFiveSeconds(t *testing.T) {
-	for _, flight := range []struct{ distance, duration float64 }{{3, .46}, {17.28, 1.28}, {20.25, 1.5}, {27, 1.5}, {54, 1.5}, {135, 1.5}} {
+func TestNetworkJumpTravelReservesLatencyWithinOnePointFiveSeconds(t *testing.T) {
+	for _, flight := range []struct{ distance, duration float64 }{{3, .46}, {17.28, 1.28}, {20.25, 1.3}, {27, 1.3}, {54, 1.3}, {135, 1.3}} {
 		distance, wantDuration := flight.distance, flight.duration
 		t.Run(fmt.Sprintf("distance-%g", distance), func(t *testing.T) {
 			p := newTestPlayer("distance-jumper", "Fighter")
@@ -95,19 +95,19 @@ func TestRealtimeJumpLandsOnElapsedTimeDespiteDelayedFrames(t *testing.T) {
 	p := newTestPlayer("realtime-jumper", "Fighter")
 	p.InstanceID = "jump-clock-test"
 	w := newPvPTestWorld(p)
-	if !w.StartPlayerJumpWithContext(p.ID, 135, 999, 0, "") || p.JumpDuration != 1.5 {
-		t.Fatal("long jump did not use the 1.5-second cap")
+	if !w.StartPlayerJumpWithContext(p.ID, 135, 999, 0, "") || p.JumpDuration != 1.3 {
+		t.Fatal("long jump did not use the 1.3-second flight cap")
 	}
 	started := p.jumpStartedAt
 	w.UpdateRealtime(.033, started.Add(time.Second))
-	if math.Abs(p.X-90) > 1e-9 || p.State != "JUMPING" {
+	if math.Abs(p.X-135/1.3) > 1e-9 || p.State != "JUMPING" {
 		t.Fatal("delayed frame slowed the flight", p.X, p.State)
 	}
 	w.UpdateRealtime(.033, started.Add(500*time.Millisecond))
-	if math.Abs(p.X-90) > 1e-9 {
+	if math.Abs(p.X-135/1.3) > 1e-9 {
 		t.Fatal("older clock rewound the jump", p.X)
 	}
-	w.UpdateRealtime(.033, started.Add(1500*time.Millisecond))
+	w.UpdateRealtime(.033, started.Add(1300*time.Millisecond))
 	if p.X != 135 || p.Y != 0 || p.State != "IDLE" || !p.jumpStartedAt.IsZero() {
 		t.Fatal("jump did not land at the accepted point on time")
 	}

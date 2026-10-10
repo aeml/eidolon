@@ -190,7 +190,7 @@ describe('GameEngine ctrl-click jump', () => {
         expect(shortDuration).toBe(0.46);
     });
 
-    test.each([[3, 0.46], [17.28, 1.28], [20.25, 1.5], [27, 1.5], [54, 1.5], [135, 1.5]])('jump prediction lands %s units away within %s seconds', (distance, duration) => {
+    test.each([[3, 0.46], [17.28, 1.28], [20.25, 1.3], [27, 1.3], [54, 1.3], [135, 1.3]])('jump prediction lands %s units away within %s seconds', (distance, duration) => {
         const engine = createEngineHarness();
         const destination = new THREE.Vector3(distance, 0, 0);
 

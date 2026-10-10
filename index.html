@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.23</span>
+                    <span class="start-version-row__label">Alpha 1.79.27</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,43 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.23" data-notes-pages="45" data-notes-total="458">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.27" data-notes-pages="46" data-notes-total="462">
+                <div class="patch-note-entry" data-version="1.79.27">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.27 (Faster jump arrival)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Long Ctrl-click jumps now use 1.3 seconds of flight, leaving room for network and rendering delay within an approximately 1.5-second total from click to landing. Nearby hops stay quick.</li>
+                        <li>Elapsed-time flight keeps jumps responsive at low frame rates, with the same server-checked destinations and terrain boundaries.</li>
+                        <li>Improved release validation for earned room rewards delivered when selling or storing gear frees bag space.</li>
+                        <li>Includes the recent world-entry download recovery and combat stability corrections. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="1.79.26">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.26 (Maintenance and validation)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Improved release checks for delayed Gold updates when selling or storing spare gear.</li>
+                        <li>Long Ctrl-click jumps retain their 1.5-second flight, including at low frame rates. Nearby hops stay quick.</li>
+                        <li>Includes the recent world-entry download recovery and combat stability corrections.</li>
+                        <li>Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="1.79.25">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.25 (Consistent jump timing)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Long Ctrl-click jumps follow elapsed time and reach their destination after 1.5 seconds of flight, including at low frame rates. Nearby hops stay quick.</li>
+                        <li>Jump display smoothing now follows elapsed time too, keeping the character closer to its landing point during slow frames.</li>
+                        <li>World entry can recover once from an interrupted engine download. Persistent download failures show reload guidance.</li>
+                        <li>Improved server stability when players cast abilities during combat.</li>
+                        <li>Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
+                <div class="patch-note-entry" data-version="1.79.24">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.24 (Reliable scene transforms)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Corrected stale scene-object positions during scene updates, including attached objects.</li>
+                        <li>Jump travel retains its 1.5-second cap. Saved progress, collision, character models and equipment remain unchanged.</li>
+                        <li>Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.23">
                     <h3 class="patch-note-entry__title">Alpha 1.79.23 (Faster jumps)</h3>
                     <ul class="patch-note-entry__list">
@@ -849,56 +885,6 @@
                         <li>Original frame, draw and triangle limits pass in bounded native High/Low reference views. Quality switching retains foliage transforms, materials and scene ownership. Prior failed profiles remain recorded; this is not whole-game performance certification.</li>
                         <li>This is combined regional component polish, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
                         <li>No account wipe, schema migration, combat, quest, economy or permission change. Supplied class/equipment source models remain unchanged. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.17">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.17 (Air Realm passage composition)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Air Realm travel gains broken roadside heath and scree, with spatial groundcover cells that share existing materials and receive shadows without adding solid obstacles.</li>
-                        <li>Existing gale cypresses frame more of the main passage before filling side stands. Tree counts, stable identities, per-tree scale and rotation remain unchanged; paths, landmarks, hazards and portal approaches keep their clearances.</li>
-                        <li>High and Low detail retain deterministic placement subsets. Changing quality redraws the appropriate foliage and groundcover without replacing their owning scene groups, materials or transforms.</li>
-                        <li>Earth, Water and Fire placements, supplied class and equipment models, gameplay, collisions, quest targets and saved player data remain unchanged. Original frame, draw and triangle limits remain required.</li>
-                        <li>This is incremental route composition, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
-                        <li>No account wipe, schema migration, currency or permission change. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.16">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.16 (worn masonry, woodland shading and shared enemy rendering)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>The First Grove vault follows a curved stone profile with shallow carved lips on both faces. Its original overhead clearance, footprint, depth and shared fieldstone material remain unchanged.</li>
-                        <li>Grove and Bastion pier courses have worn corners and staggered masonry joints instead of monolithic slices. Existing material batching is retained; no new textures or runtime draw buckets are added.</li>
-                        <li>Natural stone gains continuous mineral grain, sheltered lichen and damp lower courses. Detail follows world space across curved faces and fades below pixel size rather than painting another brick grid over the vault.</li>
-                        <li>Nearby Skeletons share opaque render batches across their independently animated rigs, reducing repeated color and shadow draws without removing enemies or changing their surfaces, animations or hitboxes. Supplied class models and unreviewed enemy families keep their existing rendering path.</li>
-                        <li>Bent woodland leaves have continuous lighting across their sections and subtle plant-to-plant tones instead of identical repeated colors. Existing plants, silhouettes, triangle counts, placements, wind and walking clearances remain unchanged.</li>
-                        <li>Area cleanup releases each instanced mesh's matrix and color buffers as well as its shared geometry, preventing those owned GPU buffers from accumulating across area changes.</li>
-                        <li>Collision, paths, quest targets, planted roots, thresholds and gameplay rules stay unchanged. Original geometry and scene performance limits remain required.</li>
-                        <li>This is incremental landmark refinement, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
-                        <li>No account wipe, schema migration, currency or permission change. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.15">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.15 (scenery rendering and atlas detail)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Owned, unchanged scene containers and foliage groups avoid repeated local matrix composition and unnecessary static world-matrix multiplication. Actors, bones, equipment animations, moved parents and reparented scenery remain live.</li>
-                        <li>The foliage registry visits registered scenery instead of unrelated character rigs and buildings. Cell bounds and frustum results are reused only for exact current transforms, bounds, camera, light and shadow-filter inputs. No movement thresholds or timed approximations are introduced.</li>
-                        <li>Irrelevant direct foliage cells skip eligibility work, while nested scenery and live region, material and visibility changes retain their existing behavior. Pointer targeting reuses each actor's owned interaction box instead of repeatedly searching its fitted rig; detached or replaced boxes fall back to normal lookup.</li>
-                        <li>Ordinary world frames no longer search the entire scene for a casino interior that is not present. Casino doors and floors reuse their current owned scene roots, reacquire replacements and release references on cleanup. Seating, floor visibility, table timers and wagers are unchanged.</li>
-                        <li>The atlas uses distinct engraved birch, pine, willow, deadwood, briar, wind-bent cypress and storm-crystal symbols at their existing world locations. Roads, gates, destinations, phone controls and cached map sizes are unchanged.</li>
-                        <li>Generated groundcover keeps its fixed local transform while shader wind and live instance transforms remain active. Detached scenery and disposed renderers restore their original methods and remove owned listeners.</li>
-                        <li>Geometry, density, shadows, cell sizes, filter margins, quality settings, collisions, gameplay and frame budgets remain unchanged. Raised terrain remains disabled in the public world; final equipped-party, device, modern-art and feature-freeze qualification remain open.</li>
-                        <li>No account wipe, schema migration, economy or permission change. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.14">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.14 (character surfaces and constructed dungeon interiors)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>All 252 supplied wearable fits now have registered High/Low detail selections. Reduced copies preserve source identities, rigging and fit; 32 unchanged variants reuse originals. Missing copies fall back to the registered original and record the affected slot. Supplied source assets remain unchanged.</li>
-                        <li>Supplied equipment gains shared cloth, leather, wood and metal surface detail while preserving authored textures, colors and magical accents. Only eligible materials with usable UVs receive the generated maps; compatible equipment still batches together.</li>
-                        <li>Robes and skirts hide enclosed underwear and body hips. Robes also mask fully concealed upper trouser armor without removing visible lower legs, crossing triangles or exposed skirt waistbands. Outfit changes restore the original layers; supplied GLBs and other characters are unchanged.</li>
-                        <li>The game world and character preview now share filmic highlight handling. Existing lighting, exposure, quality controls and passes are retained.</li>
-                        <li>Dungeon vigils have stepped feet, profiled shafts and forged cages; reliquary coffers gain vaulted lids and straps, and restorative fonts have hollow basins. Existing shared materials and room batching are reused.</li>
-                        <li>All five dungeon themes have varied, worn flagstones with registered physical surface detail. Compact room markers leave the combat floor readable while preserving objective, reward, cleared-room and exit feedback. Floors stay flat; collisions, layout, encounter and reward rules are unchanged.</li>
-                        <li>This is an integrated polish pass, not final modern-art approval or the 1.80 feature freeze. Raised terrain, equipped-party/device qualification and full 1.87 remain staged. No account wipe, schema migration or economy change. Full prior patch history is preserved through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

@@ -99,7 +99,7 @@ export function createEarthUnderstory({ quality = 'high', terrainElevation = nul
     root.userData.earthUnderstory = true;
     const plants = createEarthUnderstoryPlacements(quality);
     root.userData.plantCount = plants.length;
-    const geometries = ['bracken', 'sedge'].map(createWoodlandUnderstoryGeometry);
+    const geometries = ['bracken', 'sedge'].map(kind => createWoodlandUnderstoryGeometry(kind, { quality }));
     const material = createWoodlandWindMaterial();
     if (spatialBatches) {
         root.add(...createSpatialUnderstoryBatches({ plants, geometries, material, terrainElevation,

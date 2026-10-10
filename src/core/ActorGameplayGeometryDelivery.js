@@ -12,18 +12,19 @@ export function copyGameplayGeometry(generation, maxBytes) {
     const morphs = Object.values(geometry.morphAttributes).flat();
     const bytes = geometry.index.count * 4 + [...attributes, ...morphs].reduce((sum, attr) => sum + attr.count * attr.itemSize * 4, 0);
     if (bytes > maxBytes) return null;
-    const body = /_Body$/.test(generation.mesh.name);
+    const rigid = generation.kind === 'rigid';
+    const body = !rigid && /_Body$/.test(generation.mesh.name);
     if (body && (Object.keys(generation.mesh.morphTargetDictionary || {}).sort().join(',') !== 'Blink_L,Blink_R' ||
         Object.keys(geometry.morphAttributes).sort().join(',') !== 'normal,position' ||
         geometry.morphAttributes.position.length !== 2 || geometry.morphAttributes.normal.length !== 2)) return null;
     if (!body && morphs.length) return null;
     const source = { attributes: Object.fromEntries(Object.entries(geometry.attributes).map(([name, attr]) => [name, copyAttribute(attr)])),
-        index: new Uint32Array(geometry.index.array), morphTargetsRelative: geometry.morphTargetsRelative };
+        index: new Uint32Array(geometry.index.array), morphTargetsRelative: geometry.morphTargetsRelative, ...(rigid ? { quality: generation.quality } : {}) };
     if (body) source.morphTargets = geometry.morphAttributes.position.map((attr, index) => ({
         position: copyAttribute(attr), normal: copyAttribute(geometry.morphAttributes.normal[index]) }));
     const transfers = [source.index.buffer, ...Object.values(source.attributes).map(attr => attr.array.buffer),
         ...(source.morphTargets || []).flatMap(target => Object.values(target).map(attr => attr.array.buffer))];
-    return { kind: body ? 'body' : 'color', source, bytes, transfers };
+    return { kind: rigid ? 'rigid' : body ? 'body' : 'color', source, bytes, transfers };
 }
 
 export function gameplayGeometryWorkerURL(moduleURL = import.meta.url) {
@@ -46,14 +47,9 @@ export class ActorGameplayGeometryDelivery {
             if (reason === 'generation-changed' && this.roots.has(entry.root)) this.request(entry.mesh);
         };
         pass.retireListeners.add(this.retired);
-        try {
-            this.worker = workerFactory();
-            this.message = event => this.complete(event.data);
-            this.error = () => this.fail();
-            this.worker.addEventListener('message', this.message);
-            this.worker.addEventListener('error', this.error);
-            this.worker.addEventListener('messageerror', this.error);
-        } catch { this.fail(); }
+        this.workerFactory = workerFactory; this.worker = null;
+        this.message = event => this.complete(event.data);
+        this.error = () => this.fail();
     }
 
     track(root) {
@@ -72,7 +68,7 @@ export class ActorGameplayGeometryDelivery {
         // derivatives here, including while the main render is paused.
         for (const entry of this.pass.entries.values()) if (entry.root === root && !this.pass.valid(entry)) this.pass.unregister(entry.mesh);
         for (const [mesh, job] of this.jobs) if (job.generation.root === root && !this.pass.current(job.generation)) this.cancel(mesh);
-        root.traverse(mesh => { if (mesh.isSkinnedMesh && mesh.visible) this.request(mesh); });
+        root.traverse(mesh => { if (mesh.isMesh && mesh.visible) this.request(mesh); });
     }
 
     request(mesh) {
@@ -127,6 +123,12 @@ export class ActorGameplayGeometryDelivery {
             try {
                 const payload = copyGameplayGeometry(job.generation, this.maxSourceBytes);
                 if (!payload) { this.cancel(mesh); this.stats.fallback++; continue; }
+                if (!this.worker) {
+                    this.worker = this.workerFactory();
+                    this.worker.addEventListener('message', this.message);
+                    this.worker.addEventListener('error', this.error);
+                    this.worker.addEventListener('messageerror', this.error);
+                }
                 this.active = job; this.stats.maxCopiedBytes = Math.max(this.stats.maxCopiedBytes, payload.bytes);
                 this.timer = setTimeout(() => this.fail(), this.timeoutMs);
                 this.worker.postMessage({ id: job.id, kind: payload.kind, source: payload.source }, payload.transfers);
@@ -165,6 +167,7 @@ export class ActorGameplayGeometryDelivery {
         this.worker?.terminate(); this.active = null;
         for (const mesh of this.jobs.keys()) this.cancel(mesh);
         this.queue.length = 0;
+        for (const mesh of this.pass.entries.keys()) this.pass.unregister(mesh, 'worker-failed');
     }
 
     dispose() {

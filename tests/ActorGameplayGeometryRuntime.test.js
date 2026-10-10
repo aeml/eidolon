@@ -32,14 +32,17 @@ function fixture() {
 beforeEach(() => jest.useFakeTimers());
 afterEach(() => jest.useRealTimers());
 
-test('actual renderer defaults remain inactive and explicit shutdown cannot reactivate it', () => {
+test('actual renderer owns lazy geometry by default and shutdown cannot reactivate it', () => {
     const render = new RenderSystem(false);
-    expect(render.actorGameplayGeometry).toBeNull();
-    const worker = { addEventListener: jest.fn(), removeEventListener: jest.fn(), terminate: jest.fn() };
+    expect(render.actorGameplayGeometry).toBeInstanceOf(ActorGameplayGeometryRuntime);
+    expect(render.actorGameplayGeometry.delivery.worker).toBeNull();
+    render.setActorGameplayGeometryEnabled(false);
+    const worker = { addEventListener: jest.fn(), removeEventListener: jest.fn(), postMessage: jest.fn(), terminate: jest.fn() };
     render.setActorGameplayGeometryEnabled(true, { workerFactory: () => worker });
     const runtime = render.actorGameplayGeometry;
     expect(runtime).not.toBeNull(); render.setActorGameplayGeometryEnabled(true);
     expect(render.actorGameplayGeometry).toBe(runtime);
+    render.add(actor().root); jest.advanceTimersByTime(0);
     render.dispose(); expect(worker.terminate).toHaveBeenCalledTimes(1);
     expect(runtime.delivery.roots.size).toBe(0); expect(render.actorGameplayGeometry).toBeNull();
     render.setActorGameplayGeometryEnabled(true); expect(render.actorGameplayGeometry).toBeNull();

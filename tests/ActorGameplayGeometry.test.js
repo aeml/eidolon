@@ -150,3 +150,52 @@ test('rejects duplicate owner and invalid indices before changing a registration
     }
     f.pass.dispose();
 });
+
+function rigidFixture() {
+    const source = new THREE.PlaneGeometry(), mesh = new THREE.Mesh(source, new THREE.MeshStandardMaterial());
+    const mount = new THREE.Group(); Object.assign(mount.userData, { authoredEquipment: true, fittedItem: 'iron-sword', slot: 'mainHand' });
+    mount.add(mesh); const root = new THREE.Group(); Object.assign(root.userData, { authoredClass: 'Fighter', authoredQuality: 'low' }); root.add(mount);
+    const scene = new THREE.Scene(); scene.add(root); const camera = new THREE.OrthographicCamera(-15, 15, 15, -15, .1, 100);
+    const seen = [], renderer = { domElement: { height: 900 }, render: jest.fn(() => seen.push(mesh.geometry)) };
+    const pass = new ActorGameplayGeometry(renderer, scene, camera), draw = () => { renderer.render(scene, camera); return seen.at(-1); };
+    return { source, mesh, mount, root, scene, camera, renderer, pass, draw };
+}
+
+test('rigid hand equipment follows live mount transforms and retains original close geometry', () => {
+    const f = rigidFixture();
+    try {
+        expect(f.pass.register(f.mesh, new Uint32Array([0, 2, 1]))).toBe(true);
+        const entry = f.pass.entries.get(f.mesh); expect(entry.kind).toBe('rigid'); expect(entry.equipmentRoot).toBe(f.mount);
+        f.mount.position.set(3, 4, 5); f.mount.rotation.y = .7;
+        expect(f.draw()).toBe(entry.candidate); expect(f.mesh.geometry).toBe(f.source); expect(f.pass.valid(entry)).toBe(true);
+        f.camera.top = 4; f.camera.bottom = -4; expect(f.draw()).toBe(f.source);
+    } finally { f.pass.dispose(); }
+});
+
+test.each(['unknown', 'other-slot', 'instanced', 'morph', 'skin', 'custom-depth', 'grouped'])('rigid %s remains outside the equipped derivative path', change => {
+    const f = rigidFixture();
+    try {
+        if (change === 'unknown') f.mount.userData.authoredEquipment = false;
+        if (change === 'other-slot') f.mount.userData.slot = 'head';
+        if (change === 'instanced') f.mesh.isInstancedMesh = true;
+        if (change === 'morph') f.source.morphAttributes.position = [];
+        if (change === 'skin') f.source.setAttribute('skinWeight', new THREE.Float32BufferAttribute(new Float32Array(16), 4));
+        if (change === 'custom-depth') f.mesh.customDepthMaterial = new THREE.MeshDepthMaterial();
+        if (change === 'grouped') f.source.addGroup(0, 3, 0);
+        expect(f.pass.capture(f.mesh)).toBeNull(); expect(f.mesh.geometry).toBe(f.source);
+    } finally { f.pass.dispose(); }
+});
+
+test.each(['mount', 'slot', 'item', 'revision', 'material', 'source-version'])('rigid %s change retires its derivative before drawing', change => {
+    const f = rigidFixture();
+    try {
+        f.pass.register(f.mesh, new Uint32Array([0, 2, 1])); const candidate = f.pass.entries.get(f.mesh).candidate, dispose = jest.spyOn(candidate, 'dispose');
+        if (change === 'mount') f.root.add(f.mesh);
+        if (change === 'slot') f.mount.userData.slot = 'offHand';
+        if (change === 'item') f.mount.userData.fittedItem = 'steel-dagger';
+        if (change === 'revision') f.root.userData.equipmentVisualRevision = 1;
+        if (change === 'material') f.mesh.material = f.mesh.material.clone();
+        if (change === 'source-version') f.source.attributes.uv.needsUpdate = true;
+        expect(f.draw()).toBe(f.source); expect(f.pass.entries.size).toBe(0); expect(dispose).toHaveBeenCalledTimes(1);
+    } finally { f.pass.dispose(); }
+});
