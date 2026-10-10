@@ -100,6 +100,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
     expect(process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT, 'Wearable diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT, 'Shadow geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT, 'Color geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
+    expect(process.env.EIDOLON_E2E_GAMEPLAY_COLOR_COLLARS, 'Color seam collars currently qualify the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_GAMEPLAY_BODY_PILOT, 'Body geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     test.setTimeout(230_000);
     expect(process.env.EIDOLON_E2E_WS_URL).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
@@ -530,6 +531,31 @@ test('single native renderer observes three live equipped party socket peers on 
             finally { instances.enabled = enabled; instances.endFrame(); }
         });
         expect(pairedDraws.with.calls).toBeLessThan(pairedDraws.without.calls);
+        if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_COLLARS === '1') {
+            const census = await page.evaluate(() => {
+                const game = window.game, rows = [];
+                for (const actor of [game.player, ...game.remotePlayers.values()]) {
+                    const actorClass = actor.mesh?.userData.authoredClass;
+                    if (!['Fighter', 'Cleric', 'Rogue', 'Wizard'].includes(actorClass)) continue;
+                    actor.mesh.traverseVisible(mesh => {
+                        const geometry = mesh.geometry, material = mesh.material;
+                        if (!mesh.isMesh || mesh.isSkinnedMesh || mesh.isInstancedMesh || !geometry?.index) return;
+                        rows.push({ actorClass, name: mesh.name, triangles: geometry.index.count / 3,
+                            vertices: geometry.attributes.position.count, castShadow: mesh.castShadow,
+                            attributes: Object.keys(geometry.attributes), morphs: Object.keys(geometry.morphAttributes),
+                            groups: geometry.groups.length, fullRange: geometry.drawRange.start === 0 && geometry.drawRange.count === Infinity,
+                            material: Array.isArray(material) ? 'multiple' : material?.type,
+                            transparent: material?.transparent, opacity: material?.opacity,
+                            textured: Boolean(material?.map || material?.normalMap || material?.roughnessMap || material?.metalnessMap) });
+                    });
+                }
+                return rows;
+            });
+            await writeFile(testInfo.outputPath('equipped-rigid-census.json'), JSON.stringify({
+                scope: 'Untimed visible indexed rigid meshes beneath the four equipped roots after profiling; source metadata only, no geometry reduction or draw attribution guarantee.',
+                rows: census
+            }, null, 2));
+        }
         await testInfo.attach('single-renderer-live-party-profile', { body: JSON.stringify({ ...report, party,
             scope: 'One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.'
         }, null, 2), contentType: 'application/json' });

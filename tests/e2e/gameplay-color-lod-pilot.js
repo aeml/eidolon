@@ -5,6 +5,7 @@ import { gameplayColorIndices } from '../../scripts/lib/gameplay-color-indices.m
 
 export async function prepareGameplayColorPilot(page, kind = 'gallery', error = .006, sourceOutput = null) {
     const started = performance.now();
+    const repairSeams = process.env.EIDOLON_E2E_GAMEPLAY_COLOR_COLLARS === '1';
     // Preserve exact numeric inputs without per-number protocol objects that
     // can stall the live socket peers during this unmeasured QA preparation.
     const sources = JSON.parse(await page.evaluate(kind => {
@@ -46,7 +47,7 @@ export async function prepareGameplayColorPilot(page, kind = 'gallery', error = 
     const derivatives = sources.map(source => {
         const attributes = Object.fromEntries(Object.entries(source.attributes).map(([name, attr]) => [name, { ...attr, array: new Float32Array(attr.array) }]));
         const start = performance.now();
-        const { indices, ...details } = gameplayColorIndices({ attributes, index: new Uint32Array(source.index) }, { error });
+        const { indices, ...details } = gameplayColorIndices({ attributes, index: new Uint32Array(source.index) }, { error, repairSeams });
         const { id: _id, name: _name, ...data } = source;
         return { id: source.id, name: source.name, quality: source.quality,
             sourceSHA256: createHash('sha256').update(JSON.stringify(data)).digest('hex'),
@@ -62,7 +63,7 @@ export async function prepareGameplayColorPilot(page, kind = 'gallery', error = 
             entry.candidate = geometry;
         }
     }, derivatives);
-    return { sources: sources.length, error, wallPreparationMilliseconds: performance.now() - started, derivatives };
+    return { sources: sources.length, error, ...(repairSeams ? { repairSeams } : {}), wallPreparationMilliseconds: performance.now() - started, derivatives };
 }
 
 export async function captureGameplayColorPilot(page, testInfo) {

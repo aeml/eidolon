@@ -5,11 +5,12 @@ await MeshoptSimplifier.ready;
 // Experimental indices for supplied, already fitted opaque gear/eyes. No
 // vertex relocation or attribute rewriting. A geometric/weighted error is not
 // a pixel or posed-error guarantee; gameplay-camera native review is required.
-export function gameplayColorIndices(source, { error = .006, ratio = .12, normalWeight = .15 } = {}) {
+export function gameplayColorIndices(source, { error = .006, ratio = .12, normalWeight = .15, repairSeams = false } = {}) {
     const attrs = source.attributes, position = attrs.position, input = source.index;
     if (!(position?.array instanceof Float32Array) || position.itemSize !== 3 ||
         !input?.length || input.length % 3 || !Number.isFinite(error) || error <= 0 || error > .02 ||
-        !Number.isFinite(ratio) || ratio <= 0 || ratio > 1 || !Number.isFinite(normalWeight) || normalWeight <= 0) throw new Error('Invalid gameplay color source/options');
+        !Number.isFinite(ratio) || ratio <= 0 || ratio > 1 || !Number.isFinite(normalWeight) || normalWeight <= 0 ||
+        typeof repairSeams !== 'boolean') throw new Error('Invalid gameplay color source/options');
     const count = position.array.length / 3;
     if (!Number.isInteger(count) || [...input].some(vertex => !Number.isInteger(vertex) || vertex < 0 || vertex >= count)) throw new Error('Invalid source triangle index');
     const fallback = reason => ({ indices: new Uint32Array(input), fallback: reason, error, ratio, normalWeight });
@@ -62,6 +63,10 @@ export function gameplayColorIndices(source, { error = .006, ratio = .12, normal
         byPosition.set(key, signature);
     }
     for (const vertex of referenced) if (uses[vertex] > 1 || conflicts.has(remap[vertex])) locks[vertex] = 1;
+    if (repairSeams) {
+        const fixedPositions = new Set([...referenced].filter(vertex => locks[vertex]).map(vertex => remap[vertex]));
+        for (const vertex of referenced) if (fixedPositions.has(remap[vertex])) locks[vertex] = 1;
+    }
     const signatureNames = Object.keys(attrs).sort();
     const vertexSignature = vertex => JSON.stringify(signatureNames.flatMap(name => {
         const attr = attrs[name]; return Array.from(attr.array.subarray(vertex * attr.itemSize, (vertex + 1) * attr.itemSize));
@@ -80,22 +85,42 @@ export function gameplayColorIndices(source, { error = .006, ratio = .12, normal
             }
             for (const bone of bones) values[offset++] = blends[vertex].get(bone) || 0;
         }
-        const original = new Uint32Array(group.indices);
-        let [indices, reportedError] = MeshoptSimplifier.simplifyWithAttributes(original, position.array, 3, values, stride,
-            weights, locks, Math.floor(original.length * ratio / 3) * 3, error, ['LockBorder', 'Permissive']);
-        const emptyFallback = !indices.length;
-        if (emptyFallback) { indices = original; reportedError = 0; }
-        if (!Number.isFinite(reportedError) || reportedError > error || indices.length > original.length ||
-            [...indices].some(vertex => !vertices.has(vertex))) throw new Error('Invalid gameplay color result');
-        const retained = new Set(indices), signatures = new Set([...retained].map(vertexSignature));
-        const fixedSignatureFallback = [...vertices].some(vertex => locks[vertex] && !signatures.has(vertexSignature(vertex)));
-        if (fixedSignatureFallback) { indices = original; reportedError = 0; }
+        const original = new Uint32Array(group.indices), partLocks = repairSeams ? locks.slice() : locks, exactCollar = [];
+        let remaining = original, indices, reportedError = 0, emptyFallback = false, fixedSignatureFallback = false, repairRounds = 0;
+        for (;;) {
+            if (!remaining.length) { indices = new Uint32Array(exactCollar); break; }
+            let candidate;
+            const remainingVertices = new Set(remaining);
+            [candidate, reportedError] = MeshoptSimplifier.simplifyWithAttributes(remaining, position.array, 3, values, stride,
+                weights, partLocks, Math.floor(remaining.length * ratio / 3) * 3, error, ['LockBorder', 'Permissive']);
+            if (!Number.isFinite(reportedError) || reportedError > error || candidate.length > remaining.length ||
+                [...candidate].some(vertex => !remainingVertices.has(vertex))) throw new Error('Invalid gameplay color result');
+            if (!candidate.length) { candidate = remaining; reportedError = 0; emptyFallback = true; }
+            indices = new Uint32Array([...exactCollar, ...candidate]);
+            const signatures = new Set([...new Set(indices)].map(vertexSignature));
+            const missing = [...vertices].filter(vertex => partLocks[vertex] && !signatures.has(vertexSignature(vertex)));
+            if (!missing.length) break;
+            if (!repairSeams || repairRounds === 8) { indices = original; reportedError = 0; fixedSignatureFallback = true; break; }
+            // Keep every original triangle incident to a lost protected
+            // position, and lock the interface with the remaining surface.
+            // A missing raw attribute signature never becomes acceptable.
+            const affected = new Set(missing.map(vertex => remap[vertex])), next = [];
+            for (let offset = 0; offset < remaining.length; offset += 3) {
+                const triangle = Array.from(remaining.subarray(offset, offset + 3));
+                (triangle.some(vertex => affected.has(remap[vertex])) ? exactCollar : next).push(...triangle);
+            }
+            if (next.length === remaining.length) throw new Error('No source triangles for missing color seam');
+            const exactPositions = new Set(exactCollar.map(vertex => remap[vertex]));
+            for (const vertex of next) if (exactPositions.has(remap[vertex])) partLocks[vertex] = 1;
+            remaining = new Uint32Array(next); repairRounds++;
+        }
         output.push(...indices);
         parts.push({ inputTriangles: original.length / 3, candidateTriangles: indices.length / 3, activeBones: bones.length,
-            attributeWidth: stride, reportedError, emptyFallback, fixedSignatureFallback });
+            attributeWidth: stride, reportedError, emptyFallback, fixedSignatureFallback,
+            ...(repairSeams ? { repairRounds, protectedSourceTriangles: exactCollar.length / 3 } : {}) });
     }
     if (output.length > input.length || !output.length) throw new Error('Invalid full color output');
-    return { indices: new Uint32Array(output), error, ratio, normalWeight,
+    return { indices: new Uint32Array(output), error, ratio, normalWeight, ...(repairSeams ? { repairSeams } : {}),
         inputTriangles: input.length / 3, candidateTriangles: output.length / 3,
         materialRegions: materials.size, exactMixedTriangles: exactMixed.length / 3,
         lockedVertices: locks.reduce((sum, value) => sum + value, 0), parts };

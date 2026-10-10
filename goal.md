@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 gameplay gear seam collars:** Opt-in exact source collars replace
+whole-part fallbacks while retaining all protected raw signatures/PBR regions
+and full bones. Gallery High66832→39496/Low41010→33396; default/disabled
+indices stay exact on160captured inputs.66focused checks,160source audit,
+72native pose/zoom pairs/24exact close controls/four cleanup cycles and actual
+High/Low four-class race/save checks pass. High164532triangles meets250000but
+388draws/33.3median/50.1p95ms fail;Low90620exceeds85000. Rigid equipment census
+records High20266/Low10604remaining source triangles. Unselected QA; qualified
+e47runtime/public1.79.22/profile/access unchanged. [Pilot and limits](docs/plans/2026-10-10-gameplay-color-collars-pilot.json).
+Continue measured High submissions/frame, rigid source geometry, compact bake/
+coverage/continuous zoom/lifecycle/cache/device/moving-art and full inherited
+1.11–1.99/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff. No narrower
+completion or public microrelease.
+
+
 **October10 gameplay body index pilot:** Full supplied blink endpoints and every
 referenced bone are constrained; exact collars retain protected tangent/UV/skin
 seams. Unmasked High81216→35602/Low73094→34902triangles; actual masked

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T02:48:59.177416+00:00",
-  "classification": "Unselected source-index gameplay body pilot with full supplied blink/bone basis and exact repaired seam collars.60focused checks,8CLI guards,48source audit, two336pair native reviews and actualHigh/Low race/save observers pass. High208455triangles meets250000but378draws/33.4median/66.7p95 fail;Low90850triangles exceeds85000. Full inherited roadmap remains active.",
+  "recordedUTC": "2026-10-10T03:14:56.381835+00:00",
+  "classification": "Unselected exact source seam-collar repair for supplied gameplay gear/eyes; default operator stays byte-equivalent on160captured inputs.66focused checks,160source audit,72native pose/zoom pairs/24exact close controls/four resource cycles and actualHigh/Low race/save checks pass. High164532triangles meets250000but388draws/33.3median/50.1p95ms fail;Low90620still exceeds85000. Full inherited roadmap remains active.",
   "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,9 +9,9 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-10T02:03:02Z",
+    "readOnlyObservationUTC": "2026-10-10T02:54:04Z",
     "result": {
-      "observed_at_utc": "2026-10-10T02:03:02Z",
+      "observed_at_utc": "2026-10-10T02:54:04Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -21,9 +21,6 @@
         "updated_at": "2026-10-09T03:36:16Z",
         "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
       },
-      "authoritative_state_job": "in_progress",
-      "run_multiplayer_soak_step": "in_progress",
-      "evidence_upload": "pending",
       "jobs": [
         {
           "name": "100-client authoritative-state soak",
@@ -89,13 +86,13 @@
         }
       ]
     },
-    "action": "One delegated read-only snapshot; stale thereafter. No retry/restart/cancel/terminal or acceptance claim."
+    "noRestartCancelOrRetry": true
   },
-  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1–F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-gameplay-body-lod-pilot.json",
+  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
+  "currentReceipt": "docs/plans/2026-10-10-gameplay-color-collars-pilot.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "Progress:15ca4edd retained opt-in supplied gear/eye color pilot with native/source/resource/actualHighLow/save evidence; full budgets failed and production activation stayed off.",
-  "nextAction": "Investigate measured High submission/frame cost and Low remaining fitted/rigid/scene geometry, with controlled source-equivalent comparisons and full source material/skin/blink/slot preservation. Bake compact immutable geometry/LOD data instead of synchronous QA preparation/raw buffer duplication, qualify coverage masks, continuous zoom/hysteresis, active equip/pool/reconnect/respawn, cold/offline/returning cache, targeting/contact/combat and whole High/Low/support-device/moving-art gates. Continue full inherited1.11–1.99/art/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff; no narrower completion or public microrelease.",
+  "nextAction": "Investigate measured High submission/frame cost and Low remaining fitted/rigid/scene geometry, with controlled source-equivalent comparisons and full source material/skin/blink/slot preservation. Bake compact immutable geometry/LOD data instead of synchronous QA preparation/raw buffer duplication, qualify coverage masks, continuous zoom/hysteresis, active equip/pool/reconnect/respawn, cold/offline/returning cache, targeting/contact/combat and whole High/Low/support-device/moving-art gates. Continue full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff; no narrower completion or public microrelease.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -344,6 +341,98 @@
     "firstTwoHighPeerCloseFailuresRetained": true,
     "qaTransportOnlyRepair": true,
     "newRuntimeActivation": false,
+    "fullRoadmapRemainsActive": true
+  },
+  "gameplayColorCollarsPilot": {
+    "receipt": "docs/plans/2026-10-10-gameplay-color-collars-pilot.json",
+    "preparedNotSelected": true,
+    "nativeGalleryTriangles": {
+      "high": [
+        66832,
+        39496
+      ],
+      "low": [
+        41010,
+        33396
+      ]
+    },
+    "nativePoseZoomPairs": 72,
+    "exactCloseControls": 24,
+    "sourceAuditInputs": 160,
+    "actualHigh": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.30000000000291,
+      "frameP95Ms": 50.099999999998545,
+      "frameP99Ms": 66.70000000000437,
+      "framesOver33ms": 65,
+      "cpuLoopMedianMs": 28.399999976158142,
+      "cpuLoopP95Ms": 43,
+      "drawCallsMedian": 388,
+      "trianglesMedian": 164532,
+      "geometries": 478,
+      "textures": 291,
+      "activeEntities": 25,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLow": {
+      "quality": "low",
+      "label": "single-renderer-equipped-raised-party-low",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.299999999995634,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50,
+      "framesOver33ms": 51,
+      "cpuLoopMedianMs": 24.299999982118607,
+      "cpuLoopP95Ms": 39.20000001788139,
+      "drawCallsMedian": 200,
+      "trianglesMedian": 90620,
+      "geometries": 386,
+      "textures": 262,
+      "activeEntities": 35,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "actualLimitsMet": {
+      "high": {
+        "frameMedianMs": false,
+        "frameP95Ms": false,
+        "drawCallsMedian": false,
+        "trianglesMedian": true
+      },
+      "low": {
+        "frameMedianMs": true,
+        "frameP95Ms": true,
+        "drawCallsMedian": true,
+        "trianglesMedian": false
+      }
+    },
+    "actualRigidCensusTriangles": {
+      "high": 20266,
+      "low": 10604
+    },
+    "newRuntimeActivation": false,
+    "wholeHighLowBudgetsPass": false,
     "fullRoadmapRemainsActive": true
   }
 }

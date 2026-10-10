@@ -1,0 +1,1145 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T03:14:56.381835+00:00",
+  "classification": "Unselected exact source seam-collar repair for supplied gameplay gear/eyes; default operator stays byte-equivalent on160captured inputs.66focused checks,160source audit,72native pose/zoom pairs/24exact close controls/four resource cycles and actualHigh/Low race/save checks pass. High164532triangles meets250000but388draws/33.3median/50.1p95ms fail;Low90620still exceeds85000. Full inherited roadmap remains active.",
+  "baseCommit": "8c2a95b1a05af6fc2a1437ebc1289963cbdf24eb",
+  "previousGoalTurnClassification": "Progress:8c2a95b1 retained gameplay body endpoint/bone/seam pilot and source-equivalent QA JSON transport; full budgets remained open.",
+  "worktree": "/home/aeml/.local/share/eidolon-gameplay-color-collars-20261010",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-gameplay-color-collars-checks-20261010",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "ciRun": 37967212738,
+    "acceptanceReceipt": "docs/plans/2026-10-09-ready22-actor-publisher.json",
+    "changedByThisWork": false
+  },
+  "scope": {
+    "newModelFiles": 0,
+    "productionRuntimeSourceChanged": false,
+    "sourceAssetsCatalogsOrSelectionChanged": false,
+    "publicPush": false,
+    "newRuntimeActivation": false,
+    "versionProfileAccessChanged": false,
+    "serverAuthorityOrPlayerDataChanged": false,
+    "originalDirtyWorktreeEdited": false,
+    "deferredHumanCampaignOrPhysicalPhoneSubstituted": false
+  },
+  "implementation": {
+    "optIn": "gameplayColorIndices repairSeams=true, QA flag EIDOLON_E2E_GAMEPLAY_COLOR_COLLARS=1 together with existing explicit color pilot. Default false; no production imports or selection.",
+    "constraints": "Existing per-triangle exact PBR regions and mixed-factor exact source corners; all referenced nonzero bones get canonical summed weight channels, up to32total channels. Existing weighted normal/tangent/UV basis, ratio0.12/error0.006, LockBorder+Permissive remain. No Prune/Sloppy/vertex relocation/attribute update/bone pruning/renormalization. Weighted error does not bound every posed pixel.",
+    "repair": "Close protected locks across coincident positions. If a complete protected raw vertex signature is missing, preserve every original triangle incident to its affected position as an exact collar, lock the new interface and simplify only remaining source indices. At most8rounds, then exact entire-part fallback. Empty results also retain original triangles. No lost protected signature is accepted.",
+    "ownershipAndCamera": "Existing owned independent raw BufferGeometry clones, generation-change rejection and candidate-only disposal/restoration retained. Native orthographic1440x900 isometric zoom5/15/30; close5uses exact originals. Actual party uses ordinary worker/assets and zoom15/1280x844. No dynamic LOD/hysteresis or active lifecycle policy qualified.",
+    "diagnosis": "Post-profile opt-in census captures visible indexed non-skinned equipment metadata only. No rigid geometry reduction or render hooks added to timed profiling.",
+    "sourceArchives": "Native runs pin the prior party helper before the post-profile census. Exact file retained under source-before-rigid-census; each526file run pin resolves current or that archive."
+  },
+  "retainedInputCountScreen": {
+    "scope": "Native gallery and prior final body-pilot High/Low captured inputs, immutable GLBs/raw arrays; feasibility counts only. Inputs differ from new actual captures.",
+    "file": "collar-screen.json",
+    "rows": [
+      {
+        "capture": "gallery",
+        "quality": "high",
+        "meshes": 40,
+        "sourceTriangles": 152558,
+        "baselineTriangles": 66832,
+        "collarTriangles": 39496,
+        "baselineFullPartitionFallbacks": 9,
+        "remainingFullPartitionFallbacks": 0
+      },
+      {
+        "capture": "gallery",
+        "quality": "low",
+        "meshes": 40,
+        "sourceTriangles": 77910,
+        "baselineTriangles": 41010,
+        "collarTriangles": 33396,
+        "baselineFullPartitionFallbacks": 10,
+        "remainingFullPartitionFallbacks": 0
+      },
+      {
+        "capture": "high",
+        "quality": "high",
+        "meshes": 40,
+        "sourceTriangles": 139005,
+        "baselineTriangles": 56443,
+        "collarTriangles": 36853,
+        "baselineFullPartitionFallbacks": 7,
+        "remainingFullPartitionFallbacks": 0
+      },
+      {
+        "capture": "low",
+        "quality": "low",
+        "meshes": 40,
+        "sourceTriangles": 80549,
+        "baselineTriangles": 38299,
+        "collarTriangles": 34569,
+        "baselineFullPartitionFallbacks": 4,
+        "remainingFullPartitionFallbacks": 0
+      }
+    ]
+  },
+  "native": {
+    "terminal": {
+      "native-collars": {
+        "exitCode": 0,
+        "startedUnix": 1791601447.287727,
+        "finishedUnix": 1791601510.0571637,
+        "seconds": 62.7694365978241
+      },
+      "native-resources": {
+        "exitCode": 0,
+        "startedUnix": 1791601548.500669,
+        "finishedUnix": 1791601586.2189867,
+        "seconds": 37.71831774711609
+      }
+    },
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "samples": 72,
+    "exactCloseControls": 24,
+    "simplifiedSamples": 48,
+    "sourceRepeatUnstableChannels": 0,
+    "maximumChannel": 255,
+    "nativeSourcesEqualPrior80": true,
+    "lifetime": {
+      "scope": "Four explicit owned color-geometry allocation/render/disposal cycles on8supplied High/Low rigs; stable Three counters, not VRAM or active equip/reconnect/long-session proof.",
+      "sources": 80,
+      "lifetime": {
+        "baseline": {
+          "geometries": 161,
+          "textures": 95,
+          "programs": 15
+        },
+        "cycles": [
+          {
+            "geometries": 161,
+            "textures": 95,
+            "programs": 15
+          },
+          {
+            "geometries": 161,
+            "textures": 95,
+            "programs": 15
+          },
+          {
+            "geometries": 161,
+            "textures": 95,
+            "programs": 15
+          },
+          {
+            "geometries": 161,
+            "textures": 95,
+            "programs": 15
+          }
+        ],
+        "originalsRestored": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      }
+    },
+    "rootVisualReview": {
+      "viewedPairs": [
+        "High Wizard idle zoom15",
+        "Low Rogue side attack zoom15",
+        "High Fighter back run zoom15",
+        "Low Cleric idle zoom15"
+      ],
+      "assessment": "Supplied trim and silhouette remain visible in these small gameplay-camera samples. Local shading/edge differences remain. Partial inspection only; no pixel equivalence, complete motion/zoom or modern art acceptance."
+    }
+  },
+  "actualHighLow": [
+    {
+      "quality": "high",
+      "evidence": "eidolon-terrain-save-evidence-CBTfQsZb",
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791601627.608499,
+        "finishedUnix": 1791601753.6389337
+      },
+      "seconds": 126.03043460845947,
+      "goSeconds": 77.06,
+      "browserFourClientSkipped": true,
+      "report": {
+        "quality": "high",
+        "label": "single-renderer-equipped-raised-party-high",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.30000000000291,
+        "frameP95Ms": 50.099999999998545,
+        "frameP99Ms": 66.70000000000437,
+        "framesOver33ms": 65,
+        "cpuLoopMedianMs": 28.399999976158142,
+        "cpuLoopP95Ms": 43,
+        "drawCallsMedian": 388,
+        "trianglesMedian": 164532,
+        "geometries": 478,
+        "textures": 291,
+        "activeEntities": 25,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "unchangedLimits": {
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4,
+        "drawCallsMedian": 350,
+        "trianglesMedian": 250000
+      },
+      "limitsMet": {
+        "frameMedianMs": false,
+        "frameP95Ms": false,
+        "drawCallsMedian": false,
+        "trianglesMedian": true
+      },
+      "body": {
+        "sources": 4,
+        "sourceTriangles": 42137,
+        "candidateTriangles": 16923,
+        "wallPreparationMilliseconds": 5934.6739659999985,
+        "paired": {
+          "reference": {
+            "calls": 391,
+            "triangles": 443155
+          },
+          "candidate": {
+            "calls": 391,
+            "triangles": 392727
+          },
+          "referenceAgain": {
+            "calls": 391,
+            "triangles": 443155
+          },
+          "quality": "high",
+          "zoom": 15,
+          "ownedBufferBytes": 40090764
+        }
+      },
+      "color": {
+        "sources": 40,
+        "sourceTriangles": 139005,
+        "candidateTriangles": 36767,
+        "wallPreparationMilliseconds": 11821.36322,
+        "paired": {
+          "reference": {
+            "calls": 386,
+            "triangles": 393362
+          },
+          "candidate": {
+            "calls": 386,
+            "triangles": 188886
+          },
+          "referenceAgain": {
+            "calls": 386,
+            "triangles": 393362
+          },
+          "quality": "high",
+          "zoom": 15,
+          "ownedBufferBytes": 13750436
+        }
+      },
+      "drawAttribution": [
+        {
+          "name": "OpaqueActorInstances",
+          "color": 24,
+          "shadow": 92,
+          "triangles": 21658
+        },
+        {
+          "name": "ProceduralSkeleton",
+          "color": 6,
+          "shadow": 48,
+          "triangles": 2894
+        },
+        {
+          "name": "Equipped Cleric",
+          "color": 26,
+          "shadow": 21,
+          "triangles": 31766
+        },
+        {
+          "name": "Equipped Wizard",
+          "color": 26,
+          "shadow": 21,
+          "triangles": 32628
+        },
+        {
+          "name": "Equipped Fighter",
+          "color": 23,
+          "shadow": 20,
+          "triangles": 30624
+        },
+        {
+          "name": "Equipped Rogue",
+          "color": 23,
+          "shadow": 18,
+          "triangles": 30790
+        },
+        {
+          "name": "EnvironmentGroup",
+          "color": 17,
+          "shadow": 6,
+          "triangles": 13377
+        },
+        {
+          "name": "Mesh",
+          "color": 1,
+          "shadow": 15,
+          "triangles": 17
+        },
+        {
+          "name": "Canonical terrain tiles",
+          "color": 6,
+          "shadow": 0,
+          "triangles": 768
+        },
+        {
+          "name": "ProceduralEidolicBlackwater",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralRealmTerrain:water",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "ProceduralRealmTerrain:air",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "Points",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 46.666666666666664
+        }
+      ],
+      "sameSceneInstances": {
+        "without": {
+          "calls": 686,
+          "triangles": 158355
+        },
+        "with": {
+          "calls": 388,
+          "triangles": 164532
+        }
+      },
+      "peerLiveness": {
+        "stages": [
+          {
+            "stage": "preparation-start",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "body-prepared",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "gear-prepared",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "shadow-prepared",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "profiling",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "profile-complete",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          }
+        ],
+        "beforeCleanupReadyStates": [
+          1,
+          1,
+          1
+        ],
+        "closes": [
+          [],
+          [],
+          []
+        ]
+      },
+      "cacheEvidence": {
+        "artifact": "selected-body-runtime.json",
+        "actualWorkerResponses": 4,
+        "allFourExactCachedSHAAndVersionedPathsPassed": true,
+        "selected": [
+          {
+            "name": "Fighter",
+            "path": "./assets/archetypes/Fighter/fighter-runtime-body-v3-high.glb",
+            "expectedSHA256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+            "cachedSHA256": "86f49ec116e36b4ed9659e18f908852d7bbad26c1de73c6b361e4a9c827c2202",
+            "cachedOriginalBodyTriangles": 20482,
+            "expectedBodyTriangles": 20482,
+            "liveMaskedBodyTriangles": 3665
+          },
+          {
+            "name": "Cleric",
+            "path": "./assets/archetypes/Cleric/cleric-runtime-body-v3-high.glb",
+            "expectedSHA256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+            "cachedSHA256": "154b3a7ca0a93b240611674ed1b0e6ee8734a8bfa2c3bb5e9cede6da79dd9631",
+            "cachedOriginalBodyTriangles": 20028,
+            "expectedBodyTriangles": 20028,
+            "liveMaskedBodyTriangles": 3483
+          },
+          {
+            "name": "Rogue",
+            "path": "./assets/archetypes/Rogue/rogue-runtime-body-v3-high.glb",
+            "expectedSHA256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+            "cachedSHA256": "152a5349bc78bab104124bf160331c44f6046a537b5018a7ca108d45093dafe4",
+            "cachedOriginalBodyTriangles": 20026,
+            "expectedBodyTriangles": 20026,
+            "liveMaskedBodyTriangles": 3415
+          },
+          {
+            "name": "Wizard",
+            "path": "./assets/archetypes/Wizard/wizard-runtime-body-v3-high.glb",
+            "expectedSHA256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+            "cachedSHA256": "af4b3a845155a502fe9d65f9c500a04fb54bf5b7749d929c4a071c1ab3c07341",
+            "cachedOriginalBodyTriangles": 20680,
+            "expectedBodyTriangles": 20680,
+            "liveMaskedBodyTriangles": 6360
+          }
+        ]
+      },
+      "rigidCensus": {
+        "scope": "Untimed visible indexed rigid meshes beneath the four equipped roots after profiling; source metadata only, no geometry reduction or draw attribution guarantee.",
+        "artifact": "eidolon-terrain-save-evidence-CBTfQsZb/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/equipped-rigid-census.json",
+        "meshes": 39,
+        "triangles": 20266,
+        "perClassTriangles": {
+          "Cleric": 4932,
+          "Fighter": 3692,
+          "Rogue": 5556,
+          "Wizard": 6086
+        },
+        "largestParts": [
+          {
+            "actorClass": "Wizard",
+            "name": "wooden-staff__standard_4",
+            "triangles": 4032,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Cleric",
+            "name": "cleric-mace__standard_2",
+            "triangles": 3072,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Fighter",
+            "name": "iron-sword__standard_3",
+            "triangles": 2524,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Rogue",
+            "name": "steel-dagger__standard_3",
+            "triangles": 2524,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Rogue",
+            "name": "steel-dagger__standard_3",
+            "triangles": 2524,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Wizard",
+            "name": "spell-tome__standard_3",
+            "triangles": 1116,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Fighter",
+            "name": "wooden-shield__standard_4",
+            "triangles": 564,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Cleric",
+            "name": "wooden-shield__standard_4",
+            "triangles": 564,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Cleric",
+            "name": "cleric-mace__standard_1",
+            "triangles": 496,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Wizard",
+            "name": "wooden-staff__standard_3",
+            "triangles": 366,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Wizard",
+            "name": "wooden-staff__standard_2",
+            "triangles": 230,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Cleric",
+            "name": "cleric-mace__standard_4",
+            "triangles": 224,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          }
+        ]
+      },
+      "sameCapturedColorInputComparison": {
+        "sourceTriangles": 139005,
+        "priorDefaultTriangles": 58747,
+        "collarTriangles": 36767,
+        "disabledModeExactPriorOperator": true
+      },
+      "ownedRawCopyBytes": 63545128,
+      "shadow": {
+        "scope": "Explicit High shadow-only pilot in one actual connected renderer; ordinary selected assets and service worker. Untimed synchronous counts, no physical-device, four-renderer, battle, or production acceptance.",
+        "sourceTriangles": 53690,
+        "candidateTriangles": 29322,
+        "wallPreparationMilliseconds": 5280.433843999999,
+        "selection": {
+          "registered": 44,
+          "sourceTriangles": 53690,
+          "candidateTriangles": 29322
+        },
+        "paired": {
+          "reference": {
+            "calls": 387,
+            "triangles": 188898,
+            "swaps": 0
+          },
+          "candidate": {
+            "calls": 387,
+            "triangles": 164530,
+            "swaps": 44
+          },
+          "referenceAgain": {
+            "calls": 387,
+            "triangles": 188898,
+            "swaps": 0
+          },
+          "ownedBufferBytes": 9703928,
+          "restored": true,
+          "registered": 44
+        }
+      }
+    },
+    {
+      "quality": "low",
+      "evidence": "eidolon-terrain-save-evidence-803Dunwv",
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791601771.5145063,
+        "finishedUnix": 1791601847.0768425
+      },
+      "seconds": 75.56233620643616,
+      "goSeconds": 60.99,
+      "browserFourClientSkipped": true,
+      "report": {
+        "quality": "low",
+        "label": "single-renderer-equipped-raised-party-low",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.299999999995634,
+        "frameP95Ms": 50,
+        "frameP99Ms": 50,
+        "framesOver33ms": 51,
+        "cpuLoopMedianMs": 24.299999982118607,
+        "cpuLoopP95Ms": 39.20000001788139,
+        "drawCallsMedian": 200,
+        "trianglesMedian": 90620,
+        "geometries": 386,
+        "textures": 262,
+        "activeEntities": 35,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "unchangedLimits": {
+        "frameMedianMs": 33.4,
+        "frameP95Ms": 50,
+        "drawCallsMedian": 200,
+        "trianglesMedian": 85000
+      },
+      "limitsMet": {
+        "frameMedianMs": true,
+        "frameP95Ms": true,
+        "drawCallsMedian": true,
+        "trianglesMedian": false
+      },
+      "body": {
+        "sources": 4,
+        "sourceTriangles": 32856,
+        "candidateTriangles": 16532,
+        "wallPreparationMilliseconds": 5324.136134,
+        "paired": {
+          "reference": {
+            "calls": 224,
+            "triangles": 154361
+          },
+          "candidate": {
+            "calls": 224,
+            "triangles": 138037
+          },
+          "referenceAgain": {
+            "calls": 224,
+            "triangles": 154361
+          },
+          "quality": "low",
+          "zoom": 15,
+          "ownedBufferBytes": 38268456
+        }
+      },
+      "color": {
+        "sources": 40,
+        "sourceTriangles": 80549,
+        "candidateTriangles": 34867,
+        "wallPreparationMilliseconds": 8160.564177,
+        "paired": {
+          "reference": {
+            "calls": 175,
+            "triangles": 133740
+          },
+          "candidate": {
+            "calls": 175,
+            "triangles": 88058
+          },
+          "referenceAgain": {
+            "calls": 175,
+            "triangles": 133740
+          },
+          "quality": "low",
+          "zoom": 15,
+          "ownedBufferBytes": 9802044
+        }
+      },
+      "drawAttribution": [
+        {
+          "name": "OpaqueActorInstances",
+          "color": 96,
+          "shadow": 0,
+          "triangles": 15300
+        },
+        {
+          "name": "Equipped Cleric",
+          "color": 25,
+          "shadow": 0,
+          "triangles": 16101
+        },
+        {
+          "name": "Equipped Wizard",
+          "color": 25,
+          "shadow": 0,
+          "triangles": 17428
+        },
+        {
+          "name": "Equipped Fighter",
+          "color": 23,
+          "shadow": 0,
+          "triangles": 15803
+        },
+        {
+          "name": "Equipped Rogue",
+          "color": 23,
+          "shadow": 0,
+          "triangles": 14403
+        },
+        {
+          "name": "EnvironmentGroup",
+          "color": 18,
+          "shadow": 0,
+          "triangles": 12961
+        },
+        {
+          "name": "ProceduralSkeleton",
+          "color": 9,
+          "shadow": 0,
+          "triangles": 68
+        },
+        {
+          "name": "Canonical terrain tiles",
+          "color": 8,
+          "shadow": 0,
+          "triangles": 1024
+        },
+        {
+          "name": "Mesh",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralEidolicBlackwater",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 2
+        },
+        {
+          "name": "ProceduralRealmTerrain:water",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "ProceduralRealmTerrain:air",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 4
+        },
+        {
+          "name": "Actor ground contacts",
+          "color": 1,
+          "shadow": 0,
+          "triangles": 70
+        }
+      ],
+      "sameSceneInstances": {
+        "without": {
+          "calls": 300,
+          "triangles": 84245
+        },
+        "with": {
+          "calls": 226,
+          "triangles": 93170
+        }
+      },
+      "peerLiveness": {
+        "stages": [
+          {
+            "stage": "preparation-start",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "body-prepared",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "gear-prepared",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "profiling",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "stage": "profile-complete",
+            "readyStates": [
+              1,
+              1,
+              1
+            ]
+          }
+        ],
+        "beforeCleanupReadyStates": [
+          1,
+          1,
+          1
+        ],
+        "closes": [
+          [],
+          [],
+          []
+        ]
+      },
+      "cacheEvidence": {
+        "artifact": "selected-body-runtime.json",
+        "actualWorkerResponses": 4,
+        "allFourExactCachedSHAAndVersionedPathsPassed": true,
+        "selected": [
+          {
+            "name": "Fighter",
+            "path": "./assets/archetypes/Fighter/fighter-runtime-low.glb",
+            "expectedSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+            "cachedSHA256": "357284df9e9f22f9823e2ca0bbb1d15e40ac00024a02046d90f48b9be8524c0b",
+            "cachedOriginalBodyTriangles": 18434,
+            "expectedBodyTriangles": 18434,
+            "liveMaskedBodyTriangles": 3566
+          },
+          {
+            "name": "Cleric",
+            "path": "./assets/archetypes/Cleric/cleric-runtime-low.glb",
+            "expectedSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+            "cachedSHA256": "19784ca41b98d40ba7bf5ae26d6b4f3bba707fb288a120254cc0bc2172319364",
+            "cachedOriginalBodyTriangles": 18024,
+            "expectedBodyTriangles": 18024,
+            "liveMaskedBodyTriangles": 3365
+          },
+          {
+            "name": "Rogue",
+            "path": "./assets/archetypes/Rogue/rogue-runtime-low.glb",
+            "expectedSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+            "cachedSHA256": "8ec12238f6b622143e0dcc7cfffc0955019ef268a3fd472e7e3156a5c17685d7",
+            "cachedOriginalBodyTriangles": 18024,
+            "expectedBodyTriangles": 18024,
+            "liveMaskedBodyTriangles": 3330
+          },
+          {
+            "name": "Wizard",
+            "path": "./assets/archetypes/Wizard/wizard-runtime-low.glb",
+            "expectedSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+            "cachedSHA256": "52adfd98bd8ac6ebe7a85e84c989e8c7f42eb57b16c0dcfea41a3570c9eebd24",
+            "cachedOriginalBodyTriangles": 18612,
+            "expectedBodyTriangles": 18612,
+            "liveMaskedBodyTriangles": 6271
+          }
+        ]
+      },
+      "rigidCensus": {
+        "scope": "Untimed visible indexed rigid meshes beneath the four equipped roots after profiling; source metadata only, no geometry reduction or draw attribution guarantee.",
+        "artifact": "eidolon-terrain-save-evidence-803Dunwv/browser-results/terrain-equipped-party-sin-da3fa-cket-peers-on-raised-ground/equipped-rigid-census.json",
+        "meshes": 39,
+        "triangles": 10604,
+        "perClassTriangles": {
+          "Cleric": 3000,
+          "Fighter": 1840,
+          "Rogue": 2584,
+          "Wizard": 3180
+        },
+        "largestParts": [
+          {
+            "actorClass": "Wizard",
+            "name": "wooden-staff__standard_4",
+            "triangles": 2128,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Cleric",
+            "name": "cleric-mace__standard_2",
+            "triangles": 1728,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Rogue",
+            "name": "steel-dagger__standard_3",
+            "triangles": 1042,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Rogue",
+            "name": "steel-dagger__standard_3",
+            "triangles": 1042,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Fighter",
+            "name": "iron-sword__standard_3",
+            "triangles": 1030,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Wizard",
+            "name": "spell-tome__standard_3",
+            "triangles": 498,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Cleric",
+            "name": "cleric-mace__standard_1",
+            "triangles": 262,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Fighter",
+            "name": "wooden-shield__standard_4",
+            "triangles": 250,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Cleric",
+            "name": "wooden-shield__standard_4",
+            "triangles": 250,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Cleric",
+            "name": "cleric-mace__standard_4",
+            "triangles": 224,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Wizard",
+            "name": "wooden-staff__standard_2",
+            "triangles": 168,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          },
+          {
+            "actorClass": "Fighter",
+            "name": "wooden-shield__standard_5",
+            "triangles": 156,
+            "material": "MeshStandardMaterial",
+            "textured": true
+          }
+        ]
+      },
+      "sameCapturedColorInputComparison": {
+        "sourceTriangles": 80549,
+        "priorDefaultTriangles": 41413,
+        "collarTriangles": 34867,
+        "disabledModeExactPriorOperator": true
+      },
+      "ownedRawCopyBytes": 48070500
+    }
+  ],
+  "sourceAudit": {
+    "file": "color-collar-input-audit.json",
+    "sources": 160,
+    "meshoptCalls": 359,
+    "weightedChannelsChecked": 20030310,
+    "protectedCompleteSignaturesVerified": 3323,
+    "disabledAndDefaultExactPriorOperatorOnAllInputs": true,
+    "sourceAttributesAndIndicesUnchanged": true,
+    "candidateIndicesExactlyRecorded": true,
+    "allMaterialRegionsAndMixedCornersExact": true,
+    "limits": "No pixel/posed-error bound, universal gear/pose/mask or device acceptance."
+  },
+  "failedCheckRetained": {
+    "artifact": "color-unit-results.json",
+    "result": "First operator suite1fail/14pass: intended eight-round fixture shared identical boundary signatures, so an exact collar repaired it early. The test was corrected to use distinct coincident UV seams and now exercises the fallback cap.",
+    "corrected": "color-unit-results-corrected.json15pass, final66pass/5suites. No failed native/party attempt in this checkpoint."
+  },
+  "verification": {
+    "recordedUTC": "2026-10-10T03:13:11.777449+00:00",
+    "supervisors": [
+      {
+        "label": "native-collars",
+        "pid": 2714291,
+        "absent": true,
+        "exitCode": 0
+      },
+      {
+        "label": "native-resources",
+        "pid": 2726571,
+        "absent": true,
+        "exitCode": 0
+      },
+      {
+        "label": "party-high",
+        "pid": 2736064,
+        "absent": true,
+        "exitCode": 0
+      },
+      {
+        "label": "party-low",
+        "pid": 2754151,
+        "absent": true,
+        "exitCode": 0
+      }
+    ],
+    "ports": [
+      {
+        "port": 4190,
+        "accepting": false
+      },
+      {
+        "port": 4192,
+        "accepting": false
+      },
+      {
+        "port": 18189,
+        "accepting": false
+      }
+    ],
+    "sourcePinsVerified": 526,
+    "modelFilesVerified": 508,
+    "perRunSourcesMatchCurrentOrRetainedArchive": true,
+    "vendorFilesVerified": 407,
+    "ownedVendorLinkRemoved": true,
+    "focusedChecks": 66,
+    "focusedSuites": 5,
+    "focusedSeconds": 3.591,
+    "lintFiles": 4,
+    "lintErrors": 0,
+    "lintWarnings": 0,
+    "originalDirtyRepositoryEdited": false
+  },
+  "evidence": {
+    "artifacts": 249,
+    "inventorySHA256": "d4ad1438a1cd96295a64bf1e6ca576aad978418cc44567e4aa379e1f085b548f",
+    "privateModes": "directories0700/files0600",
+    "sourcePins": "source-hashes.json526including508GLBs; all unchanged outside4QAcode files",
+    "priorFrozenEvidenceRestored": {
+      "artifactsVerified": 1730,
+      "inventorySHA256": "a9f9758ee86430ee2fd5db13d11b4239e275c92fef384aef316a645b34986130",
+      "exactAfterSnapshotRestoration": true
+    },
+    "snapshotLocationCorrection": {
+      "issue": "Monitor inherited prior evidence destination and replaced the frozen prior snapshot.",
+      "correction": "New observation copied here; prior exact bytes reconstructed from committed receipt and matched its frozen byte count/SHA256 before restoration.",
+      "priorSnapshotSHA256": "875ff68f6ab2cc9fe946fa809af36df2466fef3684e5520945e5584296d44861",
+      "newSnapshotSHA256": "22b679b04930e87962de77f3415b0aa2636bbce0b36814bb410e1321c973cbac"
+    }
+  },
+  "longSoak": {
+    "observation": {
+      "observed_at_utc": "2026-10-10T02:54:04Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "updated_at": "2026-10-09T03:36:16Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null
+            }
+          ]
+        }
+      ]
+    },
+    "scope": "One read-only snapshot at02:54:04UTC; same exact run/attempt/head, in_progress and upload pending. No restart/cancel/retry/new soak or terminal success claim.",
+    "snapshotCorrection": "Monitor inherited previous frozen destination. New observation moved here; exact previous bytes reconstructed from committed receipt, verified against prior inventory before restoration, then all1730prior artifacts rehashed successfully."
+  },
+  "remaining": {
+    "wholeHighLowBudgetsPass": false,
+    "cpuAttribution": "Actual runs differ in population and world updates. No controlled CPU gain claim. Each body/color/shadow paired count is synchronous within its own preparation epoch; do not combine independently prepared snapshots into a single A/B.",
+    "startupAndMemory": "Owned raw QA copies remain large; no VRAM or total-memory claim. Preparation excluded from180frame samples; compact bake, coverage masks, production startup and memory qualification still required.",
+    "artAndLifecycle": "Small fixed-pose native samples retain viewed trim/silhouette with nonzero local shading/edge differences. Full moving/HUD/contact/combat, continuous zoom/hysteresis, local/remote active equip/pool/reconnect/respawn and cold/returning/old-client cache compatibility remain open. Resource counters prove only four bounded cycles.",
+    "nextCodeOwnedWork": "Inspect captured rigid textured weapon/socket geometry without losing authored secondary surfaces/UV/material identity; investigate measured High actor/NPC shadow submissions and frame cost. Retain all art/rigs and unchanged budgets; no content deletion or public microrelease.",
+    "fullRoadmap": "Full inheritedAlpha1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/recovery/rights/owner/human/beta/launch/handoff remains active. CB is not approved/open. No policy, commerce, recovery, staffing, rights, access or launch decision inferred."
+  }
+}
