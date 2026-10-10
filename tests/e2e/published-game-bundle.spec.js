@@ -112,6 +112,53 @@ for (const kind of ['persistent-download', 'evaluation', 'export', 'dependency-d
     });
 }
 
+test('copied published engine keeps status symbols and keyboard reading through countdowns', async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async release => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        document.getElementById('start-screen').style.display = 'none';
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        try {
+            game.uiManager.showHUD();
+            game.upsertActiveBuff({ id: 'well_rested', name: 'Well Rested', durationSeconds: 100,
+                remainingSeconds: 100, detail: '+10% all stats · +25% enemy-kill XP only' });
+            game.minimap._renderBuffList();
+            const button = game.minimap.buffList.querySelector('button');
+            button.focus();
+            const firstSymbol = button.firstChild;
+            game.activeBuffs[0].remainingSeconds = 98.5;
+            game.minimap._renderBuffList();
+            const desktop = { sameButton: game.minimap.buffList.querySelector('button') === button,
+                focused: document.activeElement === button, sameSymbol: button.firstChild === firstSymbol,
+                symbolCount: button.querySelectorAll('svg').length, textGlyphs: button.textContent,
+                width: game.minimap.buffList.getBoundingClientRect().width,
+                tooltip: game.minimap.buffTooltip.textContent, describedBy: button.getAttribute('aria-describedby') };
+            game.isMobile = true; document.body.classList.add('mobile-mode');
+            game.minimap._renderBuffList();
+            const phone = game.minimap.phoneStatus;
+            phone.open();
+            const mobile = { visible: !phone.root.hidden, symbolCount: phone.root.querySelectorAll('svg').length,
+                details: phone.root.textContent };
+            game.activeBuffs.length = 0; game.minimap._renderBuffList();
+            const expired = { desktopIcons: game.minimap.buffList.querySelectorAll('button').length,
+                tooltipHidden: game.minimap.buffTooltip.style.display === 'none', phoneRows: phone.rows.size };
+            return { desktop, mobile, expired };
+        } finally { game.destroy(); document.body.classList.remove('mobile-mode'); }
+    }, release);
+    expect(result.desktop).toMatchObject({ sameButton: true, focused: true, sameSymbol: true,
+        symbolCount: 1, textGlyphs: '', describedBy: 'minimap-buff-tooltip' });
+    expect(result.desktop.width).toBeLessThanOrEqual(64);
+    expect(result.desktop.tooltip).toContain('98.5s');
+    expect(result.mobile).toMatchObject({ visible: true, symbolCount: 1 });
+    expect(result.mobile.details).toContain('+25% enemy-kill XP only');
+    expect(result.expired).toEqual({ desktopIcons: 0, tooltipHidden: true, phoneRows: 0 });
+    expect(failures, failures.join('\n')).toEqual([]);
+    await testInfo.attach('published-status-symbols', { body: JSON.stringify({ result, engineSHA256: metadata.engineSHA256,
+        scope: 'Actual copied/versioned game bundle UI construction; synthetic status metadata, no server/gameplay/device claim' }), contentType: 'application/json' });
+});
+
 test('actual published engine stays lazy at login and constructs each class from the bounded module graph', async ({ page }) => {
     const failures = collectBrowserFailures(page, origin), modules = new Set();
     page.on('request', request => {
