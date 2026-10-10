@@ -17,7 +17,7 @@ export class ActorInstanceMultiDraw {
         this.group = new Group(); this.group.name = 'ActorInstanceMultiDraw'; this.group.visible = false;
         parent.add(this.group); this.entries = new Map(); this.hidden = [];
         this.frustum = new Frustum(); this.projection = new Matrix4(); this.matrix = new Matrix4();
-        this.enabled = true; this.identities = new WeakMap(); this.nextIdentity = 0;
+        this.enabled = true; this.perInstanceFrustum = false; this.identities = new WeakMap(); this.nextIdentity = 0;
     }
 
     geometryVersion(geometry) {
@@ -91,6 +91,11 @@ export class ActorInstanceMultiDraw {
                     });
                     entry = { mesh, signature, sourceSlots }; this.entries.set(key, entry); this.group.add(mesh);
                 }
+                // Optional stock per-instance clipping follows the same pass
+                // camera. Displaced geometry and explicit no-cull buckets keep
+                // the qualified whole-original-bucket path.
+                entry.mesh.perObjectFrustumCulled = this.perInstanceFrustum &&
+                    group[0].frustumCulled && !group[0].material.displacementMap;
                 entry.mesh.matrixWorld.copy(group[0].matrixWorld);
                 for (const { source, slots } of entry.sourceSlots) {
                     for (let i = 0; i < slots.length; i++) {

@@ -122,3 +122,32 @@ test('color pass keeps original depth sorting while shadow pass keeps scene orde
         expect(shadow.map(v => v.index)).toEqual([...sourceSlots[0].slots.slice(0, 2), ...sourceSlots[1].slots.slice(0, 2)]);
     } finally { f.owner.dispose(); }
 });
+
+test('optional per-instance clipping removes only off-camera members of visible original buckets', () => {
+    const f = fixture();
+    try {
+        f.sources.forEach(source => {
+            source.matrixWorld.identity();
+            source.setMatrixAt(0, new THREE.Matrix4().makeTranslation(0, 0, -5));
+            source.setMatrixAt(1, new THREE.Matrix4().makeTranslation(100, 0, -5));
+            source.computeBoundingSphere();
+        });
+        f.begin(); let mesh = [...f.owner.entries.values()][0].mesh;
+        mesh.onBeforeRender(f.renderer, null, f.camera, mesh.geometry, mesh.material);
+        expect(mesh._multiDrawCount).toBe(4);
+        f.owner.endFrame(); f.owner.perInstanceFrustum = true; f.begin();
+        mesh = [...f.owner.entries.values()][0].mesh;
+        mesh.onBeforeRender(f.renderer, null, f.camera, mesh.geometry, mesh.material);
+        expect(mesh._multiDrawCount).toBe(2);
+    } finally { f.owner.dispose(); }
+});
+
+test.each(['explicit-no-cull', 'displacement'])('%s preserves the whole-bucket path despite optional clipping', boundary => {
+    const f = fixture();
+    try {
+        f.owner.perInstanceFrustum = true;
+        if (boundary === 'explicit-no-cull') f.sources.forEach(source => { source.frustumCulled = false; });
+        if (boundary === 'displacement') f.material.displacementMap = new THREE.Texture();
+        f.begin(); expect([...f.owner.entries.values()][0].mesh.perObjectFrustumCulled).toBe(false);
+    } finally { f.owner.dispose(); }
+});
