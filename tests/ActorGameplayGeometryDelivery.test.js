@@ -142,3 +142,20 @@ test('interleaved normalized attributes copy decoded values without touching sou
     expect(payload.source.attributes.normal.array).toEqual(new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0]));
     expect(array[3]).toBe(7); f.dispose();
 });
+
+test('rigid mount work carries its quality without fabricated skin attributes and ignores other meshes', () => {
+    const f = fixture();
+    try {
+        const mount = new THREE.Group(); Object.assign(mount.userData, { authoredEquipment: true, fittedItem: 'wooden-staff', slot: 'mainHand' });
+        const geometry = new THREE.PlaneGeometry(), mesh = new THREE.Mesh(geometry, f.mesh.material); mesh.name = 'Weapon_Body'; mount.add(mesh); f.root.add(mount);
+        const unrelated = mesh.clone(); f.root.add(unrelated); f.root.userData.authoredQuality = 'low';
+        f.delivery.track(f.root); pump(); f.reply(); pump();
+        const sent = f.sent.at(-1).data;
+        expect(sent.kind).toBe('rigid'); expect(sent.source.quality).toBe('low');
+        expect(Object.keys(sent.source.attributes).sort()).toEqual(['normal', 'position', 'uv']);
+        f.reply({ indices: new Uint32Array([0, 2, 1]) }); expect(f.pass.entries.get(mesh).kind).toBe('rigid');
+        expect(f.pass.entries.has(unrelated)).toBe(false);
+        mount.removeFromParent(); f.root.dispatchEvent({ type: 'equipmentvisualschanged' });
+        expect(f.pass.entries.has(mesh)).toBe(false);
+    } finally { f.dispose(); }
+});

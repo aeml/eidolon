@@ -13,7 +13,7 @@ export async function buildGameplayGeometryWorker(root = repository) {
     const entry = path.join(destination, 'src/core/ActorGameplayGeometryWorker.js');
     const output = path.join(destination, 'src/core/ActorGameplayGeometryWorker.bundle.js');
     const delivery = path.join(destination, 'src/core/ActorGameplayGeometryDelivery.js');
-    for (const name of [entry, path.join(destination, 'src/art/GameplayBodyIndices.js'), path.join(destination, 'src/art/GameplayColorIndices.js'), path.dirname(output)]) {
+    for (const name of [entry, path.join(destination, 'src/art/GameplayBodyIndices.js'), path.join(destination, 'src/art/GameplayColorIndices.js'), path.join(destination, 'src/art/GameplayRigidIndices.js'), path.dirname(output)]) {
         if (!(await realpath(name)).startsWith(`${destination}${path.sep}`)) throw new Error('Worker sources must be copied inside the build tree');
     }
     try { if ((await lstat(output)).isSymbolicLink()) throw new Error('Worker output cannot be linked'); }

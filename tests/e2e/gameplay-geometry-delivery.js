@@ -42,6 +42,9 @@ export async function prepareGameplayGeometryDelivery(page) {
         if (state.originalRegister) pass.register = state.originalRegister;
         return { method: 'automatic-worker-exact-source-cache', milliseconds: performance.now() - started,
             body: { sources: [...pass.entries.values()].filter(row => /_Body$/.test(row.mesh.name)).length },
+            rigid: { sources: [...pass.entries.values()].filter(row => row.kind === 'rigid').length,
+                originalTriangles: [...pass.entries.values()].filter(row => row.kind === 'rigid').reduce((sum, row) => sum + row.source.index.count / 3, 0),
+                candidateTriangles: [...pass.entries.values()].filter(row => row.kind === 'rigid').reduce((sum, row) => sum + row.candidate.index.count / 3, 0) },
             installed: { registered: pass.entries.size,
                 originalTriangles: [...pass.entries.values()].reduce((sum, entry) => sum + entry.source.index.count / 3, 0),
                 candidateTriangles: [...pass.entries.values()].reduce((sum, entry) => sum + entry.candidate.index.count / 3, 0) },

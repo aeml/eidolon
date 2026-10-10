@@ -192,24 +192,25 @@ test('published geometry owner loads its immutable worker, retires streamed root
     expect(lifecycle.retired && lifecycle.reattached && lifecycle.disposed).toBe(true);
     expect([lifecycle.rootsAfter, lifecycle.jobsAfter, lifecycle.entriesAfter]).toEqual([0, 0, 0]);
     await context.setOffline(true);
-    let offline;
+    const offline = [];
     try {
-        offline = await page.evaluate(workerURL => new Promise((resolve, reject) => {
+        for (const kind of ['color', 'rigid']) offline.push({ kind, ...await page.evaluate(({ workerURL, kind }) => new Promise((resolve, reject) => {
             const worker = new Worker(workerURL, { type: 'module' });
             const timer = setTimeout(() => { worker.terminate(); reject(Error('Offline worker timeout')); }, 15_000);
             worker.onerror = () => { clearTimeout(timer); worker.terminate(); reject(Error('Offline worker failed')); };
             worker.onmessage = ({ data }) => { clearTimeout(timer); worker.terminate(); resolve({ id: data.id,
                 indices: data.indices?.length, error: data.error || null }); };
             const attribute = (array, itemSize) => ({ array: new Float32Array(array), itemSize });
-            worker.postMessage({ id: 7, kind: 'color', source: { index: new Uint32Array([0, 1, 2, 0, 2, 3]), attributes: {
+            worker.postMessage({ id: 7, kind, source: { quality: 'low', index: new Uint32Array([0, 1, 2, 0, 2, 3]), attributes: {
                 position: attribute([0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0], 3),
                 normal: attribute([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1], 3),
-                skinIndex: attribute(new Float32Array(16), 4),
-                skinWeight: attribute([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], 4)
+                ...(kind === 'rigid' ? { uv: attribute([0, 0, 1, 0, 1, 1, 0, 1], 2) } : {
+                    skinIndex: attribute(new Float32Array(16), 4),
+                    skinWeight: attribute([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], 4) })
             } } });
-        }), workerURL);
+        }), { workerURL, kind }) });
     } finally { await context.setOffline(false); }
-    expect(offline.id).toBe(7); expect(offline.error).toBeNull(); expect(offline.indices).toBeGreaterThan(0);
+    for (const row of offline) { expect(row.id).toBe(7); expect(row.error).toBeNull(); expect(row.indices).toBeGreaterThan(0); }
     await testInfo.attach('published-geometry-worker', { body: JSON.stringify({ startup, worker: metadata.worker,
         workerURL, lifecycle, offline }, null, 2), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
