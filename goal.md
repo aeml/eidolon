@@ -310,3 +310,20 @@ source561d392d/held1e60f126 corrects it with73 focused/2 native checks. Initial
 syntax failure and native failures retained. Stage after28 deployment is verified;
 no second public push while its release gates are outstanding. Full original
 roadmap, Low202draw failure, art/device/soak/beta/launch/handoff scope stays active.
+
+Jump29 follow-up is prepared locally as ce7846b3 after additional regression
+proved an older walking correction could replay after landing. f9479908 retires
+that correction while preserving the displayed takeoff offset;74 focused,466
+combined release checks and3 source/compiled-publication native checks pass.
+Not pushed while28 gates remain outstanding. Frozen15-entry handoff inventory
+a7fb3014f585ca9062462d55036739e36004871b2c5bee2d00c41eb539d4586f.
+Independent actual Low submission census5912fb46 changes QA only, retaining
+2fee/e8 runtime byte-exact. Actual1native pass/1skip and Go-race four-class14slot
+saves pass.32 rigid handgear color calls and24 procedural instance buckets;7
+compatible sibling groups estimate8 possible draw reductions. No optimization
+or draw gain accepted. Rigid simplifier currently rejects flat PBR attributes;
+material partitions and qualified index derivatives must survive any batching.
+26-entity146draw/69813triangle/16.7ms sample is a different population and does
+not close prior Low31-entity202draw failure. Missing ignored vendor preflight
+failed before accounts/DB, normal preparation resolved; both outcomes retained.
+Frozen60-entry census inventory9aa32ceeceabe932813cfc203dbcad7bfa094f932a16b1cbae76e0ac9f85416e.

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T18:45:45.652592+00:00",
+  "recordedUTC": "2026-10-10T18:58:51.433674+00:00",
   "classification": "Alpha1.79.27/a9d6fc9b deployed and release checks accepted: trusted public click-to-landing1429.7ms, endpoints0; all8assets/identities/database match; required CI38064138468 attempt1 succeeded. Native8expected/1skip/0unexpected/0flake, retry0; separate recovery2+1 pass. Optional routes remain skipped, original failures retained. Full original goal stays active.",
   "qualifiedRuntime": "Held1e60f126 retains e8eec1b9 default lazy geometry and conservative rigid actor shadows, plus motion/aura/admin corrections and qualified complete tuck/landing envelopes. High sampled budget passes, actualLow202draw failure remains. Lowview378a79a2 stays unselected.",
   "rejectedSourceCommits": [
@@ -102,7 +102,7 @@
   "currentReceipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: conservative rigid shadow influence implemented, exact native-qualified and selected only in held private milestone e8eec1b9. DefaultHigh180frames324draws/176626triangles/16.7ms median+p95 passes sampled limits; frozen390-to330draw RGB exact, original skins/shadows/content retained. ActualLow202draws fails200,79857triangles/16.7ms pass. SubsequentLowview378a79a2 passes90units/11native checks and exact pixels/2588triangle reduction, but154draws unchanged; strict actual native draw-gain assertion fails before final profile/save. Candidate kept unselected; original failure retained, no retry/waiver/public mutation.",
-  "nextAction": "Finish exact public28 CI/deployment/asset/database and live jump/walking-aura verification, then publish the already-qualified remaining midair tuck correction and verify its exact deployment. Resume actual Low batch/submission census afterward; source handgear topology shows per-primitive material seams and existing rigid simplifier rejects flat PBR attributes, so batching must preserve material partitions and qualified index derivatives. Do not relax native exact-pixel or200draw/85000triangle gates.",
+  "nextAction": "Verify public28 exact deployment/assets/database and live jump/aura behavior after requiredCI38076277436 finishes, then ordinarily push prepared29/ce7846b3 with the qualified remaining tuck/recovery/old-walking-correction fixes; verify exact29 CI/deployment and live behavior. Afterward use actual native handgear census to qualify8 potential material-compatible sibling submission reductions, preserving material partitions and current rigid index derivatives. Existing Low202draw failure and200draw/85000triangle gates remain open.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1827,5 +1827,38 @@
     "focusedPassed": 73,
     "nativePassed": 2,
     "published": false
+  },
+  "jumpCorrectionHandoff": {
+    "receipt": "docs/plans/2026-10-10-jump-correction-handoff-qualification.json",
+    "privateSource": "f9479908",
+    "heldRuntime": "d4942e15",
+    "publicCandidateRuntime": "4c8252e0",
+    "preparedRelease": "ce7846b3ebe1a767a0a91f8dfffd437a98a8186f",
+    "version": "Alpha 1.79.29",
+    "pushed": false,
+    "focusedPassed": 74,
+    "publicReleaseChecksPassed": 466,
+    "nativePassed": 3
+  },
+  "actualSubmissionCensus": {
+    "receipt": "docs/plans/2026-10-10-actual-actor-submission-census.json",
+    "source": "5912fb46",
+    "runtimeUnchanged": "2fee46ee/e8eec1b9",
+    "nativeExpected": 1,
+    "nativeSkipped": 1,
+    "actualGoRaceFourClassSaves": true,
+    "rigidHandgearColorCalls": 32,
+    "actorInstanceColorBuckets": 24,
+    "compatibleSiblingGroups": 7,
+    "potentialDrawReduction": 8,
+    "acceptedDrawGain": false,
+    "sample": {
+      "entities": 26,
+      "draws": 146,
+      "triangles": 69813,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7
+    },
+    "limitations": "Different population; no causal performance improvement or closure of prior Low31-entity202draw failure. No optimization selected."
   }
 }
