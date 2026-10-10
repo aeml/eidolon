@@ -71,6 +71,7 @@ var suspiciousCooldown = flag.Duration("suspicious-cooldown", 30*time.Second, "M
 var suspiciousLogFilePath = flag.String("suspicious-log-file", "logs/junk.log", "Path to log suspicious/non-client connections (empty disables file logging)")
 var economyMetricsFilePath = flag.String("economy-metrics-file", "logs/economy_metrics.jsonl", "Hourly gold source/sink metrics path (empty disables)")
 var qaUsernamesFlag = flag.String("qa-usernames", os.Getenv("EIDOLON_QA_USERNAMES"), "Comma-separated usernames allowed to use QA-only commands")
+var adminTestUsernamesFlag = flag.String("test-usernames", os.Getenv("EIDOLON_TEST_USERNAMES"), "Comma-separated automation accounts excluded from real-player administration views; grants no privileges")
 var qaTerrainElevationFlag = flag.Bool("qa-terrain-elevation", false, "Enable the Earth terrain integration candidate on an explicitly configured QA server")
 var terrainProfileFlag = flag.String("terrain-profile", os.Getenv("EIDOLON_TERRAIN_PROFILE"), "Server-owned terrain profile: flat-v1 (default) or earth-elevation-rocks-v1; does not enable QA commands")
 var adminBootstrapUsernamesFlag = flag.String("admin-bootstrap-usernames", os.Getenv("EIDOLON_ADMIN_BOOTSTRAP_USERNAMES"), "Comma-separated exact usernames allowed to bootstrap the durable admin role")
@@ -503,6 +504,10 @@ func main() {
 		os.Exit(2)
 	}
 	qaUsernames = parseQAUsernames(*qaUsernamesFlag)
+	adminTestUsernames = strings.FieldsFunc(*adminTestUsernamesFlag, func(r rune) bool { return r == ',' })
+	for i := range adminTestUsernames {
+		adminTestUsernames[i] = strings.TrimSpace(adminTestUsernames[i])
+	}
 	adminBootstrapUsernames = parseAdminBootstrapUsernames(*adminBootstrapUsernamesFlag)
 	closers, err := setupLogging()
 	if err != nil {

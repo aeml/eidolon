@@ -129,6 +129,91 @@ function createEngineHarness() {
 }
 
 describe('authoritative jump flow', () => {
+    const trajectoryPacket = (progress) => ({ state: 'JUMPING', x: 27 * progress, y: Math.sin(progress * Math.PI) * 10, z: 0,
+        jumpStartX: 0, jumpStartY: 0, jumpStartZ: 0, jumpTargetX: 27, jumpTargetY: 0, jumpTargetZ: 0,
+        jumpDuration: 1.3, jumpHeight: 10, jumpProgress: progress });
+
+    test('accepting a predicted trajectory preserves the takeoff clock and animation', () => {
+        const engine = createEngineHarness();
+        engine.startPlayerJump(new THREE.Vector3(27, 0, 0));
+        engine.updatePlayerJump(.1);
+        engine.applyPlayerJumpVisuals();
+        const before = engine.getJumpVisualProgress(engine.playerJumpState);
+        engine.syncAuthoritativeJumpState(engine.player, trajectoryPacket(.02));
+        expect(engine.player.playJumpAnimation).toHaveBeenCalledTimes(1);
+        expect(engine.getJumpVisualProgress(engine.playerJumpState)).toBeCloseTo(before, 8);
+    });
+
+    test('accepted local flight advances continuously between sparse or reordered snapshots', () => {
+        const engine = createEngineHarness();
+        engine.startPlayerJump(new THREE.Vector3(27, 0, 0));
+        engine.syncAuthoritativeJumpState(engine.player, trajectoryPacket(0));
+        const xs = [0];
+        for (let frame = 1; frame <= 60; frame++) {
+            if (frame % 6 === 0) {
+                const packet = trajectoryPacket(Math.max(0, (frame - 4) / 78));
+                engine.syncAuthoritativeJumpState(engine.player, frame % 12 === 0 ? { state: packet.state, x: packet.x, y: packet.y, z: packet.z, jumpProgress: packet.jumpProgress } : packet);
+                expect(engine.playerJumpState.hasAuthoritativeTrajectory).toBe(true);
+            }
+            engine.updatePlayerJump(1 / 60);
+            engine.applyPlayerJumpVisuals();
+            xs.push(engine.player.mesh.position.x);
+        }
+        const steps = xs.slice(1).map((x, i) => x - xs[i]);
+        expect(Math.max(...steps) - Math.min(...steps)).toBeLessThan(.001);
+        expect(xs.at(-1)).toBeCloseTo(27 / 1.3, 5);
+    });
+
+    test('a slightly early landing packet lets the rendered trajectory reach its endpoint', () => {
+        const engine = createEngineHarness();
+        engine.startPlayerJump(new THREE.Vector3(27, 0, 0));
+        engine.syncAuthoritativeJumpState(engine.player, trajectoryPacket(0));
+        engine.updatePlayerJump(1.2);
+        engine.applyPlayerJumpVisuals();
+        const before = engine.player.mesh.position.clone();
+        engine.clearAuthoritativeJumpState(engine.player);
+        engine.applyPlayerJumpVisuals();
+        expect(engine.player.mesh.position.distanceTo(before)).toBeLessThan(.001);
+        engine.updatePlayerJump(.1);
+        engine.applyPlayerJumpVisuals();
+        expect(engine.playerJumpState).toBeNull();
+        expect(engine.player.mesh.position.distanceTo(new THREE.Vector3(27, 0, 0))).toBeLessThan(.001);
+    });
+
+    test('remote landing keeps the endpoint and advances its pose on the render clock', () => {
+        const engine = createEngineHarness();
+        const peer = { position: new THREE.Vector3(25, 0, 0), rotation: new THREE.Quaternion(),
+            mesh: new THREE.Group(), jumpVisualState: { end: new THREE.Vector3(27, 0, 0) } };
+        engine.remotePlayers.set('peer', peer);
+        engine.finishRemoteJumpVisual(peer);
+        engine.applyEntityJumpVisuals(peer, null);
+        expect(peer.mesh.position.x).toBe(27);
+        expect(peer.position.x).toBe(25);
+        expect(peer.mesh.scale.toArray()).toEqual([1, 1, 1]);
+        engine.updateRemoteJumpVisuals(.09);
+        engine.applyEntityJumpVisuals(peer, null);
+        expect(peer.mesh.scale.y).toBeLessThan(1);
+        engine.updateRemoteJumpVisuals(.09);
+        engine.applyEntityJumpVisuals(peer, null);
+        expect(peer.mesh.scale.toArray()).toEqual([1, 1, 1]);
+        expect(peer.mesh.quaternion.angleTo(peer.rotation)).toBeLessThan(1e-6);
+        expect(peer.jumpLandingVisual).toBeNull();
+    });
+
+    test.each(['Fighter', 'Rogue', 'Cleric', 'Wizard'])('%s jump root pose is continuous at takeoff and landing', className => {
+        const engine = createEngineHarness();
+        const actor = engine.player;
+        actor.constructor = { name: className };
+        const state = { progress: 0, visualHeight: 0 };
+        engine.applyEntityJumpVisuals(actor, state);
+        expect(actor.mesh.scale.distanceTo(new THREE.Vector3(1, 1, 1))).toBeLessThan(.001);
+        expect(actor.mesh.quaternion.angleTo(actor.rotation)).toBeLessThan(.001);
+        state.progress = 1;
+        engine.applyEntityJumpVisuals(actor, state);
+        expect(actor.mesh.scale.distanceTo(new THREE.Vector3(1, 1, 1))).toBeLessThan(.001);
+        expect(actor.mesh.quaternion.angleTo(actor.rotation)).toBeLessThan(.001);
+    });
+
     test.each([15, 20, 30, 60, 144])('a long jump reserves network latency with 1.3-second flight at %i rendered frames per second', fps => {
         const engine = createEngineHarness();
         engine.lastTime = 0;
@@ -437,7 +522,7 @@ describe('authoritative jump flow', () => {
         engine.applyPlayerJumpVisuals();
 
         expect(engine.player.mesh.position.y).toBeGreaterThan(5);
-        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(2.3);
+        expect(new THREE.Vector3(0, 1, 0).applyQuaternion(engine.player.mesh.quaternion).y).toBeLessThan(0);
     });
 
     test('self authoritative jump visually interpolates toward new server jump packets instead of snapping mesh horizontally', () => {
@@ -747,10 +832,10 @@ describe('authoritative jump flow', () => {
         engine.updatePlayerJump(1 / 60);
         engine.applyPlayerJumpVisuals();
 
-        expect(engine.player.mesh.quaternion.angleTo(engine.player.rotation)).toBeGreaterThan(1.2);
+        expect(new THREE.Vector3(0, 1, 0).applyQuaternion(engine.player.mesh.quaternion).z).toBeLessThan(0);
     });
 
-    test('clearing a server-driven jump snaps the player back to the landing height instead of leaving them airborne', () => {
+    test('clearing a server-driven jump finishes the remaining flight before restoring the grounded pose', () => {
         const engine = createEngineHarness();
         engine.player.state = 'JUMPING';
         engine.player.position.set(18, 4.5, 6);
@@ -773,6 +858,8 @@ describe('authoritative jump flow', () => {
         });
 
         engine.clearAuthoritativeJumpState(engine.player);
+        expect(engine.playerJumpState.landingPending).toBe(true);
+        engine.updatePlayerJump(.08);
         engine.applyPlayerJumpVisuals();
 
         expect(engine.playerJumpState).toBeNull();
@@ -968,10 +1055,11 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.mesh.scale.y).toBeLessThan(1.01);
         expect(remoteEntity.mesh.scale.z).toBeGreaterThan(1.05);
 
+        remoteEntity.jumpVisualState.visualProgress = 0.8;
         remoteEntity.jumpVisualState.progress = 0.8;
         remoteEntity.jumpVisualState.visualHeight = Math.sin(0.8 * Math.PI) * remoteEntity.jumpVisualState.height;
         engine.applyEntityJumpVisuals(remoteEntity, remoteEntity.jumpVisualState);
-        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.2);
+        expect(new THREE.Vector3(0, 1, 0).applyQuaternion(remoteEntity.mesh.quaternion).z).toBeLessThan(0);
 
         engine.clearAuthoritativeJumpState(remoteEntity);
         engine.updateRemoteJumpVisuals(remoteEntity.jumpVisualState.duration);
@@ -1043,7 +1131,7 @@ describe('authoritative jump flow', () => {
         expect(remoteEntity.jumpVisualState.visualHeight).toBeGreaterThan(5);
         expect(remoteEntity.mesh.position.x).toBeCloseTo(5, 5);
         expect(remoteEntity.mesh.position.y).toBeGreaterThan(5);
-        expect(remoteEntity.mesh.quaternion.angleTo(remoteEntity.rotation)).toBeGreaterThan(1.2);
+        expect(new THREE.Vector3(0, 1, 0).applyQuaternion(remoteEntity.mesh.quaternion).z).toBeGreaterThan(0);
     });
 
     test('remote authoritative jump without explicit metadata still builds a visible airborne arc from replicated travel', () => {

@@ -939,7 +939,7 @@ class GameEngineRuntimeMethods {
         for (let i = 0; i < activeEntities.length; i++) {
             const entity = activeEntities[i];
             if (entity.isActive) {
-                if (entity !== this.player && entity.jumpVisualState) {
+                if (entity !== this.player && (entity.jumpVisualState || entity.jumpLandingVisual)) {
                     this.applyEntityJumpVisuals(entity, entity.jumpVisualState);
                 } else {
                     entity.render(alpha);

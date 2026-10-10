@@ -2,6 +2,7 @@ package database
 
 import (
 	"errors"
+	"regexp"
 	"strings"
 	"time"
 
@@ -10,13 +11,26 @@ import (
 )
 
 // Naming convention of existing disposable automation accounts, not a claim
-// to detect every bot or a rule that QA/admin privileges imply test accounts.
-const adminTestAccountPattern = `^(codex-|codexq-|codexqa-|loadtest-|resource-journal-)`
+// to detect every bot. Explicit deployment test accounts are separate from
+// QA command privileges and administrator roles.
+const adminTestAccountPattern = `^(codex-|codexq-|codexqa-|loadtest-|resource-journal-|jump[0-9]+-[0-9a-f]{12}$)`
 
-func IsAdminTestAccount(account string) bool {
+// Historical live jump verification used this exact generated account shape.
+// Keep it narrow so ordinary names such as jump27-player stay real players.
+var adminJumpFixtureAccount = regexp.MustCompile(`(?i)^jump[0-9]+-[0-9a-f]{12}$`)
+
+func IsAdminTestAccount(account string, testAccounts ...string) bool {
 	account = strings.ToLower(account)
+	if adminJumpFixtureAccount.MatchString(account) {
+		return true
+	}
 	for _, prefix := range []string{"codex-", "codexq-", "codexqa-", "loadtest-", "resource-journal-"} {
 		if strings.HasPrefix(account, prefix) {
+			return true
+		}
+	}
+	for _, testAccount := range testAccounts {
+		if strings.EqualFold(account, testAccount) {
 			return true
 		}
 	}
@@ -27,18 +41,24 @@ func ValidAdminPopulation(population string) bool {
 	return population == "" || population == "real" || population == "all" || population == "tests"
 }
 
-func AdminPopulationIncludes(account, population string) bool {
+func AdminPopulationIncludes(account, population string, testAccounts ...string) bool {
 	if !ValidAdminPopulation(population) {
 		return false
 	}
-	return population == "all" || (population == "tests") == IsAdminTestAccount(account)
+	return population == "all" || (population == "tests") == IsAdminTestAccount(account, testAccounts...)
 }
 
-func addAdminPopulationFilter(filter bson.M, population string) error {
+func addAdminPopulationFilter(filter bson.M, population string, testAccounts ...string) error {
 	if !ValidAdminPopulation(population) {
 		return errors.New("invalid player population")
 	}
-	pattern := primitive.Regex{Pattern: adminTestAccountPattern, Options: "i"}
+	patternText := adminTestAccountPattern
+	for _, account := range testAccounts {
+		if account != "" {
+			patternText += "|^" + regexp.QuoteMeta(AdminActivityAccountKey(account)) + "$"
+		}
+	}
+	pattern := primitive.Regex{Pattern: patternText, Options: "i"}
 	clauses := bson.A{bson.M{"actor": pattern}, bson.M{"target": pattern}}
 	switch population {
 	case "all":

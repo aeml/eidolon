@@ -624,7 +624,12 @@ jobs:
           qa_env_tmp="$(mktemp .env.qa.XXXXXX)"
           trap 'rm -f "${qa_env_tmp}"' EXIT
           awk -v value="${qa_usernames}" '
-            BEGIN { found = 0 }
+            BEGIN { found = 0; tests = 0 }
+            /^EIDOLON_TEST_USERNAMES=/ {
+              print "EIDOLON_TEST_USERNAMES=" value
+              tests = 1
+              next
+            }
             /^EIDOLON_QA_USERNAMES=/ {
               print "EIDOLON_QA_USERNAMES=" value
               found = 1
@@ -633,6 +638,7 @@ jobs:
             { print }
             END {
               if (!found) print "EIDOLON_QA_USERNAMES=" value
+              if (!tests) print "EIDOLON_TEST_USERNAMES=" value
             }
           ' .env > "${qa_env_tmp}"
           chmod --reference=.env "${qa_env_tmp}"

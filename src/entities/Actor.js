@@ -262,6 +262,9 @@ export class Actor extends Entity {
     }
 
     syncPresentationTransform() {
+        // Interpolation, jump/correction and visual separation have now placed
+        // the mesh for this frame. World-space auras must follow that pose.
+        this.attachedStatusEffects.forEach(effect => effect.update(0));
         this.spiritEffect?.syncToSource?.(true);
     }
 
@@ -1295,7 +1298,7 @@ export class Actor extends Entity {
                 if (this.currentAction !== this.animations['Death'] && this.animations['Death']) {
                     this.playAnimation('Death', false);
                 }
-            } else if (this.state === 'JUMPING') {
+            } else if (this.state === 'JUMPING' || this.jumpVisualState) {
                 if (!this.jumpAnimationRestore) {
                     this.playJumpAnimation(this.jumpVisualState);
                 } else {
