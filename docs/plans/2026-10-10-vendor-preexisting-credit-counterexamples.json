@@ -1,0 +1,64 @@
+{
+  "recordedUTC": "2026-10-10T13:22:40.956384+00:00",
+  "status": "Private controlled counterexamples established. No Gold behavior repair, deployment or release acceptance.",
+  "baseCommit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+  "sourceCommit": "8c9aa23686b31daf614f9e1a1f723c7efe5c7067",
+  "sourcePins": {
+    "server/vendor_preexisting_credit_integration_test.go": "5e3d72a24365d254be147fd3af4b01faf382e44f4ab32667c7329a2a7f92b851",
+    "tests/e2e/vendor-preexisting-credit.spec.js": "76126e6d45e44b751693622140bda0d26e1eadf3a40030d4b8e64b03bf3934cc",
+    "tests/e2e/helpers.js": "dbd3bd52386455156ee66321e3e7aa3088cbd999e8e6f034a420d3c30d0756cc"
+  },
+  "production": "All2727 tracked production source/assets/package/protocol files in the explicit source-proof set match deployed25. Only two opt-in QA files and an inaccurate bag-before-Gold comment changed. No economy/runtime/persistence mutation changes.",
+  "mechanism": "A preceding real175/242Gold vendor sale is accepted by the actual server while all following messages are held FIFO. Retained original boss gear fills its freed slot. Releasing the unmodified messages across the next sale or stash snapshot reproduces the exact overshoot sizes, with no invented packets, balance edits, loot deletion or assertion relaxation.",
+  "saleCounterexample": {
+    "report": "diagnostic/playwright-report",
+    "nativeCase": "pass29.6s, zero retries",
+    "oldHelperExpectedGold": 1175,
+    "actualGold": 1417,
+    "precedingCredit": 242,
+    "sales": 2,
+    "freshLoginExact": true,
+    "limit": "The other stash harness case failed, so diagnostic overall native1expected/1unexpected and Go failed. Direct Mongo assertions were not reached for this sale case; browser fresh login may reuse the live actor. Not an overall suite or durable-save qualification."
+  },
+  "stashCounterexample": {
+    "report": "stash-qualified-v2/playwright-report",
+    "native": "one pass20.4s, total21.7s, zero retries/flaky/skips/unexpected",
+    "GoRace": "pass26.93s/package27.996s",
+    "oldHelperExpectedGold": 1000,
+    "actualGold": 1175,
+    "precedingCredit": 175,
+    "sales": 1,
+    "freshLoginExact": true,
+    "database": "Exact saved1175Gold/43EP, equipment, original item metadata/custody, no buyback, pending earned loot collected, post-run logout verified.",
+    "server": "Actual built-race deployed25 product; all three retained server logs have zero race/crash/recovered-worker markers."
+  },
+  "negativeEvidence": [
+    "Baseline native0expected/2unexpected and Go failure44.021s retained. Sale reproduced1175versus1417, but assertion inspected ANSI-colored text without stripping controls. Stash matcher assumed a specific function-source layout and never armed.",
+    "Diagnostic native1expected/1unexpected44.9s and Go failure50.121s retained. Sale counterexample passes; stash observer attachment proves no preceding sale was sent, so that case does not count as a counterexample.",
+    "Preflight EADDRINUSE before any test launch retained separately. No listener remained; supervisor port probe corrected to use SO_REUSEADDR for TIME_WAIT.",
+    "Final selected stash alone used whitespace-independent function-source fields and passed. The already qualified sale native case was not rerun."
+  ],
+  "privacy": "Synthetic credentials kept in process env only; all actual native reports sanitized before immediate archive; recordings disabled. Sanitized copied server logs and plaintext/embedded-report identifier scans pass.",
+  "originalLiveFinding": "RequiredCI38051193149 remains failure. The original242/175Gold sequence is compatible with a preceding credit but the original live cause is NOT established by these deliberately scheduled counterexamples. No QA invariant waived.",
+  "next": "Trace which real transaction or state snapshot precedes the live QA baseline. Qualify a source-specific synchronization repair with strict balances/custody/save checks before any successor release. A correlated read-only authoritative wallet baseline is one candidate, subject to the existing5requests/10s limit and exact owner/request matching; no timer-only settle or >= assertion.",
+  "public": {
+    "recordedUTC": "2026-10-10T13:21:28.511532+00:00",
+    "normalTLS": true,
+    "frontend": {
+      "version": "Alpha 1.79.25",
+      "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79"
+    },
+    "backend": {
+      "version": "Alpha 1.79.25",
+      "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+      "status": "ok",
+      "database": "ready"
+    }
+  },
+  "fullGoal": "Active, unchanged1.11\u20131.99 scope and final gates.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-vendor-gold-coherence-checks-20261010",
+    "inventoryEntries": 59,
+    "inventorySHA256": "f151554f2863af27b40d44ac246e6a1d42360f0d29b00b0b0d03a49594c61e92"
+  }
+}
