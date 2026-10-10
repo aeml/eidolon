@@ -1,0 +1,99 @@
+{
+  "recordedUTC": "2026-10-10T21:56:38.963227+00:00",
+  "source": "59004143652a498123d053039e4503c4da7d5735",
+  "runtime": "e474d774; later commits QA only",
+  "selected": false,
+  "productDefault": false,
+  "publication": "None; private opt-in per-instance clipping on previous whole-bucket reference",
+  "focused": {
+    "suites": 3,
+    "passed": 74
+  },
+  "native": {
+    "passed": 8,
+    "retries": 0,
+    "clippedComparisons": 24,
+    "wholeBucketControls": 24,
+    "rgbError": 0,
+    "frameFailureCleanup": true,
+    "nativeGeometryTextureCountersReturned": true
+  },
+  "scope": "Stock per-instance clipping inside already-qualified same-origin actor multi-draw. Exact shader geometry/float32matrices retained; each color/shadow camera applies its own conservative geometry sphere. Displacement and explicit no-cull buckets keep whole-bucket reference. Actual ownedLow Go-race/four-class14slot saves pass; same frozen165\u2192148draws,81418\u219278748triangles,RGB0,2670triangles omitted outside actual pass view. Normal40entity Low135draws/78808triangles/16.7median16.8p95 passes sampled limits. Different population from priorLow87602failure: do not erase it or historicalHigh389/Low202failures. Animated fixture initially lacked partially visible buckets; strict required triangle-gain assertion failed until spread-out actors were added without gate relaxation. No actual connectedHigh for this opt-in source. Separate ordinary-default startup candidate d2a82c66 now being qualified; no held/public selection or whole-game/device/art/soak/beta/launch claim.",
+  "sanitization": {
+    "preparedAccounts": 4,
+    "plainFilesScanned": 55,
+    "embeddedEntriesScanned": 11,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled"
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-actor-instance-frustum-checks-20261010",
+  "inventorySHA256": "a0738d060f92ac48e3de4fd6dbd653facee09bb53fdb227f45871fd1cf30eec2",
+  "connectedParty": {
+    "low": {
+      "terminal": {
+        "exitCode": 0,
+        "startedUnix": 1791669098.9874785,
+        "finishedUnix": 1791669134.4905365,
+        "commit": "e78061e84fb94a416753c3b41285d2311cfc9ba3"
+      },
+      "actualNative": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "goRace": true,
+      "markers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "sameSceneMultiDrawComparison": {
+        "reference": {
+          "calls": 165,
+          "triangles": 81418,
+          "geometries": 442,
+          "textures": 285
+        },
+        "candidate": {
+          "calls": 148,
+          "triangles": 78748,
+          "geometries": 480,
+          "textures": 361
+        },
+        "referenceAgain": {
+          "calls": 165,
+          "triangles": 81418,
+          "geometries": 442,
+          "textures": 285
+        },
+        "changedRGB": 0,
+        "unstableRGB": 0,
+        "allocated": {
+          "groups": 38,
+          "geometryBytes": 827136,
+          "matrixTextureBytes": 54272,
+          "indirectTextureBytes": 2936
+        },
+        "perInstanceFrustum": true,
+        "restored": true,
+        "scope": "Same frozen actual four-class party; stock multi-draw on existing exact cell origins/materials/geometry/float32 matrices with original whole-bucket per-camera culling and color/shadow ordering, plus explicitly flagged stock per-instance clipping when recorded. Candidate selected only for following private normal180frame profile. No production/default enablement or historical performance waiver."
+      },
+      "sampledDrawBudget": 200,
+      "sampledDrawBudgetPassed": true,
+      "profile": {
+        "frames": 180,
+        "drawCallsMedian": 135,
+        "trianglesMedian": 78808,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 16.8,
+        "activeEntitiesMin": 40,
+        "activeEntitiesMax": 40
+      }
+    }
+  }
+}

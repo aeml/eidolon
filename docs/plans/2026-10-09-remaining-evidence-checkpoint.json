@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T21:49:07.157004+00:00",
+  "recordedUTC": "2026-10-10T21:59:41.303598+00:00",
   "classification": "Progress: exact public29 motion/admin fixes accepted; private same-cell actor multi-draw now technically qualified with actual High/Low saved parties,71focused checks and22exact native image comparisons. ActualLow87602triangle failure prevents selection. Full original goal remains active.",
   "qualifiedRuntime": "Held6db97317 retains e8eec1b9 default lazy geometry/conservative actor shadows and verified public29 motion/admin fixes. Actual historical Low202draw failure remains open. Private rigid surfaces10098530 and same-cell multi-draw9a93a779 remain isolated, unselected and unpublished.",
   "rejectedSourceCommits": [
@@ -101,8 +101,8 @@
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
   "currentReceipt": "docs/plans/2026-10-10-public29-terminal-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: user-requested jump/aura/admin fixes accepted live at exact public29/12e5e3c4,CI38078784320 success attempt1;8native pass1skip0flake0retry plus3recovery pass. Normal TLS8assets,frontend/backend/database match. Trusted native jump1396.8ms,path/backsteps/aura/endpoints0;walking88genuine frames,auraerror0. Real-Mongo classification fixture1pass0skip and6configured QA identities excluded. Full original goal remains unfinished; private rigid batching stays unselected with High389draw failure and historical Low202failure open.",
-  "nextAction": "Attribute actual Low87602triangle cost and qualify bounded geometry/visibility improvements with exact RGB, supplied silhouettes/equipment, current poses, source float32 matrices and unchanged85000triangle/200draw limits. Existing stock BatchedMesh can test conservative per-instance camera clipping separately from the now-qualified whole-original-bucket path; keep the latter as the reference and preserve strict visual gates. Then default/startup/pool/dynamic memberships and representative crowded High/Low/device/world/contact/combat proof are still required. Historical High389/Low202 failures remain retained. Public29 unchanged; art/device/owner-deferred campaigns/failed24hsoak/F1\u2013F5/beta/launch/handoff remain open.",
+  "previousGoalTurnClassification": "progress: completed actual live submission attribution and implemented/corrected an isolated same-cell actor multi-draw candidate. Original color-depth/shadow-scene ordering bug reproduced by nativeRGB failures and fixed without changing strict0 gate.71focused,12animated/far/sheared native comparisons,10recorded238instance/72bucket/3origin views preserve exactRGB and triangles; owned resources return and injected failure restores original visibility. Actual four-class fourteen-slot Go-race parties pass both qualities. High242draw/162655triangles/16.7median+p95 sampled limits pass; Low178draw passes200 but87602triangles FAIL85000. Candidate stays unselected/unpublished; all original scope open.",
+  "nextAction": "Finish exact automatically enabled default startup High/Low owned native/saved-party runs with original350/200draw,250000/85000triangle,20msmedian/33.4p95 gates; account for failed pairedHigh comparison separately. Then freeze receipts and select only qualified runtime into held integration, preserving optional rigid handgear pilot/default=false, source silhouettes and full original roadmap. World/contact/combat/device/art/failed24hsoak/F1\u2013F5/beta/launch/handoff remain open.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: completed actual live submission attribution and implemented/corrected an isolated same-cell actor multi-draw candidate. Original color-depth/shadow-scene ordering bug reproduced by nativeRGB failures and fixed without changing strict0 gate.71focused,12animated/far/sheared native comparisons,10recorded238instance/72bucket/3origin views preserve exactRGB and triangles; owned resources return and injected failure restores original visibility. Actual four-class fourteen-slot Go-race parties pass both qualities. High242draw/162655triangles/16.7median+p95 sampled limits pass; Low178draw passes200 but87602triangles FAIL85000. Candidate stays unselected/unpublished; all original scope open.",
+  "currentGoalTurnClassification": "progress: implemented private per-instance stock frustum clipping,74focused and48exact native comparisons including24whole-bucket controls pass. ActualLow40entity135draw/78808triangle/16.7median16.8p95 and Go-race four-class14slot saves pass. Initial animated fixture lacked partial buckets; spread-out actors added while preserving strict visual and reduction gates. Separate normal-startup default d2a82c66 passes99focused/eightnative and two default pool/fallback checks; first High paired helper failed strict triangle-gain assertion despite exactRGB/12draw improvement/equal triangles. Retained failure; normal automatic default qualification now enforces original whole-frame budgets without manual comparison installation. High/Low startup runs pending.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -2074,5 +2074,29 @@
       "ownedIndirectTextureBytes": 2292
     },
     "remaining": "Actual Low87602triangles exceeds85000; historical High389draw andLow202draw failures retained. Native rendering equivalence and measured submissions qualified, but ordinary default/startup/pool/dynamic membership/representative whole-game/device acceptance remains open. No runtime selected into held branch or public29."
+  },
+  "actorInstanceFrustum": {
+    "receipt": "docs/plans/2026-10-10-actor-instance-frustum-qualification.json",
+    "source": "59004143",
+    "runtime": "e474d774",
+    "selected": false,
+    "focusedPassed": 74,
+    "nativePassed": 8,
+    "clippedComparisons": 24,
+    "wholeBucketControls": 24,
+    "rgbError": 0,
+    "actualOwnedLow": {
+      "drawCallsMedian": 135,
+      "trianglesMedian": 78808,
+      "activeEntities": 40,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "sameSceneTrianglesBefore": 81418,
+      "sameSceneTrianglesAfter": 78748,
+      "sameSceneRGBError": 0,
+      "goRaceFourClassFourteenSlotSaves": true
+    },
+    "inventorySHA256": "a0738d060f92ac48e3de4fd6dbd653facee09bb53fdb227f45871fd1cf30eec2",
+    "limits": "Different population cannot erase Low87602/High389/Low202 failures. Separate automatically enabled default candidate d2a82c66 under qualification, not yet held/public selected."
   }
 }
