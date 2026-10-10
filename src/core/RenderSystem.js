@@ -11,6 +11,7 @@ import { CONSTANTS } from './Constants.js';
 import { SceneryVisibility } from './SceneryVisibility.js';
 import { ActorContactShadows } from './ActorContactShadows.js';
 import { ActorInstanceBatches } from '../art/ActorInstanceBatches.js';
+import { ActorInstanceShadowView } from '../art/ActorInstanceShadowView.js';
 import { ActorGameplayGeometryRuntime } from './ActorGameplayGeometryRuntime.js';
 import { updateFoliageRenderQuality } from '../art/FoliageRenderBatches.js';
 import { updateElementalGroundCoverQuality } from '../art/ElementalGroundCover.js';
@@ -155,6 +156,7 @@ export class RenderSystem {
         };
         this.scene.onAfterRender = () => this.foliageShadowInfluence.endFrame();
         this.actorInstances = null;
+        this.actorShadowView = null;
         // Prepared policy stays disabled until complete frame/device/art gates.
         this.actorGameplayGeometry = null;
         this.setActorInstancesEnabled(true);
@@ -1059,7 +1061,17 @@ export class RenderSystem {
         if (enabled && !this.actorInstances) {
             this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup]);
         } else if (!enabled && this.actorInstances) {
+            this.setActorShadowViewEnabled(false);
             this.actorInstances.dispose(); this.actorInstances = null;
+        }
+    }
+
+    setActorShadowViewEnabled(enabled) {
+        if (this._disposed) return;
+        if (enabled && !this.actorShadowView) {
+            this.actorShadowView = new ActorInstanceShadowView(this.renderer, this.scene, this.actorInstances);
+        } else if (!enabled && this.actorShadowView) {
+            this.actorShadowView.dispose(); this.actorShadowView = null;
         }
     }
 
@@ -1102,6 +1114,7 @@ export class RenderSystem {
     }
 
     clearInstanceScene() {
+        this.setActorShadowViewEnabled(false);
         this.actorGameplayGeometry?.clear();
         this.actorInstances?.clear();
         this.actorContactShadows?.clear();
@@ -1287,6 +1300,7 @@ export class RenderSystem {
         if (this._disposed) return;
         this._disposed = true;
         this._initialViewPreparation?.finish(false);
+        this.actorShadowView?.dispose(); this.actorShadowView = null;
         this.actorGameplayGeometry?.dispose(); this.actorGameplayGeometry = null;
         this.actorInstances?.dispose(); this.actorInstances = null;
         this.foliageShadowInfluence?.dispose();

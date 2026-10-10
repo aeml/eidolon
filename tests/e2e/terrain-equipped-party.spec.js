@@ -10,6 +10,7 @@ import { prepareActorInstanceViewPilot } from './actor-instance-view-pilot.js';
 import { measurePartyMatrixOwners } from './party-matrix-observation.js';
 import { compareGameplayGeometryFrames } from './geometry-frame-comparison.js';
 import { captureGameplayGeometryParty } from './gameplay-geometry-party.js';
+import { compareActorShadowGameplay } from './actor-shadow-gameplay.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -460,6 +461,11 @@ test('single native renderer observes three live equipped party socket peers on 
         if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1' || process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY === '1') {
             await captureGameplayGeometryParty(page, testInfo);
             recordPeerLiveness('geometry-lifecycle-prepared');
+        }
+        if (process.env.EIDOLON_E2E_ACTOR_SHADOW_GAMEPLAY === '1') {
+            const comparison = await compareActorShadowGameplay(page);
+            await writeFile(testInfo.outputPath('actor-shadow-gameplay.json'), JSON.stringify(comparison, null, 2));
+            recordPeerLiveness('actor-shadow-compared');
         }
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
