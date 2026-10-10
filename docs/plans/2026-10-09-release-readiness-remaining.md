@@ -14,12 +14,16 @@ successfully on attempt1; required native/live checks and retained artifacts
 were independently inspected, and frontend/backend identities, database readiness
 and six public file hashes agree. Optional scopes remain skipped, not passed.
 See the [exact acceptance receipt](2026-10-09-ready22-actor-publisher.json).
-Actions run `37967212738` was not restarted or cancelled. The separately running
-soak `37880032315` remains untouched; requery its exact state when needed.
+Actions run `37967212738` was not restarted or cancelled. The separate 24-hour
+soak `37880032315`, attempt 1 at `dc7d22f2`, completed **failure** on October 10;
+evidence upload succeeded. Seven read errors and only 20.2538 minutes of common
+100-client coverage fail acceptance. All 1,440 ready minute samples do not explain
+the lost connections. No restart/cancel or replacement soak was performed.
 
 | Work | Current evidence and status | Next required result / owner |
 | --- | --- | --- |
 | Current release | 1.79.22 deployed/verified at exact30a8b603 with all ten CI jobs successful | Reuse accepted22 scope; the next coherent milestone needs its own exact CI/live/assets/readiness acceptance / implementation |
+| Long-soak failure and transport diagnosis | Run 37880032315 failed with 7 read errors; min 32,327 frames/1,222,837 ms per client independently fails the 432,000 frames/77,760,000 ms requirements. All 1,440 health samples ready, max 340 goroutines/155,593,816 heap bytes, no broadcast drops; transport cause unknown. Private additive first-observed closure counters and real socket/race regressions address missing diagnostics | Keep failure open. Counters are prospective evidence, not a repair or 24-hour acceptance. Include with a coherent milestone, qualify exact deployed server/live behavior, investigate concrete closure evidence without relaxing queues/timeouts/acceptance or restarting unchanged long runs. [Failure and diagnostics receipt](2026-10-10-soak-transport-diagnostics.json) / implementation |
 | Raised terrain and atlas | Retained raised candidate `33f536c4` including staged rollout guards; functional save/profile/grounding, equipped solo road budgets and atlas receipts exist. Production activation held | Integrate this candidate deliberately; finish coherent art and equipped-party/device qualification, then matching client/server/profile rollout and compatible return-to-flat verification / implementation |
 | Terrain rollout guards | New owned candidate validates profile before mutations, passes it to preflights and checks initialized-world health. Focused race and real-process HTTP/login checks passed; **staged, not deployed** | Include with the coherent terrain milestone and obtain its own exact deployment acceptance; [receipt](2026-10-09-terrain-rollout-readiness-checks.json) / implementation |
 | Ground-cover performance | Private spatial-batching candidate preserves every High13087/Low7439 plant, exact native image/wind output and GPU cleanup; supported multi-draw only, established fallback retained. Raised movement/aim/shadows and actual equipped-party saves pass. Paired connected scene saves about2–3ms CPU median, but High median33.3–33.4ms/p9550.0–50.1ms still fail the whole-game budget | Keep held with raised milestone; investigate measured scene-projection/world-matrix/bounds/shadow costs, then qualify actual equipped party and supported devices. No plant removal, budget reduction or public microrelease; [scoped receipt](2026-10-09-understory-spatial-checks.json) / implementation |

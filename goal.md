@@ -1,5 +1,20 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October 10 failed-soak transport diagnostics:** Run 37880032315, attempt 1
+at `dc7d22f2`, completed failure; evidence upload succeeded. Seven read errors and
+only 20.2538 minutes of common 100-client coverage leave the 24-hour gate failed.
+All 1,440 health samples remained ready, max 340 goroutines/155,593,816 heap bytes,
+but retained logs cannot establish the server-side closure cause. Prospective
+bounded first-observed closure counters distinguish local policy/overflow,
+reader/writer failure and cleanup without account/address/peer text or policy
+changes. Real sockets/race, ordinary assembly-timeout and unchanged soak-policy
+regressions qualify their diagnostic scope; the initial broader race failure
+exposed a loadout fixture's unjoined background work and was corrected at the
+fixture boundary. [Failure, verification and limits](docs/plans/2026-10-10-soak-transport-diagnostics.json).
+No replacement long soak, public microrelease, failure acceptance or claim of
+underlying repair. Continue measured High frame cost and all inherited 1.11–1.99/
+art/Q/CB/F1–F5/device/operations/rights/owner/human/beta/launch/handoff gates.
+
 **October10 actor view and incoming-shadow pilot:** Optional source-preserving
 filter passes91focused checks and70strict zero-RGB native comparisons, including
 animation, distant coordinates, cell boundaries, unknown lights and draw-failure

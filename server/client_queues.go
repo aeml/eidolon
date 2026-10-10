@@ -19,6 +19,7 @@ func (c *Client) closeSendQueues() {
 	if c.sendClosed {
 		return
 	}
+	c.recordTransportClosure(transportQueuesClosed)
 	c.sendClosed = true
 	c.markTransportClosed()
 	if c.send != nil {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T03:59:39.327780+00:00",
-  "classification": "Unselected actor view/shadow-influence filtering retains exact source surfaces and incoming shadows.91focused checks,70strict native RGB pairs and finalHigh/Low actual four-class race/save observers pass. High297draws/166903triangles meet limits but33.4median/66.7p95ms fail;Low145draws/75762triangles/33.3median/50p95 meets this desktop scene scope only. Full inherited roadmap remains active.",
+  "recordedUTC": "2026-10-10T04:41:51.447332+00:00",
+  "classification": "24-hour run37880032315 completed failure: seven read errors, only20.2538minutes common100-client coverage; server-side closure cause unknown. Prospective bounded aggregate closure diagnostics are staged privately; no repair, replacement soak or long-session acceptance. High frame-time and the full inherited roadmap remain open.",
   "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,23 +9,23 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-10T03:36:38Z",
+    "readOnlyObservationUTC": "2026-10-10T04:02:31Z",
     "result": {
-      "observed_at_utc": "2026-10-10T03:36:38Z",
+      "observed_at_utc": "2026-10-10T04:02:31Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "failure",
         "run_attempt": 1,
-        "updated_at": "2026-10-09T03:36:16Z",
+        "updated_at": "2026-10-10T03:37:38Z",
         "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
       },
       "jobs": [
         {
           "name": "100-client authoritative-state soak",
-          "status": "in_progress",
-          "conclusion": null,
+          "status": "completed",
+          "conclusion": "failure",
           "steps": [
             {
               "name": "Set up job",
@@ -54,45 +54,51 @@
             },
             {
               "name": "Run multiplayer soak",
-              "status": "in_progress",
-              "conclusion": null
+              "status": "completed",
+              "conclusion": "failure"
             },
             {
               "name": "Upload soak evidence",
-              "status": "pending",
-              "conclusion": null
+              "status": "completed",
+              "conclusion": "success"
             },
             {
               "name": "Post Setup Node.js",
-              "status": "pending",
-              "conclusion": null
+              "status": "completed",
+              "conclusion": "skipped"
             },
             {
               "name": "Post Setup Go",
-              "status": "pending",
-              "conclusion": null
+              "status": "completed",
+              "conclusion": "skipped"
             },
             {
               "name": "Post Checkout",
-              "status": "pending",
-              "conclusion": null
+              "status": "completed",
+              "conclusion": "success"
             },
             {
               "name": "Stop containers",
-              "status": "pending",
-              "conclusion": null
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Complete job",
+              "status": "completed",
+              "conclusion": "success"
             }
           ]
         }
       ]
     },
-    "action": "One bounded read-only monitor observation; no restart/cancel/soak substitution or success claim."
+    "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
+    "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1–F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-actor-instance-view-pilot.json",
+  "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
+  "currentReceipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Progress:e49fa50b retained opt-in exact gameplay gear collars with source/native/resource/HighLow/save evidence; full budgets failed. Default runtime and public baseline unchanged.",
-  "nextAction": "Investigate actual High frame CPU with measured scene traversal, bounds and world/local matrix attribution and complete invalidation. Low three-second profile points toward these same costs; no High timing claim is inferred from it. Preserve all actors, foliage, source geometry/material/rig/blink/slots, exact incoming shadows and unchanged budgets. Compact bake/coverage masks/continuous zoom/hysteresis/active equip-pool-reconnect-respawn/cold-offline-returning cache, actual targeting/contact/combat/moving art, whole High/Low/support-device and full inherited1.11–1.99/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff remain required. No narrower completion or public microrelease.",
+  "previousGoalTurnClassification": "Progress:d026ba63 retained unselected actor view/incoming-shadow pilot;91focused/70strict native/HighLow race-save checks passed with unchanged budget failures and desktop-only Low qualification.",
+  "nextAction": "Investigate the failed soak using concrete bounded closure evidence when available; no unchanged long run restart or relaxed acceptance. Resume measured High scene CPU attribution and complete invalidation before optimization, preserving actors/foliage/geometry/material/rig/blink/equipment and incoming shadows. Compact bake/coverage/continuous zoom/hysteresis/active equip-pool-reconnect-respawn/cold-offline-returning cache, actual targeting/contact/combat/moving art, whole High/Low/support-device and full inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff remain required. No narrower completion or public microrelease.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -762,5 +768,20 @@
       "artifacts": 720,
       "inventorySHA256": "e9d1423705e13188fbcc94a253abc7875a21b6c79e48ef8dc723530cab849a59"
     }
+  },
+  "currentServerCandidate": "Additive process-lifetime first-observed closure counters staged privately; prospective diagnostics only. Exact deployed/server/save/session acceptance still required with the coherent milestone. Rendering qualification remains in the unchanged e47 receipt.",
+  "transportDiagnosticsVerification": {
+    "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json",
+    "testedGoPackagesPassedUnderRace": 9,
+    "packagesWithoutTests": 5,
+    "gameTopLevelPassed": 1306,
+    "gameTopLevelSkipped": 6,
+    "soakPolicyJestPassed": 7,
+    "productionGoBuild": "pass",
+    "eslint": "pass",
+    "inventoryArtifacts": 74,
+    "inventorySHA256": "95bf96eaf5cfc9d336ef7a150486e51b6654d41f7d85ae56d8ee10b25c4d12f7",
+    "longSoakAcceptance": "FAIL; underlying closure cause unknown",
+    "scope": "Private prospective diagnostics. Current server candidate still needs coherent exact deployed/live/session qualification."
   }
 }

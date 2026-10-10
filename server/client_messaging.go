@@ -277,6 +277,7 @@ func (c *Client) triggerQADisconnect() {
 			// transport interruption. Keep the delayed close owned until done;
 			// repeated allowlisted commands cannot multiply its workers.
 			time.Sleep(150 * time.Millisecond)
+			c.recordTransportClosure(transportQADisconnect)
 			_ = conn.WriteControl(
 				websocket.CloseMessage,
 				websocket.FormatCloseMessage(websocket.CloseGoingAway, "QA reconnect fault"),
@@ -285,6 +286,7 @@ func (c *Client) triggerQADisconnect() {
 			_ = conn.Close()
 		}) {
 			// Shutdown/released admission must not launch a detached fallback.
+			c.recordTransportClosure(transportQADisconnect)
 			_ = conn.Close()
 		}
 	})
@@ -320,6 +322,7 @@ func (c *Client) sendSafe(data []byte) (delivered bool) {
 		// gameplay or the hub behind it; closing the socket makes the existing
 		// read-pump cleanup path retire the client deterministically.
 		if c.conn != nil {
+			c.recordTransportClosure(transportPriorityOverflow)
 			_ = c.conn.Close()
 		}
 		return false

@@ -237,6 +237,7 @@ func retainFailedAdminActivity(c *Client, event database.AdminActivity) bool {
 	unjournaledActivity.Lock()
 	unjournaledActivity.events[event.ID] = event
 	unjournaledActivity.Unlock()
+	c.recordTransportClosure(transportAdminStorage)
 	c.markTransportClosed()
 	if c.conn != nil {
 		_ = c.conn.Close()
@@ -252,6 +253,7 @@ func (c *Client) rejectAdminAdmission(msg Message, reason string) {
 	if !c.transportClosed.CompareAndSwap(false, true) {
 		return
 	}
+	c.recordTransportClosure(transportAdminAdmission)
 	defer func() {
 		if c.conn != nil {
 			_ = c.conn.Close()
