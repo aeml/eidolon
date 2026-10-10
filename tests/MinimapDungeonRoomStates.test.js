@@ -383,11 +383,14 @@ describe('Minimap dungeon room states', () => {
         expect(buffRows[0].dataset.rowType).toBe('buffs');
         expect(buffRows[1].dataset.rowType).toBe('debuffs');
         expect(icon).not.toBeNull();
-        expect(topRowIcons[0].textContent).toContain('🛡️');
-        expect(topRowIcons[1].textContent).toContain('✨');
-        expect(bottomRowIcons[0].textContent).toContain('🩸');
+        for (const button of [...topRowIcons, ...bottomRowIcons]) {
+            expect(button.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+            expect(button.textContent).toBe('');
+        }
+        expect(topRowIcons[0].innerHTML).not.toBe(topRowIcons[1].innerHTML);
+        expect(bottomRowIcons[0].innerHTML).not.toBe(topRowIcons[0].innerHTML);
         expect(bottomRowIcons[0].className).toContain('is-debuff');
-        expect(buffListWrites.length).toBeGreaterThan(0);
+        expect(buffListWrites).toHaveLength(0);
 
         icon.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 120, clientY: 60 }));
         expect(tooltip.style.display).toBe('block');
@@ -401,7 +404,68 @@ describe('Minimap dungeon room states', () => {
         const writesBeforeBuffChange = buffListWrites.length;
         activeBuffs[0].remainingSeconds = 6.9;
         minimap.update({ position: { x: 0, z: 0 }, id: 'player-1' }, []);
-        expect(buffListWrites.length).toBeGreaterThan(writesBeforeBuffChange);
+        expect(buffListWrites.length).toBe(writesBeforeBuffChange);
+        expect(buffList.querySelector('[data-buff-id="sanctuary"]')).toBe(icon);
+        expect(icon.getAttribute('aria-label')).toContain('6.9s');
+    });
+
+
+    test('keyboard status reading retains focus and fresh details through countdown ticks, and Escape dismisses it', () => {
+        const minimap = new Minimap(200);
+        const buffs = [{ id: 'iron_fortress', name: 'Iron Fortress', remainingSeconds: 12.3,
+            detail: '20% less damage', durationSeconds: 30 }];
+        minimap.setGameEngine({ getActiveBuffs: () => buffs });
+        minimap._renderBuffList();
+        const button = minimap.buffList.querySelector('button');
+        button.focus();
+        expect(minimap.buffTooltip.style.display).toBe('block');
+        expect(button.getAttribute('aria-describedby')).toBe(minimap.buffTooltip.id);
+        expect(minimap.buffTooltip.getAttribute('role')).toBe('tooltip');
+        const symbol = button.firstChild;
+        buffs[0] = { ...buffs[0], remainingSeconds: 11.9, detail: 'Armor bonus active' };
+        minimap._renderBuffList();
+        expect(document.activeElement).toBe(button);
+        expect(minimap.buffList.querySelector('button')).toBe(button);
+        expect(button.firstChild).toBe(symbol);
+        expect(minimap.buffTooltip.textContent).toContain('11.9s');
+        expect(minimap.buffTooltip.textContent).toContain('Armor bonus active');
+        button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        expect(minimap.buffTooltip.style.display).toBe('none');
+        expect(document.activeElement).toBe(button);
+        buffs[0].remainingSeconds = 11.8; minimap._renderBuffList();
+        expect(minimap.buffTooltip.style.display).toBe('none');
+        expect(button.hasAttribute('aria-describedby')).toBe(false);
+    });
+
+    test('an expiring hovered effect removes its tooltip while other effects remain', () => {
+        const minimap = new Minimap(200);
+        const buffs = [{ id: 'arcane_shield', name: 'Arcane Shield', remainingSeconds: 1 },
+            { id: 'well_rested', name: 'Well Rested', remainingSeconds: 60 }];
+        minimap.setGameEngine({ getActiveBuffs: () => buffs }); minimap._renderBuffList();
+        const button = minimap.buffList.querySelector('button');
+        button.dispatchEvent(new MouseEvent('mouseenter', { clientX: 100, clientY: 50 }));
+        expect(minimap.buffTooltip.style.display).toBe('block');
+        buffs.shift(); minimap._renderBuffList();
+        expect(button.isConnected).toBe(false);
+        expect(minimap.buffTooltip.style.display).toBe('none');
+        expect(button.hasAttribute('aria-describedby')).toBe(false);
+        expect(minimap.buffList.querySelectorAll('button')).toHaveLength(1);
+        buffs.length = 0; minimap._renderBuffList();
+        expect(minimap.buffList.style.display).toBe('none');
+        expect(minimap.buffList.children).toHaveLength(0);
+    });
+
+    test('unknown effect metadata cannot insert markup or resources into status icons and details', () => {
+        const minimap = new Minimap(200);
+        const buff = { id: '<script>bad()</script>', name: '<img src=x>',
+            icon: '<img src=x onerror=bad()>', detail: '<script>bad()</script>', remainingSeconds: 5 };
+        minimap.setGameEngine({ getActiveBuffs: () => [buff] }); minimap._renderBuffList();
+        const button = minimap.buffList.querySelector('button');
+        expect(button.querySelectorAll('svg')).toHaveLength(1);
+        expect(button.querySelector('script, img, image, text, use, foreignObject')).toBeNull();
+        expect(button.getAttribute('aria-label')).toContain(buff.name);
+        button.focus(); expect(minimap.buffTooltip.textContent).toContain(buff.detail);
+        expect(minimap.buffTooltip.querySelector('script, img')).toBeNull();
     });
 
     test('uses exact canonical town-service anchor positions for minimap markers', () => {

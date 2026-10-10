@@ -30,6 +30,9 @@
 .phone-status-effect:last-child { margin-bottom: 0; }
 .phone-status-effect.is-debuff { border-color: #ee978866; border-left-color: #ee9788; }
 .phone-status-effect h3 { grid-column: 1 / -1; margin: 6px 0; font-size: 1em; line-height: 1.35; }
+.phone-status-effect h3 { display: flex; align-items: center; gap: 8px; }
+.phone-status-symbol { flex: 0 0 24px; height: 24px; }
+.phone-status-symbol .status-effect-icon { display: block; width: 24px; height: 24px; }
 .phone-status-kind { color: #a9decd; font-size: .875em; }
 .phone-status-effect.is-debuff .phone-status-kind { color: #ffb2a5; }
 .phone-status-remaining { display: block; color: #e0cfad; font-variant-numeric: tabular-nums; text-align: right; }
