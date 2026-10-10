@@ -13,7 +13,10 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
     await page.waitForFunction(() => window.game?.player?.wellRestedSeconds >= 8 && window.game.player.attachedStatusEffects.has('well_rested'));
     await page.screenshot({ path: testInfo.outputPath('before-jump.png') });
     let target;
-    for (const [x, z] of [[27, 0], [-27, 0], [0, 27], [0, -27]]) {
+    const directions = Array.from({ length: 16 }, (_, i) => [Math.cos(i * Math.PI / 8), Math.sin(i * Math.PI / 8)]);
+    const candidates = [];
+    for (const [dx, dz] of directions) {
+        const x = 27 * dx, z = 27 * dz;
         const availableDistance = await page.evaluate(({ x, z }) => {
             const game = window.game, start = game.player.position, end = start.clone();
             end.x += x; end.z += z;
@@ -23,12 +26,15 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
             if (corrected && Math.hypot(corrected.x - end.x, corrected.z - end.z) > .05) return 0;
             return Math.hypot(end.x - start.x, end.z - start.z);
         }, { x, z });
+        candidates.push({ x, z, availableDistance });
         if (availableDistance < 20.25) continue;
         const candidate = await projectGroundOffset(page, x, z, { allowScaling: false });
         const gameCanvas = candidate?.canvas && await page.evaluate(({ x, y }) =>
             document.elementFromPoint(x, y) === window.game.renderSystem.renderer.domElement, candidate);
+        Object.assign(candidates.at(-1), { candidate, gameCanvas });
         if (gameCanvas) { target = candidate; break; }
     }
+    await writeFile(testInfo.outputPath('input-candidates.json'), JSON.stringify(candidates, null, 2));
     expect(target, 'A full long-jump destination must be visible on the canvas').toBeTruthy();
     await page.evaluate(() => {
         const record = window.__jumpTiming = { frames: 0, acceptedDuration: null, history: [], auraSamples: 0, maxAuraError: 0, phaseBacksteps: 0, maxRenderedPathError: 0 };
@@ -98,7 +104,8 @@ test('live long jump and walking aura stay aligned in about 1.5 seconds total', 
     await page.screenshot({ path: testInfo.outputPath('after-jump.png') });
     const walkStart = await page.evaluate(() => ({ x: window.game.player.position.x, z: window.game.player.position.z }));
     let walkTarget;
-    for (const [x, z] of [[12, 0], [-12, 0], [0, 12], [0, -12]]) {
+    for (const [dx, dz] of directions) {
+        const x = 12 * dx, z = 12 * dz;
         const clear = await page.evaluate(({ x, z }) => {
             const game = window.game, start = game.player.position, end = start.clone();
             end.x += x; end.z += z;
