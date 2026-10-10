@@ -107,19 +107,32 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
                     const installed = pass.entries.get(mesh);
                     if (installed ? !pass.valid(installed) : !pass.capture(mesh)) throw Error('Invalid merged rigid worker source');
                     const reference = actors.find(other => other.type === entry.type && other.mode === 'previous');
-                    let vertexStart = 0;
-                    const expected = [];
+                    const actualGeometry = installed?.candidate || mesh.geometry;
+                    let triangleIndex = 0, exactTriangleRows = true;
                     for (const name of mesh.userData.fittedBatchSources) {
                         const original = reference.root.getObjectByName(name);
                         const previous = pass.entries.get(original);
                         if (previous ? !pass.valid(previous) : !pass.capture(original)) throw Error('Invalid original rigid worker source');
-                        for (const index of (previous?.candidate || original.geometry).index.array) expected.push(index + vertexStart);
-                        vertexStart += (previous?.source || original.geometry).attributes.position.count;
+                        const originalGeometry = previous?.candidate || original.geometry;
+                        const surface = [...original.material.color.toArray(), original.material.roughness,
+                            ...original.material.emissive.toArray().map(x => x * original.material.emissiveIntensity), original.material.metalness].map(Math.fround);
+                        for (const originalIndex of originalGeometry.index.array) {
+                            const actualIndex = actualGeometry.index.array[triangleIndex++];
+                            if (actualIndex === undefined) { exactTriangleRows = false; continue; }
+                            for (const [attributeName, attribute] of Object.entries(originalGeometry.attributes)) {
+                                const packed = actualGeometry.attributes[attributeName];
+                                for (let c = 0; c < attribute.itemSize; c++)
+                                    if (attribute.getComponent(originalIndex, c) !== packed.getComponent(actualIndex, c)) exactTriangleRows = false;
+                            }
+                            for (let c = 0; c < 4; c++) {
+                                if (actualGeometry.attributes.fittedDiffuseRoughness.getComponent(actualIndex, c) !== surface[c] ||
+                                    actualGeometry.attributes.fittedEmissiveMetalness.getComponent(actualIndex, c) !== surface[c + 4]) exactTriangleRows = false;
+                            }
+                        }
                     }
-                    const actual = (installed?.candidate || mesh.geometry).index.array;
-                    derivativeChecks.push({ type: entry.type, mesh: mesh.name, exactIndices: actual.length === expected.length &&
-                        expected.every((index, i) => index === actual[i]), originalTriangles: (installed?.source || mesh.geometry).index.count / 3,
-                        candidateTriangles: actual.length / 3 });
+                    derivativeChecks.push({ type: entry.type, mesh: mesh.name, exactTriangleRows: exactTriangleRows &&
+                        triangleIndex === actualGeometry.index.count, originalTriangles: (installed?.source || mesh.geometry).index.count / 3,
+                        candidateTriangles: actualGeometry.index.count / 3 });
                 });
                 for (const enabled of [false, true]) {
                     pass.enabled = enabled;
@@ -144,7 +157,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
             else expect(entry.batches).toBe(0);
         }
         expect(result.derivativeChecks.length).toBeGreaterThan(0);
-        expect(result.derivativeChecks.every(row => row.exactIndices)).toBe(true);
+        expect(result.derivativeChecks.every(row => row.exactTriangleRows)).toBe(true);
         for (const sample of result.reports) {
             expect(sample.baselineRepeat.maximum).toBe(0); expect(sample.baselineRepeat.changed).toBe(0);
             expect(sample.candidate.maximum, JSON.stringify(sample)).toBe(0); expect(sample.candidate.changed).toBe(0);
