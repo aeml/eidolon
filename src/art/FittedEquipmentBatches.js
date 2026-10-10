@@ -3,6 +3,11 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { hasTrustedEquipmentSurfaceMaps } from './AuthoredEquipmentSurfaces.js';
 
 const identity = new THREE.Matrix4();
+const ownedSurfaceMaterials = new WeakMap();
+export const isOwnedFittedSurfaceMaterial = material => {
+    const saved = ownedSurfaceMaterials.get(material);
+    return Boolean(saved && material.onBeforeCompile === saved.compile && material.customProgramCacheKey === saved.key);
+};
 
 function keyFor(mesh, serialization, surfaceAttributes) {
     const material = mesh.material, geometry = mesh.geometry;
@@ -112,6 +117,7 @@ function surfaceMaterial(original) {
     material.roughness = material.metalness = 1;
     material.customProgramCacheKey = () => 'fitted-surface-attributes-v1';
     material.userData.fittedSurfaceAttributes = true;
+    ownedSurfaceMaterials.set(material, { compile: material.onBeforeCompile, key: material.customProgramCacheKey });
     return material;
 }
 
