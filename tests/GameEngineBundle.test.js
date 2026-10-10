@@ -19,7 +19,7 @@ async function fixture() {
     await mkdir(path.join(root, 'src/ui'), { recursive: true });
     await writeFile(path.join(root, 'package.json'), '{"type":"module"}');
     await writeFile(path.join(root, 'release.json'), '{"version":"Alpha 1.79.11"}');
-    await writeFile(path.join(root, 'src/main.js'), "import {setToken} from './core/CredentialToken.js'; export {setToken}; export const enter=()=>import('./core/GameEngine.js');");
+    await writeFile(path.join(root, 'src/main.js'), "import {setToken} from './core/CredentialToken.js'; export {setToken}; export const enter=()=>import('./core/GameEngine.js'); export const retry=()=>import('./core/GameEngine.js?startupRetry=1');");
     await writeFile(path.join(root, 'src/core/CredentialToken.js'), 'let token=null; export const setToken=value=>token=value; export const getToken=()=>token;');
     await writeFile(path.join(root, 'src/ui/Paths.js'), "export const asset=()=>new URL('../../assets/help.json',import.meta.url).href; export const release=()=>new URL(import.meta.url).searchParams.get('release');");
     await writeFile(path.join(root, 'src/core/GameEngine.js'), "import {getToken} from './CredentialToken.js'; import {asset,release} from '../ui/Paths.js'; export class GameEngine {token(){return getToken()} asset(){return asset()} release(){return release()}}");
@@ -40,10 +40,11 @@ test('published lazy engine preserves shared credential identity, asset paths an
         `const login=await import(${JSON.stringify(mainURL)}); login.setToken('synthetic-only');
         const {GameEngine}=await login.enter(), game=new GameEngine();
         const result={token:game.token(),asset:game.asset(),release:game.release()};
+        const recovered=await login.retry(); result.recoveryToken=new recovered.GameEngine().token();
         login.setToken(null); result.cleared=game.token(); console.log(JSON.stringify(result));`]);
     expect(JSON.parse(stdout)).toEqual({ token: 'synthetic-only',
         asset: pathToFileURL(path.join(root, 'assets/help.json')).href,
-        release: 'abcdefgh123', cleared: null });
+        release: 'abcdefgh123', recoveryToken: 'synthetic-only', cleared: null });
     await expect(bundleGameEngine(root)).rejects.toThrow('exactly one lazy');
 });
 
@@ -94,7 +95,7 @@ test('actual game graph compiles while login state and Three remain external', a
     expect(result.externalImports).toEqual(expect.arrayContaining(['three', './CredentialToken.js', './GraphicsStartup.js']));
     expect(await readFile('src/main.js', 'utf8')).toBe(originalMain);
     const main = await readFile(path.join(root, 'src/main.js'), 'utf8');
-    expect(main).toBe(originalMain.replace("import('./core/GameEngine.js')", "import('./core/GameEngine.bundle.js')"));
+    expect(main).toBe(originalMain.replaceAll("./core/GameEngine.js", "./core/GameEngine.bundle.js"));
 });
 
 test('Pages publication bundles the copied engine before versioning runtime URLs', async () => {
@@ -103,4 +104,16 @@ test('Pages publication bundles the copied engine before versioning runtime URLs
     const version = workflow.indexOf('node scripts/version-pages-runtime.mjs public');
     expect(bundle).toBeGreaterThan(workflow.indexOf('cp sw.js release.json public/'));
     expect(bundle).toBeLessThan(version);
+});
+
+
+test.each(['missing', 'duplicate', 'unsupported'])('publication rejects %s recovery imports', async kind => {
+    const root = await fixture(), main = path.join(root, 'src/main.js');
+    let source = await readFile(main, 'utf8');
+    if (kind === 'missing') source = source.replace("export const retry=()=>import('./core/GameEngine.js?startupRetry=1');", '');
+    if (kind === 'duplicate') source += "export const extra=()=>import('./core/GameEngine.js?startupRetry=1');";
+    if (kind === 'unsupported') source = source.replace('startupRetry=1', 'startupRetry=2');
+    await writeFile(main, source);
+    await expect(bundleGameEngine(root)).rejects.toThrow('one bounded recovery');
+    expect(await readFile(main, 'utf8')).toBe(source);
 });

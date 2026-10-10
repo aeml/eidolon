@@ -12,7 +12,7 @@ test('failed engine import keeps its module path and network code in the startup
             }));
         });
     });
-    await page.route('**/src/core/GameEngine.js', route => route.abort('connectionclosed'));
+    await page.route('**/src/core/GameEngine.js*', route => route.abort('connectionclosed'));
     const failures = collectBrowserFailures(page, baseURL);
     const error = await loginAndEnterWorld(page, {
         username: 'fixture-only', password: 'fixture-only', characterClass: 'Wizard'
@@ -21,7 +21,8 @@ test('failed engine import keeps its module path and network code in the startup
     const diagnostic = JSON.parse(error.message.split('authoritative state: ')[1]);
     expect(diagnostic).toMatchObject({ enginePresent: false, playerReady: false, firstStateReceived: false,
         startupPhase: 'engine-module', startupFailureKind: 'module-download',
-        moduleFailures: { observed: 1, dropped: 0, failures: [
+        moduleFailures: { observed: 2, dropped: 0, failures: [
+            { module: '/src/core/GameEngine.js', kind: 'request', code: 'net::ERR_CONNECTION_CLOSED' },
             { module: '/src/core/GameEngine.js', kind: 'request', code: 'net::ERR_CONNECTION_CLOSED' }
         ] } });
     expect(error.cause).toBeInstanceOf(Error);

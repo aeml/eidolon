@@ -13,9 +13,11 @@ jest.unstable_mockModule('../src/assets/StylesheetBoot.js', () => ({
 }));
 
 let mockStartupError = null;
+let mockConstructionCount = 0;
 jest.unstable_mockModule('../src/core/GameEngine.js', () => ({
     GameEngine: class MockGameEngine {
         constructor() {
+            mockConstructionCount++;
             if (mockStartupError) throw mockStartupError;
             this.uiManager = {
                 handleEscape: jest.fn(),
@@ -33,6 +35,7 @@ describe('asset persistence boot wiring', () => {
     // Each test builds a new document; production boot runs once per module.
     beforeEach(() => {
         mockStartupError = null;
+        mockConstructionCount = 0;
         // Retire the prior fixture's detached active screen before mounting
         // a new page; its old window listener must not act as a second session.
         document.getElementById('start-screen')?.classList.remove('hidden');
@@ -134,6 +137,26 @@ describe('asset persistence boot wiring', () => {
         expect(patchNotesScreen.style.display).toBe('flex');
         window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         expect(patchNotesScreen.style.display).toBe('none');
+    });
+
+    test('rapid entry clicks construct one engine while its import is pending', async () => {
+        buildStartDom(); installBrowserMocks(); window.game = null;
+        const sockets = [];
+        class MockWebSocket {
+            static OPEN = 1;
+            constructor() { this.readyState = 1; sockets.push(this); }
+            send() {}
+        }
+        Object.defineProperty(globalThis, 'WebSocket', { configurable: true, value: MockWebSocket });
+        await import('../src/main.js');
+        window.dispatchEvent(new Event('DOMContentLoaded')); await Promise.resolve();
+        document.getElementById('btn-login').click();
+        sockets[0].onmessage({ data: JSON.stringify({ type: 'login_success', payload: { hasCharacter: false } }) });
+        document.querySelector('.class-btn').click();
+        document.querySelector('.class-btn').click();
+        await new Promise(resolve => setTimeout(resolve, 0));
+        expect(mockConstructionCount).toBe(1);
+        expect(window.game).not.toBeNull();
     });
 
     test('unavailable graphics restores login with actionable in-page guidance, not a browser alert', async () => {

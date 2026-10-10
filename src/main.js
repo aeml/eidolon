@@ -8,6 +8,12 @@ import { credentialTokenChange } from './core/CredentialToken.js';
 import { PublicEmailRecoveryUI } from './ui/EmailRecoveryUI.js';
 import { mountDataPrivacyNotices } from './ui/DataPrivacyNotice.js';
 import { gameStartupFailureMessage, gameStartupFailureKind } from './core/GraphicsStartup.js';
+import { createEngineModuleLoader } from './core/EngineModuleLoader.js';
+
+const loadGameEngine = createEngineModuleLoader(
+    () => import('./core/GameEngine.js'),
+    () => import('./core/GameEngine.js?startupRetry=1')
+);
 
 const recoveryHandoff = window.__eidolonRecoveryHandoff;
 delete window.__eidolonRecoveryHandoff;
@@ -445,7 +451,10 @@ const bootLogin = async () => {
 
     console.log('Main.js loaded. Waiting for user input...');
 
+    let gameStartupPending = false;
     const startGame = async (type) => {
+        if (gameStartupPending) return;
+        gameStartupPending = true;
         let sessionGame;
         let startupPhase = 'preparation';
         try {
@@ -484,7 +493,7 @@ const bootLogin = async () => {
             // Pass username and socket to GameEngine
             // Login must not wait for the entire renderer/world/actor graph.
             startupPhase = 'engine-module';
-            const { GameEngine } = await import('./core/GameEngine.js');
+            const { GameEngine } = await loadGameEngine();
             startupPhase = 'engine-construction';
             window.game = new GameEngine(type, isMobile, isMultiplayer, serverAddress, username, authSocket, serverTerrainProfile);
 
@@ -596,6 +605,8 @@ const bootLogin = async () => {
                 gameStartupStatus.hidden = false;
                 gameStartupStatus.focus();
             }
+        } finally {
+            gameStartupPending = false;
         }
     };
 

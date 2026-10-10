@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const repository = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ENGINE_IMPORT = /\bimport\((['"])\.\/core\/GameEngine\.js\1\)/g;
+const ENGINE_IMPORT = /\bimport\((['"])\.\/core\/GameEngine\.js([^'"]*)\1\)/g;
 
 // Build only a copied publishing tree. Editable source, development imports,
 // login's lazy-engine boundary and the original source archive stay intact.
@@ -21,7 +21,10 @@ export async function bundleGameEngine(root) {
         if ((await lstat(output)).isSymbolicLink()) throw new Error('Bundle output cannot be a symbolic link');
     } catch (error) { if (error.code !== 'ENOENT') throw error; }
     const source = await readFile(main, 'utf8');
-    if ([...source.matchAll(ENGINE_IMPORT)].length !== 1) throw new Error('Expected exactly one lazy game-engine import before bundling');
+    const imports = [...source.matchAll(ENGINE_IMPORT)];
+    if (imports.length !== 2 || imports.filter(match => !match[2]).length !== 1 ||
+        imports.some(match => !['', '?startupRetry=1'].includes(match[2])))
+        throw new Error('Expected exactly one lazy game-engine import and one bounded recovery import before bundling');
 
     const options = { absWorkingDir: destination, bundle: true, platform: 'browser',
         format: 'esm', target: 'es2022', packages: 'external', write: false,
@@ -58,7 +61,8 @@ export async function bundleGameEngine(root) {
         }
     }
     await writeFile(output, result.contents);
-    await writeFile(main, source.replace(ENGINE_IMPORT, "import('./core/GameEngine.bundle.js')"));
+    await writeFile(main, source.replace(ENGINE_IMPORT, (_match, _quote, recovery = '') =>
+        `import('./core/GameEngine.bundle.js${recovery}')`));
     return { bundledModules: Object.keys(bundled.metafile.inputs).length,
         bytes: result.contents.byteLength, sharedLoginModules: shared.size,
         externalImports: [...new Set(metadata.imports.map(entry => entry.path))].sort() };
