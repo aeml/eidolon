@@ -50,7 +50,8 @@ const eligible = part => candidate(part) && part.material.visible && !part.mater
 
 // Frame-owned presentation only: original actor visibility is restored before
 // update/input/gear/stealth logic can run. Geometry/materials remain borrowed.
-// Standard instance attributes, never per-piece GPU matrix/indirection textures.
+// Base buckets use standard instance attributes. Optional multi-draw owns
+// additional copied geometry and matrix/indirection textures.
 export class ActorInstanceBatches {
     constructor(scene, watchedGroups = [scene], { shadowInfluence = false, multiDraw = false, instanceFrustum = false } = {}) {
         this.scene = scene;
