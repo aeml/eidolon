@@ -171,3 +171,12 @@ budgets or classify skipped checks as passes. Unanswered owner decisions remain
 recorded dependencies; continue independent code-owned work without repeatedly
 asking for them. New work belongs in owned worktrees; preserve the original
 dirty repository and reconcile remote changes normally before publication.
+
+Private total-jump integration ddadf7c9 ordinarily merges public27 into qualified
+world/maintenance14d4ea1f. Actual earth-elevation-rocks-v1 copied publication:
+2native pass (36.51s Go/package37.555s), total1511.8ms normal/1411.7ms15FPS,
+logical/render endpoint errors0, separate fresh-login and exact Mongo economy/
+gear/bag/logout preserved. 128 focused checks pass. Geometry owner stays null;
+held art/render/runtime unchanged except intentional1.3s Movement cap. This is
+private and unselected; public27 CI/deployment remains separately pending.
+Receipt: `2026-10-10-world-total-jump-integration.json`.

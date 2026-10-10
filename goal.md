@@ -209,3 +209,9 @@ extraGold controls and actual prior-credit/custody receipts retained.
 Combined Alpha1.79.27/392c4a79 pushed; exact CI38062443230 is in progress.
 Verify actual deployment/assets/one public jump/required native gates without
 reruns or waivers. Full original1.11–1.99 goal and all remaining gates stay open.
+
+Private world/total-jump integration ddadf7c9 is qualified without selection:
+actual raised-world normal/15FPS totals1511.8/1411.7ms,2native/128focused pass,
+exact endpoints/fresh saves, geometry owner null. Public27 deployment and full
+required CI remain pending; full original scope and all unresolved gates stay
+active. See world-total-jump-integration receipt.

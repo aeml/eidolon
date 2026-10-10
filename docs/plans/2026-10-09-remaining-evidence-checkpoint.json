@@ -1495,5 +1495,26 @@
     },
     "flightSeconds": 1.3,
     "qaLedgerQualified": true
+  },
+  "worldTotalJumpIntegration": {
+    "commit": "ddadf7c9d0c157298150ba28d77bba7c902c0389",
+    "status": "Qualified private integration only; not published or selected into held runtime.",
+    "sourcePublic": "392c4a7993118a87f51342cb1881a22055ab405b",
+    "receipt": "docs/plans/2026-10-10-world-total-jump-integration.json",
+    "evidence": "/home/aeml/.local/share/eidolon-world-jump-total-integration-checks-20261010",
+    "inventorySHA256": "9242c0bddc0005486ad10f74e75bed52d154c5816cf88ea56b407fb656d0c95f",
+    "normalTotalMs": 1511.8,
+    "slow15FPSTotalMs": 1411.7,
+    "native": {
+      "total": 2,
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "focusedChecks": 128,
+    "exactEndpointsAndFreshSaves": true,
+    "limits": "Release27 exact earned-room Gold helper is included; independent CI/public qualification remains separate. The movement cap is the only held runtime path change. No public rollout, shadow prototype, High/device/art acceptance, long-soak replacement, owner-deferred campaign/phone substitution, beta or launch claim."
   }
 }
