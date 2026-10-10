@@ -177,11 +177,26 @@ for (const quality of ['high', 'low']) test(`published ${quality} actor defaults
                 mesh._matricesTexture.addEventListener('dispose', () => campTextureDisposals++);
                 mesh._indirectTexture.addEventListener('dispose', () => campTextureDisposals++);
             }
-            render.render();
+            render.render(); const actorDraws = render.renderer.info.render.calls;
+            const placement = field.children[0].getMatrixAt(0, orc.mesh.matrix.clone()).elements;
+            const focus = orc.mesh.position.clone().set(placement[12] + 4, 0, placement[14] + 4);
+            render.setCameraTarget(focus); render.updateEnvironmentLighting(focus, 0);
+            const direct = render.renderer.renderBufferDirect, campMeshes = new Set(field.children);
+            let campCalls = 0, campTriangles = 0;
+            render.renderer.renderBufferDirect = function (...args) {
+                const beforeCalls = this.info.render.calls, beforeTriangles = this.info.render.triangles;
+                const result = direct.apply(this, args);
+                if (campMeshes.has(args[4])) {
+                    campCalls += this.info.render.calls - beforeCalls;
+                    campTriangles += this.info.render.triangles - beforeTriangles;
+                }
+                return result;
+            };
+            try { render.render(); } finally { render.renderer.renderBufferDirect = direct; }
             result = { enabled: Boolean(owner?.enabled && multi?.enabled && multi.perInstanceFrustum),
                 groups: multi?.entries.size || 0, extension: render.renderer.extensions.has('WEBGL_multi_draw'),
                 restored: !owner.hidden.length && !multi.hidden.length && !owner.group.visible && !multi.group.visible,
-                draws: render.renderer.info.render.calls, singletons: owner.batchSingletons,
+                draws: render.renderer.info.render.calls, actorDraws, campCalls, campTriangles, singletons: owner.batchSingletons,
                 orcPackedMeshes: orc.mesh.userData.humanoidRenderBatches?.drawMeshes,
                 orcPackedSurfaces: orc.mesh.userData.humanoidRenderBatches?.surfaceAttributes,
                 campAutomaticallySelected: game.worldGenerator.campInstanceFrustum,
@@ -200,6 +215,7 @@ for (const quality of ['high', 'low']) test(`published ${quality} actor defaults
     expect(result.groups).toBeGreaterThan(0); expect(result.draws).toBeGreaterThan(0);
     expect(result.singletons && result.orcPackedSurfaces && result.campAutomaticallySelected && result.campBatched).toBe(true);
     expect(result.orcPackedMeshes).toBe(23); expect(result.campCount).toBe(15); expect(result.campBuckets).toBe(9);
+    expect(result.actorDraws).toBeGreaterThan(0); expect(result.campCalls).toBeGreaterThan(0); expect(result.campTriangles).toBeGreaterThan(0);
     expect(result.campGeometryDisposals).toBe(9); expect(result.campTextureDisposals).toBe(18);
     expect(failures, failures.join('\n')).toEqual([]);
 });
