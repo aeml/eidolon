@@ -475,3 +475,28 @@ test('normal fitted equipment batches by default; explicit false retains the sep
         clearFittedEquipment(root);
     }
 });
+
+test('rigid surface loadouts invalidate their signature and release only owned geometry/materials', async () => {
+    const current = skeletonSharingFixture();
+    const socket = new THREE.Bone(); socket.name = AUTHORED_ASSETS.grips.Fighter.mainHand.socket; current.scene.add(socket);
+    const weaponScene = new THREE.Group(), sourceGeometry = new THREE.PlaneGeometry();
+    const materials = [new THREE.MeshStandardMaterial({ color: '#aabbcc' }), new THREE.MeshStandardMaterial({ color: '#bbccee' })];
+    for (const [i, material] of materials.entries()) {
+        const mesh = new THREE.Mesh(sourceGeometry, material); mesh.name = `rigid-piece-${i}`; weaponScene.add(mesh);
+    }
+    const sourceDispose = jest.spyOn(sourceGeometry, 'dispose'), materialDisposes = materials.map(material => jest.spyOn(material, 'dispose'));
+    prepareFittedEquipment(current.root, current.scene, async () => ({ scene: weaponScene }));
+    const equipment = { mainHand: { id: 'sword', name: 'Iron Sword', baseName: 'Iron Sword', slot: 'mainHand', type: 'WEAPON', rarity: 'Rare' } };
+    applyFittedEquipment(current.root, equipment); await current.root.userData.equipmentReady;
+    expect(applyFittedEquipment(current.root, equipment).changed).toBe(false);
+    current.root.userData.fittedRigidSurfaceBatching = true;
+    expect(applyFittedEquipment(current.root, equipment).changed).toBe(true);
+    await current.root.userData.equipmentReady;
+    let batch; current.root.traverse(mesh => { if (mesh.name.startsWith('FittedRigidBatch_')) batch = mesh; });
+    expect(batch).toBeDefined();
+    const ownedGeometryDispose = jest.spyOn(batch.geometry, 'dispose'), ownedMaterialDispose = jest.spyOn(batch.material, 'dispose');
+    clearFittedEquipment(current.root); clearFittedEquipment(current.root);
+    expect(ownedGeometryDispose).toHaveBeenCalledTimes(1); expect(ownedMaterialDispose).toHaveBeenCalledTimes(1);
+    expect(sourceDispose).not.toHaveBeenCalled(); for (const spy of materialDisposes) expect(spy).not.toHaveBeenCalled();
+    jest.restoreAllMocks();
+});
