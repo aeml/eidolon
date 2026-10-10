@@ -153,15 +153,16 @@ and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
 Prior owned history is preserved byte-exact in [the archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md);
 its procedural-only instructions do not override supplied-model/modern-ARPG requirements.
 
-Previous goal turn: **progress**, privatef63a8627scene ownership/publication,
-150checks, native offline/pool/control and actualHigh/fully absent evidence.
-This turn: **progress**, owner-directed private45ef4111real-time jump flight
-under low FPS. Old15FPS loop advances only1second of flight over2real seconds;
-86focused checks and native supplied Fighter15FPS1.5478s/60FPS1.5245s pass,
-with exact simulation/rendered endpoints. Not deployed. Original full scope,
-public/Gold/soak failures and disabled geometry default remain unchanged.
+Previous goal turn: **progress**, private45ef4111real-time jump flight,
+86checks and native15FPS1.5478s/60FPS1.5245s with exact endpoints; not deployed.
+This turn: **progress**, current High default submission with actor-view OFF,
+two native four-class/race/save/moving runs and absent/installed frame windows;
+7QA checks and90RAF restored matrix-owner measurement.3478production inputs
+remain byte-exact. Both installed33.3median/478or454draws fail High; triangle
+counts pass, consistent whole-frame/memory benefit remains unproven.
+[Current High attribution and limits](docs/plans/2026-10-10-high-current-default-attribution.json).
 [Jump timing and limits](docs/plans/2026-10-10-jump-wall-clock.json).
-[Geometry integration and limits](docs/plans/2026-10-10-gameplay-geometry-runtime-owner.json).
+[Geometry integration](docs/plans/2026-10-10-gameplay-geometry-runtime-owner.json).
 
 - Public24/922753a7 still matches normalTLS frontend/backend/bundle,DBready.
   CI38030283856 attempt1 remains failed required expiry engine-module download;
@@ -193,8 +194,10 @@ public/Gold/soak failures and disabled geometry default remain unchanged.
   campaign/pacing and physical-phone feedback remain missing owner evidence.
   No commerce/access/retention/policy/rights/release decisions are implied.
 
-Next: keep default policy disabled; profile current High CPU costs, qualify
-absent/installed and no-optional-pilot default renderer, High/close/default
-HighLow, cold delivery/memory/devices/moving art. Continue every original1.11–1.99/
-gameplay/Q/CB/F1–F5/operations/rights/owner/human/beta/launch/handoff requirement.
-Preserve original public/Gold/soak failures; no failed-gate waiver or public push.
+Next: keep geometry default null. Measure real-frame source-controller-bypass/
+installed ABBA with cache held allocated; inspect rigid instance shadow/camera
+submission with exact controls. Root world-update evidence points to scene/
+foliage/other entities, not supplied-body math alone. Finish High/close/default
+HighLow/cold/memory/device/moving-art and every original1.11–1.99/gameplay/Q/CB/
+F1–F5/operations/rights/owner/human/beta/launch/handoff requirement. Preserve all
+original public/Gold/soak failures and staged jump fix; no waiver or public push.

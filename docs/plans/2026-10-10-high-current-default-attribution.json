@@ -1,0 +1,623 @@
+{
+  "status": "Fresh default-submission High CPU and matrix-owner attribution complete; no runtime repair or activation. High frame/draw gates still fail.",
+  "recordedUTC": "2026-10-10T09:52:29.822493+00:00",
+  "sourceCommit": "61df35aa1b7cb7b39edf6b07b1fc5c6bd4ab4c4a",
+  "measurementCommits": {
+    "cpu": "c4f197ab34e57d199f9b36ac58124ffcdf8ac291",
+    "matrix": "f48b8c4064ada90502e98720afb0c5b699aea1c4"
+  },
+  "implementation": "Opt-in post-frame matrix-owner observation on stock updateMatrixWorld functions, fixed role labels and complete callback/property restoration. Three focused cleanup/transform/privacy cases plus four CPU-summary cases pass. No public/profile activation. Metadata-only reporting now records actual actor-view allocation; this followed measurement and is not remeasured evidence.",
+  "productInputs": {
+    "base": "c4f197ab34e57d199f9b36ac58124ffcdf8ac291",
+    "candidate": "61df35aa1b7cb7b39edf6b07b1fc5c6bd4ab4c4a",
+    "trackedProductInputs": 3478,
+    "gitTreeLinesSHA256": "fc9a56b1850d0b6de7291d93bdef8f3c44e5adb1d3bb0e2332a640226272c47a",
+    "equal": true,
+    "scope": "src/server/assets/scripts and root index/release/package manifests byte-exact by tracked Git object IDs. Only four QA files changed; metadata-only reporting change61df35aa followed native measurementf48b8c40 and was linted, not rerun as a new measurement."
+  },
+  "method": "Two bounded actual High single-renderer/four-class party diagnostics with normal input, real fourteen-slot saves and native hardware renderer. Optional actor-view filter disabled in both supervisors; geometry owner explicitly installed after a fully absent reference. No source/runtime policy changed.",
+  "defaultRendererProof": "ActorInstanceBatches remains ordinary selected default; optional viewFilter defaults null and its only installer requires EIDOLON_E2E_ACTOR_INSTANCE_VIEW_PILOT=1. Both supervisors explicitly remove that flag. Existing raw geometry scope sentence is imprecise and retained; corrected future reporting records actual allocation. Geometry owner is fully absent during each first180frame reference, then explicitly installed only by QA.",
+  "cpuRun": {
+    "goRaceSeconds": 72.68,
+    "absent": {
+      "label": "equipped-party-before-geometry-owner-allocation",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.29999999999927,
+      "frameP95Ms": 49.900000000001455,
+      "frameP99Ms": 50,
+      "framesOver33ms": 67,
+      "cpuLoopMedianMs": 29.399999976158142,
+      "cpuLoopP95Ms": 37.39999997615814,
+      "drawCallsMedian": 417,
+      "trianglesMedian": 459416,
+      "geometries": 393,
+      "textures": 280,
+      "activeEntities": 30,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "installed": {
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.30000000000291,
+      "frameP95Ms": 50,
+      "frameP99Ms": 50.099999999998545,
+      "framesOver33ms": 64,
+      "cpuLoopMedianMs": 28.400000005960464,
+      "cpuLoopP95Ms": 40.80000001192093,
+      "drawCallsMedian": 478,
+      "trianglesMedian": 205901,
+      "geometries": 435,
+      "textures": 284,
+      "activeEntities": 28,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0,
+      "party": {
+        "profile": "earth-elevation-rocks-v1",
+        "quality": "high",
+        "actors": [
+          {
+            "ready": true,
+            "class": "Fighter",
+            "bodyQuality": "high",
+            "items": 14,
+            "missing": 0,
+            "fallback": 0,
+            "bodyFallback": false,
+            "bones": 53,
+            "ownedBones": true,
+            "independentBones": true,
+            "surfaceBatches": 4,
+            "ground": 5.608124885199391,
+            "playerError": 0,
+            "meshError": 0,
+            "authorityError": 4.5108698998319596e-07
+          },
+          {
+            "ready": true,
+            "class": "Cleric",
+            "bodyQuality": "high",
+            "items": 14,
+            "missing": 0,
+            "fallback": 0,
+            "bodyFallback": false,
+            "bones": 53,
+            "ownedBones": true,
+            "independentBones": true,
+            "surfaceBatches": 4,
+            "ground": 4.7590422550455695,
+            "playerError": 0,
+            "meshError": 0,
+            "authorityError": 4.688517218909283e-07
+          },
+          {
+            "ready": true,
+            "class": "Rogue",
+            "bodyQuality": "high",
+            "items": 14,
+            "missing": 0,
+            "fallback": 0,
+            "bodyFallback": false,
+            "bones": 53,
+            "ownedBones": true,
+            "independentBones": true,
+            "surfaceBatches": 4,
+            "ground": 5.074950464767968,
+            "playerError": 0,
+            "meshError": 0,
+            "authorityError": 7.071070315944894e-07
+          },
+          {
+            "ready": true,
+            "class": "Wizard",
+            "bodyQuality": "high",
+            "items": 14,
+            "missing": 0,
+            "fallback": 0,
+            "bodyFallback": false,
+            "bones": 53,
+            "ownedBones": true,
+            "independentBones": true,
+            "surfaceBatches": 4,
+            "ground": 5.231960827538674,
+            "playerError": 0,
+            "meshError": 0,
+            "authorityError": 5.309078145998569e-07
+          }
+        ],
+        "groundCover": {
+          "plants": 13087,
+          "meshes": 326,
+          "spatialBatches": true,
+          "multiDrawAvailable": true
+        }
+      },
+      "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate."
+    },
+    "preparation": {
+      "method": "automatic-worker-exact-source-cache",
+      "milliseconds": 8615.699999988079,
+      "body": {
+        "sources": 4
+      },
+      "installed": {
+        "registered": 44,
+        "originalTriangles": 181142,
+        "candidateTriangles": 53758
+      },
+      "stats": {
+        "requested": 44,
+        "installed": 44,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 0,
+        "rejected": 0,
+        "maxCopiedBytes": 2995424,
+        "workerCacheBytes": 645096,
+        "workerCacheEntries": 44
+      }
+    },
+    "submissionABBA": {
+      "reference": {
+        "frames": 48,
+        "median": 21.799999982118607,
+        "p95": 36.39999997615814
+      },
+      "candidate": {
+        "frames": 48,
+        "median": 21.400000005960464,
+        "p95": 30.80000001192093
+      }
+    },
+    "motionSamples": 70,
+    "clipFrames": 22,
+    "cpuFunctions": [
+      {
+        "source": "",
+        "name": "(program)",
+        "line": 0,
+        "samples": 103,
+        "selfMicros": 722467
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrixWorld",
+        "line": 14354,
+        "samples": 189,
+        "selfMicros": 248065
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "multiplyMatrices",
+        "line": 11917,
+        "samples": 174,
+        "selfMicros": 222540
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "renderObject",
+        "line": 8914,
+        "samples": 121,
+        "selfMicros": 147587
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "intersectsObject",
+        "line": 26581,
+        "samples": 107,
+        "selfMicros": 133639
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "projectObject",
+        "line": 16814,
+        "samples": 103,
+        "selfMicros": 129122
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "updateMatrix",
+        "line": 14335,
+        "samples": 54,
+        "selfMicros": 71704
+      },
+      {
+        "source": "/src/core/FoliageShadowInfluence.js",
+        "name": "FoliageShadowInfluence.visit",
+        "line": 105,
+        "samples": 52,
+        "selfMicros": 69959
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "equals",
+        "line": 5635,
+        "samples": 55,
+        "selfMicros": 64039
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "WebGLRenderer.renderBufferDirect",
+        "line": 16193,
+        "samples": 41,
+        "selfMicros": 52657
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "setProgram",
+        "line": 17279,
+        "samples": 40,
+        "selfMicros": 52428
+      },
+      {
+        "source": "",
+        "name": "(idle)",
+        "line": 0,
+        "samples": 32,
+        "selfMicros": 48612
+      },
+      {
+        "source": "/src/core/FoliageShadowInfluence.js",
+        "name": "beginFrame",
+        "line": 175,
+        "samples": 34,
+        "selfMicros": 47179
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "determinant",
+        "line": 11983,
+        "samples": 33,
+        "selfMicros": 46118
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "getProgram",
+        "line": 17132,
+        "samples": 33,
+        "selfMicros": 43829
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "getParameters",
+        "line": 7009,
+        "samples": 33,
+        "selfMicros": 43150
+      },
+      {
+        "source": "",
+        "name": "bufferSubData",
+        "line": 0,
+        "samples": 27,
+        "selfMicros": 40245
+      },
+      {
+        "source": "/vendor/three/build/three.core.js",
+        "name": "update",
+        "line": 54151,
+        "samples": 29,
+        "selfMicros": 39622
+      },
+      {
+        "source": "/src/art/ActorInstanceBatches.js",
+        "name": "beginFrame",
+        "line": 112,
+        "samples": 31,
+        "selfMicros": 38510
+      },
+      {
+        "source": "",
+        "name": "bindVertexArray",
+        "line": 0,
+        "samples": 29,
+        "selfMicros": 37416
+      },
+      {
+        "source": "/vendor/three/build/three.module.js",
+        "name": "update",
+        "line": 4509,
+        "samples": 30,
+        "selfMicros": 35898
+      },
+      {
+        "source": "/src/art/ActorInstanceBatches.js",
+        "name": "<anonymous>",
+        "line": 121,
+        "samples": 28,
+        "selfMicros": 33436
+      },
+      {
+        "source": "",
+        "name": "vertexAttribPointer",
+        "line": 0,
+        "samples": 21,
+        "selfMicros": 32753
+      },
+      {
+        "source": "",
+        "name": "bindBuffer",
+        "line": 0,
+        "samples": 20,
+        "selfMicros": 27822
+      }
+    ],
+    "cpuScope": "Sample-weighted elapsed microseconds in a3s post-frame CDP sample, not exclusive CPU. Includes foliage wrappers/shared-host scheduling; native/program samples are unattributed.",
+    "foliage": {
+      "frames": 101,
+      "visits": 240986,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    }
+  },
+  "matrixRun": {
+    "goRaceSeconds": 62.876,
+    "absent": {
+      "label": "equipped-party-before-geometry-owner-allocation",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.700000000000728,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 21,
+      "cpuLoopMedianMs": 19.19999998807907,
+      "cpuLoopP95Ms": 24.5,
+      "drawCallsMedian": 467,
+      "trianglesMedian": 455519,
+      "geometries": 418,
+      "textures": 282,
+      "activeEntities": 38,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "installed": {
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.299999999995634,
+      "frameP95Ms": 33.400000000001455,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 43,
+      "cpuLoopMedianMs": 24.900000005960464,
+      "cpuLoopP95Ms": 31.5,
+      "drawCallsMedian": 454,
+      "trianglesMedian": 206061,
+      "geometries": 459,
+      "textures": 287,
+      "activeEntities": 37,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0,
+      "party": {
+        "profile": "earth-elevation-rocks-v1",
+        "quality": "high",
+        "actors": [
+          {
+            "ready": true,
+            "class": "Fighter",
+            "bodyQuality": "high",
+            "items": 14,
+            "missing": 0,
+            "fallback": 0,
+            "bodyFallback": false,
+            "bones": 53,
+            "ownedBones": true,
+            "independentBones": true,
+            "surfaceBatches": 4,
+            "ground": 5.509216019805119,
+            "playerError": 0,
+            "meshError": 0,
+            "authorityError": 1.2043683916829195e-07
+          },
+          {
+            "ready": true,
+            "class": "Cleric",
+            "bodyQuality": "high",
+            "items": 14,
+            "missing": 0,
+            "fallback": 0,
+            "bodyFallback": false,
+            "bones": 53,
+            "ownedBones": true,
+            "independentBones": true,
+            "surfaceBatches": 4,
+            "ground": 4.8994853417277655,
+            "playerError": 0,
+            "meshError": 0,
+            "authorityError": 7.23183123163551e-07
+          },
+          {
+            "ready": true,
+            "class": "Rogue",
+            "bodyQuality": "high",
+            "items": 14,
+            "missing": 0,
+            "fallback": 0,
+            "bodyFallback": false,
+            "bones": 53,
+            "ownedBones": true,
+            "independentBones": true,
+            "surfaceBatches": 4,
+            "ground": 5.293823558171903,
+            "playerError": 0,
+            "meshError": 0,
+            "authorityError": 1.608527551155703e-07
+          },
+          {
+            "ready": true,
+            "class": "Wizard",
+            "bodyQuality": "high",
+            "items": 14,
+            "missing": 0,
+            "fallback": 0,
+            "bodyFallback": false,
+            "bones": 53,
+            "ownedBones": true,
+            "independentBones": true,
+            "surfaceBatches": 4,
+            "ground": 5.4897632572318065,
+            "playerError": 0,
+            "meshError": 0,
+            "authorityError": 9.563302052484346e-07
+          }
+        ],
+        "groundCover": {
+          "plants": 13087,
+          "meshes": 326,
+          "spatialBatches": true,
+          "multiDrawAvailable": true
+        }
+      },
+      "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate."
+    },
+    "preparation": {
+      "method": "automatic-worker-exact-source-cache",
+      "milliseconds": 7365.5,
+      "body": {
+        "sources": 4
+      },
+      "installed": {
+        "registered": 44,
+        "originalTriangles": 181142,
+        "candidateTriangles": 53728
+      },
+      "stats": {
+        "requested": 44,
+        "installed": 44,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 0,
+        "rejected": 0,
+        "maxCopiedBytes": 2995424,
+        "workerCacheBytes": 644736,
+        "workerCacheEntries": 44
+      }
+    },
+    "submissionABBA": {
+      "reference": {
+        "frames": 48,
+        "median": 19.5,
+        "p95": 31.5
+      },
+      "candidate": {
+        "frames": 48,
+        "median": 19.5,
+        "p95": 33.20000001788139
+      }
+    },
+    "motionSamples": 82,
+    "clipFrames": 25,
+    "perFrameOwnerElapsedMs": {
+      "scene": 4.715555555290646,
+      "environment-group": 2.668888889087571,
+      "instance-environment-group": 2.471111110183928,
+      "entity-group": 1.8888888892200257,
+      "foliage": 2.0099999967548583,
+      "supplied-Fighter": 0.14111111064751944,
+      "supplied-Cleric": 0.12999999788072375,
+      "supplied-Rogue": 0.15666666958067152,
+      "supplied-Wizard": 0.12222222222222222,
+      "other-entity": 1.2866666664679844
+    }
+  },
+  "matrixOwnerDetails": {
+    "sceneNodes": 6831,
+    "sceneMeshes": 5828,
+    "foliageRoots": 10,
+    "foliageNodes": 3482,
+    "entityNodes": 2345,
+    "suppliedRoots": 4,
+    "suppliedNodes": 513,
+    "suppliedCombinedMsPerObservedFrame": 0.55,
+    "frames": 90,
+    "skipped": [],
+    "restored": true,
+    "scope": "Inclusive root-boundary elapsed timing with wrappers and shared-host scheduling overhead. Nested owner times overlap and cannot be summed or treated as exclusive CPU, causal savings or a frame target."
+  },
+  "untimedAttribution": {
+    "opaqueActorInstancesColorDraws": 72,
+    "opaqueActorInstancesShadowDraws": 156,
+    "instanceComparison": {
+      "without": {
+        "calls": 752,
+        "triangles": 194756
+      },
+      "with": {
+        "calls": 478,
+        "triangles": 205901
+      },
+      "scope": "Two untimed synchronous renders of the same party/poses/camera. Borrowed exact geometry; aggregate instance bounds may draw more offscreen triangles. Not a frame-budget certificate."
+    },
+    "scope": "Independent untimed render attribution; not an exact fraction of180frame aggregate and no source-geometry triangle percentage. Points estimator vertices/3 remains approximate."
+  },
+  "targets": {
+    "highMedianMs": 20,
+    "highP95Ms": 33.4,
+    "drawCalls": 350,
+    "triangles": 250000
+  },
+  "interpretation": "Both installed default-submission samples fail High median and exact p95 and draw budgets; triangles pass. Both absent samples fail geometry/draw and exact p95; second absent median16.700000000000728 passes20. Independent time/population/allocation windows do not prove install causes whole-frame/memory change. Submission ABBA is mixed across runs; no consistent gain. Matrix root times overlap, cannot be summed, and add instrumentation overhead. Four supplied roots total about0.55ms of this narrow world-update slice; focus scene/rigid-shadow submission rather than claiming body-index or worker work solves the CPU gap. All temporary matrix wrappers restored, zero skipped custom callbacks in actual measurement.",
+  "checks": "7focused QA checks/2suites pass0.664s; scoped ESLint/diff pass after correcting initial no-unsafe-finally lint failure. Each actual browser run1pass/1four-browser skip(notpass), focused Go race/saves passed first attempt.",
+  "hardware": "Native Chrome149 on Linux/AMD ANGLE Vulkan RADV RENOIR,1280x844,dpr1. Windows user-agent preset is not physical Windows/device evidence. Viewed actual moving-HUD screenshot; synthetic long names overlap and heap396.1MB remains unqualified. No modern-art, combat, physical-device or earned campaign certificate.",
+  "evidence": "/home/aeml/.local/share/eidolon-high-current-profile-checks-20261010",
+  "inventorySHA256": "d72a4c802db85674012c22ece5e87cfc44f4fa78df124b655d24ddc7e8809644",
+  "inventoryFiles": 100,
+  "public": {
+    "recordedUTC": "2026-10-10T09:48:17.306680+00:00",
+    "ci": {
+      "conclusion": "failure",
+      "head_sha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "html_url": "https://github.com/aeml/eidolon/actions/runs/38030283856",
+      "id": 38030283856,
+      "run_attempt": 1,
+      "status": "completed"
+    },
+    "frontend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24"
+    },
+    "backend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24",
+      "status": "ok",
+      "database": "ready"
+    }
+  },
+  "limits": "Public24required live gate stays failed and unaccepted; startup/Gold original causes unresolved. No successor push,24merge, CIretry or soak restart. Default geometry owner stays null. Private jump wall-clock fix remains staged. Full1.11\u20131.99/modernart/suppliedassets/gameplay/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff scope remains active.",
+  "next": "Keep owner default null. Use same-source real-frame source-controller-bypass/installed ABBA to qualify geometry frame costs while holding allocated cache constant; inspect rigid instance shadow/camera submission with exact render controls. Do not revive rejected light/worldbox/affine/cell prototypes or activate a policy from triangle counts alone. Preserve startup/Gold/soak failures and all full-goal requirements."
+}

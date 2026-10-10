@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T09:35:03.645272+00:00",
-  "classification": "progress: user-directed private45ef4111 real-time jump flight under low FPS; old15FPS loop regression demonstrated,86checks and first-attempt native15FPS1547.8ms/60FPS1524.5ms endpoint-exact. Not deployed; original live/Gold/soak and full-goal gaps retained.",
+  "recordedUTC": "2026-10-10T09:52:29.822493+00:00",
+  "classification": "progress: default-submission current High attribution, two actual four-class/race/save/native moving runs with fully absent/installed windows,7QA checks,90RAF restored owner-boundary matrix measurement;3478product inputs byte-exact, High frame/draw failures retained. No activation or publication.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3selection retained; prepared geometry controller/delivery now statically reachable through an explicit RenderSystem setter, default owner null. Immutable worker built from copied publication sources with exact version cache and MIT notice. No public activation or24merge. Public24transform deployed but original required startup/Gold and failed24hsoak remain unresolved.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -99,10 +99,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-jump-wall-clock.json",
+  "currentReceipt": "docs/plans/2026-10-10-high-current-default-attribution.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: f63a8627 explicit scene owner/immutable worker publication,150focused checks, native offline/32controls/pool replacement and actualHigh/fully absent evidence; default disabled and timing failures retained.",
-  "nextAction": "Keep default staged policy disabled and preserve original24startup/Gold/soak failures. Profile current High CPU costs with absent/installed controls; finish no-optional-pilot default renderer and High/close/default HighLow, cold delivery/memory/support-device/moving-art qualification. Preserve supplied assets/detail and every original1.11\u20131.99/gameplay/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirement. No unchanged campaign/soak, waiver, successor push or24merge.",
+  "previousGoalTurnClassification": "progress: user-directed private45ef4111 real-time jump flight under low FPS; old15FPS loop regression demonstrated,86checks and first-attempt native15FPS1547.8ms/60FPS1524.5ms endpoint-exact. Not deployed; original live/Gold/soak and full-goal gaps retained.",
+  "nextAction": "Keep geometry default null. Run same-source real-frame source-controller-bypass/installed ABBA with cache allocated to isolate geometry frame costs; inspect rigid instance shadow/camera submission with exact render controls, guided by new current High default attribution. Finish High/close/default HighLow, cold delivery/memory/support-device/moving-art qualification and every full1.11\u20131.99/gameplay/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff gate. Preserve original startup/Gold/soak failures and staged jump fix; no unchanged campaigns, policy waiver, successor push or24merge.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: user-directed private45ef4111 real-time jump flight under low FPS; old15FPS loop regression demonstrated,86checks and first-attempt native15FPS1547.8ms/60FPS1524.5ms endpoint-exact. Not deployed; original live/Gold/soak and full-goal gaps retained.",
+  "currentGoalTurnClassification": "progress: default-submission current High attribution, two actual four-class/race/save/native moving runs with fully absent/installed windows,7QA checks,90RAF restored owner-boundary matrix measurement;3478product inputs byte-exact, High frame/draw failures retained. No activation or publication.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1270,6 +1270,22 @@
         }
       ],
       "errors": []
+    }
+  },
+  "currentHighDefaultAttribution": {
+    "sourceCommit": "61df35aa1b7cb7b39edf6b07b1fc5c6bd4ab4c4a",
+    "receipt": "docs/plans/2026-10-10-high-current-default-attribution.json",
+    "inventorySHA256": "d72a4c802db85674012c22ece5e87cfc44f4fa78df124b655d24ddc7e8809644",
+    "status": "Fresh default-submission High CPU and matrix-owner attribution complete; no runtime repair or activation. High frame/draw gates still fail.",
+    "frames": {
+      "firstAbsentMedianMs": 33.29999999999927,
+      "firstInstalledMedianMs": 33.30000000000291,
+      "firstInstalledP95Ms": 50,
+      "firstInstalledDraws": 478,
+      "secondAbsentMedianMs": 16.700000000000728,
+      "secondInstalledMedianMs": 33.299999999995634,
+      "secondInstalledP95Ms": 33.400000000001455,
+      "secondInstalledDraws": 454
     }
   }
 }
