@@ -490,7 +490,7 @@ function createDemonOrcClips() {
     ];
 }
 
-export function createProceduralDemonOrc() {
+export function createProceduralDemonOrc({ batch = false, surfaceAttributes = false } = {}) {
     const definition = PROCEDURAL_LEGACY_ENEMY_DEFINITIONS.DemonOrc;
     const p = definition.palette;
     const materials = {
@@ -569,7 +569,7 @@ export function createProceduralDemonOrc() {
     addMesh(chain, 'DemonOrc_ChainCoal', geometry('orc-chain-coal', () => new THREE.DodecahedronGeometry(0.2, 0)), materials.flame,
         { position: [0, -1.05, 0], castShadow: false });
 
-    return finalizeEnemy(root, 'DemonOrc', createDemonOrcClips());
+    return finalizeEnemy(root, 'DemonOrc', createDemonOrcClips(), { batch, surfaceAttributes });
 }
 
 function addImpWing(body, side, materials) {

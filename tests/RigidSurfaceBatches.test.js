@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { createProceduralTownActor, TOWN_ACTOR_TYPES } from '../src/art/ProceduralTownActors.js';
-import { createProceduralInfernoTitan } from '../src/art/ProceduralLegacyEnemies.js';
+import { createProceduralInfernoTitan, createProceduralDemonOrc } from '../src/art/ProceduralLegacyEnemies.js';
 import { batchRigidSurfaceParts, isOwnedRigidSurfaceMaterial } from '../src/art/RigidSurfaceBatches.js';
 import { MeshFactory } from '../src/utils/MeshFactory.js';
 import { ActorInstanceBatches } from '../src/art/ActorInstanceBatches.js';
 
 const factories = [...TOWN_ACTOR_TYPES.map(type => [type, options => createProceduralTownActor(type, options)]),
-    ['InfernoTitan', createProceduralInfernoTitan]];
+    ['InfernoTitan', createProceduralInfernoTitan], ['DemonOrc', createProceduralDemonOrc]];
 const meshes = root => { const list = []; root.traverseVisible(part => { if (part.isMesh) list.push(part); }); return list; };
 
 function compare(source, packed) {

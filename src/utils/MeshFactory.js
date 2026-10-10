@@ -809,7 +809,7 @@ export class MeshFactory {
         }
 
         if (type === 'DemonOrc') {
-            return createProceduralDemonOrc();
+            return createProceduralDemonOrc({ batch: true, surfaceAttributes: true });
         } else if (type === 'Imp') {
             return createProceduralImp();
         } else if (type === 'Construct') {
