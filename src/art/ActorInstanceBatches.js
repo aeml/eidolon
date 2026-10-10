@@ -56,7 +56,7 @@ export class ActorInstanceBatches {
         this.group = new Group(); this.group.name = 'OpaqueActorInstances'; this.group.visible = false;
         scene.add(this.group);
         this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
-        this.enabled = true;
+        this.enabled = true; this.multiDraw = null;
         this.viewFilter = null;
         this.shadowFilter = shadowInfluence ? new ActorShadowInfluence(scene, watchedGroups) : null;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
@@ -160,17 +160,19 @@ export class ActorInstanceBatches {
             }
             this.group.visible = used.size > 0;
             this.shadowFilter?.beginFrame(renderer, this.scene, camera, this.batches.values());
+            this.multiDraw?.beginFrame(renderer, camera, this.batches.values());
         } catch (error) { this.endFrame(); throw error; }
     }
 
     endFrame() {
+        this.multiDraw?.endFrame();
         this.shadowFilter?.endFrame();
         this.hidden.forEach(part => { part.visible = true; }); this.hidden.length = 0;
         this.group.visible = false;
     }
 
     clear() {
-        this.endFrame();
+        this.endFrame(); this.multiDraw?.clear();
         for (const batch of this.batches.values()) { batch.removeFromParent(); batch.dispose(); }
         this.batches.clear(); this.buckets.clear(); this.roots.clear(); this.roster = []; this.dirty = true;
     }
@@ -178,6 +180,7 @@ export class ActorInstanceBatches {
     dispose() {
         if (this.disposed) return;
         this.disposed = true; this.endFrame();
+        this.multiDraw?.dispose(); this.multiDraw = null;
         this.shadowFilter?.dispose(); this.shadowFilter = null;
         if (this.scene.onBeforeRender === this.beforeHook) this.scene.onBeforeRender = this.before;
         if (this.scene.onAfterRender === this.afterHook) this.scene.onAfterRender = this.after;
