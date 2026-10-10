@@ -147,28 +147,27 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-The requested jump is deployed in Alpha1.79.25/d15a882e and independently
-verified on the actual public game: real27unit Ctrl-click,1648.6ms total,
-1582.9ms observed flight, accepted1.5s, logical/render landing errors0.
-Normal-TLS frontend/backend/database and eight public asset hashes matched.
-Required CI38051193149 nevertheless failed exact live Gold/stash checks;
-all nine other jobs passed. Original failure/root cause remains retained.
+Public Alpha1.79.26/77859697 remains deployed with matching assets and database
+readiness; required CI38056289769 remains failed. Actual one-run diagnostic
+38061055843 proves its observed sale failure: fresh387855Gold + exact1500sale
+then separate earned175room award =389530. No retries, packet changes or pacing.
 
-Corrective Alpha1.79.26/77859697a71329facd0584a95167c80eac392398 is pushed;
-CI38056289769 attempt1 is in progress. Qualified fresh correlated read-only
-Gold synchronization preserves exact sale/stash checks and all economy logic.
-Actual preceding242/175Gold FIFO controls now both pass native/Go-race/fresh
-login/Mongo exact balances, equipment, bag/stash metadata and custody.
-See `docs/plans/2026-10-10-vendor-gold-synchronization.json`. This establishes
-controlled repair, not the original live cause. Verify exact26 required CI,
-live identities/database/eight assets and native outcomes before another push.
-No reruns/cancels/waivers or public24/25/26product merge into held.
+The owner repeated the approximately1.5second TOTAL jump requirement. Corrective
+candidate uses1.3second server/client flight to reserve latency; actual copied
+publication measures1504.9ms at normal cadence and1459.9ms at15FPS, exact endpoints,
+fresh-login position and Mongo custody.96focused client checks and Go-race pass.
+Candidate QA accounts for separately observed earned room credits exactly,
+retaining loss/extra-Gold controls, protected gear and wallet request limits.
+Actual room175 and preceding242/175Gold browser/server/Mongo proofs pass.
 
-Private5c5494ef shadow integration remains defaultOFF/unselected;36owner checks
-and actual connected High native/Go-race/party-save checks pass. ExactRGB0change,
-390→362draws; submission CPU regresses and ABBA frame medians remain16.7ms.
-WholeHighdraw/triangle, physical-device and art gates stay open.
-See `docs/plans/2026-10-10-actor-shadow-connected-gameplay.json`.
-Prior bf2039bf isolated32units/12native/70RGB proof remains valid within scope.
-No performance/art/device selection inferred. Full original1.11–1.99objective,
-failed24hsoak, art/device/owner/F1–F5/beta/launch/handoff gates remain open.
+Prepare cumulative Alpha1.79.27 and independently verify deployment and unchanged
+required gates. Earlier failures stay retained. No raised/body/geometry/shadow
+pilots selected. Full original1.11–1.99scope, art/device/owner/F1–F5/failed24hsoak/
+beta/launch/handoff remain active; this maintenance milestone is not completion.
+
+Private integration checkpoint: this branch combines qualified world/maintenance
+14d4ea1f with release27 through an ordinary merge. The 1.3s authoritative and
+client jump cap is retained with earth-elevation-rocks-v1 prepared publication
+support. Qualification is pending. Geometry ownership remains null; shadow and
+other private pilots remain unselected. This branch is not a public rollout or
+a full art, device, performance or campaign acceptance.

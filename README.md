@@ -429,9 +429,11 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.26`, correlated Gold checks, elapsed-time jump flight and bounded
-  engine-download recovery. Slow frames no longer stretch the 1.5-second flight.
-  Input/network delay and the next displayed frame can add to click-to-landing time.
+- Current source version: `Alpha 1.79.27`, faster jump arrival, exact earned-room Gold
+  accounting in release checks and bounded engine-download recovery. Long jumps use
+  1.3 seconds of elapsed-time flight to target approximately 1.5 seconds from click
+  to landing, including ordinary network/render delay. Connected qualification measured
+  1.50 seconds at normal cadence and 1.46 seconds at 15 FPS; latency still varies.
 - Previous maintenance: `Alpha 1.79.24`, reliable manual scene transforms.
   Normal world updates are retained while unchanged local composition stays cached.
 - Previous maintenance: `Alpha 1.79.23`, jump travel capped at 1.5 seconds.

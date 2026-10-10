@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.26</span>
+                    <span class="start-version-row__label">Alpha 1.79.27</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,16 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.26" data-notes-pages="46" data-notes-total="461">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.27" data-notes-pages="46" data-notes-total="462">
+                <div class="patch-note-entry" data-version="1.79.27">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.27 (Faster jump arrival)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Long Ctrl-click jumps now use 1.3 seconds of flight, leaving room for network and rendering delay within an approximately 1.5-second total from click to landing. Nearby hops stay quick.</li>
+                        <li>Elapsed-time flight keeps jumps responsive at low frame rates, with the same server-checked destinations and terrain boundaries.</li>
+                        <li>Improved release validation for earned room rewards delivered when selling or storing gear frees bag space.</li>
+                        <li>Includes the recent world-entry download recovery and combat stability corrections. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.26">
                     <h3 class="patch-note-entry__title">Alpha 1.79.26 (Maintenance and validation)</h3>
                     <ul class="patch-note-entry__list">
@@ -876,17 +885,6 @@
                         <li>Original frame, draw and triangle limits pass in bounded native High/Low reference views. Quality switching retains foliage transforms, materials and scene ownership. Prior failed profiles remain recorded; this is not whole-game performance certification.</li>
                         <li>This is combined regional component polish, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
                         <li>No account wipe, schema migration, combat, quest, economy or permission change. Supplied class/equipment source models remain unchanged. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.17">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.17 (Air Realm passage composition)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Air Realm travel gains broken roadside heath and scree, with spatial groundcover cells that share existing materials and receive shadows without adding solid obstacles.</li>
-                        <li>Existing gale cypresses frame more of the main passage before filling side stands. Tree counts, stable identities, per-tree scale and rotation remain unchanged; paths, landmarks, hazards and portal approaches keep their clearances.</li>
-                        <li>High and Low detail retain deterministic placement subsets. Changing quality redraws the appropriate foliage and groundcover without replacing their owning scene groups, materials or transforms.</li>
-                        <li>Earth, Water and Fire placements, supplied class and equipment models, gameplay, collisions, quest targets and saved player data remain unchanged. Original frame, draw and triangle limits remain required.</li>
-                        <li>This is incremental route composition, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
-                        <li>No account wipe, schema migration, currency or permission change. Full prior patch history is preserved through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

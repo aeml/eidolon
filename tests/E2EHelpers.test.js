@@ -20,7 +20,8 @@ describe('persistent QA bag rotation with earned deliveries', () => {
     beforeEach(() => {
         previousGame = window.game;
         synchronizeGold.mockClear();
-        playwrightExpect.mockImplementation(actual => ({ not: { toBeNull: () => expect(actual).not.toBeNull() } }));
+        playwrightExpect.mockImplementation(actual => expect(actual));
+        playwrightExpect.arrayContaining = expect.arrayContaining;
         playwrightExpect.poll = jest.fn(observe => ({
             toBe: async expected => expect(await observe()).toBe(expected),
             toBeLessThan: async expected => expect(await observe()).toBeLessThan(expected)
@@ -34,15 +35,18 @@ describe('persistent QA bag rotation with earned deliveries', () => {
     const spare = id => ({ id, type: 'ARMOR', slot: 'head', rarity: 'Common', value: 1 });
     const harness = (inventory, pending = [], rejectSale = false) => {
         const sales = [];
-        window.game = { player: { inventory, equipment: {}, gold: 345 }, uiManager: { inventory: { onSellItem: index => {
+        window.game = { handleServerMessage: jest.fn(), player: { id: 'bag-test-owner', inventory, equipment: {}, gold: 345 }, uiManager: { inventory: { onSellItem: index => {
             sales.push(inventory[index].id);
             if (rejectSale) return;
             window.game.player.gold += Math.max(1, inventory[index].value || 1) * Math.max(1, inventory[index].stack || 1);
             inventory.splice(index, 1);
             inventory.push(pending.shift() || null);
         } } } };
-        const page = { evaluate: jest.fn(async (fn, arg) => fn.name === 'readPlayerStateInPage'
-            ? { inventoryCount: inventory.filter(item => item?.id).length } : fn(arg)) };
+        const page = { evaluate: jest.fn(async (fn, arg) => {
+            if (fn.name === 'readPlayerStateInPage') return { inventoryCount: inventory.filter(item => item?.id).length };
+            const value = await fn(arg);
+            return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
+        }) };
         return { page, sales };
     };
     test('verifies individual removals and rechecks space after two preserved earned deliveries', async () => {
@@ -106,8 +110,8 @@ describe('persistent QA bag rotation with earned deliveries', () => {
         window.game.uiManager.inventory.onSellItem = index => { sell(index); window.game.player.gold = 345; };
         playwrightExpect.poll = jest.fn(observe => ({ toBe: async expected => {
             if (typeof expected === 'number') {
-                expect(await observe()).toBe(345);
-                expect(expected).toBe(520);
+                expect(await observe()).toBe(-175);
+                expect(expected).toBe(0);
                 window.game.player.gold = 520; // Later authoritative state packet.
             }
             expect(await observe()).toBe(expected);

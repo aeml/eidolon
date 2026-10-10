@@ -73,7 +73,7 @@ func TestMaintenanceActualPublishedLoginAndJump(t *testing.T) {
 		t.Fatal(err)
 	}
 	stop()
-	sanitizeCtx, sanitizeCancel := context.WithTimeout(t.Context(), 30*time.Second)
+	sanitizeCtx, sanitizeCancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer sanitizeCancel()
 	sanitize := exec.CommandContext(sanitizeCtx, node, "scripts/sanitize-playwright-artifacts.mjs", evidence, filepath.Join(root, "playwright-report"))
 	sanitize.Dir, sanitize.Env = root, cmd.Env

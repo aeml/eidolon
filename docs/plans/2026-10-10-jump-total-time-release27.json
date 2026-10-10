@@ -1,0 +1,53 @@
+{
+  "recordedUTC": "2026-10-10T15:08:27.994972+00:00",
+  "status": "qualified local cumulative corrective milestone; deployment and unchanged required gate pending",
+  "version": "Alpha 1.79.27",
+  "publicPredecessor": "77859697a71329facd0584a95167c80eac392398",
+  "ownerRequest": "Approximately1.5seconds TOTAL click-to-landing jump time.",
+  "jump": {
+    "source": "959f0158",
+    "flightCapSeconds": 1.3,
+    "clickToLandingNormalMs": 1504.9,
+    "clickToLanding15FPSMs": 1459.9,
+    "exactEndpoints": true,
+    "freshLoginAndMongoPreserved": true,
+    "clientChecks": 96,
+    "goRaceSeconds": 3.554,
+    "native": "2pass32.2s; Go36.59s/package37.636s",
+    "evidence": "/home/aeml/.local/share/eidolon-jump-total-latency-checks-20261010",
+    "inventorySHA256": "ae751bcdc37545fc9fb3087b3f0a91c48423aa11c44f6ff1a1d05cfc12b928eb",
+    "limits": "Copied/versioned actual server publication, not yet public27. Approximate total varies with network/device latency. Initial float32 assertion failures retained."
+  },
+  "liveGoldCause": {
+    "run": 38061055843,
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "failure",
+    "diagnosticSource": "7d3e1a11e8d7fafdee6632dfd402b9bb88bdc8bc",
+    "decodeErrors": 0,
+    "completeTrace": true,
+    "oneSale": true,
+    "freshWallet": 387855,
+    "saleCredit": 1500,
+    "exactSaleWireGold": 389355,
+    "separateRoomAward": 175,
+    "finalWireAndClientGold": 389530,
+    "evidence": "/home/aeml/.local/share/eidolon-live-gold-provenance-checks-20261010",
+    "inventorySHA256": "e8c9e2a3e48755cb65e75792121cc499457e6f295f858136d8790cf646e0d7ec",
+    "scope": "One actual failing public26 transaction, unchanged helpers, no retries/pacing/packet modification. Original required CI38056289769 remains failed."
+  },
+  "qaRepair": {
+    "source": "931bbd2d",
+    "method": "Exact Gold=atomic synchronized baseline+exact sale credit(or0stash)+separately observed own-character room-clear credits. Invalid/repeated/other-owner/unrelated receipts never excuse extra Gold. Protected gear and bag/stash/equipment custody remain checked.",
+    "roomNative": "2pass29.3s; Go33.86s/package34.910s; savedGold1178/1175 EP43 XP originalgear exactbag/stash frozenawardeditem immutablecompletedreceipt",
+    "precedingCreditNative": "2pass31.5s; Go36.20s/package37.242s; prior242/175Gold credits and exact saves preserved",
+    "focusedHelperChecks": 82,
+    "browserPlanChecks": 19,
+    "versionChecks": 386,
+    "evidence": "/home/aeml/.local/share/eidolon-earned-room-credit-checks-20261010",
+    "inventorySHA256": "857302c04255478ce1c32c2145dffed4be317639d9d3a927a1d606c022d4bdc7",
+    "limits": "Private room proof selects post-award host reads without changing client loop or FIFO messages. Economy/save runtime unchanged. Required production gates pending."
+  },
+  "scope": "Only jump flight cap runtime changes. No raised/body/geometry/shadow pilots, budget waivers, manual CI reruns, access changes or account wipes. Full original1.11\u20131.99 goal, failed24hsoak, art/device/owner/F1\u2013F5/beta/launch/handoff stay open.",
+  "goalOriginalPrefixSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7"
+}
