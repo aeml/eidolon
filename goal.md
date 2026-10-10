@@ -1,5 +1,19 @@
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
+**October10 shadow-only renderer pilot:** An opt-in pass owns exact copied
+position/skin/blink buffers and restores source geometry before color draws.
+37unique focused checks, native16exact-index pixel comparisons,16descriptive
+simplified poses, stealth/shadows-off fallback, four stable cleanup cycles and
+actual four-class race/save observer pass. Same scene456947→317983triangles,
+420draws unchanged;180frames416draws/318386triangles still fail350/250000limits.
+Color assets/selection/public1.79.22/profile/access unchanged; no production
+activation. Empty glove simplification now retains864previously uncounted source
+triangles. [Pilot and retained failures](docs/plans/2026-10-10-shadow-geometry-pilot.json).
+Continue actual-camera color/submission cost, active equip/reconnect lifetimes,
+whole High/Low/device/art and full inherited1.11–1.99/Q/CB/F1–F5/operations/rights/
+owner/human/beta/launch/handoff. No narrower completion or public microrelease.
+
+
 **October10 shadow geometry diagnosis:** Weaker skin penalties and vertex relocation
 are rejected for small/no count benefit and invalid relocated weights. A count-only
 inspector constrains every bone through <=32-bone triangle partitions, retaining

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T00:57:15.544068+00:00",
-  "classification": "Count-only supplied-geometry diagnosis and reusable shadow feasibility inspector. No derived models or runtime selection; original color geometry and qualified private e47 selection unchanged. Native shadow/pose/lifetime/full-scene/device/art and complete inherited roadmap gates remain open.",
+  "recordedUTC": "2026-10-10T01:34:56.578551+00:00",
+  "classification": "Opt-in shadow-only supplied-geometry pilot qualified for scoped native parity/fallback/lifetime and actual single-renderer party/save checks. Unselected by production RenderSystem; whole-game draw/triangle, Low/device, dynamic lifecycle and final art/full-roadmap gates remain open.",
   "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -9,9 +9,9 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d"
   ],
   "longSoak": {
-    "readOnlyObservationUTC": "2026-10-10T00:32:52Z",
+    "readOnlyObservationUTC": "2026-10-10T01:01:45Z",
     "result": {
-      "observed_at_utc": "2026-10-10T00:32:52Z",
+      "observed_at_utc": "2026-10-10T01:01:45Z",
       "run": {
         "id": 37880032315,
         "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
@@ -86,13 +86,13 @@
         }
       ]
     },
-    "action": "One read-only delegated snapshot this goal turn, stale after00:32:52UTC. Still in_progress at that observation; no restart/cancel/completion/acceptance inferred."
+    "action": "One read-only delegated observation; stale thereafter, no rerun/cancel/acceptance."
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-shadow-geometry-feasibility.json",
+  "currentReceipt": "docs/plans/2026-10-10-shadow-geometry-pilot.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Progress:e47d7480 selected reviewed High morph-basis bodies privately, with source/native/cache/ordinary-party/save proof; unchanged whole-game draw/triangle limits still fail.",
-  "nextAction": "Prepare reproducible depth indices from the selected supplied geometry, then an opt-in renderer experiment with explicit pass-only ownership and finally restoration. Preserve current masks/morphs/live skeleton/gear/stealth/material-alpha/displacement fallbacks, pool/equip/reconnect cleanup. Review actual moving shadows and ordinary equipped/HUD High/Low scenes with original draw/triangle/frame limits. Keep close-up color geometry intact. Full inherited roadmap/art/Q/CB/F1\u2013F5/operations/owner/beta/launch/handoff remains active; no public microrelease.",
+  "previousGoalTurnClassification": "bae95e04:count-only shadow feasibility; original selected e47 runtime unchanged.",
+  "nextAction": "Continue measured actor color-geometry and depth/draw submission costs at the actual gameplay camera, preserving close-up supplied surfaces and all live skeleton/morph/mask/gear/stealth paths. Shadow-only savings cannot meet the current full triangle limit by themselves. Qualify native moving/color/contact quality, active equip/pool/reconnect lifetimes, ordinary High/Low full scenes and supported devices before production integration. Full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff remains active; no public microrelease.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -177,5 +177,55 @@
     ],
     "nativePoseShadowLifetimeAndWholeGame": "open",
     "lowShadowPathUnchanged": true
+  },
+  "shadowGeometryPilot": {
+    "receipt": "docs/plans/2026-10-10-shadow-geometry-pilot.json",
+    "productionSelected": false,
+    "nativeExactPairs": 16,
+    "nativeRGBChangedPixels": 0,
+    "nativeSimplifiedPairs": 16,
+    "nativeFallbacks": [
+      "stealth",
+      "shadows disabled"
+    ],
+    "nativeResourceCycles": 4,
+    "actualPairedTriangles": [
+      456947,
+      317983
+    ],
+    "actualPairedDraws": [
+      420,
+      420
+    ],
+    "actualProfile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.39999999999418,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 12,
+      "cpuLoopMedianMs": 19.099999994039536,
+      "cpuLoopP95Ms": 25.30000001192093,
+      "drawCallsMedian": 416,
+      "trianglesMedian": 318386,
+      "geometries": 465,
+      "textures": 299,
+      "activeEntities": 29,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "ownedBufferBytes": 9858200,
+    "fullHighDrawTrianglePass": false,
+    "LowAndDeviceQualification": "open"
   }
 }

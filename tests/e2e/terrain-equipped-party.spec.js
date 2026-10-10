@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
 import { installBodyLodPilot } from './body-lod-pilot.js';
 import { installWearableAttributePilot } from './wearable-attribute-pilot.js';
+import { prepareShadowGeometryPilot, selectSimplifiedShadowGeometry } from './shadow-geometry-pilot.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -95,6 +96,7 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
     test.skip(process.env.EIDOLON_TERRAIN_PARTY_RENDER_MODE !== 'four-browser', 'Four actual renderer scope only');
     expect(process.env.EIDOLON_E2E_BODY_LOD_PILOT, 'Body LOD diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
     expect(process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_PILOT, 'Wearable diagnostic currently qualifies the single-renderer observer only').toBeUndefined();
+    expect(process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT, 'Shadow geometry pilot currently qualifies the single-renderer observer only').toBeUndefined();
     test.setTimeout(230_000);
     expect(process.env.EIDOLON_E2E_WS_URL).toMatch(/^ws:\/\/127\.0\.0\.1:\d+\/ws$/);
     expect(process.env.EIDOLON_E2E_REGISTER).toBe('0');
@@ -320,6 +322,48 @@ test('single native renderer observes three live equipped party socket peers on 
         }, { timeout: 30_000 }).toBe(true);
         await expect(page.locator('#esc-menu')).toBeHidden();
         for (const peer of peers) expect(peer.socket.readyState).toBe(1);
+        if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1') {
+            expect(quality, 'Shadow geometry pilot requires actual High shadows').toBe('high');
+            const preparation = await prepareShadowGeometryPilot(page, 'game');
+            expect(preparation.derivatives.filter(row => /_Body$/.test(row.name))).toHaveLength(4);
+            const selection = await selectSimplifiedShadowGeometry(page, preparation.derivatives);
+            const paired = await page.evaluate(() => {
+                const render = window.game.renderSystem, pilot = window.__shadowGeometryPilot;
+                const capture = enabled => {
+                    // Composer fullscreen passes have their own shadow calls.
+                    // Observe swaps immediately after the actual scene pass.
+                    const shadow = render.renderer.shadowMap, original = shadow.render;
+                    let swaps = 0;
+                    shadow.render = function (...args) {
+                        const result = original.apply(this, args);
+                        if (args[1] === render.scene) swaps += pilot.pass.lastSwaps;
+                        return result;
+                    };
+                    try {
+                        pilot.pass.enabled = enabled; render.render();
+                        return { calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles, swaps };
+                    } finally { shadow.render = original; }
+                };
+                try {
+                    const reference = capture(false), candidate = capture(true), referenceAgain = capture(false);
+                    const ownedBufferBytes = [...pilot.pass.entries.values()].reduce((sum, entry) => sum +
+                        entry.geometry.index.array.byteLength + Object.values(entry.geometry.attributes).reduce((total, attr) => total + attr.array.byteLength, 0) +
+                        (entry.geometry.morphAttributes.position || []).reduce((total, attr) => total + attr.array.byteLength, 0), 0);
+                    return { reference, candidate, referenceAgain, ownedBufferBytes,
+                        restored: [...pilot.pass.entries.values()].every(entry => entry.mesh.geometry === entry.source),
+                        registered: pilot.pass.entries.size };
+                } finally { pilot.pass.enabled = true; }
+            });
+            await writeFile(testInfo.outputPath('shadow-party-pilot.json'), JSON.stringify({
+                scope: 'Explicit High shadow-only pilot in one actual connected renderer; ordinary selected assets and service worker. Untimed synchronous counts, no physical-device, four-renderer, battle, or production acceptance.',
+                preparation, selection, paired
+            }, null, 2));
+            console.log('[shadow-party-pilot]', JSON.stringify({ selection, paired }));
+            expect(paired.restored).toBe(true);
+            expect(paired.candidate.swaps).toBeGreaterThan(0);
+            expect(paired.referenceAgain.triangles).toBe(paired.reference.triangles);
+            expect(paired.candidate.triangles).toBeLessThan(paired.reference.triangles);
+        }
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
         expect(report.visibility).toBe('visible');
@@ -563,7 +607,10 @@ test('single native renderer observes three live equipped party socket peers on 
         console.log('[untimed-party-draw-attribution]', JSON.stringify(draws.slice(0, 16)));
         console.log('[untimed-same-scene-instance-comparison]', JSON.stringify(pairedDraws));
     } finally {
-        await page.evaluate(() => window.game?.destroy?.()).catch(() => {});
+        await page.evaluate(() => {
+            window.__shadowGeometryPilot?.pass.dispose(); delete window.__shadowGeometryPilot;
+            window.game?.destroy?.();
+        }).catch(() => {});
         for (const peer of peers) peer.socket.close();
     }
 });

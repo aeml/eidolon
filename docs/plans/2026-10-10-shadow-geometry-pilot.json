@@ -1,0 +1,1297 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-10T01:34:56.578551+00:00",
+  "classification": "Opt-in shadow-only supplied-geometry pilot qualified for scoped native parity/fallback/lifetime and actual single-renderer party/save checks. Unselected by production RenderSystem; whole-game draw/triangle, Low/device, dynamic lifecycle and final art/full-roadmap gates remain open.",
+  "baseCommit": "bae95e040e320eb831912cd13b1909605d50a69c",
+  "worktree": "/home/aeml/.local/share/eidolon-shadow-geometry-pilot-20261010",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-shadow-geometry-checks-20261010",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
+  "publicBaseline": {
+    "version": "1.79.22",
+    "commit": "30a8b6038df9e071eef0f57564ae94087d1a0b11",
+    "ciRun": 37967212738,
+    "unchanged": true
+  },
+  "scope": {
+    "productionActivation": false,
+    "newDerivedModels": 0,
+    "runtimeSelectionChanged": false,
+    "sourceModelsAndManifestsChanged": false,
+    "publicPush": false,
+    "versionProfileAccessChanged": false,
+    "serverGameplayAuthorityOrPlayerDataChanged": false,
+    "deferredHumanCampaignOrPhysicalPhoneWorkSubstituted": false
+  },
+  "implementation": {
+    "pass": "Explicit ActorShadowGeometry wrapper changes geometry only inside the stock shadowMap.render call for its exact scene, restoring in finally before original color submissions. Nested renderer calls suspend candidates before scene projection. RenderSystem never imports or activates this class.",
+    "ownership": "Independent raw position, skinIndex, skinWeight and position-morph buffers, including safely deinterleaved copies and original normalization/type. No shared GPU attribute disposal or source ownership. Exact raw source attributes and surviving currently masked indices validated before registration.",
+    "invalidations": "Source/candidate geometry or buffer generation/version, mask/equip replacement, source disposal, skeleton/bind replacement and detach retire owned depth geometry. Stealth/alpha/displacement/custom-depth/material/range/unknown-shadow cases use originals. Pool/equip/reconnect behavior beyond unit invalidation and the scoped native cycles remains open.",
+    "indices": "Extracted raw index preparer from the prior count inspector: ratio0.06, error0.006, full canonical skin interpolation penalty0.1, <=32 active bone triangle partitions, fixed shared vertices, conflicting skin seams and every nonzero position morph. Exact protected depth-signature validation, no pruning/sloppy/vertex relocation.",
+    "emptyResultCorrection": "Twelve supplied glove primitives of72triangles each previously counted as zero after Meshopt simplification. Keep their exact source indices: wearable default screen271280\u2192272144. All other875-primitive rows remain exact. First empty-result assertion failure and corrected real-asset regression retained.",
+    "preparation": "Test-only browser capture and Node simplification occur before profiling. Final gallery simplification takes1.622s total; this is not production startup/caching qualification."
+  },
+  "focusedChecks": {
+    "implementationTests": 31,
+    "migrationGuardTests": 6,
+    "uniqueTotal": 37,
+    "finalImplementationLog": "focused-final.log",
+    "finalGuardLog": "migration-final-correct-path.log",
+    "earlierCombined37Pass": "focused-interleaved.log",
+    "lintFiles": 8,
+    "lintExitCode": 0,
+    "latestPartyLint": "lint-party-observation-corrected.log",
+    "note": "Final combined command named a nonexistent ArtMigrationGuard path:31implementation tests passed, invocation failed. Correct6guard tests then passed separately. Failure retained, not counted as a passing combined run."
+  },
+  "countInspector": {
+    "screen": "screen-refactor-corrected.json",
+    "files": 256,
+    "primitives": 875,
+    "bareCharacters": [
+      184890,
+      58514
+    ],
+    "wholeWearables": [
+      769432,
+      272144
+    ],
+    "exactSourceFallbackPrimitives": 12,
+    "restoredTriangles": 864,
+    "allOtherPrimitiveRowsExact": true,
+    "scope": "Bare/catalog feasibility, not actual masked party counts."
+  },
+  "native": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791595658.709324,
+      "finishedUnix": 1791595697.9997764
+    },
+    "test": "all delivered classes use fitted gear, independent rigs and alternating Rogue strikes",
+    "playwrightSeconds": 38.7,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "registered": 44,
+    "examined": 48,
+    "rejectedExactFallback": 4,
+    "sourceDepthTriangles": 194525,
+    "candidateDepthTriangles": 43621,
+    "exactIndexComparisons": 16,
+    "exactIndexRGBChangedPixels": 0,
+    "simplifiedComparisons": 16,
+    "stableSourceAgainInAllComparisons": true,
+    "samples": [
+      {
+        "mode": "exact-index",
+        "actorClass": "Fighter",
+        "label": "idle",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Fighter",
+        "label": "back-run",
+        "pose": "Run",
+        "time": 0.3,
+        "yaw": 3.141592653589793,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Fighter",
+        "label": "side-attack",
+        "pose": "Attack",
+        "time": 0.4666666666666667,
+        "yaw": 1.5707963267948966,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Fighter",
+        "label": "partial-blink",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0.5,
+        "blink": [
+          0.75,
+          0.25
+        ],
+        "reference": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Rogue",
+        "label": "idle",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Rogue",
+        "label": "back-run",
+        "pose": "Run",
+        "time": 0.3,
+        "yaw": 3.141592653589793,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Rogue",
+        "label": "side-attack",
+        "pose": "Attack",
+        "time": 0.4666666666666667,
+        "yaw": 1.5707963267948966,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Rogue",
+        "label": "partial-blink",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0.5,
+        "blink": [
+          0.75,
+          0.25
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Wizard",
+        "label": "idle",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Wizard",
+        "label": "back-run",
+        "pose": "Run",
+        "time": 0.3,
+        "yaw": 3.141592653589793,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Wizard",
+        "label": "side-attack",
+        "pose": "Attack",
+        "time": 0.4666666666666667,
+        "yaw": 1.5707963267948966,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Wizard",
+        "label": "partial-blink",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0.5,
+        "blink": [
+          0.75,
+          0.25
+        ],
+        "reference": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Cleric",
+        "label": "idle",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Cleric",
+        "label": "back-run",
+        "pose": "Run",
+        "time": 0.3,
+        "yaw": 3.141592653589793,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Cleric",
+        "label": "side-attack",
+        "pose": "Attack",
+        "time": 0.4666666666666667,
+        "yaw": 1.5707963267948966,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "exact-index",
+        "actorClass": "Cleric",
+        "label": "partial-blink",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0.5,
+        "blink": [
+          0.75,
+          0.25
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 11
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Fighter",
+        "label": "idle",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 49,
+          "triangles": 74804,
+          "swaps": 11
+        },
+        "changedPixels": 2165,
+        "maximumChannel": 36,
+        "meanChannel": 0.004943287037037037,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Fighter",
+        "label": "back-run",
+        "pose": "Run",
+        "time": 0.3,
+        "yaw": 3.141592653589793,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 49,
+          "triangles": 74804,
+          "swaps": 11
+        },
+        "changedPixels": 2651,
+        "maximumChannel": 36,
+        "meanChannel": 0.004652199074074074,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Fighter",
+        "label": "side-attack",
+        "pose": "Attack",
+        "time": 0.4666666666666667,
+        "yaw": 1.5707963267948966,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 49,
+          "triangles": 74804,
+          "swaps": 11
+        },
+        "changedPixels": 2283,
+        "maximumChannel": 45,
+        "meanChannel": 0.00535011574074074,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Fighter",
+        "label": "partial-blink",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0.5,
+        "blink": [
+          0.75,
+          0.25
+        ],
+        "reference": {
+          "calls": 49,
+          "triangles": 118434,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 49,
+          "triangles": 74804,
+          "swaps": 11
+        },
+        "changedPixels": 2303,
+        "maximumChannel": 46,
+        "meanChannel": 0.006577546296296297,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Rogue",
+        "label": "idle",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 67208,
+          "swaps": 11
+        },
+        "changedPixels": 3140,
+        "maximumChannel": 35,
+        "meanChannel": 0.007795138888888889,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Rogue",
+        "label": "back-run",
+        "pose": "Run",
+        "time": 0.3,
+        "yaw": 3.141592653589793,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 67208,
+          "swaps": 11
+        },
+        "changedPixels": 1713,
+        "maximumChannel": 51,
+        "meanChannel": 0.004119791666666667,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Rogue",
+        "label": "side-attack",
+        "pose": "Attack",
+        "time": 0.4666666666666667,
+        "yaw": 1.5707963267948966,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 67208,
+          "swaps": 11
+        },
+        "changedPixels": 2337,
+        "maximumChannel": 82,
+        "meanChannel": 0.006525462962962963,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Rogue",
+        "label": "partial-blink",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0.5,
+        "blink": [
+          0.75,
+          0.25
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 103672,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 67208,
+          "swaps": 11
+        },
+        "changedPixels": 2770,
+        "maximumChannel": 35,
+        "meanChannel": 0.0059091435185185184,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Wizard",
+        "label": "idle",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 73606,
+          "swaps": 11
+        },
+        "changedPixels": 2497,
+        "maximumChannel": 99,
+        "meanChannel": 0.007773148148148148,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Wizard",
+        "label": "back-run",
+        "pose": "Run",
+        "time": 0.3,
+        "yaw": 3.141592653589793,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 73606,
+          "swaps": 11
+        },
+        "changedPixels": 2517,
+        "maximumChannel": 38,
+        "meanChannel": 0.005946180555555555,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Wizard",
+        "label": "side-attack",
+        "pose": "Attack",
+        "time": 0.4666666666666667,
+        "yaw": 1.5707963267948966,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 73606,
+          "swaps": 11
+        },
+        "changedPixels": 2103,
+        "maximumChannel": 43,
+        "meanChannel": 0.006696759259259259,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Wizard",
+        "label": "partial-blink",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0.5,
+        "blink": [
+          0.75,
+          0.25
+        ],
+        "reference": {
+          "calls": 51,
+          "triangles": 109698,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 51,
+          "triangles": 73606,
+          "swaps": 11
+        },
+        "changedPixels": 2150,
+        "maximumChannel": 69,
+        "meanChannel": 0.006935763888888889,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Cleric",
+        "label": "idle",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 69564,
+          "swaps": 11
+        },
+        "changedPixels": 2137,
+        "maximumChannel": 54,
+        "meanChannel": 0.006489004629629629,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Cleric",
+        "label": "back-run",
+        "pose": "Run",
+        "time": 0.3,
+        "yaw": 3.141592653589793,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 69564,
+          "swaps": 11
+        },
+        "changedPixels": 1910,
+        "maximumChannel": 58,
+        "meanChannel": 0.005217592592592592,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Cleric",
+        "label": "side-attack",
+        "pose": "Attack",
+        "time": 0.4666666666666667,
+        "yaw": 1.5707963267948966,
+        "blink": [
+          0,
+          0
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 69564,
+          "swaps": 11
+        },
+        "changedPixels": 1629,
+        "maximumChannel": 47,
+        "meanChannel": 0.00538425925925926,
+        "unstableReference": 0
+      },
+      {
+        "mode": "simplified",
+        "actorClass": "Cleric",
+        "label": "partial-blink",
+        "pose": "CombatIdle",
+        "time": 0.3,
+        "yaw": 0.5,
+        "blink": [
+          0.75,
+          0.25
+        ],
+        "reference": {
+          "calls": 47,
+          "triangles": 104282,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 47,
+          "triangles": 69564,
+          "swaps": 11
+        },
+        "changedPixels": 2719,
+        "maximumChannel": 49,
+        "meanChannel": 0.006810185185185186,
+        "unstableReference": 0
+      }
+    ],
+    "fallbacks": {
+      "stealth": {
+        "reference": {
+          "calls": 197,
+          "triangles": 155213,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 197,
+          "triangles": 155213,
+          "swaps": 0
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      },
+      "disabled": {
+        "reference": {
+          "calls": 25,
+          "triangles": 51939,
+          "swaps": 0
+        },
+        "candidate": {
+          "calls": 25,
+          "triangles": 51939,
+          "swaps": 0
+        },
+        "changedPixels": 0,
+        "maximumChannel": 0,
+        "meanChannel": 0,
+        "unstableReference": 0
+      }
+    },
+    "lifetime": {
+      "baseline": {
+        "geometries": 208,
+        "textures": 99,
+        "programs": 75
+      },
+      "cycles": [
+        {
+          "geometries": 208,
+          "textures": 99,
+          "programs": 75
+        },
+        {
+          "geometries": 208,
+          "textures": 99,
+          "programs": 75
+        },
+        {
+          "geometries": 208,
+          "textures": 99,
+          "programs": 75
+        },
+        {
+          "geometries": 208,
+          "textures": 99,
+          "programs": 75
+        }
+      ],
+      "originalsRestored": true,
+      "examined": 48,
+      "rejected": 4,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    "existingGallery": "All8High/Low fitted14-slot outfits, independent rigs, alternating Rogue attacks, mixed poses, stealth restoration, pooled models and3previews pass. These latter checks run after pilot disposal; do not claim active-pilot equip/respawn/reconnect coverage.",
+    "visualReview": "Root inspected simplified Fighter side attack, Wizard partial blink, Rogue back run and Cleric idle plus previous gear-only views. Supplied close-up cloth/trim/anatomy retained and ground silhouettes coherent in those views;16simplified pairs change shadow pixels, max channel99. This is partial scoped inspection, not final all-art approval.",
+    "limits": "Gallery2048PCFSoft differs from actual High4096; no physical-device/VRAM/busy-battle/long-session acceptance. Four memory cycles prove stable Three geometry/texture/program counts only."
+  },
+  "actualParty": {
+    "terminal": {
+      "exitCode": 0,
+      "startedUnix": 1791595849.3137896,
+      "finishedUnix": 1791595912.6027465
+    },
+    "goRaceSaveSeconds": 54.799,
+    "scope": "Explicit High shadow-only pilot in one actual connected renderer; ordinary selected assets and service worker. Untimed synchronous counts, no physical-device, four-renderer, battle, or production acceptance.",
+    "selected": {
+      "registered": 44,
+      "sourceTriangles": 181142,
+      "candidateTriangles": 42178
+    },
+    "paired": {
+      "reference": {
+        "calls": 420,
+        "triangles": 456947,
+        "swaps": 0
+      },
+      "candidate": {
+        "calls": 420,
+        "triangles": 317983,
+        "swaps": 44
+      },
+      "referenceAgain": {
+        "calls": 420,
+        "triangles": 456947,
+        "swaps": 0
+      },
+      "ownedBufferBytes": 9858200,
+      "restored": true,
+      "registered": 44
+    },
+    "frameProfile": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 16.69999999999709,
+      "frameP95Ms": 33.39999999999418,
+      "frameP99Ms": 33.400000000001455,
+      "framesOver33ms": 12,
+      "cpuLoopMedianMs": 19.099999994039536,
+      "cpuLoopP95Ms": 25.30000001192093,
+      "drawCallsMedian": 416,
+      "trianglesMedian": 318386,
+      "geometries": 465,
+      "textures": 299,
+      "activeEntities": 29,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "untimedDrawAttribution": [
+      {
+        "name": "OpaqueActorInstances",
+        "color": 24,
+        "shadow": 124,
+        "triangles": 26064
+      },
+      {
+        "name": "Equipped Cleric",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 69020
+      },
+      {
+        "name": "Equipped Wizard",
+        "color": 26,
+        "shadow": 21,
+        "triangles": 62588
+      },
+      {
+        "name": "ProceduralImp",
+        "color": 0,
+        "shadow": 44,
+        "triangles": 916
+      },
+      {
+        "name": "Equipped Fighter",
+        "color": 23,
+        "shadow": 20,
+        "triangles": 70358
+      },
+      {
+        "name": "Equipped Rogue",
+        "color": 23,
+        "shadow": 18,
+        "triangles": 64150
+      },
+      {
+        "name": "ProceduralSkeleton",
+        "color": 9,
+        "shadow": 30,
+        "triangles": 2065
+      },
+      {
+        "name": "EnvironmentGroup",
+        "color": 22,
+        "shadow": 6,
+        "triangles": 24291
+      },
+      {
+        "name": "Mesh",
+        "color": 1,
+        "shadow": 15,
+        "triangles": 17
+      },
+      {
+        "name": "Canonical terrain tiles",
+        "color": 6,
+        "shadow": 0,
+        "triangles": 768
+      },
+      {
+        "name": "ProceduralEidolicBlackwater",
+        "color": 1,
+        "shadow": 0,
+        "triangles": 2
+      },
+      {
+        "name": "ProceduralRealmTerrain:water",
+        "color": 1,
+        "shadow": 0,
+        "triangles": 4
+      },
+      {
+        "name": "ProceduralRealmTerrain:air",
+        "color": 1,
+        "shadow": 0,
+        "triangles": 4
+      },
+      {
+        "name": "Points",
+        "color": 1,
+        "shadow": 0,
+        "triangles": 46.666666666666664
+      }
+    ],
+    "equippedRootTriangles": 266116,
+    "fullHighLimits": {
+      "frameMedianMs": 20,
+      "frameP95Ms": 33.4,
+      "drawCallsMedian": 350,
+      "trianglesMedian": 250000
+    },
+    "unchangedBudgetPass": {
+      "frameMedian": true,
+      "frameP95": true,
+      "drawCalls": false,
+      "triangles": false
+    },
+    "ordinaryAssets": "All4selectedv3High responses observed from normal service worker and CacheAPI SHA match selection manifest; no asset routing. Renderer remains explicit experimental intervention.",
+    "saves": "Four actual equipped classes, independent owned bones,14slots, terrain authority and normal authenticated three-socket peers; members/inventory/EP save checks pass in disposable isolated race server. Four-browser input/healing test skipped, not passed.",
+    "screenshot": "single-renderer-equipped-party-high.png inspected with live HUD/terrain/contact shadows. Its debug counter can reflect the later untimed global-instance reference (901calls); use the180frame report and synchronous paired evidence, not that stale HUD reading.",
+    "limits": "29entities,180frames, one GPU/standing-movement snapshot; no cross-run CPU attribution, busy combat/four GPU/physical-device/returning-client proof. Candidate owns9858200raw buffer bytes (not VRAM); draw calls unchanged in synchronous comparison; full scene318386triangles and416draws still fail."
+  },
+  "retainedFailures": [
+    {
+      "scope": "offline helper refactor",
+      "path": "screen-refactor.log",
+      "result": "Empty Meshopt result rejected; corrected exact-source fallback adds864triangles, no content omitted."
+    },
+    {
+      "scope": "unit fixtures",
+      "paths": [
+        "focused-corrected.log",
+        "focused-degenerate-corrected.log",
+        "degenerate-fixture-corrected.log"
+      ],
+      "result": "Synthetic degenerate fixtures did not reproduce the real empty-result branch. Replaced with hash-pinned supplied72triangle Fighter glove primitive; final regression passes."
+    },
+    {
+      "scope": "first native",
+      "path": "native-initial",
+      "result": "Pass27.6s, but only16gear batches registered; interleaved body/eye attributes excluded. Partial evidence, not full-body proof."
+    },
+    {
+      "scope": "interleaved native",
+      "path": "native-interleaved",
+      "result": "Exit1 timeout180s, actual411.7s due synchronous test-helper rebuilding a whole morph accessor per vertex.32pairs and resources captured but failed run remains failed. Cache each accessor once; corrected final native pass38.7s, simplification1.622s."
+    },
+    {
+      "scope": "first actual party",
+      "path": "party-pilot",
+      "result": "Exit1 after counter read composer fullscreen shadow call and saw0swaps. Observe exact scene pass immediately and retain evidence before assertions; corrected party passes. No renderer behavior or limits relaxed."
+    },
+    {
+      "scope": "final focused command",
+      "path": "focused-final.log",
+      "result": "31implementation pass; nonexistent guard suite path failed. Correct guard-only6pass retained separately."
+    }
+  ],
+  "retention": {
+    "inventory": "/home/aeml/.local/share/eidolon-shadow-geometry-checks-20261010/artifact-inventory.json",
+    "artifacts": 227,
+    "sha256": "ce077ea6cd16268168c26c679d9fbb85956b9a68fd68da1bcf54c8749daa226f",
+    "sourceVerification": {
+      "sourceHashesVerified": 522,
+      "assetHashesUnchanged": 511,
+      "scopes": [
+        {
+          "scope": "native-morph-cache-corrected",
+          "sourcePinsVerified": 4,
+          "supervisorPID": 1966296,
+          "supervisorAbsent": true
+        },
+        {
+          "scope": "party-observation-corrected",
+          "sourcePinsVerified": 5,
+          "supervisorPID": 1990533,
+          "supervisorAbsent": true
+        }
+      ],
+      "modelHashesUnchanged": 508,
+      "ports4190_4192_18189Absent": true
+    },
+    "privacy": "Owned directories0700/files0600; raw synthetic account logs remain private. Original dirty workspace untouched; temporary vendor symlink removed; owned supervisors and4190/4192/18189 listeners absent."
+  },
+  "longSoak": {
+    "readOnlySnapshot": {
+      "observed_at_utc": "2026-10-10T01:01:45Z",
+      "run": {
+        "id": 37880032315,
+        "head_sha": "dc7d22f2be5a85e9ce4cf1aaeed38ce43fa490d8",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 1,
+        "updated_at": "2026-10-09T03:36:16Z",
+        "url": "https://github.com/aeml/eidolon/actions/runs/37880032315"
+      },
+      "jobs": [
+        {
+          "name": "100-client authoritative-state soak",
+          "status": "in_progress",
+          "conclusion": null,
+          "steps": [
+            {
+              "name": "Set up job",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Initialize containers",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Checkout",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Go",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Setup Node.js",
+              "status": "completed",
+              "conclusion": "success"
+            },
+            {
+              "name": "Run multiplayer soak",
+              "status": "in_progress",
+              "conclusion": null
+            },
+            {
+              "name": "Upload soak evidence",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Node.js",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Setup Go",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Post Checkout",
+              "status": "pending",
+              "conclusion": null
+            },
+            {
+              "name": "Stop containers",
+              "status": "pending",
+              "conclusion": null
+            }
+          ]
+        }
+      ]
+    },
+    "action": "One read-only delegated observation01:01:45UTC this goal turn; stale thereafter. Stillin_progress then; no restart/cancel/completion/acceptance inferred."
+  },
+  "openGates": [
+    "Active native equip/mask/pool/respawn/reconnect and prolonged resource behavior",
+    "Ordinary runtime bake/cache/compatibility and actual High/Low350/250000/85000limits",
+    "Supported-device/frame/VRAM and final whole-catalog art/readability",
+    "All inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements"
+  ],
+  "nextAction": "Continue measured actor color-geometry and depth/draw submission costs at the actual gameplay camera, preserving close-up supplied surfaces and all live skeleton/morph/mask/gear/stealth paths. Shadow-only savings cannot meet the current full triangle limit by themselves. Qualify native moving/color/contact quality, active equip/pool/reconnect lifetimes, ordinary High/Low full scenes and supported devices before production integration. Full inherited1.11\u20131.99/art/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff remains active; no public microrelease."
+}
