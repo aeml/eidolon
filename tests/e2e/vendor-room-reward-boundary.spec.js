@@ -11,6 +11,29 @@ for (const [index, action] of ['sale', 'stash'].entries()) {
     test(`fresh ${action} baseline can precede separately earned room Gold`, async ({ page, baseURL }, testInfo) => {
         test.skip(process.env.EIDOLON_E2E_ROOM_GOLD_BOUNDARY !== '1', 'Explicit disposable retained-room fixture only');
         const credentials = JSON.parse(process.env.EIDOLON_E2E_ROOM_GOLD_ACCOUNTS)[index];
+        const observation = { messages: [], commands: [], forwardsOriginalMessages: true };
+        let recording = false;
+        await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
+            const server = socket.connectToServer();
+            socket.onMessage(message => {
+                if (recording && typeof message === 'string') {
+                    const command = JSON.parse(message);
+                    if (['sell', 'stash_deposit', 'get_ep_wallet'].includes(command.type))
+                        observation.commands.push({ type: command.type, itemId: command.payload?.itemId, readID: command.payload?.readID });
+                }
+                server.send(message);
+            });
+            server.onMessage(message => {
+                if (recording && typeof message === 'string') {
+                    const reply = JSON.parse(message);
+                    if (reply.type === 'ep_wallet_result' && reply.payload.readID)
+                        observation.messages.push({ type: reply.type, gold: reply.payload.gold, ep: reply.payload.ep, readID: reply.payload.readID });
+                    if (reply.type === 'room_clear_reward')
+                        observation.messages.push({ type: reply.type, gold: reply.payload.gold, roomIndex: reply.payload.roomIndex });
+                }
+                socket.send(message);
+            });
+        });
         const failures = collectBrowserFailures(page, baseURL);
         await loginAndEnterWorld(page, credentials);
         const read = () => page.evaluate(() => {
@@ -21,33 +44,7 @@ for (const [index, action] of ['sale', 'stash'].entries()) {
         const before = await read();
         expect(before.gold).toBe(1000);
         expect(before.inventory).toHaveLength(25);
-        await page.evaluate(() => {
-            const game = window.game, handle = game.handleServerMessage, send = game.network.send;
-            const observation = window.__roomGoldBoundary = { messages: [], commands: [] };
-            const wrappedHandle = function (message) {
-                const before = this.player.gold;
-                const handled = handle.call(this, message);
-                const type = message?.type, payload = message?.payload;
-                const self = type === 'state' ? payload?.[this.player.id] : type === 'delta' ? payload?.u?.[this.player.id] : null;
-                if (type === 'ep_wallet_result') observation.messages.push({ type, gold: payload.gold, ep: payload.ep, readID: payload.readID });
-                if (type === 'room_clear_reward') observation.messages.push({ type, gold: payload.gold, roomIndex: payload.roomIndex });
-                if (self?.gold !== undefined && (before !== this.player.gold || !observation.messages.length))
-                    observation.messages.push({ type, beforeGold: before, gold: this.player.gold, wireGold: self.gold });
-                return handled;
-            };
-            const wrappedSend = function (type, payload) {
-                if (['sell', 'stash_deposit', 'get_ep_wallet'].includes(type)) observation.commands.push({ type,
-                    itemId: payload.itemId, readID: payload.readID, beforeGold: game.player.gold });
-                return send.call(this, type, payload);
-            };
-            game.handleServerMessage = wrappedHandle;
-            game.network.send = wrappedSend;
-            observation.restore = () => {
-                if (game.handleServerMessage !== wrappedHandle || game.network.send !== wrappedSend)
-                    throw Error('Gold diagnostic lost observer ownership');
-                game.handleServerMessage = handle; game.network.send = send;
-            };
-        });
+        recording = true;
         let rejected;
         try {
             if (action === 'sale') await freePersistentQALootSlot(page);
@@ -61,11 +58,7 @@ for (const [index, action] of ['sale', 'stash'].entries()) {
         expect(plainError).toContain(`Expected: ${expectedGoldWithoutAward}`);
         expect(plainError).toContain(`Received: ${finalGold}`);
         await expect.poll(async () => (await read()).gold).toBe(finalGold);
-        const observation = await page.evaluate(() => {
-            const record = window.__roomGoldBoundary;
-            record.restore();
-            return { messages: record.messages, commands: record.commands, observerRestored: true };
-        });
+        recording = false;
         expect(observation.commands.filter(command => command.type === 'sell')).toHaveLength(action === 'sale' ? 1 : 0);
         expect(observation.commands.filter(command => command.type === 'stash_deposit')).toHaveLength(action === 'stash' ? 1 : 0);
         expect(observation.messages.filter(message => message.type === 'ep_wallet_result'))

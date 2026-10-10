@@ -110,14 +110,13 @@ func TestActualBrowserFreshWalletThenEarnedRoomGold(t *testing.T) {
 			t.Fatal(err)
 		}
 		wantGold := fixture.Gold + op.Participants[0].Gold
-		wantInventory := append([]database.Item{}, fixture.Inventory[1:]...)
+		wantInventory := append([]database.Item{databaseItem(earned)}, fixture.Inventory[1:]...)
 		wantStash := append(append([]database.Item{}, fixture.Stash...), fixture.Inventory[0])
 		if index == 0 {
 			wantGold += fixture.Inventory[24].Value
-			wantInventory = append([]database.Item{}, fixture.Inventory[:24]...)
+			wantInventory = append(append([]database.Item{}, fixture.Inventory[:24]...), databaseItem(earned))
 			wantStash = fixture.Stash
 		}
-		wantInventory = append(wantInventory, databaseItem(earned))
 		saved, err := repo.GetCharacter(fixture.Name, fixture.Name)
 		if err != nil || saved == nil || !saved.LastLogout.After(started) || saved.Gold != wantGold || saved.EP != fixture.EP || saved.XP != fixture.XP+op.Participants[0].XP ||
 			!reflect.DeepEqual(saved.Equipment, fixture.Equipment) || !reflect.DeepEqual(saved.Inventory, wantInventory) || !reflect.DeepEqual(saved.Stash, wantStash) ||
