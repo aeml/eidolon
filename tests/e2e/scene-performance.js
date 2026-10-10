@@ -34,6 +34,8 @@ export async function profileGameplayScene(page, label) {
                 trianglesMedian: percentile(samples.map((sample) => sample.triangles), 0.5),
                 geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures,
                 activeEntities: game.activeEntitiesCache?.length || 0,
+                activeEntitiesMin: Math.min(...samples.map(sample => sample.activeEntities)),
+                activeEntitiesMax: Math.max(...samples.map(sample => sample.activeEntities)),
                 previewFramesDuringSample: (preview?.renderer?.info.render.frame || 0) - (firstPreviewFrame || 0),
                 previewGeometries: preview?.renderer?.info.memory.geometries || 0,
                 previewTextures: preview?.renderer?.info.memory.textures || 0
@@ -54,7 +56,8 @@ export async function profileGameplayScene(page, label) {
             previous = time;
             if (warmup-- > 0) return;
             if (firstPreviewFrame === null) firstPreviewFrame = game.uiManager.characterPreview?.renderer?.info.render.frame || 0;
-            samples.push({ intervalMs, cpuMs, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles });
+            samples.push({ intervalMs, cpuMs, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
+                activeEntities: this.activeEntitiesCache?.length || 0 });
             if (samples.length === 180) finish();
         };
         timer = setTimeout(() => finish(new Error(`Scene profile timed out after ${samples.length} samples`)), 45_000);

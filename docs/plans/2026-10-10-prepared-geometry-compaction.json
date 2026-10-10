@@ -1,0 +1,254 @@
+{
+  "status": "Qualified lossless candidate storage compaction selected privately; optional geometry owner still default null and no publication.",
+  "recordedUTC": "2026-10-10T10:40:55.224532+00:00",
+  "sourceCommit": "3207fb568df0a754ff1e71efa8d82734a4b9d81d",
+  "baseCommit": "1ad6cc0d041a1f75f23b806c1a9c0df11971e2f6",
+  "implementation": "Independently cloned reduced geometries now retain only referenced vertex rows. Uint32 first-use remapping preserves triangle order/winding. Raw typed-array row copies preserve skin weights/indices, normalized integers, Float16 encoding, interleaved padding/shared stream identity, signed zero/NaN payloads, all independent position/normal morphs, metadata and conservative bounds. Read original typed-array views rather than Three clone buffer-sharing cache; full-copy fallback also preserves distinct interleaved views of a shared allocation. Original source, assets, close full geometries, algorithms, authority and default selection unchanged.",
+  "productProof": {
+    "existingInputs": 3478,
+    "modifiedExistingInputs": [
+      "src/core/ActorGameplayGeometry.js"
+    ],
+    "addedProductionInputs": [
+      "src/core/PreparedGeometry.js"
+    ],
+    "unchangedOtherInputs": 3477,
+    "workerSHA256": "2504f5880f57633cf1ac76430cb2ea73de292a34ff2f09f72cb11337b13bf51c",
+    "workerBytes": 134129
+  },
+  "checks": {
+    "unit": "180 checks /12 suites passed4.747s; scoped ESLint/whitespace pass",
+    "native": "Final gallery1pass64exact compact-vs-legacy controls/32exact close originals; published2pass10.1s; connected High party1pass/1four-renderer skip; focused Go race87.47stest88.530spackage. No retries. Earlier passes and expected regression/fixture failure logs retained separately.",
+    "regression": "Prior candidate fails distinct interleaved source-view regression;1expected failure/6omitted, not passes. Corrected full/subset cases included in final180passes. Initial absent test filename attempt retained as fixture failure; no assertion weakened.",
+    "gallery": {
+      "controls": 64,
+      "exactCloseOriginals": 32,
+      "registered": 88,
+      "sourceTriangles": 305113,
+      "reducedTriangles": 105961,
+      "oldRetainedBytes": 40678788,
+      "compactRetainedBytes": 17464220,
+      "savedRetainedPercent": 57.06799327452923,
+      "coldMs": 9964.5,
+      "coldRenderedFrames": 583,
+      "workerStats": {
+        "requested": 88,
+        "installed": 88,
+        "stale": 0,
+        "fallback": 0,
+        "failed": 0,
+        "cacheHits": 25,
+        "rejected": 0,
+        "maxCopiedBytes": 3058764,
+        "workerCacheBytes": 1162956,
+        "workerCacheEntries": 63
+      },
+      "lifecycle": {
+        "oldRetired": true,
+        "quality": "low",
+        "installed": 11,
+        "valid": true,
+        "samePoolRootReturned": true
+      }
+    },
+    "party": {
+      "compactProof": {
+        "legacyStorageBytes": 21769808,
+        "candidateStorageBytes": 8741512,
+        "ordinaryShadows": true,
+        "captured": 44
+      },
+      "preparation": {
+        "method": "automatic-worker-exact-source-cache",
+        "milliseconds": 8214,
+        "body": {
+          "sources": 4
+        },
+        "installed": {
+          "registered": 44,
+          "originalTriangles": 181142,
+          "candidateTriangles": 53960
+        },
+        "stats": {
+          "requested": 44,
+          "installed": 44,
+          "stale": 0,
+          "fallback": 0,
+          "failed": 0,
+          "cacheHits": 0,
+          "rejected": 0,
+          "maxCopiedBytes": 2995424,
+          "workerCacheBytes": 647520,
+          "workerCacheEntries": 44
+        }
+      },
+      "actorViewFilterAllocated": false,
+      "colorAndOrdinaryShadowCompactChangedChannels": [
+        0,
+        0
+      ],
+      "motionSamples": 80,
+      "motionFrames": 25,
+      "absentReference": {
+        "frameMedianMs": 33.29999999999927,
+        "frameP95Ms": 49.900000000001455,
+        "cpuLoopMedianMs": 26.19999998807907,
+        "cpuLoopP95Ms": 37.099999994039536,
+        "drawCallsMedian": 372,
+        "trianglesMedian": 451987,
+        "activeEntitiesMin": 31,
+        "activeEntitiesMax": 32
+      },
+      "installed": {
+        "frameMedianMs": 16.80000000000291,
+        "frameP95Ms": 33.400000000001455,
+        "cpuLoopMedianMs": 22.900000005960464,
+        "cpuLoopP95Ms": 30.5,
+        "drawCallsMedian": 368,
+        "trianglesMedian": 198653,
+        "activeEntitiesMin": 31,
+        "activeEntitiesMax": 31
+      },
+      "installedGates": {
+        "median20ms": true,
+        "exactP9533_4ms": false,
+        "draw350": false,
+        "triangles250000": true
+      },
+      "submissionCPU": {
+        "scope": "Same-scene source arm bypasses controller wrapper/validation; combined arm includes it. Real clock,48 samples per path. Delivery idle; allocated candidates/cache remain. Submission only, not frame pacing or installation/memory baseline.",
+        "reference": {
+          "frames": 48,
+          "median": 18.599999994039536,
+          "p95": 28.599999994039536
+        },
+        "candidate": {
+          "frames": 48,
+          "median": 19.5,
+          "p95": 33.400000005960464
+        }
+      }
+    },
+    "realFrameABBA": {
+      "warmupFramesPerArm": 60,
+      "measuredFramesPerArm": 180,
+      "initial": {
+        "registered": 44,
+        "candidateStorageBytes": 8741512,
+        "workerCacheBytes": 647520,
+        "workerCacheEntries": 44,
+        "requested": 44,
+        "pending": 0,
+        "activeJob": false,
+        "restored": true
+      },
+      "phases": [
+        {
+          "candidate": false,
+          "profile": {
+            "frameMedianMs": 16.700000000004366,
+            "frameP95Ms": 33.400000000001455,
+            "cpuLoopMedianMs": 21.400000005960464,
+            "cpuLoopP95Ms": 27.099999994039536,
+            "drawCallsMedian": 370,
+            "trianglesMedian": 455435,
+            "activeEntitiesMin": 31,
+            "activeEntitiesMax": 31
+          },
+          "gates": {
+            "median20ms": true,
+            "exactP9533_4ms": false,
+            "draw350": false,
+            "triangles250000": false
+          }
+        },
+        {
+          "candidate": true,
+          "profile": {
+            "frameMedianMs": 16.700000000004366,
+            "frameP95Ms": 33.400000000001455,
+            "cpuLoopMedianMs": 22.299999982118607,
+            "cpuLoopP95Ms": 28.299999982118607,
+            "drawCallsMedian": 368,
+            "trianglesMedian": 201071,
+            "activeEntitiesMin": 31,
+            "activeEntitiesMax": 31
+          },
+          "gates": {
+            "median20ms": true,
+            "exactP9533_4ms": false,
+            "draw350": false,
+            "triangles250000": true
+          }
+        },
+        {
+          "candidate": true,
+          "profile": {
+            "frameMedianMs": 16.69999999999709,
+            "frameP95Ms": 33.40000000000873,
+            "cpuLoopMedianMs": 21.399999976158142,
+            "cpuLoopP95Ms": 26.900000005960464,
+            "drawCallsMedian": 372,
+            "trianglesMedian": 201071,
+            "activeEntitiesMin": 31,
+            "activeEntitiesMax": 31
+          },
+          "gates": {
+            "median20ms": true,
+            "exactP9533_4ms": false,
+            "draw350": false,
+            "triangles250000": true
+          }
+        },
+        {
+          "candidate": false,
+          "profile": {
+            "frameMedianMs": 16.80000000000291,
+            "frameP95Ms": 33.40000000000873,
+            "cpuLoopMedianMs": 22.80000001192093,
+            "cpuLoopP95Ms": 29.30000001192093,
+            "drawCallsMedian": 369,
+            "trianglesMedian": 454346,
+            "activeEntitiesMin": 31,
+            "activeEntitiesMax": 31
+          },
+          "gates": {
+            "median20ms": true,
+            "exactP9533_4ms": false,
+            "draw350": false,
+            "triangles250000": false
+          }
+        }
+      ],
+      "restored": true,
+      "scope": "Same running game source-controller-bypass/compact/compact/source-controller-bypass ABBA; each60warmup+180real frames. Owned candidates and worker cache remain allocated in both arms. Normal world/network/population evolution retained and recorded. This isolates submission policy more closely, not installation/memory, physical-device or battle acceptance."
+    }
+  },
+  "selectionRationale": "Retain the verified storage reduction in the existing private opt-in delivery path. Final real-frame medians pass both source/compact arms; all exact p95 and draw gates still fail. Same-scene submission CPU18.6/28.6ms source versus19.5/33.4ms compact does not support a speed claim. Earlier first-source nativeABBA33.3ms medians also retained. No default activation or performance acceptance.",
+  "evidence": "/home/aeml/.local/share/eidolon-geometry-frame-abba-checks-20261010",
+  "inventorySHA256": "780dbaa88cc3def76241f91a2b85b4104a4729c158b08713522408f0887623e9",
+  "inventoryFiles": 159,
+  "public": {
+    "recordedUTC": "2026-10-10T10:38:58.707019+00:00",
+    "frontend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24"
+    },
+    "backend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24",
+      "status": "ok",
+      "database": "ready"
+    },
+    "ci": {
+      "conclusion": "failure",
+      "head_sha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "html_url": "https://github.com/aeml/eidolon/actions/runs/38030283856",
+      "id": 38030283856,
+      "run_attempt": 1,
+      "status": "completed"
+    }
+  },
+  "limits": "Retained typed-array buffer bytes only, not peak/whole-browser/GPU-driver memory. Fullclone plus compact allocation transiently coexists. Source/compact ABBA includes original-vs-reduced triangle selection, not compaction-only timing. Final medians pass both arms; exact p95 and draw gates fail both. Earlier source948e actual33.3ms medians retained; no cross-run FPS gain. Linux AMD ANGLE Vulkan1280x844dpr1, Windows user-agent is not physical Windows/device coverage. Synthetic usernames overlap; screenshot heap380.1MB not qualified. Protected movement fixture is not busy combat/campaign/art acceptance. Geometry owner remains default null. No new actual Low timing; real Low gallery/pool replacement only. Public24 still failedCI, no push/retry/waiver/24merge; full goal remains active.",
+  "fullGoal": "Every original1.11\u20131.99 content/gameplay/world/combat/equipment/UI/support-device/performance/save/security/F1\u2013F5/CB/operations/rights/owner/human/beta/launch/handoff requirement remains active where unproven."
+}
