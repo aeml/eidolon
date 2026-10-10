@@ -1,3 +1,15 @@
+**October10 conservative matrix world-force correction qualified:** Original unsafe
+cache was already in public23/2e519bb0; previous private-only descriptions were
+incorrect. Preserve frozen originals and supersede their scope with the source
+audit.6553fec1 caches only local composition and retains normal dirty/stock-world
+force propagation.80focused checks,14native exact world/color/shadow stages and
+High/Low equipped-party race/save scopes pass. High33.3median andLow89808triangles
+still fail original budgets;28/40entities and shared-host load prevent cross-run
+gain claims. Initial Low High-only shadow flag and old child-skip fixture failures
+are retained. Isolated24maintenance prepares its own CI/public acceptance while
+keeping1.5s jump travel. Full original roadmap, art/device/F1-F5/owner/launch and
+failed24hsoak remain open. See docs/plans/2026-10-10-matrix-world-force-checks.json.
+
 # Eidolon roadmap execution goal — Alpha 1.11 through 1.99
 
 **October 10 owner-requested jump pacing:** Long jumps now use a 1.5-second

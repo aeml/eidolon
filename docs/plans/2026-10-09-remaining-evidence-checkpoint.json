@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T05:53:47.513598+00:00",
-  "classification": "Public Alpha1.79.23 jump cap accepted at exact2e519bb0/CI38026431419 attempt1/all10jobs success, front/back/ready DB and six asset hashes exact; initial live startup download failure retained then retry passed. Private High frame/matrix/terrain/art/full inherited work remains open; unflagged manual descendant matrix divergences still require repair. Failed24-hour soak remains failed.",
-  "qualifiedRuntime": "Private qualified6fbffd34 renderer plus four selected supplied High v3body paths; all originals/oldHigh/Low retained. Public/client/server now Alpha1.79.23 for authorized jump duration only; profile/access and private renderer/terrain/diagnostic activation unchanged.",
+  "recordedUTC": "2026-10-10T06:10:50.264237+00:00",
+  "classification": "Public23 jump cap accepted. Original unsafe matrix cache was already public23, correcting earlier private-only descriptions; conservative6553fec1 correction passes80focused/14native/High-and-Low party-save scopes and prepares isolated24release. High full-frame and Low triangle budgets still fail. Full inherited gates and failed24hsoak remain open.",
+  "qualifiedRuntime": "Private qualified6fbffd34 renderer plus four selected supplied High v3body paths; all originals/oldHigh/Low retained. Public/client/server now Alpha1.79.23 for authorized jump duration only; profile/access and private renderer/terrain/diagnostic activation unchanged. Scope correction: original cache was already public23; only newer partialfix/pilots were private.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -873,5 +873,98 @@
     "privateRenderTerrainDiagnosticPilotsExcluded": true,
     "acceptanceReceipt": "docs/plans/2026-10-10-jump-speed-public-acceptance.json",
     "inventorySHA256": "9ec6338d3ce37afc90d8834e999235ca3d4e830c67d2d2b4ecc2ebe84ee62750"
+  },
+  "matrixWorldForcePropagation": {
+    "codeCommit": "6553fec14bed1042f0533488b350e6df1a873026",
+    "publicBaseline": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+    "scopeCorrection": "Original cache was already deployed in public Alpha1.79.23. Earlier private-only labels are incorrect; original frozen evidence remains unchanged and is superseded by public-cache-scope-correction.json. Private94ecf926 partial fix and terrain/actor/diagnostic pilots were not selected publicly.",
+    "implementation": "Cache only unchanged local composition; preserve normal dirty flag and stock world traversal so ancestor force reaches manual descendants. No static-child world-multiply skip or performance gain claimed.",
+    "checks": {
+      "baseline": "Five of eleven new cases fail on held partial helper. Public original helper independently fails eight of eleven cases.",
+      "focused": "66 passed originally; integrated RenderSystem ownership/manual-child fixture updated and all80checks/4suites passed. Older fixture expected unsafe child-world skip; its publisher failure retained separately.",
+      "native": "14 native ordinary/cached/ordinary world/color/shadow stages exact; zero changed/unstable RGBA channels.",
+      "party": "High and corrected Low actual one-renderer/three-socket-peer four-class race/save checks passed. Four-browser case deliberately skipped. Initial Low invocation rejected High-only shadow flag before sampling; original retained. Corrected Low disables only that flag."
+    },
+    "profiles": {
+      "high": {
+        "quality": "high",
+        "label": "single-renderer-equipped-raised-party-high",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 33.299999999995634,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 50,
+        "framesOver33ms": 42,
+        "cpuLoopMedianMs": 23.700000017881393,
+        "cpuLoopP95Ms": 35.099999994039536,
+        "drawCallsMedian": 272,
+        "trianglesMedian": 157914,
+        "geometries": 485,
+        "textures": 290,
+        "activeEntities": 28,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      },
+      "low": {
+        "quality": "low",
+        "label": "single-renderer-equipped-raised-party-low",
+        "frames": 180,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "viewport": {
+          "width": 1280,
+          "height": 844,
+          "pixelRatio": 1
+        },
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+        "visibility": "visible",
+        "frameMedianMs": 16.69999999999709,
+        "frameP95Ms": 33.400000000001455,
+        "frameP99Ms": 33.400000000001455,
+        "framesOver33ms": 19,
+        "cpuLoopMedianMs": 18.19999998807907,
+        "cpuLoopP95Ms": 26.19999998807907,
+        "drawCallsMedian": 162,
+        "trianglesMedian": 89808,
+        "geometries": 395,
+        "textures": 275,
+        "activeEntities": 40,
+        "previewFramesDuringSample": 0,
+        "previewGeometries": 0,
+        "previewTextures": 0
+      }
+    },
+    "originalBudgets": {
+      "high": {
+        "medianMs": 20,
+        "p95Ms": 33.4,
+        "drawCalls": 350,
+        "triangles": 250000
+      },
+      "low": {
+        "medianMs": 33.4,
+        "p95Ms": 50,
+        "drawCalls": 200,
+        "triangles": 85000
+      }
+    },
+    "budgetResult": {
+      "high": "Median33.3ms fails20ms; rawp95 33.400000000001455 exceeds exact33.4. Geometry272calls/157914triangles passes.",
+      "low": "Median16.7/p9533.4ms and162calls pass;89808triangles fails85000."
+    },
+    "limits": "Different populations28/40, varying shared-host load21.7\u201328.8 on16CPUs and private geometry/body/actor-filter pilots prohibit cross-run matrix performance attribution. No physical-device, full moving art, production or final roadmap acceptance. Failed24hsoak unchanged.",
+    "status": "Private conservative correction qualified narrowly; isolated public maintenance release is preparing.",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-matrix-world-force-checks-20261010",
+      "files": 74,
+      "inventorySHA256": "5bba256821386499c6207f207a37af0d1c5da9117b2ced33cdc7152a4ffc546c"
+    }
   }
 }
