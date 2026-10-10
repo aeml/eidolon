@@ -33,6 +33,8 @@ for (const quality of ['high', 'low']) test(`${quality}: DemonOrc preserves orig
             render.render(); context.drawImage(canvas, 0, 0);
             return { pixels: context.getImageData(0, 0, copy.width, copy.height).data,
                 calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+                instanceBuckets: [...owner.batches.values()].filter(batch => batch.visible && batch.count > 0).length,
+                multiDrawGroups: owner.multiDraw.entries.size,
                 restored: !owner.hidden.length && !owner.multiDraw.hidden.length && !owner.group.visible && !owner.multiDraw.group.visible };
         };
         const difference = (a, b) => {
@@ -43,7 +45,7 @@ for (const quality of ['high', 'low']) test(`${quality}: DemonOrc preserves orig
             }
             return { meanError: error / (copy.width * copy.height), changed: changed / (copy.width * copy.height), exactChanges };
         };
-        let restoredAfterFailure = false, pooledReturns = 0;
+        let restoredAfterFailure = false, pooledReturns = 0, distinctPooledReturns = 0;
         try {
             capture(0, false); capture(1, false); capture(1, true);
             for (const state of ['Idle', 'Walk', 'Run', 'Attack', 'Death', 'FarRealmRun', 'StretchedAttack', 'SingletonAttack']) {
@@ -70,7 +72,9 @@ for (const quality of ['high', 'low']) test(`${quality}: DemonOrc preserves orig
                 }
                 reports.push({ state, original: { calls: original.calls, triangles: original.triangles },
                     constructor: { calls: constructor.calls, triangles: constructor.triangles, ...difference(original.pixels, constructor.pixels) },
-                    delivered: { calls: delivered.calls, triangles: delivered.triangles, ...difference(original.pixels, delivered.pixels) },
+                    delivered: { calls: delivered.calls, triangles: delivered.triangles,
+                        instanceBuckets: delivered.instanceBuckets, multiDrawGroups: delivered.multiDrawGroups,
+                        ...difference(original.pixels, delivered.pixels) },
                     referenceAgain: difference(original.pixels, again.pixels), unsafeInstances,
                     restored: constructor.restored && delivered.restored && [...visibility].every(([part, visible]) => part.visible === visible) });
                 mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); });
@@ -87,19 +91,22 @@ for (const quality of ['high', 'low']) test(`${quality}: DemonOrc preserves orig
                 if (variant) MeshFactory.releaseMesh('DemonOrc', mesh);
             }
             render.render();
+            const returnedRoots = [];
             for (const { mesh, variant } of models) if (variant) {
                 const returned = await MeshFactory.createMeshForType('DemonOrc');
+                returnedRoots.push(returned);
                 if (models.some(model => model.variant && model.mesh === returned)) pooledReturns++;
-                render.add(returned); render.render(); returned.removeFromParent();
-                MeshFactory.releaseMesh('DemonOrc', returned);
+                render.add(returned); render.render();
                 if (!mesh.userData.humanoidRenderBatches) throw Error('Production DemonOrc did not own reviewed constructor batches');
             }
+            distinctPooledReturns = new Set(returnedRoots).size;
+            for (const returned of returnedRoots) { returned.removeFromParent(); MeshFactory.releaseMesh('DemonOrc', returned); }
             render.render();
         } finally {
             groups.forEach(group => group.removeFromParent());
             floor.removeFromParent(); render.disposeObjectResources(floor); render.dispose();
         }
-        return { quality, reports, restoredAfterFailure, pooledReturns,
+        return { quality, reports, restoredAfterFailure, pooledReturns, distinctPooledReturns,
             disposed: owner.disposed && owner.multiDraw === null && !owner.roots.size };
     }, quality);
     await writeFile(testInfo.outputPath('demon-orc-rigid-delivery.json'), JSON.stringify(evidence, null, 2));
@@ -119,5 +126,8 @@ for (const quality of ['high', 'low']) test(`${quality}: DemonOrc preserves orig
     }
     expect(evidence.restoredAfterFailure && evidence.disposed).toBe(true);
     expect(evidence.pooledReturns).toBe(6);
+    expect(evidence.distinctPooledReturns).toBe(6);
+    expect(evidence.reports[0].delivered.instanceBuckets).toBeGreaterThan(0);
+    expect(evidence.reports[0].delivered.multiDrawGroups).toBeGreaterThan(0);
     expect(failures, failures.join('\n')).toEqual([]);
 });
