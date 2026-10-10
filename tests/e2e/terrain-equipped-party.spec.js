@@ -218,6 +218,8 @@ test('connected equipped four-class party shares raised ground, fitted outfits, 
         await expect(leader.page.locator('#esc-menu')).toBeHidden();
         const report = await profileGameplayScene(leader.page, `connected-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
+        expect(report.visibleFrames).toBe(180); expect(report.restored).toBe(true);
+        expect(report.frameSamples).toHaveLength(180);
         expect(report.visibility).toBe('visible');
         expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(report.drawCallsMedian).toBeGreaterThan(0);
@@ -462,6 +464,8 @@ test('single native renderer observes three live equipped party socket peers on 
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
+        expect(report.visibleFrames).toBe(180); expect(report.restored).toBe(true);
+        expect(report.frameSamples).toHaveLength(180);
         expect(report.visibility).toBe('visible');
         expect(report.renderer).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(report.drawCallsMedian).toBeGreaterThan(0);
@@ -713,6 +717,8 @@ test('single native renderer observes three live equipped party socket peers on 
             expect(comparison.restored).toBe(true);
             for (const { profile, after } of comparison.phases) {
                 expect(profile.frames).toBe(180); expect(profile.visibility).toBe('visible');
+                expect(profile.visibleFrames).toBe(180); expect(profile.restored).toBe(true);
+                expect(profile.frameSamples).toHaveLength(180);
                 expect(after.restored).toBe(true); expect(after.pending).toBe(0); expect(after.activeJob).toBe(false);
                 for (const field of ['registered', 'candidateStorageBytes', 'workerCacheBytes', 'workerCacheEntries', 'requested'])
                     expect(after[field], field).toBe(comparison.initial[field]);
