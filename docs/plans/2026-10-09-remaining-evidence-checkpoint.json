@@ -1410,8 +1410,9 @@
     "qualifiedNotReleaseAccepted": true
   },
   "actorShadowConnectedCandidate": {
-    "source": "5c5494ef",
+    "receipt": "docs/plans/2026-10-10-actor-shadow-connected-gameplay.json",
+    "source": "5c5494ef3cecead62924a4bf6dd47d6c7513f33b",
     "defaultEnabled": false,
-    "status": "one connected High actual party comparison running; no result or selection claimed"
+    "status": "Private connected High integration qualified within scope; defaultOFF/unselected; no stable whole-frame gain."
   }
 }

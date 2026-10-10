@@ -164,8 +164,11 @@ controlled repair, not the original live cause. Verify exact26 required CI,
 live identities/database/eight assets and native outcomes before another push.
 No reruns/cancels/waivers or public24/25/26product merge into held.
 
-Private5c5494ef shadow integration is defaultOFF;36owner checks pass and one
-actual connected High equipped-party RGB/submission/real-frame ABBA is running.
+Private5c5494ef shadow integration remains defaultOFF/unselected;36owner checks
+and actual connected High native/Go-race/party-save checks pass. ExactRGB0change,
+390→362draws; submission CPU regresses and ABBA frame medians remain16.7ms.
+WholeHighdraw/triangle, physical-device and art gates stay open.
+See `docs/plans/2026-10-10-actor-shadow-connected-gameplay.json`.
 Prior bf2039bf isolated32units/12native/70RGB proof remains valid within scope.
 No performance/art/device selection inferred. Full original1.11–1.99objective,
 failed24hsoak, art/device/owner/F1–F5/beta/launch/handoff gates remain open.

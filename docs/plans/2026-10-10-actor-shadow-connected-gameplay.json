@@ -1,0 +1,36 @@
+{
+  "recordedUTC": "2026-10-10T13:48:20.089574+00:00",
+  "sourceCommit": "5c5494ef3cecead62924a4bf6dd47d6c7513f33b",
+  "state": "Private connected High integration qualified within scope; defaultOFF/unselected; no stable whole-frame gain.",
+  "checks": {
+    "units": "36/2suites pass0.719s; lint and Go fixture compile pass",
+    "native": "1pass36.7s,0retry/flaky/unexpected; four-browser alternative1skipped due explicit single-renderer scope",
+    "GoRace": "Actual four-class equipped High party43.28s/package44.328s; normal disconnect persistence exact14slot equipment/inventory/EP and party/logout; dedicated disposable Mongo",
+    "RGB": "1280x844 source/candidate/source exactly0changed/unstableRGBchannels",
+    "pairedDraws": [
+      390,
+      362,
+      390
+    ],
+    "pairedTriangles": [
+      460253,
+      457339,
+      460253
+    ],
+    "submissionBlockMedianMs": [
+      8.7,
+      11.15,
+      10.5,
+      9.45
+    ],
+    "realFrameABBA": "720raw measured frames/240warmup; source/candidate/candidate/source all16.7ms median; loop12.0/10.6/10.6/11.4ms; changing27-29entities explicit. Candidate draws362/333,triangles457862/456372; wholeHigh350draw/250k triangle gates not established.",
+    "cleanup": "Defaultowner restored; allvisibility/castShadow restored; no race/panic markers; all four credentials plain+embeddedZIP sanitized before archive; postloginHUDPNG separately reviewed synthetic labels"
+  },
+  "scope": "One GPU renderer plus three actual authenticated retained peers, normal world/network; qualified combat serialization backported to private base. No public renderer/terrain/body/geometry selection; no physical-device/busy-battle/modern-art/F1-F5/beta/launch acceptance. No new persisted Gold/resource assertion claimed.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-actor-shadow-gameplay-checks-20261010",
+    "inventoryEntries": 29,
+    "inventorySHA256": "d11ae3819efb589717952e7c28b5bcc0f56cd1a0abec449e155f2107aa1df365"
+  },
+  "next": "Leave disabled; prioritize exact26 publication verification and remaining actual whole-scene geometry/actor work. No unchanged repeat from count reduction."
+}
