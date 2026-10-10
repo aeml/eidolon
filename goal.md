@@ -156,10 +156,13 @@ The prior owned execution notes are preserved byte-for-byte in
 Historical procedural-only art instructions in that archive do not override
 the supplied-model preservation and modern-ARPG requirements above.
 
-Previous goal turn classification: **progress**. It retained exact public24
-failure evidence, independently verified public identities/assets and native
-transforms, and rejected an affine prototype after measured scene timing failed
-to show a gain. This did not accept the release or complete the full goal.
+Previous goal turn classification: **no progress** toward the full objective.
+The immediately preceding jump-status turn rechecked unchanged public24 without
+changing the broader next action. This turn revalidated the owned state and made
+**progress**:90focused checks,80strict native controls and actual default High
+four-class/race/save evidence reject a cell-matrix optimization, while retained
+draw attribution redirects work to the dominant equipped color/shadow geometry.
+This does not accept the release or complete the full goal.
 
 - Accepted bounded jump release23/2e519bb0 caps client/server travel at1.5s;
   a real Ctrl-click check landed in1.641s including display overhead.
@@ -180,7 +183,7 @@ to show a gain. This did not accept the release or complete the full goal.
   cause is still unknown and original CI remains failed. No CI rerun, product
   repair, failed-gate waiver, successor push or24merge into held source.
   [Private diagnosis and limits](docs/plans/2026-10-10-live-failure-diagnostics.json).
-- Private light membership, world-box caching and affine arithmetic experiments
+- Private light membership, world-box caching, affine arithmetic and cell-matrix experiments
   remain unselected; whole-game High timing and Low geometry, moving art,
   equipped/support-device and all inherited1.11–1.99/Q/CB/F1–F5/operations/
   rights/owner/human/beta/launch/handoff gates remain open. Preserve originals.
@@ -188,6 +191,10 @@ to show a gain. This did not accept the release or complete the full goal.
   unchanged campaign/long soak. Human pacing and physical-phone evidence remain
   owner-deferred; missing policies or approvals are not implicitly granted.
 
-Next: finish bounded live failure diagnosis, keep24unaccepted until its failed
-gate is resolved, then continue the complete outstanding roadmap and modern-art
-work. No successor public push or24merge into held source has occurred.
+Next: preserve the original startup/Gold failures and keep24unaccepted; use
+bounded request evidence at the next real failure. Continue the full roadmap and
+modern-art work by qualifying the existing supplied body/equipment/color/shadow
+policies together in actual moving/HUD gameplay. The default High scene still
+fails original frame, draw and triangle budgets; no content hiding or target
+reduction. [Cell-matrix rejection and geometry attribution](docs/plans/2026-10-10-actor-cell-translation-unselected.json).
+No successor public push, prototype selection or24merge into held source occurred.

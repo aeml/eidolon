@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T07:22:59.780151+00:00",
+  "recordedUTC": "2026-10-10T07:44:41.000241+00:00",
   "classification": "Public24 remains deployed but unaccepted: original required startup download failure is unresolved. New private QA repair waits for exact preceding vendor Gold credit; original helper fails controlled delayed-credit boundary.91focused checks and native failure control pass, with3fresh ordinary live recovery/party tests on unchanged24. No proof of original175Gold cause, no CI rerun or waiver. Full146line user goal restored as exact owned prefix; all inherited gates and failed24hsoak open.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3body selection unchanged, conservative matrix6553 qualified privately. Public24 transform correction deployed but not accepted; no merge of24 into held branch yet. Private terrain/body/actor-filter/transport pilots and rejected light/world-box/affine prototypes not publicly activated. Jump source in24 byte-exact to accepted23,1.5s cap; profile/access unchanged.",
   "rejectedSourceCommits": [
@@ -9,7 +9,8 @@
     "dd354331f8a32ff1d874ce891f9e9587daa3193d",
     "b90d1ac5218064442a013d9ced134bdd35824792",
     "26659ce364dc9465ffeae7f30d010cda198959cf",
-    "0dbe93f4066434b19bf8d5de637f0c0625e25ea3"
+    "0dbe93f4066434b19bf8d5de637f0c0625e25ea3",
+    "4b108ffbd5f68f9d6aada2ed0876feffeb063168"
   ],
   "longSoak": {
     "readOnlyObservationUTC": "2026-10-10T04:02:31Z",
@@ -98,10 +99,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-live-failure-diagnostics.json",
+  "currentReceipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: retained public24failure/native/identity evidence and rejected affine prototype after no measured scene gain.",
-  "nextAction": "Keep24unaccepted and preserve original failed CI/artifacts. Use bounded known-module request evidence for the next actual startup failure; qualify persistent vendor/stash sequencing without relaxing exact Gold/custody assertions. New diagnostics and preceding-sale credit wait are held privately with91checks. Continue full-world moving-art/equipped High/Low/device budgets and all inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff; no blind CI rerun, successor push or unchanged longsoak/campaign restart.",
+  "previousGoalTurnClassification": "no progress toward full goal: immediately preceding jump-status turn reverified unchanged public24; this turn resumed safe measured work rather than restating status.",
+  "nextAction": "Keep24unaccepted and preserve startup/Gold findings. Focus performance/art work on coherent existing supplied body/equipment/color/shadow LOD policies, jointly qualified in actual moving/HUD gameplay at High/Low and original budgets. No further unchanged light/cache/affine/cell-math prototypes, no soak/campaign replacement, no public activation before acceptance.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1062,5 +1063,21 @@
     "heldArchiveLines": 2911,
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
+  },
+  "currentGoalTurnClassification": "progress:90focused checks,80strict native pairs and actual default High four-class/race/14-slot evidence reject direct cell-matrix writes; new equipped geometry attribution redirects the next work.",
+  "actorCellTranslationPrototype": {
+    "selected": false,
+    "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
+    "candidate": "4b108ffbd5f68f9d6aada2ed0876feffeb063168",
+    "actualHighSubmissionMedianMs": {
+      "reference": 23.5,
+      "candidate": 24.100000023841858
+    },
+    "actualHighSubmissionP95Ms": {
+      "reference": 31.80000001192093,
+      "candidate": 39.099999994039536
+    },
+    "equippedUntimedTriangleSubmissions": 405078,
+    "opaqueInstancesUntimedTriangleSubmissions": 21162
   }
 }
