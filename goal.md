@@ -147,80 +147,43 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-The requested jump is deployed in Alpha1.79.25/d15a882e and independently
-verified on the actual public game: real27unit Ctrl-click,1648.6ms total,
-1582.9ms observed flight, accepted1.5s, logical/render landing errors0.
-Normal-TLS frontend/backend/database and eight public asset hashes matched.
-Required CI38051193149 nevertheless failed exact live Gold/stash checks;
-all nine other jobs passed. Original failure/root cause remains retained.
+Public Alpha1.79.26/77859697 remains the latest verified deployment: matching
+normal-TLS frontend/backend/database and eight public assets. Required
+CI38056289769 nevertheless failed live Gold/stash; later recovery/optional
+four-class steps skipped. Earlier failed releases stay retained, never waived.
+See public26-terminal-verification receipt. Its observed sale cause is now
+established by actual one-run38061055843: fresh387855 + sale1500 →389355,
+separate earned-room175 →389530, one sale/complete trace/decodeErrors0.
+See live-gold-provenance receipt; no claim that every older failure is explained.
 
-Current deployed Alpha1.79.26/77859697a71329facd0584a95167c80eac392398 matches
-normal-TLS frontend/backend/database and all eight independently hashed assets.
-CI38056289769 attempt1 nevertheless completed failure: nine other jobs pass;
-live gameplay fails initial unchanged stash Gold385761→385936 and configured
-retry exact sale Gold386536→386711, both +175. Correlated fresh baselines pass,
-so the preceding242/175Gold FIFO controls do not repair the original live issue.
-Native7pass/1unexpected/1skipped; later required recovery/optional four-class
-stages skipped. See `docs/plans/2026-10-10-public26-terminal-verification.json`.
-Original economic cause remains unproven; diagnose before another publication.
-No manual reruns/cancels/waivers or public24/25/26product merge into held.
+The owner requests approximately1.5seconds TOTAL click-to-landing. Public25's
+1648.6ms at flight1.5s is historical. Corrective27 server/client flight1.3s
+qualifies actual copied/versioned connected1504.9ms normal/1459.9ms15FPS,
+exact endpoints/fresh-login/Mongo custody. Exact earned-room QA ledger and
+negative/prior-credit/custody checks qualify without economic runtime changes.
+See jump-total-time-release27 and earned-room credit evidence.
 
-Private diagnostic1c7cbd90 proves a fresh wallet read can be correct while
-ordinary sale/stash bag work then delivers separately earned room Gold:
-four Go-race controls pass, actual level40/elite-ambush/fortune1 award175,
-exact saved receipt/feedback/custody and no repeated award. Product unchanged;
-modeled storage/filesystem journal, no native/Mongo/public-cause inference.
-See `docs/plans/2026-10-10-gold-room-reward-boundary.json`.
+First27 candidate392c4a79 CI38062443230 failed before deployment because one
+published-bundle test incorrectly retained minimum1500ms. Actual new flight
+landed1393.7/1425.2ms, configured retry1447.1/1339.9ms, endpoints0. Corrected only
+that test to same1300–1550ms as source fixture; native1pass7s,1356.4ms15FPS and
+1318.8ms60FPS, endpoints0. Follow-up a9d6fc9b ordinary-pushed; exact unchanged
+CI38064138468 attempt1 is in progress. Version27 is not yet deployed. Verify
+both deployments, eight assets, identities/database, one trusted public jump
+and actual required native outcomes; no manual reruns, cancellations or waivers.
+See release27-published-timing-correction receipt.
 
-Follow-up a69cd244 now qualifies that separate-earned175Gold path through
-actual native/browser/server/Mongo:2native pass43.4s, Go-race48.10s/pkg49.161s,
-freshGold1000, exact final1178sale/1175stash,EP43,earnedXP,original14slot gear,
-exact bag/stash/frozen-item metadata and completed immutable reward receipts.
-Only diagnostic host reads select the post-award schedule; all packets/client
-loops/balances/predicates remain ordinary. Prior unpaced native failure/pass
-schedules and observer harness failure remain retained, not waived. Actual
-public cause still unproven. See
-`docs/plans/2026-10-10-gold-room-reward-native-boundary.json`.
+Private world integration ddadf7c9 qualifies actual raised-world normal1511.8ms/
+15FPS1411.7ms,2native/128focused pass, endpoints0 and exact fresh saves. Geometry
+owner null, held art/render/runtime unchanged except intended1.3s Movement cap.
+Follow-up private72038fb3 carries the test correction with runtime identical;
+511edfaa updates optional connected timing to trusted click, pending public proof
+using the same acceptance body. Nothing selected or publicly rolled out here.
+See world-total-jump-integration receipt. Existing geometry/shadow pilots remain
+unselected/defaultOFF; whole-High/device/art acceptance stays open.
 
-Separate private world/maintenance integration14d4ea1f ordinarily merges held
-9d724663 and exact public26, retaining held art/models/render/movement bytes.
-469checks/6suites and focused Go-race checks pass; actual copied/versioned
-publication passes native60/15FPS login/startup recovery/accepted1.5s jump and
-fresh login/direct Mongo saves on explicit raised terrain. Click→landing
-1688.5/1617.9ms, endpoint errors0, exact Gold/EP/gear/bag retained. Geometry
-owner stays null. Private only; no Gold-cause, whole-High/device/art acceptance.
-See `docs/plans/2026-10-10-world-maintenance-integration.json`.
-
-Private5c5494ef shadow integration remains defaultOFF/unselected;36owner checks
-and actual connected High native/Go-race/party-save checks pass. ExactRGB0change,
-390→362draws; submission CPU regresses and ABBA frame medians remain16.7ms.
-WholeHighdraw/triangle, physical-device and art gates stay open.
-See `docs/plans/2026-10-10-actor-shadow-connected-gameplay.json`.
-Prior bf2039bf isolated32units/12native/70RGB proof remains valid within scope.
-No performance/art/device selection inferred. Full original1.11–1.99objective,
-failed24hsoak, art/device/owner/F1–F5/beta/launch/handoff gates remain open.
-
-Latest corrective milestone: the owner repeated approximately1.5second TOTAL
-jump time. Candidate1.3second server/client flight qualifies1504.9ms normal and
-1459.9ms15FPS, exact endpoints/fresh-login/Mongo custody. Actual public26
-one-run provenance38061055843 proves separate earned175roomGold after exactsale;
-read-only QA ledger now checks those separate credits exactly, with all loss/
-extraGold controls and actual prior-credit/custody receipts retained.
-Combined Alpha1.79.27/392c4a79 pushed; exact CI38062443230 is in progress.
-Verify actual deployment/assets/one public jump/required native gates without
-reruns or waivers. Full original1.11–1.99 goal and all remaining gates stay open.
-
-Private world/total-jump integration ddadf7c9 is qualified without selection:
-actual raised-world normal/15FPS totals1511.8/1411.7ms,2native/128focused pass,
-exact endpoints/fresh saves, geometry owner null. Public27 deployment and full
-required CI remain pending; full original scope and all unresolved gates stay
-active. See world-total-jump-integration receipt.
-
-Public27 candidate392 CI38062443230 failed before deployment due to missed
-published-bundle minimum1500ms. Actual new flight landed1393.7/1425.2ms, then
-configured retry1447.1/1339.9ms, endpoints0. Original outcome/archive retained.
-Only that test now matches source fixture1300–1550ms: native1pass7s,1356.4ms15FPS
-and1318.8ms60FPS, endpoints0. Follow-up a9d6fc9b ordinary-pushed; new exact
-CI38064138468 is in progress, not a manual rerun. Runtime unchanged. Version27
-remains undeployed; verified public26 and failed required prior gates retained.
-Full original scope remains active; public deployment/jump proof pending.
+The failed24hsoak has only20.2538minutes of common100client coverage and seven
+read errors; no replacement/restart or explanation claimed. Owner-deferred
+campaign/phone feedback, every outstanding original1.11–1.99 requirement,
+art/device/owner/F1–F5/beta/launch/handoff remain active. The remaining-evidence
+register and linked receipts retain detailed boundaries and prior outcomes.
