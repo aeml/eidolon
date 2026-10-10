@@ -165,9 +165,18 @@ required gates. Earlier failures stay retained. No raised/body/geometry/shadow
 pilots selected. Full original1.11–1.99scope, art/device/owner/F1–F5/failed24hsoak/
 beta/launch/handoff remain active; this maintenance milestone is not completion.
 
-Private integration checkpoint: this branch combines qualified world/maintenance
-14d4ea1f with release27 through an ordinary merge. The 1.3s authoritative and
-client jump cap is retained with earth-elevation-rocks-v1 prepared publication
-support. Qualification is pending. Geometry ownership remains null; shadow and
-other private pilots remain unselected. This branch is not a public rollout or
-a full art, device, performance or campaign acceptance.
+Release27 first CI38062443230 failed before deployment: a missed published-bundle
+assertion still required flight>=1500ms, whereas new1.3s flight actually landed
+in1393.7/1425.2ms (configured retry1447.1/1339.9), endpoints0. Server/client/other
+shards passed. Deployment/live QA skipped. Corrected only that assertion to the
+same1300–1550ms as source fixture; actual copied/versioned bundle native1pass7s
+with1356.4ms15FPS/1318.8ms60FPS, endpoints0. No runtime/economic changes or manual
+CI rerun. Follow-up ordinary publication retains undeployed candidate version27.
+Full original goal and all unresolved gates remain active.
+
+Private world/total-jump integration ddadf7c9 qualified actual raised-world
+normal1511.8ms/15FPS1411.7ms,2native/128focused pass, exact endpoints/fresh
+saves, geometry owner null. This ordinary follow-up merge carries the proven
+published-test correction only; held runtime byte-identical to qualifiedddad.
+Public27 follow-up a9d6fc9b CI38064138468 remains separately pending. Private
+world, geometry and shadow pilots remain unselected; full goal remains active.

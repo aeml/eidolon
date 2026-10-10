@@ -1,0 +1,159 @@
+{
+  "recordedUTC": "2026-10-10T15:33:33.230868+00:00",
+  "version": "Alpha 1.79.27",
+  "commit": "392c4a7993118a87f51342cb1881a22055ab405b",
+  "ci": 38062443230,
+  "attempt": 1,
+  "conclusion": "failure",
+  "deployed": false,
+  "releaseGateAccepted": false,
+  "jobs": {
+    "Server Tests (Go)": "success",
+    "Browser Smoke (Playwright 2/3)": "success",
+    "Client Tests (Jest)": "success",
+    "Browser Smoke (Playwright 3/3)": "success",
+    "Browser Smoke (Playwright 1/3)": "failure",
+    "Predeploy Character QA (System Chrome)": "skipped",
+    "Deploy to GitHub Pages": "skipped",
+    "Validate Production QA Inputs": "skipped",
+    "Live Release and Character QA": "skipped",
+    "Deploy Server (SSH)": "skipped"
+  },
+  "failure": "Published bundle jump assertion incorrectly retained minimum1500ms and maximum1750ms from flight1.5; new flight1.3 measured1393.7/1425.2ms then configured retry1447.1/1339.9ms with zero endpoint errors. Runtime and both native connected cases already qualified.",
+  "artifact": {
+    "id": 11674455245,
+    "name": "predeploy-browser-evidence-1",
+    "digest": "sha256:0e0f4e16f5894d408280c1a3c8c06cceee6ff0f844277fa752af74bd6c2e3a5c",
+    "digestVerified": true,
+    "nativeReports": [
+      {
+        "path": "browser-shard1/playwright-report/browser-1/resource-hud/index.html",
+        "data": "native-report-0.json",
+        "stats": {
+          "total": 3,
+          "expected": 3,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        }
+      },
+      {
+        "path": "browser-shard1/playwright-report/browser-1/entrances/index.html",
+        "data": "native-report-1.json",
+        "stats": {
+          "total": 3,
+          "expected": 3,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        }
+      },
+      {
+        "path": "browser-shard1/playwright-report/browser-1/layout/index.html",
+        "data": "native-report-2.json",
+        "stats": {
+          "total": 44,
+          "expected": 44,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        }
+      },
+      {
+        "path": "browser-shard1/playwright-report/browser-1/interface/index.html",
+        "data": "native-report-3.json",
+        "stats": {
+          "total": 64,
+          "expected": 56,
+          "unexpected": 1,
+          "flaky": 0,
+          "skipped": 7,
+          "ok": false
+        }
+      },
+      {
+        "path": "browser-shard1/playwright-report/browser-1/effects/index.html",
+        "data": "native-report-4.json",
+        "stats": {
+          "total": 2,
+          "expected": 2,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        }
+      },
+      {
+        "path": "browser-shard1/playwright-report/browser-1/nameplates/index.html",
+        "data": "native-report-5.json",
+        "stats": {
+          "total": 6,
+          "expected": 6,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        }
+      }
+    ]
+  },
+  "actualLog": "prerequisite-failure/browser-job-api.log",
+  "emptyLogAttempt": "gh run view --log returned empty; complete actual API job log retained separately",
+  "samples": [
+    {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 4,
+          "elapsedMs": 1393.6999999999534,
+          "maxFrameGapMs": 898.5999999998139,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 13,
+          "elapsedMs": 1425.1999999999534,
+          "maxFrameGapMs": 116.70000000000073,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    },
+    {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 4,
+          "elapsedMs": 1447.1000000000931,
+          "maxFrameGapMs": 925.2000000001399,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 12,
+          "elapsedMs": 1339.9000000001397,
+          "maxFrameGapMs": 133.4000000000001,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "nextAction": "Correct the missed published assertion to same1300\u20131550ms as source fixture, qualify directly, ordinary follow-up push. No CI rerun or runtime/economic change. Candidate version27 remains undeployed.",
+  "limits": "Seven unselected interface cases stay skipped, not passes. All deployment/live jobs skipped. Public remains prior verified26 until successor deployment proven; full original project goal remains active.",
+  "evidence": "/home/aeml/.local/share/eidolon-release27-checks-20261010",
+  "inventorySHA256": "81f550f3a39598f0b92929f75ddb50baf751f5c929213a56a056824fc515a82e",
+  "correction": {
+    "evidence": "/home/aeml/.local/share/eidolon-release27-published-timing-correction-20261010",
+    "inventorySHA256": "2c8870afd68284272017326bcbe214ef8aa4ca796cdef0906b57a4dc25cfca85",
+    "native": "1pass7.0s, zero retries/skips/flakes; totals1356.4ms15FPS/1318.8ms60FPS, endpoints0",
+    "change": "Same1300\u20131550ms as source fixture; lower bound follows intended1.3s flight, upper tightened200ms. No runtime changes."
+  }
+}
