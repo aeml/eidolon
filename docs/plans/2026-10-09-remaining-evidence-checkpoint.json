@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T12:21:30.894242+00:00",
-  "classification": "Progress: first25run38050260227 hits server DATA RACE before deployment. Local16worker dungeon recovery reproduces State conflict;6fb97aeb serializes complete casts/realtime frames. Focused Go-race scope52.240s/dispatch2.414s, actual16worker dungeon29.73s and publication/login/jump/Mongo45.51s pass. Corrected25/d15a882e pushed, CI38051193149 in progress after first terminalfailure. Live24remains expected; no acceptance/waiver/privateproductmerge.",
-  "qualifiedRuntime": "Private qualified renderer and supplied High v3selection retained; prepared geometry controller/delivery now statically reachable through an explicit RenderSystem setter, default owner null. Immutable worker built from copied publication sources with exact version cache and MIT notice. No public activation or24merge. Public24transform deployed but original required startup/Gold and failed24hsoak remain unresolved.",
+  "recordedUTC": "2026-10-10T12:57:30.037965+00:00",
+  "classification": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+  "qualifiedRuntime": "Held private renderer/supplied High v3 and prepared geometry controller/delivery retained, geometry owner default null. No public24/25product merge. Public25 jump correction independently verified; required live Gold/stash gate and full original roadmap acceptance remain open.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -99,10 +99,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-published-vendor-addons.json",
+  "currentReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: private bounded entry-module recovery48f35293,89checks and5final actual published-login cases. Browser failure cache diagnosed; one same-release recovery/one construction verified. Persistent/dependency/evaluation/export failures remain visible; original live gate/soak failures retained.",
-  "nextAction": "Monitor first25CI38050260227 to terminal and correctedCI38051193149 through required release/live gates. Verify exact corrected public assets/identities/DB and fresh ordinary public long-jump timing. No retries/cancels/gate bypass or later public release before exact acceptance. Preserve original24failure/unknownstartupGold/failed24hsoak and full1.11\u20131.99scope.",
+  "nextAction": "Diagnose current live Gold/stash failure from retained two-attempt evidence and reproduce the exact boundary in disposable real server/browser/Mongo. Preserve exact Gold/gear/bag/stash invariants; no blind rerun, waiver or successor push. Continue independent full-scope work; private bf2039bf shadow prototype still needs actual connected High/CPU/frame qualification before selection.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "Progress: first25run38050260227 hits server DATA RACE before deployment. Local16worker dungeon recovery reproduces State conflict;6fb97aeb serializes complete casts/realtime frames. Focused Go-race scope52.240s/dispatch2.414s, actual16worker dungeon29.73s and publication/login/jump/Mongo45.51s pass. Corrected25/d15a882e pushed, CI38051193149 in progress after first terminalfailure. Live24remains expected; no acceptance/waiver/privateproductmerge.",
+  "currentGoalTurnClassification": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1247,7 +1247,7 @@
   },
   "jumpWallClock": {
     "sourceCommit": "45ef41113ef0fa12b5e6bb5664430aca846f5683",
-    "status": "Implemented and locally verified private jump timing correction; not published.",
+    "status": "Deployed in Alpha1.79.25/d15a882e; requested jump independently verified live; full release CI failed separate Gold/stash gate.",
     "receipt": "docs/plans/2026-10-10-jump-wall-clock.json",
     "inventorySHA256": "bc703d5f672264ba270f23655688ddc3b5a4986cbdb63e34d080c38cd87e9991",
     "native": {
@@ -1292,7 +1292,7 @@
     "sourceCommit": "c7937f1737c3be5650340cb70c25b5fac006ba32",
     "receipt": "docs/plans/2026-10-10-jump-live24-bundle.json",
     "inventorySHA256": "2894fe795d1d2a1ae35b97d7e50f073630d02edf4ccfa76feadd9576bdfcb888",
-    "status": "Isolated live24-based jump correction implemented and verified locally; not deployed."
+    "status": "Deployed in Alpha1.79.25/d15a882e; requested jump independently verified live; full release CI failed separate Gold/stash gate."
   },
   "preparedGeometryPending": {
     "sourceCommit": "3207fb568df0a754ff1e71efa8d82734a4b9d81d",
@@ -1312,13 +1312,15 @@
     "sourceCommit": "48f352939e2f93de084f0ddc3832efbb3e9885ff",
     "receipt": "docs/plans/2026-10-10-engine-module-recovery.json",
     "inventorySHA256": "a585bf0f1a2674d8801d4083b07359772709a58f8e9def6951839e346b21d816",
-    "status": "Private bounded engine-entry download recovery implemented and locally qualified; not deployed and original live gate remains failed."
+    "status": "Included in deployed corrective Alpha1.79.25; exact public eight-asset proof and jump verification retained. Required release CI fails Gold/stash; original24startup root cause remains unknown.",
+    "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
   },
   "publishedVendorAddons": {
     "sourceCommit": "fa8168f00084fa6a1e6669dc1c9235581b7e1f44",
     "receipt": "docs/plans/2026-10-10-published-vendor-addons.json",
     "inventorySHA256": "02840d3a46ec4f99e894251c70409d11e08e3cca3a7c55e48590eb7cc87d3e02",
-    "status": "Publishing add-on consolidation qualified and selected privately; no deployment or release acceptance."
+    "status": "Included in deployed corrective Alpha1.79.25; exact public eight-asset proof and jump verification retained. Required release CI fails Gold/stash; original24startup root cause remains unknown.",
+    "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
   },
   "gameplayFrameEvidence": {
     "sourceCommit": "00742d442865d02a937d31b7aa0f3bca26f0af1a",
@@ -1332,20 +1334,27 @@
     "heldQACommit": "2d9a2db0b4dff09447d17d88a0e3c29dbb82e298",
     "receipt": "docs/plans/2026-10-10-vendor-stash-browser-qualification.json",
     "inventorySHA256": "2f0fb40c6241f4cbe063017c8a5e46b823d7c04a2278b967f6951504493387ff",
-    "status": "Private real-server vendor/stash qualification passes; public24 and original failed release unchanged."
+    "status": "Original private ordinary/one-second FIFO175-credit qualification retained. Deployed25 current required live sale-credit/stash equality failures show an uncovered boundary; root cause remains unestablished, no waiver."
   },
   "jumpStartupMaintenanceCandidate": {
     "sourceCommit": "c0d120a3f9065c3699e817f16de726cf1e201469",
     "documentationCommit": "3404c644629ec64b9534100b06213abee4226acb",
     "receipt": "docs/plans/2026-10-10-jump-startup-maintenance-candidate.json",
     "inventorySHA256": "d4d43b86e61b413810a65c617edadfc702fc4bc34d3dd4da1f82cfb66fb74a25",
-    "status": "Isolated live24 maintenance candidate implemented and locally qualified; not versioned for publication or deployed."
+    "status": "Included in deployed corrective Alpha1.79.25; exact public eight-asset proof and jump verification retained. Required release CI fails Gold/stash; original24startup root cause remains unknown.",
+    "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
   },
   "maintenanceConnectedJump": {
     "receipt": "docs/plans/2026-10-10-maintenance-connected-jump.json",
-    "status": "Pushed, checks in progress; not yet live-verified",
-    "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
-    "ci": 38050260227
+    "status": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "firstReleaseAttempt": {
+      "ci": 38050260227,
+      "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+      "conclusion": "failure",
+      "reason": "Server DATA RACE; all deployments skipped; qualified correction retained separately"
+    }
   },
   "abilityFrameSerialization": {
     "receipt": "docs/plans/2026-10-10-ability-frame-serialization.json",
@@ -1354,13 +1363,29 @@
       "version": "Alpha 1.79.25",
       "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
       "ci": 38051193149,
-      "status": "Corrected revision pushed, CI in progress; public still24",
+      "status": "Deployed; server CI passes; jump independently verified; required live Gold/stash gate failed, release not accepted",
       "initialAttempt": {
         "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
         "ci": 38050260227,
         "status": "Terminal failure; Client Tests and all3browser shards succeeded, all deployments skipped due server race"
       },
       "heldIntegration": "Docs only; no public24/25product merge into held."
-    }
+    },
+    "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
+  },
+  "currentPublicVerification": {
+    "receipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "jumpFixVerified": true,
+    "releaseAccepted": false,
+    "inventorySHA256": "1468dfa6a0cd6dbd908616d0fb7d4234c66cc6b46ae046431a885401bee8d055"
+  },
+  "actorInstanceShadowViewPrototype": {
+    "receipt": "docs/plans/2026-10-10-actor-instance-shadow-view.json",
+    "sourceCommit": "bf2039bf4b0f1c71d7b421a6953b71396b33c38e",
+    "status": "Explicit private unselected prototype; no RenderSystem import or production integration",
+    "checks": "32 units,12 native/70 exact RGB controls; no connected/CPU/whole-frame acceptance",
+    "inventorySHA256": "6716fb0b2873516279d70a2ad6fc17a46c981e89f1a303d0934b122a3287fd91"
   }
 }

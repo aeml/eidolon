@@ -147,17 +147,23 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-Corrected Alpha1.79.25/d15a882e is ordinary-pushed; CI38051193149 in progress.
-Initial25run38050260227 terminalfailed on a server DATA RACE before deployment;
-client/all3browser shards passed, all deployments skipped. Public remains24.
-Local16worker real dungeon recovery reproduced ability State access versus
-parallel frame workers.6fb97aeb serializes whole casts/frames while preserving
-actor locks. Focused Go-race scope52.240s and dispatch2.414s pass; real16worker
-dungeon recovery29.73s and publication/login/jump/Mongo45.51s pass.
-Click-to-land1.651/1.830s with1.5s authoritative flight and exact landing/saves.
-`docs/plans/2026-10-10-ability-frame-serialization.json` retains scope/failed proof.
+Alpha1.79.25/d15a882e is deployed; normal-TLS frontend/backend/database and all
+eight expected asset hashes match. The requested elapsed-time jump correction
+is independently verified on the actual public game: fresh ordinary Fighter,
+real27unit Ctrl-click,1648.6ms total/1582.9ms observed flight, accepted1.5s,
+logical/render landing errors0. One native pass, no retries/recordings.
 
-Next finish corrected required CI, exact public identities/assets/DB and fresh
-ordinary live jump. No CIretry/cancel/waiver. Public24/25source remains unmerged
-in this held renderer/terrain candidate; original24startup/Gold and failedsoak
-remain retained. Full original objective and remaining acceptance stay active.
+Required CI38051193149 attempt1 nevertheless failed the live Gold/stash gate;
+all nine other jobs passed. First sale-credit assertion expected384489 versus
+384731; configured retry stash check expected384731 versus384906. Root cause
+not established. Required recovery and optional four-class live stages skipped;
+release remains unaccepted. First25server-race failure and original24startup/Gold
+failures retained. No reruns/cancels/waivers or public24/25product merge into held.
+`docs/plans/2026-10-10-jump-wall-clock-public-verification.json` records scope.
+
+Next reproduce and repair that exact economic sequencing boundary with real
+disposable server/browser/Mongo proof and unchanged economy assertions. No
+successor push yet. Private bf2039bf shadow-view prototype (separate worktree)
+passes32units/12native/70exact RGB controls, but remains unselected and still
+needs connected High/CPU/whole-frame proof. Full original1.11–1.99objective,
+failed24hsoak, art/device/owner/F1–F5/beta/launch/handoff gates remain open.

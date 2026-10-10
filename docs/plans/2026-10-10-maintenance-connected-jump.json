@@ -68,6 +68,23 @@
   "releaseDecision": "Prepare a corrective successor for the owner-requested jump issue. Public24 frontend/backend deployment identities and database readiness are verified; its required CI remains failed. Recovery qualifies the interrupted-entry category, and exact-credit QA fixes the demonstrated delayed-Gold sequencing counterexample. Original root-versus-dependency failure remains unknown. Successor must pass its own unchanged required live gate; no rerun or waiver of24 and no held rendering/terrain pilots.",
   "release": {
     "version": "Alpha 1.79.25",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "status": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+    "ordinaryFetchMergePush": true,
+    "newVersionChecks": "407checks/3suites passed2.557s; initial missed container/default alignment1failure retained and corrected",
+    "heldIntegration": "Documentation only; public24/25 source not merged into held renderer/terrain candidate."
+  },
+  "currentPublicVerification": {
+    "receipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "status": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+    "jumpFixVerified": true,
+    "releaseAccepted": false
+  },
+  "initialReleaseRecord": {
+    "version": "Alpha 1.79.25",
     "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
     "ci": 38050260227,
     "status": "Pushed, checks in progress; not yet live-verified",
