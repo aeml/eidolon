@@ -1,3 +1,4 @@
+import { captureActorSubmissionCensus } from './actor-submission-census.js';
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -563,6 +564,7 @@ test('single native renderer observes three live equipped party socket peers on 
                 return [...counts.values()].sort((a, b) => b.color + b.shadow - a.color - a.shadow);
             } finally { renderer.renderBufferDirect = original; }
         });
+        if (process.env.EIDOLON_E2E_ACTOR_BATCH_CENSUS === '1') await captureActorSubmissionCensus(page, testInfo);
         const pairedDraws = await page.evaluate(() => {
             const render = window.game.renderSystem, instances = render.actorInstances;
             const enabled = instances.enabled;
