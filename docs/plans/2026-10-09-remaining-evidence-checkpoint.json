@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T07:03:46.680347+00:00",
-  "classification": "Exact24/922753a7 is deployed but CI38030283856 attempt1 FAILED mandatory live expiry startup. Engine/player/state never existed, module-download cause unknown; separate gold equality failure passed retry and remains flaky. Public23 jump acceptance retained;1.5s source byte-exact in24. Manual public14stage transforms and six hashes pass, not a waiver. Affine/light-index/world-box prototypes unselected; full inherited gates/failed24hsoak open.",
+  "recordedUTC": "2026-10-10T07:22:59.780151+00:00",
+  "classification": "Public24 remains deployed but unaccepted: original required startup download failure is unresolved. New private QA repair waits for exact preceding vendor Gold credit; original helper fails controlled delayed-credit boundary.91focused checks and native failure control pass, with3fresh ordinary live recovery/party tests on unchanged24. No proof of original175Gold cause, no CI rerun or waiver. Full146line user goal restored as exact owned prefix; all inherited gates and failed24hsoak open.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3body selection unchanged, conservative matrix6553 qualified privately. Public24 transform correction deployed but not accepted; no merge of24 into held branch yet. Private terrain/body/actor-filter/transport pilots and rejected light/world-box/affine prototypes not publicly activated. Jump source in24 byte-exact to accepted23,1.5s cap; profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -98,10 +98,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-matrix-world-force-public-failure.json",
+  "currentReceipt": "docs/plans/2026-10-10-live-failure-diagnostics.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Progress: independent exact public24 verification and explicit14stage native control, retained failed mandatory live startup and flaky gold; no acceptance waiver. Affine candidate has110focused/70native/actual High party-save proof but no measured gain, left unselected.",
-  "nextAction": "Investigate concrete module-download startup failures and persistent-stash gold delta from retained24 evidence without weakening recovery/economy assertions. Keep24deployed/unaccepted, no successor push or merge until acceptance is resolved; no CI rerun/delete/unchanged long-soak restart. Continue measured High costs, compact bake/coverage/zoom/lifecycle/cache/device/moving art and all inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements. Retain ordinary box transform/live light scan.",
+  "previousGoalTurnClassification": "progress: retained public24failure/native/identity evidence and rejected affine prototype after no measured scene gain.",
+  "nextAction": "Keep24unaccepted and preserve original failed CI/artifacts. Use bounded known-module request evidence for the next actual startup failure; qualify persistent vendor/stash sequencing without relaxing exact Gold/custody assertions. New diagnostics and preceding-sale credit wait are held privately with91checks. Continue full-world moving-art/equipped High/Low/device budgets and all inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff; no blind CI rerun, successor push or unchanged longsoak/campaign restart.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1002,7 +1002,8 @@
       "inventorySHA256": "edf101c1f63b0e38d365dbfbef1032cf40ef0f3c19cc2973aa3680725f5ebd69"
     },
     "failure": "Required expiry journey never got engine/player/state because module-download failed. Persistent stash gold equality expected381847/received382022 passed retry, remains flaky. Cause unknown; no rerun.",
-    "boundedControls": "Normal TLS frontend/backend/readiness and six asset hashes exact. Manual14stage raw-helper world/RGBA exact;3fresh anonymous published-bundle imports succeeded, broad probe invocationexit1 on /g/collect aborted requests retained. These do not pass failed recovery gate."
+    "boundedControls": "Normal TLS frontend/backend/readiness and six asset hashes exact. Manual14stage raw-helper world/RGBA exact;3fresh anonymous published-bundle imports succeeded, broad probe invocationexit1 on /g/collect aborted requests retained. These do not pass failed recovery gate.",
+    "followup": "3fresh ordinary live recovery/party checks passed without gameplay retries on unchanged24 at initialQA170c41af. Startup download didnot recur; causeunproven, canonicalCIstillfailed. VendorGold ordering defect proven incontrolledfixture and repaired privately, not proof of originalflaky175Gold cause."
   },
   "affineArithmeticDiagnostic": {
     "receipt": "docs/plans/2026-10-10-affine-world-box-diagnostic.json",
@@ -1022,5 +1023,44 @@
       "files": 71,
       "inventorySHA256": "80df76f102992353d93ccd775042da4115c462f26b671de126c78794dc3b50e5"
     }
+  },
+  "privateLiveFailureDiagnostics": {
+    "candidateCommit": "d1616fba7481bf5087ab693fc881a475664cb0ee",
+    "heldQACommit": "4fc34f6a321836aed71167ac692d188882267ca2",
+    "receipt": "docs/plans/2026-10-10-live-failure-diagnostics.json",
+    "evidence": {
+      "path": "/home/aeml/.local/share/eidolon-live-failure-diagnostics-checks-20261010",
+      "files": 61,
+      "inventorySHA256": "4e4fdec016fba110d257ce38e05cd27d49730391e65600cc5d370f1490d97c5a"
+    },
+    "checks": {
+      "initialFocused": "89passed/5suites1.016s",
+      "finalFocused": "91passed/5suites1.117s",
+      "heldFocused": "91passed/5suites1.327s; private integration preserves other pilots and all original stash equality checks.",
+      "nativeInitial": "1routed local startup-control passed35.2s; abortactualentry GET yielded engine/player/statefalse andGameEngine.js/ERR_CONNECTION_CLOSED",
+      "nativeFinal": "Same1control after lifecycle/privacy refinement passed35.2s; original30sassertion andcause retained",
+      "lint": "Scoped ESLint and whitespace passed.",
+      "productInputs": "3441tracked product/release/workflow inputs byte-exact to public24; only5QAfilescherry-picked into held, public24not ancestor."
+    },
+    "liveRecovery": {
+      "source": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "qaSource": "170c41af23cabfac5661170c0015909b43d312c9",
+      "result": "3passed/0failed/0retry: two expiry/combat/reentry journeys then two-player High/Low/high-repeat party auras; originalrequiredassertionsunchanged",
+      "environment": "Native AMDANGLEVulkan Chrome149,390px emulated Androidviewport, normalTLS, ordinary fresh level1 registrations; randomcredentials generatedinmemory, recordingsdisabled, artifactcredentialscanpassed",
+      "identity": "Six public hashes/frontend/backend/DBready exact before; identities/DBready exact after.",
+      "notReproduced": "Originalengine-module download failure didnot recur; failedCI38030283856attempt1 remainsfailed, causeunknown. No canonicalCIrerun, artifactdeletion, successorpush or24merge.",
+      "performanceLimits": "PublicHigh33.2\u201333.3median exceeds20ms; Highrepeatp9550ms exceeds33.4. Low243draws/236579triangles exceeds200/85000. No physicalphone/fullmoving-art/performance acceptance."
+    },
+    "status": "Qualified private QA only; no runtime/product/public/source24merge. Original stash gold equality unchanged; public24 CI remains failed."
+  },
+  "goalScopeReconciliation": {
+    "originalGoal": "/home/aeml/Github/eidolon/goal.md",
+    "originalSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7",
+    "originalLines": 146,
+    "heldArchive": "docs/plans/archive/2026-10-10-held-goal-execution-history.md",
+    "heldArchiveSHA256": "54d97797d65e9146327eda92f82e8ef42a7bf476becb5842602f8b6e49e7a5c2",
+    "heldArchiveLines": 2911,
+    "originalGoalIsExactNewPrefix": true,
+    "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   }
 }
