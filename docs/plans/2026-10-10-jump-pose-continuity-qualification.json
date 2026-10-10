@@ -1,0 +1,148 @@
+{
+  "recordedUTC": "2026-10-10T18:45:45.567356+00:00",
+  "originalRuntime": "fd852472 / public28 bbdaaf1d",
+  "sourceRuntime": "561d392d",
+  "heldRuntime": "1e60f126",
+  "publicCandidateRuntime": "57f8386b",
+  "behavior": "Replace discontinuous progress<.45 tuck branch with overlapping smooth envelopes; use squared anticipation/landing pulses and fade roll at endpoints. Preserve1.3s flight, destinations, trajectory/delta clocks, supplied clips, actor logical authority and aura/admin fixes.",
+  "reproduction": {
+    "log": "reproduction.log",
+    "failures": 4,
+    "cause": "All four class roots jump by their tuck angle across progress.4499\u2192.4501."
+  },
+  "focused": {
+    "passed": 73,
+    "suites": 2,
+    "log": "corrected-unit.log",
+    "lint": "corrected-lint.log"
+  },
+  "native": {
+    "passed": 2,
+    "retries": 0,
+    "log": "corrected-native.log",
+    "scope": "Four supplied class models at High/Low with sparse full/partial packets, exact aura/clip clock/contact/endpoint checks. Not actual server/account/device/art evidence.",
+    "measurements": [
+      {
+        "quality": "low",
+        "samples": [
+          {
+            "className": "Fighter",
+            "supplied": "Fighter",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Rogue",
+            "supplied": "Rogue",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Cleric",
+            "supplied": "Cleric",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Wizard",
+            "supplied": "Wizard",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          }
+        ],
+        "errors": []
+      },
+      {
+        "quality": "high",
+        "samples": [
+          {
+            "className": "Fighter",
+            "supplied": "Fighter",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Rogue",
+            "supplied": "Rogue",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Cleric",
+            "supplied": "Cleric",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Wizard",
+            "supplied": "Wizard",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          }
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "retainedInitialFailure": {
+    "unselectedCommit": "da984664",
+    "unitLog": "focused-unit.log",
+    "lintLog": "lint.log",
+    "nativeLog": "native.log",
+    "cause": "Squared landing envelope initially used invalid unary-minus exponent syntax; no unit cases executed, native import failed. Parenthesized expression corrected in561d392d; unchanged angular continuity gate passes."
+  },
+  "publicStatus": "Qualified and staged locally only. Public28 CI38076277436 must finish and matching deployment must be verified before another publication.",
+  "limits": "No full-goal, FPS, modern-art or physical-phone acceptance. First146 goal lines unchanged; original full objective active.",
+  "frozenEvidence": {
+    "path": "/home/aeml/.local/share/eidolon-jump-pose-continuity-checks-20261010",
+    "inventorySHA256": "171611497071b7daa98e66b77778c2e4fe25b855ced5fe53b3bb9e372f70000f"
+  }
+}

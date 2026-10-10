@@ -8,6 +8,17 @@ This register supplements the [89-milestone roadmap](2026-09-28-alpha1-11-to1-99
 It preserves carried requirements from 1.11 onward; it does not replace them
 with a smaller 1.80–1.99 objective or certify unchecked gates.
 
+Owner-priority follow-up: **Alpha1.79.28/77a48916** is pushed; exact CI38076277436
+is still in progress. Its jump prediction/trajectory/render clock, rested-aura
+attachment and explicit/legacy automation population filters are implemented
+and locally qualified (182 focused checks,401 overlapping release checks,
+Go-race filtering/paging checks and9 public-source/bundle native checks). Do
+not infer deployment or release acceptance yet. Final review additionally
+reproduced a midair tuck discontinuity for all four classes; the qualified
+correction1e60f126 is held locally (73 focused/2 native pass), awaiting completed
+verification of28 before a further publication. Both original failure archives
+remain retained. See motion-admin-qualification and jump-pose-continuity-qualification.
+
 The current deployed build is **Alpha1.79.27/a9d6fc9b**. Both deployment jobs
 succeeded; normal-TLS frontend/backend/database and all eight independently
 compared public assets match. A fresh ordinary Fighter's trusted27unit Ctrl-click

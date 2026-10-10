@@ -297,3 +297,16 @@ esbuild. Original setup failure retained; only owned ignored symlink repointed
 to already validated current tree, then normal npm preparation passes and exact
 worker44618fbd/source runtime verified. Separate3-entry integration inventory
 40e485e5e588c17e35cb9dacfe1ca69d14065df222c401163c1bfee77dd6277a.
+
+Owner-priority continuation: jump/aura/admin corrections fd852472 qualified and
+public28/77a48916 ordinarily pushed; CI38076277436 remains in progress.182 focused
+checks,401 overlapping version/history checks, focused Go-race tests and9 native
+public-source/bundle checks pass. Legacy jump25/27 generated fixtures and exact
+configured automation names are now classified separately from real players;
+no role inference, account deletion or save mutation. Frozen123-entry inventory
+42ffdfffe88a217c8afd400b4b25ce4d5b2fcb9df33e3cc2076ebca24063d621.
+Final review found a remaining midair tuck discontinuity in all four classes;
+source561d392d/held1e60f126 corrects it with73 focused/2 native checks. Initial
+syntax failure and native failures retained. Stage after28 deployment is verified;
+no second public push while its release gates are outstanding. Full original
+roadmap, Low202draw failure, art/device/soak/beta/launch/handoff scope stays active.
