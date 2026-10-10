@@ -73,11 +73,14 @@ func TestMaintenanceActualPublishedLoginAndJump(t *testing.T) {
 		t.Fatal(err)
 	}
 	stop()
-	sanitize := exec.CommandContext(ctx, node, "scripts/sanitize-playwright-artifacts.mjs", evidence, filepath.Join(root, "playwright-report"))
+	sanitizeCtx, sanitizeCancel := context.WithTimeout(t.Context(), 30*time.Second)
+	defer sanitizeCancel()
+	sanitize := exec.CommandContext(sanitizeCtx, node, "scripts/sanitize-playwright-artifacts.mjs", evidence, filepath.Join(root, "playwright-report"))
 	sanitize.Dir, sanitize.Env = root, cmd.Env
 	if err := sanitize.Run(); err != nil {
 		t.Fatal("browser artifact credential sanitation failed")
 	}
+	t.Log("native maintenance evidence credential sanitization completed")
 	if runErr != nil {
 		t.Fatalf("maintenance connected publication failed; owned evidence=%s", evidence)
 	}
