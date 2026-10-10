@@ -822,14 +822,17 @@ class GameEngineMovementMethods {
             if (!jumpState.displayPosition) {
                 jumpState.displayPosition = entity.position.clone();
             }
-            if (jumpState.hasAuthoritativeTrajectory && entity !== this.player) {
+            // Acknowledgements drain after the frame clock advances. Sample the
+            // accepted path here too, so the first local acknowledgement cannot
+            // render the prediction's stale displayPosition for one frame.
+            if (jumpState.hasAuthoritativeTrajectory) {
                 const trajectoryDisplayPosition = this.getJumpBasePositionAtProgress(jumpState);
                 if (trajectoryDisplayPosition) {
                     jumpState.displayPosition.copy(trajectoryDisplayPosition);
                 }
             }
             const shouldSmoothDisplayPosition = entity !== this.player && options.smoothDisplayPosition !== false;
-            if (shouldSmoothDisplayPosition && !(jumpState.hasAuthoritativeTrajectory && entity !== this.player)) {
+            if (shouldSmoothDisplayPosition && !jumpState.hasAuthoritativeTrajectory) {
                 const displayTarget = this.getAuthoritativeJumpDisplayTarget(entity, jumpState) || entity.position;
                 displayTarget.y = entity.position.y;
                 jumpState.displayPosition.lerp(displayTarget, 0.35);

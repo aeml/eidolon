@@ -148,6 +148,21 @@ describe('authoritative jump flow', () => {
         expect(engine.playerCorrectionVisualState).toBeNull();
     });
 
+    test('acceptance after frame clock advancement preserves the displayed pose in that render', () => {
+        const engine = createEngineHarness();
+        engine.startPlayerJump(new THREE.Vector3(27, 0, 0));
+        engine.updatePlayerJump(.08);
+        engine.applyPlayerJumpVisuals();
+        const before = engine.player.mesh.position.clone();
+        const packet = trajectoryPacket(.02);
+        packet.jumpHeight = engine.playerJumpState.height;
+        packet.y = Math.sin(packet.jumpProgress * Math.PI) * packet.jumpHeight;
+        // Network messages drain inside update(), after loop() advances flight.
+        engine.syncAuthoritativeJumpState(engine.player, packet);
+        engine.applyPlayerJumpVisuals();
+        expect(engine.player.mesh.position.distanceTo(before)).toBeLessThan(1e-6);
+    });
+
     test('accepting a predicted trajectory preserves the takeoff clock and animation', () => {
         const engine = createEngineHarness();
         engine.startPlayerJump(new THREE.Vector3(27, 0, 0));

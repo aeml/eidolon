@@ -52,6 +52,21 @@ for (const quality of ['high', 'low']) test(`${quality} supplied class jumps and
                     game.startPlayerJump(new THREE.Vector3(27, 0, 0));
                     const { duration, height } = game.playerJumpState;
                     const positions = [0];
+                    let pendingPacket = null, landingPending = false;
+                    const update = game.update.bind(game);
+                    game.update = (...args) => {
+                        // Match production: loop advances the flight clock before
+                        // update drains network messages in the same render frame.
+                        if (pendingPacket) {
+                            game.syncAuthoritativeJumpState(actor, pendingPacket);
+                            pendingPacket = null;
+                        }
+                        if (landingPending) {
+                            actor.state = 'IDLE'; game.clearAuthoritativeJumpState(actor);
+                            landingPending = false;
+                        }
+                        return update(...args);
+                    };
                     let maxClipPhaseError = 0, contactAngle = null, contactScaleError = null;
                     for (let frame = 1; frame <= 90; frame++) {
                         await new Promise(resolve => requestAnimationFrame(resolve));
@@ -60,10 +75,10 @@ for (const quality of ['high', 'low']) test(`${quality} supplied class jumps and
                             const packet = { state: 'JUMPING', x: 27 * progress, y: Math.sin(progress * Math.PI) * height, z: 0,
                                 jumpStartX: 0, jumpStartY: 0, jumpStartZ: 0, jumpTargetX: 27, jumpTargetY: 0, jumpTargetZ: 0,
                                 jumpDuration: duration, jumpHeight: height, jumpProgress: progress };
-                            game.syncAuthoritativeJumpState(actor, frame % 12 === 0
-                                ? { state: packet.state, x: packet.x, y: packet.y, z: packet.z, jumpProgress: packet.jumpProgress } : packet);
+                            pendingPacket = frame % 12 === 0
+                                ? { state: packet.state, x: packet.x, y: packet.y, z: packet.z, jumpProgress: packet.jumpProgress } : packet;
                         }
-                        if (frame === 72) { actor.state = 'IDLE'; game.clearAuthoritativeJumpState(actor); }
+                        if (frame === 72) landingPending = true;
                         game.loop(frame * 1000 / 60);
                         positions.push(actor.mesh.position.x);
                         maxAuraError = Math.max(maxAuraError, actor.attachedStatusEffects.get('well_rested').group.position.distanceTo(actor.mesh.position));
