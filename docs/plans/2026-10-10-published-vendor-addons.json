@@ -1,0 +1,145 @@
+{
+  "status": "Publishing add-on consolidation qualified and selected privately; no deployment or release acceptance.",
+  "recordedUTC": "2026-10-10T11:06:00.509058+00:00",
+  "sourceCommit": "fa8168f00084fa6a1e6669dc1c9235581b7e1f44",
+  "baseCommit": "abdd86c97f081a279863e08acdca1bca5668ccce",
+  "implementation": "Publishing-only resolver bundles copied locked Three.js add-ons and their relative dependencies into the existing lazy engine. Core Three and shared login/session modules remain external. Validate prepared vendor version and copied-input real paths; unsupported/escaped imports and linked inputs fail before altering the publication entry. Include exact Three MIT license in output. Editable runtime/gameplay/assets/authority unchanged.",
+  "checks": {
+    "unit": "32checks/2suites pass6.599s, scoped ESLint/whitespace pass. Initial nested-link fixture used an addon without that dependency;1failure31passes retained, corrected to actual GLTFLoader dependency before final checks.",
+    "native": "8ordinary published-engine cases pass in first32.8scampaign; paired harness initially fails before comparison because held baseline worktree lacks esbuild. Corrected to byte-exact prior publisher in owned startup-recovery worktree; paired case passes31.8stest33.8stotal. No browser retries. All native reports archived.",
+    "paired": {
+      "baseline": {
+        "engineBytes": 3305562,
+        "bundledModules": 432,
+        "externalImports": [
+          "../assets/ServiceWorkerBoot.js",
+          "../data/worldGeography.js",
+          "../ui/EmailRecoveryUI.js",
+          "../ui/OwnedEvents.js",
+          "../ui/PasswordChangeUI.js",
+          "../ui/ReportUI.js",
+          "../ui/reportTypes.js",
+          "./CredentialToken.js",
+          "./GraphicsStartup.js",
+          "three",
+          "three/addons/geometries/RoundedBoxGeometry.js",
+          "three/addons/loaders/GLTFLoader.js",
+          "three/addons/postprocessing/EffectComposer.js",
+          "three/addons/postprocessing/OutputPass.js",
+          "three/addons/postprocessing/RenderPass.js",
+          "three/addons/postprocessing/ShaderPass.js",
+          "three/addons/postprocessing/UnrealBloomPass.js",
+          "three/addons/shaders/FXAAShader.js",
+          "three/addons/utils/BufferGeometryUtils.js",
+          "three/addons/utils/SkeletonUtils.js"
+        ],
+        "vendorModules": [],
+        "scriptResponses": 48,
+        "decodedScriptBodyBytes": 5762671,
+        "addonResponses": 17,
+        "captures": 64,
+        "distinctPixelHashes": 55
+      },
+      "candidate": {
+        "engineBytes": 3420131,
+        "bundledModules": 447,
+        "externalImports": [
+          "../assets/ServiceWorkerBoot.js",
+          "../data/worldGeography.js",
+          "../ui/EmailRecoveryUI.js",
+          "../ui/OwnedEvents.js",
+          "../ui/PasswordChangeUI.js",
+          "../ui/ReportUI.js",
+          "../ui/reportTypes.js",
+          "./CredentialToken.js",
+          "./GraphicsStartup.js",
+          "three"
+        ],
+        "vendorModules": [
+          "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+          "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+          "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+          "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+          "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+          "vendor/three/examples/jsm/postprocessing/Pass.js",
+          "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+          "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+          "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+          "vendor/three/examples/jsm/shaders/CopyShader.js",
+          "vendor/three/examples/jsm/shaders/FXAAShader.js",
+          "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+          "vendor/three/examples/jsm/shaders/OutputShader.js",
+          "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+          "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+        ],
+        "scriptResponses": 31,
+        "decodedScriptBodyBytes": 5616101,
+        "addonResponses": 0,
+        "captures": 64,
+        "distinctPixelHashes": 55
+      },
+      "exactRGBAHashMatches": 64,
+      "matchingCallsTrianglesItemsBonesAndShadowFlags": true,
+      "classes": [
+        "Fighter",
+        "Rogue",
+        "Wizard",
+        "Cleric"
+      ],
+      "qualities": [
+        "high",
+        "low"
+      ],
+      "poses": [
+        "CombatIdle",
+        "Run",
+        "Attack",
+        "Blink"
+      ],
+      "zooms": [
+        5,
+        15
+      ],
+      "blinkInfluences": {
+        "left": 0.75,
+        "right": 0.25
+      },
+      "itemsPerActor": 14,
+      "bonesPerActor": 53,
+      "ordinaryHighShadows": true,
+      "engineGrowthBytes": 114569,
+      "decodedScriptBodyBytesSaved": 146570
+    },
+    "releaseIdentity": "Both bounded entry URLs remain same-release; core Three and shared credentials remain external. Actual compiled original/recovery identity assertions pass. Copied15vendor module bytes match locked installed0.181.2 sources. Exact MIT notice preserved after versioning. Existing published worker/offline/lifecycle and real-time jump cases pass.",
+    "workerSHA256": "2504f5880f57633cf1ac76430cb2ea73de292a34ff2f09f72cb11337b13bf51c",
+    "versionedBundleSHA256": "dec5c7984fcf6d8acaee79dadb77c284d8c70b0e90c794dd026f87e98151c850"
+  },
+  "selection": "Retain fewer publication requests with exact tested render/identity behavior. Engine grows114569bytes; observed decoded script payload shrinks146570bytes and page script responses48\u219231. These are local request/body counts, not startup-speed or original-failure-cause proof.",
+  "evidence": "/home/aeml/.local/share/eidolon-published-vendor-addons-checks-20261010",
+  "inventoryFiles": 52,
+  "inventorySHA256": "02840d3a46ec4f99e894251c70409d11e08e3cca3a7c55e48590eb7cc87d3e02",
+  "public": {
+    "recordedUTC": "2026-10-10T11:03:10.061581+00:00",
+    "frontend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24"
+    },
+    "backend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24",
+      "status": "ok",
+      "database": "ready"
+    },
+    "ci": {
+      "conclusion": "failure",
+      "head_sha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "html_url": "https://github.com/aeml/eidolon/actions/runs/38030283856",
+      "id": 38030283856,
+      "run_attempt": 1,
+      "status": "completed"
+    }
+  },
+  "limits": "Local native desktop Chromium comparison with same copied source/assets/vendor and same release, real constructed engine/GLBs/equipment/render paths in an empty test stage. SHA256 of full RGBA buffers matched for64cases;55distinct hashes exclude an all-identical/blank control. No physical-device/populated authoritative-world/startup-speed/compressed-transfer/whole-frame-memory/art acceptance. Page script response/body counts are decoded payloads, not wire/compressed bytes, unique pathname counts or latency measurements. Shared Three core remains a separate dependency; original live24root/dependency cause unknown. Existing strict browser-failure/30s state gates unchanged. No public push/CIrerun/deploy/24merge/version change. Staged jump fix retained, geometry owner default null, full original scope remains active.",
+  "nextMeasurementFinding": "Current gameplay scene profiler still subtracts RAF timestamps as binary floats; existing renderFrameInterval.js in other qualified scene tests uses exact reported-decimal subtraction. Inspect and correct this consistency gap with real excesses still failing the unchanged33.4ms target. Historical raw-only aggregates do not retain timestamp pairs and must not be retroactively relabeled as passes.",
+  "fullGoal": "All inherited1.11\u20131.99 content/gameplay/world/modernart/combat/UI/support-device/performance/save/security/F1\u2013F5/CB/operations/rights/owner/human/beta/launch/handoff requirements remain active where unproven."
+}
