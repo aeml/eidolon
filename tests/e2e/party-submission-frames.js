@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises';
 
 // This separate diagnostic interval follows the uninstrumented performance
 // sample. Renderer-boundary hooks preserve object callbacks and batch eligibility.
-export async function capturePartySubmissionFrames(page, testInfo) {
+export async function capturePartySubmissionFrames(page, testInfo, filename = 'party-submission-frames.json') {
     const evidence = await page.evaluate(() => new Promise((resolve, reject) => {
         const game = window.game, render = game.renderSystem, renderer = render.renderer;
         const direct = renderer.renderBufferDirect, draw = render.render;
@@ -77,7 +77,7 @@ export async function capturePartySubmissionFrames(page, testInfo) {
         renderer.renderBufferDirect = observedDirect;
         render.render = observedDraw;
     }));
-    await writeFile(testInfo.outputPath('party-submission-frames.json'), JSON.stringify(evidence, null, 2));
+    await writeFile(testInfo.outputPath(filename), JSON.stringify(evidence, null, 2));
     expect(evidence.restored).toBe(true); expect(evidence.frames).toHaveLength(12);
     for (const frame of evidence.frames) {
         expect(frame.rows.reduce((total, row) => total + row.submittedCalls, 0)).toBe(frame.calls);

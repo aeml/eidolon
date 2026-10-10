@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { moveByGroundClick, readPlayerState } from './helpers.js';
 import { profileGameplayScene } from './scene-performance.js';
+import { capturePartySubmissionFrames } from './party-submission-frames.js';
 
 // Explicit post-login visual evidence. These prepared level30 saves are not an
 // earned campaign, encounter clear, physical phone or frame-budget certificate.
@@ -34,6 +35,10 @@ export async function captureEarthMovingRoute(page, testInfo) {
         expect(Math.abs(snapshot.meshY - snapshot.terrain)).toBeLessThan(.15);
         observations.push({ label, elapsedMs: performance.now() - started, ...snapshot });
         await page.screenshot({ path: testInfo.outputPath(`${label}.png`) });
+        if (process.env.EIDOLON_E2E_ROUTE_SUBMISSIONS === '1' &&
+            ['town-start', 'woodland-cut'].includes(label)) {
+            await capturePartySubmissionFrames(page, testInfo, `${label}-submission-frames.json`);
+        }
         if (process.env.EIDOLON_E2E_ROUTE_BUDGETS === '1' &&
             ['town-start', 'earth-road', 'woodland-cut', 'bastion-approach'].includes(label)) {
             // Keep capture work outside the ordinary real-frame budget sample.
