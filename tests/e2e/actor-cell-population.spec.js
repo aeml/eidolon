@@ -78,7 +78,13 @@ for (const quality of ['high', 'low']) test(`${quality}: recorded three-cell act
     for (const row of result) {
         expect(row.changedRGB).toBe(0); expect(row.unstableRGB).toBe(0);
         expect(row.candidate.triangles).toBe(row.reference.triangles);
-        expect(row.candidate.calls).toBeLessThan(row.reference.calls);
+        if (quality === 'low' && row.cellZ === -128) {
+            // This recorded cell has no actor in the Low camera and no shadow
+            // pass. Keep that negative culling control exact; there is only
+            // the two-triangle floor and no actor submission to consolidate.
+            expect(row.reference.calls).toBe(1); expect(row.reference.triangles).toBe(2);
+            expect(row.candidate.calls).toBe(1);
+        } else expect(row.candidate.calls).toBeLessThan(row.reference.calls);
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
