@@ -150,56 +150,47 @@ project is finished merely because the latest deployment is green.
 The full146line owner objective above remains authoritative. Its handoff IDs
 are historical. Current evidence is in the [remaining-work register](docs/plans/2026-10-09-release-readiness-remaining.md)
 and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
-Prior owned history is preserved byte-exact in [the archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md);
-its procedural-only instructions do not override supplied-model/modern-ARPG requirements.
+Prior owned history remains byte-exact in the [archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md).
+Historical procedural-only instructions do not override supplied actors/modern ARPG.
 
-Previous goal turn: **progress**, private45ef4111real-time jump flight,
-86checks and native15FPS1.5478s/60FPS1.5245s with exact endpoints; not deployed.
-This turn: **progress**, current High default submission with actor-view OFF,
-two native four-class/race/save/moving runs and absent/installed frame windows;
-7QA checks and90RAF restored matrix-owner measurement.3478production inputs
-remain byte-exact. Both installed33.3median/478or454draws fail High; triangle
-counts pass, consistent whole-frame/memory benefit remains unproven.
-[Current High attribution and limits](docs/plans/2026-10-10-high-current-default-attribution.json).
-[Jump timing and limits](docs/plans/2026-10-10-jump-wall-clock.json).
-[Geometry integration](docs/plans/2026-10-10-gameplay-geometry-runtime-owner.json).
+Previous goal turn: **progress**, isolated live24 real-time jump correction;
+110focused checks and3native source/published-bundle tests pass, built bundle
+15FPS1547.4ms/60FPS1522.6ms with exact endpoints. Still staged, not deployed.
+[Jump follow-up](docs/plans/2026-10-10-jump-live24-bundle.json).
 
-- Public24/922753a7 still matches normalTLS frontend/backend/bundle,DBready.
+Current turn: **progress**, private3207fb56 lossless prepared-geometry compaction.
+180focused checks,64exact native gallery controls/32close originals,2published
+cases and actual High party/Go-race/14slot-save pass. Retained buffers shrink
+57.07%gallery and59.85%party, ordinary-shadow output exact. Final real-frame
+ABBA source/compact both16.7ms medians; all exactp95/draw gates still fail.
+Earlier33.3ms ABBA and slower submission CPU retained; no proven FPS gain,
+peak/whole-browser memory qualification or default activation.
+[Compaction and limits](docs/plans/2026-10-10-prepared-geometry-compaction.json).
+
+- Public24/922753a7 still matches normalTLS frontend/backend; DBready.
   CI38030283856 attempt1 remains failed required expiry engine-module download;
-  separate175Gold equality passed retry, original causes unknown. Private QA
-  diagnosis/vendor sequencing and three unchanged24recovery passes do not fix
-  the original failure. No rerun, successor push, waiver or24merge occurred.
-  [Startup/Gold evidence](docs/plans/2026-10-10-live-failure-diagnostics.json).
-- Accepted23jump caps client/server flight at1.5s; bounded actualCtrlclick1.641s
-  includes display overhead.24jump source is unchanged. New private wall-clock
-  correction removes simulation-cap slowdown; actual owner-device cause unconfirmed.
-- Geometry owner now follows bounded scene/entity-group events, not per-frame
-  roster scans or scenery/bone listeners. Reset/untrack/dispose releases owned
-  candidates/pending jobs; old roots cannot receive late results. High→Lowmodel
-  replacement and same Highpool root reacquisition pass. Source algorithms,
-  GLBs/gear/bones/blink/material attributes/collisions/authority are preserved.
-  Copied publication compiles a self-contained content-named worker with MIT
-  notice and exact engine-release URL; native cached execution works offline.
-  Other application JavaScript remains outside the asset-cache policy.
-- Current actualHigh with explicit actor-view QA pilot has unallocated reference
-  36entities/278calls/441160triangles/33.3median/33.400000000001455p95; installed
-  separate window35/293/191657/33.3/samep95. Geometry passes but High20msmedian
-  and exact33.4p95 do not. Same-scene source-bypass submission20.4/28.9→20.8/32.5
-  is slower; no causal whole-frame/memory gain established. Close originals
-  411701triangles still exceed250000; close RGBA remains exact. No new actualLow
-  owner timing: previous boundedLow evidence retained, not promoted. No-pilot
-  default renderer, cold delivery/memory/support-device/moving-art remain open.
-- Light/world-box/affine/cell-matrix rejections remain unselected. Required24h
-  soak37880032315 stays failed; no restart/substitute unchanged campaign. Deferred
-  campaign/pacing and physical-phone feedback remain missing owner evidence.
-  No commerce/access/retention/policy/rights/release decisions are implied.
+  separate175Gold equality passed retry, original causes unknown. Three fresh
+  unchanged24 recovery passes do not accept the failed gate. No rerun, successor
+  push or24merge into held source. Live24still lacks the real-time jump fix.
+- The24hour soak37880032315 completed failure: seven read errors and20.2538min
+  common100client coverage. Health samples do not explain lost connections.
+  Original evidence retained, no restart/cancel/substitute soak.
+- Qualified selected private renderer, supplied Highv3 bodies, conservative
+  local-matrix6553fec1, event-owned geometry delivery and staged jump correction
+  remain. Geometry is explicitly integrated but default null/OFF. Rejected light
+  membership/world-box/affine/cell prototypes remain unselected. Assets, skins,
+  morphs, gear, authority, original saves and algorithms preserved.
+- Current whole-game High/Low/close/device/cold/heap and modern moving equipped
+  HUD/world/combat acceptance remain open; sampled gallery equivalence is not
+  broad art/beta acceptance. Synthetic long names overlap; final screenshot
+  heap380.1MB not qualified. Physical-phone/campaign feedback remains owner-deferred.
 
-Next: keep geometry default null. Measure real-frame source-controller-bypass/
-installed ABBA with cache held allocated; inspect rigid instance shadow/camera
-submission with exact controls. Root world-update evidence points to scene/
-foliage/other entities, not supplied-body math alone. Finish High/close/default
-HighLow/cold/memory/device/moving-art and every original1.11–1.99/gameplay/Q/CB/
-F1–F5/operations/rights/owner/human/beta/launch/handoff requirement. Preserve all
-original public/Gold/soak failures and staged jump fix; no waiver or public push.
-
-Jump follow-up: isolated live24 candidate `c7937f17` contains only the real-time flight correction in two production files;110focused checks and3native source/published-bundle tests pass. Built bundle lands at15FPS1547.4ms and60FPS1522.6ms, endpoint errors0. Live24still lacks this correction; release CI remains failed and no publication/waiver occurred. See `docs/plans/2026-10-10-jump-live24-bundle.json`. Prepared geometry3207fb56 remains unmerged pending final published/actualHigh qualification; final180checks and gallery passed/archived. Full original objective remains active.
+Next: inspect the observed lazy engine-module failure and qualify bounded safe
+module-download recovery in an actual publication bundle, preserving failure
+history and gate strength. Continue measured rigid-shadow/default submission
+from current attribution using actual renderer light membership, avoiding the
+rejected full-scene indexes/caches. Finish remaining High/Low/close/cold-memory/
+support-device/moving-art and every original1.11–1.99 content/gameplay/story/
+Dark Realm/economy/social/casino/UI/save/security/F1–F5/CB/operations/rights/
+owner/human/beta/launch/handoff requirement. No unapproved access, commerce,
+destructive production or invented owner-policy decisions. Goal remains active.

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T10:35:26.551645+00:00",
+  "recordedUTC": "2026-10-10T10:40:55.224532+00:00",
   "classification": "progress: default-submission current High attribution, two actual four-class/race/save/native moving runs with fully absent/installed windows,7QA checks,90RAF restored owner-boundary matrix measurement;3478product inputs byte-exact, High frame/draw failures retained. No activation or publication.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3selection retained; prepared geometry controller/delivery now statically reachable through an explicit RenderSystem setter, default owner null. Immutable worker built from copied publication sources with exact version cache and MIT notice. No public activation or24merge. Public24transform deployed but original required startup/Gold and failed24hsoak remain unresolved.",
   "rejectedSourceCommits": [
@@ -99,10 +99,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-jump-live24-bundle.json",
+  "currentReceipt": "docs/plans/2026-10-10-prepared-geometry-compaction.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: default-submission current High attribution, two actual four-class/race/save/native moving runs with fully absent/installed windows,7QA checks,90RAF restored owner-boundary matrix measurement;3478product inputs byte-exact, High frame/draw failures retained. No activation or publication.",
-  "nextAction": "Keep jump correction staged until retained live startup/Gold release findings are resolved; no blind rerun, successor push or24merge. Continue final prepared-geometry qualification on exact3207fb56 then decide selection using retained storage/native equivalence and unchanged High frame failures. Preserve geometry default null and all full1.11\u20131.99/gameplay/modernart/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements.",
+  "previousGoalTurnClassification": "progress: owner jump timing correction isolated against live24;110focused checks and3native source/published-bundle tests pass. Built bundle15FPS1547.4ms/60FPS1522.6ms with exact endpoints. Still private, failed release gate preserved.",
+  "nextAction": "Prioritize retained engine-module startup failure path so the staged real-time jump correction can eventually ship through required release gates. Inspect bounded safe module-download recovery and validate actual published transient-failure behavior without retrying CI or waiving original failures. Continue measured rigid-shadow/default submission using actual renderer light set (avoid rejected scene-wide index/math caches), High/close/default HighLow/cold-memory/device/moving-art qualification and every full1.11\u20131.99/gameplay/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff gate. Geometry default null, no successor push or24merge while required gate unresolved.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: owner jump timing correction isolated against live24;110focused checks and3native source/published-bundle tests pass. Built bundle15FPS1547.4ms/60FPS1522.6ms with exact endpoints. Still private, failed release gate preserved.",
+  "currentGoalTurnClassification": "progress: final lossless prepared-geometry storage compaction qualified and selected privately.180focused checks/64native controls/2published cases/actual High race14slot-save pass.57.07%gallery59.85%party retained-buffer savings; finalABBA source and compact medians both16.7ms, exactp95/draw failures retained. Default remains null; no public change.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1295,8 +1295,17 @@
     "status": "Isolated live24-based jump correction implemented and verified locally; not deployed."
   },
   "preparedGeometryPending": {
-    "worktree": "/home/aeml/.local/share/eidolon-geometry-frame-abba-20261010",
     "sourceCommit": "3207fb568df0a754ff1e71efa8d82734a4b9d81d",
-    "status": "Unmerged prototype. Final180checks and64-control gallery passed; gallery archived. Final published/actualHigh checks still pending after interleaved-view product fix. Earlier actualHighABBA had33.3ms medians, no FPS gain. Retain all earlier evidence; do not relabel as final or merge until qualified."
+    "receipt": "docs/plans/2026-10-10-prepared-geometry-compaction.json",
+    "status": "Final source qualified; storage improvement selected privately, optional owner default null. Historical earlier attempts retained."
+  },
+  "preparedGeometryCompaction": {
+    "sourceCommit": "3207fb568df0a754ff1e71efa8d82734a4b9d81d",
+    "receipt": "docs/plans/2026-10-10-prepared-geometry-compaction.json",
+    "inventorySHA256": "780dbaa88cc3def76241f91a2b85b4104a4729c158b08713522408f0887623e9",
+    "status": "Qualified lossless candidate storage compaction selected privately; optional geometry owner still default null and no publication.",
+    "galleryRetainedBytes": 17464220,
+    "partyRetainedBytes": 8741512,
+    "consistentFPSGain": false
   }
 }
