@@ -21,14 +21,18 @@ for (const policy of ['baseline', 'current']) {
         // delay the next binary state and every subsequent message together.
         // This makes the existing split acknowledgement deterministic without
         // changing server balances, inventing packets or reordering delivery.
-        let saleSeen = false, holding = false, delayed = false, timer;
+        let saleSeen = false, holding = false, delayed = false, timer, pendingSale;
         const pending = [];
         let saleCommands = 0;
         await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
             const server = socket.connectToServer();
             socket.onMessage(message => {
                 if (typeof message === 'string' && JSON.parse(message).type === 'sell') {
-                    saleSeen = true; saleCommands++;
+                    saleCommands++;
+                    // Dispatch immediately after a real state frame so the
+                    // bag acknowledgement can precede its next Gold snapshot.
+                    pendingSale = message;
+                    return;
                 }
                 server.send(message);
             });
@@ -42,6 +46,10 @@ for (const policy of ['baseline', 'current']) {
                 }
                 if (holding) pending.push(message);
                 else socket.send(message);
+                if (pendingSale && typeof message !== 'string') {
+                    server.send(pendingSale);
+                    pendingSale = null; saleSeen = true;
+                }
             });
         });
         const failures = collectBrowserFailures(page, baseURL);
