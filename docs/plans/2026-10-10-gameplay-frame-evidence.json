@@ -1,0 +1,170 @@
+{
+  "status": "Gameplay profiler measurement corrected and qualified privately; no production change or deployment.",
+  "recordedUTC": "2026-10-10T11:19:19.874798+00:00",
+  "sourceCommit": "00742d442865d02a937d31b7aa0f3bca26f0af1a",
+  "baseCommit": "1ccbff50ac8de8c1fd147bcb3eae9192a2504670",
+  "implementation": "Existing exact reported-decimal helper replaces raw binary subtraction for summary frame intervals; both values and every timestamp pair retained. No rounding/tolerance/target change. CPU measurement ends before interval arithmetic. Owned observer cleanup preserves descriptors, exceptions, return values, external replacement and renderer policy; incomplete observations reject. 3480 product inputs byte-exact.",
+  "checks": {
+    "unit": "27 checks / 3 suites pass,0.843s; scoped ESLint and diff pass.",
+    "native": "Actual High four supplied classes, three normal socket peers, fourteen-slot saves and Go-race integration pass83.63s; package84.696s; supervisor119.18s. One opt-in four-renderer case skipped, not counted as a pass. No retries.",
+    "independentAudit": {
+      "method": "Independent Python Decimal from serialized timestamps; raw binary subtraction separately verified; unchanged floor percentile indices and original targets.",
+      "samplesAudited": 1080,
+      "profiles": [
+        {
+          "name": "owner-absent",
+          "frames": 180,
+          "frameMedianMs": 33.3,
+          "frameP95Ms": 33.4,
+          "rawFrameMedianMs": 33.29999999999927,
+          "rawFrameP95Ms": 33.400000000001455,
+          "cpuLoopMedianMs": 24.69999998807907,
+          "cpuLoopP95Ms": 31.19999998807907,
+          "drawCallsMedian": 383,
+          "trianglesMedian": 463282,
+          "activeEntitiesMin": 31,
+          "activeEntitiesMax": 32,
+          "gates": {
+            "median": false,
+            "p95": true,
+            "draw": false,
+            "triangles": false
+          },
+          "rawP95Pass": false
+        },
+        {
+          "name": "owner-installed",
+          "frames": 180,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 33.4,
+          "rawFrameMedianMs": 16.700000000004366,
+          "rawFrameP95Ms": 33.400000000001455,
+          "cpuLoopMedianMs": 22.099999994039536,
+          "cpuLoopP95Ms": 30,
+          "drawCallsMedian": 373,
+          "trianglesMedian": 208547,
+          "activeEntitiesMin": 27,
+          "activeEntitiesMax": 28,
+          "gates": {
+            "median": true,
+            "p95": true,
+            "draw": false,
+            "triangles": true
+          },
+          "rawP95Pass": false
+        },
+        {
+          "name": "ABBA-1-source",
+          "frames": 180,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 33.4,
+          "rawFrameMedianMs": 16.700000000004366,
+          "rawFrameP95Ms": 33.400000000001455,
+          "cpuLoopMedianMs": 21.899999976158142,
+          "cpuLoopP95Ms": 27.400000005960464,
+          "drawCallsMedian": 392,
+          "trianglesMedian": 465881,
+          "activeEntitiesMin": 26,
+          "activeEntitiesMax": 27,
+          "gates": {
+            "median": true,
+            "p95": true,
+            "draw": false,
+            "triangles": false
+          },
+          "rawP95Pass": false
+        },
+        {
+          "name": "ABBA-2-compact",
+          "frames": 180,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 33.4,
+          "rawFrameMedianMs": 16.700000000004366,
+          "rawFrameP95Ms": 33.400000000001455,
+          "cpuLoopMedianMs": 20.69999998807907,
+          "cpuLoopP95Ms": 25.299999982118607,
+          "drawCallsMedian": 372,
+          "trianglesMedian": 206489,
+          "activeEntitiesMin": 26,
+          "activeEntitiesMax": 26,
+          "gates": {
+            "median": true,
+            "p95": true,
+            "draw": false,
+            "triangles": true
+          },
+          "rawP95Pass": false
+        },
+        {
+          "name": "ABBA-3-compact",
+          "frames": 180,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 33.4,
+          "rawFrameMedianMs": 16.700000000004366,
+          "rawFrameP95Ms": 33.400000000001455,
+          "cpuLoopMedianMs": 22.200000017881393,
+          "cpuLoopP95Ms": 27.80000001192093,
+          "drawCallsMedian": 358,
+          "trianglesMedian": 207698,
+          "activeEntitiesMin": 25,
+          "activeEntitiesMax": 26,
+          "gates": {
+            "median": true,
+            "p95": true,
+            "draw": false,
+            "triangles": true
+          },
+          "rawP95Pass": false
+        },
+        {
+          "name": "ABBA-4-source",
+          "frames": 180,
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 33.4,
+          "rawFrameMedianMs": 16.69999999999709,
+          "rawFrameP95Ms": 33.39999999999418,
+          "cpuLoopMedianMs": 20.900000005960464,
+          "cpuLoopP95Ms": 25.600000023841858,
+          "drawCallsMedian": 372,
+          "trianglesMedian": 463463,
+          "activeEntitiesMin": 25,
+          "activeEntitiesMax": 25,
+          "gates": {
+            "median": true,
+            "p95": true,
+            "draw": false,
+            "triangles": false
+          },
+          "rawP95Pass": true
+        }
+      ],
+      "abbaAllocation": {
+        "registered": 44,
+        "candidateStorageBytes": 8734200,
+        "workerCacheBytes": 646368,
+        "workerCacheEntries": 44,
+        "requested": 44,
+        "pending": 0,
+        "activeJob": false,
+        "restored": true
+      },
+      "limits": "QA measurement correction only. 3480 product inputs byte-exact. No historical raw-only report reclassification, product FPS gain or supported-device/art acceptance."
+    }
+  },
+  "limits": "Installed draw373 fails350. ABBA draws392/372/358/372 all fail350. All six exact reported p95 values33.4 meet unchanged33.4 boundary; actual33.4001/33.401/50 excesses still fail in controls. Source absent median33.3 fails20; ABBA medians16.7 both arms, no consistent FPS gain. Source triangles fail250000; compact pass. Source/installed populations differ, CPU submission regression16.8/26.6 to18.7/28.4ms retained. No historical raw-only report reclassification. No physical-device, full art/combat/cold/heap or release acceptance. Viewed moving equipped HUD; synthetic names overlap; screenshot heap418.8MB unqualified. Geometry owner explicitly integrated/default null.",
+  "public": {
+    "version": "Alpha 1.79.24",
+    "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+    "engineSHA256": "d579595604b7d0b36b16ceababf088ade4783962332a9556d21578ea6e6cfb7a",
+    "health": "ok",
+    "database": "ready",
+    "ciRun": 38030283856,
+    "ciAttempt": 1,
+    "ciConclusion": "failure",
+    "jumpWallClockFixDeployed": false
+  },
+  "userJumpRequest": "Owner reiterates approximately1.5seconds total jump travel. Existing isolated live24 fix c7937f17 verified published15FPS1547.4ms/60FPS1522.6ms with exact logical/render endpoints. Still not live; required startup release gate remains failed. Do not change duration below requested1.5 as a substitute for deploying elapsed-time fix.",
+  "evidence": "/home/aeml/.local/share/eidolon-scene-frame-evidence-checks-20261010",
+  "inventorySHA256": "6e9cdc100ea4fda9b5b72ae7fa48bcea284c9f72019715f27a1ceb1a40a993c0",
+  "inventoryFiles": 56
+}
