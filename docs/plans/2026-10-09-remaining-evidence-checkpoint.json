@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T13:23:16.015317+00:00",
-  "classification": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+  "recordedUTC": "2026-10-10T13:45:42.482682+00:00",
+  "classification": "Alpha1.79.26/77859697 corrective Gold QA synchronization pushed; exact CI38056289769 attempt1 in progress, deployment/live assets/required live gates pending. Public25 requested1.5s jump independently verified1648.6ms; original25 Gold/stash gate failure retained.",
   "qualifiedRuntime": "Held private renderer/supplied High v3 and prepared geometry controller/delivery retained, geometry owner default null. No public24/25product merge. Public25 jump correction independently verified; required live Gold/stash gate and full original roadmap acceptance remain open.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -102,7 +102,7 @@
   "currentReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: private bounded entry-module recovery48f35293,89checks and5final actual published-login cases. Browser failure cache diagnosed; one same-release recovery/one construction verified. Persistent/dependency/evaluation/export failures remain visible; original live gate/soak failures retained.",
-  "nextAction": "Diagnose current live Gold/stash failure from retained two-attempt evidence and reproduce the exact boundary in disposable real server/browser/Mongo. Preserve exact Gold/gear/bag/stash invariants; no blind rerun, waiver or successor push. Continue independent full-scope work; private bf2039bf shadow prototype still needs actual connected High/CPU/frame qualification before selection.",
+  "nextAction": "Wait for this exact run, inspect all required outcomes/native artifacts, and independently compare frontend/backend/database and eight prepared public asset hashes before another publication.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "Alpha1.79.25/d15a882e deployed and exact identities/database/eight assets verified. Fresh ordinary live27unit Ctrl-click jump1648.6ms total,1582.9ms observed flight, authoritative1.5s, endpoints0; one native pass/no retries. RequiredCI38051193149 failed live Gold/stash assertions (all nine other jobs passed); later live recovery skipped. Release not accepted.",
+  "currentGoalTurnClassification": "progress: exact correlated read-only Gold baseline repair qualified against both actual FIFO counterexamples with strict native/fresh-login/Mongo custody; corrective26 pushed. Independent defaultOFF shadow integration under one actual connected High comparison.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1398,5 +1398,20 @@
     },
     "status": "Private real-server FIFO preceding-sales reproduce242Gold overshoot and175Gold crossing stash snapshot. Sale native case passes in otherwise failed diagnostic suite; corrected selected stash native/Go-race/Mongo passes. Not original live root-cause proof or a repair. Required25CI remains failure; product inputs unchanged.",
     "next": "Trace which real transaction or state snapshot precedes the live QA baseline. Qualify a source-specific synchronization repair with strict balances/custody/save checks before any successor release. A correlated read-only authoritative wallet baseline is one candidate, subject to the existing5requests/10s limit and exact owner/request matching; no timer-only settle or >= assertion."
+  },
+  "vendorGoldSynchronization": {
+    "receipt": "docs/plans/2026-10-10-vendor-gold-synchronization.json",
+    "version": "Alpha 1.79.26",
+    "commit": "77859697a71329facd0584a95167c80eac392398",
+    "run": 38056289769,
+    "attempt": 1,
+    "status": "in_progress",
+    "url": "https://github.com/aeml/eidolon/actions/runs/38056289769",
+    "qualifiedNotReleaseAccepted": true
+  },
+  "actorShadowConnectedCandidate": {
+    "source": "5c5494ef",
+    "defaultEnabled": false,
+    "status": "one connected High actual party comparison running; no result or selection claimed"
   }
 }

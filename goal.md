@@ -147,28 +147,25 @@ project is finished merely because the latest deployment is green.
 
 ## Current checkpoint (2026-10-10)
 
-Alpha1.79.25/d15a882e is deployed; normal-TLS frontend/backend/database and all
-eight expected asset hashes match. The requested elapsed-time jump correction
-is independently verified on the actual public game: fresh ordinary Fighter,
-real27unit Ctrl-click,1648.6ms total/1582.9ms observed flight, accepted1.5s,
-logical/render landing errors0. One native pass, no retries/recordings.
+The requested jump is deployed in Alpha1.79.25/d15a882e and independently
+verified on the actual public game: real27unit Ctrl-click,1648.6ms total,
+1582.9ms observed flight, accepted1.5s, logical/render landing errors0.
+Normal-TLS frontend/backend/database and eight public asset hashes matched.
+Required CI38051193149 nevertheless failed exact live Gold/stash checks;
+all nine other jobs passed. Original failure/root cause remains retained.
 
-Required CI38051193149 attempt1 nevertheless failed the live Gold/stash gate;
-all nine other jobs passed. First sale-credit assertion expected384489 versus
-384731; configured retry stash check expected384731 versus384906. Root cause
-not established. Required recovery and optional four-class live stages skipped;
-release remains unaccepted. First25server-race failure and original24startup/Gold
-failures retained. No reruns/cancels/waivers or public24/25product merge into held.
-`docs/plans/2026-10-10-jump-wall-clock-public-verification.json` records scope.
+Corrective Alpha1.79.26/77859697a71329facd0584a95167c80eac392398 is pushed;
+CI38056289769 attempt1 is in progress. Qualified fresh correlated read-only
+Gold synchronization preserves exact sale/stash checks and all economy logic.
+Actual preceding242/175Gold FIFO controls now both pass native/Go-race/fresh
+login/Mongo exact balances, equipment, bag/stash metadata and custody.
+See `docs/plans/2026-10-10-vendor-gold-synchronization.json`. This establishes
+controlled repair, not the original live cause. Verify exact26 required CI,
+live identities/database/eight assets and native outcomes before another push.
+No reruns/cancels/waivers or public24/25/26product merge into held.
 
-Private8c9aa236 real-server FIFO counterexamples reproduce242Gold overshoot
-and175Gold crossing a stash snapshot through preceding legitimate sales.
-Selected stash native/Go-race/Mongo passes; sale native case passes within an
-otherwise failed diagnostic suite. Original live cause and repair remain open;
-see `docs/plans/2026-10-10-vendor-preexisting-credit-counterexamples.json`.
-Next identify the actual preceding transaction/state baseline and qualify its
-synchronization repair with unchanged exact economy checks. No successor push.
-Private bf2039bf shadow-view prototype (separate worktree)
-passes32units/12native/70exact RGB controls, but remains unselected and still
-needs connected High/CPU/whole-frame proof. Full original1.11–1.99objective,
+Private5c5494ef shadow integration is defaultOFF;36owner checks pass and one
+actual connected High equipped-party RGB/submission/real-frame ABBA is running.
+Prior bf2039bf isolated32units/12native/70RGB proof remains valid within scope.
+No performance/art/device selection inferred. Full original1.11–1.99objective,
 failed24hsoak, art/device/owner/F1–F5/beta/launch/handoff gates remain open.
