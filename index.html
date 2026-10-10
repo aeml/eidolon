@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.24</span>
+                    <span class="start-version-row__label">Alpha 1.79.25</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,16 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.24" data-notes-pages="45" data-notes-total="459">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.25" data-notes-pages="45" data-notes-total="460">
+                <div class="patch-note-entry" data-version="1.79.25">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.25 (Consistent jump timing)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Long Ctrl-click jumps follow elapsed time and reach their destination after 1.5 seconds of flight, including at low frame rates. Nearby hops stay quick.</li>
+                        <li>Jump display smoothing now follows elapsed time too, keeping the character closer to its landing point during slow frames.</li>
+                        <li>World entry can recover once from an interrupted engine download. Persistent download failures show reload guidance.</li>
+                        <li>Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.24">
                     <h3 class="patch-note-entry__title">Alpha 1.79.24 (Reliable scene transforms)</h3>
                     <ul class="patch-note-entry__list">
@@ -882,19 +891,6 @@
                         <li>Collision, paths, quest targets, planted roots, thresholds and gameplay rules stay unchanged. Original geometry and scene performance limits remain required.</li>
                         <li>This is incremental landmark refinement, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
                         <li>No account wipe, schema migration, currency or permission change. Full prior patch history is preserved through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.15">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.15 (scenery rendering and atlas detail)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Owned, unchanged scene containers and foliage groups avoid repeated local matrix composition and unnecessary static world-matrix multiplication. Actors, bones, equipment animations, moved parents and reparented scenery remain live.</li>
-                        <li>The foliage registry visits registered scenery instead of unrelated character rigs and buildings. Cell bounds and frustum results are reused only for exact current transforms, bounds, camera, light and shadow-filter inputs. No movement thresholds or timed approximations are introduced.</li>
-                        <li>Irrelevant direct foliage cells skip eligibility work, while nested scenery and live region, material and visibility changes retain their existing behavior. Pointer targeting reuses each actor's owned interaction box instead of repeatedly searching its fitted rig; detached or replaced boxes fall back to normal lookup.</li>
-                        <li>Ordinary world frames no longer search the entire scene for a casino interior that is not present. Casino doors and floors reuse their current owned scene roots, reacquire replacements and release references on cleanup. Seating, floor visibility, table timers and wagers are unchanged.</li>
-                        <li>The atlas uses distinct engraved birch, pine, willow, deadwood, briar, wind-bent cypress and storm-crystal symbols at their existing world locations. Roads, gates, destinations, phone controls and cached map sizes are unchanged.</li>
-                        <li>Generated groundcover keeps its fixed local transform while shader wind and live instance transforms remain active. Detached scenery and disposed renderers restore their original methods and remove owned listeners.</li>
-                        <li>Geometry, density, shadows, cell sizes, filter margins, quality settings, collisions, gameplay and frame budgets remain unchanged. Raised terrain remains disabled in the public world; final equipped-party, device, modern-art and feature-freeze qualification remain open.</li>
-                        <li>No account wipe, schema migration, economy or permission change. Full prior patch history is preserved through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

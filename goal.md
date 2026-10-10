@@ -145,25 +145,16 @@ completion. If something requires owner approval or outside input, identify
 exactly what remains and continue other available work. Never claim the entire
 project is finished merely because the latest deployment is green.
 
-## Local maintenance candidate checkpoint — October 10
+## Current checkpoint (2026-10-10)
 
-The complete146line owner objective above remains authoritative; supplied four
-GLBs and modern dark-fantasy ARPG requirements override historical procedural-only
-instructions. Historical public24goal is preserved byte-exact at the referenced
-archive; this does not accept its superseded art instructions or old checkpoints.
+Owner-requested low-frame-rate jump correction is prepared as Alpha 1.79.25.
+Real copied/versioned publication with a disposable Go-race server passes normal
+and interrupted-entry login, real long-jump input, exact landing, fresh login
+and Mongo save preservation. Click-to-landing measured 1.684/1.756 seconds;
+server flight duration is 1.5 seconds. Evidence is recorded in
+`docs/plans/2026-10-10-maintenance-connected-jump.json`.
 
-Isolated live24 candidate c0d120a3 combines real elapsed-time1.5-second jump,
-bounded engine entry recovery, copied Three add-on publication and diagnostic/
-exact vendor-credit QA.197focused checks and nine locally qualified native scopes
-pass; initial private-field assertion failure is retained. No held terrain/body/
-geometry worker or owner is included.
-[Candidate and limits](docs/plans/2026-10-10-jump-startup-maintenance-candidate.json).
-
-Public24/922753a7 and its required failedCI remain unchanged. This candidate has
-no assigned successor version and is not deployed. Next qualify its actual copied/
-versioned publication against a real server for authenticated world entry and
-slow-frame jump. No blind retries, failed-gate waiver or successor public push.
-All original1.11–1.99 content/art/performance/gameplay/story/DarkRealm/economy/
-social/casino/UI/mobile/save/security/CB/F1–F5/operations/rights/owner/human/beta/
-launch/handoff scope stays active. Physical-phone/campaign feedback remains
-owner-deferred; no unapproved access/commerce/destructive production/policy change.
+Public24 deployment identities/readiness match, but CI38030283856 remains failed.
+A corrective successor must pass its own required live gates; original failed
+evidence and unknown root/dependency cause are retained. No raised/geometry/body
+pilots selected. Full original roadmap and final acceptance remain active.

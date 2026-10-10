@@ -1,0 +1,69 @@
+{
+  "recordedUTC": "2026-10-10T11:56:17.383243+00:00",
+  "sourceCommit": "e8f6b307759bc813dbac8f48be6d17e5b6e40046",
+  "baseCommit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+  "status": "Real disposable Go-race server and copied/versioned browser publication qualified; not deployed.",
+  "tests": {
+    "native": "2 passed, no retries/skips,42.3s",
+    "goRace": "TestMaintenanceActualPublishedLoginAndJump PASS51.40s; package52.450s",
+    "lint": "Scoped ESLint and git diff --check pass"
+  },
+  "samples": [
+    {
+      "fpsCap": 60,
+      "clickToLandingMs": 1756.4000000059605,
+      "serverDurationSeconds": 1.5,
+      "distance": 26.966157155164755,
+      "positionError": 0,
+      "renderError": 0,
+      "admittedFrames": 58,
+      "minFrameGapMs": 16.600000000000364,
+      "medianFrameGapMs": 33.30000000000109,
+      "maxFrameGapMs": 200.0,
+      "initialRequests": [
+        "?release=e8f6b307759bc813dbac8f48be6d17e5b6e40046"
+      ],
+      "freshLoginPositionExact": true,
+      "restored": true,
+      "faults": []
+    },
+    {
+      "fpsCap": 15,
+      "clickToLandingMs": 1684.0999999940395,
+      "serverDurationSeconds": 1.5,
+      "distance": 26.966157155164755,
+      "positionError": 0,
+      "renderError": 0,
+      "admittedFrames": 31,
+      "minFrameGapMs": 66.59999999999854,
+      "medianFrameGapMs": 66.69999999999891,
+      "maxFrameGapMs": 116.69999999999982,
+      "initialRequests": [
+        "?release=e8f6b307759bc813dbac8f48be6d17e5b6e40046",
+        "?startupRetry=1&release=e8f6b307759bc813dbac8f48be6d17e5b6e40046"
+      ],
+      "freshLoginPositionExact": true,
+      "restored": true,
+      "faults": [
+        "requestfailed: GET http://127.0.0.1:4194/src/core/GameEngine.bundle.js?release=e8f6b307759bc813dbac8f48be6d17e5b6e40046 (net::ERR_CONNECTION_CLOSED)",
+        "console: Failed to load resource: net::ERR_CONNECTION_CLOSED [http://127.0.0.1:4194/src/core/GameEngine.bundle.js?release=e8f6b307759bc813dbac8f48be6d17e5b6e40046:0]"
+      ]
+    }
+  ],
+  "sourcePins": {
+    "scripts/bundle-game-engine.mjs": "e060080802fa8593e89288d9c4ae0d456e29504d24487dfa3a62b49d6dde3acf",
+    "src/core/EngineModuleLoader.js": "fd176c28e05443b1312ba1aca36f440cec5c823184b9b119ec9b974f86bebb84",
+    "src/core/GameEngineMovement.js": "3cd0c6c19630aa0e573cdb87d191286515fbef94316e524fe7f1fefb5d52a0dd",
+    "src/core/GameEngineRuntime.js": "d9e7ce99461e2f886735fdda9699ede02e814794927e0da829d3c7cbcf872458",
+    "src/main.js": "f8d98df9284721a7e3a394bab6ef28d3a9e9f1703d57a09359650f4a9003150d",
+    "tests/e2e/maintenance-connected-publication.spec.js": "a0da3bf7d0c43d98e047f9cd9946804e5a411348dc3d12931b01f7d98bb0ffec",
+    "server/maintenance_browser_integration_test.go": "68571854a993aed0c49b49cd4b8d409dbdb17bae7a9b6be885eecc78c39ec00d"
+  },
+  "reusedEvidence": "197 focused checks and copied publication/64 equipped render parity from frozen maintenance candidate; product files byte-exact. Vendor/stash real-server evidence retained separately.",
+  "limits": "Cap60 does not certify60FPS: median33.3ms admitted cadence with200ms gap. Cap15 verified minimum66.6ms. Click-to-land includes input/network/server state and display sampling. No physical device or full-scene performance claim. Failed public24 CI and unknown original download/Gold causes are retained, not reclassified.",
+  "savedState": "Both real Mongo saves preserved exactGold/EP/inventory/equipment and landingXZ, LastLogout advanced; normal server shutdown and race/panic scan passed.",
+  "evidence": "/home/aeml/.local/share/eidolon-maintenance-connected-checks-20261010",
+  "inventorySHA256": "cc645ace2b02df5a80409b2af5278c122bcc68b9607007bcc6594cf84b4377b3",
+  "inventoryFiles": 14,
+  "releaseDecision": "Prepare a corrective successor for the owner-requested jump issue. Public24 frontend/backend deployment identities and database readiness are verified; its required CI remains failed. Recovery qualifies the interrupted-entry category, and exact-credit QA fixes the demonstrated delayed-Gold sequencing counterexample. Original root-versus-dependency failure remains unknown. Successor must pass its own unchanged required live gate; no rerun or waiver of24 and no held rendering/terrain pilots."
+}
