@@ -1,0 +1,141 @@
+{
+  "status": "Private bounded engine-entry download recovery implemented and locally qualified; not deployed and original live gate remains failed.",
+  "recordedUTC": "2026-10-10T10:52:43.394862+00:00",
+  "sourceCommit": "48f352939e2f93de084f0ddc3832efbb3e9885ff",
+  "baseCommit": "7e59e4fdd1dfc0eba9abc50d04105a41e79fff2b",
+  "diagnosis": {
+    "result": [
+      {
+        "loaded": false,
+        "errorName": "TypeError"
+      },
+      {
+        "loaded": false,
+        "errorName": "TypeError"
+      },
+      {
+        "loaded": true
+      }
+    ],
+    "requests": 2
+  },
+  "implementation": "Lazy promise loader shares one module namespace or terminal failure. One fresh bounded startupRetry=1 entry URL only for recognized TypeError module-download failures. Release publisher rewrites/versions both imports and rejects missing/duplicate/unsupported recovery paths. Main serializes starts so concurrent clicks cannot construct two engines. Shared credential module identity is verified on original/recovery imports. No timer, additional QA deadline, generic failure retry, account/server/save or access change.",
+  "verification": {
+    "unit": "89checks/7suites pass3.398s; scoped lint/whitespace pass. Earlier85/86passes retained as historical intermediate checks.",
+    "nativeFinal": "5published login recovery/failure cases pass14.5s, no retries/skips: one interrupted entry recovers at exact same release with1construction; persistent entry failures stop after2requests even after more clicks; dependency failure stays visible; TypeError evaluation and SyntaxError export failures do not retry.",
+    "nativeInitial": "Initial9case campaign8pass/1fixture failure; wrong dependency route omitted /build/ and did not inject the fault. Corrected route rerun with4other related published-login cases. Initial passing published lazy construction, immutable worker/offline/lifecycle, actual jump timing and original30s negative startup-assertion control retained and not relabeled as final full campaign.",
+    "sourceFailureControl": {
+      "enginePresent": false,
+      "playerReady": false,
+      "firstStateReceived": false,
+      "socketState": null,
+      "queuedMessages": null,
+      "frameCount": null,
+      "visibility": "visible",
+      "focused": true,
+      "startupFailureVisible": true,
+      "startupPhase": "engine-module",
+      "startupFailureKind": "module-download",
+      "loginVisible": false,
+      "moduleFailures": {
+        "observed": 2,
+        "dropped": 0,
+        "failures": [
+          {
+            "module": "/src/core/GameEngine.js",
+            "kind": "request",
+            "code": "net::ERR_CONNECTION_CLOSED"
+          },
+          {
+            "module": "/src/core/GameEngine.js",
+            "kind": "request",
+            "code": "net::ERR_CONNECTION_CLOSED"
+          }
+        ]
+      }
+    },
+    "publishedTransientRecovery": {
+      "requests": [
+        "?release=bundlefixture20261009",
+        "?startupRetry=1&release=bundlefixture20261009"
+      ],
+      "constructions": 1,
+      "state": {
+        "className": "GameEngine",
+        "defaultGeometryInactive": true,
+        "errorHidden": true
+      }
+    },
+    "publishedDependencyFailure": {
+      "requests": [
+        "?release=bundlefixture20261009",
+        "?startupRetry=1&release=bundlefixture20261009"
+      ],
+      "dependencyFailures": 1,
+      "failureKind": "module-download",
+      "enginePresent": false
+    },
+    "releaseIdentity": "Both literal lazy entry URLs rewritten to GameEngine.bundle.js and same release. Original/recovery shared credential identity passes actual compiled fixture; lazy login and named classes remain intact. Publisher rejects absent/duplicate/unsupported recovery imports.",
+    "publication": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.2504f5880f57633c.js",
+        "sha256": "2504f5880f57633cf1ac76430cb2ea73de292a34ff2f09f72cb11337b13bf51c",
+        "bytes": 134129,
+        "modules": 9,
+        "imports": []
+      },
+      "bundledModules": 432,
+      "bytes": 3305562,
+      "sharedLoginModules": 22,
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three",
+        "three/addons/geometries/RoundedBoxGeometry.js",
+        "three/addons/loaders/GLTFLoader.js",
+        "three/addons/postprocessing/EffectComposer.js",
+        "three/addons/postprocessing/OutputPass.js",
+        "three/addons/postprocessing/RenderPass.js",
+        "three/addons/postprocessing/ShaderPass.js",
+        "three/addons/postprocessing/UnrealBloomPass.js",
+        "three/addons/shaders/FXAAShader.js",
+        "three/addons/utils/BufferGeometryUtils.js",
+        "three/addons/utils/SkeletonUtils.js"
+      ],
+      "engineSHA256": "aac93481f391b74cc3935fae19757d1e208e7fa354885f7459382b456f16a580"
+    }
+  },
+  "evidence": "/home/aeml/.local/share/eidolon-startup-module-recovery-checks-20261010",
+  "inventorySHA256": "a585bf0f1a2674d8801d4083b07359772709a58f8e9def6951839e346b21d816",
+  "inventoryFiles": 68,
+  "public": {
+    "recordedUTC": "2026-10-10T10:50:48.183476+00:00",
+    "frontend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24"
+    },
+    "backend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24",
+      "status": "ok",
+      "database": "ready"
+    },
+    "ci": {
+      "conclusion": "failure",
+      "head_sha": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "html_url": "https://github.com/aeml/eidolon/actions/runs/38030283856",
+      "id": 38030283856,
+      "run_attempt": 1,
+      "status": "completed"
+    }
+  },
+  "limits": "Controlled local native Chromium149/Linux AMD fixture, actual copied/built/versioned engine and login, routed presentation-only auth with synthetic fixture credentials. Recovery reaches real renderer/engine construction; no authoritative world-state/full production network or physical-device acceptance. Same-entry recovery cannot refetch an already failed shared vendor/dependency URL; remains visible with reload guidance. Root/dependency origin of original24failure remains unknown. Strict QA browser failure collection and original30s authoritative-state deadline unchanged; recovered transport faults remain evidence, not a CI waiver. Original24CI and24hour soak failures retained; no CIrerun/push/deploy/24merge or version change. Geometry owner remains default null. All original full-goal requirements active.",
+  "fullGoal": "All inherited1.11\u20131.99 content/gameplay/modernart/world/combat/UI/support-device/performance/save/security/F1\u2013F5/CB/operations/rights/owner/human/beta/launch/handoff requirements remain active where unproven."
+}
