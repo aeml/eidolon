@@ -145,59 +145,17 @@ completion. If something requires owner approval or outside input, identify
 exactly what remains and continue other available work. Never claim the entire
 project is finished merely because the latest deployment is green.
 
-## Current execution checkpoint — October 10
+## Current checkpoint (2026-10-10)
 
-The full146line owner objective above remains authoritative. Its handoff IDs
-are historical. Current evidence is in the [remaining-work register](docs/plans/2026-10-09-release-readiness-remaining.md)
-and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
-Prior owned history remains byte-exact in the [archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md).
-Historical procedural-only instructions do not override supplied actors/modern ARPG.
+Corrective Alpha1.79.25/3ac476e6 is ordinary-pushed, CI38050260227 pending.
+Real copied/versioned publication and disposable Go-race server qualify normal
+and interrupted-entry login,1.5s authoritative flight (1.684/1.756s click-to-land),
+exact logical/render landing, fresh login and Mongo Gold/EP/bag/gear preservation.
+197 existing product checks reused;407version/publication checks pass.
+`docs/plans/2026-10-10-maintenance-connected-jump.json` records evidence/limits.
 
-Previous goal turn: **progress**, d76413a4 real vendor/stash qualification:
-two native ordinary/FIFO-delayed cases and exact savedGold/EP/gear/bag/stash
-Go-race checks pass. Two failed baseline controls retained; real ordering did not
-reproduce assumed bag-before-Gold. [Qualification](docs/plans/2026-10-10-vendor-stash-browser-qualification.json).
-
-Current turn: **progress**, isolated live24 candidate c0d120a3/docs3404c644
-combines reviewed elapsed-time jump, bounded engine entry recovery, copied Three
-add-on publication and diagnostic/exact-credit QA.197checks/10suites and nine
-locally qualified native scopes pass. Initial private-owner null assertion failed;
-corrected to require owner/setter absent, only that case rerun. Five product
-inputs,3481existing inputs unchanged; no held terrain/body/geometry worker/owner.
-Compiled jump15FPS1560.2ms/60FPS1523.8ms, endpoints0;64equipped render pairs exact,
-scripts48→31. Original full owner goal restored in candidate with exact public24
-2617line history archived. [Candidate and limits](docs/plans/2026-10-10-jump-startup-maintenance-candidate.json).
-
-Owner again requests approximately1.5seconds total jump. Existing isolatedlive24
-elapsed-time fix measures1547.4ms at15FPS/1522.6ms at60FPS with exact endpoints,
-but is not deployed. [Staged jump](docs/plans/2026-10-10-jump-live24-bundle.json).
-
-- Public24/922753a7 still matches normalTLS frontend/backend; DBready.
-  CI38030283856 attempt1 remains failed required expiry engine-module download;
-  separate175Gold equality passed retry, original causes unknown. Three fresh
-  unchanged24 recovery passes do not accept the failed gate. No rerun, successor
-  push or24merge into held source. Live24still lacks the real-time jump fix.
-- The24hour soak37880032315 completed failure: seven read errors and20.2538min
-  common100client coverage. Health samples do not explain lost connections.
-  Original evidence retained, no restart/cancel/substitute soak.
-- Qualified selected private renderer, supplied Highv3 bodies, conservative
-  local-matrix6553fec1, event-owned geometry delivery and staged jump correction
-  remain. Geometry is explicitly integrated but default null/OFF. Rejected light
-  membership/world-box/affine/cell prototypes remain unselected. Assets, skins,
-  morphs, gear, authority, original saves and algorithms preserved.
-- Current whole-game High/Low/close/device/cold/heap and modern moving equipped
-  HUD/world/combat acceptance remain open; sampled gallery equivalence is not
-  broad art/beta acceptance. Synthetic long names overlap; final screenshot
-  latest heap418.8MB not qualified. Physical-phone/campaign feedback remains owner-deferred.
-
-Next: qualify actual copied/versioned isolated maintenance publication against
-a real disposable server: normal authenticated world entry, bounded interrupted
-root recovery and slow-frame server-accepted1.5s jump with real input. Reuse
-valid server/vendor/asset evidence; no unchanged full campaign/soak. Retain failed
-CI/startup/Gold/soak findings and no successor public push while required gate
-unresolved. Continue useful independent actual-light rigid-shadow/default
-submission, remaining High/Low/close/cold-memory/support-device/moving-art and
-every original1.11–1.99 content/gameplay/story/DarkRealm/economy/social/casino/UI/
-save/security/F1–F5/CB/operations/rights/owner/human/beta/launch/handoff requirement.
-No unapproved access, commerce, destructive production or invented owner-policy
-decisions. Goal remains active.
+Public24failedCI and original network/Gold causes remain retained; corrective25
+must pass its own unchanged required live gates and exact asset/readiness checks.
+No held renderer/terrain/body/geometry pilots are included; no24/25 product merge
+into this held candidate. Next finish exact deployment and real public jump
+verification. Full original objective and all remaining acceptance gates stay active.
