@@ -1,6 +1,8 @@
 import { jest } from '@jest/globals';
 
 const recall = jest.fn(), open = jest.fn();
+const synchronizeGold = jest.fn(async () => {});
+jest.unstable_mockModule('./e2e/persistent-qa-gold.js', () => ({ waitForPersistentQAGoldBaseline: synchronizeGold }));
 const pwExpect = actual => expect(actual);
 pwExpect.arrayContaining = expect.arrayContaining;
 pwExpect.poll = observe => ({
@@ -57,6 +59,7 @@ test.each(['normal', 'pending-earned', 'neck', 'gloves'])('ordinary right-click 
     const { page, player, clicks, quest, original } = harness(mode);
     expect(await storePersistentQALootSpare(page)).toEqual(original);
     expect(recall).toHaveBeenCalledWith(page, { allowRespawn: false });
+    expect(synchronizeGold).toHaveBeenCalledWith(page);
     expect(open).toHaveBeenCalledWith(page);
     expect(clicks[0]).toEqual({ selector: '.stash-browser-item[data-source="inventory"][data-slot-index="0"]', options: { button: 'right' } });
     expect(clicks.at(-1).selector).toBe('#btn-close-stash');
