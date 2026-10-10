@@ -546,7 +546,7 @@ class GameEngineMovementMethods {
                 jump.displayPosition = this.player.position.clone();
             }
             const displayTarget = this.getAuthoritativeJumpDisplayTarget(this.player, jump) || this.player.position;
-            jump.displayPosition.lerp(displayTarget, 0.35);
+            jump.displayPosition.lerp(displayTarget, 1 - Math.pow(0.65, Math.max(0, dt) * 60));
             jump.displayPosition.y = getOverworldGroundHeight(this, jump.displayPosition) ?? this.player.position.y;
             this.playerJumpVisualHeight = jump.visualHeight || 0;
             this.renderSystem?.setCameraTarget?.(jump.displayPosition);

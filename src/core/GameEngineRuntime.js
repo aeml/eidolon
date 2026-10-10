@@ -51,8 +51,13 @@ class GameEngineRuntimeMethods {
     loop(time) {
         try {
             const seconds = time * 0.001;
+            const frameDelta = Math.max(0, seconds - this.lastTime);
+            // Flight follows elapsed time even when movement simulation drops
+            // catch-up ticks on a slow frame or a backgrounded tab.
+            this.updateRemoteJumpVisuals(frameDelta);
+            this.updatePlayerJump(frameDelta);
             // Catch-up logic: If we are too far behind (e.g. tab backgrounded), jump ahead
-            if (seconds - this.lastTime > 1.0) {
+            if (frameDelta > 1.0) {
                 console.log("GameEngine: Large lag spike detected, skipping simulation catch-up.");
                 this.lastTime = seconds;
                 this.accumulator = 0;
@@ -61,13 +66,13 @@ class GameEngineRuntimeMethods {
                 return;
             }
 
-            const dt = Math.min(seconds - this.lastTime, MAX_FRAME_SIMULATION_DELTA);
+            const dt = Math.min(frameDelta, MAX_FRAME_SIMULATION_DELTA);
             this.lastTime = seconds;
 
             this.accumulator += dt;
 
             while (this.accumulator >= this.fixedTimeStep) {
-                this.update(this.fixedTimeStep);
+                this.update(this.fixedTimeStep, false);
                 this.accumulator -= this.fixedTimeStep;
             }
 
@@ -141,7 +146,7 @@ class GameEngineRuntimeMethods {
     }
 
 
-    update(dt) {
+    update(dt, advanceJumpVisuals = true) {
         this.audioManager?.ambience?.update(worldAmbienceKey(this));
         this.casino?.beforeUpdate(dt);
         this.publicEvents?.update(dt);
@@ -405,7 +410,7 @@ class GameEngineRuntimeMethods {
         }
 
         this.activeEntitiesCache = this.chunkManager.getActiveEntities();
-        this.updateRemoteJumpVisuals(dt);
+        if (advanceJumpVisuals) this.updateRemoteJumpVisuals(dt);
         this.updateLootVisualFeedback();
         this.processAutoLoot();
 
@@ -425,7 +430,7 @@ class GameEngineRuntimeMethods {
         this.gameTime += dt;
         // Timer updated by server message
 
-        this.updatePlayerJump(dt);
+        if (advanceJumpVisuals) this.updatePlayerJump(dt);
         const playerCorrectionDisplayTarget = !this.playerJumpState ? this.updatePlayerCorrectionVisual(dt) : null;
 
         const cameraFollowTarget = this.cameraLocked
