@@ -1909,5 +1909,31 @@
     "walkingAuraError": 0,
     "inventorySHA256": "48fb22ae6afeb18e0c27f941c6d4c8fb8d6a3c98a6302de29e87cb6083b795c8",
     "publicAcceptance": false
+  },
+  "fittedRigidSurfacePilot": {
+    "source": "10098530d2bc2dbf0f939403125ef51ee6e77d5e",
+    "selected": false,
+    "public": false,
+    "defaultEnabled": false,
+    "receipt": "docs/plans/2026-10-10-fitted-rigid-surface-pilot.json",
+    "evidenceRoot": "/home/aeml/.local/share/eidolon-fitted-rigid-flat-surface-checks-20261010",
+    "inventorySHA256": "0337337871705f469ff18be1bcae53f0f867c075b9cc0583e8f7129068f6cff7",
+    "focusedPassed": 143,
+    "nativeSurfacePassed": 2,
+    "exactRGBPoseComparisons": 156,
+    "connectedLow": {
+      "drawCallsMedian": 166,
+      "trianglesMedian": 82282,
+      "sameSceneDrawsBefore": 179,
+      "sameSceneDrawsAfter": 171
+    },
+    "connectedHigh": {
+      "drawCallsMedian": 389,
+      "drawLimit": 350,
+      "passed": false,
+      "sameSceneDrawsBefore": 336,
+      "sameSceneDrawsAfter": 320
+    },
+    "remaining": "High389draw failure and historical Low202draw failure remain open. Different population/view prevents substituting Low166 sample. Actual scoped draw savings qualified; no default selection, startup/pool lifecycle or whole-game performance acceptance."
   }
 }
