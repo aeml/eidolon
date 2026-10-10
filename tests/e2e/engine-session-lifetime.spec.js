@@ -40,16 +40,23 @@ for (const quality of ['high', 'low']) test(`${quality}: three retired engines r
             await engine.player.mesh.userData.equipmentReady;
             if (engine.player.mesh.userData.equipmentVisualItemCount !== 14 || engine.player.mesh.userData.equipmentVisualMissing?.length) throw Error('Incomplete lifetime fixture equipment');
             engine.renderSystem.add(engine.player.mesh);
+            const enemy = engine.createRemotePlayer('Enemy', `lifetime-enemy-${session}`, 'Skeleton');
+            await enemy.ensureMesh(); enemy.position.set(100, 0, 0); enemy.render(1);
+            engine.remotePlayers.set(enemy.id, enemy); engine.renderSystem.add(enemy.mesh);
             const geometry = await waitForGeometryOwner(engine.renderSystem);
             engine.renderSystem.setCameraTarget(engine.player.position);
             engine.renderSystem.render();
             const render = engine.renderSystem, context = render.renderer.getContext(), instances = render.actorInstances,
-                owner = render.actorGameplayGeometry;
+                owner = render.actorGameplayGeometry, shadow = instances.shadowFilter;
+            if (!shadow || shadow.disposed || shadow.roots.size !== 1 || shadow.omitted.length) throw Error('Default shadow owner not restored');
+            const shadowBefore = { roots: shadow.roots.size, ...shadow.stats };
             const before = { ...render.renderer.info.memory };
             const minimaps = document.querySelectorAll('#minimap-hud').length;
             engine.destroy(); engine.destroy();
             await new Promise(resolve => requestAnimationFrame(resolve));
-            reports.push({ before, geometry, geometryRetired: owner.disposed && owner.pass.disposed && owner.delivery.disposed &&
+            reports.push({ before, geometry, shadowBefore, shadowRetired: shadow.disposed && shadow.view.disposed &&
+                    !shadow.roots.size && !shadow.omitted.length && !shadow.watchedGroups.length && !instances.shadowFilter,
+                geometryRetired: owner.disposed && owner.pass.disposed && owner.delivery.disposed &&
                     !owner.delivery.roots.size && !owner.delivery.jobs.size && !owner.pass.entries.size && !render.actorGameplayGeometry,
                 minimaps, retiredMinimaps: document.querySelectorAll('#minimap-hud').length,
                 retiredTooltips: document.querySelectorAll('#minimap-buff-tooltip').length,
@@ -68,6 +75,9 @@ for (const quality of ['high', 'low']) test(`${quality}: three retired engines r
     console.log('[engine-retirement]', JSON.stringify(result));
     for (const report of result) {
         expect(report.instancesRetired).toBe(true);
+        expect(report.shadowRetired).toBe(true); expect(report.shadowBefore.roots).toBe(1);
+        if (quality === 'high') expect(report.shadowBefore.omitted).toBeGreaterThan(0);
+        else expect(report.shadowBefore.omitted).toBe(0);
         expect(report.geometryRetired).toBe(true);
         expect(report.geometry.workerStarted && report.geometry.valid && report.geometry.restored).toBe(true);
         expect(report.geometry.entries).toBeGreaterThan(0);

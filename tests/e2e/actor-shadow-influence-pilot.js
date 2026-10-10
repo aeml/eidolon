@@ -1,14 +1,14 @@
-// Explicit QA selection of an otherwise unselected frame-owned policy.
+// Observe the default frame-owned policy against its bypassed shadow arm.
 export async function prepareActorShadowInfluencePilot(page) {
     return page.evaluate(async () => {
         const { ActorShadowInfluence } = await import('/src/art/ActorShadowInfluence.js');
         const render = window.game.renderSystem, instances = render.actorInstances;
         if (!instances?.enabled || window.__actorShadowInfluencePilot) throw Error('Actor shadow pilot requires one current instancing owner');
-        const previous = instances.shadowFilter, view = new ActorShadowInfluence(render.scene, [render.scene, render.entityGroup]);
-        if (previous) throw Error('Actor shadow pilot requires the ordinary null policy');
+        const view = instances.shadowFilter;
+        if (!(view instanceof ActorShadowInfluence) || view.disposed || !view.enabled) throw Error('Default shadow owner absent');
         const select = enabled => {
             if (render.actorInstances !== instances) throw Error('Actor instance generation changed during comparison');
-            instances.shadowFilter = enabled ? view : previous;
+            instances.shadowFilter = enabled ? view : null;
         };
         const restored = () => instances.hidden.length === 0 && !instances.group.visible && view.omitted.length === 0;
         const draw = enabled => {
@@ -17,8 +17,7 @@ export async function prepareActorShadowInfluencePilot(page) {
                 restored: restored(), stats: enabled ? { ...view.stats } : null };
         };
         const dispose = () => {
-            if (instances.shadowFilter === view) instances.shadowFilter = previous;
-            instances.endFrame(); view.dispose();
+            instances.shadowFilter = view; instances.endFrame();
         };
         window.__actorShadowInfluencePilot = { view, instances, dispose };
         try {

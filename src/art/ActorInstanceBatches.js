@@ -1,4 +1,5 @@
 import { isOwnedRigidSurfaceMaterial } from './RigidSurfaceBatches.js';
+import { ActorShadowInfluence } from './ActorShadowInfluence.js';
 import { DynamicDrawUsage, Group, InstancedMesh, Material, Matrix4, Object3D } from 'three';
 
 const inside = (part, ancestor, visible = false) => {
@@ -50,14 +51,14 @@ const eligible = part => candidate(part) && part.material.visible && !part.mater
 // update/input/gear/stealth logic can run. Geometry/materials remain borrowed.
 // Standard instance attributes, never per-piece GPU matrix/indirection textures.
 export class ActorInstanceBatches {
-    constructor(scene, watchedGroups = [scene]) {
+    constructor(scene, watchedGroups = [scene], { shadowInfluence = false } = {}) {
         this.scene = scene;
         this.group = new Group(); this.group.name = 'OpaqueActorInstances'; this.group.visible = false;
         scene.add(this.group);
         this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
         this.enabled = true;
         this.viewFilter = null;
-        this.shadowFilter = null;
+        this.shadowFilter = shadowInfluence ? new ActorShadowInfluence(scene, watchedGroups) : null;
         this.roots = new Map(); this.roster = []; this.buckets = new Map(); this.dirty = true;
         scene.traverse(root => this.register(root));
         this.watchedGroups = [...new Set(watchedGroups)];
@@ -177,6 +178,7 @@ export class ActorInstanceBatches {
     dispose() {
         if (this.disposed) return;
         this.disposed = true; this.endFrame();
+        this.shadowFilter?.dispose(); this.shadowFilter = null;
         if (this.scene.onBeforeRender === this.beforeHook) this.scene.onBeforeRender = this.before;
         if (this.scene.onAfterRender === this.afterHook) this.scene.onAfterRender = this.after;
         for (const group of this.watchedGroups) {

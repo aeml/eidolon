@@ -16,7 +16,7 @@ const finiteBox = box => !box.isEmpty() && [...box.min.toArray(), ...box.max.toA
 const affine = matrix => matrix.elements.every(Number.isFinite) && matrix.elements[3] === 0 &&
     matrix.elements[7] === 0 && matrix.elements[11] === 0 && matrix.elements[15] === 1;
 
-// Optional frame-owned shadow policy. Original color submissions remain intact.
+// Frame-owned shadow policy. Original color submissions remain intact.
 // Rigid leaves use their live pivot matrices. Supplied skins, morphs, custom
 // deformation and unknown lighting keep the original shadow path. The visible
 // camera's full padded light-ray volume includes raised receivers and roofs.

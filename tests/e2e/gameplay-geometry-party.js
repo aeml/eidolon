@@ -174,6 +174,9 @@ export async function captureGameplayGeometryParty(page, testInfo) {
             samples.push({ state: game.player.state, x: game.player.position.x, z: game.player.position.z,
                 animation: game.player.currentAnimationName, actionTime: game.player.currentAction?.time,
                 gear: game.player.mesh.userData.equipmentVisualItemCount, swaps: pass.lastSwaps,
+                shadowOwned: Boolean(game.renderSystem.actorInstances.shadowFilter),
+                shadowRestored: game.renderSystem.actorInstances.shadowFilter?.omitted.length === 0,
+                shadowStats: { ...game.renderSystem.actorInstances.shadowFilter?.stats },
                 restored: !pass.active.length && [...pass.entries.values()].every(entry => entry.mesh.geometry === entry.source) });
             if (samples.length < 180) request = requestAnimationFrame(frame);
         };
@@ -197,6 +200,7 @@ export async function captureGameplayGeometryParty(page, testInfo) {
     expect(motion.some(row => row.state === 'MOVING' && row.animation === 'Run' && row.swaps > 0)).toBe(true);
     expect(new Set(motion.filter(row => row.state === 'MOVING').map(row => row.actionTime)).size).toBeGreaterThan(2);
     expect(motion.every(row => row.gear === 14 && row.restored)).toBe(true);
+    expect(motion.every(row => row.shadowOwned && row.shadowRestored)).toBe(true);
     expect(frames.length).toBeGreaterThan(5);
     console.log('[gameplay-geometry-party]', JSON.stringify({ installed: preparation.installed, samples: paired.samples,
         cpu: { reference: paired.cpu.reference, candidate: paired.cpu.candidate }, movementSamples: motion.length, frames: frames.length }));

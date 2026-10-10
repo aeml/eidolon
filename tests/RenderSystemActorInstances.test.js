@@ -18,7 +18,10 @@ function fixture() {
 test('verified batching is enabled by default and cannot be reactivated after retirement', () => {
     const render = new RenderSystem(false);
     expect(render.actorInstances).not.toBeNull(); expect(render.actorInstances.enabled).toBe(true);
+    const shadow = render.actorInstances.shadowFilter;
+    expect(shadow).not.toBeNull(); expect(shadow.enabled).toBe(true);
     render.dispose();
+    expect(shadow.disposed).toBe(true); expect(shadow.roots.size).toBe(0); expect(shadow.omitted).toHaveLength(0);
     render.setActorInstancesEnabled(true); expect(render.actorInstances).toBeNull();
 });
 
