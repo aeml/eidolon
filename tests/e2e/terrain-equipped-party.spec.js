@@ -7,6 +7,7 @@ import { prepareShadowGeometryPilot, selectSimplifiedShadowGeometry } from './sh
 import { prepareGameplayColorPilot } from './gameplay-color-lod-pilot.js';
 import { prepareGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
 import { prepareActorInstanceViewPilot } from './actor-instance-view-pilot.js';
+import { prepareActorShadowInfluencePilot } from './actor-shadow-influence-pilot.js';
 import { measurePartyMatrixOwners } from './party-matrix-observation.js';
 import { compareGameplayGeometryFrames } from './geometry-frame-comparison.js';
 import { captureGameplayGeometryParty } from './gameplay-geometry-party.js';
@@ -457,6 +458,19 @@ test('single native renderer observes three live equipped party socket peers on 
             expect(paired.candidate.stats.culled).toBeGreaterThan(0);
             for (const row of [paired.reference, paired.candidate, paired.referenceAgain, ...paired.cpu.blocks]) expect(row.restored).toBe(true);
             recordPeerLiveness('actor-view-prepared');
+        }
+        if (process.env.EIDOLON_E2E_ACTOR_SHADOW_INFLUENCE_PILOT === '1') {
+            const paired = await prepareActorShadowInfluencePilot(page);
+            await writeFile(testInfo.outputPath('actor-shadow-influence-party.json'), JSON.stringify({
+                scope: 'Optional conservative shadow influence with default geometry owner and ordinary supplied assets. Strict frozen RGB controls, current rigid pivots/instance matrices and real-clock ABBA submission. Selected during following motion and180-frame actual sample. No supplied skin shadow simplification, actor hiding or target change.', paired
+            }, null, 2));
+            expect(paired.image.changedChannels).toBe(0); expect(paired.image.unstableChannels).toBe(0);
+            expect(paired.referenceAgain.calls).toBe(paired.reference.calls);
+            expect(paired.referenceAgain.triangles).toBe(paired.reference.triangles);
+            expect(paired.candidate.calls).toBeLessThan(paired.reference.calls);
+            expect(paired.candidate.stats.omitted).toBeGreaterThan(0);
+            for (const row of [paired.reference, paired.candidate, paired.referenceAgain, ...paired.cpu.blocks]) expect(row.restored).toBe(true);
+            recordPeerLiveness('actor-shadow-influence-prepared');
         }
         if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1' || process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_DELIVERY === '1') {
             await captureGameplayGeometryParty(page, testInfo);

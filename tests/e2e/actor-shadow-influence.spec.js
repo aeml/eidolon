@@ -117,7 +117,12 @@ for (const quality of ['high', 'low']) for (const type of ['Skeleton', 'Imp']) {
             if (row.visibilityRestored !== undefined) expect(row.visibilityRestored).toBe(true);
             if (row.state === 'UnknownPointShadow') expect(row.candidate.stats.unknownShadow).toBe(true);
         }
-        expect(report.samples.some(row => row.candidate.stats.omitted > 0)).toBe(true);
+        if (quality === 'high') expect(report.samples.some(row => row.candidate.stats.omitted > 0)).toBe(true);
+        else for (const row of report.samples) {
+            expect(row.candidate.stats.omitted).toBe(0);
+            expect(row.candidate.stats.lightScanNodes).toBe(0);
+            expect(row.candidate.calls).toBe(row.source.calls);
+        }
         for (const row of report.lifetime) expect(row).toEqual(report.lifetime[0]);
         expect(report.failureRestored).toBe(true);
         expect(failures, failures.join('\n')).toEqual([]);
