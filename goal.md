@@ -153,19 +153,21 @@ and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
 Prior owned history remains byte-exact in the [archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md).
 Historical procedural-only instructions do not override supplied actors/modern ARPG.
 
-Previous goal turn: **progress**, isolated live24 real-time jump correction;
-110focused checks and3native source/published-bundle tests pass, built bundle
-15FPS1547.4ms/60FPS1522.6ms with exact endpoints. Still staged, not deployed.
-[Jump follow-up](docs/plans/2026-10-10-jump-live24-bundle.json).
+Previous goal turn: **progress**, lossless prepared-geometry compaction qualified
+and privately selected:180checks,64native controls,2published cases and actual
+High party/race/save pass.57.07%gallery59.85%party retained-buffer savings;
+final source/compact medians both16.7ms, exactp95/draw still fail. Default null.
+[Storage and frame limits](docs/plans/2026-10-10-prepared-geometry-compaction.json).
 
-Current turn: **progress**, private3207fb56 lossless prepared-geometry compaction.
-180focused checks,64exact native gallery controls/32close originals,2published
-cases and actual High party/Go-race/14slot-save pass. Retained buffers shrink
-57.07%gallery and59.85%party, ordinary-shadow output exact. Final real-frame
-ABBA source/compact both16.7ms medians; all exactp95/draw gates still fail.
-Earlier33.3ms ABBA and slower submission CPU retained; no proven FPS gain,
-peak/whole-browser memory qualification or default activation.
-[Compaction and limits](docs/plans/2026-10-10-prepared-geometry-compaction.json).
+Current turn: **progress**, private48f35293 bounded engine-entry download
+recovery. Browser proves failed entry URL stays failed without a new request;
+one distinct same-release URL recovers.89checks and5final published-login
+cases pass, rapid clicks construct once. Persistent/dependency/evaluation/export
+failures remain visible; initial wrong vendor-route fixture failure retained and
+corrected. Strict browser-failure collection and30s state deadline unchanged.
+This does not diagnose original24root/dependency cause or accept its failed CI.
+[Recovery and limits](docs/plans/2026-10-10-engine-module-recovery.json).
+[Staged real-time jump](docs/plans/2026-10-10-jump-live24-bundle.json).
 
 - Public24/922753a7 still matches normalTLS frontend/backend; DBready.
   CI38030283856 attempt1 remains failed required expiry engine-module download;
@@ -185,12 +187,13 @@ peak/whole-browser memory qualification or default activation.
   broad art/beta acceptance. Synthetic long names overlap; final screenshot
   heap380.1MB not qualified. Physical-phone/campaign feedback remains owner-deferred.
 
-Next: inspect the observed lazy engine-module failure and qualify bounded safe
-module-download recovery in an actual publication bundle, preserving failure
-history and gate strength. Continue measured rigid-shadow/default submission
-from current attribution using actual renderer light membership, avoiding the
-rejected full-scene indexes/caches. Finish remaining High/Low/close/cold-memory/
-support-device/moving-art and every original1.11–1.99 content/gameplay/story/
-Dark Realm/economy/social/casino/UI/save/security/F1–F5/CB/operations/rights/
-owner/human/beta/launch/handoff requirement. No unapproved access, commerce,
-destructive production or invented owner-policy decisions. Goal remains active.
+Next: distinguish original entry/dependency failure from retained live diagnostics;
+consider reducing unbundled lazy vendor-addon requests while preserving shared
+Three/session identities, publication/asset behavior and strict failure evidence.
+Continue measured rigid-shadow/default submission using actual light membership,
+avoiding rejected full-scene indexes/caches. Finish remaining High/Low/close/
+cold-memory/support-device/moving-art and every original1.11–1.99 content/
+gameplay/story/Dark Realm/economy/social/casino/UI/save/security/F1–F5/CB/
+operations/rights/owner/human/beta/launch/handoff requirement. No unapproved
+access, commerce, destructive production or invented owner-policy decisions.
+Goal remains active.
