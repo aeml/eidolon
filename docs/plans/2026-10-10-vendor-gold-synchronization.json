@@ -1,6 +1,6 @@
 {
   "recordedUTC": "2026-10-10T13:33:00.906022+00:00",
-  "status": "Qualified repair pushed as Alpha1.79.26; exact CI attempt1 in progress. Deployment/live assets/required live gates pending.",
+  "status": "Controlled FIFO qualification remains valid; deployed Alpha1.79.26 failed strict live sale/stash Gold checks despite fresh baselines. Original cause/repair unproven.",
   "sourceCommit": "9b252480dd8cf18a91f2d93c382d3c71e60e81f7",
   "runtimeCommit": "551dbba9676ad604fcbfd56ca5a760ae4e08e616",
   "baseCommit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
@@ -49,9 +49,9 @@
     "lint": "Focused changed files pass; initial native-file edit had a parsing error and was corrected before any connected run; no runtime failure or waived assertion."
   },
   "scope": "One optional read-only response field and test synchronization only; no vendor/stash/spending/reward/persistence algorithms changed. Existing clients with uncorrelated reads retain the old response shape. Read IDs cannot acknowledge pending exchange IDs.",
-  "limits": "Current public25 required CI remains failed. Original live preceding transaction/root cause remains unproven. A successor must pass the unchanged required live tests; no rerun/waiver. Not full roadmap/art/device/soak/beta/launch acceptance.",
+  "limits": "Exact26 live initial stash and configured retry sale checks still fail +175. Correlated fresh baselines passed. Controlled preceding-credit qualification is insufficient for the original live cause. Required later recovery/optional four-class skipped. No waiver or full-roadmap/art/device/soak/beta/launch acceptance.",
   "privacy": "Credentials only process env; native records off; actual reports sanitized before immediate archive; sanitized server copy and final plaintext/embedded ZIP scan.",
-  "next": "Wait for this exact run, inspect all required outcomes/native artifacts, and independently compare frontend/backend/database and eight prepared public asset hashes before another publication.",
+  "next": "Diagnose actual live Gold provenance/boundary with bounded controlled evidence before another publication; see public26 terminal receipt.",
   "evidence": {
     "directory": "/home/aeml/.local/share/eidolon-vendor-gold-sync-checks-20261010",
     "inventoryEntries": 34,
@@ -63,7 +63,11 @@
     "commit": "77859697a71329facd0584a95167c80eac392398",
     "run": 38056289769,
     "attempt": 1,
-    "status": "in_progress",
-    "url": "https://github.com/aeml/eidolon/actions/runs/38056289769"
+    "status": "completed",
+    "url": "https://github.com/aeml/eidolon/actions/runs/38056289769",
+    "conclusion": "failure",
+    "deployed": true,
+    "requiredCIPassed": false,
+    "releaseAccepted": false
   }
 }

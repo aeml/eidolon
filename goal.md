@@ -154,15 +154,25 @@ Normal-TLS frontend/backend/database and eight public asset hashes matched.
 Required CI38051193149 nevertheless failed exact live Gold/stash checks;
 all nine other jobs passed. Original failure/root cause remains retained.
 
-Corrective Alpha1.79.26/77859697a71329facd0584a95167c80eac392398 is pushed;
-CI38056289769 attempt1 is in progress. Qualified fresh correlated read-only
-Gold synchronization preserves exact sale/stash checks and all economy logic.
-Actual preceding242/175Gold FIFO controls now both pass native/Go-race/fresh
-login/Mongo exact balances, equipment, bag/stash metadata and custody.
-See `docs/plans/2026-10-10-vendor-gold-synchronization.json`. This establishes
-controlled repair, not the original live cause. Verify exact26 required CI,
-live identities/database/eight assets and native outcomes before another push.
-No reruns/cancels/waivers or public24/25/26product merge into held.
+Current deployed Alpha1.79.26/77859697a71329facd0584a95167c80eac392398 matches
+normal-TLS frontend/backend/database and all eight independently hashed assets.
+CI38056289769 attempt1 nevertheless completed failure: nine other jobs pass;
+live gameplay fails initial unchanged stash Gold385761→385936 and configured
+retry exact sale Gold386536→386711, both +175. Correlated fresh baselines pass,
+so the preceding242/175Gold FIFO controls do not repair the original live issue.
+Native7pass/1unexpected/1skipped; later required recovery/optional four-class
+stages skipped. See `docs/plans/2026-10-10-public26-terminal-verification.json`.
+Original economic cause remains unproven; diagnose before another publication.
+No manual reruns/cancels/waivers or public24/25/26product merge into held.
+
+Separate private world/maintenance integration14d4ea1f ordinarily merges held
+9d724663 and exact public26, retaining held art/models/render/movement bytes.
+469checks/6suites and focused Go-race checks pass; actual copied/versioned
+publication passes native60/15FPS login/startup recovery/accepted1.5s jump and
+fresh login/direct Mongo saves on explicit raised terrain. Click→landing
+1688.5/1617.9ms, endpoint errors0, exact Gold/EP/gear/bag retained. Geometry
+owner stays null. Private only; no Gold-cause, whole-High/device/art acceptance.
+See `docs/plans/2026-10-10-world-maintenance-integration.json`.
 
 Private5c5494ef shadow integration remains defaultOFF/unselected;36owner checks
 and actual connected High native/Go-race/party-save checks pass. ExactRGB0change,

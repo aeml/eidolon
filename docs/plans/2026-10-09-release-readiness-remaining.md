@@ -8,30 +8,48 @@ This register supplements the [89-milestone roadmap](2026-09-28-alpha1-11-to1-99
 It preserves carried requirements from 1.11 onward; it does not replace them
 with a smaller 1.80–1.99 objective or certify unchecked gates.
 
-The current deployed build is Alpha1.79.25, exact
-`d15a882e72603589b6dd9e75b6b98e763c2cbd79`. Normal-TLS frontend/backend,
+The current deployed build is Alpha1.79.26, exact
+`77859697a71329facd0584a95167c80eac392398`. Normal-TLS frontend/backend,
 database readiness and all eight expected public asset hashes match. The
-requested jump correction is independently verified live: one fresh ordinary
+requested jump correction was independently verified on public25 and retained: one fresh ordinary
 Fighter, real27unit Ctrl-click,1648.6ms total/1582.9ms observed flight,
 authoritative1.5s, logical/render endpoint errors0; one native pass/no retries.
 [Public jump verification and limits](2026-10-10-jump-wall-clock-public-verification.json).
 
-**The release remains unaccepted:** required CI`38051193149` attempt1 fails
+**The release remains unaccepted:** required26 CI`38056289769` attempt1 completed
+failure after nine other jobs passed. Native live gameplay fails initial stash
+Gold385761→385936 and configured retry exact sale Gold386536→386711, both +175.
+Fresh correlated baselines pass, so the controlled FIFO repair is insufficient.
+Actual report7passed/1unexpected/1skipped; required later recovery and optional
+four-class stages skipped. Exact frontend/backend/database/eight assets match.
+[Terminal26 evidence and limits](2026-10-10-public26-terminal-verification.json).
+
+Previous required25 CI`38051193149` attempt1 failed
 live Gold/stash gameplay assertions after nine other jobs succeed. The initial
 exact sale-credit check expects384489 but receives384731; the configured retry
 stash check expects384731 but receives384906. Root cause is not established.
 Required later town recovery and optional four-class live stages were skipped,
-not passed. No manual rerun, waiver or cancellation occurred. A qualified corrective26 is now pushed as described below.
+not passed. No manual rerun, waiver or cancellation occurred; the later26 failure
+does not waive this earlier result.
 The initial25`3ac476e6` server race failed before deployment; the corrected server
 passes its complete CI after retained16worker reproduction/qualification.
 
-Corrective **Alpha1.79.26/77859697** is pushed; exact CI`38056289769`
-attempt1 is in progress. The fresh correlated read-only Gold baseline repair
+Corrective **Alpha1.79.26/77859697** is deployed but failed its required gate.
+The fresh correlated read-only Gold baseline helper
 passes both real preceding242/175Gold FIFO controls with unchanged exact
 sale/stash assertions, fresh login and direct Mongo custody/metadata checks.
 [Qualified correction and limits](2026-10-10-vendor-gold-synchronization.json).
-Exact26 deployment, assets/database and required live gates remain pending;
-no successor publication until that exact release is independently verified.
+These controls remain valid within scope; they do not establish or repair the
+original live cause. Diagnose that discrepancy before a successor publication.
+
+Separate private integration **14d4ea1f** ordinarily merges held9d724663 with
+public26, preserving held art/model/render/movement bytes and default inactive
+geometry.469checks/6suites, focused wallet/ability Go-race and actual raised-world
+copied publication pass. Native60/15FPS click→landing1688.5/1617.9ms with
+accepted1.5s flight, zero endpoint error and fresh login/direct Mongo exact
+Gold/EP/equipment/bag/landing. Initial startup recovery constructs once; a
+separate fresh login intentionally constructs again. No public rollout or
+whole-High/device/art acceptance. [Integration evidence](2026-10-10-world-maintenance-integration.json).
 
 Previous24`922753a7`/CI`38030283856` failed startup and retained a Gold/stash
 flake; original causes remain unproven. Neither historical failure is waived.

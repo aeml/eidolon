@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T13:45:42.482682+00:00",
+  "recordedUTC": "2026-10-10T14:20:49.494422+00:00",
   "classification": "Alpha1.79.26/77859697 corrective Gold QA synchronization pushed; exact CI38056289769 attempt1 in progress, deployment/live assets/required live gates pending. Public25 requested1.5s jump independently verified1648.6ms; original25 Gold/stash gate failure retained.",
   "qualifiedRuntime": "Held private renderer/supplied High v3 and prepared geometry controller/delivery retained, geometry owner default null. No public24/25product merge. Public25 jump correction independently verified; required live Gold/stash gate and full original roadmap acceptance remain open.",
   "rejectedSourceCommits": [
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: new actual connected-party nameplate ownership/non-overlap proof resolves screenshot suspicion without changing product; exact26 Server/Client/all3browser jobs pass and required predeploy QA is confirmed running. No release/art/device acceptance inferred.",
+  "currentGoalTurnClassification": "progress: retained exact26 deployed identities/eight assets and terminal required Gold failure without waiver; qualified coherent private held-world/public-maintenance integration with actual raised-terrain60/15FPS native jumps and exact fresh Mongo saves. Original live Gold cause, whole-High/device/art and full-roadmap gates remain open.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1374,12 +1374,15 @@
     "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
   },
   "currentPublicVerification": {
-    "receipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json",
-    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
-    "ci": 38051193149,
-    "jumpFixVerified": true,
+    "receipt": "docs/plans/2026-10-10-public26-terminal-verification.json",
+    "commit": "77859697a71329facd0584a95167c80eac392398",
+    "ci": 38056289769,
+    "jumpFixRetained": true,
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "requiredCIPassed": false,
     "releaseAccepted": false,
-    "inventorySHA256": "1468dfa6a0cd6dbd908616d0fb7d4234c66cc6b46ae046431a885401bee8d055"
+    "inventorySHA256": "6fd711a168018cc8f722db58b485c53d0e479fbc43d1ab38654723a6ce445cc7"
   },
   "actorInstanceShadowViewPrototype": {
     "receipt": "docs/plans/2026-10-10-actor-instance-shadow-view.json",
@@ -1405,9 +1408,13 @@
     "commit": "77859697a71329facd0584a95167c80eac392398",
     "run": 38056289769,
     "attempt": 1,
-    "status": "in_progress",
+    "status": "completed",
     "url": "https://github.com/aeml/eidolon/actions/runs/38056289769",
-    "qualifiedNotReleaseAccepted": true
+    "qualifiedNotReleaseAccepted": true,
+    "conclusion": "failure",
+    "deployed": true,
+    "liveRepairEstablished": false,
+    "next": "Diagnose actual live +175 discrepancy; fresh baselines passed but strict sale/stash checks still failed."
   },
   "actorShadowConnectedCandidate": {
     "receipt": "docs/plans/2026-10-10-actor-shadow-connected-gameplay.json",
@@ -1421,5 +1428,23 @@
     "visibleLabels": 7,
     "overlappingPairs": 0,
     "productChanged": false
+  },
+  "previousPublicVerification25": {
+    "receipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json",
+    "commit": "d15a882e72603589b6dd9e75b6b98e763c2cbd79",
+    "ci": 38051193149,
+    "jumpFixVerified": true,
+    "releaseAccepted": false,
+    "inventorySHA256": "1468dfa6a0cd6dbd908616d0fb7d4234c66cc6b46ae046431a885401bee8d055"
+  },
+  "worldMaintenanceIntegration": {
+    "receipt": "docs/plans/2026-10-10-world-maintenance-integration.json",
+    "commit": "14d4ea1f2fb8a6458ddec7f907da70aa1f042dfb",
+    "qualified": true,
+    "published": false,
+    "selectedIntoHeldRuntime": false,
+    "nativePassed": 2,
+    "nativeSkipped": 0,
+    "inventorySHA256": "a94ddf920e494de01e19a00776d360f473290d3729ddfb099386f9f5f2976f20"
   }
 }
