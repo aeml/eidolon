@@ -54,7 +54,7 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 		if fixture.Class == "Cleric" {
 			fixture.SavedHotbar = []string{"Healing Light"}
 		}
-		if os.Getenv("EIDOLON_E2E_FIGHT_DUNGEON_REVIEW") == "1" {
+		if review := os.Getenv("EIDOLON_E2E_FIGHT_DUNGEON_REVIEW"); review == "1" || review == "fight" || review == "dungeon" {
 			// Explicit prepared specialization loadout; every skill is already
 			// unlocked in this fixture. Stats, health, gear and gameplay stay
 			// unchanged, and the browser must cast through normal controls.
