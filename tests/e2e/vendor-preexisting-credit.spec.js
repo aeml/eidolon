@@ -1,4 +1,3 @@
-import { stripVTControlCharacters } from 'node:util';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures, freePersistentQALootSlot, loginAndEnterWorld } from './helpers.js';
 import { storePersistentQALootSpare } from './persistent-qa-stash.js';
@@ -6,11 +5,12 @@ import { storePersistentQALootSpare } from './persistent-qa-stash.js';
 test.use({ trace: 'off', screenshot: 'off', video: 'off' });
 
 for (const [index, action] of ['sale', 'stash'].entries()) {
-    test(`retains the ${action} failure when a preceding real sale is unobserved`, async ({ page, baseURL }, testInfo) => {
+    test(`synchronizes the ${action} baseline after a preceding real sale`, async ({ page, baseURL }, testInfo) => {
         test.skip(process.env.EIDOLON_E2E_VENDOR_PREEXISTING_CREDIT !== '1', 'Explicit disposable fixture only');
         const credentials = JSON.parse(process.env.EIDOLON_E2E_VENDOR_STASH_ACCOUNTS)[index];
         let holding = false, priorAcknowledged = false, released = false, saleCommands = 0;
-        const pending = [];
+        const pending = [], walletSnapshots = [];
+        let walletCommands = 0;
         await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
             const server = socket.connectToServer();
             socket.onMessage(message => {
@@ -19,14 +19,18 @@ for (const [index, action] of ['sale', 'stash'].entries()) {
                     saleCommands++;
                     if (command.payload.itemId === 'prior-sale') holding = true;
                 }
+                if (command.type === 'get_ep_wallet') walletCommands++;
                 server.send(message);
-                if (holding && ((action === 'sale' && command.type === 'sell' && command.payload.itemId === 'current-sale') ||
-                    (action === 'stash' && command.type === 'stash_deposit'))) {
+                if (holding && command.type === 'get_ep_wallet') {
                     holding = false; released = true;
                     for (const queued of pending.splice(0)) socket.send(queued);
                 }
             });
             server.onMessage(message => {
+                if (typeof message === 'string') {
+                    const reply = JSON.parse(message);
+                    if (reply.type === 'ep_wallet_result') walletSnapshots.push({ readID: reply.payload.readID, gold: reply.payload.gold, ep: reply.payload.ep });
+                }
                 if (holding) {
                     pending.push(message);
                     if (typeof message === 'string') {
@@ -55,35 +59,28 @@ for (const [index, action] of ['sale', 'stash'].entries()) {
             await expect.poll(() => priorAcknowledged, { timeout: 10_000 }).toBe(true);
             expect((await read()).gold).toBe(1000);
         };
-        let failure;
-        try {
-            if (action === 'sale') {
-                await startPriorSale();
-                await freePersistentQALootSlot(page);
-            } else {
-                // Let ordinary recall/walking/opening finish first. Delay the
-                // preceding sale immediately before the helper's real snapshot.
-                // Actual server packets stay FIFO; no balance or item is edited.
-                const proxy = new Proxy(page, { get(target, property) {
-                    if (property !== 'evaluate') {
-                        const value = Reflect.get(target, property);
-                        return typeof value === 'function' ? value.bind(target) : value;
-                    }
-                    return async (fn, arg) => {
-                        if (!saleCommands && String(fn).includes('player.equipment') && String(fn).includes('player.stash') && String(fn).includes('player.gold')) await startPriorSale();
-                        return page.evaluate(fn, arg);
-                    };
-                } });
-                await storePersistentQALootSpare(proxy);
-            }
-        } catch (error) { failure = stripVTControlCharacters(error.message); }
-        await testInfo.attach('observed-helper-outcome', { body: JSON.stringify({ action, failure, released, saleCommands, priorAcknowledged }), contentType: 'application/json' });
+        if (action === 'sale') {
+            await startPriorSale();
+            await freePersistentQALootSlot(page);
+        } else {
+            // Finish actual recall/walking/opening first, then schedule the
+            // preceding real sale immediately before the correlated read.
+            const proxy = new Proxy(page, { get(target, property) {
+                if (property !== 'evaluate') {
+                    const value = Reflect.get(target, property);
+                    return typeof value === 'function' ? value.bind(target) : value;
+                }
+                return async (fn, arg) => {
+                    if (!saleCommands && String(fn).includes('get_ep_wallet')) await startPriorSale();
+                    return page.evaluate(fn, arg);
+                };
+            } });
+            await storePersistentQALootSpare(proxy);
+        }
         expect(released).toBe(true);
         expect(saleCommands).toBe(action === 'sale' ? 2 : 1);
-        expect(failure).toBeTruthy();
-        expect(failure).toContain(action === 'sale' ? 'The exact vendor Gold credit' : 'toBe(expected)');
-        expect(failure).toContain(action === 'sale' ? 'Expected: 1175' : 'Expected: 1000');
-        expect(failure).toContain(action === 'sale' ? 'Received: 1417' : 'Received: 1175');
+        expect(walletCommands).toBe(1);
+        expect(walletSnapshots).toEqual([{ readID: expect.any(String), gold: action === 'sale' ? 1242 : 1175, ep: 43 }]);
         await expect.poll(() => page.evaluate(() => window.game.player.inventory.some(item => item?.id === 'prior-sale'))).toBe(false);
         const after = await read();
         expect(after.gold).toBe(action === 'sale' ? 1417 : 1175);
@@ -92,7 +89,7 @@ for (const [index, action] of ['sale', 'stash'].entries()) {
         expect(failures, failures.join('\n')).toEqual([]);
         await testInfo.attach('preexisting-credit-counterexample', { body: JSON.stringify({ action, saleCommands,
             priorCredit: action === 'sale' ? 242 : 175, staleGold: 1000, finalGold: after.gold,
-            originalHelperFailure: failure, freshLoginExact: true,
-            scope: 'Controlled preceding real vendor transaction with FIFO delayed delivery and retained earned loot. Does not establish the cause of the original live failure.' }), contentType: 'application/json' });
+            correlatedBaselineGold: walletSnapshots[0].gold, walletCommands, freshLoginExact: true,
+            scope: 'A correlated read synchronizes prior real vendor credits before unchanged exact sale/stash assertions. FIFO delivery, retained earned loot and fresh-login preservation. Original live root cause remains unproven.' }), contentType: 'application/json' });
     });
 }

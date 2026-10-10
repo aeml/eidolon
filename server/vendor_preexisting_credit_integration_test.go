@@ -15,7 +15,7 @@ import (
 	"eidolon-server/internal/game"
 )
 
-func TestVendorStashPreexistingCreditCounterexamples(t *testing.T) {
+func TestVendorStashCorrelatedWalletBaseline(t *testing.T) {
 	repo, uri, binary := resourceJournalIntegration(t)
 	node, evidence := os.Getenv("EIDOLON_VENDOR_BROWSER_NODE"), os.Getenv("EIDOLON_VENDOR_BROWSER_EVIDENCE")
 	if !filepath.IsAbs(node) || !filepath.IsAbs(evidence) {
@@ -71,7 +71,7 @@ func TestVendorStashPreexistingCreditCounterexamples(t *testing.T) {
 		if selected != "sale" && selected != "stash" {
 			t.Fatal("unknown counterexample case")
 		}
-		cmd.Args = append(cmd.Args, "--grep", "retains the "+selected+" failure")
+		cmd.Args = append(cmd.Args, "--grep", "synchronizes the "+selected+" baseline")
 	}
 	cmd.Dir = root
 	cmd.Env = append(os.Environ(), "EIDOLON_E2E_VENDOR_PREEXISTING_CREDIT=1", "EIDOLON_E2E_VENDOR_STASH_ACCOUNTS="+string(encoded),
@@ -110,6 +110,20 @@ func TestVendorStashPreexistingCreditCounterexamples(t *testing.T) {
 		if err != nil || saved == nil || saved.Gold != wantGold || saved.EP != 43 || !saved.LastLogout.After(started) || !reflect.DeepEqual(saved.Equipment, fixture.Equipment) || len(saved.Buyback) != 0 || len(saved.PendingBossLoot) != 0 {
 			t.Fatal("counterexample changed exact independent Gold credit, EP, equipment or retained-loot custody", err)
 		}
+		var pending game.Item
+		if err := json.Unmarshal([]byte(fixture.PendingBossLoot[0]), &pending); err != nil {
+			t.Fatal(err)
+		}
+		wantInventory := append([]database.Item{}, fixture.Inventory[:23]...)
+		wantStash := append([]database.Item{}, fixture.Stash...)
+		if index == 1 {
+			wantInventory = append([]database.Item{}, fixture.Inventory[1:24]...)
+			wantStash = append(wantStash, fixture.Inventory[0])
+		}
+		wantInventory = append(wantInventory, databaseItem(pending))
+		if !reflect.DeepEqual(saved.Inventory, wantInventory) || !reflect.DeepEqual(saved.Stash, wantStash) {
+			t.Fatal("exact bag/stash placement or retained metadata changed")
+		}
 		all := append(append([]database.Item{}, saved.Inventory...), saved.Stash...)
 		seen := make(map[string]database.Item)
 		for _, item := range all {
@@ -136,5 +150,5 @@ func TestVendorStashPreexistingCreditCounterexamples(t *testing.T) {
 		}
 	}
 
-	t.Log("real preexisting-credit counterexamples and exact fresh-login saves verified")
+	t.Log("real correlated wallet baselines and exact fresh-login saves verified")
 }
