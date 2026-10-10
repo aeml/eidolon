@@ -153,13 +153,15 @@ and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
 Prior owned history is preserved byte-exact in [the archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md);
 its procedural-only instructions do not override supplied-model/modern-ARPG requirements.
 
-Previous goal turn: **progress**, staged11be4c67automatic delivery with145checks,
-32native controls and actualHigh/Low moving/save evidence. This turn: **progress**,
-privatef63a8627renderer/group/reset/disposal ownership and immutable publication,
-release-keyed cache/offline execution,150checks,32native controls/16exact close,
-actualHighLowreplacement/pool reuse, and actualHigh moving/save plus an unallocated
-180frame reference. The default owner stays null; no public activation.
-[Current integration and limits](docs/plans/2026-10-10-gameplay-geometry-runtime-owner.json).
+Previous goal turn: **progress**, privatef63a8627scene ownership/publication,
+150checks, native offline/pool/control and actualHigh/fully absent evidence.
+This turn: **progress**, owner-directed private45ef4111real-time jump flight
+under low FPS. Old15FPS loop advances only1second of flight over2real seconds;
+86focused checks and native supplied Fighter15FPS1.5478s/60FPS1.5245s pass,
+with exact simulation/rendered endpoints. Not deployed. Original full scope,
+public/Gold/soak failures and disabled geometry default remain unchanged.
+[Jump timing and limits](docs/plans/2026-10-10-jump-wall-clock.json).
+[Geometry integration and limits](docs/plans/2026-10-10-gameplay-geometry-runtime-owner.json).
 
 - Public24/922753a7 still matches normalTLS frontend/backend/bundle,DBready.
   CI38030283856 attempt1 remains failed required expiry engine-module download;
@@ -168,7 +170,8 @@ actualHighLowreplacement/pool reuse, and actualHigh moving/save plus an unalloca
   the original failure. No rerun, successor push, waiver or24merge occurred.
   [Startup/Gold evidence](docs/plans/2026-10-10-live-failure-diagnostics.json).
 - Accepted23jump caps client/server flight at1.5s; bounded actualCtrlclick1.641s
-  includes display overhead.24jump source is unchanged; this turn did not edit it.
+  includes display overhead.24jump source is unchanged. New private wall-clock
+  correction removes simulation-cap slowdown; actual owner-device cause unconfirmed.
 - Geometry owner now follows bounded scene/entity-group events, not per-frame
   roster scans or scenery/bone listeners. Reset/untrack/dispose releases owned
   candidates/pending jobs; old roots cannot receive late results. High→Lowmodel

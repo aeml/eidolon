@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T09:22:13.024220+00:00",
-  "classification": "Private explicit renderer/scene owner and immutable worker publication/cache integrated f63a8627 with150checks, copied-bundle/offline and32native controls/16exact close, real HighLow replacement/pool and actualHigh movement/save. Default remains null. Fully unallocated180frame reference and installed window both33.3median; High/close/default-policy/device/art unqualified. Public24stillfailed/unaccepted; fullgoal preserved.",
+  "recordedUTC": "2026-10-10T09:35:03.645272+00:00",
+  "classification": "progress: user-directed private45ef4111 real-time jump flight under low FPS; old15FPS loop regression demonstrated,86checks and first-attempt native15FPS1547.8ms/60FPS1524.5ms endpoint-exact. Not deployed; original live/Gold/soak and full-goal gaps retained.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3selection retained; prepared geometry controller/delivery now statically reachable through an explicit RenderSystem setter, default owner null. Immutable worker built from copied publication sources with exact version cache and MIT notice. No public activation or24merge. Public24transform deployed but original required startup/Gold and failed24hsoak remain unresolved.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -99,9 +99,9 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-gameplay-geometry-runtime-owner.json",
+  "currentReceipt": "docs/plans/2026-10-10-jump-wall-clock.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: staged11be4c67 exact-source worker delivery,145focused checks,32native controls and actualHigh/Low moving/save evidence.",
+  "previousGoalTurnClassification": "progress: f63a8627 explicit scene owner/immutable worker publication,150focused checks, native offline/32controls/pool replacement and actualHigh/fully absent evidence; default disabled and timing failures retained.",
   "nextAction": "Keep default staged policy disabled and preserve original24startup/Gold/soak failures. Profile current High CPU costs with absent/installed controls; finish no-optional-pilot default renderer and High/close/default HighLow, cold delivery/memory/support-device/moving-art qualification. Preserve supplied assets/detail and every original1.11\u20131.99/gameplay/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirement. No unchanged campaign/soak, waiver, successor push or24merge.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: prepared render-owned supplied body/gear lifecycle;123focused checks,64native pose/zoom controls including32exact close views and actual High/Low moving-HUD four-class/race/save checks. Kept runtime activation off and preserved High/close/source-delivery gaps.",
+  "currentGoalTurnClassification": "progress: user-directed private45ef4111 real-time jump flight under low FPS; old15FPS loop regression demonstrated,86checks and first-attempt native15FPS1547.8ms/60FPS1524.5ms endpoint-exact. Not deployed; original live/Gold/soak and full-goal gaps retained.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1244,5 +1244,32 @@
     "highWholeFrameStillFails": true,
     "closeSourceGeometryStillOverTargets": true,
     "noPilotDefaultAndLowOwnerDeviceArtQualificationMissing": true
+  },
+  "jumpWallClock": {
+    "sourceCommit": "45ef41113ef0fa12b5e6bb5664430aca846f5683",
+    "status": "Implemented and locally verified private jump timing correction; not published.",
+    "receipt": "docs/plans/2026-10-10-jump-wall-clock.json",
+    "inventorySHA256": "bc703d5f672264ba270f23655688ddc3b5a4986cbdb63e34d080c38cd87e9991",
+    "native": {
+      "samples": [
+        {
+          "fps": 15,
+          "frames": 23,
+          "elapsedMs": 1547.7999999821186,
+          "maxFrameGapMs": 68,
+          "positionError": 0,
+          "renderError": 0
+        },
+        {
+          "fps": 60,
+          "frames": 90,
+          "elapsedMs": 1524.5,
+          "maxFrameGapMs": 31.699999994039445,
+          "positionError": 0,
+          "renderError": 0
+        }
+      ],
+      "errors": []
+    }
   }
 }
