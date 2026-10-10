@@ -1,0 +1,90 @@
+{
+  "recordedUTC": "2026-10-10T12:13:11.876878+00:00",
+  "sourceCommit": "6fb97aeb83fd31f21c234e0347258bc6158af599",
+  "baseCommit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+  "status": "Corrected candidate qualified locally; not pushed or deployed yet.",
+  "firstCI": {
+    "run": 38050260227,
+    "commit": "3ac476e63beba25829fb9cab981ac908bf5b5929",
+    "failure": "Server Tests, TestDungeonRoomRewardActualPartyClearCrashAndRecovery, phase738 owned server DATA RACE. CI retained no stack; original specific conflict cannot be proven identical."
+  },
+  "reproduction": {
+    "ordinary2Workers": "pass33.24s; not failure waiver",
+    "parallel16Workers": "fails31.42s; complete local stack retained",
+    "conflict": "PerformAbility ability_dispatch.go:210 writes player.State while frame worker updateEntity world_update_entity.go:890 reads it. World.Mu does not exclude parallel workers, which release it and use Entity.Mu.",
+    "unitBaseline": "New concurrent realtime/ability unit passed baseline6.152s; it is additional regression coverage, not the failing counterexample."
+  },
+  "fix": "One per-world mutex acquired before World.Mu serializes complete ability dispatch with realtime frames. Existing source/target actor-lock boundaries remain unchanged, avoiding self/Whirlwind/impact reentrant actor locks. Parallel entity workers remain parallel within each frame. No timing/cooldown/range/reward/authority/assertion reductions.",
+  "checks": {
+    "focusedGoRace": "Ability/combat/Whirlwind/four classes/room/jump scope pass52.240s",
+    "dispatchGoRace": "TestPerformAbility* pass2.414s",
+    "actualHighConcurrency": "GOMAXPROCS16: real dungeon party clear/crash/recovery29.73s and maintenance browser/Go/Mongo45.51s pass; package76.302s",
+    "native": "2pass41.5s, no retries or skips, recordings off; ordinary and interrupted-entry actual publication login, real jump input, fresh login and exact saves",
+    "lint": "Scoped JS ESLint and diff check pass"
+  },
+  "samples": [
+    {
+      "fpsCap": 60,
+      "clickToLandingMs": 1829.800000011921,
+      "serverDuration": 1.5,
+      "distance": 26.966157155164755,
+      "positionError": 0,
+      "renderError": 0,
+      "frameGapMinMs": 16.80000000000109,
+      "frameGapMedianMs": 33.400000000001455,
+      "frameGapMaxMs": 216.60000000000036,
+      "restored": true,
+      "freshLoginPositionExact": true,
+      "requests": [
+        "?release=6fb97aeb83fd31f21c234e0347258bc6158af599"
+      ],
+      "controlledFaults": []
+    },
+    {
+      "fpsCap": 15,
+      "clickToLandingMs": 1651.300000011921,
+      "serverDuration": 1.5,
+      "distance": 26.966157155164755,
+      "positionError": 0,
+      "renderError": 0,
+      "frameGapMinMs": 66.5,
+      "frameGapMedianMs": 66.69999999999891,
+      "frameGapMaxMs": 150.0,
+      "restored": true,
+      "freshLoginPositionExact": true,
+      "requests": [
+        "?release=6fb97aeb83fd31f21c234e0347258bc6158af599",
+        "?startupRetry=1&release=6fb97aeb83fd31f21c234e0347258bc6158af599"
+      ],
+      "controlledFaults": [
+        "requestfailed: GET http://127.0.0.1:4194/src/core/GameEngine.bundle.js?release=6fb97aeb83fd31f21c234e0347258bc6158af599 (net::ERR_CONNECTION_CLOSED)",
+        "console: Failed to load resource: net::ERR_CONNECTION_CLOSED [http://127.0.0.1:4194/src/core/GameEngine.bundle.js?release=6fb97aeb83fd31f21c234e0347258bc6158af599:0]"
+      ]
+    }
+  ],
+  "raceAudit": {
+    "observed": {
+      "serverLogs": 3,
+      "raceReports": 0
+    },
+    "parallel-workers": {
+      "serverLogs": 3,
+      "raceReports": 1
+    },
+    "qualified": {
+      "serverLogs": 4,
+      "raceReports": 0
+    }
+  },
+  "sourcePins": {
+    "server/internal/game/world.go": "d7ef452821df2b44cb7a25fe5de81c9d967084454920cc063439ef35deecf4db",
+    "server/internal/game/ability_dispatch.go": "dfef4a10c150d6299a3ed90eb8859f1e18fdc7be37805f37dbc4007899350603",
+    "server/internal/game/world_update.go": "ca72b432a0874b4e8f52ff8203f08017d7f858f4ee65be584947051346a9e86d",
+    "server/internal/game/ability_frame_race_test.go": "df9aeede206748297e4015d72ff5e09d20180f5094342ac87fe1e6228cec6c82",
+    "tests/e2e/maintenance-connected-publication.spec.js": "8e011a6df7440c6ede7b050f3a4aab87ea8fcb1f91ffa59d009cc8b247caf954"
+  },
+  "limits": "High-concurrency actual four-player dungeon/save proof and bounded ability/jump checks; no100player/24h/device/performance/final-art acceptance. Flight remains1.5s; input/network/frame display delay remains outside authoritative duration. Original24failedCI and startup/Gold causes retained; successor must pass own unchanged release gates.",
+  "evidence": "/home/aeml/.local/share/eidolon-room-race-checks-20261010",
+  "inventoryFiles": 38,
+  "inventorySHA256": "ad4e5c1c733d14928afb6289db3d1cfe3dcb0d056fb0f55476340e7b856b3121"
+}

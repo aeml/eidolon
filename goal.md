@@ -158,3 +158,10 @@ Public24 deployment identities/readiness match, but CI38030283856 remains failed
 A corrective successor must pass its own required live gates; original failed
 evidence and unknown root/dependency cause are retained. No raised/geometry/body
 pilots selected. Full original roadmap and final acceptance remain active.
+
+The initial25CI38050260227 hit an ability/frame data race before deployment.
+Local16worker room recovery reproduces a State access conflict;6fb97aeb
+serializes full casts and realtime frames while preserving actor-lock boundaries.
+Focused Go-race checks and real16worker dungeon recovery plus both connected
+login/jump/save cases now pass. No first-run retry or failure waiver.
+See `docs/plans/2026-10-10-ability-frame-serialization.json`.
