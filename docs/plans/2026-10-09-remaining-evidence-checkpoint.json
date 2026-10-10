@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T04:41:51.447332+00:00",
-  "classification": "24-hour run37880032315 completed failure: seven read errors, only20.2538minutes common100-client coverage; server-side closure cause unknown. Prospective bounded aggregate closure diagnostics are staged privately; no repair, replacement soak or long-session acceptance. High frame-time and the full inherited roadmap remain open.",
+  "recordedUTC": "2026-10-10T05:24:38.209712+00:00",
+  "classification": "High equipped-party attribution retained: geometry passes,33.4median/66.6p95ms frames fail. Three private container invalidation divergences repaired/qualified with63focused and8exact native controls; new whole-party performance not certified. Owner-requested1.5s jump source2e519bb0/Alpha1.79.23 published with CI38026431419 still pending terminal/live acceptance. Full inherited scope remains open; prior24-hour soak remains failed.",
   "qualifiedRuntime": "Qualified6fbffd34 rendering implementation plus current selected supplied High morph-basis bodies at four immutable v3paths. All prior v2/originalHigh/Low/source assets retained. Public/server/package version/profile/access unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -95,10 +95,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json",
+  "currentReceipt": "docs/plans/2026-10-10-high-frame-attribution.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "Progress:d026ba63 retained unselected actor view/incoming-shadow pilot;91focused/70strict native/HighLow race-save checks passed with unchanged budget failures and desktop-only Low qualification.",
-  "nextAction": "Investigate the failed soak using concrete bounded closure evidence when available; no unchanged long run restart or relaxed acceptance. Resume measured High scene CPU attribution and complete invalidation before optimization, preserving actors/foliage/geometry/material/rig/blink/equipment and incoming shadows. Compact bake/coverage/continuous zoom/hysteresis/active equip-pool-reconnect-respawn/cold-offline-returning cache, actual targeting/contact/combat/moving art, whole High/Low/support-device and full inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff remain required. No narrower completion or public microrelease.",
+  "previousGoalTurnClassification": "Progress: bounded High attribution and private matrix correctness repair94ecf926; jump fix separately published2e519bb0. No whole-frame gain or long-session acceptance.",
+  "nextAction": "Finish exact jump2e519bb0 CI/live/assets/readiness acceptance, then merge accepted public source normally into held milestone. Continue actual equipped-party High scene/bounds/shadow/light-scan and repaired matrix costs with explicit invalidation, original budgets and recorded host conditions. Keep failed soak open; no unchanged replacement run or failure waiver. Preserve supplied actors/gear/foliage/rig/blink/material/geometry, compact bake/coverage/zoom/lifecycle/cache/device/moving art and all inherited1.11\u20131.99/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -783,5 +783,90 @@
     "inventorySHA256": "95bf96eaf5cfc9d336ef7a150486e51b6654d41f7d85ae56d8ee10b25c4d12f7",
     "longSoakAcceptance": "FAIL; underlying closure cause unknown",
     "scope": "Private prospective diagnostics. Current server candidate still needs coherent exact deployed/live/session qualification."
+  },
+  "highFrameAttribution": {
+    "baseCommit": "01787bbb542a55e70c823f274ac80882901bb72c",
+    "method": "Exact existing connected-party-observer scenario with one native hardware renderer and three normal equipped/socket peers; ordinary180frame sample followed by3s CPU sampling. Existing shadow, gameplay color/collar/body, terrain-body-selection and actor-instance-view pilots enabled explicitly. No source edits during measurement. Server race binary and disposable Mongo fixture. Four-browser mode not run.",
+    "ordinaryFrame": {
+      "quality": "high",
+      "label": "single-renderer-equipped-raised-party-high",
+      "frames": 180,
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "viewport": {
+        "width": 1280,
+        "height": 844,
+        "pixelRatio": 1
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "visibility": "visible",
+      "frameMedianMs": 33.40000000000873,
+      "frameP95Ms": 66.60000000000582,
+      "frameP99Ms": 66.70000000001164,
+      "framesOver33ms": 118,
+      "cpuLoopMedianMs": 37,
+      "cpuLoopP95Ms": 56,
+      "drawCallsMedian": 300,
+      "trianglesMedian": 166785,
+      "geometries": 489,
+      "textures": 303,
+      "activeEntities": 35,
+      "previewFramesDuringSample": 0,
+      "previewGeometries": 0,
+      "previewTextures": 0
+    },
+    "gate": {
+      "highDrawLimit": 350,
+      "highTriangleLimit": 250000,
+      "frameMedianLimitMs": 20,
+      "frameP95LimitMs": 33.4,
+      "geometryPassed": true,
+      "framePassed": false
+    },
+    "foliage": {
+      "frames": 68,
+      "visits": 162248,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    },
+    "hostAtStart": {
+      "loadAverage": [
+        33.9072265625,
+        34.73681640625,
+        31.18896484375
+      ],
+      "cpuCount": 16,
+      "baseCommit": "01787bbb542a55e70c823f274ac80882901bb72c",
+      "scope": "post-timing3s CPU attribution; no timing acceptance inferred from profiler overhead"
+    },
+    "interpretation": "Scene projection, bounds/frustum checks, shadow traversal and matrices remain significant sampled costs. ActorInstanceView scans4553visible nodes for current casting lights; traverseVisible under its beginFrame accounts for80926sample-weighted microseconds. This identifies work to investigate, not an established repair or safe cache invalidation design. The same-scene paired image control is exact; live populations differ from prior runs, so no cross-run gain claim.",
+    "evidence": "/home/aeml/.local/share/eidolon-high-frame-attribution-checks-20261010",
+    "frozenArtifacts": 24,
+    "inventorySHA256": "69fafdf7c765ea96007b7137b4b9212429194b6c444c3b218288d4474f8e4849",
+    "qualification": "Single current High/native renderer/three live equipped socket peers. CPU profile is3s after ordinary180frame sample, with diagnostic wrapper overhead and substantial shared-host load. Sample-weighted elapsed durations, not hardware CPU exclusive time. Same-scene image/control valid; no cross-run/device/long-session/art or root-cause certificate.",
+    "receipt": "docs/plans/2026-10-10-high-frame-attribution.json"
+  },
+  "localMatrixInvalidation": {
+    "receipt": "docs/plans/2026-10-10-local-matrix-invalidation.json",
+    "sourceCommit": "94ecf926",
+    "checks": {
+      "focused": "63 passed in1.475s across UnchangedLocalMatrix, FoliageShadowInfluence, ActorInstanceView; scoped ESLint and whitespace passed. Earlier61-check pass retained before explicit manual-world controls.",
+      "native": "Final native Chrome AMD ANGLE Vulkan RADV RENOIR: eight stages of manual-to-auto, direct-world-write and restore-world-auto exact color/shadow comparisons; zero changed/unstable RGBA channels and exact world matrices. One test2.6s/total4.8s. Earlier native8-control pass retained before manual-world refinement. Opt-in EIDOLON_E2E_MATRIX_INVALIDATION route; standard CI skips it.",
+      "ownedCleanup": "Port4196 free and zero matching fixture workers at final collection."
+    },
+    "inventorySHA256": "dcca50150f221d25c6eb3a82eef0ef9b59e3bd5fa188d2f4409ea9d5d12cdb40",
+    "extraComparisonCopyCost": "unmeasured",
+    "wholeEquippedPartyFrames": "not rerun after repair",
+    "publicActivation": false
+  },
+  "jumpSpeedRelease": {
+    "sourceCommit": "2e519bb07fc9eaf2c8afa87b24f2bbb7521a50e9",
+    "version": "Alpha1.79.23",
+    "run": 38026431419,
+    "attempt": 1,
+    "status": "published; terminal CI/live/public identity and six-hash acceptance pending",
+    "nativeElapsedMs": 1641,
+    "acceptedJumpSeconds": 1.5,
+    "privateRenderTerrainDiagnosticPilotsExcluded": true
   }
 }
