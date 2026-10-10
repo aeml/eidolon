@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T09:52:29.822493+00:00",
+  "recordedUTC": "2026-10-10T10:35:26.551645+00:00",
   "classification": "progress: default-submission current High attribution, two actual four-class/race/save/native moving runs with fully absent/installed windows,7QA checks,90RAF restored owner-boundary matrix measurement;3478product inputs byte-exact, High frame/draw failures retained. No activation or publication.",
   "qualifiedRuntime": "Private qualified renderer and supplied High v3selection retained; prepared geometry controller/delivery now statically reachable through an explicit RenderSystem setter, default owner null. Immutable worker built from copied publication sources with exact version cache and MIT notice. No public activation or24merge. Public24transform deployed but original required startup/Gold and failed24hsoak remain unresolved.",
   "rejectedSourceCommits": [
@@ -99,10 +99,10 @@
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
   "nextRequiredResult": "Finish actual whole-game equipped-party/native/support-device budgets and convincing moving equipped/HUD world/contact/combat quality. Native technical equivalence or isolated CPU gain does not establish modern-art, F1\u2013F5, beta or launch acceptance.",
-  "currentReceipt": "docs/plans/2026-10-10-high-current-default-attribution.json",
+  "currentReceipt": "docs/plans/2026-10-10-jump-live24-bundle.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
-  "previousGoalTurnClassification": "progress: user-directed private45ef4111 real-time jump flight under low FPS; old15FPS loop regression demonstrated,86checks and first-attempt native15FPS1547.8ms/60FPS1524.5ms endpoint-exact. Not deployed; original live/Gold/soak and full-goal gaps retained.",
-  "nextAction": "Keep geometry default null. Run same-source real-frame source-controller-bypass/installed ABBA with cache allocated to isolate geometry frame costs; inspect rigid instance shadow/camera submission with exact render controls, guided by new current High default attribution. Finish High/close/default HighLow, cold delivery/memory/support-device/moving-art qualification and every full1.11\u20131.99/gameplay/Q/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff gate. Preserve original startup/Gold/soak failures and staged jump fix; no unchanged campaigns, policy waiver, successor push or24merge.",
+  "previousGoalTurnClassification": "progress: default-submission current High attribution, two actual four-class/race/save/native moving runs with fully absent/installed windows,7QA checks,90RAF restored owner-boundary matrix measurement;3478product inputs byte-exact, High frame/draw failures retained. No activation or publication.",
+  "nextAction": "Keep jump correction staged until retained live startup/Gold release findings are resolved; no blind rerun, successor push or24merge. Continue final prepared-geometry qualification on exact3207fb56 then decide selection using retained storage/native equivalence and unchanged High frame failures. Preserve geometry default null and all full1.11\u20131.99/gameplay/modernart/CB/F1\u2013F5/operations/rights/owner/human/beta/launch/handoff requirements.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-body-morph-selection.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1064,7 +1064,7 @@
     "originalGoalIsExactNewPrefix": true,
     "scope": "Restore explicit full user goal as owned goal prefix; preserve2911line historical execution record without treating superseded procedural-art instructions as current."
   },
-  "currentGoalTurnClassification": "progress: default-submission current High attribution, two actual four-class/race/save/native moving runs with fully absent/installed windows,7QA checks,90RAF restored owner-boundary matrix measurement;3478product inputs byte-exact, High frame/draw failures retained. No activation or publication.",
+  "currentGoalTurnClassification": "progress: owner jump timing correction isolated against live24;110focused checks and3native source/published-bundle tests pass. Built bundle15FPS1547.4ms/60FPS1522.6ms with exact endpoints. Still private, failed release gate preserved.",
   "actorCellTranslationPrototype": {
     "selected": false,
     "receipt": "docs/plans/2026-10-10-actor-cell-translation-unselected.json",
@@ -1287,5 +1287,16 @@
       "secondInstalledP95Ms": 33.400000000001455,
       "secondInstalledDraws": 454
     }
+  },
+  "jumpLive24Bundle": {
+    "sourceCommit": "c7937f1737c3be5650340cb70c25b5fac006ba32",
+    "receipt": "docs/plans/2026-10-10-jump-live24-bundle.json",
+    "inventorySHA256": "2894fe795d1d2a1ae35b97d7e50f073630d02edf4ccfa76feadd9576bdfcb888",
+    "status": "Isolated live24-based jump correction implemented and verified locally; not deployed."
+  },
+  "preparedGeometryPending": {
+    "worktree": "/home/aeml/.local/share/eidolon-geometry-frame-abba-20261010",
+    "sourceCommit": "3207fb568df0a754ff1e71efa8d82734a4b9d81d",
+    "status": "Unmerged prototype. Final180checks and64-control gallery passed; gallery archived. Final published/actualHigh checks still pending after interleaved-view product fix. Earlier actualHighABBA had33.3ms medians, no FPS gain. Retain all earlier evidence; do not relabel as final or merge until qualified."
   }
 }
