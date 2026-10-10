@@ -206,6 +206,9 @@ class GameEngineMovementMethods {
         const takeoffRotation = this.player.mesh?.quaternion?.clone?.();
         const takeoffOffset = this.player.mesh?.position?.clone?.().sub(start) || new THREE.Vector3();
         takeoffOffset.y = 0;
+        // This jump now owns the displayed path. Replaying an older walking
+        // correction after landing would pull the mesh back to its takeoff.
+        this.playerCorrectionVisualState = null;
         this.player.playJumpAnimation?.({
             duration,
             height,
