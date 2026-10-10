@@ -22,6 +22,7 @@ import { hardwareWebGLBrowserArgs } from './browserLaunchPolicy.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { summarizePartyCPUProfile } from './party-cpu-summary.js';
 import { captureUnderstoryPreparation } from './understory-preparation-diagnosis.js';
+import { captureUnderstoryDetailComparison } from './understory-detail-comparison.js';
 
 test.use({ trace: 'off', screenshot: 'off', video: 'off', serviceWorkers:
     process.env.EIDOLON_E2E_BODY_LOD_COMPARE === '1' || process.env.EIDOLON_E2E_BODY_LOD_PILOT ||
@@ -587,6 +588,7 @@ test('single native renderer observes three live equipped party socket peers on 
         await testInfo.attach('single-renderer-live-party-profile', { body: JSON.stringify({ ...report, party,
             scope: 'One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate.'
         }, null, 2), contentType: 'application/json' });
+        if (process.env.EIDOLON_TERRAIN_UNDERSTORY_DETAIL_COMPARE === '1') await captureUnderstoryDetailComparison(page, testInfo);
         await testInfo.attach('untimed-party-draw-attribution', { body: JSON.stringify(draws, null, 2), contentType: 'application/json' });
         await testInfo.attach('untimed-same-scene-instance-comparison', { body: JSON.stringify({ ...pairedDraws,
             scope: 'Two untimed synchronous renders of the same party/poses/camera. Borrowed exact geometry; aggregate instance bounds may draw more offscreen triangles. Not a frame-budget certificate.'
