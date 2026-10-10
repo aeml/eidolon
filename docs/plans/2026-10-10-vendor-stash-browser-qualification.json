@@ -1,0 +1,78 @@
+{
+  "status": "Private real-server vendor/stash qualification passes; public24 and original failed release unchanged.",
+  "recordedUTC": "2026-10-10T11:33:01.024330+00:00",
+  "baseCommit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+  "sourceCommit": "d76413a46347e45b8c62145060a342fa75562596",
+  "unchangedProductInputs": 3485,
+  "implementation": "Two QA files only. Prepared disposable full bags, Common175Gold sale and invested spare deposit via existing UI/helper, real public24-byte-exact Go-race server and Mongo. Ordinary and one-second FIFO-delayed delivery; no invented packets or delivery reorder, no economy/product changes. Current helper retains exact sale credit barrier; stash/equipment assertions unchanged.",
+  "checks": {
+    "native": "Final2native cases pass50.6s; Go-race integration passes56.29s/package57.350s; exact savedGold1175/EP43/23bagitems/2stashitems/unchanged equipment verified for both accounts after fresh login and disconnect. No retry or skip.",
+    "reports": [
+      {
+        "path": "playwright-report",
+        "stats": {
+          "total": 2,
+          "expected": 1,
+          "unexpected": 1,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": false
+        }
+      },
+      {
+        "path": "final/playwright-report",
+        "stats": {
+          "total": 2,
+          "expected": 1,
+          "unexpected": 1,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": false
+        }
+      },
+      {
+        "path": "qualified/playwright-report",
+        "stats": {
+          "total": 2,
+          "expected": 2,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        }
+      }
+    ],
+    "existingUnit": "91checks previously qualified in frozen live-failure-diagnostics evidence; same helperSHAfa26c5a782aec2e3fea7cc8349d020a63b27ce3e57c50bbf34b14d4bda096af7. Not rerun unchanged. Controlled delayed175Gold unit counterexample remains valid.",
+    "privacy": "Both synthetic account credentials sanitized in native logs and each embedded HTML report before copying; recordings off; additional plaintext/decoded-report username scan passes."
+  },
+  "retainedNegativeEvidence": "Initial c6458ba4 and dispatch-aligned91b91498 each1failed/1passed. Baseline expected1000Gold at return but received1175: real ordering did not reproduce assumed bag-before-Gold boundary. Both failures/reports retained. Final cases qualify ordinary/delayed complete transactions; they do not claim a reproduced baseline bug or original live cause. No original Gold/stash assertion relaxed. Source vendor sends bag JSON without wallet, but concurrent state publication may arrive first.",
+  "sourcePins": {
+    "server/vendor_stash_browser_integration_test.go": "ffdf7a61335656e9a009820175b38cee2ea95825b2b51cd4d4c04f1cb5727f15",
+    "tests/e2e/vendor-stash-boundary.spec.js": "5e1c3941f565acba8ba18cc35400d1d4ac46a9fe71da6b9baa081696ee3cf618"
+  },
+  "public": {
+    "recordedUTC": "2026-10-10T11:31:09.706063+00:00",
+    "normalTLS": true,
+    "frontend": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24"
+    },
+    "health": {
+      "commit": "922753a72dd127eb2fffa6e2e5892235cd549318",
+      "version": "Alpha 1.79.24",
+      "status": "ok",
+      "database": "ready"
+    }
+  },
+  "ci": {
+    "run": 38030283856,
+    "attempt": 1,
+    "conclusion": "failure",
+    "status": "completed"
+  },
+  "limits": "Not a live persistent-account acceptance, original381847to382022 root-cause proof, startup-failure resolution or CI waiver. Required live module-download finding and failed24hsoak remain open. Isolated c7937f17 jump elapsed-time fix already verifies15FPS1547.4ms/60FPS1522.6ms, but is not deployed. No successor push, CI rerun, public24merge, unapproved policy decision or original workspace edit. Full inherited1.11\u20131.99 objective remains active.",
+  "evidence": "/home/aeml/.local/share/eidolon-vendor-stash-boundary-checks-20261010",
+  "inventorySHA256": "2f0fb40c6241f4cbe063017c8a5e46b823d7c04a2278b967f6951504493387ff",
+  "inventoryFiles": 46,
+  "heldQACommit": "2d9a2db0b4dff09447d17d88a0e3c29dbb82e298"
+}

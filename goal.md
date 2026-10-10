@@ -153,18 +153,19 @@ and [checkpoint](docs/plans/2026-10-09-remaining-evidence-checkpoint.json).
 Prior owned history remains byte-exact in the [archive](docs/plans/archive/2026-10-10-held-goal-execution-history.md).
 Historical procedural-only instructions do not override supplied actors/modern ARPG.
 
-Previous goal turn: **progress**, privatefa8168f0 consolidates15copied locked
-Three add-ons.32checks/8published cases/64paired native render controls pass;
-script responses48→31, decoded bodies146570B less. No measured startup-speed
-or original live-failure-cause claim. [Publishing](docs/plans/2026-10-10-published-vendor-addons.json).
+Previous goal turn: **progress**, private00742d44 retains exact reported-decimal
+frame intervals and raw timestamp pairs;27checks/current actual High party and
+1080sample audit pass. Draws still fail; no FPS gain or historical raw-only
+reclassification. [Frame evidence](docs/plans/2026-10-10-gameplay-frame-evidence.json).
 
-Current turn: **progress**, private00742d44 QA-only gameplay frame evidence
-uses existing exact reported-decimal intervals, retaining raw timestamp pairs,
-CPU and owned restoration.27checks/3suites and actual High four-class/race/save
-pass;1080samples independently recomputed,3480product inputs byte-exact.
-Six exactp95 values33.4 meet unchanged33.4 boundary; real33.4001ms excess still
-fails. Draws fail; ABBA16.7ms both arms proves no FPS gain. Historical raw-only
-aggregates remain unchanged. [Evidence](docs/plans/2026-10-10-gameplay-frame-evidence.json).
+Current turn: **progress**, private d76413a4 real vendor/stash qualification:
+two native ordinary/one-second FIFO-delayed cases pass50.6s, Go-race integration
+and exact savedGold/EP/gear/bag/stash checks pass57.350s.3485existing public24
+product inputs unchanged; no production code changed. Two failed baseline
+controls retained: native ordering did not reproduce assumed bag-before-Gold.
+The controlled unit delayed-credit counterexample remains valid; original live
+175Gold failure cause remains unproven. [Qualification](docs/plans/2026-10-10-vendor-stash-browser-qualification.json).
+
 Owner again requests approximately1.5seconds total jump. Existing isolatedlive24
 elapsed-time fix measures1547.4ms at15FPS/1522.6ms at60FPS with exact endpoints,
 but is not deployed. [Staged jump](docs/plans/2026-10-10-jump-live24-bundle.json).
@@ -187,14 +188,14 @@ but is not deployed. [Staged jump](docs/plans/2026-10-10-jump-live24-bundle.json
   broad art/beta acceptance. Synthetic long names overlap; final screenshot
   latest heap418.8MB not qualified. Physical-phone/campaign feedback remains owner-deferred.
 
-Next: prioritize release qualification of requested1.5-second total jump.
-The elapsed-time fix is already implemented; resolve retained required startup/
-Gold release findings using staged diagnosis/recovery/publication evidence,
-without blind retries, waiver or successorpush while gate unresolved. Continue
-independent measured rigid-shadow/default submission using actual light
-membership, avoiding rejected full-scene indexes/caches. Finish remaining High/
-Low/close/cold-memory/support-device/moving-art and every original1.11–1.99
-content/gameplay/story/Dark Realm/economy/social/casino/UI/save/security/F1–F5/
-CB/operations/rights/owner/human/beta/launch/handoff requirement. No unapproved
-access, commerce, destructive production or invented owner-policy decisions.
-Goal remains active.
+Next: prepare and locally qualify one isolated live24 maintenance candidate
+combining reviewed real-time jump, bounded engine-entry recovery, copied-addon
+publication and exact vendor-credit QA barrier/diagnostics. Exclude held terrain/
+geometry/art pilots. Preserve original failedCI/Gold/soak evidence; no public
+successor while required release gate unresolved. Do not force acknowledgement
+ordering or relabel failed native controls as passes. Continue useful independent
+actual-light rigid-shadow/default submission, remaining High/Low/close/cold-memory/
+support-device/moving-art and every original1.11–1.99 content/gameplay/story/Dark
+Realm/economy/social/casino/UI/save/security/F1–F5/CB/operations/rights/owner/human/
+beta/launch/handoff requirement. No unapproved access, commerce, destructive
+production or invented owner-policy decisions. Goal remains active.
