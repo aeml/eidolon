@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.28</span>
+                    <span class="start-version-row__label">Alpha 1.79.29</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,16 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.28" data-notes-pages="46" data-notes-total="463">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.29" data-notes-pages="46" data-notes-total="464">
+                <div class="patch-note-entry" data-version="1.79.29">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.29 (Complete jump pose continuity)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Removed a remaining pose snap as characters untuck midway through a jump. Takeoff, roll and landing now ease smoothly between poses.</li>
+                        <li>Starting a jump retires any earlier walking correction, preventing a pull back toward takeoff after landing.</li>
+                        <li>Includes smooth jump prediction and sparse network updates, the Well Rested aura tracking fix and correct separation of automation accounts in administration.</li>
+                        <li>Long jumps retain 1.3 seconds of flight for approximately 1.5-second total arrival. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.28">
                     <h3 class="patch-note-entry__title">Alpha 1.79.28 (Smooth jumps and auras)</h3>
                     <ul class="patch-note-entry__list">
@@ -868,20 +877,6 @@
                         <li>All 15 camp placements, rotations, nine material batches, walking blockers and service paths remain unchanged. The detailed camp props add 3,300 raw triangles across the entire town; original reference-view budgets remain unchanged.</li>
                         <li>Native High/Low equipped town views qualify this scoped update, not final modern-world art, sustained equipped-party or physical-device performance. Raised terrain remains disabled by default; broader art and performance work continues.</li>
                         <li>Supplied actor, equipment and animation assets, combat, rewards, account permissions and saved progress remain unchanged. Full prior patch history is retained; login shows ten notes initially with Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.19">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.19 (Grounded town and regional materials)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Lanternhold pilgrim tents have folded ridge canvas, open curtains, timber frames and supported lanterns. Their buried origin is corrected while the 15 horizontal camp placements and existing walking blockers remain unchanged.</li>
-                        <li>Generated administrator teleport-clearance data matches the corrected camp height. Only those 15 vertical bounds change; horizontal walls, service approaches and all other landing geometry remain unchanged.</li>
-                        <li>Tents, banners and regional sails share physical canvas thread detail that filters away below pixel resolution. Existing colors, lighting and material batches remain; there are no additional cloth textures or per-frame cloth simulation. Air windbreak corners now meet their support posts and crossbars.</li>
-                        <li>Earth soil has finer aggregate detail and quieter broad contrast. Existing plants gain deterministic variation in breadth and height, while preserving every placement, horizontal clearance, Low subset, plant tones and rooted wind bounds.</li>
-                        <li>Cinder Wastes ground uses a roughly nine-metre basalt and ash scale with restrained contrast. Kiln Span and Molten Approach supports gain staggered worn basalt courses inside their existing collision footprints.</li>
-                        <li>Regional lore books gain curved paper stacks and writing that follows the fold. Their desks, bindings, quest markers and inspection bounds are retained; fewer page and writing meshes are submitted.</li>
-                        <li>Foliage visibility and shadow restoration reuse frame-local arrays instead of rebuilding hash sets. Eligibility, exact bounds, live actors and end-of-frame restoration stay unchanged.</li>
-                        <li>Original frame, draw and triangle limits remain unchanged. Bounded native High/Low world views and equipped town captures qualify this update, not final modern-world, equipped-party, physical-device or campaign acceptance. Raised terrain remains disabled by default; no experimental outcrop-shader rollout.</li>
-                        <li>Supplied actor, equipment and animation assets, class restrictions, combat, rewards and saved player data remain unchanged. Full prior patch history is retained; login initially shows ten notes with a load-more control.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">
