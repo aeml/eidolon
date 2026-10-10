@@ -293,6 +293,37 @@ test('single native renderer observes three live equipped party socket peers on 
         await page.setViewportSize({ width: 1280, height: 844 });
         await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
         await loginAndEnterWorld(page, accounts[0]);
+        if (process.env.EIDOLON_E2E_STATUS_HUD_REVIEW === '1') {
+            await expect.poll(() => page.evaluate(() => window.game.player.mesh?.userData.equipmentVisualItemCount)).toBe(14);
+            const button = page.locator('#minimap-buff-list [data-buff-id="well_rested"]');
+            await expect(button).toBeVisible();
+            expect(await button.locator('svg').count()).toBe(1);
+            await button.focus();
+            const before = await page.evaluate(() => {
+                const minimap = window.game.minimap, button = minimap.buffList.querySelector('[data-buff-id="well_rested"]');
+                window.__savedStatusButton = button;
+                return { label: button.getAttribute('aria-label'), seconds: window.game.player.wellRestedSeconds,
+                    width: minimap.buffList.getBoundingClientRect().width };
+            });
+            await expect.poll(() => button.getAttribute('aria-label')).not.toBe(before.label);
+            const after = await page.evaluate(() => {
+                const game = window.game, minimap = game.minimap, button = window.__savedStatusButton;
+                delete window.__savedStatusButton;
+                return { sameButton: minimap.buffList.querySelector('[data-buff-id="well_rested"]') === button,
+                    focused: document.activeElement === button, tooltipVisible: minimap.buffTooltip.style.display === 'block',
+                    tooltip: minimap.buffTooltip.textContent, seconds: game.player.wellRestedSeconds,
+                    equippedItems: game.player.mesh.userData.equipmentVisualItemCount, hp: game.player.stats.hp };
+            });
+            expect(before.width).toBeLessThanOrEqual(64);
+            expect(after).toMatchObject({ sameButton: true, focused: true, tooltipVisible: true, equippedItems: 14 });
+            expect(after.seconds).toBeGreaterThan(before.seconds); expect(after.hp).toBeGreaterThan(0);
+            expect(after.tooltip).toContain('Well Rested');
+            await page.screenshot({ path: testInfo.outputPath('actual-saved-status-hud.png') });
+            await writeFile(testInfo.outputPath('actual-saved-status-hud.json'), JSON.stringify({ before, after,
+                scope: 'Normal authenticated saved Fighter in actual town with14equipped slots; real server-earned WellRested timer, native focus/tooltip stability. No buff/stat/time writes.' }, null, 2));
+            await page.keyboard.press('Escape');
+            await expect(page.locator('#minimap-buff-tooltip')).toBeHidden();
+        }
         if (process.env.EIDOLON_E2E_TOWN_SUBMISSIONS === '1') {
             // The shared profiler always observes60warmup+180real frames.
             // Preserve this fixed startup interval even when assets/workers are
