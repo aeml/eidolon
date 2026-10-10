@@ -1,4 +1,4 @@
-import { BatchedMesh, Frustum, Group, Matrix4 } from 'three';
+import { BatchedMesh, Frustum, Group, Matrix4, Vector4 } from 'three';
 
 const layout = geometry => JSON.stringify([Boolean(geometry.index), Object.entries(geometry.attributes).map(([name, attr]) =>
     [name, attr.itemSize, attr.normalized, attr.array.constructor.name])]);
@@ -35,6 +35,7 @@ export class ActorInstanceMultiDraw {
         if (this.disposed || !this.enabled || !renderer?.extensions?.has('WEBGL_multi_draw') || camera?.isArrayCamera) {
             this.clearEntries(); return;
         }
+        this.colorCamera = camera;
         const groups = new Map();
         for (const source of sources) {
             if (!source.visible || !source.isInstancedMesh || source.morphTexture || !safeGeometry(source.geometry)) continue;
@@ -73,7 +74,7 @@ export class ActorInstanceMultiDraw {
                     });
                     // Cull whole original buckets with Three's same sphere
                     // test. Keep original object-id/instance order for equal
-                    // material/origin submissions, including shadow passes.
+                    // material/origin color submissions. Shadow passes retain scene order.
                     mesh.setCustomSort((list, passCamera) => {
                         this.projection.multiplyMatrices(passCamera.projectionMatrix, passCamera.matrixWorldInverse);
                         this.frustum.setFromProjectionMatrix(this.projection, passCamera.coordinateSystem, passCamera.reversedDepth);
@@ -82,7 +83,11 @@ export class ActorInstanceMultiDraw {
                         let count = 0;
                         for (const row of list) if (visible.get(owners[row.index])) list[count++] = row;
                         list.length = count;
-                        list.sort((a, b) => owners[a.index].id - owners[b.index].id || a.index - b.index);
+                        const depth = new Map();
+                        if (passCamera === this.colorCamera) for (const source of group) depth.set(source,
+                            new Vector4().copy(source.boundingSphere.center).applyMatrix4(source.matrixWorld).applyMatrix4(this.projection).z);
+                        list.sort((a, b) => (depth.get(owners[a.index]) || 0) - (depth.get(owners[b.index]) || 0) ||
+                            owners[a.index].id - owners[b.index].id || a.index - b.index);
                     });
                     entry = { mesh, signature, sourceSlots }; this.entries.set(key, entry); this.group.add(mesh);
                 }

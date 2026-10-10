@@ -67,13 +67,15 @@ for (const quality of ['high', 'low']) test(`${quality}: actor cell multi-draw p
                 } finally {
                     if (descriptor) Object.defineProperty(performance, 'now', descriptor); else delete performance.now;
                 }
-                let changedRGB = 0, unstableRGB = 0;
+                let changedRGB = 0, unstableRGB = 0, maxChannelDifference = 0; const differences = [];
                 for (let i = 0; i < before.pixels.length; i++) if (i % 4 !== 3) {
                     changedRGB += before.pixels[i] !== after.pixels[i] ? 1 : 0;
+                    maxChannelDifference = Math.max(maxChannelDifference, Math.abs(before.pixels[i] - after.pixels[i]));
+                    if (before.pixels[i] !== after.pixels[i] && differences.length < 64) differences.push({ x: Math.floor(i / 4) % copy.width, y: Math.floor(i / 4 / copy.width), channel: i % 4, before: before.pixels[i], after: after.pixels[i] });
                     unstableRGB += before.pixels[i] !== again.pixels[i] ? 1 : 0;
                 }
                 const strip = ({ pixels: _pixels, ...counts }) => counts;
-                reports.push({ state, changedRGB, unstableRGB, entries, before: strip(before), after: strip(after), again: strip(again) });
+                reports.push({ state, changedRGB, unstableRGB, maxChannelDifference, differences, entries, before: strip(before), after: strip(after), again: strip(again) });
                 mixers.forEach(mixer => { mixer.stopAllAction(); mixer.uncacheRoot(mixer.getRoot()); });
                 models.forEach(({ mesh }) => mesh.userData.resetPose());
             }
