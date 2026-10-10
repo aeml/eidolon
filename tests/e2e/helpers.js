@@ -1553,9 +1553,9 @@ export async function freePersistentQALootSlot(page, { storeSpare } = {}) {
             (window.game?.player?.inventory || []).some(item => item?.id === id), sale.itemId), {
             timeout: 15_000, message: 'The exact vendor item must leave the authoritative bag before another sale'
         }).toBe(false);
-        // Vendor JSON acknowledges the bag before a state packet publishes
-        // Gold. Do not let that earlier sale's delayed credit cross the next
-        // stash snapshot, whose exact unchanged-Gold assertion stays intact.
+        // The bag and Gold arrive separately, and either can arrive first.
+        // Require this exact sale's credit before the next sale or stash
+        // snapshot, whose unchanged-Gold assertion stays intact.
         await expect.poll(() => page.evaluate(() => window.game?.player?.gold), {
             timeout: 15_000, message: 'The exact vendor Gold credit must arrive before another sale or stash deposit'
         }).toBe(sale.expectedGold);
