@@ -1,0 +1,138 @@
+{
+  "recordedUTC": "2026-10-10T19:11:47.637362+00:00",
+  "privateSource": "97447d12",
+  "publicRuntime": "35672cbd",
+  "heldRuntime": "6da880b6",
+  "publicPublication": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+  "problem": "Network acknowledgement drains after render-clock advancement. First accepted local jump reused stale prediction displayPosition for one render, causing a1.661538-unit backstep.",
+  "reproduction": "reproduction.log:1failed58passed; same-frame rendered pose distance1.661538 expected<1e-6",
+  "change": "Recompute accepted local and remote trajectory position at render; preserve elapsed clock, takeoff offset, sparse metadata, terrain and authoritative logical positions.",
+  "focused": {
+    "passed": 85,
+    "suites": 2,
+    "log": "focused-unit-corrected.log"
+  },
+  "preflightFailure": "focused-unit.log requested nonexistent plural AttachedStatusEffects file;59jump tests passed, status suite did not run. Corrected filename; failed invocation retained.",
+  "public": {
+    "passed": 477,
+    "suites": 4,
+    "log": "public-unit.log"
+  },
+  "native": {
+    "passed": 3,
+    "retries": 0,
+    "log": "public-native.log",
+    "scope": "High/Low actual four supplied classes with acknowledgements injected inside update after frame-clock advancement; compiled actual publication15/60FPS jump timing. Strict aura/clip/contact/endpoint/flight-step gates unchanged.",
+    "samples": [
+      {
+        "quality": "low",
+        "samples": [
+          {
+            "className": "Fighter",
+            "supplied": "Fighter",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Rogue",
+            "supplied": "Rogue",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Cleric",
+            "supplied": "Cleric",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Wizard",
+            "supplied": "Wizard",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          }
+        ],
+        "errors": []
+      },
+      {
+        "quality": "high",
+        "samples": [
+          {
+            "className": "Fighter",
+            "supplied": "Fighter",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Rogue",
+            "supplied": "Rogue",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Cleric",
+            "supplied": "Cleric",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          },
+          {
+            "className": "Wizard",
+            "supplied": "Wizard",
+            "animationStarts": 1,
+            "maxAuraError": 0,
+            "maxClipPhaseError": 0,
+            "flightStepSpread": 1.0658141036401503e-14,
+            "contactAngle": 0,
+            "contactScaleError": 0,
+            "endpointError": 0,
+            "stillJumping": false
+          }
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "limits": "Public29 pushed after public28 deployment, required CI and exact assets verified;29 live verification still pending. Full-roadmap/device/art/failed-soak/beta/launch remain open."
+}

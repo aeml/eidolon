@@ -1,0 +1,84 @@
+{
+  "recordedUTC": "2026-10-10T19:10:37.580434+00:00",
+  "version": "Alpha 1.79.28",
+  "commit": "77a48916be49184a04ecceeb979c75668d1972b8",
+  "ci": 38076277436,
+  "attempt": 1,
+  "url": "https://github.com/aeml/eidolon/actions/runs/38076277436",
+  "status": "completed",
+  "conclusion": "success",
+  "deployed": true,
+  "requiredCIPassed": true,
+  "releaseGateAccepted": true,
+  "terminalIdentityMatches": true,
+  "assetProof": {
+    "files": 8,
+    "allAssetsMatch": true,
+    "engineSHA256": "f3dff4b3df634eb2183f64e7794bc5b3b6cbbd1f9942724fa6ad2458a6b38bda"
+  },
+  "jobs": {
+    "Server Tests (Go)": "success",
+    "Browser Smoke (Playwright 2/3)": "success",
+    "Browser Smoke (Playwright 3/3)": "success",
+    "Browser Smoke (Playwright 1/3)": "success",
+    "Client Tests (Jest)": "success",
+    "Predeploy Character QA (System Chrome)": "success",
+    "Validate Production QA Inputs": "success",
+    "Deploy to GitHub Pages": "success",
+    "Deploy Server (SSH)": "success",
+    "Live Release and Character QA": "success"
+  },
+  "requiredLiveSteps": {
+    "Wait for matching live releases": "success",
+    "Run live anonymous and persistent-character QA": "success",
+    "Run live town recovery and Well Rested QA": "success"
+  },
+  "native": {
+    "reports": [
+      {
+        "total": 9,
+        "expected": 8,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      }
+    ],
+    "terminalLines": [
+      "2026-10-10T19:05:39.9009716Z   1 skipped",
+      "2026-10-10T19:05:39.9010047Z   8 passed (5.8m)",
+      "2026-10-10T19:07:11.4754916Z   2 passed (1.5m)",
+      "2026-10-10T19:07:51.7752417Z   1 passed (39.6s)",
+      "2026-10-10T19:07:52.0569504Z Live town recovery and Well Rested QA passed."
+    ],
+    "archiveSHA256": "d8c4edc67a980aaf776674079809d2630f2a77a96bcaa96319ff029abbf023b6",
+    "archiveDigestMatchesAPI": true
+  },
+  "publicJump": {
+    "elapsedMs": 1426.300000011921,
+    "acceptedDuration": 1.2999999523162842,
+    "auraSamples": 45,
+    "maxAuraError": 0,
+    "positionError": 0,
+    "renderError": 0
+  },
+  "walkingAcceptance": {
+    "accepted": false,
+    "attempts": [
+      "live-motion",
+      "live-motion-walking-observation"
+    ],
+    "reason": "Walking gate had insufficient moving samples (1 then3; required>3); both original failures retained. Aura error0 and logical movement2.061units. Public29 retires stale pre-jump correction; require fresh live acceptance there."
+  },
+  "admin": {
+    "recordedUTC": "2026-10-10T19:09:51.440544+00:00",
+    "method": "Read-only SSH and in-memory Docker Config.Env classification; no account identities/credentials retained",
+    "containerRunning": true,
+    "explicitTestAccounts": 6,
+    "configuredQAAccounts": 6,
+    "allConfiguredQAAccountsExcludedFromRealPlayerViews": true,
+    "limits": "Runtime configuration proof plus focused admin/database-filter tests; disposable real-Mongo population fixture remained skipped."
+  },
+  "followupRequired": "Qualified local29 corrects midair pose snap, pre-jump walking-correction replay and acceptance-frame stale displayPosition. Public28 is release-gate verified, not complete acceptance of all requested motion fixes.",
+  "limits": "No new public release before this verification. Skips stay skipped. No full roadmap/art/device/soak/beta/launch acceptance."
+}

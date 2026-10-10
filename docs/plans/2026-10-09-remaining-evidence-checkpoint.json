@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T18:58:51.433674+00:00",
+  "recordedUTC": "2026-10-10T19:13:51.940225+00:00",
   "classification": "Alpha1.79.27/a9d6fc9b deployed and release checks accepted: trusted public click-to-landing1429.7ms, endpoints0; all8assets/identities/database match; required CI38064138468 attempt1 succeeded. Native8expected/1skip/0unexpected/0flake, retry0; separate recovery2+1 pass. Optional routes remain skipped, original failures retained. Full original goal stays active.",
   "qualifiedRuntime": "Held1e60f126 retains e8eec1b9 default lazy geometry and conservative rigid actor shadows, plus motion/aura/admin corrections and qualified complete tuck/landing envelopes. High sampled budget passes, actualLow202draw failure remains. Lowview378a79a2 stays unselected.",
   "rejectedSourceCommits": [
@@ -102,7 +102,7 @@
   "currentReceipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress: conservative rigid shadow influence implemented, exact native-qualified and selected only in held private milestone e8eec1b9. DefaultHigh180frames324draws/176626triangles/16.7ms median+p95 passes sampled limits; frozen390-to330draw RGB exact, original skins/shadows/content retained. ActualLow202draws fails200,79857triangles/16.7ms pass. SubsequentLowview378a79a2 passes90units/11native checks and exact pixels/2588triangle reduction, but154draws unchanged; strict actual native draw-gain assertion fails before final profile/save. Candidate kept unselected; original failure retained, no retry/waiver/public mutation.",
-  "nextAction": "Verify public28 exact deployment/assets/database and live jump/aura behavior after requiredCI38076277436 finishes, then ordinarily push prepared29/ce7846b3 with the qualified remaining tuck/recovery/old-walking-correction fixes; verify exact29 CI/deployment and live behavior. Afterward use actual native handgear census to qualify8 potential material-compatible sibling submission reductions, preserving material partitions and current rigid index derivatives. Existing Low202draw failure and200draw/85000triangle gates remain open.",
+  "nextAction": "Finish exact public29 CI38078784320, then verify both deployments,8served asset hashes,frontend/backend identities,database readiness and fresh trusted jump/walking aura acceptance. Public28 release gates verified; both insufficient walking samples retained and not accepted. Continue private Low submission reduction from actual census while29 runs; no further public push before29 verification. Full original art/device/soak/beta/launch scope remains open.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -1374,29 +1374,17 @@
     "publicVerificationReceipt": "docs/plans/2026-10-10-jump-wall-clock-public-verification.json"
   },
   "currentPublicVerification": {
-    "receipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
-    "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
-    "ci": 38064138468,
-    "jumpTotalTimeVerified": true,
-    "totalMs": 1429.7,
-    "allEightAssetsMatch": true,
-    "identitiesAndDatabaseMatch": true,
+    "receipt": "docs/plans/2026-10-10-public28-terminal-qualification.json",
+    "version": "Alpha 1.79.28",
+    "commit": "77a48916be49184a04ecceeb979c75668d1972b8",
+    "ci": 38076277436,
     "requiredCIPassed": true,
     "releaseAccepted": true,
-    "ciStatus": "completed",
-    "publicJumpInventorySHA256": "6f9a71498d550ef0f6a962e53b4d19449f6d9964b87e97720887383ba2e30bc5",
-    "ciConclusion": "success",
-    "releaseInventorySHA256": "a0b01efbf552bf84473865e316526286c3a0b0e07ef4773c42a90619570df5ad",
-    "native": {
-      "total": 9,
-      "expected": 8,
-      "unexpected": 0,
-      "flaky": 0,
-      "skipped": 1,
-      "ok": true
-    },
-    "recoveryPassed": 3,
-    "optionalFourClass": "skipped"
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "totalMs": 1426.300000011921,
+    "walkingAccepted": false,
+    "releaseInventorySHA256": "0858d66501ca2e97a1ac0ec68b2b803049bf211e48e8cac635613a580d0b680d"
   },
   "actorInstanceShadowViewPrototype": {
     "receipt": "docs/plans/2026-10-10-actor-instance-shadow-view.json",
@@ -1811,13 +1799,15 @@
     "privateRuntime": "fd852472",
     "publicRelease": "77a48916be49184a04ecceeb979c75668d1972b8",
     "ci": 38076277436,
-    "status": "in_progress",
-    "deployed": false,
-    "accepted": false,
+    "status": "completed",
+    "deployed": true,
+    "accepted": true,
     "legacyJumpAccountsClassified": true,
     "configuredAutomationRosterExplicit": true,
     "auraFinalRenderedTransform": true,
-    "flightSeconds": 1.3
+    "flightSeconds": 1.3,
+    "terminalReceipt": "docs/plans/2026-10-10-public28-terminal-qualification.json",
+    "allSixConfiguredQAAccountsExcluded": true
   },
   "jumpPoseContinuity": {
     "receipt": "docs/plans/2026-10-10-jump-pose-continuity-qualification.json",
@@ -1833,12 +1823,16 @@
     "privateSource": "f9479908",
     "heldRuntime": "d4942e15",
     "publicCandidateRuntime": "4c8252e0",
-    "preparedRelease": "ce7846b3ebe1a767a0a91f8dfffd437a98a8186f",
+    "preparedRelease": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
     "version": "Alpha 1.79.29",
-    "pushed": false,
+    "pushed": true,
     "focusedPassed": 74,
     "publicReleaseChecksPassed": 466,
-    "nativePassed": 3
+    "nativePassed": 3,
+    "ci": 38078784320,
+    "status": "in_progress",
+    "deployed": false,
+    "accepted": false
   },
   "actualSubmissionCensus": {
     "receipt": "docs/plans/2026-10-10-actual-actor-submission-census.json",
@@ -1860,5 +1854,42 @@
       "frameP95Ms": 16.7
     },
     "limitations": "Different population; no causal performance improvement or closure of prior Low31-entity202draw failure. No optimization selected."
+  },
+  "previousPublicVerification27": {
+    "receipt": "docs/plans/2026-10-10-public27-terminal-verification.json",
+    "commit": "a9d6fc9bab6c7835bce621f53ecde7f381f23137",
+    "ci": 38064138468,
+    "jumpTotalTimeVerified": true,
+    "totalMs": 1429.7,
+    "allEightAssetsMatch": true,
+    "identitiesAndDatabaseMatch": true,
+    "requiredCIPassed": true,
+    "releaseAccepted": true,
+    "ciStatus": "completed",
+    "publicJumpInventorySHA256": "6f9a71498d550ef0f6a962e53b4d19449f6d9964b87e97720887383ba2e30bc5",
+    "ciConclusion": "success",
+    "releaseInventorySHA256": "a0b01efbf552bf84473865e316526286c3a0b0e07ef4773c42a90619570df5ad",
+    "native": {
+      "total": 9,
+      "expected": 8,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "recoveryPassed": 3,
+    "optionalFourClass": "skipped"
+  },
+  "jumpAcceptanceRender": {
+    "receipt": "docs/plans/2026-10-10-jump-acceptance-render-qualification.json",
+    "privateSource": "97447d12",
+    "publicRuntime": "35672cbd",
+    "heldRuntime": "6da880b6",
+    "reproducedBackstepUnits": 1.6615384615384614,
+    "focusedPassed": 85,
+    "publicPassed": 477,
+    "nativePassed": 3,
+    "retries": 0,
+    "inventorySHA256": "5bbffe3378e56f33a7eed6f03a518595204acb56e069468cfe43a8afafdd0714"
   }
 }

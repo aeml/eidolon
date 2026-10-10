@@ -251,3 +251,7 @@ CI38064138468 completed success, not a manual rerun. Runtime unchanged. Version2
 is deployed and verified as recorded above; failed prior gates remain retained.
 Full original scope remains active; this release does not establish art/device/
 beta/launch acceptance.
+
+Public28/77a48916 CI38076277436 completed success, attempt1; normal TLS8assets exact, frontend/backend identity and database ready. Actual long jump1426.3ms, auraerror0, endpoints0;8native pass1skip0flake,3recovery pass. Read-only running-container check confirms6explicit test identities include all6QA identities. Two walking observations had insufficient moving samples (1,3;required>3), preserved as failures; walking acceptance remains open. Frozen receipt: `2026-10-10-public28-terminal-qualification.json`.
+
+Public29/12e5e3c4 ordinarily pushed after28 verification; CI38078784320 running. Includes qualified midair/landing correction fixes and newly reproduced acceptance-frame stale-position fix (1.661538unit backstep).85focused and477public checks;3native no-retry checks with production frame ordering passed. Exact29 deployment and live walking/jump acceptance pending. Receipt: `2026-10-10-jump-acceptance-render-qualification.json`. Full original requirements remain open.

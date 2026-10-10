@@ -327,3 +327,5 @@ material partitions and qualified index derivatives must survive any batching.
 not close prior Low31-entity202draw failure. Missing ignored vendor preflight
 failed before accounts/DB, normal preparation resolved; both outcomes retained.
 Frozen60-entry census inventory9aa32ceeceabe932813cfc203dbcad7bfa094f932a16b1cbae76e0ac9f85416e.
+
+2026-10-10: Public28/77a48916 exact CI38076277436,8assets,frontend/backend/database verified; long jump1426.3ms,auraerror0. Walking sample gates failed and remain retained. Public29/12e5e3c4 pushed after28 verification, CI38078784320 running: midair pose, old walking-correction replay and1.661538unit first-ack backstep corrected,85focused/477public/3native checks passed. Exact29 live acceptance pending. Full original scope unchanged.
