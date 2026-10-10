@@ -7,6 +7,7 @@ import { prepareShadowGeometryPilot, selectSimplifiedShadowGeometry } from './sh
 import { prepareGameplayColorPilot } from './gameplay-color-lod-pilot.js';
 import { prepareGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
 import { prepareActorInstanceViewPilot } from './actor-instance-view-pilot.js';
+import { captureGameplayGeometryParty } from './gameplay-geometry-party.js';
 import { installFoliageRevisionObservation, readFoliageRevisionObservation,
     restoreFoliageRevisionObservation } from './foliage-revision-observation.js';
 import {
@@ -452,6 +453,10 @@ test('single native renderer observes three live equipped party socket peers on 
             for (const row of [paired.reference, paired.candidate, paired.referenceAgain, ...paired.cpu.blocks]) expect(row.restored).toBe(true);
             recordPeerLiveness('actor-view-prepared');
         }
+        if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1') {
+            await captureGameplayGeometryParty(page, testInfo);
+            recordPeerLiveness('geometry-lifecycle-prepared');
+        }
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
@@ -724,6 +729,7 @@ test('single native renderer observes three live equipped party socket peers on 
     } finally {
         await page.evaluate(() => {
             window.__actorInstanceViewPilot?.dispose(); delete window.__actorInstanceViewPilot;
+            window.__gameplayGeometryLifecycle?.pass.dispose(); delete window.__gameplayGeometryLifecycle;
             window.__shadowGeometryPilot?.pass.dispose(); delete window.__shadowGeometryPilot;
             window.__gameplayColorPilot?.dispose(); delete window.__gameplayColorPilot;
             window.__gameplayBodyPilot?.dispose(); delete window.__gameplayBodyPilot;

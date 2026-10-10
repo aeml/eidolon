@@ -6,6 +6,7 @@ import { collectBrowserFailures } from './helpers.js';
 import { captureShadowGeometryPilot } from './shadow-geometry-pilot.js';
 import { captureGameplayColorPilot, captureGameplayColorResources } from './gameplay-color-lod-pilot.js';
 import { captureGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
+import { captureGameplayGeometryLifecycle } from './gameplay-geometry-lifecycle.js';
 
 // Explicit routed-asset comparisons need both controls to bypass the service
 // worker, which would otherwise serve reviewed files outside page.route.
@@ -16,6 +17,7 @@ test.use({ serviceWorkers: process.env.EIDOLON_E2E_WEARABLE_ATTRIBUTE_COMPARE ==
 test('all delivered classes use fitted gear, independent rigs and alternating Rogue strikes', async ({ page, baseURL }, testInfo) => {
     if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1' || process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT === '1') test.setTimeout(180_000);
     if (process.env.EIDOLON_E2E_GAMEPLAY_BODY_PILOT === '1') test.setTimeout(360_000);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1') test.setTimeout(240_000);
     const failures = collectBrowserFailures(page, baseURL);
     const attributePilot = await installWearableAttributePilot(page);
     const bodyPilot = await installBodyLodPilot(page);
@@ -122,6 +124,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
     });
     if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1') await captureShadowGeometryPilot(page, testInfo);
     if (process.env.EIDOLON_E2E_GAMEPLAY_BODY_PILOT === '1') await captureGameplayBodyPilot(page, testInfo);
+    if (process.env.EIDOLON_E2E_GAMEPLAY_GEOMETRY_LIFECYCLE === '1') await captureGameplayGeometryLifecycle(page, testInfo);
     if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_PILOT === '1') {
         if (process.env.EIDOLON_E2E_GAMEPLAY_COLOR_RESOURCES_ONLY === '1') await captureGameplayColorResources(page, testInfo);
         else await captureGameplayColorPilot(page, testInfo);
