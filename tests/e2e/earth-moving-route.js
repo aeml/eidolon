@@ -19,7 +19,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
     const started = performance.now();
     let recording = false;
     const fightReview = process.env.EIDOLON_E2E_FIGHT_DUNGEON_REVIEW === '1';
-    let previousAutoLoot, fightEvidence;
+    let previousAutoLoot, fightEvidence, routeFailure;
     const sample = async (label, options = {}) => {
         const resume = recording;
         if (resume) { recording = false; await session.send('Page.stopScreencast'); }
@@ -146,13 +146,15 @@ export async function captureEarthMovingRoute(page, testInfo) {
         }
         if (fightReview) await captureFirstDungeon(page, testInfo, walkTo, screenshot, sample);
 
+    } catch (error) {
+        routeFailure = { name: error.name, message: error.message }; throw error;
     } finally {
         recording = false;
         try { await session.send('Page.stopScreencast'); }
         finally { await session.detach(); await Promise.all(writes); }
         await writeFile(testInfo.outputPath('moving-route.json'), JSON.stringify({
             scope: 'Prepared level30 Fighter, normal ground-input continuous town→gate→Earth road→Verdant approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.',
-            fightAndDungeonReview: fightReview, frames, observations, profiles, elapsedMs: performance.now() - started
+            fightAndDungeonReview: fightReview, failure: routeFailure, frames, observations, profiles, elapsedMs: performance.now() - started
         }, null, 2));
         if (fightReview && previousAutoLoot !== undefined) fightEvidence = await finishFightReview(page, testInfo, previousAutoLoot);
     }

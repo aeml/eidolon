@@ -54,6 +54,12 @@ func TestTerrainActualEquippedBrowserParty(t *testing.T) {
 		if fixture.Class == "Cleric" {
 			fixture.SavedHotbar = []string{"Healing Light"}
 		}
+		if os.Getenv("EIDOLON_E2E_FIGHT_DUNGEON_REVIEW") == "1" {
+			// Explicit prepared specialization loadout; every skill is already
+			// unlocked in this fixture. Stats, health, gear and gameplay stay
+			// unchanged, and the browser must cast through normal controls.
+			fixture.SavedHotbar = append([]string(nil), fixture.UnlockedSkills...)
+		}
 		if len(fixture.Equipment) != 14 {
 			t.Fatal("party render fixture needs every equipped slot")
 		}

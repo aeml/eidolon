@@ -15,6 +15,37 @@ function drive(game, step = 334000n) {
 beforeEach(() => { jest.useFakeTimers(); });
 afterEach(() => { jest.useRealTimers(); });
 
+test('immediate activity samples contain180real intervals and distinguish attack from recovery', async () => {
+    const { game, renderer, original } = fixture();
+    let boneValue = 0;
+    game.player = { state: 'ATTACKING', stats: { hp: 300 }, position: { toArray: () => [2, 0, 4] },
+        currentAction: { time: 0, getClip: () => ({ name: game.player.state === 'ATTACKING' ? 'Attack' : 'Idle' }) },
+        mesh: { position: { toArray: () => [2, 0, 4] }, getObjectByProperty: () =>
+            ({ name: 'Hips', quaternion: { toArray: () => [boneValue, 0, 0, 1] } }) } };
+    const promise = observeGameplayScene(game, 'mixed-fight', { warmupFrames: 0, activity: true });
+    game.loop(0);
+    for (let i = 1; i <= 180; i++) {
+        game.player.state = i <= 90 ? 'ATTACKING' : 'IDLE';
+        game.player.currentAction.time = i / 100; boneValue = i;
+        game.loop(Number(BigInt(i) * 167000n) / 10000);
+    }
+    const report = await promise;
+    expect(report.frames).toBe(180); expect(report.warmupFrames).toBe(0); expect(report.observedBone).toBe('Hips');
+    expect(report.frameSamples.every(row => row.intervalMs === 16.7 && row.previousTime !== null)).toBe(true);
+    expect(report.frameSamples.filter(row => row.activity.localClip === 'Attack')).toHaveLength(90);
+    expect(report.frameSamples.filter(row => row.activity.localClip === 'Idle')).toHaveLength(90);
+    expect(report.frameSamples[0].activity.bone).toEqual([1, 0, 0, 1]);
+    expect(report.frameSamples[179].activity.bone).toEqual([180, 0, 0, 1]);
+    expect(game.loop).toBe(original); expect(renderer.info.autoReset).toBe(true);
+});
+
+test.each([-1, 1.5, NaN, 61])('invalid warmup%s cannot alter the original loop or render policy', async warmupFrames => {
+    const { game, renderer, original } = fixture();
+    await expect(observeGameplayScene(game, 'invalid', { warmupFrames })).rejects.toThrow('QA warmup');
+    expect(game.loop).toBe(original); expect(Object.hasOwn(game, 'loop')).toBe(false);
+    expect(renderer.info.autoReset).toBe(true);
+});
+
 test.each([334000n, 334001n, 334010n, 500000n])('full scene observation preserves exact reported intervals and real excesses (%s)', async step => {
     const { game, renderer, original } = fixture(), promise = observeGameplayScene(game, 'fixture');
     drive(game, step); const report = await promise;
