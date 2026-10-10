@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.27</span>
+                    <span class="start-version-row__label">Alpha 1.79.28</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,17 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.27" data-notes-pages="46" data-notes-total="462">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.28" data-notes-pages="46" data-notes-total="463">
+                <div class="patch-note-entry" data-version="1.79.28">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.28 (Smooth jumps and auras)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Jump takeoff, flight and landing now share a continuous animation clock. Server acceptance preserves the takeoff pose, and sparse updates keep motion smooth while long jumps retain 1.3 seconds of flight.</li>
+                        <li>Characters ease into their jump and return upright on contact, with a smooth landing recovery.</li>
+                        <li>The Well Rested aura follows the character's rendered position while walking and jumping.</li>
+                        <li>Administration correctly separates automation accounts from real players in online lists, activity history and daily totals. All accounts remain available through the population filter.</li>
+                        <li>Includes the recent faster jump arrival, world-entry recovery and combat stability fixes. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.27">
                     <h3 class="patch-note-entry__title">Alpha 1.79.27 (Faster jump arrival)</h3>
                     <ul class="patch-note-entry__list">
@@ -872,19 +882,6 @@
                         <li>Foliage visibility and shadow restoration reuse frame-local arrays instead of rebuilding hash sets. Eligibility, exact bounds, live actors and end-of-frame restoration stay unchanged.</li>
                         <li>Original frame, draw and triangle limits remain unchanged. Bounded native High/Low world views and equipped town captures qualify this update, not final modern-world, equipped-party, physical-device or campaign acceptance. Raised terrain remains disabled by default; no experimental outcrop-shader rollout.</li>
                         <li>Supplied actor, equipment and animation assets, class restrictions, combat, rewards and saved player data remain unchanged. Full prior patch history is retained; login initially shows ten notes with a load-more control.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.18">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.18 (Air Realm scenery and lighting)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Gale cypresses gain curved rooted trunks, fuller needle crowns and matching bark instead of cylinders and detached root cones. All 90 existing tree placements, instance scales, rotations and collision clearances are retained.</li>
-                        <li>Air ground detail uses a roughly nine-metre material scale and sheltered dust pockets rather than broad repeated diagonal deposits. Color, relief and roughness still share three registered surface maps; the floor remains flat.</li>
-                        <li>Weather instruments have forged pointer silhouettes, bearings and calibrated instrument bands. Observatory chart tables gain grounded legs and bracing within their existing footprints.</li>
-                        <li>Courier shelving gains timber supports. Bivouacs have padded, folded canvas bedrolls with rolled ends instead of solid boxes; they join the existing canvas material batch, without new materials or textures.</li>
-                        <li>Air lighting uses stronger directional light and less ambient wash to shape stone, cloth and equipment. Existing light counts, colors, exposure, fog and bloom settings are retained.</li>
-                        <li>Original frame, draw and triangle limits pass in bounded native High/Low reference views. Quality switching retains foliage transforms, materials and scene ownership. Prior failed profiles remain recorded; this is not whole-game performance certification.</li>
-                        <li>This is combined regional component polish, not final modern-world approval, equipped-party or physical-device qualification, the 1.80 feature freeze or full 1.87 completion. Raised terrain remains disabled in the public world.</li>
-                        <li>No account wipe, schema migration, combat, quest, economy or permission change. Supplied class/equipment source models remain unchanged. Full prior patch history is preserved through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">
