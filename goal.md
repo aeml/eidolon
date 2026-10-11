@@ -750,3 +750,25 @@ Receipt2026-10-11-birch-connected-crown-qualification.json.32ownorderedCI and
 publicacceptance remainpending;31lastaccepted,29soakseparate. Alloriginal
 world/art/gameplay/devices/performance/operations/F1-F5/beta/launch/handoff
 requirements remainactive; no unchangedcampaign/soak replay or accessmutation.
+
+October11 recovery continuation (progress): selected completed eea1183f history
+through ordinary reviewed merge31e69e97, qualified current correctionsd81b1ef8,
+and ordinarily merged67267986 into master. Prior birch turn was progress, with
+qualified implementation integrated and real disk preflight repaired. Original
+verifier trailing slash/dot alias bypasses and later /./ missing-marker bypass
+were reproduced, retained and corrected. Fixed artifact SHA/gzip check remains
+read-only; coordinated restore verifies integrity before Docker. Current CI now
+enrolls existing actual disposable archive restore and saved-checkpoint check.
+26manifest/path+8coordinatedgate+28restoreguard+1checkpoint =63distinct focused;
+backup generation/failure restart, private build-context and real schema25 BSON
+restore add3distinct checks (66total), all final pass/no skip. Actual backup
+17.91s/privatecontext1.36s retained; affected final restore27.51s passed after
+canonical-directory fix. Three exact owned network-none Mongo projects fully
+cleaned. Frozen17entry inventory9de9e05c0ae538a1c9fa2ce26f73b42ad900de1ca09b582d3715dc8bc6c88c6a.
+Receipt2026-10-11-recovery-integrity-qualification.json. Unmergedtips84→83
+(original287); no deletion, blanket integration or originaldirty203/262 changes.
+Public32 own predeployQA stillactive; client/server/3browser prerequisites pass.
+Public31 remainslastaccepted, public29soakseparateactive. No GPU campaign replay,
+productionrestore, terrainactivation, access/commerce/wipe changes. Alloriginal
+world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff
+requirements stayactive; scopeheader unchanged.

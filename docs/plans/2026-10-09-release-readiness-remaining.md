@@ -66,12 +66,23 @@ Every explicit requirement in those sources remains part of the completion audit
   affected cases rechecked. Five owned reproducible publication copies removed
   after every pinned asset matched; manifests, source and evidence preserved.
   [Birch qualification](2026-10-11-birch-connected-crown-qualification.json).
+- **Recovery integrity:** completed staged recovery work is now ordinarily merged
+  into master at `67267986`, with current-source path corrections `d81b1ef8`.
+  Read-only fixed-artifact SHA/gzip verification precedes Docker access for a
+  coordinated restore point. Trailing symlink and `/./` missing-marker bypasses
+  were reproduced and corrected. Sixty-six distinct focused/disposable checks
+  qualify current guards, generated backup sets, schema25 BSON custody and saved
+  boss checkpoint consumption. All three owned test projects are cleaned up.
+  Existing actual archive restore is enrolled in CI. Unpublished; production
+  restore, off-machine recovery, RPO/RTO and final rehearsal remain open.
+  [Recovery qualification](2026-10-11-recovery-integrity-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **84**, reduced from 287. Unfinished/rejected experiments
+  unmerged tips are now **83**, reduced from 287. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
-  three additional origin-parser regression cases; current runtime, workflow
-  guards and full scope remain intact.
+  three additional origin-parser regression cases. Completed recovery integrity
+  is also selected and merged after current-source qualification; unfinished
+  future recovery/integration work remains separate. Full scope remains intact.
   [Workflow](../../AGENTS.md),
   [original reconciliation](2026-10-11-master-branch-reconciliation.json),
   [stale-hover/rune histories](2026-10-11-stale-hover-rune-branch-reconciliation.json),
