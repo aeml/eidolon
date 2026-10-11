@@ -1,0 +1,118 @@
+{
+  "recordedUTC": "2026-10-11T21:20:28.505672+00:00",
+  "status": "Qualified and ordinarily merged into local master; unpublished pending coherent milestone and ordered release38 acceptance.",
+  "source": "f73d5225838be39188e4cb2650dcc2cb64f8951a",
+  "implementationCommit": "81751781",
+  "whitespaceProvenanceCorrection": "f73d5225",
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.bundle.js",
+    "sha256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+    "bytes": 173395,
+    "modules": 15,
+    "imports": [],
+    "precomputed": {
+      "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+      "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+      "bytes": 777321,
+      "entries": 133
+    }
+  },
+  "artifact": {
+    "entries": 133,
+    "original109OutputsRemainExact": true,
+    "addedExactInputs": 24,
+    "bytes": 777321,
+    "decodedUint32Bytes": 2401116,
+    "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346"
+  },
+  "behavior": "Exact supplied-class initial and equipped geometry indices are precomputed by the original algorithms. Runtime validates source fingerprints, bounded length, artifact and output SHA before using them. Missing, changed, offline, malformed or corrupt data falls back to the original algorithms. Existing bounded worker LRU and root lifetime stay intact.",
+  "provenance": "Generator and runtime share fingerprint, codec and original preparation. Catalog binds algorithm sources, generator/fixture/helper sources and locked meshoptimizer1.2.0 integrity. Read-only content/build checks reject stale or linked inputs.",
+  "focused": {
+    "distinctPassed": 142,
+    "suites": 10,
+    "groups": {
+      "codecFingerprintProvider": 41,
+      "existingBodyColorDeliveryRuntime": 71,
+      "artifactAndGameBundle": 27,
+      "aggregateContent": 3
+    },
+    "testExecutions": 212,
+    "failedExecutionsRetained": 6,
+    "filteredNotCounted": 21,
+    "affectedFinalRerun": 43
+  },
+  "native": {
+    "distinctCases": 3,
+    "finalPassed": 3,
+    "finalSeconds": 30.4,
+    "finalRetries": 0,
+    "finalSkips": 0,
+    "executionsIncludingPriorFailure": 6,
+    "retainedFailedExecutions": 1,
+    "coverage": [
+      "High four supplied classes, 14 slots, both job orderings, full output SHA and precomputed flags, exact pixel comparison",
+      "Low same coverage",
+      "Immutable worker/root retirement/cache reuse; fresh offline worker computes exact actual-body precomputed result and original synthetic fallbacks"
+    ]
+  },
+  "generation": {
+    "uniqueRows": 133,
+    "jobsPerRun": 240,
+    "eachQualityRequestedExecuted": 120,
+    "canceledBeforeExecution": 0,
+    "highInstalledFallback": [
+      104,
+      16
+    ],
+    "lowInstalledFallback": [
+      110,
+      10
+    ],
+    "sameSourceRepeatCatalogAndBinaryByteExact": true,
+    "whitespaceOnlyRegenerationBinaryUnchanged": true,
+    "original109OutputsRemainExact": true
+  },
+  "checks": {
+    "generatedContentGroups": 12,
+    "lintPassed": true,
+    "workingAndStagedWhitespaceChecksPassed": true,
+    "workerOnlyDifferenceAfterWhitespaceCorrection": "Embedded unused fingerprint provenance SHA; executable bytes exactly equal before/after replacement; native coverage reused on that proof."
+  },
+  "retainedFailures": [
+    "Initial combined focused run: 6 failures, 92 passes. Cross-realm Node Buffer rejected by strict codec and copied publication lacked the new binary. Tests now execute actual Node tooling and copy the artifact; final 27 affected cases pass.",
+    "Local vendor symlink let malicious isolation tests alter three ignored vendor files. Restored from locked dependencies; owned fixture now independent. All403 Three build/add-on files verified byte-exact and no symlinks. Committed source and original dirty checkout unaffected.",
+    "Initial native offline actual-body case correctly fell back but failed expected precomputed flag because initial appearances were absent from109-row catalog. Added24 exact inputs, including initial appearances; final133-row artifact passes all3native cases.",
+    "Initial expanded generator observed legitimate cancellations while loading equipment and failed overly strict requested/response equality. Stable initial/equipped boundaries untrack during gear loading; final120requested=120executed perquality, canceled0. Historical failure retained.",
+    "Initial staged whitespace check flagged an extra EOF blank; shell continued to81751781. Corrected f73d5225 and refreshed bound provenance, with passing working/staged checks and compiled equivalence proof."
+  ],
+  "limits": [
+    "Selected local implementation only; not yet a published release.",
+    "133-row asset retains777321 encoded bytes per worker beyond original16MiB/128-entry cache. Peak memory and download/first-frame performance remain unqualified.",
+    "109-row private prototype timing does not qualify this larger133-row runtime.",
+    "Cold triangle budgets, connected frame-time failures, modern art, physical devices and all original readiness/beta/launch gates remain open."
+  ],
+  "evidenceLogs": [
+    "native-expanded.log",
+    "native.log",
+    "final-affected-focused.log",
+    "aggregate-content-focused.log",
+    "build-and-existing-focused.log",
+    "corrected-build-fixtures.log",
+    "check-content-expanded.log",
+    "lint-expanded.log",
+    "reproducibility-result.json",
+    "whitespace-worker-equivalence.json",
+    "vendor-repair-verification.json"
+  ],
+  "merge": "11d9b9112af776674a69111112bcc13fb16fa315",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-precomputed-implementation-checks-20261011",
+    "entries": 77,
+    "frozen": true,
+    "inventorySHA256": "994f9273c7b2474724ef55c7fd83ad33b10b9a7cd90fc79ab1953b4e48b1c51a"
+  },
+  "masterBuild": {
+    "metadata": "/home/aeml/.local/share/eidolon-master-precomputed-worker-20261011.json",
+    "matchesQualifiedWorkerByteExact": true
+  }
+}

@@ -3181,5 +3181,34 @@
       "inventorySHA256": "488537f6d363119411b38e24f649a5bfec39238e722b9dce7169bd565b2fa8e7"
     },
     "receipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json"
+  },
+  "precomputedGeometryLocalQualification": {
+    "source": "f73d5225838be39188e4cb2650dcc2cb64f8951a",
+    "merge": "11d9b9112af776674a69111112bcc13fb16fa315",
+    "status": "Qualified and ordinarily merged into local master; unpublished pending coherent milestone and ordered release38 acceptance.",
+    "workerSHA256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+    "artifact": {
+      "entries": 133,
+      "original109OutputsRemainExact": true,
+      "addedExactInputs": 24,
+      "bytes": 777321,
+      "decodedUint32Bytes": 2401116,
+      "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346"
+    },
+    "focusedDistinct": 142,
+    "nativeDistinct": 3,
+    "receipt": "docs/plans/2026-10-11-precomputed-geometry-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-precomputed-implementation-checks-20261011",
+      "entries": 77,
+      "frozen": true,
+      "inventorySHA256": "994f9273c7b2474724ef55c7fd83ad33b10b9a7cd90fc79ab1953b4e48b1c51a"
+    },
+    "limits": [
+      "Selected local implementation only; not yet a published release.",
+      "133-row asset retains777321 encoded bytes per worker beyond original16MiB/128-entry cache. Peak memory and download/first-frame performance remain unqualified.",
+      "109-row private prototype timing does not qualify this larger133-row runtime.",
+      "Cold triangle budgets, connected frame-time failures, modern art, physical devices and all original readiness/beta/launch gates remain open."
+    ]
   }
 }
