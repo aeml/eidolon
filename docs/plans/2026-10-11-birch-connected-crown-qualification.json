@@ -257,7 +257,7 @@
     ],
     "frameRateClaim": false
   },
-  "artReview": "Actual supplied14-slot Fighter/HUD in45preparedviews360walkingposes, plus24flat-world site views. DesktopHigh/Low and390pxLow controls reviewed. Broader birch silhouette improves while sparse/repeated foliage, broad ground masks and procedural rock/architecture remain unfinished. Canvaspairedimages excludeDOMHUD; separatecandidate screenshots includeactualHUD.",
+  "artReview": "Actual supplied14-slot Fighter/HUD in45preparedviews360walkingposes, plus40flat-world site views. DesktopHigh/Low and390pxLow controls reviewed. Broader birch silhouette improves while sparse/repeated foliage, broad ground masks and procedural rock/architecture remain unfinished. Canvaspairedimages excludeDOMHUD; separatecandidate screenshots includeactualHUD.",
   "failuresRetained": [
     "Initial diagnostic found7.186mm stemshift from bounds-based root adjustment; keep lowerforkexact and finalrootattributes/transformgoldens pass. Draftnative3 superseded by affectedfinal3.",
     "Copiedfixture beforeAll failedENOSPC copyingassets;2flatcasespass,1copiedfail/3notrun. Verified allpinnedassets of5ownedgeneratedpublicationcopies and removed only reproducible public/directories; immutablemanifests/builders/contexts/source/evidence retained. Then affectedcopied4pass, no CItaskretry/cancel."
