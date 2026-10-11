@@ -14,7 +14,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
     const folder = testInfo.outputPath('post-login-moving-route');
     await mkdir(folder, { recursive: true, mode: 0o700 });
     const session = await page.context().newCDPSession(page);
-    const frames = [], writes = [], observations = [], profiles = [];
+    const frames = [], writes = [], observations = [], profiles = [], walkingPlans = [];
     const captureOptions = { format: 'jpeg', quality: 70, maxWidth: 1280, maxHeight: 844, everyNthFrame: 6 };
     const started = performance.now();
     let recording = false;
@@ -106,15 +106,27 @@ export async function captureEarthMovingRoute(page, testInfo) {
             for (let step = 0; step < 30; step++) {
                 const before = await readPlayerState(page), distance = Math.hypot(x - before.x, z - before.z);
                 if (distance < .6) return;
-                const fraction = Math.min(18, distance) / distance;
-                const visible = await page.evaluate(async step => {
+                const planned = await page.evaluate(async destination => {
+                    const { planCollisionAwareWalk } = await import('/tests/collisionAwareWalking.js');
                     const { planVisibleGroundStepInPage } = await import('/tests/groundInputProjection.js');
-                    return planVisibleGroundStepInPage(step);
-                }, { dx: (x - before.x) * fraction, dz: (z - before.z) * fraction });
-                expect(visible, 'Plan an unobscured prefix before constructing the strict arrival target').toBeTruthy();
-                const targetX = before.x + visible.dx, targetZ = before.z + visible.dz;
+                    const game = window.game, origin = game.player.position.clone();
+                    const route = planCollisionAwareWalk(game.collisionManager, origin, game.player.radius || 1.25,
+                        destination, { sampleHeight: (x, z) => game.currentInstanceId ? origin.y :
+                            game.terrainElevation?.sample(x, z) ?? origin.y });
+                    if (!route) return null;
+                    const next = route.waypoints[0], length = Math.hypot(next.x - origin.x, next.z - origin.z);
+                    const fraction = Math.min(18, length) / Math.max(.001, length);
+                    const visible = planVisibleGroundStepInPage({ dx: (next.x - origin.x) * fraction,
+                        dz: (next.z - origin.z) * fraction }, { minimumDistance: .1 });
+                    return { ...route, visible, origin: { x: origin.x, z: origin.z, instanceId: game.currentInstanceId || '' } };
+                }, { x, z });
+                walkingPlans.push({ destination: { x, z }, ...planned });
+                expect(planned?.visible, 'Plan a collision-clear, unobscured ordinary walking prefix').toBeTruthy();
+                const visible = planned.visible;
+                const targetX = planned.origin.x + visible.dx, targetZ = planned.origin.z + visible.dz;
                 await moveByGroundClick(page, visible.dx, visible.dz, { moveOnly: true,
                     requireClearPath: true, allowAlternatePaths: false, allowJumpFallback: false, minimumDistance: .1,
+                    batchPreparation: true, expectedOrigin: planned.origin,
                     arrival: { x: targetX, z: targetZ, radius: .6, instanceId: before.instanceId } });
                 await expect.poll(async () => {
                     const state = await readPlayerState(page);
@@ -123,7 +135,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
             }
             throw Error('Bounded authored-road movement did not reach the requested stop');
         };
-        const lastRoadStop = reviewMode === 'dungeon' ? ['bastion-road-turn', 725, 200] : ['bastion-approach', 760, 200];
+        const lastRoadStop = reviewDungeon ? ['bastion-road-turn', 725, 200] : ['bastion-approach', 760, 200];
         for (const [label, x, z] of [['north-court', 0, 186], ['market-pass', 60, 186], ['east-street', 60, 200],
             ['east-gate', 120, 200], ['earth-road', 240, 200], ['woodland-cut', 470, 200], lastRoadStop]) {
             while (true) {
@@ -162,7 +174,7 @@ export async function captureEarthMovingRoute(page, testInfo) {
         finally { await session.detach(); await Promise.all(writes); }
         await writeFile(testInfo.outputPath('moving-route.json'), JSON.stringify({
             scope: 'Prepared level30 Fighter, normal ground-input continuous town→gate→Earth road→Verdant approach, actual HUD and native render. Explicit post-login screencast; excluded from subsequent party frame timings. No campaign/encounter clear/mobile/final-art approval.',
-            fightAndDungeonReview: fightReview, reviewMode, failure: routeFailure, frames, observations, profiles, elapsedMs: performance.now() - started
+            fightAndDungeonReview: fightReview, reviewMode, failure: routeFailure, frames, observations, profiles, walkingPlans, elapsedMs: performance.now() - started
         }, null, 2));
         if (fightReview && previousAutoLoot !== undefined) fightEvidence = await finishFightReview(page, testInfo, previousAutoLoot);
     }
