@@ -21,22 +21,16 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## Release and source custody
 
-- **Last accepted public build:** Alpha 1.79.30,
-  `1aae8407e51c0a6016ac9a27cff75be060001306`.
-  [CI 38124028177](https://github.com/aeml/eidolon/actions/runs/38124028177)
-  passed all ten ordered jobs. Post-terminal normal TLS checks verified exact
-  frontend/backend identity, ready database and all nine expected asset hashes
-  and byte counts. Optional stabilization/gallery/full-character/four-renderer
-  steps remain skips, not passes.
-  [Acceptance receipt](2026-10-11-public30-terminal-qualification.json).
-- **Current pushed milestone:** Alpha 1.79.31,
+- **Last accepted public build:** Alpha 1.79.31,
   `88be47c55e56b00f7d7cdb659c6ed51020391cb3`.
   [CI 38131408628](https://github.com/aeml/eidolon/actions/runs/38131408628)
-  attempt 1 is active. Client and browser shard 3 have passed; server and shards
-  1/2 are active at this checkpoint. Required native predeploy, deployment, live
-  gameplay and post-terminal exact assets/readiness remain due. The nine-asset
-  manifest is pinned separately in the publication directory identified by
-  [prepublication proof](2026-10-11-release31-world-corrected-prepublication.json).
+  attempt 1 passed all ten ordered jobs. Post-terminal normal TLS checks at
+  11:04:48 UTC verified exact frontend/backend identity, ready database and all
+  nine expected asset hashes and byte counts. Optional gallery/full-rest-GPU/
+  full-character/four-renderer steps remain skips, not passes.
+  [Acceptance receipt](2026-10-11-public31-terminal-qualification.json).
+  Accepted public 30 remains retained as historical evidence in its
+  [receipt](2026-10-11-public30-terminal-qualification.json).
 - Both previous 31 runs failed before deployment. Original `42f06ad0` hit the
   copied High world-review timeout; corrected `2c41890c` failed the unchanged
   conifer projected-coverage gate. All failure evidence is retained. The view
@@ -49,8 +43,8 @@ Every explicit requirement in those sources remains part of the completion audit
 - **New completed work after that push:** roof construction `e5087567` is
   ordinarily merged into local master `7a8fbfb4`; it is qualified and unpublished.
   [Roof proof](2026-10-11-town-roof-construction-qualification.json).
-  No subsequent release push until the current milestone's outcome and required
-  deployment verification are resolved.
+  Public31 is accepted; these later components remain held for a coherent next
+  milestone with its own qualification and deployment verification.
 - **Branch workflow:** reviewed completed work merges into `master`. Local
   unmerged tips are now **91**, reduced from 287. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
@@ -71,10 +65,10 @@ Every explicit requirement in those sources remains part of the completion audit
 
 | Work | Current state and limits |
 | --- | --- |
-| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30 and pushed 31. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
+| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30 and 31. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
 | Supplied actors and equipment | Four class GLBs, equipment catalog and motion banks are delivered and integrated. Retain originals, provenance, rig/bone/morph/material/slot identity and compatibility. No replacement procedural player catalog or repeated asset request. |
 | Dungeon/environment/combat/HUD milestone | Selected ground/floor/prop maps, entrance wards, regional relics, paving, shallow boss masonry, equipped motions, impact continuity, bounded contact foley and status symbols are merged and included in accepted 30. Old “private/not published” labels in dated receipts are historical. Final art, human listening, busy fights and device gates remain open. |
-| Renderer/environment milestone 31 | High-only singleton batching, reviewed DemonOrc packing, camp instance clipping, display-space FXAA, rock shoulders, rooted foliage shading, pine growth/coverage, Earth map cleanup/ordered physical layers and tapered fern pinnae are merged and pushed as 88be47c5. Exact publication acceptance is pending. Earlier rejected all-quality singleton and renderer prototypes remain separate. |
+| Renderer/environment milestone 31 | High-only singleton batching, reviewed DemonOrc packing, camp instance clipping, display-space FXAA, rock shoulders, rooted foliage shading, pine growth/coverage, Earth map cleanup/ordered physical layers and tapered fern pinnae are merged and pushed as 88be47c5. Exact ordered publication acceptance passed; broader art/performance remains open. Earlier rejected all-quality singleton and renderer prototypes remain separate. |
 | Phone fixture | The 390px Earth review uses actual phone startup policy and checks visible/reachable controls. Browser emulation and prepared poses do not establish physical-phone party/dungeon feedback. |
 | Town roof construction | Two fitted gable ends and four timber edge boards per affected structure; 80 additional triangles per building, existing batches/materials/colliders/bounds retained. 30 focused and four distinct native cases pass. Actual town review covers smithy/Compact; Oathhall is constructor/unit covered, with no claim of town placement. Qualified, local master, unpublished. |
 
@@ -92,7 +86,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Current release | Complete the exact 88be47c5 ordered CI/deploy/live gate and normal-TLS nine-asset/frontend/backend/database verification. Diagnose actual failures; no blind retry or next release during verification. | Implementation |
+| Next release | Assemble the next coherent milestone from qualified local-master work, then qualify its exact publication, ordered CI/deploy/live gates and normal-TLS assets/readiness. Accepted public31 does not prequalify future source. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |

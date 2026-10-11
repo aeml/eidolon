@@ -1,0 +1,225 @@
+{
+  "recordedUTC": "2026-10-11T11:09:27.299634+00:00",
+  "version": "Alpha 1.79.31",
+  "source": "88be47c55e56b00f7d7cdb659c6ed51020391cb3",
+  "releaseGateAccepted": true,
+  "run": 38131408628,
+  "attempt": 1,
+  "url": "https://github.com/aeml/eidolon/actions/runs/38131408628",
+  "terminal": {
+    "status": "completed",
+    "conclusion": "success",
+    "observedAt": "2026-10-11T11:04:37.025914+00:00"
+  },
+  "jobs": [
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "id": 114446328468,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:31:00Z",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "id": 114446328559,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:34:27Z",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Client Tests (Jest)",
+      "id": 114446328577,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:28:48Z",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "id": 114446328584,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:43:42Z",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Server Tests (Go)",
+      "id": 114446328600,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:37:37Z",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "id": 114450974820,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:53:42Z",
+      "optionalSkippedSteps": [
+        "Run deterministic High/Low animation gallery",
+        "Run required Well Rested rendering and GPU lifecycle QA",
+        "Run disposable full-character gameplay"
+      ]
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "id": 114452752413,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:53:47Z",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "id": 114452769188,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:55:07Z",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "id": 114452769211,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T10:55:12Z",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Live Release and Character QA",
+      "id": 114453021468,
+      "status": "completed",
+      "conclusion": "success",
+      "completedAt": "2026-10-11T11:04:22Z",
+      "optionalSkippedSteps": [
+        "Run live four-class and remote-animation QA"
+      ]
+    }
+  ],
+  "live": {
+    "observedAt": "2026-10-11T11:04:48.583318+00:00",
+    "tls": "Normal certificate validation; no insecure TLS override.",
+    "frontend": {
+      "url": "https://play.eidolonrealms.com/release.json",
+      "http_status": 200,
+      "version": "Alpha 1.79.31",
+      "commit": "88be47c55e56b00f7d7cdb659c6ed51020391cb3"
+    },
+    "backend": {
+      "url": "https://server.eidolonrealms.com/healthz",
+      "http_status": 200,
+      "version": "Alpha 1.79.31",
+      "commit": "88be47c55e56b00f7d7cdb659c6ed51020391cb3",
+      "status": "ok",
+      "database": "ready"
+    },
+    "expectedManifest": "/home/aeml/.local/share/eidolon-release31-world-corrected-publication-checks-20261011/expected-public31-assets.json",
+    "assets": [
+      {
+        "path": "index.html",
+        "expected_sha256": "98ffcabc190e12fa51edc6a2ad4fe86c30f98f1d5f6e4379d524b6d8a8a99aac",
+        "expected_bytes": 104758,
+        "observed_sha256": "98ffcabc190e12fa51edc6a2ad4fe86c30f98f1d5f6e4379d524b6d8a8a99aac",
+        "observed_bytes": 104758,
+        "match": true,
+        "http_status": 200
+      },
+      {
+        "path": "src/main.js",
+        "expected_sha256": "2c15bb4dec21618fe734e6b20f7d462c3a18bf13d2cfa7d3abc263b9a1d2f378",
+        "expected_bytes": 28947,
+        "observed_sha256": "2c15bb4dec21618fe734e6b20f7d462c3a18bf13d2cfa7d3abc263b9a1d2f378",
+        "observed_bytes": 28947,
+        "match": true,
+        "http_status": 200
+      },
+      {
+        "path": "src/core/GameEngine.bundle.js",
+        "expected_sha256": "85afe586059931d4a152d68f232829af44af3557bea83d345e8fdee79d4b89ee",
+        "expected_bytes": 3487705,
+        "observed_sha256": "85afe586059931d4a152d68f232829af44af3557bea83d345e8fdee79d4b89ee",
+        "observed_bytes": 3487705,
+        "match": true,
+        "http_status": 200
+      },
+      {
+        "path": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+        "expected_sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "expected_bytes": 137178,
+        "observed_sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "observed_bytes": 137178,
+        "match": true,
+        "http_status": 200
+      },
+      {
+        "path": "src/entities/Actor.js",
+        "expected_sha256": "f7128caa216024562b832be4afebc616346c74f067df4a8806d498615705f784",
+        "expected_bytes": 96447,
+        "observed_sha256": "f7128caa216024562b832be4afebc616346c74f067df4a8806d498615705f784",
+        "observed_bytes": 96447,
+        "match": true,
+        "http_status": 200
+      },
+      {
+        "path": "src/ui/AdminUI.js",
+        "expected_sha256": "83a59d890a29ae4f11fa984725f84cac8ef4d1a50e9279d5aea7eec6e7b07a6b",
+        "expected_bytes": 25593,
+        "observed_sha256": "83a59d890a29ae4f11fa984725f84cac8ef4d1a50e9279d5aea7eec6e7b07a6b",
+        "observed_bytes": 25593,
+        "match": true,
+        "http_status": 200
+      },
+      {
+        "path": "src/core/GameEngineMovement.js",
+        "expected_sha256": "844e93549a4ae265c3c8b731319a5400c3e2d272a0855b1eb3d409346bdefd11",
+        "expected_bytes": 65272,
+        "observed_sha256": "844e93549a4ae265c3c8b731319a5400c3e2d272a0855b1eb3d409346bdefd11",
+        "observed_bytes": 65272,
+        "match": true,
+        "http_status": 200
+      },
+      {
+        "path": "src/core/GameEngineRuntime.js",
+        "expected_sha256": "fb5b9590d7da6b08ec58e4709de02bf3912ec8b6596347f1cf64131f18011d88",
+        "expected_bytes": 60516,
+        "observed_sha256": "fb5b9590d7da6b08ec58e4709de02bf3912ec8b6596347f1cf64131f18011d88",
+        "observed_bytes": 60516,
+        "match": true,
+        "http_status": 200
+      },
+      {
+        "path": "src/styles/index.css",
+        "expected_sha256": "cb3be448447afc1388392f58a4e7edffe12e14755ff0f74ee5d37421572da099",
+        "expected_bytes": 251766,
+        "observed_sha256": "cb3be448447afc1388392f58a4e7edffe12e14755ff0f74ee5d37421572da099",
+        "observed_bytes": 251766,
+        "match": true,
+        "http_status": 200
+      }
+    ]
+  },
+  "retainedFailures": [
+    {
+      "run": 38126692286,
+      "source": "42f06ad0",
+      "receipt": "2026-10-11-release31-hosted-review-failure.json",
+      "reason": "Copied High combined view review timed out before deployment."
+    },
+    {
+      "run": 38129763146,
+      "source": "2c41890c",
+      "receipt": "2026-10-11-release31-conifer-coverage-failure.json",
+      "reason": "Unchanged conifer projected-coverage assertions failed before deployment."
+    }
+  ],
+  "correction": "Final source retains original coverage and timeout budgets; partitioned High review and fuller pine fan are qualified in linked prepublication evidence. No workflow retry, cancellation or waiver.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-public31-terminal-checks-20261011",
+    "inventoryEntries": 4,
+    "inventorySHA256": "451ce457446e7deb465507dfde3dad858925f64f71c782208408d9cf06ccec1b"
+  },
+  "limits": "Accepts this exact ordered release gate and public deployment. Four optional skipped steps are not passes. Does not close final modern art, whole-game performance, physical-phone/campaign review, active public29 soak, F1\u2013F5, beta, launch or handoff; full original goal remains active."
+}
