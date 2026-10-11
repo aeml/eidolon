@@ -1,0 +1,32 @@
+{
+  "recordedUTC": "2026-10-11T15:25:34.913976+00:00",
+  "source": "2b2bd799c77e8be3f535a3e57d178ba0c0ea88c3",
+  "status": "Qualified desktop keyboard fix ready for ordinary master merge; unpublished.",
+  "problem": "Desktop active skill choices and rune choices were click-only divs, missing native keyboard focus/activation and rune toggle semantics.",
+  "change": "Native type=button skill/rune controls, disabled eligibility and authoritative aria-pressed rune selection. Span children preserve card layout; existing visible-focus outline reused. Read-only Tier1 and desktop talent/mobile controls retain their current behavior. No protocol, rank, cost, branch eligibility, optimistic state or server authority changes.",
+  "validation": {
+    "distinctFocusedTests": 175,
+    "suites": 8,
+    "browserDistinct": 4,
+    "browserExecutions": 6,
+    "browserRetries": 0,
+    "browserSkips": 0,
+    "discoveredCIcases": 352,
+    "discoveryIsExecution": false,
+    "lint": "pass",
+    "diffCheck": "pass"
+  },
+  "baseline": "Corrected selector control:11checks fail on original source. Initial selector selected read-only Tier1 rather than active branch; original logs retained. Final focused83checks/5suites pass; related91pass1fail is obsolete MenuPolish div selector, corrected to actual rune button and only affected suite rerun. Final175distinct checks pass.",
+  "native": "Actual Chromium keyboard Tab/Enter/Space and visible focus activate skill and equip/remove rune; supplied player image remains unchanged until explicit fixture acknowledgement. Three pre-existing360x800/390x844/844x390touch layout cases pass. One desktop rerun adds skill image; visual review finds width applied to read-only Tier1, fixed to button-only width and only desktop case rerun with all card bounds checked. Four distinct native cases, six executions, no retries/skips.",
+  "imagesInspected": [
+    "desktop-final/mobile-skills-layout-deskt-bdbf4-ith-authoritative-selection/desktop-keyboard-skills.png",
+    "desktop-width-final/mobile-skills-layout-deskt-bdbf4-ith-authoritative-selection/desktop-keyboard-skills.png",
+    "browser-results/mobile-skills-layout-deskt-bdbf4-ith-authoritative-selection/desktop-keyboard-runes.png",
+    "eidolon-phone-skills-runes-360.png"
+  ],
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-keyboard-build-checks-20261011",
+  "inventoryEntries": 39,
+  "inventorySHA256": "54081338cbd09d871a72b2d0337af7537c848610c47e158c715a80643f28f2cf",
+  "limits": "Prepared UI fixture with blocked WebSocket and simulated acknowledgements, not earned connected progression or physical-device/whole-game accessibility acceptance. Existing352case CI discovery is coverage enrollment only. Full release-readiness stays active.",
+  "publication": "Combine with already-qualified guild/venue successor work after exact corrective34CI/deploy/public acceptance; no tiny release pushed."
+}
