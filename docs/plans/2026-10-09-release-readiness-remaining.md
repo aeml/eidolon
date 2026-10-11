@@ -44,7 +44,7 @@ full locked-dependency lint pass. Actual discovery338hosted/27native/13overlap/
 upstream licensing/docs4e7fbe6f is preserved. Release deployment remains pending.
 [Correction proof](2026-10-11-additive-hosted-native-gate-correction.json).
 
-**Next qualified camp change:**346b9a58 is ready to merge into local master;
+**Next qualified camp change:**346b9a58 is merged into local master at21a8bba4;
 publication waits for current Alpha1.79.30 acceptance. Only the four reviewed
 camp/owner files from the earlier private prototype were selected onto current
 master; other private renderer/monster experiments remain excluded. Stock

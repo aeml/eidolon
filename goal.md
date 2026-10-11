@@ -491,3 +491,12 @@ Completed qualified change merges into local master per owner workflow; no new
 publication until current Alpha1.79.30/7df6cf22 CI/deployment is accepted. Initial
 CI38116276417 terminal failure; final38117717646 running. Original full goal and
 whole-world/art/device/operations/F1–F5/beta/launch/handoff remain active.
+
+2026-10-11 branch custody: qualified camp source/QA/receipts ordinarily merged
+into local master21a8bba4, not left only on a work branch. Concurrent upstream
+AGPL/asset-license revision8accba41 is preserved. Current publication remains
+Alpha1.79.30:7dfCI38117717646 running, upstream8accCI38118148918 pending. Local
+camp milestone will publish coherently after current release gates/deployment
+acceptance. Original dirty work/fighter-charge checkout is preserved at64ec325b
+with203tracked/262untracked entries;104unmerged historical branches remain
+under review. Frozen camp96-entry/97file inventory verified without mutation.
