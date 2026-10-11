@@ -1,0 +1,965 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-11T03:06:36.038564+00:00",
+  "classification": "progress",
+  "source": "cbff101407d2a8a0f265f1cb07d96e5f976e1196",
+  "parent": "c7ac770210f4c27971c49742af37cd2b92f16354",
+  "selected": false,
+  "published": false,
+  "runtimeWired": false,
+  "hypothesis": "Prior owned90frame matrix boundary observer identifies foliage transform subtree ~2.81ms/frame. Try exact unchanged left/right/result matrix-product reuse while preserving stock traversal/force/dirty propagation. Only prepared foliage cells wrapped by QA; no actor/bone/shadow semantics replaced.",
+  "focused": {
+    "distinctPassed": 15,
+    "newExactProductChecks": 4,
+    "existingLocalMatrixChecks": 11,
+    "finalChangedHelperPassed": 4,
+    "scope": "15initial distinct checks/2suites; four directly affected exact-product tests rerun after unrolling. Repeated checks not counted twice. Signedzero/NaN/infinity/aliasing/manualwrites/dirtyforce/reparenting/borrowedcalls/latehook ownership included."
+  },
+  "native": {
+    "distinctPassed": 2,
+    "quality": [
+      "high",
+      "low"
+    ],
+    "finalControls": 12,
+    "finalRAFRenders": 480,
+    "cellsPerQuality": 3146,
+    "exactPixelsMatricesDraws": true,
+    "retainedInitialObserverLimitation": "Initial two passing cases at0,200 drew no foliage colors; those results establish only matrix/empty-view scope and are not visual or submission proof. Corrected camera uses actual Earth tree placement, requires positive foliage color draws in every control, and preserves all raw initial artifacts.",
+    "correctedLoop": {
+      "high": {
+        "pooled": {
+          "ordinary": {
+            "submission": {
+              "medianMs": 16.350000008940697,
+              "p95Ms": 28.5,
+              "samples": 120
+            },
+            "transforms": {
+              "medianMs": 2.0,
+              "p95Ms": 2.800000011920929,
+              "samples": 180
+            }
+          },
+          "cached": {
+            "submission": {
+              "medianMs": 15.649999991059303,
+              "p95Ms": 25.100000023841858,
+              "samples": 120
+            },
+            "transforms": {
+              "medianMs": 2.600000023841858,
+              "p95Ms": 3.4000000059604645,
+              "samples": 180
+            }
+          }
+        },
+        "controls": [
+          {
+            "stage": "stationary",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 77,
+                "shadow": 68
+              },
+              "calls": 92,
+              "triangles": 87461
+            },
+            "cached": {
+              "draws": {
+                "color": 77,
+                "shadow": 68
+              },
+              "calls": 92,
+              "triangles": 87461
+            }
+          },
+          {
+            "stage": "camera",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 101,
+                "shadow": 98
+              },
+              "calls": 119,
+              "triangles": 119839
+            },
+            "cached": {
+              "draws": {
+                "color": 101,
+                "shadow": 98
+              },
+              "calls": 119,
+              "triangles": 119839
+            }
+          },
+          {
+            "stage": "parent",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 116796
+            },
+            "cached": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 116796
+            }
+          },
+          {
+            "stage": "manual",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 116796
+            },
+            "cached": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 116796
+            }
+          },
+          {
+            "stage": "bounds",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 92000
+            },
+            "cached": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 92000
+            }
+          },
+          {
+            "stage": "return",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 101,
+                "shadow": 98
+              },
+              "calls": 119,
+              "triangles": 119839
+            },
+            "cached": {
+              "draws": {
+                "color": 101,
+                "shadow": 98
+              },
+              "calls": 119,
+              "triangles": 119839
+            }
+          }
+        ],
+        "cells": 3146,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "phases": [
+          {
+            "mode": "ordinary",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 5880
+            },
+            "calls": 232,
+            "triangles": 187378,
+            "submission": {
+              "medianMs": 14.700000017881393,
+              "p95Ms": 28.599999994039536
+            },
+            "transforms": {
+              "medianMs": 1.699999988079071,
+              "p95Ms": 2.300000011920929
+            }
+          },
+          {
+            "mode": "cached",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 5880
+            },
+            "calls": 232,
+            "triangles": 187378,
+            "submission": {
+              "medianMs": 15.299999982118607,
+              "p95Ms": 20.400000005960464
+            },
+            "transforms": {
+              "medianMs": 2.600000023841858,
+              "p95Ms": 3.4000000059604645
+            }
+          },
+          {
+            "mode": "cached",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 5880
+            },
+            "calls": 232,
+            "triangles": 187378,
+            "submission": {
+              "medianMs": 16.19999998807907,
+              "p95Ms": 28.100000023841858
+            },
+            "transforms": {
+              "medianMs": 2.699999988079071,
+              "p95Ms": 3.399999976158142
+            }
+          },
+          {
+            "mode": "ordinary",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 5880
+            },
+            "calls": 232,
+            "triangles": 187378,
+            "submission": {
+              "medianMs": 17.19999998807907,
+              "p95Ms": 28.5
+            },
+            "transforms": {
+              "medianMs": 2.300000011920929,
+              "p95Ms": 3
+            }
+          }
+        ]
+      },
+      "low": {
+        "pooled": {
+          "ordinary": {
+            "submission": {
+              "medianMs": 10.800000011920929,
+              "p95Ms": 18.5,
+              "samples": 120
+            },
+            "transforms": {
+              "medianMs": 2.199999988079071,
+              "p95Ms": 3.2999999821186066,
+              "samples": 180
+            }
+          },
+          "cached": {
+            "submission": {
+              "medianMs": 9.599999994039536,
+              "p95Ms": 15.599999994039536,
+              "samples": 120
+            },
+            "transforms": {
+              "medianMs": 2.5,
+              "p95Ms": 3.600000023841858,
+              "samples": 180
+            }
+          }
+        },
+        "controls": [
+          {
+            "stage": "stationary",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 77,
+                "shadow": 0
+              },
+              "calls": 92,
+              "triangles": 42253
+            },
+            "cached": {
+              "draws": {
+                "color": 77,
+                "shadow": 0
+              },
+              "calls": 92,
+              "triangles": 42253
+            }
+          },
+          {
+            "stage": "camera",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 101,
+                "shadow": 0
+              },
+              "calls": 118,
+              "triangles": 59603
+            },
+            "cached": {
+              "draws": {
+                "color": 101,
+                "shadow": 0
+              },
+              "calls": 118,
+              "triangles": 59603
+            }
+          },
+          {
+            "stage": "parent",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 58842
+            },
+            "cached": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 58842
+            }
+          },
+          {
+            "stage": "manual",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 58842
+            },
+            "cached": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 58842
+            }
+          },
+          {
+            "stage": "bounds",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 83638
+            },
+            "cached": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 83638
+            }
+          },
+          {
+            "stage": "return",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 101,
+                "shadow": 0
+              },
+              "calls": 118,
+              "triangles": 59603
+            },
+            "cached": {
+              "draws": {
+                "color": 101,
+                "shadow": 0
+              },
+              "calls": 118,
+              "triangles": 59603
+            }
+          }
+        ],
+        "cells": 3146,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "phases": [
+          {
+            "mode": "ordinary",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 0
+            },
+            "calls": 118,
+            "triangles": 59603,
+            "submission": {
+              "medianMs": 11.400000005960464,
+              "p95Ms": 20.900000005960464
+            },
+            "transforms": {
+              "medianMs": 2,
+              "p95Ms": 2.800000011920929
+            }
+          },
+          {
+            "mode": "cached",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 0
+            },
+            "calls": 118,
+            "triangles": 59603,
+            "submission": {
+              "medianMs": 10.599999994039536,
+              "p95Ms": 18.400000005960464
+            },
+            "transforms": {
+              "medianMs": 2.5,
+              "p95Ms": 3.699999988079071
+            }
+          },
+          {
+            "mode": "cached",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 0
+            },
+            "calls": 118,
+            "triangles": 59603,
+            "submission": {
+              "medianMs": 9,
+              "p95Ms": 12.900000005960464
+            },
+            "transforms": {
+              "medianMs": 2.5,
+              "p95Ms": 3.5
+            }
+          },
+          {
+            "mode": "ordinary",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 0
+            },
+            "calls": 118,
+            "triangles": 59603,
+            "submission": {
+              "medianMs": 9.899999976158142,
+              "p95Ms": 17
+            },
+            "transforms": {
+              "medianMs": 2.5,
+              "p95Ms": 3.4000000059604645
+            }
+          }
+        ]
+      }
+    },
+    "unrolledFinal": {
+      "high": {
+        "pooled": {
+          "ordinary": {
+            "submission": {
+              "medianMs": 12.300000011920929,
+              "p95Ms": 17.5,
+              "samples": 120
+            },
+            "transforms": {
+              "medianMs": 1.5,
+              "p95Ms": 2,
+              "samples": 180
+            }
+          },
+          "cached": {
+            "submission": {
+              "medianMs": 14.599999994039536,
+              "p95Ms": 18.80000001192093,
+              "samples": 120
+            },
+            "transforms": {
+              "medianMs": 2.5,
+              "p95Ms": 3,
+              "samples": 180
+            }
+          }
+        },
+        "controls": [
+          {
+            "stage": "stationary",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 77,
+                "shadow": 68
+              },
+              "calls": 92,
+              "triangles": 87461
+            },
+            "cached": {
+              "draws": {
+                "color": 77,
+                "shadow": 68
+              },
+              "calls": 92,
+              "triangles": 87461
+            }
+          },
+          {
+            "stage": "camera",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 101,
+                "shadow": 98
+              },
+              "calls": 119,
+              "triangles": 119839
+            },
+            "cached": {
+              "draws": {
+                "color": 101,
+                "shadow": 98
+              },
+              "calls": 119,
+              "triangles": 119839
+            }
+          },
+          {
+            "stage": "parent",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 116796
+            },
+            "cached": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 116796
+            }
+          },
+          {
+            "stage": "manual",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 116796
+            },
+            "cached": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 116796
+            }
+          },
+          {
+            "stage": "bounds",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 92000
+            },
+            "cached": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 92000
+            }
+          },
+          {
+            "stage": "return",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 101,
+                "shadow": 98
+              },
+              "calls": 119,
+              "triangles": 119839
+            },
+            "cached": {
+              "draws": {
+                "color": 101,
+                "shadow": 98
+              },
+              "calls": 119,
+              "triangles": 119839
+            }
+          }
+        ],
+        "cells": 3146,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "phases": [
+          {
+            "mode": "ordinary",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 5880
+            },
+            "calls": 232,
+            "triangles": 187378,
+            "submission": {
+              "medianMs": 12.800000011920929,
+              "p95Ms": 18.19999998807907
+            },
+            "transforms": {
+              "medianMs": 1.5999999940395355,
+              "p95Ms": 2
+            }
+          },
+          {
+            "mode": "cached",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 5880
+            },
+            "calls": 232,
+            "triangles": 187378,
+            "submission": {
+              "medianMs": 14.599999994039536,
+              "p95Ms": 18.80000001192093
+            },
+            "transforms": {
+              "medianMs": 2.5,
+              "p95Ms": 3
+            }
+          },
+          {
+            "mode": "cached",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 5880
+            },
+            "calls": 232,
+            "triangles": 187378,
+            "submission": {
+              "medianMs": 14.599999994039536,
+              "p95Ms": 19.599999994039536
+            },
+            "transforms": {
+              "medianMs": 2.4000000059604645,
+              "p95Ms": 2.9000000059604645
+            }
+          },
+          {
+            "mode": "ordinary",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 5880
+            },
+            "calls": 232,
+            "triangles": 187378,
+            "submission": {
+              "medianMs": 11.900000005960464,
+              "p95Ms": 15.399999976158142
+            },
+            "transforms": {
+              "medianMs": 1.399999976158142,
+              "p95Ms": 1.9000000059604645
+            }
+          }
+        ]
+      },
+      "low": {
+        "pooled": {
+          "ordinary": {
+            "submission": {
+              "medianMs": 8.349999994039536,
+              "p95Ms": 14.699999988079071,
+              "samples": 120
+            },
+            "transforms": {
+              "medianMs": 1.8499999940395355,
+              "p95Ms": 2.800000011920929,
+              "samples": 180
+            }
+          },
+          "cached": {
+            "submission": {
+              "medianMs": 6.8499999940395355,
+              "p95Ms": 10.099999994039536,
+              "samples": 120
+            },
+            "transforms": {
+              "medianMs": 1.9500000029802322,
+              "p95Ms": 2.600000023841858,
+              "samples": 180
+            }
+          }
+        },
+        "controls": [
+          {
+            "stage": "stationary",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 77,
+                "shadow": 0
+              },
+              "calls": 92,
+              "triangles": 42253
+            },
+            "cached": {
+              "draws": {
+                "color": 77,
+                "shadow": 0
+              },
+              "calls": 92,
+              "triangles": 42253
+            }
+          },
+          {
+            "stage": "camera",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 101,
+                "shadow": 0
+              },
+              "calls": 118,
+              "triangles": 59603
+            },
+            "cached": {
+              "draws": {
+                "color": 101,
+                "shadow": 0
+              },
+              "calls": 118,
+              "triangles": 59603
+            }
+          },
+          {
+            "stage": "parent",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 58842
+            },
+            "cached": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 58842
+            }
+          },
+          {
+            "stage": "manual",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 58842
+            },
+            "cached": {
+              "draws": {
+                "color": 102,
+                "shadow": 0
+              },
+              "calls": 119,
+              "triangles": 58842
+            }
+          },
+          {
+            "stage": "bounds",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 83638
+            },
+            "cached": {
+              "draws": {
+                "color": 100,
+                "shadow": 94
+              },
+              "calls": 117,
+              "triangles": 83638
+            }
+          },
+          {
+            "stage": "return",
+            "changed": 0,
+            "matricesEqual": true,
+            "ordinary": {
+              "draws": {
+                "color": 101,
+                "shadow": 0
+              },
+              "calls": 118,
+              "triangles": 59603
+            },
+            "cached": {
+              "draws": {
+                "color": 101,
+                "shadow": 0
+              },
+              "calls": 118,
+              "triangles": 59603
+            }
+          }
+        ],
+        "cells": 3146,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "phases": [
+          {
+            "mode": "ordinary",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 0
+            },
+            "calls": 118,
+            "triangles": 59603,
+            "submission": {
+              "medianMs": 9.299999982118607,
+              "p95Ms": 15.900000005960464
+            },
+            "transforms": {
+              "medianMs": 2,
+              "p95Ms": 2.5999999940395355
+            }
+          },
+          {
+            "mode": "cached",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 0
+            },
+            "calls": 118,
+            "triangles": 59603,
+            "submission": {
+              "medianMs": 7.0999999940395355,
+              "p95Ms": 9.900000005960464
+            },
+            "transforms": {
+              "medianMs": 1.7999999821186066,
+              "p95Ms": 2.4000000059604645
+            }
+          },
+          {
+            "mode": "cached",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 0
+            },
+            "calls": 118,
+            "triangles": 59603,
+            "submission": {
+              "medianMs": 6.5999999940395355,
+              "p95Ms": 11.099999994039536
+            },
+            "transforms": {
+              "medianMs": 2.100000023841858,
+              "p95Ms": 2.9000000059604645
+            }
+          },
+          {
+            "mode": "ordinary",
+            "foliageDraws": {
+              "color": 6060,
+              "shadow": 0
+            },
+            "calls": 118,
+            "triangles": 59603,
+            "submission": {
+              "medianMs": 7.600000023841858,
+              "p95Ms": 13.099999994039536
+            },
+            "transforms": {
+              "medianMs": 1.7000000178813934,
+              "p95Ms": 2.800000011920929
+            }
+          }
+        ]
+      }
+    },
+    "scope": "Prepared production foliage in all4realms, real native AMD RADV renderer/ground/shadows, synchronous ABBA submission cost and separate transform cost. No server, moving equipped party, true frame-interval budget, physical-device or general FPS acceptance."
+  },
+  "decision": "REJECT BOTH VARIANTS. Loop version increases targeted transform medians High2.0\u21922.6ms andLow2.2\u21922.5ms, despite modest pooled submission improvement. Unrolled final High submission12.3\u219214.6msmedian/17.5\u219218.8p95 and transforms1.5\u21922.5msmedian/2.0\u21923.0p95 are worse; Low submission improves8.35\u21926.85ms but transform median1.85\u21921.95ms. Shared-host timing and fixed prepared scenes cannot establish a broad causal speedup. Do not select cache or run another unchanged full party to justify it. Preserve held renderer arithmetic and dirty/force behavior.",
+  "cost": "Three extra Matrix4 snapshots plus closure per wrapped leaf and48exact component comparisons per cache hit; this overhead is poorly amortized against native ordinary multiplication.",
+  "nextAction": "Retain existing matrix owner and CPU evidence. Focus further performance diagnosis on actual live actor/light/frustum/submission costs with a concrete changed hypothesis, and continue code-owned composition/material/contact/audio/device work. No duplicate CPU instrumentation or campaign/soak replay.",
+  "retainedReports": [
+    "native/report/index.html",
+    "corrected-native/report/index.html",
+    "unrolled-native/report/index.html"
+  ],
+  "trackedSourcePins": 6133,
+  "custody": "Anonymous native fixture, no accounts/server/database/credentials. Separate owner diagnostic retains sanitized text and reviewed synthetic post-login screenshot.",
+  "limits": "Private unselected experimental branch only; no import/integration into held/public runtime or CI required lists. Public29 motion/admin acceptance unchanged. Existing High50/66.7ms and earliergeometry/Low202draw failures stay open. Full original roadmap remains active.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-foliage-product-checks-20261011",
+    "inventoryEntries": 23,
+    "files": 24,
+    "inventorySHA256": "2ffd0c78055f93bd9728188a8d1feb6412394afb6ba872afe5108445690fc648",
+    "frozen": true
+  }
+}

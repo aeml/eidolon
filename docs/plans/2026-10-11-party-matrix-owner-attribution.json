@@ -1,0 +1,603 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-11T03:05:10.317377+00:00",
+  "classification": "progress",
+  "source": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+  "productChanged": false,
+  "published": false,
+  "method": "Existing opt-in matrix owner observer;90actual RAF callbacks after ordinary180frame sample. One native GPU browser plus3normal authenticated socket peers with all four supplied class outfits/14slots; isolated real Go-race/Mongo save custody. No new runtime instrumentation or campaign replay.",
+  "nativeStats": {
+    "total": 2,
+    "expected": 1,
+    "unexpected": 0,
+    "flaky": 0,
+    "skipped": 1,
+    "ok": true
+  },
+  "ordinaryFrame": {
+    "label": "single-renderer-equipped-raised-party-high",
+    "warmupFrames": 60,
+    "activityObserved": false,
+    "observedBone": "Root",
+    "frames": 180,
+    "intervalMethod": "exact-reported-decimal",
+    "restored": true,
+    "visibleFrames": 180,
+    "rawFrameMedianMs": 50,
+    "rawFrameP95Ms": 66.69999999999709,
+    "rawFrameP99Ms": 66.79999999999563,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "viewport": {
+      "width": 1280,
+      "height": 844,
+      "pixelRatio": 1
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "visibility": "visible",
+    "frameMedianMs": 50,
+    "frameP95Ms": 66.7,
+    "frameP99Ms": 66.8,
+    "framesOver33ms": 146,
+    "cpuLoopMedianMs": 42.599999994039536,
+    "cpuLoopP95Ms": 56.5,
+    "drawCallsMedian": 305,
+    "trianglesMedian": 169365,
+    "geometries": 442,
+    "textures": 374,
+    "activeEntities": 40,
+    "activeEntitiesMin": 40,
+    "activeEntitiesMax": 43,
+    "previewFramesDuringSample": 0,
+    "previewGeometries": 0,
+    "previewTextures": 0,
+    "scope": "One actual GPU renderer, three live normal authenticated socket peers; standing/movement snapshot, not peer input or a battle frame-budget certificate."
+  },
+  "ownerAggregates": {
+    "scene": {
+      "roots": 1,
+      "nodes": 7215,
+      "calls": 90,
+      "inclusiveMs": 599.9000000953674,
+      "inclusiveMsPerFrame": 6.665555556615193
+    },
+    "environment-group": {
+      "roots": 1,
+      "nodes": 4271,
+      "calls": 90,
+      "inclusiveMs": 336.8000000715256,
+      "inclusiveMsPerFrame": 3.7422222230169506
+    },
+    "instance-environment-group": {
+      "roots": 1,
+      "nodes": 4038,
+      "calls": 90,
+      "inclusiveMs": 310.49999994039536,
+      "inclusiveMsPerFrame": 3.4499999993377264
+    },
+    "entity-group": {
+      "roots": 1,
+      "nodes": 2639,
+      "calls": 90,
+      "inclusiveMs": 240.19999998807907,
+      "inclusiveMsPerFrame": 2.668888888756434
+    },
+    "foliage": {
+      "roots": 10,
+      "nodes": 3482,
+      "calls": 900,
+      "inclusiveMs": 253.30000016093254,
+      "inclusiveMsPerFrame": 2.8144444462325837
+    },
+    "static-environment-group": {
+      "roots": 1,
+      "nodes": 232,
+      "calls": 90,
+      "inclusiveMs": 25.700000077486038,
+      "inclusiveMsPerFrame": 0.28555555641651154
+    },
+    "supplied-Fighter": {
+      "roots": 1,
+      "nodes": 127,
+      "calls": 90,
+      "inclusiveMs": 17.199999898672104,
+      "inclusiveMsPerFrame": 0.1911111099852456
+    },
+    "supplied-Rogue": {
+      "roots": 1,
+      "nodes": 128,
+      "calls": 90,
+      "inclusiveMs": 14.799999952316284,
+      "inclusiveMsPerFrame": 0.16444444391462537
+    },
+    "supplied-Cleric": {
+      "roots": 1,
+      "nodes": 131,
+      "calls": 90,
+      "inclusiveMs": 14,
+      "inclusiveMsPerFrame": 0.15555555555555556
+    },
+    "supplied-Wizard": {
+      "roots": 1,
+      "nodes": 127,
+      "calls": 90,
+      "inclusiveMs": 12.600000083446503,
+      "inclusiveMsPerFrame": 0.14000000092718337
+    },
+    "other-entity": {
+      "roots": 36,
+      "nodes": 2125,
+      "calls": 3240,
+      "inclusiveMs": 176.80000007152557,
+      "inclusiveMsPerFrame": 1.964444445239173
+    }
+  },
+  "owners": {
+    "frames": 90,
+    "owners": [
+      {
+        "role": "scene",
+        "nodes": 7215,
+        "meshes": 6136,
+        "calls": 90,
+        "totalMs": 599.9000000953674,
+        "maxMs": 11.600000023841858
+      },
+      {
+        "role": "environment-group",
+        "nodes": 4271,
+        "meshes": 4145,
+        "calls": 90,
+        "totalMs": 336.8000000715256,
+        "maxMs": 7.700000017881393
+      },
+      {
+        "role": "instance-environment-group",
+        "nodes": 4038,
+        "meshes": 3916,
+        "calls": 90,
+        "totalMs": 310.49999994039536,
+        "maxMs": 6.9000000059604645
+      },
+      {
+        "role": "entity-group",
+        "nodes": 2639,
+        "meshes": 1694,
+        "calls": 90,
+        "totalMs": 240.19999998807907,
+        "maxMs": 5.0999999940395355
+      },
+      {
+        "role": "foliage",
+        "nodes": 676,
+        "meshes": 675,
+        "calls": 90,
+        "totalMs": 51.60000017285347,
+        "maxMs": 3.800000011920929
+      },
+      {
+        "role": "foliage",
+        "nodes": 691,
+        "meshes": 690,
+        "calls": 90,
+        "totalMs": 46.50000002980232,
+        "maxMs": 3.4000000059604645
+      },
+      {
+        "role": "foliage",
+        "nodes": 696,
+        "meshes": 695,
+        "calls": 90,
+        "totalMs": 43.09999996423721,
+        "maxMs": 1.300000011920929
+      },
+      {
+        "role": "foliage",
+        "nodes": 327,
+        "meshes": 326,
+        "calls": 90,
+        "totalMs": 30.700000137090683,
+        "maxMs": 2.199999988079071
+      },
+      {
+        "role": "static-environment-group",
+        "nodes": 232,
+        "meshes": 229,
+        "calls": 90,
+        "totalMs": 25.700000077486038,
+        "maxMs": 0.800000011920929
+      },
+      {
+        "role": "foliage",
+        "nodes": 257,
+        "meshes": 256,
+        "calls": 90,
+        "totalMs": 18.399999916553497,
+        "maxMs": 1.5
+      },
+      {
+        "role": "supplied-Fighter",
+        "nodes": 127,
+        "meshes": 55,
+        "calls": 90,
+        "totalMs": 17.199999898672104,
+        "maxMs": 2.0999999940395355
+      },
+      {
+        "role": "supplied-Rogue",
+        "nodes": 128,
+        "meshes": 56,
+        "calls": 90,
+        "totalMs": 14.799999952316284,
+        "maxMs": 0.800000011920929
+      },
+      {
+        "role": "supplied-Cleric",
+        "nodes": 131,
+        "meshes": 59,
+        "calls": 90,
+        "totalMs": 14,
+        "maxMs": 0.4000000059604645
+      },
+      {
+        "role": "foliage",
+        "nodes": 196,
+        "meshes": 195,
+        "calls": 90,
+        "totalMs": 13.600000113248825,
+        "maxMs": 0.30000001192092896
+      },
+      {
+        "role": "foliage",
+        "nodes": 190,
+        "meshes": 189,
+        "calls": 90,
+        "totalMs": 13.49999988079071,
+        "maxMs": 1.399999976158142
+      },
+      {
+        "role": "foliage",
+        "nodes": 163,
+        "meshes": 162,
+        "calls": 90,
+        "totalMs": 12.90000006556511,
+        "maxMs": 1.0999999940395355
+      },
+      {
+        "role": "supplied-Wizard",
+        "nodes": 127,
+        "meshes": 55,
+        "calls": 90,
+        "totalMs": 12.600000083446503,
+        "maxMs": 0.30000001192092896
+      },
+      {
+        "role": "foliage",
+        "nodes": 123,
+        "meshes": 122,
+        "calls": 90,
+        "totalMs": 11.799999922513962,
+        "maxMs": 1.5999999940395355
+      },
+      {
+        "role": "foliage",
+        "nodes": 163,
+        "meshes": 162,
+        "calls": 90,
+        "totalMs": 11.199999958276749,
+        "maxMs": 0.30000001192092896
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 8.699999958276749,
+        "maxMs": 0.29999998211860657
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 7.299999982118607,
+        "maxMs": 2.9000000059604645
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 7.000000059604645,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 6.89999994635582,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 6.599999874830246,
+        "maxMs": 0.29999998211860657
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 6.300000011920929,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 6.100000023841858,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 6.000000029802322,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 5.600000083446503,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 5.39999994635582,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 5.200000196695328,
+        "maxMs": 0.30000001192092896
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 5.200000047683716,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 5.099999934434891,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.899999886751175,
+        "maxMs": 0.5999999940395355
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.800000041723251,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 75,
+        "meshes": 54,
+        "calls": 90,
+        "totalMs": 4.699999958276749,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.600000083446503,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.60000005364418,
+        "maxMs": 0.19999998807907104
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.599999964237213,
+        "maxMs": 0.19999998807907104
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.4999998807907104,
+        "maxMs": 0.19999998807907104
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.4999998807907104,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.400000035762787,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.399999886751175,
+        "maxMs": 0.10000002384185791
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.300000041723251,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.300000011920929,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.299999982118607,
+        "maxMs": 0.19999998807907104
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.200000166893005,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.199999928474426,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.100000083446503,
+        "maxMs": 0.19999998807907104
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4.099999874830246,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 4,
+        "maxMs": 0.29999998211860657
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 3.7000001966953278,
+        "maxMs": 0.19999998807907104
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 3.5000000298023224,
+        "maxMs": 0.19999998807907104
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 3.1999999284744263,
+        "maxMs": 0.20000001788139343
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 2.9000000059604645,
+        "maxMs": 0.19999998807907104
+      },
+      {
+        "role": "other-entity",
+        "nodes": 52,
+        "meshes": 35,
+        "calls": 90,
+        "totalMs": 2.6000000536441803,
+        "maxMs": 0.19999998807907104
+      }
+    ],
+    "skipped": [],
+    "restored": true,
+    "scope": "Inclusive elapsed time at stock updateMatrixWorld owner boundaries over90real RAF callbacks. Nested rows overlap, wrappers/profiling/shared-host scheduling add overhead; not exclusive CPU or an uninstrumented frame budget. No transform/visibility/material policy changed."
+  },
+  "interpretation": "Foliage3472 descendants across10roots contributes253.3 inclusive milliseconds/90frames (~2.81ms/frame), versus599.9ms/90 forscene (~6.67ms/frame). Supplied4class roots together58.6ms/90 (~.65ms/frame); other36entities176.8ms/90 (~1.96ms/frame). These nested inclusive values overlap and must not be added as exclusive CPU. Per-root wrappers and shared-host scheduling add measurement overhead.",
+  "decision": "Test unchanged foliage matrix-product arithmetic reuse before modifying actor/bone traversal. Preserve stock dirty/force propagation, live transforms, direct writes, reparenting, animation and culling. A cache must demonstrate native correctness and a measured benefit; do not select from this diagnostic alone.",
+  "limits": "Ordinary50msmedian/66.7msp95 still fail20/33.4;305draws169365median triangles pass geometry limits.40-43entities differ from previous30-31and35-36; no cross-run speedup or held/public performance acceptance. Private source includes unselected camp/singleton/DemonOrc context. No new dungeon/campaign/battle/device/soak acceptance.",
+  "criticalScan": {
+    "textSyntheticIdentitiesRemaining": 0,
+    "serverSignatures": {
+      "race": 0,
+      "panic": 0,
+      "fatal": 0,
+      "saveWorker": 0
+    },
+    "binaryPostLoginSyntheticLabelsRetained": true
+  },
+  "trackedSourcePins": 6115,
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-party-matrix-owner-checks-20261011",
+    "inventoryEntries": 18,
+    "files": 19,
+    "inventorySHA256": "63da522dad00bf2b7e64cb15f7d6e05522ed364924aeb40139406b24a0fb8d6d",
+    "frozen": true
+  }
+}

@@ -392,3 +392,35 @@ no fresh server route, timing, physical-phone or full-art acceptance. Sparse roo
 composition, broader scenery/contact/audio/devices, existing performance failures,
 operations/F1–F5/beta/launch/handoff remain open. No campaign or soak replay.
 [Floor qualification and retained failures](2026-10-11-elemental-floor-material-qualification.json).
+
+
+2026-10-11 transform ownership: the existing 90-frame observer on unchanged
+private `7890349e` measures foliage at ~2.81 ms/frame of ~6.67 ms for the full
+scene transform subtree. The four supplied character roots total ~0.65 ms/frame;
+36 other entity roots total ~1.96 ms/frame. Nested inclusive times overlap and
+include wrapper/shared-host overhead. The separate ordinary 180-frame sample
+still fails at 50 ms median /66.7 ms p95; 305 draws/169365 median triangles pass.
+40–43 entities differ from previous populations. Four-class fourteen-slot real
+Go-race/save custody passes; one native browser passes, optional four-browser
+case skips. [Owner attribution](2026-10-11-party-matrix-owner-attribution.json).
+
+Private `cbff1014` tests exact unchanged foliage matrix products without changing
+stock traversal or force propagation. 15 distinct focused checks and two native
+High/Low cases pass; final 12 actual foliage color/shadow/matrix controls and 480
+RAF renders cover manual writes, camera/parent movement and quality changes.
+Initial empty-view evidence is retained and excluded from visual qualification.
+Both loop and unrolled caches remain rejected: the final High submission median
+rises 12.3→14.6 ms, p95 17.5→18.8; transform median 1.5→2.5 ms, p95 2.0→3.0.
+Low submission improves but transform median worsens slightly; this does not
+establish a broad benefit. Three snapshot matrices and 48 exact comparisons per
+leaf cost more than they save in the measured High scene. No runtime wiring or
+new connected-party replay for the rejected prototype.
+[Prototype decision and controls](2026-10-11-foliage-matrix-product-unselected.json).
+
+Frozen owner18-entry inventory `63da522dad00bf2b7e64cb15f7d6e05522ed364924aeb40139406b24a0fb8d6d`;
+prototype23-entry inventory `2ffd0c78055f93bd9728188a8d1feb6412394afb6ba872afe5108445690fc648`.
+Owned Mongo is removed; fixture ports are free; synthetic text identities redacted.
+Held floor/ward/root/HUD/actor work remains staged, public29 unchanged. Continue
+cohesive world composition/material/contact/audio/devices and concrete measured
+performance changes; original operations/F1–F5/beta/launch/handoff remain open.
+No campaign/soak replay, public push, version/access change or completion claim.

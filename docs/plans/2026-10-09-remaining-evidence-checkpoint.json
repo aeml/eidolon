@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T02:54:24.854785+00:00",
-  "classification": "Progress: selected75a37d88 makes four elemental dungeon floors readable under regional lights and adds stationary world-space weathering.86 distinct focused and14 distinct native checks pass cumulatively; prior failures retained. Prepared visual/material qualification only; whole-world performance remains failed.",
+  "recordedUTC": "2026-10-11T03:07:41.682028+00:00",
+  "classification": "Progress: existing90RAF owner attribution identifies foliage~2.81ms/frame of~6.67scene transform traversal. Exact-product prototypecbff1014 passes correctness but is rejected after native High costs regress. No held/public runtime changes.",
   "qualifiedRuntime": "Held75a37d88 adds four elemental floor materials and mandatory native coverage to prior34ca5b97. Existing actor/ward/root/Verdant/geometry-priority/HUD work retained; scope-qualified source and copied bundle only. Public Alpha1.79.29 unchanged; private camp/singleton/DemonOrc/route QA remains unselected.",
   "rejectedSourceCommits": [
     "282d0a78",
@@ -98,11 +98,11 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Continue cohesive environment composition, material/contact/audio and device work; use existing CPU ownership evidence for concrete hypotheses, retaining49.9/66.6ms timing and386370/281603/289302triangle/438/361draw/Low202draw failures. Original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or full-goal completion claim.",
-  "currentReceipt": "docs/plans/2026-10-11-elemental-floor-material-qualification.json",
+  "nextRequiredResult": "Continue cohesive code-owned world/environment composition, contact/audio and device work while preserving the held floor/ward/root/HUD/actor corrections. Further performance changes require a concrete hypothesis supported by existing ownership/CPU/submission evidence. Unchanged-product cache adds overhead and stays rejected; retain normal live transform/force behavior. Existing50/66.7ms and all historicalgeometry/Low202draw failures remain open, as do operations/F1-F5/beta/launch/handoff. No campaign/soak replay.",
+  "currentReceipt": "docs/plans/2026-10-11-foliage-matrix-product-unselected.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Continue cohesive environment composition, material/contact/audio and device work; use existing CPU ownership evidence for concrete hypotheses, retaining49.9/66.6ms timing and386370/281603/289302triangle/438/361draw/Low202draw failures. Original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or full-goal completion claim.",
+  "nextAction": "Continue cohesive code-owned world/environment composition, contact/audio and device work while preserving the held floor/ward/root/HUD/actor corrections. Further performance changes require a concrete hypothesis supported by existing ownership/CPU/submission evidence. Unchanged-product cache adds overhead and stays rejected; retain normal live transform/force behavior. Existing50/66.7ms and all historicalgeometry/Low202draw failures remain open, as do operations/F1-F5/beta/launch/handoff. No campaign/soak replay.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-elemental-floor-material-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -2640,5 +2640,42 @@
       "frozen": true
     },
     "scopeLimits": "Staged only. Public Alpha1.79.29/12e5e3c4 and accepted jump/aura/admin unchanged. Original49.9median/66.6p95 CPU and386370/281603/289302triangle/438/361draw/Low202draw counterexamples remain unresolved; no frame-time/performance acceptance. Full world/art/contact/audio/device/operations/F1-F5/beta/launch/handoff goal active; no campaign/soak replay or version/access/beta change."
+  },
+  "partyMatrixOwnerAttribution": {
+    "receipt": "docs/plans/2026-10-11-party-matrix-owner-attribution.json",
+    "source": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+    "nativePassed": 1,
+    "nativeSkipped": 1,
+    "ownerFrames": 90,
+    "foliageInclusiveMsPerFrame": 2.8144444462325837,
+    "sceneInclusiveMsPerFrame": 6.665555556615193,
+    "ordinaryMedianMs": 50,
+    "ordinaryP95Ms": 66.7,
+    "scope": "Nested inclusive wrappers overlap; not exclusive CPU. Private source,40-43entities, one GPU renderer/three live socket peers; no held/public performance acceptance.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-party-matrix-owner-checks-20261011",
+      "inventoryEntries": 18,
+      "files": 19,
+      "inventorySHA256": "63da522dad00bf2b7e64cb15f7d6e05522ed364924aeb40139406b24a0fb8d6d",
+      "frozen": true
+    }
+  },
+  "unselectedFoliageMatrixProduct": {
+    "receipt": "docs/plans/2026-10-11-foliage-matrix-product-unselected.json",
+    "source": "cbff101407d2a8a0f265f1cb07d96e5f976e1196",
+    "selected": false,
+    "published": false,
+    "focusedDistinctPassed": 15,
+    "nativeDistinctPassed": 2,
+    "finalNativeControls": 12,
+    "finalNativeRAFRenders": 480,
+    "decision": "REJECT BOTH VARIANTS. Loop version increases targeted transform medians High2.0\u21922.6ms andLow2.2\u21922.5ms, despite modest pooled submission improvement. Unrolled final High submission12.3\u219214.6msmedian/17.5\u219218.8p95 and transforms1.5\u21922.5msmedian/2.0\u21923.0p95 are worse; Low submission improves8.35\u21926.85ms but transform median1.85\u21921.95ms. Shared-host timing and fixed prepared scenes cannot establish a broad causal speedup. Do not select cache or run another unchanged full party to justify it. Preserve held renderer arithmetic and dirty/force behavior.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-foliage-product-checks-20261011",
+      "inventoryEntries": 23,
+      "files": 24,
+      "inventorySHA256": "2ffd0c78055f93bd9728188a8d1feb6412394afb6ba872afe5108445690fc648",
+      "frozen": true
+    }
   }
 }
