@@ -1,7 +1,87 @@
 {
+  "october8AcceptedSourceReconciliation": {
+    "sourceCommit": "f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",
+    "liveReceipt": "2026-10-08-release1-79-2-public-checks.json",
+    "method": "Exact accepted Git trees and blob bytes, not the dirty checkout or staged future work. Historical October7 records below keep their original scopes; this current record supersedes their not-yet-deployed origin/trust and failed woodland-reference states.",
+    "trees": {
+      "assets": {
+        "gitTree": "70d9114c9e6bb19a386d740c661e45cd97317f31",
+        "trackedFiles": 580
+      },
+      "src/art": {
+        "gitTree": "3bd4d00b465fd4769081ff4cb3aa8e4cf4898a7e",
+        "trackedFiles": 112
+      },
+      "src/data": {
+        "gitTree": "8a2f4c5290917c379db3241d8541af7c8a8681f3",
+        "trackedFiles": 28
+      },
+      "src/ui": {
+        "gitTree": "9ee5a7f1d8722722ccfc260da1d9c5b8ee771b95",
+        "trackedFiles": 99
+      },
+      "server/internal/game/content": {
+        "gitTree": "c68d6a8e5f2721336d4e315ae77f0cd8fa9c71fb",
+        "trackedFiles": 12
+      },
+      "server/internal/game": {
+        "gitTree": "45fb04acbb93444c9ff0ce92b8bcd8e75363cd24",
+        "trackedFiles": 550
+      },
+      "scripts": {
+        "gitTree": "b34a325adc10562797c7f9e909cdc5f24df400ca",
+        "trackedFiles": 38
+      }
+    },
+    "inputSha256": {
+      "package.json": "c4ee9781c0cea134672aa4603fdaa69357f2a5e9f6cc8594f22e585f42179bed",
+      "package-lock.json": "fea236b4b71848b2087c94d480209b24d5763337458edd29c1639f0f4e1f94b5",
+      "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
+      "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
+      "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f",
+      ".github/workflows/ci.yml": "e2088682a332e601cc126b90c2548db9f4e6cb87d1bcbba1a13867618d0f3206"
+    },
+    "boundaryReview": "Read actual b5c3981e-to-f9 runtime/deploy/fit diff: origin tuple/cardinality checks delivered1.79.1; minimum-storage/deploy guards, trusted SSH identity and canonical native-QA ref admission delivered1.79.2. Fitted replacement generation owns completed parts and epoch-limited failure signatures; existing ownership checks retained. No new review test/campaign or claim of no exploits.",
+    "catalogContinuity": "Assets, UI, authoritative game and content trees remain exact October7 baseline identities. Changed data is only qualified worldFoliage batching; changed script is isolated-QA version default. Package roots change release versions, not dependency resolution; Go/asset manifest hashes unchanged. Source catalog counts are not a publisher allowlist or license approval.",
+    "externalState": "Read-only GitHub API reports master protected=false and no rulesets. Native QA source guards now published; repository/runner settings unchanged. Hosted SSH key setup passes but network connection times out, retained as failed CI rather than green deployment.",
+    "remaining": "F1–F5 not accepted: original65 requirements, final modern all-family art, compatible raised production delivery, rights/notices, service/budget/support/recovery choices and human launch evidence remain. No dependency/content freeze or1.80 version inferred; future qualified material/terrain/support work remains staged for selective ordered integration."
+  },
+  "october8PendingVisualSuccessor": {
+    "sourceCommit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c",
+    "version": "Alpha 1.79.3",
+    "ciRun": 37734583404,
+    "status": "pushed-current-integration-qualified-own-ci-and-public-acceptance-pending",
+    "receipt": "2026-10-08-release1-79-3-checks.json",
+    "sourceContinuity": "Current read-only verification:7 accepted source trees/counts and6 input hashes match the exact f9 Git blobs. Assets, UI, authoritative game and content trees are also unchanged in b13. Art changes are qualified components, not a new authority, content or economy policy.",
+    "externalState": "Current read-only GitHub API still reports master protected=false and no rulesets. No repository/runner settings changed.",
+    "remaining": "Pending own release acceptance, F1-F5, all-family modern-art and raised-world delivery, rights review, owner operations/recovery decisions and final human launch evidence. Existing local outage alerts are running with the approved recipients/settings; that does not establish public or off-machine coverage. No freeze approval inferred."
+  },
   "schema": 1,
   "milestone": "1.80 launch feature freeze",
   "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
+  "october8NativeRunnerAdmission": {
+    "source": "Current1.80 preparation b736ae46 before this change still allowed full_stabilization manual input without a trusted repository/ref guard. Select only reviewed9e3bb9c8 guards/test logic into current workflow; no old authority/version or unrelated changes.",
+    "baseline": "Evaluate real current predeploy condition against canonical-repository manual feature-branch full=true context; returns true, required false. Two updated tests FAIL/fourPASS0.368s. No actual untrusted dispatch or host code execution.",
+    "change": "Native predeploy requires canonical aeml/eidolon repository, master/main ref and push or explicitly enabled manual full run. Live credentialed job explicitly requires canonical production push as well as its successful deploy dependencies. Ordinary hosted checks, Pages concurrency and trusted nightly soak remain unchanged.",
+    "qualification": "Bounded-VM actual-condition evaluation covers60 repository/event/ref/full-boolean combinations for predeploy/live/nightly plus actual scheduled-soak control. Affected runner/host-pin/executable-checkout suites PASS14/0.988s; scoped diff/whitespace pass. Test uses common exact-literal/boolean subset and does not simulate all GitHub expression/admission semantics.",
+    "limits": "Prepared only, not pushed or deployed. Source guards do not establish branch/ruleset protection, workflow review, authorized dispatchers or runner-group access; no repository admin setting mutation. Public SSH reachability and original failed37709850553 remain independent. F1–F5/full goal still unaccepted."
+  },
+  "currentStatePrecedence": "October8 guarded1.79.1 delivery and trust preparation above/below supersede historical pending/earlier baseline statements. Exact public receipt2026-10-08-release1-79-1-public-checks.json now present after owned release-branch merge. Source-only1.80 guards are not runtime delivery or F1–F5 freeze acceptance; all65 original promise rows remain in scope.",
+  "october8DeploymentTrustStabilization": {
+    "baseline": "Exact c8ff2cd668213a3cf53cd536b7067bd3404d0437 Alpha1.79.1 deployed through the normal guarded local script after hosted SSH setup failed. Matching public frontend/backend identities,7 rewritten runtime files and real anonymous Chrome2checks pass. Original GitHub run37709850553 remains failed and credentialed live job skipped; exact receipt retained on recovered current release branch.",
+    "trustedIdentity": "Re-read only local public /etc/ssh/ssh_host_ed25519_key.pub; SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE matches the previously prepared2879d399 pin. No key rotation, private-key read or unverified network trust. Current public SSH scan fails; pinning cannot repair routing.",
+    "candidateChange": "Selectively bring the reviewed public ED25519 pin and explicit StrictHostKeyChecking=yes into current candidate workflow, replacing runtime discovery. Add10s/1-attempt connection bounds and15s/2-count server-alive checks. Preserve outgoing exact-commit checkout, private credentials and hosted/self-hosted queue separation. Document guarded local fallback without claiming a failed CI run green. No1.82 wholesale merge or future version labels.",
+    "regression": "Both new current-workflow host-identity/connection-policy tests fail before change: missing pin and strict/bounded outgoing command. After change, these plus actual executable checkout and runner-separation suites PASS13 in0.946s; whitespace passes. Initial test invocation lacked the restored worktree dependency link, then existing dependencies linked without installation or lock changes; do not count missing module as regression proof.",
+    "remaining": "Prepared source only, not pushed or accepted as new workflow. Actual external SSH access, repository protections/release trust and broader1.82 operations remain separate; no router/firewall/provider setting change. All F1–F5 statuses remain unaccepted and full modern-art/roadmap scope retained."
+  },
+  "october8CurrentBoundaryReview": {
+    "baseline": "Current candidate c8ff2cd668213a3cf53cd536b7067bd3404d0437 pushed; its own CI37709850553 is still in progress, monitored by authorized Luna. Do not substitute the accepted1.79 b5c3981e baseline or infer candidate deployment acceptance.",
+    "origin": "Three additional real-handshake cases exercise bracketed non-IPv6 authorities using trusted domain, localhost and IPv4 spellings. All are already rejected by the current runtime: complete existing handshake suite PASS race1.054s. Retain the new cases as future parser-regression coverage; no reproduced bug or runtime correction is claimed, and no second unchanged admission/protocol rerun is needed.",
+    "party": "Read actual party_kill_credit.go and retained party_kill_credit_test.go/party_chronicle_credit_test.go. Eligibility includes downed players still present, excludes disconnected/foreign instances, uses actual dungeon/raid types for whole-instance credit, and keeps server-owned110-unit two-default-screen radius for open-world parties. The four-role reward fixture already covers a downed healer with no damage contribution and individual manual Wizard turn-ins. Existing source already fulfills this specific promise; do not rerun a long dungeon to rediscover it or infer earned campaign/feel proof from prepared fixtures.",
+    "privacy": "Read actual RecoveryLinkBoot.js blocking head script and analytics/game.js initialization path. Private recovery/download markers suppress deferred analytics and scrub the private URL before module boot; failure to scrub keeps private-page analytics disabled. This preserves accepted recovery/privacy source scope, not independent GA4 provider-event, earlier collection or compliance approval.",
+    "inventory": "Re-read all65 distinct promise IDs with current implementation/status rows. Preserve modern art/raised-world, human pacing/device, external networking, rights/commercial and remaining operations issues; counts or retained rows do not establish every foundation or F1–F5 acceptance. Correct stale V03 six-failing-view wording and stale operations-monitor publication state using recorded accepted/scoped evidence only.",
+    "remaining": "F1–F5 remain unaccepted. This is source-specific review and narrow additional parser coverage, not a new release, content/dependency freeze, license choice, staffing/SLA, backup destination, provider setting, full art or goal completion. No production writes, automatic cleanup, extra email or long campaign/native/cohort test."
+  },
   "october7CatalogCandidateNotFreeze": {
     "sourceCommit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
     "method": "Read exact accepted Git trees/blob bytes, not mutable working-directory caches. Git object identities are SHA1; separate input byte hashes are SHA256. Counts include source assets and tests/non-shipped files, not a publisher allowlist or license approval.",
