@@ -1,0 +1,128 @@
+{
+  "recordedUTC": "2026-10-11T19:42:57.096167+00:00",
+  "status": "Qualified corrective37 source ordinarily pushed to master; new ordered CI/deployment/live acceptance pending.36 remains last accepted.",
+  "source": "92c7392e9be5cbc2d2a2771b17cd4f83fa012d62",
+  "version": "Alpha 1.79.37",
+  "ci": {
+    "id": 38169083772,
+    "head_sha": "92c7392e9be5cbc2d2a2771b17cd4f83fa012d62",
+    "status": "in_progress",
+    "conclusion": null,
+    "run_attempt": 1,
+    "created_at": "2026-10-11T19:41:25Z",
+    "updated_at": "2026-10-11T19:41:39Z",
+    "html_url": "https://github.com/aeml/eidolon/actions/runs/38169083772"
+  },
+  "diagnosis": {
+    "recordedUTC": "2026-10-11T19:38:51.116209+00:00",
+    "source": "92c7392e9be5cbc2d2a2771b17cd4f83fa012d62",
+    "failedHostedSource": "fac6489a76fd0baf99f0f6181c7e7da381110e7b",
+    "failedCIRun": 38167079786,
+    "hostedFailure": "Server boss socket owned child race (stack not retained), plus stale five-column MenuPolish assertion; all three browser shards pass, deployment skipped.",
+    "causalRegression": {
+      "before": "ability-impact-before.log",
+      "beforeExitCode": 1,
+      "raceReports": 5,
+      "after": "ability-impact-final.log",
+      "afterExitCode": 0,
+      "elapsedPackageSeconds": 20.694,
+      "assertions": "300 accepted ordinary Fireball casts and 600 real bidirectional post-windup impacts; all hits land, both actors take damage. Focused snapshot, realtime-frame, relationship/reach, explosion, boss death/slam and impact tests also pass.",
+      "limits": "Concrete delayed-impact/cast race is fixed; hosted failure stack was lost, so exact equivalence cannot be proven. Fresh ordinary candidate CI remains required."
+    },
+    "socketReproductions": {
+      "unchangedBeforeFix": 3,
+      "allPassed": true,
+      "countsDoNotClearHostedFailure": true,
+      "corrective": {
+        "exitCode": 0,
+        "elapsedSeconds": 56.147,
+        "completedUTC": "2026-10-11T19:37:33.982829+00:00",
+        "test": "TestBossVictoryActualPartyKillCrashAndRecovery",
+        "ownedServerLogs": [
+          {
+            "source": "/tmp/eidolon-compat-session-1009467966",
+            "retained": "/home/aeml/.local/share/eidolon-release37-server-failure-checks-20261011/corrective-eidolon-compat-session-1009467966",
+            "raceWarnings": 0,
+            "panicMarkers": 0
+          },
+          {
+            "source": "/tmp/eidolon-compat-session-3589146964",
+            "retained": "/home/aeml/.local/share/eidolon-release37-server-failure-checks-20261011/corrective-eidolon-compat-session-3589146964",
+            "raceWarnings": 0,
+            "panicMarkers": 0
+          }
+        ]
+      },
+      "fixtureIdentity": "race-built current compiled runtime, health buildCommit=server; four synthetic saved classes on task-owned private disposable Mongo, not an exact deployed SHA identity."
+    },
+    "client": {
+      "menuAndBuybackPassed": 75,
+      "versionAndHistoryPassed": 386,
+      "goldDiagnosticPassed": 4,
+      "distinctTotal": 465,
+      "suites": 4,
+      "lint": "Changed JS test/diagnostic paths pass; git diff --check passes."
+    },
+    "diagnostics": {
+      "source": "1b32d96a",
+      "raceHelperChecksPassed": 2,
+      "outputBoundBytes": 32768,
+      "maxReports": 3
+    },
+    "branches": {
+      "mergedBefore": 595,
+      "unmergedBefore": 59,
+      "mergedAfter": 596,
+      "unmergedAfter": 58,
+      "merge": "3e484320",
+      "reviewedHead": "7d3e1a11e8d7fafdee6632dfd402b9bb88bdc8bc",
+      "change": "Four exact bounded Gold provenance diagnostic paths; branch-only one-shot workflow remains pinned to historical source, no workflow/live route dispatched.",
+      "remaining": "Need individual review/selection; includes rejected/unselected prototypes, mixed histories and original dirty user branch. No blanket merge/delete."
+    },
+    "cleanup": "Exact own Mongo ID/label and only its anonymous volumes verified and removed. Four socket cohorts stopped; reproducible owned binaries hashed and removed. No production data/services changed."
+  },
+  "diagnosisEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release37-server-failure-checks-20261011",
+    "entries": 37,
+    "inventorySHA256": "54977033149b7aa6d51b95fc789a6f43aacc3508b0a3d0cb84f36fa2f1c3f486"
+  },
+  "publicationEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release37-corrective-publication-checks-20261011",
+    "entries": 21,
+    "inventorySHA256": "fac363ad975371d27013e58266ad1923d785d96722899de93de0146e79ff2375"
+  },
+  "assetPins": 86,
+  "manifestPath": "/home/aeml/.local/share/eidolon-release37-corrective-publication-checks-20261011/expected-public37-assets.json",
+  "manifestSHA256": "f1285a500988fd3a6357b53a8b8845e6bb86c18e7a21b817a83e88ae51c1e64a",
+  "engine": {
+    "path": "src/core/GameEngine.bundle.js",
+    "bytes": 3507601,
+    "sha256": "151a86d0f20c0763abc091df08dbdf99f75951b686e1ddc74f8eb1b19e6f3ce6"
+  },
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+    "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "bytes": 137178,
+    "modules": 10,
+    "imports": []
+  },
+  "native": {
+    "source": "92c7392e9be5cbc2d2a2771b17cd4f83fa012d62",
+    "assetPins": 86,
+    "nativeCases": 2,
+    "nativeExecutions": 2,
+    "retries": 0,
+    "skips": 0,
+    "failures": 0,
+    "collectionCorrection": "First grep selected only copied four-class startup; collector asserted two and failed. Retained original JSON/log and ran only missing login patch-history/manual-retry case. No successful case repeated.",
+    "clientChecks": "465 distinct across MenuPolish, InventoryBuybackChoices, VersionPresentation and GoldProvenanceObserver; reused unchanged prior UI qualification/native component evidence.",
+    "history": {
+      "total": 472,
+      "priorPreservedByteExact": 471,
+      "newNoteIncludesCombatStability": true
+    },
+    "required": "Ordinary current candidate CI/deployment/live success plus fresh post-terminal normal-TLS86asset identities/readyDB verification. Prior sourcefac failed and did not deploy."
+  },
+  "acceptanceRequired": "Exact92c7392e current ordered CI/deployment/live success plus fresh post-terminal normal-TLS matching frontend/backend/readyDB and all86asset byte counts/SHA. Do not reuse the failed fac manifest for acceptance.",
+  "fullGoal": "All original open world/art/combat/performance/device/operations/F1-F5/beta/launch/handoff requirements remain active. No whole-game readiness or capacity claim."
+}

@@ -15,7 +15,7 @@
     "updated_at": "2026-10-11T19:13:20Z",
     "html_url": "https://github.com/aeml/eidolon/actions/runs/38167079786"
   },
-  "status": "Ordinarily pushed exact master source; own ordered CI/deployment/live acceptance pending. Previous36 remains last accepted.",
+  "status": "Original fac candidate terminal failure: server race and stale client layout assertion; all three browser shards pass, all deployment/live jobs skip. No deployment. Corrective92c7392e published separately.",
   "qualifiedPrepublication": "2026-10-11-release37-forge-buyback-prepublication.json",
   "assetPins": 86,
   "expectedManifest": "/home/aeml/.local/share/eidolon-release37-publication-checks-20261011/expected-public37-assets.json",
@@ -46,5 +46,14 @@
   },
   "previousAccepted": "Alpha1.79.36/aee9c3dba85da6f11555439a3ad4476597aaada3;CI38161891123attempt1 all ten jobs and fresh normal-TLS82asset/readiness accepted.",
   "acceptanceRequired": "Exact37ordered CI/deploy/live success and fresh post-terminal normal-TLS exact frontend/backend identities, readyDB and all86served asset lengths/SHA; no successor publication until verified.",
-  "fullGoal": "Original world/art/actors/contact/combat/device/performance/operations/F1\u2013F5/beta/launch/handoff requirements remain active. Existing soak remains separate; no campaign replay/access change."
+  "fullGoal": "Original world/art/actors/contact/combat/device/performance/operations/F1\u2013F5/beta/launch/handoff requirements remain active. Existing soak remains separate; no campaign replay/access change.",
+  "terminal": {
+    "ciRun": 38167079786,
+    "conclusion": "failure",
+    "server": "owned phase745 boss socket child race, stack not retained",
+    "client": "MenuPolish obsolete five-column layout assertion",
+    "browserShards": "all3success",
+    "deployment": "skipped",
+    "correctiveReceipt": "2026-10-11-release37-server-race-correction.json"
+  }
 }

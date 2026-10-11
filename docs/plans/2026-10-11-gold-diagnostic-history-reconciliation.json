@@ -1,0 +1,27 @@
+{
+  "recordedUTC": "2026-10-11T19:42:57.096167+00:00",
+  "status": "Completed bounded Gold diagnostic history ordinarily merged into master and included in pushed92c7392e.",
+  "reviewedBranch": "work/gold-provenance-diagnostic-20261010",
+  "reviewedHead": "7d3e1a11e8d7fafdee6632dfd402b9bb88bdc8bc",
+  "merge": "3e484320",
+  "before": {
+    "merged": 595,
+    "unmerged": 59
+  },
+  "after": {
+    "merged": 596,
+    "unmerged": 58
+  },
+  "sinceOwnerRequest": {
+    "unmergedBefore": 287,
+    "unmergedNow": 58
+  },
+  "review": "One distinct commit, four added diagnostic-only paths retained byte-exact. Branch-only one-shot workflow remains pinned to its historical expected live source; no live route dispatched. Four meaningful observer checks and changed-path lint pass. No product runtime or economic rules change from this history merge.",
+  "remaining": "58branch names need individual selection/review; includes rejected/unselected experiments, mixed ancestry and original dirty user branch. Do not blanket merge/delete. Completed validated work must merge into master before being called done.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release37-server-failure-checks-20261011",
+    "entries": 37,
+    "inventorySHA256": "54977033149b7aa6d51b95fc789a6f43aacc3508b0a3d0cb84f36fa2f1c3f486"
+  },
+  "preservation": "Original dirty checkout preserved; no reset/stash/branch switch/deletion/force push."
+}
