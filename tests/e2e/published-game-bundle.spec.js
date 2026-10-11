@@ -159,6 +159,42 @@ test('copied published engine keeps status symbols and keyboard reading through 
         scope: 'Actual copied/versioned game bundle UI construction; synthetic status metadata, no server/gameplay/device claim' }), contentType: 'application/json' });
 });
 
+test('copied published engine retains filled additive and wireframe effect policies', async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async release => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const { AdditiveBlending } = await import('three');
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        const actor = game.createRemotePlayer('Player', 'synthetic-effect-fighter', 'Fighter');
+        try {
+            actor.gameEngine = game; actor.ironFortressTimer = 10; actor.syncAttachedStatusEffects(.04);
+            game.spawnTransientEffect('sphere', actor.position, 0xddbb77,
+                { source: actor, abilityName: 'Iron Fortress', abilityLayer: 0 });
+            game.spawnTransientEffect('combat_feedback', actor.position, 0xddbb77,
+                { feedbackKind: 'fighter_strike', amount: 100 });
+            for (const effect of game.effects) effect.update(.04);
+            const counts = { single: 0, wireframe: 0, ordinary: 0, invalid: 0 };
+            game.renderSystem.effectGroup.traverse(mesh => {
+                if (!mesh.isMesh) return;
+                for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+                    const eligible = material.blending === AdditiveBlending && !material.wireframe;
+                    if (eligible) counts.single++; else if (material.wireframe) counts.wireframe++; else counts.ordinary++;
+                    if (material.forceSinglePass !== eligible) counts.invalid++;
+                }
+            });
+            return { counts, statuses: actor.attachedStatusEffects.size, transients: game.effects.length };
+        } finally { actor.dispose(); game.destroy(); }
+    }, release);
+    expect(result.statuses).toBeGreaterThan(0); expect(result.transients).toBe(2);
+    expect(result.counts.single).toBeGreaterThan(0); expect(result.counts.wireframe).toBeGreaterThan(0);
+    expect(result.counts.ordinary).toBeGreaterThan(0); expect(result.counts.invalid).toBe(0);
+    expect(failures, failures.join('\n')).toEqual([]);
+    await testInfo.attach('published-additive-policy', { body: JSON.stringify({ result, engineSHA256: metadata.engineSHA256,
+        scope: 'Actual copied/versioned bundle factories exercised through engine/actor entry points; synthetic metadata, no server or gameplay timing claim.' }), contentType: 'application/json' });
+});
+
 test('actual published engine stays lazy at login and constructs each class from the bounded module graph', async ({ page }) => {
     const failures = collectBrowserFailures(page, origin), modules = new Set();
     page.on('request', request => {
