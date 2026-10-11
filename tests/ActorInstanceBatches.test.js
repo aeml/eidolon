@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { jest } from '@jest/globals';
 import { createProceduralTownActor, TOWN_ACTOR_TYPES } from '../src/art/ProceduralTownActors.js';
 import { ActorInstanceBatches } from '../src/art/ActorInstanceBatches.js';
-import { createProceduralSkeleton, createProceduralImp, createProceduralInfernoTitan } from '../src/art/ProceduralLegacyEnemies.js';
+import { createProceduralSkeleton, createProceduralImp, createProceduralInfernoTitan, createProceduralDemonOrc } from '../src/art/ProceduralLegacyEnemies.js';
 
 function fixture() {
     const scene = new THREE.Scene(), geometry = new THREE.BoxGeometry(), material = new THREE.MeshStandardMaterial();
@@ -76,6 +76,7 @@ test('rotated nonuniform scale without shear remains instanceable', () => {
 });
 
 const reviewedCases = [['Skeleton', createProceduralSkeleton], ['InfernoTitan', createProceduralInfernoTitan],
+    ['DemonOrc', createProceduralDemonOrc],
     ...TOWN_ACTOR_TYPES.map(type => [type, options => createProceduralTownActor(type, options)])];
 test.each(reviewedCases.flatMap(([type, make]) => (TOWN_ACTOR_TYPES.includes(type) ? ['Idle'] : ['Idle', 'Walk', 'Run', 'Attack', 'Death'])
     .map(state => [type, state, make])))('reviewed %s instances retain independent %s pivot transforms and visibility', (type, state, make) => {
@@ -119,7 +120,7 @@ test.each(reviewedCases.flatMap(([type, make]) => (TOWN_ACTOR_TYPES.includes(typ
 
 test('unbatched Skeleton, unreviewed enemy and supplied actor do not enter the rigid instance roster', () => {
     const scene = new THREE.Scene();
-    scene.add(createProceduralSkeleton(), createProceduralImp(), createProceduralInfernoTitan(), ...TOWN_ACTOR_TYPES.map(type => createProceduralTownActor(type)));
+    scene.add(createProceduralSkeleton(), createProceduralImp(), createProceduralInfernoTitan(), createProceduralDemonOrc(), ...TOWN_ACTOR_TYPES.map(type => createProceduralTownActor(type)));
     const unreviewed = createProceduralTownActor('QuestNPC', { batch: true });
     unreviewed.userData.proceduralActorType = 'UnreviewedService'; scene.add(unreviewed);
     const supplied = new THREE.Group(); supplied.userData.authoredClass = 'Fighter';

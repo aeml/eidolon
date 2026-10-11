@@ -17,7 +17,7 @@ const inside = (part, ancestor, visible = false) => {
 const reviewedTownTypes = new Set(['DwarfSalesman', 'QuestNPC', 'DungeonNPC', 'RespecNPC']);
 const ownedRigidActor = root => root?.userData.proceduralHumanoid ||
     (Boolean(root?.userData.humanoidRenderBatches) &&
-        ((root.userData.proceduralEnemyFamily === true && ['Skeleton', 'InfernoTitan'].includes(root.userData.proceduralActorType)) ||
+        ((root.userData.proceduralEnemyFamily === true && ['Skeleton', 'InfernoTitan', 'DemonOrc'].includes(root.userData.proceduralActorType)) ||
         (root.userData.proceduralTownActor === true && reviewedTownTypes.has(root.userData.proceduralActorType))));
 
 const candidate = part => part.isMesh && !part.isInstancedMesh && !part.isSkinnedMesh && !part.children.length &&

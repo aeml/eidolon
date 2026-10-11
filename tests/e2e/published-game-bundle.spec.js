@@ -449,11 +449,12 @@ test('actual published engine stays lazy at login and constructs each class from
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
-for (const quality of ['high', 'low']) test(`published ${quality} actor defaults render generated roots and retire owned copies`, async ({ page }, testInfo) => {
+for (const type of ['Skeleton', 'DemonOrc'])
+for (const quality of ['high', 'low']) test(`published ${quality} ${type === 'Skeleton' ? 'actor' : 'DemonOrc'} defaults render generated roots and retire owned copies`, async ({ page }, testInfo) => {
     const failures = collectBrowserFailures(page, origin);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto(origin, { waitUntil: 'networkidle' });
-    const result = await page.evaluate(async ({ release, quality }) => {
+    const result = await page.evaluate(async ({ release, quality, type }) => {
         const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
         const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
         const render = game.renderSystem, owner = render.actorInstances, multi = owner?.multiDraw, actors = [];
@@ -461,12 +462,24 @@ for (const quality of ['high', 'low']) test(`published ${quality} actor defaults
         try {
             render.setGraphicsQuality(quality);
             for (let i = 0; i < 6; i++) {
-                const actor = game.createRemotePlayer('Enemy', `published-skeleton-${i}`, 'Skeleton');
+                const actor = game.createRemotePlayer('Enemy', `published-${type}-${i}`, type);
                 actors.push(actor); await actor.ensureMesh();
                 actor.mesh.position.set(i % 3 * 3, 0, i < 3 ? 0 : 3); render.add(actor.mesh);
             }
-            render.render();
+            const poses = [];
+            for (const state of type === 'DemonOrc' ? ['Idle', 'Walk', 'Run', 'Attack', 'Death'] : ['Idle']) {
+                for (const [i, actor] of actors.entries()) {
+                    actor.playAnimation(state, state !== 'Death', true);
+                    actor.updateAnimationMixer(.2 + i * .07);
+                }
+                render.render();
+                poses.push({ state, groups: multi?.entries.size || 0, draws: render.renderer.info.render.calls,
+                    restored: !owner.hidden.length && !multi.hidden.length && !owner.group.visible && !multi.group.visible });
+            }
+            const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
             result = { enabled: Boolean(owner?.enabled && multi?.enabled && multi.perInstanceFrustum),
+                gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+                constructors: actors.map(actor => actor.mesh.userData.humanoidRenderBatches), poses,
                 groups: multi?.entries.size || 0, extension: render.renderer.extensions.has('WEBGL_multi_draw'),
                 restored: !owner.hidden.length && !multi.hidden.length && !owner.group.visible && !multi.group.visible,
                 draws: render.renderer.info.render.calls };
@@ -476,10 +489,18 @@ for (const quality of ['high', 'low']) test(`published ${quality} actor defaults
         }
         result.disposed = multi.disposed && multi.entries.size === 0 && multi.group.parent === null && owner.roots.size === 0;
         return result;
-    }, { release, quality });
-    await testInfo.attach('published-default-actor-owner', { body: JSON.stringify({ quality, result, engineSHA256: metadata.engineSHA256 }), contentType: 'application/json' });
+    }, { release, quality, type });
+    await testInfo.attach('published-default-actor-owner', { body: JSON.stringify({ quality, type, result, engineSHA256: metadata.engineSHA256 }), contentType: 'application/json' });
     expect(result.enabled && result.extension && result.restored && result.disposed).toBe(true);
     expect(result.groups).toBeGreaterThan(0); expect(result.draws).toBeGreaterThan(0);
+    if (type === 'DemonOrc') {
+        expect(result.poses.map(pose => pose.state)).toEqual(['Idle', 'Walk', 'Run', 'Attack', 'Death']);
+        for (const constructor of result.constructors) expect(constructor).toMatchObject({ sourceMeshes: 55, drawMeshes: 23, surfaceAttributes: true });
+        for (const pose of result.poses) {
+            expect(pose.groups).toBeGreaterThan(0); expect(pose.draws).toBeGreaterThan(0); expect(pose.restored).toBe(true);
+        }
+    }
+    if (requiresHardwareWebGL()) expect(result.gpu).not.toMatch(/SwiftShader|llvmpipe|softpipe|software/i);
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
