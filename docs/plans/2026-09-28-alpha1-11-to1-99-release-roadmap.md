@@ -17,7 +17,7 @@ All78copied asset pins are prepared. Own ordered CI/deploy/live and fresh
 post-terminal identity/readyDB/asset acceptance remain pending.
 [Prepublication](2026-10-11-release35-menu-review-prepublication.json).
 [Publication](2026-10-11-release35-publication.json).
-582of647local branch names are already ancestors ofmaster;65unmerged
+584of648local branch names are already ancestors ofmaster;64unmerged
 unfinished/rejected/historical tips remain individually reviewed. Original
 uncommitted user changes are preserved. Historical High frame-time failures,
 broader world/art/combat/audio, whole-game performance/devices/operations/

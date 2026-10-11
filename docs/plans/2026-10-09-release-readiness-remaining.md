@@ -141,7 +141,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **65**, reduced from 287; 582 of 647 local branch names
+  unmerged tips are now **64**, reduced from 287; 584 of 648 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -167,6 +167,12 @@ Every explicit requirement in those sources remains part of the completion audit
   [completed diagnostic histories](2026-10-11-completed-diagnostic-branch-reconciliation.json),
   [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json),
   [release/atlas/casino histories](2026-10-11-completed-release-history-reconciliation.json).
+  Completed original environment history `69cb2af1` and reviewed `23a5e6d6`
+  are also now ordinary ancestors of master `63b884fc`, with the complete
+  current source tree unchanged. Original surface/gateway fixes are already
+  integrated and superseded by newer materials/architecture; no art or
+  performance acceptance is inferred from ancestry.
+  [Environment history](2026-10-11-environment-history-reconciliation.json).
 - **Completed content-gate history:** original `ce7a0a1d` and qualified
   `54ead973` now ordinarily merged into master `22cf547a`. Read-only eleven-group
   local/CI gate, cosmetic input validation and explicit generation replace silent

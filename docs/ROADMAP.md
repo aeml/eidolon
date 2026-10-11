@@ -17,7 +17,7 @@ and470cumulative notes retain all469prior entries exactly. Own35publication and
 ordered CI/deploy/live/fresh public acceptance remain required.78copied asset
 pins are prepared. [Publication](plans/2026-10-11-release35-publication.json).
 [Prepublication](plans/2026-10-11-release35-menu-review-prepublication.json).
-After the qualified35merge,582of647local branches are merged;65unmerged histories
+After the qualified35merge,584of648local branches are merged;64unmerged histories
 remain under individual review. The complete world/art/gameplay/device/
 performance/operations/F1–F5/beta/launch scope and historical failures remain
 open; these scoped fixes do not establish freeze or beta readiness.

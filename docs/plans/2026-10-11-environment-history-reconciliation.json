@@ -1,0 +1,107 @@
+{
+  "recordedUTC": "2026-10-11T16:45:43.796870+00:00",
+  "sourceMerge": "23a5e6d6e003e078048528fcaf02959dbb2ca7c9",
+  "firstParent": "63de202da42ad1615ae45916c022bcbe870c17ff",
+  "historicalHead": "69cb2af121198a40161fbeff346b7a8b7bd16c20",
+  "sourceTreeUnchanged": true,
+  "treeSHA": "39cd274fe83a5cb853fc3c0bdbb779c2307afd45",
+  "currentFeatureFiles": [
+    {
+      "path": "src/art/ProceduralCasino.js",
+      "checkedStrings": [
+        "applyWorldSurfaceDetail(m.stone",
+        "applyWorldSurfaceDetail(m.dark"
+      ],
+      "sha256": "1e4cc4effe79837badb7860303830a336df0d0665540bfe55b179748b140ed52"
+    },
+    {
+      "path": "src/art/ProceduralDungeonEntrances.js",
+      "checkedStrings": [
+        "applyWorldSurfaceDetail",
+        "options.surface",
+        "fieldstone"
+      ],
+      "sha256": "427ba8f149e7c9cdb1ff51f7defafce76ed45ed1ca2b00ea0e2e0f1c563f25dd"
+    },
+    {
+      "path": "src/art/ProceduralDungeonInteriors.js",
+      "checkedStrings": [
+        "roughnessMap",
+        "normalMap",
+        "floorNormal",
+        "floorRoughness",
+        "wallNormal",
+        "wallRoughness"
+      ],
+      "sha256": "7d19d9dd6aa30addc65eb045727d5006b0b23c107a1d1871e81f7a3495dfb0a7"
+    },
+    {
+      "path": "src/core/RenderSystem.js",
+      "checkedStrings": [
+        "createRealmGroundMesh(region, material",
+        "disposeObjectResources"
+      ],
+      "sha256": "ecd20bd2d4580012131a9c44a39cdcea2de8cf6b945ddd046bc2583193f57ccc"
+    },
+    {
+      "path": "src/art/RealmGroundMesh.js",
+      "checkedStrings": [
+        "createRealmGroundGeometry(region, .75, elevation)"
+      ],
+      "sha256": "3370c7559fa77c6cd5fcc267c1f740cb7bebddd094d57bb281b5e6aa6564a9e0"
+    },
+    {
+      "path": "src/art/RealmGroundGeometry.js",
+      "checkedStrings": [
+        "createRealmGroundGeometry",
+        "wall.gap",
+        "computeBoundingBox"
+      ],
+      "sha256": "651f0fee3116f19a161e56f6c41efe88503b95f584fd66ff3476e3ca33fda7f2"
+    },
+    {
+      "path": "tests/ProceduralDungeonInteriors.test.js",
+      "checkedStrings": [
+        "zone cleanup disposes shared physical maps exactly once",
+        "bounded physical surface maps aligned with masonry"
+      ],
+      "sha256": "324945a51d6c3964182b7dc149efe380006a02328d616870a535ae39b27feac1"
+    },
+    {
+      "path": "tests/ElementalDungeonSurface.test.js",
+      "checkedStrings": [
+        "tide paint changes color, not physical relief or polish"
+      ],
+      "sha256": "caef07e4bef76eff3e06deffcea2e914b43d4151bc8e96a2d0749479a9dc6b0c"
+    },
+    {
+      "path": "tests/CasinoController.test.js",
+      "checkedStrings": [
+        "town facade uses masonry and slate"
+      ],
+      "sha256": "1402d02958f6ab17c6e5a0ba98382b3dc3cfe75593482ea2c7ed05d6c8a9c543"
+    }
+  ],
+  "historicalExactFiles": [
+    "tests/e2e/dungeon-surface-depth.spec.js",
+    "tests/e2e/realm-gateway-surfaces.spec.js",
+    "tests/RealmGroundGeometry.test.js",
+    "docs/plans/2026-09-29-1-42-environment-integration-preflight.md"
+  ],
+  "review": "All original surface/physical-map/gateway fixes already integrated and since improved. Preserve quality-dependent256px maps, current facade and dungeon architecture, extracted RealmGroundMesh wrapper/elevation-safe patches, current tests and complete modern candidate notes. Old source contains no additional selected runtime behavior.",
+  "isolatedAuditCorrections": "Initial literal probes expected a userData name rather than options.surface, then expected the pre-extraction direct RenderSystem call. Corrected after reading current implementation. The shell committed the isolated unchanged-tree merge after the first read-audit assertion failed; all current feature/source identity assertions now pass before any master merge. No malformed content or production mutation.",
+  "status": "completed-historical-ancestry-ordinarily-merged-into-master",
+  "masterMerge": "63b884fc111f26c1f56cf4db32beeb9f1f5e3045",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-environment-history-checks-20261011",
+    "inventoryEntries": 1,
+    "inventorySHA256": "42284589ed03fe1c77976b4a02bf9671429725c7ca069a45fd1941b461d4729d"
+  },
+  "currentBranches": {
+    "total": 648,
+    "merged": 584,
+    "unmerged": 64
+  },
+  "validation": "Both exact historical and qualified heads ancestors of master. Master complete tree unchanged from first parent, all4 exact retained historical files and9 reviewed current feature/source files verified. No unchanged runtime/browser test replay needed.",
+  "publication": "Source-only historical reconciliation; exact35CI38154778403 still in progress. Original dirty checkout and unselected experiments preserved."
+}
