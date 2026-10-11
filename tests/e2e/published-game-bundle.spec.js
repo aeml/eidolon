@@ -195,6 +195,41 @@ test('copied published engine retains filled additive and wireframe effect polic
         scope: 'Actual copied/versioned bundle factories exercised through engine/actor entry points; synthetic metadata, no server or gameplay timing claim.' }), contentType: 'application/json' });
 });
 
+test('copied published engine constructs a grounded ward and drives its state through the world owner', async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    const layout = JSON.parse(await readFile('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
+        .find(fixture => fixture.dungeonType === 'verdant_bastion_catacombs').layout;
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, layout }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        try {
+            const world = game.worldGenerator;
+            await world.createVerdantBastionCatacombs(0, 0, layout);
+            const state = world.dungeonRoomPresentations.get(0), ward = state.getObjectByName('DungeonEntryWard');
+            const veil = ward.getObjectByName('DungeonExitPortal'), matrix = veil.matrix.toArray();
+            const colliders = JSON.stringify(game.collisionManager.colliders), phases = [];
+            for (const objectiveRoomIndex of [0, -1, 0]) {
+                world.updateDungeonRoomState({ currentRoomIndex: 0, objectiveRoomIndex, rooms: [{ index: 0, cleared: objectiveRoomIndex === -1 }] });
+                const appliedOpacity = veil.material.opacity;
+                world.updateDungeonPresentation(.25);
+                game.renderSystem.render();
+                phases.push({ ready: state.userData.exitReady, appliedOpacity, time: veil.material.userData.dungeonVeilTime.value,
+                    stable: veil.matrix.elements.every((value, index) => value === matrix[index]) });
+            }
+            return { parts: ward.children.length, visualOnly: ward.userData.visualOnly, phases,
+                collidersStable: JSON.stringify(game.collisionManager.colliders) === colliders };
+        } finally { game.destroy(); }
+    }, { release, layout });
+    expect(result).toMatchObject({ parts: 3, visualOnly: true, collidersStable: true });
+    expect(result.phases).toEqual([{ ready: false, appliedOpacity: .18, time: .25, stable: true },
+        { ready: true, appliedOpacity: .9, time: .5, stable: true }, { ready: false, appliedOpacity: .18, time: .75, stable: true }]);
+    expect(failures, failures.join('\n')).toEqual([]);
+    await testInfo.attach('published-entry-ward', { body: JSON.stringify({ result, engineSHA256: metadata.engineSHA256,
+        scope: 'Copied/versioned engine and actual WorldGenerator entry points, prepared layout and room summaries. No server or earned completion claim.' }), contentType: 'application/json' });
+});
+
 test('actual published engine stays lazy at login and constructs each class from the bounded module graph', async ({ page }) => {
     const failures = collectBrowserFailures(page, origin), modules = new Set();
     page.on('request', request => {
