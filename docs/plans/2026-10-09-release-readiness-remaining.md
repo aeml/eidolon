@@ -55,6 +55,17 @@ Every explicit requirement in those sources remains part of the completion audit
   [roof proof](2026-10-11-town-roof-construction-qualification.json),
   [shared ownership proof](2026-10-11-understory-shared-geometry-qualification.json),
   [rock proof](2026-10-11-earth-directional-fault-qualification.json).
+- **Later qualified work:** connected, overlapping birch crowns `323e500c`
+  are merged into local master, unpublished while32acceptance runs. Forty focused
+  checks and nine distinct native cases qualify High/Low/phone, current flat
+  world and copied publication. Forty-five reference-again pairs are exact;
+  legitimate expanded visibility adds up to2draws/2048triangles while original
+  sampled limits pass. Root720vertices/UVs/normals/transform and all geometry
+  counts remain exact;38of41part records unchanged. Initial7.186mm root-shift
+  diagnostic and copied-fixture ENOSPC failure remain recorded, with only
+  affected cases rechecked. Five owned reproducible publication copies removed
+  after every pinned asset matched; manifests, source and evidence preserved.
+  [Birch qualification](2026-10-11-birch-connected-crown-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
   unmerged tips are now **84**, reduced from 287. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,

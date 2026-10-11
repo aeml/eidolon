@@ -729,3 +729,24 @@ isactive, existingmonitorowns sparseordered/terminalpublicchecks; no newpush
 until exactacceptance. Public31 remainslastaccepted; public29soakseparateactive.
 All24frozen preflight files reverified. Unmerged84 and originaldirty203/262
 preserved. Receipt/register update heldlocallywhileCIruns. Fullgoal staysactive.
+
+October11 connected-birch continuation (progress): previousgoalturn pushed
+coherent32/d31246e9 and recordedpendingCI38136326810, thereforeprogress. Thisturn
+qualifiedcf422bf6/323e500c and ordinarymerged completedbirchwork intomaster.
+Broaderoverlappingcrowns reuseall256leaves andexistingtwoboughs; upperforknow
+reachesactualcrown. Root720vertices/UVs/normals/transform exact;38of41parts exact
+andalltriangle/attributebytes unchanged.40distinctfocused/3suites and9distinct
+native(source3/retainedflat2/copied4) pass.45pairedviews360preparedwalkingposes
+referenceagainexact;14changed/31unchanged(out-of-view);40actualflatworldsite
+views. Largercoverlegitimatelyadds up to2draws2048trianglesHigh/1draw512Low;
+alloriginalsampledbudgets pass, noFPS/normalinput/device/finalartclaim.
+Initial7.186mm bounds-derivedrootshift diagnostic correctedbeforemerge;draft3
+native superseded. CopiedfixturebeforeAll ENOSPC failure retained(2pass1fail
+3notrun);verifiedpinnedassets thenremoved5ownedreproduciblepublicbuildcopies
+only(~2.18GB), immutablemanifests/builders/source/evidence retained. Affected
+4copiedcases pass aftercapacityrepair, noCIretry/cancel. Frozen355entryinventory
+762aa84e8f532be35b70329895c6a497de56719d94be975192fd4340eee03c8f.
+Receipt2026-10-11-birch-connected-crown-qualification.json.32ownorderedCI and
+publicacceptance remainpending;31lastaccepted,29soakseparate. Alloriginal
+world/art/gameplay/devices/performance/operations/F1-F5/beta/launch/handoff
+requirements remainactive; no unchangedcampaign/soak replay or accessmutation.
