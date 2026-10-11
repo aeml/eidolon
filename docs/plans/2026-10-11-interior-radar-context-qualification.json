@@ -1,0 +1,30 @@
+{
+  "status": "selected-and-qualified-for-master-merge-unpublished",
+  "recordedUTC": "2026-10-11T13:50:23.801117+00:00",
+  "source": "260ea4d3c4b11953e05fbf84e661efa67f9125f9",
+  "base": "522050a1",
+  "problem": "Retained connected first-dungeon gameplay image has a solid blue radar. Actual native2D baseline confirms floors are present, but4px/metre clips the entire140m fallback entry outline outside the100px radius (395.98px room-corner radius,0edge pixels across10types). Normal120m entry has the same scale error. Not a missing floor/instance-coordinate bug.",
+  "change": "Fit the canonical entry room diagonal into the radar with20px margin. Use this fixed footprint throughout the dungeon run so ordinary walking and room advancement do not change scale. Preserve user-preferred smaller scale, normal overworld/casino/Dark Realm/PvP and missing-layout behavior. Floor union, open corridor joins, progress/objective/party/hostile/waypoint projection use the same rendered scale.",
+  "validation": {
+    "focused": "44InstanceAtlas/MinimapDungeonRoomStates/AtlasNavigation checks in3suites,1.087s;29browser plan/coverage/sharding checks in3suites,0.695s.73distinct checks total.",
+    "lint": "Full repository lint passes; final browser-fixture-only cleanup passes scoped lint.",
+    "native": "Two distinct SystemChrome2DCanvas cases,1280px/390px actualCSS,30retained real-coordinate production dungeon/raid layouts each. Qualified7.052s,retries0/skips0. Entry corner radius<=80px, visible wall pixels>50; walking and movement to the next room retain exact scale. New case enrolled once in existing interface browser stage.",
+    "visual": "Inspected reference/fallback, selected fallback and qualified normal Verdant desktop/phone images. Reference is a featureless blue disk; selected has a readable complete entry outline and actual open corridor mouth. Phone uses existing compact84px CSS while drawing on200px canvas.",
+    "baselineScope": "The preliminary baseline selects10fallback layouts and bypasses the new geometry assertions only for diagnostic capture. The final committed fixture has no reference/bypass flag and exercises all30layouts. Preliminary and final pre-cleanup results retained, not counted as additional distinct acceptance cases.",
+    "limits": "2D tactical-map fixture evidence, not connected gameplay/campaign, earned dungeon clears, actor animation, actual-phone feedback, whole-game performance or final art acceptance. No WebGLrenderer/context or competing GPU workload. No server/collision/layout/gameplay/asset/access/version change."
+  },
+  "sourceSHA256": {
+    "package.json": "146eac5182c620a9854485d5ef00326467603593a2e39a9830d701234560fb24",
+    "src/ui/InstanceAtlas.js": "ebc9b33af6649180cbce6b3f3ee2fd87426ca78a80ed1368245750f459fb4c0b",
+    "src/ui/Minimap.js": "fba7e4a674f675a4f2a4204493bc02eb255d0b31487c4822666e65d3b19f3bbd",
+    "tests/InstanceAtlas.test.js": "50cabfa89f6aaf374a0ee3f3954714ff91cbb95e7c1e482efc632f4989c8285c",
+    "tests/e2e/dungeon-radar-context.spec.js": "5882e0623bfd2f3694907a314f0dc33507bc4c30667a9f92e1dba453cb53caf4"
+  },
+  "productionFixtureSHA256": "1620d00e970212c734f8da39dd4329ec81e1e126d88dd9092938e86fa87bb7cb",
+  "publication": "Keep local qualified work on master; release33 exact9ce67fe3/run38142813857 is still in mandatory native predeploy. No subsequent release push before its own acceptance.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-interior-radar-checks-20261011",
+    "entries": 39,
+    "inventorySHA256": "35eff3ce04c50b274b4570f70ec1310b24dc68065ca143549e6e127c70f9b69f"
+  }
+}
