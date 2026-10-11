@@ -62,6 +62,8 @@ function material(key, color, opacity = 0.9, blending = THREE.AdditiveBlending) 
             opacity,
             depthWrite: false,
             side: THREE.DoubleSide,
+            // Preserve both faces while submitting additive contact cues once.
+            forceSinglePass: blending === THREE.AdditiveBlending,
             blending
         }));
     }
