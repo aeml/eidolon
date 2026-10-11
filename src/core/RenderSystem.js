@@ -722,6 +722,9 @@ export class RenderSystem {
         const normalized = (quality === 'low' || quality === 'medium' || quality === 'high') ? quality : 'high';
         const previousQuality = this.graphicsQuality;
         this.graphicsQuality = normalized;
+        // Low/Medium keep the original direct-singleton path; High combines
+        // compatible leaves only when the frame has native multi-draw support.
+        if (this.actorInstances) this.actorInstances.batchSingletons = normalized === 'high';
         updateFoliageRenderQuality(this.instanceEnvironmentGroup, normalized);
         updateElementalGroundCoverQuality(this.instanceEnvironmentGroup, normalized);
         this.bloomQualityScale = normalized === 'high' ? 1.0 : (normalized === 'medium' ? 0.66 : 0.0);
@@ -1059,7 +1062,7 @@ export class RenderSystem {
     setActorInstancesEnabled(enabled) {
         if (this._disposed) return;
         if (enabled && !this.actorInstances) {
-            this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true });
+            this.actorInstances = new ActorInstanceBatches(this.scene, [this.scene, this.entityGroup], { shadowInfluence: true, multiDraw: true, instanceFrustum: true, batchSingletons: this.graphicsQuality === 'high' });
         } else if (!enabled && this.actorInstances) {
             this.actorInstances.dispose(); this.actorInstances = null;
         }

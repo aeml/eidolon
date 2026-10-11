@@ -202,3 +202,32 @@ test('reuses unchanged roster and detects material, geometry, revision, cell and
     f.scene.add(f.actors[1].root); f.actors[1].mesh.geometry = f.geometry;
     f.instances.register(f.actors[1].root); f.begin(); expect(f.instances.batches.size).toBe(1); f.instances.dispose();
 });
+
+
+test('reviewed singleton consolidation requires live multi-draw support and retires copies on fallback', () => {
+    const scene = new THREE.Scene(), root = new THREE.Group();
+    root.userData.proceduralHumanoid = true; scene.add(root);
+    const material = new THREE.MeshStandardMaterial();
+    const geometries = [new THREE.BoxGeometry(), new THREE.SphereGeometry(1, 8, 6)];
+    geometries.forEach(geometry => { geometry.clearGroups(); root.add(new THREE.Mesh(geometry, material)); });
+    const owner = new ActorInstanceBatches(scene, [scene], { multiDraw: true, batchSingletons: true });
+    const camera = new THREE.PerspectiveCamera(), renderer = { extensions: { has: () => true } };
+    const begin = () => { scene.updateMatrixWorld(true); owner.beginFrame(renderer, camera); };
+    try {
+        begin(); expect(owner.batches.size).toBe(2); expect(owner.multiDraw.entries.size).toBe(1);
+        const mesh = [...owner.multiDraw.entries.values()][0].mesh;
+        const copied = jest.spyOn(mesh.geometry, 'dispose'), matrices = jest.spyOn(mesh._matricesTexture, 'dispose');
+        owner.endFrame();
+        renderer.extensions.has = () => false; begin();
+        expect(owner.batches.size).toBe(0); expect(owner.multiDraw.entries.size).toBe(0);
+        expect(copied).toHaveBeenCalledTimes(1); expect(matrices).toHaveBeenCalledTimes(1);
+        root.children.forEach(part => expect(part.visible).toBe(true));
+        renderer.extensions.has = () => true; owner.multiDraw.enabled = false; begin();
+        expect(owner.batches.size).toBe(0);
+        owner.multiDraw.enabled = true; camera.isArrayCamera = true; begin();
+        expect(owner.batches.size).toBe(0);
+        camera.isArrayCamera = false; begin(); expect(owner.multiDraw.entries.size).toBe(1);
+        owner.endFrame(); owner.batchSingletons = false; begin(); expect(owner.batches.size).toBe(0);
+        expect(owner.multiDraw.entries.size).toBe(0); root.children.forEach(part => expect(part.visible).toBe(true));
+    } finally { owner.dispose(); geometries.forEach(geometry => geometry.dispose()); material.dispose(); }
+});

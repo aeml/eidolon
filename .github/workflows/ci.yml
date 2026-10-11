@@ -312,7 +312,7 @@ jobs:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'
           PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/dungeon-outfits/report
-        run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/dungeon-entry-ward.spec.js tests/e2e/dungeon-floor-material.spec.js tests/e2e/published-game-bundle.spec.js tests/e2e/additive-effects-render.spec.js tests/e2e/camp-instance-frustum.spec.js tests/e2e/demon-orc-rigid-delivery.spec.js --grep "grounded entry wards|floor weathering|geometry scheduling|elemental floor materials|additive status, cast and contact|camp clipping preserves|DemonOrc preserves|DemonOrc defaults" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/dungeon-outfits/results'
+        run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/dungeon-entry-ward.spec.js tests/e2e/dungeon-floor-material.spec.js tests/e2e/published-game-bundle.spec.js tests/e2e/additive-effects-render.spec.js tests/e2e/camp-instance-frustum.spec.js tests/e2e/demon-orc-rigid-delivery.spec.js tests/e2e/singleton-actor-delivery.spec.js --grep "grounded entry wards|floor weathering|geometry scheduling|elemental floor materials|additive status, cast and contact|camp clipping preserves|DemonOrc preserves|DemonOrc defaults|singleton reviewed actors|singleton actors follow" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/dungeon-outfits/results'
 
       - name: Run required Well Rested rendering and GPU lifecycle QA
         if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'
