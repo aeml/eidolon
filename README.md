@@ -720,13 +720,17 @@ Still useful to add:
 
 ## License
 
-Eidolon is source-available under the [Eidolon Source-Available Share-Back
-License v1.0](LICENSE). Translation, modification, regional hosting, replacement
-assets, and commercial forks are permitted. Distributed or publicly hosted
-modifications must provide complete editable sources under the same license,
-notify upstream, and credit Robert Mendola as the original developer and
-maintainer. Existing third-party licenses remain in force.
+Eidolon's software is licensed under [GNU AGPL v3 only](LICENSE)
+(`AGPL-3.0-only`). Project-authored game assets use the separate
+[Eidolon Asset Share-Alike License v1.0](ASSET-LICENSE), requiring editable
+source sharing for distributed or publicly hosted assets and adapted asset
+collections, including integrated new and replacement models and animations.
+See [NOTICE](NOTICE) for scope and attribution to Robert Mendola, the original
+developer and maintainer. Existing third-party licenses remain in force.
 
-See [licensing and fork policy](docs/LICENSING.md) for attribution, asset source,
-payment integration, and submission requirements. Official Eidolon accepts only
-cosmetic monetization; independent forks may choose differently under the license.
+Translation, modification, regional hosting, and commercial forks are permitted.
+AGPL requires corresponding source access for users of modified network versions;
+upstream submissions are welcome but optional. See [licensing and fork
+policy](docs/LICENSING.md) for software, asset, and payment integration details.
+Official Eidolon accepts only cosmetic monetization; independent forks may
+choose differently under the licenses.

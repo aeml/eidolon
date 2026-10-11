@@ -1,0 +1,110 @@
+Eidolon Asset Share-Alike License, Version 1.0
+Copyright (c) 2026 Robert Mendola
+
+1. Scope
+
+"Assets" means project-authored visual and audio game content licensed under
+these terms, including models, meshes, textures, materials, rigs, animations,
+icons, illustrations, music, sound, and their editable sources. It includes the
+project-authored selection and arrangement of the game asset collection to the
+extent protected by copyright.
+
+"Adapted Collection" means an adaptation of that licensed asset collection,
+including additions and replacements integrated into it: player and monster
+models, weapons, armor, equipment, mounts, textures, rigs, animations, and other
+game assets. Mere aggregation of separate independent works without adapting
+the licensed collection is not an Adapted Collection.
+
+"Editable Source" means the preferred form for modifying assets, including
+original editable scenes (such as Blender files), meshes, rigs, animation clips,
+layered textures, audio projects where used, exports, and custom generation
+scripts and instructions needed to reproduce the published assets. Use open or
+documented formats where reasonably possible and identify required tools.
+
+These terms do not apply to AGPL software or separately identified third-party
+material. Third-party base components retain their own licenses; these terms
+cover project-authored additions and adaptations only to the extent the relevant
+copyright holders may license them.
+
+2. Permission
+
+Each copyright holder grants you worldwide, non-exclusive, royalty-free rights
+to use, reproduce, display, perform, modify, adapt, and distribute the Assets
+and Adapted Collections for any purpose, including commercial games, paid
+servers, subscriptions, virtual-item sales, and payment-enabled services,
+subject to these conditions. Recipients receive the same permissions directly
+from the applicable holders. No separate permission or revenue share is needed
+for compliant use. No trademark or endorsement rights are granted.
+
+3. Attribution
+
+Preserve copyright, license, attribution, and provenance notices. Include
+"Based on Eidolon by Robert Mendola, original developer and maintainer" in an
+accessible credits/about screen of games using the Assets, or equivalent credits
+accompanying other uses. Link to https://github.com/aeml/eidolon where supported.
+Equivalent translations are permitted if project and author remain identifiable.
+Identify adaptations and credit their authors separately; do not imply the
+original author created or endorses your modifications.
+
+4. Editable source and share-alike
+
+When distributing Assets or an Adapted Collection, or making either available
+to users outside your organization through a hosted game or network service:
+
+(a) Provide recipients and network users a prominent link to download complete
+matching Editable Source free of charge. A public repository is a simple way
+to comply. Supply editable sources for new and replacement assets integrated
+into an Adapted Collection, not only exported runtime files.
+
+(b) License your modifications and all new or replacement assets integrated into
+an Adapted Collection under this same license. Obtain necessary contributor and
+third-party rights before including material. Preserve separately identified
+third-party base components' licenses, supplying their notices and source or
+acquisition information as their terms require. Do not include replacement
+content whose terms prevent this source sharing and reuse. Upstream and every
+other recipient may reuse, modify, distribute, and commercially use your
+licensed contributions under section 2.
+
+(c) Include this license and retain accessible matching source versions for as
+long as you offer the version and at least three years after its last
+distribution or public operation. Do not add restrictions on these permissions.
+
+Private development neither distributed nor offered to outside users does not
+trigger section 4. No upstream notification, pull request, copyright assignment,
+or acceptance of contributions is required. Authors retain ownership.
+Keep passwords, credentials, private keys, player data, and payment records
+private; substitute configuration templates where necessary.
+
+5. Separate rights and gameplay media
+
+These conditions govern permission to use the Assets and adapt their licensed
+collection. They impose no additional conditions on AGPL software. Using the
+software alone does not place independently created artwork under this license.
+A work that neither uses nor adapts the licensed Assets or their protected
+collection is outside its scope. No rights in third-party material are granted
+beyond those the relevant copyright holders control.
+
+Gameplay videos, screenshots, streams, and promotional images may display the
+Assets without delivering editable sources or licensing the whole recording or
+image under these terms, provided reasonable Eidolon attribution is supplied.
+This permission does not cover distributing extractable game assets or operating
+a playable game or asset service.
+
+6. Termination
+
+Permissions terminate automatically on violation. They are automatically
+reinstated if you cure the violation within 30 days after first receiving notice
+from a copyright holder, provided this is your first such notice from that
+holder. Otherwise reinstatement requires that holder's written permission.
+Compliant downstream recipients retain their rights.
+
+7. Disclaimer and license identity
+
+TO THE EXTENT PERMITTED BY LAW, THE ASSETS ARE PROVIDED "AS IS", WITHOUT WARRANTY
+OF ANY KIND, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+TITLE, AND NON-INFRINGEMENT. NO COPYRIGHT HOLDER OR CONTRIBUTOR IS LIABLE FOR
+CLAIMS, DAMAGES, OR OTHER LIABILITY ARISING FROM THE ASSETS OR THEIR USE.
+
+This is a custom asset license, not AGPL or Creative Commons and not an
+OSI-approved software license. Later versions do not automatically replace this
+version. Only relevant copyright holders may grant exceptions.

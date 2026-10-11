@@ -1,0 +1,31 @@
+Eidolon
+Copyright (c) 2026 Robert Mendola
+Original developer and maintainer: Robert Mendola
+Upstream: https://github.com/aeml/eidolon
+
+Except for separately licensed third-party material and game assets, all
+project-authored code, scripts, documentation, and textual game content
+(including translations) are licensed under GNU AGPL version 3 only
+(SPDX-License-Identifier: AGPL-3.0-only). See LICENSE.
+
+Eidolon is free software: you can redistribute it and/or modify it under the
+terms of the GNU Affero General Public License as published by the Free Software
+Foundation, version 3 of the License.
+
+Eidolon is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE. See the GNU Affero General Public License for details.
+
+Under AGPL section 7(b), preserve this reasonable author attribution in copies
+of covered material and in the Appropriate Legal Notices displayed by works
+containing it: "Eidolon by Robert Mendola, original developer and maintainer".
+Equivalent translations are permitted if author and project remain identifiable.
+Credit your own contributors too; do not imply Robert Mendola authored their
+work or endorses a fork.
+
+Project-authored visual and audio game assets and their editable sources,
+including assets/, output/models/, and art sources elsewhere in the repository,
+use ASSET-LICENSE. Code in those directories remains AGPL unless separately
+licensed. Separately identified third-party code, fonts, base meshes, and other
+material retain their own licenses. Preserve their notices. This notice grants
+only rights the relevant copyright holders own or have authority to license.
