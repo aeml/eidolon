@@ -1,0 +1,27 @@
+{
+  "recordedUTC": "2026-10-11T18:33:09.194109+00:00",
+  "branch": "work/vendor-gold-coherence-20261010",
+  "historicalHead": "9b252480dd8cf18a91f2d93c382d3c71e60e81f7",
+  "masterBefore": "fa14b76963ceece7297b3de4fd8c777b980038f3",
+  "masterMerge": "a21023a511b9c5ab3aa40ea70e7c853324c90b3f",
+  "status": "completed selected history ordinarily merged into master",
+  "review": "All four unique historical commits reviewed. Seven of eleven changed paths already byte-identical to master. Four later test/helper paths retain strict earned-room reward accounting, request matching, pacing and hardware requirements. Three merge conflicts resolved to those reviewed current files.",
+  "validation": "Complete merge tree byte-identical to first parent; exact historical tip now ancestor of master. Existing qualified source and retained failure evidence in 2026-10-10-vendor-gold-synchronization.json remain unchanged. No source or test changes, so no unchanged runtime campaign replay.",
+  "localBranches": {
+    "merged": 594,
+    "unmerged": 60
+  },
+  "remoteBranches": {
+    "merged": 48,
+    "unmerged": 4
+  },
+  "remoteUnmerged": [
+    "origin/qa/release14-click-diagnostic",
+    "origin/work/1-1-party-traversal-timing",
+    "origin/work/1-1-verdant-expedition-budget",
+    "origin/work/gold-provenance-diagnostic-20261010"
+  ],
+  "workflow": "Completed validated work must merge into master before being reported done (AGENTS.md and CONTRIBUTING.md). Remaining branches need individual review; retained merged names are not unmerged work.",
+  "publication": "Fetched origin successfully; no remote commits missing locally. Source-only history reconciliation queued with qualified Forge changes for a coherent successor; current release36 deployment must finish verification before another push.",
+  "preserved": "Original dirty checkout, all branch names and unfinished/rejected experiments. No deletion, reset, stash, force push or production mutation."
+}
