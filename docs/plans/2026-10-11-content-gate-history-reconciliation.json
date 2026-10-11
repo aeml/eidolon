@@ -1,0 +1,43 @@
+{
+  "recordedUTC": "2026-10-11T16:42:53.139797+00:00",
+  "baseMaster": "69c3b8c1",
+  "historicalHead": "ce7a0a1ded9a65263ef3fbc5bf75f893bed29106",
+  "qualifiedSource": "54ead973939d7d5ab4fdec2506d68522a42a7fc1",
+  "masterMerge": "22cf547ac80d9dfe732291d9ef69b5cbd53123dd",
+  "focused": {
+    "checks": 177,
+    "suites": 11,
+    "failed": 0
+  },
+  "browser": {
+    "checks": 2,
+    "failed": 0,
+    "retries": 0,
+    "skipped": 0,
+    "rendererScope": "System Chrome2D icon decoding/layout, GPU explicitly disabled to avoid native release QA contention; not game graphics/performance acceptance"
+  },
+  "changes": "Read-only fixed content gate; validate cosmetic catalogues before output; stop install regeneration; honest generated animation inventory; current authored-equipment validator retained byte-for-byte",
+  "staticChecks": "Focused ESLint max-warnings0 and git diff checks pass",
+  "currentBranches": {
+    "total": 647,
+    "merged": 582,
+    "unmerged": 65
+  },
+  "limits": "No runtime graphics/gameplay/model/schema/access/release identity changes; source-only until next coherent publication. Original full goal and dirty checkout preserved.",
+  "status": "completed-validated-ordinarily-merged-into-master",
+  "ownerInstruction": "Completed work must always be merged into master.",
+  "validation": {
+    "focused": "177 distinct checks across11 suites PASS; no failures/skips. New aggregate tests verify all11 check-only invocations, external cwd, early failure propagation and unknown-argument refusal.",
+    "currentEquipment": "All27 current authored-equipment generator checks pass; old underspecified one-class fixtures replaced by this stronger existing suite. Validator/catalog and selected744 asset paths preserved.",
+    "content": "Actual11-group gate passes; before/after byte hashes and nanosecond mtimes unchanged across11 audited generated outputs.",
+    "browser": "2 System Chrome UIManager icon cases at1440px/390px PASS;2executions,retries0,skips0. GPU disabled for2D-only run while exact35nativeQA owns GPU. Phone image inspected. No authenticated bag/gameplay/physical-device/native-renderer acceptance inferred.",
+    "hygiene": "Scoped ESLint max-warnings0 and staged/unstaged whitespace checks pass. Current goal/release/runtime/catalog checks preserved byte-for-byte."
+  },
+  "reconciliation": "Historical ce7a0a1d and qualified54ead973 are now exact ancestors of master22cf547a. Ordinary merge retains both completed commits; current goal/roadmap/release state and stronger equipment implementation win outdated conflicts. Generated animation inventory rebuilt from current manifests.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-content-gate-history-checks-20261011",
+    "inventoryEntries": 15,
+    "inventorySHA256": "0db5cbbebb78197fe44b8d37fc409e1ac2f4587d8ade864eb395f365c7e0fb5b"
+  },
+  "publication": "Not pushed independently. Exact release35 ade204b8 CI38154778403 still in progress; verify deployment before next coherent publication."
+}

@@ -141,7 +141,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **66**, reduced from 287; 580 of 646 local branch names
+  unmerged tips are now **65**, reduced from 287; 582 of 647 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -167,6 +167,15 @@ Every explicit requirement in those sources remains part of the completion audit
   [completed diagnostic histories](2026-10-11-completed-diagnostic-branch-reconciliation.json),
   [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json),
   [release/atlas/casino histories](2026-10-11-completed-release-history-reconciliation.json).
+- **Completed content-gate history:** original `ce7a0a1d` and qualified
+  `54ead973` now ordinarily merged into master `22cf547a`. Read-only eleven-group
+  local/CI gate, cosmetic input validation and explicit generation replace silent
+  install regeneration. Current equipment validator/catalog remain byte-exact;
+  all744 asset paths retained.177 distinct checks/11suites and2 System Chrome
+  desktop/phone-width2D icon cases pass, no failures/retries/skips. Eleven audited
+  generated outputs retain bytes/mtime through actual checks. Source-only until
+  next coherent publication; full1.86/rights/gameplay/device gates remain open.
+  [Reconciliation](2026-10-11-content-gate-history-reconciliation.json).
 - **Merged/pushed35 milestone:** source `0a2303c1` combines the exact qualified
   guild/venue/build-menu/direct-trade runtime below in one release.728distinct
   checks/17suites, full lint, shell syntax and two native publication cases pass;
