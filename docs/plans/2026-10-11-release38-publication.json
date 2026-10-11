@@ -1,0 +1,43 @@
+{
+  "recordedUTC": "2026-10-11T20:34:45.676635+00:00",
+  "version": "Alpha 1.79.38",
+  "source": "91ee3ec85ed13a643025c047bbaba5eba14528d7",
+  "status": "Qualified coherent38ordinarily pushed after exact37acceptance; exact CI38172700682attempt1active, not accepted yet.",
+  "ci": {
+    "run": 38172700682,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38172700682",
+    "attempt": 1,
+    "initialStatus": "in_progress"
+  },
+  "prepublication": "2026-10-11-release38-prepublication-qualification.json",
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.a0bfaaefee9a272a.js",
+    "sha256": "a0bfaaefee9a272a274daa813fb6e9e0f4f3e3897ebd829aae66da45a5954afd",
+    "bytes": 137254,
+    "modules": 10,
+    "imports": []
+  },
+  "assetPins": 86,
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release38-publication-checks-20261011/expected-public38-assets.json",
+  "engine": {
+    "path": "src/core/GameEngine.bundle.js",
+    "bytes": 3507601,
+    "sha256": "d21ee216145fb8273f7330379e59a4de5c6efb369f7c8a2fc2d2fef985907b73"
+  },
+  "copiedPublication": {
+    "verifiedPins": 86,
+    "source": "91ee3ec85ed13a643025c047bbaba5eba14528d7",
+    "copyFiles": 3275,
+    "copyBytes": 441967189,
+    "ownedReproducibleCopyRemoved": "/home/aeml/.local/share/eidolon-release38-publication-checks-20261011/public",
+    "scope": "Only owned copied static publication retired; current-source3native qualification reused because runtime paths are byte-exact. Source/evidence retained."
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release38-publication-checks-20261011",
+    "entries": 10,
+    "inventorySHA256": "d0bafa9387e7b9cb1d368b02737483095e05eead5d1bea84f120ceea9bb958ef"
+  },
+  "branchCleanup": "All654original local branch tips and51remote tips are ancestors of the published master.653local/50remote names removed; only master remains. All dirty original changes retained at identical detached HEAD.",
+  "acceptanceRequired": "Exact current ordered CI/deploy/live success, then fresh normal-TLS frontend/backend/readyDB and all86asset lengths/SHA. No next source publication before acceptance.",
+  "limits": "Original full readiness scope stays active; cold triangles, connected frame-time, art, device, campaign, capacity, freeze/beta/launch/handoff gates remain open. Precomputed-index work is only extraction/encoding feasibility and is not in the runtime."
+}
