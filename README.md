@@ -496,20 +496,16 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Latest verified public build: `Alpha 1.79.34`, exact `3ec8bb151f24909127b832a4035eb7e6eab9b635`.
-  All ten ordered CI jobs succeed on attempt2. Fresh post-terminal normal-TLS
-  frontend/backend identities, ready database and all23 served asset byte counts
-  and hashes match at16:10:48UTC. Four optional stages remain skips.
-  [Acceptance](docs/plans/2026-10-11-public34-terminal-qualification.json).
-  Original client-fixture failure and diagnosed predeploy network failure remain
-  retained. [Diagnosis/retry](docs/plans/2026-10-11-release34-predeploy-network-retry.json).
-  [Correction](docs/plans/2026-10-11-release34-charging-fixture-correction.json).
-- Current publication: coherent `Alpha 1.79.35` is merged and ordinarily pushed
-  as `ade204b800faa2cba8eacf1da71b100590e88d87`; CI38154778403 is active.
- 728focused checks/17suites, two native publication cases and all12version paths
-  pass;470cumulative notes retain all469prior entries exactly. All78copied asset
-  pins are prepared. Own ordered CI/deploy/live and fresh public acceptance
-  remain pending. [Publication](docs/plans/2026-10-11-release35-publication.json).
+- Accepted public release: Alpha1.79.35, exact
+`ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
+All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
+identities, ready database and all78served asset hashes/byte counts match at
+17:02:13UTC. Four optional stages remain skips.
+  [Acceptance](docs/plans/2026-10-11-public35-terminal-qualification.json).
+- Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
+728distinct focused checks/17suites and two native publication cases pass;
+12versions align35;470cumulative notes preserve all469prior entries byte-exact.
+  [Publication](docs/plans/2026-10-11-release35-publication.json).
 - Current source version: `Alpha 1.79.35`, reliable trade drafts and confirmations,
   keyboard build choices with stable focus and reading position, current guild
   calendar actions and a clearer venue dialog. Retains steady dungeon radar context, independent

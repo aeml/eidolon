@@ -46,15 +46,14 @@ Every explicit requirement in those sources remains part of the completion audit
   repair does not establish deployment success.
   [Receipt](2026-10-11-release33-scratch-capacity.json).
 
-- **Last accepted public build:** Alpha1.79.34,
-  `3ec8bb151f24909127b832a4035eb7e6eab9b635`, CI38149199718 attempt2.
-  All ten ordered jobs succeed. Fresh post-terminal normal-TLS checks at
-  16:10:48UTC verify exact frontend/backend identities, ready database and all23
-  expected served asset hashes and byte counts. Four optional stages remain
-  skips. Original client-fixture and diagnosed predeploy network failures are
-  retained; the failed-job-only retry changed no source or gate. Current terrain
-  stays flat-v1. [Acceptance](2026-10-11-public34-terminal-qualification.json).
-  Previous33 remains accepted in its [receipt](2026-10-11-public33-terminal-qualification.json).
+- **Last accepted public build:** Accepted public release: Alpha1.79.35, exact
+`ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
+All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
+identities, ready database and all78served asset hashes/byte counts match at
+17:02:13UTC. Four optional stages remain skips.
+  [Acceptance](2026-10-11-public35-terminal-qualification.json).
+  Previous34 and its fixture/network failures remain in its
+  [receipt](2026-10-11-public34-terminal-qualification.json).
 - **Previous accepted public build:** Alpha1.79.32,
   `d31246e9b53fbe73bd7f59beea4c3235df30a922`.
   [CI38136326810](https://github.com/aeml/eidolon/actions/runs/38136326810)
@@ -141,7 +140,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **64**, reduced from 287; 584 of 648 local branch names
+  unmerged tips are now **64**, reduced from 287; 585 of 649 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -189,10 +188,11 @@ Every explicit requirement in those sources remains part of the completion audit
  469prior entry byte-exact. Native login/page retry and copied four-class engine
   construction pass. Component source identity checks justify reusing their
   existing focused/browser evidence. Ordinary master merge/push `ade204b8`
-  starts exact CI38154778403. All78copied asset pins are prepared and verified
+  completed exact CI38154778403 attempt1 with all ten jobs successful. All78copied asset pins are prepared and verified
   before owned reproducible copy retirement; source/evidence preserved. Own
   ordered CI/deploy/live and fresh post-terminal normal-TLS identities/readyDB/
-  asset checks remain required.
+  78asset checks are accepted at17:02:13UTC. Four optional stages remain skips.
+  [Acceptance](2026-10-11-public35-terminal-qualification.json).
   [Publication](2026-10-11-release35-publication.json).
   [Prepublication](2026-10-11-release35-menu-review-prepublication.json).
 - **Desktop build keyboard access:** native skill unlock/rune buttons now support
@@ -200,7 +200,7 @@ Every explicit requirement in those sources remains part of the completion audit
   Qualified175distinct checks/eight suites and four native desktop/phone-layout
   cases;352CI cases discovered exactly once, not352execution passes. Initial
   selector failures and visual Tier1 overflow correction retained. Merged locally,
-  included in pushed35; own35acceptance pending.
+  included in pushed35; accepted with35 within the retained scope.
   Prepared UI acknowledgements do not prove connected progression or whole-game
   accessibility. [Qualification](2026-10-11-desktop-build-keyboard-qualification.json).
 - **Desktop build continuity:** qualified source `ec4763db`, ordinary master
@@ -211,7 +211,7 @@ Every explicit requirement in those sources remains part of the completion audit
   Actual short desktop supplies nonzero overflow; tall desktop fits all runes.
   GPU-disabled DOM/keyboard evidence and simulated acknowledgements do not
   qualify GPU, earned progression or whole-game accessibility. Merged locally,
-  included in pushed35; own35acceptance pending.
+  included in pushed35; accepted with35 within the retained scope.
   [Qualification](2026-10-11-desktop-build-continuity-qualification.json).
 - **Direct trade review:** qualified source `032ac872`, ordinary master merge
   `40c39d76`. Partner updates and acknowledgements preserve newer unsent drafts;
@@ -224,7 +224,7 @@ Every explicit requirement in those sources remains part of the completion audit
   failure and changed-source/visual iterations;355CI cases discovered exactly
   once, not execution passes. Prepared GPU-disabled UI/simulated replies do not
   qualify durable settlement or physical-device/whole-game accessibility.
-  Merged and ordinarily pushed in35; own35acceptance pending.
+  Merged and ordinarily pushed in35; accepted with35 within the retained scope.
   [Qualification](2026-10-11-direct-trade-review-qualification.json).
 - **Dungeon radar context:** selected `260ea4d3`, qualified `5e039538`, merged
   `6d904417`. Entry-room walls and corridor mouths now fit the radar; the scale
@@ -267,7 +267,7 @@ Every explicit requirement in those sources remains part of the completion audit
   retries/skips0, preserving current account/display-name/revision and explicit
   consent rules. Reviewed1.60 history is joined without replacing newer runtime;
   only its original75-line historical preparation doc is added by that join.
-  Included in ordinarily pushed35; own35acceptance pending.
+  Included in ordinarily pushed35; accepted with35 within the retained scope.
   [Qualification](2026-10-11-guild-calendar-action-qualification.json).
 - **Prepared/pushed34 milestone:** source `c75c0f41`, qualification `0b120edc`,
   ordinary master merge `88cf2985`. Steady dungeon radar, independent mixed

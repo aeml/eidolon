@@ -8,9 +8,21 @@ This is the product-level roadmap and historical Alpha 1.0 closeout record. The 
 
 ## Current Snapshot
 
-- Latest accepted live release is `Alpha 1.79.34`, exact `3ec8bb151f24909127b832a4035eb7e6eab9b635`, CI38149199718 attempt2. All ten ordered jobs succeeded; fresh post-terminal normal-TLS frontend/backend identities, ready database and all23 served asset hashes/byte counts match at16:10:48UTC. Four optional stages remain skips. Original client-fixture and predeploy transient-network failures are retained. [Acceptance](docs/plans/2026-10-11-public34-terminal-qualification.json).
-- Accepted34 combines steady dungeon radar, independent mixed-weapon Rogue grips and faster owned geometry copies.444 distinct release checks/five suites and four native publication cases pass, with retries/skips0. All468prior entries are byte-exact within469 cumulative notes. Includes actual High/Low four-class14-slot outfits through the geometry worker with exact index/pixel controls. [Prepublication](docs/plans/2026-10-11-release34-motion-navigation-prepublication.json).64unmerged histories remain reviewed individually;584of648local branches are ancestors of master after the qualified35 merge.
-- Merged and ordinarily pushed coherent `Alpha 1.79.35`, exact `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 active, combines qualified guild/venue/build-menu/direct-trade work.728 focused checks/17suites and two distinct native publication cases pass with retries/skips0; all12version paths align35 and470cumulative notes preserve every469prior entry exactly. All78copied asset pins are prepared. Completed work is merged into master. Exact35 CI/deploy/live and fresh public acceptance remain required. [Publication](docs/plans/2026-10-11-release35-publication.json). [Prepublication](docs/plans/2026-10-11-release35-menu-review-prepublication.json).
+- Accepted public release: Alpha1.79.35, exact
+`ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
+All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
+identities, ready database and all78served asset hashes/byte counts match at
+17:02:13UTC. Four optional stages remain skips.
+[Acceptance](docs/plans/2026-10-11-public35-terminal-qualification.json).
+- Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
+728distinct focused checks/17suites and two native publication cases pass;
+12versions align35;470cumulative notes preserve all469prior entries byte-exact.
+[Publication](docs/plans/2026-10-11-release35-publication.json).
+[Prepublication](docs/plans/2026-10-11-release35-menu-review-prepublication.json).
+- 585of649local branch names are ancestors of master;64unmerged histories remain
+under individual review. Completed content-validation and environment histories
+are merged locally for the next coherent publication. Prior34 failures remain
+retained in its historical acceptance receipt.
 - The [remaining-work register](docs/plans/2026-10-09-release-readiness-remaining.md) tracks original world/art/gameplay/device/performance/operations/F1–F5/beta/launch/handoff gaps. High frame-time counterexamples remain open. The current 100-client soak38109009521 is still running, not capacity certification. Owner-deferred uninterrupted campaign/pacing and physical-phone review remain for playtests. Feature freeze and closed beta are not approved by these scoped releases.
 
 - Working-candidate and verified-live versions are tracked separately in the [execution ledger](docs/plans/2026-09-05-roadmap-execution.md). The login screen shows its build's version; a locally prepared candidate is not automatically deployed.

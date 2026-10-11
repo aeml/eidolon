@@ -1,0 +1,925 @@
+{
+  "recordedUTC": "2026-10-11T17:07:45.095431+00:00",
+  "version": "Alpha 1.79.35",
+  "source": "ade204b800faa2cba8eacf1da71b100590e88d87",
+  "status": "Accepted exact ordered publication within its retained scope. Full goal remains active.",
+  "ci": {
+    "run": 38154778403,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38154778403",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "terminalUpdatedUTC": "2026-10-11T17:00:04Z"
+  },
+  "orderedJobs": [
+    {
+      "name": "Server Tests (Go)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Client Tests (Jest)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "conclusion": "success",
+      "optionalSkippedSteps": [
+        "Run deterministic High/Low animation gallery",
+        "Run required Well Rested rendering and GPU lifecycle QA",
+        "Run disposable full-character gameplay"
+      ]
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Live Release and Character QA",
+      "conclusion": "success",
+      "optionalSkippedSteps": [
+        "Run live four-class and remote-animation QA"
+      ]
+    }
+  ],
+  "public": {
+    "observedAtUtc": "2026-10-11T17:02:13.535014+00:00",
+    "manifestPath": "/home/aeml/.local/share/eidolon-release35-publication-checks-20261011/expected-public35-assets.json",
+    "manifestSource": "ade204b800faa2cba8eacf1da71b100590e88d87",
+    "expectedVersion": "Alpha 1.79.35",
+    "frontend": {
+      "status": 200,
+      "identity": {
+        "commit": "ade204b800faa2cba8eacf1da71b100590e88d87",
+        "version": "Alpha 1.79.35"
+      }
+    },
+    "backend": {
+      "status": 200,
+      "identity": {
+        "status": "ok",
+        "database": "ready",
+        "commit": "ade204b800faa2cba8eacf1da71b100590e88d87",
+        "version": "Alpha 1.79.35",
+        "terrainProfile": "flat-v1",
+        "goroutines": 40,
+        "heapAllocBytes": 54825776,
+        "heapObjects": 49947,
+        "broadcastQueues": {
+          "queued": 0,
+          "capacity": 1024,
+          "encounterQueued": 0,
+          "encounterCapacity": 128,
+          "dropped": 0,
+          "encounterDropped": 0,
+          "invalidDropped": 0
+        },
+        "websocketClosures": {
+          "accessDenied": 0,
+          "accountRecovery": 0,
+          "adminAdmission": 0,
+          "adminStorage": 0,
+          "hubShutdown": 0,
+          "inboundLimit": 0,
+          "peerAbnormal": 0,
+          "peerGoingAway": 14,
+          "peerNormal": 1,
+          "peerPolicy": 0,
+          "peerProtocol": 0,
+          "peerServer": 0,
+          "priorityOverflow": 0,
+          "qaDisconnect": 3,
+          "queuesClosed": 0,
+          "readNetwork": 0,
+          "readOther": 0,
+          "readTimeout": 0,
+          "sessionReplaced": 0,
+          "writeNetwork": 0,
+          "writeOther": 0,
+          "writeTimeout": 0
+        },
+        "operational": {
+          "characterJournal": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 33,
+            "failed": 0,
+            "timedSamples": 33,
+            "totalMicros": 417295,
+            "maxMicros": 33320
+          },
+          "characterCommit": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 33,
+            "failed": 0,
+            "timedSamples": 33,
+            "totalMicros": 299207,
+            "maxMicros": 20434
+          },
+          "characterCleanup": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 33,
+            "failed": 0,
+            "timedSamples": 33,
+            "totalMicros": 203937,
+            "maxMicros": 17936
+          },
+          "characterRecovery": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 13,
+            "failed": 0,
+            "timedSamples": 13,
+            "totalMicros": 3415,
+            "maxMicros": 1677
+          },
+          "casinoGold": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "casinoEP": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "realtimeUpdate": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 22146,
+            "failed": 0,
+            "timedSamples": 22146,
+            "totalMicros": 97370370,
+            "maxMicros": 30660
+          },
+          "stateBroadcast": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 22146,
+            "failed": 0,
+            "timedSamples": 22146,
+            "totalMicros": 8966292,
+            "maxMicros": 11458
+          }
+        }
+      }
+    },
+    "assets": [
+      {
+        "path": "assets/patch-notes/1.79.34/page-001.json",
+        "status": 200,
+        "bytes": 18939,
+        "sha256": "74972e3e207ef0a87e6ece6d9907973eccfc90ceba3db698c7898253cbb88087",
+        "expectedBytes": 18939,
+        "expectedSha256": "74972e3e207ef0a87e6ece6d9907973eccfc90ceba3db698c7898253cbb88087",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.34/page-046.json",
+        "status": 200,
+        "bytes": 15420,
+        "sha256": "28918ecdde06539109eaff76c5d4ae24c49a96f46926eff10d9c44ff37ee5ec2",
+        "expectedBytes": 15420,
+        "expectedSha256": "28918ecdde06539109eaff76c5d4ae24c49a96f46926eff10d9c44ff37ee5ec2",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-001.json",
+        "status": 200,
+        "bytes": 17387,
+        "sha256": "49ff159e8b7e845e9bcd1c0f4a217bc35e2714ecf80b0a218fb60db855403eea",
+        "expectedBytes": 17387,
+        "expectedSha256": "49ff159e8b7e845e9bcd1c0f4a217bc35e2714ecf80b0a218fb60db855403eea",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-002.json",
+        "status": 200,
+        "bytes": 18959,
+        "sha256": "28dc004f548d9e480fa1e5b79dcfebeb10ef7895931250fb3afbebb809c20179",
+        "expectedBytes": 18959,
+        "expectedSha256": "28dc004f548d9e480fa1e5b79dcfebeb10ef7895931250fb3afbebb809c20179",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-003.json",
+        "status": 200,
+        "bytes": 25185,
+        "sha256": "b7dd1dd4958a5e8237a67e6e6f4da8cbe872c02f5139efb20930f75681acebdd",
+        "expectedBytes": 25185,
+        "expectedSha256": "b7dd1dd4958a5e8237a67e6e6f4da8cbe872c02f5139efb20930f75681acebdd",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-004.json",
+        "status": 200,
+        "bytes": 15422,
+        "sha256": "307d30eb78d5697fe14f1366a2f594558d4ee7b10ee019b7b19ee1d638a81900",
+        "expectedBytes": 15422,
+        "expectedSha256": "307d30eb78d5697fe14f1366a2f594558d4ee7b10ee019b7b19ee1d638a81900",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-005.json",
+        "status": 200,
+        "bytes": 14659,
+        "sha256": "b03e9c4b5b93f3efb2d55a7af5dd2b54c4e14cb930cce5289a93d6aa32bd554a",
+        "expectedBytes": 14659,
+        "expectedSha256": "b03e9c4b5b93f3efb2d55a7af5dd2b54c4e14cb930cce5289a93d6aa32bd554a",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-006.json",
+        "status": 200,
+        "bytes": 15577,
+        "sha256": "cf63d2385b160ca7c80d0282b71ad4868788b8a588e534bdce248b0cc66b6f87",
+        "expectedBytes": 15577,
+        "expectedSha256": "cf63d2385b160ca7c80d0282b71ad4868788b8a588e534bdce248b0cc66b6f87",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-007.json",
+        "status": 200,
+        "bytes": 18716,
+        "sha256": "6f5d7dbbedbdff996a1e6d3922047c8290c2acb3778ec0ffad8980ea4feeb250",
+        "expectedBytes": 18716,
+        "expectedSha256": "6f5d7dbbedbdff996a1e6d3922047c8290c2acb3778ec0ffad8980ea4feeb250",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-008.json",
+        "status": 200,
+        "bytes": 19209,
+        "sha256": "8c70deeb80ec4502cb26fdbc83a71822e6407d08106cf25a6c0bd0f74f134b44",
+        "expectedBytes": 19209,
+        "expectedSha256": "8c70deeb80ec4502cb26fdbc83a71822e6407d08106cf25a6c0bd0f74f134b44",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-009.json",
+        "status": 200,
+        "bytes": 17138,
+        "sha256": "dd9c079760a8e353efd748917dfd559e71c91fdf1a7b84c0d7dc99c449700ffd",
+        "expectedBytes": 17138,
+        "expectedSha256": "dd9c079760a8e353efd748917dfd559e71c91fdf1a7b84c0d7dc99c449700ffd",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-010.json",
+        "status": 200,
+        "bytes": 17716,
+        "sha256": "66df679a3d4facb820aea2901686fb4bb0ab210fc89e25f1474aa786a199dea9",
+        "expectedBytes": 17716,
+        "expectedSha256": "66df679a3d4facb820aea2901686fb4bb0ab210fc89e25f1474aa786a199dea9",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-011.json",
+        "status": 200,
+        "bytes": 20116,
+        "sha256": "228c7e8e655b4d0fce420872664790befdac6815f9314ca2eb110b6aaf4b575f",
+        "expectedBytes": 20116,
+        "expectedSha256": "228c7e8e655b4d0fce420872664790befdac6815f9314ca2eb110b6aaf4b575f",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-012.json",
+        "status": 200,
+        "bytes": 15994,
+        "sha256": "adf4ded236103a59421d1cc6608561792019b6628fac4f6086d2c36ea0610dea",
+        "expectedBytes": 15994,
+        "expectedSha256": "adf4ded236103a59421d1cc6608561792019b6628fac4f6086d2c36ea0610dea",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-013.json",
+        "status": 200,
+        "bytes": 12868,
+        "sha256": "fe9208231b86cf760d4c22b4d557db39bde9ad62c8653780289ec1250d0e6b46",
+        "expectedBytes": 12868,
+        "expectedSha256": "fe9208231b86cf760d4c22b4d557db39bde9ad62c8653780289ec1250d0e6b46",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-014.json",
+        "status": 200,
+        "bytes": 9584,
+        "sha256": "71acc1dcd2e38779aa4c5fba675d9a32bccc58db2ae67dc098fa2cdb84673378",
+        "expectedBytes": 9584,
+        "expectedSha256": "71acc1dcd2e38779aa4c5fba675d9a32bccc58db2ae67dc098fa2cdb84673378",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-015.json",
+        "status": 200,
+        "bytes": 24843,
+        "sha256": "747b684cdc7b408ac9be3932cc09311ec0d908c0793daa627761db72d834ff19",
+        "expectedBytes": 24843,
+        "expectedSha256": "747b684cdc7b408ac9be3932cc09311ec0d908c0793daa627761db72d834ff19",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-016.json",
+        "status": 200,
+        "bytes": 20184,
+        "sha256": "956d1f356db4eff8019e0fbc9d9617ed4cad95f325324ad990a2e7df490864ca",
+        "expectedBytes": 20184,
+        "expectedSha256": "956d1f356db4eff8019e0fbc9d9617ed4cad95f325324ad990a2e7df490864ca",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-017.json",
+        "status": 200,
+        "bytes": 14963,
+        "sha256": "169eb4e7cd856292bc86453b143e1541b431265a42fdbe69da2aa3e616dbe7b1",
+        "expectedBytes": 14963,
+        "expectedSha256": "169eb4e7cd856292bc86453b143e1541b431265a42fdbe69da2aa3e616dbe7b1",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-018.json",
+        "status": 200,
+        "bytes": 20049,
+        "sha256": "be4c851bdc14fc658c39d168c024f558bbffa42da70b7a1ecb2037fc6ac119ba",
+        "expectedBytes": 20049,
+        "expectedSha256": "be4c851bdc14fc658c39d168c024f558bbffa42da70b7a1ecb2037fc6ac119ba",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-019.json",
+        "status": 200,
+        "bytes": 17616,
+        "sha256": "754da006bcbc5de67a20b271e7a573fc7770f2c7704622dde1b22f02945d1c82",
+        "expectedBytes": 17616,
+        "expectedSha256": "754da006bcbc5de67a20b271e7a573fc7770f2c7704622dde1b22f02945d1c82",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-020.json",
+        "status": 200,
+        "bytes": 13528,
+        "sha256": "b8484ec84122613805307a3f63373e533ee31cdb138c293bddfb6774baa7d649",
+        "expectedBytes": 13528,
+        "expectedSha256": "b8484ec84122613805307a3f63373e533ee31cdb138c293bddfb6774baa7d649",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-021.json",
+        "status": 200,
+        "bytes": 16930,
+        "sha256": "c6c3af53fd1f0ac92fa8d848b01454aed73b3ea622a313409b6b9b8517c5620f",
+        "expectedBytes": 16930,
+        "expectedSha256": "c6c3af53fd1f0ac92fa8d848b01454aed73b3ea622a313409b6b9b8517c5620f",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-022.json",
+        "status": 200,
+        "bytes": 21499,
+        "sha256": "7b832340d948615635bcef5400fe22fc5183dd600bec30f264d93ed3cc2d1e71",
+        "expectedBytes": 21499,
+        "expectedSha256": "7b832340d948615635bcef5400fe22fc5183dd600bec30f264d93ed3cc2d1e71",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-023.json",
+        "status": 200,
+        "bytes": 21715,
+        "sha256": "9b4f0b2d0a75153b595328129ef1349cb9959804ec5e6907f6fea28b7903c159",
+        "expectedBytes": 21715,
+        "expectedSha256": "9b4f0b2d0a75153b595328129ef1349cb9959804ec5e6907f6fea28b7903c159",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-024.json",
+        "status": 200,
+        "bytes": 32147,
+        "sha256": "1dfb86baa58275c96cb3df57d7a3ec073b2bcf8de8a0f0607fce519040456752",
+        "expectedBytes": 32147,
+        "expectedSha256": "1dfb86baa58275c96cb3df57d7a3ec073b2bcf8de8a0f0607fce519040456752",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-025.json",
+        "status": 200,
+        "bytes": 30631,
+        "sha256": "a81cebda30461003756a5b4576f7813e7d48576674d07f129cdf0d3105d5bb06",
+        "expectedBytes": 30631,
+        "expectedSha256": "a81cebda30461003756a5b4576f7813e7d48576674d07f129cdf0d3105d5bb06",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-026.json",
+        "status": 200,
+        "bytes": 24321,
+        "sha256": "e77fc292801510376f86aa3c599220c0ddb0d4de435f35ba2dd05cd64c795103",
+        "expectedBytes": 24321,
+        "expectedSha256": "e77fc292801510376f86aa3c599220c0ddb0d4de435f35ba2dd05cd64c795103",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-027.json",
+        "status": 200,
+        "bytes": 20436,
+        "sha256": "7ef14d80dfdd6f5648679f29583d59ef1ee24d8670bc4007280ddec168c6e6fb",
+        "expectedBytes": 20436,
+        "expectedSha256": "7ef14d80dfdd6f5648679f29583d59ef1ee24d8670bc4007280ddec168c6e6fb",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-028.json",
+        "status": 200,
+        "bytes": 11489,
+        "sha256": "dad0a48f9e517d5945b12985b142146e37dbf5daa9ac35b32e3567727152d807",
+        "expectedBytes": 11489,
+        "expectedSha256": "dad0a48f9e517d5945b12985b142146e37dbf5daa9ac35b32e3567727152d807",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-029.json",
+        "status": 200,
+        "bytes": 11443,
+        "sha256": "a7def75f70845fce2aff53f9e504d57f7281f7e09feec6ccd58ea327a2ed3955",
+        "expectedBytes": 11443,
+        "expectedSha256": "a7def75f70845fce2aff53f9e504d57f7281f7e09feec6ccd58ea327a2ed3955",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-030.json",
+        "status": 200,
+        "bytes": 11419,
+        "sha256": "b9c12cf935df9d1af1d19863d2e555f14a41b4a86a2e0d45220c44478388f634",
+        "expectedBytes": 11419,
+        "expectedSha256": "b9c12cf935df9d1af1d19863d2e555f14a41b4a86a2e0d45220c44478388f634",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-031.json",
+        "status": 200,
+        "bytes": 10990,
+        "sha256": "9c151bdf502d35356955c07888bab49d53d97bab70a5037031513a317f73a18a",
+        "expectedBytes": 10990,
+        "expectedSha256": "9c151bdf502d35356955c07888bab49d53d97bab70a5037031513a317f73a18a",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-032.json",
+        "status": 200,
+        "bytes": 10772,
+        "sha256": "3de9b6e72fd09a46652b0787bd0d08161eb0dec619f75288dcfeda41472ee4fd",
+        "expectedBytes": 10772,
+        "expectedSha256": "3de9b6e72fd09a46652b0787bd0d08161eb0dec619f75288dcfeda41472ee4fd",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-033.json",
+        "status": 200,
+        "bytes": 11598,
+        "sha256": "06128e24183b622bef2177d9ea9841c4fd34606df09175ead106947ac0364e1c",
+        "expectedBytes": 11598,
+        "expectedSha256": "06128e24183b622bef2177d9ea9841c4fd34606df09175ead106947ac0364e1c",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-034.json",
+        "status": 200,
+        "bytes": 11747,
+        "sha256": "9142985fc8c8915eccd73229f4717554fc6ab4b5aa1a7ae58f9a792507ded823",
+        "expectedBytes": 11747,
+        "expectedSha256": "9142985fc8c8915eccd73229f4717554fc6ab4b5aa1a7ae58f9a792507ded823",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-035.json",
+        "status": 200,
+        "bytes": 13112,
+        "sha256": "8d2a0f98b71982b8d1ed7b2049fc9520011ba0b8c95b860cf6f161eebddb8ca6",
+        "expectedBytes": 13112,
+        "expectedSha256": "8d2a0f98b71982b8d1ed7b2049fc9520011ba0b8c95b860cf6f161eebddb8ca6",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-036.json",
+        "status": 200,
+        "bytes": 12746,
+        "sha256": "c28e1af018adb757d6d1654020d1c46f13fbf667b4aa7c426a801e78da2d6642",
+        "expectedBytes": 12746,
+        "expectedSha256": "c28e1af018adb757d6d1654020d1c46f13fbf667b4aa7c426a801e78da2d6642",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-037.json",
+        "status": 200,
+        "bytes": 12664,
+        "sha256": "534826ebbcb11668d7c1ca97287c765845da5ffaa4eb4c211bced9ece50a932c",
+        "expectedBytes": 12664,
+        "expectedSha256": "534826ebbcb11668d7c1ca97287c765845da5ffaa4eb4c211bced9ece50a932c",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-038.json",
+        "status": 200,
+        "bytes": 12866,
+        "sha256": "727a932dd0b8b09febff12e6717c501775b83969f6aaed721e7029500de2cd33",
+        "expectedBytes": 12866,
+        "expectedSha256": "727a932dd0b8b09febff12e6717c501775b83969f6aaed721e7029500de2cd33",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-039.json",
+        "status": 200,
+        "bytes": 12066,
+        "sha256": "930b15ea46bae4926f74362cf17ee5b78b49ee033eff5229b9e2e8f2e9b1af7d",
+        "expectedBytes": 12066,
+        "expectedSha256": "930b15ea46bae4926f74362cf17ee5b78b49ee033eff5229b9e2e8f2e9b1af7d",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-040.json",
+        "status": 200,
+        "bytes": 11442,
+        "sha256": "e201cb1706885cb55c551bda41b3da7e9e0dcfdc20f80c744fe71cca54541850",
+        "expectedBytes": 11442,
+        "expectedSha256": "e201cb1706885cb55c551bda41b3da7e9e0dcfdc20f80c744fe71cca54541850",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-041.json",
+        "status": 200,
+        "bytes": 12207,
+        "sha256": "e48894ad476cc231e262d8cb854f875164dd5258a2e702c76d9dece56805d3ed",
+        "expectedBytes": 12207,
+        "expectedSha256": "e48894ad476cc231e262d8cb854f875164dd5258a2e702c76d9dece56805d3ed",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-042.json",
+        "status": 200,
+        "bytes": 11292,
+        "sha256": "ec588530564d71c1465446132eed86029b36ab0578eaca96264658f2b05c2ffe",
+        "expectedBytes": 11292,
+        "expectedSha256": "ec588530564d71c1465446132eed86029b36ab0578eaca96264658f2b05c2ffe",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-043.json",
+        "status": 200,
+        "bytes": 11174,
+        "sha256": "bae10e1452d3d112fbe4f79da72ce99f8a71004da96245fd35f0002a04529361",
+        "expectedBytes": 11174,
+        "expectedSha256": "bae10e1452d3d112fbe4f79da72ce99f8a71004da96245fd35f0002a04529361",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-044.json",
+        "status": 200,
+        "bytes": 14522,
+        "sha256": "91e356c08db20475ece0ee4fe8b614f90e68da6f4c66b1d38a765e89f93c29b0",
+        "expectedBytes": 14522,
+        "expectedSha256": "91e356c08db20475ece0ee4fe8b614f90e68da6f4c66b1d38a765e89f93c29b0",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-045.json",
+        "status": 200,
+        "bytes": 18490,
+        "sha256": "dbcee2117446dda9d815d53dbda1e9edab06ed98f9d045d93f544a8dab70a6ed",
+        "expectedBytes": 18490,
+        "expectedSha256": "dbcee2117446dda9d815d53dbda1e9edab06ed98f9d045d93f544a8dab70a6ed",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.35/page-046.json",
+        "status": 200,
+        "bytes": 17496,
+        "sha256": "f8e3bb8a1eb0bf83e7eae623845264a4be19711e8dac9847287cdde014c744da",
+        "expectedBytes": 17496,
+        "expectedSha256": "f8e3bb8a1eb0bf83e7eae623845264a4be19711e8dac9847287cdde014c744da",
+        "matches": true
+      },
+      {
+        "path": "index.html",
+        "status": 200,
+        "bytes": 120080,
+        "sha256": "8d9083e14b0156fe383ded1671b039a38109f8642e043462310b62fb463f5a65",
+        "expectedBytes": 120080,
+        "expectedSha256": "8d9083e14b0156fe383ded1671b039a38109f8642e043462310b62fb463f5a65",
+        "matches": true
+      },
+      {
+        "path": "release.json",
+        "status": 200,
+        "bytes": 89,
+        "sha256": "47ed0353b3e04357b4809ca3fb781a04c03837dce151253f7f5a160bbd14f1b0",
+        "expectedBytes": 89,
+        "expectedSha256": "47ed0353b3e04357b4809ca3fb781a04c03837dce151253f7f5a160bbd14f1b0",
+        "matches": true
+      },
+      {
+        "path": "src/art/AuthoredWeaponMotions.js",
+        "status": 200,
+        "bytes": 5684,
+        "sha256": "52b95e0af67e9a07bf978581b63c8bb6a03eb3efb8186e616245d7b04e1d9de6",
+        "expectedBytes": 5684,
+        "expectedSha256": "52b95e0af67e9a07bf978581b63c8bb6a03eb3efb8186e616245d7b04e1d9de6",
+        "matches": true
+      },
+      {
+        "path": "src/assets/authoredEquipment.generated.js",
+        "status": 200,
+        "bytes": 113819,
+        "sha256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+        "expectedBytes": 113819,
+        "expectedSha256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+        "matches": true
+      },
+      {
+        "path": "src/core/ActorGameplayGeometryDelivery.js",
+        "status": 200,
+        "bytes": 12637,
+        "sha256": "3d69f58f7f7daa89ef7e03aeecfb633b009b2880f7429449797e17e33ef81f80",
+        "expectedBytes": 12637,
+        "expectedSha256": "3d69f58f7f7daa89ef7e03aeecfb633b009b2880f7429449797e17e33ef81f80",
+        "matches": true
+      },
+      {
+        "path": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+        "status": 200,
+        "bytes": 137178,
+        "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "expectedBytes": 137178,
+        "expectedSha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "matches": true
+      },
+      {
+        "path": "src/core/CasinoController.js",
+        "status": 200,
+        "bytes": 34718,
+        "sha256": "d2a3b4963ae9cce85f43d8ef55c8a501ca3d72c155d023693e2226e0f31f5909",
+        "expectedBytes": 34718,
+        "expectedSha256": "d2a3b4963ae9cce85f43d8ef55c8a501ca3d72c155d023693e2226e0f31f5909",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngine.bundle.js",
+        "status": 200,
+        "bytes": 3499109,
+        "sha256": "f1bc44271d53a159dd52278ba22667668c2b2b4a8a5a19cc5e53615b3f278566",
+        "expectedBytes": 3499109,
+        "expectedSha256": "f1bc44271d53a159dd52278ba22667668c2b2b4a8a5a19cc5e53615b3f278566",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngineMovement.js",
+        "status": 200,
+        "bytes": 65272,
+        "sha256": "be2c3d184373bcbc76fe92e64f4b76b74d4004a12f94ad550c25047a40725e49",
+        "expectedBytes": 65272,
+        "expectedSha256": "be2c3d184373bcbc76fe92e64f4b76b74d4004a12f94ad550c25047a40725e49",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngineRuntime.js",
+        "status": 200,
+        "bytes": 60516,
+        "sha256": "546d536a8322ac805607702a087fc18ad9202bddbf7fe2c0fc54bb0f206ad7c2",
+        "expectedBytes": 60516,
+        "expectedSha256": "546d536a8322ac805607702a087fc18ad9202bddbf7fe2c0fc54bb0f206ad7c2",
+        "matches": true
+      },
+      {
+        "path": "src/entities/Actor.js",
+        "status": 200,
+        "bytes": 96922,
+        "sha256": "9e0343a761a73d9172449039fc8e58cd48b99fd1f706d4edd016249ae9086729",
+        "expectedBytes": 96922,
+        "expectedSha256": "9e0343a761a73d9172449039fc8e58cd48b99fd1f706d4edd016249ae9086729",
+        "matches": true
+      },
+      {
+        "path": "src/main.js",
+        "status": 200,
+        "bytes": 28947,
+        "sha256": "b41c9005a23874c31c5fc482c73a52394d010472e3d8d3a627a365fb5e63d6a1",
+        "expectedBytes": 28947,
+        "expectedSha256": "b41c9005a23874c31c5fc482c73a52394d010472e3d8d3a627a365fb5e63d6a1",
+        "matches": true
+      },
+      {
+        "path": "src/styles/casino.css",
+        "status": 200,
+        "bytes": 23795,
+        "sha256": "aa250222990cbcf97a6d372651648beab25e0222d438aacc6824dff6870de2fe",
+        "expectedBytes": 23795,
+        "expectedSha256": "aa250222990cbcf97a6d372651648beab25e0222d438aacc6824dff6870de2fe",
+        "matches": true
+      },
+      {
+        "path": "src/styles/direct-trade.css",
+        "status": 200,
+        "bytes": 1999,
+        "sha256": "bbe61187ec606cfb4277141e20dad680c68e71f835e4c99c15a1dcbfbe97ee29",
+        "expectedBytes": 1999,
+        "expectedSha256": "bbe61187ec606cfb4277141e20dad680c68e71f835e4c99c15a1dcbfbe97ee29",
+        "matches": true
+      },
+      {
+        "path": "src/styles/index.css",
+        "status": 200,
+        "bytes": 253343,
+        "sha256": "ea35fdaa70642e8dc945067b01fbcfacf4dbe87f101244bb8712ce3bb6ebd4ed",
+        "expectedBytes": 253343,
+        "expectedSha256": "ea35fdaa70642e8dc945067b01fbcfacf4dbe87f101244bb8712ce3bb6ebd4ed",
+        "matches": true
+      },
+      {
+        "path": "src/styles/skill-tree.css",
+        "status": 200,
+        "bytes": 4025,
+        "sha256": "e64f5f7546b7611e3b98c43aa9cbd7039a44981cd26643463b85ec710d3b0f6a",
+        "expectedBytes": 4025,
+        "expectedSha256": "e64f5f7546b7611e3b98c43aa9cbd7039a44981cd26643463b85ec710d3b0f6a",
+        "matches": true
+      },
+      {
+        "path": "src/ui/AdminReportReview.js",
+        "status": 200,
+        "bytes": 7228,
+        "sha256": "eb24c7cd04727a7fd56fad306e3450aee34cdb9e8325c68ae2bf6eade40dedae",
+        "expectedBytes": 7228,
+        "expectedSha256": "eb24c7cd04727a7fd56fad306e3450aee34cdb9e8325c68ae2bf6eade40dedae",
+        "matches": true
+      },
+      {
+        "path": "src/ui/AdminUI.js",
+        "status": 200,
+        "bytes": 25690,
+        "sha256": "62ffa7d43e7013d2b13f26a827e7998ab27a8af5ca662a6d367cc8a0b81b9874",
+        "expectedBytes": 25690,
+        "expectedSha256": "62ffa7d43e7013d2b13f26a827e7998ab27a8af5ca662a6d367cc8a0b81b9874",
+        "matches": true
+      },
+      {
+        "path": "src/ui/DirectTradeUI.js",
+        "status": 200,
+        "bytes": 9826,
+        "sha256": "d89d8eefd25e5cf71c5cac42ea07e5d4e7e5659c4a9cd0a9c76bda5e3d4a543c",
+        "expectedBytes": 9826,
+        "expectedSha256": "d89d8eefd25e5cf71c5cac42ea07e5d4e7e5659c4a9cd0a9c76bda5e3d4a543c",
+        "matches": true
+      },
+      {
+        "path": "src/ui/GuildEventsUI.js",
+        "status": 200,
+        "bytes": 11572,
+        "sha256": "3f1d695bc9825219e684ea5cd38fdbac1bc2ca649e1550e322592b82f4fe9ffb",
+        "expectedBytes": 11572,
+        "expectedSha256": "3f1d695bc9825219e684ea5cd38fdbac1bc2ca649e1550e322592b82f4fe9ffb",
+        "matches": true
+      },
+      {
+        "path": "src/ui/InstanceAtlas.js",
+        "status": 200,
+        "bytes": 11230,
+        "sha256": "f887997b8b968c8801d8eb69697109bf94f062ab8141179f7d86729046bec250",
+        "expectedBytes": 11230,
+        "expectedSha256": "f887997b8b968c8801d8eb69697109bf94f062ab8141179f7d86729046bec250",
+        "matches": true
+      },
+      {
+        "path": "src/ui/LoginModerationUI.js",
+        "status": 200,
+        "bytes": 7049,
+        "sha256": "e6aab05e3a5b42056d84eca9b72cab3aa501bb55232e2fb3124104cdeea9821f",
+        "expectedBytes": 7049,
+        "expectedSha256": "e6aab05e3a5b42056d84eca9b72cab3aa501bb55232e2fb3124104cdeea9821f",
+        "matches": true
+      },
+      {
+        "path": "src/ui/Minimap.js",
+        "status": 200,
+        "bytes": 38111,
+        "sha256": "872e201119055d1d13df0978b6d2a2b70cf0057e9bbe2a2272184c49810b590f",
+        "expectedBytes": 38111,
+        "expectedSha256": "872e201119055d1d13df0978b6d2a2b70cf0057e9bbe2a2272184c49810b590f",
+        "matches": true
+      },
+      {
+        "path": "src/ui/ReportUI.js",
+        "status": 200,
+        "bytes": 15251,
+        "sha256": "c85015877fe9221cf6f11825230f80408824e60e605550f5472cad3379f5dd06",
+        "expectedBytes": 15251,
+        "expectedSha256": "c85015877fe9221cf6f11825230f80408824e60e605550f5472cad3379f5dd06",
+        "matches": true
+      },
+      {
+        "path": "src/ui/SkillTreeUI.js",
+        "status": 200,
+        "bytes": 54170,
+        "sha256": "52b735441d7a8ae8cff43e283cd5000d59d19387b72e55443e945b8c16fee1c2",
+        "expectedBytes": 54170,
+        "expectedSha256": "52b735441d7a8ae8cff43e283cd5000d59d19387b72e55443e945b8c16fee1c2",
+        "matches": true
+      },
+      {
+        "path": "src/ui/SocialUI.js",
+        "status": 200,
+        "bytes": 42796,
+        "sha256": "066622cfbbe6938a7d0c104ed645234c289d0150c841a84d9f37e23ac71564c5",
+        "expectedBytes": 42796,
+        "expectedSha256": "066622cfbbe6938a7d0c104ed645234c289d0150c841a84d9f37e23ac71564c5",
+        "matches": true
+      },
+      {
+        "path": "src/ui/WorldReadingDialog.js",
+        "status": 200,
+        "bytes": 3596,
+        "sha256": "c5c509033f17aec0fe0a1f07969bafa1c45e8c55395eb0400b3d20c78d0e3c1a",
+        "expectedBytes": 3596,
+        "expectedSha256": "c5c509033f17aec0fe0a1f07969bafa1c45e8c55395eb0400b3d20c78d0e3c1a",
+        "matches": true
+      },
+      {
+        "path": "src/ui/reportTypes.js",
+        "status": 200,
+        "bytes": 610,
+        "sha256": "3054bc59b8f6b6b97c0b0fd4444dfe48d03c86a024677b5137ef0d209a986b7a",
+        "expectedBytes": 610,
+        "expectedSha256": "3054bc59b8f6b6b97c0b0fd4444dfe48d03c86a024677b5137ef0d209a986b7a",
+        "matches": true
+      },
+      {
+        "path": "vendor/protobuf/LICENSE",
+        "status": 200,
+        "bytes": 1937,
+        "sha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c",
+        "expectedBytes": 1937,
+        "expectedSha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c",
+        "matches": true
+      },
+      {
+        "path": "vendor/three/LICENSE",
+        "status": 200,
+        "bytes": 1081,
+        "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+        "expectedBytes": 1081,
+        "expectedSha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+        "matches": true
+      }
+    ],
+    "allAssetsMatch": true,
+    "analyticsModule": {
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "bytes": 1002,
+      "sha256": "0f58383ee0b5409e68710c3e56f8d1a8d67f5c48576fa653675af53213b18003",
+      "containsObserver": true
+    },
+    "identitiesMatch": true,
+    "normalTLS": true
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-public35-terminal-checks-20261011",
+    "inventoryEntries": 4,
+    "inventorySHA256": "ef2fb2d221ac62ae5ce730c52daab20ac581f6d456eb1f6c44c9c5eb82ab25f7"
+  },
+  "limits": "Exact35 source/readiness/78 served assets and ordered CI/live scope accepted. Four optional skipped stages remain skips. Component qualifications retain their limits. Full world/art/gameplay/equipped-party/device/performance/operations/F1\u2013F5/beta/launch/handoff remain open. Ongoing public29 soak not accepted by this release. Terrain remains flat-v1. Prior34 failures remain in its acceptance receipt."
+}

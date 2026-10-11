@@ -1,24 +1,21 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October11 current checkpoint: last accepted publicAlpha1.79.34,
-exact `3ec8bb151f24909127b832a4035eb7e6eab9b635`, CI38149199718attempt2.
-All ten ordered jobs succeed; fresh post-terminal normal-TLS frontend/backend
-identities, ready database and all23served asset hashes/byte counts match at
-16:10:48UTC. Four optional stages remain skips.
-[Acceptance](2026-10-11-public34-terminal-qualification.json).
-Original client-fixture failure and diagnosed predeploy network failure remain
-retained; one failed-job-only retry changed no source, threshold or gate.
-[Diagnosis/retry](2026-10-11-release34-predeploy-network-retry.json).
-Coherent Alpha1.79.35 guild/venue/build-menu/direct-trade milestone is merged
-and ordinarily pushed onmaster, exactade204b8, CI38154778403active.
+October11 current checkpoint: Accepted public release: Alpha1.79.35, exact
+`ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
+All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
+identities, ready database and all78served asset hashes/byte counts match at
+17:02:13UTC. Four optional stages remain skips.
+[Acceptance](2026-10-11-public35-terminal-qualification.json).
+Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
 728distinct focused checks/17suites and two native publication cases pass;
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
-All78copied asset pins are prepared. Own ordered CI/deploy/live and fresh
-post-terminal identity/readyDB/asset acceptance remain pending.
 [Prepublication](2026-10-11-release35-menu-review-prepublication.json).
 [Publication](2026-10-11-release35-publication.json).
-584of648local branch names are already ancestors ofmaster;64unmerged
-unfinished/rejected/historical tips remain individually reviewed. Original
+585of649local branch names are ancestors of master;64unmerged histories remain
+under individual review. Completed content-validation and environment histories
+are merged locally for the next coherent publication. Prior34 failures remain
+retained in its historical acceptance receipt.
+Original
 uncommitted user changes are preserved. Historical High frame-time failures,
 broader world/art/combat/audio, whole-game performance/devices/operations/
 F1–F5/beta/launch/handoff requirements stay open. Existing100-clientsoak
