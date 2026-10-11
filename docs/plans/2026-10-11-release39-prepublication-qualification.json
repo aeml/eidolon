@@ -1,7 +1,7 @@
 {
   "recordedUTC": "2026-10-11T21:27:03.803254+00:00",
   "version": "Alpha 1.79.39",
-  "status": "Prepared and qualified locally; publication requires release38 own terminal CI/live/fresh public acceptance.",
+  "status": "Qualified and ordinarily merged into local masterf399ea3c. Exact38accepted; await copied final-source pins and ordinary publication.",
   "change": "Exact precomputed supplied-character initial/equipped indices, reproducible generator and stale-content checks, strict bounded source/content/output identity validation, original algorithm fallback, immutable offline-cached delivery and normal worker/root retirement.",
   "geometryQualification": "2026-10-11-precomputed-geometry-qualification.json",
   "runtimeQualification": "2026-10-11-precomputed-runtime-qualification.json",
@@ -53,5 +53,7 @@
     "root": "/home/aeml/.local/share/eidolon-release39-preparation-checks-20261011",
     "entries": 9,
     "inventorySHA256": "ed778930f2aa9d599ee1b3f0543e1ce24aa789e41fdd13d8767e1fc290649b68"
-  }
+  },
+  "source": "fe9eccf1c9f1925160e2f3279b10f992b0d4551e",
+  "merge": "f399ea3c9bc8bbc3b0ea6656466f2027f67e550c"
 }

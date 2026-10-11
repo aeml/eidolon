@@ -2,7 +2,7 @@
   "recordedUTC": "2026-10-11T20:34:45.676635+00:00",
   "version": "Alpha 1.79.38",
   "source": "91ee3ec85ed13a643025c047bbaba5eba14528d7",
-  "status": "Qualified coherent38ordinarily pushed after exact37acceptance; exact CI38172700682attempt1active, not accepted yet.",
+  "status": "Exact38accepted: all10ordered jobs succeeded, with4optional stages skipped; fresh21:28:05UTC normal-TLS identities/readyDB/all86assets match.",
   "ci": {
     "run": 38172700682,
     "url": "https://github.com/aeml/eidolon/actions/runs/38172700682",
@@ -39,5 +39,6 @@
   },
   "branchCleanup": "All654original local branch tips and51remote tips are ancestors of the published master.653local/50remote names removed; only master remains. All dirty original changes retained at identical detached HEAD.",
   "acceptanceRequired": "Exact current ordered CI/deploy/live success, then fresh normal-TLS frontend/backend/readyDB and all86asset lengths/SHA. No next source publication before acceptance.",
-  "limits": "Original full readiness scope stays active; cold triangles, connected frame-time, art, device, campaign, capacity, freeze/beta/launch/handoff gates remain open. Precomputed-index work is only extraction/encoding feasibility and is not in the runtime."
+  "limits": "Original full readiness scope stays active; cold triangles, connected frame-time, art, device, campaign, capacity, freeze/beta/launch/handoff gates remain open. Precomputed-index work is only extraction/encoding feasibility and is not in the runtime.",
+  "acceptance": "2026-10-11-public38-terminal-qualification.json"
 }
