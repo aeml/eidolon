@@ -1,0 +1,81 @@
+{
+  "recordedUTC": "2026-10-11T20:31:59.925563+00:00",
+  "status": "Bounded extraction and lossless encoding feasibility only; not selected, implemented or published.",
+  "source": "3cc0fcfbcdabba37bc14b838aa202f38d8547343",
+  "workerSHA256": "a0bfaaefee9a272a274daa813fb6e9e0f4f3e3897ebd829aae66da45a5954afd",
+  "native": {
+    "distinctInputKeys": 109,
+    "decodedBytes": 1283292,
+    "jsonBytes": 1733095,
+    "gzipBytes": 635892,
+    "byKind": {
+      "body": 8,
+      "color": 55,
+      "rigid": 46
+    },
+    "checks": [
+      {
+        "quality": "high",
+        "jobs": 76,
+        "exactOutputChecks": 76,
+        "stats": {
+          "requested": 76,
+          "installed": 65,
+          "stale": 0,
+          "fallback": 11,
+          "failed": 0,
+          "cacheHits": 6,
+          "rejected": 0,
+          "maxCopiedBytes": 2995424,
+          "workerCacheBytes": 727644,
+          "workerCacheEntries": 67
+        },
+        "observersRestored": true
+      },
+      {
+        "quality": "low",
+        "jobs": 76,
+        "exactOutputChecks": 76,
+        "stats": {
+          "requested": 76,
+          "installed": 71,
+          "stale": 0,
+          "fallback": 5,
+          "failed": 0,
+          "cacheHits": 8,
+          "rejected": 0,
+          "maxCopiedBytes": 2840900,
+          "workerCacheBytes": 664224,
+          "workerCacheEntries": 67
+        },
+        "observersRestored": true
+      }
+    ],
+    "scope": "Two native natural-clock extraction sessions, prepared4classes14slots; base64 output copying adds diagnostic overhead. Exact full outputs equal the retained qualified candidate; no speed/FPS/first-frame/device acceptance or product source changes."
+  },
+  "encoding": {
+    "entries": 109,
+    "allDeltaRoundTripsExact": true,
+    "uint16Eligible": 109,
+    "raw": {
+      "bytes": 1283292,
+      "gzip": 480982
+    },
+    "narrowed": {
+      "bytes": 641646,
+      "gzip": 458709
+    },
+    "deltaVarint": {
+      "bytes": 404680,
+      "gzip": 290706
+    },
+    "scope": "Encoding feasibility only;109complete original worker outputs round-trip byte-exact. No product runtime, network or first-frame performance claim."
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-precomputed-index-feasibility-20261011",
+    "entries": 15,
+    "inventorySHA256": "1bdc0b4c93db440049ab4e57b7b5a9aa97a2dc12abeac4eb4c031e7eec6b5743"
+  },
+  "next": "Prototype immutable source-key-bound precomputed index delivery with canonical algorithm/version binding, content-hash verification, strict decode and cache bounds, byte-exact fallback on miss/error, resource retirement and ordinary source/attribute preservation. Measure actual network/worker/first-frame effects; do not hide content, change budgets or infer whole-game FPS acceptance.",
+  "scope": "152actual current-source worker executions across2native prepared four-class14slot High/Low sessions yield109unique exact inputs. All output SHA match retained qualified candidate. All observers restore, contexts/workers close, owned4201server stops. Output extraction overhead invalidates timing claims."
+}
