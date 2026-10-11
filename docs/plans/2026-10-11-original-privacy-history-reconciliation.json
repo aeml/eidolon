@@ -1,0 +1,18 @@
+{
+  "recordedUTC": "2026-10-11T15:15:12.760194+00:00",
+  "branch": "work/alpha-1-75-release-20261004",
+  "head": "2ccae4c8428360a1a74845461ec3382c6ff9f9e7",
+  "merge": "828770e09d0f042f4abb8cd4667d5a8f4a3891fa",
+  "status": "Completed privacy safeguard history ordinarily reconciled; every product/runtime/test blob unchanged.",
+  "review": "Credential JSON exclusion and recovery projection tests/code already match integrated privacy implementation. Current db retains further private object-ID/accounting exclusions. Owner snapshot differs only by newer explicit export coverage; keep it. Original allowlist tests byte-identical. Current README/roadmap preserved.",
+  "documentation": "Retain original data inventory, historical corrective1.74acceptance and corresponding dated status correction, plus14lines describing existing JSON/TTL/privacy boundaries. These do not approve collection, deletion, retention, export policy or any new administrator powers.",
+  "changedPaths": [
+    "docs/ADMINISTRATION.md",
+    "docs/plans/2026-10-04-release1-74-public-acceptance.json",
+    "docs/plans/2026-10-04-release1-74-release-checks.json",
+    "docs/plans/2026-10-04-release1-75-data-inventory.json"
+  ],
+  "validation": "No runtime/test/config/package changes; cached diff check passes. Reuse integrated privacy implementation qualification; no unchanged persistence/browser/campaign/soak replay.",
+  "publication": "Local history integration while exact corrective34CI runs; no new runtime release pushed.",
+  "goal": "Full release-readiness remains active."
+}
