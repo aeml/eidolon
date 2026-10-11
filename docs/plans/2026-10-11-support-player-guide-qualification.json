@@ -1,0 +1,47 @@
+{
+  "observedAt": "2026-10-11T12:22:46.168578+00:00",
+  "base": "a0d9bbc6d84e6f12d1425d113f5ff231d2d319bc",
+  "source": "a378b6aa85362f1d388d79ed0cce1e1d239ea465",
+  "selectedHistoricalHeads": [
+    "89c18f71cd7cc3aa83a65aecf83c69dc4ac4210d",
+    "516faa2b1dd3b507df01c16ca6181fd3540cd1e1",
+    "7fbdee83743d8a2f27b06099bdb58e27cf2bc7a0"
+  ],
+  "mergeHeads": [
+    "e0c02714",
+    "9d40ccec"
+  ],
+  "monitorResolution": "All current paired login/manifest/API monitoring, CLI, Compose, alert/state/deployment tests and threat ledger kept byte-exact to base. Older frontend-only monitoring source is superseded, history and dated receipt retained; no new monitor option or activation.",
+  "sourceReview": "Current equipment/class, dungeon progression, EP/VIP, preparation/raid rules unchanged relative to prior guide; portal dialog has subsequent administrator passage authorization retained. Guide documents ordinary player eligibility, not an administrator workflow.",
+  "native": "Explicit synthetic login WebSocket responses (two cases); blocked sockets and actual UIManager Help/class-selection (two cases); prepared in-game report UI and shared windows (three cases). No world/game process or real accounts.",
+  "setupFailures": "Initial direct Jest invocation omitted repository VM-module flag: five suites failed before tests; retained, corrected via npm test. Original checkout node_modules lacked esbuild: prepare-client failed before vendor, seven browser cases failed before navigation. Switch owned symlink to master installed dependencies and run actual preparer; retained initial logs/results. Canonical dependencies used for final 137 checks.",
+  "nativeCorrections": "After dependency repair, four cases pass; three existing report-form cases fail exact lowercase copy assertion against now-capitalized Optional. Correct exact phrase casing and explicitly scroll retained daily-return row now above six new chapters. Only affected three cases rerun: pass11.168s, no retries/skips. Four initial functional passes remain valid; seven distinct, not ten.",
+  "unrunPersistenceScopes": "Scoped root/database Go selections skip eight conditional Mongo cases; these are not passes. New account-help Mongo test separately executes all three categories against owned loopback/tmpfs Mongo7.0.14 and current handler/store/review path: pass race1.460s; final guard requires explicit disposable marker and accepts shared CI /eidolon URI.",
+  "qualification": {
+    "jestDistinct": 137,
+    "jestSuites": 8,
+    "goGuardLeafCases": 48,
+    "mongoLeafCases": 1,
+    "nativeDistinct": 7,
+    "nativeRetries": 0,
+    "nativeSkips": 0
+  },
+  "imagesInspected": [
+    "native/eidolon-help-native-corrected-20261011/results/report-feedback-login-acco-aa72b-fore-world-entry-at-390x844/login-progress-help-entry.png",
+    "native/eidolon-help-native-corrected-20261011/results/journey-guidance-class-and-1ad96-ce-remain-readable-at-390px/class-equipment-reference.png"
+  ],
+  "cleanup": "Disposable Mongo removed, no container remains. Browser-owned4197 listener closed. Original user checkout preserved203tracked/262untracked.",
+  "publication": "Unpublished component; public32 failed source-storage preflight and requires corrected own deployment/live acceptance before any new release.",
+  "limits": "No staffing/SLA, account restoration, real inbox/ownership recovery, full authenticated journey, physical phone, human campaign, final world art/device/performance/F1-F5/beta/launch/handoff acceptance.",
+  "status": "current-source-qualified-ready-for-ordinary-master-merge-unpublished",
+  "frozenEvidence": {
+    "directory": "/home/aeml/.local/share/eidolon-support-guide-checks-20261011",
+    "entries": 120,
+    "inventorySHA256": "f0de177a6ee94c50cc22f46df61a5385755c310ec5197c7bfd0a4575ce39b023"
+  },
+  "changes": [
+    "Authenticated Account / Progress Help in login and in-game shared private report flow; no automatic diagnostics/context, shared rate/payload limits, saved references and private status; administration category and case-only review.",
+    "Player Guide uses six accessible native disclosure chapters for class/equipment, groups, story/instances, Forge, Gold/EP/casino and settings. Existing rest, early journey, activities, remapped controls and status guidance retained.",
+    "CI actual support persistence enrollment and explicit disposable marker; shared report review semantics retained."
+  ]
+}
