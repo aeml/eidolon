@@ -29,6 +29,10 @@ test.describe('desktop build keyboard controls', () => {
         await page.keyboard.press('Enter'); await page.keyboard.press('Space');
         expect(await page.evaluate(() => window.__desktopBuildKeyboard.calls)).toEqual([{ skill: 'Whirlwind' }, { skill: 'Whirlwind' }]);
         expect(await page.evaluate(() => window.__desktopBuildKeyboard.player.unlockedSkills)).toEqual([]);
+        expect(await content.locator('.skill-node').evaluateAll(nodes => nodes.every(node => {
+            const box = node.getBoundingClientRect(), parent = node.parentElement.getBoundingClientRect();
+            return box.left >= parent.left && box.right <= parent.right;
+        })), 'Skill cards fit their column, including the read-only starting skill').toBe(true);
         await page.screenshot({ path: testInfo.outputPath('desktop-keyboard-skills.png') });
         await content.getByRole('button', { name: 'Runes', exact: true }).click();
         const rune = content.locator('button[data-rune-id]').filter({ hasText: 'Level 50' }).first();
