@@ -140,7 +140,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **78**, reduced from 287; 559 of 637 local branch names
+  unmerged tips are now **77**, reduced from 287; 561 of 638 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -190,6 +190,17 @@ Every explicit requirement in those sources remains part of the completion audit
   The prior failed soak remains open; no retry/cancellation or unchanged campaign
   replay has been performed.
 
+- **Guild calendar/recruitment integration:** selected `4238a1eb`, historical
+  integration join `db108b1b`, qualified `b5d073c4`, ordinarily merged `4308ba85`.
+  Replaced/cleared/disposed/expired cards retire every old action, including an
+  armed cancellation. Long-calendar handoff resets recruitment scroll. Eight
+  baseline cases fail; actual phone-sized handoff reproduces scrollTop402.
+ 116focused checks/five suites and two native desktop/phone-sized cases pass,
+  retries/skips0, preserving current account/display-name/revision and explicit
+  consent rules. Reviewed1.60 history is joined without replacing newer runtime;
+  only its original75-line historical preparation doc is added by that join.
+  Unpublished pending a coherent successor after exact34 acceptance.
+  [Qualification](2026-10-11-guild-calendar-action-qualification.json).
 - **Published34 milestone:** source `c75c0f41`, qualification `0b120edc`,
   ordinary master merge `88cf2985`. Steady dungeon radar, independent mixed
   weapon grips and faster owned geometry copies combine in one publication.
