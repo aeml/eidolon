@@ -33,10 +33,18 @@ payment integration or new infrastructure purchase.
 
 The owner approved existing `ADMIN_NOTIFICATION_EMAILS` recipients as outage
 owners with30s health probes,3 failures,2 recoveries and30m reminders. The single
-labelled Postmark test reached its inbox. Ordered1.78 CI/deployment and actual
-independent monitor/public acceptance remain pending; approved settings are not
-proof of installed or off-machine coverage. Staffing/response commitments and
-the eventual beta transition remain separate decisions.
+labelled Postmark test reached its inbox. The separate monitor was delivered
+with1.78 and reverified running after the October8 host restart. Its command
+matches the approved thresholds, deployment opt-in remains enabled, and local
+configuration-only validation succeeds without a probe or email. Coverage is
+local API/database readiness, not public DNS/TLS/frontend or whole-host/network
+outages. Staffing/response commitments and the eventual beta transition remain
+separate decisions. The October8 [verification receipt](plans/2026-10-08-alerts-and-partial-release-checks.json)
+also records the initial incomplete1.79.1 backend deployment. The same tested
+commit subsequently deployed locally through the guarded script; see the
+[matching public identities/runtime and browser receipt](plans/2026-10-08-release1-79-1-public-checks.json).
+The original GitHub SSH job remains failed; alert activity does not establish
+whole-game or off-machine release acceptance.
 
 ## Live 1.71 password change and emailed recovery
 
