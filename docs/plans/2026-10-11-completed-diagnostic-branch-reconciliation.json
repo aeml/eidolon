@@ -1,0 +1,38 @@
+{
+  "recordedUTC": "2026-10-11T10:41:18.283007+00:00",
+  "beforeMaster": "66a04b80c5710bb5625b34890b52b28ce033b5db",
+  "masterMerge": "03426396c2d1ba0c03ecb9baa5d25bac37f73262",
+  "reviewedMerge": "32fa161d285eef2097efe494bcef777f602c9c4f",
+  "branches": [
+    {
+      "name": "work/1-1-party-partial-retreat",
+      "head": "6f00e00dece9a9e3b046df3735a14d2cc0dd2862"
+    },
+    {
+      "name": "work/1-1-moving-cast-profile",
+      "head": "f0f250f1d394eeb0bafea19f88493648be7f7fb7"
+    },
+    {
+      "name": "work/1-1-fence-frame-profile",
+      "head": "30783498249340482fe3dce1c0d0ba0ac76f6fdc"
+    }
+  ],
+  "beforeDistinctUnmergedTips": 95,
+  "afterDistinctUnmergedTips": 92,
+  "changedPaths": [
+    "docs/plans/2026-09-12-moving-cast-profile.md",
+    "docs/plans/2026-09-12-party-partial-retreat.md",
+    "tests/MovingCastFrameProbe.test.js",
+    "tests/e2e/animation-gameplay.spec.js",
+    "tests/movingCastFrameProbe.js"
+  ],
+  "change": "Merge the completed historical party retreat failure report and bounded moving-cast diagnostic, including its equivalent branch history. The report retains the failed boss attempt and does not claim full clear. Diagnostic adds update/render wall times, counters and callback delay to the existing 650ms frame sample, preserving method behavior/receivers and restoring original descriptors. Existing frame/movement assertions, routes, timeouts and retries unchanged. No product runtime, deployment configuration or assets change.",
+  "validation": {
+    "focused": "23 checks in MovingCastFrameProbe.test.js and BrowserSmokePlan.test.js pass; 2 suites, 0.608s.",
+    "lint": "Full repository ESLint passes with max-warnings=0.",
+    "discovery": "Playwright imports the actual modified animation-gameplay.spec.js and discovers its single matrix case. Discovery is not gameplay execution.",
+    "git": "No merge conflicts. Whitespace check passes. All three exact branch heads are ancestors of master; runtime paths unchanged.",
+    "limits": "No new native animation matrix, campaign, dungeon replay, performance acceptance or deployment is claimed."
+  },
+  "publication": "Merged locally; current release31 exact88be47c5 remains under verification. No subsequent release push yet."
+}

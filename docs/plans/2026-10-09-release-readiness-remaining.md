@@ -52,14 +52,15 @@ Every explicit requirement in those sources remains part of the completion audit
   No subsequent release push until the current milestone's outcome and required
   deployment verification are resolved.
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **95**, reduced from 287. Unfinished/rejected experiments
+  unmerged tips are now **92**, reduced from 287. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical documentation merge adds
-  only a retained failure receipt.
+  a retained failure receipt and bounded test-only animation diagnostics.
   [Workflow](../../AGENTS.md),
   [original reconciliation](2026-10-11-master-branch-reconciliation.json),
   [stale-hover/rune histories](2026-10-11-stale-hover-rune-branch-reconciliation.json),
-  [starter-pursuit history](2026-10-11-starter-pursuit-branch-reconciliation.json).
+  [starter-pursuit history](2026-10-11-starter-pursuit-branch-reconciliation.json),
+  [completed diagnostic histories](2026-10-11-completed-diagnostic-branch-reconciliation.json).
 - **Existing 100-client soak:** run 38109009521 remains active on accepted public
   29 `12e5e3c4`. It is not a completed capacity gate or a test of release 31.
   The prior failed soak remains open; no retry/cancellation or unchanged campaign
