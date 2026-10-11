@@ -204,3 +204,22 @@ linked original receipts preserve failures and their precise scopes.
 Keep implemented, staged, pushed, deployed, verified and owner-approved states
 distinct. Preserve original budgets, skips and owner-deferred work. Reconcile
 remote changes ordinarily and verify each publication before another push.
+
+
+October11 additive-effect continuation: selected privately as cd92dc01 with required
+browser coverage ca03de05; public29 remains unchanged. Three owned factories submit
+filled additive faces once, retaining ordinary-alpha and wireframe brightness.
+87distinct focused checks and1560High/Low native source comparisons pass
+(1549exactRGB; all reference-again exact); original wireframe-policy failure retained.
+Actual saved14slot Fighter uses normal hotbar/server Iron Fortress: same-scene
+316→283draws, maximumRGBdelta1. Four-class Go-race save custody passes; party
+180frame median341draw/170314tri/16.7msmedian+p95 passes sampled medians, but
+284882triangle startup peak exceeds250000. Two selected held copied-bundle checks
+pass;332required cases discovered exactly once (discovery, not execution).
+The180frame draw observer explains120EffectGroup draws from60meshes, but both
+instrumented encounters fail; it is attribution evidence, never timing/balance
+acceptance. Private QA/loadout revisions remain unselected. No new public release,
+budget waiver or camp/DemonOrc/singleton selection. Next review dynamic actor/scenery
+startup costs and coherent world/interior/material/contact polish, keeping prior
+438combat/361party draw failures and physical-device/art/operations/F1–F5/beta/launch/
+handoff gates open. [Source, failures and frozen evidence](2026-10-11-additive-effects-qualification.json).

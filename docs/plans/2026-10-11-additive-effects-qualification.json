@@ -1,0 +1,143 @@
+{
+  "status": "Scoped additive source-surface qualification; selected in private held milestone, unpublished",
+  "productSource": "84f6d51b",
+  "privateQA": "fb03de23",
+  "heldRuntime": "cd92dc01",
+  "heldCI": "ca03de05",
+  "focusedUniquePassed": 87,
+  "heldFocusedSubsetPassed": 22,
+  "heldDiscoveredCases": 332,
+  "discoveryOnly": true,
+  "initialFailures": [
+    "feedback corpus fixture wrongly required ordinary-alpha feedback materials",
+    "unrestricted single-pass policy changed wireframe brightness:60/780 views at each quality failed",
+    "initial saved-character fixture had no defensive skill in hotbar; no effect comparison or party custody ran"
+  ],
+  "corpus": {
+    "low": {
+      "cases": 130,
+      "views": 780,
+      "exactRGBViews": 775,
+      "maximumMeanRGBError": 4.57763671875e-05,
+      "maximumChangedRatio": 0,
+      "referenceAgainAllExact": true,
+      "sourceAllIntact": true,
+      "sumReferenceCalls": 13716,
+      "sumCandidateCalls": 7020,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    "high": {
+      "cases": 130,
+      "views": 780,
+      "exactRGBViews": 774,
+      "maximumMeanRGBError": 9.1552734375e-05,
+      "maximumChangedRatio": 0,
+      "referenceAgainAllExact": true,
+      "sourceAllIntact": true,
+      "sumReferenceCalls": 22056,
+      "sumCandidateCalls": 11412,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    }
+  },
+  "bundles": {
+    "copied-bundle": {
+      "result": {
+        "counts": {
+          "single": 34,
+          "wireframe": 2,
+          "ordinary": 2,
+          "invalid": 0
+        },
+        "statuses": 1,
+        "transients": 2
+      },
+      "engineSHA256": "ea0fdbb82be7521729287334e5d9783a2ad317bdecb275d9d8db05e85acc01eb",
+      "scope": "Actual copied/versioned bundle factories exercised through engine/actor entry points; synthetic metadata, no server or gameplay timing claim."
+    },
+    "held-copied-bundle": {
+      "result": {
+        "counts": {
+          "single": 34,
+          "wireframe": 2,
+          "ordinary": 2,
+          "invalid": 0
+        },
+        "statuses": 1,
+        "transients": 2
+      },
+      "engineSHA256": "58dfe04f1bb700ffef53ef5090b31ead63cafbdf0da5e42c89092fd5a8a59b4a",
+      "scope": "Actual copied/versioned bundle factories exercised through engine/actor entry points; synthetic metadata, no server or gameplay timing claim."
+    }
+  },
+  "savedCharacter": {
+    "materials": 9,
+    "width": 1280,
+    "height": 844,
+    "reference": {
+      "calls": 316,
+      "triangles": 211527
+    },
+    "candidate": {
+      "calls": 283,
+      "triangles": 210345,
+      "meanRGBError": 5.553909952606635e-06,
+      "changedRatio": 0,
+      "maximumRGBError": 1
+    },
+    "referenceAgain": {
+      "meanRGBError": 0,
+      "changedRatio": 0,
+      "maximumRGBError": 0
+    },
+    "quality": "high",
+    "hp": 495,
+    "equippedItems": 14,
+    "activeSeconds": 29.708456675211593,
+    "scope": "Saved equipped Fighter; normal hotbar input and server-replicated Iron Fortress. Same actual world/camera/effects, synchronous reference/candidate/reference-again source renders to an owned target; no simulation advancement between captures. Source surface/call comparison excludes postprocessing and is not a timing or device certificate."
+  },
+  "party": {
+    "frames": 180,
+    "drawCallsMedian": 341,
+    "trianglesMedian": 170314,
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 16.7,
+    "activeEntitiesMin": 29,
+    "activeEntitiesMax": 29,
+    "maximumDraws": 341,
+    "maximumTriangles": 284882,
+    "actualFourClassFourteenSlotGoRaceSavesPassed": true,
+    "nativePassed": 1,
+    "nativeSkipped": 1,
+    "maxRetry": 0,
+    "scope": "Median gates pass this sample; startup triangle peak exceeds250000. Different population cannot clear prior counterexamples; no battle/device timing acceptance."
+  },
+  "policy": "Only filled additive DoubleSide transparent depth-read-only MeshBasic materials in three owned factories. Normal alpha and additive wireframe retain two passes. Geometry, material attributes other than forceSinglePass, opacity, layers, timing, animation and authoritative state unchanged.",
+  "limits": "Isolated corpus has all130canonical ability layers/status/feedback entries at two early phases and three front/back oblique views per quality. No exhaustive rune aliases/later phases or physical-device/final-art acceptance. Actual source-scene comparison excludes composer postprocessing and simulation advancement. No global budget waiver, full campaign/soak replay, runtime selection of camp/DemonOrc/singleton pilots, version or public push.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-additive-effects-checks-20261011",
+    "inventoryEntries": 95,
+    "files": 96,
+    "inventorySHA256": "8f26a7d7115a0956ba041ee65104ef47706e57b70789640d42ebf3a9417cce8e",
+    "frozen": true
+  },
+  "attribution": {
+    "source": "97dc3b64",
+    "root": "/home/aeml/.local/share/eidolon-combat-submission-checks-20261011",
+    "inventoryEntries": 907,
+    "files": 908,
+    "inventorySHA256": "b98802ed63a0b6e757c9a689389203d07c80ef2ad4d174d621dd169d117237da",
+    "frozen": true,
+    "focusedPassed": 16,
+    "actualFrames": 180,
+    "allDrawsAccountedFor": true,
+    "hooksRestored": true,
+    "capturedPeakCalls": 345,
+    "peakEffectMeshes": 60,
+    "peakEffectCalls": 120,
+    "nativeGameplayFailuresRetained": 2,
+    "nativeGameplayPasses": 0,
+    "scope": "First attempt timed out before attribution; pending target changed and Charge was rejected during500msGCD. QA observer now retains actually acquired deaths with local damage evidence and waits real GCD. Corrected capture accounts for every draw but the Fighter dies before defeat: no party/dungeon/save certificate. Heavy instrumentation disturbed scheduling; do not use these frames as timing or balance evidence."
+  },
+  "selectedPrivately": true,
+  "published": false
+}

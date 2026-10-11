@@ -2323,5 +2323,49 @@
     "lowCombatMedianTriangles": 33469,
     "previousFailuresRetained": true,
     "scope": "Private QA only; normal movement around actual generated scenery. Existing per-sample median gates pass; dynamic costs, modern art, contact/audio and supported-device acceptance stay open."
+  },
+  "additiveEffectSubmissions": {
+    "receipt": "docs/plans/2026-10-11-additive-effects-qualification.json",
+    "runtime": "cd92dc01",
+    "requiredBrowserCI": "ca03de05",
+    "selected": true,
+    "published": false,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-additive-effects-checks-20261011",
+      "inventoryEntries": 95,
+      "files": 96,
+      "inventorySHA256": "8f26a7d7115a0956ba041ee65104ef47706e57b70789640d42ebf3a9417cce8e",
+      "frozen": true
+    },
+    "attributionEvidence": {
+      "source": "97dc3b64",
+      "root": "/home/aeml/.local/share/eidolon-combat-submission-checks-20261011",
+      "inventoryEntries": 907,
+      "files": 908,
+      "inventorySHA256": "b98802ed63a0b6e757c9a689389203d07c80ef2ad4d174d621dd169d117237da",
+      "frozen": true,
+      "focusedPassed": 16,
+      "actualFrames": 180,
+      "allDrawsAccountedFor": true,
+      "hooksRestored": true,
+      "capturedPeakCalls": 345,
+      "peakEffectMeshes": 60,
+      "peakEffectCalls": 120,
+      "nativeGameplayFailuresRetained": 2,
+      "nativeGameplayPasses": 0,
+      "scope": "First attempt timed out before attribution; pending target changed and Charge was rejected during500msGCD. QA observer now retains actually acquired deaths with local damage evidence and waits real GCD. Corrected capture accounts for every draw but the Fighter dies before defeat: no party/dungeon/save certificate. Heavy instrumentation disturbed scheduling; do not use these frames as timing or balance evidence."
+    },
+    "focusedUniquePassed": 87,
+    "nativeCorpusViews": 1560,
+    "exactRGBViews": 1549,
+    "actualSavedSceneCalls": [
+      316,
+      283
+    ],
+    "actualSavedFourClassPartyPassed": true,
+    "heldEngineSHA256": "58dfe04f1bb700ffef53ef5090b31ead63cafbdf0da5e42c89092fd5a8a59b4a",
+    "heldDiscoveredCases": 332,
+    "highPartyMaximumTriangles": 284882,
+    "historicalFailuresRetained": true
   }
 }
