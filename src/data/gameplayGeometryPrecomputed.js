@@ -4,7 +4,7 @@ export default {
   "version": "supplied-indices-v1-.006-.12-collars",
   "provenance": {
     "files": {
-      "src/core/GameplayGeometryFingerprint.js": "f4d35e1adbe601cf99b3d5538ff1d6b2884bd388988599f46ac4185e978831bb",
+      "src/core/GameplayGeometryFingerprint.js": "82e8fb9b63cc38af0948a2400866648e491ff60309d4872c971d214888f5d2bc",
       "src/core/GameplayGeometryPreparation.js": "66034c2b73a98dd10294d8241b207aa61f5ecc2f95c555c83c701d8609296bf4",
       "src/core/GameplayGeometryIndexCodec.js": "74caf7b19ca7b6204d3a60ebbf19afb53d45041ac4a8f661a5d7f7a26672d78c",
       "src/art/GameplayBodyIndices.js": "be88b077fdb35f07f82242d5f1ec7e81449bb4a5e96762b39625da933aeeae55",

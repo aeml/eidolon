@@ -18,4 +18,3 @@ export async function gameplayGeometryFingerprint(kind, source) {
     for (const array of buffers) { bytes.set(new Uint8Array(array.buffer, array.byteOffset, array.byteLength), offset); offset += array.byteLength; }
     return [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
-
