@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "milestone": "Alpha 1.74 corrective public acceptance",
+  "status": "accepted within the recorded CI and public verification scope",
+  "checkedAt": "2026-10-04T14:33:42.878Z",
+  "commit": "76225a2f4278be3c897af624de5c0c1b91e1e7f8",
+  "version": "Alpha 1.74.0",
+  "ci": {
+    "run": 37207389001,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Server Tests (Go)",
+        "id": 111451321026,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:09:23Z"
+      },
+      {
+        "name": "Client Tests (Jest)",
+        "id": 111451321136,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:04:21Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 2/3)",
+        "id": 111451321157,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:19:03Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 1/3)",
+        "id": 111451321175,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:18:00Z"
+      },
+      {
+        "name": "Browser Smoke (Playwright 3/3)",
+        "id": 111451321308,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:13:22Z"
+      },
+      {
+        "name": "Predeploy Character QA (System Chrome)",
+        "id": 111455570548,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:21:52Z"
+      },
+      {
+        "name": "Validate Production QA Inputs",
+        "id": 111456080011,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:21:58Z"
+      },
+      {
+        "name": "Deploy to GitHub Pages",
+        "id": 111456096445,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:23:16Z"
+      },
+      {
+        "name": "Deploy Server (SSH)",
+        "id": 111456096450,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:22:33Z"
+      },
+      {
+        "name": "Live Release and Character QA",
+        "id": 111456335428,
+        "conclusion": "success",
+        "completedAt": "2026-10-04T14:31:53Z"
+      }
+    ],
+    "skipped": [
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run deterministic High/Low animation gallery"
+      },
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run required Well Rested rendering and GPU lifecycle QA"
+      },
+      {
+        "job": "Predeploy Character QA (System Chrome)",
+        "step": "Run disposable full-character gameplay"
+      },
+      {
+        "job": "Live Release and Character QA",
+        "step": "Run live four-class and remote-animation QA"
+      }
+    ]
+  },
+  "independentPublic": {
+    "frontend": {
+      "commit": "76225a2f4278be3c897af624de5c0c1b91e1e7f8",
+      "version": "Alpha 1.74.0"
+    },
+    "backend": {
+      "commit": "76225a2f4278be3c897af624de5c0c1b91e1e7f8",
+      "version": "Alpha 1.74.0",
+      "status": "ok",
+      "database": "ready"
+    },
+    "loginAndNotes": true,
+    "runtime": [
+      {
+        "path": "src/ui/AdminUI.js",
+        "sha256": "a35f300a3920d56a2aa90548ab3bbef743181c7babb6308343e65d71479feb45"
+      },
+      {
+        "path": "src/main.js",
+        "sha256": "8923052ca5b97bec77594b6ca24fce6835e8b36ed7f1169ad253983a25d84b56"
+      },
+      {
+        "path": "src/ui/EmailRecoveryUI.js",
+        "sha256": "2ebda98ff9eb21ca8e2f6ef1114e503e37264429fd65a251df198f9b54f6a434"
+      },
+      {
+        "path": "src/core/RecoveryLinkBoot.js",
+        "sha256": "d98fd4214724063a4cbb94ca084d9e645932ef00dd2cbf7fe57e31afbcce9baa"
+      }
+    ]
+  },
+  "scope": "Administration permission review and read-only moderation-history filters, plus test-only persistent-bag correction. Schema22 writer compatibility remains unchanged; database ready is not a new raw-production-BSON/schema audit. Root performed post-terminal verified IPv4 HTTPS checks with bounded requests and compared complete publisher-rewritten runtime bytes against exact git source. No live mail/account/role/value/service mutation was performed by this independent check.",
+  "previousFailure": "Run37203989155/d1a9dd5c deployed but failed final live character QA's full-bag assertion. Corrective76225a2f re-reads exact successful ordinary vendor sales when already-earned loot refills slots; original failure/reproduction and protected-item scope remain in2026-10-04-release1-74-live-bag-correction.json. Actual failed account/outbox was not inspected.",
+  "remaining": "Skipped GPU/gallery/disposable-full-character/four-class animation scopes remain open; this is not their acceptance, phone/campaign/pacing/production-mail/capacity proof, privacy-policy approval, closed-beta transition or full-roadmap completion."
+}
