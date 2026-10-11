@@ -164,6 +164,62 @@ test('interleaved normalized attributes copy decoded values without touching sou
     expect(array[3]).toBe(7); f.dispose();
 });
 
+test('packed float views copy only their own components into independently owned buffers', () => {
+    const f = fixture();
+    try {
+        const backing = new Float32Array([99, 98, -0, .25, -1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 97]);
+        const view = backing.subarray(2, 14);
+        f.source.setAttribute('position', new THREE.BufferAttribute(view, 3));
+        const payload = copyGameplayGeometry(f.pass.capture(f.mesh), 100_000);
+        const copied = payload.source.attributes.position.array;
+        expect(copied).toEqual(view);
+        expect(Object.is(copied[0], -0)).toBe(true);
+        expect(copied.byteOffset).toBe(0);
+        expect(copied.buffer.byteLength).toBe(view.byteLength);
+        expect(payload.transfers).not.toContain(backing.buffer);
+        copied.fill(7);
+        expect(backing).toEqual(new Float32Array([99, 98, -0, .25, -1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 97]));
+    } finally { f.dispose(); }
+});
+
+test('interleaved float views gather only their lanes and retain source buffer ownership', () => {
+    const f = fixture();
+    try {
+        const backing = new Float32Array([99, 98, 7, -0, .25, 1, 8, 1, 0, 0, 9, 0, 1, 0, 10, 0, 0, 1, 97]);
+        const view = backing.subarray(2, 18);
+        f.source.setAttribute('normal', new THREE.InterleavedBufferAttribute(new THREE.InterleavedBuffer(view, 4), 3, 1));
+        const payload = copyGameplayGeometry(f.pass.capture(f.mesh), 100_000);
+        const copied = payload.source.attributes.normal.array;
+        expect(copied).toEqual(new Float32Array([-0, .25, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1]));
+        expect(Object.is(copied[0], -0)).toBe(true);
+        expect(payload.transfers).not.toContain(backing.buffer);
+        copied.fill(7);
+        expect(backing).toEqual(new Float32Array([99, 98, 7, -0, .25, 1, 8, 1, 0, 0, 9, 0, 1, 0, 10, 0, 0, 1, 97]));
+    } finally { f.dispose(); }
+});
+
+test.each(['normalized', 'custom-reader', 'interleaved-custom-reader'])('%s attributes retain component decoding', kind => {
+    const f = fixture();
+    try {
+        let attribute;
+        if (kind === 'normalized') attribute = new THREE.Uint16BufferAttribute(new Uint16Array(12).fill(32768), 3, true);
+        else {
+            attribute = kind === 'interleaved-custom-reader'
+                ? new THREE.InterleavedBufferAttribute(new THREE.InterleavedBuffer(new Float32Array(12).fill(.25), 3), 3, 0)
+                : new THREE.Float32BufferAttribute(new Float32Array(12).fill(.25), 3);
+            const original = attribute.getComponent;
+            attribute.getComponent = function (index, component) {
+                return original.call(this, index, component) + .25;
+            };
+        }
+        f.source.setAttribute('normal', attribute);
+        const payload = copyGameplayGeometry(f.pass.capture(f.mesh), 100_000);
+        const expected = kind === 'normalized' ? 32768 / 65535 : .5;
+        expect(payload.source.attributes.normal.array).toEqual(new Float32Array(12).fill(expected));
+        expect(payload.transfers).not.toContain(attribute.array.buffer);
+    } finally { f.dispose(); }
+});
+
 test('rigid mount work carries its quality without fabricated skin attributes and ignores other meshes', () => {
     const f = fixture();
     try {
