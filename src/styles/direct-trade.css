@@ -1,6 +1,12 @@
 .direct-trade-window {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: var(--z-window);
     width: min(620px, calc(100vw - 32px));
     max-height: min(620px, calc(100vh - 32px));
+    max-height: min(620px, calc(100dvh - 32px));
+    overflow-y: auto;
 }
 
 .direct-trade-status {
@@ -57,6 +63,35 @@
     justify-content: flex-end;
     gap: 8px;
     padding: 0 12px 12px;
+    flex-wrap: wrap;
+}
+
+.direct-trade-actions button {
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--color-white);
+    font: inherit;
+    cursor: pointer;
+}
+
+.direct-trade-actions button:disabled {
+    color: var(--color-text-muted);
+    cursor: default;
+}
+
+.mobile-mode .direct-trade-window .direct-trade-item {
+    min-height: 44px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.mobile-mode .direct-trade-gold input {
+    min-height: 44px;
+    box-sizing: border-box;
+    font-size: 16px;
 }
 
 @media (max-width: 560px) {

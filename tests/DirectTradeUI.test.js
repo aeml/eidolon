@@ -47,6 +47,9 @@ describe('DirectTradeUI', () => {
         document.getElementById('btn-direct-trade-offer').click();
         expect(ui.onOffer).toHaveBeenCalledWith('trade-1', ['sword', 'potion'], 100000);
 
+        expect(ui.confirmButton.disabled).toBe(true);
+        ui.update({ state: 'offer', trade: { ...ui.trade,
+            offerA: { items: [{ id: 'sword', name: 'Sword', stack: 1 }, player.inventory[0]], gold: 100000 } } });
         document.getElementById('btn-direct-trade-confirm').click();
         document.getElementById('btn-direct-trade-cancel').click();
         expect(ui.onConfirm).toHaveBeenCalledWith('trade-1');
@@ -56,8 +59,9 @@ describe('DirectTradeUI', () => {
     test('terminal state closes the window and reports escrow outcome', () => {
         const addGameMessage = jest.fn();
         const ui = new DirectTradeUI({ getLastPlayer: () => ({ id: 'player-a', inventory: [] }), addGameMessage });
-        ui.update({ trade: { id: 'trade-1' }, state: 'open' });
-        ui.update({ trade: { id: 'trade-1' }, state: 'cancelled' });
+        const trade = { id: 'trade-1', playerAId: 'player-a', playerBId: 'player-b' };
+        ui.update({ trade, state: 'open' });
+        ui.update({ trade, state: 'cancelled' });
         expect(document.getElementById('direct-trade-window').style.display).toBe('none');
         expect(addGameMessage).toHaveBeenCalledWith('Trade', 'Trade cancelled; escrow returned and saved.');
     });
