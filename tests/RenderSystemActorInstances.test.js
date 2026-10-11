@@ -103,3 +103,19 @@ test('automatic multi-draw survives scene retirement and returning actor members
         expect(owner.group.visible).toBe(false);
     } finally { f.render.dispose(); jest.restoreAllMocks(); }
 });
+
+
+test('singleton delivery follows High quality across settings changes and owner replacement', () => {
+    const render = new RenderSystem(false);
+    try {
+        render.setGraphicsQuality('high'); expect(render.actorInstances.batchSingletons).toBe(true);
+        for (const quality of ['low', 'medium']) {
+            render.setGraphicsQuality(quality); expect(render.actorInstances.batchSingletons).toBe(false);
+            render.setActorInstancesEnabled(false); render.setActorInstancesEnabled(true);
+            expect(render.actorInstances.batchSingletons).toBe(false);
+        }
+        render.setGraphicsQuality('high'); expect(render.actorInstances.batchSingletons).toBe(true);
+        render.setActorInstancesEnabled(false); render.setActorInstancesEnabled(true);
+        expect(render.actorInstances.batchSingletons).toBe(true);
+    } finally { render.dispose(); }
+});

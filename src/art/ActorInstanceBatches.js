@@ -53,12 +53,12 @@ const eligible = part => candidate(part) && part.material.visible && !part.mater
 // Base buckets use standard instance attributes. Optional multi-draw owns
 // additional copied geometry and matrix/indirection textures.
 export class ActorInstanceBatches {
-    constructor(scene, watchedGroups = [scene], { shadowInfluence = false, multiDraw = false, instanceFrustum = false } = {}) {
+    constructor(scene, watchedGroups = [scene], { shadowInfluence = false, multiDraw = false, instanceFrustum = false, batchSingletons = false } = {}) {
         this.scene = scene;
         this.group = new Group(); this.group.name = 'OpaqueActorInstances'; this.group.visible = false;
         scene.add(this.group);
         this.batches = new Map(); this.hidden = []; this.inverse = new Matrix4(); this.matrix = new Matrix4();
-        this.enabled = true; this.multiDraw = multiDraw ? new ActorInstanceMultiDraw(this.group) : null;
+        this.enabled = true; this.batchSingletons = batchSingletons; this.multiDraw = multiDraw ? new ActorInstanceMultiDraw(this.group) : null;
         if (this.multiDraw) this.multiDraw.perInstanceFrustum = instanceFrustum;
         this.viewFilter = null;
         this.shadowFilter = shadowInfluence ? new ActorShadowInfluence(scene, watchedGroups) : null;
@@ -117,6 +117,10 @@ export class ActorInstanceBatches {
     beginFrame(renderer, camera) {
         this.endFrame();
         if (this.disposed || !this.enabled) return;
+        // A lone leaf only benefits from cross-geometry multi-draw. Preserve
+        // its original direct path whenever that delivery is unavailable.
+        const batchSingletons = this.batchSingletons && this.multiDraw?.enabled &&
+            renderer?.extensions?.has('WEBGL_multi_draw') && !camera?.isArrayCamera;
         this.refreshRoster();
         this.viewFilter?.beginFrame(renderer, this.scene, camera);
         const used = new Set();
@@ -131,7 +135,7 @@ export class ActorInstanceBatches {
                 // Preserve the existing instance shader for a retained single
                 // member of an originally eligible bucket. Changing it to a
                 // direct draw can introduce normal/position rounding changes.
-                if (eligibleParts.length < 2 || !parts.length) continue;
+                if ((!batchSingletons && eligibleParts.length < 2) || !parts.length) continue;
                 let batch = this.batches.get(key);
                 if (batch && batch.instanceMatrix.count < parts.length) {
                     batch.removeFromParent(); batch.dispose(); this.batches.delete(key); batch = null;

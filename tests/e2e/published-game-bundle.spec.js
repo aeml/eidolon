@@ -863,3 +863,73 @@ test('published engine reaches the jump destination in real elapsed time at low 
     }
     expect(failures, failures.join('\n')).toEqual([]);
 });
+
+
+for (const quality of ['high', 'low']) test(`published ${quality} singleton actors follow quality changes and restore source visibility`, async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, quality }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
+        const render = game.renderSystem, owner = render.actorInstances, multi = owner.multiDraw, actors = [], rows = [], transitions = [];
+        const canvas = render.renderer.domElement, copy = document.createElement('canvas');
+        copy.width = canvas.width; copy.height = canvas.height;
+        const context = copy.getContext('2d', { willReadFrequently: true });
+        const frozen = performance.now(), descriptor = Object.getOwnPropertyDescriptor(performance, 'now');
+        const capture = selected => {
+            owner.batchSingletons = selected; render.render(); context.drawImage(canvas, 0, 0);
+            return { pixels: context.getImageData(0, 0, copy.width, copy.height).data,
+                calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+        };
+        let result;
+        try {
+            Object.defineProperty(performance, 'now', { configurable: true, value: () => frozen });
+            render.setGraphicsQuality(quality); const selected = owner.batchSingletons;
+            for (const [type, subType, states] of [['NPC', 'QuestNPC', ['Idle']], ['Enemy', 'DemonOrc', ['Idle', 'Run', 'Attack', 'Death']]]) {
+                const actor = game.createRemotePlayer(type, `singleton-${subType}`, subType);
+                actors.push(actor); await actor.ensureMesh(); render.add(actor.mesh);
+                for (const state of states) {
+                    actor.playAnimation(state, state !== 'Death', true); actor.updateAnimationMixer(.37);
+                    const visible = new Map(); actor.mesh.traverse(part => visible.set(part, part.visible));
+                    capture(false); capture(selected); capture(false);
+                    const reference = capture(false), candidate = capture(selected), again = capture(false);
+                    let error = 0, changed = 0, exactChanges = 0, unstable = 0;
+                    for (let i = 0; i < reference.pixels.length; i += 4) {
+                        const delta = Math.max(...[0, 1, 2].map(c => Math.abs(reference.pixels[i + c] - candidate.pixels[i + c])));
+                        error += delta; changed += delta > 8 ? 1 : 0; exactChanges += delta > 0 ? 1 : 0;
+                        unstable += [0, 1, 2].some(c => reference.pixels[i + c] !== again.pixels[i + c]) ? 1 : 0;
+                    }
+                    rows.push({ subType, state, selected, meanError: error / (copy.width * copy.height), changed: changed / (copy.width * copy.height), exactChanges, unstable,
+                        reference: { calls: reference.calls, triangles: reference.triangles }, candidate: { calls: candidate.calls, triangles: candidate.triangles },
+                        restored: [...visible].every(([part, value]) => part.visible === value) && !owner.hidden.length && !multi.hidden.length });
+                }
+                actor.dispose(); actors.pop();
+            }
+            for (const setting of ['high', 'low', 'medium', 'high']) {
+                render.setGraphicsQuality(setting); render.render(); transitions.push({ setting, selected: owner.batchSingletons });
+            }
+            const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            result = { rows, transitions, extension: render.renderer.extensions.has('WEBGL_multi_draw'),
+                gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
+        } finally {
+            if (descriptor) Object.defineProperty(performance, 'now', descriptor); else delete performance.now;
+            for (const actor of actors) actor.dispose(); game.destroy();
+        }
+        result.disposed = multi.disposed && multi.entries.size === 0 && owner.roots.size === 0;
+        return result;
+    }, { release, quality });
+    await testInfo.attach('published-singleton-owner', { body: JSON.stringify({ quality, result, engineSHA256: metadata.engineSHA256 }), contentType: 'application/json' });
+    expect(result.disposed).toBe(true);
+    if (requiresHardwareWebGL()) { expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i); expect(result.extension).toBe(true); }
+    for (const row of result.rows) {
+        expect(row.selected).toBe(quality === 'high'); expect(row.restored).toBe(true); expect(row.unstable).toBe(0);
+        expect(row.meanError).toBeLessThan(.1); expect(row.changed).toBeLessThan(.001);
+        expect(row.candidate.calls).toBeLessThanOrEqual(row.reference.calls);
+        if (quality === 'low') { expect(row.exactChanges).toBe(0); expect(row.candidate).toEqual(row.reference); }
+    }
+    for (const row of result.transitions) expect(row.selected).toBe(row.setting === 'high');
+    if (quality === 'high' && result.extension) for (const type of ['QuestNPC', 'DemonOrc'])
+        expect(result.rows.some(row => row.subType === type && row.candidate.calls < row.reference.calls), type).toBe(true);
+    expect(failures, failures.join('\n')).toEqual([]);
+});

@@ -3,6 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { moveByGroundClick, readPlayerState } from './helpers.js';
 import { profileGameplayScene } from './scene-performance.js';
 import { capturePartySubmissionFrames } from './party-submission-frames.js';
+import { compareSingletonScene } from './singleton-scene-comparison.js';
 import { compareDemonOrcScene } from './demon-orc-scene-comparison.js';
 
 // Explicit post-login visual evidence. These prepared level30 saves are not an
@@ -56,6 +57,9 @@ export async function captureEarthMovingRoute(page, testInfo) {
             } finally {
                 if (resume) { await session.send('Page.startScreencast', captureOptions); recording = true; }
             }
+        }
+        if (process.env.EIDOLON_E2E_SINGLETON_COMPARE === '1' && ['town-start', 'woodland-cut'].includes(label)) {
+            await compareSingletonScene(page, testInfo, label);
         }
         // Keep the frozen raw-source comparison outside ordinary frame timings.
         if (process.env.EIDOLON_E2E_DEMON_ORC_COMPARE === '1' && label === 'woodland-cut') {

@@ -163,4 +163,6 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
     expect(native).toContain('camp clipping preserves');
     expect(native).toContain('tests/e2e/demon-orc-rigid-delivery.spec.js');
     expect(native).toContain('DemonOrc preserves|DemonOrc defaults');
+    expect(native).toContain('tests/e2e/singleton-actor-delivery.spec.js');
+    expect(native).toContain('singleton reviewed actors|singleton actors follow');
 });
