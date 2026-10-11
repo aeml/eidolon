@@ -1,0 +1,20 @@
+{
+  "recordedUTC": "2026-10-11T09:44:51.559373+00:00",
+  "instruction": "Completed validated work must be merged into master.",
+  "branch": "work/regen-rate-20260908",
+  "head": "42c70a2c6dfaa431dcf15dcef8346e19ca041a41",
+  "reviewMerge": "b25099080ae73bb9bae4f76eebe79110ef4291dc",
+  "masterMerge": "87a6a466bb6d3c43b5a9dc3e0d8a11b20904b78a",
+  "beforeMaster": "4f7c581f9c9c89ceca84f090b27b34f8bf41a928",
+  "beforeUnmerged": 100,
+  "afterUnmerged": 99,
+  "validation": {
+    "treeUnchanged": true,
+    "ancestry": true,
+    "review": "Original0.01per-stat rate was already integrated via2580ac27. Historical full-regression note already present byte-identically. Four conflicts preserve newer duration-based rest regeneration, disconnected-state handling, isolated real-tick fixture, player tick ownership and current Actor cadence/imports. All other paths merge with no staged differences. Entire result is byte-identical to premerge master; ancestry check passes.",
+    "tests": "No source/test/document content changed, so exact-tree and ancestry checks suffice; no unchanged full regression rerun.",
+    "correctedCommandError": "An attempted master merge used the owned worktree path rather than its commit; Git rejected it without mutation. Reissued with exact reviewed b2509908 commit."
+  },
+  "remaining": "99distinct histories require individual review; no blanket merge/delete or claim that they are all unfinished. Original dirty checkout preserved.",
+  "published": false
+}

@@ -1,0 +1,92 @@
+{
+  "recordedUTC": "2026-10-11T09:44:51.559373+00:00",
+  "version": "Alpha 1.79.31",
+  "source": "42f06ad0b7116420e33ff0fff760df391e244216",
+  "run": 38126692286,
+  "attempt": 1,
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "name": "Client Tests (Jest)",
+      "databaseId": 114432417243,
+      "conclusion": "success",
+      "completedAt": "2026-10-11T09:09:51Z"
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "databaseId": 114432417419,
+      "conclusion": "success",
+      "completedAt": "2026-10-11T09:16:26Z"
+    },
+    {
+      "name": "Server Tests (Go)",
+      "databaseId": 114432417490,
+      "conclusion": "success",
+      "completedAt": "2026-10-11T09:18:14Z"
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "databaseId": 114432417509,
+      "conclusion": "success",
+      "completedAt": "2026-10-11T09:16:41Z"
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "databaseId": 114432417562,
+      "conclusion": "failure",
+      "completedAt": "2026-10-11T09:34:07Z"
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "databaseId": 114438741270,
+      "conclusion": "skipped",
+      "completedAt": "2026-10-11T09:34:08Z"
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "databaseId": 114438742038,
+      "conclusion": "skipped",
+      "completedAt": "2026-10-11T09:34:08Z"
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "databaseId": 114438742145,
+      "conclusion": "skipped",
+      "completedAt": "2026-10-11T09:34:08Z"
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "databaseId": 114438742588,
+      "conclusion": "skipped",
+      "completedAt": "2026-10-11T09:34:08Z"
+    },
+    {
+      "name": "Live Release and Character QA",
+      "databaseId": 114438742605,
+      "conclusion": "skipped",
+      "completedAt": "2026-10-11T09:34:08Z"
+    }
+  ],
+  "failure": {
+    "case": "copied published high Earth rock shelves retain equipped views and cleanup",
+    "timeoutMilliseconds": 120000,
+    "attempts": 2,
+    "location": "grove-bed display/FXAA comparison after eight prepared views",
+    "evidence": "Both traces show eight-pose view work taking roughly11\u201316seconds per view, plus the first High image comparison about10seconds. Both attempts exhaust the same120second test limit during the second comparison; no assertion failure established. Browser protocol evaluation timing alone understates queued GPU/readback work. Cleanup page closure masks the primary timeout in the final reporter.",
+    "counts": {
+      "interfacePassed": 84,
+      "interfaceSkipped": 7,
+      "interfaceFailed": 1
+    },
+    "correctionInProgress": "Partition copied High review into three independent three-view cases. Retain allnine views,72walking poses, both FXAA comparisons, equipped/HUD, geometry/draw/grounding/GPU and ownership assertions. No timeout/budget increases or pose reduction. Software/native proof required before merge."
+  },
+  "deployment": {
+    "occurred": false,
+    "downstreamJobsSkipped": 5,
+    "acceptedPublic": "Alpha 1.79.30 / 1aae8407e51c0a6016ac9a27cff75be060001306"
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-release31-failure-checks-20261011",
+  "preserved": "Full241676926byte shard artifact, raw100027byte job log, extracted original/retry traces and PNGs, terminal API JSON and parsed timing summary retained. Earlier gh log command produced an empty file; direct job-log API download supplies the actual log.",
+  "retryOrCancelPerformed": false,
+  "limits": "Hosted prepared-render timeout diagnosis does not establish production/native frame performance or final art acceptance."
+}

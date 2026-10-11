@@ -4,8 +4,9 @@ Last refreshed: October 11, 2026
 
 This file is a short pointer. Accepted public release: Alpha1.79.30/exact1aae8407
 ([ordered release and live acceptance](plans/2026-10-11-public30-terminal-qualification.json)).
-Alpha1.79.31/exact42f06ad0 is pushed to master; CI38126692286 is running, so its
-own deployment and live acceptance remain pending. See the
+Alpha1.79.31/exact42f06ad0 is pushed to master; CI38126692286 attempt1 failed
+in hosted High world-review rendering before deployment. Allfive downstream jobs
+skipped; public30 remains accepted. [Failure evidence](plans/2026-10-11-release31-hosted-review-failure.json). See the
 [remaining-work register](plans/2026-10-09-release-readiness-remaining.md) for the
 full inherited world/art/gameplay/device/performance/operations/F1–F5/beta/launch
 scope. These scoped releases do not complete those gates.

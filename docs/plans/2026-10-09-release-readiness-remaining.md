@@ -9,14 +9,15 @@ Historical test receipts do not close unchecked requirements.
 
 **Master reconciliation:** completed, qualified world/dungeon/equipment/HUD,
 renderer and contact-audio work is merged into local `master`. Branch
-reconciliation reduced distinct unmerged histories287→100; unfinished/rejected
+reconciliation reduced distinct unmerged histories287→99; unfinished/rejected
 experiments and the dirty user checkout remain preserved. New completed work
 continues to merge into `master`, without adding work branches or force-pushing.
 [Repository workflow](../../AGENTS.md),
 [branch reconciliation](2026-10-11-master-branch-reconciliation.json),
-[four completed-history follow-up merges](2026-10-11-completed-branch-followup.json).
+[four completed-history follow-up merges](2026-10-11-completed-branch-followup.json),
+[completed regeneration history](2026-10-11-regeneration-branch-reconciliation.json).
 
-**Current release custody, October11 09:25UTC:** Alpha1.79.30/1aae8407 is now
+**Current release custody, October11 09:45UTC:** Alpha1.79.30/1aae8407 is now
 fully accepted through the ordered release gate. CI38124028177 attempt1 completed
 success: all10jobs, including required native predeploy, both deployments and
 mandatory live gameplay/town-recovery/Well Rested checks. Optional stabilization,
@@ -26,11 +27,15 @@ identity, ready database and all9expected asset hashes/byte counts. Earlier
 2e6c6a14 final helper-import failure remains retained. The test-only delivery
 correction preserves its game runtime. Alpha1.79.31 integrates cumulative notes
 and the six qualified renderer/environment components below. Exact42f06ad0 is
-pushed to master; CI38126692286 is running. Client/Server/browser1and3 have
-succeeded; browser2 remains active, with no native predeploy job yet. Its own
-deployment/CI/live acceptance remains pending. Per-component receipts below
-preserve their earlier, prepublication states. Current100-client
-soak38109009521 is still active on acceptedpublic29, not a completed capacity gate.
+pushed to master; CI38126692286 attempt1 is terminal failed before deployment.
+Client/Server/browser1and3 pass; browser2 times out in the copied High world review
+on both configured attempts. Allfive downstream jobs skip, so no31deployment
+occurred; accepted public remains30. Both actual traces and raw job logs are
+retained. A bounded-case correction is being qualified with every original view,
+pose, comparison and budget retained. Per-component receipts below preserve their
+earlier prepublication states. Current100-clientsoak38109009521 remains active on
+acceptedpublic29, not a completed capacity gate.
+[Release31 failure](2026-10-11-release31-hosted-review-failure.json),
 [Release30 acceptance](2026-10-11-public30-terminal-qualification.json),
 [Live profiling correction](2026-10-11-live-profile-delivery-correction.json).
 

@@ -4,7 +4,9 @@ October11 current checkpoint: accepted publicAlpha1.79.30/exact1aae8407,
 CI38124028177attempt1 all10jobs successful, with post-terminal normal-TLS exact
 frontend/backend/readyDB and9served assets. Optional stabilization/full-character/
 live-four-class skips are explicit, not passes. [Acceptance](2026-10-11-public30-terminal-qualification.json).
-CombinedAlpha1.79.31/exact42f06ad0 is pushed to master; CI38126692286 is running.
+CombinedAlpha1.79.31/exact42f06ad0 is pushed to master; CI38126692286 attempt1 failed
+at the hosted copied High world-review timeout; no31deployment occurred.
+[Failure evidence](2026-10-11-release31-hosted-review-failure.json).
 Six qualified camp/DemonOrc/Highsingleton/rock/foliage/display components retain
 previous dungeon/equipment/contact/HUD and jump/aura/admin fixes.415focused
 version/history/enrollment checks, full lint and3combined-publication native
