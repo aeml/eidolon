@@ -438,7 +438,9 @@ For local Firefox QA, use port4173 or4192, not its restricted port4190.
   Original client-fixture failure and diagnosed predeploy network failure remain
   retained. [Diagnosis/retry](docs/plans/2026-10-11-release34-predeploy-network-retry.json).
   [Correction](docs/plans/2026-10-11-release34-charging-fixture-correction.json).
-- Current source version: `Alpha 1.79.34`, steady dungeon radar context, independent
+- Current source version: `Alpha 1.79.35`, reliable trade drafts and confirmations,
+  keyboard build choices with stable focus and reading position, current guild
+  calendar actions and a clearer venue dialog. Retains steady dungeon radar context, independent
   mixed-weapon Rogue grips and faster character geometry preparation, alongside
   private account/progress help, expanded
   Player Guide, readable lore dialogs, coordinated recovery checks and connected
