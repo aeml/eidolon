@@ -9,12 +9,17 @@ Historical test receipts do not close unchecked requirements.
 
 **Master reconciliation:** qualified staged world/dungeon/equipment/HUD/geometry
 work and bounded contact audio are now merged into local master. Cumulative
-Alpha1.79.30 is prepared; CI/deployment acceptance is pending. Older staged/private
+Alpha1.79.30 is prepared; CI/deployment acceptance is pending. Initial CI38116276417
+blocks deployment at generated-worker lint. Exact locked dependencies reproduce
+ten errors; corrective26e3a8c5 excludes only minified build output and full lint
+passes. Full client-suite validation remains in progress. Older staged/private
 labels below describe historical qualification and do not override this checkpoint.
 Local master was1567commits behind upstream; synchronization resolved91branch
 ancestry mismatches. Qualified milestone integration resolves58more, and30branches
 with only already-cherry-picked patches are ordinarily merged with unchanged trees.
-Unmerged count287→108. Remaining branches have distinct patches requiring review;
+Four more completed histories merge cleanly with an unchanged tree, including the
+original motion/admin branches. Unmerged count287→104. Remaining branches have
+distinct patches requiring review;
 rejected experiments and dirty user work are preserved. Future completed validated
 work must merge into master, per [repository workflow](../../AGENTS.md).
 [Branch reconciliation](2026-10-11-master-branch-reconciliation.json).
