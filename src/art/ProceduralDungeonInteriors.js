@@ -11,6 +11,7 @@ import { createDungeonVigilBase, createDungeonVigilShaft, createDungeonVigilCage
     createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid } from './DungeonVigilGeometry.js';
 import { createDungeonEntryWard } from './DungeonEntryWard.js';
 import { applyVerdantFloorPatina } from './VerdantFloorPatina.js';
+import { applyElementalFloorPatina } from './ElementalFloorPatina.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -704,6 +705,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
         material.userData.dungeonType = dungeonType;
         material.userData.surface = surface;
         if (dungeonType === 'verdant_bastion_catacombs' && surface === 'floor') applyVerdantFloorPatina(material);
+        else if (surface === 'floor') applyElementalFloorPatina(material, dungeonType);
         materials.set(key, material);
         return material;
     };

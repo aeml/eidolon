@@ -1,17 +1,22 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
-test('Verdant floor weathering crosses mesh partitions without repeating with the tile', async ({ page, baseURL }, testInfo) => {
+const cases = [
+    ['Verdant', 'verdant_bastion_catacombs', 'high'],
+    ...['molten_core', 'tempest_spire', 'abyssal_well', 'umbral_nexus']
+        .flatMap(type => ['high', 'low'].map(quality => [`${type} ${quality}:`, type, quality]))
+];
+for (const [label, type, quality] of cases) test(`${label} floor weathering crosses mesh partitions without repeating with the tile`, async ({ page, baseURL }, testInfo) => {
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.goto('/', { waitUntil: 'networkidle' });
-    const result = await page.evaluate(async () => {
+    const result = await page.evaluate(async ({ type, quality }) => {
         const THREE = await import('three');
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { createProceduralDungeonInteriorKit } = await import('/src/art/ProceduralDungeonInteriors.js');
         const render = new RenderSystem(false), origin = 20000;
-        render.setGraphicsQuality('high');
-        const kit = createProceduralDungeonInteriorKit('verdant_bastion_catacombs');
+        render.setGraphicsQuality(quality);
+        const kit = createProceduralDungeonInteriorKit(type, { quality });
         const material = kit.floorMaterial(24, 24), control = material.clone();
         const whole = new THREE.Group(), split = new THREE.Group();
         const addFloor = (group, width, depth, x, z) => {
@@ -37,7 +42,7 @@ test('Verdant floor weathering crosses mesh partitions without repeating with th
         for (const patched of [false, true]) {
             whole.children[0].material = patched ? material : control;
             const rgb = [];
-            for (const x of [-24, 0, 24]) for (const z of [-24, 0, 24]) {
+            for (const x of [-48, -24, 0, 24, 48]) for (const z of [-48, -24, 0, 24, 48]) {
                 render.setCameraTarget(new THREE.Vector3(origin + x, .1, origin + z));
                 const data = capture(), offset = (128 * 256 + 128) * 4;
                 rgb.push([...data.slice(offset, offset + 3)]);
@@ -48,10 +53,10 @@ test('Verdant floor weathering crosses mesh partitions without repeating with th
         const gpu = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
         render.renderer.setRenderTarget(null); target.dispose(); whole.children[0].material = material;
         control.dispose(); render.dispose();
-        return { maximumPartitionDelta, samples, gpu,
+        return { type, quality, maximumPartitionDelta, samples, gpu,
             scope: 'Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim.' };
-    });
-    await testInfo.attach('verdant-floor-material', { body: JSON.stringify(result), contentType: 'application/json' });
+    }, { type, quality });
+    await testInfo.attach('dungeon-floor-material', { body: JSON.stringify(result), contentType: 'application/json' });
     expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
     expect(result.maximumPartitionDelta).toBeLessThanOrEqual(1);
     expect(result.samples[0].span).toBeLessThanOrEqual(1);

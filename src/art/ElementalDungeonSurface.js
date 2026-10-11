@@ -5,6 +5,12 @@ const clamp = value => Math.max(0, Math.min(1, value));
 const smooth = (a, b, value) => { const t = clamp((value - a) / (b - a)); return t * t * (3 - 2 * t); };
 const wrap = (value, period) => ((value % period) + period) % period;
 const seeds = { molten_core: 0x41a6, tempest_spire: 0x19ef, abyssal_well: 0x7381, umbral_nexus: 0x4b31 };
+// Mineral albedo stays readable under the existing strongly colored regional
+// lights. Applying the same saturated palette twice hid the worn stonework.
+const floorStone = {
+    molten_core: [94, 83, 72], tempest_spire: [112, 118, 126],
+    abyssal_well: [76, 96, 102], umbral_nexus: [85, 77, 99]
+};
 function hash(x, y, seed) {
     let n = Math.imul(x + 91, 1597334677) ^ Math.imul(y + 17, 3812015801) ^ seed;
     n = Math.imul(n ^ n >>> 16, 2246822519);
@@ -34,8 +40,10 @@ export function sampleElementalDungeonSurface(x, y, type, wall, palette) {
     const turn = Math.PI * 2 / 64;
     // Small mineral variations survive gameplay zoom without a checkerboard
     // of unrelated bright stones. Mortar is worn, not perfectly black.
-    const base = palette.shadow.map((value, i) => value +
-        ((wall ? palette.midtone[i] : palette.ground[i]) - value) * (wall ? .48 : .72));
+    const base = palette.shadow.map((value, i) => {
+        const regional = value + ((wall ? palette.midtone[i] : palette.ground[i]) - value) * (wall ? .48 : .72);
+        return wall ? regional : floorStone[type][i] * .8 + regional * .2;
+    });
     const tone = .88 + stone * .12 + weather * .08 + grain * .025;
     const color = base.map(value => value * tone * ((wall ? .75 : .87) + bevel * (wall ? .25 : .13))
         * (1 - (flagstone?.fracture || 0) * .09));

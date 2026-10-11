@@ -48,4 +48,5 @@ test('native dungeon and outfit assertions block release independently of hosted
     expect(body).toContain('--workers=1 --retries=0 --reporter=line,html');
     expect(body).not.toContain('if:');
     for (const file of ['dungeon-entry-ward', 'dungeon-floor-material', 'published-game-bundle']) expect(body).toContain(`tests/e2e/${file}.spec.js`);
+    expect(body).toContain('grounded entry wards|floor weathering|geometry scheduling|elemental floor materials');
 });

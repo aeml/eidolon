@@ -403,6 +403,79 @@ test('published geometry owner loads its immutable worker, retires streamed root
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
+for (const quality of ['high', 'low']) test(`copied published ${quality} elemental floor materials render through the world owner`, async ({ page }, testInfo) => {
+    const failures = collectBrowserFailures(page, origin);
+    const fixtures = JSON.parse(await readFile('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, quality, fixtures }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        localStorage.setItem('eidolon.graphicsQuality', quality);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-floor-only', null, 'flat-v1');
+        const render = game.renderSystem, world = game.worldGenerator, samples = [];
+        try {
+            game.uiManager.setGraphicsQuality(quality);
+            render.render();
+            const unwarmedBaseline = { ...render.renderer.info.memory };
+            // An empty scene has not initialized Three's PBR reflection/PMREM
+            // resources. Warm an actual room, then require exact return to that
+            // baseline after every subsequent room, rather than counting the
+            // renderer's first PBR allocation as a dungeon ownership leak.
+            const warmLayout = fixtures.find(fixture => fixture.dungeonType === 'molten_core').layout;
+            await world.createMoltenCore(0, 0, warmLayout);
+            const warmTarget = render.cameraTarget.clone().set(warmLayout.rooms[0].x, .1, warmLayout.rooms[0].z);
+            render.setEnvironmentContext('molten_core', warmTarget, true);
+            render.setCameraTarget(warmTarget); render.updateEnvironmentLighting(warmTarget, 0);
+            render.render(); render.render();
+            const warmFloor = render.instanceEnvironmentGroup.children.find(part => part.name === 'DungeonUnionFloor');
+            const warmed = Boolean(render.renderer.properties.get(warmFloor.material).currentProgram);
+            render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
+            const baseline = { ...render.renderer.info.memory }, cleared = [];
+            const methods = { molten_core: 'createMoltenCore', tempest_spire: 'createTempestSpire',
+                abyssal_well: 'createAbyssalWell', umbral_nexus: 'createUmbralNexus' };
+            const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            for (const [type, method] of Object.entries(methods)) {
+                render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true });
+                const layout = fixtures.find(fixture => fixture.dungeonType === type).layout;
+                await world[method](0, 0, layout);
+                const target = render.cameraTarget.clone().set(layout.rooms[0].x, .1, layout.rooms[0].z);
+                render.setEnvironmentContext(type, target, true); render.setCameraTarget(target); render.updateEnvironmentLighting(target, 0);
+                const colliders = JSON.stringify(game.collisionManager.colliders);
+                render.render(); render.render();
+                const floor = render.instanceEnvironmentGroup.children.find(part => part.name === 'DungeonUnionFloor');
+                const program = render.renderer.properties.get(floor.material).currentProgram;
+                const compiled = Boolean(program && gl.getShaderSource(program.fragmentShader)?.includes('elementalFloorWeather') &&
+                    gl.getProgramParameter(program.program, gl.LINK_STATUS));
+                samples.push({ type, compiled, patina: floor.material.userData.elementalFloorPatina,
+                    quality: world.graphicsQuality, mapSize: floor.material.map.image.width,
+                    calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+                    collidersStable: colliders === JSON.stringify(game.collisionManager.colliders) });
+                render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
+                cleared.push({ type, ...render.renderer.info.memory });
+            }
+            render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
+            const remainingMeshes = [];
+            render.scene.traverse(part => {
+                if (part.geometry) remainingMeshes.push({ name: part.name, type: part.type, geometry: part.geometry.type, parent: part.parent?.name });
+            });
+            return { samples, warmed, unwarmedBaseline, baseline, cleared, after: { ...render.renderer.info.memory }, remainingMeshes,
+                gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
+        } finally { game.destroy(); }
+    }, { release, quality, fixtures });
+    await testInfo.attach('published-elemental-floors', { body: JSON.stringify({ ...result, engineSHA256: metadata.engineSHA256,
+        scope: 'Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim.' }), contentType: 'application/json' });
+    for (const row of result.samples) {
+        expect(row).toMatchObject({ compiled: true, patina: row.type, quality, mapSize: quality === 'low' ? 64 : 256, collidersStable: true });
+        expect(row.calls).toBeGreaterThan(0); expect(row.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);
+        expect(row.triangles).toBeGreaterThan(0); expect(row.triangles).toBeLessThanOrEqual(quality === 'low' ? 85000 : 250000);
+    }
+    expect(result.after).toEqual(result.baseline);
+    expect(result.warmed).toBe(true);
+    for (const { type, ...memory } of result.cleared) expect(memory, type).toEqual(result.baseline);
+    if (requiresHardwareWebGL()) expect(result.gpu).not.toMatch(/SwiftShader|llvmpipe|software/i);
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
 for (const quality of ['high', 'low']) test(`published ${quality} geometry scheduling preserves prepared four-class outfits`, async ({ page }, testInfo) => {
     test.setTimeout(180_000);
     const failures = collectBrowserFailures(page, origin);

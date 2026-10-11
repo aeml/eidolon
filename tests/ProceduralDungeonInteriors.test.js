@@ -71,7 +71,7 @@ describe('Procedural dungeon interior art', () => {
         }
     });
 
-    test('sRGB floor bytes preserve the authored basalt palette rather than double-darkening it', () => {
+    test('sRGB floor bytes preserve the mineral basalt albedo rather than double-darkening it', () => {
         const map = createProceduralDungeonInteriorKit('abyssal_well').floorMaterial(120, 120).map;
         const palette = Object.fromEntries(Object.entries(getRegionTheme('abyssal_well').palette).map(([name, hex]) => {
             const color = new THREE.Color(hex).convertLinearToSRGB();
@@ -83,9 +83,7 @@ describe('Procedural dungeon interior art', () => {
         const expected = sampleElementalDungeonSurface(10, 10, 'abyssal_well', false, palette).color;
         expect(map.colorSpace).toBe(THREE.SRGBColorSpace);
         expect(Array.from(map.image.data.slice(offset, offset + 4))).toEqual([...expected, 255]);
-        expect(expected[0]).toBeGreaterThanOrEqual(10); expect(expected[0]).toBeLessThanOrEqual(18);
-        expect(expected[1]).toBeGreaterThanOrEqual(29); expect(expected[1]).toBeLessThanOrEqual(45);
-        expect(expected[2]).toBeGreaterThanOrEqual(38); expect(expected[2]).toBeLessThanOrEqual(57);
+        expect(expected).toEqual([63, 84, 91]);
     });
 
     test.each(DUNGEON_INTERIOR_IDS)('%s keeps floor detail broad and smoothly filtered without changing wall scale', (dungeonType) => {
