@@ -115,6 +115,21 @@ export class ForgeUI {
         this.selectedRemoveSocketIndex = null;
         this.currentGemSubTab = 'insert';
 
+        for (const [element, label] of [
+            [this.forgeGemEquipment, 'Equipment with sockets'],
+            [this.forgeGemInventory, 'Gems in inventory'],
+            [this.forgeGemSocketSlots, 'Sockets for gem insertion'],
+            [this.forgeGemCombineInventory, 'Gems for combining'],
+            [this.forgeGemRemoveEquipment, 'Equipment with socketed gems'],
+            [this.forgeGemRemoveSlots, 'Socketed gems for removal']
+        ]) {
+            if (!element) continue;
+            element.classList.add('forge-gem-choices');
+            element.setAttribute('role', 'group');
+            element.setAttribute('aria-label', label);
+            element.tabIndex = -1;
+        }
+
         // --- Callbacks (set by GameEngine) ---
         this.onForgeUpgrade = null;
         this.onForgePotency = null;
@@ -195,6 +210,9 @@ export class ForgeUI {
         if (!removal?.gems?.length) {
             this.selectedRemoveEquipSlot = null;
             this.selectedRemoveSocketIndex = null;
+            if (this.forgeGemRemoveInfo?.contains(document.activeElement)) {
+                this.forgeGemRemoveEquipment?.focus({ preventScroll: true });
+            }
             if (this.forgeGemRemoveInfo) this.forgeGemRemoveInfo.style.display = 'none';
             if (this.btnForgeRemoveGem) this.btnForgeRemoveGem.disabled = true;
         } else if (this.selectedRemoveSocketIndex >= removal.gems.length) this.selectedRemoveSocketIndex = null;
@@ -337,6 +355,45 @@ export class ForgeUI {
     _getInventoryStackCount(item) {
         if (!item) return 0;
         return item.stack && item.stack > 0 ? item.stack : 1;
+    }
+
+    _captureGemFocus(...groups) {
+        const active = document.activeElement;
+        const group = groups.find(element => element?.contains(active));
+        const scroll = [...groups, this.forgeScreen?.querySelector('.window-body')]
+            .filter(Boolean).map(element => ({ element, top: element.scrollTop, left: element.scrollLeft }));
+        return { group, key: active?.dataset.forgeChoiceKey, scroll };
+    }
+
+    _restoreGemFocus({ group, key, scroll }) {
+        let choice;
+        if (group && key !== undefined) {
+            choice = [...group.querySelectorAll('[data-forge-choice-key]')]
+                .find(element => element.dataset.forgeChoiceKey === key && !element.disabled);
+            (choice || group).focus({ preventScroll: true });
+        }
+        for (const { element, top, left } of scroll) {
+            element.scrollTop = top;
+            element.scrollLeft = left;
+        }
+        // Sorting can move the same gem beyond the saved reading position.
+        // Keep ordinary redraws still, but reveal a relocated keyboard choice.
+        if (choice) {
+            const bounds = choice.getBoundingClientRect(), area = group.getBoundingClientRect();
+            if (area.height > 0 && (bounds.top < area.top || bounds.bottom > area.bottom ||
+                bounds.left < area.left || bounds.right > area.right)) {
+                choice.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            }
+        }
+    }
+
+    _gemChoice(element, key, label, selected, disabled = false) {
+        element.type = 'button';
+        element.classList.add('forge-gem-choice');
+        element.dataset.forgeChoiceKey = JSON.stringify(key);
+        element.setAttribute('aria-label', label);
+        element.setAttribute('aria-pressed', String(selected));
+        element.disabled = disabled;
     }
 
     _isHeartItem(item) {
@@ -821,6 +878,7 @@ export class ForgeUI {
 
     updateForgeGemsUI(player) {
         if (!this.forgeGemEquipment || !this.forgeGemInventory) return;
+        const focus = this._captureGemFocus(this.forgeGemEquipment, this.forgeGemInventory);
 
         this.forgeGemEquipment.innerHTML = '';
         this.forgeGemInventory.innerHTML = '';
@@ -837,7 +895,10 @@ export class ForgeUI {
                 el.style.width = '48px';
                 el.style.height = '48px';
 
+                el.dataset.slot = slot;
                 this._setItemIcon(el, item);
+                el.dataset.forgeChoiceKey = JSON.stringify(['equipment', slot, item.id]);
+                el.setAttribute('aria-pressed', String(this.selectedGemEquipSlot === slot));
                 el.style.backgroundSize = 'contain';
                 el.style.backgroundRepeat = 'no-repeat';
                 el.style.backgroundPosition = 'center';
@@ -892,7 +953,7 @@ export class ForgeUI {
         if (player.inventory) {
             player.inventory.forEach((item, index) => {
                 if (this._isGemItem(item)) {
-                    const el = document.createElement('div');
+                    const el = document.createElement('button');
                     el.className = 'inv-slot';
                     el.style.cursor = 'pointer';
                     el.style.width = '48px';
@@ -904,6 +965,9 @@ export class ForgeUI {
                     const gemType = GEM_TYPES[item.gemType];
                     const gemQuality = GEM_QUALITIES[item.gemQuality];
                     const gemColor = gemType ? gemType.color : '#ff00ff';
+                    this._gemChoice(el, ['inventory', item.id ?? index],
+                        `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'} ×${item.stack || 1}`,
+                        this.selectedGemInvIndex === index);
 
                     el.style.backgroundColor = '#1a1a1a';
                     el.style.border = `1px solid ${gemColor}`;
@@ -945,6 +1009,7 @@ export class ForgeUI {
             msg.textContent = 'No equipment with sockets';
             this.forgeGemEquipment.appendChild(msg);
         }
+        this._restoreGemFocus(focus);
     }
 
     updateForgeGemInfo(item, player) {
@@ -956,6 +1021,9 @@ export class ForgeUI {
             ? { ...forgeQuote(equipItem), gemIds: [gemItem.id], gemCounts: [gemItem.stack || 1] } : null;
 
         if (!equipItem || !this.selectedGemEquipSlot) {
+            if (this.forgeGemInfo.contains(document.activeElement)) {
+                this.forgeGemEquipment?.focus({ preventScroll: true });
+            }
             this.forgeGemInfo.style.display = 'none';
             return;
         }
@@ -968,11 +1036,12 @@ export class ForgeUI {
         }
 
         if (this.forgeGemSocketSlots) {
+            const focus = this._captureGemFocus(this.forgeGemSocketSlots);
             this.forgeGemSocketSlots.innerHTML = '';
             const usedSockets = equipItem.gems ? equipItem.gems.length : 0;
 
             for (let i = 0; i < equipItem.sockets; i++) {
-                const socketEl = document.createElement('div');
+                const socketEl = document.createElement('button');
                 socketEl.style.width = '20px';
                 socketEl.style.height = '20px';
                 socketEl.style.borderRadius = '3px';
@@ -1005,8 +1074,13 @@ export class ForgeUI {
                     };
                 }
 
+                this._gemChoice(socketEl, ['socket', equipItem.id, i],
+                    i < usedSockets ? `Socket ${i + 1}: ${socketEl.title} on ${equipItem.name}`
+                        : `Empty socket ${i + 1} on ${equipItem.name}`,
+                    this.selectedGemSocketIndex === i, i < usedSockets);
                 this.forgeGemSocketSlots.appendChild(socketEl);
             }
+            this._restoreGemFocus(focus);
         }
 
         if (this.forgeGemSelectedName) {
@@ -1065,13 +1139,14 @@ export class ForgeUI {
 
     updateGemCombineUI(player) {
         if (!this.forgeGemCombineInventory) return;
+        const focus = this._captureGemFocus(this.forgeGemCombineInventory);
 
         this.forgeGemCombineInventory.innerHTML = '';
 
         if (player.inventory) {
             player.inventory.forEach((item, index) => {
                 if (this._isGemItem(item)) {
-                    const el = document.createElement('div');
+                    const el = document.createElement('button');
                     el.className = 'inv-slot';
                     el.style.cursor = 'pointer';
                     el.style.width = '40px';
@@ -1106,11 +1181,16 @@ export class ForgeUI {
                         }
                     }
 
-                    if (item.gemQuality === 'Radiant') {
+                    if (gemQuality === GEM_QUALITIES.RADIANT) {
                         el.style.opacity = '0.4';
                         canSelect = false;
                     }
 
+                    const units = this.selectedCombineGemIndices.filter(i => i === index).length;
+                    const full = this.selectedCombineGemIndices.length === 3;
+                    this._gemChoice(el, ['inventory', item.id ?? index],
+                        `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'} ×${item.stack || 1}; ${units} selected`,
+                        isSelected, !isSelected && (!canSelect || full));
                     el.onclick = () => {
                         if (!canSelect && !isSelected) return;
                         if (isSelected) {
@@ -1122,7 +1202,7 @@ export class ForgeUI {
                         this.updateGemCombineUI(player);
                     };
 
-                    el.title = `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'} ×${item.stack || 1} — click to select up to three; click again to deselect`;
+                    el.title = `${gemQuality ? gemQuality.name : ''} ${gemType ? gemType.name : 'Gem'} ×${item.stack || 1} — select up to three; activate again to deselect`;
                     this.forgeGemCombineInventory.appendChild(el);
                 }
             });
@@ -1139,6 +1219,7 @@ export class ForgeUI {
         }
 
         this.updateGemCombineSlots(player);
+        this._restoreGemFocus(focus);
     }
 
     updateGemCombineSlots(player) {
@@ -1212,6 +1293,7 @@ export class ForgeUI {
 
     updateGemRemoveUI(player) {
         if (!this.forgeGemRemoveEquipment) return;
+        const focus = this._captureGemFocus(this.forgeGemRemoveEquipment);
 
         this.forgeGemRemoveEquipment.innerHTML = '';
 
@@ -1227,7 +1309,10 @@ export class ForgeUI {
                 el.style.width = '48px';
                 el.style.height = '48px';
 
+                el.dataset.slot = slot;
                 this._setItemIcon(el, item);
+                el.dataset.forgeChoiceKey = JSON.stringify(['equipment', slot, item.id]);
+                el.setAttribute('aria-pressed', String(this.selectedRemoveEquipSlot === slot));
                 el.style.backgroundSize = 'contain';
                 el.style.backgroundRepeat = 'no-repeat';
                 el.style.backgroundPosition = 'center';
@@ -1287,6 +1372,7 @@ export class ForgeUI {
         } else if (this.forgeGemRemoveInfo) {
             this.forgeGemRemoveInfo.style.display = 'none';
         }
+        this._restoreGemFocus(focus);
     }
 
     updateGemRemoveInfo(item, player) {
@@ -1299,6 +1385,9 @@ export class ForgeUI {
         }
         this.removeQuote = nextQuote;
         if (!this.forgeGemRemoveInfo || !item || !item.gems || item.gems.length === 0) {
+            if (this.forgeGemRemoveInfo?.contains(document.activeElement)) {
+                this.forgeGemRemoveEquipment?.focus({ preventScroll: true });
+            }
             if (this.forgeGemRemoveInfo) this.forgeGemRemoveInfo.style.display = 'none';
             return;
         }
@@ -1311,6 +1400,7 @@ export class ForgeUI {
         }
 
         if (this.forgeGemRemoveSlots) {
+            const focus = this._captureGemFocus(this.forgeGemRemoveSlots);
             this.forgeGemRemoveSlots.innerHTML = '';
 
             for (let i = 0; i < item.gems.length; i++) {
@@ -1318,7 +1408,7 @@ export class ForgeUI {
                 const gemType = GEM_TYPES[gem.type];
                 const gemColor = gemType ? gemType.color : '#ff00ff';
 
-                const socketEl = document.createElement('div');
+                const socketEl = document.createElement('button');
                 socketEl.style.width = '30px';
                 socketEl.style.height = '30px';
                 socketEl.style.borderRadius = '3px';
@@ -1342,8 +1432,11 @@ export class ForgeUI {
 
                 const gemQualityObj = GEM_QUALITIES[gem.quality];
                 socketEl.title = `${gemQualityObj ? gemQualityObj.name : gem.quality} ${gemType ? gemType.name : 'Gem'}`;
+                this._gemChoice(socketEl, ['socket', item.id, i, gem.type, gem.quality],
+                    `Socket ${i + 1}: ${socketEl.title} on ${item.name}`, this.selectedRemoveSocketIndex === i);
                 this.forgeGemRemoveSlots.appendChild(socketEl);
             }
+            this._restoreGemFocus(focus);
         }
 
         if (this.forgeGemRemovePreview) {
