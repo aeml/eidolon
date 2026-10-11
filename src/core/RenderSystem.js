@@ -1155,16 +1155,15 @@ export class RenderSystem {
             // geometry. Three releases their GPU buffers on the mesh's own
             // dispose event; disposing only geometry leaks them on area swaps.
             if (child.isInstancedMesh) child.dispose?.();
-            if (child.geometry?.dispose && !disposedGeometries.has(child.geometry)) {
-                // BatchedMesh owns geometry AND its matrix/indirection textures.
-                // Its dispose releases all three; do not dispose geometry twice.
-                if (child.isBatchedMesh) {
-                    disposedGeometries.add(child.geometry);
-                    pendingGeometries.delete(child.geometry);
-                    child.dispose();
-                } else {
-                    pendingGeometries.add(child.geometry);
-                }
+            if (child.isBatchedMesh) {
+                // Every batch owns separate matrix/color/indirection textures,
+                // even when an immutable recipe has a shared geometry owner.
+                // Its dispose handles geometry lifetime; visit every batch.
+                disposedGeometries.add(child.geometry);
+                pendingGeometries.delete(child.geometry);
+                child.dispose();
+            } else if (child.geometry?.dispose && !disposedGeometries.has(child.geometry)) {
+                pendingGeometries.add(child.geometry);
             }
             if (Array.isArray(child.material)) {
                 child.material.forEach(disposeMaterial);

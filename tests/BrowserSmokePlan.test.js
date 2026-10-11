@@ -167,4 +167,6 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
     expect(native).toContain('singleton reviewed actors|singleton actors follow');
     expect(native).toContain('tests/e2e/earth-rock-shelf-review.spec.js');
     expect(native).toContain('Earth rock shelves retain');
+    expect(native).toContain('tests/e2e/understory-shared-geometry.spec.js');
+    expect(native).toContain('shared understory geometry survives');
 });

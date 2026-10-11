@@ -21,6 +21,7 @@ test.each(['high', 'low'])('%s sectors conserve exact recipe, transform and tint
     const shapes = ['bracken', 'sedge'].map(kind => createWoodlandUnderstoryGeometry(kind, { quality }));
     try {
         expect(root.children.length).toBeLessThan(350);
+        expect(new Set(root.children.map(mesh => mesh.geometry)).size).toBe(1);
         for (const mesh of root.children) {
             expect(mesh.isBatchedMesh).toBe(true);
             expect(mesh.castShadow).toBe(false);
@@ -88,8 +89,38 @@ test('sector and per-plant bounds include the entire rooted wind envelope and pa
 
 test('sector resources release matrix, color, indirection and geometry exactly once on scene clear', () => {
     const root = createEarthUnderstory({ quality: 'low', spatialBatches: true }), mesh = root.children[0];
-    const spies = [mesh.geometry, mesh._matricesTexture, mesh._colorsTexture, mesh._indirectTexture, mesh.material]
+    const spies = [mesh.geometry, mesh.material, ...root.children.flatMap(sector =>
+        [sector._matricesTexture, sector._colorsTexture, sector._indirectTexture])]
         .map(object => jest.spyOn(object, 'dispose'));
     RenderSystem.prototype.disposeObjectResources.call({}, root);
     for (const spy of spies) expect(spy).toHaveBeenCalledTimes(1);
+});
+
+test('retiring one sector preserves other sectors and releases the shared geometry only at the last owner', () => {
+    const root = createEarthUnderstory({ quality: 'low', spatialBatches: true });
+    const [first, second] = root.children, geometry = first.geometry;
+    const release = jest.spyOn(geometry, 'dispose');
+    const textures = [first._matricesTexture, first._colorsTexture, first._indirectTexture]
+        .map(texture => jest.spyOn(texture, 'dispose'));
+    const matrix = new THREE.Matrix4(); second.getMatrixAt(0, matrix);
+    const originalMatrix = matrix.clone(), originalBounds = second.boundingSphere.clone();
+    first.dispose(); first.dispose();
+    for (const texture of textures) expect(texture).toHaveBeenCalledTimes(1);
+    expect(release).not.toHaveBeenCalled();
+    expect(second.geometry).toBe(geometry);
+    expect(second.getMatrixAt(0, matrix)).toEqual(originalMatrix);
+    expect(second.boundingSphere).toEqual(originalBounds);
+    RenderSystem.prototype.disposeObjectResources.call({}, root);
+    expect(release).toHaveBeenCalledTimes(1);
+});
+
+test('separate fields never share geometry lifetime across scene replacement', () => {
+    const first = createEarthUnderstory({ quality: 'low', spatialBatches: true });
+    const second = createEarthUnderstory({ quality: 'low', spatialBatches: true });
+    const geometry = second.children[0].geometry, release = jest.spyOn(geometry, 'dispose');
+    expect(first.children[0].geometry).not.toBe(geometry);
+    RenderSystem.prototype.disposeObjectResources.call({}, first);
+    expect(release).not.toHaveBeenCalled();
+    RenderSystem.prototype.disposeObjectResources.call({}, second);
+    expect(release).toHaveBeenCalledTimes(1);
 });
