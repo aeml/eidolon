@@ -514,8 +514,9 @@ identities, ready database and all78served asset hashes/byte counts match at
 728distinct focused checks/17suites and two native publication cases pass;
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
   [Publication](docs/plans/2026-10-11-release35-publication.json).
-- Current source version: `Alpha 1.79.36`, dry thatch and living grass ground
-  materials, distinct Chronicle item icons and read-only content validation.
+- Current source version: `Alpha 1.79.37`, Forge and merchant keyboard controls
+  with visible prices and stable focus. Retains Earth ground materials, distinct
+  Chronicle item icons and read-only content validation.
   Retains reliable trade drafts and confirmations,
   keyboard build choices with stable focus and reading position, current guild
   calendar actions and a clearer venue dialog. Retains steady dungeon radar context, independent
