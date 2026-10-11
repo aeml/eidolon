@@ -40,7 +40,7 @@ Every explicit requirement in those sources remains part of the completion audit
   [partition qualification](2026-10-11-release31-world-review-correction.json),
   [conifer failure](2026-10-11-release31-conifer-coverage-failure.json),
   [coverage correction](2026-10-11-pine-coverage-qualification.json).
-- **Prepared Alpha 1.79.32:** qualified roof construction `e5087567`, shared
+- **Pushed Alpha 1.79.32, corrected deployment pending:** qualified roof construction `e5087567`, shared
   understory ownership `6bd45546` and directional geological faces `26a915de`
   are ordinarily merged into master. Synchronized release identity and 467
   cumulative patch-note entries are prepared. Four focused suites qualify 429
@@ -48,8 +48,13 @@ Every explicit requirement in those sources remains part of the completion audit
   or skips. Initial missed README/manifest versions and their affected-only
   correction are retained. Ordinarily pushed exact `d31246e9b53fbe73bd7f59beea4c3235df30a922`;
   [CI38136326810](https://github.com/aeml/eidolon/actions/runs/38136326810)
-  attempt1 is active. Exact ordered CI/deploy/live acceptance and nine normal-TLS
-  asset checks remain pending; accepted public31 remains current.
+  attempt1 failed the unchanged storage preflight after all tests, native
+  predeployment QA and frontend publication passed. SSH connected, but source
+  had1675MiB against2048MiB minimum; no build/service replacement occurred.
+  Verified clean merged scratch-source retirement restored3104MiB. One failed-job-
+  only attempt2 deploy now succeeds; live browser/character QA is active as of
+  12:25:18 UTC. Exact ordered deployment/live acceptance and nine normal-TLS asset checks remain pending; public31 is
+  last accepted. [Failure and repair](2026-10-11-release32-storage-preflight-recovery.json).
   [Publication custody](2026-10-11-release32-publication.json).
   [Prepublication proof](2026-10-11-release32-world-resources-prepublication.json),
   [roof proof](2026-10-11-town-roof-construction-qualification.json),
@@ -76,13 +81,24 @@ Every explicit requirement in those sources remains part of the completion audit
   Existing actual archive restore is enrolled in CI. Unpublished; production
   restore, off-machine recovery, RPO/RTO and final rehearsal remain open.
   [Recovery qualification](2026-10-11-recovery-integrity-qualification.json).
+- **Player support and guide:** current-source account/progress help and six
+  Player Guide chapters are qualified and ordinarily merged at `f4efe198`,
+  unpublished. 137 distinct UI checks/eight suites,48 Go guard cases, one actual
+  disposable Mongo handler/store/review case and seven distinct native desktop/
+  phone/landscape cases pass. Eight other conditional Mongo cases remain skips,
+  not passes. Dependency setup and old text/scroll fixture failures are retained;
+  only affected cases rechecked. Existing newer paired public monitoring stays
+  byte-exact; older monitoring history is reconciled without another runtime.
+  [Support/guide qualification](2026-10-11-support-player-guide-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **83**, reduced from 287. Unfinished/rejected experiments
+  unmerged tips are now **80**, reduced from 287. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
   three additional origin-parser regression cases. Completed recovery integrity
   is also selected and merged after current-source qualification; unfinished
-  future recovery/integration work remains separate. Full scope remains intact.
+  future recovery/integration work remains separate. Completed support/guide and
+  superseded public-probe histories are also now ancestors of master. Full scope
+  remains intact.
   [Workflow](../../AGENTS.md),
   [original reconciliation](2026-10-11-master-branch-reconciliation.json),
   [stale-hover/rune histories](2026-10-11-stale-hover-rune-branch-reconciliation.json),
@@ -122,7 +138,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Observe pushed Alpha1.79.32/d31246e9 CI38136326810 to terminal, then qualify exact ordered CI/deploy/live gates and normal-TLS assets/readiness before another publication. Accepted public31 does not prequalify future source. | Implementation |
+| Next release | Observe corrected attempt2 of Alpha1.79.32/d31246e9 CI38136326810 to terminal after repaired storage preflight; qualify exact ordered deploy/live gates and normal-TLS assets/readiness before another publication. Retain failed attempt1. Accepted public31 does not prequalify future source. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |

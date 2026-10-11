@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-11T12:27:23.729257+00:00",
+  "status": "completed-support-guide-and-superseded-monitor-histories-ordinarily-merged-into-master",
+  "beforeMaster": "a0d9bbc6d84e6f12d1425d113f5ff231d2d319bc",
+  "qualifiedMerge": "f4efe198e6802b66d6c27cea2779ff621dc41943",
+  "selectedHistories": [
+    {
+      "branch": "work/alpha-1-83-public-probes-current-20261008",
+      "head": "89c18f71cd7cc3aa83a65aecf83c69dc4ac4210d",
+      "ancestorOfMaster": true
+    },
+    {
+      "branch": "work/alpha-1-84-support-current-20261008",
+      "head": "516faa2b1dd3b507df01c16ca6181fd3540cd1e1",
+      "ancestorOfMaster": true
+    },
+    {
+      "branch": "work/alpha-1-85-player-guide-current-20261008",
+      "head": "7fbdee83743d8a2f27b06099bdb58e27cf2bc7a0",
+      "ancestorOfMaster": true
+    }
+  ],
+  "beforeUnmerged": 83,
+  "afterUnmerged": 80,
+  "originalUnmerged": 287,
+  "monitorResolution": "Retain exact newer paired public monitoring2be4f1cd across runtime, CLI, Compose, detector/alert and deployment tests. Older frontend-only code is superseded; dated receipt/history retained without enabling an extra implementation.",
+  "qualification": "2026-10-11-support-player-guide-qualification.json",
+  "preserved": "Original203tracked/262untracked checkout, goal scope, future/unselected/rejected branches, all frozen evidence. No branch deletion, force-push or version/source publication. Source-only clean completed scratch worktree retired after ordinary merge to restore deployment headroom.",
+  "release": "Public32 failed storage preflight in attempt1; concrete repair followed by one failed-job-only attempt2, whose server deploy succeeds and liveQA remains active. Last acceptedpublic31; full goal active."
+}

@@ -772,3 +772,34 @@ Public31 remainslastaccepted, public29soakseparateactive. No GPU campaign replay
 productionrestore, terrainactivation, access/commerce/wipe changes. Alloriginal
 world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff
 requirements stayactive; scopeheader unchanged.
+
+October11 support/operations continuation (progress): previous turn selected
+and qualified current recovery integrity, ordinarymerged67267986/a0d9bbc6 and
+retained actual path-bypass evidence; real authoritative progress. This turn
+ordinarymerged selected support516faa2b and PlayerGuide7fbdee83 histories,
+qualified current a378b6aa and mergedf4efe198 into master. Older89c18f71
+frontend-only monitor is superseded by exact retained newer paired login/
+manifest/API implementation; no duplicate monitor, flags or activation.
+Authenticated private progress help works before worldentry and in-game with
+shared limits/queue/reference/status; six source-checked Guide chapters retain
+current class/gates/Forge/EP/casino/settings rules.137distinct UI checks/eight
+suites +48Go guard cases +one actual disposable Mongo support case +seven
+distinct native desktop/phone/landscape cases pass. Eight conditional other
+Mongo cases remain skips. Initial VM-module/esbuild/vendor setup failures and
+three exact copy/scroll fixture failures retained; affected-only corrections
+pass. Distinct counts exclude repeated executions. Frozen120entry inventoryf0de177a6ee94c50cc22f46df61a5385755c310ec5197c7bfd0a4575ce39b023.
+Support/guide qualification receipt retained; no staffing/SLA/restoration or
+physical-device/human/fulljourney/finalart acceptance. Branches83→80(original287).
+Public32attempt1 CI38136326810 failed actual source storage preflight1675MiB
+<2048MiB; SSH succeeded, no build/service replacement. Client/server/3browser/
+nativepredeploy/inputvalidation/Pages passed; liveQA skipped. Samehostsource/
+Docker confirmed byread-only trustedSSH. Removed only two clean owned merged
+worktrees after229frozen evidence hashes verified, preserved ignored HTMLreport,
+then removed clean merged currenthelp scratch source; source/evidence intact.
+Finalremote3104MiB. One failed-job-only rerun requestedafter concrete capacity
+repair, sameexactd31246e9 source; attempt2active at12:24:02UTC DeployviaSSH.
+By12:25:18UTC corrected serverdeployment succeeds and liveQA is active.
+Storage failure/repair receipt frozen. No newpush until ownorderedlive/9asset
+acceptance; public31lastaccepted, public29soak38109009521 separatelyactive.
+Originaldirty203/262 and scopeheader preserved. Alloriginalworld/art/gameplay/
+device/performance/operations/F1-F5/beta/launch/handoff requirements stayactive.

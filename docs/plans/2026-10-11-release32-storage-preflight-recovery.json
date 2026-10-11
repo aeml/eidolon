@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-11T12:26:06.846609+00:00",
+  "status": "attempt1-failed-storage-preflight-cause-repaired-attempt2-active-not-accepted",
+  "version": "Alpha 1.79.32",
+  "source": "d31246e9b53fbe73bd7f59beea4c3235df30a922",
+  "run": 38136326810,
+  "attempt1": {
+    "terminal": "failure",
+    "passed": [
+      "Client Tests (Jest)",
+      "Server Tests (Go)",
+      "Browser Smoke 1/3",
+      "Browser Smoke 2/3",
+      "Browser Smoke 3/3",
+      "Predeploy Character QA (System Chrome)",
+      "Validate Production QA Inputs",
+      "Deploy to GitHub Pages"
+    ],
+    "failed": "Deploy Server (SSH), Deploy via SSH step",
+    "skipped": "Live Release and Character QA",
+    "cause": "SSH connected and exact source checked out; source storage1675MiB below unchanged2048MiB. Deploy reports no build/service replacement. Not an SSH auth or source test failure."
+  },
+  "repair": {
+    "sameHost": "Read-only trusted SSH hostname/findmnt/df confirms same root filesystem r7-server for source and Docker.",
+    "retiredCleanMergedWorktrees": [
+      {
+        "worktree": "/home/aeml/.local/share/eidolon-understory-light-20261011",
+        "source": "a8a5801e97b928461178617b70052f1c507f03e5",
+        "mergedIntoMaster": true,
+        "trackedAndUntrackedStatus": "",
+        "ignored": [
+          "Would remove node_modules",
+          "Would remove src/core/ActorGameplayGeometryWorker.bundle.js",
+          "Would remove vendor/"
+        ],
+        "reproducible": "Git-tracked clean source/assets, generated vendor/ and worker bundle; node_modules is an external symlink only",
+        "preservedEvidence": "/home/aeml/.local/share/eidolon-understory-light-checks-20261011",
+        "verifiedInventorySHA256": "805224cd076f7ea3f2015a2478b2a00da2ca5d133804fe69ac2b30117db1f392",
+        "verifiedEvidenceEntries": 207,
+        "diskKB": 497512
+      },
+      {
+        "worktree": "/home/aeml/.local/share/eidolon-understory-shared-geometry-20261011",
+        "source": "6bd45546da60114c357fec4e728852f98e58d927",
+        "mergedIntoMaster": true,
+        "trackedAndUntrackedStatus": "",
+        "ignored": [
+          "Would remove node_modules",
+          "Would remove playwright-report/",
+          "Would remove src/core/ActorGameplayGeometryWorker.bundle.js",
+          "Would remove vendor/"
+        ],
+        "reproducible": "Git-tracked clean source/assets, generated vendor/ and worker bundle; node_modules is an external symlink only",
+        "preservedEvidence": "/home/aeml/.local/share/eidolon-understory-shared-final-checks-20261011",
+        "verifiedInventorySHA256": "6a1055debca256edff4a0345645d8ef78edf89eafa38a3945a5d14b0bf34b290",
+        "verifiedEvidenceEntries": 22,
+        "diskKB": 498908
+      }
+    ],
+    "helpCandidate": "Completed f4efe198 support/Player Guide candidate ordinarily merged into master, then clean scratch worktree removed. Its120-entry acceptance evidence and source retained.",
+    "preservation": "Verified229prior frozen evidence hashes, preserved ignored generated HTML report. No production database, logs, backups, private snapshots, dirty/unmerged worktrees or global prune. Original deploy minimum unchanged.",
+    "finalRemoteFreeMiB": 3104,
+    "sourceStillExact": true
+  },
+  "retry": {
+    "action": "One failed-job-only rerun after concrete capacity repair; passing prerequisites reused. No new release source push.",
+    "attempt": 2,
+    "asOf": "2026-10-11T12:24:02Z",
+    "state": "Deploy Server (SSH) active at Deploy via SSH",
+    "normalTLSExactAcceptance": "Pending own terminal ordered jobs, live QA, exact frontend/backend/readiness and all nine pinned assets.",
+    "expectedNineAssetManifestSHA256": "bb0ab45ecf3141c3e4c2e5f19afc985ed1f91c85acef97a19cc096aa9ec7fc73"
+  },
+  "frozenEvidence": {
+    "directory": "/home/aeml/.local/share/eidolon-release32-storage-repair-20261011",
+    "entries": 10,
+    "inventorySHA256": "c70e2ac6be10cd843877f00c09fa5b40a85543ec262952df29b6bf5db63fab62"
+  },
+  "scope": "Public31 remains last accepted. Original full world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff scope remains active. Soak38109009521 separately active on public29; no capacity pass/restart/cancellation."
+}

@@ -2,15 +2,20 @@
 
 Last refreshed: October 11, 2026
 
-This file is a short pointer. Accepted public release: Alpha1.79.30/exact1aae8407
-([ordered release and live acceptance](plans/2026-10-11-public30-terminal-qualification.json)).
-Alpha1.79.31/exact42f06ad0 is pushed to master; CI38126692286 attempt1 failed
-in hosted High world-review rendering before deployment. Allfive downstream jobs
-skipped; public30 remains accepted. Correctedexact2c41890c is pushed;
-CI38129763146attempt1 is active, with its own deployment/live acceptance pending. [Failure evidence](plans/2026-10-11-release31-hosted-review-failure.json). See the
-[remaining-work register](plans/2026-10-09-release-readiness-remaining.md) for the
-full inherited world/art/gameplay/device/performance/operations/F1–F5/beta/launch
-scope. These scoped releases do not complete those gates.
+This file is a short pointer. Last accepted public release: Alpha1.79.31,
+exact88be47c55e56b00f7d7cdb659c6ed51020391cb3
+([ordered CI and live acceptance](plans/2026-10-11-public31-terminal-qualification.json)).
+Pushed Alpha1.79.32/d31246e9 CI38136326810 passed source/browser/native checks
+and frontend publication, but attempt1 server deployment refused insufficient
+storage before build/service replacement. After verified clean merged scratch
+retirement, one failed-job-only attempt2 deployed the server successfully; live
+browser/character QA is active. Own ordered live/normal-TLS nine-asset acceptance
+remains pending.
+[Failure and capacity repair](plans/2026-10-11-release32-storage-preflight-recovery.json).
+Qualified birch/recovery/support/Player Guide work is merged locally, unpublished.
+The [remaining register](plans/2026-10-09-release-readiness-remaining.md) retains
+all inherited world/art/gameplay/device/performance/operations/F1–F5/beta/launch
+requirements and historical failures. No freeze or beta acceptance is claimed.
 
 Current forward planning and historical closeout live in these documents:
 

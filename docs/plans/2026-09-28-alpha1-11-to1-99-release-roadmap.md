@@ -1,24 +1,25 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October11 current checkpoint: accepted publicAlpha1.79.30/exact1aae8407,
-CI38124028177attempt1 all10jobs successful, with post-terminal normal-TLS exact
-frontend/backend/readyDB and9served assets. Optional stabilization/full-character/
-live-four-class skips are explicit, not passes. [Acceptance](2026-10-11-public30-terminal-qualification.json).
-CombinedAlpha1.79.31/exact42f06ad0 is pushed to master; CI38126692286 attempt1 failed
-at the hosted copied High world-review timeout; no31deployment occurred.
-[Failure evidence](2026-10-11-release31-hosted-review-failure.json).
-Six qualified camp/DemonOrc/Highsingleton/rock/foliage/display components retain
-previous dungeon/equipment/contact/HUD and jump/aura/admin fixes.415focused
-version/history/enrollment checks, full lint and3combined-publication native
-cases pass;370required anonymous identities are discovered, not370new executions.
-[Prepublication qualification](2026-10-11-release31-prepublication-qualification.json).
-Correctedexact2c41890c is pushed; CI38129763146attempt1 is active.
-Its own CI/deployment/live acceptance remains pending. Original High frame-time
-failures, broader world composition/material/vegetation, human contact-audio
-review and full inherited device/gameplay/operations/F1-F5/beta/launch/handoff
-scope stay open. Current100-clientsoak38109009521is active; owner-deferred
-uninterrupted campaign/pacing and physical-phone feedback remain for playtests.
-See the [remaining register](2026-10-09-release-readiness-remaining.md).
+October11 current checkpoint: last accepted publicAlpha1.79.31,
+exact88be47c55e56b00f7d7cdb659c6ed51020391cb3,
+CI38131408628attempt1 all10orderedjobs successful. Post-terminal normal-TLS
+frontend/backend/readyDB and9served assets match.
+[Acceptance](2026-10-11-public31-terminal-qualification.json).
+PushedAlpha1.79.32/exactd31246e9 CI38136326810attempt1 passes all source,
+browser/native and frontend publication, but server deployment refuses1675MiB
+against unchanged2048MiB storage preflight before build/service replacement.
+Verified clean merged scratch retirement restores3104MiB. One failed-job-only
+attempt2 deployed the server successfully; live browser/character QA is active.
+Own ordered live/nineasset acceptance is pending.
+[Failure and repair](2026-10-11-release32-storage-preflight-recovery.json).
+Qualified birch/recovery-integrity/account-help/Player-Guide components are
+merged into localmaster, unpublished.80unmerged histories remain reviewed
+individually; unfinished/rejected source and originaldirty checkout preserved.
+Historical High frame-time failures, broader world/art/combat/audio, whole-game
+performance/devices/operations/F1-F5/beta/launch/handoff requirements stayopen.
+Existing100-clientsoak38109009521is active onpublic29, not capacity acceptance.
+Owner-deferred uninterrupted campaign/pacing and physical-phone review remain
+for playtests. See the [remaining register](2026-10-09-release-readiness-remaining.md).
 The dated checkpoints below retain historical evidence and superseded queues.
 
 October9 current checkpoint: accepted public1.79.22/exact30a8b603 with all ten
