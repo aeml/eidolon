@@ -28,7 +28,7 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
         const clock = Object.getOwnPropertyDescriptor(performance, 'now');
         Object.defineProperty(performance, 'now', { configurable: true, value: () => 12000 });
         render.applyLightingPreset('earth', true); hero.playAnimation('Run', true, true);
-        window.__rockReview = { game, hero, field, understory, clock, rows: [], THREE };
+        window.__rockReview = { game, hero, field, understory, clock, rows: [], comparisons: [], THREE };
     }, { quality, engineURL });
     try {
         for (const [label, x, z, zoom] of [['west-grove', -120, -200, 18], ['deep-west', -102, -311, 18], ['deep-east', 62, -297, 18], ['east-road', 390, 173, 18], ['road-break', 590, 270, 18], ['far-east', 690, 160, 18], ['road-detail', 590, 263, 10], ['grove-bed', -83, -334, 10], ['east-verge', 353, 216, 10]]) {
@@ -44,6 +44,7 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
                 const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
                 return { label, zoom, poses: 8, formations: field.children.length,
                     triangles: render.renderer.info.render.triangles, calls: render.renderer.info.render.calls,
+                    displayBeforeFxaa: render.composer ? render.composer.passes.indexOf(render.outputPass) < render.composer.passes.indexOf(render.fxaaPass) : null,
                     plants: understory.userData.plantCount,
                     spatialPlants: understory.children.every(part => part.isBatchedMesh),
                     plantGeometry: new Set(understory.children.map(part => part.geometry)).size,
@@ -56,11 +57,47 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
                     groundError: Math.abs(hero.mesh.position.y - game.terrainElevation.sample(hero.mesh.position.x, hero.mesh.position.z)),
                     gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
             }, { label, x, z, zoom });
+            if (quality === 'high' && ['west-grove', 'grove-bed'].includes(label)) {
+                const comparison = await page.evaluate(label => {
+                    const review = window.__rockReview, render = review.game.renderSystem;
+                    const passes = render.composer.passes;
+                    const canvas = render.renderer.domElement, copy = document.createElement('canvas');
+                    copy.width = canvas.width; copy.height = canvas.height;
+                    const context = copy.getContext('2d', { willReadFrequently: true });
+                    const previous = [render.renderPass, render.bloomPass, render.fxaaPass, render.outputPass];
+                    const capture = selected => {
+                        render.composer.passes = selected; render.render(); context.drawImage(canvas, 0, 0);
+                        return { pixels: context.getImageData(0, 0, copy.width, copy.height).data, png: copy.toDataURL('image/png'),
+                            calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+                    };
+                    const difference = (a, b) => {
+                        let changed = 0, maximum = 0, sum = 0;
+                        for (let i = 0; i < a.length; i++) {
+                            const delta = Math.abs(a[i] - b[i]);
+                            if (delta) changed++; maximum = Math.max(maximum, delta); sum += delta;
+                        }
+                        return { changed, maximum, mean: sum / a.length };
+                    };
+                    try {
+                        capture(previous); capture(passes);
+                        const before = capture(previous), after = capture(passes), repeat = capture(previous);
+                        const row = { label, change: difference(before.pixels, after.pixels), stability: difference(before.pixels, repeat.pixels),
+                            before: { calls: before.calls, triangles: before.triangles }, after: { calls: after.calls, triangles: after.triangles } };
+                        review.comparisons.push(row);
+                        return { ...row, beforePNG: before.png, afterPNG: after.png };
+                    } finally { render.composer.passes = passes; render.render(); }
+                }, label);
+                for (const variant of ['before', 'after']) {
+                    await writeFile(testInfo.outputPath(`${label}-display-fxaa-${variant}.png`), Buffer.from(comparison[`${variant}PNG`].split(',')[1], 'base64'));
+                }
+                expect(comparison.stability.changed).toBe(0);
+                expect(comparison.change.changed).toBeGreaterThan(0);
+            }
             await page.screenshot({ path: testInfo.outputPath(`${label}.png`) });
             await page.evaluate(row => window.__rockReview.rows.push(row), row);
         }
         const result = await page.evaluate(() => {
-            const { game, hero, field, understory, clock, rows } = window.__rockReview;
+            const { game, hero, field, understory, clock, rows, comparisons } = window.__rockReview;
             const scenery = [...field.children, ...understory.children];
             const geometry = new Set(scenery.map(part => part.geometry)), material = new Set(scenery.map(part => part.material));
             const released = { geometry: 0, material: 0 };
@@ -71,12 +108,13 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
             game.destroy();
             if (clock) Object.defineProperty(performance, 'now', clock); else delete performance.now;
             delete window.__rockReview;
-            return { rows, released, expected: { geometry: geometry.size, material: material.size },
+            return { rows, comparisons, released, expected: { geometry: geometry.size, material: material.size },
                 scope: 'Prepared supplied14-slot Fighter across72sampled walking poses, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval.' };
         });
         await writeFile(testInfo.outputPath('rock-review.json'), JSON.stringify(result, null, 2));
         expect(result.released).toEqual(result.expected);
         for (const row of result.rows) {
+            expect(row.displayBeforeFxaa).toBe(quality === 'high' ? true : null);
             expect(row.formations).toBe(6); expect(row.rockTriangles).toBe(3708);
             expect(row.surfaces.every(surface => surface === 'stratified-rock')).toBe(true);
             expect(row.plants).toBe(quality === 'high' ? 13087 : 7439);

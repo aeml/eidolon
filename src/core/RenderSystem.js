@@ -525,12 +525,14 @@ export class RenderSystem {
             );
             this.composer.addPass(this.bloomPass);
 
+            // FXAA evaluates display-space luminance. Keep bloom in HDR,
+            // then tone map/encode before filtering the final visible edges.
+            this.outputPass = new OutputPass();
+            this.composer.addPass(this.outputPass);
+
             this.fxaaPass = new ShaderPass(FXAAShader);
             this.updateFxaaResolution();
             this.composer.addPass(this.fxaaPass);
-
-            this.outputPass = new OutputPass();
-            this.composer.addPass(this.outputPass);
 
             this.usePostProcessing = true;
             this.postProcessingInitFailed = false;
