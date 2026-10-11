@@ -25,3 +25,10 @@ export function backendOriginBrowserArgs(backendOriginIP) {
         '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessChecksWebSockets'
     ];
 }
+
+// Hosted CI proves rendering behavior on its available WebGL implementation.
+// Local visual qualification and the mandatory native release step require GPU
+// hardware explicitly; software output never establishes native acceptance.
+export function requiresHardwareWebGL(env = process.env) {
+    return env.EIDOLON_E2E_REQUIRE_NATIVE_GPU === '1' || !env.CI;
+}

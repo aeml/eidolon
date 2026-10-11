@@ -6,7 +6,8 @@ import {
 } from './e2e/browserFailurePolicy.js';
 import {
     backendOriginBrowserArgs,
-    hardwareWebGLBrowserArgs
+    hardwareWebGLBrowserArgs,
+    requiresHardwareWebGL
 } from './e2e/browserLaunchPolicy.js';
 
 const playwrightExpect = jest.fn();
@@ -398,4 +399,12 @@ describe('live browser failure reconciliation', () => {
 
         expect(failures).toHaveLength(1);
     });
+});
+
+
+test('hardware qualification stays mandatory locally and on the native release gate', () => {
+    expect(requiresHardwareWebGL({})).toBe(true);
+    expect(requiresHardwareWebGL({ CI: 'true' })).toBe(false);
+    expect(requiresHardwareWebGL({ CI: 'true', EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1' })).toBe(true);
+    expect(requiresHardwareWebGL({ CI: '', EIDOLON_E2E_REQUIRE_NATIVE_GPU: '0' })).toBe(true);
 });

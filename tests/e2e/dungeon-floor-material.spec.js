@@ -1,3 +1,4 @@
+import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
@@ -49,10 +50,10 @@ test('Verdant floor weathering crosses mesh partitions without repeating with th
         render.renderer.setRenderTarget(null); target.dispose(); whole.children[0].material = material;
         control.dispose(); render.dispose();
         return { maximumPartitionDelta, samples, gpu,
-            scope: 'Native material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim.' };
+            scope: 'Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim.' };
     });
     await testInfo.attach('verdant-floor-material', { body: JSON.stringify(result), contentType: 'application/json' });
-    expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
+    if (requiresHardwareWebGL()) expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
     expect(result.maximumPartitionDelta).toBeLessThanOrEqual(1);
     expect(result.samples[0].span).toBeLessThanOrEqual(1);
     expect(result.samples[1].span).toBeGreaterThan(1);

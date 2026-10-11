@@ -1,3 +1,4 @@
+import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 import { cp, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
@@ -472,7 +473,7 @@ for (const quality of ['high', 'low']) test(`published ${quality} geometry sched
     }, { release, quality });
     result.engineSHA256 = metadata.engineSHA256;
     await testInfo.attach('published-geometry-scheduling', { body: JSON.stringify(result), contentType: 'application/json' });
-    expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
+    if (requiresHardwareWebGL()) expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
     expect(result.classes).toHaveLength(4);
     for (const actor of result.classes) expect(actor).toMatchObject({ quality, items: 14, missing: 0, fallback: 0 });
     const [reference, candidate] = result.arms;
