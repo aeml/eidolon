@@ -81,8 +81,11 @@ export function observeGameplayScene(game, label) {
             previous = time;
             if (warmup-- > 0) return result;
             if (firstPreviewFrame === null) firstPreviewFrame = game.uiManager.characterPreview?.renderer?.info.render.frame || 0;
+            const geometry = this.renderSystem.actorGameplayGeometry;
             samples.push({ time, previousTime, rawIntervalMs, intervalMs, cpuMs, visibility: document.visibilityState, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
-                activeEntities: this.activeEntitiesCache?.length || 0 });
+                activeEntities: this.activeEntitiesCache?.length || 0,
+                gameplayGeometry: geometry ? { pending: geometry.delivery.jobs.size, installed: geometry.pass.entries.size,
+                    swaps: geometry.pass.lastSwaps, reduced: geometry.pass.reduced, enabled: geometry.pass.enabled } : null });
             if (samples.length === 180) finish();
             return result;
         }

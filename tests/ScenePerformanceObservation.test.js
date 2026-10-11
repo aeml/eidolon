@@ -41,6 +41,26 @@ test('own loop descriptor, return value and disabled automatic reset survive obs
     expect(renderer.info.autoReset).toBe(false);
 });
 
+test('geometry delivery counters follow each completed frame without waiting for preparation', async () => {
+    const { game, original } = fixture();
+    const geometry = game.renderSystem.actorGameplayGeometry = {
+        delivery: { jobs: new Map() }, pass: { entries: new Map(), lastSwaps: 0, reduced: true, enabled: true }
+    };
+    let frame = 0;
+    original.mockImplementation(() => {
+        frame++;
+        if (frame === 61) geometry.delivery.jobs.set('pending', {});
+        if (frame === 62) {
+            geometry.delivery.jobs.clear(); geometry.pass.entries.set('installed', {}); geometry.pass.lastSwaps = 1;
+        }
+    });
+    const promise = observeGameplayScene(game, 'geometry-startup'); drive(game);
+    const report = await promise;
+    expect(report.frameSamples[0].gameplayGeometry).toEqual({ pending: 1, installed: 0, swaps: 0, reduced: true, enabled: true });
+    expect(report.frameSamples[1].gameplayGeometry).toEqual({ pending: 0, installed: 1, swaps: 1, reduced: true, enabled: true });
+    expect(report.frames).toBe(180); expect(original).toHaveBeenCalledTimes(240);
+});
+
 test('an original loop exception rejects the observation, propagates and restores ownership', async () => {
     const { game, renderer, original } = fixture(), error = new Error('fixture loop failed');
     original.mockImplementation(() => { throw error; });
