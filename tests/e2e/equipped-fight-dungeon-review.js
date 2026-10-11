@@ -161,8 +161,15 @@ export async function captureFirstDungeon(page, testInfo, walkTo, screenshot, sa
     }), { timeout: 30_000 }).toBe(true);
     await moveByGroundClick(page, 2, 0, { moveOnly: true, allowAlternatePaths: true, allowJumpFallback: false, minimumDistance: .1 });
     await screenshot('first-dungeon-entry');
+    const art = await page.evaluate(() => {
+        const render = window.game.renderSystem, gl = render.renderer.getContext();
+        const floors = render.instanceEnvironmentGroup.children.filter(part => part.name === 'DungeonUnionFloor');
+        return { floorMeshes: floors.length, floorPatina: floors.every(part => part.material.userData.verdantFloorPatina === true),
+            compiled: render.renderer.info.programs.some(program => gl.getShaderSource(program.fragmentShader)?.includes('verdantWeather')) };
+    });
+    expect(art.floorMeshes).toBeGreaterThan(0); expect(art.floorPatina && art.compiled).toBe(true);
     const profile = await sample('first-dungeon-start', { activity: true });
-    await writeFile(testInfo.outputPath('first-dungeon.json'), JSON.stringify({ profile,
+    await writeFile(testInfo.outputPath('first-dungeon.json'), JSON.stringify({ profile, art,
         scope: 'Normal real portal UI after continuous authored-road movement; prepared level30normal Verdant entry, equipment retained and first-room movement/real180frame sample. Not a dungeon clear, earned story progression, sustained dungeon combat or device/art approval.' }, null, 2));
     await returnToTown(page, { allowRespawn: false });
     await moveByGroundClick(page, 2, 0, { moveOnly: true, allowAlternatePaths: true, allowJumpFallback: false, minimumDistance: .1 });
