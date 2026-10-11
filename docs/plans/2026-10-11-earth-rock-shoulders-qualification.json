@@ -133,7 +133,7 @@
       ]
     }
   },
-  "visualReview": "Viewed ordinary gameplay and detail views across all six formations, source/copy and desktop/phone. Sharp crown fins are absent and shoulder moss seams soften. Broad repeated body/heel/toe construction, modest material detail, repeated plant clumps and broader scenery/HUD composition still need work. Phone crops the adjacent large rock and shows an existing clipped bottom-navigation edge; phone review is not full mobile UI acceptance.",
+  "visualReview": "Viewed ordinary gameplay and detail views across all six formations, source/copy and desktop/phone. Sharp crown fins are absent and shoulder moss seams soften. Broad repeated body/heel/toe construction, modest material detail, repeated plant clumps and broader scenery/HUD composition still need work. Phone crops the adjacent large rock and shows an existing clipped bottom-navigation edge; phone review is not full mobile UI acceptance. The390px source fixture retains DesktopChrome input mode; its cropped desktop navigation is a narrow-desktop observation, not proof of a production touch-phone navigation defect.",
   "retainedFailures": [
     {
       "log": "candidate-unit-initial.log",

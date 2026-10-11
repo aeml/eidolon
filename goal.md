@@ -561,3 +561,25 @@ checks succeed, final live QA pending. Broad repeated rock/vegetation/world
 composition and phone bottom-navigation clipping remain for review. See
 2026-10-11-earth-rock-shoulders-qualification. Original High frame-time, modern
 art/world/contact/audio/device/operations/F1–F5/beta/launch/handoff goal active.
+
+
+2026-10-11 release30live gate correction:2e6cCI38119634774terminal FAIL solely
+in live two-player rest test at07:58:45UTC: profiler imported undeployed/tests
+module before any party measurement. Other nine required jobs/deployments pass,
+normal-TLS public identity/database/nine assets match2e. Earlier recovery/expiry
+2cases pass. Test-only2cf7bb42supplies exact checkout observer/interval modules
+via temporary owned routes, removes handlers before sampling, and resets cached
+delivery after document navigation. Observer body unchanged;52focused/full lint
+pass and copied publication first/repeat/navigation regression passes. The exact
+affected live two-player case passes on public2e: actual joystick/party and
+High/Low/Highrepeat,540visibleframes plus fresh login/owned aura offsets0. Native
+phone emulation, not physical-device or broad performance acceptance; Low
+113581triangles exceeds broad85k target. Draft fixture and scan-input failures
+retained; no browser retry after successful live case. Frozen126-entry proof
+f1d9af4d; see2026-10-11-live-profile-delivery-correction. Qualified correction
+ordinary-merged localmaster13b43156/55e3b15c, preserving all prior world QA.
+Corrective publication ancestry1aae8407contains only test helper/regression and
+receipt, sameAlpha1.79.30runtime/notes. Next orderedCI/deploy/live acceptance
+required before feature milestone. Prepared rock390px uses desktop input mode;
+cropped desktop navigation does not prove touch-phone navigation defect.
+Public29remains last fully accepted; full original goal stays active.
