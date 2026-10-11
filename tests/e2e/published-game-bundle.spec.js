@@ -904,7 +904,20 @@ for (const quality of ['high', 'low']) test(`published ${quality} singleton acto
                         reference: { calls: reference.calls, triangles: reference.triangles }, candidate: { calls: candidate.calls, triangles: candidate.triangles },
                         restored: [...visible].every(([part, value]) => part.visible === value) && !owner.hidden.length && !multi.hidden.length });
                 }
-                actor.dispose(); actors.pop();
+                capture(selected);
+                const retirement = { instances: 0, batches: 0, geometry: 0, matrices: 0, indirection: 0 };
+                const expected = { instances: owner.batches.size, batches: multi.entries.size, geometry: multi.entries.size,
+                    matrices: multi.entries.size, indirection: multi.entries.size };
+                const observe = (object, key) => {
+                    const dispose = object.dispose; object.dispose = function () { retirement[key]++; return dispose.call(this); };
+                };
+                for (const batch of owner.batches.values()) observe(batch, 'instances');
+                for (const { mesh } of multi.entries.values()) {
+                    observe(mesh, 'batches'); observe(mesh.geometry, 'geometry');
+                    observe(mesh._matricesTexture, 'matrices'); observe(mesh._indirectTexture, 'indirection');
+                }
+                actor.dispose(); actors.pop(); render.render(); render.render();
+                rows.at(-1).retirement = { expected, actual: retirement };
             }
             for (const setting of ['high', 'low', 'medium', 'high']) {
                 render.setGraphicsQuality(setting); render.render(); transitions.push({ setting, selected: owner.batchSingletons });
@@ -926,6 +939,7 @@ for (const quality of ['high', 'low']) test(`published ${quality} singleton acto
         expect(row.selected).toBe(quality === 'high'); expect(row.restored).toBe(true); expect(row.unstable).toBe(0);
         expect(row.meanError).toBeLessThan(.1); expect(row.changed).toBeLessThan(.001);
         expect(row.candidate.calls).toBeLessThanOrEqual(row.reference.calls);
+        if (row.retirement) expect(row.retirement.actual).toEqual(row.retirement.expected);
         if (quality === 'low') { expect(row.exactChanges).toBe(0); expect(row.candidate).toEqual(row.reference); }
     }
     for (const row of result.transitions) expect(row.selected).toBe(row.setting === 'high');
