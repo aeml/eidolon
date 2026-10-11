@@ -1,0 +1,37 @@
+{
+  "recordedUTC": "2026-10-11T15:14:19.422601+00:00",
+  "status": "Three completed original feature branches ordinarily reconciled; runtime and all existing files byte-identical.",
+  "before": "a22d4391b20081bff349eed8f900efb232721e39",
+  "reviewedMerge": "c6a4726e96a84065fbbb48ba6885151903626c69",
+  "branches": [
+    {
+      "branch": "work/alpha-1-83-current-20261006",
+      "head": "db29bd601451a7a6fa865bfb4d808f6a4ed93447",
+      "ancestor": true
+    },
+    {
+      "branch": "work/alpha-1-84-current-20261006",
+      "head": "67c97dfd40721bd23e503ef696a07057ff0aad77",
+      "ancestor": true
+    },
+    {
+      "branch": "work/alpha-1-85-current-20261006",
+      "head": "1320cec622a643250a0a88833731acbcf605ed78",
+      "ancestor": true
+    }
+  ],
+  "review": "Announcement handler/UI/styles/tests byte-identical to deployed current implementation. Master retains newer automation-account filtering, service diagnostics, Dark Realm audit, world rendering and continuous combat motion. Account-help report type/form/review/tests match integrated successor; newer explicit disposable-Mongo guard and login focus retained. Guide styles/unit/native cases match integrated successor; expanded current chapters, current version/cumulative notes and fresh qualification preserved.",
+  "retainedHistoricalReceipts": [
+    "docs/plans/2026-10-06-release1-83-current-incident-checks.json",
+    "docs/plans/2026-10-06-release1-84-current-support-checks.json",
+    "docs/plans/2026-10-06-release1-85-current-player-guide-checks.json"
+  ],
+  "resolution": "Keep current goal, roadmap and single operator playbook; obsolete goal appendices and duplicated playbook were not imported. Three dated October6receipts preserved unchanged as historical evidence.",
+  "validation": "Only three new dated historical JSON files differ from first parent; all other paths/tree blobs exact. Reuse current scope-matched maintenance and support/guide receipts, with no runtime/browser/campaign/soak replay.",
+  "currentQualification": [
+    "2026-10-11-maintenance-notice-history-reconciliation.json",
+    "2026-10-11-support-player-guide-qualification.json"
+  ],
+  "publication": "Local master history integration; next public milestone waits for corrective34acceptance. No release or public-access change.",
+  "limits": "No new support/incident readiness, physical-phone, performance, beta or final-goal gate closure."
+}

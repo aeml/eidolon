@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "milestone": "1.84 player support readiness",
+  "status": "account-progress-support-flow-staged-not-published-full-milestone-open",
+  "baseCommit": "db29bd60 prepared1.83; inherits1.76 runtime/version identity",
+  "gap": "Authenticated login-only support offered appeals/privacy but not lost progress, a stuck character or failed world entry. Ordinary bug reports correctly require an active character, leaving these players without an appropriate support case.",
+  "implementation": "Add Account / Progress Help to the existing shared literal report allowlist, authenticated-only report route, private durable report store and strict Administration category filter. Login Account help defaults to this category and clears any previous context preview. Reuse explicit Submit, correlated save acknowledgement, retained draft, no automatic retry, saved reference and owner-only status. Staff confirmation explicitly states no restoration/teleport/grant/ownership transfer/reversal. Prepared support procedure in server/deploy/README_LINUX.md covers private triage, ownership, existing audited recovery, review versus fulfillment and incident escalation. No new ticket transport, client account catalog, restoration/grant authority, billing or automatic sanction reversal.",
+  "privacyAndExpectations": "No automatic context or optional diagnostics attached for this category, in or outside the world. Guidance requests what happened, approximate time/area if known and expected result, warns against credentials/recovery links/tokens/documents/payment details and directs sign-in recovery to the existing verified-email form. No guaranteed response time or promised restoration; resolved means review finished. In-game help explains both entry points. Existing retention/provider settings preserved.",
+  "tests": {
+    "red": "New database category/queue regression fails before implementation. Login progress-help regression fails because diagnostics remain enabled before implementation.",
+    "race": "Database report/category bounds PASS1.063s; root report/privacy/admin scope PASS1.993s. Dedicated authenticated progress-help admission/budget/payload regression PASS race1.063s. Initial non-Mongo scope skips native persistence and is not claimed as database acceptance.",
+    "nativeMongo": "Actual explicitly isolated Mongo7.0.14 loopback32965: extended account-support persistence/queue/owner-status/confirmed-review replay scope PASS race1.568s (test0.48s), all three categories including progress help. No active character required; server only acknowledges after persistence. Another account cannot read status; private owner/staff/body fields absent from status. Existing ordinary report bounds and authority gates retained.",
+    "client": "Final five focused Jest suites PASS93 checks3.747s: Account help, report consent/drafts/timeout/acknowledgement, owner reference lookup, Administration and explicit case-only staff confirmation/cancel. Focused ESLint and diff whitespace pass.",
+    "browser": "Final-source System Chrome actual login/support form flow at1280x800 and390x844 with synthetic WebSocket replies PASS2 tests17.8s. Verifies explicit progress-help submission/body, no game engine/world entry, disabled diagnostics, confirmation/reference and existing notices/appeals/name-correction flows. Earlier pre-default-change PASS27.9s retained. One later rerun terminated143 without a result; its leftover server was verified against worktree/port, not mistaken for a pass. A port-conflict attempt admitted no test, then a phone attempt failed the stale Moderation Appeal default expectation. Updated that assertion to the intended progress-help default without removing later explicit appeal/notice checks; final both-size result passes. Phone screenshot reviewed: scrollable form retains readable controls and fixed header. Mock replies are not native persistence/authentication proof."
+  },
+  "fixture": "After terminal native PASS, exact Mongo0d12e84148ce974a6256317a46d388a1fa440286a7c695cc7e15d2f8919c9d4d/name eidolon-184-support-20261006/label support-184-20261006 revalidated then removed with its disposable synthetic data/volumes. Independent label query empty. Production, main user-dirty worktree and unrelated fixtures untouched.",
+  "plannedPatchNotes": [
+    "Account help before world entry now accepts lost-progress, stuck-character and failed-entry support cases; the same category is available in the in-game report form.",
+    "Private progress-help cases attach no automatic diagnostics, retain unconfirmed drafts and provide a saved reference for owner-only review-status lookup.",
+    "Administration can filter account/progress cases; support guidance clarifies recovery links, review expectations and no automatic compensations."
+  ],
+  "remaining": [
+    "Integrate accepted ordered predecessor changes, synchronize actual1.84 release identity/patch notes and verify exact deployed acceptance; no future milestone published out of order.",
+    "Owner-assigned support/moderation staffing, response targets and escalation remain undecided; do not invent an SLA or extra contact channel.",
+    "Exercise applicable existing audited/reversible stuck-character and progress-review workflows with the integrated candidate; cases do not authorize grants or ownership transfer.",
+    "Billing support remains conditional on separately authorized enabled commerce. No payment integration or new sensitive data collection."
+  ]
+}

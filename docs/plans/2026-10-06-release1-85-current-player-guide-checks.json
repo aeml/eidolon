@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "milestone": "1.85 player-facing documentation",
+  "status": "expanded-in-game-player-guide-prepared-ordered-release-and-owner-review-open",
+  "baseCommit": "67c97dfd prepared1.84 support; inherited1.76 version/runtime identity",
+  "implementation": "Expand the existing Help window, not an external documentation site. Six native collapsed chapters cover classes/equipment/bag, party/raid/safety, story/dungeon/portal/expiry, Forge/repairs, Gold/EP/trade/casino and settings/accessibility/known limits. Keep existing first-hour, recurring activities, remapped control labels, local optional playtest timer and known-alpha limitations. Add touch-size keyboard-focusable summaries and wrapping class cards; no new storage, network route or gameplay authority.",
+  "authoritativeSources": [
+    "src/core/EquipmentSlots.js and server/internal/game/equipment_slots.go: armor families, Rogue staff/offhand restrictions and two-thirds dual-wield interval; item level/slot checks remain authoritative.",
+    "src/data/dungeonProgression.js and server/internal/game/dungeon_progression.go: Earth30/Water60/Fire70/Air70/Nexus100, Heroic/Mythic100 and preserved original saved-run scaling.",
+    "src/ui/DungeonPreparation.js, src/ui/ElementalRaidBriefing.js and server/internal/game/elemental_raids.go: personal dungeon chapter,5–10 raid/ready check, full guardian route plus three ritual/defense waves, personal Ilyra turn-in, latest boss checkpoint and separate empty-run/logout expiry policies.",
+    "src/data/worldLocations.js, src/ui/ResonancePortalDialog.js and server/internal/game/dark_realm.go: exact southeast-town directions, personal level100/restoration gates with veteran preservation, shared Foothold versus party-owned Nexus, Fifth Note turn-in before the court.",
+    "src/ui/InventoryUI.js, src/ui/MobileItemDetails.js, src/core/ForgeProgression.js and src/ui/EPWalletUI.js: world-canvas drops, touch confirmation/one-minute ground expiry, Forge material/cost previews, character-wallet entry and irreversible Gold exchange.",
+    "server/internal/database/ep_exchange.go, vip.go and src/core/CasinoController.js:1,000,000 Gold/EP,100EP monthly, no reverse/transfer/power route, floor-specific currency, funded outcomes persist after departure; public casino optional, no payment integration.",
+    "src/ui/CasinoPlayControls.js and server/internal/game/casino_currency.go: voluntary browser-visit time limit, not a spending/account lock; funded decisions remain available, legal stake steps differ. Backend blackjack natural3:2 profit, poker real-player seats.",
+    "src/core/GameEngineMovement.js and src/ui/KeyboardSettingsUI.js: Ctrl/Command pointer jump, actual remapped-label behavior, default-only journey examples. Performance/headroom/phone/pacing limitations remain explicitly unverified where applicable."
+  ],
+  "verification": {
+    "red": "After correcting the new test's Node/jsdom URL fixture setup, all five guide-contract tests fail because the required chapters do not exist. The first expanded suite also exposes one case-sensitive payment-copy expectation and two guessed nonexistent test filenames; correct the assertion to actual copy and use discovered existing suites, no behavior/gate removed.",
+    "client": "Five focused suites pass104 distinct checks: guide/current keyboard/default dungeon rules43 checks5.056s, actual class equipment/slot validation61 checks10.364s. Guide tests compare rendered family data to real eligibility and dungeon floors to the real client catalog, read actual backend Gold/EP/allowance constants, and require personal portal/expiry/no-power/no-payment/limits wording. Final copy-only guide recheck PASS5 checks4.68s, not five additional distinct tests.",
+    "server": "Seven selected existing authoritative rule tests pass with race detection: game5.068s/database1.036s. Includes class armor, Rogue cadence, actual entry floors, personal portal gates/range, one-way exchange, recorded VIP allowance and administrator/month overlap. No live service, fixture or database population started; not a broad gameplay or persistence run.",
+    "browser": "Actual UIManager Help/class-selection flow in System Chrome at1280px and390px passes2 tests34.3s. All six chapters open/close by focused Enter, summaries reach44px, paragraphs/cards/list entries have no horizontal overflow, existing journey/class guidance and close behavior retained. Phone screenshot visually reviewed: readable wrapping cards, scrolling and persistent header/footer. After final header/EP-label/drop-expiry copy adjustment, phone check PASS1 test16.6s. No real-phone or authenticated progression claim.",
+    "hygiene": "Focused ESLint and git diff --check pass. Client dependencies prepared using ignored predecessor dependencies; no dependency version change. Both completed browser fixture runs closed local port4185; no Mongo/owned fixture data or production service was created or mutated. Fresh origin/master fetch remains69cc97d9; earlier ordered1.77 operator/release prerequisites stay open."
+  },
+  "plannedPatchNotes": [
+    "Help becomes a fuller Player Guide with collapsible class/equipment, party, story/instance, Forge, currency/casino and settings chapters.",
+    "Guide shows current dungeon minimums and personal repair/portal requirements, latest boss checkpoint recovery and separate five-minute empty-run/fifteen-minute logout rules.",
+    "Equipment, EP/VIP and casino guidance matches current class restrictions, irreversible exchange and cosmetic-only EP economy; voluntary timer limits and unfinished alpha evidence are stated accurately."
+  ],
+  "remaining": [
+    "Integrate accepted ordered predecessor changes, reconcile the guide with the exact candidate, synchronize1.85 identity/cumulative patch notes and verify deployment. Prepared work is not live.",
+    "Owner/cohort reader feedback and whole-campaign pacing remain playtest evidence, not inferred from matching text or a browser layout pass.",
+    "Later1.87/1.90 supported-device/headroom, modern-art and nearly complete beta/release gates stay open; no support promise is added by this guide."
+  ]
+}

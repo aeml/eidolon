@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "milestone": "1.83 incident and maintenance playbook",
+  "status": "operator-procedure-and-audited-public-notice-tool-staged-not-accepted-or-published",
+  "baseCommit": "2879d399 prepared1.82 verified SSH identity pin; inherits1.76 source identity",
+  "artifact": "server/deploy/README_LINUX.md: Incident and maintenance playbook (prepared1.83)",
+  "coverage": [
+    "Degraded database: bounded readiness inspection, preserve private pending work, stop unsafe deploys, no durability bypass or duplicate rewards.",
+    "Unavailable origin: distinguish public frontend/backend from loopback, exact identities and TLS/WebSocket/login recovery; IPv4 is not proof of IPv6.",
+    "Abuse burst: bounded aggregate observations, retain limits, operator-approved edge action, no automatic account/proxy bans.",
+    "Stuck settlement: observe aggregate pending work, original operation retry only, no compensating grants or receipt deletion, independent wallet and replay validation.",
+    "Storage exhaustion: byte/inode inspection, preserve journals/complete and incomplete backups, exact approved disposable targets or added storage, fail closed until recovery.",
+    "Planned maintenance and failed upgrade: coordinating operator, fail-closed lock/preflight/backup/SSH/health gates, no incompatible old-writer restart or unapproved data-loss restore."
+  ],
+  "communications": "Initial/outage/recovery notice templates use UTC and a next-update time, verified scope and known limitations. Audited Administration public-notice controls and bounded authenticated dispatch now exist in this isolated stage. Existing global server chat reaches connected players across scenes. A reachable external destination/alternate operator remain unselected; no production notice was sent.",
+  "announcementTool": {
+    "interface": "Administration → Maintenance and incident notices. Maintenance, incident update and recovery; exact plain-text/UTC preview followed by explicit confirmation. Edits/cancel retire the draft. Missing acknowledgement never triggers automatic resend; advise checking server chat/history. Disconnect/revocation clears draft state and stale replies are ignored. Existing character-operation selectors remain distinct.",
+    "authorityAndAudit": "Authenticated dispatch,1024-byte closed duplicate-rejecting schema,3 requests/minute. Actual durable admin authority/current connection are checked before and after the acknowledged activity write. Persist exact public copy/kind/time using existing activity retention. No notice queues on malformed/unconfirmed input, role/audit outage or changed authority. Queue failure/stopping is reported without delivery acknowledgement. Audit success explicitly means admission only; it is not guaranteed socket delivery.",
+    "publicPayload": "Existing allowlisted global MsgChat lane, System/server channel and bounded public text only; no actor/account/request/round identity or private reason. Actual production delivery function is tested for town/dungeon/casino recipients.220 UTF-8 bytes and a future UTC next-update deadline within24h; recovery may omit the deadline. No new collection, TTL change, character mutation, service restart, maintenance mode, mail or login-later replay.",
+    "serverVerification": "Initial root announcement/console/late-authority/global-chat scopes PASS race4.380s. Final announcement and actual cross-scene delivery scopes PASS race2.663s. Dispatch contract/admission guards and persistence validation scopes PASS root race2.952s/database race1.123s. Exact new action/public copy/reason/expiration survive existing private audit-journal reopen; this is journal persistence, not a new native Mongo/deployment-restart claim.",
+    "clientVerification": "41 tests/four actual administration Jest suites PASS2.838s,20 UI/notice checks PASS1.577s after subsequent component adjustments. Final six-test notice suite PASS1.268s after shared action-button styling. Checks cover explicit frozen confirmation, edits/cancel, UTF-8/control/time bounds, safe literal text, no resend, revocation/disconnect/late replies and actual GameEngine acknowledgement/server-chat routing.",
+    "browserVerification": "System Chrome desktop1280x720 and phone390x844 administration layout/notice flows PASS2 tests31.2s. Existing admin report/history/operation flows retain assertions; new literal-text review, safe Cancel focus,44px send target, no horizontal overflow and queued-not-guaranteed outcome pass. First run failed on label-query choice (use actual accessible combobox role); next run exposed21px notice buttons. Use existing touch-friendly action styling, then both cases pass. Synthetic responses only, not native authentication/audit/real-player delivery proof.",
+    "hygieneAndLimits": "Final focused ESLint, gofmt and git diff --check pass; browser-owned local port42983 is closed after terminal completion. Dependency preparation reused ignored predecessor dependencies; no dependency version change. No production access, live notice, provider mutation, native outage exercise, external status destination, full tabletop or own release acceptance. Full goal and ordered predecessors remain required."
+  },
+  "verification": "Procedure reviewed against current deployment/preflight/backup/restore safeguards; staged notice authority/audit/queue/client/browser checks are scoped above. No production incident, native outage exercise, full tabletop or1.83 acceptance claim.",
+  "remaining": [
+    "Integrate accepted ordered1.76–1.82 changes and reconcile the procedure with the exact release candidate.",
+    "Integrate and accept the staged announcement tool with exact ordered release source; select/confirm the external communication route and alternate operator coverage. Native restart/audit and real-player notice acceptance remain distinct from these focused fixtures.",
+    "Retain scenario-by-scenario tabletop outcomes and safe disposable failure/recovery evidence without destructive production experiments.",
+    "Own version, cumulative patch notes, fresh remote integration, CI, deployment and public acceptance."
+  ],
+  "authorityLimits": "No production service/database/DNS/provider/root changes, load, erasure, retention changes, mail or public notices. Owner's dirty worktree untouched. Full Alpha1.99 goal remains active."
+}
