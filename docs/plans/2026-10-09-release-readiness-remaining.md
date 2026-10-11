@@ -140,7 +140,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **65**, reduced from 287; 576 of 641 local branch names
+  unmerged tips are now **65**, reduced from 287; 577 of 642 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -166,6 +166,14 @@ Every explicit requirement in those sources remains part of the completion audit
   [completed diagnostic histories](2026-10-11-completed-diagnostic-branch-reconciliation.json),
   [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json),
   [release/atlas/casino histories](2026-10-11-completed-release-history-reconciliation.json).
+- **Desktop build keyboard access:** native skill unlock/rune buttons now support
+  Tab/Enter/Space, disabled eligibility and authoritative rune toggle state.
+  Qualified175distinct checks/eight suites and four native desktop/phone-layout
+  cases;352CI cases discovered exactly once, not352execution passes. Initial
+  selector failures and visual Tier1 overflow correction retained. Merged locally,
+  unpublished; include with qualified guild/venue successor after34acceptance.
+  Prepared UI acknowledgements do not prove connected progression or whole-game
+  accessibility. [Qualification](2026-10-11-desktop-build-keyboard-qualification.json).
 - **Dungeon radar context:** selected `260ea4d3`, qualified `5e039538`, merged
   `6d904417`. Entry-room walls and corridor mouths now fit the radar; the scale
   stays fixed while walking and advancing rooms.73 focused checks and two
