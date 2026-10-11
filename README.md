@@ -430,7 +430,9 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.29`, smooth jumps and rested auras, automation population filtering, exact earned-room Gold
+- Current source version: `Alpha 1.79.30`, grounded dungeon materials and masonry,
+  equipped skill motion, contact audio, status symbols and prepared outfit geometry.
+  Retains smooth jumps and rested auras, automation population filtering, exact earned-room Gold
   accounting in release checks and bounded engine-download recovery. Long jumps use
   1.3 seconds of elapsed-time flight to target approximately 1.5 seconds from click
   to landing, including ordinary network/render delay. Connected qualification measured
