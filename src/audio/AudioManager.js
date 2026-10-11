@@ -105,6 +105,7 @@ export class AudioManager {
         this.unlocked = false;
         this.disposed = false;
         this.activeTones = new Set();
+        this.contactNoiseBuffer = null;
 
         this.enabled = this.readStoredBoolean('eidolon.audioEnabled', true);
         this.volume = this.readStoredNumber('eidolon.audioVolume', DEFAULT_VOLUME, 0, 1);
@@ -490,14 +491,30 @@ export class AudioManager {
         }
     }
 
+    getContactNoiseBuffer(context) {
+        if (this.contactNoiseBuffer) return this.contactNoiseBuffer;
+        const buffer = context.createBuffer(1, Math.ceil(context.sampleRate * .16), context.sampleRate);
+        const samples = buffer.getChannelData(0);
+        let seed = 2047;
+        for (let i = 0; i < samples.length; i++) {
+            seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+            samples[i] = seed / 2147483648 - 1;
+        }
+        this.contactNoiseBuffer = buffer;
+        return buffer;
+    }
+
     playTone(context, destination, startAt, tone, options = {}) {
-        const oscillator = context.createOscillator();
-        let gain = null, panner = null;
+        const noise = tone.type === 'noise';
+        // Buffer sources count and retire exactly like oscillator voices.
+        const oscillator = noise ? context.createBufferSource() : context.createOscillator();
+        let gain = null, panner = null, filter = null;
         let released = false;
         const voice = { oscillator, bus: options.bus, cueName: options.cueName, cueId: options.cueId, release: () => {
             if (released) return;
             released = true;
             oscillator.disconnect?.();
+            filter?.disconnect();
             gain?.disconnect?.();
             panner?.disconnect();
             this.activeTones.delete(voice);
@@ -509,21 +526,32 @@ export class AudioManager {
             const toneStart = startAt + (tone.delay || 0);
             const toneEnd = toneStart + tone.duration;
             const peakGain = tone.gain * (Number.isFinite(options.gain) ? Math.max(0, Math.min(1, options.gain)) : 1);
-            oscillator.type = tone.type;
-            if (oscillator.frequency?.setValueAtTime) {
-                oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
-                if (tone.endFrequency > 0) oscillator.frequency.exponentialRampToValueAtTime?.(tone.endFrequency, toneEnd);
-            } else if (oscillator.frequency) {
-                oscillator.frequency.value = tone.frequency;
+            if (noise) {
+                oscillator.buffer = this.getContactNoiseBuffer(context);
+                filter = context.createBiquadFilter();
+                filter.type = tone.filterType;
+                filter.Q.value = tone.q;
+                const cutoff = frequency => Math.max(20, Math.min(context.sampleRate * .45, frequency));
+                filter.frequency.setValueAtTime(cutoff(tone.frequency), toneStart);
+                filter.frequency.exponentialRampToValueAtTime(cutoff(tone.endFrequency), toneEnd);
+            } else {
+                oscillator.type = tone.type;
+                if (oscillator.frequency?.setValueAtTime) {
+                    oscillator.frequency.setValueAtTime(tone.frequency, toneStart);
+                    if (tone.endFrequency > 0) oscillator.frequency.exponentialRampToValueAtTime?.(tone.endFrequency, toneEnd);
+                } else if (oscillator.frequency) {
+                    oscillator.frequency.value = tone.frequency;
+                }
             }
             if (gain.gain?.setValueAtTime && gain.gain?.exponentialRampToValueAtTime) {
                 gain.gain.setValueAtTime(0.0001, toneStart);
-                gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peakGain), toneStart + 0.008);
+                gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peakGain), toneStart + (noise ? .002 : .008));
                 gain.gain.exponentialRampToValueAtTime(0.0001, toneEnd);
             } else if (gain.gain) {
                 gain.gain.value = peakGain;
             }
-            oscillator.connect?.(gain);
+            if (filter) { oscillator.connect(filter); filter.connect(gain); }
+            else oscillator.connect?.(gain);
             if (Number.isFinite(options.pan) && options.pan !== 0 && context.createStereoPanner) {
                 panner = context.createStereoPanner();
                 panner.pan.value = Math.max(-1, Math.min(1, options.pan));
@@ -533,6 +561,7 @@ export class AudioManager {
             oscillator.start?.(toneStart);
             oscillator.stop?.(toneEnd + 0.01);
         } catch (error) {
+            try { oscillator.stop?.(); } catch { /* May not have started. */ }
             voice.release();
             throw error;
         }
@@ -547,6 +576,7 @@ export class AudioManager {
         this.ambience.dispose();
         if (this.masterGain) this.masterGain.gain.value = 0;
         this.stopTones();
+        this.contactNoiseBuffer = null;
         for (const media of this.mediaCache.values()) {
             media?.pause?.();
             if (media && 'volume' in media) media.volume = 0;
