@@ -15,14 +15,23 @@ export function createConiferBoughGeometry(quality = 'high') {
         // vertical envelope. Lift lower tiers; keep the top tier unchanged.
         const y = -1.27 + tier * .60, length = 1.65 - tier * .27;
         for (let branch = 0; branch < 7; branch++) {
-            const angle = branch * Math.PI * 2 / 7 + tier * 1.17;
+            // Branches grow at different heights and lengths around the stem.
+            // Keep all five whorls and seven living boughs, but avoid identical
+            // horizontal shelves and a repeated seven-point star silhouette.
+            const growth = Math.sin(branch * 2.17 + tier * 1.83);
+            const angle = branch * Math.PI * 2 / 7 + tier * 1.17 + growth * .13;
+            const branchLength = length * (.88 + .12 * Math.sin(branch * 1.79 + tier * 2.31));
+            const branchHeight = y + .11 * Math.sin(branch * 2.73 + tier * .91);
             const forward = new Vector3(Math.cos(angle), 0, Math.sin(angle));
             const side = new Vector3(-forward.z, 0, forward.x);
             for (let fan = 0; fan < 6; fan++) {
-                const t = (fan + .4) / 6, reach = length * t;
-                const center = forward.clone().multiplyScalar(reach).setY(y - .28 * t + .13 * Math.sin(branch * 3 + tier)
-                    + .05 * Math.sin(fan * 1.7 + branch * .7 + tier));
-                const shade = .68 + tier * .055 + ((branch + fan) % 3) * .07;
+                const t = (fan + .4) / 6, reach = branchLength * t;
+                const center = forward.clone().multiplyScalar(reach)
+                    .addScaledVector(side, growth * .13 * Math.sin(t * Math.PI))
+                    .setY(branchHeight - .28 * t * t + .05 * Math.sin(fan * 1.7 + branch * .7 + tier));
+                // Coherent new growth toward the tips replaces alternating
+                // light/dark tiles on every branch. Lighting supplies folds.
+                const shade = .69 + tier * .045 + .075 * t + growth * .035;
                 // Paired narrow sprays replace the broad triangular arrowhead.
                 // Sweep each tip outward/down, with a raised folded midrib.
                 for (const sign of [-1, 1]) {
@@ -30,8 +39,9 @@ export function createConiferBoughGeometry(quality = 'high') {
                     // Overlapping needle sprays read as a living bough rather
                     // than disconnected fine triangles at the gameplay zoom.
                     // Keep every tier/fan and the existing Low detail policy.
-                    const tip = center.clone().addScaledVector(forward, .41)
-                        .addScaledVector(side, sign * .31 * (1 - t * .45));
+                    const spray = .88 + .12 * Math.sin(fan * 2.1 + branch * 1.3 + tier + sign);
+                    const tip = center.clone().addScaledVector(forward, .41 * spray)
+                        .addScaledVector(side, sign * .31 * (1 - t * .45) * spray);
                     // Broaden the existing fan, not the branch's reach, and
                     // curve its hanging tip. Flat, narrow sprays read as rows
                     // of sticks when the entire crown is viewed at play zoom.
