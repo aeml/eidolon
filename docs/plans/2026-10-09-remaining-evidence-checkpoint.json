@@ -2367,5 +2367,49 @@
     "heldDiscoveredCases": 332,
     "highPartyMaximumTriangles": 284882,
     "historicalFailuresRetained": true
+  },
+  "dungeonEntryWard": {
+    "receipt": "docs/plans/2026-10-11-dungeon-entry-ward-qualification.json",
+    "runtime": "c9e3b2ba",
+    "selectedSource": "68e30c83",
+    "selected": true,
+    "published": false,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-entry-ward-checks-20261011",
+      "inventoryEntries": 884,
+      "files": 885,
+      "inventorySHA256": "1dbedb63909295971178334f9b9c8db63f02951bd54baa61d09fb72ce5734557",
+      "frozen": true
+    },
+    "supportedThemes": 5,
+    "preparedLayoutsPerQuality": 20,
+    "preparedMotionFrames": 1440,
+    "preparedNativePassed": 2,
+    "ciDefaultLowPassed": 1,
+    "copiedBundlePassed": 2,
+    "connectedNativePassed": 1,
+    "connectedNativeSkipped": 1,
+    "savedFourClassCustodyPassed": true,
+    "firstDungeon": {
+      "frames": 180,
+      "drawCallsMedian": 105,
+      "trianglesMedian": 53029,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "maximumCalls": 105,
+      "maximumTriangles": 53029
+    },
+    "party": {
+      "frames": 180,
+      "drawCallsMedian": 262,
+      "trianglesMedian": 216766,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 33.3,
+      "maximumCalls": 284,
+      "maximumTriangles": 289302
+    },
+    "engineSHA256": "62f538c037982250147e7896c225bf9cc10d3c2178463861887c7d59d2fe23d4",
+    "requiredDiscoveredCases": 335,
+    "limits": "Entry-ward art stage only; private connected QA context unselected. Historical dynamic draw failures, startup triangle peak289302, narrow floor/shadow artifacts and broader world/art/device/operations/F1\u2013F5/beta/launch/handoff remain open."
   }
 }

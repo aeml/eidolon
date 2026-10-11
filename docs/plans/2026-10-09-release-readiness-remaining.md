@@ -223,3 +223,32 @@ budget waiver or camp/DemonOrc/singleton selection. Next review dynamic actor/sc
 startup costs and coherent world/interior/material/contact polish, keeping prior
 438combat/361party draw failures and physical-device/art/operations/F1–F5/beta/launch/
 handoff gates open. [Source, failures and frozen evidence](2026-10-11-additive-effects-qualification.json).
+
+
+October11 dungeon-entry art continuation: selected exact68e30c83 privately; public29
+unchanged. Five existing interior themes now use pointed, beveled masonry piers/
+arch stones, low sill and tarnished ironwork around a restrained animated veil.
+The physical frame/veil transform stays fixed across ready/inactive states;
+original authoritative summary and interaction rules remain. Three meshes/
+1318triangles/171220attribute bytes and zero textures per entry, no new colliders/
+lights/targets.41current art/lifecycle checks and19CI plan checks pass; three earlier
+unchanged authoritative-summary checks also pass. Original metadata/unit and two
+QA setup failures remain retained. Both native High/Low reviews cover all20supported
+production layout variants per quality,120state views and1440animated frames,
+zero blocked path samples/changed colliders. Separate normal CI Low path passes;
+335required cases discovered exactly once, not all executed. Exact copied bundle
+ward lifecycle and lazy four-class checks pass.
+
+Normal saved14slot Fighter walking→first-dungeon entry/movement→Recall passes in
+private camp/route-QA context; four-class Go-race saves retain gear/inventory/EP/
+membership. Dungeon180frames105draw/53029tri/16.7msmedian+p95 pass sampled limits.
+Party262draw/216766tri/16.7median33.3p95 passes sampled medians, but289302startup
+triangle peak remains; no cross-population FPS gain or clearance of prior438/361
+draw failures. Binary screenshots intentionally retain synthetic labels; textual/
+embedded account data sanitized. Narrow prepared views still show thin dark floor/
+shadow artifacts also present in predecessor, and floor repetition/other world
+materials/contact/audio/physical-device acceptance remain open. Next diagnose those
+visible narrow-view artifacts and continue coherent world/interior/material polish,
+then finish representative dynamic budgets and original operations/F1–F5/beta/launch/
+handoff. No campaign/soak replay, unrelated renderer selection or public release.
+[Source, comparison, normal route and frozen evidence](2026-10-11-dungeon-entry-ward-qualification.json).

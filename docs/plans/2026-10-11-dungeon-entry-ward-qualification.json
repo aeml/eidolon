@@ -1,0 +1,237 @@
+{
+  "status": "Selected privately for coherent held milestone; unpublished",
+  "runtime": "c9e3b2ba",
+  "qualificationSource": "68e30c83",
+  "connectedPrivateSource": "d3ac269e",
+  "selection": "Fast-forward from7f966b58 to exact tested68e30c83; no unrelated private renderer/QA integration",
+  "scope": "Grounded entry ward for five existing dungeon interiors. Fourteen beveled arch voussoirs, coursed piers, low sill and tarnished ironwork; original shared animated veil. Stable physical transform through readiness changes. Visual-only, no colliders, targets, lights, textures, new interactions, authority/state rules or imported actor asset changes.",
+  "model": [
+    {
+      "type": "verdant_bastion_catacombs",
+      "meshes": 3,
+      "triangles": 1318,
+      "attributeBytes": 171220,
+      "textures": 0
+    },
+    {
+      "type": "molten_core",
+      "meshes": 3,
+      "triangles": 1318,
+      "attributeBytes": 171220,
+      "textures": 0
+    },
+    {
+      "type": "tempest_spire",
+      "meshes": 3,
+      "triangles": 1318,
+      "attributeBytes": 171220,
+      "textures": 0
+    },
+    {
+      "type": "abyssal_well",
+      "meshes": 3,
+      "triangles": 1318,
+      "attributeBytes": 171220,
+      "textures": 0
+    },
+    {
+      "type": "umbral_nexus",
+      "meshes": 3,
+      "triangles": 1318,
+      "attributeBytes": 171220,
+      "textures": 0
+    }
+  ],
+  "focused": {
+    "currentArtAndLifecyclePassed": 41,
+    "earlierUnchangedAuthoritativeSummaryPassed": 3,
+    "browserPlanPassed": 19,
+    "initialMetadataFailuresRetained": 5,
+    "discoveredExactCases": 335,
+    "discoveryIsExecution": false
+  },
+  "native": {
+    "native-supported": {
+      "terminal": {
+        "source": "f6049ca8d159b1e2bba9fc31c13ada64f24c0ffc",
+        "exitCode": 0,
+        "startUnix": 1791680019.5231764,
+        "endUnix": 1791680080.0980492
+      },
+      "views": [
+        {
+          "quality": "low",
+          "layouts": 20,
+          "themes": [
+            "abyssal_well",
+            "molten_core",
+            "tempest_spire",
+            "umbral_nexus",
+            "verdant_bastion_catacombs"
+          ],
+          "views": 60,
+          "motionFrames": 720,
+          "allStable": true,
+          "collidersUnchanged": true,
+          "blockedSamples": 0,
+          "equippedItemsAll14": true,
+          "maximumCalls": 47,
+          "maximumTriangles": 36655,
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        },
+        {
+          "quality": "high",
+          "layouts": 20,
+          "themes": [
+            "abyssal_well",
+            "molten_core",
+            "tempest_spire",
+            "umbral_nexus",
+            "verdant_bastion_catacombs"
+          ],
+          "views": 60,
+          "motionFrames": 720,
+          "allStable": true,
+          "collidersUnchanged": true,
+          "blockedSamples": 0,
+          "equippedItemsAll14": true,
+          "maximumCalls": 92,
+          "maximumTriangles": 116335,
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        }
+      ]
+    },
+    "ci-default-low": {
+      "terminal": {
+        "source": "68e30c834d5369ebac1f3ae2325963a58d5f8356",
+        "exitCode": 0,
+        "startUnix": 1791680209.496232,
+        "endUnix": 1791680232.451136
+      },
+      "views": [
+        {
+          "quality": "low",
+          "layouts": 20,
+          "themes": [
+            "abyssal_well",
+            "molten_core",
+            "tempest_spire",
+            "umbral_nexus",
+            "verdant_bastion_catacombs"
+          ],
+          "views": 40,
+          "motionFrames": 720,
+          "allStable": true,
+          "collidersUnchanged": true,
+          "blockedSamples": 0,
+          "equippedItemsAll14": true,
+          "maximumCalls": 47,
+          "maximumTriangles": 36823,
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+        }
+      ]
+    }
+  },
+  "retainedFailures": [
+    "Initial unit run39pass5fail: new meshes omitted existing proceduralDungeonInteriorPart metadata; corrected without altering tests.",
+    "First native run completes all20supported layouts per quality but then attempts the unsupported Dark Realm factory from the shared mixed fixture corpus. Explicitly scope to the five interior IDs; all20variants retained.",
+    "Initial copied-bundle check saved an uninitialized local matrix before first render. Explicit updateMatrix establishes baseline; original failure retained."
+  ],
+  "limits": "Prepared views use actual layout/material/lighting/camera/HUD and14slot supplied Fighter but synthetic state, not earned clears or physical phones. Cross-render triangle differences during asynchronous source preparation are not causal A/B geometry savings. Narrow views retain dark thin floor/shadow artifacts also visible in predecessor. Geometry looks more constructed but this does not close overall modern art, materials, contact/audio, global performance or device acceptance. No release/version/access/commerce/campaign/soak changes.",
+  "bundle": {
+    "result": {
+      "parts": 3,
+      "visualOnly": true,
+      "phases": [
+        {
+          "ready": false,
+          "appliedOpacity": 0.18,
+          "time": 0.25,
+          "stable": true
+        },
+        {
+          "ready": true,
+          "appliedOpacity": 0.9,
+          "time": 0.5,
+          "stable": true
+        },
+        {
+          "ready": false,
+          "appliedOpacity": 0.18,
+          "time": 0.75,
+          "stable": true
+        }
+      ],
+      "collidersStable": true
+    },
+    "engineSHA256": "62f538c037982250147e7896c225bf9cc10d3c2178463861887c7d59d2fe23d4",
+    "scope": "Copied/versioned engine and actual WorldGenerator entry points, prepared layout and room summaries. No server or earned completion claim."
+  },
+  "connected": {
+    "sanitization": {
+      "observedPreparedAccounts": 4,
+      "plaintextFilesScanned": 13,
+      "embeddedEntriesScanned": 2,
+      "remainingPreparedNames": 0,
+      "serverMarkers": {
+        "WARNING: DATA RACE": 0,
+        "panic:": 0,
+        "fatal error:": 0,
+        "Worker panic:": 0,
+        "Recovered from panic in Update:": 0
+      },
+      "native": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maxRetry": 0
+    },
+    "terminal": {
+      "source": "d3ac269e3cd9842c2aac0330be9f78b2a62624dc",
+      "exitCode": 0,
+      "startUnix": 1791680304.3346467,
+      "endUnix": 1791680425.3324504
+    },
+    "firstDungeon": {
+      "frames": 180,
+      "drawCallsMedian": 105,
+      "trianglesMedian": 53029,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.7,
+      "maximumCalls": 105,
+      "maximumTriangles": 53029
+    },
+    "normalEntryMovementRecallPassed": true,
+    "fourClassFourteenSlotGoRaceSavePassed": true,
+    "context": "Private camp/singleton/DemonOrc and collision-aware route QA context, with byte-identical new ward and additive effect factories. Not selected wholesale. No player teleport, direct movement/stat/cooldown mutation, or new terrain layout during recorded route. Normal fixture waypoint remains confined to subsequent independent party check.",
+    "party": {
+      "frames": 180,
+      "drawCallsMedian": 262,
+      "trianglesMedian": 216766,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 33.3,
+      "maximumCalls": 284,
+      "maximumTriangles": 289302
+    }
+  },
+  "runtimeSourceRetention": {
+    "src/art/DungeonEntryWard.js": "a46fb74f63a0c635abb93d2cb7c2c9dc8baf4d136a096beb9e949e42490485dc",
+    "src/art/ProceduralDungeonInteriors.js": "cd53ed1b5f04f65faee9df60e6b08666d2e4efcbf27539c67ac6e0d18e593d36",
+    "src/art/ProceduralStatusEffects.js": "de28b358e34bab89f122086dc8cf1ecedd203d0509dd65107f2b5a517789e336",
+    "src/art/ProceduralAbilityCasts.js": "fdea45d0e7b482173f4ec5b3c69391d20acd70f5a7a14c70abb7845fecf7c825",
+    "src/art/ProceduralCombatFeedback.js": "432c414d47f71227c3ae70ed6619dede6dff278c51b82f24ff2cc8c1c6449099"
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dungeon-entry-ward-checks-20261011",
+    "inventoryEntries": 884,
+    "files": 885,
+    "inventorySHA256": "1dbedb63909295971178334f9b9c8db63f02951bd54baa61d09fb72ce5734557",
+    "frozen": true
+  },
+  "published": false,
+  "selectedPrivately": true
+}
