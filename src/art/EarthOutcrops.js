@@ -74,17 +74,24 @@ export function createEarthOutcropGeometry(solid, terrain = null) {
     // midpoints: an edge cannot sprout a thin fin between its two endpoints.
     // Periodic angular wear also joins continuously at the contour's seam.
     const phase = random(solid.seed + 1723) * Math.PI * 2;
+    // One directional fault exposes a steep face and a worn ledge. Carrying
+    // the same rounded profile around every side made the formations read as
+    // smooth loaves. Keep the foot and crown exact, and vary only the existing
+    // intermediate contour controls; this is not another ring or stone stack.
+    const faultWidths = [1, .98, .975, .955, .64, .62, .32];
     for (let tier = 2; tier < layers.length; tier++) {
         const [level, width] = layers[tier];
         const controls = outline.map(([x, z], edge) => {
             const angle = Math.atan2(z, x);
             const wear = Math.sin(angle * 2 + phase) * .045 + Math.cos(angle * 3 - phase) * .02;
+            const fault = Math.pow(Math.max(0, Math.cos(angle - phase)), 4);
+            const profile = width + (faultWidths[tier] - width) * fault;
             const previous = rings[tier - 1][edge * 2];
             const previousX = (previous[0] - solid.x) / (solid.width / 2) - leanX;
             const previousZ = (previous[2] - solid.z) / (solid.depth / 2) - leanZ;
             const previousWidth = (previousX * (x - leanX) + previousZ * (z - leanZ)) /
                 ((x - leanX) ** 2 + (z - leanZ) ** 2);
-            const erosion = Math.min(width + wear * Math.sin(level * Math.PI / 2), previousWidth - .015);
+            const erosion = Math.min(profile + wear * Math.sin(level * Math.PI / 2), previousWidth - .015);
             const px = x * erosion + leanX * (1 - erosion);
             const pz = z * erosion + leanZ * (1 - erosion);
             const bedding = tier < 5 ? Math.cos(angle + phase) * Math.sin(level * Math.PI) * .025 : 0;
