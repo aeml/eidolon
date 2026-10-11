@@ -2,13 +2,18 @@ import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
+import { DUNGEON_INTERIOR_IDS } from '../../src/art/ProceduralDungeonInteriors.js';
 
-const fixtures = JSON.parse(await readFile('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
+const fixtures = JSON.parse(await readFile('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
+    .filter(fixture => DUNGEON_INTERIOR_IDS.includes(fixture.dungeonType));
+const comparePredecessor = process.env.EIDOLON_E2E_DUNGEON_WARD_COMPARE === '1';
 for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}: grounded entry wards retain dungeon state and walkable layout`, async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180000);
     const failures = collectBrowserFailures(page, baseURL);
-    const previous = execFileSync('git', ['show', '7f966b58:src/art/ProceduralDungeonInteriors.js'], { encoding: 'utf8' });
-    await page.route('**/src/art/DungeonInteriorsWardReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
+    if (comparePredecessor) {
+        const previous = execFileSync('git', ['show', '7f966b58:src/art/ProceduralDungeonInteriors.js'], { encoding: 'utf8' });
+        await page.route('**/src/art/DungeonInteriorsWardReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
+    }
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -31,12 +36,12 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         window.__entryWardReview = { render, ui, hero };
     }, { quality, phone: width < 600 });
     const reports = [];
-    for (const { dungeonType: type, layout } of fixtures) {
-        const setup = await page.evaluate(async ({ type, layout, quality }) => {
+    for (const [fixtureIndex, { dungeonType: type, layout }] of fixtures.entries()) {
+        const setup = await page.evaluate(async ({ type, layout, quality, comparePredecessor }) => {
             const THREE = await import('three');
             const { WorldGenerator } = await import('/src/world/WorldGenerator.js');
             const { CollisionManager } = await import('/src/core/CollisionManager.js');
-            const { createProceduralDungeonInteriorKit: referenceKit, applyDungeonRoomStatePresentation: referenceState } = await import('/src/art/DungeonInteriorsWardReference.js');
+            const reference = comparePredecessor ? await import('/src/art/DungeonInteriorsWardReference.js') : null;
             const { applyDungeonRoomStatePresentation, animateDungeonRoomStatePresentation } = await import('/src/art/ProceduralDungeonInteriors.js');
             const state = window.__entryWardReview, { render, ui, hero } = state;
             if (state.previous) render.disposeObjectResources(state.previous);
@@ -48,17 +53,17 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
             const room = layout.rooms[0];
             collision.setDungeonWalkableGeometry(layout.walkRects);
             const current = render.instanceEnvironmentGroup.children.find(part => part.userData.proceduralDungeonInterior && part.userData.roomIndex === 0);
-            const previous = referenceKit(type, { quality }).createRoomDressing(room, 0);
+            const previous = reference?.createProceduralDungeonInteriorKit(type, { quality }).createRoomDressing(room, 0);
             const currentState = current.getObjectByName(`DungeonRoomState:${type}:0`);
             const summary = { currentRoomIndex: 0, objectiveRoomIndex: 0 };
             applyDungeonRoomStatePresentation(currentState, { cleared: false }, summary);
-            referenceState(previous.getObjectByName(`DungeonRoomState:${type}:0`), { cleared: false }, summary);
+            reference?.applyDungeonRoomStatePresentation(previous.getObjectByName(`DungeonRoomState:${type}:0`), { cleared: false }, summary);
             hero.position.set(room.x + 1.5, .1, room.z + 1); hero.mesh.position.copy(hero.position);
             render.setEnvironmentContext(type, hero.position, true); render.setCameraTarget(hero.position); render.updateEnvironmentLighting(hero.position, 0);
             ui.quest.renderObjectivesPanel([{ id: 'ward', title: 'Explore the dungeon', progressLabel: 'Entry', hint: 'Prepared art review' }]);
             const colliders = JSON.stringify([collision.colliders, collision.orientedColliders, collision.circularColliders, collision.dungeonWalkableRects]);
             state.select = mode => {
-                current.removeFromParent(); previous.removeFromParent();
+                current.removeFromParent(); previous?.removeFromParent();
                 render.instanceEnvironmentGroup.add(mode === 'reference' ? previous : current);
                 if (mode !== 'reference') {
                     applyDungeonRoomStatePresentation(currentState, { cleared: mode === 'ready' }, { currentRoomIndex: 0, objectiveRoomIndex: mode === 'ready' ? -1 : 0 });
@@ -80,11 +85,11 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
             return { blocked, colliders, equippedItems: hero.mesh.userData.equipmentVisualItemCount,
                 missing: hero.mesh.userData.equipmentVisualMissing?.length || 0, fallback: hero.mesh.userData.equipmentVisualFallback?.length || 0,
                 gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
-        }, { type, layout, quality });
+        }, { type, layout, quality, comparePredecessor });
         const views = [];
-        for (const mode of ['reference', 'candidate', 'ready']) {
+        for (const mode of comparePredecessor ? ['reference', 'candidate', 'ready'] : ['candidate', 'ready']) {
             views.push(await page.evaluate(mode => window.__entryWardReview.select(mode), mode));
-            await page.screenshot({ path: testInfo.outputPath(`${type}-${mode}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
+            await page.screenshot({ path: testInfo.outputPath(`${type}-${fixtureIndex}-${mode}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
         }
         const motion = await page.evaluate(async () => {
             const { animateDungeonRoomStatePresentation } = await import('/src/art/ProceduralDungeonInteriors.js');
@@ -99,7 +104,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
             return { frames: 36, stable, colliders: JSON.stringify([collision.colliders, collision.orientedColliders, collision.circularColliders, collision.dungeonWalkableRects]),
                 scope: 'Prepared actual production layout/materials/lighting/camera and14slot supplied Fighter with HUD. Regional ready/inactive views and animated source renders; no server, earned-clear, gameplay timing or physical-device certificate.' };
         });
-        reports.push({ type, quality, ...setup, views, motion });
+        reports.push({ type, fixtureIndex, quality, ...setup, views, motion });
         await writeFile(testInfo.outputPath('entry-ward-review.json'), JSON.stringify(reports, null, 2));
         expect(setup.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(setup.blocked).toBe(0); expect(setup.equippedItems).toBe(14); expect(setup.missing + setup.fallback).toBe(0);
@@ -111,7 +116,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
     }
     await page.evaluate(() => {
         const { render, hero, ui, previous } = window.__entryWardReview;
-        render.disposeObjectResources(previous); hero.dispose(); ui.destroy?.(); render.dispose(); delete window.__entryWardReview;
+        if (previous) render.disposeObjectResources(previous); hero.dispose(); ui.destroy?.(); render.dispose(); delete window.__entryWardReview;
     });
     expect(failures, failures.join('\n')).toEqual([]);
 });
