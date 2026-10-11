@@ -1,0 +1,31 @@
+{
+  "recordedUTC": "2026-10-11T14:57:15.511461+00:00",
+  "version": "Alpha1.79.34",
+  "source": "3ec8bb151f24909127b832a4035eb7e6eab9b635",
+  "ciRun": 38149199718,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38149199718",
+  "status": "Ordinarily pushed exact corrective34source; own CI active, no own deployment/public acceptance yet.",
+  "originalRun": 38147178300,
+  "originalConclusion": "Terminal failure;4prerequisitespass, soleclientfixturefailure,5dependentjobsskip; no deployment.",
+  "correction": "Only GameSimulation fixture and qualification docs differ from original34publishedsource. All23original asset pins reproduced exactly before corrective query rewrite. Same qualified product runtime;59focused/2suitespass.",
+  "normalPush": {
+    "recordedUTC": "2026-10-11T14:57:15.511461+00:00",
+    "from": "f7c7b9e05fc703fb459af721729f4a1133e770a6",
+    "to": "3ec8bb151f24909127b832a4035eb7e6eab9b635",
+    "fetchedAndOrdinarilyMergedOriginBeforePush": true,
+    "force": false,
+    "branch": "origin/master",
+    "localMasterContainsCorrectiveSource": true,
+    "separatelyMergedGuildVenueRuntime": "Held locally for coherent successor after corrective34ownacceptance."
+  },
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release34-corrective-publication-checks-20261011/expected-public34-assets.json",
+  "expectedManifestSHA256": "f4222cc27cbfc854bbd7b7d1ded317ed4d4976ca84e77c4d006c661dc89de679",
+  "assetPins": 23,
+  "preparation": "2026-10-11-release34-corrective-preparation.json",
+  "failureAndQualification": "2026-10-11-release34-charging-fixture-correction.json",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-release34-corrective-start-20261011",
+  "inventorySHA256": "929c8f754b2a9465a077d569624043e94c97d171d2d634cdd1f4b18cf70c1e8a",
+  "previousAccepted": "Alpha1.79.33/9ce67fe3d2d0aeae55102d14b579107733d1a719",
+  "acceptanceStillRequired": "Corrective CI38149199718 ordereddeploy/live and fresh post-terminal normal-TLS frontend/backend identities, ready database and all23servedasset byte/SHA checks. Component/public33 evidence does not substitute.",
+  "goal": "Full original goal remains active; no final gate closure."
+}

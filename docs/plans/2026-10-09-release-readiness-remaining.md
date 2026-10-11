@@ -215,15 +215,16 @@ Every explicit requirement in those sources remains part of the completion audit
   and pixels; five mixed Rogue stances resolve correctly. Initial local vendor
   preparation failure and affected-only rerun remain retained. Final23asset pins
   verify before owned copy retirement; ordinarily pushed exact `f7c7b9e0`,
-  CI38147178300 has one failed client fixture; server and two browser shards
-  passed, third browser shard still active. No34deployment. Corrective
+  CI38147178300 is terminal failed: server/all three browser shards pass,
+  client fixture fails and five dependent jobs skip. No34deployment. Corrective
   `3ec8bb15` uses real Three Groups in two movement fixtures, retaining every
   assertion;59focused checks/two suites pass. All23original asset pins reproduce
   exactly, then source queries rewrite to the corrective identity. Correction
-  is merged locally and prepared for ordinary push after original CI terminal.
+  is merged locally and ordinarily pushed; exact CI38149199718 is active.
   Own corrected ordered release and fresh23asset acceptance still required.
   [Failure/correction](2026-10-11-release34-charging-fixture-correction.json),
-  [Corrective preparation](2026-10-11-release34-corrective-preparation.json).
+  [Corrective preparation](2026-10-11-release34-corrective-preparation.json),
+  [Corrective publication](2026-10-11-release34-corrective-publication.json).
   [Publication](2026-10-11-release34-publication.json).
   [Prepublication](2026-10-11-release34-motion-navigation-prepublication.json).
 - **Next qualified optimization:** exact worker geometry copies avoid component
@@ -261,7 +262,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Observe failed Alpha1.79.34/f7c7b9e0/CI38147178300 to terminal, ordinarily publish prepared test-only correction3ec8bb15, then verify its own ordered CI/deploy/live and fresh post-terminal normal-TLS frontend/backend/readyDB/all23pinned asset bytes/SHA256. All12versions/469notes and combined publication checks pass; exact33 acceptance and reused component evidence do not prequalify34. | Implementation |
+| Next release | Observe exact corrective Alpha1.79.34/3ec8bb15/CI38149199718 to terminal, then verify its own ordered CI/deploy/live and fresh post-terminal normal-TLS frontend/backend/readyDB/all23pinned asset bytes/SHA256. All12versions/469notes and combined publication checks pass; exact33 acceptance and reused component evidence do not prequalify34. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |

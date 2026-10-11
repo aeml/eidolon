@@ -434,8 +434,8 @@ For local Firefox QA, use port4173 or4192, not its restricted port4190.
   All ten ordered CI jobs and fresh post-terminal frontend/backend, ready-database
   and17asset checks pass. [Acceptance](docs/plans/2026-10-11-public33-terminal-qualification.json).
   Source34 below is separately qualified. Original CI failed one incomplete test
-  mesh fixture; a test-only correction is merged and prepared, with all23original
-  asset pins reproduced. Corrected deployment/public verification still follows.
+  mesh fixture; a test-only correction is merged and pushed as3ec8bb15, with all23original
+  asset pins reproduced. Corrective CI38149199718 and public verification still follow.
   [Correction](docs/plans/2026-10-11-release34-charging-fixture-correction.json).
 - Current source version: `Alpha 1.79.34`, steady dungeon radar context, independent
   mixed-weapon Rogue grips and faster character geometry preparation, alongside
