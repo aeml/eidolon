@@ -1,0 +1,30 @@
+{
+  "recordedUTC": "2026-10-11T13:25:08.089517+00:00",
+  "version": "Alpha 1.79.33",
+  "source": "9ce67fe3d2d0aeae55102d14b579107733d1a719",
+  "ciRun": 38142813857,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38142813857",
+  "status": "Ordinarily pushed; own ordered CI/deploy/live and post-terminal normal-TLS17asset acceptance pending.",
+  "normalPush": {
+    "from": "cc001f0062d161d1b706fa2ca4275a1724b6c221",
+    "to": "9ce67fe3d2d0aeae55102d14b579107733d1a719",
+    "fetchedAndMergedOriginFirst": true,
+    "force": false
+  },
+  "failedOriginal": {
+    "source": "cc001f0062d161d1b706fa2ca4275a1724b6c221",
+    "run": 38140628469,
+    "terminal": "failure",
+    "failure": "Sole client asset-reference audit;10613otherchecks pass. Server and all3browser shards succeed; five dependent predeploy/input/deploy/live jobs skip. No deployment from this run.",
+    "correction": "Exact one-token audit of the already validated generator;33focusedchecks and scoped lint pass. Original failure/local reproduction retained."
+  },
+  "runtime": "All src/assets/scripts/index/sw/release/package/server/deploy/CI paths match prior qualifiedcc source exactly. Correction changes test audit/docs and reconciles already integrated Whirlwind ancestry only. Same12versions/468notes, original8native copied-preflight evidence retained. No runtime performance change included in this corrective publication.",
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release33-guard-publication-checks-20261011/expected-public33-assets.json",
+  "expectedManifestSHA256": "656b4a3642c7041917ed997949e21be5832923b641739135dc495fd822c04a87",
+  "expectedAssets": 17,
+  "build": "Prepared strict copied-input engine and worker. All17byte counts remain identical to previous pins; source query identifiers refreshed for9ce. Engine3491539B/SHA247552cea077c725caaf10e4f6f6a1af100ab67c249362a481030beaf2464c02. Worker unchanged44618fbd1160aa63. Every17hash verified before owned generated copy retired.",
+  "copyScope": "Hash preparation requires src/vendor/index/release/sw and the only asset HTML,notices/index.html; binary model/texture/font sources stay unchanged. This smaller hash copy is not a new full browser asset-loading acceptance.",
+  "lastAccepted": "Alpha1.79.32/d31246e9",
+  "monitor": "Existing release_monitor observes exact corrected source/run and normal-TLS17asset qualification; public29soak separately, no retry/cancel/mutations.",
+  "nextQualifiedWork": "Geometry transfer copy improvement8c4e916d is qualified and ordinarily merged locally after this push; unpublished until this corrective33 acceptance. Full goal remains active."
+}

@@ -916,3 +916,24 @@ finish. Corrective33 keeps exact runtime and all12versions/468notes; refresh
 source-bound seventeen-asset pins and ordinarily publish the guard/history
 correction. Never retry the unchanged failed source. Accepted32 remains current
 until corrective33's own ordered acceptance succeeds. Full scope stays active.
+
+## October11: corrective33 published and actual geometry copy qualified
+
+Original38140628469 terminal failure is solely the reproduced client audit;
+Go/all3browser shards pass, five dependent deployment/QA jobs skip. Corrective
+33 exact9ce67fe3 is ordinarily pushed, own38142813857 active. All17asset pins
+refresh source query identities; runtime/version/468notes match prior qualified
+source. Source-only generated copy verified then retired; accepted32 retained.
+See [corrective publication](docs/plans/2026-10-11-release33-guard-corrective-publication.json).
+
+A measured geometry-copy hypothesis now selects native packed float copies and
+ordinary interleaved lane gathering, retaining normalized/custom component
+readers and separate worker ownership. Actual GLTFLoader16sourcefiles/118meshes
+match exact780400ad payloads and survive real structured transfers.90 focused
+checks/full lint, one distinct native7.942s case and strict copied bundle pass.
+ABBA complete character producer medians8.4–13.4ms→4.2–5.9ms; copy-only scope,
+no frame/startup/device acceptance. Initial NodeIO/reference/half-float fixture
+limitations and raw results retained. Qualified8c4e916d/ad81b6db ordinarily
+merged locally after corrective33 push; hold next publication until acceptance.
+See [qualification](docs/plans/2026-10-11-geometry-transfer-copy-qualification.json).
+Full world/art/gameplay/operations/F1–F5/beta/launch/handoff goal remains active.

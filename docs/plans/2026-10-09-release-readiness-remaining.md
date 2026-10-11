@@ -22,9 +22,11 @@ Every explicit requirement in those sources remains part of the completion audit
 ## Release and source custody
 
 - **Release33 CI correction:** its sole client asset-audit failure is reproduced
-  and corrected with33 focused passing checks; original CI remains active with
-  no deployment. The correction is on local master awaiting terminal state and
-  ordinary publication. [Receipt](2026-10-11-release33-client-guard-correction.json).
+  and corrected with33 focused passing checks. Original CI is terminal failed,
+  all other prerequisites passed and deployment skipped. Corrective9ce67fe3
+  CI38142813857 is active after ordinary publication; exact17asset pins refreshed.
+  [Receipt](2026-10-11-release33-client-guard-correction.json),
+  [corrective publication](2026-10-11-release33-guard-corrective-publication.json).
 
 - **Last accepted public build:** Alpha1.79.32,
   `d31246e9b53fbe73bd7f59beea4c3235df30a922`.
@@ -57,8 +59,8 @@ Every explicit requirement in those sources remains part of the completion audit
   [publication](2026-10-11-release32-publication.json),
   [prepublication](2026-10-11-release32-world-resources-prepublication.json).
 - **Pushed33 milestone:** qualified birch/recovery/account-help/Player Guide/
-  authoring/lore changes are ordinarily pushed as exact `cc001f0062d161d1b706fa2ca4275a1724b6c221`,
-  CI38140628469 active, for one coherent publication.
+  authoring/lore changes are ordinarily pushed with test-only correction as exact `9ce67fe3d2d0aeae55102d14b579107733d1a719`,
+  corrective CI38142813857 active, for one coherent publication.
  429distinct release checks/four suites and8distinct browser publication cases
   pass, retries/skips0. All12 version paths align33;468cumulative notes retain
   every467prior entry byte-exact. Initial missed CI deployment version is retained
@@ -131,6 +133,14 @@ Every explicit requirement in those sources remains part of the completion audit
   29 `12e5e3c4`. It is not a completed capacity gate or a test of release 31 or 32.
   The prior failed soak remains open; no retry/cancellation or unchanged campaign
   replay has been performed.
+
+- **Next qualified optimization:** exact worker geometry copies avoid component
+  decoding for ordinary packed/interleaved float buffers.90 focused checks, full
+  lint and one actual GLTFLoader16source/118mesh case pass; complete character
+  producer ABBA medians8.4–13.4ms→4.2–5.9ms. Qualified8c4e916d is merged
+  locally, unpublished until corrective33 acceptance. Source/worker limits and
+  all original scene/frame targets remain.
+  [Qualification](2026-10-11-geometry-transfer-copy-qualification.json).
 
 ## Delivered and qualified work to preserve
 

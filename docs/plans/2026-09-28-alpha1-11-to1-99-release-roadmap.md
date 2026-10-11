@@ -9,14 +9,16 @@ Attempt1's1675MiB/2048MiB storage refusal and clean merged scratch capacity
 repair remain retained; one failed-job-only retry reused passing prerequisites.
 [Failure and repair](2026-10-11-release32-storage-preflight-recovery.json).
 Alpha1.79.33 coherent player-help/recovery milestone is ordinarily pushed onmaster
-exactcc001f00, CI38140628469active:
+exact9ce67fe3, corrective CI38142813857active:
 qualified birch/recovery/account-help/Player-Guide/content-authoring/lore.
 429distinct focused release checks and8browser publication cases pass with
 retries/skips0;468cumulative notes retain all467prior entries byte-exact.
 [Prepublication](2026-10-11-release33-support-recovery-prepublication.json).
 [Publication](2026-10-11-release33-publication.json).
+Original33 failed only its client audit before deployment; exact test-only
+correction is pushed. [Corrective publication](2026-10-11-release33-guard-corrective-publication.json).
 Own ordered CI/deploy/live/17asset acceptance is pending;
-public32 remains last accepted.79unmerged histories remain reviewed individually;
+public32 remains last accepted.78unmerged histories remain reviewed individually;
 unfinished/rejected source and originaldirty checkout preserved.
 Historical High frame-time failures, broader world/art/combat/audio, whole-game
 performance/devices/operations/F1-F5/beta/launch/handoff requirements stayopen.
