@@ -1,0 +1,20 @@
+{
+  "status": "selected-and-qualified-bounded-geometry-copy",
+  "source": "8c4e916dc8b4a395f5027b48333dca40bfe07150",
+  "base": "780400ad",
+  "change": "Native bulk copy for ordinary packed Float32 BufferAttributes and direct lane gathering for ordinary nonnormalized interleaved Float32 attributes. Exact prototype method guards retain custom readers; normalized, integer and other representations retain original component reads. Every worker buffer remains separately owned. No worker algorithm, scheduling, geometry budget, asset, material, visible population, draw/triangle limit or gameplay change.",
+  "validation": {
+    "focused": "90 checks in4 suites pass,1.555s, no failure/skip.",
+    "lint": "Full repository ESLint passes with max-warnings0.",
+    "native": "One distinct System Chrome test passes,7.942s,retry0/skip0. Actual GLTFLoader decodes all four selected class bodies in High/Low and their corresponding fitted helmets:16 exact-hash source files,118 meshes,98 packed float attributes,456 interleaved float attributes,118 other attributes,0 skipped meshes. Payload indices/attributes/both blink targets/kind/bytes/transfer count match exact780400ad producer. Actual structured transfer preserves every live source buffer.",
+    "measurements": "Final same-input ABBA complete character producer block medians: reference8.4–13.4ms versus candidate4.2–5.9ms. Fitted helmets retain exact payloads; their submillisecond timings are too small for a broad speed claim. No renderer is constructed in this CPU-only probe.",
+    "build": "Strict copied-input production bundle succeeds,3490368bytes before release rewriting. Worker output remains exact44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43.",
+    "source": "Frozen reference producer equals master780400ad byte-for-byte after its one provenance comment. Whitespace check passes. Delivered assets remain unchanged."
+  },
+  "retainedInitialEvidence": "NodeIO unpacks interleaved data, so its packed-only prototype is discovery only. First browser reference omitted accounting/transfer overhead and is superseded by the exact prior producer. An initial half-float assertion assumed decoding absent from Three getComponent; that unsupported assertion is removed, while normalized/custom reader coverage stays. Raw initial results are retained; two executions of the same native case count as one distinct case.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-geometry-copy-checks-20261011",
+  "inventoryEntries": 17,
+  "inventorySHA256": "ab5d5ec1b57a787b9d7b6ab4dbd6d172098ddea0011ccd438dab8a25f876abc3",
+  "publication": "Merge completed validated work into master; hold next coherent publication until corrective33 exact9ce67fe3 run38142813857 passes its own ordered acceptance. This component remains unpublished.",
+  "limits": "Copy-only CPU/ownership qualification. Does not clear startup triangle peaks, whole-frame medians/p95, equipped-party/device performance, full modern-art or any remaining release gate. Full original goal remains active."
+}
