@@ -248,7 +248,9 @@ export function createProceduralTerrainTexture(key, { quality = 'high' } = {}) {
 // bright magical mark is not a raised bump. Evaluate one periodic canonical
 // field so Low and High retain the same stone/soil footprint and normal strength.
 function createTerrainSurfaceMaps(key, quality) {
-    if (!['town', 'earth', 'water', 'fire', 'air'].includes(key)) return null;
+    // Earth's composition owns registered soil, moss and stone relief. A
+    // second unrelated noise normal/roughness field would distort those layers.
+    if (!['town', 'water', 'fire', 'air'].includes(key)) return null;
     const definition = PROCEDURAL_TERRAIN_DEFINITIONS[key];
     const canonicalSize = 256;
     const height = new Float32Array(canonicalSize * canonicalSize);
@@ -262,11 +264,6 @@ function createTerrainSurfaceMaps(key, quality) {
                 const coverage = bevel * bevel * (3 - 2 * bevel);
                 height[index] = .06 + coverage * (.55 + stoneNoise * .12 - fracture * .04);
                 roughness[index] = .98 - coverage * (.20 + stoneNoise * .06 - fracture * .025);
-            } else if (key === 'earth') {
-                const broad = periodicNoise(x, y, 8, definition.seed);
-                const grit = periodicNoise(x, y, 32, definition.seed ^ 0x5184);
-                height[index] = .2 + broad * .16 + grit * .065;
-                roughness[index] = .86 + broad * .12;
             } else {
                 const surface = sampleElementalTerrain(x, y, key, definition.seed);
                 height[index] = surface.height; roughness[index] = surface.roughness;
