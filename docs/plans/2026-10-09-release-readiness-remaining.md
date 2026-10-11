@@ -40,22 +40,26 @@ Every explicit requirement in those sources remains part of the completion audit
   [partition qualification](2026-10-11-release31-world-review-correction.json),
   [conifer failure](2026-10-11-release31-conifer-coverage-failure.json),
   [coverage correction](2026-10-11-pine-coverage-qualification.json).
-- **New completed work after that push:** roof construction `e5087567` is
-  ordinarily merged into local master `7a8fbfb4`; it is qualified and unpublished.
-  [Roof proof](2026-10-11-town-roof-construction-qualification.json).
+- **New completed work after that push:** roof construction `e5087567` and
+  shared understory ownership `6bd45546` are ordinarily merged into local master;
+  both are qualified and unpublished.
+  [Roof proof](2026-10-11-town-roof-construction-qualification.json),
+  [shared ownership proof](2026-10-11-understory-shared-geometry-qualification.json).
   Public31 is accepted; these later components remain held for a coherent next
   milestone with its own qualification and deployment verification.
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **91**, reduced from 287. Unfinished/rejected experiments
+  unmerged tips are now **84**, reduced from 287. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
-  reset, stash or force-push. The latest historical documentation merge adds
-  a retained failure receipt and bounded test-only animation diagnostics.
+  reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
+  three additional origin-parser regression cases; current runtime, workflow
+  guards and full scope remain intact.
   [Workflow](../../AGENTS.md),
   [original reconciliation](2026-10-11-master-branch-reconciliation.json),
   [stale-hover/rune histories](2026-10-11-stale-hover-rune-branch-reconciliation.json),
   [starter-pursuit history](2026-10-11-starter-pursuit-branch-reconciliation.json),
   [completed diagnostic histories](2026-10-11-completed-diagnostic-branch-reconciliation.json),
-  [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json).
+  [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json),
+  [release/atlas/casino histories](2026-10-11-completed-release-history-reconciliation.json).
 - **Existing 100-client soak:** run 38109009521 remains active on accepted public
   29 `12e5e3c4`. It is not a completed capacity gate or a test of release 31.
   The prior failed soak remains open; no retry/cancellation or unchanged campaign
@@ -71,6 +75,7 @@ Every explicit requirement in those sources remains part of the completion audit
 | Renderer/environment milestone 31 | High-only singleton batching, reviewed DemonOrc packing, camp instance clipping, display-space FXAA, rock shoulders, rooted foliage shading, pine growth/coverage, Earth map cleanup/ordered physical layers and tapered fern pinnae are merged and pushed as 88be47c5. Exact ordered publication acceptance passed; broader art/performance remains open. Earlier rejected all-quality singleton and renderer prototypes remain separate. |
 | Phone fixture | The 390px Earth review uses actual phone startup policy and checks visible/reachable controls. Browser emulation and prepared poses do not establish physical-phone party/dungeon feedback. |
 | Town roof construction | Two fitted gable ends and four timber edge boards per affected structure; 80 additional triangles per building, existing batches/materials/colliders/bounds retained. 30 focused and four distinct native cases pass. Actual town review covers smithy/Compact; Oathhall is constructor/unit covered, with no claim of town placement. Qualified, local master, unpublished. |
+| Understory geometry ownership | One immutable packed recipe per field instead of 326 High/320 Low duplicates. Retained raw attribute arrays reduce 17,850,456→54,756B High and 15,932,160→49,788B Low; all 13,087/7,439 plants and exact transforms/tints retained. 51 distinct focused and four native cases qualify prepared visuals and actual retirement cycles; original phone-network and lazy-PBR-baseline test failures retained. Local master, unpublished. No whole-VRAM, startup-allocation or FPS claim. |
 
 Component receipts and exact failure/ownership/image scopes remain in the
 [preceding evidence register](2026-10-11-release-readiness-evidence-history.md)

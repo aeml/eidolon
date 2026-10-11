@@ -672,3 +672,32 @@ Completedregeneration+openingrewardhistories reconciled withunchangedtrees;
 unmerged287→98. Openingmerge20704ed0+thisreceipt areheldlocallywhilecurrentCIruns.
 Fulloriginalgoal remainsactive; nomarkcomplete/versionacceptance/betaapproval,
 no deferredcampaign/physicalphone substitution or retry/cancel/forcepush.
+
+
+October11 post-11:04UTC continuation: exact88be47c5 Alpha1.79.31 accepted
+after CI38131408628 attempt1 all10ordered jobs pass and postterminal normal-TLS
+frontend/backend/readyDB/nineasset bytes+hashes match. Four optional steps remain
+skips, not passes. Frozen4-entry acceptance inventory451ce457; receipt
+2026-10-11-public31-terminal-qualification.json. Existing public29 100-client
+soak38109009521 remains separately monitored, no retry/cancel/capacity claim.
+Qualified shared-understory ownership6bd45546 ordinarily merged masterb0f82cb9:
+326High/320Low packed recipes become1perfield, raw attributes17850456→54756B/
+15932160→49788B with all13087/7439plants/transforms/tints/bounds retained exactly.
+51distinct focused/4distinct native cases pass;27prepared HUDviews216poses have
+exact pairedRGBA/calls/triangles;4native High/Low lifetimecycles return strict
+PBR-initialized baseline, partial retirement preserves visible sibling pixels.
+Initial phoneERR_NETWORK_CHANGED guard and lazyDFG-baseline failures retained;
+only failed identities rechecked after deployment terminal, original desktop
+passes reused. No startup-allocation/whole-VRAM/FPS/physical-device claim. Frozen
+final22-entry inventory6a1055de plus preliminary86-entry5a27fe03 retains failures.
+Source product unchanged afterc4b39573; final3463e447 corrects QA baseline only.
+Roof and shared ownership held locally for next coherent milestone, not pushed.
+Seven more completed atlas/casino/diagnostic/release histories now ancestors of
+masterbc34032c; unmerged91→84, original287→84. Current runtime/trust/goal/roadmap
+retained; three added real-origin regression rows pass selected race1.075s.
+Isolated receipt-union/commit mistake corrected before master merge; final JSON
+parses/conflict-marker/whitespace/ancestry checks pass. Original checkout exact
+64ec325b/203tracked/262untracked preserved. See completed-release-history receipt.
+Full original1.11–1.99/world/modern-art/gameplay/devices/performance/operations/
+F1–F5/beta/launch/handoff goal remains active; deferred campaign/physical-phone
+feedback remains deferred, no unchanged campaign/soak replay or access mutation.
