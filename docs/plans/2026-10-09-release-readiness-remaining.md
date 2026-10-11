@@ -140,7 +140,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **65**, reduced from 287; 577 of 642 local branch names
+  unmerged tips are now **65**, reduced from 287; 578 of 643 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -174,6 +174,16 @@ Every explicit requirement in those sources remains part of the completion audit
   unpublished; include with qualified guild/venue successor after34acceptance.
   Prepared UI acknowledgements do not prove connected progression or whole-game
   accessibility. [Qualification](2026-10-11-desktop-build-keyboard-qualification.json).
+- **Desktop build continuity:** qualified source `ec4763db`, ordinary master
+  merge `d917817b`. Same-view updates preserve focused action and scroll;
+  retired, detached, closed or old-character controls cannot submit.169distinct
+  focused checks/eight suites and one native keyboard case pass; five browser
+  executions retain original focus failure and three scroll-fixture failures.
+  Actual short desktop supplies nonzero overflow; tall desktop fits all runes.
+  GPU-disabled DOM/keyboard evidence and simulated acknowledgements do not
+  qualify GPU, earned progression or whole-game accessibility. Merged locally,
+  unpublished for the coherent successor after34acceptance.
+  [Qualification](2026-10-11-desktop-build-continuity-qualification.json).
 - **Dungeon radar context:** selected `260ea4d3`, qualified `5e039538`, merged
   `6d904417`. Entry-room walls and corridor mouths now fit the radar; the scale
   stays fixed while walking and advancing rooms.73 focused checks and two
@@ -232,7 +242,13 @@ Every explicit requirement in those sources remains part of the completion audit
   `3ec8bb15` uses real Three Groups in two movement fixtures, retaining every
   assertion;59focused checks/two suites pass. All23original asset pins reproduce
   exactly, then source queries rewrite to the corrective identity. Correction
-  is merged locally and ordinarily pushed; exact CI38149199718 is active.
+  is merged locally and ordinarily pushed. Exact CI38149199718attempt1 failed
+  predeploy with36native passes/one failure:179loopback ERR_NETWORK_CHANGED
+  dependency failures before engine construction; GameEngine itself returned200.
+  All five prerequisites passed; validation/deploy/live jobs skipped. One
+  failed-job-only retry on identical source is active as attempt2; no gate,
+  source, timeout or threshold changes. Initial failure retained.
+  [Trace diagnosis/retry](2026-10-11-release34-predeploy-network-retry.json).
   Own corrected ordered release and fresh23asset acceptance still required.
   [Failure/correction](2026-10-11-release34-charging-fixture-correction.json),
   [Corrective preparation](2026-10-11-release34-corrective-preparation.json),
