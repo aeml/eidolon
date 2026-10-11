@@ -1087,11 +1087,41 @@
     padding: var(--spacing-md);
 }
 
-.shop-buyback-grid {
-    grid-template-columns: repeat(5, 1fr);
+.inventory-grid.shop-buyback-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: var(--spacing-md);
     max-height: 300px;
     overflow-y: auto;
+}
+
+.shop-buyback-choice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    min-height: 64px;
+    padding: 8px;
+    border: 1px solid var(--border-default);
+    border-radius: 4px;
+    background: #171b22;
+    color: #d9e1e8;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.shop-buyback-choice:hover { background: #252b35; }
+.shop-buyback-choice:focus-visible,
+.shop-buyback-grid:focus-visible { outline: 2px solid #ffe4a2; outline-offset: 2px; }
+.shop-buyback-choice:disabled { opacity: 0.65; cursor: default; }
+.shop-buyback-icon.inv-slot { width: 44px; height: 44px; flex: 0 0 44px; }
+.shop-buyback-details { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.shop-buyback-name { overflow-wrap: anywhere; }
+.shop-buyback-price { color: var(--color-gold); font-size: 13px; }
+.shop-buyback-empty { grid-column: 1 / -1; color: var(--color-text-muted); }
+
+@media (max-width: 600px) {
+    .inventory-grid.shop-buyback-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 .shop-sell-button {
