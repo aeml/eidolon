@@ -1,0 +1,39 @@
+{
+  "recordedUTC": "2026-10-11T09:34:31.933064+00:00",
+  "base": "72b009f1762e53ed52317acbd2339f2bdbbd8041",
+  "source": "d0c4bfafb8946d343da2a414aaeb6516b5bfc9b2",
+  "ordinaryMerge": "9e5d29879a9c281fcce766037ab29f6e48924ad0",
+  "problem": "The existing low phone Earth review opens390px and receives mobile-mode CSS from main, but hardcodes GameEngine(isMobile=false). This shows a cropped desktop menu, omits mobile input installation and gives a misleading phone art/HUD review. Normal main startup selects mobile policy at<=800px.",
+  "change": "QA helper selects phone engine/UI/input policy for its390px case and retains desktop policy for1280px source/copy cases. Records and asserts policy, touch input installation, desktop menu visibility, nine visible phone control bounds/min44px and actual elementFromPoint center reachability in all nine views. Original equipment/geometry/collision/budget/GPU/cleanup assertions retained unchanged.",
+  "runtimeChanges": false,
+  "validation": {
+    "nativePassed": 7,
+    "nativeDuration": "1.1min",
+    "retry": 0,
+    "skip": 0,
+    "cases": "Five existing Earth source/copied-engine cases, plus two existing mobile HUD cases.23 browser enrollment checks/2suites pass0.714s; changed helper ESLint and diff check pass. No case identity added/removed.",
+    "world": "45preparedworld images,360manually sampled poses. Corrected390case has nine reachable controls in each of nine views, min44px, menu hidden and mobile input installed. All existing draw/triangle/14slot/zero fallback/ground error/rock-understory disposal gates pass.",
+    "phoneInteraction": "Existing mobile HUD checks use mobile/touch browser policy and real CDP touch dispatch to exercise joystick start/release with a five-person roster at390x844,844x390,568x320. Other existing case taps menu/Skills/chat and target clear in portrait/landscape. This is browser emulation, not physical-phone or authoritative movement evidence.",
+    "manualReview": "Viewed corrected Low390 east-road PNG. Phone menu/party controls, joystick, attack/skill/use and four hotbar slots are visible; clipped desktop row is absent. This resolves the specific preview finding rather than certifying final art, normal connected combat or physical devices.",
+    "scope": "Helper-owned rock/understory resources disposed exactly once. No terrain/pine cache zeroVRAM inference, FPS or campaign approval. High/Low desktop source and copied engine remain covered.",
+    "host": "Native System Chrome AMD RADV Renoir. Native run ended before observed hosted predeploy; release31 still waiting on hosted browser2. Active100-clientsoak shares host; no causal performance claim."
+  },
+  "operationNote": "One merge command used nonexistent22f00000 and Git rejected it without mutation. Correct exact d0c4bfaf ordinary merge9e5d2987 then succeeded. No source rollback, retry of CI or force-push.",
+  "publication": "Merged into local master, no public release; current exact42f06ad0/CI38126692286 still running. Hold with pine/material work for the next coherent milestone after31own acceptance.",
+  "remaining": "Full1.11\u20131.99 world/art/gameplay/device/performance/operations/F1\u2013F5/beta/launch/handoff scope remains active. The preview mismatch does not establish a production phone defect or qualify post-login desktop-to-phone viewport input-policy changes.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-phone-world-review-checks-20261011",
+    "manifest": "SHA256SUMS",
+    "entries": 73,
+    "files": 74,
+    "sha256": "621089312cba29927e8fd15ac2fc134f33a616fe48f78f6dabbfdaffdc3f8e76",
+    "custody": "All73listed hashes verified; files0444, directories/root0555."
+  },
+  "correctedPhoneBudget": {
+    "maxCalls": 80,
+    "maxTriangles": 49316,
+    "limitCalls": 200,
+    "limitTriangles": 85000,
+    "scope": "Changing the review to the real phone engine policy changes camera/render behavior; previous desktop-policy390figures55/41593 are historical, not current phone-policy evidence. Limits unchanged."
+  }
+}

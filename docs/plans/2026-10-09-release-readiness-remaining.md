@@ -58,10 +58,26 @@ Retained Earth maps and other-realm surface/albedo fields are byte-identical.
 15/18source-copy images exact, three differences retained and unattributed.
 The change is subtle in manual views; broad repeated terrain transitions,
 understory/rock silhouettes and normal-session responsive/device review remain
-open. Low390DesktopChrome prepared HUD actions appear cropped at the left edge;
-review in normal responsive gameplay before inferring a production UI failure.
+open. The earlier390px cropped desktop-menu observation is superseded by the
+corrected phone-policy review below; it came from the prepared desktop engine.
 No connected-input/FPS/physical-phone/final-art acceptance or public release.
 [Earth material qualification](2026-10-11-earth-material-field-qualification.json).
+
+**Phone world-review correction:**d0c4bfaf is ordinary-merged into local master9e5d2987.
+The390px helper previously forced a desktop engine under mobile CSS, unlike main
+startup's phone policy. The existing narrow case now installs phone engine/UI/input
+and verifies nine >=44px controls remain fully bounded and center-hit reachable
+in all nine world views; desktop source/copied cases keep their original policy.
+No runtime changes.7existing native cases0retry/skip1.1min,23enrollment checks,
+helper lint and diff check pass. Existing mobile HUD cases exercise real browser
+touch joystick start/release with five party members in three viewport sizes,
+plus menu/Skills/chat/target-clear taps in portrait/landscape. Corrected phone
+world max80draws49316triangles passes unchanged200/85000limits; prior desktop-policy
+390figures55/41593are historical. Earlier cropped-menu images remain retained,
+not evidence of a production phone defect. Browser emulation and prepared poses
+do not close physical-phone, authoritative connected movement, responsive mode
+changes after login or final art gates. No new branch/public release.
+[Phone review qualification](2026-10-11-phone-world-review-qualification.json).
 
 Contact audio76focused/3distinct native cases pass; human listening/busy-fight mix
 and physical devices remain open. Fresh required discovery preserves all337previous
