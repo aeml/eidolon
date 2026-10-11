@@ -141,7 +141,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **65**, reduced from 287; 579 of 644 local branch names
+  unmerged tips are now **65**, reduced from 287; 580 of 645 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -167,6 +167,16 @@ Every explicit requirement in those sources remains part of the completion audit
   [completed diagnostic histories](2026-10-11-completed-diagnostic-branch-reconciliation.json),
   [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json),
   [release/atlas/casino histories](2026-10-11-completed-release-history-reconciliation.json).
+- **Prepared35 milestone:** source `0a2303c1` combines the exact qualified
+  guild/venue/build-menu/direct-trade runtime below in one release.728distinct
+  checks/17suites, full lint, shell syntax and two native publication cases pass;
+  retries/skips0. All12version paths align35;470cumulative notes preserve every
+ 469prior entry byte-exact. Native login/page retry and copied four-class engine
+  construction pass. Component source identity checks justify reusing their
+  existing focused/browser evidence. Completed work merges to master before
+  publication; exact35asset pins, ordinary push, own ordered CI/deploy/live and
+  fresh post-terminal normal-TLS identities/readyDB/asset checks remain required.
+  [Prepublication](2026-10-11-release35-menu-review-prepublication.json).
 - **Desktop build keyboard access:** native skill unlock/rune buttons now support
   Tab/Enter/Space, disabled eligibility and authoritative rune toggle state.
   Qualified175distinct checks/eight suites and four native desktop/phone-layout
