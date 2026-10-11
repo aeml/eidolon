@@ -1,0 +1,29 @@
+{
+  "recordedUTC": "2026-10-11T00:02:23.227609+00:00",
+  "classification": "progress",
+  "source": "1625ac2e8db5c173e0bb6f1b26ab6db3da173126",
+  "commit": "1625ac2e",
+  "published": false,
+  "change": "Enroll the two desktop status-presentation checks in required test:e2e:interface browser CI; extend the existing BrowserSmokePlan ownership assertion.",
+  "manifestScope": "Only appends tests/e2e/status-effects-presentation.spec.js to test:e2e:interface. No dependency/version/lock or runtime source change.",
+  "focusedPassed": 19,
+  "focusedSuites": 1,
+  "discovery": {
+    "exitCode": 0,
+    "cases": 329,
+    "omissions": 0,
+    "duplicates": 0,
+    "scope": "Case discovery only, no browser/server/accounts started; not 329 execution passes."
+  },
+  "reusedPrimaryReceipt": "docs/plans/2026-10-10-status-hud-qualification.json",
+  "unchangedPrimaryInventorySHA256": "3f79342c055821903e571b2cd2c854dd8685eba9958966ac01048515aebc1107",
+  "runtimeInputsUnchanged": true,
+  "limits": "No new native run or deployment. Prior frozen HUD evidence unchanged. Full original game goal and remaining performance/art/device/release gates remain open.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-status-hud-ci-checks-20261010",
+    "inventoryEntries": 5,
+    "files": 6,
+    "inventorySHA256": "2f69e129eca2c9d7f9afe7243144293386f9d0d8b51d047232798067d7a2cdf4",
+    "frozen": true
+  }
+}

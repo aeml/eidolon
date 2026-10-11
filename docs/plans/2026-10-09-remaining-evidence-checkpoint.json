@@ -2288,6 +2288,14 @@
     "actualTrayWidth": 62,
     "heldEngineSHA256": "bea1f3019a0247b5db289a83b0d080dcd3b8fb8f50d843aa34516e4ef4276d12",
     "actualSavedFourClassPartyPassed": true,
-    "scope": "HUD-only stage. Actual saved-character/party uses private camp context; exact selected held publication separately qualified. No universal performance/art/device or release claim."
+    "scope": "HUD-only stage. Actual saved-character/party uses private camp context; exact selected held publication separately qualified. No universal performance/art/device or release claim.",
+    "requiredBrowserCI": {
+      "source": "1625ac2e8db5c173e0bb6f1b26ab6db3da173126",
+      "receipt": "docs/plans/2026-10-11-status-hud-ci-enrollment.json",
+      "focusedPassed": 19,
+      "discoveredExactCases": 329,
+      "runtimeUnchanged": true,
+      "published": false
+    }
   }
 }

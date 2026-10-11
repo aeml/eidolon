@@ -1,6 +1,6 @@
 # Release-readiness remaining work
 
-Current checkpoint: October 10, 2026. The full objective in the owner's
+Current checkpoint: October 11, 2026. The full objective in the owner's
 `goal.md`, the [1.11–1.99 roadmap](2026-09-28-alpha1-11-to1-99-release-roadmap.md),
 [promise inventory](2026-09-28-1-11-gap-register.md),
 [freeze preparation](2026-10-06-release1-80-freeze-preparation.json) and
@@ -41,6 +41,10 @@ passes cover desktop/phone layouts, copied private/held bundles and actual saved
 Fighter/four-class Go-race custody;1optional peer-renderer skip stays skipped.
 Exact selected bundle also preserves lazy four-class construction. No other
 world/server/assets/runtime pilot selected. [Scoped HUD evidence](2026-10-10-status-hud-qualification.json).
+The two desktop status cases are also enrolled in required browser CI:19focused
+plan checks pass; discovery assigns all329cases exactly once. This is discovery,
+not execution of329cases. Runtime inputs and frozen native evidence are unchanged.
+[CI enrollment](2026-10-11-status-hud-ci-enrollment.json).
 
 **Whole-world performance remains open.** The selected runtime's original
 ordinary route retains town400draw/woodland468draw failures against350; original
