@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.33</span>
+                    <span class="start-version-row__label">Alpha 1.79.34</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -843,7 +843,17 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.33" data-notes-pages="46" data-notes-total="468">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.34" data-notes-pages="46" data-notes-total="469">
+                <div class="patch-note-entry" data-version="1.79.34">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.34 (Steady navigation and weapon grips)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>The dungeon radar keeps entrance-room walls and corridor openings in view. Its scale stays steady while walking and advancing through the instance.</li>
+                        <li>Rogues carrying different weapons keep each hand's own grip while resting, walking, running and blocking. Alternating attacks retain the corresponding main-hand and off-hand weapon motions.</li>
+                        <li>Character preparation copies supplied geometry more efficiently while preserving the original models and visible detail. This improves a measured preparation step; whole-game frame-rate and device qualification remain in progress.</li>
+                        <li>Retains approximately 1.5-second jump arrival, smooth takeoff and landing, Well Rested aura tracking, separate automation-account population reporting, account help and the expanded Player Guide.</li>
+                        <li>Existing accounts, saved progression and access remain unchanged. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.33">
                     <h3 class="patch-note-entry__title">Alpha 1.79.33 (Player help and recovery)</h3>
                     <ul class="patch-note-entry__list">
@@ -935,14 +945,6 @@
                         <li>Jump display smoothing now follows elapsed time too, keeping the character closer to its landing point during slow frames.</li>
                         <li>World entry can recover once from an interrupted engine download. Persistent download failures show reload guidance.</li>
                         <li>Improved server stability when players cast abilities during combat.</li>
-                        <li>Full prior patch history remains available through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.24">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.24 (Reliable scene transforms)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Corrected stale scene-object positions during scene updates, including attached objects.</li>
-                        <li>Jump travel retains its 1.5-second cap. Saved progress, collision, character models and equipment remain unchanged.</li>
                         <li>Full prior patch history remains available through Load more notes.</li>
                     </ul>
                 </div>
