@@ -1,0 +1,28 @@
+{
+  "recordedUTC": "2026-10-11T11:39:14.903028+00:00",
+  "version": "Alpha 1.79.32",
+  "source": "d31246e9b53fbe73bd7f59beea4c3235df30a922",
+  "normalPush": true,
+  "ciRun": 38136326810,
+  "ciAttempt": 1,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38136326810",
+  "initialStatus": "in_progress",
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release32-world-resources-publication-checks-20261011/expected-public32-assets.json",
+  "expectedManifestSHA256": "bb0ab45ecf3141c3e4c2e5f19afc985ed1f91c85acef97a19cc096aa9ec7fc73",
+  "expectedAssets": 9,
+  "status": "Pushed; own ordered CI, deployment and post-terminal normal-TLS frontend/backend/DB/nine-assets acceptance pending. Last accepted public31 remains88be47c5.",
+  "monitor": "Existing release_monitor; sparse read-only checks; no retry or cancellation. Existing 100-client public29soak remains separate.",
+  "remaining": "All ten ordered CI/deploy/live jobs and post-terminal exact normal-TLS frontend/backend/database/nine-assets acceptance. No new publication before this custody resolves.",
+  "originalCheckout": {
+    "source": "64ec325bd39be74293b653474101babed2800e04",
+    "trackedModified": 203,
+    "untracked": 262,
+    "preserved": true
+  },
+  "branchWorkflow": {
+    "unmergedLocalTips": 84,
+    "originalUnmergedLocalTips": 287,
+    "completedValidatedWork": "Ordinarily merged into master; no blanket merges of unfinished/rejected experiments."
+  },
+  "goal": "Full original release-readiness objective remains active."
+}
