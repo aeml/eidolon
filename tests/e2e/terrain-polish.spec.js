@@ -23,6 +23,7 @@ test('graphics changes resize real shadow targets and release unused postprocess
                 snapshots.push({ quality, requested: render.keyLight.shadow.mapSize.x,
                     allocated: render.keyLight.shadow.map?.width ?? null,
                     composer: Boolean(render.composer), bloom: Boolean(render.bloomPass),
+                    displayBeforeFxaa: render.composer ? render.composer.passes.indexOf(render.outputPass) < render.composer.passes.indexOf(render.fxaaPass) : null,
                     enabled: render.usePostProcessing, textures: render.renderer.info.memory.textures });
             }
             // A repeated current setting must not churn its active targets.
@@ -37,6 +38,7 @@ test('graphics changes resize real shadow targets and release unused postprocess
         expect(state.composer).toBe(state.quality !== 'low');
         expect(state.bloom).toBe(state.quality !== 'low');
         expect(state.enabled).toBe(state.quality !== 'low');
+        expect(state.displayBeforeFxaa).toBe(state.quality === 'low' ? null : true);
     }
     const low = result.snapshots.filter(s => s.quality === 'low');
     const high = result.snapshots.filter(s => s.quality === 'high');

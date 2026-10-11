@@ -76,6 +76,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
             const audio = engine.audioManager.getSettings();
             const row = { label, uiQuality: ui.getGraphicsQuality(), rendererQuality: render.graphicsQuality,
                 generatorQuality: engine.activeWorldGenerator.graphicsQuality,
+                displayBeforeFxaa: render.composer ? render.composer.passes.indexOf(render.outputPass) < render.composer.passes.indexOf(render.fxaaPass) : null,
                 brightness: render.brightnessLevel, uiBrightness: ui.getBrightnessLevel(), scale: ui.getUiScale(),
                 muted: !audio.enabled, motion: document.documentElement.dataset.reducedMotion,
                 shake: render.cameraShakeEnabled, shadows: render.renderer.shadowMap.enabled,
@@ -161,6 +162,7 @@ for (const phone of [false, true]) test(`${phone ? 'phone policy' : 'desktop'}: 
         await writeFile(testInfo.outputPath('integrated-route.json'), JSON.stringify(reports, null, 2));
         for (const row of reports) {
             expect(row.rendererQuality).toBe(row.uiQuality); expect(row.generatorQuality).toBe(row.uiQuality);
+            expect(row.displayBeforeFxaa).toBe(phone || row.uiQuality === 'low' ? null : true);
             expect(row.brightness).toBe(65); expect(row.uiBrightness).toBe(65); expect(row.scale).toBe(1.25);
             expect(row.muted).toBe(true); expect(row.motion).toBe('true'); expect(row.shake).toBe(false);
             expect(row.shadows).toBe(!phone && row.uiQuality !== 'low'); expect(row.playerRenderOwned).toBe(true);

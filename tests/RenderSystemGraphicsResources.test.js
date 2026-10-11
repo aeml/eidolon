@@ -38,6 +38,8 @@ test.each(['low', 'medium', 'high'])('renderer starts at saved %s quality withou
         expect(render.renderer.shadowMap.enabled).toBe(quality !== 'low');
         expect(render.keyLight.shadow.mapSize.width).toBe(quality === 'low' ? 512 : quality === 'medium' ? 2048 : 4096);
         if (quality === 'low') { expect(render.composer).toBeNull(); expect(render.effectQualityScale).toBe(.52); }
+        else expect([render.renderPass, render.bloomPass, render.outputPass, render.fxaaPass]
+                    .map(pass => render.composer.passes.indexOf(pass))).toEqual([0, 1, 2, 3]);
         expect(localStorage.getItem('eidolon.graphicsQuality')).toBe(quality);
     } finally { render.dispose(); }
 });
@@ -106,7 +108,11 @@ test('switching back from Low recreates postprocessing without enabling it on ph
             render.setGraphicsQuality('low'); expect(render.composer).toBeNull();
             render.setGraphicsQuality('high');
             expect(render.usePostProcessing).toBe(!mobile);
-            if (!mobile) { expect(render.composer).not.toBeNull(); expect(render.composer).not.toBe(initial); }
+            if (!mobile) {
+                expect(render.composer).not.toBeNull(); expect(render.composer).not.toBe(initial);
+                expect([render.renderPass, render.bloomPass, render.outputPass, render.fxaaPass]
+                    .map(pass => render.composer.passes.indexOf(pass))).toEqual([0, 1, 2, 3]);
+            }
             else expect(render.composer).toBeNull();
         } finally { render.dispose(); }
     }
