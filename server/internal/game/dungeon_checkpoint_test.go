@@ -6,9 +6,16 @@ import (
 )
 
 func TestDungeonTownReturnUsesLatestClearedBossCheckpoint(t *testing.T) {
-	for _, action := range []string{"recall", "respawn"} {
-		t.Run(action, func(t *testing.T) {
-			w := newTestWorld()
+	for _, scenario := range []struct{ profile, action string }{
+		{FlatTerrainProfile, "recall"}, {FlatTerrainProfile, "respawn"},
+		{RaisedEarthTerrainProfile, "recall"}, {RaisedEarthTerrainProfile, "respawn"},
+	} {
+		t.Run(scenario.profile+"/"+scenario.action, func(t *testing.T) {
+			w, err := NewWorldWithTerrainProfile(nil, scenario.profile)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(w.StopBackground)
 			p := newTestPlayer("checkpoint-return", "Fighter")
 			w.AddEntity(p)
 			id := w.CreateDungeon("checkpoint-party", "molten_core", DifficultyNormal, 70)
@@ -26,7 +33,7 @@ func TestDungeonTownReturnUsesLatestClearedBossCheckpoint(t *testing.T) {
 				for i := 1; i <= checkpoint; i++ {
 					instance.RoomState.Rooms[i] = DungeonRoomProgress{Explored: true, Cleared: true, Rewarded: true}
 				}
-				if action == "recall" {
+				if scenario.action == "recall" {
 					if err := w.PerformRecall(p.ID); err != nil {
 						t.Fatal(err)
 					}
@@ -36,13 +43,16 @@ func TestDungeonTownReturnUsesLatestClearedBossCheckpoint(t *testing.T) {
 						t.Fatal(err)
 					}
 				}
+				if p.InstanceID != "" || p.Y != 0 || p.X != -1.25 || p.Z != 200 {
+					t.Fatal("dungeon recovery did not land on the flat Lanternhold floor")
+				}
 				progress := append([]DungeonRoomProgress(nil), instance.RoomState.Rooms...)
 				gold, xp, hp, mana := p.Gold, p.Experience, p.Health, p.Mana
 				if err := w.EnterInstance(p.ID, id); err != nil {
 					t.Fatal(err)
 				}
 				room := instance.Layout.Rooms[checkpoint]
-				if p.X != room.X || p.Z != room.Z || p.TargetX != room.X || p.TargetZ != room.Z {
+				if p.InstanceID != id || p.Y != 0 || p.X != room.X || p.Z != room.Z || p.TargetX != room.X || p.TargetZ != room.Z {
 					t.Fatalf("return did not use cleared boss checkpoint %d", checkpoint)
 				}
 				if p.Gold != gold || p.Experience != xp || p.Health != hp || p.Mana != mana {
