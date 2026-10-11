@@ -1,0 +1,126 @@
+{
+  "recordedUTC": "2026-10-11T08:11:00.209823+00:00",
+  "source": "2cf7bb42172cf4e5b9de2d83f06fca4db4c1da53",
+  "base": "2e6c6a14c781ce9416679fee2fd409a6caf398da",
+  "version": "Alpha1.79.30",
+  "productRuntimeChanged": false,
+  "failure": {
+    "run": 38119634774,
+    "job": 114420567844,
+    "terminal": "failure",
+    "completedUTC": "2026-10-11T07:58:45Z",
+    "requiredJobs": {
+      "succeeded": 9,
+      "failed": 1
+    },
+    "reason": "Live two-player WellRested QA imports/tests/e2e/scene-performance.jsfrompublicorigin, which intentionally deploys no tests folder. No party frame/visual assertion was reached. Earlier recovery/expiry2cases passed.",
+    "retained": "/home/aeml/.local/share/eidolon-release30-monitor-20261011/run-38119634774-failure-evidence"
+  },
+  "correction": "Test runner temporarily supplies exact local observer and interval module via two page-owned routes. It imports both before sampling, removes only its own handlers, reuses module cache within document, and clears cache entry after next DOMContentLoaded. Public site receives no test files; HTTP interception is retired before profiling.",
+  "observerBodyByteExact": true,
+  "checks": {
+    "existingObserverAndInterval": 24,
+    "existingEnrollmentAndNativeContract": 28,
+    "fullLint": "pass",
+    "copiedPublicationRegression": "1pass,0retry/skip; predecessor reproduces same missing-module error. Publication has no tests folder;540realRAF fixture frames across first/repeat/fresh-navigation phases; loop/render policy restored; post-observation fetch returns404proving temporary route removal. Fixture does not establish game performance.",
+    "liveAffectedCase": "1pass,0retry/skip; unchanged actual two-player rested party case against deployed2e using local corrected helper; two fresh ordinary reservedQAaccounts, no admin grants or existing account deletion; real joystick, party acceptance, nineviewport/statuschecks,High/Low/Highrepeat, fresh login and both owned auras.",
+    "live": {
+      "actualPartyMembers": 2,
+      "joystickMovement": true,
+      "meshCounts": {
+        "high": [
+          5,
+          5
+        ],
+        "low": [
+          4,
+          4
+        ],
+        "high-repeat": [
+          5,
+          5
+        ]
+      },
+      "rejoinedAuras": [
+        {
+          "bank": 37.67513181599995,
+          "attached": true,
+          "quality": "high",
+          "meshes": 5,
+          "invalid": 0,
+          "batches": 2,
+          "sparks": 16,
+          "ownerGroups": 1,
+          "ownerMatches": true,
+          "distance": 0
+        },
+        {
+          "bank": 46.03228774999999,
+          "attached": true,
+          "quality": "high",
+          "meshes": 5,
+          "invalid": 0,
+          "batches": 2,
+          "sparks": 16,
+          "ownerGroups": 1,
+          "ownerMatches": true,
+          "distance": 0
+        }
+      ],
+      "profiles": [
+        {
+          "phase": "high",
+          "frames": 180,
+          "restored": true,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "drawCallsMedian": 141,
+          "trianglesMedian": 113871,
+          "visibility": "visible",
+          "visibleFrames": 180
+        },
+        {
+          "phase": "low",
+          "frames": 180,
+          "restored": true,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.7,
+          "drawCallsMedian": 138,
+          "trianglesMedian": 113581,
+          "visibility": "visible",
+          "visibleFrames": 180
+        },
+        {
+          "phase": "high-repeat",
+          "frames": 180,
+          "restored": true,
+          "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "frameMedianMs": 16.7,
+          "frameP95Ms": 16.8,
+          "drawCallsMedian": 141,
+          "trianglesMedian": 113869,
+          "visibility": "visible",
+          "visibleFrames": 180
+        }
+      ]
+    },
+    "limitations": "Native browser emulatesphone390/844/568viewports; not physical-phone acceptance. Original party case asserts nativeGPU,180visibleframes and positive counters, not full Low200draw/85000tri or timing targets; observed Low113581tri exceeds broad85k target. Public29soak shares host; no causalFPSclaim.",
+    "discovery": "Regression is in existing mandatory hosted published-game-bundle file; no test selection or optional campaign expansion."
+  },
+  "retainedDraftFailures": [
+    "baseline.log: predecessor missing-public-test-module failure",
+    "corrected.log: new fixture used browserResponse.status()instead of.status; measurements completed before post-route assertion failed",
+    "navigation.log and lint.log: draft fixture scope introduced undefined installFixture; existing login helper restored exactly, fixture scoped correctly",
+    "live-party-terminal-initial.json/live-party-sanitization.log: actual case passes, scanner rejects file-path inputENOTDIR; console redacted separately and result/report directory scan succeeds, no browser rerun"
+  ],
+  "privacy": "Credentialed automatic trace/video/screenshot disabled; explicit post-login screenshots only. Freshcredentials kept0600outsideevidence root; console username/password variants redacted, credentialed directories scanned successfully. Anonymous predecessor traces remain.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-profile-delivery-checks-20261011",
+    "entries": 126,
+    "inventorySHA256": "f1d9af4d9932f89d98b182983378b4f97b2db67f9c023ab745a1c52e8a0ebb32"
+  },
+  "publication": "Corrective release-gate-only change on same1.79.30version and unchanged cumulative notes; source2e runtime unchanged. Merge qualified correction into localmaster before pushing only this corrective ancestry. Do not publish camp/Demon/Highsingleton/rock feature milestone before ordered corrective gates/deploy/live identity acceptance.",
+  "remaining": "Failed2e CI remains failed despite successful deployments and nine exact public assets. Public29lastfullyaccepted. Full original goal/Highperformance/art/world/audio/devices/operations/F1\u2013F5/beta/launch/handoff remains active."
+}
