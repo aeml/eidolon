@@ -1,0 +1,51 @@
+{
+  "recordedUTC": "2026-10-11T15:13:31.007911+00:00",
+  "source": "b453fa5266281ef00c83600017e34ac2d55f9178",
+  "status": "Completed QA observer qualified; actual native party performance failure retained. No product optimization selected.",
+  "change": "Record pending/installed/swapped reduced geometry after every completed timed frame. Existing60warmup/180samples, budgets, renderer/reset/loop restoration and visible-frame checks unchanged.",
+  "focused": "14checks/1suite pass; scoped ESLint and diff checks pass. Counter transition case proves observation does not delay sampling.",
+  "native": {
+    "passed": 0,
+    "failed": 1,
+    "skipped": 1,
+    "retries": 0,
+    "seconds": 92.43519262899645,
+    "drawMedian": 297,
+    "triangleMedian": 174118,
+    "trianglePeak": 246694,
+    "frameMedianMs": 33.4,
+    "frameP95Ms": 50.1,
+    "medianLimitMs": 20,
+    "p95LimitMs": 33.4,
+    "pendingFrames": 118,
+    "settledFrames": 62
+  },
+  "interpretation": "Worker handoff overlaps sampling and triangle count falls as entries install. Settled62frames still have33.3ms median. This is correlation, not a controlled bottleneck or speedup result. All historical failures remain open. Browser failure prevents later saved-custody assertions.",
+  "scope": "Actual Go-race disposable four-class14slot party, one native renderer and three ordinary socket peers; no campaign or soak replay.",
+  "sanitization": {
+    "observedPreparedAccounts": 4,
+    "plaintextFilesScanned": 12,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "native": {
+      "total": 2,
+      "expected": 0,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": false
+    },
+    "maxRetry": 0
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-party-startup-geometry-checks-20261011",
+  "inventorySHA256": "795c1127236f472382fbcf2b0e93980f12d3b6e7c8c17010782633f85faaa2ed",
+  "runtimeChanged": false,
+  "publication": "QA-only local master integration; corrective34still active; no next runtime release pushed."
+}
