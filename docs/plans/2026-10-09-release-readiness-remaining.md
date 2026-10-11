@@ -21,7 +21,7 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## Release and source custody
 
-- **Active coherent36 milestone:** selected Earth ground, Chronicle icons, read-only content validation and restored terrain coverage are merged and pushed at`aee9c3dba85da6f11555439a3ad4476597aaada3`. CI38161891123 attempt1 is active;35remains last accepted.448distinct focused/six suites and four native publication cases pass, retries/skips0.471notes preserve470prior entries;12versions align;82asset pins prepared. Exact copied views retain High gate285210tri and Low gate106063/road91510tri above original budgets, equally before/after. No final-art/whole-game-performance clearance. [Qualification](2026-10-11-release36-earth-content-prepublication.json), [publication](2026-10-11-release36-publication.json).
+- **Accepted coherent36 milestone:** selected Earth ground, Chronicle icons, read-only content validation and restored terrain coverage are merged and pushed at`aee9c3dba85da6f11555439a3ad4476597aaada3`. CI38161891123 attempt1 passed all ten jobs; fresh18:52:03UTC normal-TLS checks match exact frontend/backend identities, ready database and all82served asset hashes/byte counts. Four optional stages remain skips.448distinct focused/six suites and four native publication cases pass, retries/skips0.471notes preserve470prior entries;12versions align;82asset pins independently verified. Exact copied views retain High gate285210tri and Low gate106063/road91510tri above original budgets, equally before/after. No final-art/whole-game-performance clearance. [Qualification](2026-10-11-release36-earth-content-prepublication.json), [publication](2026-10-11-release36-publication.json), [acceptance](2026-10-11-public36-terminal-qualification.json).
 
 - **Release33 CI correction:** its sole client asset-audit failure is reproduced
   and corrected with33 focused passing checks. Original CI is terminal failed,
@@ -48,7 +48,9 @@ Every explicit requirement in those sources remains part of the completion audit
   repair does not establish deployment success.
   [Receipt](2026-10-11-release33-scratch-capacity.json).
 
-- **Last accepted public build:** Accepted public release: Alpha1.79.35, exact
+- **Last accepted public build:** Alpha1.79.36, exact`aee9c3dba85da6f11555439a3ad4476597aaada3`. CI38161891123 attempt1 passed all ten ordered jobs. Fresh normal-TLS frontend/backend identities, ready database and all82served asset hashes/byte counts match at18:52:03UTC. Four optional stages remain skips. [Acceptance](2026-10-11-public36-terminal-qualification.json).
+
+- **Previous accepted public build:** Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
 identities, ready database and all78served asset hashes/byte counts match at
@@ -154,7 +156,7 @@ identities, ready database and all78served asset hashes/byte counts match at
   High gate285210tri and Low gate88749/road85030tri remain above original limits
   in paired views; no whole-game performance or final-art clearance.
  39native cases (including both new cases) and355ordinary browser cases are
-  discovered, not all newly executed. Included in pushed36; deployment acceptance pending.
+  discovered, not all newly executed. Included in accepted36; scoped deployment acceptance passed.
   [Qualification](2026-10-11-earth-thatch-composition-qualification.json).
 - **Completed terrain histories:** Moonfrost material, Earth outcrop art and
   raised-reference/checkpoint histories are reviewed and ordinarily merged.
@@ -163,14 +165,14 @@ identities, ready database and all78served asset hashes/byte counts match at
   Go-race cases and two native cases/eight120-frame samples pass unchanged
   original budgets, retries/skips0. Two retained October8 receipts stay dated;
   prepared unequipped previews do not establish final art, connected equipped
-  gameplay or production raised-terrain acceptance. Included in pushed36; deployment acceptance pending. [Reconciliation](2026-10-11-terrain-history-reconciliation.json).
+  gameplay or production raised-terrain acceptance. Included in accepted36; scoped deployment acceptance passed. [Reconciliation](2026-10-11-terrain-history-reconciliation.json).
 - **Unselected turf detail:**28focused checks and two native four-class14-slot
   HUD comparisons pass; added surface preparation costs about67ms High/20ms Low
   for only marginal ordinary-zoom visual benefit. Private88eeabdb remains
   unselected with frozen evidence; no runtime/CI enrollment or budget change.
   [Selection](2026-10-11-earth-turf-unselected.json).
 - **Completed current recovery history:** four historical commits through`ef7510f0` are ordinarily merged as`cd9f05f3`. All pre-existing tracked files remain byte-exact; only the dated October6 receipt is added. Five recovery source/test files exactly match qualified`d81b1ef8`, reusing its66distinct checks and retained failures. Later path-alias protections remain in force. No unchanged restore/campaign replay, production restore or new publication. [Reconciliation](2026-10-11-recovery-current-history-reconciliation.json).
-- **Forge gem keyboard/refresh continuity:** qualified source`1af38973` is ordinarily merged as`eeade50f`. Native gem/socket controls expose names, selected/disabled states, visible focus and44px targets. Ordinary redraws retain scroll; inventory reorder follows the same visible gem and clears spending selection; removed/replaced items use labeled focus fallback and clear destructive choice. Existing quote guards/local resources stay unchanged.68distinct focused checks/seven suites and four distinct Chrome1280/390cases pass, retries/skips0. Seven browser executions retain one actual offscreen-focus failure; unit fixture nesting correction is retained.357CI cases are discovered exactly once, not357new passes. Source-only while36acceptance runs. [Qualification](2026-10-11-forge-gem-keyboard-qualification.json).
+- **Forge gem keyboard/refresh continuity:** qualified source`1af38973` is ordinarily merged as`eeade50f`. Native gem/socket controls expose names, selected/disabled states, visible focus and44px targets. Ordinary redraws retain scroll; inventory reorder follows the same visible gem and clears spending selection; removed/replaced items use labeled focus fallback and clear destructive choice. Existing quote guards/local resources stay unchanged.68distinct focused checks/seven suites and four distinct Chrome1280/390cases pass, retries/skips0. Seven browser executions retain one actual offscreen-focus failure; unit fixture nesting correction is retained.357CI cases are discovered exactly once, not357new passes. Source-only for a coherent successor to accepted36. [Qualification](2026-10-11-forge-gem-keyboard-qualification.json).
 - **Merchant buyback keyboard and honest prices:** qualified`db3346cb` is ordinarily merged as`49b50d7b`. Named native buttons show item/stack and total Gold prices, including the server's legacy one-Gold/single-item defaults. Keyed refresh retains held-key targets, item focus and reading position; reordering reveals the focused item. Removed, invalid or ambiguous choices fall back to the named group; obsolete/disposed nodes cannot send actions.65focused checks/five suites and two actual Chrome1280/390DOM cases pass, retries/skips0.359CI cases are discovered exactly once. Initial test matcher/collector mistakes and CSS-precedence correction are retained. Synthetic callbacks/viewport emulation do not prove connected economic transactions, actual phone or GPU performance. Source-only for a coherent successor. [Qualification](2026-10-11-buyback-keyboard-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
   unmerged tips are now **60**, reduced from 287; 594 of 654 local branch names
@@ -368,7 +370,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Exact35 remains accepted.36/aee9c3db is pushed, with448focused/six suites, four browser cases and82copied asset pins qualified; own CI38161891123 is active. Require its ordered CI/deploy/live success and fresh normal-TLS exact identities/readyDB/all82asset pins before another publication. Later local Forge and buyback keyboard/price work and completed recovery/Gold histories are qualified and merged, awaiting a coherent successor. | Implementation |
+| Next release | Exact36/aee9c3db is accepted after CI38161891123 attempt1 passed all ten jobs and fresh normal-TLS exact identities/readyDB/all82asset pins matched. Four optional stages remain skips. Retained cold Earth geometry overruns remain open. Later local Forge and buyback keyboard/price work and completed recovery/Gold histories are qualified and merged, awaiting a coherent successor. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |

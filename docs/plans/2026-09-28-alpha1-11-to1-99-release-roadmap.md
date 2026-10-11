@@ -1,12 +1,12 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is merged and pushed; CI38161891123 attempt1 is active.448distinct focused checks/six suites and four native publication cases pass, retries/skips0.12versions align;471notes preserve all470prior entries byte-exact.82public asset pins are prepared; public35 remains last accepted. [Publication](2026-10-11-release36-publication.json).
+Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is accepted live. CI38161891123 attempt1 passed all ten jobs. Fresh normal-TLS checks at18:52:03UTC match frontend/backend identities, ready database and all82served asset hashes/byte counts. Four optional stages remain skips.448distinct prepublication focused checks/six suites and four native publication cases pass, retries/skips0;12versions align and471notes preserve all470prior entries byte-exact. [Publication](2026-10-11-release36-publication.json). [Acceptance](2026-10-11-public36-terminal-qualification.json).
 
-Forge gem keyboard choices and identity/focus continuity are qualified and merged locally as`eeade50f` for a later coherent milestone.68distinct focused checks/seven suites and four distinct Chrome desktop/phone cases pass; one reproduced reorder-visibility failure and original fixture correction are retained. Source-only while36qualification runs. [Qualification](2026-10-11-forge-gem-keyboard-qualification.json).
+Forge gem keyboard choices and identity/focus continuity are qualified and merged locally as`eeade50f` for a later coherent milestone.68distinct focused checks/seven suites and four distinct Chrome desktop/phone cases pass; one reproduced reorder-visibility failure and original fixture correction are retained. Source-only for a coherent successor to accepted36. [Qualification](2026-10-11-forge-gem-keyboard-qualification.json).
 
-Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Source-only for a later coherent milestone while36deployment is active. [Qualification](2026-10-11-buyback-keyboard-qualification.json).
+Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Source-only for a coherent successor to accepted36. [Qualification](2026-10-11-buyback-keyboard-qualification.json).
 
-October11 current checkpoint: Accepted public release: Alpha1.79.35, exact
+October11 historical checkpoint: Previous accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
 identities, ready database and all78served asset hashes/byte counts match at

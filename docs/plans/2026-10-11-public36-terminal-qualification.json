@@ -1,0 +1,964 @@
+{
+  "recordedUTC": "2026-10-11T18:55:02.958132+00:00",
+  "version": "Alpha 1.79.36",
+  "source": "aee9c3dba85da6f11555439a3ad4476597aaada3",
+  "status": "Accepted exact ordered publication within its retained scope. Full goal remains active.",
+  "ci": {
+    "run": 38161891123,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38161891123",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "terminalUpdatedUTC": "2026-10-11T18:51:23Z"
+  },
+  "orderedJobs": [
+    {
+      "name": "Client Tests (Jest)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Server Tests (Go)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "conclusion": "success",
+      "optionalSkippedSteps": [
+        "Run deterministic High/Low animation gallery",
+        "Run required Well Rested rendering and GPU lifecycle QA",
+        "Run disposable full-character gameplay"
+      ]
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Live Release and Character QA",
+      "conclusion": "success",
+      "optionalSkippedSteps": [
+        "Run live four-class and remote-animation QA"
+      ]
+    }
+  ],
+  "public": {
+    "normalTLS": true,
+    "observedAtUtc": "2026-10-11T18:52:03.480755+00:00",
+    "manifestPath": "/home/aeml/.local/share/eidolon-release36-publication-checks-20261011/expected-public36-assets.json",
+    "manifestSource": "aee9c3dba85da6f11555439a3ad4476597aaada3",
+    "expectedVersion": "Alpha 1.79.36",
+    "frontend": {
+      "status": 200,
+      "identity": {
+        "commit": "aee9c3dba85da6f11555439a3ad4476597aaada3",
+        "version": "Alpha 1.79.36"
+      }
+    },
+    "backend": {
+      "status": 200,
+      "identity": {
+        "status": "ok",
+        "database": "ready",
+        "commit": "aee9c3dba85da6f11555439a3ad4476597aaada3",
+        "version": "Alpha 1.79.36",
+        "terrainProfile": "flat-v1",
+        "goroutines": 40,
+        "heapAllocBytes": 57935744,
+        "heapObjects": 55191,
+        "broadcastQueues": {
+          "queued": 0,
+          "capacity": 1024,
+          "encounterQueued": 0,
+          "encounterCapacity": 128,
+          "dropped": 0,
+          "encounterDropped": 0,
+          "invalidDropped": 0
+        },
+        "websocketClosures": {
+          "accessDenied": 0,
+          "accountRecovery": 0,
+          "adminAdmission": 0,
+          "adminStorage": 0,
+          "hubShutdown": 0,
+          "inboundLimit": 0,
+          "peerAbnormal": 0,
+          "peerGoingAway": 14,
+          "peerNormal": 1,
+          "peerPolicy": 0,
+          "peerProtocol": 0,
+          "peerServer": 0,
+          "priorityOverflow": 0,
+          "qaDisconnect": 3,
+          "queuesClosed": 0,
+          "readNetwork": 0,
+          "readOther": 0,
+          "readTimeout": 0,
+          "sessionReplaced": 0,
+          "writeNetwork": 0,
+          "writeOther": 0,
+          "writeTimeout": 0
+        },
+        "operational": {
+          "characterJournal": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 33,
+            "failed": 0,
+            "timedSamples": 33,
+            "totalMicros": 1222560,
+            "maxMicros": 295763
+          },
+          "characterCommit": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 33,
+            "failed": 0,
+            "timedSamples": 33,
+            "totalMicros": 733443,
+            "maxMicros": 200652
+          },
+          "characterCleanup": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 33,
+            "failed": 0,
+            "timedSamples": 33,
+            "totalMicros": 562369,
+            "maxMicros": 66718
+          },
+          "characterRecovery": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 10,
+            "failed": 0,
+            "timedSamples": 10,
+            "totalMicros": 676,
+            "maxMicros": 95
+          },
+          "casinoGold": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "casinoEP": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 0,
+            "failed": 0,
+            "timedSamples": 0,
+            "totalMicros": 0,
+            "maxMicros": 0
+          },
+          "realtimeUpdate": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 18021,
+            "failed": 0,
+            "timedSamples": 18021,
+            "totalMicros": 126463319,
+            "maxMicros": 33885
+          },
+          "stateBroadcast": {
+            "inFlight": 0,
+            "inFlightKnown": true,
+            "completed": 18021,
+            "failed": 0,
+            "timedSamples": 18021,
+            "totalMicros": 13486269,
+            "maxMicros": 21732
+          }
+        }
+      }
+    },
+    "assets": [
+      {
+        "path": "assets/patch-notes/1.79.34/page-001.json",
+        "status": 200,
+        "bytes": 18939,
+        "sha256": "74972e3e207ef0a87e6ece6d9907973eccfc90ceba3db698c7898253cbb88087",
+        "expectedBytes": 18939,
+        "expectedSha256": "74972e3e207ef0a87e6ece6d9907973eccfc90ceba3db698c7898253cbb88087",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.34/page-046.json",
+        "status": 200,
+        "bytes": 15420,
+        "sha256": "28918ecdde06539109eaff76c5d4ae24c49a96f46926eff10d9c44ff37ee5ec2",
+        "expectedBytes": 15420,
+        "expectedSha256": "28918ecdde06539109eaff76c5d4ae24c49a96f46926eff10d9c44ff37ee5ec2",
+        "matches": true
+      },
+      {
+        "path": "index.html",
+        "status": 200,
+        "bytes": 120834,
+        "sha256": "3088a67440faaa639848488c3dd7b149ea5a15eac6eaf47478950a241033f7ee",
+        "expectedBytes": 120834,
+        "expectedSha256": "3088a67440faaa639848488c3dd7b149ea5a15eac6eaf47478950a241033f7ee",
+        "matches": true
+      },
+      {
+        "path": "release.json",
+        "status": 200,
+        "bytes": 89,
+        "sha256": "7d5b28163e9d44095f39da6d6d15792c0b361ad687a940ef68fa89c9278f1647",
+        "expectedBytes": 89,
+        "expectedSha256": "7d5b28163e9d44095f39da6d6d15792c0b361ad687a940ef68fa89c9278f1647",
+        "matches": true
+      },
+      {
+        "path": "src/art/AuthoredWeaponMotions.js",
+        "status": 200,
+        "bytes": 5684,
+        "sha256": "8f3209f22f531d47528024c7abd8dd12ae0b2030e1c1e29854f242724f54822e",
+        "expectedBytes": 5684,
+        "expectedSha256": "8f3209f22f531d47528024c7abd8dd12ae0b2030e1c1e29854f242724f54822e",
+        "matches": true
+      },
+      {
+        "path": "src/assets/authoredEquipment.generated.js",
+        "status": 200,
+        "bytes": 113819,
+        "sha256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+        "expectedBytes": 113819,
+        "expectedSha256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+        "matches": true
+      },
+      {
+        "path": "src/core/ActorGameplayGeometryDelivery.js",
+        "status": 200,
+        "bytes": 12637,
+        "sha256": "3d69f58f7f7daa89ef7e03aeecfb633b009b2880f7429449797e17e33ef81f80",
+        "expectedBytes": 12637,
+        "expectedSha256": "3d69f58f7f7daa89ef7e03aeecfb633b009b2880f7429449797e17e33ef81f80",
+        "matches": true
+      },
+      {
+        "path": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+        "status": 200,
+        "bytes": 137178,
+        "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "expectedBytes": 137178,
+        "expectedSha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "matches": true
+      },
+      {
+        "path": "src/core/CasinoController.js",
+        "status": 200,
+        "bytes": 34718,
+        "sha256": "4c43dd134a5662d9a9cd042d45dc27ea63223fe13ff883b504d0e60ba548317a",
+        "expectedBytes": 34718,
+        "expectedSha256": "4c43dd134a5662d9a9cd042d45dc27ea63223fe13ff883b504d0e60ba548317a",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngine.bundle.js",
+        "status": 200,
+        "bytes": 3501693,
+        "sha256": "15d577015592cccab8ca562129a45096895ad8867db7f744198e90495e7bb443",
+        "expectedBytes": 3501693,
+        "expectedSha256": "15d577015592cccab8ca562129a45096895ad8867db7f744198e90495e7bb443",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngineMovement.js",
+        "status": 200,
+        "bytes": 65272,
+        "sha256": "562efe9ccf931422a577de87bb19ff2f8162622c005784c7a2838dba2c816c76",
+        "expectedBytes": 65272,
+        "expectedSha256": "562efe9ccf931422a577de87bb19ff2f8162622c005784c7a2838dba2c816c76",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngineRuntime.js",
+        "status": 200,
+        "bytes": 60516,
+        "sha256": "ee3ebfbe4b2c60b4cfa7d86f3b9167a771783fd96a373446f0358c828db03ea0",
+        "expectedBytes": 60516,
+        "expectedSha256": "ee3ebfbe4b2c60b4cfa7d86f3b9167a771783fd96a373446f0358c828db03ea0",
+        "matches": true
+      },
+      {
+        "path": "src/entities/Actor.js",
+        "status": 200,
+        "bytes": 96922,
+        "sha256": "0f2c909a74cc3900e09f2d4b419a9aa23e1577df000b60ab10ff166be8d8e98b",
+        "expectedBytes": 96922,
+        "expectedSha256": "0f2c909a74cc3900e09f2d4b419a9aa23e1577df000b60ab10ff166be8d8e98b",
+        "matches": true
+      },
+      {
+        "path": "src/main.js",
+        "status": 200,
+        "bytes": 28947,
+        "sha256": "ded3ee41be682c8c4fa4759899794c8565323d19551b7613a35a2d94bcc652dd",
+        "expectedBytes": 28947,
+        "expectedSha256": "ded3ee41be682c8c4fa4759899794c8565323d19551b7613a35a2d94bcc652dd",
+        "matches": true
+      },
+      {
+        "path": "src/styles/casino.css",
+        "status": 200,
+        "bytes": 23795,
+        "sha256": "aa250222990cbcf97a6d372651648beab25e0222d438aacc6824dff6870de2fe",
+        "expectedBytes": 23795,
+        "expectedSha256": "aa250222990cbcf97a6d372651648beab25e0222d438aacc6824dff6870de2fe",
+        "matches": true
+      },
+      {
+        "path": "src/styles/direct-trade.css",
+        "status": 200,
+        "bytes": 1999,
+        "sha256": "bbe61187ec606cfb4277141e20dad680c68e71f835e4c99c15a1dcbfbe97ee29",
+        "expectedBytes": 1999,
+        "expectedSha256": "bbe61187ec606cfb4277141e20dad680c68e71f835e4c99c15a1dcbfbe97ee29",
+        "matches": true
+      },
+      {
+        "path": "src/styles/index.css",
+        "status": 200,
+        "bytes": 253343,
+        "sha256": "127712e26f109da5f9838050d0bf500d2c4f013adcba3a1cc47247c57be65c26",
+        "expectedBytes": 253343,
+        "expectedSha256": "127712e26f109da5f9838050d0bf500d2c4f013adcba3a1cc47247c57be65c26",
+        "matches": true
+      },
+      {
+        "path": "src/styles/skill-tree.css",
+        "status": 200,
+        "bytes": 4025,
+        "sha256": "e64f5f7546b7611e3b98c43aa9cbd7039a44981cd26643463b85ec710d3b0f6a",
+        "expectedBytes": 4025,
+        "expectedSha256": "e64f5f7546b7611e3b98c43aa9cbd7039a44981cd26643463b85ec710d3b0f6a",
+        "matches": true
+      },
+      {
+        "path": "src/ui/AdminReportReview.js",
+        "status": 200,
+        "bytes": 7228,
+        "sha256": "ffa328ad88fd5b868c79c1bde5edec6227426b20cd10e988fe606b03d518fb4d",
+        "expectedBytes": 7228,
+        "expectedSha256": "ffa328ad88fd5b868c79c1bde5edec6227426b20cd10e988fe606b03d518fb4d",
+        "matches": true
+      },
+      {
+        "path": "src/ui/AdminUI.js",
+        "status": 200,
+        "bytes": 25690,
+        "sha256": "8c375dc4fb9a77230ac168148884d032c349eb39a635c681b829d6b990e4a835",
+        "expectedBytes": 25690,
+        "expectedSha256": "8c375dc4fb9a77230ac168148884d032c349eb39a635c681b829d6b990e4a835",
+        "matches": true
+      },
+      {
+        "path": "src/ui/DirectTradeUI.js",
+        "status": 200,
+        "bytes": 9826,
+        "sha256": "1c456a89e7e3912dbb4f43a259520a1acbc6262af07ea10e88b5542bab25062f",
+        "expectedBytes": 9826,
+        "expectedSha256": "1c456a89e7e3912dbb4f43a259520a1acbc6262af07ea10e88b5542bab25062f",
+        "matches": true
+      },
+      {
+        "path": "src/ui/GuildEventsUI.js",
+        "status": 200,
+        "bytes": 11572,
+        "sha256": "3f1d695bc9825219e684ea5cd38fdbac1bc2ca649e1550e322592b82f4fe9ffb",
+        "expectedBytes": 11572,
+        "expectedSha256": "3f1d695bc9825219e684ea5cd38fdbac1bc2ca649e1550e322592b82f4fe9ffb",
+        "matches": true
+      },
+      {
+        "path": "src/ui/InstanceAtlas.js",
+        "status": 200,
+        "bytes": 11230,
+        "sha256": "8d555d70ce686534537b6b27c03d0f2aa756a364d648c7df0f4624bf6c11f245",
+        "expectedBytes": 11230,
+        "expectedSha256": "8d555d70ce686534537b6b27c03d0f2aa756a364d648c7df0f4624bf6c11f245",
+        "matches": true
+      },
+      {
+        "path": "src/ui/LoginModerationUI.js",
+        "status": 200,
+        "bytes": 7049,
+        "sha256": "ada55b488329f8c2f156a7b0d811cb8bf5d9a3a17624d4b6900465414d25713e",
+        "expectedBytes": 7049,
+        "expectedSha256": "ada55b488329f8c2f156a7b0d811cb8bf5d9a3a17624d4b6900465414d25713e",
+        "matches": true
+      },
+      {
+        "path": "src/ui/Minimap.js",
+        "status": 200,
+        "bytes": 38111,
+        "sha256": "783abc11fb1983177ab8e37c5e15438a7a56a8d91c1bc6b23f4440953609c68a",
+        "expectedBytes": 38111,
+        "expectedSha256": "783abc11fb1983177ab8e37c5e15438a7a56a8d91c1bc6b23f4440953609c68a",
+        "matches": true
+      },
+      {
+        "path": "src/ui/ReportUI.js",
+        "status": 200,
+        "bytes": 15251,
+        "sha256": "f7e7b50511783bf0b1ee7840743a316b893fcf7699470ff179e2b8db94ff9035",
+        "expectedBytes": 15251,
+        "expectedSha256": "f7e7b50511783bf0b1ee7840743a316b893fcf7699470ff179e2b8db94ff9035",
+        "matches": true
+      },
+      {
+        "path": "src/ui/SkillTreeUI.js",
+        "status": 200,
+        "bytes": 54170,
+        "sha256": "2b6c15de2da66fdec9c5f1a359d92a5f270110cdf1a40c5c284ac2884602b68a",
+        "expectedBytes": 54170,
+        "expectedSha256": "2b6c15de2da66fdec9c5f1a359d92a5f270110cdf1a40c5c284ac2884602b68a",
+        "matches": true
+      },
+      {
+        "path": "src/ui/SocialUI.js",
+        "status": 200,
+        "bytes": 42796,
+        "sha256": "0b1a6ac4b1d814a857d01d1173bca243dd23cd315b5f648a51ea658584803bec",
+        "expectedBytes": 42796,
+        "expectedSha256": "0b1a6ac4b1d814a857d01d1173bca243dd23cd315b5f648a51ea658584803bec",
+        "matches": true
+      },
+      {
+        "path": "src/ui/WorldReadingDialog.js",
+        "status": 200,
+        "bytes": 3596,
+        "sha256": "c5c509033f17aec0fe0a1f07969bafa1c45e8c55395eb0400b3d20c78d0e3c1a",
+        "expectedBytes": 3596,
+        "expectedSha256": "c5c509033f17aec0fe0a1f07969bafa1c45e8c55395eb0400b3d20c78d0e3c1a",
+        "matches": true
+      },
+      {
+        "path": "src/ui/reportTypes.js",
+        "status": 200,
+        "bytes": 610,
+        "sha256": "3054bc59b8f6b6b97c0b0fd4444dfe48d03c86a024677b5137ef0d209a986b7a",
+        "expectedBytes": 610,
+        "expectedSha256": "3054bc59b8f6b6b97c0b0fd4444dfe48d03c86a024677b5137ef0d209a986b7a",
+        "matches": true
+      },
+      {
+        "path": "vendor/protobuf/LICENSE",
+        "status": 200,
+        "bytes": 1937,
+        "sha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c",
+        "expectedBytes": 1937,
+        "expectedSha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c",
+        "matches": true
+      },
+      {
+        "path": "vendor/three/LICENSE",
+        "status": 200,
+        "bytes": 1081,
+        "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+        "expectedBytes": 1081,
+        "expectedSha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-001.json",
+        "status": 200,
+        "bytes": 15700,
+        "sha256": "a27b9f50d3f4a6603d0a0fbbbee7c182bb1c4145b1d5a9a6622fba56896114ee",
+        "expectedBytes": 15700,
+        "expectedSha256": "a27b9f50d3f4a6603d0a0fbbbee7c182bb1c4145b1d5a9a6622fba56896114ee",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-002.json",
+        "status": 200,
+        "bytes": 20176,
+        "sha256": "9e7cfbb7d6c97eefe0f219f09b6b73e7b34bbcb390532dce3c3ab67525d9e703",
+        "expectedBytes": 20176,
+        "expectedSha256": "9e7cfbb7d6c97eefe0f219f09b6b73e7b34bbcb390532dce3c3ab67525d9e703",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-003.json",
+        "status": 200,
+        "bytes": 23192,
+        "sha256": "911aea45d69a1f071dbc223187d882900ccb36584b4f1c9ad246f13da95c2d5f",
+        "expectedBytes": 23192,
+        "expectedSha256": "911aea45d69a1f071dbc223187d882900ccb36584b4f1c9ad246f13da95c2d5f",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-004.json",
+        "status": 200,
+        "bytes": 16495,
+        "sha256": "6ec385967f02cb76e8a2fec9a7be67d004b4f37ad68033abb8ccfbd249271c44",
+        "expectedBytes": 16495,
+        "expectedSha256": "6ec385967f02cb76e8a2fec9a7be67d004b4f37ad68033abb8ccfbd249271c44",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-005.json",
+        "status": 200,
+        "bytes": 15401,
+        "sha256": "8659b0ea521bd1f1c5cc0a21eb00ef93125519c9a86a93473b106b608329051b",
+        "expectedBytes": 15401,
+        "expectedSha256": "8659b0ea521bd1f1c5cc0a21eb00ef93125519c9a86a93473b106b608329051b",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-006.json",
+        "status": 200,
+        "bytes": 15853,
+        "sha256": "3dce168f44b17bbb227302651e38f6bb9989856e958020116848971db3c59bd7",
+        "expectedBytes": 15853,
+        "expectedSha256": "3dce168f44b17bbb227302651e38f6bb9989856e958020116848971db3c59bd7",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-007.json",
+        "status": 200,
+        "bytes": 17868,
+        "sha256": "37bf2acfbd352b638d07bb997620691e0ae5e2f305f9dcb373310b517ceca6cf",
+        "expectedBytes": 17868,
+        "expectedSha256": "37bf2acfbd352b638d07bb997620691e0ae5e2f305f9dcb373310b517ceca6cf",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-008.json",
+        "status": 200,
+        "bytes": 18964,
+        "sha256": "659d61750a7b7a1e7f3a0da9c2a7145bcf2efb6952ec6116f7db4b7e8dc86bb2",
+        "expectedBytes": 18964,
+        "expectedSha256": "659d61750a7b7a1e7f3a0da9c2a7145bcf2efb6952ec6116f7db4b7e8dc86bb2",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-009.json",
+        "status": 200,
+        "bytes": 16358,
+        "sha256": "62afa89a58223443a0d9dd9ad7c084fb1f13922af4a1275d86b266c7350d930d",
+        "expectedBytes": 16358,
+        "expectedSha256": "62afa89a58223443a0d9dd9ad7c084fb1f13922af4a1275d86b266c7350d930d",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-010.json",
+        "status": 200,
+        "bytes": 18910,
+        "sha256": "59eb5c1d2e0745eedbeb18c12c04e1806f1bdd8612960e46424d4ba4eb19b01c",
+        "expectedBytes": 18910,
+        "expectedSha256": "59eb5c1d2e0745eedbeb18c12c04e1806f1bdd8612960e46424d4ba4eb19b01c",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-011.json",
+        "status": 200,
+        "bytes": 20765,
+        "sha256": "74ce73b84d65e027275c21439b5b55b6088c0995c77d754ae032f17503f660a4",
+        "expectedBytes": 20765,
+        "expectedSha256": "74ce73b84d65e027275c21439b5b55b6088c0995c77d754ae032f17503f660a4",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-012.json",
+        "status": 200,
+        "bytes": 16183,
+        "sha256": "27d80dd79e62b29bb4b288822c77cf09edc354d50cce1c93e4e4bd940a6fd5da",
+        "expectedBytes": 16183,
+        "expectedSha256": "27d80dd79e62b29bb4b288822c77cf09edc354d50cce1c93e4e4bd940a6fd5da",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-013.json",
+        "status": 200,
+        "bytes": 11966,
+        "sha256": "6f7c7fb65d99bb85396ce5eba8f3b7251a43b9148419e1ecce788f200fe28934",
+        "expectedBytes": 11966,
+        "expectedSha256": "6f7c7fb65d99bb85396ce5eba8f3b7251a43b9148419e1ecce788f200fe28934",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-014.json",
+        "status": 200,
+        "bytes": 9295,
+        "sha256": "03f775be9bc267b908a614a83cf0bdb7ae76267cae7b46c79952fdf1c04ee6cf",
+        "expectedBytes": 9295,
+        "expectedSha256": "03f775be9bc267b908a614a83cf0bdb7ae76267cae7b46c79952fdf1c04ee6cf",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-015.json",
+        "status": 200,
+        "bytes": 23969,
+        "sha256": "dd411f360234d688b58fb76de762ab3bdd1087fbebbed7100598aacc39b40d87",
+        "expectedBytes": 23969,
+        "expectedSha256": "dd411f360234d688b58fb76de762ab3bdd1087fbebbed7100598aacc39b40d87",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-016.json",
+        "status": 200,
+        "bytes": 22171,
+        "sha256": "6b8a63b9b0cd29f68cbe0abbc1068c7a246e1977702f4e56479ed5a8407dd5e3",
+        "expectedBytes": 22171,
+        "expectedSha256": "6b8a63b9b0cd29f68cbe0abbc1068c7a246e1977702f4e56479ed5a8407dd5e3",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-017.json",
+        "status": 200,
+        "bytes": 14267,
+        "sha256": "456f48b167cddb8b3928a70efeebfda1730a019a1386dc93065a779f2071542f",
+        "expectedBytes": 14267,
+        "expectedSha256": "456f48b167cddb8b3928a70efeebfda1730a019a1386dc93065a779f2071542f",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-018.json",
+        "status": 200,
+        "bytes": 19862,
+        "sha256": "58c0d92e2cd63fdf4ebb266f34ea26ff6b18962983eb4f47f7622ab60d9bef5c",
+        "expectedBytes": 19862,
+        "expectedSha256": "58c0d92e2cd63fdf4ebb266f34ea26ff6b18962983eb4f47f7622ab60d9bef5c",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-019.json",
+        "status": 200,
+        "bytes": 18033,
+        "sha256": "cd8b0284a6508eff80fc813016abdd3693856e5b168e75c135649230747eb7e4",
+        "expectedBytes": 18033,
+        "expectedSha256": "cd8b0284a6508eff80fc813016abdd3693856e5b168e75c135649230747eb7e4",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-020.json",
+        "status": 200,
+        "bytes": 13445,
+        "sha256": "97c850b37d8ca2750ca290918864382668f55a15f70534363e0ed4adc94f4040",
+        "expectedBytes": 13445,
+        "expectedSha256": "97c850b37d8ca2750ca290918864382668f55a15f70534363e0ed4adc94f4040",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-021.json",
+        "status": 200,
+        "bytes": 17098,
+        "sha256": "5f7b1bbb388ff3447af522c51f79dcb0269c1369285a3b40ecac6760caefdb82",
+        "expectedBytes": 17098,
+        "expectedSha256": "5f7b1bbb388ff3447af522c51f79dcb0269c1369285a3b40ecac6760caefdb82",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-022.json",
+        "status": 200,
+        "bytes": 19954,
+        "sha256": "bb55c8aa3fe55c98d8ac76e3f9a03f9b4c1c1fb5d4776ef24545dfaf691e92e1",
+        "expectedBytes": 19954,
+        "expectedSha256": "bb55c8aa3fe55c98d8ac76e3f9a03f9b4c1c1fb5d4776ef24545dfaf691e92e1",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-023.json",
+        "status": 200,
+        "bytes": 20585,
+        "sha256": "a94ddd1de2aab87231482abe7d190e6b4fff70cf994fe85790041cc89eed6e9f",
+        "expectedBytes": 20585,
+        "expectedSha256": "a94ddd1de2aab87231482abe7d190e6b4fff70cf994fe85790041cc89eed6e9f",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-024.json",
+        "status": 200,
+        "bytes": 33374,
+        "sha256": "d27d43b7c45b62f72d544a14125b51093a74a33e8d1e6ef0098cdaf0bf34146f",
+        "expectedBytes": 33374,
+        "expectedSha256": "d27d43b7c45b62f72d544a14125b51093a74a33e8d1e6ef0098cdaf0bf34146f",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-025.json",
+        "status": 200,
+        "bytes": 30224,
+        "sha256": "dfa76df95c26a68340a5501717d70d98354909fdcdf6a1648ecd25ad9fcd99fd",
+        "expectedBytes": 30224,
+        "expectedSha256": "dfa76df95c26a68340a5501717d70d98354909fdcdf6a1648ecd25ad9fcd99fd",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-026.json",
+        "status": 200,
+        "bytes": 25186,
+        "sha256": "2f80bb411d257f1b65ea5f7463622270fc7cadc3a619085d9244c3dd24ead770",
+        "expectedBytes": 25186,
+        "expectedSha256": "2f80bb411d257f1b65ea5f7463622270fc7cadc3a619085d9244c3dd24ead770",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-027.json",
+        "status": 200,
+        "bytes": 21408,
+        "sha256": "1ff2208711399a92089216ef1b679a45e63b5a36ee911a898645928e39e581fd",
+        "expectedBytes": 21408,
+        "expectedSha256": "1ff2208711399a92089216ef1b679a45e63b5a36ee911a898645928e39e581fd",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-028.json",
+        "status": 200,
+        "bytes": 11603,
+        "sha256": "2160c6b64128ac6317f0b1eba9cf5621e7877475ef506588a0984982a5bbe2dd",
+        "expectedBytes": 11603,
+        "expectedSha256": "2160c6b64128ac6317f0b1eba9cf5621e7877475ef506588a0984982a5bbe2dd",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-029.json",
+        "status": 200,
+        "bytes": 11757,
+        "sha256": "f61cd6095779343591981d2b09d48c1b842c0ca71a5ebf303005741738b9f9ed",
+        "expectedBytes": 11757,
+        "expectedSha256": "f61cd6095779343591981d2b09d48c1b842c0ca71a5ebf303005741738b9f9ed",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-030.json",
+        "status": 200,
+        "bytes": 11330,
+        "sha256": "2890d54908ecb09e8a66dd73a86ee14d2f54505e86719bba4980b7922b895afa",
+        "expectedBytes": 11330,
+        "expectedSha256": "2890d54908ecb09e8a66dd73a86ee14d2f54505e86719bba4980b7922b895afa",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-031.json",
+        "status": 200,
+        "bytes": 10881,
+        "sha256": "cf2a192567a021fffb27537f2551ec890b09586fb7debbba0d77b81ffb27f4e8",
+        "expectedBytes": 10881,
+        "expectedSha256": "cf2a192567a021fffb27537f2551ec890b09586fb7debbba0d77b81ffb27f4e8",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-032.json",
+        "status": 200,
+        "bytes": 10886,
+        "sha256": "3d6107c1a9d4cec8a42ea2bb8a4e02a83076406d3d53f31eca70988be4800013",
+        "expectedBytes": 10886,
+        "expectedSha256": "3d6107c1a9d4cec8a42ea2bb8a4e02a83076406d3d53f31eca70988be4800013",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-033.json",
+        "status": 200,
+        "bytes": 11429,
+        "sha256": "2723dbd7195cdfcdc0ffb5d3e66700a908c3197e4c7f1784027e62f0b747a0a2",
+        "expectedBytes": 11429,
+        "expectedSha256": "2723dbd7195cdfcdc0ffb5d3e66700a908c3197e4c7f1784027e62f0b747a0a2",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-034.json",
+        "status": 200,
+        "bytes": 11845,
+        "sha256": "bd5549a41a040bcc21ec9514dbfbc6ac14daa4acc04a91826753404bc9423103",
+        "expectedBytes": 11845,
+        "expectedSha256": "bd5549a41a040bcc21ec9514dbfbc6ac14daa4acc04a91826753404bc9423103",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-035.json",
+        "status": 200,
+        "bytes": 13006,
+        "sha256": "e7081abb360ded542adfa0af0d6d1ddf229cce5edf586de84bb59630599c436c",
+        "expectedBytes": 13006,
+        "expectedSha256": "e7081abb360ded542adfa0af0d6d1ddf229cce5edf586de84bb59630599c436c",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-036.json",
+        "status": 200,
+        "bytes": 12810,
+        "sha256": "37f4c6bf6c83cdfbaf9cc5b36cf57090b9da3107eba22c167f80662858aaccd0",
+        "expectedBytes": 12810,
+        "expectedSha256": "37f4c6bf6c83cdfbaf9cc5b36cf57090b9da3107eba22c167f80662858aaccd0",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-037.json",
+        "status": 200,
+        "bytes": 12661,
+        "sha256": "6db2c2e22475b894213e9424e6fb214db4b024d02efdc57d34ba483dc66c03ec",
+        "expectedBytes": 12661,
+        "expectedSha256": "6db2c2e22475b894213e9424e6fb214db4b024d02efdc57d34ba483dc66c03ec",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-038.json",
+        "status": 200,
+        "bytes": 12797,
+        "sha256": "12c8a475e4875798e4cb07c33810f16628f2c498aa20f1e95499fdb35efc639a",
+        "expectedBytes": 12797,
+        "expectedSha256": "12c8a475e4875798e4cb07c33810f16628f2c498aa20f1e95499fdb35efc639a",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-039.json",
+        "status": 200,
+        "bytes": 12114,
+        "sha256": "f5ae270e6b48c3538498d285e0e6ddd7f5f554e047622bf50ed997c811602f7b",
+        "expectedBytes": 12114,
+        "expectedSha256": "f5ae270e6b48c3538498d285e0e6ddd7f5f554e047622bf50ed997c811602f7b",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-040.json",
+        "status": 200,
+        "bytes": 11619,
+        "sha256": "d0b18dcbc7d878db3d6e5ce7aab2ecbb01496c17520696df9458f597ac230ed5",
+        "expectedBytes": 11619,
+        "expectedSha256": "d0b18dcbc7d878db3d6e5ce7aab2ecbb01496c17520696df9458f597ac230ed5",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-041.json",
+        "status": 200,
+        "bytes": 12123,
+        "sha256": "13b4e0c6a3763426f366a7ee235dbc0bc2a336de497eef956b191e56b3681fd9",
+        "expectedBytes": 12123,
+        "expectedSha256": "13b4e0c6a3763426f366a7ee235dbc0bc2a336de497eef956b191e56b3681fd9",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-042.json",
+        "status": 200,
+        "bytes": 11438,
+        "sha256": "fa692a8d99dde548c87bc15a4a62eb8a7c594d4da7f6a37f81d8eb815e32d469",
+        "expectedBytes": 11438,
+        "expectedSha256": "fa692a8d99dde548c87bc15a4a62eb8a7c594d4da7f6a37f81d8eb815e32d469",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-043.json",
+        "status": 200,
+        "bytes": 11112,
+        "sha256": "6a4b2c87fe8b2fdb19f862ef043ac1f1b43122c6c77009431d45b5dcf8f07de1",
+        "expectedBytes": 11112,
+        "expectedSha256": "6a4b2c87fe8b2fdb19f862ef043ac1f1b43122c6c77009431d45b5dcf8f07de1",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-044.json",
+        "status": 200,
+        "bytes": 13615,
+        "sha256": "696275676f270e1626d76a3dcde8380eb6757b3c3829ebee035a88b139ada4ca",
+        "expectedBytes": 13615,
+        "expectedSha256": "696275676f270e1626d76a3dcde8380eb6757b3c3829ebee035a88b139ada4ca",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-045.json",
+        "status": 200,
+        "bytes": 19438,
+        "sha256": "d8ed9ab532f1e13f464f710d75a6f1cfef217d9c128c6d5502d8b61eff9f1cd4",
+        "expectedBytes": 19438,
+        "expectedSha256": "d8ed9ab532f1e13f464f710d75a6f1cfef217d9c128c6d5502d8b61eff9f1cd4",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-046.json",
+        "status": 200,
+        "bytes": 17096,
+        "sha256": "082817a9ebf6ab2e45b91c8d44ca1d448b33ccf8e21d0e3107cc2fc2fcf82624",
+        "expectedBytes": 17096,
+        "expectedSha256": "082817a9ebf6ab2e45b91c8d44ca1d448b33ccf8e21d0e3107cc2fc2fcf82624",
+        "matches": true
+      },
+      {
+        "path": "assets/patch-notes/1.79.36/page-047.json",
+        "status": 200,
+        "bytes": 1490,
+        "sha256": "fcf28db2072d69a7a1820da2cc398f3d754463ce99d9d9b1cb8e1813c493c299",
+        "expectedBytes": 1490,
+        "expectedSha256": "fcf28db2072d69a7a1820da2cc398f3d754463ce99d9d9b1cb8e1813c493c299",
+        "matches": true
+      },
+      {
+        "path": "src/art/EarthGroundComposition.js",
+        "status": 200,
+        "bytes": 22489,
+        "sha256": "68a0279bc1ddac531803cbc8acd22b43932d100f0490d08e4c8a426094b47051",
+        "expectedBytes": 22489,
+        "expectedSha256": "68a0279bc1ddac531803cbc8acd22b43932d100f0490d08e4c8a426094b47051",
+        "matches": true
+      },
+      {
+        "path": "src/art/EarthSurfaceDetail.js",
+        "status": 200,
+        "bytes": 7940,
+        "sha256": "dc9732b009b2b9567079c7c4b91dfea7d592c46da2c6ceacb9157da4122384a3",
+        "expectedBytes": 7940,
+        "expectedSha256": "dc9732b009b2b9567079c7c4b91dfea7d592c46da2c6ceacb9157da4122384a3",
+        "matches": true
+      },
+      {
+        "path": "src/art/ProceduralIcons.js",
+        "status": 200,
+        "bytes": 21904,
+        "sha256": "7350840810d1fe9bbbab78ec67d9c69843164a5ecc90ca69a2783f94c767cd99",
+        "expectedBytes": 21904,
+        "expectedSha256": "7350840810d1fe9bbbab78ec67d9c69843164a5ecc90ca69a2783f94c767cd99",
+        "matches": true
+      }
+    ],
+    "allAssetsMatch": true,
+    "analyticsModule": {
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "bytes": 1002,
+      "sha256": "0f58383ee0b5409e68710c3e56f8d1a8d67f5c48576fa653675af53213b18003",
+      "containsObserver": true
+    },
+    "identitiesMatch": true
+  },
+  "prepublication": "2026-10-11-release36-earth-content-prepublication.json",
+  "frozenPublicationCustody": "All seven original frozen publication files reverified by bytes/SHA; checker uses ssl.create_default_context, manifest82pins exactSHA7f36ae5278c58e431a2820431310ef5d5dea7529b1129b7f26778f26440d7411. New output root; frozen sources unchanged.",
+  "readOnlyAuditCorrection": "Initial gh run view requested unsupported JSON field attempt. Read-only query corrected to documented supported fields plus run_attempt from Actions API; no CI retry, cancellation or mutation.",
+  "limits": "Four optional stage skips remain skips. This accepts exact36within its retained world/content/source qualification, not full art, performance, device,100clientsoak, campaign, beta or final release. Source-only Forge/buyback and completed histories remain on local master for a coherent successor.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-public36-terminal-checks-20261011",
+    "inventoryEntries": 5,
+    "inventorySHA256": "5fffce5b5bad9a6ace6d815fa235ac21de21fcf4a34d1ff68762ecefe45781d9"
+  }
+}
