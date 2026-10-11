@@ -1,0 +1,914 @@
+# Release-readiness remaining work
+
+Current checkpoint: October 11, 2026. The full objective in the owner's
+`goal.md`, the [1.11–1.99 roadmap](2026-09-28-alpha1-11-to1-99-release-roadmap.md),
+[promise inventory](2026-09-28-1-11-gap-register.md),
+[freeze preparation](2026-10-06-release1-80-freeze-preparation.json) and
+[threat ledger](2026-10-07-release1-80-threat-and-exception-ledger.md) remain authoritative.
+Historical test receipts do not close unchecked requirements.
+
+**Master reconciliation:** completed, qualified world/dungeon/equipment/HUD,
+renderer and contact-audio work is merged into local `master`. Branch
+reconciliation reduced distinct unmerged histories287→96; unfinished/rejected
+experiments and the dirty user checkout remain preserved. New completed work
+continues to merge into `master`, without adding work branches or force-pushing.
+[Repository workflow](../../AGENTS.md),
+[branch reconciliation](2026-10-11-master-branch-reconciliation.json),
+[four completed-history follow-up merges](2026-10-11-completed-branch-followup.json),
+[completed regeneration history](2026-10-11-regeneration-branch-reconciliation.json),
+[completed opening reward history](2026-10-11-opening-reward-branch-reconciliation.json),
+[completed stale-hover and rune histories](2026-10-11-stale-hover-rune-branch-reconciliation.json).
+
+**Current release custody, October11 10:16UTC:** Alpha1.79.30/1aae8407 is now
+fully accepted through the ordered release gate. CI38124028177 attempt1 completed
+success: all10jobs, including required native predeploy, both deployments and
+mandatory live gameplay/town-recovery/Well Rested checks. Optional stabilization,
+full-character and live four-class steps were explicitly skipped; they are not
+passes. Post-terminal normal-TLS verification confirms exact frontend/backend
+identity, ready database and all9expected asset hashes/byte counts. Earlier
+2e6c6a14 final helper-import failure remains retained. The test-only delivery
+correction preserves its game runtime. Alpha1.79.31 integrates cumulative notes
+and the six qualified renderer/environment components below. Exact42f06ad0 is
+pushed to master; CI38126692286 attempt1 is terminal failed before deployment.
+Client/Server/browser1and3 pass; browser2 times out in the copied High world review
+on both configured attempts. Allfive downstream jobs skip, so no31deployment
+occurred; accepted public remains30. Both actual traces and raw job logs are
+retained. A bounded-case correction is qualified and ordinary-merged97f43091: allnine
+copied High views/72poses and both comparisons now span three independent cases;
+Low/source coverage, original120second timeout and allbudgets retained.
+Software4cases174.58s/native7cases89.25s/combined3cases24.73s pass0retry/skip;
+415version/history/plan and28enrollment checks plusfull lint pass. Discovery is
+349hosted/46native/23overlap/372distinct; two old copied titles become four,
+with allother identities retained. Correctedexact2c41890c is pushed normally; CI38129763146attempt1 started09:49:52UTC
+and terminated failure10:10:32UTC. Allbrowser shards andserver passed; client
+716suites/10563tests passed, but two unchanged conifer coverage checks failed.
+Allfive downstreamjobs skipped; no31deployment. Product correctionaaad93ce
+widens existing needlefanedge .20to.22, restoring projected triangle area
+17.2538→18.9792 above the original>18gate, preserving counts/bytes/bounds.
+16focused/3suites and7native cases pass0retry/skip; ordinary-mergedd0271a3a.
+The earlier pine40focused checks omitted the original conifer coverage suite;
+that qualification gap is recorded. No assertion or budget changed.
+A newly corrected coherent31publication still needs its full ordered gates.
+[Retained terminal failure](2026-10-11-release31-conifer-coverage-failure.json),
+[coverage correction](2026-10-11-pine-coverage-qualification.json).
+New nine-asset expectedmanifest is preserved separately from failed42source.
+Engine3486705bytes/SHA299195a1c8d2e9fd77aa9e8fe034e8b8e9a6c50c67337c615577975a7c913019.
+Openingreward and stale-hover/rune ancestry were subsequently merged with
+unchanged trees;96unmerged tips remain for individual review.
+[World review correction](2026-10-11-release31-world-review-correction.json).
+Per-component receipts below preserve their
+earlier prepublication states. Current100-clientsoak38109009521 remains active on
+acceptedpublic29, not a completed capacity gate.
+[Release31 failure](2026-10-11-release31-hosted-review-failure.json),
+[Release30 acceptance](2026-10-11-public30-terminal-qualification.json),
+[Live profiling correction](2026-10-11-live-profile-delivery-correction.json).
+
+
+**Additional qualified world work on master:** Earth v17 `33a63731` is ordinarily
+merged at `35a37c6b`: shared layer coverage/order now governs color, roughness
+and relief; moss/leaf thickness rests above its underlying surface. Existing
+maps and five fetches stay unchanged. Nine final native cases pass, including
+actual GL samplers and resource transitions; original failures/drafts retained.
+Fern `5dc19471` is ordinarily merged at `4a4890ae`:98original root/tip pairs
+become curved tapered pinnae.27focused/4suites and7native cases pass. All plants,
+placements, sedge buffers and owners retained. Adds196triangles/21168raw bytes
+per fern recipe and~6.9MBHigh/~6.8MBLow spatial geometry copies; original world
+budgets pass. No FPS saving, source/copy pixel equivalence, physical-device or
+final modern-art acceptance. Both changes await corrected31publication.
+[Earth layer qualification](2026-10-11-earth-layer-order-qualification.json),
+[fern qualification](2026-10-11-fern-pinnae-qualification.json).
+
+**Qualified pine refinement:**2a8d0c35 is ordinary-merged into local master9e85a67c.
+Pine boughs vary angle/height/length/curvature and needle-spray width, with coherent
+new-growth tones. Same5whorls/7boughs/6paired sprays and production crown owners;
+High840tri/90720attribute bytes,Low420/45360unchanged.391Earthtree placement and
+collision contracts preserved.40focused/3suites, changed-file lint and5existing
+native source/copy/narrow-desktop cases pass0retry/skip59.9s.45HUDviews/360sampled
+walking poses;15/18source-copy images exact,3small differences retained and
+unattributed. No FPS/physical-phone/final-art acceptance. Repeated/coarse foliage,
+rock/terrain/architecture composition and High frame targets remain open. No new
+branch; included in the coherent corrected31milestone after original31failed before deployment.
+[Pine qualification](2026-10-11-pine-bough-growth-qualification.json).
+
+**Qualified Earth material correction:**706af5f2 is ordinary-merged into local
+masterca205f1d. Ground composition uses its registered soil/moss/stone physical
+fields without two unrelated legacy noise maps; the overwritten base-albedo
+sample is removed, shared albedo ownership retained. Actual High/Low compiled
+uniforms expose only its three composition samplers, with five custom fetches.
+Two removed maps save524288raw bytesHigh/131072Low per material before mips.
+Retained Earth maps and other-realm surface/albedo fields are byte-identical.
+54focused/5suites231.82s, full lint and11existing native cases pass0retry/skip2.4m.
+45prepared HUDviews/360sampled poses plus isolated realm/quality resource checks;
+15/18source-copy images exact, three differences retained and unattributed.
+The change is subtle in manual views; broad repeated terrain transitions,
+understory/rock silhouettes and normal-session responsive/device review remain
+open. The earlier390px cropped desktop-menu observation is superseded by the
+corrected phone-policy review below; it came from the prepared desktop engine.
+No connected-input/FPS/physical-phone/final-art acceptance. Included in corrected31
+preparation; new exactCI/deploy/live acceptance remains due.
+[Earth material qualification](2026-10-11-earth-material-field-qualification.json).
+
+**Phone world-review correction:**d0c4bfaf is ordinary-merged into local master9e5d2987.
+The390px helper previously forced a desktop engine under mobile CSS, unlike main
+startup's phone policy. The existing narrow case now installs phone engine/UI/input
+and verifies nine >=44px controls remain fully bounded and center-hit reachable
+in all nine world views; desktop source/copied cases keep their original policy.
+No runtime changes.7existing native cases0retry/skip1.1min,23enrollment checks,
+helper lint and diff check pass. Existing mobile HUD cases exercise real browser
+touch joystick start/release with five party members in three viewport sizes,
+plus menu/Skills/chat/target-clear taps in portrait/landscape. Corrected phone
+world max80draws49316triangles passes unchanged200/85000limits; prior desktop-policy
+390figures55/41593are historical. Earlier cropped-menu images remain retained,
+not evidence of a production phone defect. Browser emulation and prepared poses
+do not close physical-phone, authoritative connected movement, responsive mode
+changes after login or final art gates. No new branch/public release.
+[Phone review qualification](2026-10-11-phone-world-review-qualification.json).
+
+Contact audio76focused/3distinct native cases pass; human listening/busy-fight mix
+and physical devices remain open. Fresh required discovery preserves all337previous
+hosted identities and adds one:338hosted/25native/11overlap/352distinct. Earlier
+337/15/348 summaries omitted expanded mandatory native and authored-equipment
+coverage; this is discovery, not fresh hosted execution.
+[Audio qualification](2026-10-11-combat-contact-foley-qualification.json).
+
+**Release gate correction:** initial Browser1 also rejects hosted SwiftShader
+with an unconditional additive GPU assertion. Shared launch policy now preserves
+hosted rendering checks and requires the same High/Low cases in mandatory native
+predeploy. Local software2/native2 passes retain all original comparison limits;
+130factories/780comparisons per quality and renderer. Plan/coverage23checks and
+full locked-dependency lint pass. Actual discovery338hosted/27native/13overlap/
+352distinct retains every previous hosted identity. This supersedes the earlier
+25native/11overlap counts above; discovery is not hosted execution. Concurrent
+upstream licensing/docs4e7fbe6f is preserved. Release deployment remains pending.
+[Correction proof](2026-10-11-additive-hosted-native-gate-correction.json).
+
+**Release30 fixture and live-gate history:**38117717646/7df6cf22 and
+38118148918/8acc are terminal failed on11client fixture failures; server and all
+hosted browser jobs pass, downstream jobs skip. Corrective2e6c6a14 retains all
+selected runtime and passes those fixtures plus native/inputs/both deploys.
+CI38119634774 then fails its last live two-player aura test before profiling:
+public deployment correctly omits/tests/e2e, but the observer tried to import it
+from the game origin. Test-only1aae8407 serves exact checkout observer modules
+through temporary page routes, retires the routes before sampling, and preserves
+the observer,180samples, cleanup and all gates. Its copied-publication transport
+regression and unchanged actual live two-player case pass with540sampled frames;
+that targeted proof does not waive the original failed CI. The new ordered run
+completed successfully and is accepted as described above. The all-in-one local coverage diagnostic exited
+134 after exhausting its4GBV8heap without a suite summary; no automatic replay.
+[Fixture correction](2026-10-11-release30-fixture-correction.json),
+[live correction](2026-10-11-live-profile-delivery-correction.json),
+[local memory diagnostic](2026-10-11-local-coverage-memory-diagnostic.json).
+
+**Next qualified camp change:**346b9a58 is merged into local master at21a8bba4;
+publication waits for current Alpha1.79.30 acceptance. Only the four reviewed
+camp/owner files from the earlier private prototype were selected onto current
+master; other private renderer/monster experiments remain excluded. Stock
+per-camera BatchedMesh clipping retains all15camps/nine surfaces and colliders,
+with unsupported-device instancing fallback.44focused checks,23CI-plan checks,
+full lint,4distinct native cases and2software cases pass. Native42source views
+plus48equipped copied-engine poses preserve exactRGB and reference stability;
+GPU replacement/owner disposal returns exact warmed counts. Each field owns
+171552additional measured derivative bytes. Sampled copied town-center High
+209439→178243triangles/190→181draws; Low70353→50613/76→67. These prepared samples
+do not resolve historical whole-world budgets or establish FPS/device acceptance.
+The first full software-motion High fixture timed out; retained, excluded from
+acceptance. Hosted coverage checks the same three views at one pose each; full
+24native poses per quality remain mandatory. Actual discovery340hosted/31native/
+15overlap/356distinct preserves all338previous hosted identities. Frozen96-entry
+inventory2a98bcee328d18682b144546ca63e6191ef3352ec1bd6054db816aac74aa6191.
+[Camp qualification](2026-10-11-current-master-camp-clipping-qualification.json).
+
+**Qualified DemonOrc change is merged into local masterbdf22ce1.**
+Source3ee704f4 selects three reviewed product files and source/copied-owner QA;
+private singleton/default-renderer experiments remain excluded.236focused checks
+in8suites, full lint and6distinct native source/copied cases pass with no retries
+or skips. High/Low source comparisons cover8poses each and preserve1202body
+triangles; copied-engine tests cover5animation states and existing Skeleton
+regression cases. Frozen same-scene woodland draws High398→212 and Low253→97
+retain identical triangle counts in each control; pixel differences remain
+within unchanged tolerances, not universally exact. Current High route still
+fails town391draws/33.3ms median against350/20ms; final party/save custody is
+not reached in that run. Low strictly passes all four original route budgets
+and normal Go-race/Mongo four-class fourteen-slot saved custody. Its later
+party profile139draws/73525triangles/16.7median/33.4p95 is measured without the
+optional startup-budget assertion switch. One GPU renderer plus three live
+socket peers does not establish four-renderer or physical-phone acceptance.
+The actual100-client soak38109009521/public29 was concurrently active on this
+host; frame samples do not establish causal FPS gains or isolated-device
+acceptance. No job was altered. Packed constructor55→23meshes uses shared
+134400additional measured final derivative bytes; intermediate caches and
+GPU allocation are unmeasured. Discovery342hosted/35native/17overlap/360distinct
+preserves all previous identities; discovery is not execution of360cases.
+Frozen979-entry inventory0361cecf5e4c046487b5606ed9943963c1aeb1e45ce6a24673a4ba8e76e43f13
+verified in full. Publication waits for current release30 acceptance. This
+supersedes older private DemonOrc labels. The older all-quality singleton
+experiment remains unselected; the qualified High-only revision below is now
+selected. High town/world/art/device/operations/F1–F5/beta/launch/handoff remain open.
+[Qualification](2026-10-11-current-master-demon-orc-qualification.json).
+
+**Qualified High-only singleton change is merged into local masterb53b2f96.**
+Runtimea59b4f3f/QAbe30b96a select only ActorInstanceBatches/RenderSystem product
+changes. Reviewed leaves join same-cell/material/layout multi-draw on High
+quality with actual extension support; Low/Medium, unsupported/disabled delivery
+and array cameras retain the previous singleton path. Quality changes and
+owner replacement update the policy.144focused checks in9suites/full lint and
+4distinct native source/copied cases pass, retry0. Source60pose comparisons
+across7families include distant/stretched transforms;120PNGs retained. All
+30Low comparisons are exact. High uses original0.1mean/.001fraction(delta>8)
+limits; maximum mean.0004717794/fraction.0000096941, all reference-again exact.
+Final copied NPC/DemonOrc checks verify exact once-only retirement of owned
+instance meshes, batches, geometry and matrix/indirection textures. Borrowed
+source caches/driver allocations are not total-VRAM evidence.
+Actual frozen High town391→338draws retains198379triangles; Low town184→184
+and woodland94→94 preserve exact pixels. All High route draw/triangle medians
+fit original limits, but town33.3/49.9ms and road33.3/50ms FAIL20/33.4ms targets.
+Separate High party305draws/181444triangles fits limits but33.3/50ms FAILS;
+its final saved custody is not reached. No retry or waiver. Low strictly passes
+all four route budgets and final party174draws/81318triangles/16.7median/33.4p95,
+plus real Go-race/Mongo four-class fourteen-slot saved custody. Each connected
+run uses one GPU renderer and three socket peers; optional four-renderer remains
+skipped. Active100-client public29 soak shares this host; the added copied
+retirement check also overlaps Low route execution. No isolated-device or
+causal-FPS acceptance. Discovery344hosted/39unconditional-native-visual/
+19overlap/364distinct preserves342previous hosted and35native identities;
+conditional stabilization and separate release-smoke are outside this union.
+Discovery is not execution. Earlier all-quality Low83→90 regression remains
+retained and unselected. Frozen1056-entry inventory
+7f09a579ca37d6c589a2a12bcff2f67599a36a420a62b34f624c8a7d907f3348
+verified in full. Publication waits for current release30 acceptance. High
+frame time and full world/art/device/operations/F1–F5/beta/launch/handoff remain open.
+[Qualification](2026-10-11-current-master-high-singleton-qualification.json).
+
+**Qualified scenery and display changes are also merged locally.**
+Earth rock shoulders remove outward contour fins and moss seams while retaining
+buried bases/collisions,3708triangles and one shared material. Rooted ferns then
+receive continuous fold normals/colors and existing canopy thin-leaf lighting;
+all plant positions/bounds, wind, source byte counts and canopy shaders stay exact.
+Display correction6f3b592f follows the installed Three contract: HDR world/bloom,
+then tone mapping/display encoding, then FXAA. It adds no passes/resources or
+geometry and preserves Low/phone bypass. Final18focused checks and8distinct
+native source/copy/integrated/resource cases pass; earlier rock/foliage case
+identities overlap these and must not be summed as new distinct coverage.
+Intentional High edge differences and small unattributed source/copy/Low image
+variations remain explicit. These are code-owned refinements, not modern-art,
+whole-world timing, physical-device or gameplay acceptance. Publication remains
+held behind current release custody. Next address broader repeated vegetation,
+pine/rock/floor/architecture composition and material/contact/audio quality,
+alongside the existing High frame-time failures.
+[Rock](2026-10-11-earth-rock-shoulders-qualification.json),
+[foliage](2026-10-11-rooted-foliage-shading-qualification.json),
+[display antialiasing](2026-10-11-display-fxaa-qualification.json).
+
+**Live: Alpha1.79.29/12e5e3c4 is accepted.** Exact CI38078784320 succeeded on
+attempt1; frontend/backend/database and eight served asset hashes match.
+The requested jump, takeoff/landing, aura attachment and test-account filtering
+fixes are verified: trusted jump1396.8ms with zero measured backward steps,
+path/endpoint/aura error; sustained walking88frames with auraerror0; six QA
+identities excluded from real-player views and owned real-Mongo classification
+fixture1pass0skip.8required native passes/1skip plus3recovery passes, retry0.
+[Public29 terminal proof](2026-10-10-public29-terminal-qualification.json).
+
+**Held private renderer:695cee4a selects qualified automatic same-cell actor
+multi-draw and conservative per-instance clipping**, with prior lazy geometry,
+worker preparation, e8 actor shadows and public29 motion/admin. Only three
+actor runtime files were selected; the private fitted-rigid handgear pilot stays
+excluded.99focused checks,12native integrated checks/48exactRGB comparisons,
+pooled-root return/disposal/fallback and four-class High/Low jump/aura continuity
+pass. Separate actual-publication tests3pass verify lazy four-class construction
+and High/Low automatic actor-owner activation/disposal.
+[Default startup](2026-10-10-default-actor-cell-qualification.json),
+[integration](2026-10-10-actor-default-integration-qualification.json),
+[publication](2026-10-10-actor-default-publication-qualification.json).
+Candidate High265draw/176732triangles and Low149draw/79962triangles sampled limits
+pass with16.7median16.8p95 and real Go-race four-class14slot saves. Those startup
+frame samples are modular-client evidence; publication tests cover a separate
+bundle. No cross-population FPS gain or universal-budget claim.
+
+**Status HUD27bf88a8 is staged on heldae675ba2, not published.** All21tracked
+actor statuses use distinct code-drawn SVG symbols with safe shape-distinct
+fallbacks. Desktop countdowns preserve focus and update/dismiss/expire live
+keyboard tooltips; phone headings share the symbols. Actual single-effect tray
+is62pxwide.33focused checks pass; original4fail/29pass control retained.13native
+passes cover desktop/phone layouts, copied private/held bundles and actual saved
+Fighter/four-class Go-race custody;1optional peer-renderer skip stays skipped.
+Exact selected bundle also preserves lazy four-class construction. No other
+world/server/assets/runtime pilot selected. [Scoped HUD evidence](2026-10-10-status-hud-qualification.json).
+The two desktop status cases are also enrolled in required browser CI:19focused
+plan checks pass; discovery assigns all329cases exactly once. This is discovery,
+not execution of329cases. Runtime inputs and frozen native evidence are unchanged.
+[CI enrollment](2026-10-11-status-hud-ci-enrollment.json).
+
+**Fresh current-master route ca4f685e remains a failed performance diagnostic.**
+All four ordinary-input stops complete at unchanged High budgets, with draws
+391/181/398/114 and triangles198527/91010/130002/64909 for town/road/woodland/
+approach. Every median is33.3ms against20ms; p95 is50/50/33.4/50ms against33.4ms.
+The strict route assertion fails before final party assembly/saved custody.
+A separate untimed woodland census identifies167DemonOrc color/shadow draws;
+streaming populations differ from the timed profile, so this is not a steady-state
+or causal FPS comparison. No retry or waiver. Frozen352-entry evidence inventory
+87d9a290aa341ed10d024d71cf7150d44f8ea86e0de84147c0156f67d48bde45.
+[Current route diagnostic](2026-10-11-current-master-route-diagnostic.json).
+
+**Whole-world performance remains open.** The selected runtime's original
+ordinary route retains town400draw/woodland468draw failures against350; original
+Low202draw/87602triangle and High389draw failures also remain retained.
+[Original route](2026-10-10-actor-default-moving-route-qualification.json),
+[original attribution](2026-10-10-town-woodland-submission-qualification.json).
+
+**Prior DemonOrc/singleton source75a4403f remains private and unselected.** Reviewed
+DemonOrc packing preserves all1202source triangles, PBR/UV/normals, original
+animation/gameplay metadata,20pose bounds and pooling:55raw meshes→23packed.
+167focused checks and latest16native poses/32surface controls pass existing
+visual thresholds. Corrected actual High raw-source control398→241draws;
+town400draw still FAILS. Initial control missing runtime attachments failed and
+is retained. [DemonOrc evidence](2026-10-10-demon-orc-rigid-qualification.json).
+
+The combined singleton candidate adds105focused checks and12native passes,
+including60single-actor pose/shadow comparisons across seven reviewed families.
+Existing0.1mean/0.001changed-pixel thresholds pass;13/60are exact, not all.
+All four actual High route stops pass unchanged gates:town347/road207/
+woodland231/approach125draws. Later High party361draw FAILS350. Low route town
+103102triangles FAILS85000; Low frozen woodland83→90draws is a retained
+counterexample despite exact pixels. Three separate normal four-class14slot
+Go-race/Mongo party checks pass their sampled budgets/saved custody; different
+populations do not clear these failures. No retry or waiver.
+
+A new fixed60warmup+180frame Low town sample confirms103110triangles,172draws,
+16.7median16.8p95;12following untimed renders have worker pending0 and18selected
+geometry entries throughout. The earlier immediate12frame census sampled asset
+loading and entity streaming; it cannot establish steady-state attribution.
+Settled contributors:Ilyra31289triangles,camp field19740,Fighter15219.
+[Prior combined candidate and retained failures](2026-10-10-singleton-actor-qualification.json).
+
+**Camp component is now qualified privately; combined source9fe14c19 stays
+unselected.** Native-capability-gated stock per-camp clipping retains all15camps,
+nine material buckets, source vertices/attributes/materials and exact placement/
+colliders; fallback keeps prior instancing.52distinct focused checks pass after
+retained QA-only nonexistent-dispose failure.42native source comparisons across
+all15placements, close/wide/edges/far origin preserve exactRGB/color/shadows;
+eight replacement cycles return to baseline. Owned derivative storage171552bytes
+per field is explicit. Actual frozen town High347→338draws and229479→198283tri;
+Low172→163draws and103108→83368tri, exactRGB/reference-again0both. This directly
+addresses measured offscreen-camp cost without removing content.
+
+All eight High/Low ordinary route samples pass original budgets. High draws
+338/167/239/118; Low163/91/118/56. Town Low83366triangles now passes85000.
+Separate ordinary four-class14slot Go-race saves pass:High282draw/191390tri,
+Low149draw/76853tri; both16.7median16.8p95. Two expanded copied-publication checks
+require actual camp submissions and9geometry/18texture disposals; earlier three
+checks include lazy four-class construction, same exact engine hash. Prior
+Highparty361draw/Lowwoodland83→90draw counterexamples remain retained; different
+party populations do not causally resolve them. No universal-world-budget,
+modern-art/device/beta/launch acceptance or new public release.
+[Camp qualification and scoped controls](2026-10-10-camp-instance-frustum-qualification.json).
+**Combined equipped fight→walking return→first dungeon now passes in private QA
+846d63ed; runtime is unchanged and unselected.** Both High and Low normal-input
+sequences complete two kit kills, dungeon entry/movement, Recall and four-class
+14slot Go-race save custody;2native passes/2optional peer-renderer skips, retry0.
+Low also reaches the retained failure origin through actual walking and requires
+a real detour around generated scenery before returning to the road.30focused
+checks pass, including production scenery reproduction of the blocked chord.
+The earlier rock-only fixture failed to reproduce it; all fixture and prior
+native failures remain retained. High combat348median/173799tri and Low124median/
+33469tri pass existing sample gates;High438draw peak and87of180frames over350
+remain open, as does the party's279698triangle startup peak. Different populations
+do not causally clear historical failures. No gameplay/stat/collision/rendering
+or public change; modern-art/contact/device acceptance remains open.
+[Combined route and retained limits](2026-10-11-collision-aware-fight-return-qualification.json).
+Next: controlled dynamic actor/effect/shadow submission attribution and
+source-preserving improvements, representative devices and code-owned
+world/interior/material polish, then full milestone acceptance.
+
+The full modern-art/world/contact/combat, supported-browser/device/accessibility,
+save/security/operations/support/notices, F1–F5 freeze, closed-beta, launch and
+handoff requirements remain open. Owner-deferred full campaign pacing and actual
+physical-phone feedback remain deferred. Failed24hsoak37880032315 is retained;
+no restart/cancellation or substitute campaign. No beta/access/commerce/release
+approval is inferred. Original dirty repository is preserved; no new public
+push. Continue milestone-sized work in owned worktrees.
+
+The table retains source-specific historical findings and requirements. The
+current state above supersedes older default-null/public-version descriptions;
+linked original receipts preserve failures and their precise scopes.
+
+| Work | Current evidence and status | Next required result / owner |
+| --- | --- | --- |
+| Automatic actor cell delivery | Selected privately as695cee4a:99focused,12native integrated/48exactRGB,3actual-publication checks pass; candidate modular High265draw/176732triangles,Low149draw/79962triangles,16.7median16.8p95 sampled limits and four-class14slot Go-race saves pass | Whole-world budgets remain open: actual ordinary route town400draw/woodland468draw FAIL350; original Low202/Low87602/High389 failures retained. No public release. [Default integration](2026-10-10-actor-default-integration-qualification.json), [route failure](2026-10-10-actor-default-moving-route-qualification.json) |
+| DemonOrc and singleton delivery | Qualified current-master DemonOrc and High-only singleton revisions are ordinarily merged atbdf22ce1/b53b2f96. Same frozen High town391→338 and woodland398→212draws preserve triangles; Low unchanged singleton pixels and all route/party budgets plus normal four-class saves pass | High route/party frame times still fail original targets; retain previous all-quality Low83→90 regression and other source-specific failures. Publication awaits current release30 acceptance; full dynamic/device/modern-art acceptance stays open. [DemonOrc proof](2026-10-11-current-master-demon-orc-qualification.json), [High-only proof](2026-10-11-current-master-high-singleton-qualification.json), [prior failures](2026-10-10-singleton-actor-qualification.json) |
+| Camp per-instance clipping | Private1f87c0b7/QA9fe14c19 preserves all15camps/9buckets and exact source surfaces.52focused checks,42exact native controls,8replacement cycles,8ordinary High/Low route samples,2Go-race saved parties and expanded actual-publication rendering/disposal pass. Same-frozen Low103108→83368triangles | Keep combined candidate unselected; scoped Highcombat and independent High/Low first-dungeon entry now qualify separately. Finish Lowcombat, off-road return and representative dynamic population/device gates. Prior Highparty361draw/Low83→90draw counterexamples retained. [Evidence](2026-10-10-camp-instance-frustum-qualification.json) |
+| Status HUD and keyboard reading | Staged27bf88a8;21distinct font-independent actor status symbols, safe fallbacks, compact62pxtray and shared phone icons. Keyed countdown buttons retain focus; live clamped keyboard tooltip supports Escape/expiry.33focused and13native passes; original4fail control retained; exact held bundle and actual saved-character/four-class custody qualified | Include with coherent milestone. Layout/browser evidence is not physical-device or final-art approval; render/context/counterexamples remain explicit.1optional peer-renderer case skipped. [Evidence](2026-10-10-status-hud-qualification.json) |
+| Equipped normal-input combat and first dungeon | Private QAca9e1c5b, runtime unchanged from camp candidate.41focused checks;6High kit kills across3mixed180frame samples pass median/p95 gates. Independent authored-road High/Low normallevel30portal entry, first-room movement and Recall pass; first-room High115draw/51121tri,Low57/22463,16.7msmedian/p95. Two four-class14slot Go-race saved parties pass High325draw/230068tri,Low182/78735tri | Four overall failed sequences retained: basic-only death/cleanup ownership, HUD-covered road input, unbound browser helper and rock-blocked off-road return. Highcombat384draw peak remains; Lowcombat and combined off-road fight→dungeon return unqualified. No clear, earned pacing, contact/audio/art/device approval or public release. [Scoped evidence](2026-10-10-equipped-fight-first-dungeon-qualification.json) |
+| Low vegetation detail margin | Private011fddda keeps every7439plants, all leaf roots/tips/fern leaflets, exact placement/tints and wind bounds with two Low ribbon sections. Sedge80→48/fern231→217triangles; High position/color/normal SHA256 goldens and spatial copies unchanged.24distinct focused checks pass after retained old expected-recipe test failure; actual Low1native pass1skip27.9s/retry0, exact four-class14slot movement/Mongo saves | Actual180frames158draws/80382triangles/16.7msmedian16.8msp95 pass sampled Low limits. Same-scene prior/current scenery independently saves3248triangles with158draws and exact plant transforms/tints; ordinary/close visual differences inspected. Private integration now exact011fddda; default null/public27 unchanged. Qualify cold/returning default startup, worker fallback, settings replacement and session/resource lifetime before activation; wider combat/device/art gates stay open. [Frozen evidence](2026-10-10-low-understory-detail-qualification.json) |
+| Rigid supplied equipment geometry | Private09fba6f8/de9c9a15 extends the existing optional owner to original-vertex hand gear, preserving source GLBs, attributes, mounts and close originals.86focused checks, immutable/offline worker,64native gallery controls/32exact close, actual High/Low normal movement and four-class14slot Mongo saves pass. Corrected QA-only pool assertion retains11skinned+10rigid; first failure and selector setup failure retained. Private integration fast-forwarded to exactde9; public27 unchanged | Same frozen scene saves3356Low/19304High rendered triangles. Actual Low179draws/85056triangles/16.7msmedian+p95 still fails85000. High334draws/181569triangles/16.7ms passes sampled limits only. Keep default null; build meaningful Low scenery margin without losing plants/leaves or altering High/wind bounds, then finish wider representative/device/art/activation gates. [Frozen evidence and limits](2026-10-10-rigid-equipment-geometry-qualification.json) |
+| Connected party names | Actual High one-renderer/three-live-peer scene retains7visible22px labels, all owned/chosen and0overlapping pairs. Native23.1s/Go-race31.152s save check pass; four-renderer alternative skipped. Screenshot suspicion not reproduced; product unchanged | Retain bounded existing layout; transient/HUD, supported-device and overall UI/art acceptance remain open. [Scoped proof](2026-10-10-connected-party-nameplates.json) |
+| Current Low geometry-owner qualification | Runtime identical511edfaa; QA-only missing-worker guard eeed562f carried as11df89b4. Existing exact worker now prepared. Actual Low four supplied classes/14slots/3socket peers:1native pass1skip, saved custody exact,44geometry registrations/no errors; close RGB0, normal clicks/motion/HUD inspected | Low16.7msmedian/p95 and175draws pass sampled limits,89377triangles fails85000; same frozen scene85491 also fails. Default stays null. Original missing-worker native failure retained; no blind retry. Original rigid equipment census10604triangles identifies remaining bounded coverage. [Actual evidence and limits](2026-10-10-world-geometry-low-qualification.json) |
+| Actor frame scratch storage | Private3aea15aa reuses per-frame arrays/set while retaining live eligibility/order.69focused checks,10exact HighLow pose controls and actualHighparty pixel parity/save checks pass;720real frames all16.7msmedian | Keep unselected: fixed-scene submission medians9.0/9.85ms reference versus10.6/11.35ms candidate give no gain. Population/draw changes forbid causal frame comparison; wholeHighdraw/triangle/device/art gates stay open. [Decision](2026-10-10-actor-frame-storage-unselected.json) |
+| Optional shadow view | Private5c5494ef explicit owner, defaultOFF;36units, one actual equipped High native/Go-race save check and exactRGB pass.390→362same-scene draws; synchronous submission regresses;720real frames all16.7ms medians | Keep disabled/unselected: no stable FPS gain and wholeHigh350draw/250k triangle gates remain open. [Connected proof and limits](2026-10-10-actor-shadow-connected-gameplay.json) |
+| Current release | Alpha1.79.29/12e5e3c4 accepted: CI38078784320 success attempt1, normal TLS frontend/backend/database and8served hashes match; jump1396.8ms,zero backsteps/path/endpoints/aura error; walking88frames auraerror0; six configured QA identities excluded and real-Mongo fixture1pass0skip | Owner-requested motion/admin fixes complete. Full roadmap, held world/default renderer, art/devices/soak/freeze/beta/launch remain open. [Terminal public29 proof](2026-10-10-public29-terminal-qualification.json) |
+| User-requested jump speed | Owner repeated approximately1.5s TOTAL. Candidate1.3s flight qualifies actual connected1504.9ms normal/1459.9ms15FPS, endpoints0, fresh login/direct Mongo custody | Actual public27 landing/deployment verified1429.7ms total, endpoint errors0; required broader live CI passed retry0. Earlier public25 measured1648.6ms at1.5s flight and is retained. No physical-device/art acceptance. [Candidate](2026-10-10-jump-total-time-release27.json) |
+| Historical vendor/stash release qualification | Private d76413a4 two native ordinary/one-second FIFO-delayed cases pass50.6s; public24-byte-exact Go-race server and Mongo savedGold1175/EP43/23bag/2stash/exactequipment checks pass57.350s.3485existing product inputs unchanged. Existing helper waits exact175credit before stash snapshot; original stash equality retained | Two baseline controls failed their assumed old-balance observation: real delivery publishedGold first. Preserve both; native does not reproduce originalGoldcause. Controlled unit counterexample remains valid. [Qualification and limits](2026-10-10-vendor-stash-browser-qualification.json). Original live startup/Gold and failedCI remain unaccepted; deployed25current live Gold/stash assertions fail despite original175-credit qualification; diagnose the uncovered boundary without relaxing equality |
+| Historical Gold boundary investigation | Private8c9aa236 actual preceding sales under FIFO delayed delivery reproduce242Gold overshoot and175Gold crossing stash snapshot. Sale native case passes within a failed two-case diagnostic; corrected selected stash native/Go-race/Mongo passes exact1175Gold/43EP/custody. Initial harness failures retained;2727production files unchanged | At this earlier checkpoint, original live cause remained unproven. Fresh correlated baseline repair is qualified in both controlled cases, including strict persisted custody; corrective26 gates were pending and subsequently failed, retained above. Public27 current acceptance supersedes this historical status. [Counterexamples and limits](2026-10-10-vendor-preexisting-credit-counterexamples.json) |
+| Jump/startup corrective release | Five client inputs qualified locally and exact final publication verified live. Corrected ability/frame serialization passes full Server Tests; client/all3browser shards/predeploy/input/deploy jobs pass | Current25 live Gold/stash fails in both configured attempts; original recovery/Gold causes remain open. No private renderer/terrain/body/geometry pilots included. [Failure and bounded jump proof](2026-10-10-jump-wall-clock-public-verification.json) |
+| Jump time at low FPS | Elapsed-time flight source45ef4111/c7937f17 now deployed25; prior110focused checks/3native cases retained, actual isolated15FPS1547.4ms/60cap1522.6ms and exact endpoints. Fresh public total1648.6ms passes | Jump correction verified independently; required releaseCI still fails separate Gold/stash. No physical-device or whole-game frame-budget acceptance. [Public proof](2026-10-10-jump-wall-clock-public-verification.json) |
+| Current gameplay frame evidence | Private00742d44 QA-only exact reported-decimal intervals with raw timestamp pairs and restored observer ownership.27checks/3suites, actual High four-class/race/14slot-save pass;1080samples independently recomputed. All six p95 values33.4 meet unchanged33.4 boundary; source absent median33.3 fails, all draws383/373/392/372/358/372 fail350 | No product FPS gain or historical raw-only reclassification. ABBA16.7ms medians both arms; installed compact triangles pass, source fail. Actual33.4001ms excess still fails controlled checks. [Measurement receipt](2026-10-10-gameplay-frame-evidence.json). Requested jump fix is now independently verified on25; release Gold/stash and full performance/device/art gates remain open |
+| Unselected actor batch shadow view | Isolated bf2039bf reads actual renderer shadow-light list and already prepared whole-batch bounds;32units/12native/70exact RGB controls pass. Existing offscreen incoming shadows retained; High Skeleton idle120→60draws, Low original path, stable four-cycle resources and failure/nested restoration | Product remains outside held/public/default runtime. Obtain actual connected equipped High CPU/whole-frame ABBA before selection; isolated draw reductions are not FPS or art acceptance. [Prototype scope and evidence](2026-10-10-actor-instance-shadow-view.json) |
+| Prepared geometry storage | Private3207fb56 compacts exact selected rows;180focused checks,64native gallery controls/32close originals,2published cases and actual High party/race/14slot-save pass. Retained buffers40,678,788→17,464,220B gallery (57.07%),21,769,808→8,741,512B party (59.85%); ordinary-shadow RGBA exact. Final real-frame ABBA source/compact medians16.7ms both, all exactp95/draw gates fail | Select storage improvement only, geometry owner default null. No FPS/whole-browser/peak-memory or device/art acceptance. Earlier33.3ms ABBA and CPU regressions retained. [Compaction evidence](2026-10-10-prepared-geometry-compaction.json). Prior current High attribution remains valid/source-scoped |
+| Current High default-submission attribution | Two actual native four-class/race/save runs with optional actor-view OFF; installed33.3ms medians, p9550/33.400000000001455ms,478/454draws fail original High gates; triangles205901/206061 pass.90RAF root probe restores all methods; scene world updates4.72ms including foliage2.01/entity1.89, four supplied roots0.55ms.7QA checks,3478product inputs unchanged | No consistent whole-frame/memory gain proved. Source/installed windows and overlapping root times have explicit limits. Investigate rigid-shadow/default submission and real-frame geometry ABBA; preserve disabled default. [Current attribution](2026-10-10-high-current-default-attribution.json) |
+| High frame attribution | Exact equipped-party native observer:300draws/166785triangles passes geometry ceilings,33.4median/66.6p95ms fails frame limits. Post-timing3s sampling points to projection/bounds/shadow/matrix and4553-node optional light scan; substantial shared-host load retained | Measure safe scene/matrix/light-scan changes with complete invalidation; no cross-run gain or device/art acceptance. [Frozen attribution](2026-10-10-high-frame-attribution.json) / implementation |
+| Local-matrix invalidation | Original unsafe cache was already selected in public23; earlier private-only labels were incorrect. Conservative6553fec1 keeps local composition caching and restores stock world-force propagation.80focused checks,14exact native controls and High/Low actual party/race/save checks pass; old/invalid-fixture failures retained. High272draws/157914triangles/33.3median/33.4p95ms still fails timing;Low162draws/89808triangles/16.7median/33.4p95ms fails triangles | Isolated24/922753a7 is deployed; required live expiry startup failed, acceptance remains open. Manual public14stage transforms and six hashes exact; no waiver. Different28/40populations and shared-host load prohibit cross-run gain claims. Whole-frame/device/art/full-roadmap gates remain open. [Qualified conservative correction](2026-10-10-matrix-world-force-checks.json) supersedes old descendant diagnosis and private-only labels; frozen originals retained / implementation |
+| Published vendor add-ons | Privatefa8168f0 bundles15copied locked add-on modules, keeps shared Three/session identities and exact MIT notice.32focused checks/8published engine cases and64paired equipped HighLow pose/zoom RGBA controls pass. Script responses48→31; decoded script bodies5,762,671→5,616,101B, engine+114,569B | Selected privately; no startup-speed/wire-byte/original failure-cause claim. Core Three dependency remains external; live24still unaccepted. [Publishing evidence](2026-10-10-published-vendor-addons.json). Inspect scene-profiler exact timestamp consistency before further frame comparisons, without changing targets or historical raw-only outcomes |
+| Engine-entry download recovery | Private48f35293: browser confirms failed entry URL remains failed without a second request; distinct same-release entry succeeds. Lazy shared promise permits one bounded recovery and serializes rapid starts.89focused checks and5final published-login cases pass; initial dependency-route fixture failure retained/corrected | Staged only. Root/dependency origin of original24failure remains unknown; already-failed vendor URLs remain visible and require reload. Strict browser failure policy/30s state deadline unchanged; no CI waiver/retry/push. [Recovery evidence](2026-10-10-engine-module-recovery.json) / implementation |
+| Live startup and vendor/stash QA | Private170c41af/d1616fba, selected as held4fc34f6a:91focused checks and local native fault control pass. Original helper fails a controlled inventory-before-175Gold boundary; exact preceding credit wait fixes QA sequencing while stash equality remains intact.3fresh ordinary live recovery/party tests pass on unchanged24, with no startup reproduction | Preserve original failed CI and unknown download/175Gold causes. New diagnostics retain at most8known static-module paths with fixed error codes/statuses, no query/credential data and no abandoned-document contamination. Confirm next real failure and persistent vendor/stash flow before closing findings. Full-game High/Low/device/art budgets remain open. [Evidence](2026-10-10-live-failure-diagnostics.json) / implementation |
+| Actor light-membership prototype | Unselectedb90d1ac5:107focused checks/70exact native pairs and actual High party/race/save pass. Same-scene previous full scan/indexed274calls/162468triangles and RGBA exact;17.3→16.7ms submission median improves but23.7→24.3p95 worsens.6058watched nodes/12116listeners and extra construction-time graph contract | Keep prior live full light scan. Isolated0.182→0.0048ms phase gain does not establish whole-frame/native benefit worth cold registration and ownership complexity. No new actual Low party repeated for this unselected prototype. [Retained decision](2026-10-10-actor-light-membership-unselected.json). Investigate measured world-bounds work with full invalidation / implementation |
+| Actor world-box cache prototype | Unselected26659ce3:104focused checks/70exact native pairs and actual High party/race/save pass. Same-scene counts/RGBA exact, submission median18.1→18.9ms worsens whilep9528.6→27.6ms improves. Actual180animated frames rebuild145329/reuse1551boxes:1.06%hits | Keep original scratch-box transform and full live light scan. Avoid per-leaf cache compare/copy/retention that scarcely amortizes under animation. No new actual Low party repetition. [Retained decision](2026-10-10-actor-world-bounds-unselected.json). Consider exact affine projection with full differential/overflow and actual-game proof; whole-frame/device/art gates open / implementation |
+| Actor affine arithmetic prototype | Unselected0dbe93f4:110focused checks,70strict native pairs and actual High four-class/race/14-slot saves pass. Exact same-scene262calls/147536triangles and RGBA; ordinary21.5/29.7ms versus affine23.8/35ms gives no measured submission gain. Node-only32780case diagnostic remains arithmetic scope | Retain ordinary eight-corner scratch-box transform and live light scan. High33.3ms median still fails20ms; shared load/population prohibit cross-run gain or general regression claims. No new actual Low party repetition for unselected code. [Decision](2026-10-10-actor-affine-bounds-unselected.json) / implementation |
+| Actor cell-translation prototype | Unselected4b108ffb:90focused checks,70strict view plus10strict cell RGBA/matrix controls pass. Default actual High four-class/race/14-slot saves pass. Same writer-dispatch arithmetic control23.5/31.8ms versus direct24.1/39.1ms gives no consistent submission gain; retain ordinary path. High422draws/464410triangles/33.3median/33.5p95 fails original limits | Focus on supplied equipped color/shadow submissions:405078estimated triangles versus21162rigid instances in untimed attribution. Qualify existing coherent body/equipment/shadow policies in moving/HUD gameplay, preserve models and budgets. No actual Low repetition for rejected prototype. [Evidence and limits](2026-10-10-actor-cell-translation-unselected.json) / implementation |
+| Long-soak failure and transport diagnosis | Run 37880032315 failed with 7 read errors; min 32,327 frames/1,222,837 ms per client independently fails the 432,000 frames/77,760,000 ms requirements. All 1,440 health samples ready, max 340 goroutines/155,593,816 heap bytes, no broadcast drops; transport cause unknown. Private additive first-observed closure counters and real socket/race regressions address missing diagnostics | Keep failure open. Counters are prospective evidence, not a repair or 24-hour acceptance. Include with a coherent milestone, qualify exact deployed server/live behavior, investigate concrete closure evidence without relaxing queues/timeouts/acceptance or restarting unchanged long runs. [Failure and diagnostics receipt](2026-10-10-soak-transport-diagnostics.json) / implementation |
+| Raised terrain and atlas | Retained raised candidate `33f536c4` including staged rollout guards; functional save/profile/grounding, equipped solo road budgets and atlas receipts exist. Production activation held | Integrate this candidate deliberately; finish coherent art and equipped-party/device qualification, then matching client/server/profile rollout and compatible return-to-flat verification / implementation |
+| Terrain rollout guards | New owned candidate validates profile before mutations, passes it to preflights and checks initialized-world health. Focused race and real-process HTTP/login checks passed; **staged, not deployed** | Include with the coherent terrain milestone and obtain its own exact deployment acceptance; [receipt](2026-10-09-terrain-rollout-readiness-checks.json) / implementation |
+| Ground-cover performance | Private spatial-batching candidate preserves every High13087/Low7439 plant, exact native image/wind output and GPU cleanup; supported multi-draw only, established fallback retained. Raised movement/aim/shadows and actual equipped-party saves pass. Paired connected scene saves about2–3ms CPU median, but High median33.3–33.4ms/p9550.0–50.1ms still fail the whole-game budget | Keep held with raised milestone; investigate measured scene-projection/world-matrix/bounds/shadow costs, then qualify actual equipped party and supported devices. No plant removal, budget reduction or public microrelease; [scoped receipt](2026-10-09-understory-spatial-checks.json) / implementation |
+| Tree scene projection | Follow-up to private5c4998e9 uses existing filter-padded swept-shadow proof to skip only static leaf cells whose geometry and full incoming shadow are outside the actual camera. Thirty-three unit checks, sixteen exact native pixel comparisons, copied-site bundle and four-class save/party check pass. Same connected24-entity scene CPU medians improve27.9/28.7→24.9/27.1ms; frame medians33.3ms and one candidate p9550ms still fail High budget | Retain with held terrain milestone; investigate remaining measured renderer/world-matrix/bounds costs. Low shadows-off path unchanged; unknown filters/deformation/descendants conservative. [Scoped receipt](2026-10-09-foliage-projection-checks.json) / implementation |
+| Supplied gameplay geometry delivery | Privatef63a8627 explicitly binds delivery/controller to RenderSystem group/reset/dispose lifetime; default owner stays null.150checks, copied publication lazy-graph/immutable-worker/offline execution,32native controls/16exact close, actualHigh→Low replacement/High pool reacquisition and High moving/save pass. Algorithms remain byte-exact. Before-allocation180frames33.3median/33.4p95/278calls/441160triangles; installed separate window33.3/33.4/293/191657 | High20msmedian and exact33.4p95, close411701triangles, no-pilot default renderer, Low owner/device/memory/cold/moving-art gates remain open. Same-scene source-bypass20.4/28.9→candidate20.8/32.5submission is slower; independent populations36/35 do not prove frame or memory gain. Keep default inactive; profile current High costs and qualify complete unchanged targets. [Runtime/publication evidence](2026-10-10-gameplay-geometry-runtime-owner.json), [prior worker/Low evidence](2026-10-10-gameplay-geometry-worker-delivery.json) / implementation |
+| Supplied body LOD selection | Earlier protected High bodies182740→123204triangles were selected privately at four additive v2paths; current v3selection below supersedes High loading and retains all v2files; source/oldHigh/Low files retained, Low exact.221units, selected native fit/morph/pool, all-vertex source proof, production12file cold/offline cache and ordinary four-class race/save check pass. Initial new QA failures retained and corrected. Actual High497calls/496215scene/446678equipped-root triangles still fail350/250000limits; raw16.7/33.3ms sample and35entities do not establish CPU attribution | Continue dominant fitted geometry/material/body/eye and whole-game scene costs without losing supplied surfaces, bones, morphs, slots, motion or silhouette. Finish unchanged High/Low full-game/support-device and final modern-art/Q/CB gates. No public/version/profile/access activation; old-client deployed compatibility and F1–F5 remain open. [Selection receipt](2026-10-09-body-lod-integration.json), [preparation and rejected Low](2026-10-09-body-lod-preparation.json) / implementation |
+| Revised High body selection | Four immutable v3High paths select reviewed123204→81216body triangles in held private milestone. All source/Low/gear/motion/originalHigh/v2High bytes retained;744catalog version paths.61units, eightGLTF/source checks, native56pose/eight-outfit checks and16file cold/offline freshly parsed rigs pass; selected images72/72RGB match preparation. Ordinary selected-path four-class race/save check passes with cached SHA/body proof. Actual High436calls/458642scene/405078equipped-root triangles still exceed350/250000; raw16.7/16.8ms sample and33entities do not establish controlled CPU gain | Continue dominant gear/eye/actor/scene costs and unchanged High/Low whole-game/device/art/raised compatible activation gates. No public/version/profile/access change or final art/CB acceptance. [Selection receipt](2026-10-10-body-morph-selection.json) / implementation |
+| Actor view and incoming-shadow pilot | Unselected optional source-preserving filter:91checks/70strict zero-RGB native pairs, finalHigh/Low four-class race/save observers/three retained peers. Same-scene High419→296draws/181519→166891triangles;Low169→145/82117→75508, zeroRGB. Ordinary High297draws/166903triangles meets geometry ceilings but33.4median/66.7p95ms fails;Low145/75762/33.3/50meets this desktop scene scope only. Rigid weapon trials save only12or192Low catalog triangles; count-only negative evidence retained | Diagnose measured High scene traversal/bounds/local-world matrices and whole-frame cost with full invalidation. Low post-sample CPU supports this investigation, not a High gain. Compact bake/coverage/zoom/lifecycle/cache, whole supported-device/moving-art/combat and all inherited gates remain open. Default filter null, qualified e47selection/public22 unchanged. [Pilot and limits](2026-10-10-actor-instance-view-pilot.json) / implementation |
+| Gameplay gear seam-collar pilot | Unselected opt-in exact source collars replace19gallery full-part fallbacks: High66832→39496/Low41010→33396. Default/disabled operator exact on160captured inputs;66checks,160source audit,72native pairs/24exact close controls/four stable cycles and actualHigh/Low race/save pass. High164532triangles meets250000but388draws/33.3median/50.1p95 fail;Low90620exceeds85000. Visible rigid equipment census High20266/Low10604triangles remains outside pilots | Continue measured High actor/NPC shadow submissions/frame cost, textured rigid weapon/socket geometry, compact bake/coverage masks/continuous zoom/lifecycle/cache and unchanged whole High/Low/device/art gates. Qualified e47runtime/public22 unchanged; full inherited roadmap remains active. [Pilot and limits](2026-10-10-gameplay-color-collars-pilot.json) / implementation |
+| Gameplay-camera body pilot | Unselected source-index QA keeps raw blink/skin attributes and exact protected seam collars:unmasked High81216→35602/Low73094→34902; actual masked42137→16923/32856→16532.60focused checks,8CLI guards,48source audit,two336pair native galleries/112exact close controls each, finalHigh/Low race/save pass. Two High peer-close failures retained; source-equivalent JSON capture transport keeps peers open without policy changes. High208455triangles meets250000but378draws/33.4median/66.7p95ms fail;Low90850exceeds85000. Independent raw copies High63.8MB/Low48.1MB are QA costs, notVRAM or production choices | Continue measured High submissions/frame and Low remaining fitted/rigid/scene geometry, compact baking/coverage masks/continuous zoom/hysteresis/active lifecycle/cold and returning cache, whole supported-device/moving-art/contact/combat gates. Current assets/qualified e47runtime/public22 unchanged; full inherited roadmap remains active. [Pilot and retained failures](2026-10-10-gameplay-body-lod-pilot.json) / implementation |
+| Gameplay-camera gear/eye pilot | Unselected exact-source index QA:High152558→66832/Low77910→41010, every PBR region and full bone channels retained;19fixed-seam partitions remain exact.15checks,80source audit,72native pose/zoom pairs/24exact close controls/four stable resource cycles and actualHigh/Low race/save party pass. Combined High420draws/253753triangles still fails350/250000;Low102800fails85000. Current bodies/assets/runtime/public22 remain exact | Continue gameplay body blink-endpoint/bone constraints and High submissions, close-source retention, continuous zoom/hysteresis, active equip/reconnect/bake/cache and whole High/Low/device/art gates. No production selection or final roadmap acceptance. [Pilot and retained failures](2026-10-10-gameplay-color-lod-pilot.json) / implementation |
+| Shadow-only renderer pilot | Explicit opt-in, independent exact raw depth buffers and finally restoration;37unique checks, native16exact-index zero-pixel pairs/16simplified poses, stealth/shadows-off and four stable resource cycles; actual four-class race/save observer passes. Same scene456947→317983triangles/420draws unchanged, owned9.86MBraw buffers (notVRAM).180frames416draws/318386triangles still fail350/250000; source/selected assets and public1.79.22 unchanged.12empty glove results now retain864source triangles | Keep unselected; continue actual-camera actor color/submission cost, active equip/pool/reconnect/native and whole High/Low/support-device/final-art gates. No budget relaxation, public microrelease or full-roadmap completion. [Pilot and retained failures](2026-10-10-shadow-geometry-pilot.json) / implementation |
+| Shadow geometry feasibility | Count-only tool preserves every referenced bone through <=32-bone triangle partitions and checks exact protected position/skin/blink depth signatures. Three256-file/875-primitive screens pass; default High bare characters184890→58514/catalog wearables769432→271280. Weaker skin penalties/vertex relocation rejected; strict High eye gains small. Six migration checks/CLI guards pass. No generated GLBs or runtime/public selection; e47qualified runtime remains exact | Prepare pass-only depth indices/renderer experiment with safe restoration, masks/poses/gear/stealth/alpha/displacement and lifecycle ownership. Native moving shadow/actual equipped HUD, unchanged whole High/Low/device/art gates required; catalog counts are not a party/GPU budget result. Low shadows off needs separate geometry work. [Diagnosis](2026-10-10-shadow-geometry-feasibility.json) / implementation |
+| Body morph endpoint preparation | Preparation completed: revised High123204→81216body triangles now selected privately as recorded above, four Low exact reviewed files; initial coarse neck/shoulder faceting rejected.44units,16validGLBs including rejected trials, three native eight-outfit/56pose runs,170960exact-source vertices/all8334moving blink vertices retained and actual four-class race/save observer pass. High460draws/466590scene/405076player-root triangles still fail unchanged whole-game limits;33entities do not prove CPU gain. Prepared-stage evidence is historical; current private selection above qualifies normal loading/cache, public unchanged | Retain rejected coarse trial and source/morph proof; finish actual whole-game High/Low/support-device/art/raised qualification. Continue entire inherited roadmap and owner/operations/beta/launch gates. [Preparation and retained rejection](2026-10-10-body-morph-basis-preparation.json) / implementation |
+| Largest-layer wearable preparation | Joint seam hypothesis rejected for12sources with no shared positions. Keeping reviewed secondary regions exact prepares40fits per mode; soft High10.1%/Low12.7% subset reduction.160validGLBs,809952exact-source vertices,285exact reviewed secondary regions,223units/three native galleries and actual four-class race/save observer pass. Wizard close trim retained in viewed pair. Actual436106equipped-root/502083scene triangles,476draws and rawp9533.400000000001455 still fail unchanged High limits. No runtime/asset/catalog activation | Retain preparation only; investigate larger actor/body/eye/base-layer/gear and scene cost with supplied art/rig/morph/material order intact. Deliberate immutable selection/cache and actual High/Low full-game/device/art/raised rollout remain required. [Preparation receipt](2026-10-09-wearable-material-layer-preparation.json) / implementation |
+| Weighted wearable LOD trial | Source-pinned40fits/80variants pass rig/attribute/serialization checks and actual native routed gallery. Unprotected High14.3%/Low30.8% selected-fit reductions lose robe trim visually; rejected. Guarding material proximity restores exact reviewed robes but only0.75% High/no Low aggregate savings,182triangles in the gallery. Runtime/catalogs unchanged | Investigate coordinated material-surface and supplied-body/eye geometry; do not promote counts, fallback images or functional gallery checks to art/whole-game acceptance. [Rejection receipt](2026-10-09-wearable-attribute-rejected.json) / implementation |
+| Fitted actor submissions | Private follow-up to0da9afac preserves supplied rigs, all per-piece PBR values and triangle topology while consolidating compatible opaque gear. 107 focused units plus final41 checks,140 exact native comparisons and four bounded GPU cleanup cycles pass; four-class connected party/saves pass. Native High352→212calls at unchanged508699triangles; vertex data and eight connected rig textures increase. Connected timing remains mixed, with candidate p9550ms | Retain with held terrain milestone; High whole-game20ms median/33.4ms p95 and supported-device gates remain open. Additional world-group cache experiment rejected as negligible. [Scoped receipt](2026-10-09-fitted-surface-checks.json) / implementation |
+| Actual rig rendering and movement | Private2e3cf1b3 retains weapon-profile movement calibration (`Sword_Run`1→requested2.5), four service NPC types and Inferno Titan rigid/instance integration. Prior117units/four constructor/ten instance native tests and supplied four-class saves pass. New selective reference keeps existing Skeleton/humanoid instances: town893→640draws but CPU27.8/26.7→28.3/28.0ms shows no town CPU gain; approach1073/1184→340/352draws and25.8→22.8/21.6ms gives a local gain. Current normal-input motion still records14moving samples at2.5 and nine changing bones | Retain source-scoped partial work. The earlier globally disabled reference remains historical; no retrospective correction of its results. Actual whole-game and supported-device/art gates stay open. [Prior receipt](2026-10-09-actual-rig-render-checks.json), [corrected control](2026-10-09-rigid-surface-render-checks.json) / implementation |
+| Opaque rig PBR consolidation | Private follow-up to2e3cf1b3 combines eligible opaque stock surfaces only within each live animated pivot, preserving all source triangles and exact Float32PBR values.157units/ten native tests with28pose comparisons and two final High/Low GPU lifetime cases pass. Same-scene incremental ABBA keeps prior instancing: town640→505/497draws, CPU30.5/30.0→27.2/26.0ms; approach198/242→174/182draws, CPU21.5/19.9→18.5/18.7ms. Additional shared packed raw geometry881280bytes explicit | Retain with held terrain milestone. Town33.3/50ms and current30entity equipped-party33.3/50ms,456draws/549343triangles still fail unchanged20ms/33.4ms/350draw/250k limits. Approach reference also16.7ms; no stable whole-frame gain or physical-device/art acceptance. CPU cache probe has zero misses; investigate measured traversal/matrix/render costs with complete invalidation and native shadow proof. [Evidence](2026-10-09-rigid-surface-render-checks.json) / implementation |
+| Rejected renderer/art experiments | Isolated all-realm foliage prototype282d0a78 preserves sixteen exact native images but increases CPU on High and Low; isolated Earth soil prototypeab3ce06d passes technical native/party/save checks but wider contrast looks like camouflage and corrected filtering leaves the actual HUD scene under-detailed. Neither runtime is selected | Keep the qualified rendering precursors and protected High body selection. Build richer physical ground detail at meaningful scales and deliberate vegetation composition; test actual supported scenes without deleting content or weakening budgets. [Foliage result](2026-10-09-forest-visibility-rejected.json), [soil review](2026-10-09-earth-soil-response-rejected.json) / implementation |
+| Rejected woodland spatial submissions | Isolateddd354331 combines original tree pieces into material-compatible64m multi-draw sectors, preserving2070piece instances, all recipe triangles/indices/matrices/materials and391colliders.63initial units and6updated indexed cases pass. Initial and indexed native runs both finish1fail/1pass: same wide-Low pixel differs in two channels by1; strict zero gate remains unchanged. High219→86calls but CPU samples show no consistent gain; duplicated raw geometry837444→88397740bytes, with Low also reserving88MB | Keep prototype unselected; qualified6fbffd34source remains intact. Measure reusable stock BatchedMesh preparation in existing owned understory with complete invalidation/native parity and actual equipped-party evidence, without copying geometry per sector or skipping live foliage validation. Full whole-game/device/art gates remain open. [Rejection evidence](2026-10-09-woodland-spatial-rejected.json) / implementation |
+| Existing understory preparation and supplied geometry diagnosis | Stock preparation observes0calls in actual town/approach and0.10ms median per frame in equipped party; a cache is not justified by these JavaScript samples. Actual four equipped roots alone submit489598color+shadow triangles. Independent native eight-outfit gallery attributes High17344–30213color triangles to masked bodies and substantial cost to gear; four-class race/save and gallery checks pass. That diagnostic snapshot retains6fbffd34; later protected High selection is recorded above | Prioritize supplied-body/gear submissions and reproducible source-derived optimization with original assets, all gear/rig/morph/material/attachment identities and motion/fit/visual checks preserved. No content removal or budget reduction. Current party33.3/50ms,459draws/544310triangles still fail. [Diagnosis](2026-10-09-understory-preparation-diagnosis.json) / implementation |
+| Physical Earth material | Private physical-morphology foundation adds one packed linear mipmapped map for registered soil clods, stones and moss;13 units,2 expanded native checks/four GPU cleanup cycles, copied-site bundle and actual four-class14-slot party/save check pass. Paired fixed-scene timing is mixed; actual31-entity party High33.3ms median/50ms p95 still fails. Viewed HUD improves ground distinction but gravel remains evenly scattered | Retain in held terrain candidate; finish deliberate gravel/vegetation composition and ordinary moving equipped/HUD route review, then supported-device and whole-game gates. Extra High256KiB/Low64KiB base RGBA map and synchronous generation costs explicit; [receipt](2026-10-09-earth-surface-morphology-checks.json) / implementation |
+| Earth ground-cover composition and moving reference | Private follow-up retains High13087/Low7439 plants and all leaf/recipe triangles while forming lower curved sedge fans and irregular stands; gravel placement shared by color/relief.34 units,2 native art checks/four GPU cleanup cycles and20 exact current batching/wind comparisons pass. Actual41-step town→Earth→Verdant approach with14-slot Fighter/HUD captured; four-class party/saves pass111.38s. Whole-game High33.3/50ms still fails | Retain with held terrain milestone. Attribute actual town848/approach875 draws and warmed resource retention; inspect moving actor action/bone progression, contact/fight and remaining scene silhouettes. Low gains one sector; no zero-VRAM or device claim. [Evidence](2026-10-09-earth-ground-cover-composition-checks.json) / implementation |
+| Modern environments | Code-owned material, terrain, road, foliage, architecture, landmark and interior improvements delivered or staged at differing exact sources. Latest prepared equipped/HUD ordinary-input town→Earth→Verdant approach records movement/grounding; tree/rock/architecture repetition, real-scene cost and combat/gait quality remain open. Q/CB art acceptance open | Gameplay-size, moving, equipped/HUD review of Lanternhold → Earth → fight → dungeon approach, then every realm/border/dungeon/raid/Dark Realm/casino/PvP family; repair actual gaps / implementation, final owner review |
+| Supplied actors/equipment | Four GLBs, equipment catalog and motion banks delivered; current rig/slot/material/dual-wield/cleanup receipts retained. No new asset request | Finish full/mixed/cosmetic fit and material identity in motion, local/remote swaps and supported profiles without replacing supplied models / implementation |
+| Combat and presentation | Twelve kits and class-authority implementation retained; art/effects/audio and resource-lifetime receipts are source-scoped | Close actual class/spec, animation/contact, warning hierarchy, sound and busy-group/readability gaps. Essential warnings survive Low/reduced effects/mute / implementation and playtest |
+| Campaign and activity integration | Complete story/raid/finale systems and prepared encounter/save receipts retained; earned human pacing remains unmeasured | Reconcile every inherited chapter/legacy contract/handoff/party/reward rule; act on player findings. Human campaign, role feel and finale timing belong to owner/cohort playtests / implementation and owner |
+| Economy/social/casino/admin/recovery | Delivered systems and valuable-operation ledgers retained; green tests do not cover every final integration/policy requirement | Reconcile original source/settlement/permission requirements and support flows, investigate concrete findings, retain Gold/EP isolation and account ownership / implementation |
+| Browser/mobile/accessibility | Existing controls/settings/layout evidence retained; physical-phone party/dungeon feedback owner-deferred | Finish declared support matrix, keyboard/non-color/reduced-motion review, returning sessions and sustained device/resource budgets. Publish limitations only with required owner agreement / implementation and owner |
+| F1–F5 feature freeze | **Open**: full promise review, threat boundaries, population/service objectives, policy ownership and catalog freeze are separate requirements | Reconcile all promised content and critical issues against current delivered evidence; obtain missing owner policy decisions; freeze only when every F item is proven / implementation and owner |
+| Operations 1.81–1.86 | Recovery/deployment/support/documentation/notice candidates and accepted precursors exist at separate sources | Inspect/select exact current work, qualify remaining backup/restore/rollback/old-client and support procedures; resolve off-machine destination, RPO/RTO, service budget/staffing and rights without inventing decisions / implementation and owner |
+| Release trust | Current CI has a trusted SSH pin, strict checking and repository/event/ref guards. Read-only GitHub API now reports `master` unprotected and no rulesets | Preserve installed guards; agree remaining branch/workflow/runner policy. Historical X02 “runtime key discovery still current” is superseded by current source; it does not close X03 or all F2 / implementation and owner |
+| Monitoring/network | Approved monitoring and public-probe code retained. Final exposure/alert/host-failure coverage is not established by a same-host health check | Verify actual enabled configuration within authorized scope; resolve remaining public/address-family and recovery coverage at launch gates. No DNS/provider/retention change or fabricated outage / implementation and owner |
+| Consolidation 1.87–1.89 | Art/performance, fresh/returning-save integration and commercial/free-launch signoff remain open | Finish missing scope and preserve valid unchanged evidence. No commerce, pricing, retention, save wipe or scope decision inferred / implementation and owner |
+| CB 1.90 | **Not approved or open**; game must be nearly complete first | All preceding content/art/usability/operations gates, invitation preparation and chosen cohort capacity/support; preserve existing accounts; owner explicitly approves admission/channel change |
+| Findings and 1.91–1.98 | Waiting on qualified beta/cohort evidence and remaining launch proofs; preparation may continue | Repro and resolve beta blockers, then data/security/economy/capacity/device/privacy/operations/final-content signoffs with named residual issues / implementation and owner |
+| 1.99 and handoff | **Not complete** | Exact approved candidate, synchronized versions/cumulative notes, live assets/readiness/account smoke, operating/support/recovery handoff and explicit owner go/no-go/public naming |
+
+
+Keep implemented, staged, pushed, deployed, verified and owner-approved states
+distinct. Preserve original budgets, skips and owner-deferred work. Reconcile
+remote changes ordinarily and verify each publication before another push.
+
+
+October11 additive-effect continuation: selected privately as cd92dc01 with required
+browser coverage ca03de05; public29 remains unchanged. Three owned factories submit
+filled additive faces once, retaining ordinary-alpha and wireframe brightness.
+87distinct focused checks and1560High/Low native source comparisons pass
+(1549exactRGB; all reference-again exact); original wireframe-policy failure retained.
+Actual saved14slot Fighter uses normal hotbar/server Iron Fortress: same-scene
+316→283draws, maximumRGBdelta1. Four-class Go-race save custody passes; party
+180frame median341draw/170314tri/16.7msmedian+p95 passes sampled medians, but
+284882triangle startup peak exceeds250000. Two selected held copied-bundle checks
+pass;332required cases discovered exactly once (discovery, not execution).
+The180frame draw observer explains120EffectGroup draws from60meshes, but both
+instrumented encounters fail; it is attribution evidence, never timing/balance
+acceptance. Private QA/loadout revisions remain unselected. No new public release,
+budget waiver or camp/DemonOrc/singleton selection. Next review dynamic actor/scenery
+startup costs and coherent world/interior/material/contact polish, keeping prior
+438combat/361party draw failures and physical-device/art/operations/F1–F5/beta/launch/
+handoff gates open. [Source, failures and frozen evidence](2026-10-11-additive-effects-qualification.json).
+
+
+October11 dungeon-entry art continuation: selected exact68e30c83 privately; public29
+unchanged. Five existing interior themes now use pointed, beveled masonry piers/
+arch stones, low sill and tarnished ironwork around a restrained animated veil.
+The physical frame/veil transform stays fixed across ready/inactive states;
+original authoritative summary and interaction rules remain. Three meshes/
+1318triangles/171220attribute bytes and zero textures per entry, no new colliders/
+lights/targets.41current art/lifecycle checks and19CI plan checks pass; three earlier
+unchanged authoritative-summary checks also pass. Original metadata/unit and two
+QA setup failures remain retained. Both native High/Low reviews cover all20supported
+production layout variants per quality,120state views and1440animated frames,
+zero blocked path samples/changed colliders. Separate normal CI Low path passes;
+335required cases discovered exactly once, not all executed. Exact copied bundle
+ward lifecycle and lazy four-class checks pass.
+
+Normal saved14slot Fighter walking→first-dungeon entry/movement→Recall passes in
+private camp/route-QA context; four-class Go-race saves retain gear/inventory/EP/
+membership. Dungeon180frames105draw/53029tri/16.7msmedian+p95 pass sampled limits.
+Party262draw/216766tri/16.7median33.3p95 passes sampled medians, but289302startup
+triangle peak remains; no cross-population FPS gain or clearance of prior438/361
+draw failures. Binary screenshots intentionally retain synthetic labels; textual/
+embedded account data sanitized. Narrow prepared views still show thin dark floor/
+shadow artifacts also present in predecessor, and floor repetition/other world
+materials/contact/audio/physical-device acceptance remain open. Next diagnose those
+visible narrow-view artifacts and continue coherent world/interior/material polish,
+then finish representative dynamic budgets and original operations/F1–F5/beta/launch/
+handoff. No campaign/soak replay, unrelated renderer selection or public release.
+[Source, comparison, normal route and frozen evidence](2026-10-11-dungeon-entry-ward-qualification.json).
+
+
+October11 Verdant root/preset continuation: selected420a3cfa privately, unpublished.
+Native component isolation and ray probes identify the supposed thin floor
+artifacts as the old almost-black grave-root props; the bottom straight line is
+the XP bar. This supersedes the earlier shadow/batching hypothesis. Curved,
+branched, partially buried roots now have smooth, restrained bark tones, preserving
+two motifs and one batch per room with no textures, lights or collisions added.
+High uses2880source triangles/380160merged bytes per room; Low864/114048.
+Intentional extra detail is recorded, not presented as a memory or FPS saving.
+
+The default Low check caught Verdant failing to forward its graphics preset.
+The one-line factory repair passes High/Low checks for all five dungeon factories;
+all eight existing Verdant masonry maps remain byte-identical256px across presets.
+72distinct focused checks pass. Final native review covers20production layouts
+per quality,140state/root views and1440animated frames, including288camera-pan
+frames;14equipped slots, colliders and walk samples remain intact. Maximum prepared
+High92draw/117231tri and Low47draw/37143tri pass unchanged scene bounds. Exact
+copied/versioned bundle ward/ten-root lifecycle plus lazy four-class checks pass.
+Two initial fixture-matrix failures, the real default-Low quality failure and
+superseded draft reviews are retained in the frozen580-entry evidence inventory.
+
+Prepared views/pans are not normal-input walking, timing, device or final-art
+acceptance. Prior normal entry/Recall and saved-party evidence retains its own
+source/scope. Floor repetition, broader world/material/contact/audio polish,
+dynamic438/361draw and289302triangle peak counterexamples, device/owner feedback
+and original operations/F1–F5/beta/launch/handoff remain open. No campaign/soak
+replay, unrelated private renderer selection, public version, beta/access change
+or public push. [Source, retained failures and qualification](2026-10-11-verdant-grave-roots-qualification.json).
+
+
+October11 Verdant floor continuation: selected ef70a3b4 privately, unpublished.
+Fitted irregular flagstones and lighter worn grout replace the long repeating
+courses; subtle world-space weathering stays continuous across floor partitions.
+The existing PBR maps, textures, geometry, lights and collision layout are retained.
+The floor adds one shader variant and two sine expressions per fragment; this is
+material polish, with no claimed GPU/FPS reduction. Walls and the other four floor
+families retain identical bounded surface-field probes.
+
+70distinct focused checks pass. Native High/Low reviews cover all20production
+layouts per quality,168state/root views and1440animated frames including288camera
+pan frames. Four Verdant layouts per quality compare the actual predecessor floor.
+A separate default Low path passes all20layouts. Native far-origin material reads
+show partition delta at most1RGBA level and world variation absent from the periodic
+control. Exact copied bundle compiles the floor shader and preserves the ward,
+ten root batches and lazy four-class startup. Seven native checks pass with one
+optional peer-renderer skip;336required CI cases are discovered exactly once,
+not counted as execution passes.
+
+Actual normal saved14slot Fighter authored-road entry, first-room movement and
+Recall plus four-class Go-race saves pass in the private route context. The actual
+floor shader is compiled there. Dungeon180frames:105draw/55079triangles,
+16.7median16.8p95. Party180frames:285draw/211709triangles,16.7median16.8p95,
+but281603startup triangles exceed250000; prior289302triangle and438/361draw
+counterexamples remain. Private camp/singleton/DemonOrc and route QA stay unselected.
+Frozen evidence contains851entries/852files. No public push, version/access change,
+campaign/soak replay or final art/device acceptance. Broader scenery/material/
+contact/audio, dynamic population budgets and original operations/F1–F5/beta/launch/
+handoff remain open. [Qualification](2026-10-11-verdant-floor-qualification.json).
+
+
+October11 geometry preparation and CI continuation: selected cda30fd0 privately,
+unpublished; runtime88e250af changes only worker dispatch order. The early native
+party capture accounts for every submitted triangle and shows large fitted outfit
+batches waiting behind small eye/details. Largest pending source meshes now go
+first, with the oldest job served every fourth dispatch. One in-flight job,
+bounded copies, stale-generation handling, worker algorithms/cache, original
+visible models and quality thresholds remain. No frame-rate gain is claimed.
+
+139distinct focused checks pass. Copied bundle native High/Low four-class14slot
+controls retain65/71exact prepared index buffers and identical final pixel hashes,
+draws and triangles; worker offline/reentry and actual exception fallback pass.
+Eight distinct native correctness checks pass, with one optional peer-renderer
+skip. Actual normal authored-road dungeon entry/movement/Recall and four-class
+Go-race gear/inventory/EP/membership/logout saves pass in the private route context.
+First dungeon104draw/57197triangles,16.7median16.8p95 passes sampled limits.
+
+Performance remains FAILED: the separate uninstrumented180frame party has300draw/
+168340triangles but33.3msmedian exceeds20 and50msp95 exceeds33.4. Its35–36active
+entities differ from the earlier28–31population. The instrumented early capture
+also reaches386370triangles; its timing is invalid. Earlier281603/289302triangle,
+438/361draw and other failures remain. Exact final images do not close these gates.
+
+A real software-WebGL probe exposed the prior host/native CI mismatch: High full
+animation sweep times out at180seconds, retained as failure (combined probe4pass/
+1fail). Both exact outfit scheduling cases pass on SwiftShader. The three full
+dungeon reviews now run intact on an unconditional hardware-native predeploy step;
+original20layouts/quality, motion frames, collider/material and budget assertions
+remain.335hosted cases are discovered exactly once plus5native cases; all338prior
+required identities retained, two outfit cases intentionally cover both backends.
+Discovery is not execution. No quality reduction, skip or threshold waiver.
+
+Initial604-entry and final677-entry evidence inventories are frozen. Private camp/
+singleton/DemonOrc/route QA stays unselected; public29 unchanged. Next attribute
+actual CPU costs versus population and preparation before first appearance, then
+continue cohesive world/scenery/material/contact/audio and device work. Original
+operations/F1–F5/beta/launch/handoff remain open; no campaign/soak replay or public
+push/version/access change. [Qualification and retained failures](2026-10-11-geometry-preparation-priority-qualification.json).
+
+2026-10-11 CPU attribution: the existing post-timing three-second profiler on
+unchanged private7890349e identifies scene matrix propagation, projection/frustum
+checks and shadow traversal as significant sampled costs. The ordinary180frame
+High sample retains49.9msmedian/66.6msp95 failures;269draws/169766median triangles
+pass geometry limits. One native renderer/three equipped socket peers and
+four-class fourteen-slot Go-race saves pass; optional four-browser case skipped.
+Population30–31 and recorded shared-host load differ from earlier runs, so no
+cross-run speedup, causal host diagnosis or held/public performance acceptance.
+
+No runtime change selected: retain stock matrix-force semantics and actual live
+light discovery. Earlier light-membership and animated world-box prototypes
+remain rejected on their measured costs. Existing matrix-owner instrumentation
+is available for a concrete future hypothesis; avoid duplicate probes and
+unchanged campaign/soak reruns. Frozen22-entry inventory and source pins preserve
+the diagnostic, with synthetic text identities removed. Public29 jump/aura/admin
+acceptance remains valid; broader scenery/material/contact/audio, devices,
+performance and original operations/F1–F5/beta/launch/handoff remain open.
+[CPU qualification](2026-10-11-party-cpu-attribution.json).
+
+
+2026-10-11 elemental floors: selected `75a37d88` privately for Molten, Tempest,
+Abyssal and Umbral. Mineral albedo stays readable under the existing regional
+lights; stationary world-space color/roughness weathering crosses texture repeats
+and mesh partitions. All 56 wall/floor noncolor map pins retain predecessor bytes.
+No added textures, geometry, lights, colliders or passes; four shader variants and
+two sine expressions per floor fragment add shading work. No FPS saving claim.
+
+86 distinct focused checks and 14 distinct native cases pass cumulatively, with
+all failed runs retained. Scope includes High/Low far-origin partition controls,
+16 prepared equipped room/HUD views (32 paired screenshots), 288 animation frames,
+and the actual copied/versioned engine. Each of four cleared dungeon rooms returns
+to identical warmed renderer counts; empty-scene first-use allocation is recorded.
+337 hosted cases discovered exactly once and 15 required native cases cover 348
+distinct identities; all prior 338 retained. Discovery is not execution.
+
+Frozen 297-entry inventory `df7a284a8a24befdb864997ec573a82a0a1d0013b6c9d467ee891773c15b5fa8`.
+Public29 jump/aura/admin fixes remain accepted. This work is staged and unpublished;
+no fresh server route, timing, physical-phone or full-art acceptance. Sparse room
+composition, broader scenery/contact/audio/devices, existing performance failures,
+operations/F1–F5/beta/launch/handoff remain open. No campaign or soak replay.
+[Floor qualification and retained failures](2026-10-11-elemental-floor-material-qualification.json).
+
+
+2026-10-11 transform ownership: the existing 90-frame observer on unchanged
+private `7890349e` measures foliage at ~2.81 ms/frame of ~6.67 ms for the full
+scene transform subtree. The four supplied character roots total ~0.65 ms/frame;
+36 other entity roots total ~1.96 ms/frame. Nested inclusive times overlap and
+include wrapper/shared-host overhead. The separate ordinary 180-frame sample
+still fails at 50 ms median /66.7 ms p95; 305 draws/169365 median triangles pass.
+40–43 entities differ from previous populations. Four-class fourteen-slot real
+Go-race/save custody passes; one native browser passes, optional four-browser
+case skips. [Owner attribution](2026-10-11-party-matrix-owner-attribution.json).
+
+Private `cbff1014` tests exact unchanged foliage matrix products without changing
+stock traversal or force propagation. 15 distinct focused checks and two native
+High/Low cases pass; final 12 actual foliage color/shadow/matrix controls and 480
+RAF renders cover manual writes, camera/parent movement and quality changes.
+Initial empty-view evidence is retained and excluded from visual qualification.
+Both loop and unrolled caches remain rejected: the final High submission median
+rises 12.3→14.6 ms, p95 17.5→18.8; transform median 1.5→2.5 ms, p95 2.0→3.0.
+Low submission improves but transform median worsens slightly; this does not
+establish a broad benefit. Three snapshot matrices and 48 exact comparisons per
+leaf cost more than they save in the measured High scene. No runtime wiring or
+new connected-party replay for the rejected prototype.
+[Prototype decision and controls](2026-10-11-foliage-matrix-product-unselected.json).
+
+Frozen owner18-entry inventory `63da522dad00bf2b7e64cb15f7d6e05522ed364924aeb40139406b24a0fb8d6d`;
+prototype23-entry inventory `2ffd0c78055f93bd9728188a8d1feb6412394afb6ba872afe5108445690fc648`.
+Owned Mongo is removed; fixture ports are free; synthetic text identities redacted.
+Held floor/ward/root/HUD/actor work remains staged, public29 unchanged. Continue
+cohesive world composition/material/contact/audio/devices and concrete measured
+performance changes; original operations/F1–F5/beta/launch/handoff remain open.
+No campaign/soak replay, public push, version/access change or completion claim.
+
+
+2026-10-11 shared dungeon props: selected `3da66d67` privately across all five
+themes. Existing stone and metal material roles now use seamless mineral grain,
+forge marks and independent albedo/normal/roughness maps, with readable physical
+colors under regional lights. Six maps/two materials are shared per kit; High128/
+Low64 pixels, 384/96 KiB raw CPU pixels and approximately512/128 KiB RGBA8 mip
+chains, excluding driver overhead. Existing PBR shaders perform additional samples.
+No geometry, lights, colliders, material groups or passes added; no FPS saving claim.
+
+68 distinct focused checks and seven distinct native cases pass cumulatively;
+initial stale portal assertion and incorrect Verdant Low floor-size expectation
+remain retained. Actual unchanged baseline proves the stale portal assertion.
+The corrected phone review uses the real Low world owner. Thirty prop views/
+60 paired screenshots include supplied fourteen-slot Fighter, HUD and 2088
+prepared animation updates. Render-to-next-RAF timing is not continuous game-loop
+performance. Actual copied engine High/Low compiles both prop materials across
+all five themes; each cleared room returns exact warmed GPU resource counts.
+337 hosted/15 native/348 distinct required case identities remain unchanged;
+discovery is not full execution. Frozen164-entry/165-file inventory
+`f7f9d70b6f2dbee412425c9cec548aa9272ac812e23f67ff2cb5a0c7b90e3ac4`.
+
+Public29 jump/aura/admin acceptance remains valid. This milestone is staged and
+unpublished; sparse room composition, regional motifs, broader scenery/contact/
+audio/devices, existing dynamic frame/triangle/draw failures and original
+operations/F1–F5/beta/launch/handoff remain open. No campaign/soak replay, fresh
+server route, physical-device/full-art approval or version/access change.
+[Prop materials and retained failures](2026-10-11-dungeon-prop-material-qualification.json).
+
+
+2026-10-11 dungeon construction: selected `aa97abd3` privately across all five
+themes. Worn paving joins both entry vigils and the ward to the room center and
+grounds coffers/fonts. Staggered joints, chipped corners, bevels and broad stone
+shade use the six existing prop maps. One darker vertex-color finish and three
+kit-local shapes add231264source attribute bytes per kit; each paved production
+room adds its own merged attributes and one opaque material batch. Entry792
+triangles, coffer/font480 each; no textures, lights, colliders or interactions
+added. Same shape detail on High/Low; no GPU/FPS saving claim. Relief is2–3cm
+above the rendered floor, beneath decorative and objective seals.
+
+74 distinct focused checks pass cumulatively, including13new paving checks,
+shared-map cleanup and precise source/baked far-origin bounds. Initial stale
+parent matrices, conservative bounding comparisons and two-to-three-finish
+expectations remain retained; no weakened budget or counted skip. Six distinct
+native cases pass with zero retries/skips: five actual production layouts on
+desktop/phone,30prop views/60paired screenshots and2088prepared animation updates,
+then actual copied High/Low engine compilation and exact warmed GPU cleanup
+after each of five themes. Additional two-case shader extension overlaps the
+same copied cases; six distinct, not eight. Prepared next-RAF timing is not
+continuous gameplay, party/server-route or physical-device performance.
+
+The pale first draft crossed outer floor rings and was rejected despite one
+native pass. Final darker/lower construction preserves seals; a prepared fixture
+now updates genuine room-state roots rather than hiding runes through child
+mesh updates.337hosted/15native/348distinct required CI identities are unchanged;
+discovery only. Frozen133-entry/134-file inventory
+`a21e9d9adc288a117c269cf587f4923c00c8fc3a3b207bfcc0da138db5537c21`.
+
+This is partial local construction, staged and unpublished. Broad rooms remain
+sparse, regional silhouettes basic and courses repetitive. Public29 jump/aura/
+admin acceptance remains unchanged. Historical timing/geometry/draw failures,
+world/contact/audio/devices, original operations/F1–F5/beta/launch/handoff stay
+open. No campaign/soak replay, public push, version/access change or owner art
+approval. [Paving qualification and retained drafts](2026-10-11-dungeon-processional-paving-qualification.json).
+
+
+2026-10-11 regional dungeon construction: selected `a32939c4` privately. Molten
+now has hollow coal crucibles, Tempest split slate in conductor cradles, Abyssal
+tapered branching coral/pearl buds, Umbral fractured opaque monoliths with narrow
+light seams. Three shared kit-local geometry channels reuse all existing physical
+materials/maps and production batching; no textures, materials, lights, targets,
+colliders or clocks added. Verdant roots unchanged. Umbral alone shifts its Z
+anchor by.01radius (at most.24world units), within the old decorative apron.
+
+Extra geometry/shadows are explicit: per-room High/Low triangle deltas Molten
+1832/1208, Tempest992/672, Abyssal5704/1864, Umbral372/308. Added merged attribute
+bytes respectively175872/115968,95232/64512,547584/178944,35712/29568. Kit source
+geometry is additional ownership; full channel costs retained separately. Across
+64identity/quality comparisons, batching changes-1..+2draw meshes; max7/8.
+No FPS/GPU saving or universal-budget claim.
+
+29focused checks pass (15new);40nonmatching skips are not passes. Seven distinct
+native cases pass cumulatively: one gallery, two source desktop/phone reviews,
+two20layout/quality sweeps and two actual copied-engine checks. Initial source
+views obscured props; final16paired views/32screenshots fix only review actor
+placement.864actor mixer updates plus1440ward-state renders (288camera sweeps)
+are prepared presentation, not normal-input/server/device performance. Copied
+High/Low engine retains all relic channels, compiles actual floor/prop/paving
+materials and returns exact warmed GPU baseline after every one of five themes.
+
+An unchanged-parent native gallery reproduced stale9geometry/5material assertions.
+The ward observer also miscounted vertex-color paving as bark: unchanged parent
+probe reproduces2batches and3672/1656triangles; corrected observer retains the
+original1root batch and2880/864triangles. Both initial native failures remain.
+337hosted/15native/348distinct required case identities unchanged; discovery only.
+Frozen306-entry/307-file inventory
+`dcfed337ecde8ee17cb084dbf13edd1bd2005ef4bd88bff1581707b167c54469`.
+
+Staged unpublished. Small repeated pairs, broad empty rooms and floor/furniture
+repetition remain visible; no owner modern-art approval. Public29 requested
+jump/aura/admin fixes and prior performance failures remain unchanged. Continue
+combat contact/audio, world composition, devices and original operations/F1–F5/
+beta/launch/handoff. No campaign/soak replay, public push or version/access change.
+[Regional relic qualification and retained failures](2026-10-11-dungeon-regional-relics-qualification.json).
+
+
+### 2026-10-11 — preserve source motion through confirmed combat impact
+
+Selected `5ae298f1` removes a damage-message restart that rewound remote
+swings at contact and interrupted casts on projectile/area/periodic damage.
+Explicit attack/ability events and replicated state still start animations;
+floating text, hit feedback/reactions and typed local impact audio remain.
+Eight new real-mixer regressions fail against the unchanged parent; final
+106 focused checks pass with no skips. One distinct native equipped-class case
+passes: eight supplied High/Low rigs, fourteen slots each and224 prepared
+mixer/render frames preserve action/time/timer/ability/state/pose at damage,
+then advance. Rogue retains alternating hands. Concrete class fixture replaces
+Actor placeholders so the actual attack-event dispatch is exercised; initial
+fixture failure and both Node baseline results are retained. Native passing
+runs share one identity and are counted once. Scoped lint/diff checks pass.
+
+Locally staged, unpublished. Public29 manifest and exact engine hash freshly
+match the prior jump/aura/admin acceptance. No live combat timing, speaker/
+listening, supported-device, busy-party performance or modern-art approval.
+Existing performance failures, contact/audio polish, world composition and all
+original operations/F1–F5/beta/launch/handoff requirements remain open. No
+campaign/soak replay or public/version/access change.
+[Scoped qualification](2026-10-11-combat-impact-continuity-qualification.json).
+
+
+### 2026-10-11 — equipped skill motions and remote cast speed
+
+Selected `2f9c284b` gives Fighter shield-led bash, heavy strike, sweep and full-turn
+spin; Rogue throws/spins and Cleric mace strikes use equipped stance clips.
+Wizard Flame Whip/Arcane Missiles reuse delivered Cast. Source GLBs, finger
+grips, logical facing/position, skill durations and gameplay remain unchanged.
+Remote ATTACKING updates no longer replace active cast speed with basic-attack
+speed; eight reproduction failures pass after the guard.138 focused checks
+pass, including16 new tests, plus3 distinct native identities without retries
+or skips. Repeated drafts are retained and counted once.
+
+High/Low actual HUD/14-slot four-class prepared review covers12 scenarios each,
+1920 mixer/render frames and110 screenshots. Reference/candidate draw/triangle
+counts match; maxima76/39draws and44015/21492triangles. Separate equipped-rig
+runtime case covers224 animation/render frames including32 actual remote Actor
+updates. Keyframe arrays cost38060/33460/29060/0bytes per Fighter/Rogue/Cleric/
+Wizard instance, excluding JS/action/binding overhead. No GPU-resource addition
+or FPS claim. Final copied production engine compiles; no copied-bundle browser
+execution this turn. Initial fixture, class-allocation, pose and remote-timing
+failures remain in the frozen evidence.
+
+Staged unpublished; public29 jump/aura/admin acceptance reused. Prepared motion
+does not prove live contact timing, sustained gameplay/party performance,
+listening, physical devices or owner art acceptance. Historical timing/draw/
+triangle failures, sparse room/world composition and full original operations/
+F1–F5/beta/launch/handoff remain open. No campaign/soak replay or public change.
+[Scoped qualification](2026-10-11-equipped-skill-motion-qualification.json).
+
+
+### 2026-10-11 — room-scale dungeon floor composition
+
+Selected `51b84ca2` frames naves, courts, approaches and arenas with shallow mapped
+stone bands. All five themes reuse existing materials/maps; four shapes are
+lazily kit-owned (150480source attribute bytes if all used). Added triangles
+320/440/220/160 per nave/court/approach/arena, plus merged room attributes.
+Entry/cache batches unchanged; approach/arena adds one. Original8room batches,
+350/200draw and250000/85000triangle bounds preserved. No textures, materials,
+lights, colliders, interaction/prop centers or FPS claim added.
+
+80 focused checks pass,11 new. Seven distinct native cases pass: four source
+art and three actual copied/versioned engine cases. An extra default desktop
+case repeats an identity and proves historical comparison is optional.
+38 paired art views/76screenshots and912 prepared animation/render updates
+show supplied14-slot Fighter/HUD at normal zoom. Source maxima102/51draw and
+64707/25201triangles. Copied High/Low renders38plan views across all five themes,
+links existing materials and returns exact warmed GPU counts after each clear.
+Prepared motion is not continuous gameplay/server/device performance.
+
+Initial downward diagonal bevel normals fixed by centroid contraction; parent
+matrix observer and explicit lazy resource counts corrected. Unchanged parent
+proves stale bark observer counts792triangle paving instead of864/2880roots;
+mapless selectors retain original root checks. Missing vendor/worker environment
+failures retained; final prepare-client/native checks pass without retries.
+
+Staged unpublished. The existing boss dais is visibly a broad almost-black
+polygon and is the next concrete room material/geometry repair. Broad tile
+repetition, sparse furniture/world composition, contact/audio, supported devices
+and all historical performance failures remain open. Public29 jump/aura/admin
+acceptance unchanged. Original operations/F1–F5/beta/launch/handoff goal active;
+no campaign/soak replay, public/version/access change or unrelated selection.
+[Scoped qualification](2026-10-11-dungeon-floor-composition-qualification.json).
+
+
+### 2026-10-11 — grounded boss-floor masonry
+
+Selected `3e03221e` replaces the raised black octagonal boss platform with49
+shallow mapped stones across all five dungeon themes. Feet and original room
+state markings remain visible; decorative inlays follow the lower surface.
+Arena footprint, authoritative floor, collision, props, room states and wards
+are preserved. One lazy kit shape costs66264source attribute bytes, plus merged
+room ownership;502triangles replace32, while the boss uses one fewer opaque
+batch. Existing stone maps/material reused, no new textures/lights/colliders.
+No frame-rate saving claim.
+
+98 focused checks pass across six suites:87main plus11existing exact timestamp
+checks, including7new masonry checks. Six distinct native identities pass:
+four source art and two actual copied/versioned engine cases.48paired views,
+96screenshots and1632prepared animation/render updates show supplied14-slot
+Fighter/HUD at zoom15. Both center and edge arena walks cross stone joints or
+perimeter. Source maxima102/51draws and69873/25703triangles High/Low. Copied
+High/Low renders48plan views and returns exact warmed GPU counts after each of
+five cleared themes. Engine hash matches the saved compiled bundle.
+
+Parent reproduction failures, an unexplained focused exit143 and initial High
+binary timestamp-boundary failure remain retained. Final helper reuses exact
+reported decimal subtraction, retains raw intervals and keeps all original
+limits. Intermediate nanosecond-comparison pass is superseded and counted once.
+Synthetic crystal-vigil unit coverage does not establish a new raid route.
+
+Staged unpublished. Repeated base tiles, sparse furniture/composition, simple
+props, broader world/contact/audio/devices and historical timing/draw/triangle
+failures remain open. Public29 requested jump/aura/admin acceptance unchanged.
+No campaign/soak replay, public/version/access/account change or unrelated
+private source selected. Full original operations/F1–F5/beta/launch/handoff
+scope stays active. [Scoped qualification](2026-10-11-dungeon-boss-masonry-qualification.json).

@@ -1,0 +1,15 @@
+{
+  "recordedUTC": "2026-10-11T10:30:37.025199+00:00",
+  "branch": "work/starter-pursuit-20260908",
+  "head": "9bf76b2abfc8ead5fc57ba1f95ebfe7b27d50def",
+  "masterMerge": "e072ba05e6314c3a965062cdf6b3eb26687eb1b1",
+  "beforeMaster": "88be47c55e56b00f7d7cdb659c6ed51020391cb3",
+  "beforeUnmerged": 96,
+  "afterUnmerged": 95,
+  "changedPaths": [
+    "docs/plans/2026-09-08-starter-pursuit.md"
+  ],
+  "change": "Merge completed historical13line failure receipt only. Records actual prepared collection failure and automatic online stat growth; it is dated historical evidence, not a new pacing verdict or current instruction to rerun. All source/tests/configuration unchanged. No campaign replay.",
+  "validation": "Reviewed exact triple-dot branch diff and resulting first-parent tree diff; only named documentation file changes. Exact branch head becomes ancestor of master. No blanketmerge or deletion.",
+  "pushed": false
+}

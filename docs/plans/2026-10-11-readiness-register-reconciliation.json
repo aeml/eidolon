@@ -1,0 +1,30 @@
+{
+  "recordedUTC": "2026-10-11T10:33:26.120287+00:00",
+  "baseMaster": "7a8fbfb42926eaa80868c4ff8a574eccabb6c820",
+  "previousRegisterLines": 914,
+  "previousSHA256": "ed38120628b21b8295374e738e1eeeb4486721d9ea2512759847f4b995f1e9ca",
+  "historicalArchive": "docs/plans/2026-10-11-release-readiness-evidence-history.md",
+  "archiveByteIdentical": true,
+  "currentRegisterLines": 151,
+  "scope": "Consolidate obsolete checkpoint labels into current release custody and full open-requirement matrix. All original goal/roadmap/promise/world/art/F1-F5/CB/launch/handoff scope and previous failures preserved. No acceptance gate closed.",
+  "freshObservations": [
+    "release31-run.json",
+    "soak-run.json",
+    "master-protection.json"
+  ],
+  "sourceChecks": "Current CI trusted pin/StrictHostKeyChecking/repository-event-ref guards retained. Original sampled limits checked against current fixture assertions. No runtime/configuration/policy mutation.",
+  "limits": "This is status reconciliation, not full requirement-by-requirement completion audit, whole-game validation or new permission. Public31 still pending; local roof component held.",
+  "validation": {
+    "currentLinksResolved": 22,
+    "sourcePins": "source-pins.json",
+    "archiveByteIdentical": true,
+    "runtimeChanged": false
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-readiness-reconciliation-checks-20261011",
+    "entries": 6,
+    "files": 7,
+    "inventorySHA256": "a70fd328277a499cd9a8a017e19b6f1661e78ce91b27cbcee94343c52c16cb20",
+    "readOnly": true
+  }
+}

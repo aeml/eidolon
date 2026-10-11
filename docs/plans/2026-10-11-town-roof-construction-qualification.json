@@ -1,0 +1,82 @@
+{
+  "recordedUTC": "2026-10-11T10:30:37.025199+00:00",
+  "source": "e5087567bf527ec6dc408c333515a676031d3651",
+  "base": "88be47c55e56b00f7d7cdb659c6ed51020391cb3",
+  "masterMerge": "7a8fbfb42926eaa80868c4ff8a574eccabb6c820",
+  "published": false,
+  "change": "Fitted masonry gable end infill closes the space above both wall ends of smithy, Compact and Oathhall. Timber bargeboards finish original roof edges. Existing material buckets/maps/passes, every pre-existing part geometry/transform/material, roof silhouette, total bounds and walk colliders unchanged. Dormers untouched.",
+  "cost": {
+    "addedTrianglesPerAffectedBuilding": 80,
+    "newCachedGeometries": 3,
+    "sourceGeometryAttributeBytes": 4608,
+    "addedOptimizedAttributeBytesAllThree": 23040,
+    "newMaterials": 0,
+    "newTextures": 0,
+    "newLights": 0,
+    "extraOptimizedDraws": 0,
+    "limits": "Raw CPU geometry attributes; excludes driver/GPU/cache overhead. No FPS savings claim."
+  },
+  "focused": {
+    "passed": 30,
+    "suites": 4,
+    "seconds": 38.404,
+    "newCases": 3,
+    "checks": "12end rays hit the new cap at original wall line; baseline diagnostics hit no cap or a farther interior part. Existing finite normals/UVs, source/batch triangle preservation, bounds/picking/walk, shared ownership and camp clipping checks retained.",
+    "initial": "22pass1failure/23checks because immutable cache count changed23\u219226. Updated intentional resource count; three geometric gap regressions added. Failure retained."
+  },
+  "lint": "Full locked-dependency lint and git diff --check pass.",
+  "native": {
+    "distinctCasesPassed": 4,
+    "retries": 0,
+    "skips": 0,
+    "sourceCases": {
+      "passed": 2,
+      "seconds": 19.978702,
+      "scope": "Existing actual desktop1280High/phone390Low town presentation;14ordinary HUDviews total. Source logs use draft label but final product files are identical to that run."
+    },
+    "copiedCases": {
+      "passed": 2,
+      "seconds": 32.122735,
+      "scope": "Actual copied/versioned production engine/world constructor, 3town/camp views per quality,48prepared equipped walking poses and exact camp selected/reference/again pixels; existing9campgeometry/matrix/indirection retire once. Camp ownership does not instrument new shared architecture cache retirement.",
+      "results": [
+        {
+          "title": "copied published high camp clipping preserves equipped town views and cleanup",
+          "engineSHA256": "71bdf689dfa01f4493240317cd0325e68a21e013ebdc565875daf8e90c111370",
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "poses": 24,
+          "cleanup": {
+            "batches": 9,
+            "geometry": 9,
+            "matrices": 9,
+            "indirection": 9
+          },
+          "exactClippingPairs": 24
+        },
+        {
+          "title": "copied published low camp clipping preserves equipped town views and cleanup",
+          "engineSHA256": "71bdf689dfa01f4493240317cd0325e68a21e013ebdc565875daf8e90c111370",
+          "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+          "poses": 24,
+          "cleanup": {
+            "batches": 9,
+            "geometry": 9,
+            "matrices": 9,
+            "indirection": 9
+          },
+          "exactClippingPairs": 24
+        }
+      ]
+    },
+    "baseline": "Same2source cases passed20.97931s on exact88be47c5before editing; not additional distinct final passes."
+  },
+  "visualReview": "Viewed ordinary desktop and phone smithy alongside predecessor. Wall ends now reach the roof; edge boards remain narrow. Difference is subtle.14before/after pairs preserve7exact views; other7differences retained. This does not qualify all architecture, final modern art, connected gameplay, sustained device FPS or human feedback. Oathhall is constructor/unit covered; no claim it is currently placed in Lanternhold.",
+  "scope": "Original performance/art/contact/audio/device/operations/F1-F5/beta/launch/handoff requirements stay open. Release31exact88be47c5 CI38131408628 active; new work held after that push.",
+  "sanitization": "Anonymous prepared artifacts scan passed0fileschanged.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-town-construction-checks-20261011",
+    "entries": 61,
+    "files": 62,
+    "inventorySHA256": "7ca1acf5f989fa962882172377f4d8eb8f945bee1ac675a26d791bb2a9254733",
+    "readOnly": true
+  }
+}
