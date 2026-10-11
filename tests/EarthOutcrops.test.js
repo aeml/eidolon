@@ -67,10 +67,10 @@ test('seeded cleaved crowns vary their geological plane without adding surfaces'
     } finally { geometries.forEach(geometry => geometry.dispose()); }
 });
 
-test('weathered rock shoulders have continuous vertex lighting without rounding sharp cleaves', () => {
+test('weathered rock shoulders have continuous lighting and moss without rounding sharp cleaves', () => {
     const geometry = createEarthOutcropGeometry(EARTH_OUTCROP_SOLIDS[0], EARTH_ELEVATION);
     try {
-        const position = geometry.attributes.position, normal = geometry.attributes.normal;
+        const position = geometry.attributes.position, normal = geometry.attributes.normal, color = geometry.attributes.color;
         const shared = new Map(), minimumDot = Math.cos(Math.PI / 4);
         const point = i => new THREE.Vector3().fromBufferAttribute(position, i);
         const face = i => new THREE.Vector3().subVectors(point(i + 1), point(i))
@@ -80,7 +80,8 @@ test('weathered rock shoulders have continuous vertex lighting without rounding 
             for (let i = quad; i < quad + 6; i++) {
                 const key = `${position.getX(i)},${position.getY(i)},${position.getZ(i)}`;
                 if (!shared.has(key)) shared.set(key, []);
-                shared.get(key).push({ original, current: new THREE.Vector3().fromBufferAttribute(normal, i) });
+                shared.get(key).push({ original, current: new THREE.Vector3().fromBufferAttribute(normal, i),
+                    color: new THREE.Vector3().fromBufferAttribute(color, i) });
             }
         }
         let continuousPairs = 0, sharpPairs = 0;
@@ -89,12 +90,38 @@ test('weathered rock shoulders have continuous vertex lighting without rounding 
             for (let i = 0; i < normals.length; i++) for (let j = i + 1; j < normals.length; j++) {
                 const before = normals[i].original.dot(normals[j].original);
                 const after = normals[i].current.dot(normals[j].current);
-                if (gentle && before < .998) { expect(after).toBeGreaterThan(.998); continuousPairs++; }
+                if (gentle && before < .998) {
+                    expect(after).toBeGreaterThan(.998);
+                    expect(normals[i].color.distanceTo(normals[j].color)).toBeLessThan(.000001);
+                    continuousPairs++;
+                }
                 if (before < .5) { expect(after).toBeLessThan(.97); sharpPairs++; }
             }
         }
         expect(continuousPairs).toBeGreaterThan(0); expect(sharpPairs).toBeGreaterThan(0);
     } finally { geometry.dispose(); }
+});
+
+test('upper rock edges never grow a thin outward fin between neighboring contour controls', () => {
+    for (const terrain of [null, EARTH_ELEVATION]) for (const solid of EARTH_OUTCROP_SOLIDS) {
+        const geometry = createEarthOutcropGeometry(solid, terrain);
+        try {
+            const position = geometry.attributes.position;
+            const point = i => new THREE.Vector3().fromBufferAttribute(position, i);
+            for (let tier = 2; tier < 7; tier++) for (let edge = 0; edge < 8; edge++) {
+                // Each preceding ring's two triangles expose the next ring's
+                // first endpoint, midpoint and following endpoint in order.
+                const start = (tier - 1) * 16 * 6 + edge * 2 * 6;
+                const a = point(start + 1), middle = point(start + 5), b = point(start + 11);
+                const inward = (b.x - a.x) * (middle.z - a.z) - (b.z - a.z) * (middle.x - a.x);
+                // Signed distance, not area: Float32 world coordinates around
+                // x=690 have ~.00006-unit precision regardless of edge length.
+                expect(inward / Math.hypot(b.x - a.x, b.z - a.z)).toBeGreaterThanOrEqual(-.0001);
+                expect(middle.y).toBeGreaterThanOrEqual(Math.min(a.y, b.y) - solid.height * .025);
+                expect(middle.y).toBeLessThanOrEqual(Math.max(a.y, b.y) + solid.height * .025);
+            }
+        } finally { geometry.dispose(); }
+    }
 });
 
 test('candidate rock bodies have finite outward faces, buried bases and explicit bounded footprints', () => {

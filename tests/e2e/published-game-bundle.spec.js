@@ -9,6 +9,7 @@ import { bundleGameEngine } from '../../scripts/bundle-game-engine.mjs';
 import { versionPagesRuntime } from '../../scripts/version-pages-runtime.mjs';
 import { collectBrowserFailures } from './helpers.js';
 import { measureJumpWallClock } from './jump-clock-observation.js';
+import { reviewEarthRockShelves } from './earth-rock-shelf-review.js';
 
 const release = 'bundlefixture20261009';
 let root, server, origin, metadata;
@@ -57,6 +58,11 @@ test.beforeAll(async () => {
 test.afterAll(async () => {
     if (server) await new Promise(resolve => server.close(resolve));
     if (root) await rm(root, { recursive: true, force: true });
+});
+
+for (const quality of ['high', 'low']) test(`copied published ${quality} Earth rock shelves retain equipped views and cleanup`, async ({ page }, testInfo) => {
+    await reviewEarthRockShelves({ page, baseURL: origin }, testInfo, quality, `/src/core/GameEngine.bundle.js?release=${release}`);
+    await testInfo.attach('published-engine-identity', { body: JSON.stringify(metadata, null, 2), contentType: 'application/json' });
 });
 
 for (const quality of ['high', 'low']) test(`copied published ${quality} camp clipping preserves equipped town views and cleanup`, async ({ page }, testInfo) => {
