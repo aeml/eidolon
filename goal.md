@@ -583,3 +583,26 @@ receipt, sameAlpha1.79.30runtime/notes. Next orderedCI/deploy/live acceptance
 required before feature milestone. Prepared rock390px uses desktop input mode;
 cropped desktop navigation does not prove touch-phone navigation defect.
 Public29remains last fully accepted; full original goal stays active.
+
+
+2026-10-11 rooted foliage shading continuation (progress): previous turn merged
+rock art and the qualified live profiler delivery correction; corrective run
+38124028177 at exact1aae8407 is still active. At08:28:17UTC client and browser
+shard1 pass; server race and browser shards2/3 remain active. Public29 is last
+fully accepted; deployed public30/2e still awaits corrected ordered acceptance.
+This turn sourcea8a5801e is ordinary-merged into localmasterc4af4958. Earth fern
+folds share continuous normals/colors and ground cover uses existing canopy
+shadow-aware thin-leaf diffuse lighting. All vertex positions/bounds, source
+byte counts, wind deformation and canopy shader strings remain exact.44focused
+checks in7suites, full lint and5native source/copy/narrow-desktop cases pass,
+with360sampled poses and45HUDimages.17of18source/copy image pairs exact; one Low
+deep-west difference and unequal submitted triangles remain unattributed,
+without equivalence/FPS claim. Original budgets pass sampled views; broad High
+frame-time failures and conspicuous plant/pine/rock/terrain composition remain.
+Frozen207-entry evidence805224cd; receipt2026-10-11-rooted-foliage-shading-
+qualification.json preserves all draft/control failures. Original203tracked/
+262untracked changes and104unmerged historical branches preserved; no new branch
+or feature publication. Next corrective release acceptance, coherent held
+milestone publication, and broader world/material/contact/audio/device work.
+Full original roadmap/operations/F1–F5/beta/launch/handoff goal remains active;
+no campaign/soak replay, access/commerce/beta change or completion claim.

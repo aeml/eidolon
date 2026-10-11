@@ -1,0 +1,262 @@
+{
+  "recordedUTC": "2026-10-11T08:29:28.042024+00:00",
+  "source": "a8a5801e97b928461178617b70052f1c507f03e5",
+  "base": "42f29db5eaac1753c9636cbc6bdf03d63b7b6116",
+  "masterMerge": "c4af49583e09ce1889b582311270bf9bdef090f8",
+  "published": false,
+  "change": "Rooted Earth ground cover shares the existing canopy thin-leaf diffuse response. Each fern pinna has continuous normals and vertex colors across its two faces, retaining its fold and separate neighboring leaves.",
+  "authority": "No world positions, terrain, collision, roads, clearances, wind deformation, actors, gameplay, server or assets changed.",
+  "geometry": {
+    "rows": [
+      {
+        "quality": "high",
+        "kind": "bracken",
+        "triangles": 231,
+        "attributeBytes": 24948,
+        "before": {
+          "position": "12a59b1f52aea48bb47f6bdb623a1e669457b0aa7ef1a61a90b5c3fbc0230e2e",
+          "color": "27cf477bb214ff3ad74a7ee6942981074ac5344c9b8c2e9743a71b71eb937542",
+          "normal": "b2777c1c2fdfa09e7f58bfca5ec80775e105851329696c65c0b14d12126e7037"
+        },
+        "after": {
+          "position": "12a59b1f52aea48bb47f6bdb623a1e669457b0aa7ef1a61a90b5c3fbc0230e2e",
+          "color": "2206fa07a29e3edd909289c256371323bf9356ea7823afa05d1cd75f79ebfe1a",
+          "normal": "ec07cf85f8126082b592a79e045a1b2e3224be1b50987fe9adf6526a657a51c4"
+        },
+        "exactPositions": true,
+        "exactBounds": true,
+        "seams": {
+          "before": {
+            "normal": 196,
+            "color": 196
+          },
+          "after": {
+            "normal": 0,
+            "color": 0
+          }
+        }
+      },
+      {
+        "quality": "high",
+        "kind": "sedge",
+        "triangles": 80,
+        "attributeBytes": 8640,
+        "before": {
+          "position": "6003d7c03d0cca012fbb05c44b075f16efd0ab318b685e0959a9e6b247b4043f",
+          "color": "716973847a69be12e23be3828a32c3ebe4a3cf71703414017b13e8ec76ac0e7f",
+          "normal": "e2f3abd273a90b5fd39a47971b5109d2aae56ad5c88b9dba8dcf04da95dd7c69"
+        },
+        "after": {
+          "position": "6003d7c03d0cca012fbb05c44b075f16efd0ab318b685e0959a9e6b247b4043f",
+          "color": "716973847a69be12e23be3828a32c3ebe4a3cf71703414017b13e8ec76ac0e7f",
+          "normal": "e2f3abd273a90b5fd39a47971b5109d2aae56ad5c88b9dba8dcf04da95dd7c69"
+        },
+        "exactPositions": true,
+        "exactBounds": true,
+        "seams": null
+      },
+      {
+        "quality": "low",
+        "kind": "bracken",
+        "triangles": 217,
+        "attributeBytes": 23436,
+        "before": {
+          "position": "ff55f3f7c0f697e4895da20d4cc10d55072c90b9e0673b5adf412a6876efe14f",
+          "color": "3746e0cecbd9359169a72c58dbef26ebe0d0c0f4913d8438212562238cd76d25",
+          "normal": "5db622758457e9563a4217785a787dcf09a3529d3aacd13ce04d097699cdcf8d"
+        },
+        "after": {
+          "position": "ff55f3f7c0f697e4895da20d4cc10d55072c90b9e0673b5adf412a6876efe14f",
+          "color": "1e4fcf2e8f77f8e95c472b8ca1f367d91e3479ed39c78df3d6f3bac417addb74",
+          "normal": "0d27c513bc81b1942580b85e06f87dc15f8140f34b0e9fe799c57676fd74609e"
+        },
+        "exactPositions": true,
+        "exactBounds": true,
+        "seams": {
+          "before": {
+            "normal": 196,
+            "color": 196
+          },
+          "after": {
+            "normal": 0,
+            "color": 0
+          }
+        }
+      },
+      {
+        "quality": "low",
+        "kind": "sedge",
+        "triangles": 48,
+        "attributeBytes": 5184,
+        "before": {
+          "position": "36b291018d4b318c56a795ba0493aa26a096ef1fcb8565f92f139e0f2d604ac3",
+          "color": "321f56d43ab4df51253da49cd7c2470373c0dd8fa62f3baf10e7f890842305a2",
+          "normal": "005d6c26da636b0da1f41f822f87546a1fd2be12c2f07a5a89cfb7515f3f077b"
+        },
+        "after": {
+          "position": "36b291018d4b318c56a795ba0493aa26a096ef1fcb8565f92f139e0f2d604ac3",
+          "color": "321f56d43ab4df51253da49cd7c2470373c0dd8fa62f3baf10e7f890842305a2",
+          "normal": "005d6c26da636b0da1f41f822f87546a1fd2be12c2f07a5a89cfb7515f3f077b"
+        },
+        "exactPositions": true,
+        "exactBounds": true,
+        "seams": null
+      }
+    ],
+    "canopyVertexExact": true,
+    "canopyFragmentExact": true,
+    "windVertexExact": true,
+    "windFragmentChanged": true,
+    "scope": "Source buffers and compiled shader strings; not device timing or visual approval."
+  },
+  "resources": "Same source attribute byte counts, two source recipes, one shared opaque ground-cover material, no textures/lights/particles/extra passes. Native production spatial path retains326High/320Lowowned geometry copies; existing non-multi-draw fallback still shares2source geometries. Added diffuse shader arithmetic is not a measured GPU-time improvement.",
+  "checks": {
+    "focusedPassed": 44,
+    "focusedSuites": 7,
+    "logs": [
+      "focused.log",
+      "batch-canopy-focused.log"
+    ],
+    "predecessorControl": "Exact predecessor fails all3new fern-continuity/lighting cases; explicit testNamePattern excludes14others, which are not passes.",
+    "lint": "Full source lint passes; final formatting/QA edits separately linted. git diff --check passes.",
+    "nativePassed": 5,
+    "nativeDistinctCases": 5,
+    "nativeRetries": 0,
+    "nativeSkipped": 0,
+    "nativeSummary": [
+      {
+        "case": "earth-rock-shelf-review-hi-5dfcd-d-views-and-owned-resources",
+        "views": 9,
+        "maxDraws": 196,
+        "maxTriangles": 147081,
+        "released": {
+          "geometry": 332,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 332,
+          "material": 2
+        }
+      },
+      {
+        "case": "published-game-bundle-copi-d794f--equipped-views-and-cleanup",
+        "views": 9,
+        "maxDraws": 196,
+        "maxTriangles": 147081,
+        "released": {
+          "geometry": 332,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 332,
+          "material": 2
+        }
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-fae49-d-views-and-owned-resources",
+        "views": 9,
+        "maxDraws": 89,
+        "maxTriangles": 50152,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        }
+      },
+      {
+        "case": "published-game-bundle-copi-befdd--equipped-views-and-cleanup",
+        "views": 9,
+        "maxDraws": 89,
+        "maxTriangles": 50152,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        }
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-ba37f-d-views-and-owned-resources",
+        "views": 9,
+        "maxDraws": 55,
+        "maxTriangles": 41593,
+        "released": {
+          "geometry": 326,
+          "material": 2
+        },
+        "expected": {
+          "geometry": 326,
+          "material": 2
+        }
+      }
+    ],
+    "nativeScope": "Source High/Low1280px and Low390px plus copied publication High/Low. Nine views/case across six formations plus closer rock/actual plant beds. Supplied14-slot Fighter, actual prepared HUD,72manually sampled animation poses per case,360total. Shader wind clock frozen for comparison; no normal input, continuous-loop timing or physical-phone acceptance.390px retains DesktopChrome input mode.",
+    "budgets": "Original350draws/250000trianglesHigh,200draws/85000trianglesLow retained; every sampled view passes. Broad High frame-time failures remain open.",
+    "cleanup": "Normal scene clearing twice and engine destruction dispose exactly332High/326Lowgeometries and2sharedmaterials. This counts owned rock and plant geometry/material disposal, not zero VRAM or all driver caches.",
+    "sourceCopied": {
+      "pairs": 18,
+      "exactRGB": 17,
+      "difference": {
+        "quality": "low",
+        "view": "deep-west",
+        "changedRGBChannels": 1258,
+        "channels": 3240960,
+        "maximumRGBDelta": 146,
+        "meanRGBDelta": 0.003943584616903633,
+        "sourceTriangles": 27404,
+        "copiedTriangles": 32022
+      },
+      "limit": "One small visible-image difference and different submitted-triangle counts remain unattributed. No exact full rendering/performance equivalence claimed; no repeated browser run to erase this observation.",
+      "evidence": "source-copied-images.json"
+    },
+    "ciEnrollment": "Existing source/copy test identities and enrollment unchanged. Existing native required Earth-rock grep and hosted published-game-bundle file exercise the changed plants and lighting. No tests removed/skipped or broad unchanged discovery/execution replayed."
+  },
+  "visualReview": "Reviewed actual prepared High grove/rock/copy, Low road-verge/deep-west source/copy and390px beds. Fern folds have softer lighting/color continuity; overall vegetation still has conspicuous repeated clumps, coarse sedge and pine crowns. Broader composition/material/terrain/architecture/lighting/contact/audio and modern-art acceptance remain open. The narrow desktop navigation crop is not proof of a touch-phone defect.",
+  "retainedFailures": [
+    {
+      "log": "baseline.log",
+      "reason": "Anchored --grep did not match Playwright full test titles; no tests executed."
+    },
+    {
+      "log": "initial-focused.log",
+      "reason": "Expected old High fern color/normal golden hashes changed with intended art correction; position hash unchanged. New structural continuity checks pass."
+    },
+    {
+      "log": "reference-control.log",
+      "reason": "Exact predecessor fails all3new lighting/fern continuity cases;14unselected tests skipped by explicit targeted filter are not passes."
+    },
+    {
+      "log": "reference.log",
+      "reason": "New observer assumed2source geometries in production spatial path. Actual world has326High/320Lowowned sector geometry copies; every rendered row and disposal is retained."
+    },
+    {
+      "log": "reference-corrected.log",
+      "reason": "Reference checkout vendor symlink did not supply generated geometry worker; collected404is preserved. Explicitly copied unchanged44618fbd worker, prepared predecessor source cases pass. First added grove view was bare ground; final2views chosen from actual plant sampler."
+    }
+  ],
+  "publication": {
+    "correctiveCI": "38124028177",
+    "correctiveSource": "1aae8407e51c0a6016ac9a27cff75be060001306",
+    "asOfUTC": "2026-10-11T08:28:17Z",
+    "status": "in_progress; client and browser shard1successful; server race and browser shards2/3and3/3active.",
+    "lastFullyAccepted": "Alpha1.79.29/12e5e3c",
+    "currentDeployed": "Alpha1.79.30/2e6c6a14, failed original live helper-delivery gate; corrected ordered run pending.",
+    "policy": "No next feature publication until corrective ordered gates, deployment and live identity/database/served-asset acceptance. No version/access/commerce/beta change this component."
+  },
+  "hostScope": "Existing100-client public29soak38109009521shares host and remains active per08:28:17UTCread-only monitor. No campaign/soak restart or isolated FPS claim.",
+  "custody": "Original dirty work/fighter-charge-20260915HEAD64ec325b retains203tracked/262untracked entries and original146-line goal SHA783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7. Owned detached source ordinary-merged into localmaster;104historicalunmergedbranches unchanged, no new branch or unrelated experiment selected.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-understory-light-checks-20261011",
+    "frozenInventoryEntries": 207,
+    "filesIncludingInventory": 208,
+    "inventorySHA256": "805224cd076f7ea3f2015a2478b2a00da2ca5d133804fe69ac2b30117db1f392",
+    "verified": "All207filehashesverified after merge; files and evidence root made read-only.",
+    "sanitization": "Anonymous prepared fixtures only; no accounts/credentials. Playwright scanner passes,0fileschanged."
+  },
+  "remaining": "Original full roadmap/world/art/class/equipment/gameplay/device/performance/operations/F1\u2013F5/beta/launch/handoff goal remains active. Owner-deferred campaign/pacing and physical-phone playtests remain deferred. No component or passing CI closes the full goal."
+}
