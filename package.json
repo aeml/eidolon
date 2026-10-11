@@ -39,7 +39,8 @@
     "audit:talent-consumers": "node scripts/audit-talent-consumers.mjs",
     "verify:browser-gpu": "node scripts/verify-browser-gpu.mjs",
     "docs:animations": "node scripts/generate-animation-coverage.mjs",
-    "lint": "eslint src tests scripts playwright.config.js --max-warnings=0"
+    "lint": "eslint src tests scripts playwright.config.js --max-warnings=0",
+    "generate:gameplay-geometry": "node scripts/generate-gameplay-geometry-precomputed.mjs"
   },
   "dependencies": {
     "three": "0.181.2"

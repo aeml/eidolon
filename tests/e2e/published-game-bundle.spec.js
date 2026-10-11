@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { bundleGameEngine } from '../../scripts/bundle-game-engine.mjs';
+import { parseCatalog } from '../../scripts/lib/gameplay-geometry-artifact.mjs';
 import { versionPagesRuntime } from '../../scripts/version-pages-runtime.mjs';
 import { collectBrowserFailures } from './helpers.js';
 import { measureJumpWallClock } from './jump-clock-observation.js';
@@ -13,7 +14,7 @@ import { profileGameplayScene } from './scene-performance.js';
 import { reviewEarthRockShelves } from './earth-rock-shelf-review.js';
 
 const release = 'bundlefixture20261009';
-let root, server, origin, metadata;
+let root, server, origin, metadata, precomputedCatalog;
 async function enterPublishedFixture(page) {
     await page.routeWebSocket(/\/ws(?:\?|$)/, socket => {
         socket.onMessage(data => {
@@ -37,6 +38,7 @@ test.beforeAll(async () => {
     root = await mkdtemp(path.join(tmpdir(), 'eidolon-published-engine-'));
     for (const filename of ['src', 'assets', 'vendor', 'index.html', 'release.json', 'sw.js'])
         await cp(path.resolve(filename), path.join(root, filename), { recursive: true });
+    precomputedCatalog = parseCatalog(await readFile(path.join(root, 'src/data/gameplayGeometryPrecomputed.js'), 'utf8'));
     metadata = await bundleGameEngine(root);
     metadata.engineSHA256 = createHash('sha256').update(await readFile(path.join(root, 'src/core/GameEngine.bundle.js'))).digest('hex');
     await versionPagesRuntime(root, release);
@@ -571,6 +573,19 @@ test('published geometry owner loads its immutable worker, retires streamed root
     await page.goto(origin, { waitUntil: 'networkidle' });
     await page.evaluate(() => navigator.serviceWorker.ready);
     await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+    await page.evaluate(() => {
+        const Original = window.Worker;
+        function CaptureWorker(...args) {
+            const worker = new Original(...args), post = worker.postMessage;
+            if (String(args[0]).includes('ActorGameplayGeometryWorker')) worker.postMessage = function (message, ...rest) {
+                if (!window.__publishedBodyRequest && message.kind === 'body') window.__publishedBodyRequest = structuredClone(message);
+                return Reflect.apply(post, this, [message, ...rest]);
+            };
+            return worker;
+        }
+        Object.setPrototypeOf(CaptureWorker, Original); CaptureWorker.prototype = Original.prototype;
+        window.Worker = CaptureWorker; window.__restorePublishedWorker = () => { window.Worker = Original; };
+    });
     const startup = await page.evaluate(async release => {
         const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
         const game = new GameEngine('Fighter', false, true, '', 'synthetic-bundle-only', null, 'flat-v1');
@@ -593,6 +608,12 @@ test('published geometry owner loads its immutable worker, retires streamed root
         for (const key of await caches.keys()) if (await (await caches.open(key)).match(workerURL)) return true;
         return false;
     }, workerURL)).toBe(true);
+    const indexURL = `${origin}/${metadata.worker.precomputed.path}`;
+    await expect.poll(() => page.evaluate(async indexURL => {
+        for (const name of await caches.keys()) if (await (await caches.open(name)).match(indexURL)) return true;
+        return false;
+    }, indexURL)).toBe(true);
+    await page.evaluate(() => window.__restorePublishedWorker());
     const lifecycle = await page.evaluate(() => {
         const { game, actor, owner } = window.__publishedGeometry;
         const before = { roots: owner.delivery.roots.size, entries: owner.pass.entries.size, cacheHits: owner.delivery.stats.cacheHits };
@@ -635,8 +656,21 @@ test('published geometry owner loads its immutable worker, retires streamed root
                     skinWeight: attribute([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], 4) })
             } } });
         }), { workerURL, kind }) });
+        offline.push({ kind: 'supplied-body', ...await page.evaluate(workerURL => new Promise((resolve, reject) => {
+            const worker = new Worker(workerURL, { type: 'module' });
+            const timer = setTimeout(() => { worker.terminate(); reject(Error('Offline precomputed body timeout')); }, 15000);
+            worker.onerror = () => { clearTimeout(timer); worker.terminate(); reject(Error('Offline precomputed body failed')); };
+            worker.onmessage = async ({ data }) => {
+                clearTimeout(timer); worker.terminate();
+                const sha256 = data.indices ? [...new Uint8Array(await crypto.subtle.digest('SHA-256', data.indices))].map(byte => byte.toString(16).padStart(2, '0')).join('') : null;
+                resolve({ id: data.id, indices: data.indices?.length, error: data.error || null, key: data.key, sha256, precomputed: data.precomputed });
+            };
+            worker.postMessage({ ...structuredClone(window.__publishedBodyRequest), id: 7 });
+        }), workerURL) });
     } finally { await context.setOffline(false); }
     for (const row of offline) { expect(row.id).toBe(7); expect(row.error).toBeNull(); expect(row.indices).toBeGreaterThan(0); }
+    const body = offline.find(row => row.kind === 'supplied-body');
+    expect(body.precomputed).toBe(true); expect(body.sha256).toBe(precomputedCatalog.entries[body.key]?.sha256);
     await testInfo.attach('published-geometry-worker', { body: JSON.stringify({ startup, worker: metadata.worker,
         workerURL, lifecycle, offline }, null, 2), contentType: 'application/json' });
     expect(failures, failures.join('\n')).toEqual([]);
@@ -823,7 +857,13 @@ for (const quality of ['high', 'low']) test(`published ${quality} geometry sched
             const context = copy.getContext('2d', { willReadFrequently: true });
             for (const reference of [true, false]) {
                 render.setActorGameplayGeometryEnabled(false); render.setActorGameplayGeometryEnabled(true);
-                const { pass, delivery } = render.actorGameplayGeometry, order = [], indices = new Map();
+                const { pass, delivery } = render.actorGameplayGeometry, order = [], indices = new Map(), outputs = [], pendingOutputs = [];
+                const complete = delivery.complete;
+                delivery.complete = function (message) {
+                    if (message.indices) pendingOutputs.push(digest(message.indices).then(sha256 => outputs.push({
+                        key: message.key, sha256, fallback: message.fallback, precomputed: message.precomputed })));
+                    return complete.call(this, message);
+                };
                 const next = delivery.nextJob, register = pass.register;
                 delivery.nextJob = function () {
                     const pending = this.queue.map(job => ({ id: job.id, triangles: job.sourceTriangles }));
@@ -842,9 +882,10 @@ for (const quality of ['high', 'low']) test(`published ${quality} geometry sched
                     if (delivery.failed || performance.now() > deadline) throw Error('Four-class geometry scheduling did not complete');
                     await new Promise(resolve => setTimeout(resolve, 10));
                 }
+                await Promise.all(pendingOutputs);
                 render.render(); render.render(); context.drawImage(canvas, 0, 0);
                 const pixels = context.getImageData(0, 0, copy.width, copy.height).data;
-                arms.push({ reference, order, indices: Object.fromEntries(await Promise.all([...indices].map(async ([id, array]) => [id, await digest(array)]))),
+                arms.push({ reference, order, outputs, indices: Object.fromEntries(await Promise.all([...indices].map(async ([id, array]) => [id, await digest(array)]))),
                     pixels: await digest(pixels), draws: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                     restored: !pass.active.length && [...pass.entries.values()].every(entry => entry.mesh.geometry === entry.source), stats: { ...delivery.stats } });
             }
@@ -869,6 +910,12 @@ for (const quality of ['high', 'low']) test(`published ${quality} geometry sched
     for (const arm of result.arms) {
         expect(arm.restored).toBe(true); expect(arm.stats.failed).toBe(0); expect(arm.stats.rejected).toBe(0);
         expect(arm.order.length).toBeGreaterThan(60); expect(arm.order.every(row => row.id === row.expected)).toBe(true);
+        expect(arm.outputs.length).toBe(arm.order.length);
+        for (const row of arm.outputs) {
+            expect(row.precomputed).toBe(true);
+            expect(row.sha256).toBe(precomputedCatalog.entries[row.key]?.sha256);
+            expect(row.fallback).toBe(precomputedCatalog.entries[row.key]?.fallback);
+        }
     }
     expect(Object.keys(candidate.indices).length).toBeGreaterThan(40);
     expect(candidate.indices).toEqual(reference.indices);

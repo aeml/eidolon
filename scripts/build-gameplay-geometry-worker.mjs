@@ -1,4 +1,5 @@
 import { build } from 'esbuild';
+import { checkGeometryArtifact } from './lib/gameplay-geometry-artifact.mjs';
 import { createHash } from 'node:crypto';
 import { readFile, lstat, realpath, writeFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -13,11 +14,14 @@ export async function buildGameplayGeometryWorker(root = repository) {
     const entry = path.join(destination, 'src/core/ActorGameplayGeometryWorker.js');
     const output = path.join(destination, 'src/core/ActorGameplayGeometryWorker.bundle.js');
     const delivery = path.join(destination, 'src/core/ActorGameplayGeometryDelivery.js');
-    for (const name of [entry, path.join(destination, 'src/art/GameplayBodyIndices.js'), path.join(destination, 'src/art/GameplayColorIndices.js'), path.join(destination, 'src/art/GameplayRigidIndices.js'), path.dirname(output)]) {
+    for (const name of [entry, path.join(destination, 'src/art/GameplayBodyIndices.js'), path.join(destination, 'src/art/GameplayColorIndices.js'), path.join(destination, 'src/art/GameplayRigidIndices.js'), path.join(destination, 'src/core/GameplayGeometryFingerprint.js'), path.join(destination, 'src/core/GameplayGeometryPreparation.js'),
+        path.join(destination, 'src/core/GameplayGeometryPrecomputed.js'), path.join(destination, 'src/core/GameplayGeometryIndexCodec.js'),
+        path.join(destination, 'src/data/gameplayGeometryPrecomputed.js'), path.dirname(output)]) {
         if (!(await realpath(name)).startsWith(`${destination}${path.sep}`)) throw new Error('Worker sources must be copied inside the build tree');
     }
     try { if ((await lstat(output)).isSymbolicLink()) throw new Error('Worker output cannot be linked'); }
     catch (error) { if (error.code !== 'ENOENT') throw error; }
+    const precomputed = await checkGeometryArtifact(destination, repository);
     const dependency = JSON.parse(await readFile(path.join(repository, 'node_modules/meshoptimizer/package.json'), 'utf8'));
     if (dependency.version !== '1.2.0') throw new Error('Worker requires locked meshoptimizer1.2.0');
     const license = await readFile(path.join(repository, 'node_modules/meshoptimizer/LICENSE.md'), 'utf8');
@@ -41,7 +45,7 @@ export async function buildGameplayGeometryWorker(root = repository) {
         await writeFile(delivery, source.replace(marker, `./${path.basename(artifact)}`));
     } else await writeFile(artifact, contents);
     return { output: path.relative(destination, artifact), sha256, bytes: contents.length,
-        modules: Object.keys(result.metafile.inputs).length, imports };
+        modules: Object.keys(result.metafile.inputs).length, imports, precomputed };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href)
