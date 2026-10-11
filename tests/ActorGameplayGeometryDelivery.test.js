@@ -180,3 +180,47 @@ test('rigid mount work carries its quality without fabricated skin attributes an
         expect(f.pass.entries.has(mesh)).toBe(false);
     } finally { f.dispose(); }
 });
+
+
+test('large queued surfaces prepare before small details while equal sizes retain arrival order', () => {
+    const f = fixture();
+    const add = triangles => {
+        const mesh = f.mesh.clone(); mesh.geometry = f.source.clone();
+        mesh.geometry.setIndex(Array.from({ length: triangles }, () => [0, 1, 2]).flat());
+        f.root.add(mesh); return mesh;
+    };
+    const large = add(50), sameSize = add(50), medium = add(20);
+    f.delivery.track(f.root); pump();
+    expect(f.delivery.active.generation.mesh).toBe(large);
+    f.reply(); pump(); expect(f.delivery.active.generation.mesh).toBe(sameSize);
+    f.reply(); pump(); expect(f.delivery.active.generation.mesh).toBe(medium);
+    f.reply(); pump(); expect(f.delivery.active.generation.mesh).toBe(f.mesh);
+    f.reply(); expect(f.delivery.jobs.size).toBe(0); expect(f.sent).toHaveLength(4);
+    f.dispose();
+});
+
+test('oldest detail receives every fourth dispatch despite continual larger arrivals', () => {
+    const f = fixture(); f.delivery.track(f.root);
+    let triangles = 10;
+    const add = () => {
+        const mesh = f.mesh.clone(); mesh.geometry = f.source.clone();
+        mesh.geometry.setIndex(Array.from({ length: triangles++ }, () => [0, 1, 2]).flat());
+        f.root.add(mesh); f.delivery.request(mesh); return mesh;
+    };
+    for (let i = 0; i < 3; i++) {
+        const latest = add(); pump(); expect(f.delivery.active.generation.mesh).toBe(latest); f.reply();
+    }
+    add(); pump(); expect(f.delivery.active.generation.mesh).toBe(f.mesh);
+    f.reply(); f.dispose();
+});
+
+test('cancelled high priority job cannot displace live work or install a stale result', () => {
+    const f = fixture();
+    const large = f.mesh.clone(); large.geometry = f.source.clone();
+    large.geometry.setIndex(Array.from({ length: 50 }, () => [0, 1, 2]).flat());
+    f.root.add(large); f.delivery.track(f.root); large.removeFromParent();
+    f.root.dispatchEvent({ type: 'equipmentvisualschanged' }); pump();
+    expect(f.delivery.active.generation.mesh).toBe(f.mesh); f.reply();
+    expect(f.pass.entries.has(large)).toBe(false); expect(f.delivery.jobs.size).toBe(0);
+    f.dispose();
+});

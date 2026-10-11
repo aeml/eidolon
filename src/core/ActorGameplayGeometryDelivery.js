@@ -40,7 +40,7 @@ export class ActorGameplayGeometryDelivery {
         if (!Number.isSafeInteger(maxSourceBytes) || maxSourceBytes < 1 || !Number.isSafeInteger(maxJobs) || maxJobs < 1 ||
             !Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new Error('Bounded delivery limits required');
         this.pass = pass; this.maxSourceBytes = maxSourceBytes; this.maxJobs = maxJobs; this.timeoutMs = timeoutMs;
-        this.disposedSources = new WeakSet(); this.roots = new Map(); this.jobs = new Map(); this.queue = []; this.id = 0; this.disposed = false;
+        this.disposedSources = new WeakSet(); this.roots = new Map(); this.jobs = new Map(); this.queue = []; this.id = 0; this.dispatched = 0; this.disposed = false;
         this.stats = { requested: 0, installed: 0, stale: 0, fallback: 0, failed: 0, cacheHits: 0, rejected: 0, maxCopiedBytes: 0 };
         this.retired = (entry, reason) => {
             if (reason === 'source-disposed') { this.disposedSources.add(entry.source); this.cancel(entry.mesh); return; }
@@ -80,7 +80,7 @@ export class ActorGameplayGeometryDelivery {
         const generation = this.pass.capture(mesh);
         if (!generation || this.disposedSources.has(generation.source) || !this.roots.has(generation.root)) return;
         if (this.jobs.size >= this.maxJobs) { this.stats.rejected++; return; }
-        const job = { id: ++this.id, generation };
+        const job = { id: ++this.id, generation, sourceTriangles: generation.source.index.count / 3 };
         job.onDispose = () => { this.disposedSources.add(generation.source); this.cancel(mesh); };
         generation.source.addEventListener('dispose', job.onDispose);
         this.jobs.set(mesh, job); this.queue.push(job); this.stats.requested++; this.schedule();
@@ -113,10 +113,21 @@ export class ActorGameplayGeometryDelivery {
         }, 0);
     }
 
+    nextJob() {
+        // Most submissions go to the largest pending source first, so large
+        // outfits need not wait behind eyes and accessories. Every fourth
+        // dispatch takes the oldest job, bounding starvation during arrivals.
+        let selected = 0;
+        if (this.dispatched % 4 !== 3) for (let i = 1; i < this.queue.length; i++) {
+            if (this.queue[i].sourceTriangles > this.queue[selected].sourceTriangles) selected = i;
+        }
+        return this.queue.splice(selected, 1)[0];
+    }
+
     pump() {
         if (this.disposed || this.failed || this.active) return;
         let job;
-        while ((job = this.queue.shift())) {
+        while ((job = this.nextJob())) {
             const { mesh } = job.generation;
             if (this.jobs.get(mesh) !== job) continue;
             if (!this.pass.current(job.generation) || !this.pass.capture(mesh)) { this.cancel(mesh); this.stats.stale++; this.request(mesh); continue; }
@@ -132,6 +143,7 @@ export class ActorGameplayGeometryDelivery {
                 this.active = job; this.stats.maxCopiedBytes = Math.max(this.stats.maxCopiedBytes, payload.bytes);
                 this.timer = setTimeout(() => this.fail(), this.timeoutMs);
                 this.worker.postMessage({ id: job.id, kind: payload.kind, source: payload.source }, payload.transfers);
+                this.dispatched++;
                 return;
             } catch { this.fail(); return; }
         }

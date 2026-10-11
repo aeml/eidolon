@@ -402,6 +402,92 @@ test('published geometry owner loads its immutable worker, retires streamed root
     expect(failures, failures.join('\n')).toEqual([]);
 });
 
+for (const quality of ['high', 'low']) test(`published ${quality} geometry scheduling preserves prepared four-class outfits`, async ({ page }, testInfo) => {
+    test.setTimeout(180_000);
+    const failures = collectBrowserFailures(page, origin);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const result = await page.evaluate(async ({ release, quality }) => {
+        const { GameEngine } = await import(`/src/core/GameEngine.bundle.js?release=${release}`);
+        const game = new GameEngine('Fighter', false, true, '', 'synthetic-scheduling-only', null, 'flat-v1');
+        const render = game.renderSystem, actors = [], arms = [];
+        const outfits = {
+            Fighter: ['Iron Helm', 'Plate Mail', 'Plate Greaves', 'Iron Boots', 'Iron Gauntlets', 'Steel Pauldrons', 'Plated Girdle', 'Iron Sword', 'Wooden Shield'],
+            Rogue: ['Leather Cap', 'Leather Tunic', 'Leather Pants', 'Leather Boots', 'Leather Gloves', 'Reinforced Spaulders', 'Studded Belt', 'Steel Dagger', 'Iron Sword'],
+            Wizard: ['Silk Hood', 'Robes', 'Silk Skirt', 'Sandals', 'Silk Gloves', 'Velvet Mantle', 'Silk Sash', 'Wooden Staff', 'Spell Tome'],
+            Cleric: ['Iron Helm', 'Robes', 'Leather Pants', 'Iron Boots', 'Silk Gloves', 'Steel Pauldrons', 'Studded Belt', 'Cleric Mace', 'Wooden Shield']
+        };
+        const slots = ['head', 'chest', 'legs', 'feet', 'gloves', 'shoulders', 'belt', 'mainHand', 'offHand', 'ring1', 'ring2', 'neck', 'trinket1', 'trinket2'];
+        const digest = async array => [...new Uint8Array(await crypto.subtle.digest('SHA-256', array))].map(byte => byte.toString(16).padStart(2, '0')).join('');
+        try {
+            render.setGraphicsQuality(quality); render.setActorGameplayGeometryEnabled(false);
+            for (const [index, character] of Object.keys(outfits).entries()) {
+                const actor = game.createRemotePlayer('Player', `schedule-${character}`, character);
+                actor.gameEngine = game; actors.push(actor); await actor.ensureMesh();
+                actor.syncEquipmentVisuals(Object.fromEntries([...outfits[character], 'Ruby Ring', 'Silver Ring', 'Necklace', 'Amulet of Power', 'Orb of Mana'].map((name, i) =>
+                    [slots[i], { id: `schedule-${character}-${slots[i]}`, name, baseName: name, slot: i === 8 && character === 'Rogue' ? 'mainHand' : slots[i],
+                        type: [7, 8].includes(i) ? 'WEAPON' : 'ARMOR', rarity: 'Rare', potency: 5 }])));
+                await actor.mesh.userData.equipmentReady;
+                actor.mesh.position.set((index - 1.5) * 4, 0, 0); render.add(actor.mesh);
+            }
+            render.setZoom(18); render.setCameraTarget(actors[1].mesh.position);
+            const canvas = render.renderer.domElement, copy = document.createElement('canvas');
+            copy.width = canvas.width; copy.height = canvas.height;
+            const context = copy.getContext('2d', { willReadFrequently: true });
+            for (const reference of [true, false]) {
+                render.setActorGameplayGeometryEnabled(false); render.setActorGameplayGeometryEnabled(true);
+                const { pass, delivery } = render.actorGameplayGeometry, order = [], indices = new Map();
+                const next = delivery.nextJob, register = pass.register;
+                delivery.nextJob = function () {
+                    const pending = this.queue.map(job => ({ id: job.id, triangles: job.sourceTriangles }));
+                    const expected = reference || this.dispatched % 4 === 3 ? pending[0] : pending.reduce((best, job) => !best || job.triangles > best.triangles ? job : best, null);
+                    const job = reference ? this.queue.shift() : next.call(this);
+                    if (job) order.push({ id: job.id, mesh: job.generation.mesh.name, triangles: job.sourceTriangles, expected: expected.id });
+                    return job;
+                };
+                pass.register = function (mesh, prepared) {
+                    const installed = register.call(this, mesh, prepared);
+                    if (installed) indices.set(mesh.uuid, prepared.slice());
+                    return installed;
+                };
+                const deadline = performance.now() + 90_000;
+                while (delivery.active || delivery.jobs.size) {
+                    if (delivery.failed || performance.now() > deadline) throw Error('Four-class geometry scheduling did not complete');
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                }
+                render.render(); render.render(); context.drawImage(canvas, 0, 0);
+                const pixels = context.getImageData(0, 0, copy.width, copy.height).data;
+                arms.push({ reference, order, indices: Object.fromEntries(await Promise.all([...indices].map(async ([id, array]) => [id, await digest(array)]))),
+                    pixels: await digest(pixels), draws: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
+                    restored: !pass.active.length && [...pass.entries.values()].every(entry => entry.mesh.geometry === entry.source), stats: { ...delivery.stats } });
+            }
+            const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+            return { quality, arms, classes: actors.map(actor => ({ character: actor.mesh.userData.authoredClass,
+                quality: actor.mesh.userData.authoredQuality, items: actor.mesh.userData.equipmentVisualItemCount,
+                missing: actor.mesh.userData.equipmentVisualMissing.length, fallback: actor.mesh.userData.equipmentVisualFallback.length })),
+                gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER), engineSHA256: null };
+        } finally {
+            for (const actor of actors) actor.dispose(); game.destroy();
+        }
+    }, { release, quality });
+    result.engineSHA256 = metadata.engineSHA256;
+    await testInfo.attach('published-geometry-scheduling', { body: JSON.stringify(result), contentType: 'application/json' });
+    expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
+    expect(result.classes).toHaveLength(4);
+    for (const actor of result.classes) expect(actor).toMatchObject({ quality, items: 14, missing: 0, fallback: 0 });
+    const [reference, candidate] = result.arms;
+    for (const arm of result.arms) {
+        expect(arm.restored).toBe(true); expect(arm.stats.failed).toBe(0); expect(arm.stats.rejected).toBe(0);
+        expect(arm.order.length).toBeGreaterThan(60); expect(arm.order.every(row => row.id === row.expected)).toBe(true);
+    }
+    expect(Object.keys(candidate.indices).length).toBeGreaterThan(40);
+    expect(candidate.indices).toEqual(reference.indices);
+    expect(candidate.pixels).toBe(reference.pixels);
+    expect(candidate.draws).toBe(reference.draws); expect(candidate.triangles).toBe(reference.triangles);
+    expect(candidate.order.map(row => row.mesh)).not.toEqual(reference.order.map(row => row.mesh));
+    expect(failures, failures.join('\n')).toEqual([]);
+});
+
 test.describe('default geometry worker fallback', () => {
     test.use({ serviceWorkers: 'block' });
     test('actual published worker exception keeps the game and original model usable', async ({ page }, testInfo) => {
