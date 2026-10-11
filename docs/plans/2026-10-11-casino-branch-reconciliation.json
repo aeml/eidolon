@@ -1,0 +1,71 @@
+{
+  "recordedUTC": "2026-10-11T14:54:36.733896+00:00",
+  "status": "All eight reviewed historical casino branches are ancestors of local master. Coherent public successor pending exact corrective34acceptance.",
+  "branches": [
+    "work/alpha-1-61-venue-20261001",
+    "work/alpha-1-62-blackjack-20261001",
+    "work/alpha-1-63-poker-20261001",
+    "work/alpha-1-64-house-20261001",
+    "work/alpha-1-65-slots-20261001",
+    "work/alpha-1-66-wallets-20261001",
+    "work/alpha-1-67-cosmetics-20261001",
+    "work/alpha-1-68-membership-20261001"
+  ],
+  "counts": {
+    "before": {
+      "total": 638,
+      "merged": 561,
+      "unmerged": 77
+    },
+    "after": {
+      "total": 640,
+      "merged": 571,
+      "unmerged": 69
+    }
+  },
+  "currentTip": "947a9e98b4807c4ee8dd69ab67f1d846519a440f",
+  "venueAndBlackjack": "Selected accessible-name/disabled-style restoration qualified with102focused checks and1actual browser stairs case. Source93d5d520; historycdf6f85d/561abf2d; qualificationee0c473e. See2026-10-11-casino-completed-history-qualification.json.",
+  "unchangedTreeHistory": [
+    {
+      "commit": "1ad7b7513affa922a62354ed09433bf7fa4899a7",
+      "tree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "firstParentTree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "subject": "Merge completed Holdem timeout history with current saved-release fences"
+    },
+    {
+      "commit": "830a806a1b4de46da996b50cb7e17732b2374c88",
+      "tree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "firstParentTree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "subject": "Merge completed house-table history already integrated as identical patch"
+    },
+    {
+      "commit": "3222ac39e7c15d90ef9d44179939feff7d69009d",
+      "tree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "firstParentTree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "subject": "Merge completed slot bonus controls already integrated by exact patch"
+    },
+    {
+      "commit": "313ed69510c70ee802bb08a3918bc73467344e96",
+      "tree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "firstParentTree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "subject": "Merge completed character-owned EP wallet history already integrated"
+    },
+    {
+      "commit": "dc48880e56ed836940953b0e400fb5af7cd4921d",
+      "tree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "firstParentTree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "subject": "Merge completed cosmetic reply-ownership history with current asset contract"
+    },
+    {
+      "commit": "947a9e98b4807c4ee8dd69ab67f1d846519a440f",
+      "tree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "firstParentTree": "d8a7498dce8051043fca73d696765d5b58951812",
+      "subject": "Merge completed VIP refresh and recovery history already integrated by exact patches"
+    }
+  ],
+  "evidence": "Poker current captured-token/post-save chair release and saved cashout coverage reviewed. House exact patch equivalence verified. Slots/wallet/vendor/wardrobe/membership patches are already cherry-picked. Same early private-result guard remains; associated test byte-exact. Current four-class delivered-asset contract takes precedence over older missing-export notes.",
+  "workflow": "Completed validated work merges into master; unfinished/rejected experiments and original dirty user checkout remain isolated. Ordinary remote fetch/merge/push only; no force/deletion/reset/stash. Local source merges wait for a coherent qualified publication rather than triggering tiny versions.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-casino-history-reconciliation-20261011",
+  "inventorySHA256": "7b8ba2c346c5697c1c5a21ac89d0c2312428a1dd8e7c9aab476375199d0b01c0",
+  "limits": "Historical reconciliation is not new casino full integration, performance/device/settlement/beta acceptance. Full original goal remains active."
+}

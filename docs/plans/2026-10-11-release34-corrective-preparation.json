@@ -1,0 +1,34 @@
+{
+  "recordedUTC": "2026-10-11T14:55:14.962612+00:00",
+  "status": "Prepared exact corrective34source; waiting for original CI38147178300 terminal state before ordinary push.",
+  "source": "3ec8bb151f24909127b832a4035eb7e6eab9b635",
+  "version": "Alpha 1.79.34",
+  "originalSource": "f7c7b9e05fc703fb459af721729f4a1133e770a6",
+  "runtimeIdenticalToQualifiedSource": true,
+  "changedPaths": [
+    "docs/plans/2026-10-11-release34-charging-fixture-correction.json",
+    "tests/GameSimulation.test.js"
+  ],
+  "reproducedOriginalAssetPins": 23,
+  "correctiveAssetPins": 23,
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release34-corrective-publication-checks-20261011/expected-public34-assets.json",
+  "expectedManifestSHA256": "f4222cc27cbfc854bbd7b7d1ded317ed4d4976ca84e77c4d006c661dc89de679",
+  "engine": {
+    "path": "src/core/GameEngine.bundle.js",
+    "bytes": 3493602,
+    "sha256": "99d001d50b985637b30949e6da92e990f25806dec6d61438f1c3f843127be696"
+  },
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+    "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "bytes": 137178,
+    "modules": 10,
+    "imports": []
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-release34-corrective-publication-checks-20261011",
+  "inventorySHA256": "2d648b6cf5d5f4ddcff409a0ecf6c14a78a175968806d7d4c9becfd424ca9a93",
+  "checks": "Same-source strict bundle reproduces all23original qualified asset lengths/hashes, then only source query identities rewritten to corrective source. Fixture59tests/2suites pass. Original444publicationchecks/4native cases and component evidence remain valid; no repeated gameplay/soak/native run for this test-only change.",
+  "publication": "Corrective source is already an ancestor of owned master. Publish that exact fast-forward origin/master candidate after prior failed run terminal, keeping separately merged guild/venue changes pending a coherent later milestone. Fetch/ordinary merge before push; no force.",
+  "acceptance": "Own corrected CI/deploy/live plus fresh post-terminal normal-TLS frontend/backend/readyDB/all23served byte/hash checks remain required. Public33 stays last accepted.",
+  "goal": "Full original goal remains active."
+}
