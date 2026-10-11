@@ -1075,3 +1075,25 @@ TLS93asset/frontend/backend/readyDB acceptance. Sparse monitor continues existin
 world/art/gameplay/device/performance/operations/F1–F5/beta/launch/handoff and
 owner-deferred campaign/physical-phone feedback remain active. No performance,
 art/device, campaign or capacity acceptance is inferred from these diagnostics.
+
+
+## October11 corrective39 live failure and world camp implementation
+
+Previous branch continuation rechecked the completed master-only cleanup; this
+turn implements pitched Pilgrim Rest canvas, supported benches, rolled bedding,
+boarded stores and cold-hearth ironwork in an owned detached worktree.26focused
+checks/3suites and all12content groups pass; exact walking footprints retained.
+Native review is unfinished: initial extra geometry exceeded its4000-triangle
+bound and was reduced; a second High review exposed missing ignored worker in
+the scratch setup, retained and repaired. Neither is art/performance acceptance.
+Final High/Low moving supplied-four-class14slot/HUD review awaits the live GPU.
+
+Exact39/a1ebc404 CI38178405817attempt1 deployed but terminally failed final live
+QA:7expected/1unexpected/1skip. Both failed executions reached the final strict
+collector: GA network-change then Ilyra HTTP408. Fresh normal-TLS all93pins,
+identities/readyDB and exact Ilyra URL/SHA now match; diagnostic only. One root
+failed-job-only attempt2 on identical source is active; nine successful jobs
+reused, no source/gate change or new publication.38 remains last accepted.
+See release39-live-network-recovery. Full original scope remains active.
+
+2026-10-11 scoped acceptance and owner progression steering: corrective39/a1ebc404 is now accepted after exact CI38178405817attempt2(all10ordered jobs,4optional skips) and fresh22:56:11UTC normal-TLS93asset/frontend/backend/readyDB checks. Original failures are retained; one failed-job-only recovery used unchanged source. Campcdc68ada is qualified within prepared native scope:26focused checks/3suites,12content groups, all941source pins, High/Low gameplay/HUD/equipped-class views, scoped ABBA timing and2GPU retirement cycles per mode. Eighty-eight-entry frozen inventory4826a8eacbcbc4adb8dbe7082a348e81fd59db623c44174cfe14203d8104c567; no connected-performance/final-world closure. Owner reports a post-Bastion30→45quest burst and requests consistent proportional quest XP with dungeon turn-ins at most1–2levels. Private detached quest-pacing work removes oversized preparation overrides, normalizes story percentages and checks legacy unpaid quotes/two-level limits. Initial numerical route/forecast failures are retained and must be resolved before integration/publication; merely lowering XP exposes unacceptable grinding gaps. Existing earned levels/paid receipts remain historical. Owner preference between more quests and more combat XP is pending; independent correction/audit continues. Full original goal remains active.

@@ -1,0 +1,41 @@
+{
+  "recordedUTC": "2026-10-11T22:49:53.728401+00:00",
+  "source": "a1ebc4046a294ac315b97d9e86e9057a6f13294b",
+  "version": "Alpha 1.79.39",
+  "ciRun": 38178405817,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38178405817",
+  "attempt1": {
+    "state": "Terminal failure; nine prerequisite/deployment jobs succeeded. Final live QA failed; optional four-class/recovery stages skipped.",
+    "native": {
+      "expected": 7,
+      "unexpected": 1,
+      "flaky": 0,
+      "skipped": 1
+    },
+    "failedCase": "authenticated: kills and loots in the overworld, enters and exits a dungeon, and persists",
+    "firstExecution": "Reached final strict collector after reconnect/fresh-login persistence; Google Analytics request ERR_NETWORK_CHANGED.",
+    "configuredRetry": "Reached same final strict collector; exact Ilyra GLB URL returned HTTP408 plus console error.",
+    "scope": "Gameplay assertions reached their end; failure is retained, not accepted or waived."
+  },
+  "diagnosis": {
+    "observedUTC": "2026-10-11T22:44:18.193547+00:00",
+    "normalTLS": true,
+    "all93PinsMatch": true,
+    "exactFrontendBackendIdentityAndReadyDatabase": true,
+    "observerModule200": true,
+    "failedIlyraURL": "https://play.eidolonrealms.com/assets/npcs/ilyra/ilyra-archmage.glb?v=010301379aaa92a3",
+    "ilyraFreshUTC": "2026-10-11T22:45:11.872635+00:00",
+    "ilyraStatus": 200,
+    "ilyraBytes": 1548340,
+    "ilyraSHA256": "010301379aaa92a3bac6e54e9f7d7bf94cc8a2be20e9c1ebe883eeae6e87e8b7",
+    "ilyraMatchesLocalSource": true
+  },
+  "recovery": "Root requested one failed-job-only rerun after diagnosis. Attempt2 same exact source is active; nine successful jobs reused. No source change, test weakening, new publication, deployment retry or soak restart. Require own terminal success and fresh post-terminal normal-TLS93asset/frontend/backend/readyDB acceptance.",
+  "lastAccepted": "Alpha1.79.38/91ee3ec85ed13a643025c047bbaba5eba14528d7",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release39-live-failure-checks-20261011",
+    "entries": 13,
+    "inventorySHA256": "d2e5db37b3c1e58e462f7de013ad322a5d6e720d669fd9af4b181beff836b3f1"
+  },
+  "scope": "39 is deployed but unaccepted. Full world/art/gameplay/device/performance/operations/F1-F5/beta/launch/handoff scope and owner-deferred playtest feedback remain open."
+}

@@ -1,0 +1,27 @@
+{
+  "source": "cdc68adaec8908ff6cdaf4671aa0abe78de02640",
+  "sourcePins": 941,
+  "selected": [
+    "final/high-report.json:views,lifetime",
+    "final-attribution/high-report.json:timing",
+    "final/low-report.json:hearth,shelters",
+    "low-scoped-attribution/low-report.json:detail,timing,lifetime"
+  ],
+  "visualReview": "Three gameplay views with HUD and four supplied equipped classes, plus captured motion inspected. Two pitched shelters, supported benches, boarded crates and bedrolls improve the former bare pole/box camp. Broad scene sparsity and final-world approval remain open.",
+  "performanceClaim": "Prepared same-source comparison remains within original High/Low limits; no connected-performance or FPS improvement claim. Low detail adds the existing iron draw due to expanded conservative bounds, confirmed with scoped controls preserving actor batching.",
+  "retainedFailures": [
+    "initial over-budget geometry",
+    "missing ignored worker copy",
+    "incorrect equal Low draw-count fixture assumption",
+    "raw timestamp floating subtraction boundary",
+    "broad onBeforeRender diagnostic perturbed ActorInstanceBatches eligibility"
+  ],
+  "cleanup": "Browser contexts closed by fixture; owned local static server stopped.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-pilgrim-camp-checks-20261011",
+  "inventoryEntries": 88,
+  "inventorySHA256": "4826a8eacbcbc4adb8dbe7082a348e81fd59db623c44174cfe14203d8104c567",
+  "focusedChecks": 26,
+  "focusedSuites": 3,
+  "contentGroups": 12,
+  "status": "Qualified bounded prepared native scope, ready for ordinary merge; unpublished."
+}
