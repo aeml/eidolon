@@ -98,6 +98,16 @@ export function getInstanceAtlas(engine) {
     return model;
 }
 
+export function getInstanceRadarScale(model, size, preferredScale) {
+    // A 4px/metre radar shows only the middle of a 120m dungeon entry room.
+    // Fit that room with a 20px margin so its walls and the corridor mouth give
+    // useful context. Use the immutable entry footprint throughout the run:
+    // walking and room-progress updates must not make the map zoom or jitter.
+    const entry = model?.summary && model.rooms.find(room => room.type === 'start');
+    if (!entry || !validRect(entry) || size <= 40) return preferredScale;
+    return Math.min(preferredScale, (size - 40) / Math.hypot(entry.width, entry.height));
+}
+
 export function drawInstanceAtlasFloor(ctx, model, project) {
     ctx.fillStyle = model.casino?.floor === 'vip' ? '#3e344a' : '#303d42';
     for (const r of model.floors) {

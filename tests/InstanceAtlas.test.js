@@ -1,4 +1,4 @@
-import { getInstanceAtlas, atlasSpaceKey, drawInstanceAtlasFloor } from '../src/ui/InstanceAtlas.js';
+import { getInstanceAtlas, atlasSpaceKey, drawInstanceAtlasFloor, getInstanceRadarScale } from '../src/ui/InstanceAtlas.js';
 import { getAtlasLocations, getWaypointGuidance } from '../src/ui/AtlasNavigation.js';
 
 const dungeon = () => {
@@ -71,4 +71,30 @@ test('atlas and radar floor painter projects actual rotated corners, not half-si
     const ctx = { beginPath() {}, moveTo(x, y) { points.push([x, y]); }, lineTo(x, y) { points.push([x, y]); }, closePath() {}, fill() {}, stroke() {} };
     drawInstanceAtlasFloor(ctx, model, (x, z) => ({ x: x - z, y: x + z }));
     expect(points.slice(0, 4)).toEqual([[-10, -30], [30, 10], [10, 30], [-30, -10]]);
+});
+
+test('dungeon radar fits its entry footprint and keeps that scale as the player walks and advances', () => {
+    const game = dungeon();
+    const entry = game.currentDungeonLayout.rooms[0];
+    entry.width = 120; entry.height = 120;
+    const scale = getInstanceRadarScale(getInstanceAtlas(game), 200, 4);
+    expect(scale * Math.hypot(entry.width, entry.height) / 2).toBeCloseTo(80);
+    game.player.position = { x: 30, z: -20 };
+    game.getDungeonRoomSummary().currentRoomIndex = 2;
+    game.getDungeonRoomSummary().rooms[0].cleared = true;
+    expect(getInstanceRadarScale(getInstanceAtlas(game), 200, 4)).toBe(scale);
+    expect(getInstanceRadarScale(getInstanceAtlas(game), 200, 0.5)).toBe(0.5);
+});
+
+test.each([null, { rooms: [], summary: {} }, { rooms: [{ type: 'start', width: NaN, height: 120 }], summary: {} },
+    { rooms: [{ type: 'start', x: 0, z: 0, width: 120, height: 120 }] }])(
+    'missing layout and non-dungeon radar retain the preferred scale: %j', model => {
+        expect(getInstanceRadarScale(model, 200, 4)).toBe(4);
+    });
+
+test('radar respects compact canvases and small dungeon rooms', () => {
+    const model = getInstanceAtlas(dungeon());
+    expect(getInstanceRadarScale(model, 40, 4)).toBe(4);
+    model.rooms[0].width = 10; model.rooms[0].height = 10;
+    expect(getInstanceRadarScale(model, 200, 4)).toBe(4);
 });

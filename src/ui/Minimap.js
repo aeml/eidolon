@@ -1,7 +1,7 @@
 import { applyStatusEffectIcon } from '../art/StatusEffectIcons.js';
 import { TOWN_SERVICE_POINTS } from './townServiceConfig.js';
 import { isAtlasPartyMemberVisible, isOverworldAtlas, getWaypointGuidance, drawAtlasWaypoint, getAtlasWorldLocations } from './AtlasNavigation.js';
-import { getInstanceAtlas, drawInstanceAtlasFloor } from './InstanceAtlas.js';
+import { getInstanceAtlas, drawInstanceAtlasFloor, getInstanceRadarScale } from './InstanceAtlas.js';
 import { getOverworldRegion, WORLD_BOUNDARY_SEGMENTS } from '../data/worldGeography.js';
 import { PhoneStatusUI } from './PhoneStatusUI.js';
 import { drawDarkRealmFloors } from './DarkRealmMap.js';
@@ -188,7 +188,8 @@ export class Minimap {
         const ctx = this.ctx;
         const size = this.canvas.width;
         const half = size / 2;
-        const scale = this.scale;
+        const interior = getInstanceAtlas(this.gameEngine);
+        const scale = this.renderScale = getInstanceRadarScale(interior, size, this.scale);
 
         // Rotation (45 degrees to match isometric camera)
         const cos = 0.70710678;
@@ -220,7 +221,6 @@ export class Minimap {
         // ---- Realm boundary hints ----
         // Draw faint boundary lines for nearby realm edges so the player
         // can see when they're approaching a transition.
-        const interior = getInstanceAtlas(this.gameEngine);
         if (interior?.bounds) {
             drawInstanceAtlasFloor(ctx, interior, toMap);
             if (this.gameEngine?.currentInstanceType === 'casino') this._drawTownServiceMarkers(ctx, toMap, player, half);
