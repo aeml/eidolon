@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T02:15:16.446320+00:00",
-  "classification": "Progress: early submission attribution, selected fair large-surface worker scheduling88e250af and corrected required native CI ownership cda30fd0.139focused and8distinct native correctness passes/1skip; High/Low prepared buffers and final pixels exact. New party timing failure33.3median/50p95 and386370instrumented startup triangles retained.",
-  "qualifiedRuntime": "Held cda30fd0 adds preparation dispatch order only plus required native CI corrections to prior9c81c573. Scoped scheduling/render fidelity verified; whole-world performance qualification remains failed. Public Alpha1.79.29 unchanged; private camp/singleton/DemonOrc/route QA not selected wholesale.",
+  "recordedUTC": "2026-10-11T02:54:24.854785+00:00",
+  "classification": "Progress: selected75a37d88 makes four elemental dungeon floors readable under regional lights and adds stationary world-space weathering.86 distinct focused and14 distinct native checks pass cumulatively; prior failures retained. Prepared visual/material qualification only; whole-world performance remains failed.",
+  "qualifiedRuntime": "Held75a37d88 adds four elemental floor materials and mandatory native coverage to prior34ca5b97. Existing actor/ward/root/Verdant/geometry-priority/HUD work retained; scope-qualified source and copied bundle only. Public Alpha1.79.29 unchanged; private camp/singleton/DemonOrc/route QA remains unselected.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -98,12 +98,12 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Attribute CPU costs in representative dynamic populations and preparation before first appearance, retaining33.3/50ms timing and386370/281603/289302triangle/438/361draw failures. Continue cohesive code-owned world/scenery/material/contact/audio, device/owner art and original operations/F1-F5/beta/launch/handoff. No campaign/soak replay or full-goal completion claim.",
-  "currentReceipt": "docs/plans/2026-10-11-geometry-preparation-priority-qualification.json",
+  "nextRequiredResult": "Continue cohesive environment composition, material/contact/audio and device work; use existing CPU ownership evidence for concrete hypotheses, retaining49.9/66.6ms timing and386370/281603/289302triangle/438/361draw/Low202draw failures. Original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or full-goal completion claim.",
+  "currentReceipt": "docs/plans/2026-10-11-elemental-floor-material-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Attribute CPU costs in representative dynamic populations and preparation before first appearance, retaining33.3/50ms timing and386370/281603/289302triangle/438/361draw failures. Continue cohesive code-owned world/scenery/material/contact/audio, device/owner art and original operations/F1-F5/beta/launch/handoff. No campaign/soak replay or full-goal completion claim.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
+  "nextAction": "Continue cohesive environment composition, material/contact/audio and device work; use existing CPU ownership evidence for concrete hypotheses, retaining49.9/66.6ms timing and386370/281603/289302triangle/438/361draw/Low202draw failures. Original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or full-goal completion claim.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-elemental-floor-material-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
     "preparedNotSelected": true,
@@ -2609,5 +2609,36 @@
       "inventorySHA256": "1d08fe52a19a63e50c0e9e85fffbb190bd362170cb0a872338d2963f377d0605",
       "frozen": true
     }
+  },
+  "elementalFloorMaterial": {
+    "receipt": "docs/plans/2026-10-11-elemental-floor-material-qualification.json",
+    "source": "75a37d888b1d0244f8747a00a701735e29e8cb77",
+    "selected": true,
+    "published": false,
+    "focusedDistinctPassed": 86,
+    "nativeDistinctPassed": 14,
+    "preparedAnimatedFrames": 288,
+    "preparedViews": 16,
+    "pairedScreenshots": 32,
+    "preservedMapPins": 56,
+    "engineSHA256": "820000040a39b988edd0c0043e1376575b1b408c0119e1412ec9b76d3d2c50bb",
+    "requiredCI": {
+      "hostedCount": 337,
+      "nativeCount": 15,
+      "combinedDistinctRequired": 348,
+      "priorDistinctRequired": 338,
+      "lost": [],
+      "scope": "337hosted exactlyonce,15mandatorynative,348distinctcombined; four intentional backend overlaps (two outfits/two floor publication). Discovery only; no claim all348or15 executed this turn. Required native hardware and zero retries preserved.",
+      "newDistinctCases": 10,
+      "allPrior338IdentitiesRetained": true
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-elemental-floor-checks-20261011",
+      "inventoryEntries": 297,
+      "files": 298,
+      "inventorySHA256": "df7a284a8a24befdb864997ec573a82a0a1d0013b6c9d467ee891773c15b5fa8",
+      "frozen": true
+    },
+    "scopeLimits": "Staged only. Public Alpha1.79.29/12e5e3c4 and accepted jump/aura/admin unchanged. Original49.9median/66.6p95 CPU and386370/281603/289302triangle/438/361draw/Low202draw counterexamples remain unresolved; no frame-time/performance acceptance. Full world/art/contact/audio/device/operations/F1-F5/beta/launch/handoff goal active; no campaign/soak replay or version/access/beta change."
   }
 }

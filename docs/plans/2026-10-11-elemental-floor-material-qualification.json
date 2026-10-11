@@ -1,0 +1,2819 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-11T02:53:21.741892+00:00",
+  "classification": "progress",
+  "source": "75a37d888b1d0244f8747a00a701735e29e8cb77",
+  "parent": "34ca5b97b5957034563cfa6eebdec21ecc0371d8",
+  "selected": true,
+  "published": false,
+  "implementation": {
+    "families": [
+      "molten_core",
+      "tempest_spire",
+      "abyssal_well",
+      "umbral_nexus"
+    ],
+    "mineralFloorAlbedo": "80 percent physical mineral /20 percent existing regional base; existing colored room lighting retained",
+    "weathering": "Stationary world-XZ color and roughness variation across tile repeats and mesh partitions",
+    "unchanged": "All wall maps and floor normal/roughness/emissive texture bytes; existing joints/fractures, walls, Verdant, collision, actors, equipment, HUD and lighting",
+    "cost": "Four family shader variants and two sine evaluations per floor fragment; no extra textures, draw passes, geometry, lights, colliders or time uniform. No GPU/frame-time improvement claim."
+  },
+  "sourceSnapshotFiles": [
+    ".github/workflows/ci.yml",
+    "src/art/ElementalDungeonSurface.js",
+    "src/art/ElementalFloorPatina.js",
+    "src/art/ProceduralDungeonInteriors.js",
+    "tests/ElementalFloorPatina.test.js",
+    "tests/NativeVisualEvidence.test.js",
+    "tests/ProceduralDungeonInteriors.test.js",
+    "tests/e2e/dungeon-floor-material.spec.js",
+    "tests/e2e/elemental-dungeon-presentation.spec.js",
+    "tests/e2e/published-game-bundle.spec.js"
+  ],
+  "trackedSourcePins": 6129,
+  "focused": {
+    "distinctPassed": 86,
+    "suites": 5,
+    "newElementalFloorTests": 7,
+    "scope": "Cumulative unique checks, not a single clean86 run. corrected-focused85pass/1sRGB failure; final-gamma1pass/40nonmatching skips corrects that assertion; final-ci-plan28pass overlap. No skip counted as a pass.",
+    "logs": [
+      "focused.log",
+      "corrected-focused.log",
+      "final-gamma.log",
+      "final-ci-plan.log",
+      "final-lint.log",
+      "publication-final-lint.log"
+    ]
+  },
+  "native": {
+    "distinctPassed": 14,
+    "continuityPassed": 9,
+    "equippedRoomPassed": 2,
+    "copiedEngineFloorPassed": 2,
+    "copiedEngineLazyFourClassPassed": 1,
+    "frames": 288,
+    "preparedViews": 16,
+    "pairedScreenshots": 32,
+    "rooms": [
+      {
+        "frames": 36,
+        "played": true,
+        "poseChanged": true,
+        "calls": 81,
+        "triangles": 45743,
+        "scope": "Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.",
+        "family": "molten_core",
+        "viewport": "equipped elemental dungeon rooms at 1280px"
+      },
+      {
+        "frames": 36,
+        "played": true,
+        "poseChanged": true,
+        "calls": 79,
+        "triangles": 45651,
+        "scope": "Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.",
+        "family": "tempest_spire",
+        "viewport": "equipped elemental dungeon rooms at 1280px"
+      },
+      {
+        "frames": 36,
+        "played": true,
+        "poseChanged": true,
+        "calls": 80,
+        "triangles": 49335,
+        "scope": "Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.",
+        "family": "abyssal_well",
+        "viewport": "equipped elemental dungeon rooms at 1280px"
+      },
+      {
+        "frames": 36,
+        "played": true,
+        "poseChanged": true,
+        "calls": 81,
+        "triangles": 43029,
+        "scope": "Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.",
+        "family": "umbral_nexus",
+        "viewport": "equipped elemental dungeon rooms at 1280px"
+      },
+      {
+        "frames": 36,
+        "played": true,
+        "poseChanged": true,
+        "calls": 37,
+        "triangles": 20309,
+        "scope": "Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.",
+        "family": "molten_core",
+        "viewport": "equipped elemental dungeon rooms at 390px"
+      },
+      {
+        "frames": 36,
+        "played": true,
+        "poseChanged": true,
+        "calls": 36,
+        "triangles": 20125,
+        "scope": "Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.",
+        "family": "tempest_spire",
+        "viewport": "equipped elemental dungeon rooms at 390px"
+      },
+      {
+        "frames": 36,
+        "played": true,
+        "poseChanged": true,
+        "calls": 37,
+        "triangles": 20509,
+        "scope": "Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.",
+        "family": "abyssal_well",
+        "viewport": "equipped elemental dungeon rooms at 390px"
+      },
+      {
+        "frames": 36,
+        "played": true,
+        "poseChanged": true,
+        "calls": 37,
+        "triangles": 19919,
+        "scope": "Prepared animation and camera movement through the real generated room; no gameplay authority, frame-time or physical-device claim.",
+        "family": "umbral_nexus",
+        "viewport": "equipped elemental dungeon rooms at 390px"
+      }
+    ],
+    "continuity": [
+      {
+        "type": "verdant_bastion_catacombs",
+        "quality": "high",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                21,
+                20,
+                17
+              ],
+              [
+                21,
+                20,
+                16
+              ],
+              [
+                20,
+                19,
+                16
+              ],
+              [
+                21,
+                20,
+                17
+              ],
+              [
+                21,
+                19,
+                16
+              ],
+              [
+                22,
+                21,
+                17
+              ],
+              [
+                21,
+                20,
+                17
+              ],
+              [
+                22,
+                20,
+                17
+              ],
+              [
+                22,
+                21,
+                17
+              ],
+              [
+                21,
+                20,
+                17
+              ],
+              [
+                21,
+                20,
+                16
+              ],
+              [
+                20,
+                19,
+                16
+              ],
+              [
+                21,
+                20,
+                17
+              ],
+              [
+                21,
+                20,
+                16
+              ],
+              [
+                21,
+                20,
+                16
+              ],
+              [
+                21,
+                20,
+                17
+              ],
+              [
+                21,
+                20,
+                16
+              ],
+              [
+                22,
+                21,
+                17
+              ],
+              [
+                21,
+                19,
+                16
+              ],
+              [
+                21,
+                20,
+                16
+              ],
+              [
+                21,
+                20,
+                16
+              ],
+              [
+                22,
+                21,
+                17
+              ],
+              [
+                22,
+                21,
+                17
+              ],
+              [
+                21,
+                20,
+                17
+              ],
+              [
+                22,
+                21,
+                17
+              ]
+            ],
+            "span": 2
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      },
+      {
+        "type": "molten_core",
+        "quality": "high",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                22,
+                15,
+                12
+              ],
+              [
+                22,
+                15,
+                12
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                19,
+                13,
+                11
+              ],
+              [
+                19,
+                13,
+                11
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                19,
+                13,
+                10
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                22,
+                15,
+                12
+              ],
+              [
+                21,
+                15,
+                11
+              ],
+              [
+                19,
+                13,
+                10
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                22,
+                15,
+                12
+              ],
+              [
+                22,
+                15,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                22,
+                15,
+                12
+              ]
+            ],
+            "span": 3
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      },
+      {
+        "type": "molten_core",
+        "quality": "low",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                22,
+                15,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                19,
+                13,
+                10
+              ],
+              [
+                19,
+                13,
+                10
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                19,
+                13,
+                10
+              ],
+              [
+                19,
+                13,
+                10
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                18,
+                13,
+                10
+              ],
+              [
+                19,
+                13,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                19,
+                13,
+                10
+              ],
+              [
+                20,
+                13,
+                11
+              ],
+              [
+                19,
+                13,
+                11
+              ],
+              [
+                22,
+                15,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ],
+              [
+                20,
+                14,
+                11
+              ],
+              [
+                21,
+                14,
+                11
+              ]
+            ],
+            "span": 4
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      },
+      {
+        "type": "tempest_spire",
+        "quality": "high",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ],
+              [
+                27,
+                26,
+                29
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                27,
+                27,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                29,
+                29,
+                32
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                24,
+                24,
+                26
+              ],
+              [
+                28,
+                28,
+                31
+              ],
+              [
+                25,
+                25,
+                27
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                25,
+                28
+              ],
+              [
+                24,
+                24,
+                27
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                23,
+                23,
+                26
+              ],
+              [
+                26,
+                26,
+                28
+              ],
+              [
+                28,
+                28,
+                31
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                27,
+                27,
+                30
+              ],
+              [
+                26,
+                26,
+                28
+              ],
+              [
+                27,
+                27,
+                30
+              ],
+              [
+                29,
+                29,
+                32
+              ],
+              [
+                25,
+                25,
+                28
+              ],
+              [
+                29,
+                29,
+                32
+              ],
+              [
+                27,
+                27,
+                30
+              ],
+              [
+                25,
+                25,
+                28
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                25,
+                25,
+                27
+              ]
+            ],
+            "span": 6
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      },
+      {
+        "type": "tempest_spire",
+        "quality": "low",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                28,
+                28,
+                31
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                23,
+                23,
+                26
+              ],
+              [
+                27,
+                27,
+                30
+              ],
+              [
+                24,
+                24,
+                27
+              ],
+              [
+                25,
+                25,
+                28
+              ],
+              [
+                25,
+                25,
+                28
+              ],
+              [
+                24,
+                24,
+                26
+              ],
+              [
+                25,
+                26,
+                28
+              ],
+              [
+                23,
+                23,
+                25
+              ],
+              [
+                25,
+                25,
+                28
+              ],
+              [
+                27,
+                28,
+                31
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                25,
+                25,
+                28
+              ],
+              [
+                27,
+                27,
+                30
+              ],
+              [
+                28,
+                28,
+                31
+              ],
+              [
+                25,
+                25,
+                28
+              ],
+              [
+                28,
+                29,
+                32
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                25,
+                25,
+                27
+              ],
+              [
+                26,
+                26,
+                29
+              ],
+              [
+                24,
+                24,
+                27
+              ]
+            ],
+            "span": 7
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      },
+      {
+        "type": "abyssal_well",
+        "quality": "high",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                15,
+                19,
+                21
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                18,
+                19
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                22
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                19,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                16,
+                21,
+                22
+              ],
+              [
+                16,
+                22,
+                23
+              ],
+              [
+                16,
+                22,
+                23
+              ],
+              [
+                15,
+                20,
+                22
+              ],
+              [
+                15,
+                19,
+                21
+              ],
+              [
+                15,
+                19,
+                21
+              ],
+              [
+                15,
+                20,
+                22
+              ],
+              [
+                15,
+                20,
+                22
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                14,
+                18,
+                19
+              ],
+              [
+                14,
+                18,
+                19
+              ],
+              [
+                15,
+                19,
+                20
+              ]
+            ],
+            "span": 4
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      },
+      {
+        "type": "abyssal_well",
+        "quality": "low",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                18,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                15,
+                19,
+                21
+              ],
+              [
+                14,
+                18,
+                20
+              ],
+              [
+                14,
+                18,
+                19
+              ],
+              [
+                13,
+                17,
+                18
+              ],
+              [
+                14,
+                18,
+                19
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                19,
+                21
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                15,
+                20,
+                22
+              ],
+              [
+                16,
+                21,
+                22
+              ],
+              [
+                15,
+                21,
+                22
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                15,
+                20,
+                21
+              ],
+              [
+                14,
+                19,
+                20
+              ],
+              [
+                13,
+                18,
+                19
+              ],
+              [
+                13,
+                17,
+                18
+              ],
+              [
+                14,
+                19,
+                20
+              ]
+            ],
+            "span": 4
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      },
+      {
+        "type": "umbral_nexus",
+        "quality": "high",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                16,
+                13,
+                17
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                16,
+                13,
+                17
+              ],
+              [
+                17,
+                13,
+                19
+              ],
+              [
+                17,
+                13,
+                19
+              ],
+              [
+                18,
+                14,
+                20
+              ],
+              [
+                17,
+                13,
+                19
+              ],
+              [
+                16,
+                12,
+                17
+              ],
+              [
+                16,
+                13,
+                17
+              ],
+              [
+                17,
+                13,
+                19
+              ],
+              [
+                18,
+                14,
+                20
+              ],
+              [
+                18,
+                14,
+                19
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                15,
+                12,
+                17
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                18,
+                14,
+                19
+              ],
+              [
+                17,
+                14,
+                19
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                16,
+                13,
+                17
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                16,
+                13,
+                17
+              ],
+              [
+                16,
+                13,
+                18
+              ]
+            ],
+            "span": 3
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      },
+      {
+        "type": "umbral_nexus",
+        "quality": "low",
+        "maximumPartitionDelta": 1,
+        "samples": [
+          {
+            "patched": false,
+            "rgb": [
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ]
+            ],
+            "span": 0
+          },
+          {
+            "patched": true,
+            "rgb": [
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                16,
+                12,
+                17
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                15,
+                12,
+                17
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                17,
+                13,
+                19
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                15,
+                12,
+                16
+              ],
+              [
+                16,
+                12,
+                17
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                18,
+                14,
+                20
+              ],
+              [
+                17,
+                13,
+                19
+              ],
+              [
+                16,
+                12,
+                17
+              ],
+              [
+                15,
+                12,
+                16
+              ],
+              [
+                16,
+                12,
+                17
+              ],
+              [
+                17,
+                13,
+                19
+              ],
+              [
+                17,
+                13,
+                18
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                16,
+                12,
+                17
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                16,
+                13,
+                18
+              ],
+              [
+                15,
+                12,
+                17
+              ],
+              [
+                16,
+                12,
+                17
+              ]
+            ],
+            "span": 4
+          }
+        ],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "scope": "Material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+      }
+    ],
+    "copiedEngine": [
+      {
+        "samples": [
+          {
+            "type": "molten_core",
+            "compiled": true,
+            "patina": "molten_core",
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 37,
+            "triangles": 12945,
+            "collidersStable": true
+          },
+          {
+            "type": "tempest_spire",
+            "compiled": true,
+            "patina": "tempest_spire",
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 35,
+            "triangles": 12853,
+            "collidersStable": true
+          },
+          {
+            "type": "abyssal_well",
+            "compiled": true,
+            "patina": "abyssal_well",
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 36,
+            "triangles": 16537,
+            "collidersStable": true
+          },
+          {
+            "type": "umbral_nexus",
+            "compiled": true,
+            "patina": "umbral_nexus",
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 37,
+            "triangles": 10231,
+            "collidersStable": true
+          }
+        ],
+        "warmed": true,
+        "unwarmedBaseline": {
+          "geometries": 1,
+          "textures": 14
+        },
+        "baseline": {
+          "geometries": 9,
+          "textures": 18
+        },
+        "cleared": [
+          {
+            "type": "molten_core",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "tempest_spire",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "abyssal_well",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "umbral_nexus",
+            "geometries": 9,
+            "textures": 18
+          }
+        ],
+        "after": {
+          "geometries": 9,
+          "textures": 18
+        },
+        "remainingMeshes": [],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "engineSHA256": "820000040a39b988edd0c0043e1376575b1b408c0119e1412ec9b76d3d2c50bb",
+        "scope": "Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim."
+      },
+      {
+        "samples": [
+          {
+            "type": "molten_core",
+            "compiled": true,
+            "patina": "molten_core",
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 14,
+            "triangles": 5174,
+            "collidersStable": true
+          },
+          {
+            "type": "tempest_spire",
+            "compiled": true,
+            "patina": "tempest_spire",
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 13,
+            "triangles": 4990,
+            "collidersStable": true
+          },
+          {
+            "type": "abyssal_well",
+            "compiled": true,
+            "patina": "abyssal_well",
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 14,
+            "triangles": 5374,
+            "collidersStable": true
+          },
+          {
+            "type": "umbral_nexus",
+            "compiled": true,
+            "patina": "umbral_nexus",
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 15,
+            "triangles": 4792,
+            "collidersStable": true
+          }
+        ],
+        "warmed": true,
+        "unwarmedBaseline": {
+          "geometries": 0,
+          "textures": 0
+        },
+        "baseline": {
+          "geometries": 8,
+          "textures": 4
+        },
+        "cleared": [
+          {
+            "type": "molten_core",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "tempest_spire",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "abyssal_well",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "umbral_nexus",
+            "geometries": 8,
+            "textures": 4
+          }
+        ],
+        "after": {
+          "geometries": 8,
+          "textures": 4
+        },
+        "remainingMeshes": [],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "engineSHA256": "820000040a39b988edd0c0043e1376575b1b408c0119e1412ec9b76d3d2c50bb",
+        "scope": "Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim."
+      }
+    ],
+    "reports": [
+      "corrected-native/report/index.html",
+      "final-native/report/index.html",
+      "published-final/report/index.html",
+      "published-qualified/report/index.html"
+    ],
+    "scope": "Actual system Chrome AMD RADV. Source room Fighter14slot equipment, HUD/phone controls, normal15zoom and prepared animated movement. Far-origin20000 partition/readback tests. Copied/versioned actual engine/world-builder/material ownership and shader compilation. No server/gameplay authority, timing, physical-phone or full-scene acceptance."
+  },
+  "mapVerification": {
+    "sourceBaseline": "34ca5b97b5957034563cfa6eebdec21ecc0371d8",
+    "pinsCompared": 56,
+    "wallDigest": "7c491260b14bd3a3cfd91bee9ed391354665adab33e271449175e0ffbbd120e0",
+    "mismatches": []
+  },
+  "requiredCI": {
+    "hostedCount": 337,
+    "nativeCount": 15,
+    "combinedDistinctRequired": 348,
+    "priorDistinctRequired": 338,
+    "lost": [],
+    "scope": "337hosted exactlyonce,15mandatorynative,348distinctcombined; four intentional backend overlaps (two outfits/two floor publication). Discovery only; no claim all348or15 executed this turn. Required native hardware and zero retries preserved.",
+    "newDistinctCases": 10,
+    "allPrior338IdentitiesRetained": true
+  },
+  "retainedFailures": [
+    {
+      "run": "focused.log",
+      "result": "85pass1fail",
+      "reason": "Existing sRGB expectation assumed old dark stone."
+    },
+    {
+      "run": "corrected-focused.log",
+      "result": "85pass1fail",
+      "reason": "Incorrect guessed replacement RGB golden; final independent canonical bytes63/84/91 pass targeted check."
+    },
+    {
+      "run": "native/report/index.html",
+      "result": "3pass8fail",
+      "reason": "Six world-weather samples below unchanged minimum span; two paired room counts changed while geometry worker prepared outfit. Stronger mineral/readability profile and settled preparation resolve."
+    },
+    {
+      "run": "corrected-native/report/index.html",
+      "result": "9pass2fail",
+      "reason": "Two room animation checks compared identical endpoints of a looping pose. Every-frame bone transforms now required and observed."
+    },
+    {
+      "run": "final-native/report/index.html",
+      "result": "2pass2fail",
+      "reason": "Rooms pass; copied room baseline taken before first PBR renderer allocation."
+    },
+    {
+      "run": "retention-diagnostic/report/index.html",
+      "result": "0pass1fail",
+      "reason": "Empty-scene baseline retained8geometries4textures with no remaining meshes; diagnostic narrowed ownership."
+    },
+    {
+      "run": "published-final/report/index.html",
+      "result": "1pass2fail",
+      "reason": "Lazy copied four-class construction passes; first warm-room camera remained at origin so no floor rendered. Final observer points camera at real warm floor, asserts compiled first-use shader, exact resource return after all four rooms."
+    }
+  ],
+  "visualReview": "Retained source/current paired desktop and phone center/wall views make worn mineral blocks more legible under colored regional lights; world weather crosses repeated tiles. Basic props, repeated tile rhythm and sparse large-room composition still need broader art work; no modern-ARPG completion claim.",
+  "custody": "Anonymous static fixtures and synthetic constructor labels only. No Go/server/database/account fixture, normal-account login or production mutation. No secrets provisioned. Failed browser traces/videos retained with synthetic labels.",
+  "scopeLimits": "Staged only. Public Alpha1.79.29/12e5e3c4 and accepted jump/aura/admin unchanged. Original49.9median/66.6p95 CPU and386370/281603/289302triangle/438/361draw/Low202draw counterexamples remain unresolved; no frame-time/performance acceptance. Full world/art/contact/audio/device/operations/F1-F5/beta/launch/handoff goal active; no campaign/soak replay or version/access/beta change.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-elemental-floor-checks-20261011",
+    "inventoryEntries": 297,
+    "files": 298,
+    "inventorySHA256": "df7a284a8a24befdb864997ec573a82a0a1d0013b6c9d467ee891773c15b5fa8",
+    "frozen": true
+  }
+}

@@ -369,3 +369,26 @@ the diagnostic, with synthetic text identities removed. Public29 jump/aura/admin
 acceptance remains valid; broader scenery/material/contact/audio, devices,
 performance and original operations/F1–F5/beta/launch/handoff remain open.
 [CPU qualification](2026-10-11-party-cpu-attribution.json).
+
+
+2026-10-11 elemental floors: selected `75a37d88` privately for Molten, Tempest,
+Abyssal and Umbral. Mineral albedo stays readable under the existing regional
+lights; stationary world-space color/roughness weathering crosses texture repeats
+and mesh partitions. All 56 wall/floor noncolor map pins retain predecessor bytes.
+No added textures, geometry, lights, colliders or passes; four shader variants and
+two sine expressions per floor fragment add shading work. No FPS saving claim.
+
+86 distinct focused checks and 14 distinct native cases pass cumulatively, with
+all failed runs retained. Scope includes High/Low far-origin partition controls,
+16 prepared equipped room/HUD views (32 paired screenshots), 288 animation frames,
+and the actual copied/versioned engine. Each of four cleared dungeon rooms returns
+to identical warmed renderer counts; empty-scene first-use allocation is recorded.
+337 hosted cases discovered exactly once and 15 required native cases cover 348
+distinct identities; all prior 338 retained. Discovery is not execution.
+
+Frozen 297-entry inventory `df7a284a8a24befdb864997ec573a82a0a1d0013b6c9d467ee891773c15b5fa8`.
+Public29 jump/aura/admin fixes remain accepted. This work is staged and unpublished;
+no fresh server route, timing, physical-phone or full-art acceptance. Sparse room
+composition, broader scenery/contact/audio/devices, existing performance failures,
+operations/F1–F5/beta/launch/handoff remain open. No campaign or soak replay.
+[Floor qualification and retained failures](2026-10-11-elemental-floor-material-qualification.json).
