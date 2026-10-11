@@ -27,9 +27,6 @@ func TestChronicleHuntsOrderAndBudgets(t *testing.T) {
 		}
 		q := catalog[i]
 		xp := contentExperiencePercent(hunt.ContentLevel, 75)
-		if preparation, ok := chroniclePreparationXP[hunt.ID]; ok {
-			xp = preparation
-		}
 		if q.MaxCount != hunt.Count || q.RewardXP != xp || q.RewardGold != hunt.ContentLevel*10 || q.Accepted || q.Completed || q.LegacyOptional {
 			t.Fatalf("incorrect hunt offer: %+v", q)
 		}
@@ -62,6 +59,7 @@ func TestChronicleHuntsMigrateAllPriorExpandedMilestones(t *testing.T) {
 	for milestone, active := range oldCatalog {
 		t.Run(active.ID, func(t *testing.T) {
 			p := newTestPlayer("hunt-migration", "Wizard")
+			p.Level = 100
 			for i := 0; i <= milestone; i++ {
 				q := oldCatalog[i]
 				q.Accepted, q.Completed = true, i < milestone

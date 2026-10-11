@@ -85,36 +85,33 @@ func TestCampaignBalanceHonorsAcceptedDailyQuotes(t *testing.T) {
 	}
 }
 
-func TestPreparationBudgetsPreserveEveryAcceptedStoryQuote(t *testing.T) {
-	seen := 0
+func TestBalancedStoryQuotesRetainProgressAndPaidReceipts(t *testing.T) {
 	for _, definition := range chronicleQuestCatalog() {
-		budget, changed := chroniclePreparationXP[definition.ID]
-		if !changed {
-			continue
-		}
-		seen++
-		if definition.RewardXP != budget {
-			t.Fatalf("new offer %s has %d, want %d", definition.ID, definition.RewardXP, budget)
-		}
 		for _, completed := range []bool{false, true} {
-			for _, quote := range []int{0, 1234} {
+			for _, quote := range []int{0, 1234, 9_000_000} {
 				progress := definition
 				progress.Accepted, progress.Completed = true, completed
 				progress.RewardXP, progress.RewardGold = quote, 71
 				progress.RewardXPQuoted, progress.RewardGoldQuoted = true, true
 				progress.Count = 1
+				progress.GrantedXP, progress.GrantedGold, progress.GrantedResonanceXP = 11, 12, 13
 				if definition.Type == "INVESTIGATE" {
 					progress.InvestigationMask = 1
 				}
+				wantXP := quote
+				if !completed {
+					wantXP = min(quote, definition.RewardXP)
+				}
 				refreshed := copyQuestDefinition(progress, definition)
-				if refreshed.RewardXP != quote || refreshed.RewardGold != 71 || refreshed.Count != 1 ||
-					!refreshed.Accepted || refreshed.Completed != completed {
-					t.Fatalf("rewrote saved contract %s: %+v", definition.ID, refreshed)
+				if refreshed.RewardXP != wantXP || refreshed.RewardGold != 71 || refreshed.Count != 1 ||
+					!refreshed.Accepted || refreshed.Completed != completed || refreshed.GrantedXP != 11 ||
+					refreshed.GrantedGold != 12 || refreshed.GrantedResonanceXP != 13 {
+					t.Fatalf("lost saved state %s: %+v", definition.ID, refreshed)
+				}
+				if copyQuestDefinition(refreshed, definition) != refreshed {
+					t.Fatal("rebalance is not idempotent")
 				}
 			}
 		}
-	}
-	if seen != len(chroniclePreparationXP) {
-		t.Fatal("preparation budget references missing story chapters")
 	}
 }

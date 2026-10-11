@@ -29,7 +29,7 @@ func TestChronicleOpeningRewardPreservesAcceptedQuotes(t *testing.T) {
 			ensureChronicleLocked(p)
 			q := *questByID(t, p, old.ID)
 			wantXP := 100
-			if state.accepted || state.completed {
+			if state.completed {
 				wantXP = 500
 			}
 			if q.RewardXP != wantXP || q.RewardGold != 100 || q.Count != old.Count ||
@@ -105,12 +105,11 @@ func TestChronicleOpeningLegacyManualReward(t *testing.T) {
 		t.Fatal("legacy turn-in failed")
 	}
 	q := questByID(t, p, old.ID)
-	// The promised 500 XP is unchanged; curve 2 spends 100 + 125 + 200
-	// reaching level four, leaving exactly 75 rather than the legacy 136.
-	if p.Level != 4 || p.Experience != 75 || p.Gold != 137 || q.GrantedXP != 500 || q.GrantedGold != 100 {
-		t.Fatalf("legacy promise was reduced: level=%d xp=%d gold=%d receipt=%+v", p.Level, p.Experience, p.Gold, q)
+	// Rebalance the unpaid legacy quote before turn-in; paid receipts remain historical.
+	if p.Level != 2 || p.Experience != 0 || p.Gold != 137 || q.GrantedXP != 100 || q.GrantedGold != 100 {
+		t.Fatalf("unpaid legacy quote was not rebalanced: level=%d xp=%d gold=%d receipt=%+v", p.Level, p.Experience, p.Gold, q)
 	}
-	if _, ok := w.PerformCompleteQuest(p.ID, old.ID); ok || p.Gold != 137 || p.Experience != 75 {
+	if _, ok := w.PerformCompleteQuest(p.ID, old.ID); ok || p.Gold != 137 || p.Experience != 0 {
 		t.Fatal("legacy turn-in replay paid twice")
 	}
 }

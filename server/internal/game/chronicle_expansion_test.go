@@ -84,6 +84,7 @@ func TestChronicleExpansionMigratesEveryLegacyMilestoneWithoutRevokingProgress(t
 	for milestone, active := range classic {
 		t.Run(active.ID, func(t *testing.T) {
 			p := newTestPlayer("legacy-reader", "Wizard")
+			p.Level = 100
 			for index := 0; index <= milestone; index++ {
 				q := classic[index]
 				q.Accepted = true

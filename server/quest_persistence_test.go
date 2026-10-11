@@ -108,7 +108,7 @@ func TestOpeningQuotedRewardSurvivesDatabaseAndDailyRefresh(t *testing.T) {
 		for i := 0; i < 2; i++ {
 			w.GenerateDailyQuests(loaded.ID)
 			q := loaded.Quests[0]
-			if q.RewardXP != xp || q.RewardGold != 100 || q.Count != 2 || q.MaxCount != 3 || !q.Accepted || q.Completed {
+			if q.RewardXP != min(xp, 100) || q.RewardGold != 100 || q.Count != 2 || q.MaxCount != 3 || !q.Accepted || q.Completed {
 				t.Fatalf("save/refresh changed an accepted %d-XP opening quote: %+v", xp, q)
 			}
 		}
