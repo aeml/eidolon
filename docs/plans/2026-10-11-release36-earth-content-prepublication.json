@@ -1,0 +1,53 @@
+{
+  "recordedUTC": "2026-10-11T18:01:45.591558+00:00",
+  "version": "Alpha 1.79.36",
+  "source": "aee9c3dba85da6f11555439a3ad4476597aaada3",
+  "preparationCommit": "ad9bc9d1",
+  "masterMerge": "aee9c3dba85da6f11555439a3ad4476597aaada3",
+  "status": "Qualified and merged; ordinarily pushed to origin/master. Deployment acceptance is tracked separately.",
+  "components": [
+    "Selected Earth dry thatch/living grass material64679263",
+    "Distinct Chronicle item icons and read-only content validation54ead973",
+    "Restored dual-profile checkpoint and visible-rock coverage165c423f/current qualification"
+  ],
+  "validation": {
+    "focusedDistinct": 448,
+    "focusedSuites": 6,
+    "nativeDistinct": 4,
+    "nativeRetries": 0,
+    "nativeSkipped": 0,
+    "nativeUnexpected": 0,
+    "lint": "full max-warnings=0 pass",
+    "shellSyntax": "pass",
+    "diffCheck": "pass",
+    "readOnlyContent": "11 groups;11 generated outputs preserve bytes/SHA/mtime",
+    "versions": "all12 active release paths synchronized36",
+    "patchHistory": "471 cumulative,470 prior byte-exact,10 inline,47 lazy pages"
+  },
+  "nativeScope": "Exact prospective master commit copied/bundled/versioned: High1280 and Low390 ground comparisons with supplied four-class14-slot outfits/HUD and native AMD GPU, plus lazy notes/manual retry. Fourth case builds same source under existing fixed fixture release identity and constructs all four classes from bounded lazy module graph.",
+  "performance": {
+    "settledRealFrames": 960,
+    "high": "200draw/183748tri;16.7msmedian/33.4msp95 across ABBA",
+    "low": "102draw/79668tri;16.7msmedian/16.7\u201316.8msp95",
+    "unchangedCounterexamples": "High gate285210tri>250000;Low gate106063/road91510>85000. All paired views preserve geometry/draw/memory and have zero reference-repeat pixel instability.",
+    "limits": "Sampled grove passes only. No whole-game performance/FPS improvement/final-art/physical-device/connected normal-input traversal claim."
+  },
+  "reusedReceipts": [
+    "2026-10-11-earth-thatch-composition-qualification.json",
+    "2026-10-11-content-gate-history-reconciliation.json",
+    "2026-10-11-terrain-history-reconciliation.json",
+    "2026-10-10-motion-owned-session-qualification.json"
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release36-earth-content-checks-20261011",
+    "inventoryEntries": 41,
+    "inventorySHA256": "9b38c0af07b9b5d0651eab85b907488360045785137eb0bcfdf60d60d0dd3aaa"
+  },
+  "branches": {
+    "merged": 590,
+    "unmerged": 62,
+    "originalUnmerged": 287,
+    "policy": "Completed validated work merges into master. Unfinished/rejected/mixed historical work needs individual review; no wholesale merge or deletion. Original dirty checkout preserved."
+  },
+  "remaining": "Full original readiness scope remains active; acceptance requires own ordered CI/live and fresh normal-TLS exact identity/readyDB/82asset checks."
+}

@@ -496,6 +496,8 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
+- Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is merged and pushed; CI38161891123 attempt1 is active.448distinct focused checks/six suites and four native publication cases pass, retries/skips0.12versions align;471notes preserve all470prior entries byte-exact.82public asset pins are prepared; public35 remains last accepted. [Publication](docs/plans/2026-10-11-release36-publication.json).
+
 - Accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend

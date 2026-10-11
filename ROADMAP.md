@@ -8,6 +8,8 @@ This is the product-level roadmap and historical Alpha 1.0 closeout record. The 
 
 ## Current Snapshot
 
+- Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is merged and pushed; CI38161891123 attempt1 is active.448distinct focused checks/six suites and four native publication cases pass, retries/skips0.12versions align;471notes preserve all470prior entries byte-exact.82public asset pins are prepared; public35 remains last accepted. [Publication](docs/plans/2026-10-11-release36-publication.json).
+
 - Accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
@@ -19,9 +21,9 @@ identities, ready database and all78served asset hashes/byte counts match at
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
 [Publication](docs/plans/2026-10-11-release35-publication.json).
 [Prepublication](docs/plans/2026-10-11-release35-menu-review-prepublication.json).
-- 589of651local branch names are ancestors of master;62unmerged histories remain
-under individual review. Completed content-validation and environment histories
-are merged locally for the next coherent publication. Prior34 failures remain
+- 590of652local branch names are ancestors of master;62unmerged histories remain
+under individual review. Completed content-validation, environment and selected Earth ground histories
+are merged and included in the pushed36 milestone. Prior34 failures remain
 retained in its historical acceptance receipt.
 - The [remaining-work register](docs/plans/2026-10-09-release-readiness-remaining.md) tracks original world/art/gameplay/device/performance/operations/F1–F5/beta/launch/handoff gaps. High frame-time counterexamples remain open. The current 100-client soak38109009521 is still running, not capacity certification. Owner-deferred uninterrupted campaign/pacing and physical-phone review remain for playtests. Feature freeze and closed beta are not approved by these scoped releases.
 

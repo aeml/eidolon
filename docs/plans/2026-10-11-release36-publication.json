@@ -1,0 +1,28 @@
+{
+  "recordedUTC": "2026-10-11T18:01:45.591558+00:00",
+  "version": "Alpha 1.79.36",
+  "source": "aee9c3dba85da6f11555439a3ad4476597aaada3",
+  "ciRun": 38161891123,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38161891123",
+  "attempt": 1,
+  "status": "Ordinarily pushed; own CI/live acceptance pending. Previous35 remains last accepted.",
+  "qualifiedPrepublication": "2026-10-11-release36-earth-content-prepublication.json",
+  "assetPins": 82,
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release36-publication-checks-20261011/expected-public36-assets.json",
+  "manifestSHA256": "7f36ae5278c58e431a2820431310ef5d5dea7529b1129b7f26778f26440d7411",
+  "engine": {
+    "path": "src/core/GameEngine.bundle.js",
+    "bytes": 3501693,
+    "sha256": "15d577015592cccab8ca562129a45096895ad8867db7f744198e90495e7bb443"
+  },
+  "worker": "Unchanged immutable44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43;137178bytes.",
+  "publicationEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release36-publication-checks-20261011",
+    "inventoryEntries": 7,
+    "inventorySHA256": "b43e29cd27db41faac2b0a770d1359fc68b9da04e8370cfd21609deed0969be2"
+  },
+  "publicationCopy": "82 pinned files reverified before owned440430741-byte copy retirement. Source/frozen evidence retained. Initial asset audit and already-exited server guard corrections retained.",
+  "previousAccepted": "Alpha1.79.35/ade204b800faa2cba8eacf1da71b100590e88d87;CI38154778403 and fresh normal-TLS78asset/readiness accepted.",
+  "acceptanceStillRequired": "Exact36ordered CI/deploy/live success; fresh post-terminal normal-TLS frontend/backend exact commit/version, database ready and all82served asset lengths/SHA. No successor publication until verified.",
+  "goal": "All original world/art/gameplay/device/performance/operations/F1\u2013F5/beta/launch/handoff requirements remain active. Existing public29soak remains separate; no unchanged campaign replay or access/terrain activation."
+}

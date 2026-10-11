@@ -3,6 +3,8 @@
 Last refreshed: October 11, 2026
 
 This is a short pointer to the [remaining-work register](plans/2026-10-09-release-readiness-remaining.md).
+Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is merged and pushed; CI38161891123 attempt1 is active.448distinct focused checks/six suites and four native publication cases pass, retries/skips0.12versions align;471notes preserve all470prior entries byte-exact.82public asset pins are prepared; public35 remains last accepted. [Publication](plans/2026-10-11-release36-publication.json).
+
 Accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
@@ -14,9 +16,9 @@ Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
 [Publication](plans/2026-10-11-release35-publication.json).
 [Prepublication](plans/2026-10-11-release35-menu-review-prepublication.json).
-589of651local branch names are ancestors of master;62unmerged histories remain
-under individual review. Completed content-validation and environment histories
-are merged locally for the next coherent publication. Prior34 failures remain
+590of652local branch names are ancestors of master;62unmerged histories remain
+under individual review. Completed content-validation, environment and selected Earth ground histories
+are merged and included in the pushed36 milestone. Prior34 failures remain
 retained in its historical acceptance receipt.
 The complete world/art/gameplay/device/
 performance/operations/F1–F5/beta/launch scope and historical failures remain

@@ -21,6 +21,8 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## Release and source custody
 
+- **Active coherent36 milestone:** selected Earth ground, Chronicle icons, read-only content validation and restored terrain coverage are merged and pushed at`aee9c3dba85da6f11555439a3ad4476597aaada3`. CI38161891123 attempt1 is active;35remains last accepted.448distinct focused/six suites and four native publication cases pass, retries/skips0.471notes preserve470prior entries;12versions align;82asset pins prepared. Exact copied views retain High gate285210tri and Low gate106063/road91510tri above original budgets, equally before/after. No final-art/whole-game-performance clearance. [Qualification](2026-10-11-release36-earth-content-prepublication.json), [publication](2026-10-11-release36-publication.json).
+
 - **Release33 CI correction:** its sole client asset-audit failure is reproduced
   and corrected with33 focused passing checks. Original CI is terminal failed,
   all other prerequisites passed and deployment skipped. Corrective9ce67fe3
@@ -152,7 +154,7 @@ identities, ready database and all78served asset hashes/byte counts match at
   High gate285210tri and Low gate88749/road85030tri remain above original limits
   in paired views; no whole-game performance or final-art clearance.
  39native cases (including both new cases) and355ordinary browser cases are
-  discovered, not all newly executed. Source-only until next coherent release.
+  discovered, not all newly executed. Included in pushed36; deployment acceptance pending.
   [Qualification](2026-10-11-earth-thatch-composition-qualification.json).
 - **Completed terrain histories:** Moonfrost material, Earth outcrop art and
   raised-reference/checkpoint histories are reviewed and ordinarily merged.
@@ -161,15 +163,14 @@ identities, ready database and all78served asset hashes/byte counts match at
   Go-race cases and two native cases/eight120-frame samples pass unchanged
   original budgets, retries/skips0. Two retained October8 receipts stay dated;
   prepared unequipped previews do not establish final art, connected equipped
-  gameplay or production raised-terrain acceptance. Source-only until the next
-  coherent publication. [Reconciliation](2026-10-11-terrain-history-reconciliation.json).
+  gameplay or production raised-terrain acceptance. Included in pushed36; deployment acceptance pending. [Reconciliation](2026-10-11-terrain-history-reconciliation.json).
 - **Unselected turf detail:**28focused checks and two native four-class14-slot
   HUD comparisons pass; added surface preparation costs about67ms High/20ms Low
   for only marginal ordinary-zoom visual benefit. Private88eeabdb remains
   unselected with frozen evidence; no runtime/CI enrollment or budget change.
   [Selection](2026-10-11-earth-turf-unselected.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **62**, reduced from 287; 589 of 651 local branch names
+  unmerged tips are now **62**, reduced from 287; 590 of 652 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
