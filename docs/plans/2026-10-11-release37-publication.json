@@ -1,0 +1,50 @@
+{
+  "recordedUTC": "2026-10-11T19:14:36.465672+00:00",
+  "version": "Alpha 1.79.37",
+  "source": "fac6489a76fd0baf99f0f6181c7e7da381110e7b",
+  "ciRun": 38167079786,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38167079786",
+  "attempt": 1,
+  "initialCI": {
+    "id": 38167079786,
+    "head_sha": "fac6489a76fd0baf99f0f6181c7e7da381110e7b",
+    "status": "in_progress",
+    "conclusion": null,
+    "run_attempt": 1,
+    "created_at": "2026-10-11T19:13:11Z",
+    "updated_at": "2026-10-11T19:13:20Z",
+    "html_url": "https://github.com/aeml/eidolon/actions/runs/38167079786"
+  },
+  "status": "Ordinarily pushed exact master source; own ordered CI/deployment/live acceptance pending. Previous36 remains last accepted.",
+  "qualifiedPrepublication": "2026-10-11-release37-forge-buyback-prepublication.json",
+  "assetPins": 86,
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release37-publication-checks-20261011/expected-public37-assets.json",
+  "manifestSHA256": "9c02947ee573a97ac26c10eeeea27da5822becd6a5839a5063263f76d6ef2cb0",
+  "engine": {
+    "path": "src/core/GameEngine.bundle.js",
+    "bytes": 3507601,
+    "sha256": "f299a4a3b8a1783eca9ef543675128f3a8e9f0c04f230e28932c92f70bdd6be0"
+  },
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+    "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "bytes": 137178,
+    "modules": 10,
+    "imports": []
+  },
+  "publicationEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release37-publication-checks-20261011",
+    "inventoryEntries": 11,
+    "inventorySHA256": "6f91e4765f1572cd434388d68342f8dd3109ce78399835db899317bea814c0a6"
+  },
+  "publicationCopy": {
+    "verifiedPins": 86,
+    "ownedReproducibleCopyRemoved": "/home/aeml/.local/share/eidolon-release37-publication-checks-20261011/public",
+    "copyFiles": 3228,
+    "copyBytes": 441206938,
+    "scope": "Only owned copied static publication, after terminal local browser checks/server shutdown. Source, commits and all evidence retained."
+  },
+  "previousAccepted": "Alpha1.79.36/aee9c3dba85da6f11555439a3ad4476597aaada3;CI38161891123attempt1 all ten jobs and fresh normal-TLS82asset/readiness accepted.",
+  "acceptanceRequired": "Exact37ordered CI/deploy/live success and fresh post-terminal normal-TLS exact frontend/backend identities, readyDB and all86served asset lengths/SHA; no successor publication until verified.",
+  "fullGoal": "Original world/art/actors/contact/combat/device/performance/operations/F1\u2013F5/beta/launch/handoff requirements remain active. Existing soak remains separate; no campaign replay/access change."
+}

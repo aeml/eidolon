@@ -1,0 +1,86 @@
+{
+  "recordedUTC": "2026-10-11T19:14:36.465672+00:00",
+  "version": "Alpha 1.79.37",
+  "source": "fac6489a76fd0baf99f0f6181c7e7da381110e7b",
+  "status": "Qualified and committed directly on owned master, ordinarily pushed to origin/master; deployment acceptance tracked separately.",
+  "components": [
+    "Qualified Forge gem/socket keyboard choices and refresh/identity/quote protection1af38973/eeade50f",
+    "Qualified merchant buyback keyboard continuity and exact total pricesdb3346cb/49b50d7b",
+    "Completed recovery/Gold history reconciliations; current Go room-reward boundary regression6422b422",
+    "Restored beginner Buyback explanation alongside total price guidance; original assertion retained"
+  ],
+  "validation": {
+    "source": "fac6489a76fd0baf99f0f6181c7e7da381110e7b",
+    "version": "Alpha 1.79.37",
+    "focused": {
+      "distinctPassed": 448,
+      "suites": 6,
+      "reusedUnchangedFromInitial": 62,
+      "affectedVersionPassed": 386,
+      "initial": "447pass/1fail on removed beginner buyback wording; original assertion retained and guidance restored.",
+      "lint": "full max-warnings=0 pass",
+      "bashSyntax": "pass"
+    },
+    "native": {
+      "distinctPassed": 8,
+      "executions": 8,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "retries": 0,
+      "cases": [
+        "1280px merchant buyback keeps keyboard intent, visible prices and item identity through refresh",
+        "390px merchant buyback keeps keyboard intent, visible prices and item identity through refresh",
+        "1280px Forge gems retain keyboard choices, quotes and reading position",
+        "390px Forge gems retain keyboard choices, quotes and reading position",
+        "actual published engine stays lazy at login and constructs each class from the bounded module graph",
+        "1280px Forge previews stay readable through refresh and capped items",
+        "390px Forge previews stay readable through refresh and capped items",
+        "login loads ten notes without the game engine; older pages load only on demand and retry cleanly"
+      ],
+      "scope": "Seven actual release-commit copied/versioned UI/history cases (native Chrome desktop/phone viewport emulation); one independently copied same-source four-class lazy engine case under existing fixed fixture identity. No connected economic transactions, real phone or performance/final-art acceptance."
+    },
+    "history": {
+      "version": "1.79.37",
+      "total": 472,
+      "inline": 10,
+      "pages": 47,
+      "priorEntries": 471,
+      "priorByteExact": true,
+      "priorSHA256": "3e88b572fc293d67179dad98787dc05bfbde26db3075432bc714bb997038d3b8",
+      "versionPaths": [
+        "README.md",
+        "package.json",
+        "package-lock.json",
+        "release.json",
+        "index.html",
+        "scripts/run-isolated-character-qa.sh",
+        "server/Dockerfile",
+        "server/deploy/deploy_linux.sh",
+        "server/docker-compose.yml",
+        "server/main.go",
+        "tests/VersionPresentation.test.js",
+        ".github/workflows/ci.yml"
+      ]
+    },
+    "copiedAssetPins": 86,
+    "visualReview": "Actual phone buyback and desktop Forge gem screenshots inspected: visible restored guidance/prices, focus and selected indicators; no final UI-art clearance.",
+    "selectionAudit": "First execution grep selected5 of intended8 cases; discovered and executed only the missing two Forge preview cases and one patch-history case. No case repeated or dropped.",
+    "retainedFailures": "Initial447pass/1fail on removed beginner Buyback wording; restored guidance without weakening assertion, affected386pass with62unchanged passes reused.",
+    "reused": "Qualified Forge68checks/four native cases, buyback65checks/two native cases and Gold four current Go-race subcases retain their original scopes and failure records. Current six source/UI/browser files remain byte-exact; release guidance repair separately covered."
+  },
+  "versions": "All12active release paths synchronized37",
+  "patchHistory": "472cumulative entries, all471prior entries byte-exact;10inline/47lazy pages",
+  "reusedReceipts": [
+    "2026-10-11-forge-gem-keyboard-qualification.json",
+    "2026-10-11-buyback-keyboard-qualification.json",
+    "2026-10-11-gold-boundary-history-reconciliation.json",
+    "2026-10-10-motion-owned-session-qualification.json"
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release37-forge-buyback-checks-20261011",
+    "inventoryEntries": 32,
+    "inventorySHA256": "38408dcf0530a387f7be0d2cad8c0382aef44d6980aac7165f134014d739c28b"
+  },
+  "limits": "Prepared native UI/viewport/bundle checks, no connected economic transaction or actual-device/performance/final-art acceptance. All prior failures and full original goal remain open. No unchanged campaign/soak replay or access change."
+}
