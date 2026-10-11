@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 // Average only connected faces of one bent leaf ribbon. Keep distinct leaves
-// and the folded fern leaflets separate even where their rooted vertices meet.
+// and each folded fern leaflet separate even where rooted vertices meet.
 // Positions, colors and triangle count stay intact; work happens at creation.
 function smoothRibbonNormals(geometry, ranges) {
     const { position, normal } = geometry.attributes;
@@ -96,8 +96,12 @@ export function createWoodlandUnderstoryGeometry(kind, { quality = 'high' } = {}
                 const mid = origin.map((value, i) => (value + end[i]) / 2);
                 const left = offset(mid, dx, dz, -.065, -.02);
                 const right = offset(mid, dx, dz, .065, -.02);
+                // One continuous folded pinna, rather than two flat triangles
+                // with different baked colors along their shared spine.
+                const pinnaStart = positions.length / 3;
                 triangle(origin, left, end, tone);
-                triangle(origin, end, right, tone * .85);
+                triangle(origin, end, right, tone);
+                ribbons.push([pinnaStart, positions.length / 3]);
             }
         }
     }
