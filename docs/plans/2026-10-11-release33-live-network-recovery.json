@@ -1,0 +1,18 @@
+{
+  "recordedUTC": "2026-10-11T14:10:31.163582+00:00",
+  "source": "9ce67fe3d2d0aeae55102d14b579107733d1a719",
+  "version": "Alpha 1.79.33",
+  "ciRun": 38142813857,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38142813857",
+  "attempt1": "Terminal failure. All nine prerequisite/deployment jobs succeeded. Final live job failed the strict browser error collector after actual earned-rest expiry/reentry gameplay assertions passed. Second native travel/combat/reconnect recovery case passed.",
+  "failure": "GET src/analytics/GameSessionObserver.js?release=9ce67fe3d2d0aeae55102d14b579107733d1a719 net::ERR_NETWORK_CHANGED and corresponding console error. Original gate and logs retained.",
+  "diagnostic": "After terminal failure, normal-TLS frontend/backend exact source and version, ready database and all17 pinned asset byte counts/SHA256 match. The failed observer module separately serves200 application/javascript,1002B,SHA0f58383ee0b5409e68710c3e56f8d1a8d67f5c48576fa653675af53213b18003. This diagnostic does not accept failed CI.",
+  "recovery": "One root-requested failed-job-only rerun. Successful prerequisites and deployments reused; no source change, gate weakening, automatic retry or release replacement. Attempt2 is in_progress on the same exact source. Hold new publication until its own terminal success plus fresh post-terminal normal-TLS17asset/source/database verification.",
+  "lastAccepted": "Alpha1.79.32/d31246e9b53fbe73bd7f59beea4c3235df30a922",
+  "scope": "Public33 is deployed but unaccepted. This transient-network diagnosis does not establish final gameplay/art/device/performance/release-readiness gates.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release33-live-network-recovery-20261011",
+    "inventoryEntries": 8,
+    "inventorySHA256": "81435fef38f9a80f857b76dc669d4de9b24e2c974717104a6440aa2b1bec8ae8"
+  }
+}

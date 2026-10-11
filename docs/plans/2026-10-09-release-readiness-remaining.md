@@ -24,9 +24,19 @@ Every explicit requirement in those sources remains part of the completion audit
 - **Release33 CI correction:** its sole client asset-audit failure is reproduced
   and corrected with33 focused passing checks. Original CI is terminal failed,
   all other prerequisites passed and deployment skipped. Corrective9ce67fe3
-  CI38142813857 is active after ordinary publication; exact17asset pins refreshed.
+  CI38142813857 attempt1 deployed but failed final live QA on a single browser
+  network-change error; diagnosed failed-job-only attempt2 is active on the same
+  source. Exact17asset diagnostics match; acceptance remains pending.
   [Receipt](2026-10-11-release33-client-guard-correction.json),
   [corrective publication](2026-10-11-release33-guard-corrective-publication.json).
+- **Release33 live network failure:** all nine prerequisite/deployment jobs
+  succeeded. Earned-rest expiry/reentry gameplay assertions passed, but the
+  strict collector caught `GameSessionObserver.js` `ERR_NETWORK_CHANGED`.
+  The second travel/combat/reconnect case passed. Normal-TLS exact identities,
+  ready database, all17 pinned assets and the observer module now verify.
+  One failed-job-only attempt2 reuses successful jobs on identical source;
+  no relaxed gate or new release. Fresh post-terminal acceptance still required.
+  [Retained diagnosis](2026-10-11-release33-live-network-recovery.json).
 - **Release33 storage headroom:** two clean merged owned scratch worktrees
   retired after all818 ignored entries were checked against retained master;
   shared dependency symlink targets and every source commit remain intact.
@@ -67,7 +77,8 @@ Every explicit requirement in those sources remains part of the completion audit
   [prepublication](2026-10-11-release32-world-resources-prepublication.json).
 - **Pushed33 milestone:** qualified birch/recovery/account-help/Player Guide/
   authoring/lore changes are ordinarily pushed with test-only correction as exact `9ce67fe3d2d0aeae55102d14b579107733d1a719`,
-  corrective CI38142813857 active, for one coherent publication.
+  corrective CI38142813857 attempt2 active after diagnosed transient-network
+  live failure, for one coherent publication.
  429distinct release checks/four suites and8distinct browser publication cases
   pass, retries/skips0. All12 version paths align33;468cumulative notes retain
   every467prior entry byte-exact. Initial missed CI deployment version is retained
@@ -120,7 +131,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **78**, reduced from 287; 557 of 635 local branch names
+  unmerged tips are now **78**, reduced from 287; 558 of 636 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -147,6 +158,16 @@ Every explicit requirement in those sources remains part of the completion audit
   Unpublished until a coherent successor milestone after33 acceptance. This is
   tactical-map evidence, not connected gameplay, physical-phone or final-art
   approval. [Qualification](2026-10-11-interior-radar-context-qualification.json).
+- **Mixed Rogue weapon grips:** selected `66992b94`, qualified `64e1beae`,
+  ordinarily merged `f3c3533f`. Rest, walk, run and block retain each hand's
+  own supplied weapon profile. Clips/actions are created only when used and
+  share existing tracks; normal mixer cleanup retires them.83 focused checks
+  and one native eight-class High/Low equipment case pass, including60 wrist/
+  finger pose samples across all six ordered mixed loadouts; retries/skips0.
+  Original corrected-fixture baseline fails all six pairs. Supplied assets,
+  rigs, equipment ownership and alternating attack cadence remain intact.
+  Unpublished pending coherent successor milestone after33 acceptance.
+  [Qualification](2026-10-11-mixed-weapon-stance-qualification.json).
 - **Unselected unsigned-copy extension:** private `367dd344` preserves the
   completed experiment and exact-input measurements.37 focused checks and one
   actual16-file/118-mesh native comparison pass correctness; the incremental
@@ -170,7 +191,7 @@ Every explicit requirement in those sources remains part of the completion audit
 
 | Work | Current state and limits |
 | --- | --- |
-| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30 and 31. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
+| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30–32 and deployed, unaccepted 33. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
 | Supplied actors and equipment | Four class GLBs, equipment catalog and motion banks are delivered and integrated. Retain originals, provenance, rig/bone/morph/material/slot identity and compatibility. No replacement procedural player catalog or repeated asset request. |
 | Dungeon/environment/combat/HUD milestone | Selected ground/floor/prop maps, entrance wards, regional relics, paving, shallow boss masonry, equipped motions, impact continuity, bounded contact foley and status symbols are merged and included in accepted 30. Old “private/not published” labels in dated receipts are historical. Final art, human listening, busy fights and device gates remain open. |
 | Renderer/environment milestone 31 | High-only singleton batching, reviewed DemonOrc packing, camp instance clipping, display-space FXAA, rock shoulders, rooted foliage shading, pine growth/coverage, Earth map cleanup/ordered physical layers and tapered fern pinnae are merged and pushed as 88be47c5. Exact ordered publication acceptance passed; broader art/performance remains open. Earlier rejected all-quality singleton and renderer prototypes remain separate. |
