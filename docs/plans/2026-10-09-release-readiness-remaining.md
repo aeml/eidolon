@@ -424,3 +424,31 @@ Held floor/ward/root/HUD/actor work remains staged, public29 unchanged. Continue
 cohesive world composition/material/contact/audio/devices and concrete measured
 performance changes; original operations/F1–F5/beta/launch/handoff remain open.
 No campaign/soak replay, public push, version/access change or completion claim.
+
+
+2026-10-11 shared dungeon props: selected `3da66d67` privately across all five
+themes. Existing stone and metal material roles now use seamless mineral grain,
+forge marks and independent albedo/normal/roughness maps, with readable physical
+colors under regional lights. Six maps/two materials are shared per kit; High128/
+Low64 pixels, 384/96 KiB raw CPU pixels and approximately512/128 KiB RGBA8 mip
+chains, excluding driver overhead. Existing PBR shaders perform additional samples.
+No geometry, lights, colliders, material groups or passes added; no FPS saving claim.
+
+68 distinct focused checks and seven distinct native cases pass cumulatively;
+initial stale portal assertion and incorrect Verdant Low floor-size expectation
+remain retained. Actual unchanged baseline proves the stale portal assertion.
+The corrected phone review uses the real Low world owner. Thirty prop views/
+60 paired screenshots include supplied fourteen-slot Fighter, HUD and 2088
+prepared animation updates. Render-to-next-RAF timing is not continuous game-loop
+performance. Actual copied engine High/Low compiles both prop materials across
+all five themes; each cleared room returns exact warmed GPU resource counts.
+337 hosted/15 native/348 distinct required case identities remain unchanged;
+discovery is not full execution. Frozen164-entry/165-file inventory
+`f7f9d70b6f2dbee412425c9cec548aa9272ac812e23f67ff2cb5a0c7b90e3ac4`.
+
+Public29 jump/aura/admin acceptance remains valid. This milestone is staged and
+unpublished; sparse room composition, regional motifs, broader scenery/contact/
+audio/devices, existing dynamic frame/triangle/draw failures and original
+operations/F1–F5/beta/launch/handoff remain open. No campaign/soak replay, fresh
+server route, physical-device/full-art approval or version/access change.
+[Prop materials and retained failures](2026-10-11-dungeon-prop-material-qualification.json).

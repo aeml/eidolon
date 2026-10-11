@@ -1,0 +1,1396 @@
+{
+  "schema": 1,
+  "recordedUTC": "2026-10-11T03:27:08.432357+00:00",
+  "classification": "progress",
+  "source": "3da66d6741f02a470d6428c1013e814fa422b660",
+  "parent": "9ff955b42b4b3e578734d72433e34fc6ee0543cd",
+  "selected": true,
+  "published": false,
+  "implementation": {
+    "scope": "Shared stone and metal dressing across all five dungeon themes: vigil feet/shafts/cages, coffer bodies/lids/straps, fonts, waystones and existing metal/stone motifs. Existing colored light, emissive accents, ward, floors, walls, roots and gameplay unchanged.",
+    "surface": "Seamless generated mineral grain/forge marks with independent sRGB albedo, tangent normal and linear roughness maps; mineral and tarnished metal colors remain readable under regional light. Smooth supplied geometry normals replace forced flat shading only on these two finishes.",
+    "ownership": "Six maps/two existing materials per kit, shared by all rooms; kit/material disposal releases them. No global cache, per-room textures, animation clock, new material groups, geometry, lights, render passes, colliders or authoritative state.",
+    "quality": "High128 andLow64 pixels for prop maps. Verdant retains its established256floor/wall maps on both qualities; elemental floors retainHigh256/Low64.",
+    "cost": "Six added RGBA maps:384KiB raw CPU pixels High/96KiB Low per kit; approximately512KiB/128KiB for full RGBA8 mip chains, excluding driver overhead. Existing PBR shaders now sample albedo/normal/roughness. This adds shading/texture work; no FPS or broad performance improvement claimed."
+  },
+  "focused": {
+    "distinctPassed": 68,
+    "suites": 4,
+    "newPropChecks": 12,
+    "scope": "Cumulative67initial passes plus corrected inherited vigil/portal case1pass;7nonmatching skips not counted. Initial failure retained. Existing geometry bounds/resource counts, exact wall byte pins, floor sample encoding, material sharing, periodicity, normal encoding, bounded roughness, color space, map quality and explicit unknown-role rejection covered.",
+    "logs": [
+      "focused.log",
+      "baseline-stale-vigil.log",
+      "corrected-vigil.log",
+      "lint.log",
+      "final-lint.log",
+      "qualified-lint.log"
+    ]
+  },
+  "native": {
+    "distinctPassed": 7,
+    "sourceRoomCases": 4,
+    "copiedEngineCases": 2,
+    "copiedEngineLazyFourClassCase": 1,
+    "propViews": 30,
+    "pairedPropScreenshots": 60,
+    "generalRoomViews": 20,
+    "propAnimationUpdates": 1800,
+    "elementalCenterAnimationUpdates": 288,
+    "totalPreparedAnimationUpdates": 2088,
+    "scope": "Actual AMD RADV system Chrome, equipped supplied Fighter14slots, gameplay zoom15, actual desktop1280/phone390HUD controls. Prepared motion and paired real-layout material comparisons. Props use60 renders/mixer updates between RAF callback pairs; measured next-callback intervals are not continuous-engine frame cadence or input-driven gameplay. No server route, party fight, physical-phone, sustained-device or broad frame-budget acceptance.",
+    "propReports": [
+      {
+        "type": "abyssal_well",
+        "label": "vigil",
+        "index": 0,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.799999999999272,
+        "calls": 80,
+        "triangles": 49335,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "abyssal_well",
+        "label": "cache",
+        "index": 1,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.700000000000728,
+        "p95Ms": 16.700000000000728,
+        "calls": 81,
+        "triangles": 48113,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "abyssal_well",
+        "label": "font",
+        "index": 12,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 4,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.700000000000728,
+        "p95Ms": 16.799999999999272,
+        "calls": 89,
+        "triangles": 55885,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "molten_core",
+        "label": "vigil",
+        "index": 0,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.700000000000728,
+        "calls": 81,
+        "triangles": 45743,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "molten_core",
+        "label": "cache",
+        "index": 1,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.700000000000728,
+        "calls": 83,
+        "triangles": 44653,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "molten_core",
+        "label": "font",
+        "index": 12,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.700000000000728,
+        "calls": 87,
+        "triangles": 47265,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "umbral_nexus",
+        "label": "vigil",
+        "index": 0,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.799999999995634,
+        "calls": 82,
+        "triangles": 43641,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "umbral_nexus",
+        "label": "cache",
+        "index": 1,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.700000000004366,
+        "calls": 91,
+        "triangles": 45829,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "umbral_nexus",
+        "label": "font",
+        "index": 5,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.667999999997846,
+        "p95Ms": 16.799999999995634,
+        "calls": 85,
+        "triangles": 44489,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "tempest_spire",
+        "label": "vigil",
+        "index": 0,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.700000000000728,
+        "p95Ms": 16.700000000000728,
+        "calls": 79,
+        "triangles": 45651,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "tempest_spire",
+        "label": "cache",
+        "index": 1,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.600000000002183,
+        "p95Ms": 16.799999999999272,
+        "calls": 81,
+        "triangles": 44837,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "tempest_spire",
+        "label": "font",
+        "index": 12,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 4,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.799999999999272,
+        "calls": 88,
+        "triangles": 47929,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "abyssal_well",
+        "label": "vigil",
+        "index": 0,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.799999999999272,
+        "calls": 38,
+        "triangles": 21589,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "abyssal_well",
+        "label": "cache",
+        "index": 1,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.80000000000291,
+        "calls": 36,
+        "triangles": 17973,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "abyssal_well",
+        "label": "font",
+        "index": 12,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 4,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.700000000000728,
+        "calls": 36,
+        "triangles": 19341,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "molten_core",
+        "label": "vigil",
+        "index": 0,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.700000000000728,
+        "calls": 38,
+        "triangles": 21293,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "molten_core",
+        "label": "cache",
+        "index": 1,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.700000000000728,
+        "calls": 36,
+        "triangles": 17773,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "molten_core",
+        "label": "font",
+        "index": 12,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.799999999999272,
+        "calls": 37,
+        "triangles": 18997,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "umbral_nexus",
+        "label": "vigil",
+        "index": 0,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.700000000000728,
+        "calls": 39,
+        "triangles": 20543,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "umbral_nexus",
+        "label": "cache",
+        "index": 1,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.700000000000728,
+        "p95Ms": 16.700000000000728,
+        "calls": 39,
+        "triangles": 18005,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "umbral_nexus",
+        "label": "font",
+        "index": 5,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999709,
+        "p95Ms": 16.80000000000291,
+        "calls": 38,
+        "triangles": 19297,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "tempest_spire",
+        "label": "vigil",
+        "index": 0,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.700000000000728,
+        "calls": 37,
+        "triangles": 21217,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "tempest_spire",
+        "label": "cache",
+        "index": 1,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.700000000000728,
+        "calls": 35,
+        "triangles": 17589,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "tempest_spire",
+        "label": "font",
+        "index": 12,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 4,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "frames": 60,
+        "medianMs": 16.700000000000728,
+        "p95Ms": 16.700000000000728,
+        "calls": 36,
+        "triangles": 18873,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "verdant_bastion_catacombs",
+        "label": "vigil",
+        "index": 0,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "propMaps": {
+          "stone": 128,
+          "metal": 128
+        },
+        "frames": 60,
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.700000000000728,
+        "calls": 82,
+        "triangles": 58431,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "verdant_bastion_catacombs",
+        "label": "cache",
+        "index": 1,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "propMaps": {
+          "stone": 128,
+          "metal": 128
+        },
+        "frames": 60,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.799999999999272,
+        "calls": 83,
+        "triangles": 52615,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "verdant_bastion_catacombs",
+        "label": "font",
+        "index": 8,
+        "quality": "high",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "propMaps": {
+          "stone": 128,
+          "metal": 128
+        },
+        "frames": 60,
+        "medianMs": 16.700000000000728,
+        "p95Ms": 16.799999999999272,
+        "calls": 80,
+        "triangles": 53301,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "verdant_bastion_catacombs",
+        "label": "vigil",
+        "index": 0,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 12,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "propMaps": {
+          "stone": 64,
+          "metal": 64
+        },
+        "frames": 60,
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.700000000000728,
+        "calls": 38,
+        "triangles": 24073,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "verdant_bastion_catacombs",
+        "label": "cache",
+        "index": 1,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 6,
+        "parts": 10,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "propMaps": {
+          "stone": 64,
+          "metal": 64
+        },
+        "frames": 60,
+        "medianMs": 16.699999999999818,
+        "p95Ms": 16.799999999999272,
+        "calls": 37,
+        "triangles": 20099,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "type": "verdant_bastion_catacombs",
+        "label": "font",
+        "index": 8,
+        "quality": "low",
+        "zoom": 15,
+        "visualOnly": true,
+        "batched": true,
+        "batches": 5,
+        "parts": 6,
+        "equipped": 14,
+        "authoredClass": "Fighter",
+        "played": true,
+        "poseChanged": true,
+        "propMaps": {
+          "stone": 64,
+          "metal": 64
+        },
+        "frames": 60,
+        "medianMs": 16.69999999999891,
+        "p95Ms": 16.799999999999272,
+        "calls": 35,
+        "triangles": 19889,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      }
+    ],
+    "exactReferenceDrawsAndTriangles": true,
+    "copiedEngine": [
+      {
+        "samples": [
+          {
+            "type": "molten_core",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "molten_core",
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 37,
+            "triangles": 12945,
+            "collidersStable": true
+          },
+          {
+            "type": "tempest_spire",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "tempest_spire",
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 35,
+            "triangles": 12853,
+            "collidersStable": true
+          },
+          {
+            "type": "abyssal_well",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "abyssal_well",
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 36,
+            "triangles": 16537,
+            "collidersStable": true
+          },
+          {
+            "type": "umbral_nexus",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "umbral_nexus",
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 37,
+            "triangles": 10231,
+            "collidersStable": true
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "compiled": false,
+            "floorLinked": true,
+            "verdant": true,
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 128,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 128,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "high",
+            "mapSize": 256,
+            "calls": 37,
+            "triangles": 23365,
+            "collidersStable": true
+          }
+        ],
+        "warmed": true,
+        "unwarmedBaseline": {
+          "geometries": 1,
+          "textures": 14
+        },
+        "baseline": {
+          "geometries": 9,
+          "textures": 18
+        },
+        "cleared": [
+          {
+            "type": "molten_core",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "tempest_spire",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "abyssal_well",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "umbral_nexus",
+            "geometries": 9,
+            "textures": 18
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "geometries": 9,
+            "textures": 18
+          }
+        ],
+        "after": {
+          "geometries": 9,
+          "textures": 18
+        },
+        "remainingMeshes": [],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "engineSHA256": "d74a603c1fa19c12c099676caca75cc06dab07d6c2dd1ac4e74d429bacf98881",
+        "scope": "Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim."
+      },
+      {
+        "samples": [
+          {
+            "type": "molten_core",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "molten_core",
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 14,
+            "triangles": 5174,
+            "collidersStable": true
+          },
+          {
+            "type": "tempest_spire",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "tempest_spire",
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 13,
+            "triangles": 4990,
+            "collidersStable": true
+          },
+          {
+            "type": "abyssal_well",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "abyssal_well",
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 14,
+            "triangles": 5374,
+            "collidersStable": true
+          },
+          {
+            "type": "umbral_nexus",
+            "compiled": true,
+            "floorLinked": true,
+            "patina": "umbral_nexus",
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "low",
+            "mapSize": 64,
+            "calls": 15,
+            "triangles": 4792,
+            "collidersStable": true
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "compiled": false,
+            "floorLinked": true,
+            "verdant": true,
+            "props": [
+              {
+                "role": "stone",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              },
+              {
+                "role": "metal",
+                "compiled": true,
+                "maps": [
+                  {
+                    "key": "map",
+                    "size": 64,
+                    "colorSpace": "srgb"
+                  },
+                  {
+                    "key": "normalMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  },
+                  {
+                    "key": "roughnessMap",
+                    "size": 64,
+                    "colorSpace": ""
+                  }
+                ]
+              }
+            ],
+            "quality": "low",
+            "mapSize": 256,
+            "calls": 14,
+            "triangles": 7498,
+            "collidersStable": true
+          }
+        ],
+        "warmed": true,
+        "unwarmedBaseline": {
+          "geometries": 0,
+          "textures": 0
+        },
+        "baseline": {
+          "geometries": 8,
+          "textures": 4
+        },
+        "cleared": [
+          {
+            "type": "molten_core",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "tempest_spire",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "abyssal_well",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "umbral_nexus",
+            "geometries": 8,
+            "textures": 4
+          },
+          {
+            "type": "verdant_bastion_catacombs",
+            "geometries": 8,
+            "textures": 4
+          }
+        ],
+        "after": {
+          "geometries": 8,
+          "textures": 4
+        },
+        "remainingMeshes": [],
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+        "engineSHA256": "d74a603c1fa19c12c099676caca75cc06dab07d6c2dd1ac4e74d429bacf98881",
+        "scope": "Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim."
+      }
+    ],
+    "engineSHA256": "d74a603c1fa19c12c099676caca75cc06dab07d6c2dd1ac4e74d429bacf98881",
+    "reports": [
+      "native/report/index.html",
+      "corrected-native/report/index.html"
+    ],
+    "selection": "Elemental source cases and lazy startup from initial native; Verdant source High/Low and copied High/Low from corrected native. Overlapping passes not double counted. Initial phone Verdant used defaultHigh kit inLow renderer and is excluded from finalLow prop qualification."
+  },
+  "requiredCI": {
+    "hostedCount": 337,
+    "nativeCount": 15,
+    "combinedDistinctRequired": 348,
+    "priorDistinctRequired": 348,
+    "lost": [],
+    "added": [],
+    "scope": "337hosted/15native/348distinct case identities unchanged, zero added/lost. Discovery only. Prior exact-once hosted partition proof reused: package, browser plan and CI policy unchanged. Existing mandatory native copied-bundle High/Low cases now cover both prop materials and exact GPU resource return for all five themes. No all348execution claim."
+  },
+  "retainedFailures": [
+    {
+      "run": "focused.log",
+      "result": "67pass1fail",
+      "reason": "Inherited vigil test expected pre-ward floating portal local position. Same targeted case fails on unchanged9ff955b4 baseline; corrected assertion verifies ward parent, actual local/world positions and real opening height. Product portal/ward unchanged."
+    },
+    {
+      "run": "native/report/index.html",
+      "result": "6pass1fail",
+      "reason": "Added Verdant copied-bundle coverage initially assumed elemental Low64floor sizing. Current predecessor explicitly keeps Verdant256floor maps; corrected observer retains this invariant and separately requires newLow64prop maps. Corrected copied cases4pass alongside sourceVerdant."
+    }
+  ],
+  "visualReview": "Paired ordinary gameplay views show clearer mineral coffer/font bodies, less uniformly black/red metal and smoother turned vigil shafts under unchanged regional lights. Desktop Molten cache reference/current, Abyssal font, Tempest vigil and corrected phone Verdant cache/font inspected directly. Props remain simple silhouettes and large room composition remains sparse; this does not establish complete modern-ARPG art or owner approval.",
+  "custody": "Anonymous static/browser fixtures and synthetic constructor/review labels only. No Go/server/Mongo/accounts, authentication secrets, public mutation or normal-account login. One anonymous failed trace/video retained. Native static port4198 is released after terminal test jobs.",
+  "sourceFiles": [
+    "src/art/DungeonPropSurface.js",
+    "src/art/ProceduralDungeonInteriors.js",
+    "tests/DungeonPropSurface.test.js",
+    "tests/DungeonVigilGeometry.test.js",
+    "tests/e2e/dungeon-prop-review.js",
+    "tests/e2e/elemental-dungeon-presentation.spec.js",
+    "tests/e2e/published-game-bundle.spec.js",
+    "tests/e2e/verdant-room-presentation.spec.js"
+  ],
+  "trackedSourcePins": 6134,
+  "scopeLimits": "Staged unpublished. PublicAlpha1.79.29 motion/aura/admin fixes unchanged; prior unselected matrix/cache/camp/singleton/DemonOrc branches not merged. Existing50/66.7ms and49.9/66.6ms timing,386370/281603/289302triangles,438/361draw andLow202draw counterexamples remain. Full original world/art/contact/audio/devices/performance/operations/F1-F5/beta/launch/handoff goal active. No campaign/soak replay, version/access/commerce or beta change.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dungeon-prop-checks-20261011",
+    "inventoryEntries": 164,
+    "files": 165,
+    "inventorySHA256": "f7f9d70b6f2dbee412425c9cec548aa9272ac812e23f67ff2cb5a0c7b90e3ac4",
+    "frozen": true
+  }
+}

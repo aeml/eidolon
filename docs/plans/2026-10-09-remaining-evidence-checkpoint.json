@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T03:07:41.682028+00:00",
-  "classification": "Progress: existing90RAF owner attribution identifies foliage~2.81ms/frame of~6.67scene transform traversal. Exact-product prototypecbff1014 passes correctness but is rejected after native High costs regress. No held/public runtime changes.",
-  "qualifiedRuntime": "Held75a37d88 adds four elemental floor materials and mandatory native coverage to prior34ca5b97. Existing actor/ward/root/Verdant/geometry-priority/HUD work retained; scope-qualified source and copied bundle only. Public Alpha1.79.29 unchanged; private camp/singleton/DemonOrc/route QA remains unselected.",
+  "recordedUTC": "2026-10-11T03:31:46.110103+00:00",
+  "classification": "Progress: selected3da66d67 gives shared dungeon stone and metal props physical mineral/forge finishes across all five themes.68 distinct focused and7 distinct native checks pass cumulatively; copied High/Low engine compiles actual materials and returns exact warmed GPU resources after every room.",
+  "qualifiedRuntime": "Held3da66d67 adds shared dungeon prop materials to9ff955b4, retaining selected elemental/Verdant floors, roots, entry wards, geometry-priority worker, additive effects, HUD and actor corrections. Staged unpublished; public Alpha1.79.29 unchanged. Private camp/singleton/DemonOrc/route QA and rejected matrix-product cache remain unselected.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -98,12 +98,12 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Continue cohesive code-owned world/environment composition, contact/audio and device work while preserving the held floor/ward/root/HUD/actor corrections. Further performance changes require a concrete hypothesis supported by existing ownership/CPU/submission evidence. Unchanged-product cache adds overhead and stays rejected; retain normal live transform/force behavior. Existing50/66.7ms and all historicalgeometry/Low202draw failures remain open, as do operations/F1-F5/beta/launch/handoff. No campaign/soak replay.",
-  "currentReceipt": "docs/plans/2026-10-11-foliage-matrix-product-unselected.json",
+  "nextRequiredResult": "Continue coherent dungeon/world composition and regional motifs, contact/audio and representative device work. Performance changes require concrete measured hypotheses; retain stock matrix-force behavior and existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures. Prepared prop motion does not establish continuous engine or physical-device performance. Original operations/F1-F5/beta/launch/handoff remains open; no campaign/soak replay.",
+  "currentReceipt": "docs/plans/2026-10-11-dungeon-prop-material-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Continue cohesive code-owned world/environment composition, contact/audio and device work while preserving the held floor/ward/root/HUD/actor corrections. Further performance changes require a concrete hypothesis supported by existing ownership/CPU/submission evidence. Unchanged-product cache adds overhead and stays rejected; retain normal live transform/force behavior. Existing50/66.7ms and all historicalgeometry/Low202draw failures remain open, as do operations/F1-F5/beta/launch/handoff. No campaign/soak replay.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-elemental-floor-material-qualification.json",
+  "nextAction": "Continue coherent dungeon/world composition and regional motifs, contact/audio and representative device work. Performance changes require concrete measured hypotheses; retain stock matrix-force behavior and existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures. Prepared prop motion does not establish continuous engine or physical-device performance. Original operations/F1-F5/beta/launch/handoff remains open; no campaign/soak replay.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-prop-material-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
     "preparedNotSelected": true,
@@ -2677,5 +2677,36 @@
       "inventorySHA256": "2ffd0c78055f93bd9728188a8d1feb6412394afb6ba872afe5108445690fc648",
       "frozen": true
     }
+  },
+  "dungeonPropMaterials": {
+    "receipt": "docs/plans/2026-10-11-dungeon-prop-material-qualification.json",
+    "source": "3da66d6741f02a470d6428c1013e814fa422b660",
+    "selected": true,
+    "published": false,
+    "themes": 5,
+    "focusedDistinctPassed": 68,
+    "nativeDistinctPassed": 7,
+    "propViews": 30,
+    "pairedPropScreenshots": 60,
+    "preparedAnimationUpdates": 2088,
+    "engineSHA256": "d74a603c1fa19c12c099676caca75cc06dab07d6c2dd1ac4e74d429bacf98881",
+    "requiredCI": {
+      "hostedCount": 337,
+      "nativeCount": 15,
+      "combinedDistinctRequired": 348,
+      "priorDistinctRequired": 348,
+      "lost": [],
+      "added": [],
+      "scope": "337hosted/15native/348distinct case identities unchanged, zero added/lost. Discovery only. Prior exact-once hosted partition proof reused: package, browser plan and CI policy unchanged. Existing mandatory native copied-bundle High/Low cases now cover both prop materials and exact GPU resource return for all five themes. No all348execution claim."
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-prop-checks-20261011",
+      "inventoryEntries": 164,
+      "files": 165,
+      "inventorySHA256": "f7f9d70b6f2dbee412425c9cec548aa9272ac812e23f67ff2cb5a0c7b90e3ac4",
+      "frozen": true
+    },
+    "cost": "Six added RGBA maps:384KiB raw CPU pixels High/96KiB Low per kit; approximately512KiB/128KiB for full RGBA8 mip chains, excluding driver overhead. Existing PBR shaders now sample albedo/normal/roughness. This adds shading/texture work; no FPS or broad performance improvement claimed.",
+    "scopeLimits": "Staged unpublished. PublicAlpha1.79.29 motion/aura/admin fixes unchanged; prior unselected matrix/cache/camp/singleton/DemonOrc branches not merged. Existing50/66.7ms and49.9/66.6ms timing,386370/281603/289302triangles,438/361draw andLow202draw counterexamples remain. Full original world/art/contact/audio/devices/performance/operations/F1-F5/beta/launch/handoff goal active. No campaign/soak replay, version/access/commerce or beta change."
   }
 }
