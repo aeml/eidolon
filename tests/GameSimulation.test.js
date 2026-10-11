@@ -261,11 +261,8 @@ describe('Actor System', () => {
             actor.visualOffset = new THREE.Vector3();
             actor.position.set(0, 0, 0);
             actor.rotation = new THREE.Quaternion();
-            actor.mesh = {
-                position: new THREE.Vector3(),
-                quaternion: new THREE.Quaternion(),
-                lookAt: jest.fn()
-            };
+            actor.mesh = new THREE.Group();
+            actor.mesh.lookAt = jest.fn();
             actor.getMovementAnimationName = jest.fn(() => 'Run');
             actor.playAnimation = jest.fn();
 
@@ -284,11 +281,8 @@ describe('Actor System', () => {
             actor.visualOffset = new THREE.Vector3();
             actor.position.set(0, 0, 0);
             actor.rotation = new THREE.Quaternion();
-            actor.mesh = {
-                position: new THREE.Vector3(),
-                quaternion: new THREE.Quaternion(),
-                lookAt: jest.fn()
-            };
+            actor.mesh = new THREE.Group();
+            actor.mesh.lookAt = jest.fn();
 
             actor.update(0.2, null, null, null);
 
