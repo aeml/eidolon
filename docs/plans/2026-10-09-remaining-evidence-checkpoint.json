@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T03:44:55.428686+00:00",
-  "classification": "Progress: selected aa97abd3 connects entry wards/vigils, coffers and fonts with shallow worn paving across all five themes.74 distinct focused and6 distinct native checks pass cumulatively; first pale/raised draft rejected and fixture issues retained.",
-  "qualifiedRuntime": "Held aa97abd3 adds shared processional paving to f3adbbf0, preserving selected floor/prop materials, roots, wards, geometry-priority worker, additive effects, HUD and actor corrections. Staged unpublished; public Alpha1.79.29 unchanged. Private cache/camp/singleton/DemonOrc/route QA remains unselected.",
+  "recordedUTC": "2026-10-11T03:59:58.731881+00:00",
+  "classification": "Progress: selected a32939c4 replaces isolated elemental dungeon primitives with hollow crucibles, conductor-held split slate, branching coral and fractured memory monoliths.29 focused checks and7 distinct native cases pass cumulatively; inherited gallery/root-observer failures retained and corrected.",
+  "qualifiedRuntime": "Held a32939c4 adds four regional relic families to f37b035c, retaining selected floor/prop/paving/ward/root, geometry-priority worker, additive effects, HUD and actor corrections. Staged unpublished; public Alpha1.79.29 unchanged. Private cache/camp/singleton/DemonOrc/route QA remains unselected.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -98,12 +98,12 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Continue broader room/world composition and regional construction, contact/audio and representative devices; local paving is partial art implementation. Performance work requires concrete hypotheses from retained attribution. Preserve original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures. Original operations/F1-F5/beta/launch/handoff active; no campaign/soak replay.",
-  "currentReceipt": "docs/plans/2026-10-11-dungeon-processional-paving-qualification.json",
+  "nextRequiredResult": "Continue integrated combat anticipation/contact/recovery/audio at ordinary gameplay camera, broader room/world composition and representative devices. Regional relics are partial construction and still small/repeated in sparse rooms. Dynamic performance changes require concrete hypotheses from retained attribution; original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures remain. Original operations/F1-F5/beta/launch/handoff active; no campaign/soak replay.",
+  "currentReceipt": "docs/plans/2026-10-11-dungeon-regional-relics-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Continue broader room/world composition and regional construction, contact/audio and representative devices; local paving is partial art implementation. Performance work requires concrete hypotheses from retained attribution. Preserve original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures. Original operations/F1-F5/beta/launch/handoff active; no campaign/soak replay.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-processional-paving-qualification.json",
+  "nextAction": "Continue integrated combat anticipation/contact/recovery/audio at ordinary gameplay camera, broader room/world composition and representative devices. Regional relics are partial construction and still small/repeated in sparse rooms. Dynamic performance changes require concrete hypotheses from retained attribution; original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures remain. Original operations/F1-F5/beta/launch/handoff active; no campaign/soak replay.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-regional-relics-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
     "preparedNotSelected": true,
@@ -2734,5 +2734,34 @@
       "frozen": true
     },
     "scopeLimits": "Staged unpublished; publicAlpha1.79.29 requested jump/aura/admin acceptance retained. No unrelated private cache/camp/singleton/DemonOrc/route QA selected. Original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures unresolved. No full-room/device/party/combat performance or owner art approval. Original world/art/contact/audio/devices/operations/F1-F5/beta/launch/handoff goal active; no campaign/soak replay, version/access/commerce/beta change."
+  },
+  "dungeonRegionalRelics": {
+    "receipt": "docs/plans/2026-10-11-dungeon-regional-relics-qualification.json",
+    "source": "a32939c47be839ca71afb6bb378eb871ed1a1488",
+    "selected": true,
+    "published": false,
+    "families": 4,
+    "focusedPassed": 29,
+    "newChecks": 15,
+    "nativeDistinctPassed": 7,
+    "selectedPairedViews": 16,
+    "pairedScreenshots": 32,
+    "actorMixerUpdates": 864,
+    "wardStateAnimationFrames": 1440,
+    "productionLayoutsPerQuality": 20,
+    "engineSHA256": "54eb11d1747069177fc0950e7c94b3818fc2f301e5a979690977b5f57bb010e2",
+    "newTextures": 0,
+    "newMaterials": 0,
+    "newLights": 0,
+    "batchDeltaMin": -1,
+    "batchDeltaMax": 2,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-relic-checks-20261011",
+      "inventoryEntries": 306,
+      "files": 307,
+      "inventorySHA256": "dcfed337ecde8ee17cb084dbf13edd1bd2005ef4bd88bff1581707b167c54469",
+      "frozen": true
+    },
+    "scopeLimits": "Staged unpublished. PublicAlpha1.79.29 requested jump/aura/admin fixes remain accepted. No private cache/camp/singleton/DemonOrc/route QA selected. Original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures remain. Full original world/art/contact/audio/devices/performance/operations/F1-F5/beta/launch/handoff active. No campaign/soak replay, version/access/commerce/beta change."
   }
 }

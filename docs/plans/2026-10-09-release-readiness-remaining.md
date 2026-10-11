@@ -488,3 +488,43 @@ admin acceptance remains unchanged. Historical timing/geometry/draw failures,
 world/contact/audio/devices, original operations/F1–F5/beta/launch/handoff stay
 open. No campaign/soak replay, public push, version/access change or owner art
 approval. [Paving qualification and retained drafts](2026-10-11-dungeon-processional-paving-qualification.json).
+
+
+2026-10-11 regional dungeon construction: selected `a32939c4` privately. Molten
+now has hollow coal crucibles, Tempest split slate in conductor cradles, Abyssal
+tapered branching coral/pearl buds, Umbral fractured opaque monoliths with narrow
+light seams. Three shared kit-local geometry channels reuse all existing physical
+materials/maps and production batching; no textures, materials, lights, targets,
+colliders or clocks added. Verdant roots unchanged. Umbral alone shifts its Z
+anchor by.01radius (at most.24world units), within the old decorative apron.
+
+Extra geometry/shadows are explicit: per-room High/Low triangle deltas Molten
+1832/1208, Tempest992/672, Abyssal5704/1864, Umbral372/308. Added merged attribute
+bytes respectively175872/115968,95232/64512,547584/178944,35712/29568. Kit source
+geometry is additional ownership; full channel costs retained separately. Across
+64identity/quality comparisons, batching changes-1..+2draw meshes; max7/8.
+No FPS/GPU saving or universal-budget claim.
+
+29focused checks pass (15new);40nonmatching skips are not passes. Seven distinct
+native cases pass cumulatively: one gallery, two source desktop/phone reviews,
+two20layout/quality sweeps and two actual copied-engine checks. Initial source
+views obscured props; final16paired views/32screenshots fix only review actor
+placement.864actor mixer updates plus1440ward-state renders (288camera sweeps)
+are prepared presentation, not normal-input/server/device performance. Copied
+High/Low engine retains all relic channels, compiles actual floor/prop/paving
+materials and returns exact warmed GPU baseline after every one of five themes.
+
+An unchanged-parent native gallery reproduced stale9geometry/5material assertions.
+The ward observer also miscounted vertex-color paving as bark: unchanged parent
+probe reproduces2batches and3672/1656triangles; corrected observer retains the
+original1root batch and2880/864triangles. Both initial native failures remain.
+337hosted/15native/348distinct required case identities unchanged; discovery only.
+Frozen306-entry/307-file inventory
+`dcfed337ecde8ee17cb084dbf13edd1bd2005ef4bd88bff1581707b167c54469`.
+
+Staged unpublished. Small repeated pairs, broad empty rooms and floor/furniture
+repetition remain visible; no owner modern-art approval. Public29 requested
+jump/aura/admin fixes and prior performance failures remain unchanged. Continue
+combat contact/audio, world composition, devices and original operations/F1–F5/
+beta/launch/handoff. No campaign/soak replay, public push or version/access change.
+[Regional relic qualification and retained failures](2026-10-11-dungeon-regional-relics-qualification.json).
