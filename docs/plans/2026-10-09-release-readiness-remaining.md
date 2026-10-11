@@ -311,3 +311,42 @@ Frozen evidence contains851entries/852files. No public push, version/access chan
 campaign/soak replay or final art/device acceptance. Broader scenery/material/
 contact/audio, dynamic population budgets and original operations/F1–F5/beta/launch/
 handoff remain open. [Qualification](2026-10-11-verdant-floor-qualification.json).
+
+
+October11 geometry preparation and CI continuation: selected cda30fd0 privately,
+unpublished; runtime88e250af changes only worker dispatch order. The early native
+party capture accounts for every submitted triangle and shows large fitted outfit
+batches waiting behind small eye/details. Largest pending source meshes now go
+first, with the oldest job served every fourth dispatch. One in-flight job,
+bounded copies, stale-generation handling, worker algorithms/cache, original
+visible models and quality thresholds remain. No frame-rate gain is claimed.
+
+139distinct focused checks pass. Copied bundle native High/Low four-class14slot
+controls retain65/71exact prepared index buffers and identical final pixel hashes,
+draws and triangles; worker offline/reentry and actual exception fallback pass.
+Eight distinct native correctness checks pass, with one optional peer-renderer
+skip. Actual normal authored-road dungeon entry/movement/Recall and four-class
+Go-race gear/inventory/EP/membership/logout saves pass in the private route context.
+First dungeon104draw/57197triangles,16.7median16.8p95 passes sampled limits.
+
+Performance remains FAILED: the separate uninstrumented180frame party has300draw/
+168340triangles but33.3msmedian exceeds20 and50msp95 exceeds33.4. Its35–36active
+entities differ from the earlier28–31population. The instrumented early capture
+also reaches386370triangles; its timing is invalid. Earlier281603/289302triangle,
+438/361draw and other failures remain. Exact final images do not close these gates.
+
+A real software-WebGL probe exposed the prior host/native CI mismatch: High full
+animation sweep times out at180seconds, retained as failure (combined probe4pass/
+1fail). Both exact outfit scheduling cases pass on SwiftShader. The three full
+dungeon reviews now run intact on an unconditional hardware-native predeploy step;
+original20layouts/quality, motion frames, collider/material and budget assertions
+remain.335hosted cases are discovered exactly once plus5native cases; all338prior
+required identities retained, two outfit cases intentionally cover both backends.
+Discovery is not execution. No quality reduction, skip or threshold waiver.
+
+Initial604-entry and final677-entry evidence inventories are frozen. Private camp/
+singleton/DemonOrc/route QA stays unselected; public29 unchanged. Next attribute
+actual CPU costs versus population and preparation before first appearance, then
+continue cohesive world/scenery/material/contact/audio and device work. Original
+operations/F1–F5/beta/launch/handoff remain open; no campaign/soak replay or public
+push/version/access change. [Qualification and retained failures](2026-10-11-geometry-preparation-priority-qualification.json).
