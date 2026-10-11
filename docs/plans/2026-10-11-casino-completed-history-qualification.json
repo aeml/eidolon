@@ -1,0 +1,36 @@
+{
+  "recordedUTC": "2026-10-11T14:46:18.672245+00:00",
+  "status": "qualified for master; publication pending coherent successor",
+  "source": "93d5d520",
+  "historyMerges": [
+    "cdf6f85d",
+    "561abf2d"
+  ],
+  "reconciledBranches": {
+    "reviewTip": "561abf2d00f2c33c3c84125c8462c6922bb1ddf9",
+    "masterBefore": "4a7843c53c24452ac433acd8c70aa1aaa437844d",
+    "venue": "c99de3fbee167324764d4135b8499ca52aaea462",
+    "blackjack": "c62fa027888b2f70971e92ff35b7c153d0cdb162",
+    "scope": "Historical branch reconciliation and venue accessible-name/disabled-style selection; no server, wager, version or workflow change."
+  },
+  "selection": "Restore omitted accessible casino-dialogue names and disabled-access styling; retain all newer scene/socket/player/floor lifetime guards. Browser artifact uses owned output path.",
+  "blackjack": "Draft stakes and responsive control order already integrated; current timeout implementation, saved-release retries, payout coverage, private-session redaction, public names, seat-action guards and workflow retained byte-exact. Existing integration commit b184bcc8 and current CI card-table timeout step succeeded. No server mutation or Mongo test replay.",
+  "validation": {
+    "focusedTests": 102,
+    "focusedSuites": 3,
+    "native": {
+      "startTime": "2026-10-11T14:44:57.051Z",
+      "duration": 3925.5,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "lint": "Changed JavaScript paths pass max-warnings=0; git diff master --check passes",
+    "browser": "Prepared real Actor collision, named/disabled VIP dialog, close and scene-change cleanup at390x844; System Chrome. Screenshot inspected. Not connected wagering, physical phone, measured hardware performance or full casino acceptance."
+  },
+  "treeDelta": "Only CasinoController aria-label, disabled CSS, stairs fixture and preserved historical58line venue document. Server/UI settlement/workflow/version/roadmap unchanged.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-casino-history-checks-20261011",
+  "inventorySHA256": "0c9c663ffa5681da48d97580586b6e332df73e2c1951c702886fb839a37c80aa",
+  "goal": "Full release readiness scope remains active."
+}
