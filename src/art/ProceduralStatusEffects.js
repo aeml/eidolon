@@ -81,6 +81,8 @@ function material(statusKey, role, color, options = {}) {
             opacity: options.opacity ?? 0.78,
             depthWrite: false,
             side: THREE.DoubleSide,
+            // Additive filled faces need one pass; wireframe lines retain both passes for brightness.
+            forceSinglePass: (options.blending ?? THREE.AdditiveBlending) === THREE.AdditiveBlending && !options.wireframe,
             wireframe: Boolean(options.wireframe),
             blending: options.blending ?? THREE.AdditiveBlending
         }));

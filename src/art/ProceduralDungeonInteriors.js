@@ -9,6 +9,7 @@ import { sampleElementalDungeonSurface } from './ElementalDungeonSurface.js';
 import { createElementalDungeonWallGeometry } from './ElementalDungeonWallGeometry.js';
 import { createDungeonVigilBase, createDungeonVigilShaft, createDungeonVigilCage,
     createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid } from './DungeonVigilGeometry.js';
+import { createDungeonEntryWard } from './DungeonEntryWard.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -316,7 +317,6 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
     const currentMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.26);
     const clearedMaterial = makeRoomStateMaterial(0xa8ffd0, 0.46);
     const sealMaterial = makeRoomStateMaterial(theme.palette.accent, 0.82);
-    const portalMaterial = makeRoomStateMaterial(theme.palette.spirit, 0.18);
 
     const objectiveHalo = addRoomStateMesh(
         root,
@@ -376,13 +376,10 @@ export function createDungeonRoomStatePresentation(dungeonType, room, roomIndex,
 
     let exitPortal = null;
     if (room?.type === 'start') {
-        exitPortal = addRoomStateMesh(
-            root,
-            'DungeonExitPortal',
-            new THREE.TorusGeometry(3.25, 0.24, 8, 36),
-            portalMaterial,
-            { position: [0, 3.7, -radius * 0.42] }
-        );
+        const ward = createDungeonEntryWard(theme);
+        ward.position.z = -radius * .42;
+        root.add(ward);
+        exitPortal = ward.getObjectByName('DungeonExitPortal');
     }
 
     objectiveHalo.visible = false;
@@ -416,7 +413,6 @@ export function applyDungeonRoomStatePresentation(presentation, roomState = null
     if (exitPortal) {
         exitPortal.visible = true;
         exitPortal.material.opacity = exitReady ? 0.9 : 0.18;
-        exitPortal.scale.setScalar(exitReady ? 1.08 : 0.94);
     }
     presentation.userData.cleared = cleared;
     presentation.userData.objective = objective;
@@ -443,7 +439,7 @@ export function animateDungeonRoomStatePresentation(presentation, elapsedSeconds
         rewardSeal.position.y = 3.6 + (pulse * 0.28);
     }
     if (exitPortal?.visible) {
-        exitPortal.rotation.z = elapsedSeconds * (presentation.userData.exitReady ? 0.2 : 0.07);
+        exitPortal.material.userData.dungeonVeilTime.value = Math.max(0, Number(elapsedSeconds) || 0);
         exitPortal.material.opacity = presentation.userData.exitReady
             ? 0.72 + (pulse * 0.22)
             : 0.14 + (pulse * 0.08);
@@ -518,9 +514,6 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     case 'entry_gate':
         addPylon(root, shapes, materials, 'entry:left-vigil', -radius * 0.62, -radius * 0.42, 5.8);
         addPylon(root, shapes, materials, 'entry:right-vigil', radius * 0.62, -radius * 0.42, 5.8);
-        addPart(root, 'entry:oath-threshold', shapes.bevelBlock, materials.stone, {
-            position: [0, 0.2, -radius * 0.42], scale: [radius * 0.85, 0.4, 1.1]
-        });
         break;
     case 'treasure_cache':
         addPart(root, 'cache:reliquary-plinth', shapes.vigilBase, materials.stone, {
