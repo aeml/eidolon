@@ -88,3 +88,16 @@ Coverage retains the advanced budget policy and adds all four primary-stat
 budgets, zero/insufficient points, invalid requests and opt-in route preservation.
 Actual preparation/collection remains required; this QA extension changes no
 production balance, regeneration or rewards.
+
+Actual32039 on0d05dcc **FAILED9.0m**, terminal: opening40s/no deaths; preparation
+reported0eligible gear,0allocated points. Online level growth is automatic and
+UIManagerCharacter deliberately hides manual stat allocation in multiplayer;
+those offline-only points are not missing player preparation. No free equipment
+was added to make this comparison pass. Collection6observed deaths/2seeds/1player
+death then120s encounter failure. This is not pacing approval. Scan0 and cleanup/
+independent exact-container absence pass; the failure image was inspected.
+
+Do not rerun unchanged or prescribe nonexistent online allocation. Next actual
+comparison uses the already-developed player-only basic-cadence prototype with
+these independently verified starter fixes; it does not restore fast regeneration
+or import the expanded story. Original unprepared route remains available.
