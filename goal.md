@@ -972,3 +972,28 @@ gameplay replay. No campaign/soak rerun or physical-device/art/performance waive
 See current-render-connected-cpu-qualification and release39-client-guard-correction.
 Every original world/art/gameplay/device/operations/F1-F5/beta/launch/handoff
 requirement remains active, including owner-deferred campaign/phone feedback.
+
+
+## October11 corrective39 publication after retained terminal failure
+
+Previous goal turn made concrete progress: current connected performance
+failure and rejected Low color-cull evidence frozen, two CI audits reproduced
+and corrected on master. This turn independent terminal original39 inspection
+confirms CI38176727839attempt1 failed only client coverage (10775pass/2fail);
+Go/all3browser shards passed, five dependent stages skipped, no deployment.
+No retry or cancellation. Same-version corrective39 exacta1ebc4046a294ac315b97d9e86e9057a6f13294b
+ordinarily pushed after fresh fetch+merge. Own CI38178405817attempt1active,
+created21:56:27UTC;38 remains last accepted. All93actual copied asset pins
+reproduce original39 after only release-id replacement; workered74163b/data
+6aa8c7e/runtime/12versions/474notes unchanged. Original555focused/five native
+qualification reused only for identical runtime;14corrected audit checks pass.
+Owned443630265-byte reproducible copy fully inventoried, pins rechecked, then
+retired;9entry frozen inventoryec33ea7f197cc5c582ef343df6eac6fda6b6c6b338dbf12d54eb85aedf2581c2.
+Initial documentation allowlist omission and unsupported gh attempt field
+refused before source copy/push respectively, retained/repaired without any
+runtime effect or browser replay. Existing sparse monitor follows exact newCI
+and unchanged100clientsoak38109009521; no mutation authority delegated.
+Require own ordered CI/deploy/live then fresh normal-TLS93asset/frontend/
+backend/readyDB acceptance before next milestone. See release39-guard-corrective-publication.
+All original world/art/gameplay/device/performance/operations/F1-F5/beta/launch/
+handoff and owner-deferred campaign/phone feedback remain active.

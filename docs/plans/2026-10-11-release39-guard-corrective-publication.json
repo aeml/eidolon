@@ -1,0 +1,88 @@
+{
+  "recordedUTC": "2026-10-11T21:58:10.727625+00:00",
+  "version": "Alpha 1.79.39",
+  "source": "a1ebc4046a294ac315b97d9e86e9057a6f13294b",
+  "status": "Qualified same-version audit correction ordinarily pushed after original39terminal prerequisite failure. Own CI38178405817attempt1 active; not accepted.",
+  "originalCI": {
+    "run": 38176727839,
+    "source": "c7271bddfa34f6267973cc1302c7512e24f1886e",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "failure",
+    "terminalUTC": "2026-10-11T21:55:14Z",
+    "failedJob": "Client Tests (Jest)",
+    "passed": [
+      "Server Tests (Go)",
+      "Browser Smoke (Playwright 1/3)",
+      "Browser Smoke (Playwright 2/3)",
+      "Browser Smoke (Playwright 3/3)"
+    ],
+    "skipped": [
+      "Predeploy Character QA",
+      "QA input validation",
+      "GitHub Pages deployment",
+      "server deployment",
+      "live QA"
+    ],
+    "deploymentOccurred": false,
+    "noRetryOrCancellation": true
+  },
+  "correction": "2026-10-11-release39-client-guard-correction.json",
+  "ci": {
+    "run": 38178405817,
+    "attempt": 1,
+    "createdUTC": "2026-10-11T21:56:27Z",
+    "initialObservedStatus": "in_progress",
+    "url": "https://github.com/aeml/eidolon/actions/runs/38178405817"
+  },
+  "publicationProof": {
+    "recordedUTC": "2026-10-11T21:55:44.160236+00:00",
+    "source": "a1ebc4046a294ac315b97d9e86e9057a6f13294b",
+    "identity": {
+      "commit": "a1ebc4046a294ac315b97d9e86e9057a6f13294b",
+      "version": "Alpha 1.79.39"
+    },
+    "copiedPinsVerified": 93,
+    "allPriorPinsExactAfterReleaseIdSubstitution": true,
+    "buildMetadataByteExactToOriginal39": true,
+    "worker": {
+      "output": "src/core/ActorGameplayGeometryWorker.ed74163bff6f2ccc.js",
+      "sha256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+      "bytes": 173395,
+      "modules": 15,
+      "imports": [],
+      "precomputed": {
+        "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+        "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+        "bytes": 777321,
+        "entries": 133
+      }
+    },
+    "copyFiles": 3328,
+    "copyBytes": 443630265,
+    "scope": "Corrective same-version publication only. Source differs from original39 solely by two qualified test audits and documentation. Existing555focused/five native qualification remains scoped and valid; no duplicate browser or broad gameplay acceptance. Original CI failed client prerequisite, other jobs still active; not pushed."
+  },
+  "custody": {
+    "originalTerminal": {
+      "root": "/home/aeml/.local/share/eidolon-release39-original-terminal-checks-20261011",
+      "entries": 3,
+      "inventorySHA256": "bd1d380f2b71635ea75f656eb46a63f0cbd6f45c18d2d117b2ea50ffdc5d8742"
+    },
+    "correctiveAssets": {
+      "root": "/home/aeml/.local/share/eidolon-release39-corrective-publication-checks-20261011",
+      "entries": 9,
+      "inventorySHA256": "ec33ea7f197cc5c582ef343df6eac6fda6b6c6b338dbf12d54eb85aedf2581c2"
+    },
+    "pushObservation": {
+      "root": "/home/aeml/.local/share/eidolon-release39-corrective-publication-observation-20261011",
+      "entries": 2,
+      "inventorySHA256": "96ed7e44a2b0dc51ffc90bb81042af3d089d6af4b30495804b0610f53a90c957"
+    }
+  },
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release39-corrective-publication-checks-20261011/expected-public39-assets.json",
+  "publicChecker": "/home/aeml/.local/share/eidolon-release39-corrective-publication-checks-20261011/check-public.py",
+  "sourceIntegration": "Fresh fetch+ordinary merge reported already up to date; clean local master ordinarily pushed c7271bdd\u2192a1ebc404. Only master exists locally/on origin.",
+  "acceptanceRequired": "Own exact ordered CI/deploy/live success, then fresh normal-TLS frontend/backend source/version, readyDB and all93asset lengths/SHA into new root. No next milestone before own acceptance.",
+  "previousAccepted": "2026-10-11-public38-terminal-qualification.json",
+  "scope": "Runtime, immutable worker, geometry data, original budgets, all12versions and474cumulative notes unchanged from qualified39. Fourteen corrected checks/two suites and scoped lint pass; previous555focused/five native milestone qualification reused only within exact runtime scope. Current connected50/66.7ms and originalcold triangle failures stay open. No campaign/soak replay, final-art/device/F1-F5/beta/launch/handoff acceptance. Full original goal stays active."
+}
