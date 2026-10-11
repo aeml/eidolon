@@ -1,0 +1,36 @@
+{
+  "recordedUTC": "2026-10-11T12:36:59.545384+00:00",
+  "status": "qualified-current-source-unpublished",
+  "source": "596c170f3e21c9312299c9a865ec4e96aabb8745",
+  "selectedHistory": "aff0fe106b8ccdac597bbded31e33a7dc1bcb31f",
+  "changes": [
+    "Read-only authored-equipment --check/import; reject malformed coverage/slot/tier/fit/schema/path/hash/grip/motion inputs while preserving selected character bodies, wearable derivatives and retained baselines.",
+    "Fixed lore control header plus independently scrolling keyboard-focusable text, modal input isolation and owned lifetime; short Bellkeeper lore addition retains IDs/positions/eligibility/reward-free behavior.",
+    "Contributor canonical-source guidance, completed-work/master policy, supplied notice inventory and explicit unresolved rights."
+  ],
+  "retainedCatalog": {
+    "path": "src/assets/authoredEquipment.generated.js",
+    "sha256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+    "verifiedPaths": 744,
+    "classes": 4,
+    "items": 36,
+    "bytesAndMtimePreservedByActualCLI": true
+  },
+  "qualification": {
+    "focusedJest": "58 distinct checks across7 suites: first57 pass; final affected generator27 pass includes one additional stale-check case. No failures/skips.",
+    "cli": "Actual --check verifies all744 catalog paths without writing; absolute invocation from unrelated cwd passes. A disposable stale-output sandbox fails without changing bytes/mtime. Import and unknown flags do not write.",
+    "runtimeRegressions": "Eight additional rejection cases preserve source-delivery, missing/duplicate wearable fits, source/derivative hashes, selected-character roster/hash and retained unsafe-path guards.",
+    "population": "520 spawn exclusions and8 optional readings verified; generated footprint unchanged.",
+    "native": "System Chrome1280\u00d7844 and390\u00d7844:2 distinct passes, retries0, skips0,7.182s. Both sites; full ending bounds/keyboardEnd, fixed44px close, input isolation, reopen/death cleanup and zero network commands. Prepared anonymous UI, not authenticated campaign or physical-phone proof.",
+    "images": "Inspected actual desktop first-reading capture and390px ending; fixed close clear, final paragraph/footer readable.",
+    "lint": "Six changed JS files max-warnings0 pass; final affected generator test lint pass.",
+    "notices": "29 local links resolve; copied Three/protobuf package notices equal pinned installed notices byte-for-byte."
+  },
+  "historicalEvidence": "2026-10-08-content-authoring-checks.json retains old264-path scope and historical failures; current merge supersedes its old generator implementation while preserving current744-path catalog.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-content-authoring-checks-20261011",
+    "inventoryEntries": 21,
+    "inventorySHA256": "98913693c8689af6a1bb3537aee294dd0dac98ab22d46b6b76d135acf5a868d8"
+  },
+  "limits": "Source qualification only; no publication/version/dependency/model/schema/account/economy/access change. Does not close full1.86, third-party/project rights, modern world art, device/campaign/performance/F1\u2013F5/beta/launch/handoff gates. Full goal remains active."
+}
