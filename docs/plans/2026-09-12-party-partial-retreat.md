@@ -226,3 +226,23 @@ Initial test failed because the new helper did not yet exist. No native timing
 improvement or dungeon clear has yet been verified. The leader still performs
 ordinary mouse/keyboard actions; no second input owner, game-state mutation,
 encounter nerf or larger timeout was introduced.
+
+### Compact-observation replay result
+
+Native39948 on d985fa89 FAILED7.8minutes, seed-5075659787700787075,
+gen2/attempt0/no fallback. Four-role entry, trash combat and one actual town
+recovery/reentry passed;38steps/two room traversals preceded the Warden. Tank
+died with last reported boss1465/15000HP. Final cleanup respawn is not survival.
+Cleric cast16Light/8Embrace,4199whole-run ally healing (3665boss-only), and had
+12mana at death. Wizard/Rogue had no effective remaining spell budget either.
+Fighter early warning escapes14 vs1 in the previous different-seed Low run;
+not a controlled same-seed improvement. Last two ordinary hits were183 at
+7.38/7.43range (50/54FPS); fatal183 occurred during a warning, at11.48distance
+47ms after estimated impact. Final dodge click release602ms, movement853ms;
+the dead endpoint remained unsafe253ms after impact. Preserve this failure.
+
+Archive `/tmp/eidolon-party-health-failure-P7Dabk`, scan0 and exact owned
+cleanup verified. Log `/tmp/eidolon-party-health-correct-route-native-20260912.log`.
+No full clear, per-member credit or Water handoff passed. The subsequent
+Verdant expedition-budget candidate is separate; this automation-only replay
+did not change combat numbers.
