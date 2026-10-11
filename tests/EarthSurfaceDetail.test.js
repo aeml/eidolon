@@ -1,5 +1,6 @@
+import { sampleEarthSurface as reference } from './fixtures/earth-surface-before-thatch.js';
 import * as THREE from 'three';
-import { createEarthSurfaceDetail, EARTH_SURFACE_TILE_METRES, sampleEarthSurface } from '../src/art/EarthSurfaceDetail.js';
+import { createEarthSurfaceDetail, EARTH_SURFACE_TILE_METRES, sampleEarthSurface, sampleEarthThatch } from '../src/art/EarthSurfaceDetail.js';
 
 test('physical channels are finite, bounded and continuous across repeated tile seams', () => {
     expect(EARTH_SURFACE_TILE_METRES).toBe(8);
@@ -55,4 +56,29 @@ test('stones form sparse separate islands with varied relief rather than a pavin
     expect(islands).toBeGreaterThan(20); expect(largest / (width * width)).toBeLessThan(.012);
     heights.forEach(values => expect(values.size).toBeGreaterThan(80));
     texture.dispose();
+});
+
+test('thatch ridges cross cell and tile boundaries continuously', () => {
+    for (let index = 0; index <= 96; index++) {
+        const boundary = index * 4 / 9, other = (index % 23) / 8;
+        for (const [a, b] of [
+            [[boundary - 1e-6, other], [boundary + 1e-6, other]],
+            [[other, boundary - 1e-6], [other, boundary + 1e-6]]
+        ]) expect(Math.abs(sampleEarthThatch(...a) - sampleEarthThatch(...b))).toBeLessThan(.001);
+    }
+});
+
+test('matted thatch only changes the registered vegetation relief channel', () => {
+    let changed = 0, minimum = 1, maximum = 0;
+    for (let z = 0; z < 64; z++) for (let x = 0; x < 64; x++) {
+        const point = [x / 8, z / 8], before = reference(...point), after = sampleEarthSurface(...point);
+        for (const channel of [0, 1, 3]) expect(after[channel]).toBe(before[channel]);
+        changed += before[2] !== after[2] ? 1 : 0;
+        const thatch = sampleEarthThatch(...point);
+        minimum = Math.min(minimum, thatch); maximum = Math.max(maximum, thatch);
+        expect(thatch).toBeGreaterThanOrEqual(0); expect(thatch).toBeLessThanOrEqual(1);
+        expect(sampleEarthThatch(point[0] - 8, point[1] + 16)).toBe(thatch);
+    }
+    expect(changed).toBeGreaterThan(1000);
+    expect(minimum).toBe(0); expect(maximum).toBeGreaterThan(.7);
 });

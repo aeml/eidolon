@@ -174,7 +174,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality), surface = createEarthSurfaceDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail, surface };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v17';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v18';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail }, earthSurface: { value: surface }, earthSurfaceScale: { value: 1 / EARTH_SURFACE_TILE_METRES },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -261,7 +261,9 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // over worn routes or expose a new geometry/texture workload.
             float earthShelteredMoss = smoothstep(.42, .68,
                 earthBroad.r * .72 + earthMoss * .28) * earthWear.r * (1. - earthWear.g);
-            float earthMossFiber = earthMoss;
+            // Linear coverage survives mip averaging; never threshold tiny blades
+            // back into high-contrast sparkling fragments at travel distance.
+            float earthMossFiber = clamp((earthMoss - .20) / .70, 0., 1.);
             float earthLeafCoverage = earthGrain.g * earthWear.r;
             // These are linear reflectances, lit by the existing physical
             // lights/shadows, never emissive colors or baked fake highlights.
@@ -277,9 +279,18 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             vec3 forestBed = earthSoil * vec3(.72, .76, .66);
             vec3 fallenLeaf = mix(vec3(.065, .038, .016), vec3(.17, .115, .052), earthScatter);
             fallenLeaf *= .9 + earthGrain.b * .1;
-            vec3 heathBed = mix(vec3(.037, .062, .024), vec3(.065, .086, .033), earthMossFiber);
-            heathBed *= mix(.96, 1.04, earthMossFiber) * mix(.96, 1.04, earthClod);
+            // Dry stalks and living blades belong to one fibrous field. Bare
+            // open land gets an aged mat between mineral/soil exposures; lush
+            // authored beds stay greener. Worn paths and woodland litter own
+            // their separate surfaces, rather than receiving a grass overlay.
+            vec3 dryGrass = mix(vec3(.066, .059, .039), vec3(.135, .116, .071), earthMossFiber);
+            vec3 heathBed = mix(vec3(.032, .047, .023), vec3(.073, .087, .043), earthMossFiber);
+            float earthDryCoverage = (1. - earthWear.g) * (1. - earthWear.r) *
+                (1. - earthMossCoverage) * (.48 + earthScatter * .24);
+            vec2 earthGrassPhysical = vec2(.94 + earthMossFiber * .04, earthSoilRelief + earthMossFiber * .018);
             diffuseColor.rgb = earthSoil;
+            earthBlendSurface(diffuseColor.rgb, earthPhysical, dryGrass,
+                earthGrassPhysical, earthDryCoverage);
             earthBlendSurface(diffuseColor.rgb, earthPhysical, heathBed,
                 vec2(.96, earthSoilRelief + earthMoss * .012), earthMossCoverage);
             earthBlendSurface(diffuseColor.rgb, earthPhysical, forestBed,
