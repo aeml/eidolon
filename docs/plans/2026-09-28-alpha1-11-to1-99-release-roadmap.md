@@ -8,12 +8,14 @@ and9served asset hashes/byte counts match at12:33:35UTC.
 Attempt1's1675MiB/2048MiB storage refusal and clean merged scratch capacity
 repair remain retained; one failed-job-only retry reused passing prerequisites.
 [Failure and repair](2026-10-11-release32-storage-preflight-recovery.json).
-Qualified birch/recovery/account-help/Player-Guide/content-authoring components
-are merged into localmaster, awaiting a coherent publication.79unmerged histories
-remain individually reviewed; unfinished/rejected source and originaldirty
-checkout preserved. Authoring retains exact744-path catalog and qualifies58
-focused checks plus2native desktop/phone cases.
-[Authoring qualification](2026-10-11-content-authoring-qualification.json).
+Alpha1.79.33 coherent player-help/recovery milestone is prepared onmaster:
+qualified birch/recovery/account-help/Player-Guide/content-authoring/lore.
+429distinct focused release checks and8browser publication cases pass with
+retries/skips0;468cumulative notes retain all467prior entries byte-exact.
+[Prepublication](2026-10-11-release33-support-recovery-prepublication.json).
+Ordinary push and own ordered CI/deploy/live/17asset acceptance are next;
+public32 remains last accepted.79unmerged histories remain reviewed individually;
+unfinished/rejected source and originaldirty checkout preserved.
 Historical High frame-time failures, broader world/art/combat/audio, whole-game
 performance/devices/operations/F1-F5/beta/launch/handoff requirements stayopen.
 Existing100-clientsoak38109009521is active onpublic29, not capacity acceptance.

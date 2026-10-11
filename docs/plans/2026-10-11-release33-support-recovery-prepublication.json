@@ -1,0 +1,33 @@
+{
+  "recordedUTC": "2026-10-11T12:46:11.907727+00:00",
+  "version": "Alpha 1.79.33",
+  "preparedRuntimeSource": "db4b31c6557d874b061a7a12167eb6d302e46d82",
+  "status": "Qualified coherent milestone, ordinary push and own ordered CI/deploy/live acceptance next.",
+  "components": [
+    "2026-10-11-birch-connected-crown-qualification.json",
+    "2026-10-11-recovery-integrity-qualification.json",
+    "2026-10-11-support-player-guide-qualification.json",
+    "2026-10-11-content-authoring-qualification.json"
+  ],
+  "focused": {
+    "distinctPassed": 429,
+    "suites": 4,
+    "retainedFailure": "Initial428pass1fail: .github/workflows/ci.yml deploy command still32. Corrected only version; affectedVersionPresentation386pass, unchanged43 acrossother3suites retained."
+  },
+  "native": {
+    "distinctPassed": 8,
+    "retries": 0,
+    "skips": 0,
+    "bundleIdentityClassesSeconds": 5.955366,
+    "copiedHelpGuideLoreHistorySeconds": 22.278761,
+    "scope": "Actual copied bundle HTTP identity, lazy login and four class construction; actual prepared copied-publication login account help/private payload/appeal/name-correction at1280/390, six native guide chapters at1280/390, both lore sites/full ending/fixed control/keyboard/input/lifetime at1280/390, cumulative lazy-note/retry flow. Synthetic auth only, no production submissions or rewards."
+  },
+  "metadata": "All12 version paths synchronize33.468exact cumulative entries: all467 previous byte-exact, initial10/46lazy pages. Full lint, bash syntax and diff checks pass.",
+  "publication": "17 expected assets include baseline9 plus changed account/help/lore modules, current authored catalog and both supplied package notices. Final source manifest will be regenerated after this receipt commit, before ordinary push.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release33-support-recovery-preflight-20261011",
+    "inventoryEntries": 39,
+    "inventorySHA256": "3384bbb4dad77717a0521448ca8e29808af420c9b222faba68a87d03eb889b04"
+  },
+  "limits": "Last accepted32 retained. Component evidence reused; no unchanged full campaign/soak replay. No production recovery/access/economy/terrain activation/schema/wipe or final world/art/device/performance/F1\u2013F5/beta/launch/handoff approval. Full goal remains active."
+}

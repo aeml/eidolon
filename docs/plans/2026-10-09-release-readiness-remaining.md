@@ -51,6 +51,17 @@ Every explicit requirement in those sources remains part of the completion audit
   [Failure and repair](2026-10-11-release32-storage-preflight-recovery.json),
   [publication](2026-10-11-release32-publication.json),
   [prepublication](2026-10-11-release32-world-resources-prepublication.json).
+- **Prepared33 milestone:** qualified birch/recovery/account-help/Player Guide/
+  authoring/lore changes are bundled on master for one coherent publication.
+ 429distinct release checks/four suites and8distinct browser publication cases
+  pass, retries/skips0. All12 version paths align33;468cumulative notes retain
+  every467prior entry byte-exact. Initial missed CI deployment version is retained
+  as428pass/1fail; affected386pass after correction, unchanged43 reused.
+  Prepared copied-publication identity/help/guide/lore/history flows pass. Final
+  publication will pin17assets, including current authored catalog and notices.
+  Ordinary push and own ordered CI/deploy/live/public acceptance remain pending;
+  component qualification below does not substitute for that acceptance.
+  [Prepublication](2026-10-11-release33-support-recovery-prepublication.json).
 - **Later qualified work:** connected, overlapping birch crowns `323e500c`
   are merged into local master, unpublished after accepted32. Forty focused
   checks and nine distinct native cases qualify High/Low/phone, current flat
@@ -138,7 +149,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Prepare a coherent next milestone containing qualified merged birch/recovery/support/guide/authoring work after exact accepted32. Synchronize versions/cumulative notes and qualify its own source/publication/live acceptance. Retain failed32attempt1; accepted32 does not prequalify later source. | Implementation |
+| Next release | Push prepared Alpha1.79.33 after fresh ordinary remote reconciliation and final exact17asset pinning; observe its own ordered CI/deploy/live and normal-TLS identity/assets/readiness. Retain initial missed CI-version failure and failed32attempt1. Accepted32 does not prequalify33. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
