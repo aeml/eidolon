@@ -1,0 +1,221 @@
+{
+  "recordedUTC": "2026-10-11T19:56:46.046992+00:00",
+  "status": "Qualified per-invocation exact signature reuse selected and ordinarily merged into local master; not published, original cold/connected frame budgets remain open.",
+  "source": "143be329",
+  "merge": "03fa966f",
+  "change": "Cache immutable per-vertex surface and protected-row JSON signatures only within each color/body preparation call. Preserve all original validations, source rows, morphs, skins, solver options, seam repairs, scheduling/fairness, worker source-key/cache/fallback limits and output indices. Later calls recompute changed buffers.",
+  "focused": {
+    "passed": 71,
+    "suites": 4,
+    "newRegressions": 2,
+    "coverage": "Color material regions and body blink endpoints recompute on the same mutated source buffers and match fresh copies; all existing source-preservation, protected-collar, attribute/option refusal, bounded delivery and lifecycle checks pass.",
+    "lint": "Four changed source/test paths pass; whitespace check passes."
+  },
+  "native": {
+    "observations": [
+      {
+        "quality": "high",
+        "exactInputAndOutputCases": 76,
+        "allThreeVariantsSame": true,
+        "observations": [
+          {
+            "variant": "reference",
+            "workerWallMs": 6519.1,
+            "firstRequestToLastCompleteMs": 9960.7,
+            "afterSetupToLastCompleteMs": 8074.2,
+            "mainPumpMs": 77.4,
+            "mainCompleteMs": 156.3,
+            "settled": {
+              "at": 18020.5,
+              "pending": 0,
+              "installed": 65,
+              "calls": 220,
+              "triangles": 147466
+            },
+            "stats": {
+              "requested": 76,
+              "installed": 65,
+              "stale": 0,
+              "fallback": 11,
+              "failed": 0,
+              "cacheHits": 6,
+              "rejected": 0,
+              "maxCopiedBytes": 2995424,
+              "workerCacheBytes": 727644,
+              "workerCacheEntries": 67
+            }
+          },
+          {
+            "variant": "candidate",
+            "workerWallMs": 5366.8,
+            "firstRequestToLastCompleteMs": 8163.0,
+            "afterSetupToLastCompleteMs": 6188.4,
+            "mainPumpMs": 87.6,
+            "mainCompleteMs": 200.1,
+            "settled": {
+              "at": 16164,
+              "pending": 0,
+              "installed": 65,
+              "calls": 220,
+              "triangles": 147466
+            },
+            "stats": {
+              "requested": 76,
+              "installed": 65,
+              "stale": 0,
+              "fallback": 11,
+              "failed": 0,
+              "cacheHits": 6,
+              "rejected": 0,
+              "maxCopiedBytes": 2995424,
+              "workerCacheBytes": 727644,
+              "workerCacheEntries": 67
+            }
+          },
+          {
+            "variant": "reference-again",
+            "workerWallMs": 7006.9,
+            "firstRequestToLastCompleteMs": 10348.3,
+            "afterSetupToLastCompleteMs": 8100.6,
+            "mainPumpMs": 125.6,
+            "mainCompleteMs": 188.8,
+            "settled": {
+              "at": 18648.600000023842,
+              "pending": 0,
+              "installed": 65,
+              "calls": 220,
+              "triangles": 147466
+            },
+            "stats": {
+              "requested": 76,
+              "installed": 65,
+              "stale": 0,
+              "fallback": 11,
+              "failed": 0,
+              "cacheHits": 6,
+              "rejected": 0,
+              "maxCopiedBytes": 2995424,
+              "workerCacheBytes": 727644,
+              "workerCacheEntries": 67
+            }
+          }
+        ]
+      },
+      {
+        "quality": "low",
+        "exactInputAndOutputCases": 76,
+        "allThreeVariantsSame": true,
+        "observations": [
+          {
+            "variant": "reference",
+            "workerWallMs": 4335.1,
+            "firstRequestToLastCompleteMs": 6213.8,
+            "afterSetupToLastCompleteMs": 4300.9,
+            "mainPumpMs": 103.6,
+            "mainCompleteMs": 153.4,
+            "settled": {
+              "at": 12739.900000035763,
+              "pending": 0,
+              "installed": 71,
+              "calls": 110,
+              "triangles": 65649
+            },
+            "stats": {
+              "requested": 76,
+              "installed": 71,
+              "stale": 0,
+              "fallback": 5,
+              "failed": 0,
+              "cacheHits": 8,
+              "rejected": 0,
+              "maxCopiedBytes": 2840900,
+              "workerCacheBytes": 664224,
+              "workerCacheEntries": 67
+            }
+          },
+          {
+            "variant": "candidate",
+            "workerWallMs": 3005.4,
+            "firstRequestToLastCompleteMs": 3995.7,
+            "afterSetupToLastCompleteMs": 2510.2,
+            "mainPumpMs": 63.7,
+            "mainCompleteMs": 129.4,
+            "settled": {
+              "at": 9777.400000035763,
+              "pending": 0,
+              "installed": 71,
+              "calls": 110,
+              "triangles": 65649
+            },
+            "stats": {
+              "requested": 76,
+              "installed": 71,
+              "stale": 0,
+              "fallback": 5,
+              "failed": 0,
+              "cacheHits": 8,
+              "rejected": 0,
+              "maxCopiedBytes": 2840900,
+              "workerCacheBytes": 664224,
+              "workerCacheEntries": 67
+            }
+          },
+          {
+            "variant": "reference-again",
+            "workerWallMs": 3567.6,
+            "firstRequestToLastCompleteMs": 4775.6,
+            "afterSetupToLastCompleteMs": 3409.6,
+            "mainPumpMs": 68.3,
+            "mainCompleteMs": 146.0,
+            "settled": {
+              "at": 9835.300000011921,
+              "pending": 0,
+              "installed": 71,
+              "calls": 110,
+              "triangles": 65649
+            },
+            "stats": {
+              "requested": 76,
+              "installed": 71,
+              "stale": 0,
+              "fallback": 5,
+              "failed": 0,
+              "cacheHits": 8,
+              "rejected": 0,
+              "maxCopiedBytes": 2840900,
+              "workerCacheBytes": 664224,
+              "workerCacheEntries": 67
+            }
+          }
+        ]
+      }
+    ],
+    "nativeSessions": 6,
+    "jobsPerSession": 76,
+    "completedJobExecutions": 456,
+    "distinctInputOutputComparisons": 152,
+    "limits": "Worker wall time includes algorithm imports, hashing and asynchronous waits under current host load; not CPU/FPS/device/whole-world acceptance. Same source fingerprints and full output index SHA for every actual four-class/14-slot job; all original budgets unchanged. Cold samples remain above triangle budgets. Largest-first/fairness queue, algorithms/options, original attributes/morphs and fallback/cache policy unchanged."
+  },
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.a0bfaaefee9a272a.js",
+    "sha256": "a0bfaaefee9a272a274daa813fb6e9e0f4f3e3897ebd829aae66da45a5954afd",
+    "bytes": 137254,
+    "modules": 10,
+    "imports": []
+  },
+  "initialDiagnosis": "Two natural-clock observations isolate worker wall intervals as dominant versus copying/installation; includes imports/hash/await and current host load, not CPU time.",
+  "evidence": [
+    {
+      "root": "/home/aeml/.local/share/eidolon-preparation-latency-20261011",
+      "entries": 12,
+      "inventorySHA256": "1ec2f4baef897e0b609d4bff7dc9ad5e39a4e46194588ba97313667cd22b9c70"
+    },
+    {
+      "root": "/home/aeml/.local/share/eidolon-preparation-signature-comparison-20261011",
+      "entries": 24,
+      "inventorySHA256": "b99db3a495940ca89e2554990b6f4bdea9cb490fa69180ae479c16d95f47d92c"
+    }
+  ],
+  "scope": "Six prepared native AMD High1280/Low390 sessions, four supplied classes with14slots each, original Earth scene/HUD and all76jobs per session. No connected gameplay/FPS/physical-phone/whole-world/art/capacity claim. Worker observer forwards original buffers/messages/transfer lists with one private diagnostic duration field; main observers restore, each owned context/worker closes, serving session stops.",
+  "next": "Retain the cold-start triangle failures and connected frame-time counterexamples. Verify corrective37 ordinary deployment/live/public assets before preparing another coherent publication; continue full original readiness scope."
+}
