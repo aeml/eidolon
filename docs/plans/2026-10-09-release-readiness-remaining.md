@@ -44,6 +44,25 @@ full locked-dependency lint pass. Actual discovery338hosted/27native/13overlap/
 upstream licensing/docs4e7fbe6f is preserved. Release deployment remains pending.
 [Correction proof](2026-10-11-additive-hosted-native-gate-correction.json).
 
+**Next qualified camp change:**346b9a58 is ready to merge into local master;
+publication waits for current Alpha1.79.30 acceptance. Only the four reviewed
+camp/owner files from the earlier private prototype were selected onto current
+master; other private renderer/monster experiments remain excluded. Stock
+per-camera BatchedMesh clipping retains all15camps/nine surfaces and colliders,
+with unsupported-device instancing fallback.44focused checks,23CI-plan checks,
+full lint,4distinct native cases and2software cases pass. Native42source views
+plus48equipped copied-engine poses preserve exactRGB and reference stability;
+GPU replacement/owner disposal returns exact warmed counts. Each field owns
+171552additional measured derivative bytes. Sampled copied town-center High
+209439→178243triangles/190→181draws; Low70353→50613/76→67. These prepared samples
+do not resolve historical whole-world budgets or establish FPS/device acceptance.
+The first full software-motion High fixture timed out; retained, excluded from
+acceptance. Hosted coverage checks the same three views at one pose each; full
+24native poses per quality remain mandatory. Actual discovery340hosted/31native/
+15overlap/356distinct preserves all338previous hosted identities. Frozen96-entry
+inventory2a98bcee328d18682b144546ca63e6191ef3352ec1bd6054db816aac74aa6191.
+[Camp qualification](2026-10-11-current-master-camp-clipping-qualification.json).
+
 **Live: Alpha1.79.29/12e5e3c4 is accepted.** Exact CI38078784320 succeeded on
 attempt1; frontend/backend/database and eight served asset hashes match.
 The requested jump, takeoff/landing, aura attachment and test-account filtering
