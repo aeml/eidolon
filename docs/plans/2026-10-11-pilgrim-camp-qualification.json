@@ -23,5 +23,6 @@
   "focusedChecks": 26,
   "focusedSuites": 3,
   "contentGroups": 12,
-  "status": "Qualified bounded prepared native scope, ready for ordinary merge; unpublished."
+  "status": "Qualified bounded prepared native scope, merged into master; unpublished.",
+  "mergeCommit": "e40ab455054a8fb6a4f4ff9cdd816d8501a7bb44"
 }
