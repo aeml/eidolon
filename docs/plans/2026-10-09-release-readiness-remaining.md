@@ -113,7 +113,8 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **78**, reduced from 287. Unfinished/rejected experiments
+  unmerged tips are now **77**, reduced from 287; 557 of 634 local branch names
+  are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
   three additional origin-parser regression cases. Completed recovery integrity
@@ -122,6 +123,7 @@ Every explicit requirement in those sources remains part of the completion audit
   superseded public-probe and current authoring histories are also ancestors of master. Full scope
   remains intact.
   [Workflow](../../AGENTS.md),
+  [maintenance-notice history](2026-10-11-maintenance-notice-history-reconciliation.json),
   [Whirlwind validation history](2026-10-11-whirlwind-history-reconciliation.json),
   [original reconciliation](2026-10-11-master-branch-reconciliation.json),
   [stale-hover/rune histories](2026-10-11-stale-hover-rune-branch-reconciliation.json),

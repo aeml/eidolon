@@ -1,0 +1,409 @@
+{
+  "recordedUTC": "2026-10-11T13:39:44.189411+00:00",
+  "status": "completed-validated-history-ordinarily-merged-into-master",
+  "beforeMaster": "84b295e69aa8bd67719487f2d9a86d7a010e9f43",
+  "masterMerge": "67300318bba6eea755beb53e06d81b5b0c0d2595",
+  "reviewedMerge": "837c5848f59f6ca4a20f5cf40f3f64ce061a4b1a",
+  "branch": "work/alpha-1-83-notices-current-20261008",
+  "branchHead": "9e1d6f627ebcc668ac4b6b77217a6274ef6ef504",
+  "tree": "bce5650b86d0500e1430d02149ee90e54cc275c7",
+  "treeUnchanged": true,
+  "review": "Announcement handler, authority/audit checks, UI, styles, focused tests, browser case and dated receipt already match master. Later master retains configured automation-account population filtering, Dark Realm access audit, worker/frustum delivery, action-animation continuity and current release/recovery documentation. Historical merge duplicated the existing 97-line operator playbook; retain the single current copy. Keep the current full goal and roadmap. No implementation removed or stale goal imported.",
+  "validation": "All files match the first parent byte-for-byte; clean tree, diff check and exact branch ancestry pass. Reuse retained scope-matched acceptance; no unchanged runtime, browser, campaign or soak replay.",
+  "counts": {
+    "localBranchNames": 634,
+    "merged": 557,
+    "unmergedBefore": 78,
+    "unmergedAfter": 77
+  },
+  "remaining": [
+    {
+      "branch": "archive/root-ledger-never-push-20260914-296d747f",
+      "head": "296d747f8bf7cf4e9b5d25303b6228532bd6ae4f",
+      "commitsOutsideMaster": 644
+    },
+    {
+      "branch": "qa/release14-click-diagnostic",
+      "head": "527a812bb17d8f18a54c550490cbc8fe697f1466",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/1-1-party-traversal-timing",
+      "head": "90b3313ae09c2c8744d5576da0cc7da0f469f753",
+      "commitsOutsideMaster": 3
+    },
+    {
+      "branch": "work/1-1-verdant-expedition-budget",
+      "head": "64a4881e565bbdf506e3877166708798bf5fdbf3",
+      "commitsOutsideMaster": 3
+    },
+    {
+      "branch": "work/actor-affine-bounds-20261010",
+      "head": "0dbe93f4066434b19bf8d5de637f0c0625e25ea3",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/actor-batch-shadow-entry-20261010",
+      "head": "bf2039bf4b0f1c71d7b421a6953b71396b33c38e",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/actor-cell-translation-20261010",
+      "head": "4b108ffbd5f68f9d6aada2ed0876feffeb063168",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/actor-frame-storage-20261010",
+      "head": "3aea15aa4ce91d64829e563621e0a4eeb222e210",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/actor-shadow-gameplay-20261010",
+      "head": "2723cff1904671b5be3b6d01f996402e6bf9a0b0",
+      "commitsOutsideMaster": 6
+    },
+    {
+      "branch": "work/actor-shadow-influence-20261010",
+      "head": "378a79a2c6bd59409813f01dc43351e6daeb0402",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/actor-shadow-light-index-20261010",
+      "head": "b90d1ac5218064442a013d9ced134bdd35824792",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/actor-world-bounds-20261010",
+      "head": "26659ce364dc9465ffeae7f30d010cda198959cf",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/additive-effect-single-pass-20261011",
+      "head": "fb03de23abccae327b9269fdf5173052908a2c27",
+      "commitsOutsideMaster": 26
+    },
+    {
+      "branch": "work/alpha-1-48-equipment-multidraw-probe-20260930",
+      "head": "998115b4ad4d33f623e25edbf64c3b2aec5bba49",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/alpha-1-48-shadow-casters-probe-20260930",
+      "head": "360d612b789004b8a1fa2f65902def7ce043f38a",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/alpha-1-48-surface-pivot-probe-20260930",
+      "head": "f4d3574011d4f9f30b0e3ded780e916870b0330f",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/alpha-1-60-integration-20261001",
+      "head": "62eb40f5d8b888ccc02423639f00cfe7bee6c1ff",
+      "commitsOutsideMaster": 4
+    },
+    {
+      "branch": "work/alpha-1-61-venue-20261001",
+      "head": "c99de3fbee167324764d4135b8499ca52aaea462",
+      "commitsOutsideMaster": 6
+    },
+    {
+      "branch": "work/alpha-1-62-blackjack-20261001",
+      "head": "c62fa027888b2f70971e92ff35b7c153d0cdb162",
+      "commitsOutsideMaster": 8
+    },
+    {
+      "branch": "work/alpha-1-63-poker-20261001",
+      "head": "0b17c0691f3fc333412a063089207867f6258967",
+      "commitsOutsideMaster": 9
+    },
+    {
+      "branch": "work/alpha-1-64-house-20261001",
+      "head": "794f2c16109211fbbcf6ca579b3ded47309a5c2f",
+      "commitsOutsideMaster": 11
+    },
+    {
+      "branch": "work/alpha-1-65-slots-20261001",
+      "head": "1757c9691f64423020b9310e4168765a270382ce",
+      "commitsOutsideMaster": 12
+    },
+    {
+      "branch": "work/alpha-1-66-wallets-20261001",
+      "head": "bcec17110dfb639ca86a5e9e13b7ee6dac559bf6",
+      "commitsOutsideMaster": 13
+    },
+    {
+      "branch": "work/alpha-1-67-cosmetics-20261001",
+      "head": "649066768cd572ba637d657ed9cb9d6da87f00a6",
+      "commitsOutsideMaster": 17
+    },
+    {
+      "branch": "work/alpha-1-68-membership-20261001",
+      "head": "bfbead1e2aba03e8d219a692a2a1f7ba56cd07e5",
+      "commitsOutsideMaster": 19
+    },
+    {
+      "branch": "work/alpha-1-73-valuable-operations-20261002",
+      "head": "229c3c2ae8fdaafb9ead6f123d8426712975cecc",
+      "commitsOutsideMaster": 52
+    },
+    {
+      "branch": "work/alpha-1-75-release-20261004",
+      "head": "2ccae4c8428360a1a74845461ec3382c6ff9f9e7",
+      "commitsOutsideMaster": 14
+    },
+    {
+      "branch": "work/alpha-1-76-release-20261004",
+      "head": "5e8a140925dca71664e9f9a345f754708ec49041",
+      "commitsOutsideMaster": 46
+    },
+    {
+      "branch": "work/alpha-1-77-network-current-20261004",
+      "head": "c40ec073505076461754d5cfbae4ee6794988462",
+      "commitsOutsideMaster": 52
+    },
+    {
+      "branch": "work/alpha-1-78-operations-current-20261004",
+      "head": "b1bb20d927953bba735138cf547fa8bef8c5fd78",
+      "commitsOutsideMaster": 68
+    },
+    {
+      "branch": "work/alpha-1-79-capacity-current-20261004",
+      "head": "c6b228e4fce5b3b6d3d489b52b37a62bb125b3ae",
+      "commitsOutsideMaster": 168
+    },
+    {
+      "branch": "work/alpha-1-79-equipment-palette-current-20261009",
+      "head": "4c04f6ccd19c865d7bd53b46b301cbc55f318600",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/alpha-1-81-current-20261006",
+      "head": "ef7510f07539b7d85ff291107f31e90366ebfd4d",
+      "commitsOutsideMaster": 4
+    },
+    {
+      "branch": "work/alpha-1-83-current-20261006",
+      "head": "db29bd601451a7a6fa865bfb4d808f6a4ed93447",
+      "commitsOutsideMaster": 2
+    },
+    {
+      "branch": "work/alpha-1-84-current-20261006",
+      "head": "67c97dfd40721bd23e503ef696a07057ff0aad77",
+      "commitsOutsideMaster": 3
+    },
+    {
+      "branch": "work/alpha-1-85-current-20261006",
+      "head": "1320cec622a643250a0a88833731acbcf605ed78",
+      "commitsOutsideMaster": 4
+    },
+    {
+      "branch": "work/alpha-1-86-current-20261006",
+      "head": "ce7a0a1ded9a65263ef3fbc5bf75f893bed29106",
+      "commitsOutsideMaster": 6
+    },
+    {
+      "branch": "work/alpha-1-87-current-20261006",
+      "head": "575a80f2d56c2f486817f097236e9eec6c4523a8",
+      "commitsOutsideMaster": 28
+    },
+    {
+      "branch": "work/alpha-1-87-dungeon-architecture-20261008",
+      "head": "b39bffe14777100697a423118ce38549fcba62cc",
+      "commitsOutsideMaster": 9
+    },
+    {
+      "branch": "work/alpha-1-87-dungeon-walls-20261008-0453",
+      "head": "a18ad39fca0cf79303777d4045484473c27abf3e",
+      "commitsOutsideMaster": 8
+    },
+    {
+      "branch": "work/alpha-1-87-fire-surface-current-20261008",
+      "head": "61e8e69e89c1844db591539cc04d461fff80fdc0",
+      "commitsOutsideMaster": 5
+    },
+    {
+      "branch": "work/alpha-1-87-floor-current-20261008",
+      "head": "6b39c503bda2c9a444077e359a11d98ad8743148",
+      "commitsOutsideMaster": 173
+    },
+    {
+      "branch": "work/alpha-1-87-moonfrost-current-20261008",
+      "head": "f8ffef302f033cfc9e1d7184a19289e149413c70",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/alpha-1-87-moonfrost-review-20261008",
+      "head": "6599fee636755add77c1eaf8616a08d74dab3cfb",
+      "commitsOutsideMaster": 7
+    },
+    {
+      "branch": "work/alpha-1-87-outcrop-art-current-20261008",
+      "head": "72a9c37fad564cf5a43df3ee8f43dd7ca875e509",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/alpha-1-87-raised-budget-current-20261008",
+      "head": "165c423fbc9a4f11500ef003e855c0cfe2049865",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/alpha-1-87-selection-current-20261008",
+      "head": "548e5381714d82fa92a33922d1bfa8d90bcf9b72",
+      "commitsOutsideMaster": 3
+    },
+    {
+      "branch": "work/alpha-1-87-skyreach-canvas-20261008",
+      "head": "eaf70ebfba759c6a6ec2e9b079a8ee3694fe2888",
+      "commitsOutsideMaster": 10
+    },
+    {
+      "branch": "work/alpha-1-87-terrain-selection-current-20261008",
+      "head": "54497bbbe1a26bd13dcbaf91913ecb1769793b4b",
+      "commitsOutsideMaster": 4
+    },
+    {
+      "branch": "work/alpha-1-87-town-masonry-current-20261008",
+      "head": "fdfbd22347da680ae1219a65bfbb74a7f7878ae0",
+      "commitsOutsideMaster": 6
+    },
+    {
+      "branch": "work/alpha-1-87-tree-cells-current-20261008",
+      "head": "d3c47e95e636c71a1feca339f129ba0ddcdcda16",
+      "commitsOutsideMaster": 3
+    },
+    {
+      "branch": "work/alpha-1-87-woodland-budget-current-20261008",
+      "head": "6b828ad8b441418f6a28643c685ea2699f83d5ee",
+      "commitsOutsideMaster": 2
+    },
+    {
+      "branch": "work/alpha-1-88-current-20261006",
+      "head": "5bc8ed9a48c6597aa5547b71aea8035b96843fdf",
+      "commitsOutsideMaster": 13
+    },
+    {
+      "branch": "work/alpha-1-90-admission-preparation-20261008",
+      "head": "1037852c57149900a37a1a4493221a714724eb2d",
+      "commitsOutsideMaster": 4
+    },
+    {
+      "branch": "work/browser-cost-partition-20260909",
+      "head": "df6f806a6c4ac1f50c79b1cd9ec72b3e83338b65",
+      "commitsOutsideMaster": 4
+    },
+    {
+      "branch": "work/camp-instance-frustum-20261010",
+      "head": "9fe14c1999036780740e9f6c51e23b4fe7f9c0ae",
+      "commitsOutsideMaster": 10
+    },
+    {
+      "branch": "work/collision-aware-fight-return-20261011",
+      "head": "846d63edf54bc56d3c9f56f347f093312f6586b5",
+      "commitsOutsideMaster": 20
+    },
+    {
+      "branch": "work/combat-1-43-candidate-20260929",
+      "head": "048aec6e343d193415e8bf5454b4675679c524e9",
+      "commitsOutsideMaster": 73
+    },
+    {
+      "branch": "work/combat-submission-attribution-20261011",
+      "head": "97dc3b64fa9fae7f30f3aae9d20c0ec24d36327a",
+      "commitsOutsideMaster": 22
+    },
+    {
+      "branch": "work/default-actor-cell-delivery-20261010",
+      "head": "5e3c4d3faf17fad3e532c91e7b8f8d18669d43cf",
+      "commitsOutsideMaster": 19
+    },
+    {
+      "branch": "work/demon-orc-rigid-delivery-20261010",
+      "head": "af0bfd0a100498b0ddb47dc8c4577ef32405850d",
+      "commitsOutsideMaster": 3
+    },
+    {
+      "branch": "work/dungeon-entry-ward-live-20261011",
+      "head": "d3ac269e3cd9842c2aac0330be9f78b2a62624dc",
+      "commitsOutsideMaster": 21
+    },
+    {
+      "branch": "work/earth-soil-response-20261009",
+      "head": "ab3ce06d9c4609c05b4d0b0c5aadab3077dc67d9",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/environment-1-42-candidate-20260929",
+      "head": "69cb2af121198a40161fbeff346b7a8b7bd16c20",
+      "commitsOutsideMaster": 2
+    },
+    {
+      "branch": "work/equipped-fight-dungeon-review-20261010",
+      "head": "ca9e1c5bc5a6e390d33cd03a6e5a8ed9142797d0",
+      "commitsOutsideMaster": 15
+    },
+    {
+      "branch": "work/fighter-charge-20260915",
+      "head": "64ec325bd39be74293b653474101babed2800e04",
+      "commitsOutsideMaster": 2
+    },
+    {
+      "branch": "work/fitted-rigid-flat-surfaces-20261010",
+      "head": "59004143652a498123d053039e4503c4da7d5735",
+      "commitsOutsideMaster": 15
+    },
+    {
+      "branch": "work/foliage-world-product-20261011",
+      "head": "cbff101407d2a8a0f265f1cb07d96e5f976e1196",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/forest-visibility-20261009",
+      "head": "282d0a78197d273dd36251bdfa8ae6e5b4914e1b",
+      "commitsOutsideMaster": 1
+    },
+    {
+      "branch": "work/gold-provenance-diagnostic-20261010",
+      "head": "7d3e1a11e8d7fafdee6632dfd402b9bb88bdc8bc",
+      "commitsOutsideMaster": 5
+    },
+    {
+      "branch": "work/gold-room-reward-boundary-20261010",
+      "head": "a69cd244e298d97875c04480c1dd7577e8cb22e1",
+      "commitsOutsideMaster": 4
+    },
+    {
+      "branch": "work/party-startup-attribution-20261011",
+      "head": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+      "commitsOutsideMaster": 25
+    },
+    {
+      "branch": "work/singleton-actor-delivery-20261010",
+      "head": "f8e994d058adeafa8a6e2057604b2b0fb12953ce",
+      "commitsOutsideMaster": 6
+    },
+    {
+      "branch": "work/status-hud-icons-20261010",
+      "head": "aebc87abc4426bc97aea0cbe177ee3ccf37694ac",
+      "commitsOutsideMaster": 18
+    },
+    {
+      "branch": "work/vendor-gold-coherence-20261010",
+      "head": "9b252480dd8cf18a91f2d93c382d3c71e60e81f7",
+      "commitsOutsideMaster": 4
+    },
+    {
+      "branch": "work/verdant-floor-live-20261011",
+      "head": "603efd84fc5d0de1c2f432aeeb28f59c592e0c3f",
+      "commitsOutsideMaster": 23
+    },
+    {
+      "branch": "work/woodland-spatial-batching-20261009",
+      "head": "dd354331f8a32ff1d874ce891f9e9587daa3193d",
+      "commitsOutsideMaster": 1
+    }
+  ],
+  "publication": "Local master merge. Corrective release33 run38142813857 on exact9ce67fe3 remains in progress; no subsequent release pushed before its own deployment acceptance.",
+  "preserved": "Unfinished/rejected experiments, uncommitted integer-copy candidate and original dirty user checkout. No deletion, reset, stash, force-push or production mutation.",
+  "completion": "This ancestry cleanup does not complete release-readiness or qualify the remaining candidates."
+}
