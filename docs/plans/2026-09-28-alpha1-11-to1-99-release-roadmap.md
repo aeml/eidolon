@@ -1,5 +1,23 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
+October11 current checkpoint: accepted publicAlpha1.79.30/exact1aae8407,
+CI38124028177attempt1 all10jobs successful, with post-terminal normal-TLS exact
+frontend/backend/readyDB and9served assets. Optional stabilization/full-character/
+live-four-class skips are explicit, not passes. [Acceptance](2026-10-11-public30-terminal-qualification.json).
+CombinedAlpha1.79.31/exact42f06ad0 is pushed to master; CI38126692286 is running.
+Six qualified camp/DemonOrc/Highsingleton/rock/foliage/display components retain
+previous dungeon/equipment/contact/HUD and jump/aura/admin fixes.415focused
+version/history/enrollment checks, full lint and3combined-publication native
+cases pass;370required anonymous identities are discovered, not370new executions.
+[Prepublication qualification](2026-10-11-release31-prepublication-qualification.json).
+Its own CI/deployment/live acceptance remains pending. Original High frame-time
+failures, broader world composition/material/vegetation, human contact-audio
+review and full inherited device/gameplay/operations/F1-F5/beta/launch/handoff
+scope stay open. Current100-clientsoak38109009521is active; owner-deferred
+uninterrupted campaign/pacing and physical-phone feedback remain for playtests.
+See the [remaining register](2026-10-09-release-readiness-remaining.md).
+The dated checkpoints below retain historical evidence and superseded queues.
+
 October9 current checkpoint: accepted public1.79.22/exact30a8b603 with all ten
 CI jobs, mandatory native/live evidence and exact public identities/assets.
 Qualified private terrain follow-up consolidates opaque NPC/Titan PBR surfaces
