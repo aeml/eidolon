@@ -768,7 +768,7 @@ describe('GameEngine encounter callouts', () => {
         expect(engine.playAudioCue).not.toHaveBeenCalled();
     });
 
-    test.each([undefined, 'physical', 'fire', 'arcane', 'holy', 'cold'])('local %s damage preserves its impact type and refreshes the remote attacker without an explicit action start', kind => {
+    test.each([undefined, 'physical', 'fire', 'arcane', 'holy', 'cold'])('local %s damage preserves its impact type without inventing an action start', kind => {
         const engine = Object.create(GameEngine.prototype);
         const remotePlayer = {
             id: 'remote-2',
@@ -799,7 +799,8 @@ describe('GameEngine encounter callouts', () => {
             }
         });
 
-        expect(remotePlayer.setAttackingState).toHaveBeenCalledWith(true);
+        expect(remotePlayer.setAttackingState).not.toHaveBeenCalled();
+        expect(remotePlayer.state).toBe('IDLE');
         expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.combatHit, { impact: 31 / 80, ...(kind ? { kind } : {}) });
     });
 

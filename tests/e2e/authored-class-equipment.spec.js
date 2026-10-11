@@ -8,6 +8,7 @@ import { captureGameplayColorPilot, captureGameplayColorResources } from './game
 import { captureGameplayBodyPilot } from './gameplay-body-lod-pilot.js';
 import { captureGameplayGeometryLifecycle } from './gameplay-geometry-lifecycle.js';
 import { captureGameplayGeometryDelivery } from './gameplay-geometry-delivery.js';
+import { captureImpactAnimationContinuity } from './impact-animation-continuity.js';
 
 // Explicit routed-asset comparisons need both controls to bypass the service
 // worker, which would otherwise serve reviewed files outside page.route.
@@ -35,7 +36,8 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
     const evidence = await page.evaluate(async () => {
         const THREE = await import('three');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
-        const { Actor } = await import('/src/entities/Actor.js');
+        const actorClasses = Object.fromEntries(await Promise.all(['Fighter', 'Rogue', 'Wizard', 'Cleric'].map(async type =>
+            [type, (await import(`/src/entities/${type}.js`))[type]])));
         document.getElementById('start-screen').style.display = 'none';
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(1440, 900); renderer.setPixelRatio(1);
@@ -61,7 +63,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         for (const [i, type] of classes.entries()) for (const quality of ['high', 'low']) {
             const root = await MeshFactory.createMeshForType(type, { quality });
             if (root.userData.authoredClass !== type) throw new Error(`Authored ${type} failed (${quality})`);
-            const actor = new Actor(`asset-${type}-${quality}`, {}); actor.meshType = type; actor.setMesh(root);
+            const actor = new actorClasses[type](`asset-${type}-${quality}`); actor.setMesh(root);
             root.position.set((i - 1.5) * 5.3, 0, quality === 'high' ? 0 : -8); scene.add(root);
             const gear = Object.fromEntries(Object.entries({ ...outfits[type], ring1: 'Ruby Ring', ring2: 'Silver Ring', neck: 'Necklace', trinket1: 'Amulet of Power', trinket2: 'Orb of Mana' })
                 .map(([slot, name]) => [slot, { id: `${type}-${quality}-${slot}`, name, baseName: name, type: ['Iron Sword', 'Steel Dagger', 'Wooden Staff', 'Cleric Mace'].includes(name) ? 'WEAPON' : 'ARMOR',
@@ -283,6 +285,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         }
         await writeFile(testInfo.outputPath('body-lod-review.json'), JSON.stringify(samples, null, 2));
     }
+    await captureImpactAnimationContinuity(page, testInfo);
     const ownership = await page.evaluate(async () => {
         const { actors, MeshFactory } = window.__classGear;
         const { fighterRuntimePath } = await import('/src/art/AuthoredFighter.js');

@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { Actor } from '../src/entities/Actor.js';
 import { createProceduralFighter, createProceduralRogue, createProceduralWizard, createProceduralCleric } from '../src/art/ProceduralHumanoid.js';
 import { prepareWeaponMotions } from '../src/art/AuthoredWeaponMotions.js';
+import { jest } from '@jest/globals';
+import { GameEngine } from '../src/core/GameEngine.js';
+import { AUDIO_CUES } from '../src/audio/AudioManager.js';
 
 const cases = [
     ['Fighter', createProceduralFighter, .5, .65],
@@ -84,5 +87,69 @@ test('both alternating Rogue strikes use the same reviewed damage contact, not t
             expect(actor.currentAction.getClip().name).toBe(name);
             expect(mesh.userData.basicAttackContactTime / actor.currentAction.getEffectiveTimeScale()).toBeCloseTo(.7, 6);
         }
+    } finally { actor.dispose(); }
+});
+
+test.each(cases)('%s confirmed impact preserves the running strike and its recovery timer', (name, create) => {
+    const actor = new Actor(`impact-${name}`, {});
+    actor.meshType = name;
+    actor.isRemote = true;
+    actor.setMesh(create());
+    const engine = Object.assign(Object.create(GameEngine.prototype), {
+        player: { id: 'hero', position: new THREE.Vector3(0, 0, 4) },
+        remotePlayers: new Map([[actor.id, actor]]),
+        floatingTextManager: { spawn: jest.fn() },
+        renderCombatFeedback: jest.fn(),
+        playAudioCue: jest.fn()
+    });
+    try {
+        actor.setAttackingState();
+        actor.updateAnimationMixer(.35);
+        const action = actor.currentAction, time = action.time, timer = actor.attackTimer;
+        const chest = actor.mesh.getObjectByName('Rig_Chest').quaternion.clone();
+        engine.handleServerMessage({ type: 'damage', payload: {
+            sourceId: actor.id, targetId: 'hero', amount: 40, kind: 'physical'
+        } });
+        expect(actor.currentAction === action).toBe(true);
+        expect(action.time).toBe(time);
+        expect(actor.attackTimer).toBe(timer);
+        expect(actor.mesh.getObjectByName('Rig_Chest').quaternion.equals(chest)).toBe(true);
+        actor.updateAnimationMixer(.02);
+        expect(action.time).toBeGreaterThan(time);
+        expect(engine.floatingTextManager.spawn).toHaveBeenCalled();
+        expect(engine.renderCombatFeedback).toHaveBeenCalled();
+        expect(engine.playAudioCue).toHaveBeenCalledWith(AUDIO_CUES.combatHit, { impact: .5, kind: 'physical' });
+    } finally { actor.dispose(); }
+});
+
+test.each([
+    ['Fighter', createProceduralFighter, 'Whirlwind'],
+    ['Rogue', createProceduralRogue, 'Piercing Throw'],
+    ['Wizard', createProceduralWizard, 'Fireball'],
+    ['Cleric', createProceduralCleric, 'Radiant Strike']
+])('%s delayed/periodic damage leaves its current ability animation intact', (name, create, skillName) => {
+    const actor = new Actor(`cast-impact-${name}`, {});
+    actor.meshType = name;
+    actor.isRemote = true;
+    actor.setMesh(create());
+    const engine = Object.assign(Object.create(GameEngine.prototype), {
+        player: { id: 'hero', position: new THREE.Vector3(0, 0, 4) },
+        remotePlayers: new Map([[actor.id, actor]]),
+        floatingTextManager: { spawn: jest.fn() }, renderCombatFeedback: jest.fn(), playAudioCue: jest.fn()
+    });
+    try {
+        expect(actor.playAbilityAnimation(skillName)).toBe(true);
+        actor.updateAnimationMixer(.1);
+        const action = actor.currentAction, time = action.time, ability = actor.currentAbilityAnimation;
+        for (const kind of ['physical', 'fire', 'arcane', 'holy', 'poison', 'bleed']) {
+            engine.handleServerMessage({ type: 'damage', payload: {
+                sourceId: actor.id, targetId: 'hero', amount: 8, kind
+            } });
+            expect(actor.currentAction === action).toBe(true);
+            expect(action.time).toBe(time);
+            expect(actor.currentAbilityAnimation === ability).toBe(true);
+        }
+        actor.updateAnimationMixer(.02);
+        expect(action.time).toBeGreaterThan(time);
     } finally { actor.dispose(); }
 });

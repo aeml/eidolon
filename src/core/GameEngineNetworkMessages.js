@@ -722,17 +722,11 @@ class GameEngineNetworkMessageMethods {
                 this.renderCombatFeedback(dmgData, 'damage');
             }
 
+            // Damage is contact feedback, not a new action start. Replaying
+            // Attack here rewinds a swing at impact and can interrupt a cast
+            // when its projectile, area effect or periodic damage arrives.
+            // Explicit attack/ability events and state snapshots own animation.
             playLocalDamageCue(this, dmgData);
-
-            // If target is local player, flash screen or shake camera?
-            if (this.player && dmgData.targetId === this.player.id) {
-                // Visual sync: if we took damage from a remote entity, force its ATTACKING animation.
-                // This prevents cases where state updates arrive out-of-sync and enemies appear to "run" while hitting.
-                if (sourceEntity && sourceEntity.isRemote) {
-                    this.beginRemoteActionPresentation(sourceEntity);
-                }
-                // this.renderSystem.shakeCamera(0.2);
-            }
 		} else if (msg.type === 'trade_update') {
 			this.uiManager.directTrade?.update(msg.payload);
 		} else if (msg.type === 'trade_complete') {
