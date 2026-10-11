@@ -1071,56 +1071,91 @@ export class InventoryUI {
     // ================================================================
 
     updateBuybackList(items) {
-        if (!this.buybackGrid) return;
-        this.buybackGrid.innerHTML = '';
-        if (!items) return;
+        const grid = this.buybackGrid;
+        if (!grid || this.disposed) return;
+        grid.setAttribute('role', 'group');
+        grid.setAttribute('aria-label', 'Items available to buy back');
+        grid.tabIndex = -1;
+        const active = document.activeElement;
+        const hadFocus = grid.contains(active);
+        const focusedKey = active?.dataset.buybackKey;
+        const scrollers = [grid, this.shopContentBuyback].filter(Boolean)
+            .map(element => ({ element, top: element.scrollTop, left: element.scrollLeft }));
+        const previous = this.buybackChoices || new Map(), next = new Map();
+        const current = (Array.isArray(items) ? items : []).filter(item => typeof item?.id === 'string' && item.id);
+        const counts = new Map(), occurrences = new Map();
+        for (const item of current) counts.set(item.id, (counts.get(item.id) || 0) + 1);
 
-        const reversedItems = [...items].reverse();
-
-        reversedItems.forEach(item => {
-            if (!item || !item.id) return;
-            const el = document.createElement('div');
-            el.className = 'inv-slot';
+        [...current].reverse().forEach((item, index) => {
+            const occurrence = occurrences.get(item.id) || 0;
+            occurrences.set(item.id, occurrence + 1);
+            const key = JSON.stringify([item.id, occurrence]);
             const iconPath = this._getItemIconPath(item);
-            const gemIndicatorStyle = this._getGemIndicatorStyle(item);
-            el.style.position = 'relative';
-            el.style.cursor = 'pointer';
-
-            this._applyItemSlotVisual(el, item, iconPath);
-
-            el.title = `${item.name}\nBuyback Price: ${item.value * (item.stack || 1)}g`;
-
-            if (item.stack > 1) {
-                const stackCount = document.createElement('div');
-                stackCount.className = 'item-stack';
-                stackCount.innerText = item.stack;
-                stackCount.style.position = 'absolute';
-                stackCount.style.bottom = '2px';
-                stackCount.style.right = '2px';
-                stackCount.style.fontSize = '10px';
-                if (gemIndicatorStyle) {
-                    stackCount.style.minWidth = '12px';
-                    stackCount.style.padding = '0 3px';
-                    stackCount.style.borderRadius = '9px';
-                    stackCount.style.background = gemIndicatorStyle.badgeBackground;
-                    stackCount.style.border = gemIndicatorStyle.badgeBorder;
-                    stackCount.style.color = gemIndicatorStyle.color;
-                    stackCount.style.textShadow = gemIndicatorStyle.textShadow;
-                    stackCount.style.textAlign = 'center';
-                } else {
-                    stackCount.style.color = 'white';
-                    stackCount.style.textShadow = '1px 1px 0 #000';
-                }
-                stackCount.style.fontWeight = 'bold';
-                el.appendChild(stackCount);
+            const ambiguous = counts.get(item.id) > 1;
+            const signature = JSON.stringify([item, iconPath, ambiguous]);
+            let choice = previous.get(key);
+            if (!choice || choice.signature !== signature) {
+                const itemId = item.id;
+                const el = document.createElement('button');
+                el.type = 'button';
+                el.className = 'shop-buyback-choice';
+                el.dataset.buybackKey = key;
+                el.dataset.itemId = item.id;
+                // Match server vendorStackPrice's legacy defaults. Unknown or
+                // imprecise totals cannot honestly be advertised as a price.
+                const stack = item.stack == null ? 1 : Math.max(1, item.stack);
+                const value = Math.max(1, item.value);
+                const price = value * stack;
+                const valid = Number.isSafeInteger(item.value) &&
+                    (item.stack == null || Number.isSafeInteger(item.stack)) && Number.isSafeInteger(price);
+                const name = `${item.name || 'Unnamed item'}${Number.isSafeInteger(stack) && stack > 1 ? ` ×${stack}` : ''}`;
+                const priceLabel = ambiguous ? 'Item unavailable' : valid ? `${price} Gold` : 'Price unavailable';
+                el.disabled = ambiguous || !valid;
+                el.setAttribute('aria-label', el.disabled ? `${name}; ${priceLabel}` : `Buy back ${name} for ${priceLabel}`);
+                const icon = document.createElement('span');
+                icon.className = 'inv-slot shop-buyback-icon';
+                icon.setAttribute('aria-hidden', 'true');
+                this._applyItemSlotVisual(icon, item, iconPath);
+                const details = document.createElement('span');
+                details.className = 'shop-buyback-details';
+                const title = document.createElement('span');
+                title.className = 'shop-buyback-name';
+                title.textContent = name;
+                const cost = document.createElement('span');
+                cost.className = 'shop-buyback-price';
+                cost.textContent = priceLabel;
+                details.append(title, cost);
+                el.append(icon, details);
+                el.onclick = () => {
+                    if (!this.disposed && !el.disabled && el.isConnected && el.parentElement === grid &&
+                        this.buybackChoices?.get(key)?.element === el) this.onBuyback?.(itemId);
+                };
+                choice = { element: el, signature };
             }
-
-            el.onclick = () => {
-                if (this.onBuyback) this.onBuyback(item.id);
-            };
-
-            this.buybackGrid.appendChild(el);
+            next.set(key, choice);
+            if (grid.children[index] !== choice.element) grid.insertBefore(choice.element, grid.children[index] || null);
         });
+        const retained = new Set([...next.values()].map(choice => choice.element));
+        for (const element of [...grid.children]) if (!retained.has(element)) element.remove();
+        this.buybackChoices = next;
+        if (!next.size) {
+            const empty = document.createElement('p');
+            empty.className = 'shop-buyback-empty';
+            empty.textContent = 'No items available to buy back.';
+            grid.appendChild(empty);
+        }
+        const focused = next.get(focusedKey)?.element;
+        if (hadFocus) (focused && !focused.disabled ? focused : grid).focus({ preventScroll: true });
+        for (const { element, top, left } of scrollers) {
+            element.scrollTop = top;
+            element.scrollLeft = left;
+        }
+        if (hadFocus && focused && !focused.disabled) {
+            const bounds = focused.getBoundingClientRect(), area = grid.getBoundingClientRect();
+            if (area.height > 0 && (bounds.top < area.top || bounds.bottom > area.bottom)) {
+                focused.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            }
+        }
     }
 
     // ================================================================
