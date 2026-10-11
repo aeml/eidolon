@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
-export async function reviewEarthRockShelves({ page, baseURL }, testInfo, quality, engineURL = '/src/core/GameEngine.js', width = 1280) {
+export async function reviewEarthRockShelves({ page, baseURL }, testInfo, quality, engineURL = '/src/core/GameEngine.js', width = 1280, viewRange = [0, 9]) {
     const phone = width <= 800;
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -34,7 +34,8 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
         window.__rockReview = { game, hero, field, understory, clock, rows: [], comparisons: [], THREE };
     }, { quality, engineURL, phone });
     try {
-        for (const [label, x, z, zoom] of [['west-grove', -120, -200, 18], ['deep-west', -102, -311, 18], ['deep-east', 62, -297, 18], ['east-road', 390, 173, 18], ['road-break', 590, 270, 18], ['far-east', 690, 160, 18], ['road-detail', 590, 263, 10], ['grove-bed', -83, -334, 10], ['east-verge', 353, 216, 10]]) {
+        const views = [['west-grove', -120, -200, 18], ['deep-west', -102, -311, 18], ['deep-east', 62, -297, 18], ['east-road', 390, 173, 18], ['road-break', 590, 270, 18], ['far-east', 690, 160, 18], ['road-detail', 590, 263, 10], ['grove-bed', -83, -334, 10], ['east-verge', 353, 216, 10]].slice(...viewRange);
+        for (const [label, x, z, zoom] of views) {
             const row = await page.evaluate(({ label, x, z, zoom }) => {
                 const { game, hero, field, understory, THREE } = window.__rockReview, render = game.renderSystem;
                 const focus = new THREE.Vector3(x, game.terrainElevation.sample(x, z), z);
@@ -120,9 +121,12 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
             if (clock) Object.defineProperty(performance, 'now', clock); else delete performance.now;
             delete window.__rockReview;
             return { rows, comparisons, released, expected: { geometry: geometry.size, material: material.size },
-                scope: 'Prepared supplied14-slot Fighter across72sampled walking poses, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval.' };
+                scope: `Prepared supplied14-slot Fighter across${rows.length * 8}sampled walking poses in${rows.length}views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval.` };
         });
         await writeFile(testInfo.outputPath('rock-review.json'), JSON.stringify(result, null, 2));
+        expect(result.rows.map(row => row.label)).toEqual(views.map(view => view[0]));
+        expect(result.rows.every(row => row.poses === 8)).toBe(true);
+        expect(result.comparisons.map(row => row.label)).toEqual(quality === 'high' ? views.map(view => view[0]).filter(label => ['west-grove', 'grove-bed'].includes(label)) : []);
         expect(result.released).toEqual(result.expected);
         for (const row of result.rows) {
             expect(row.phonePolicy).toBe(phone);

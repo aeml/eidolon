@@ -61,8 +61,14 @@ test.afterAll(async () => {
     if (root) await rm(root, { recursive: true, force: true });
 });
 
-for (const quality of ['high', 'low']) test(`copied published ${quality} Earth rock shelves retain equipped views and cleanup`, async ({ page }, testInfo) => {
-    await reviewEarthRockShelves({ page, baseURL: origin }, testInfo, quality, `/src/core/GameEngine.bundle.js?release=${release}`);
+// Keep all nine views and eight walking poses per view on both software and
+// native WebGL. Three independent High cases bound software rendering/readback
+// work without extending the test timeout or dropping either FXAA comparison.
+for (const [quality, section, viewRange] of [
+    ['high', 'groves', [0, 3]], ['high', 'roads', [3, 6]], ['high', 'details', [6, 9]],
+    ['low', 'all views', [0, 9]]
+]) test(`copied published ${quality} Earth rock shelves retain equipped views and cleanup: ${section}`, async ({ page }, testInfo) => {
+    await reviewEarthRockShelves({ page, baseURL: origin }, testInfo, quality, `/src/core/GameEngine.bundle.js?release=${release}`, 1280, viewRange);
     await testInfo.attach('published-engine-identity', { body: JSON.stringify(metadata, null, 2), contentType: 'application/json' });
 });
 
