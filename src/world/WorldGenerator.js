@@ -78,6 +78,7 @@ export class WorldGenerator {
         // multi-draw submits each plant separately; retain established cells
         // on those devices rather than increasing their draw-call budget.
         this.understorySpatialBatches = options.understorySpatialBatches !== false;
+        this.campInstanceFrustum = options.campInstanceFrustum === true;
         this.crystalSanctum = null;
         this.townCourtyards = null;
         this.reducedMotionQuery = createMotionPreference();
@@ -302,7 +303,7 @@ export class WorldGenerator {
         // Trading House is now an Entity (loaded in MeshFactory) to handle interaction/collision better
 
         const campPlacements = createLanternholdCampPlacements(cx, cz);
-        const campField = createProceduralLanternholdCampField(campPlacements);
+        const campField = createProceduralLanternholdCampField(campPlacements, { perInstanceFrustum: this.campInstanceFrustum });
         campField.traverse((part) => {
             if (part.isMesh) {
                 MeshFactory.configureShadowCastingForObject(part, { stableFrontShadows: true });

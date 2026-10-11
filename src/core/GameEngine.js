@@ -507,7 +507,8 @@ export class GameEngine {
         this.activeBuffs = [];
         this.worldGenerator = new WorldGenerator(this.getInstanceEnvironmentGroup(), this.collisionManager, {
             graphicsQuality: this.renderSystem.graphicsQuality, terrainElevation: this.terrainElevation, terrainProfile: this.terrainProfile,
-            understorySpatialBatches: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true
+            understorySpatialBatches: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true,
+            campInstanceFrustum: this.renderSystem.renderer?.extensions?.has?.('WEBGL_multi_draw') === true
         });
         this.activeWorldGenerator = this.worldGenerator;
         this.minimap = new Minimap();

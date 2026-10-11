@@ -745,7 +745,7 @@ export function createProceduralLanternholdStructure(structureId, { optimized = 
 
 // The .02m canvas hem meets the .025m town surface. The retired-.65m asset
 // offset buried cloth, bedrolls and hearths; camp centers/footprints stay fixed.
-export function createProceduralLanternholdCampField(placements, { targetY = .005 } = {}) {
+export function createProceduralLanternholdCampField(placements, { targetY = .005, perInstanceFrustum = false } = {}) {
     const normalizedPlacements = Array.isArray(placements) ? placements : [];
     const optimized = getOptimizedStructureParts('camp');
     const field = new THREE.Group();
@@ -760,11 +760,18 @@ export function createProceduralLanternholdCampField(placements, { targetY = .00
     const scale = new THREE.Vector3(1, 1, 1);
     const matrix = new THREE.Matrix4();
     optimized.parts.forEach((descriptor, partIndex) => {
-        const instances = new THREE.InstancedMesh(
-            descriptor.geometry,
-            descriptor.material,
-            normalizedPlacements.length
-        );
+        // Callers enable this only with native multi-draw support. Keep one
+        // exact copy of each existing material geometry, all fifteen original
+        // transforms and their order. Stock BatchedMesh clips against each
+        // actual color/shadow camera; offscreen casters remain in shadow passes.
+        const clipped = perInstanceFrustum && normalizedPlacements.length > 0 &&
+            !descriptor.material.transparent && !descriptor.material.displacementMap;
+        const instances = clipped ? new THREE.BatchedMesh(normalizedPlacements.length,
+            descriptor.geometry.attributes.position.count, descriptor.geometry.index?.count || 0,
+            descriptor.material) : new THREE.InstancedMesh(
+                descriptor.geometry, descriptor.material, normalizedPlacements.length);
+        const geometryId = clipped ? instances.addGeometry(descriptor.geometry) : null;
+        if (clipped) { instances.perObjectFrustumCulled = true; instances.sortObjects = false; }
         instances.name = `camp:material-instance-batch:${partIndex}`;
         instances.castShadow = descriptor.castShadow;
         instances.receiveShadow = descriptor.receiveShadow;
@@ -773,9 +780,10 @@ export function createProceduralLanternholdCampField(placements, { targetY = .00
             position.set(placement.x, targetY, placement.z);
             rotation.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, placement.rotation);
             matrix.compose(position, rotation, scale);
-            instances.setMatrixAt(placementIndex, matrix);
+            const instanceId = clipped ? instances.addInstance(geometryId) : placementIndex;
+            instances.setMatrixAt(instanceId, matrix);
         });
-        instances.instanceMatrix.needsUpdate = true;
+        if (!clipped) instances.instanceMatrix.needsUpdate = true;
         instances.computeBoundingBox();
         instances.computeBoundingSphere();
         field.add(instances);

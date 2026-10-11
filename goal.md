@@ -477,3 +477,17 @@ Local software2/native2,23plan checks and full locked lint pass; discovery retai
 338hosted and expands native25→27, overlap11→13,352distinct unchanged. Concurrent
 upstream licensing/docs preserved by ordinary merge. No runtime/version change;
 CI/public acceptance pending, public29 last accepted. Full goal remains active.
+
+2026-10-11 camp selection on current master:346b9a58 qualifies only four
+camp/owner source files, retaining exact original vertices/surfaces/transforms/
+colliders/shadows with native multi-draw gating and instancing fallback.44focused
+and23plan checks/full lint,4distinct native/2software cases pass.90native exactRGB
+comparisons include48prepared equipped walking poses with actual HUD/terrain;
+GPU owner disposal and four replacement cycles per quality return warmed counts.
+Full software-motion High fixture timed out and is retained, not accepted; hosted
+checks three views/one pose each, native24poses per quality remain mandatory.
+96-entry frozen inventory2a98bcee328d18682b144546ca63e6191ef3352ec1bd6054db816aac74aa6191.
+Completed qualified change merges into local master per owner workflow; no new
+publication until current Alpha1.79.30/7df6cf22 CI/deployment is accepted. Initial
+CI38116276417 terminal failure; final38117717646 running. Original full goal and
+whole-world/art/device/operations/F1–F5/beta/launch/handoff remain active.
