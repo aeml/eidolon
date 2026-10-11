@@ -159,4 +159,6 @@ test('hardware dungeon and additive reviews retain a mandatory native release ga
     expect(browserSmokeBaselineFiles(manifest)).toContain('tests/e2e/additive-effects-render.spec.js');
     expect(native).toContain('tests/e2e/additive-effects-render.spec.js');
     expect(native).toContain('additive status, cast and contact');
+    expect(native).toContain('tests/e2e/camp-instance-frustum.spec.js');
+    expect(native).toContain('camp clipping preserves');
 });
