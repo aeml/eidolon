@@ -7,6 +7,7 @@ import { compareFilmicLighting } from './lighting-comparison.js';
 import { reviewDungeonProps, prepareDungeonPropReference } from './dungeon-prop-review.js';
 import { reviewDungeonRelics, prepareDungeonRelicReference } from './dungeon-relic-review.js';
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
+import { reviewEquippedSkillMotions } from './equipped-skill-motion-review.js';
 
 const fixtures = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
 const methods = { molten_core: 'createMoltenCore', tempest_spire: 'createTempestSpire',
@@ -59,7 +60,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             await hero.mesh.userData.equipmentReady;
             render.entityGroup.add(hero.mesh); ui.updatePlayerStats(hero);
             render.onWindowResize();
-            window.__dungeonArtReview = { render, hero, input };
+            window.__dungeonArtReview = { render, hero, input, ui };
             return { authoredClass: hero.mesh.userData.authoredClass, items: hero.mesh.userData.equipmentVisualItemCount };
         }, mobile);
         expect(actor).toEqual({ authoredClass: 'Fighter', items: 14 });
@@ -180,6 +181,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             await reviewDungeonRelics(page, testInfo, type, layout);
         }
         await writeFile(testInfo.outputPath('render-scopes.json'), JSON.stringify(samples, null, 2));
+        await reviewEquippedSkillMotions(page, testInfo);
         const gpu = await page.evaluate(() => {
             const gl = window.__dungeonArtReview.render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
             return debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);

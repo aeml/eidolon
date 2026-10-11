@@ -15,11 +15,11 @@ const PLAYER_CLIPS = [...STANDARD_CLIPS, ...HUMANOID_ABILITY_CLIPS];
 const WALKING_ENEMY_CLIPS = ['Idle', 'Walk', 'Run', 'Attack', 'Death'];
 
 export const ACTOR_ANIMATION_MANIFEST = Object.freeze({
-    Fighter: entry('player', 'delivered 53-joint Fighter rig with procedural load-failure fallback', PLAYER_CLIPS, { jump: 'authored JumpStart/JumpLoop/JumpLand', special: 'Weapon-profile motions, fitted equipment, cast/channel/guard/shout/blessing gestures and moving-cast gait' }),
-    Rogue: entry('player', 'delivered 53-joint Rogue rig with procedural load-failure fallback', PLAYER_CLIPS, { jump: 'authored JumpStart/JumpLoop/JumpLand', special: 'Weapon-profile motions, alternating dual-wield strikes, fitted equipment and moving-cast gait' }),
-    Wizard: entry('player', 'delivered 53-joint Wizard rig with procedural load-failure fallback', PLAYER_CLIPS, { jump: 'authored JumpStart/JumpLoop/JumpLand', special: 'Delivered Cast/Channel, equipped weapon-profile motions, fitted equipment and moving-cast gait' }),
+    Fighter: entry('player', 'delivered 53-joint Fighter rig with procedural load-failure fallback', PLAYER_CLIPS, { jump: 'authored JumpStart/JumpLoop/JumpLand', special: 'Weapon-profile motions, equipped shield bash/heavy/sweep/full-turn spin, fitted equipment, cast/channel/guard/shout/blessing gestures and moving-cast gait' }),
+    Rogue: entry('player', 'delivered 53-joint Rogue rig with procedural load-failure fallback', PLAYER_CLIPS, { jump: 'authored JumpStart/JumpLoop/JumpLand', special: 'Weapon-profile motions, equipped throws/full-turn spin, alternating dual-wield basic strikes, fitted equipment and moving-cast gait' }),
+    Wizard: entry('player', 'delivered 53-joint Wizard rig with procedural load-failure fallback', PLAYER_CLIPS, { jump: 'authored JumpStart/JumpLoop/JumpLand', special: 'Delivered Cast/Channel, Cast releases for Flame Whip/Arcane Missiles, equipped weapon-profile motions, fitted equipment and moving-cast gait' }),
     ArchmageIlyra: entry('npc', 'Blender-authored Fourfold archmage with dressed fallback', ['Idle'], { special: 'Permanent robe, high mantle, four covenant stones and hand-bound resonance staff', browserEvidence: 'dedicated local NPC appearance check' }),
-    Cleric: entry('player', 'delivered 53-joint Cleric rig with procedural load-failure fallback', PLAYER_CLIPS, { jump: 'authored JumpStart/JumpLoop/JumpLand', special: 'Delivered Cast/Heal, equipped weapon-profile motions, fitted equipment and moving-cast gait' }),
+    Cleric: entry('player', 'delivered 53-joint Cleric rig with procedural load-failure fallback', PLAYER_CLIPS, { jump: 'authored JumpStart/JumpLoop/JumpLand', special: 'Delivered Cast/Heal, equipped heavy strikes and weapon-profile motions, fitted equipment and moving-cast gait' }),
 
     Skeleton: entry('enemy', 'procedural Gloamwood ossuary rig', WALKING_ENEMY_CLIPS, {
         special: 'grave-sickle, soul lantern, shroud, and loose-bone collapse'

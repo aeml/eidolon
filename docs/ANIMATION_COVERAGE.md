@@ -98,16 +98,17 @@ Aliases reuse the canonical composition deliberately; they are tested so a serve
 | Cleric | Sacred Ground | Consecrated Ground |
 | Cleric | Resurrection | Divine Intervention |
 
-## Actor animation inventory (57)
+## Actor animation inventory (58)
 
 All player classes declare Idle/Walk/Run/Attack/Death clips through the shared procedural humanoid architecture and their class-specific generated rigs. No player currently has a dedicated Jump clip, so Jump uses an intentional procedural arc/lean synchronized to the best locomotion clip. Procedural enemies and bosses receive deterministic generated Idle/Walk/Run/Attack/Death clips. NPCs that never move or fight are explicitly Idle-only.
 
 | Actor | Category | Source | Declared clips | Jump | Special behavior | Browser evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| Fighter | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | procedural arc/lean with locomotion clip fallback | Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained | local hardware gallery: High/Low |
-| Rogue | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | procedural arc/lean with locomotion clip fallback | Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained | local hardware gallery: High/Low |
-| Wizard | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | procedural arc/lean with locomotion clip fallback | Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained | local hardware gallery: High/Low |
-| Cleric | player | shared procedural humanoid rig | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | procedural arc/lean with locomotion clip fallback | Dedicated cast/channel/guard/shout/blessing gestures; basic strikes and moving-cast gait retained | local hardware gallery: High/Low |
+| Fighter | player | delivered 53-joint Fighter rig with procedural load-failure fallback | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | authored JumpStart/JumpLoop/JumpLand | Weapon-profile motions, equipped shield bash/heavy/sweep/full-turn spin, fitted equipment, cast/channel/guard/shout/blessing gestures and moving-cast gait | local hardware gallery: High/Low |
+| Rogue | player | delivered 53-joint Rogue rig with procedural load-failure fallback | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | authored JumpStart/JumpLoop/JumpLand | Weapon-profile motions, equipped throws/full-turn spin, alternating dual-wield basic strikes, fitted equipment and moving-cast gait | local hardware gallery: High/Low |
+| Wizard | player | delivered 53-joint Wizard rig with procedural load-failure fallback | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | authored JumpStart/JumpLoop/JumpLand | Delivered Cast/Channel, Cast releases for Flame Whip/Arcane Missiles, equipped weapon-profile motions, fitted equipment and moving-cast gait | local hardware gallery: High/Low |
+| ArchmageIlyra | npc | Blender-authored Fourfold archmage with dressed fallback | Idle | not-used | Permanent robe, high mantle, four covenant stones and hand-bound resonance staff | dedicated local NPC appearance check |
+| Cleric | player | delivered 53-joint Cleric rig with procedural load-failure fallback | Idle, Walk, Run, Attack, Death, Cast, Channel, Guard, Shout, Bless | authored JumpStart/JumpLoop/JumpLand | Delivered Cast/Heal, equipped heavy strikes and weapon-profile motions, fitted equipment and moving-cast gait | local hardware gallery: High/Low |
 | Skeleton | enemy | procedural Gloamwood ossuary rig | Idle, Walk, Run, Attack, Death | not-used | grave-sickle, soul lantern, shroud, and loose-bone collapse | local hardware gallery: High/Low |
 | Imp | enemy | procedural Cinder Wastes ember-scavenger rig | Idle, Walk, Run, Attack, Death | not-used | beating coal heart, bat wings, pilfer-fork, and spaded tail | local hardware gallery: High/Low |
 | DemonOrc | enemy | procedural Cinder Wastes kiln-warrior rig | Idle, Walk, Run, Attack, Death | not-used | furnace breastplate, cinder cleaver, coal chain, and heavy collapse | local hardware gallery: High/Low |
@@ -169,7 +170,7 @@ These effects are world-space groups: they follow actor position without inherit
 | State key | Visual composition | Accent color | Radius |
 | --- | --- | --- | --- |
 | invulnerable | silver-blue orbiting shards and a thin protective seal | #93ddff | 1.7 |
-| well_rested | golden sanctuary motes carrying four elemental echoes | #ffcf68 | 1.55 |
+| well_rested | soft golden star motes and interlaced sanctuary filigree carrying four elemental echoes | #ffcf68 | 1.55 |
 | iron_fortress | riveted oathsteel bastion cage | #a8d8ff | 1.75 |
 | guardian_roar | procession of sky-blue oath shields | #54d6ff | 1.9 |
 | berserker_edge | hooked bloodsteel fury halo | #ff3131 | 1.55 |
@@ -205,6 +206,6 @@ These effects are world-space groups: they follow actor position without inherit
 ## Evidence status
 
 - Inventory and explicit classification: implemented and unit tested.
-- Deterministic local/remote gallery: all 112 base/rune presentations and all 57 actor entries pass at High and Low in hardware Chrome; the release checklist records the renderer and release-specific run.
+- Deterministic local/remote gallery: all 112 base/rune presentations and all 58 actor entries pass at High and Low in hardware Chrome; the release checklist records the renderer and release-specific run.
 - Real-input gameplay: all four dedicated class routes cover idle/run/jump/basic attack/death, 52 selectable abilities, and 60 rune variants. The two-browser route covers remote persistent aura refresh/reconstruction/cleanup, summon, ground, projectile, teleport, movement, jump, and combat convergence.
 - Multiplayer and live production: must be re-run for each release SHA and are not implied by this generated document.

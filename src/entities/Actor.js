@@ -565,7 +565,9 @@ export class Actor extends Entity {
     playAbilityAnimation(skillName, options = {}) {
         const className = this.meshType || this.subType || this.constructor.name;
         const profile = getAbilityAnimationProfile(className, skillName);
-        let clipName = options.clip || profile.clip;
+        const presentation = getAbilityPresentation(className, skillName);
+        let clipName = options.clip || this.mesh?.userData.resolveAbilityAnimationName?.(
+            presentation?.animation, presentation?.canonicalName) || profile.clip;
         if (!this.animations[clipName]) {
             clipName = this.animations.Attack ? 'Attack' : (this.animations.Idle ? 'Idle' : null);
         }
@@ -1313,7 +1315,7 @@ export class Actor extends Entity {
             } else if (this.state === 'ATTACKING') {
                 this.playAnimation('Attack', false);
                 // Scale animation speed for remote entities
-                if (this.currentAction && this.stats.attackSpeed) {
+                if (!this.currentAbilityAnimation && this.currentAction && this.stats.attackSpeed) {
                     const cooldown = this.stats.attackSpeed;
 
                     // Play slightly faster (90% of cooldown) to ensure it finishes before server state reset

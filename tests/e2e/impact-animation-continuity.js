@@ -40,7 +40,9 @@ export async function captureImpactAnimationContinuity(page, testInfo) {
                 if (actor.currentAction !== action || action.time !== time || actor.attackTimer !== timer ||
                     actor.currentAbilityAnimation !== ability || actor.state !== state ||
                     before.some((value, i) => value !== after[i])) throw new Error(`Impact interrupted ${type}/${quality}/${kind}`);
-                actor.updateAnimationMixer(1 / 60);
+                const scale = action.getEffectiveTimeScale();
+                actor.update(1 / 60);
+                if (action.getEffectiveTimeScale() !== scale) throw new Error(`Remote update retimed ${type}/${quality}/${kind}`);
                 if (!(action.time > time)) throw new Error(`Mixer did not advance ${type}/${quality}/${kind}`);
                 renderer.render(scene, camera);
                 return { clip: action.getClip().name, before: time, after: action.time };
@@ -87,7 +89,7 @@ export async function captureImpactAnimationContinuity(page, testInfo) {
         if (report.type === 'Rogue') expect(report.strikes.map(strike => strike.clip)).toEqual(['Dagger_Attack', 'Sword_Attack_Left']);
     }
     await writeFile(testInfo.outputPath('impact-animation-continuity.json'), JSON.stringify({
-        scope: 'Eight supplied High/Low class rigs with 14 slots; explicit starts, damage message admission and 224 prepared mixer/render frames. Audio calls retained; no speaker, live network, device or combat-performance claim.',
+        scope: 'Eight supplied High/Low class rigs with 14 slots; explicit starts, damage message admission and 224 prepared animation/render frames, including 32 remote Actor updates with preserved cast speed. Audio calls retained; no speaker, live network, device or combat-performance claim.',
         reports
     }, null, 2));
 }
