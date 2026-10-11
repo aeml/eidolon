@@ -20,6 +20,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
     await page.evaluate(async ({ quality, phone }) => {
         const { RenderSystem } = await import('/src/core/RenderSystem.js');
         const { UIManager } = await import('/src/ui/UIManager.js');
+        const { InputManager } = await import('/src/core/InputManager.js');
         const { Fighter } = await import('/src/entities/Fighter.js');
         const { MeshFactory } = await import('/src/utils/MeshFactory.js');
         document.getElementById('start-screen').style.display = 'none';
@@ -32,8 +33,10 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         hero.syncEquipmentVisuals(Object.fromEntries(names.map((name, i) => [slots[i], {
             id: slots[i], name, baseName: name, slot: slots[i], rarity: 'Rare', type: name === 'Iron Sword' ? 'WEAPON' : 'ARMOR' }])));
         await hero.mesh.userData.equipmentReady; render.entityGroup.add(hero.mesh);
-        ui.showHUD(); ui.updatePlayerStats(hero); render.onWindowResize();
-        window.__entryWardReview = { render, ui, hero };
+        const input = new InputManager(render.camera, render.scene, render.renderer.domElement);
+        if (phone) input.setupMobileControls();
+        ui.showHUD(); ui.updatePlayerStats(hero); ui.updateHotbar(hero); render.onWindowResize();
+        window.__entryWardReview = { render, ui, hero, input };
     }, { quality, phone: width < 600 });
     const reports = [];
     for (const [fixtureIndex, { dungeonType: type, layout }] of fixtures.entries()) {
@@ -115,8 +118,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         }
     }
     await page.evaluate(() => {
-        const { render, hero, ui, previous } = window.__entryWardReview;
-        if (previous) render.disposeObjectResources(previous); hero.dispose(); ui.destroy?.(); render.dispose(); delete window.__entryWardReview;
+        const { render, hero, ui, previous, input } = window.__entryWardReview;
+        if (previous) render.disposeObjectResources(previous); hero.dispose(); input.dispose(); ui.destroy?.(); render.dispose(); delete window.__entryWardReview;
     });
     expect(failures, failures.join('\n')).toEqual([]);
 });

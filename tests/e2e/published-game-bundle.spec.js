@@ -208,7 +208,9 @@ test('copied published engine constructs a grounded ward and drives its state th
             const world = game.worldGenerator;
             await world.createVerdantBastionCatacombs(0, 0, layout);
             const state = world.dungeonRoomPresentations.get(0), ward = state.getObjectByName('DungeonEntryWard');
-            const veil = ward.getObjectByName('DungeonExitPortal'), matrix = veil.matrix.toArray();
+            const veil = ward.getObjectByName('DungeonExitPortal');
+            veil.updateMatrix();
+            const matrix = veil.matrix.toArray();
             const colliders = JSON.stringify(game.collisionManager.colliders), phases = [];
             for (const objectiveRoomIndex of [0, -1, 0]) {
                 world.updateDungeonRoomState({ currentRoomIndex: 0, objectiveRoomIndex, rooms: [{ index: 0, cleared: objectiveRoomIndex === -1 }] });
