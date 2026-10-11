@@ -615,3 +615,37 @@ and all historical performance failures remain open. Public29 jump/aura/admin
 acceptance unchanged. Original operations/F1–F5/beta/launch/handoff goal active;
 no campaign/soak replay, public/version/access change or unrelated selection.
 [Scoped qualification](2026-10-11-dungeon-floor-composition-qualification.json).
+
+
+### 2026-10-11 — grounded boss-floor masonry
+
+Selected `3e03221e` replaces the raised black octagonal boss platform with49
+shallow mapped stones across all five dungeon themes. Feet and original room
+state markings remain visible; decorative inlays follow the lower surface.
+Arena footprint, authoritative floor, collision, props, room states and wards
+are preserved. One lazy kit shape costs66264source attribute bytes, plus merged
+room ownership;502triangles replace32, while the boss uses one fewer opaque
+batch. Existing stone maps/material reused, no new textures/lights/colliders.
+No frame-rate saving claim.
+
+98 focused checks pass across six suites:87main plus11existing exact timestamp
+checks, including7new masonry checks. Six distinct native identities pass:
+four source art and two actual copied/versioned engine cases.48paired views,
+96screenshots and1632prepared animation/render updates show supplied14-slot
+Fighter/HUD at zoom15. Both center and edge arena walks cross stone joints or
+perimeter. Source maxima102/51draws and69873/25703triangles High/Low. Copied
+High/Low renders48plan views and returns exact warmed GPU counts after each of
+five cleared themes. Engine hash matches the saved compiled bundle.
+
+Parent reproduction failures, an unexplained focused exit143 and initial High
+binary timestamp-boundary failure remain retained. Final helper reuses exact
+reported decimal subtraction, retains raw intervals and keeps all original
+limits. Intermediate nanosecond-comparison pass is superseded and counted once.
+Synthetic crystal-vigil unit coverage does not establish a new raid route.
+
+Staged unpublished. Repeated base tiles, sparse furniture/composition, simple
+props, broader world/contact/audio/devices and historical timing/draw/triangle
+failures remain open. Public29 requested jump/aura/admin acceptance unchanged.
+No campaign/soak replay, public/version/access/account change or unrelated
+private source selected. Full original operations/F1–F5/beta/launch/handoff
+scope stays active. [Scoped qualification](2026-10-11-dungeon-boss-masonry-qualification.json).

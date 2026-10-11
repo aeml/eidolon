@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T05:04:45.415922+00:00",
-  "classification": "Progress: selected shallow room-scale floor composition;80 focused and7 distinct native cases pass, including copied-bundle cleanup. Existing black boss dais is the next concrete art repair.",
-  "qualifiedRuntime": "Held 51b84ca2 adds nave/court/procession/arena stone borders on equipped skill/world/material/HUD/worker staged milestone. Public29 unchanged.",
+  "recordedUTC": "2026-10-11T05:25:40.168918+00:00",
+  "classification": "Progress: selected shallow mapped boss-floor masonry, preserving authoritative floor and arena footprint.98focused checks and6distinct native cases pass; prepared rendering/lifetime scope only. Public29 motion/aura/admin unchanged.",
+  "qualifiedRuntime": "Held3e03221e adds49stone grounded boss masonry on the existing staged world/material/HUD/actor/worker milestone. Public29 unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -98,12 +98,12 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Continue integrated combat anticipation/contact/recovery/audio at ordinary gameplay camera, broader room/world composition and representative devices. Regional relics are partial construction and still small/repeated in sparse rooms. Dynamic performance changes require concrete hypotheses from retained attribution; original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures remain. Original operations/F1-F5/beta/launch/handoff active; no campaign/soak replay.",
-  "currentReceipt": "docs/plans/2026-10-11-dungeon-regional-relics-qualification.json",
+  "nextRequiredResult": "Continue coherent room/world construction and regional composition at ordinary gameplay camera with supplied equipped actors/HUD, plus integrated contact/audio and supported-device qualification. Sparse rooms, repeated base tiles/simple props and original performance failures remain. Original operations/F1-F5/beta/launch/handoff stay active; no campaign/soak replay.",
+  "currentReceipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Continue integrated combat anticipation/contact/recovery/audio at ordinary gameplay camera, broader room/world composition and representative devices. Regional relics are partial construction and still small/repeated in sparse rooms. Dynamic performance changes require concrete hypotheses from retained attribution; original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures remain. Original operations/F1-F5/beta/launch/handoff active; no campaign/soak replay.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-regional-relics-qualification.json",
+  "nextAction": "Inspect regional room-wall/threshold composition and combat/contact/audio for the next concrete milestone repair. Use prepared High/Low ordinary-camera controls and bounded source/copy lifecycle checks for changed behavior. Historical gameplay timing/draw/triangle failures and physical devices remain open.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
     "preparedNotSelected": true,
@@ -3019,5 +3019,167 @@
     },
     "limits": "Prepared source and copied-bundle presentation/lifecycle proof only. Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw andLow202draw counterexamples remain. No server route/campaign/soak replay, listening, supported physical-device, whole-party performance or owner modern-art approval. Original operations/F1-F5/beta/launch/handoff scope remains active. No unrelated private source selected.",
     "receipt": "docs/plans/2026-10-11-dungeon-floor-composition-qualification.json"
+  },
+  "dungeonBossMasonry": {
+    "source": "3e03221eed6477d72ad906dbd26d4a05608d8e36",
+    "selected": true,
+    "published": false,
+    "focused": {
+      "passed": 98,
+      "mainPassed": 87,
+      "mainSuites": 5,
+      "mainSeconds": 170.177,
+      "existingIntervalChecks": 11,
+      "intervalSeconds": 0.587,
+      "newChecks": 7,
+      "failedFinal": 0,
+      "skipped": 0
+    },
+    "native": {
+      "distinctPassed": 6,
+      "sourceArtCases": 4,
+      "copiedBundleCases": 2,
+      "retries": 0,
+      "skips": 0,
+      "flaky": 0,
+      "counts": "Initial three passing source identities plus final High source identity and two copied identities. Intermediate nanosecond High also passes but repeats the same identity and is excluded from selected counts. Initial failed High retained.",
+      "initialStats": {
+        "startTime": "2026-10-11T05:12:03.944Z",
+        "duration": 162840.111,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "finalHighStats": {
+        "startTime": "2026-10-11T05:21:43.646Z",
+        "duration": 80489.10100000001,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "copiedStats": {
+        "startTime": "2026-10-11T05:23:12.447Z",
+        "duration": 14374.24,
+        "expected": 2,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "artViews": 48,
+      "artPairedScreenshots": 96,
+      "preparedAnimationUpdates": 1632,
+      "bossViews": 20,
+      "bossPreparedAnimationUpdates": 960,
+      "bossWalkDistancePerView": 3.6,
+      "copiedPlanViews": 48,
+      "themes": 5,
+      "qualities": [
+        "high",
+        "low"
+      ],
+      "hero": "Supplied fourteen-slot Fighter and actual desktop/phone HUD at zoom15.",
+      "sourceMaxPreparedDraws": {
+        "high": 102,
+        "low": 51
+      },
+      "sourceMaxPreparedTriangles": {
+        "high": 69873,
+        "low": 25703
+      },
+      "sourceControl": "Parent5d272649 dressing at identical camera, hero, pose, lighting and room-state visibility. Nonboss geometry/batches unchanged; boss adds470triangles and removes one opaque batch. Center and edge views per arena;48mixer/render frames and3.6world-unit prepared walk per boss view cross stone joints/perimeter.",
+      "copiedGPU": "Exact copied/versioned engine hash matches saved bundle. All five themes, center/edge arenas and other present plans render High/Low with linked existing PBR materials, stable colliders and exact warmed GPU counts after every cleared theme and final cleanup.",
+      "scope": "Prepared source presentation and copied-bundle resource lifetime only. Umbral has three plans; other themes have four. No continuous engine/server combat, sustained party performance or physical-device acceptance. Synthetic crystal_vigil unit coverage is not a fresh raid-route acceptance."
+    },
+    "cost": {
+      "stones": 49,
+      "triangles": 502,
+      "outerRadius": 17.4,
+      "visualOnly": true,
+      "sourceAttributeBytes": 66264,
+      "bounds": [
+        [
+          -17.36676025390625,
+          0.10400000214576721,
+          -17.36676025390625
+        ],
+        [
+          17.36676025390625,
+          0.12399999797344208,
+          17.36676025390625
+        ]
+      ],
+      "additionalTrianglesPerBoss": 470,
+      "opaqueBatchesPerBoss": -1,
+      "sourceShapes": "One additional lazy kit-owned geometry, shared across boss rooms; at most five composition shapes including four border plans. Source49stones/502triangles/66264attribute bytes, plus merged per-room attribute ownership. Old cylinder source remains in the existing shape kit but is no longer placed.",
+      "newTextures": 0,
+      "newMaterials": 0,
+      "newLights": 0,
+      "newColliders": 0,
+      "surface": "Existing mapped stone paving material, vertex color variation, nonemissive. TopY=.121-.124; bevel baseY=.104, above floorY=.1. Grout reveals the existing floor. Top covers over90% of original octagon area. Original .32-high top covered feet/state markings; inlays move .35to.14.",
+      "performance": "Additional geometry/buffer/shading cost despite one fewer boss batch. No FPS saving or clearance of historical performance failures."
+    },
+    "checks": {
+      "scopedESLint": "pass",
+      "gitDiffCheck": "pass",
+      "copiedProductionBundle": {
+        "worker": {
+          "output": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+          "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+          "bytes": 137178,
+          "modules": 10,
+          "imports": []
+        },
+        "bundledModules": 462,
+        "bytes": 3480239,
+        "sharedLoginModules": 22,
+        "vendorModules": [
+          "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+          "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+          "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+          "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+          "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+          "vendor/three/examples/jsm/postprocessing/Pass.js",
+          "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+          "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+          "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+          "vendor/three/examples/jsm/shaders/CopyShader.js",
+          "vendor/three/examples/jsm/shaders/FXAAShader.js",
+          "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+          "vendor/three/examples/jsm/shaders/OutputShader.js",
+          "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+          "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+        ],
+        "externalImports": [
+          "../assets/ServiceWorkerBoot.js",
+          "../data/worldGeography.js",
+          "../ui/EmailRecoveryUI.js",
+          "../ui/OwnedEvents.js",
+          "../ui/PasswordChangeUI.js",
+          "../ui/ReportUI.js",
+          "../ui/reportTypes.js",
+          "./CredentialToken.js",
+          "./GraphicsStartup.js",
+          "three"
+        ],
+        "engineSHA256": "f6c7b8b4584cdcdfbd8f6916869002eb18cb537bedda3f85202759743e86750a"
+      },
+      "ownedStaticServer": "stopped;4204free",
+      "timingMethod": "Existing renderFrameInterval exact browser-reported decimal subtraction reused; rawIntervals retained. Original median20/33.4 andp9533.4/50 limits unchanged."
+    },
+    "visualFindings": {
+      "improved": "Mapped broad stone surface and joints replace the dark filled polygon. Feet, shadows and existing state seals are visible in equipped center/edge desktop/phone views. Grounded perimeter transition.",
+      "remaining": "Sparse room furniture/composition, repeated underlying tiles and simple props remain short of final modern-art acceptance. Broader world/actor/contact/audio/device work remains."
+    },
+    "limits": "Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw andLow202draw failures remain. No campaign/soak replay, listening, supported physical-device, whole-party performance or owner modern-art approval. Original operations/F1-F5/beta/launch/handoff scope stays active. No unrelated private source selected.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-boss-masonry-checks-20261011",
+      "frozen": true,
+      "inventoryEntries": 448,
+      "files": 449,
+      "inventorySHA256": "488537f6d363119411b38e24f649a5bfec39238e722b9dce7169bd565b2fa8e7"
+    },
+    "receipt": "docs/plans/2026-10-11-dungeon-boss-masonry-qualification.json"
   }
 }
