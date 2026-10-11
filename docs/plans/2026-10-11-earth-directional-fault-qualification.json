@@ -1,0 +1,522 @@
+{
+  "recordedUTC": "2026-10-11T11:28:17.266984+00:00",
+  "source": "7ddb7b8a5969e11b95e745affbfc5eabf4af1935",
+  "productSource": "3f33e467",
+  "base": "a8890a8406feafc70fdb9f9c3c490195224bfef9",
+  "published": false,
+  "change": "Seeded directional fault varies existing intermediate contour widths to expose a steep geological face and worn ledge instead of a uniformly rounded shoulder. Bases, crowns, all bounds and collision/source rules unchanged; no added ring, mesh, material, texture, light, shader or per-frame work.",
+  "geometry": [
+    {
+      "terrain": "flat",
+      "baseSHA256": "e3fab4219bd55e11e4eeab5e01eec9b38d38280f28bd7712d0256523bd9061a6",
+      "capSHA256": "f129cbca2db74ea650bcd4db284b1aaab90337851e79e94afbc37bc65ad5b32b",
+      "rows": [
+        {
+          "id": "grove-west-shelf",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 612
+        },
+        {
+          "id": "grove-west-shelf:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 432
+        },
+        {
+          "id": "grove-west-shelf:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 612
+        },
+        {
+          "id": "grove-east-shelf",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 540
+        },
+        {
+          "id": "grove-east-shelf:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 486
+        },
+        {
+          "id": "grove-east-shelf:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 630
+        },
+        {
+          "id": "grove-west-break",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 528
+        },
+        {
+          "id": "grove-west-break:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 612
+        },
+        {
+          "id": "grove-west-break:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 612
+        },
+        {
+          "id": "bastion-west-shelf",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 432
+        },
+        {
+          "id": "bastion-west-shelf:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 588
+        },
+        {
+          "id": "bastion-west-shelf:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 576
+        },
+        {
+          "id": "bastion-road-break",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 576
+        },
+        {
+          "id": "bastion-road-break:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 648
+        },
+        {
+          "id": "bastion-road-break:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 510
+        },
+        {
+          "id": "bastion-east-shelf",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 522
+        },
+        {
+          "id": "bastion-east-shelf:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 498
+        },
+        {
+          "id": "bastion-east-shelf:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 576
+        }
+      ]
+    },
+    {
+      "terrain": "raised",
+      "baseSHA256": "df1564dfc80022b9df09f9143e169418b033e84acb7f8298a301ec3ac8e8fe46",
+      "capSHA256": "2e26340230adc221199d40f231c542b26995410a36eb23dc63ae3c1a44a00da8",
+      "rows": [
+        {
+          "id": "grove-west-shelf",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 612
+        },
+        {
+          "id": "grove-west-shelf:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 426
+        },
+        {
+          "id": "grove-west-shelf:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 594
+        },
+        {
+          "id": "grove-east-shelf",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 540
+        },
+        {
+          "id": "grove-east-shelf:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 486
+        },
+        {
+          "id": "grove-east-shelf:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 630
+        },
+        {
+          "id": "grove-west-break",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 504
+        },
+        {
+          "id": "grove-west-break:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 612
+        },
+        {
+          "id": "grove-west-break:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 612
+        },
+        {
+          "id": "bastion-west-shelf",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 432
+        },
+        {
+          "id": "bastion-west-shelf:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 576
+        },
+        {
+          "id": "bastion-west-shelf:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 570
+        },
+        {
+          "id": "bastion-road-break",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 576
+        },
+        {
+          "id": "bastion-road-break:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 642
+        },
+        {
+          "id": "bastion-road-break:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 510
+        },
+        {
+          "id": "bastion-east-shelf",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 522
+        },
+        {
+          "id": "bastion-east-shelf:heel",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 498
+        },
+        {
+          "id": "bastion-east-shelf:toe",
+          "triangles": 206,
+          "attributeBytes": 27192,
+          "exactBase": true,
+          "exactCap": true,
+          "sameBounds": true,
+          "changedPositionComponents": 576
+        }
+      ]
+    }
+  ],
+  "focused": {
+    "distinctPassed": 10,
+    "suites": 2,
+    "seconds": 23.997,
+    "scope": "Eight EarthOutcrops checks including two all18-body original-base/crown goldens; two world/collision integration cases. Original six pass reused only until final10 supersedes, not16distinct."
+  },
+  "native": {
+    "distinctPassed": 7,
+    "retries": 0,
+    "skips": 0,
+    "runs": [
+      {
+        "label": "source",
+        "stats": {
+          "total": 3,
+          "expected": 3,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        },
+        "seconds": 39.470981
+      },
+      {
+        "label": "copied",
+        "stats": {
+          "total": 4,
+          "expected": 4,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        },
+        "seconds": 48.61393
+      }
+    ],
+    "reviews": [
+      {
+        "label": "source",
+        "file": "results/earth-rock-shelf-review-hi-5dfcd-d-views-and-owned-resources/rock-review.json",
+        "views": 9,
+        "poses": 72,
+        "changedViews": 8,
+        "referenceAgainExactViews": 9,
+        "referenceReleased": {
+          "geometry": 6,
+          "material": 1
+        },
+        "candidateReleased": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 978
+        }
+      },
+      {
+        "label": "source",
+        "file": "results/earth-rock-shelf-review-lo-fae49-d-views-and-owned-resources/rock-review.json",
+        "views": 9,
+        "poses": 72,
+        "changedViews": 8,
+        "referenceAgainExactViews": 9,
+        "referenceReleased": {
+          "geometry": 6,
+          "material": 1
+        },
+        "candidateReleased": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 960
+        }
+      },
+      {
+        "label": "source",
+        "file": "results/earth-rock-shelf-review-lo-ba37f-d-views-and-owned-resources/rock-review.json",
+        "views": 9,
+        "poses": 72,
+        "changedViews": 7,
+        "referenceAgainExactViews": 9,
+        "referenceReleased": {
+          "geometry": 6,
+          "material": 1
+        },
+        "candidateReleased": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 960
+        }
+      },
+      {
+        "label": "copied",
+        "file": "results/published-game-bundle-copi-bd2bd-d-views-and-cleanup-details/rock-review.json",
+        "views": 3,
+        "poses": 24,
+        "changedViews": 2,
+        "referenceAgainExactViews": 3,
+        "referenceReleased": {
+          "geometry": 6,
+          "material": 1
+        },
+        "candidateReleased": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 978
+        }
+      },
+      {
+        "label": "copied",
+        "file": "results/published-game-bundle-copi-e81d3-ed-views-and-cleanup-groves/rock-review.json",
+        "views": 3,
+        "poses": 24,
+        "changedViews": 3,
+        "referenceAgainExactViews": 3,
+        "referenceReleased": {
+          "geometry": 6,
+          "material": 1
+        },
+        "candidateReleased": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 978
+        }
+      },
+      {
+        "label": "copied",
+        "file": "results/published-game-bundle-copi-0ae7b-views-and-cleanup-all-views/rock-review.json",
+        "views": 9,
+        "poses": 72,
+        "changedViews": 8,
+        "referenceAgainExactViews": 9,
+        "referenceReleased": {
+          "geometry": 6,
+          "material": 1
+        },
+        "candidateReleased": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 960
+        }
+      },
+      {
+        "label": "copied",
+        "file": "results/published-game-bundle-copi-cd828-ped-views-and-cleanup-roads/rock-review.json",
+        "views": 3,
+        "poses": 24,
+        "changedViews": 3,
+        "referenceAgainExactViews": 3,
+        "referenceReleased": {
+          "geometry": 6,
+          "material": 1
+        },
+        "candidateReleased": {
+          "geometry": 7,
+          "material": 2,
+          "plantTexture": 978
+        }
+      }
+    ],
+    "views": 45,
+    "preparedWalkingPoses": 360,
+    "changedComparisonViews": 39,
+    "unchangedComparisonViews": 6,
+    "referenceAgainExactViews": 45,
+    "equalDrawTriangleViews": 45,
+    "reference": "Exact a8890a84 geometry reconstructed with current unchanged materials/lights, same outfit/camera and fixed scene clock; hidden during ordinary candidate screenshot. Each reference releases6geometries/1material. Paired canvas captures exclude DOM HUD; separate ordinary candidate screenshots include the actual HUD and supplied14-slot Fighter.",
+    "review": "Root viewed paired High grove and deep-west faces, roadside and phone screenshot. Clearer directional ledges are partial geological shape improvement; terrain/vegetation remains repetitive and broad material/composition work stays open."
+  },
+  "static": "Normal client preparation, changed-file lint, both report credential scans (zero changes), JSON and diff checks pass.",
+  "trials": "No native/test assertion failures in this component. Private source initial6checks and final10checks are not summed as distinct. Product source unchanged after source3pass; final follow-up adds unit goldens only.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-earth-cleaved-planes-checks-20261011",
+    "inventoryEntries": 170,
+    "inventorySHA256": "5ce0407f062fa552a8e9f48b044618ca8fee609b5ef4e6771f670116479240c2"
+  },
+  "limits": "Prepared source/copied native art and ownership checks; no normal connected input, sustained performance, physical-phone or final-art acceptance. Negotiated earth-elevation-rocks-v1 profile only; public31 still uses flat-v1. No terrain-profile activation, server/collision/save change, budget relaxation, campaign/soak replay or full-goal completion."
+}
