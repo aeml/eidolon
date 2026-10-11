@@ -44,6 +44,21 @@ full locked-dependency lint pass. Actual discovery338hosted/27native/13overlap/
 upstream licensing/docs4e7fbe6f is preserved. Release deployment remains pending.
 [Correction proof](2026-10-11-additive-hosted-native-gate-correction.json).
 
+**Current release30 fixture correction2e6c6a14 is on origin/master.**
+Run38117717646/7df6cf22 is terminal failed: server and all three hosted browser
+shards pass, client has11failures in3fixtures; later inputs/native/deploy/live jobs
+are skipped. The corrected bundle fixture includes GameplayRigidIndices; terrain
+selection requires both existing race cases; native evidence follows its unique
+artifact directory and explicitly retains additive coverage.66focused checks,
+8final evidence checks and full lint pass. Ordinary local master merge8404ee85
+retains all selected camp work; only the current-release fixture correction was
+published. Corrective CI38119634774/2e6c6a14 is queued behind8acc; no acceptance yet.
+The additional all-in-one local coverage diagnostic exhausted its4GBV8heap and
+exited134 without a suite summary. It is not a pass and is not automatically
+retried. Required hosted coverage remains a release gate.
+[Fixture correction](2026-10-11-release30-fixture-correction.json),
+[local memory diagnostic](2026-10-11-local-coverage-memory-diagnostic.json).
+
 **Next qualified camp change:**346b9a58 is merged into local master at21a8bba4;
 publication waits for current Alpha1.79.30 acceptance. Only the four reviewed
 camp/owner files from the earlier private prototype were selected onto current

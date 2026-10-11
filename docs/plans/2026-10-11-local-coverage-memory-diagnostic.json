@@ -1,0 +1,11 @@
+{
+  "recordedUTC": "2026-10-11T06:57:56.851197+00:00",
+  "sourceDuringRun": "8accba419e07dd7170f8c63a37308270720992d6 plus three fixture corrections subsequently committed2e6c6a14",
+  "command": "Node24 Jest --experimental-vm-modules --coverage --runInBand",
+  "terminalExitCode": 134,
+  "diagnosis": "V8 exhausted approximately4GB JavaScript heap; no suite summary or full-suite acceptance. Inspector was attached late to investigate lack of reported progress; no completed CPU profile was captured. Retention cause is not established; this is not a product-runtime failure or a waived gate.",
+  "focusedQualification": "66focused tests plus8final native evidence assertions and full lint passed before normal publication2e6c6a14. Required hosted coverage remains authoritative and pending.",
+  "log": "/home/aeml/.local/share/eidolon-master-reconciliation-checks-20261011/release30-fixture-full-coverage.log",
+  "logSHA256": "c1b920507e7ce7ea072463384fd1718196a275e09d05fda7e6009b3560bde4bb",
+  "noAutomaticLocalRetry": true
+}
