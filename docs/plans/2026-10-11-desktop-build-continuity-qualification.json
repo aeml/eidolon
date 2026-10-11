@@ -1,0 +1,25 @@
+{
+  "recordedUTC": "2026-10-11T15:44:34.177986+00:00",
+  "source": "ec4763db",
+  "status": "Qualified for ordinary master merge; unpublished.",
+  "problem": "Desktop build redraws discarded focused rune/skill controls and their reading position. Detached or closed-view controls retained callable action handlers.",
+  "change": "Restore focus by stable action identity and preserve scroll for the same character/class/tab. Fall back to active tab if an action becomes disabled; leave outside focus alone. Guard click handlers against retired render, detached control, hidden window, disposal and character/class replacement. No server/protocol/cost or optimistic progression changes.",
+  "validation": {
+    "focusedDistinct": 169,
+    "suites": 8,
+    "nativeDistinctCases": 1,
+    "nativeExecutions": 5,
+    "nativeRetries": 0,
+    "nativeSkips": 0,
+    "lint": "pass",
+    "diffCheck": "pass"
+  },
+  "native": "Actual Chromium Tab/Enter/Space with simulated authoritative acknowledgement retains focus. At1280x600 desktop, nonzero reading position survives selected-rune redraw and detached old button submits nothing. Final rune image inspected. GPU disabled for DOM-only qualification.",
+  "retainedFailures": "Original unit baseline1pass11fail; original native baseline fails acknowledgement focus. MenuPolish closed-window fixture explicitly opened. Three intermediate scrolling fixture failures retained: measured tall desktop719pxclient/719pxscroll means all runes fit; actual shorter desktop supplies real overflow. No runtime layout change or assertion weakening.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-desktop-build-continuity-checks-20261011",
+  "inventoryEntries": 137,
+  "inventorySHA256": "d395eb961c59622c4de2843a5cdb74e6882c3263376e1df337cb6b9a7067bab5",
+  "evidenceCorrection": "Frozen checks-summary.json mistakenly counts six browser executions. The five named browser log files establish five total executions (one baseline failure, three scroll fixture failures, one final pass); this qualification uses the corrected count. Original evidence remains unchanged.",
+  "limits": "Prepared UI and simulated acknowledgements, not earned connected progression, GPU acceptance, physical device or whole-game accessibility. Full goal remains active.",
+  "publication": "Include with qualified guild/venue/keyboard successor after corrective34 exact CI/deploy/public acceptance; no tiny release pushed."
+}
