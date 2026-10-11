@@ -1,0 +1,377 @@
+{
+  "recordedUTC": "2026-10-11T07:14:48.034008+00:00",
+  "source": "3ee704f4d156e98bee3ce8786eebe334cf46b95b",
+  "selection": "Three reviewed DemonOrc product files only; no private singleton/default-renderer experiment selected. Shared existing source-preserving constructor/pivot batching and automatic actor-owner delivery.",
+  "focused": {
+    "suites": 8,
+    "tests": 236,
+    "seconds": 19.431,
+    "result": "passed"
+  },
+  "fullLint": "passed",
+  "nativeSourceAndCopiedCases": {
+    "passed": 6,
+    "skipped": 0,
+    "retry": 0,
+    "source": {
+      "low": {
+        "poses": 8,
+        "sourceComparisons": 16,
+        "maximumMeanError": 0.0008681602757432142,
+        "maximumChangedFractionOver8": 1.0771219302024989e-06,
+        "allReferenceAgainExact": true,
+        "visibilityAndUnsafeTransformChecksPass": true,
+        "restoredAfterFailure": true,
+        "pooledReturns": 6,
+        "disposed": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      "high": {
+        "poses": 8,
+        "sourceComparisons": 16,
+        "maximumMeanError": 0.0009360189573459715,
+        "maximumChangedFractionOver8": 1.1848341232227488e-05,
+        "allReferenceAgainExact": true,
+        "visibilityAndUnsafeTransformChecksPass": true,
+        "restoredAfterFailure": true,
+        "pooledReturns": 6,
+        "disposed": true,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      }
+    },
+    "copiedEnginePreversionSHA256": "0301fde26f7702cf440e975ebe4e005d6ce5f9b2ce29bfd0161b2ea550522961",
+    "sourceConstructorDeliveredImages": 48,
+    "scope": "Two High/Low source cases across8poses each,32source comparisons; two High/Low actual copied-engine DemonOrc cases across5animation states; two existing Skeleton copied-owner regression cases. Existing0.1mean/.001fraction(delta>8) tolerances retained. Not all images are exact."
+  },
+  "routes": {
+    "high": {
+      "terminalExitCode": 1,
+      "profiles": [
+        {
+          "label": "bastion-approach",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "sample": {
+            "frames": 180,
+            "visibleFrames": 180,
+            "restored": true,
+            "drawCallsMedian": 131,
+            "trianglesMedian": 75477,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.4,
+            "activeEntitiesMin": 26,
+            "activeEntitiesMax": 26
+          },
+          "measuredBudgetViolations": []
+        },
+        {
+          "label": "earth-road",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "sample": {
+            "frames": 180,
+            "visibleFrames": 180,
+            "restored": true,
+            "drawCallsMedian": 151,
+            "trianglesMedian": 87674,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.4,
+            "activeEntitiesMin": 77,
+            "activeEntitiesMax": 78
+          },
+          "measuredBudgetViolations": []
+        },
+        {
+          "label": "town-start",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "sample": {
+            "frames": 180,
+            "visibleFrames": 180,
+            "restored": true,
+            "drawCallsMedian": 391,
+            "trianglesMedian": 198391,
+            "frameMedianMs": 33.3,
+            "frameP95Ms": 33.4,
+            "activeEntitiesMin": 158,
+            "activeEntitiesMax": 158
+          },
+          "measuredBudgetViolations": [
+            "draws",
+            "frameMedianMs"
+          ]
+        },
+        {
+          "label": "woodland-cut",
+          "budget": {
+            "draws": 350,
+            "triangles": 250000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "sample": {
+            "frames": 180,
+            "visibleFrames": 180,
+            "restored": true,
+            "drawCallsMedian": 212,
+            "trianglesMedian": 129866,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.3,
+            "activeEntitiesMin": 22,
+            "activeEntitiesMax": 22
+          },
+          "measuredBudgetViolations": []
+        }
+      ],
+      "frozenSourceControl": {
+        "roots": 21,
+        "quality": "high",
+        "original": {
+          "calls": 398,
+          "triangles": 129866
+        },
+        "candidate": {
+          "calls": 212,
+          "triangles": 129866
+        },
+        "meanError": 0.0001416247037914692,
+        "changed": 9.256516587677725e-07,
+        "exactChanges": 100,
+        "unstable": 0,
+        "restored": true
+      },
+      "full1202TriangleBodyInventories": 21,
+      "partyAndSaveCustody": "not reached after strict town route failure"
+    },
+    "low": {
+      "terminalExitCode": 0,
+      "profiles": [
+        {
+          "label": "bastion-approach",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "sample": {
+            "frames": 180,
+            "visibleFrames": 180,
+            "restored": true,
+            "drawCallsMedian": 64,
+            "trianglesMedian": 30109,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.3,
+            "activeEntitiesMin": 26,
+            "activeEntitiesMax": 27
+          },
+          "measuredBudgetViolations": []
+        },
+        {
+          "label": "earth-road",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "sample": {
+            "frames": 180,
+            "visibleFrames": 180,
+            "restored": true,
+            "drawCallsMedian": 77,
+            "trianglesMedian": 32555,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.3,
+            "activeEntitiesMin": 70,
+            "activeEntitiesMax": 70
+          },
+          "measuredBudgetViolations": []
+        },
+        {
+          "label": "town-start",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "sample": {
+            "frames": 180,
+            "visibleFrames": 180,
+            "restored": true,
+            "drawCallsMedian": 184,
+            "trianglesMedian": 83376,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.4,
+            "activeEntitiesMin": 158,
+            "activeEntitiesMax": 159
+          },
+          "measuredBudgetViolations": []
+        },
+        {
+          "label": "woodland-cut",
+          "budget": {
+            "draws": 200,
+            "triangles": 85000,
+            "frameMedianMs": 20,
+            "frameP95Ms": 33.4
+          },
+          "sample": {
+            "frames": 180,
+            "visibleFrames": 180,
+            "restored": true,
+            "drawCallsMedian": 102,
+            "trianglesMedian": 41623,
+            "frameMedianMs": 16.7,
+            "frameP95Ms": 33.4,
+            "activeEntitiesMin": 24,
+            "activeEntitiesMax": 25
+          },
+          "measuredBudgetViolations": []
+        }
+      ],
+      "frozenSourceControl": {
+        "roots": 23,
+        "quality": "low",
+        "original": {
+          "calls": 253,
+          "triangles": 41221
+        },
+        "candidate": {
+          "calls": 97,
+          "triangles": 41221
+        },
+        "meanError": 0.00011848341232227489,
+        "changed": 0,
+        "exactChanges": 124,
+        "unstable": 0,
+        "restored": true
+      },
+      "full1202TriangleBodyInventories": 23,
+      "partyAndSaveCustody": "passed with real Go-race/Mongo four-class fourteen-slot saves"
+    }
+  },
+  "lowFinalParty": {
+    "frames": 180,
+    "visibleFrames": 180,
+    "restored": true,
+    "drawCallsMedian": 139,
+    "trianglesMedian": 73525,
+    "frameMedianMs": 16.7,
+    "frameP95Ms": 33.4,
+    "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "classesAndItemCounts": [
+      {
+        "class": "Fighter",
+        "items": 14
+      },
+      {
+        "class": "Cleric",
+        "items": 14
+      },
+      {
+        "class": "Rogue",
+        "items": 14
+      },
+      {
+        "class": "Wizard",
+        "items": 14
+      }
+    ],
+    "scope": "One actual GPU renderer and three live normal authenticated socket peers; normal Go-race final saves pass. Original route budgets were strictly asserted; this later party profile was measured without the optional startup-budget assertion switch. No physical-phone or four-renderer certificate."
+  },
+  "constructorStorage": {
+    "raw": {
+      "meshes": 55,
+      "geometries": 30,
+      "uniqueArrayBuffers": 112,
+      "bytes": 43508,
+      "triangles": 1202
+    },
+    "packed": {
+      "meshes": 23,
+      "geometries": 18,
+      "uniqueArrayBuffers": 76,
+      "bytes": 141200,
+      "triangles": 1202
+    },
+    "additionalFinalRecipe": {
+      "meshes": 16,
+      "geometries": 13,
+      "uniqueArrayBuffers": 57,
+      "bytes": 134400,
+      "triangles": 1086
+    },
+    "scope": "CPU array-buffer bytes referenced by each final source/packed constructor recipe; deduplicated across shared geometry. Packed derivatives are shared across roots and persist in existing immutable family caches. Intermediate cached derivatives, renderer instance/multi-draw buffers and GPU driver allocation are not measured here; this is not total VRAM or zero-added-memory evidence."
+  },
+  "discovery": {
+    "discoveryOnly": true,
+    "hosted": 342,
+    "native": 35,
+    "overlap": 17,
+    "distinct": 360,
+    "previousHosted": 340,
+    "missingPrevious": [],
+    "added": [
+      "[\"published-game-bundle.spec.js\",\"published-game-bundle.spec.js\",\"published high DemonOrc defaults render generated roots and retire owned copies\",\"\"]",
+      "[\"published-game-bundle.spec.js\",\"published-game-bundle.spec.js\",\"published low DemonOrc defaults render generated roots and retire owned copies\",\"\"]"
+    ],
+    "groups": [
+      44,
+      3,
+      2,
+      6,
+      3,
+      51,
+      48,
+      3,
+      3,
+      10,
+      87,
+      28,
+      4,
+      3,
+      4,
+      43
+    ],
+    "previousNative": 31,
+    "missingPreviousNative": []
+  },
+  "sharedHost": {
+    "activeSoakRun": 38109009521,
+    "attempt": 1,
+    "source": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "statusAtObservation": "in_progress",
+    "scope": "Confirmed active100-client authoritative-state soak on the same host; separately retained old37880032315 failure remains terminal. Frame-time samples are observations under this load, not causal FPS or isolated-device acceptance. No job/process was changed."
+  },
+  "sanitization": {
+    "observedPreparedAccountsRedacted": 5,
+    "preparedFixtureAccountsPerRoute": 4,
+    "plainFilesScanned": 75,
+    "embeddedEntriesScanned": 10,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled",
+    "explicitPostLoginMovingImages": true
+  },
+  "retainedDiagnostics": [
+    "Initial focused command named nonexistent LegacyAttackClips; four real suites passed200tests, wrong-path failure retained; corrected actual LegacyEnemyAttackPresentation passes5, final exact8-suite236checks pass.",
+    "High route strictly fails town391draws against350 and33.3ms median against20; later party/save not reached. Low route and normal final saves pass."
+  ],
+  "scope": "Bounded reviewed component qualification on current master with real HUD/equipped motion and copied production engine. Full1202body triangles/UV/normals/PBR/gameplay/animation metadata preserved;55raw meshes\u219223packed. Same frozen High woodland398\u2192212draws andLow253\u219297 with identical submitted triangles in each control; population differs between qualities and timed/untimed phases. Current public remains accepted1.79.29; release30 acceptance pending; this candidate is not yet published. High town performance, full world/art/equipped-party/physical-device/campaign/freeze/beta/launch goals remain open.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-demon-current-checks-20261011",
+  "inventoryEntries": 979,
+  "inventorySHA256": "0361cecf5e4c046487b5606ed9943963c1aeb1e45ce6a24673a4ba8e76e43f13"
+}
