@@ -7,8 +7,9 @@ Publish coherent milestones with synchronized release versions and cumulative
 patch notes, then verify deployment before publishing another release.
 
 Preserve existing uncommitted user changes. Use an owned worktree when the main
-checkout is dirty. Keep unfinished or rejected experiments isolated until they
-are reviewed and selected; do not merge them just to reduce branch counts.
+checkout is dirty. Keep unfinished work isolated in detached worktrees. Archive rejected or
+superseded histories before retiring their branch names; history consolidation
+must preserve the selected runtime and does not qualify unfinished features.
 
 Owner branch policy (October 11, 2026): keep only `master` as an active branch,
 locally and on origin. Use detached owned worktrees for isolated work. Merge

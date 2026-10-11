@@ -2,6 +2,8 @@
 
 Corrective Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is merged and ordinarily pushed; CI38169083772attempt1active,36remains last accepted. Original fac CI38167079786failed server-race/stale client layout prerequisites, with3browser shards passing and deployment skipped. The concrete delayed-impact/cast race now regresses before and passes after the guard; current real4class boss crash/recovery,465client checks/four suites and2native cases pass.472notes preserve471prior entries byte-exact; fresh86asset pins prepared. [Correction](2026-10-11-release37-server-race-correction.json).
 
+Alpha1.79.38 is prepared locally with exact per-job geometry signatures and the master-only history consolidation.457distinct focused checks/five suites and3native browser cases pass, retries/skips0;473notes preserve472prior entries byte-exact. New137254-byte immutable worker exactly matches the qualified candidate. No source push until corrective37deployment/public acceptance. [Prepublication](2026-10-11-release38-prepublication-qualification.json).
+
 Geometry preparation now reuses exact signatures within each job; selected source`143be329` is ordinarily merged into local master`03fa966f`, awaiting the next coherent publication.71focused checks/four suites pass. Six native High/Low observations preserve all152distinct input fingerprints and complete output indices; candidate worker wall times improve in both qualities against both references. Cold triangle and connected frame-time failures remain open; this is preparation latency evidence, not FPS/art/device acceptance. [Qualification](2026-10-11-geometry-signature-preparation-qualification.json).
 
 Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is accepted live. CI38161891123 attempt1 passed all ten jobs. Fresh normal-TLS checks at18:52:03UTC match frontend/backend identities, ready database and all82served asset hashes/byte counts. Four optional stages remain skips.448distinct prepublication focused checks/six suites and four native publication cases pass, retries/skips0;12versions align and471notes preserve all470prior entries byte-exact. [Publication](2026-10-11-release36-publication.json). [Acceptance](2026-10-11-public36-terminal-qualification.json).
@@ -10,7 +12,7 @@ Forge gem keyboard choices and identity/focus continuity are qualified and merge
 
 Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Included in pushed37; deployment acceptance pending. [Qualification](2026-10-11-buyback-keyboard-qualification.json).
 
-Owner-requested master-only cleanup has consolidated all old local/remote tips into local master`4a1a4176`, retaining the selected source tree exactly.653local and50remote old branch names are removed; only master remains locally and on origin.129existing working trees retain identical HEAD/index/status/changed-file hashes, including465original dirty paths. Superseded/unselected experiments remain archived rather than enabled; The archive tag is published and verified; next coherent master source push awaits current37acceptance. [Archive and preservation](2026-10-11-master-only-branch-consolidation.json).
+Owner-requested master-only cleanup has consolidated all old local/remote tips into local master`4a1a4176`, retaining the selected source tree exactly.653local and50remote old branch names are removed; only master remains locally and on origin.129existing working trees retain identical HEAD/index/status/changed-file hashes, including465original dirty paths. Superseded/unselected experiments remain archived rather than enabled. The archive tag is published and verified; next coherent master source push awaits current37acceptance. [Archive and preservation](2026-10-11-master-only-branch-consolidation.json).
 
 October11 historical checkpoint: Previous accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
@@ -23,8 +25,7 @@ Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
 [Prepublication](2026-10-11-release35-menu-review-prepublication.json).
 [Publication](2026-10-11-release35-publication.json).
-592of653local branch names are ancestors of master;61unmerged histories remain
-under individual review. Completed content-validation, environment and selected Earth ground histories
+Before the master-only cleanup above,592of653local branch names were ancestors of master;61unmerged histories still required review. Completed content-validation, environment and selected Earth ground histories
 are merged and included in the pushed36 milestone. Prior34 failures remain
 retained in its historical acceptance receipt.
 Original
