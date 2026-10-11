@@ -552,6 +552,23 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
     await page.evaluate(() => window.__reviewEarthShoulder(-33, -235));
     await page.screenshot({ path: testInfo.outputPath('grove-willow-curtains.png') });
     await page.evaluate(() => window.__reviewEarthShoulder(-94, -313));
+    const profileView = async name => {
+        if (process.env.EIDOLON_E2E_RAISED_TERRAIN_PROFILE !== '1') return;
+        const profile = await page.evaluate(() => window.__profileEarthTerrain());
+        await testInfo.attach(`raised-terrain-${name}-profile`, {
+            body: JSON.stringify(profile), contentType: 'application/json'
+        });
+        console.log(`[raised terrain ${quality} ${name}] ${JSON.stringify(profile)}`);
+        expect(profile.frames).toBe(120);
+        expect(profile.renderer).not.toBe('unavailable');
+        expect(profile.renderer).not.toMatch(/SwiftShader|llvmpipe/i);
+        // Retain the original populated-world budgets at both qualities.
+        expect.soft(profile.median, `${name} median`).toBeLessThanOrEqual(quality === 'high' ? 20 : 33.4);
+        expect.soft(profile.p95, `${name} p95`).toBeLessThanOrEqual(quality === 'high' ? 33.4 : 50);
+        expect.soft(profile.calls, `${name} calls`).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);
+        expect.soft(profile.triangles, `${name} triangles`).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
+    };
+    await profileView('grove-formation');
     for (const [name, x, z] of [['west-bank', 340, 200], ['woodland-cut', 470, 200], ['outer-fold', 600, 200]]) {
         const view = await page.evaluate(([x, z]) => window.__reviewEarthShoulder(x, z), [x, z]);
         await testInfo.attach(`bastion-${name}`, { body: JSON.stringify(view), contentType: 'application/json' });
@@ -574,21 +591,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`Earth eleva
             await testInfo.attach(`raised-terrain-${name}-draws`, { body: JSON.stringify(draws), contentType: 'application/json' });
             console.log(`[raised terrain draws ${quality} ${name}] ${JSON.stringify(draws.slice(0, 10))}`);
         }
-        if (process.env.EIDOLON_E2E_RAISED_TERRAIN_PROFILE === '1') {
-            const profile = await page.evaluate(() => window.__profileEarthTerrain());
-            await testInfo.attach(`raised-terrain-${name}-profile`, {
-                body: JSON.stringify(profile), contentType: 'application/json'
-            });
-            console.log(`[raised terrain ${quality} ${name}] ${JSON.stringify(profile)}`);
-            expect(profile.frames).toBe(120);
-            expect(profile.renderer).not.toBe('unavailable');
-            expect(profile.renderer).not.toMatch(/SwiftShader|llvmpipe/i);
-            // Retain the original populated-world budgets at both qualities.
-            expect.soft(profile.median, `${name} median`).toBeLessThanOrEqual(quality === 'high' ? 20 : 33.4);
-            expect.soft(profile.p95, `${name} p95`).toBeLessThanOrEqual(quality === 'high' ? 33.4 : 50);
-            expect.soft(profile.calls, `${name} calls`).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);
-            expect.soft(profile.triangles, `${name} triangles`).toBeLessThanOrEqual(quality === 'high' ? 250000 : 85000);
-        }
+        await profileView(name);
     }
     const culling = await page.evaluate(() => window.__reviewSurfaceCulling());
     await testInfo.attach('surface-culling-equivalence', { body: JSON.stringify(culling), contentType: 'application/json' });
