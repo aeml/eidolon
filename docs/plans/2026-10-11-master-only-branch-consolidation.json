@@ -1,6 +1,6 @@
 {
   "recordedUTC": "2026-10-11T20:06:31.782460+00:00",
-  "status": "All original local/remote tips consolidated into local master;653old local branch names removed. Remote retirement pending durable archive publication.",
+  "status": "Only master remains locally and on origin. All old branch tips are ancestors of local master and preserved by the verified published archive tag; pending coherent master source push waits for corrective37 acceptance.",
   "ownerInstruction": "Merge old aged branches and remove old branch names, keeping only master/main.",
   "archiveMerge": {
     "merge": "4a1a417663f130e75472bbf26c5b606c44d7507f",
@@ -35,5 +35,11 @@
     "bundleVerified": true,
     "prerequisite": "Current repository master ancestry; incremental archive includes the61unmerged local/tracking refs. Previously merged tips remain reachable from master."
   },
-  "publication": "Master source push waits for the active corrective37 deployment and exact public acceptance; archive tag and branch deletion do not trigger a release."
+  "publication": "Master source push waits for the active corrective37 deployment and exact public acceptance; archive tag and branch deletion do not trigger a release.",
+  "remoteAfter": [
+    "master"
+  ],
+  "remoteDeleted": 50,
+  "archiveTag": "archive/branch-consolidation-20261011",
+  "archiveTagPeeledSHA": "c83a5def5399cce6c172ceee1fece6be8c0cc0cf"
 }
