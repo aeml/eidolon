@@ -193,8 +193,10 @@
     "nativeSessions": 6,
     "jobsPerSession": 76,
     "completedJobExecutions": 456,
-    "distinctInputOutputComparisons": 152,
-    "limits": "Worker wall time includes algorithm imports, hashing and asynchronous waits under current host load; not CPU/FPS/device/whole-world acceptance. Same source fingerprints and full output index SHA for every actual four-class/14-slot job; all original budgets unchanged. Cold samples remain above triangle budgets. Largest-first/fairness queue, algorithms/options, original attributes/morphs and fallback/cache policy unchanged."
+    "distinctInputOutputComparisons": 109,
+    "limits": "Worker wall time includes algorithm imports, hashing and asynchronous waits under current host load; not CPU/FPS/device/whole-world acceptance. Same source fingerprints and full output index SHA for every actual four-class/14-slot job; all original budgets unchanged. Cold samples remain above triangle budgets. Largest-first/fairness queue, algorithms/options, original attributes/morphs and fallback/cache policy unchanged.",
+    "referenceJobComparisons": 152,
+    "comparisonCountClarification": "152counts reference jobs acrossqualities including repeated inputs;109unique exact input/output pairs. Original frozen evidence remains unchanged."
   },
   "worker": {
     "output": "src/core/ActorGameplayGeometryWorker.a0bfaaefee9a272a.js",

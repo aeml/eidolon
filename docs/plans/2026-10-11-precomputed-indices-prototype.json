@@ -1,0 +1,226 @@
+{
+  "recordedUTC": "2026-10-11T20:49:14.507693+00:00",
+  "status": "Private copied-worker prototype qualified for continued implementation; unselected and unpublished. No product source/branches changed.",
+  "referenceSource": "91ee3ec85ed13a643025c047bbaba5eba14528d7",
+  "referenceWorkerSHA256": "a0bfaaefee9a272a274daa813fb6e9e0f4f3e3897ebd829aae66da45a5954afd",
+  "candidateWorker": {
+    "output": "src/core/ActorGameplayGeometryWorker.83528faf6bfcf0a0.js",
+    "sha256": "83528faf6bfcf0a06fd0bb265dc25242465122331184af33dbfb3564da5404c6",
+    "bytes": 162280,
+    "modules": 12,
+    "imports": []
+  },
+  "artifact": {
+    "rows": 109,
+    "algorithmKeyVersion": "supplied-indices-v1-.006-.12-collars",
+    "decodedUint32Bytes": 1283292,
+    "deltaVarintBytes": 404680,
+    "servedGzipBytes": 291323,
+    "sha256": "632e56ebf1038b6719b599c5892e2d8a4eb988acaabe0e8fde7478df2685ba87",
+    "fetchTimeoutMs": 1500,
+    "load": "One lazy bounded real local HTTP fetch per worker for known input keys; unknown keys never fetch. Strict decoded length, full artifact SHA, canonical varints, source vertex/index-count bounds and full output SHA before use. Errors disable provider and run original algorithms.",
+    "retainedCache": "Original16MiB/128-entry worker cache unchanged; additional404680-byte encoded blob and25KBcatalog/decoder are not peak-memory-qualified."
+  },
+  "checks": {
+    "completeGoldenBuffers": 109,
+    "providerGoldenBuffers": 109,
+    "malformedCodecCases": 9,
+    "providerFailureCases": 7,
+    "fetchRequestsForAll109Rows": 1,
+    "offlineAttempts": 1,
+    "artifactSHA256": "632e56ebf1038b6719b599c5892e2d8a4eb988acaabe0e8fde7478df2685ba87",
+    "encodedBytes": 404680
+  },
+  "nativeComparison": {
+    "scope": "Native controlled copied-worker prototype: High/Low reference, candidate, reference again. Not connected FPS, startup, peak memory, device or art acceptance.",
+    "sessions": 6,
+    "executions": 456,
+    "allOutputHashesAndFingerprintsMatch": true,
+    "originalStatsMatch": true,
+    "records": [
+      {
+        "quality": "high",
+        "variant": "reference",
+        "workerWallMs": 4416.899999856949,
+        "requestDrainMs": 7072.699999988079,
+        "afterSetupPending": 74,
+        "firstSample": {
+          "at": 8593.399999976158,
+          "pending": 74,
+          "installed": 2,
+          "calls": 235,
+          "triangles": 340422
+        },
+        "settledSample": {
+          "at": 13262.899999976158,
+          "pending": 0,
+          "installed": 65,
+          "calls": 220,
+          "triangles": 147466
+        },
+        "wholeFixtureMs": 12448.300000011921,
+        "longTasks": 11,
+        "clockHasOwnOverride": false,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "quality": "high",
+        "variant": "candidate",
+        "workerWallMs": 126.30000019073486,
+        "requestDrainMs": 2364.5,
+        "afterSetupPending": 20,
+        "firstSample": {
+          "at": 8434.199999988079,
+          "pending": 20,
+          "installed": 48,
+          "calls": 235,
+          "triangles": 206422
+        },
+        "settledSample": {
+          "at": 9015.599999964237,
+          "pending": 0,
+          "installed": 65,
+          "calls": 220,
+          "triangles": 147466
+        },
+        "wholeFixtureMs": 8205.399999976158,
+        "longTasks": 12,
+        "clockHasOwnOverride": false,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "quality": "high",
+        "variant": "reference-again",
+        "workerWallMs": 3877.8999999165535,
+        "requestDrainMs": 5483.5,
+        "afterSetupPending": 74,
+        "firstSample": {
+          "at": 7196.600000023842,
+          "pending": 74,
+          "installed": 2,
+          "calls": 235,
+          "triangles": 340422
+        },
+        "settledSample": {
+          "at": 10866.600000023842,
+          "pending": 0,
+          "installed": 65,
+          "calls": 220,
+          "triangles": 147466
+        },
+        "wholeFixtureMs": 10097.300000011921,
+        "longTasks": 10,
+        "clockHasOwnOverride": false,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "quality": "low",
+        "variant": "reference",
+        "workerWallMs": 2318.0,
+        "requestDrainMs": 3285.199999988079,
+        "afterSetupPending": 73,
+        "firstSample": {
+          "at": 5308,
+          "pending": 73,
+          "installed": 3,
+          "calls": 125,
+          "triangles": 109365
+        },
+        "settledSample": {
+          "at": 6930,
+          "pending": 0,
+          "installed": 71,
+          "calls": 110,
+          "triangles": 65649
+        },
+        "wholeFixtureMs": 6192.900000035763,
+        "longTasks": 8,
+        "clockHasOwnOverride": false,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "quality": "low",
+        "variant": "candidate",
+        "workerWallMs": 73.1999996304512,
+        "requestDrainMs": 1225.5999999642372,
+        "afterSetupPending": 20,
+        "firstSample": {
+          "at": 4830.799999952316,
+          "pending": 20,
+          "installed": 54,
+          "calls": 125,
+          "triangles": 82381
+        },
+        "settledSample": {
+          "at": 4993.799999952316,
+          "pending": 0,
+          "installed": 71,
+          "calls": 110,
+          "triangles": 65649
+        },
+        "wholeFixtureMs": 4175.299999952316,
+        "longTasks": 8,
+        "clockHasOwnOverride": false,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "quality": "low",
+        "variant": "reference-again",
+        "workerWallMs": 2474.399999856949,
+        "requestDrainMs": 3255.0,
+        "afterSetupPending": 73,
+        "firstSample": {
+          "at": 5066.300000011921,
+          "pending": 73,
+          "installed": 3,
+          "calls": 125,
+          "triangles": 109365
+        },
+        "settledSample": {
+          "at": 7118,
+          "pending": 0,
+          "installed": 71,
+          "calls": 110,
+          "triangles": 65649
+        },
+        "wholeFixtureMs": 6384.300000011921,
+        "longTasks": 8,
+        "clockHasOwnOverride": false,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      }
+    ],
+    "referenceJobComparisons": 152,
+    "uniqueInputKeysAcrossQualities": 109,
+    "uniqueInputOutputPairsAcrossQualities": 109,
+    "comparisonsAgainstCandidateAndReferenceAgain": 304,
+    "repeatedInputMultiplicitiesMatch": true,
+    "observersRestoredAllSessions": true,
+    "ownedServerStoppedWithExit": 0,
+    "browserContextsWorkersClosed": true
+  },
+  "nativeFallback": {
+    "cases": 4,
+    "directWorkerExecutions": 10,
+    "scenarios": [
+      "Known supplied-body exact row plus repeated cache hit",
+      "HTTP503 fallback plus repeated cache hit",
+      "Corrupt artifact fallback plus repeated cache hit",
+      "Changed real body position input produces new key, no fetch, original-algorithm output plus repeated cache hit"
+    ],
+    "allFullOutputsKeysFallbackAndCacheAccountingMatchReference": true,
+    "intentionalBrowserFailure": "response:503 owned __owned_precomputed fixture endpoint; retained in native-fallback.json. No production collector changes."
+  },
+  "limitations": [
+    "Prepared natural-clock four-class14-slot fixture only; not connected startup, FPS, WAN, peak memory, physical-device or final-art acceptance.",
+    "High/Low first post-setup sample is206422/82381tri in candidate vs340422/109365reference. These samples occur after fixture setup, not application first frame; no retained cold/performance gate closed.",
+    "Catalog generation is diagnostic from frozen exact extraction outputs; reproducible generator and build-time binding to canonical algorithm/options/provenance are still required.",
+    "Published immutable asset/offline integration and lifecycle/retirement qualification remain required before product selection.",
+    "109unique input/output pairs underlie152reference jobs including repeated keys;304candidate/reference-again comparisons match with repeated-input multiplicities.456actual controlled-session executions. Prior use of152distinct in signature notes meant152reference-job comparisons; exact unique count is109."
+  ],
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-precomputed-index-prototype-20261011",
+    "entries": 35,
+    "inventorySHA256": "18854322849a892682212444c4fe54145a4b06733e61352120f2a033919078c7"
+  },
+  "next": "Implement reproducible provenance-bound generation and meaningful source/decoder/provider/lifecycle guards in an owned detached worktree. Select/merge only after qualification; preserve all original geometry and fallback behavior. No next publication until38 own terminal/live acceptance."
+}
