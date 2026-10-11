@@ -12,7 +12,10 @@ work and bounded contact audio are now merged into local master. Cumulative
 Alpha1.79.30 is prepared; CI/deployment acceptance is pending. Initial CI38116276417
 blocks deployment at generated-worker lint. Exact locked dependencies reproduce
 ten errors; corrective26e3a8c5 excludes only minified build output and full lint
-passes. Full client-suite validation remains in progress. Older staged/private
+passes. The local full diagnostic run reproduced an Actor metadata fallback
+TypeError; optional metadata guards now pass122focused checks in5suites. That
+partial diagnostic run was stopped after diagnosis and is not a full-suite pass.
+Required hosted full-suite and deployment acceptance remain pending. Older staged/private
 labels below describe historical qualification and do not override this checkpoint.
 Local master was1567commits behind upstream; synchronization resolved91branch
 ancestry mismatches. Qualified milestone integration resolves58more, and30branches

@@ -551,7 +551,7 @@ export class Actor extends Entity {
     syncMovementAnimationSpeed(speed = this.stats?.speed) {
         const movementName = this.getMovementAnimationName(this.isRunning);
         if (!movementName) return false;
-        const resolvedName = this.mesh?.userData.resolveAnimationName?.(movementName, {
+        const resolvedName = this.mesh?.userData?.resolveAnimationName?.(movementName, {
             restart: false, currentName: this.currentAnimationName
         }) || movementName;
         const movementAction = this.animations[resolvedName] || this.animations[movementName];
@@ -566,7 +566,7 @@ export class Actor extends Entity {
         const className = this.meshType || this.subType || this.constructor.name;
         const profile = getAbilityAnimationProfile(className, skillName);
         const presentation = getAbilityPresentation(className, skillName);
-        let clipName = options.clip || this.mesh?.userData.resolveAbilityAnimationName?.(
+        let clipName = options.clip || this.mesh?.userData?.resolveAbilityAnimationName?.(
             presentation?.animation, presentation?.canonicalName) || profile.clip;
         if (!this.animations[clipName]) {
             clipName = this.animations.Attack ? 'Attack' : (this.animations.Idle ? 'Idle' : null);
@@ -684,7 +684,7 @@ export class Actor extends Entity {
             if (force) this.currentAbilityAnimation = null;
         }
 
-        const resolvedName = this.mesh?.userData.resolveAnimationName?.(name, { restart: force, currentName: this.currentAnimationName }) || name;
+        const resolvedName = this.mesh?.userData?.resolveAnimationName?.(name, { restart: force, currentName: this.currentAnimationName }) || name;
         const action = this.animations[resolvedName] || this.animations[name];
         if (!force && this.currentAction === action) return true;
 
@@ -795,7 +795,7 @@ export class Actor extends Entity {
         this.movingCastGait?.restore();
         this.mixer.update(dt);
         this.movingCastGait?.apply(dt);
-        this.mesh?.userData.updateEquipmentPose?.();
+        this.mesh?.userData?.updateEquipmentPose?.();
     }
 
     clearBlockedMovementTarget() {
@@ -1655,12 +1655,12 @@ export class Actor extends Entity {
         const clip = this.currentAction?.getClip?.();
         const duration = clip?.duration || 1;
         const interval = Number.isFinite(cooldown) && cooldown > 0 ? cooldown : 1;
-        const contact = this.mesh?.userData.basicAttackContactTime;
+        const contact = this.mesh?.userData?.basicAttackContactTime;
         // Only annotated basic clips opt in. Unreviewed enemy/imported rigs
         // and ability clips retain their existing playback.
         // Server and offline basic damage both land at 35% of the interval.
         // Match the visible contact, not the entire clip's arbitrary duration.
-        const reviewedBasic = clip?.name === 'Attack' || this.mesh?.userData.basicAttackContactClipNames?.includes(clip?.name);
+        const reviewedBasic = clip?.name === 'Attack' || this.mesh?.userData?.basicAttackContactClipNames?.includes(clip?.name);
         if (reviewedBasic && Number.isFinite(contact) && contact > 0 && contact <= duration) {
             return contact / (interval * .35);
         }

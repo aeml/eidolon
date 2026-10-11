@@ -456,3 +456,16 @@ Full original roadmap/performance/art/device/operations/F1–F5/beta/launch/hand
 remain open. Audio76focused/3distinct native cases pass; isolated PCM/voice
 cleanup does not establish human listening or busy-fight mix acceptance.
 [Audio proof](docs/plans/2026-10-11-combat-contact-foley-qualification.json).
+
+
+2026-10-11 master follow-up: four additional completed histories, including the
+original motion/admin branches, merge cleanly without changing the master tree.
+Unmerged branches now104. Qualified work is pushed to origin/master. Initial
+Alpha1.79.30 CI38116276417 blocks deployment on generated-worker lint; reproduced
+with locked dependencies and corrected by excluding only generated minified
+output. An owned local diagnostic full run exposed a missing optional mesh
+metadata guard; final movement/cast/contact fallbacks pass122focused checks in
+5suites with full locked-dependency lint. Partial diagnostic run stopped after
+diagnosis and not counted as full-suite success. Corrective release gates and
+exact public acceptance remain pending; public29 remains last accepted.
+Full original goal remains active.

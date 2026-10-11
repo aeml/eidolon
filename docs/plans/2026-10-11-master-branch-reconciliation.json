@@ -1170,7 +1170,18 @@
     "completeClientESLint": "pass",
     "diffCheck": "pass",
     "originalCheckout": "Preserved branch and all pre-existing uncommitted work; only AGENTS.md added and goal.md appended.",
-    "audioEvidence": "docs/plans/2026-10-11-combat-contact-foley-qualification.json"
+    "audioEvidence": "docs/plans/2026-10-11-combat-contact-foley-qualification.json",
+    "actorMetadataFallback": {
+      "change": "Guard optional mesh userData before movement/ability clip resolvers, equipment-pose callbacks and contact metadata. Meshes without metadata use the existing animation fallback.",
+      "baseline": "Owned local full diagnostic run reproduces GameSimulation remote charging TypeError. Partial/mixed-source run stopped after diagnosis, not counted as a full-suite pass.",
+      "focusedPassed": 122,
+      "suites": 5,
+      "seconds": 5.31,
+      "failedFinal": 0,
+      "skipped": 0,
+      "completeSourceLint": "pass with exact locked dependencies",
+      "requiredHostedFullSuite": "pending on corrective source"
+    }
   },
   "evidenceRoot": "/home/aeml/.local/share/eidolon-master-reconciliation-checks-20261011",
   "next": "Fetch and ordinary-merge any new upstream changes, push master, then verify CI/deployment and exact public identities before another release.",
