@@ -1,0 +1,53 @@
+{
+  "recordedUTC": "2026-10-11T14:28:13.569500+00:00",
+  "version": "Alpha 1.79.34",
+  "source": "f7c7b9e05fc703fb459af721729f4a1133e770a6",
+  "ciRun": 38147178300,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38147178300",
+  "status": "Ordinarily pushed to origin/master; own ordered CI/deploy/live/post-terminal23asset acceptance remains pending.",
+  "normalPush": {
+    "from": "9ce67fe3d2d0aeae55102d14b579107733d1a719",
+    "to": "f7c7b9e05fc703fb459af721729f4a1133e770a6",
+    "fetchedAndMergedOriginFirst": true,
+    "force": false
+  },
+  "preparedRuntimeSource": "c75c0f4131213c25048b8c2454452c6d8551d5ab",
+  "runtimeIdenticalToQualifiedSource": true,
+  "prepublication": "2026-10-11-release34-motion-navigation-prepublication.json",
+  "scope": "Steady dungeon radar, independent mixed-weapon Rogue grips and faster owned float geometry copies. All12version paths/469cumulative notes align;444 distinct focused checks and four distinct native publication cases pass. Supplied assets, rigs, visible populations, gameplay cadence and original frame limits retained.",
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release34-publication-checks-20261011/expected-public34-assets.json",
+  "expectedManifestSHA256": "0e7c70ea82078700116c0ad2943a18e2c5cab91ff660a1ae91742a2296015ad4",
+  "expectedAssets": 23,
+  "engine": {
+    "path": "src/core/GameEngine.bundle.js",
+    "bytes": 3493602,
+    "sha256": "5954d09169a413a82a0765bc3562c911c266e2104f63002eb814eea941440c8f"
+  },
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+    "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+    "bytes": 137178,
+    "modules": 10,
+    "imports": []
+  },
+  "copyRetirement": {
+    "recordedUTC": "2026-10-11T14:26:17.014085+00:00",
+    "source": "f7c7b9e05fc703fb459af721729f4a1133e770a6",
+    "ownedGeneratedCopy": "/home/aeml/.local/share/eidolon-release34-motion-navigation-checks-20261011/public",
+    "verifiedFinalAssetPins": 23,
+    "verifiedFrozenPreflightEntries": 23,
+    "sourceAndEvidencePreserved": true,
+    "freeMiBBefore": 2814,
+    "freeMiBAfter": 3248,
+    "guardMiB": 2048,
+    "guardUnchanged": true,
+    "scope": "Only the owned reproducible publication copy excluded from preflight inventory retired. No production, CI, logs, frozen evidence, backups, source worktrees or shared dependencies removed."
+  },
+  "previousAccepted": "Alpha1.79.33/9ce67fe3d2d0aeae55102d14b579107733d1a719, CI38142813857attempt2 and fresh post-terminal17assets/readiness accepted; four optional skips remain.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release34-publication-checks-20261011",
+    "inventoryEntries": 7,
+    "inventorySHA256": "a7a2055619a3fc459a979b611b914aadea131d97fbe3178d9210c1412804cd2c"
+  },
+  "limits": "No own34deployment/live/public acceptance yet. No terrain/access/economy/schema/wipe or final world/art/gameplay/device/performance/operations/F1\u2013F5/beta/launch/handoff approval. Existing public29soak remains separate. Full original goal active."
+}

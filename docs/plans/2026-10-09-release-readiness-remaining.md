@@ -190,7 +190,7 @@ Every explicit requirement in those sources remains part of the completion audit
   The prior failed soak remains open; no retry/cancellation or unchanged campaign
   replay has been performed.
 
-- **Qualified34 milestone:** source `c75c0f41`, qualification `0b120edc`,
+- **Published34 milestone:** source `c75c0f41`, qualification `0b120edc`,
   ordinary master merge `88cf2985`. Steady dungeon radar, independent mixed
   weapon grips and faster owned geometry copies combine in one publication.
   All12 version paths align34;469 cumulative notes preserve all468prior entries
@@ -199,7 +199,9 @@ Every explicit requirement in those sources remains part of the completion audit
   four-class14-slot worker integration retains exact scheduler-control indices
   and pixels; five mixed Rogue stances resolve correctly. Initial local vendor
   preparation failure and affected-only rerun remain retained. Final23asset pins
-  and normal publication next; own release acceptance still required.
+  verify before owned copy retirement; ordinarily pushed exact `f7c7b9e0`,
+  CI38147178300 active. Own ordered release acceptance still required.
+  [Publication](2026-10-11-release34-publication.json).
   [Prepublication](2026-10-11-release34-motion-navigation-prepublication.json).
 - **Next qualified optimization:** exact worker geometry copies avoid component
   decoding for ordinary packed/interleaved float buffers.90 focused checks, full
@@ -236,7 +238,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Complete prepared Alpha1.79.34 combined publication checks for steady dungeon radar, independent mixed weapon grips and faster owned geometry copies; merge qualified work, fetch/ordinarily merge origin, synchronize all versions/469 cumulative notes and verify its own ordered CI/deploy/live/post-terminal asset acceptance. Exact33 is accepted; its retained failures and scoped evidence do not prequalify34. | Implementation |
+| Next release | Observe exact Alpha1.79.34/f7c7b9e0/CI38147178300 to terminal, verify its own ordered CI/deploy/live and fresh post-terminal normal-TLS frontend/backend/readyDB/all23pinned asset bytes/SHA256. All12versions/469notes and combined publication checks pass; exact33 acceptance and reused component evidence do not prequalify34. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
