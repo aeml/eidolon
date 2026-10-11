@@ -29,6 +29,18 @@ test('shared understory geometry survives partial retirement and repeated qualit
         const samePixels = (a, b) => a.every((value, i) => value === b[i]);
         const gl = renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
         const gpu = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+        // Stock PBR lazily initializes its renderer-wide 32x32 DFG lookup on
+        // the first lit material. Establish that actual renderer baseline with
+        // an ordinary unbatched mesh, then remove all of the seed's resources.
+        let lutUniform;
+        const seedMaterial = new THREE.MeshStandardMaterial();
+        seedMaterial.onBeforeCompile = shader => { lutUniform = shader.uniforms.dfgLUT; };
+        const seed = new THREE.Mesh(new THREE.BoxGeometry(), seedMaterial);
+        seed.position.set(16, 0, 0); scene.add(seed); render();
+        const lut = lutUniform.value;
+        const rendererPbrLookup = { width: lut.image.width, height: lut.image.height,
+            bytes: lut.image.data.byteLength, rg16f: lut.format === THREE.RGFormat && lut.type === THREE.HalfFloatType };
+        seed.removeFromParent(); seed.geometry.dispose(); seedMaterial.dispose();
         const emptyPixels = render(), baseline = { ...renderer.info.memory }, rows = [];
         try {
             for (const quality of ['high', 'low', 'high', 'low']) {
@@ -53,11 +65,13 @@ test('shared understory geometry survives partial retirement and repeated qualit
                     identicalPixels: samePixels(before, after), changedColorChannels: before.reduce((sum, value, i) =>
                         sum + (i % 4 !== 3 && value !== emptyPixels[i] ? 1 : 0), 0) });
             }
-            return { gpu, baseline, rows };
+            return { gpu, rendererPbrLookup, baseline, rows };
         } finally { target.dispose(); renderer.dispose(); }
     });
     await testInfo.attach('shared-understory-lifetime', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
     if (requiresHardwareWebGL()) expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
+    expect(result.rendererPbrLookup).toEqual({ width: 32, height: 32, bytes: 4096, rg16f: true });
+    expect(result.baseline).toEqual({ geometries: 0, textures: 2 });
     expect(result.rows).toHaveLength(4);
     for (const row of result.rows) {
         expect(row.whole.geometries).toBe(result.baseline.geometries + 1);
