@@ -1,0 +1,255 @@
+{
+  "recordedUTC": "2026-10-11T14:19:49.279014+00:00",
+  "version": "Alpha 1.79.33",
+  "source": "9ce67fe3d2d0aeae55102d14b579107733d1a719",
+  "status": "Accepted exact ordered publication within its retained scope. Full goal remains active.",
+  "ci": {
+    "run": 38142813857,
+    "url": "https://github.com/aeml/eidolon/actions/runs/38142813857",
+    "attempt": 2,
+    "status": "completed",
+    "conclusion": "success",
+    "terminalUpdatedUTC": "2026-10-11T14:17:33Z"
+  },
+  "orderedJobs": [
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Client Tests (Jest)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "conclusion": "success",
+      "optionalSkippedSteps": [
+        "Run deterministic High/Low animation gallery",
+        "Run required Well Rested rendering and GPU lifecycle QA",
+        "Run disposable full-character gameplay"
+      ]
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Live Release and Character QA",
+      "conclusion": "success",
+      "optionalSkippedSteps": [
+        "Run live four-class and remote-animation QA"
+      ]
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    },
+    {
+      "name": "Server Tests (Go)",
+      "conclusion": "success",
+      "optionalSkippedSteps": []
+    }
+  ],
+  "public": {
+    "observedAtUtc": "2026-10-11T14:18:21.767376+00:00",
+    "normalTLS": true,
+    "frontendCommit": "9ce67fe3d2d0aeae55102d14b579107733d1a719",
+    "backendCommit": "9ce67fe3d2d0aeae55102d14b579107733d1a719",
+    "version": "Alpha 1.79.33",
+    "database": "ready",
+    "terrainProfile": "flat-v1",
+    "identitiesMatch": true,
+    "assets": [
+      {
+        "path": "index.html",
+        "status": 200,
+        "bytes": 118926,
+        "sha256": "f3c1369f54952561ebd34ebab7048200d606057895b1a73aed51d3d2bc86ac0f",
+        "expectedBytes": 118926,
+        "expectedSha256": "f3c1369f54952561ebd34ebab7048200d606057895b1a73aed51d3d2bc86ac0f",
+        "matches": true
+      },
+      {
+        "path": "src/main.js",
+        "status": 200,
+        "bytes": 28947,
+        "sha256": "58360572ab8370346a88aa619978a5837334968c2e3796aea48d3cdf0ae589b0",
+        "expectedBytes": 28947,
+        "expectedSha256": "58360572ab8370346a88aa619978a5837334968c2e3796aea48d3cdf0ae589b0",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngine.bundle.js",
+        "status": 200,
+        "bytes": 3491539,
+        "sha256": "247552cea077c725caaf10e4f6f6a1af100ab67c249362a481030beaf2464c02",
+        "expectedBytes": 3491539,
+        "expectedSha256": "247552cea077c725caaf10e4f6f6a1af100ab67c249362a481030beaf2464c02",
+        "matches": true
+      },
+      {
+        "path": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+        "status": 200,
+        "bytes": 137178,
+        "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "expectedBytes": 137178,
+        "expectedSha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "matches": true
+      },
+      {
+        "path": "src/entities/Actor.js",
+        "status": 200,
+        "bytes": 96447,
+        "sha256": "3e5bd4c388d91be9c7be109739989321369e06f01d3ffbedfe9acb8fb39b329a",
+        "expectedBytes": 96447,
+        "expectedSha256": "3e5bd4c388d91be9c7be109739989321369e06f01d3ffbedfe9acb8fb39b329a",
+        "matches": true
+      },
+      {
+        "path": "src/ui/AdminUI.js",
+        "status": 200,
+        "bytes": 25690,
+        "sha256": "9d213ce239a8f81a9e5a7a35f32b0b4ea60a010d3486c98a09c81b65264448a5",
+        "expectedBytes": 25690,
+        "expectedSha256": "9d213ce239a8f81a9e5a7a35f32b0b4ea60a010d3486c98a09c81b65264448a5",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngineMovement.js",
+        "status": 200,
+        "bytes": 65272,
+        "sha256": "6d2ce20c7c10488179bf1332ee74ff28a1767846403cb050a58e93bbbbd146fd",
+        "expectedBytes": 65272,
+        "expectedSha256": "6d2ce20c7c10488179bf1332ee74ff28a1767846403cb050a58e93bbbbd146fd",
+        "matches": true
+      },
+      {
+        "path": "src/core/GameEngineRuntime.js",
+        "status": 200,
+        "bytes": 60516,
+        "sha256": "2ff6b50889b2b0edccbaf8507175242c959c4fddefdaecb4d33bd61f659f9839",
+        "expectedBytes": 60516,
+        "expectedSha256": "2ff6b50889b2b0edccbaf8507175242c959c4fddefdaecb4d33bd61f659f9839",
+        "matches": true
+      },
+      {
+        "path": "src/styles/index.css",
+        "status": 200,
+        "bytes": 252263,
+        "sha256": "8c0017ddb9376f4a7a5eceab0fcc004a0eeb534138b7745a1f39a46bcbf7e8c3",
+        "expectedBytes": 252263,
+        "expectedSha256": "8c0017ddb9376f4a7a5eceab0fcc004a0eeb534138b7745a1f39a46bcbf7e8c3",
+        "matches": true
+      },
+      {
+        "path": "src/ui/LoginModerationUI.js",
+        "status": 200,
+        "bytes": 7049,
+        "sha256": "dc83c5e06ef3abc7443bf038b15f9380743e6943e7bb468245b23d9ffa2d23ad",
+        "expectedBytes": 7049,
+        "expectedSha256": "dc83c5e06ef3abc7443bf038b15f9380743e6943e7bb468245b23d9ffa2d23ad",
+        "matches": true
+      },
+      {
+        "path": "src/ui/ReportUI.js",
+        "status": 200,
+        "bytes": 15251,
+        "sha256": "6ad30eec6717dd89bce8a16598155ef8d510692cbdb699420a4a4d2508fcc968",
+        "expectedBytes": 15251,
+        "expectedSha256": "6ad30eec6717dd89bce8a16598155ef8d510692cbdb699420a4a4d2508fcc968",
+        "matches": true
+      },
+      {
+        "path": "src/ui/AdminReportReview.js",
+        "status": 200,
+        "bytes": 7228,
+        "sha256": "adf6f2a664f8ab216b17a178e00e1b180fdfab18417379336709603d38ce430c",
+        "expectedBytes": 7228,
+        "expectedSha256": "adf6f2a664f8ab216b17a178e00e1b180fdfab18417379336709603d38ce430c",
+        "matches": true
+      },
+      {
+        "path": "src/ui/WorldReadingDialog.js",
+        "status": 200,
+        "bytes": 3596,
+        "sha256": "c5c509033f17aec0fe0a1f07969bafa1c45e8c55395eb0400b3d20c78d0e3c1a",
+        "expectedBytes": 3596,
+        "expectedSha256": "c5c509033f17aec0fe0a1f07969bafa1c45e8c55395eb0400b3d20c78d0e3c1a",
+        "matches": true
+      },
+      {
+        "path": "src/ui/reportTypes.js",
+        "status": 200,
+        "bytes": 610,
+        "sha256": "3054bc59b8f6b6b97c0b0fd4444dfe48d03c86a024677b5137ef0d209a986b7a",
+        "expectedBytes": 610,
+        "expectedSha256": "3054bc59b8f6b6b97c0b0fd4444dfe48d03c86a024677b5137ef0d209a986b7a",
+        "matches": true
+      },
+      {
+        "path": "src/assets/authoredEquipment.generated.js",
+        "status": 200,
+        "bytes": 113819,
+        "sha256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+        "expectedBytes": 113819,
+        "expectedSha256": "a20c6ffff9e5e4baf4f96699dded33c3699fa7681d608216cec4505d6c186203",
+        "matches": true
+      },
+      {
+        "path": "vendor/three/LICENSE",
+        "status": 200,
+        "bytes": 1081,
+        "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+        "expectedBytes": 1081,
+        "expectedSha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+        "matches": true
+      },
+      {
+        "path": "vendor/protobuf/LICENSE",
+        "status": 200,
+        "bytes": 1937,
+        "sha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c",
+        "expectedBytes": 1937,
+        "expectedSha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c",
+        "matches": true
+      }
+    ],
+    "allAssetsMatch": true,
+    "analyticsModule": {
+      "status": 200,
+      "contentType": "application/javascript; charset=utf-8",
+      "bytes": 1002,
+      "sha256": "0f58383ee0b5409e68710c3e56f8d1a8d67f5c48576fa653675af53213b18003",
+      "containsObserver": true
+    }
+  },
+  "retainedFailures": [
+    "Original33 cc001f00/CI38140628469 failed sole client asset-literal audit before deployment; exact audit correction retained.",
+    "Corrected run attempt1 passed all nine prerequisite/deployment jobs, then strict live browser collector caught one ERR_NETWORK_CHANGED. Gameplay expiry/reentry assertions and second native recovery journey passed. One diagnosed failed-job-only retry reused successful jobs; no gate or source change. See2026-10-11-release33-live-network-recovery.json."
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-public33-terminal-checks-20261011",
+    "inventoryEntries": 4,
+    "inventorySHA256": "06258f4ab6d340c7c58b4a1aee7e3d14e71687f656b82745b28304c3708f774d"
+  },
+  "limits": "Only exact33 source/readiness/17 served assets and its ordered CI/live scope accepted. Four optional skipped steps remain skips. Prior component qualifications keep their own limits. This does not close full world/art/equipped-party/device/performance/operations/F1\u2013F5/beta/launch/handoff requirements or accept the ongoing public29 soak. Public terrain stays flat-v1."
+}

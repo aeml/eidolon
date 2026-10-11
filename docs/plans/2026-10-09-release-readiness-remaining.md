@@ -25,8 +25,8 @@ Every explicit requirement in those sources remains part of the completion audit
   and corrected with33 focused passing checks. Original CI is terminal failed,
   all other prerequisites passed and deployment skipped. Corrective9ce67fe3
   CI38142813857 attempt1 deployed but failed final live QA on a single browser
-  network-change error; diagnosed failed-job-only attempt2 is active on the same
-  source. Exact17asset diagnostics match; acceptance remains pending.
+  network-change error; diagnosed failed-job-only attempt2 succeeded on identical
+  source. Fresh post-terminal17asset/source/readiness checks accept exact33.
   [Receipt](2026-10-11-release33-client-guard-correction.json),
   [corrective publication](2026-10-11-release33-guard-corrective-publication.json).
 - **Release33 live network failure:** all nine prerequisite/deployment jobs
@@ -34,8 +34,9 @@ Every explicit requirement in those sources remains part of the completion audit
   strict collector caught `GameSessionObserver.js` `ERR_NETWORK_CHANGED`.
   The second travel/combat/reconnect case passed. Normal-TLS exact identities,
   ready database, all17 pinned assets and the observer module now verify.
-  One failed-job-only attempt2 reuses successful jobs on identical source;
-  no relaxed gate or new release. Fresh post-terminal acceptance still required.
+  One failed-job-only attempt2 reused successful jobs on identical source and
+  succeeded. Fresh post-terminal normal-TLS17asset/source/database acceptance
+  now passes; no relaxed gate or new release.
   [Retained diagnosis](2026-10-11-release33-live-network-recovery.json).
 - **Release33 storage headroom:** two clean merged owned scratch worktrees
   retired after all818 ignored entries were checked against retained master;
@@ -45,7 +46,15 @@ Every explicit requirement in those sources remains part of the completion audit
   repair does not establish deployment success.
   [Receipt](2026-10-11-release33-scratch-capacity.json).
 
-- **Last accepted public build:** Alpha1.79.32,
+- **Last accepted public build:** Alpha1.79.33,
+  `9ce67fe3d2d0aeae55102d14b579107733d1a719`, CI38142813857 attempt2.
+  All ten ordered jobs succeed. Fresh post-terminal normal-TLS checks at
+  14:18:21UTC verify exact frontend/backend identities, ready database and all17
+  expected served asset hashes and byte counts. Four optional steps remain
+  skips. Initial client-audit and later transient-network failures are retained;
+  the diagnosed failed-job-only retry changed no source or gate. Current terrain
+  stays flat-v1. [Acceptance](2026-10-11-public33-terminal-qualification.json).
+- **Previous accepted public build:** Alpha1.79.32,
   `d31246e9b53fbe73bd7f59beea4c3235df30a922`.
   [CI38136326810](https://github.com/aeml/eidolon/actions/runs/38136326810)
   attempt2 passed all ten ordered jobs. Post-terminal normal-TLS checks at
@@ -75,9 +84,9 @@ Every explicit requirement in those sources remains part of the completion audit
   [Failure and repair](2026-10-11-release32-storage-preflight-recovery.json),
   [publication](2026-10-11-release32-publication.json),
   [prepublication](2026-10-11-release32-world-resources-prepublication.json).
-- **Pushed33 milestone:** qualified birch/recovery/account-help/Player Guide/
+- **Accepted33 milestone:** qualified birch/recovery/account-help/Player Guide/
   authoring/lore changes are ordinarily pushed with test-only correction as exact `9ce67fe3d2d0aeae55102d14b579107733d1a719`,
-  corrective CI38142813857 attempt2 active after diagnosed transient-network
+  corrective CI38142813857 attempt2 accepted after diagnosed transient-network
   live failure, for one coherent publication.
  429distinct release checks/four suites and8distinct browser publication cases
   pass, retries/skips0. All12 version paths align33;468cumulative notes retain
@@ -86,11 +95,11 @@ Every explicit requirement in those sources remains part of the completion audit
   Prepared copied-publication identity/help/guide/lore/history flows pass. Final
   source publication pins17assets, including current authored catalog and notices.
   [Publication custody](2026-10-11-release33-publication.json).
-  Own ordered CI/deploy/live/public acceptance remains pending;
-  component qualification below does not substitute for that acceptance.
+  Own ordered CI/deploy/live/public acceptance passes within the original scope;
+  component qualifications below retain their limits.
   [Prepublication](2026-10-11-release33-support-recovery-prepublication.json).
 - **Later qualified work:** connected, overlapping birch crowns `323e500c`
-  are merged into master and pushed with33; acceptance pending after accepted32. Forty focused
+  are merged into master and accepted with33. Forty focused
   checks and nine distinct native cases qualify High/Low/phone, current flat
   world and copied publication. Forty-five reference-again pairs are exact;
   legitimate expanded visibility adds up to2draws/2048triangles while original
@@ -107,13 +116,13 @@ Every explicit requirement in those sources remains part of the completion audit
   were reproduced and corrected. Sixty-six distinct focused/disposable checks
   qualify current guards, generated backup sets, schema25 BSON custody and saved
   boss checkpoint consumption. All three owned test projects are cleaned up.
-  Existing actual archive restore is enrolled in CI. Pushed with33, acceptance
-  pending; production
+  Existing actual archive restore is enrolled in CI. Accepted with33 within
+  these scoped checks; production
   restore, off-machine recovery, RPO/RTO and final rehearsal remain open.
   [Recovery qualification](2026-10-11-recovery-integrity-qualification.json).
 - **Player support and guide:** current-source account/progress help and six
   Player Guide chapters are qualified and ordinarily merged at `f4efe198`,
-  pushed with33, acceptance pending.137 distinct UI checks/eight suites,48 Go guard cases, one actual
+  accepted with33 within the retained scope.137 distinct UI checks/eight suites,48 Go guard cases, one actual
   disposable Mongo handler/store/review case and seven distinct native desktop/
   phone/landscape cases pass. Eight other conditional Mongo cases remain skips,
   not passes. Dependency setup and old text/scroll fixture failures are retained;
@@ -122,7 +131,7 @@ Every explicit requirement in those sources remains part of the completion audit
   [Support/guide qualification](2026-10-11-support-player-guide-qualification.json).
 - **Content authoring/lore:** selected `aff0fe10` is ordinarily merged after
   current-source adaptation at `596c170f`, qualified at `3d00395d`, pushed with33
-  and awaiting acceptance.
+  and accepted with33 within the retained scope.
   Read-only/import-safe asset validation retains exact744-path catalog, selected
   bodies/wearables and all retained baselines.58 distinct focused checks/seven
   suites and two actual Chrome desktop/phone lore cases pass with no retries or
@@ -155,7 +164,8 @@ Every explicit requirement in those sources remains part of the completion audit
   distinct native desktop/phone-sized 2D cases cover all30 retained production
   layouts, with no retries/skips. Original fallback baseline has0 visible wall
   pixels; qualified normal/fallback captures show the room and open join.
-  Unpublished until a coherent successor milestone after33 acceptance. This is
+  Included in prepared34; its own combined publication qualification and
+  ordered release acceptance remain separate. This is
   tactical-map evidence, not connected gameplay, physical-phone or final-art
   approval. [Qualification](2026-10-11-interior-radar-context-qualification.json).
 - **Mixed Rogue weapon grips:** selected `66992b94`, qualified `64e1beae`,
@@ -166,7 +176,8 @@ Every explicit requirement in those sources remains part of the completion audit
   finger pose samples across all six ordered mixed loadouts; retries/skips0.
   Original corrected-fixture baseline fails all six pairs. Supplied assets,
   rigs, equipment ownership and alternating attack cadence remain intact.
-  Unpublished pending coherent successor milestone after33 acceptance.
+  Included in prepared34; own combined publication and release acceptance
+  remain separate.
   [Qualification](2026-10-11-mixed-weapon-stance-qualification.json).
 - **Unselected unsigned-copy extension:** private `367dd344` preserves the
   completed experiment and exact-input measurements.37 focused checks and one
@@ -183,7 +194,7 @@ Every explicit requirement in those sources remains part of the completion audit
   decoding for ordinary packed/interleaved float buffers.90 focused checks, full
   lint and one actual GLTFLoader16source/118mesh case pass; complete character
   producer ABBA medians8.4–13.4ms→4.2–5.9ms. Qualified8c4e916d is merged
-  locally, unpublished until corrective33 acceptance. Source/worker limits and
+  locally and included in prepared34; its own release acceptance remains pending. Source/worker limits and
   all original scene/frame targets remain.
   [Qualification](2026-10-11-geometry-transfer-copy-qualification.json).
 
@@ -214,7 +225,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Observe corrective Alpha1.79.33/exact9ce67fe3/CI38142813857 to terminal; verify its own ordered CI/deploy/live and post-terminal normal-TLS frontend/backend/readyDB/all17asset bytes and hashes. Original33/CI38140628469 failed only the client asset audit before deployment; its failure and narrow correction remain retained, along with the initial missed CI-version failure and failed32attempt1. Accepted32 does not prequalify33. | Implementation |
+| Next release | Complete prepared Alpha1.79.34 combined publication checks for steady dungeon radar, independent mixed weapon grips and faster owned geometry copies; merge qualified work, fetch/ordinarily merge origin, synchronize all versions/469 cumulative notes and verify its own ordered CI/deploy/live/post-terminal asset acceptance. Exact33 is accepted; its retained failures and scoped evidence do not prequalify34. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
