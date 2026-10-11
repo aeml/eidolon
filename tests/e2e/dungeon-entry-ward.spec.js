@@ -7,11 +7,12 @@ import { DUNGEON_INTERIOR_IDS } from '../../src/art/ProceduralDungeonInteriors.j
 const fixtures = JSON.parse(await readFile('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
     .filter(fixture => DUNGEON_INTERIOR_IDS.includes(fixture.dungeonType));
 const comparePredecessor = process.env.EIDOLON_E2E_DUNGEON_WARD_COMPARE === '1';
+const referenceCommit = process.env.EIDOLON_E2E_DUNGEON_WARD_REFERENCE || '7f966b58';
 for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}: grounded entry wards retain dungeon state and walkable layout`, async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180000);
     const failures = collectBrowserFailures(page, baseURL);
     if (comparePredecessor) {
-        const previous = execFileSync('git', ['show', '7f966b58:src/art/ProceduralDungeonInteriors.js'], { encoding: 'utf8' });
+        const previous = execFileSync('git', ['show', `${referenceCommit}:src/art/ProceduralDungeonInteriors.js`], { encoding: 'utf8' });
         await page.route('**/src/art/DungeonInteriorsWardReference.js', route => route.fulfill({ body: previous, contentType: 'text/javascript' }));
     }
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
@@ -76,6 +77,16 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
                 return { mode, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
             };
             Object.assign(state, { current, currentState, previous, collision });
+            state.setReviewView = view => {
+                const radius = Math.max(8, Math.min(24, Math.max(40, Number(room.width) || 80) * .2));
+                const side = view === 'root-left' ? -1 : 1;
+                hero.position.set(room.x + (view === 'entry' ? 1.5 : side * radius * .78), .1,
+                    room.z + (view === 'entry' ? 1 : radius * .58 + 2));
+                hero.mesh.position.copy(hero.position); render.setCameraTarget(hero.position);
+                render.updateEnvironmentLighting(hero.position, 0); render.render(); render.render();
+                return { view, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
+            };
+            const rootBatches = current.children.filter(part => part.isMesh && part.material.vertexColors);
             // The entry remains a normal traversable room. Presentation swaps
             // cannot register geometry as a new walk blocker or interaction.
             let blocked = 0;
@@ -85,7 +96,9 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
                 if (corrected?.distanceTo(p) > .01) blocked++;
             }
             const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
-            return { blocked, colliders, equippedItems: hero.mesh.userData.equipmentVisualItemCount,
+            return { blocked, colliders, rootBatches: rootBatches.length,
+                rootTriangles: rootBatches.reduce((sum, part) => sum + (part.geometry.index?.count || part.geometry.attributes.position.count) / 3, 0),
+                equippedItems: hero.mesh.userData.equipmentVisualItemCount,
                 missing: hero.mesh.userData.equipmentVisualMissing?.length || 0, fallback: hero.mesh.userData.equipmentVisualFallback?.length || 0,
                 gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
         }, { type, layout, quality, comparePredecessor });
@@ -93,24 +106,36 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         for (const mode of comparePredecessor ? ['reference', 'candidate', 'ready'] : ['candidate', 'ready']) {
             views.push(await page.evaluate(mode => window.__entryWardReview.select(mode), mode));
             await page.screenshot({ path: testInfo.outputPath(`${type}-${fixtureIndex}-${mode}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
+            if (type === 'verdant_bastion_catacombs') {
+                for (const view of ['root-left', 'root-right']) {
+                    views.push(await page.evaluate(view => window.__entryWardReview.setReviewView(view), view));
+                    await page.screenshot({ path: testInfo.outputPath(`${type}-${fixtureIndex}-${mode}-${view}.png`), style: '#perf-overlay { visibility: hidden !important; }' });
+                }
+                await page.evaluate(() => window.__entryWardReview.setReviewView('entry'));
+            }
         }
         const motion = await page.evaluate(async () => {
             const { animateDungeonRoomStatePresentation } = await import('/src/art/ProceduralDungeonInteriors.js');
             const { render, currentState, collision } = window.__entryWardReview;
             const veil = currentState.getObjectByName('DungeonExitPortal');
-            const matrix = veil.matrixWorld.toArray(); let stable = true;
+            const matrix = veil.matrixWorld.toArray(), target = render.cameraTarget.clone(); let stable = true;
+            const sweep = currentState.userData.dungeonType === 'verdant_bastion_catacombs';
             for (let i = 0; i < 36; i++) {
                 await new Promise(requestAnimationFrame);
+                if (sweep) render.setCameraTarget(target.clone().add({ x: Math.sin(i / 35 * Math.PI * 2) * 4, y: 0, z: 0 }));
                 animateDungeonRoomStatePresentation(currentState, 2.5 + i / 60); render.render();
                 stable &&= veil.matrixWorld.elements.every((value, index) => value === matrix[index]);
             }
-            return { frames: 36, stable, colliders: JSON.stringify([collision.colliders, collision.orientedColliders, collision.circularColliders, collision.dungeonWalkableRects]),
-                scope: 'Prepared actual production layout/materials/lighting/camera and14slot supplied Fighter with HUD. Regional ready/inactive views and animated source renders; no server, earned-clear, gameplay timing or physical-device certificate.' };
+            render.setCameraTarget(target); render.render();
+            return { frames: 36, cameraSweep: sweep, stable, colliders: JSON.stringify([collision.colliders, collision.orientedColliders, collision.circularColliders, collision.dungeonWalkableRects]),
+                scope: 'Prepared actual production layout/materials/lighting/camera and14slot supplied Fighter with HUD. Regional ready/inactive views, Verdant root views and camera sweep, animated source renders; no server, normal-input walking, earned-clear, gameplay timing or physical-device certificate.' };
         });
-        reports.push({ type, fixtureIndex, quality, ...setup, views, motion });
+        reports.push({ type, fixtureIndex, quality, referenceCommit: comparePredecessor ? referenceCommit : null, ...setup, views, motion });
         await writeFile(testInfo.outputPath('entry-ward-review.json'), JSON.stringify(reports, null, 2));
         expect(setup.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(setup.blocked).toBe(0); expect(setup.equippedItems).toBe(14); expect(setup.missing + setup.fallback).toBe(0);
+        expect(setup.rootBatches).toBe(type === 'verdant_bastion_catacombs' ? 1 : 0);
+        expect(setup.rootTriangles).toBe(type === 'verdant_bastion_catacombs' ? 864 : 0);
         expect(motion.stable).toBe(true); expect(motion.colliders).toBe(setup.colliders);
         for (const view of views) {
             expect(view.calls).toBeGreaterThan(0); expect(view.calls).toBeLessThanOrEqual(quality === 'high' ? 350 : 200);

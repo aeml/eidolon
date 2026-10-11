@@ -207,6 +207,12 @@ test('copied published engine constructs a grounded ward and drives its state th
         try {
             const world = game.worldGenerator;
             await world.createVerdantBastionCatacombs(0, 0, layout);
+            const rootBatches = game.renderSystem.instanceEnvironmentGroup.children
+                .filter(part => part.userData.proceduralDungeonInterior)
+                .flatMap(part => part.children.filter(mesh => mesh.isMesh && mesh.material.vertexColors));
+            const roots = rootBatches.map(mesh => ({ triangles: (mesh.geometry.index?.count || mesh.geometry.attributes.position.count) / 3,
+                maxY: mesh.geometry.boundingBox.max.y, roughness: mesh.material.roughness,
+                smooth: !mesh.material.flatShading, textures: Object.values(mesh.material).filter(value => value?.isTexture).length }));
             const state = world.dungeonRoomPresentations.get(0), ward = state.getObjectByName('DungeonEntryWard');
             const veil = ward.getObjectByName('DungeonExitPortal');
             veil.updateMatrix();
@@ -220,11 +226,16 @@ test('copied published engine constructs a grounded ward and drives its state th
                 phases.push({ ready: state.userData.exitReady, appliedOpacity, time: veil.material.userData.dungeonVeilTime.value,
                     stable: veil.matrix.elements.every((value, index) => value === matrix[index]) });
             }
-            return { parts: ward.children.length, visualOnly: ward.userData.visualOnly, phases,
+            return { parts: ward.children.length, visualOnly: ward.userData.visualOnly, phases, roots,
                 collidersStable: JSON.stringify(game.collisionManager.colliders) === colliders };
         } finally { game.destroy(); }
     }, { release, layout });
     expect(result).toMatchObject({ parts: 3, visualOnly: true, collidersStable: true });
+    expect(result.roots).toHaveLength(layout.rooms.length);
+    for (const root of result.roots) {
+        expect(root).toMatchObject({ triangles: 864, roughness: .94, smooth: true, textures: 0 });
+        expect(root.maxY).toBeLessThan(1);
+    }
     expect(result.phases).toEqual([{ ready: false, appliedOpacity: .18, time: .25, stable: true },
         { ready: true, appliedOpacity: .9, time: .5, stable: true }, { ready: false, appliedOpacity: .18, time: .75, stable: true }]);
     expect(failures, failures.join('\n')).toEqual([]);

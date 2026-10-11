@@ -207,7 +207,11 @@ describe('Procedural dungeon interior art', () => {
             for (const side of [-1, 1]) {
                 const root = dressing.getObjectByName(`verdant:grave-root:${side}`);
                 const bounds = new THREE.Box3().setFromObject(root);
-                expect(root.geometry.type).toBe('TubeGeometry');
+                expect(root.geometry.userData.dungeonGraveRoot).toEqual({ branches: 3, visualOnly: true });
+                expect(root.material.vertexColors).toBe(true);
+                expect(root.material.flatShading).toBe(false);
+                expect(root.material.emissive.getHex()).toBe(0);
+                expect(root.material.map).toBeNull();
                 expect(bounds.max.y).toBeLessThan(1);
             }
         }
