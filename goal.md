@@ -523,3 +523,23 @@ full High/world/art/device/operations/F1–F5/beta/launch/handoff remain open.
 Corrective release30 CI38119634774/2e6c6a14 is in_progress07:19UTC; predecessor
 8acc run is terminal failed on known fixtures with downstream gates skipped.
 No new publication until current release acceptance. Full original goal active.
+
+
+2026-10-11 High-only singleton revisiona59b4f3f/QAbe30b96a ordinarily merged
+into local masterb53b2f96.144focused/full lint and4distinct source/copied native
+cases pass with original tolerances, settings/fallback propagation and exact
+once-only GPU owner retirement.60source poses/120PNGs across7families include
+30exact Low controls. Same frozen High town391→338draws preserves198379triangles;
+Low town184→184/woodland94→94 pixels exact. Actual High route town/road and a
+separate High party still FAIL original frame targets; draw/triangle medians fit.
+No retry or waiver, High final save custody not reached. Low strictly passes all
+four route budgets and final party174draws/81318triangles/16.7median/33.4p95 plus
+normal Go-race/Mongo four-class fourteen-slot saves. Active100-client public29
+soak shares host; added copied retirement check overlaps Low execution. No
+isolated-device/causal-FPS claim. Frozen1056-entry evidence verified;
+see2026-10-11-current-master-high-singleton-qualification. Earlier all-quality
+Low83→90 regression remains unselected. Public29 last accepted; release30
+CI38119634774/2e6c6a14 has client/server/browser1and3success and browser2active
+at07:34UTC. No new publication until release gates/deployment/live acceptance.
+High frame time, full modern art/world/device/operations/F1–F5/beta/launch/handoff
+and every original requirement remain open. Full original goal active.

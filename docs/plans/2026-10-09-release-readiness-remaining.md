@@ -52,8 +52,9 @@ selection requires both existing race cases; native evidence follows its unique
 artifact directory and explicitly retains additive coverage.66focused checks,
 8final evidence checks and full lint pass. Ordinary local master merge8404ee85
 retains all selected camp work; only the current-release fixture correction was
-published. Corrective CI38119634774/2e6c6a14 is in_progress at07:19UTC with all five
-prerequisite jobs active; no acceptance yet. Preceding8accCI38118148918 is
+published. Corrective CI38119634774/2e6c6a14 remains in_progress at07:34UTC: client,
+server and hosted browser shards1/3and3/3 pass; shard2/3 remains active. No
+deployment or release acceptance yet. Preceding8accCI38118148918 is
 terminal failed on the known client fixtures; server and all three hosted
 browser shards pass, downstream native/deployment/live gates are skipped.
 The additional all-in-one local coverage diagnostic exhausted its4GBV8heap and
@@ -104,9 +105,43 @@ GPU allocation are unmeasured. Discovery342hosted/35native/17overlap/360distinct
 preserves all previous identities; discovery is not execution of360cases.
 Frozen979-entry inventory0361cecf5e4c046487b5606ed9943963c1aeb1e45ce6a24673a4ba8e76e43f13
 verified in full. Publication waits for current release30 acceptance. This
-supersedes older private DemonOrc labels; singleton remains unselected and
-High town/world/art/device/operations/F1–F5/beta/launch/handoff remain open.
+supersedes older private DemonOrc labels. The older all-quality singleton
+experiment remains unselected; the qualified High-only revision below is now
+selected. High town/world/art/device/operations/F1–F5/beta/launch/handoff remain open.
 [Qualification](2026-10-11-current-master-demon-orc-qualification.json).
+
+**Qualified High-only singleton change is merged into local masterb53b2f96.**
+Runtimea59b4f3f/QAbe30b96a select only ActorInstanceBatches/RenderSystem product
+changes. Reviewed leaves join same-cell/material/layout multi-draw on High
+quality with actual extension support; Low/Medium, unsupported/disabled delivery
+and array cameras retain the previous singleton path. Quality changes and
+owner replacement update the policy.144focused checks in9suites/full lint and
+4distinct native source/copied cases pass, retry0. Source60pose comparisons
+across7families include distant/stretched transforms;120PNGs retained. All
+30Low comparisons are exact. High uses original0.1mean/.001fraction(delta>8)
+limits; maximum mean.0004717794/fraction.0000096941, all reference-again exact.
+Final copied NPC/DemonOrc checks verify exact once-only retirement of owned
+instance meshes, batches, geometry and matrix/indirection textures. Borrowed
+source caches/driver allocations are not total-VRAM evidence.
+Actual frozen High town391→338draws retains198379triangles; Low town184→184
+and woodland94→94 preserve exact pixels. All High route draw/triangle medians
+fit original limits, but town33.3/49.9ms and road33.3/50ms FAIL20/33.4ms targets.
+Separate High party305draws/181444triangles fits limits but33.3/50ms FAILS;
+its final saved custody is not reached. No retry or waiver. Low strictly passes
+all four route budgets and final party174draws/81318triangles/16.7median/33.4p95,
+plus real Go-race/Mongo four-class fourteen-slot saved custody. Each connected
+run uses one GPU renderer and three socket peers; optional four-renderer remains
+skipped. Active100-client public29 soak shares this host; the added copied
+retirement check also overlaps Low route execution. No isolated-device or
+causal-FPS acceptance. Discovery344hosted/39unconditional-native-visual/
+19overlap/364distinct preserves342previous hosted and35native identities;
+conditional stabilization and separate release-smoke are outside this union.
+Discovery is not execution. Earlier all-quality Low83→90 regression remains
+retained and unselected. Frozen1056-entry inventory
+7f09a579ca37d6c589a2a12bcff2f67599a36a420a62b34f624c8a7d907f3348
+verified in full. Publication waits for current release30 acceptance. High
+frame time and full world/art/device/operations/F1–F5/beta/launch/handoff remain open.
+[Qualification](2026-10-11-current-master-high-singleton-qualification.json).
 
 **Live: Alpha1.79.29/12e5e3c4 is accepted.** Exact CI38078784320 succeeded on
 attempt1; frontend/backend/database and eight served asset hashes match.
@@ -243,7 +278,7 @@ linked original receipts preserve failures and their precise scopes.
 | Work | Current evidence and status | Next required result / owner |
 | --- | --- | --- |
 | Automatic actor cell delivery | Selected privately as695cee4a:99focused,12native integrated/48exactRGB,3actual-publication checks pass; candidate modular High265draw/176732triangles,Low149draw/79962triangles,16.7median16.8p95 sampled limits and four-class14slot Go-race saves pass | Whole-world budgets remain open: actual ordinary route town400draw/woodland468draw FAIL350; original Low202/Low87602/High389 failures retained. No public release. [Default integration](2026-10-10-actor-default-integration-qualification.json), [route failure](2026-10-10-actor-default-moving-route-qualification.json) |
-| DemonOrc and singleton delivery | Private75a4403f;167DemonOrc/105singleton focused checks, latest32DemonOrc surface controls and12combined native passes qualify bounded paths. All4High route stops pass; Highparty361draw and Lowtown103102/103110tri FAIL original gates; Low83→90draw counterexample retained | Keep source-specific failures retained. Camp follow-up now passes scoped route/party and exact-publication checks; finish representative combat/dynamic/device gates before coherent selection. [Original evidence](2026-10-10-singleton-actor-qualification.json) |
+| DemonOrc and singleton delivery | Qualified current-master DemonOrc and High-only singleton revisions are ordinarily merged atbdf22ce1/b53b2f96. Same frozen High town391→338 and woodland398→212draws preserve triangles; Low unchanged singleton pixels and all route/party budgets plus normal four-class saves pass | High route/party frame times still fail original targets; retain previous all-quality Low83→90 regression and other source-specific failures. Publication awaits current release30 acceptance; full dynamic/device/modern-art acceptance stays open. [DemonOrc proof](2026-10-11-current-master-demon-orc-qualification.json), [High-only proof](2026-10-11-current-master-high-singleton-qualification.json), [prior failures](2026-10-10-singleton-actor-qualification.json) |
 | Camp per-instance clipping | Private1f87c0b7/QA9fe14c19 preserves all15camps/9buckets and exact source surfaces.52focused checks,42exact native controls,8replacement cycles,8ordinary High/Low route samples,2Go-race saved parties and expanded actual-publication rendering/disposal pass. Same-frozen Low103108→83368triangles | Keep combined candidate unselected; scoped Highcombat and independent High/Low first-dungeon entry now qualify separately. Finish Lowcombat, off-road return and representative dynamic population/device gates. Prior Highparty361draw/Low83→90draw counterexamples retained. [Evidence](2026-10-10-camp-instance-frustum-qualification.json) |
 | Status HUD and keyboard reading | Staged27bf88a8;21distinct font-independent actor status symbols, safe fallbacks, compact62pxtray and shared phone icons. Keyed countdown buttons retain focus; live clamped keyboard tooltip supports Escape/expiry.33focused and13native passes; original4fail control retained; exact held bundle and actual saved-character/four-class custody qualified | Include with coherent milestone. Layout/browser evidence is not physical-device or final-art approval; render/context/counterexamples remain explicit.1optional peer-renderer case skipped. [Evidence](2026-10-10-status-hud-qualification.json) |
 | Equipped normal-input combat and first dungeon | Private QAca9e1c5b, runtime unchanged from camp candidate.41focused checks;6High kit kills across3mixed180frame samples pass median/p95 gates. Independent authored-road High/Low normallevel30portal entry, first-room movement and Recall pass; first-room High115draw/51121tri,Low57/22463,16.7msmedian/p95. Two four-class14slot Go-race saved parties pass High325draw/230068tri,Low182/78735tri | Four overall failed sequences retained: basic-only death/cleanup ownership, HUD-covered road input, unbound browser helper and rock-blocked off-road return. Highcombat384draw peak remains; Lowcombat and combined off-road fight→dungeon return unqualified. No clear, earned pacing, contact/audio/art/device approval or public release. [Scoped evidence](2026-10-10-equipped-fight-first-dungeon-qualification.json) |
