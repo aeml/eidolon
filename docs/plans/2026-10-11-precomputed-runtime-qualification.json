@@ -1,0 +1,195 @@
+{
+  "source": "e45b598b9d16537ddabd142f947b783aac3d2ea9",
+  "sessions": 6,
+  "totalExecutions": 456,
+  "referenceJobs": 152,
+  "allFingerprintsCompleteOutputsFallbacksAndStatsMatch": true,
+  "rows": [
+    {
+      "quality": "high",
+      "variant": "reference",
+      "executedJobs": 76,
+      "uniqueInputOutputPairs": 67,
+      "precomputedResponses": 0,
+      "workerWallMs": 6648.29999935627,
+      "requestDrainMs": 10999.0,
+      "firstPostSetupSample": {
+        "at": 13974,
+        "pending": 73,
+        "installed": 3,
+        "calls": 235,
+        "triangles": 312682
+      },
+      "settledSample": {
+        "at": 20529.899999976158,
+        "pending": 0,
+        "installed": 65,
+        "calls": 220,
+        "triangles": 147466
+      },
+      "artifactResources": [],
+      "clockHasOwnOverride": false,
+      "observersRestored": true,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "high",
+      "variant": "candidate",
+      "executedJobs": 76,
+      "uniqueInputOutputPairs": 67,
+      "precomputedResponses": 76,
+      "workerWallMs": 303.59999960660934,
+      "requestDrainMs": 4697.600000023842,
+      "firstPostSetupSample": {
+        "at": 12884.600000023842,
+        "pending": 20,
+        "installed": 48,
+        "calls": 235,
+        "triangles": 206422
+      },
+      "settledSample": {
+        "at": 14117.800000011921,
+        "pending": 0,
+        "installed": 65,
+        "calls": 220,
+        "triangles": 147466
+      },
+      "artifactResources": [],
+      "clockHasOwnOverride": false,
+      "observersRestored": true,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "high",
+      "variant": "reference-again",
+      "executedJobs": 76,
+      "uniqueInputOutputPairs": 67,
+      "precomputedResponses": 0,
+      "workerWallMs": 6469.8999999165535,
+      "requestDrainMs": 10608.300000011921,
+      "firstPostSetupSample": {
+        "at": 13175.100000023842,
+        "pending": 74,
+        "installed": 2,
+        "calls": 235,
+        "triangles": 340422
+      },
+      "settledSample": {
+        "at": 20602.69999998808,
+        "pending": 0,
+        "installed": 65,
+        "calls": 220,
+        "triangles": 147466
+      },
+      "artifactResources": [],
+      "clockHasOwnOverride": false,
+      "observersRestored": true,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "variant": "reference",
+      "executedJobs": 76,
+      "uniqueInputOutputPairs": 67,
+      "precomputedResponses": 0,
+      "workerWallMs": 4354.999999701977,
+      "requestDrainMs": 7008.099999964237,
+      "firstPostSetupSample": {
+        "at": 10917.199999988079,
+        "pending": 72,
+        "installed": 4,
+        "calls": 125,
+        "triangles": 107903
+      },
+      "settledSample": {
+        "at": 14204.300000011921,
+        "pending": 0,
+        "installed": 71,
+        "calls": 110,
+        "triangles": 65649
+      },
+      "artifactResources": [],
+      "clockHasOwnOverride": false,
+      "observersRestored": true,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "variant": "candidate",
+      "executedJobs": 76,
+      "uniqueInputOutputPairs": 67,
+      "precomputedResponses": 76,
+      "workerWallMs": 140.80000007152557,
+      "requestDrainMs": 2242.599999964237,
+      "firstPostSetupSample": {
+        "at": 8819.699999988079,
+        "pending": 20,
+        "installed": 54,
+        "calls": 125,
+        "triangles": 82381
+      },
+      "settledSample": {
+        "at": 9134.199999988079,
+        "pending": 0,
+        "installed": 71,
+        "calls": 110,
+        "triangles": 65649
+      },
+      "artifactResources": [],
+      "clockHasOwnOverride": false,
+      "observersRestored": true,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "variant": "reference-again",
+      "executedJobs": 76,
+      "uniqueInputOutputPairs": 67,
+      "precomputedResponses": 0,
+      "workerWallMs": 4071.999999821186,
+      "requestDrainMs": 5949.5,
+      "firstPostSetupSample": {
+        "at": 8989.800000011921,
+        "pending": 72,
+        "installed": 4,
+        "calls": 125,
+        "triangles": 107903
+      },
+      "settledSample": {
+        "at": 12082,
+        "pending": 0,
+        "installed": 71,
+        "calls": 110,
+        "triangles": 65649
+      },
+      "artifactResources": [],
+      "clockHasOwnOverride": false,
+      "observersRestored": true,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    }
+  ],
+  "scope": "Prepared four-class14-slot Earth scene with natural clock, real gzip HTTP artifact and hardware GPU. Worker wall time includes import/hash/await and is not CPU time. Host has concurrent work, so timings are bounded observations, not isolated benchmarks. First post-setup render is not the first application frame. Peak memory, connected FPS, devices, art and original performance gates remain unqualified.",
+  "status": "Current133-row runtime qualified for bounded preparation latency and exact outputs; merged local source e45b598b, included in prepared39. No release acceptance or original performance gate closure.",
+  "network": {
+    "requests": [
+      {
+        "artifactRequest": 1,
+        "at": 1791753798698,
+        "encodedBytes": 558101,
+        "decodedBytes": 777321
+      },
+      {
+        "artifactRequest": 2,
+        "at": 1791753847881,
+        "encodedBytes": 558101,
+        "decodedBytes": 777321
+      }
+    ],
+    "scope": "Server-observed real gzip HTTP response, one request in each candidate session. Main-page resource entries do not include worker-owned fetches; array is empty and is not network timing evidence."
+  },
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-precomputed-runtime-checks-20261011",
+    "entries": 18,
+    "inventorySHA256": "238aec1b1cdb90f465aeeebaa75e60e06972f0ac848898dc027ca0e6da6946b4"
+  }
+}
