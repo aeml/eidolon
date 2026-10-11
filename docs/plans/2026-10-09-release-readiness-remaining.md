@@ -31,15 +31,22 @@ pushed to master; CI38126692286 attempt1 is terminal failed before deployment.
 Client/Server/browser1and3 pass; browser2 times out in the copied High world review
 on both configured attempts. Allfive downstream jobs skip, so no31deployment
 occurred; accepted public remains30. Both actual traces and raw job logs are
-retained. A bounded-case correction is being qualified with every original view,
-pose, comparison and budget retained. Per-component receipts below preserve their
+retained. A bounded-case correction is qualified and ordinary-merged97f43091: allnine
+copied High views/72poses and both comparisons now span three independent cases;
+Low/source coverage, original120second timeout and allbudgets retained.
+Software4cases174.58s/native7cases89.25s/combined3cases24.73s pass0retry/skip;
+415version/history/plan and28enrollment checks plusfull lint pass. Discovery is
+349hosted/46native/23overlap/372distinct; two old copied titles become four,
+with allother identities retained. New exactpublication/CI/deploy/live remains due.
+[World review correction](2026-10-11-release31-world-review-correction.json).
+Per-component receipts below preserve their
 earlier prepublication states. Current100-clientsoak38109009521 remains active on
 acceptedpublic29, not a completed capacity gate.
 [Release31 failure](2026-10-11-release31-hosted-review-failure.json),
 [Release30 acceptance](2026-10-11-public30-terminal-qualification.json),
 [Live profiling correction](2026-10-11-live-profile-delivery-correction.json).
 
-**Next held pine refinement:**2a8d0c35 is ordinary-merged into local master9e85a67c.
+**Qualified pine refinement:**2a8d0c35 is ordinary-merged into local master9e85a67c.
 Pine boughs vary angle/height/length/curvature and needle-spray width, with coherent
 new-growth tones. Same5whorls/7boughs/6paired sprays and production crown owners;
 High840tri/90720attribute bytes,Low420/45360unchanged.391Earthtree placement and
@@ -48,10 +55,10 @@ native source/copy/narrow-desktop cases pass0retry/skip59.9s.45HUDviews/360sampl
 walking poses;15/18source-copy images exact,3small differences retained and
 unattributed. No FPS/physical-phone/final-art acceptance. Repeated/coarse foliage,
 rock/terrain/architecture composition and High frame targets remain open. No new
-branch; publication waits for current1.79.31acceptance and a coherent next milestone.
+branch; included in the coherent corrected31milestone after original31failed before deployment.
 [Pine qualification](2026-10-11-pine-bough-growth-qualification.json).
 
-**Next held Earth material correction:**706af5f2 is ordinary-merged into local
+**Qualified Earth material correction:**706af5f2 is ordinary-merged into local
 masterca205f1d. Ground composition uses its registered soil/moss/stone physical
 fields without two unrelated legacy noise maps; the overwritten base-albedo
 sample is removed, shared albedo ownership retained. Actual High/Low compiled
@@ -65,7 +72,8 @@ The change is subtle in manual views; broad repeated terrain transitions,
 understory/rock silhouettes and normal-session responsive/device review remain
 open. The earlier390px cropped desktop-menu observation is superseded by the
 corrected phone-policy review below; it came from the prepared desktop engine.
-No connected-input/FPS/physical-phone/final-art acceptance or public release.
+No connected-input/FPS/physical-phone/final-art acceptance. Included in corrected31
+preparation; new exactCI/deploy/live acceptance remains due.
 [Earth material qualification](2026-10-11-earth-material-field-qualification.json).
 
 **Phone world-review correction:**d0c4bfaf is ordinary-merged into local master9e5d2987.

@@ -1,0 +1,101 @@
+{
+  "recordedUTC": "2026-10-11T09:49:21.658030+00:00",
+  "version": "Alpha 1.79.31",
+  "failedSource": "42f06ad0b7116420e33ff0fff760df391e244216",
+  "failedRun": 38126692286,
+  "source": "9471de2d19317af7ae55025f2624761894501414",
+  "ordinaryMasterMerge": "97f4309129fd91fb1154cec3eef014c7dff65cdb",
+  "published": false,
+  "correction": "Three independently owned copied High cases render three views each. Allnine views,72walking poses,both FXAA comparisons,equipment/grounding/geometry/draw/GPU/ownership checks retained on software and native. Low and source allnine-view paths retained. Test120000ms timeout and original350/250000High,200/85000Low budgets unchanged.",
+  "proof": {
+    "software": {
+      "passed": 4,
+      "retries": 0,
+      "skipped": 0,
+      "seconds": 174.580275,
+      "caseMilliseconds": [
+        43979,
+        35878,
+        40038,
+        48167
+      ],
+      "gpu": "Bundled Chromium ANGLE Vulkan SwiftShader; explicitly software proof, not native acceptance.",
+      "views": 18,
+      "poses": 144,
+      "highComparisons": 2
+    },
+    "native": {
+      "passed": 7,
+      "retries": 0,
+      "skipped": 0,
+      "seconds": 89.251595,
+      "gpu": "Required SystemChrome hardware gate passes; actual renderer recorded in every view row.",
+      "views": 45,
+      "poses": 360,
+      "highComparisons": 4,
+      "phone": "Existing390pxcase retains corrected phone policy and allnine controls/bounds/reachability checks."
+    },
+    "combinedPublication": {
+      "passed": 3,
+      "retries": 0,
+      "skipped": 0,
+      "seconds": 24.725288,
+      "scope": "Existing login/pagination retry, copied profiler delivery and four-class lazy engine construction; not live four-class combat."
+    },
+    "enrollment": {
+      "passed": 28,
+      "suites": 2,
+      "seconds": 0.528
+    },
+    "versionsHistoryPlan": {
+      "passed": 415,
+      "suites": 4,
+      "seconds": 4.4,
+      "historyEntries": 466,
+      "initialEntries": 10,
+      "lazyPages": 46
+    },
+    "fullLint": "passed",
+    "diffCheck": "passed",
+    "cleanup": "Every owned rock/understory geometry and material disposes once per test; High332geometry/2material,Low326/2. Partition now exercises independent ownership three times for copied High.",
+    "scopeChange": "One continuous prepared nine-view High sequence becomes three independent scenes. Same view coordinates/eight mixer poses and frozen comparison protocol; this fixture never established continuous normal-session movement or performance."
+  },
+  "discovery": {
+    "onlyDiscovery": true,
+    "previousHosted": 347,
+    "hosted": 349,
+    "previousNative": 44,
+    "native": 46,
+    "overlap": 23,
+    "distinct": 372,
+    "identityChange": "Exactly two old copied Earth test titles replaced by four section-labeled cases. Allother identities retained; every original High/Low view/pose/comparison remains checked. Not372new executions."
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-world-review-partition-checks-20261011",
+    "inventoryEntries": 131,
+    "inventorySHA256": "9d103bcf789629e6d6700de6ab4a7db4e1e177bf7fe0e3a50eb2dc8d50d39294",
+    "readOnly": true,
+    "sanitization": "passed,0fileschanged"
+  },
+  "failureEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release31-failure-checks-20261011",
+    "inventoryEntries": 28,
+    "inventorySHA256": "47356945c296b9cc189df4e28ca28c8db89869dd7c54300850ccc402718a98a8",
+    "readOnly": true,
+    "receipt": "2026-10-11-release31-hosted-review-failure.json"
+  },
+  "nextPublication": {
+    "selection": "Retain original six qualified31components plus already merged and qualified pine growth and registered Earth material correction; cumulative31notes include both. Correct phone-policy fixture and this test partition included. No31was deployed, so this remains the coherent corrected31milestone.",
+    "componentReceipts": [
+      "2026-10-11-pine-bough-growth-qualification.json",
+      "2026-10-11-earth-material-field-qualification.json",
+      "2026-10-11-phone-world-review-qualification.json",
+      "2026-10-11-release31-prepublication-qualification.json"
+    ],
+    "acceptedPublic": "Alpha1.79.30 / 1aae8407e51c0a6016ac9a27cff75be060001306",
+    "newExactBuildRequired": true,
+    "preserveFailedExpectedManifest": "Do not overwrite prior42f06ad0expected-public31-assets.json. Fresh corrective publication builds into separate directory."
+  },
+  "workflow": "Completed correction ordinary-merged into master. Fetch+ordinarymerge before normalpush; then verify new exactCI/deploy/live/normalTLSassets before anotherrelease. No retries/cancellations/forcepush.99unmerged histories still individually reviewed.",
+  "limits": "Original full goal remains active. No final modern-art, original High frame-time budgets, connected whole-party/physicaldevice, human audio, deferred campaign/pacing, operations/F1\u2013F5/beta/launch/handoff acceptance. Current100-clientsoak remains separate. Existing dirty user checkout/goal preserved."
+}
