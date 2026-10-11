@@ -1,0 +1,22 @@
+{
+  "status": "unselected-private-experiment",
+  "recordedUTC": "2026-10-11T13:47:04.358217+00:00",
+  "base": "84b295e69aa8bd67719487f2d9a86d7a010e9f43",
+  "branch": "work/geometry-integer-copy-20261011",
+  "change": "Extend standard numeric copy path to unsigned8/16 bone indices and cache local interleaved parameters. Original normalized/custom reader fallback and copied buffer ownership retained.",
+  "qualification": {
+    "unit": "37 passing cases,0.511s; four additional unsigned packed/interleaved cases.",
+    "lint": "Four-file scoped lint passes.",
+    "native": "One actual GLTFLoader real-input ABBA case,16GLTFfiles118meshes,6.411s,retry0/skip0; exact attributes/morphs/transfer ownership retained.",
+    "reference": "Frozen fixture after its attribution comment exactly matches84b295e6 copy producer prefix through copyGameplayGeometry.",
+    "measurement": "Eight character medians overlap/parity or modest gain against already selected float-copy optimization. Fitted helmets remain submillisecond. No decisive whole-startup/frame benefit established."
+  },
+  "decision": "Preserve source, tests and raw measurements privately. Do not select or merge this incremental runtime extension merely because correctness tests pass. Larger qualified float-copy improvement is already on master.",
+  "limits": "No FPS/device/full-release acceptance. No scheduler, worker, budget, algorithm, asset or geometry-density change. No production mutation.",
+  "source": "367dd344",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-geometry-integer-copy-checks-20261011",
+    "entries": 8,
+    "inventorySHA256": "a0887166c88d0c18ce3c25afa21aa5ae4975f0d392118c3c766ebfc1348d2355"
+  }
+}

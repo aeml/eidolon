@@ -113,7 +113,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **77**, reduced from 287; 557 of 634 local branch names
+  unmerged tips are now **78**, reduced from 287; 557 of 635 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -131,6 +131,21 @@ Every explicit requirement in those sources remains part of the completion audit
   [completed diagnostic histories](2026-10-11-completed-diagnostic-branch-reconciliation.json),
   [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json),
   [release/atlas/casino histories](2026-10-11-completed-release-history-reconciliation.json).
+- **Dungeon radar context:** selected `260ea4d3`, qualified `5e039538`, merged
+  `6d904417`. Entry-room walls and corridor mouths now fit the radar; the scale
+  stays fixed while walking and advancing rooms.73 focused checks and two
+  distinct native desktop/phone-sized 2D cases cover all30 retained production
+  layouts, with no retries/skips. Original fallback baseline has0 visible wall
+  pixels; qualified normal/fallback captures show the room and open join.
+  Unpublished until a coherent successor milestone after33 acceptance. This is
+  tactical-map evidence, not connected gameplay, physical-phone or final-art
+  approval. [Qualification](2026-10-11-interior-radar-context-qualification.json).
+- **Unselected unsigned-copy extension:** private `367dd344` preserves the
+  completed experiment and exact-input measurements.37 focused checks and one
+  actual16-file/118-mesh native comparison pass correctness; the incremental
+  timing benefit overlaps parity. Keep its runtime separate from master. The
+  larger float-copy improvement remains selected and merged.
+  [Disposition](2026-10-11-unsigned-geometry-copy-disposition.json).
 - **Existing 100-client soak:** run 38109009521 remains active on accepted public
   29 `12e5e3c4`. It is not a completed capacity gate or a test of release 31 or 32.
   The prior failed soak remains open; no retry/cancellation or unchanged campaign
@@ -171,7 +186,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Observe pushed Alpha1.79.33/exactcc001f00/CI38140628469 to terminal; verify its own ordered CI/deploy/live and post-terminal normal-TLS frontend/backend/readyDB/all17asset bytes and hashes. Retain initial missed CI-version failure and failed32attempt1. Accepted32 does not prequalify33. | Implementation |
+| Next release | Observe corrective Alpha1.79.33/exact9ce67fe3/CI38142813857 to terminal; verify its own ordered CI/deploy/live and post-terminal normal-TLS frontend/backend/readyDB/all17asset bytes and hashes. Original33/CI38140628469 failed only the client asset audit before deployment; its failure and narrow correction remain retained, along with the initial missed CI-version failure and failed32attempt1. Accepted32 does not prequalify33. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
