@@ -120,6 +120,18 @@ test('collar mode rejects invalid option types', () => {
     expect(() => gameplayColorIndices(fixture(), { repairSeams: 'true' })).toThrow('Invalid gameplay color source/options');
 });
 
+test('a later preparation recomputes changed material regions on the same source buffers', () => {
+    const source = fixture(), before = gameplayColorIndices(source, { repairSeams: true });
+    const factors = source.attributes.fittedDiffuseRoughness.array;
+    for (let vertex = 0; vertex < factors.length / 4; vertex++) factors[vertex * 4] += (vertex % 36) * .001;
+    const copy = { index: source.index.slice(), attributes: Object.fromEntries(Object.entries(source.attributes)
+        .map(([name, attr]) => [name, { ...attr, array: attr.array.slice() }])) };
+    const after = gameplayColorIndices(source, { repairSeams: true });
+    expect(after.exactMixedTriangles).toBeGreaterThan(before.exactMixedTriangles);
+    expect(after).toEqual(gameplayColorIndices(copy, { repairSeams: true }));
+    expect(source).toEqual(copy);
+});
+
 test.each(['negative-weight', 'new-index', 'nonfinite-normal', 'invalid-error'])('invalid %s fails before returning a candidate', kind => {
     const source = fixture();
     if (kind === 'negative-weight') source.attributes.skinWeight.array[0] = -.1;

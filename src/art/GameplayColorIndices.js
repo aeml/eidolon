@@ -33,7 +33,11 @@ export function gameplayColorIndices(source, { error = .006, ratio = .12, normal
     const basis = ['normal', 'tangent', 'uv'].filter(name => attrs[name]);
     const basisWidth = basis.reduce((sum, name) => sum + attrs[name].itemSize, 0), capacity = 32 - basisWidth;
     const surfaceNames = ['fittedDiffuseRoughness', 'fittedEmissiveMetalness'].filter(name => attrs[name]);
-    const surface = vertex => JSON.stringify(surfaceNames.flatMap(name => Array.from(attrs[name].array.subarray(vertex * 4, vertex * 4 + 4))));
+    // This worker owns immutable decoded input for one preparation. Reuse
+    // exact strings within this call; later calls can receive changed buffers.
+    const surfaceSignatures = new Array(count);
+    const surface = vertex => surfaceSignatures[vertex] ??= JSON.stringify(surfaceNames.flatMap(name =>
+        Array.from(attrs[name].array.subarray(vertex * 4, vertex * 4 + 4))));
     const materials = new Map(), exactMixed = [];
     for (let offset = 0; offset < input.length; offset += 3) {
         const triangle = Array.from(input.subarray(offset, offset + 3));
@@ -68,7 +72,8 @@ export function gameplayColorIndices(source, { error = .006, ratio = .12, normal
         for (const vertex of referenced) if (fixedPositions.has(remap[vertex])) locks[vertex] = 1;
     }
     const signatureNames = Object.keys(attrs).sort();
-    const vertexSignature = vertex => JSON.stringify(signatureNames.flatMap(name => {
+    const vertexSignatures = new Array(count);
+    const vertexSignature = vertex => vertexSignatures[vertex] ??= JSON.stringify(signatureNames.flatMap(name => {
         const attr = attrs[name]; return Array.from(attr.array.subarray(vertex * attr.itemSize, (vertex + 1) * attr.itemSize));
     }));
     const output = [...exactMixed], parts = [];

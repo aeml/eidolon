@@ -65,7 +65,11 @@ export function gameplayBodyIndices(source, { error = .006, ratio = .12, normalW
     const fixedPositions = new Set([...referenced].filter(vertex => uses[vertex] > 1 || conflicts.has(remap[vertex])).map(vertex => remap[vertex]));
     for (const vertex of referenced) if (fixedPositions.has(remap[vertex])) locks[vertex] = 1;
     const signatureAttributes = [...Object.keys(widths).sort().map(name => attrs[name]), ...targets.flatMap(target => [target.position, target.normal])];
-    const vertexSignature = vertex => JSON.stringify(signatureAttributes.flatMap(attr => Array.from(attr.array.subarray(vertex * attr.itemSize, (vertex + 1) * attr.itemSize))));
+    // Repair rounds revisit the same exact rows. Keep these strings local to
+    // this invocation so later coverage/morph changes are always recomputed.
+    const vertexSignatures = new Array(count);
+    const vertexSignature = vertex => vertexSignatures[vertex] ??= JSON.stringify(signatureAttributes.flatMap(attr =>
+        Array.from(attr.array.subarray(vertex * attr.itemSize, (vertex + 1) * attr.itemSize))));
     const output = [...exact], parts = [];
     for (const group of groups) {
         const bones = [...group.bones].sort((a, b) => a - b), stride = group.basisWidth + bones.length;

@@ -126,3 +126,17 @@ test.each(['negative-weight', 'invalid-bone', 'new-index', 'nonfinite-morph', 'i
     if (kind === 'nonfinite-morph') source.morphTargets[0].normal.array[0] = NaN;
     expect(() => gameplayBodyIndices(source, kind === 'invalid-error' ? { error: .5 } : {})).toThrow();
 });
+
+test('later morph preparation recomputes changed endpoints on the same source buffers', () => {
+    const source = fixture(), before = gameplayBodyIndices(source);
+    for (let vertex = 0; vertex < source.attributes.position.array.length / 3; vertex++)
+        source.morphTargets[0].position.array[vertex * 3 + 1] = .02;
+    const cloneAttributes = attributes => Object.fromEntries(Object.entries(attributes)
+        .map(([name, attr]) => [name, { ...attr, array: attr.array.slice() }]));
+    const copy = { ...source, index: source.index.slice(), attributes: cloneAttributes(source.attributes),
+        morphTargets: source.morphTargets.map(cloneAttributes) };
+    const after = gameplayBodyIndices(source);
+    expect(after.movingReferencedVertices).toBeGreaterThan(before.movingReferencedVertices);
+    expect(after).toEqual(gameplayBodyIndices(copy));
+    expect(source).toEqual(copy);
+});
