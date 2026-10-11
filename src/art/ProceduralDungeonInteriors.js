@@ -13,6 +13,7 @@ import { createDungeonEntryWard } from './DungeonEntryWard.js';
 import { applyVerdantFloorPatina } from './VerdantFloorPatina.js';
 import { applyElementalFloorPatina } from './ElementalFloorPatina.js';
 import { createDungeonPropSurfaceMaps } from './DungeonPropSurface.js';
+import { createDungeonProcessionalPaving } from './DungeonProcessionalPaving.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -189,9 +190,14 @@ function createMaterialSet(dungeonType, quality) {
         material.userData.dungeonPropSurface = surface;
         return material;
     };
+    const stone = finished('stone', new THREE.Color(theme.palette.midtone).lerp(new THREE.Color(0x92908a), .8), 0);
+    const paving = stone.clone();
+    paving.color.multiplyScalar(.48);
+    paving.vertexColors = true;
     return Object.freeze({
         shadow: makeDetailMaterial(theme.palette.shadow, { roughness: 0.98 }),
-        stone: finished('stone', new THREE.Color(theme.palette.midtone).lerp(new THREE.Color(0x92908a), .8), 0),
+        stone,
+        paving,
         metal: finished('metal', new THREE.Color(0x8e887d).lerp(new THREE.Color(theme.palette.midtone), .08), .68),
         accent: makeDetailMaterial(theme.palette.accent, {
             roughness: 0.4,
@@ -229,7 +235,10 @@ function createShapes(quality) {
         vigilShaft: createDungeonVigilShaft(),
         vigilCage: createDungeonVigilCage(),
         bevelBlock: createDungeonBevelBlock(),
-        fontBasin: createDungeonFontBasin()
+        fontBasin: createDungeonFontBasin(),
+        entryPaving: createDungeonProcessionalPaving('entry_gate'),
+        cachePaving: createDungeonProcessionalPaving('treasure_cache'),
+        shrinePaving: createDungeonProcessionalPaving('restorative_shrine')
     });
 }
 
@@ -516,6 +525,15 @@ function buildRoomDressing(dungeonType, room, roomIndex, shapes, materials) {
     root.userData.roomIdentity = identity;
     root.userData.visualOnly = true;
     root.userData.roomBounds = [Number(room.width) || size, Number(room.height) || size];
+
+    const paving = { entry_gate: shapes.entryPaving, treasure_cache: shapes.cachePaving,
+        restorative_shrine: shapes.shrinePaving }[identity];
+    if (paving) {
+        root.userData.processionalPaving = { ...paving.userData.dungeonProcessionalPaving };
+        addPart(root, `${identity}:processional-paving`, paving, materials.paving, {
+            scale: [radius / 24, 1, radius / 24], castShadow: false
+        });
+    }
 
     const wardRadius = Math.min(6, radius * .32);
     addFloorRing(root, shapes, materials.shadow, `${identity}:outer-ward`, wardRadius);

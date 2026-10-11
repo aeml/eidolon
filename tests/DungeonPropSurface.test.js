@@ -35,7 +35,7 @@ test.each(['stone', 'metal'].flatMap(surface => ['high', 'low'].map(quality => [
     for (const map of [...Object.values(maps), ...Object.values(other)]) map.dispose();
 });
 
-test.each(['verdant_bastion_catacombs', 'molten_core', 'tempest_spire', 'abyssal_well', 'umbral_nexus'])('%s shares six kit-owned prop maps across all room roles without new draw materials', type => {
+test.each(['verdant_bastion_catacombs', 'molten_core', 'tempest_spire', 'abyssal_well', 'umbral_nexus'])('%s shares six kit-owned prop maps across prop and paving finishes', type => {
     const kit = createProceduralDungeonInteriorKit(type, { quality: 'low' });
     const rooms = [kit.createRoomDressing({ type: 'start', x: 0, z: 0, width: 120 }, 0, { optimized: false }),
         kit.createRoomDressing({ type: 'normal', hook: 'chest', x: 400, z: 0, width: 120 }, 1, { optimized: false }),
@@ -48,10 +48,10 @@ test.each(['verdant_bastion_catacombs', 'molten_core', 'tempest_spire', 'abyssal
         expect(part.material.transparent).toBe(false); expect(part.material.flatShading).toBe(false);
         expect(part.material.emissiveIntensity).toBe(0);
     });
-    expect(materials.size).toBe(2); expect(textures.size).toBe(6);
+    expect(materials.size).toBe(3); expect(textures.size).toBe(6);
     expect(rooms[0].getObjectByName('entry:left-vigil:base').material).toBe(rooms[2].getObjectByName('shrine:basin').material);
     expect(rooms[0].getObjectByName('entry:left-vigil:shaft').material).toBe(rooms[1].getObjectByName('cache:coffer-lid').material);
-    expect(kit.metrics().detailMaterials).toBe(type === 'verdant_bastion_catacombs' ? 7 : 6);
+    expect(kit.metrics().detailMaterials).toBe(type === 'verdant_bastion_catacombs' ? 8 : 7);
     expect(kit.metrics().surfaceTextures).toBe(8);
 });
 

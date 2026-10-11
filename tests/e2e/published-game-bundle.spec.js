@@ -450,17 +450,20 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
                 const propMaterials = new Map();
                 render.instanceEnvironmentGroup.traverse(part => {
                     const role = part.material?.userData.dungeonPropSurface;
-                    if (role) propMaterials.set(role, part.material);
+                    if (role) propMaterials.set(`${role}:${part.material.vertexColors}`, { role, material: part.material });
                 });
-                const props = [...propMaterials].map(([role, material]) => {
+                const props = [...propMaterials.values()].map(({ role, material }) => {
                     const propProgram = render.renderer.properties.get(material).currentProgram;
-                    return { role, compiled: Boolean(propProgram && gl.getProgramParameter(propProgram.program, gl.LINK_STATUS)),
+                    return { role, vertexColors: material.vertexColors,
+                        compiled: Boolean(propProgram && gl.getProgramParameter(propProgram.program, gl.LINK_STATUS)),
                         maps: ['map', 'normalMap', 'roughnessMap'].map(key => ({ key, size: material[key].image.width,
                             colorSpace: material[key].colorSpace })) };
                 });
                 samples.push({ type, compiled, floorLinked: Boolean(program && gl.getProgramParameter(program.program, gl.LINK_STATUS)),
                     patina: floor.material.userData.elementalFloorPatina,
                     verdant: floor.material.userData.verdantFloorPatina, props,
+                    paving: render.instanceEnvironmentGroup.children.filter(part => part.userData.processionalPaving)
+                        .map(part => part.userData.processionalPaving.identity),
                     quality: world.graphicsQuality, mapSize: floor.material.map.image.width,
                     calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                     collidersStable: colliders === JSON.stringify(game.collisionManager.colliders) });
@@ -483,7 +486,8 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
             mapSize: quality === 'low' && row.type !== 'verdant_bastion_catacombs' ? 64 : 256, collidersStable: true });
         if (row.type === 'verdant_bastion_catacombs') expect(row.verdant).toBe(true);
         else expect(row).toMatchObject({ compiled: true, patina: row.type });
-        expect(row.props.map(prop => prop.role).sort()).toEqual(['metal', 'stone']);
+        expect(row.props.map(prop => `${prop.role}:${prop.vertexColors}`).sort()).toEqual(['metal:false', 'stone:false', 'stone:true']);
+        for (const identity of ['entry_gate', 'treasure_cache', 'restorative_shrine']) expect(row.paving).toContain(identity);
         for (const prop of row.props) {
             expect(prop.compiled, `${row.type} ${prop.role}`).toBe(true);
             for (const map of prop.maps) expect(map).toMatchObject({ size: quality === 'low' ? 64 : 128,
