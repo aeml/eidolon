@@ -4,7 +4,7 @@ const observers = new WeakMap();
 const profileModuleLoads = new WeakMap();
 
 /** Optional real-game profiling; no account state or network commands changed. */
-export function observeGameplayScene(game, label) {
+export function observeGameplayScene(game, label, { phases = false } = {}) {
     return new Promise((resolve, reject) => {
         const renderer = game?.renderSystem?.renderer;
         if (!renderer || game.isDestroyed || typeof game.loop !== 'function') { reject(new Error('A live game is required for profiling')); return; }
@@ -14,6 +14,9 @@ export function observeGameplayScene(game, label) {
         const renderInfo = renderer.info;
         const originalReset = renderInfo.autoReset;
         const samples = [];
+        const hooks = [];
+        let phaseFrame = null;
+        const phaseNames = ['update', 'presentation', 'renderSystem', 'renderer'];
         let warmup = 60;
         let previous = null;
         let firstPreviewFrame = null;
@@ -26,6 +29,15 @@ export function observeGameplayScene(game, label) {
                 if (loopDescriptor) Object.defineProperty(game, 'loop', loopDescriptor);
                 else delete game.loop;
             } else error ??= new Error('Scene profiler lost loop ownership');
+            for (const hook of hooks) {
+                if (!hook.installed) continue;
+                if (hook.owner[hook.method] === hook.wrapper) {
+                    if (hook.descriptor) Object.defineProperty(hook.owner, hook.method, hook.descriptor);
+                    else delete hook.owner[hook.method];
+                } else error ??= new Error(`Scene profiler lost ${hook.name} phase ownership`);
+            }
+            if (phases && (game.renderSystem !== renderSystem || renderSystem.renderer !== renderer))
+                error ??= new Error('Scene profiler lost phase renderer ownership');
             if (renderInfo.autoReset === false) renderInfo.autoReset = originalReset;
             if (renderer.info !== renderInfo || renderInfo.autoReset !== originalReset)
                 error ??= new Error('Scene profiler lost render policy ownership');
@@ -38,8 +50,20 @@ export function observeGameplayScene(game, label) {
                 const preview = game.uiManager.characterPreview;
                 const gl = renderer.getContext();
                 const debug = gl.getExtension('WEBGL_debug_renderer_info');
+                const phaseSummary = phases ? {
+                    scope: 'Opt-in inclusive synchronous CPU clocks; renderer includes Three.js traversal/submission, not GPU elapsed time. Exclusive components subtract nested clocks. Instrumentation overhead is included; this separate diagnostic does not replace the ordinary budget sample.',
+                    components: Object.fromEntries(Object.keys(samples[0].phaseCpuMs).map(name => [name, {
+                        medianMs: percentile(samples.map(sample => sample.phaseCpuMs[name]), .5),
+                        p95Ms: percentile(samples.map(sample => sample.phaseCpuMs[name]), .95)
+                    }])),
+                    calls: Object.fromEntries(phaseNames.map(name => [name, {
+                        min: Math.min(...samples.map(sample => sample.phaseCalls[name])),
+                        max: Math.max(...samples.map(sample => sample.phaseCalls[name]))
+                    }]))
+                } : null;
                 resolve({
                     label, frames: samples.length, intervalMethod: 'exact-reported-decimal', restored: true,
+                    ...(phases ? { phaseSummary } : {}),
                     frameSamples: samples, visibleFrames: samples.filter(sample => sample.visibility === 'visible').length,
                     rawFrameMedianMs: percentile(raw, .5), rawFrameP95Ms: percentile(raw, .95), rawFrameP99Ms: percentile(raw, .99),
                     renderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
@@ -67,14 +91,25 @@ export function observeGameplayScene(game, label) {
             }
             let result, started;
             try {
+                if (phases && (hooks.some(hook => hook.owner[hook.method] !== hook.wrapper)
+                    || game.renderSystem !== renderSystem || renderSystem.renderer !== renderer))
+                    throw new Error('Scene profiler lost phase ownership');
+                if (phases) phaseFrame = {
+                    cpu: Object.fromEntries(phaseNames.map(name => [name, 0])),
+                    calls: Object.fromEntries(phaseNames.map(name => [name, 0]))
+                };
                 started = performance.now();
                 renderInfo.reset();
                 result = originalLoop.call(this, time);
+                if (phases && hooks.some(hook => hook.owner[hook.method] !== hook.wrapper))
+                    throw new Error('Scene profiler lost phase ownership');
             } catch (error) {
+                phaseFrame = null;
                 finish(error);
                 throw error;
             }
             const cpuMs = performance.now() - started;
+            const framePhases = phaseFrame; phaseFrame = null;
             const previousTime = previous;
             const rawIntervalMs = previous === null ? 0 : time - previous;
             const intervalMs = previous === null ? 0 : renderFrameInterval(time, previous);
@@ -83,21 +118,46 @@ export function observeGameplayScene(game, label) {
             if (firstPreviewFrame === null) firstPreviewFrame = game.uiManager.characterPreview?.renderer?.info.render.frame || 0;
             const geometry = this.renderSystem.actorGameplayGeometry;
             samples.push({ time, previousTime, rawIntervalMs, intervalMs, cpuMs, visibility: document.visibilityState, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles,
+                ...(phases ? { phaseCalls: framePhases.calls, phaseCpuMs: {
+                    ...framePhases.cpu,
+                    presentationOutsideRenderSystem: framePhases.cpu.presentation - framePhases.cpu.renderSystem,
+                    renderSystemOutsideRenderer: framePhases.cpu.renderSystem - framePhases.cpu.renderer,
+                    loopOutsideUpdateAndPresentation: cpuMs - framePhases.cpu.update - framePhases.cpu.presentation
+                } } : {}),
                 activeEntities: this.activeEntitiesCache?.length || 0,
                 gameplayGeometry: geometry ? { pending: geometry.delivery.jobs.size, installed: geometry.pass.entries.size,
                     swaps: geometry.pass.lastSwaps, reduced: geometry.pass.reduced, enabled: geometry.pass.enabled } : null });
             if (samples.length === 180) finish();
             return result;
         }
+        const renderSystem = game.renderSystem;
         observers.set(game, observedLoop);
         try {
+            if (phases) {
+                const targets = [[game, 'update', 'update'], [game, 'render', 'presentation'],
+                    [renderSystem, 'render', 'renderSystem'], [renderer, 'render', 'renderer']];
+                if (targets.some(([owner, method]) => typeof owner[method] !== 'function'))
+                    throw new Error('Scene phase profiling requires update and render methods');
+                for (const [owner, method, name] of targets) {
+                    const original = owner[method], descriptor = Object.getOwnPropertyDescriptor(owner, method);
+                    const hook = { owner, method, name, descriptor, installed: false, wrapper: function (...args) {
+                        const frame = phaseFrame;
+                        if (!frame) return original.apply(this, args);
+                        const started = performance.now(); frame.calls[name]++;
+                        try { return original.apply(this, args); }
+                        finally { frame.cpu[name] += performance.now() - started; }
+                    } };
+                    hooks.push(hook);
+                    owner[method] = hook.wrapper; hook.installed = true;
+                }
+            }
             renderInfo.autoReset = false; game.loop = observedLoop;
             timer = setTimeout(() => finish(new Error(`Scene profile timed out after ${samples.length} samples`)), 45_000);
         } catch (error) { finish(error); }
     });
 }
 
-export async function profileGameplayScene(page, label) {
+export async function profileGameplayScene(page, label, options) {
     if (!profileModuleLoads.has(page)) {
         page.once('domcontentloaded', () => profileModuleLoads.delete(page));
         // Only the Node test runner executes this wrapper. A published site
@@ -120,8 +180,8 @@ export async function profileGameplayScene(page, label) {
         profileModuleLoads.set(page, loading);
     }
     await profileModuleLoads.get(page);
-    return page.evaluate(async label => {
+    return page.evaluate(async ({ label, options }) => {
         const { observeGameplayScene } = await import('/tests/e2e/scene-performance.js');
-        return observeGameplayScene(window.game, label);
-    }, label);
+        return observeGameplayScene(window.game, label, options);
+    }, { label, options });
 }

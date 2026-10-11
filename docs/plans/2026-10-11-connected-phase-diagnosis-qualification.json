@@ -1,0 +1,261 @@
+{
+  "recordedUTC": "2026-10-11T22:15:02.522121+00:00",
+  "status": "Qualified QA-only observer extension on master; ordinary connected median still fails. Private key-reuse prototype rejected. No runtime/performance acceptance.",
+  "source": "79017b0504e613316560422342e4c69d3c0695e7",
+  "changedFiles": [
+    "tests/e2e/scene-performance.js",
+    "tests/e2e/terrain-equipped-party.spec.js",
+    "tests/ScenePerformanceObservation.test.js"
+  ],
+  "implementation": "Opt-in four inclusive CPU hooks preserve descriptors, receivers, arguments, return values and throws; all hooks restore on success/error/timeout/partial setup without overwriting external replacements. Per-frame counts and subtraction expose disjoint costs. Default observer does not wrap any phase method or emit phase fields. Separate diagnostic follows unchanged ordinary60warmup/180frame budget sample.",
+  "focused": {
+    "command": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --runTestsByPath tests/ScenePerformanceObservation.test.js",
+    "testsPassed": 21,
+    "suitesPassed": 1,
+    "exitCode": 0,
+    "seconds": 0.96,
+    "lint": "Scoped ESLint all three changed QA files, max-warnings0: exit0",
+    "qaPatchSHA256": "66b19df2fa79b7b843165121a21cf68a93f55dadc38ad0370169da204bfa5241"
+  },
+  "native": {
+    "observedPreparedAccounts": 4,
+    "plaintextFilesScanned": 9,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "native": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "maxRetry": 0
+  },
+  "custody": "Actual Go-race four-class14-slot equipment/inventory/EP/party/fresh-save/logout checks passed. Disposable database removed, API/browser terminal, all940source/vendor pins unchanged.",
+  "ordinary": {
+    "frames": 180,
+    "frameMedianMs": 33.3,
+    "frameP95Ms": 33.4,
+    "cpuLoopMedianMs": 26.5,
+    "cpuLoopP95Ms": 36.69999998807907,
+    "drawCallsMedian": 303,
+    "trianglesMedian": 184416,
+    "activeEntitiesMin": 34,
+    "activeEntitiesMax": 34,
+    "visibleFrames": 180,
+    "restored": true
+  },
+  "instrumented": {
+    "frames": 180,
+    "frameMedianMs": 33.3,
+    "frameP95Ms": 33.4,
+    "cpuLoopMedianMs": 24.5,
+    "cpuLoopP95Ms": 33.80000001192093,
+    "drawCallsMedian": 268,
+    "trianglesMedian": 183080,
+    "activeEntitiesMin": 31,
+    "activeEntitiesMax": 33,
+    "visibleFrames": 180,
+    "restored": true
+  },
+  "phaseSummary": {
+    "scope": "Opt-in inclusive synchronous CPU clocks; renderer includes Three.js traversal/submission, not GPU elapsed time. Exclusive components subtract nested clocks. Instrumentation overhead is included; this separate diagnostic does not replace the ordinary budget sample.",
+    "components": {
+      "update": {
+        "medianMs": 2.5,
+        "p95Ms": 5.399999976158142
+      },
+      "presentation": {
+        "medianMs": 22.399999976158142,
+        "p95Ms": 30
+      },
+      "renderSystem": {
+        "medianMs": 21.80000001192093,
+        "p95Ms": 29.399999976158142
+      },
+      "renderer": {
+        "medianMs": 21.600000023841858,
+        "p95Ms": 29.100000023841858
+      },
+      "presentationOutsideRenderSystem": {
+        "medianMs": 0.40000003576278687,
+        "p95Ms": 1.0000000596046448
+      },
+      "renderSystemOutsideRenderer": {
+        "medianMs": 0.19999998807907104,
+        "p95Ms": 0.40000003576278687
+      },
+      "loopOutsideUpdateAndPresentation": {
+        "medianMs": 0.09999996423721313,
+        "p95Ms": 0.20000004768371582
+      }
+    },
+    "calls": {
+      "update": {
+        "min": 1,
+        "max": 2
+      },
+      "presentation": {
+        "min": 1,
+        "max": 1
+      },
+      "renderSystem": {
+        "min": 1,
+        "max": 1
+      },
+      "renderer": {
+        "min": 16,
+        "max": 16
+      }
+    }
+  },
+  "originalBudgets": {
+    "drawCallsMedian": {
+      "actual": 303,
+      "maximum": 350,
+      "passes": true
+    },
+    "trianglesMedian": {
+      "actual": 184416,
+      "maximum": 250000,
+      "passes": true
+    },
+    "frameMedianMs": {
+      "actual": 33.3,
+      "maximum": 20,
+      "passes": false
+    },
+    "frameP95Ms": {
+      "actual": 33.4,
+      "maximum": 33.4,
+      "passes": true
+    }
+  },
+  "interpretation": "All180instrumented frames have16renderer calls, matching this configured composer. Aggregate renderer clock includes the gameplay geometry wrapper, Three.js world traversal/shadows, fullscreen submission and any synchronous GPU waits. It is not GPU elapsed time or proof of a duplicate world render. Separate world versus fullscreen CPU clocks are the next bounded diagnostic.",
+  "nextAction": "Extend this same opt-in observer to classify its renderer calls by exact live world scene/camera versus other calls; preserve ordinary sample and all quality/content/effect settings. Do not select an optimization based on aggregate time alone.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-connected39-phase-checks-20261011",
+    "entries": 22,
+    "inventorySHA256": "4a511d8839d8ec7478ad327c760ef43b8c217dfcdf06878aea439d22d3122af7"
+  },
+  "rejectedGroupingKey": {
+    "decision": "Rejected; no production selection. Six full RGBA controls are exact but mixed render timing and worse High p95 do not establish a gain. Only14 key reuses per frame. No additional variant/replay justified.",
+    "scope": "Private grouping-key prototype; High/Low prepared populated Earth, four supplied14-slot outfits and16live animated Skeletons, ABBA60warmup/180frames per arm. Normal RAF, elapsed mixer clock and moving roots during timing. Brief frozen pixel controls only. Not connected party, arbitrary-source lifecycle, device or full performance acceptance.",
+    "controls": 6,
+    "rgbaBytesPerControl": 4321280,
+    "changedChannels": 0,
+    "unstableChannels": 0,
+    "qualityArms": [
+      {
+        "quality": "high",
+        "arms": [
+          {
+            "enabled": false,
+            "frames": 180,
+            "renderMedianMs": 18.600000023841858,
+            "renderP95Ms": 23.19999998807907,
+            "frameMedianMs": 16.700000000000728,
+            "frameP95Ms": 33.399999999999636,
+            "hitsMedian": 0,
+            "missesMedian": 0
+          },
+          {
+            "enabled": true,
+            "frames": 180,
+            "renderMedianMs": 18.19999998807907,
+            "renderP95Ms": 24.5,
+            "frameMedianMs": 16.700000000000728,
+            "frameP95Ms": 33.39999999999782,
+            "hitsMedian": 14,
+            "missesMedian": 0
+          },
+          {
+            "enabled": true,
+            "frames": 180,
+            "renderMedianMs": 20.100000023841858,
+            "renderP95Ms": 25.599999964237213,
+            "frameMedianMs": 16.700000000000728,
+            "frameP95Ms": 33.400000000001455,
+            "hitsMedian": 14,
+            "missesMedian": 0
+          },
+          {
+            "enabled": false,
+            "frames": 180,
+            "renderMedianMs": 19.80000001192093,
+            "renderP95Ms": 24,
+            "frameMedianMs": 16.700000000000728,
+            "frameP95Ms": 33.400000000001455,
+            "hitsMedian": 0,
+            "missesMedian": 0
+          }
+        ]
+      },
+      {
+        "quality": "low",
+        "arms": [
+          {
+            "enabled": false,
+            "frames": 180,
+            "renderMedianMs": 10.099999964237213,
+            "renderP95Ms": 14.300000011920929,
+            "frameMedianMs": 16.69999999999891,
+            "frameP95Ms": 16.700000000000728,
+            "hitsMedian": 0,
+            "missesMedian": 0
+          },
+          {
+            "enabled": true,
+            "frames": 180,
+            "renderMedianMs": 10.899999976158142,
+            "renderP95Ms": 15.5,
+            "frameMedianMs": 16.69999999999891,
+            "frameP95Ms": 16.700000000000728,
+            "hitsMedian": 14,
+            "missesMedian": 0
+          },
+          {
+            "enabled": true,
+            "frames": 180,
+            "renderMedianMs": 9.299999952316284,
+            "renderP95Ms": 12,
+            "frameMedianMs": 16.700000000000728,
+            "frameP95Ms": 16.700000000000728,
+            "hitsMedian": 14,
+            "missesMedian": 0
+          },
+          {
+            "enabled": false,
+            "frames": 180,
+            "renderMedianMs": 8.699999988079071,
+            "renderP95Ms": 16,
+            "frameMedianMs": 16.700000000000728,
+            "frameP95Ms": 16.700000000000728,
+            "hitsMedian": 0,
+            "missesMedian": 0
+          }
+        ]
+      }
+    ],
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-group-key-prototype-20261011",
+      "entries": 12,
+      "inventorySHA256": "f28e8674bd720b7d1c5ea61d72288b61a82189e1ffe737f4c38502648d827185"
+    }
+  },
+  "limitations": [
+    "CPU instrumentation includes own overhead and synchronous submission/waits; no GPU elapsed clock.",
+    "Sequential windows have different live population and draw counts; not an optimization ABBA comparison.",
+    "Original timing/cold triangle failures remain retained. No content, density, clocks, animation, quality setting or performance target changed.",
+    "No unchanged campaign/soak rerun, physical-device or final-art acceptance. All original1.11\u20131.99/F1\u2013F5/beta/launch/handoff requirements remain active."
+  ],
+  "releaseCustody": "Corrective39/a1ebc404 CI38178405817attempt1 active at latest authoritative observation.38last accepted. Local validated QA/doc work held from push pending own39acceptance. Separate100clientsoak38109009521 remains active; no restart/cancellation."
+}

@@ -997,3 +997,40 @@ Require own ordered CI/deploy/live then fresh normal-TLS93asset/frontend/
 backend/readyDB acceptance before next milestone. See release39-guard-corrective-publication.
 All original world/art/gameplay/device/performance/operations/F1-F5/beta/launch/
 handoff and owner-deferred campaign/phone feedback remain active.
+
+
+## October11 connected CPU phase attribution and rejected key reuse
+
+Previous branch-only continuation revalidated cleanup without new implementation;
+this turn advances the open performance investigation with qualified QA tooling
+and new connected evidence. Optional phases extend the existing scene observer;
+ordinary60warmup/180frame sampling and original targets remain unchanged.21focused
+checks and scoped lint pass, including nested clock arithmetic and descriptor/
+receiver/return/exception/timeout/partial-install ownership restoration.
+Actual Go-race four-class14-slot saves pass, native1pass/1optional skip/retry0.
+Ordinary180frames303draw/184416tri pass counts;33.3msmedian fails20ms while33.4p95
+meets33.4ms. Separate diagnostic180frames show simulation2.5/5.4msmedian/p95,
+aggregate renderer21.6/29.1ms. It includes synchronous submission/waits, not GPU
+elapsed time. Live population differs across windows, so this is no paired gain.
+Sixteen renderer calls match one world plus13bloom/output/FXAA passes; next split
+world versus fullscreen CPU in the same observer before selecting optimization.
+All940runtime/vendor pins unchanged; disposable fixture removed, own API/browser
+terminal, four prepared identities sanitized.22entry frozen inventory
+4a511d8839d8ec7478ad327c760ef43b8c217dfcdf06878aea439d22d3122af7.
+
+Private grouping-key reuse preserves six complete4321280-byteRGBA controls,
+all supplied14-slot outfits and live animation, but ABBA render timings are
+mixed and Highp95 worsens. Only14keyhits/frame; rejected, no product selection.
+Owned4214server stopped;12entry frozen inventory
+f28e8674bd720b7d1c5ea61d72288b61a82189e1ffe737f4c38502648d827185.
+No unchanged campaign/soak rerun, budget relaxation, density reduction or art/
+device acceptance. See connected-phase-diagnosis-qualification receipt.
+
+Corrective39/a1ebc404 CI38178405817attempt1 remains authoritatively active; client
+prerequisite now passes, remaining prerequisites active at observation.38 remains
+last accepted; refreshed README/both roadmaps/primary-forward pointers retain
+original failure and exact pending acceptance. Local qualified QA/docs held
+from push until own39ordered CI/live/normal-TLS93asset/frontend/backend/readyDB
+acceptance. Existing100clientsoak38109009521 remains active, not capacity proof.
+Every original world/art/gameplay/device/performance/operations/F1–F5/beta/launch/
+handoff requirement and owner-deferred campaign/phone feedback remains active.

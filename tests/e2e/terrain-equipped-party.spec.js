@@ -757,6 +757,13 @@ test('single native renderer observes three live equipped party socket peers on 
             }, null, 2), contentType: 'application/json' });
             console.log('[paired-fitted-surface-profile]', JSON.stringify(phases));
         }
+        if (process.env.EIDOLON_TERRAIN_PARTY_PHASE_PROFILE === '1') {
+            const diagnostic = await profileGameplayScene(page, `connected-phase-diagnostic-${quality}`, { phases: true });
+            await testInfo.attach('diagnostic-party-phases', { body: JSON.stringify(diagnostic, null, 2), contentType: 'application/json' });
+            expect(diagnostic.frames).toBe(180); expect(diagnostic.visibleFrames).toBe(180);
+            expect(diagnostic.restored).toBe(true); expect(diagnostic.phaseSummary.calls.renderer.min).toBeGreaterThan(0);
+            console.log('[diagnostic-party-phases]', JSON.stringify(diagnostic));
+        }
         if (process.env.EIDOLON_TERRAIN_PARTY_CPU_PROFILE === '1') {
             // Opt-in diagnosis AFTER the frame sample, never part of its timing.
             // CPU profiles contain function/source identities, not chat or args.

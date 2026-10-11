@@ -114,3 +114,102 @@ test('a destroyed game cannot contribute an apparently successful completed samp
     const rejection = expect(promise).rejects.toThrow('running game'); game.loop(1); await rejection;
     expect(original).not.toHaveBeenCalled(); expect(game.loop).toBe(original); expect(renderer.info.autoReset).toBe(true);
 });
+
+function phaseFixture() {
+    const setup = fixture(), { game, renderer, original } = setup;
+    renderer.render = jest.fn(function (scene) {
+        expect(this).toBe(renderer); expect(scene).toBe('scene');
+        jest.advanceTimersByTime(5); return 'renderer-return';
+    });
+    const renderSystem = game.renderSystem;
+    Object.setPrototypeOf(renderSystem, { render: function () {
+        expect(this).toBe(renderSystem); jest.advanceTimersByTime(3);
+        return this.renderer.render('scene');
+    } });
+    game.update = jest.fn(function (dt, flag) {
+        expect(this).toBe(game); expect(dt).toBe(.01); expect(flag).toBe(false);
+        jest.advanceTimersByTime(2); return 'update-return';
+    });
+    Object.defineProperty(game, 'render', { configurable: true, writable: true, enumerable: false, value: function (alpha) {
+        expect(this).toBe(game); expect(alpha).toBe(.5);
+        jest.advanceTimersByTime(2); return this.renderSystem.render();
+    } });
+    original.mockImplementation(function () {
+        expect(this.update(.01, false)).toBe('update-return');
+        this.update(.01, false); jest.advanceTimersByTime(1);
+        return this.render(.5);
+    });
+    return setup;
+}
+
+test('opt-in phases measure inclusive clocks and disjoint components across multiple fixed updates', async () => {
+    const { game, renderer } = phaseFixture(), update = game.update, render = Object.getOwnPropertyDescriptor(game, 'render');
+    const submission = renderer.render, systemRender = game.renderSystem.render;
+    const promise = observeGameplayScene(game, 'phases', { phases: true });
+    // Calls outside the observed loop preserve behavior without contaminating samples.
+    expect(game.render(.5)).toBe('renderer-return');
+    drive(game); const report = await promise;
+    expect(report.frameSamples).toHaveLength(180);
+    for (const row of report.frameSamples) {
+        expect(row.cpuMs).toBe(15);
+        expect(row.phaseCalls).toEqual({ update: 2, presentation: 1, renderSystem: 1, renderer: 1 });
+        expect(row.phaseCpuMs).toEqual({ update: 4, presentation: 10, renderSystem: 8, renderer: 5,
+            presentationOutsideRenderSystem: 2, renderSystemOutsideRenderer: 3, loopOutsideUpdateAndPresentation: 1 });
+    }
+    expect(report.phaseSummary.components.renderer).toEqual({ medianMs: 5, p95Ms: 5 });
+    expect(report.phaseSummary.calls.update).toEqual({ min: 2, max: 2 });
+    expect(game.update).toBe(update); expect(Object.getOwnPropertyDescriptor(game, 'render')).toEqual(render);
+    expect(renderer.render).toBe(submission); expect(game.renderSystem.render).toBe(systemRender);
+    expect(Object.hasOwn(game.renderSystem, 'render')).toBe(false);
+});
+
+test('ordinary observation does not wrap phase methods or emit diagnostic clocks', async () => {
+    const { game, renderer } = phaseFixture(), update = game.update, render = game.render, submission = renderer.render;
+    const promise = observeGameplayScene(game, 'ordinary');
+    expect(game.update).toBe(update); expect(game.render).toBe(render); expect(renderer.render).toBe(submission);
+    drive(game); const report = await promise;
+    expect(report).not.toHaveProperty('phaseSummary'); expect(report.frameSamples[0]).not.toHaveProperty('phaseCpuMs');
+});
+
+test('a phase exception propagates unchanged and restores every owned hook', async () => {
+    const { game, renderer } = phaseFixture(), error = new Error('submission failed');
+    renderer.render.mockImplementation(() => { throw error; });
+    const update = game.update, render = game.render, submission = renderer.render;
+    const promise = observeGameplayScene(game, 'exception', { phases: true }), rejection = expect(promise).rejects.toBe(error);
+    expect(() => game.loop(1)).toThrow(error); await rejection;
+    expect(game.update).toBe(update); expect(game.render).toBe(render); expect(renderer.render).toBe(submission);
+    expect(Object.hasOwn(game.renderSystem, 'render')).toBe(false); expect(renderer.info.autoReset).toBe(true);
+});
+
+test('phase timeout preserves an external hook replacement while restoring remaining hooks', async () => {
+    const { game, renderer } = phaseFixture(), update = game.update, render = game.render;
+    const promise = observeGameplayScene(game, 'timeout', { phases: true }), replacement = () => {};
+    renderer.render = replacement;
+    const rejection = expect(promise).rejects.toThrow('timed out'); jest.advanceTimersByTime(45000); await rejection;
+    expect(renderer.render).toBe(replacement); expect(game.update).toBe(update); expect(game.render).toBe(render);
+    expect(Object.hasOwn(game.renderSystem, 'render')).toBe(false); expect(renderer.info.autoReset).toBe(true);
+});
+
+test('phase ownership loss inside a loop rejects instead of reporting incomplete phase totals', async () => {
+    const { game, renderer, original } = phaseFixture(), update = game.update, replacement = () => {};
+    original.mockImplementation(() => { renderer.render = replacement; });
+    const promise = observeGameplayScene(game, 'lost', { phases: true }), rejection = expect(promise).rejects.toThrow('phase ownership');
+    expect(() => game.loop(1)).toThrow('phase ownership'); await rejection;
+    expect(renderer.render).toBe(replacement); expect(game.update).toBe(update); expect(renderer.info.autoReset).toBe(true);
+});
+
+test('partial phase installation failure restores methods already wrapped', async () => {
+    const { game, renderer, original } = phaseFixture(), update = game.update;
+    const descriptor = Object.getOwnPropertyDescriptor(game, 'render');
+    Object.defineProperty(game, 'render', { ...descriptor, writable: false });
+    await expect(observeGameplayScene(game, 'readonly', { phases: true })).rejects.toThrow();
+    expect(game.update).toBe(update); expect(game.loop).toBe(original); expect(renderer.info.autoReset).toBe(true);
+    expect(Object.getOwnPropertyDescriptor(game, 'render')).toEqual({ ...descriptor, writable: false });
+});
+
+test('missing phase methods reject before installing any hook and allow an ordinary observer', async () => {
+    const { game, renderer, original } = fixture();
+    await expect(observeGameplayScene(game, 'missing', { phases: true })).rejects.toThrow('requires update and render');
+    expect(game.loop).toBe(original); expect(renderer.info.autoReset).toBe(true);
+    const promise = observeGameplayScene(game, 'ordinary'); drive(game); await promise;
+});
