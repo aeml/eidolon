@@ -1,355 +1,4 @@
 {
-  "schema": 1,
-  "milestone": "1.80 launch feature freeze",
-  "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
-<<<<<<< HEAD
-  "october8NativeRunnerAdmission": {
-    "source": "Current1.80 preparation b736ae46 before this change still allowed full_stabilization manual input without a trusted repository/ref guard. Select only reviewed9e3bb9c8 guards/test logic into current workflow; no old authority/version or unrelated changes.",
-    "baseline": "Evaluate real current predeploy condition against canonical-repository manual feature-branch full=true context; returns true, required false. Two updated tests FAIL/fourPASS0.368s. No actual untrusted dispatch or host code execution.",
-    "change": "Native predeploy requires canonical aeml/eidolon repository, master/main ref and push or explicitly enabled manual full run. Live credentialed job explicitly requires canonical production push as well as its successful deploy dependencies. Ordinary hosted checks, Pages concurrency and trusted nightly soak remain unchanged.",
-    "qualification": "Bounded-VM actual-condition evaluation covers60 repository/event/ref/full-boolean combinations for predeploy/live/nightly plus actual scheduled-soak control. Affected runner/host-pin/executable-checkout suites PASS14/0.988s; scoped diff/whitespace pass. Test uses common exact-literal/boolean subset and does not simulate all GitHub expression/admission semantics.",
-    "limits": "Prepared only, not pushed or deployed. Source guards do not establish branch/ruleset protection, workflow review, authorized dispatchers or runner-group access; no repository admin setting mutation. Public SSH reachability and original failed37709850553 remain independent. F1–F5/full goal still unaccepted."
-  },
-  "currentStatePrecedence": "October8 guarded1.79.1 delivery and trust preparation above/below supersede historical pending/earlier baseline statements. Exact public receipt2026-10-08-release1-79-1-public-checks.json now present after owned release-branch merge. Source-only1.80 guards are not runtime delivery or F1–F5 freeze acceptance; all65 original promise rows remain in scope.",
-  "october8DeploymentTrustStabilization": {
-    "baseline": "Exact c8ff2cd668213a3cf53cd536b7067bd3404d0437 Alpha1.79.1 deployed through the normal guarded local script after hosted SSH setup failed. Matching public frontend/backend identities,7 rewritten runtime files and real anonymous Chrome2checks pass. Original GitHub run37709850553 remains failed and credentialed live job skipped; exact receipt retained on recovered current release branch.",
-    "trustedIdentity": "Re-read only local public /etc/ssh/ssh_host_ed25519_key.pub; SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE matches the previously prepared2879d399 pin. No key rotation, private-key read or unverified network trust. Current public SSH scan fails; pinning cannot repair routing.",
-    "candidateChange": "Selectively bring the reviewed public ED25519 pin and explicit StrictHostKeyChecking=yes into current candidate workflow, replacing runtime discovery. Add10s/1-attempt connection bounds and15s/2-count server-alive checks. Preserve outgoing exact-commit checkout, private credentials and hosted/self-hosted queue separation. Document guarded local fallback without claiming a failed CI run green. No1.82 wholesale merge or future version labels.",
-    "regression": "Both new current-workflow host-identity/connection-policy tests fail before change: missing pin and strict/bounded outgoing command. After change, these plus actual executable checkout and runner-separation suites PASS13 in0.946s; whitespace passes. Initial test invocation lacked the restored worktree dependency link, then existing dependencies linked without installation or lock changes; do not count missing module as regression proof.",
-    "remaining": "Prepared source only, not pushed or accepted as new workflow. Actual external SSH access, repository protections/release trust and broader1.82 operations remain separate; no router/firewall/provider setting change. All F1–F5 statuses remain unaccepted and full modern-art/roadmap scope retained."
-  },
-  "october8CurrentBoundaryReview": {
-    "baseline": "Current candidate c8ff2cd668213a3cf53cd536b7067bd3404d0437 pushed; its own CI37709850553 is still in progress, monitored by authorized Luna. Do not substitute the accepted1.79 b5c3981e baseline or infer candidate deployment acceptance.",
-    "origin": "Three additional real-handshake cases exercise bracketed non-IPv6 authorities using trusted domain, localhost and IPv4 spellings. All are already rejected by the current runtime: complete existing handshake suite PASS race1.054s. Retain the new cases as future parser-regression coverage; no reproduced bug or runtime correction is claimed, and no second unchanged admission/protocol rerun is needed.",
-    "party": "Read actual party_kill_credit.go and retained party_kill_credit_test.go/party_chronicle_credit_test.go. Eligibility includes downed players still present, excludes disconnected/foreign instances, uses actual dungeon/raid types for whole-instance credit, and keeps server-owned110-unit two-default-screen radius for open-world parties. The four-role reward fixture already covers a downed healer with no damage contribution and individual manual Wizard turn-ins. Existing source already fulfills this specific promise; do not rerun a long dungeon to rediscover it or infer earned campaign/feel proof from prepared fixtures.",
-    "privacy": "Read actual RecoveryLinkBoot.js blocking head script and analytics/game.js initialization path. Private recovery/download markers suppress deferred analytics and scrub the private URL before module boot; failure to scrub keeps private-page analytics disabled. This preserves accepted recovery/privacy source scope, not independent GA4 provider-event, earlier collection or compliance approval.",
-    "inventory": "Re-read all65 distinct promise IDs with current implementation/status rows. Preserve modern art/raised-world, human pacing/device, external networking, rights/commercial and remaining operations issues; counts or retained rows do not establish every foundation or F1–F5 acceptance. Correct stale V03 six-failing-view wording and stale operations-monitor publication state using recorded accepted/scoped evidence only.",
-    "remaining": "F1–F5 remain unaccepted. This is source-specific review and narrow additional parser coverage, not a new release, content/dependency freeze, license choice, staffing/SLA, backup destination, provider setting, full art or goal completion. No production writes, automatic cleanup, extra email or long campaign/native/cohort test."
-=======
-  "october8PendingVisualSuccessor": {
-    "sourceCommit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c",
-    "version": "Alpha 1.79.3",
-    "ciRun": 37734583404,
-    "status": "pushed-current-integration-qualified-own-ci-and-public-acceptance-pending",
-    "receipt": "2026-10-08-release1-79-3-checks.json",
-    "sourceContinuity": "Current read-only verification:7 accepted source trees/counts and6 input hashes match the exact f9 Git blobs. Assets, UI, authoritative game and content trees are also unchanged in b13. Art changes are qualified components, not a new authority, content or economy policy.",
-    "externalState": "Current read-only GitHub API still reports master protected=false and no rulesets. No repository/runner settings changed.",
-    "remaining": "Pending own release acceptance, F1-F5, all-family modern-art and raised-world delivery, rights review, owner operations/recovery decisions and final human launch evidence. Existing local outage alerts are running with the approved recipients/settings; that does not establish public or off-machine coverage. No freeze approval inferred."
-  },
-  "october8AcceptedSourceReconciliation": {
-    "sourceCommit": "f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",
-    "liveReceipt": "2026-10-08-release1-79-2-public-checks.json",
-    "method": "Exact accepted Git trees and blob bytes, not the dirty checkout or staged future work. Historical October7 records below keep their original scopes; this current record supersedes their not-yet-deployed origin/trust and failed woodland-reference states.",
-    "trees": {
-      "assets": {"gitTree":"70d9114c9e6bb19a386d740c661e45cd97317f31","trackedFiles":580},
-      "src/art": {"gitTree":"3bd4d00b465fd4769081ff4cb3aa8e4cf4898a7e","trackedFiles":112},
-      "src/data": {"gitTree":"8a2f4c5290917c379db3241d8541af7c8a8681f3","trackedFiles":28},
-      "src/ui": {"gitTree":"9ee5a7f1d8722722ccfc260da1d9c5b8ee771b95","trackedFiles":99},
-      "server/internal/game/content": {"gitTree":"c68d6a8e5f2721336d4e315ae77f0cd8fa9c71fb","trackedFiles":12},
-      "server/internal/game": {"gitTree":"45fb04acbb93444c9ff0ce92b8bcd8e75363cd24","trackedFiles":550},
-      "scripts": {"gitTree":"b34a325adc10562797c7f9e909cdc5f24df400ca","trackedFiles":38}
-    },
-    "inputSha256": {
-      "package.json":"c4ee9781c0cea134672aa4603fdaa69357f2a5e9f6cc8594f22e585f42179bed",
-      "package-lock.json":"fea236b4b71848b2087c94d480209b24d5763337458edd29c1639f0f4e1f94b5",
-      "server/go.mod":"386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
-      "server/go.sum":"dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
-      "assets/equipment/authored/manifest.json":"4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f",
-      ".github/workflows/ci.yml":"e2088682a332e601cc126b90c2548db9f4e6cb87d1bcbba1a13867618d0f3206"
-    },
-    "boundaryReview": "Read actual b5c3981e-to-f9 runtime/deploy/fit diff: origin tuple/cardinality checks delivered1.79.1; minimum-storage/deploy guards, trusted SSH identity and canonical native-QA ref admission delivered1.79.2. Fitted replacement generation owns completed parts and epoch-limited failure signatures; existing ownership checks retained. No new review test/campaign or claim of no exploits.",
-    "catalogContinuity": "Assets, UI, authoritative game and content trees remain exact October7 baseline identities. Changed data is only qualified worldFoliage batching; changed script is isolated-QA version default. Package roots change release versions, not dependency resolution; Go/asset manifest hashes unchanged. Source catalog counts are not a publisher allowlist or license approval.",
-    "externalState": "Read-only GitHub API reports master protected=false and no rulesets. Native QA source guards now published; repository/runner settings unchanged. Hosted SSH key setup passes but network connection times out, retained as failed CI rather than green deployment.",
-    "remaining": "F1–F5 not accepted: original65 requirements, final modern all-family art, compatible raised production delivery, rights/notices, service/budget/support/recovery choices and human launch evidence remain. No dependency/content freeze or1.80 version inferred; future qualified material/terrain/support work remains staged for selective ordered integration."
->>>>>>> work/alpha-1-80-review-current-20261008
-  },
-  "october7CatalogCandidateNotFreeze": {
-    "sourceCommit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
-    "method": "Read exact accepted Git trees/blob bytes, not mutable working-directory caches. Git object identities are SHA1; separate input byte hashes are SHA256. Counts include source assets and tests/non-shipped files, not a publisher allowlist or license approval.",
-    "trees": {
-      "assets": {
-        "gitTree": "70d9114c9e6bb19a386d740c661e45cd97317f31",
-        "trackedFiles": 580
-      },
-      "src/art": {
-        "gitTree": "76b686693c3550c25ee66da5ecd91a715b5b76d0",
-        "trackedFiles": 111
-      },
-      "src/data": {
-        "gitTree": "17268396c2a5518236760d606e1a006633c0c47c",
-        "trackedFiles": 28
-      },
-      "src/ui": {
-        "gitTree": "9ee5a7f1d8722722ccfc260da1d9c5b8ee771b95",
-        "trackedFiles": 99
-      },
-      "server/internal/game/content": {
-        "gitTree": "c68d6a8e5f2721336d4e315ae77f0cd8fa9c71fb",
-        "trackedFiles": 12
-      },
-      "server/internal/game": {
-        "gitTree": "45fb04acbb93444c9ff0ce92b8bcd8e75363cd24",
-        "trackedFiles": 550
-      },
-      "scripts": {
-        "gitTree": "18a7a2bd5185c9312122d6680497df65fe55a836",
-        "trackedFiles": 38
-      }
-    },
-    "inputSha256": {
-      "package.json": "fe064ebf2d83247581b3126f8a642f86a07caf8e21d096f64aeecd94cfccfd8a",
-      "package-lock.json": "33fb3f2af672eff7d1e90a4dee5456c04f6efbcf162b25b70553382e3d4ea793",
-      "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
-      "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
-      "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f",
-      ".github/workflows/ci.yml": "ce2a95c5fa45364c9d16695f6c5fd7af81441af5af298d858c9270bf1e9d26f7"
-    },
-    "limits": "Preserve this accepted baseline for final catalog comparison. Local origin correction changes server/main.go; later qualified art/compatibility/trust candidates must appear as reviewed exceptions in the final freeze revision. No dependency update, catalog exclusion, unpublished1.87 import or content lock inferred."
-  },
-  "october7OriginAndThreatLedger": {
-    "baseline": "Accepted1.79 b5c3981e060d6dea3ef50c9c2b4abb37999856db",
-    "reproduction": "Real WebSocket handshake regressions failed on accepted source: host-only parsing admitted non-web schemes, resource URLs, userinfo, invalid ports and first-of-multiple Origin headers. This is an admission parsing gap, not demonstrated account/role bypass; native clients may omit Origin and still require authentication.",
-    "correction": "Require one nonempty HTTP(S) scheme/host/optional-valid-port tuple when Origin is provided. Reject userinfo/path/query/fragment and empty/out-of-range ports. Retain exact existing allowed host catalog, local development ports and absent-Origin native compatibility. No credential, CORS/domain, role, item or saved-data policy changes.",
-    "verification": "Original two handshake suites failed before correction. Scoped race-enabled origin, WebSocket admission and inbound protocol/policy suite passed1.122s; no long100/native/provider rerun. Local only, not yet deployed.",
-    "ledger": "2026-10-07-release1-80-threat-and-exception-ledger.md",
-    "remaining": "Twelve adversarial boundaries reviewed with actual controls and retained limits; nine named remaining issues preserve deployment trust, operations/recovery decisions, modern art/raised terrain, rights and human evidence. This is not penetration certification or F1–F5 freeze acceptance."
-  },
-  "october7OrderedPrerequisite": {
-    "acceptedLiveVersion": "Alpha 1.79.0",
-    "commit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
-    "ci": 37600167508,
-    "receipt": "2026-10-07-release1-79-public-checks.json",
-    "effect": "Ordered1.79 publication prerequisite now passed. Original100 qualification retained. This supersedes earlier in-progress publication text, not remaining F1–F5 freeze, art, operations, licensing or human acceptance gates."
-  },
-  "october7CurrentRuntimeTrustReview": {
-    "source": "Read actual production-runtime diff from accepted1.78 c7c2c5260dd0ba806e34d81cdeec305dd2ccb3ae to corrected1.79 b5c3981e060d6dea3ef50c9c2b4abb37999856db. Exclude load-driver/test-only changes from claims about production authority. No implementation patch or new long test follows this review.",
-    "credentials": "Current login admission keeps the existing shared hash-work slots and account retry budget. Only sixteen login waiters may wait at most250ms; overflow/timeouts return busy before spending retries. Acquired work retains sync.Once release. Dispatch checks actual closed/retired transport after admission, releasing its slot and refusing delayed storage work. Other credential operations retain immediate admission. Client-side forged account identifiers/administrator claims do not become session authority.",
-    "casino": "The operation-local player roster is collected under World.Mu and includes players from all scenes. Live actor locks still determine seat/session/connection epoch/readiness, and invalid/dead/disconnected/foreign-scene seats remain pruned. Public preparation uses the existing opaque roster revision; membership indexing does not authorize a wager, reveal private seat tokens or replace the existing saved wallet/settlement gates.",
-    "world": "Structured spatial keys retain exact instance plus signed integer cells; all/player indexes change under one Grid.Mu in Add/Remove/cross-cell Update. Same-cell updates avoid the grid lock but do not cache positions. Scene transfers retain explicit Remove/Add contract. Enemy candidates are admitted from the frame-start identity roster, not arbitrary grid actors; every positive threat is included independent of spatial range, ties retain prior order. Live membership/life/scene/stealth/safe-zone/pursuit/range checks still determine eligibility. Grid lock is released before actor locks. Only inert fences skip frame work; they remain authoritative spatial/replicated entities. Worker count respects actual GOMAXPROCS and all workers join before frame-local roster retirement.",
-    "replication": "Prepared caches key by detached actor pointer, not reused playerID, and freeze membership before recipient workers. Foreign lookups cannot mutate membership or borrow another actor's encoding. Owner messages bypass public caches; non-owner progression is stripped from new protobuf objects. Original visibility/session/current-character checks and recipient-owned prior queued baselines remain. Shared immutable snapshots are scoped to one joined broadcast; no live world/player input becomes a public cache key.",
-    "persistence": "Shutdown closes admission and periodic/world work, resolves PvP, retires connections, joins character work and makes session history durable before final characters. Final journals overlap only across independent account locks, with four workers and a full join before any Mongo commit. Any journal failure keeps shutdown waiting rather than acknowledging missing data. Mongo failure stops commits and retains remaining journals for next startup. Periodic saves stop starting new work during drain; late rewards/disconnected characters are still captured in the final pass. The original current100 proof independently confirms all100 fresh saved outcomes and ordinary eight-phase drain; it is not a whole-host power-loss/off-machine restore proof.",
-    "retainedEvidence": "Current1.79 receipt preserves focused credential/casino/spatial/target/static-worker/frame-privacy/shutdown tests and exact current API/hash/native qualification. Original CI37596856794 Server Go passed; corrected CI37600167508 remains separately required and was observed running. No old CI is substituted for the corrected release gate. Existing1.71–1.78 account/value/privacy/monitor evidence retains its original scopes, not blanket penetration certification.",
-    "remaining": "Changed-runtime review found no new authority bypass in these paths, not proof of no exploits elsewhere. Actual unprotected master/no-ruleset policy, prepared1.82 workflow/SSH trust hardening, operator recovery/service objectives and full launch threat/exception ledger remain open. Do not mark F2/F freeze complete or install future guards without their ordered integration/public acceptance."
-  },
-  "october7LaterOwnerRequirementCoverage": {
-    "source": "Corrected1.79 b5c3981e060d6dea3ef50c9c2b4abb37999856db is pushed; its own CI37600167508 was independently observed in progress with all five initial jobs actually running. Production acceptance remains1.78 until exact new CI/public checks succeed. No runtime change accompanies this inventory update.",
-    "change": "Add N01–N12 to the original53 promise register, preserving later full single-branch kits, delivered four-class/item/motion imports, class/offhand/dual-cadence authority, type/eligibility tooltips, dressed Ilyra, stable Forge stat order, bulk-selling/nonblocking errors, filtered durable admin history, final stash/three-second jump, emailed recovery, reviewed privacy paths and approved alerts. Correct obsolete O03 current1.10.2 wording; the full register now has65 distinct requirements, not only its original53.",
-    "evidence": "Read current ClassEquipmentRules/ForgeStatOrder tests and actual EquipmentSlots imports, authored weapon-motion mirroring, server entity2/3 cadence, world stash/Forge/quest-house coordinates/rotations, jump authority duration tests, admin journal-before-acknowledgement path and current AdminUI filtering. Retained exact release/connected/provider/NPC/privacy receipts linked per row. This is source/retained-evidence review, not new gameplay/native execution or independent provider-policy validation.",
-    "verification": "Read-only Node24 validation PASS65 distinct requirement IDs/32 existing local evidence links and receipt JSON; git diff --check PASS. No src/server/index/package differences from actual CI b5c3981e. This checks inventory/link consistency only, not feature behavior or acceptance.",
-    "limits": "Full F1 reconciliation and F2–F5 approval remain open; expanded coverage cannot accept human feel, final modern art, real-device feedback, license rights, whole-host coverage or operations objectives. Later staged1.87 leaf/rock improvements remain unpublished and do not qualify current1.79 or freeze the launch set."
-  },
-  "october7ChangedFoliageRaisedProfile": {
-    "source": "Current649e checkout has883 all-realm foliage cell changes relative to the earlier raised-profile failure. Rerun only the affected optional raised-Earth profile; public main remains flat and placement/physics/movement/effects/save promotion remains mandatory1.87 work.",
-    "result": "Actual native SystemChrome AMD/Vulkan two-case profile FAIL: all3 High triangle limits remain exceeded; Low west-bank also exceeds85000 by875, other2 Low views pass. All original median/P95/draw/triangle limits retained, no density/geometry/shadow/art quality downgrade. Functional picking/jump/grounding/effect/culling assertions remain; measured frame intervals are not evidence of connected-world/hardware-wide/final art acceptance.",
-    "high": [
-      {
-        "view": "west-bank",
-        "calls": 216,
-        "triangles": 338165,
-        "medianMs": 16.7,
-        "p95Ms": 16.7
-      },
-      {
-        "view": "woodland-cut",
-        "calls": 202,
-        "triangles": 320761,
-        "medianMs": 16.7,
-        "p95Ms": 16.7
-      },
-      {
-        "view": "outer-fold",
-        "calls": 209,
-        "triangles": 331040,
-        "medianMs": 16.7,
-        "p95Ms": 16.8
-      }
-    ],
-    "low": [
-      {
-        "view": "west-bank",
-        "calls": 93,
-        "triangles": 85875,
-        "medianMs": 16.7,
-        "p95Ms": 16.8
-      },
-      {
-        "view": "woodland-cut",
-        "calls": 79,
-        "triangles": 75013,
-        "medianMs": 16.7,
-        "p95Ms": 16.8
-      },
-      {
-        "view": "outer-fold",
-        "calls": 83,
-        "triangles": 75782,
-        "medianMs": 16.7,
-        "p95Ms": 16.7
-      }
-    ],
-    "actualAttribution": "Existing draw diagnostic PASS12.9s; extend opt-in hook to separate actual color/shadow submitted triangles and assert their sum, without changing runtime/profiling clock. Updated diagnostic PASS12.3s/scoped lint passes. Each view body64162 color+64150 shadow; west-bank trees willow4512/63056, pine12180/49508, birch7308/46132 color/shadow. Terrain tiles768 color/no shadow; changing terrain tessellation does not target this cost. Keep actor/caster silhouettes and all art; any optimization needs current color/shadow equivalence and original budgets, not hiding actors or clipping off-screen casters.",
-    "appearance": "Root inspected current High and Low west-bank captures: gentle elevation/textured road/foliage remain visibly basic; bare-body preview is not equipped-character/final modern-art proof. Do not mark code-owned modern environments finished from unchanged16.7ms frame intervals.",
-    "artifacts": {
-      "directory": "/tmp/eidolon-179-raised-world-current-ZflCYb",
-      "highTraceSha256": "690ce0772afcc0fe359450370a3782bc88a8d8147b77491e0e8bda6db71f40b7",
-      "lowTraceSha256": "98c46b429f252c5c7b1b053e9aa35fdf86328a9088d7abee5848a67eec94f2b8",
-      "highWestBankSha256": "5d96da2a5518096131ee59264c7c6f4d79ecec80be2eb5f33cac219602bf42c2",
-      "phaseDiagnosticDirectory": "/tmp/eidolon-179-raised-world-current-ZflCYb/phase-draws"
-    },
-    "limits": "All browser sessions63391/55300/14520 terminal before06:37 scheduled native setup;4189 listener independently closed. No native measurement overlap, public rollout, freeze, art or1.87 acceptance. Full1.99 goal remains active."
-  },
-  "october7RaisedTerrainDeliveryAndBudgetGap": {
-    "source": "Ordinary main.go still constructs flat NewWorld; only -qa-terrain-elevation with explicit QA account allowlist selects the shared Earth elevation/outcrop profile. Older1.42/1.48 accepted flat-world receipts cannot establish delivery or current performance of the raised profile. Keep promotion a mandatory remaining1.87/code-owned environment task, not merely optional art polish.",
-    "newVerification": "Add opt-in realRAF120-sample profiling to existing elevation preview; standard CI does not pay for the profile. Six road/quality samples use the original populated-world targets: High20/33.4ms median/p95,350calls/250000triangles; Low33.4/50ms,200calls/85000triangles. Native SystemChrome AMD/Vulkan run actually FAILS both cases on all six triangle limits. Existing movement/jump/picking/grounding/effects/culling-equivalence checks remain intact; no budget relaxed or geometry changed.",
-    "high": [
-      {
-        "view": "west-bank",
-        "calls": 227,
-        "triangles": 361715,
-        "medianMs": 16.7,
-        "p95Ms": 16.8
-      },
-      {
-        "view": "woodland-cut",
-        "calls": 218,
-        "triangles": 353101,
-        "medianMs": 16.7,
-        "p95Ms": 16.7
-      },
-      {
-        "view": "outer-fold",
-        "calls": 226,
-        "triangles": 364280,
-        "medianMs": 16.7,
-        "p95Ms": 16.8
-      }
-    ],
-    "low": [
-      {
-        "view": "west-bank",
-        "calls": 100,
-        "triangles": 101235,
-        "medianMs": 16.7,
-        "p95Ms": 16.7
-      },
-      {
-        "view": "woodland-cut",
-        "calls": 89,
-        "triangles": 93223,
-        "medianMs": 16.7,
-        "p95Ms": 16.8
-      },
-      {
-        "view": "outer-fold",
-        "calls": 96,
-        "triangles": 100832,
-        "medianMs": 16.7,
-        "p95Ms": 16.7
-      }
-    ],
-    "diagnostic": "One additional High-only draw-hook scope PASS15.0s outside timed samples, reusing populated-world instrumentation. AuthoredFighter contributes128312 submitted triangles/12color+11shadow draws at each road view. Earth tree groups contribute substantial shadow geometry; water/air groups also appear in submitted counts. These are elapsed/submission diagnostics, not proof of a production culling bug, GPU-cost attribution or permission to hide scenery/lower actor detail. No speculative tile/mesh/fixture change adopted.",
-    "artifacts": {
-      "directory": "/tmp/eidolon-179-raised-earth-profile-jSRPDL/results",
-      "highTraceSha256": "fc0a67af437dfa22187f47e8cf28ad9661fd74fbb60a8844db6f9cb6bd2e7741",
-      "lowTraceSha256": "6cd22ee54297ad18d43adc469afe31af23ed00b32f8fd8835192b36a56ef9687",
-      "highWestBankImageSha256": "d1f13296b66ae4b00c0e2aa7f57ec732dc4510c7cf6ef754ea6e7533a4eeef37",
-      "diagnosticDirectory": "/tmp/eidolon-179-raised-earth-draws-NlstRS/results"
-    },
-    "limits": "Inspected High bank capture: broad ground/road variation and simple vegetation remain visibly unfinished; a naked prepared body is not equipped-character appearance proof. Preview is generated scenery plus one actor, not connected combat, complete world or real-phone acceptance. Both browser sessions terminal and loopback4189 closed before scheduled03:57 native launch; no runtime/API/driver/harness/production change. All F gates and full1.99 goal remain open."
-  },
-  "october7ActualRepositoryPolicyReview": {
-    "observedAt": "2026-10-07T03:27:02Z",
-    "readOnlyEvidence": "Authenticated GitHub repository APIs return master protected=false at c7c2c526 and rulesets=[]. Actions enabled/allowed_actions=all; default_workflow_permissions=read and can_approve_pull_request_reviews=false. github-pages environment has branch_policy only, custom policies enabled, exact allowed branchmaster. No repository/settings mutation or secret reads.",
-    "currentWorkflow": "Hosted PR checks remain separated from ordinary push-only native/public deployment jobs. Current predeploy-character also allows full_stabilization manual input without a branch guard; prepared1.82 explicitly restricts the repository, event and master/main refs. Postdeploy currently depends on push-only deployment jobs; prepared1.82 adds its explicit matching guard. Prepared fixes are not installed in current live1.78 or this1.79 candidate.",
-    "remaining": "F2/1.82 cannot claim protected release credentials and branches complete from workflow source alone. Owner-selected branch/ruleset and workflow-change review policy must accommodate authorized agents and operators; no automatic protection, required-review/check setting or access revocation. Default read tokens and a master-only Pages branch rule do not prove overall release trust. Revalidate actual settings at ordered1.82 acceptance."
-  },
-  "reviewBase": "Current isolated1.79 worktree: unpublished49011e16 now has actual changed-API100 mixed/raid/event/town and independent-save PASS581.88s, with112882ms common interval. Server phases remain41.74ms over33ms; a subsequently changed same-cell grid-lock candidate is not covered by that PASS. Current41db client render proof remains. This preparation is not freeze/publication/headroom acceptance.",
-  "orderedDependency": "Accepted1.78 c7c2c526/CI37543824180 is latest verified live: all ten jobs successful, exact public identities/runtime/readiness and actual independent monitor checked. Own1.79 native/headroom/release acceptance remains open. Do not skip that prerequisite or relabel this snapshot as a frozen1.80 build.",
-  "resolvedStaleClaims": [
-    "Roadmap starting-position row still called the physical Dark Realm portal missing. Current world_locations.go/world.go spawn the canonical portal; exact accepted1.12 receipt14290d22 records (28,235), personal gates/plaza/map and Guide fallback. Correct the row without claiming new portal work or final modern-art acceptance.",
-    "Promise V02 still requested the first actor pilot. Delivery and accepted1.58.2 public receiptff303dc2 show four rigged class bodies,252 equipment models/four motion banks with exact-source checks. Update to delivered integration while preserving final art/whole-catalog licensing gates; no repeated pilot request or model rewrite.",
-    "Roadmap/beta handoff still called hosting/alert ownership unanswered. Record owner's actual approval of current self-hosting/Postmark/no new paid service/existing admin recipients and explicit outage settings. Actual1.78 service acceptance, numeric budget/SLA/staffing and off-machine coverage are not inferred.",
-    "V03–V06 still described early materials/population/atlas/casino-map foundations as missing or only local. Current source has eight distinct places per elemental realm (32 unique IDs) and eight optional readings. Existing exact accepted1.11/1.14/1.15/1.16/1.17/1.18 receipts establish their original technical/public scope; reconcile foundations, not final exploration/modern-art/mobile/capacity quality.",
-    "C10 still schedules an undelivered vendor/wardrobe catalog. Current source and accepted1.67 public receipt8cbf0c1c establish the owned fitted-base palette catalog and owner-bound UI. Final unique-art/catalog quality and commercial decisions remain open; no new purchase, EP conversion or power reward."
-  ],
-  "gateReview": [
-    {
-      "id": "F3-current-qualification-update",
-      "status": "named-workload-and-original-budget-passed-publication-open",
-      "evidence": "October7 root-consumed57874/current c323 driver8c API9a harness original full100 PASS584.92s/common112958ms/100 independent fresh saves. Mixed80, event4/all4 waves and raid5/assault/three repair waves/13 checkpoints complete. Original budget checker PASS18.847513ms versus33ms with3012/3011 samples. Exact hashed evidence/process/drain/disposable cleanup in current1.79 receipt supersedes prior pending current trial below. Own1.79 CI/public acceptance, shared-host headroom/storage, service objectives and broader freeze/beta/launch gates remain open; no general capacity certification."
-    },
-    {
-      "id": "F1",
-      "requirement": "Mandatory features reviewed against promise register; remaining work stabilization/identified launch evidence, not missing foundations",
-      "status": "incomplete",
-      "evidence": "Correct demonstrated obsolete portal/actor-pilot/world-population/atlas/casino-map/vendor claims using current source and accepted exact-release receipts. Retain full Q/D/V/C/G promise inventory and modern-art contract; this remains partial reconciliation, not all-row acceptance. Later staged compatibility/operations changes and final integrated art/pacing still require their own scope."
-    },
-    {
-      "id": "F2",
-      "requirement": "Threat model, serious exploits and authority/data boundaries reviewed",
-      "status": "retained-targeted-evidence-not-final-freeze-review",
-      "evidence": "Current account-bound/schema25 source and accepted1.71–1.76 security/privacy/valuable-operation receipts remain exact-source scoped. Changed-source final review remains; no broad no-exploit certification."
-    },
-    {
-      "id": "F3",
-      "requirement": "Population, hosting/service budget and alert owners chosen with named capacity workload/limits",
-      "status": "named-current-workload-qualified-final-operations-decisions-open",
-      "evidence": "Owner plans up to100 beta players and approved existing hosting/Postmark/admin outage recipients/settings; exact1.78 public/CI/installed monitor acceptance is complete. Current c323 driver/unchanged8c API original full100 PASS584.92s/common112958ms/all100 independent fresh saves, all event members and full five-player Earth assault/checkpoint/manual repair complete. Original unchanged phase checker PASS18.847513ms versus33ms; separate sample counts3012/3011 retained. This supersedes older failed current trials, preserved as historical evidence in1.79 receipt. Client casino/raid rendering is separately scoped, not whole-game/device acceptance. Own corrected1.79 CI37600167508/public checks, shared-host/storage/headroom, supported-service objectives and off-machine incident coverage remain open. No general100-player capacity, SLA or final freeze approval."
-    },
-    {
-      "id": "F4",
-      "requirement": "Privacy/retention/admin/moderation/recovery have owners and implementation paths",
-      "status": "implementation-paths-retained-final-operations-review-open",
-      "evidence": "Reviewed exports/removal requests retain current settings; Postmark recovery and durable role/audit/moderation paths remain. No erasure, player grant, retention/provider setting change or unsupported compliance promise. Final support staffing/retention/restore objectives remain explicit later decisions."
-    },
-    {
-      "id": "F5",
-      "requirement": "Launch content/dependency set frozen with documented exception policy",
-      "status": "not-frozen",
-      "evidence": "Record inventory hashes below only as current source snapshot. No lock, feature exclusion, dependency upgrade or owner release/beta go/no-go inferred. Remaining catalog/license review and stabilization candidates must be reconciled before actual freeze."
-    }
-  ],
-  "inventorySnapshotNotFreeze": {
-    "package-lock.json": "33fb3f2af672eff7d1e90a4dee5456c04f6efbcf162b25b70553382e3d4ea793",
-    "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
-    "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
-    "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f"
-  },
-  "october7PackagedNoticeReconciliation": {
-    "scope": "Source/package verification only, while native66380/supervisor572460 genuinely waits for03:17. No native restart, heavy test/browser, upstream browsing, license choice or runtime change.",
-    "correction": "Fighter PROVENANCE referred to an absent LICENSE-THREE.txt/viewer runtime. Its delivered directory has only character exports and MakeHuman source notices. Correct the stale statement to the actual separate browser-runtime notice, without changing asset sources or relicensing project-specific additions.",
-    "evidence": "package.json pins Three0.181.2; prepare-client.mjs copies node_modules/three/LICENSE unchanged to vendor/three/LICENSE. Both actual local files SHA256bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601 match. Current ci.yml line413 publishes the complete vendor directory, including that notice.",
-    "limits": "This proves one supplied notice's build/publication path, not upstream-source legal validation, full dependency/asset catalog coverage, owner licensing signoff, final art or F1/F5 completion. Existing four class CC0/provenance files remain; no new license text or commercial rights invented. No doc-only release push."
-  },
-  "october7GuideAndActorPromiseReview": {
-    "D06": "Inspect current UIManagerDungeon.js/dungeonProgression.js and authoritative dungeon_progression.go: Earth30/Water60/Fire70/Air70/Nexus100. Fresh choices filter by family floor/current server values/player band; underlevel choices are explicit disabled placeholders. Qualified existing runs retain their original saved band; current server still checks family level and story on actual resume. No policy bypass or claim that lower-level characters can return to a higher-level family.",
-    "verification": "Add only eight focused menu regressions: three fresh-family filters/payloads, three underlevel disabled/no-send cases, newer-server floor and qualified legacy saved-band continuity. Full two affected menu/rule suites PASS26 tests4.011s on Node24.18.0. No client runtime, 3D source, server, native driver or thresholds changed; no repeated hardware or100-client run.",
-    "V01": "Promise register's local-pauldrons statement predates delivered class/item assets. Accepted exact1.58.2 sourceff303dc2bbe221533f6c07fd53a77a13f522c48c/CI36920070557 establishes scoped public integration, alongside current rig/fit evidence. Correct status to delivered technical integration/final art gap, retaining A/W modern-art, readable environments, fit, device and human-quality requirements.",
-    "remaining": "These two-row corrections and focused tests do not accept the whole promise register, F1, final map/art quality or1.80. Owner project/code/art license preferences requested asynchronously once; no license grant selected. Native66380/supervisor572460 remains the same genuine pending03:17 timer, with root terminal/cleanup ownership."
-  },
-  "october7PreparedDeploymentTrustRevalidation": {
-    "scope": "Read-only revalidation of prepared1.82 source2879d399 while native66380/supervisor572460 remains live. No future commit selected into1.79, actual pin installation, key rotation, credentials, repository-setting change or deployment.",
-    "evidence": "Current r7-server local public /etc/ssh/ssh_host_ed25519_key.pub yields SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE. Independently hash the public key blob in prepared1.82's SSH_KNOWN_HOSTS; it matches that trusted local key. One bounded5s ED25519 scan of ssh.mendola.tech offers exactly one matching key. The trusted local file, not network discovery, supplies identity trust; the prepared source retains StrictHostKeyChecking=yes and no runtime keyscan.",
-    "limits": "An included sshd configuration fragment is unreadable without elevation; no daemon-wide configuration certification. Prepared1.82 already recorded this trust source, so do not ask the owner to provide a key already verified or describe it as unchosen. Its actual ordered CI/deployment acceptance, branch/workflow protection and runner-access policy remain open. No blanket F2/security approval.",
-    "deploymentStorage": "Read-only review confirms current1.79 builds API and enabled monitor before schema preflight. A schema upgrade invokes the retained consistent image/database/journal backup before migration. About1.27GB root availability and a10MB source context do not establish safe peak Docker/backup storage. No actual build, dump, production stop or shared-cache deletion performed; owner cleanup approval remains unanswered."
-  },
-  "october7PreparedReplicationBoundaryReview": {
-    "source": "49011e16 candidate remains unpublished and not accepted by prior6c native results. Source review covers state_serialization.go, state_delta_frame.go, state_public_encoding.go and new state_frame_contention_test.go; it supplements retained focused race2.188s, not a penetration test or fullF2 approval.",
-    "membership": "World-produced detached recipient maps are assembled before worker launch. Prepared caches key by actual detached actor pointer, not playerID; membership is never changed by workers or foreign lookups. Actor-local mutexes protect lazy snapshot/comparison/encoding values. Cache lifetime is one joined broadcast; immutable client history may survive intentionally, but encoded public messages do not become a cross-frame actor cache.",
-    "privacy": "forRecipient identifies an owner using the trusted recipientID and detached Player actorID under the actor lock. Owner encoding bypasses the shared public cache. Non-owner player messages zero Gold/Experience/MaxExperience/SkillPoints/TalentPoints and remove unlocked skills/talents, runes/ranks and quests in the new encoded message, never mutating source actors. Inventory, EP and account records stay outside these entity snapshots. Visible identity/spec/equipment/combat/animation fields remain available as before.",
-    "retainedVerification": "Existing concurrent public-owner privacy/proto marshal and distinct/stale/reset-baseline/history tests still pass in scoped race checks. New tests cover independent actor work with equalIDs, prepared and lazy paths, foreign lookup without membership mutation, and owner bypass before public encoding. This does not prove all network/account/privacy boundaries or current100 gameplay acceptance.",
-    "inventory": "Direct October7 hashes match all four current recorded inputs:package-lock.json,server/go.mod,server/go.sum and authored equipment manifest. This is a reproducible source snapshot, not a content/license lock, dependency upgrade or owner freeze/beta go/no-go."
-  },
-  "changedAuthorityBoundaryReview": {
-    "scope": "Read-only current1.78 monitor/diagnostic changes retained in isolated1.79; source review supplements retained focused race evidence, not a new penetration test or complete F2 approval.",
-    "administratorDiagnostics": "admin_console_handlers.go routes MsgAdminService through closed-field decoding, authenticated current-character connection and durable HasAdminRole. Privileged results require the durable audit path and recheck role/session after query/audit IO. The handler only reads typed health; no grant, movement or configuration mutation. admin_service_test.go retains denied/revoked/no-private-data/foreign-field coverage and authenticated1024-byte/burst5 policy assertions.",
-    "publicAggregateData": "main.go healthResponse and internal/operations/signals.go expose fixed process-level numeric/bool aggregates, not account/player/currency amounts, raw errors, filenames or arbitrary labels. Eight groups were independently checked against exact live1.78 at23:27:28UTC. Public availability of these aggregates is deliberate; this is not proof of privacy across unrelated APIs.",
-    "probeBoundary": "internal/operations/readiness.go accepts only exact /healthz without userinfo/query/fragment, HTTPS or loopback HTTP, finite request deadline, redirects refused and32KiB response cap. Production command uses explicit host loopback. Optional storage/pressure limits remain off; probe configuration is operator-supplied, not a player input.",
-    "mailBoundary": "internal/operations/postmark.go uses a fixed verified-HTTPS Postmark endpoint with redirects refused,10s timeout, bounded8KiB receipt and a shared1m attempt interval. Alert encoding accepts fixed incident/cause enums and typed samples, ignores caller delivery text, and never includes provider tokens/recipient addresses/raw peer errors. Existing provider/inbox proof remains one separately approved test; no further send or production failure injection occurred.",
-    "serviceBoundary": "Actual independent nonroot65532/read-only/capability-free/no-new-privileges monitor, host loopback networking, journald retention and mode600 private environment are recorded in the1.78 installation receipt. Host networking intentionally permits local readiness access and does not provide off-machine/host-failure coverage. No new paid service, retention change or public listener.",
-    "remaining": "This review does not close all exploit/data-boundary promises. Final content/dependency inventory, cross-feature authority/recovery reconciliation, representative capacity and owner operational/commercial decisions remain separate gates. Do not infer F freeze or launch security certification."
-  },
-  "limits": "Read-only source/receipt review and documentation corrections only. No new test/benchmark, asset/model/dependency/runtime change, production mutation, access restriction, purchase feature, capacity/F/CB/1.99 completion or waiver of manual review. User whole-campaign/phone feedback remains deferred, not passed.",
   "october8AcceptedSourceReconciliation": {
     "sourceCommit": "f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",
     "liveReceipt": "2026-10-08-release1-79-2-public-checks.json",
@@ -396,5 +45,178 @@
     "catalogContinuity": "Assets, UI, authoritative game and content trees remain exact October7 baseline identities. Changed data is only qualified worldFoliage batching; changed script is isolated-QA version default. Package roots change release versions, not dependency resolution; Go/asset manifest hashes unchanged. Source catalog counts are not a publisher allowlist or license approval.",
     "externalState": "Read-only GitHub API reports master protected=false and no rulesets. Native QA source guards now published; repository/runner settings unchanged. Hosted SSH key setup passes but network connection times out, retained as failed CI rather than green deployment.",
     "remaining": "F1–F5 not accepted: original65 requirements, final modern all-family art, compatible raised production delivery, rights/notices, service/budget/support/recovery choices and human launch evidence remain. No dependency/content freeze or1.80 version inferred; future qualified material/terrain/support work remains staged for selective ordered integration."
-  }
+  },
+  "october8PendingVisualSuccessor": {
+    "sourceCommit": "b13dd3af0f780031b828c3ed2d2a5b5bd78d5b2c",
+    "version": "Alpha 1.79.3",
+    "ciRun": 37734583404,
+    "status": "pushed-current-integration-qualified-own-ci-and-public-acceptance-pending",
+    "receipt": "2026-10-08-release1-79-3-checks.json",
+    "sourceContinuity": "Current read-only verification:7 accepted source trees/counts and6 input hashes match the exact f9 Git blobs. Assets, UI, authoritative game and content trees are also unchanged in b13. Art changes are qualified components, not a new authority, content or economy policy.",
+    "externalState": "Current read-only GitHub API still reports master protected=false and no rulesets. No repository/runner settings changed.",
+    "remaining": "Pending own release acceptance, F1-F5, all-family modern-art and raised-world delivery, rights review, owner operations/recovery decisions and final human launch evidence. Existing local outage alerts are running with the approved recipients/settings; that does not establish public or off-machine coverage. No freeze approval inferred."
+  },
+  "schema": 1,
+  "milestone": "1.80 launch feature freeze",
+  "status": "initial-source-and-promise-reconciliation-not-frozen-or-published",
+  "october8NativeRunnerAdmission": {
+    "source": "Current1.80 preparation b736ae46 before this change still allowed full_stabilization manual input without a trusted repository/ref guard. Select only reviewed9e3bb9c8 guards/test logic into current workflow; no old authority/version or unrelated changes.",
+    "baseline": "Evaluate real current predeploy condition against canonical-repository manual feature-branch full=true context; returns true, required false. Two updated tests FAIL/fourPASS0.368s. No actual untrusted dispatch or host code execution.",
+    "change": "Native predeploy requires canonical aeml/eidolon repository, master/main ref and push or explicitly enabled manual full run. Live credentialed job explicitly requires canonical production push as well as its successful deploy dependencies. Ordinary hosted checks, Pages concurrency and trusted nightly soak remain unchanged.",
+    "qualification": "Bounded-VM actual-condition evaluation covers60 repository/event/ref/full-boolean combinations for predeploy/live/nightly plus actual scheduled-soak control. Affected runner/host-pin/executable-checkout suites PASS14/0.988s; scoped diff/whitespace pass. Test uses common exact-literal/boolean subset and does not simulate all GitHub expression/admission semantics.",
+    "limits": "Prepared only, not pushed or deployed. Source guards do not establish branch/ruleset protection, workflow review, authorized dispatchers or runner-group access; no repository admin setting mutation. Public SSH reachability and original failed37709850553 remain independent. F1–F5/full goal still unaccepted."
+  },
+  "currentStatePrecedence": "October8 guarded1.79.1 delivery and trust preparation above/below supersede historical pending/earlier baseline statements. Exact public receipt2026-10-08-release1-79-1-public-checks.json now present after owned release-branch merge. Source-only1.80 guards are not runtime delivery or F1–F5 freeze acceptance; all65 original promise rows remain in scope.",
+  "october8DeploymentTrustStabilization": {
+    "baseline": "Exact c8ff2cd668213a3cf53cd536b7067bd3404d0437 Alpha1.79.1 deployed through the normal guarded local script after hosted SSH setup failed. Matching public frontend/backend identities,7 rewritten runtime files and real anonymous Chrome2checks pass. Original GitHub run37709850553 remains failed and credentialed live job skipped; exact receipt retained on recovered current release branch.",
+    "trustedIdentity": "Re-read only local public /etc/ssh/ssh_host_ed25519_key.pub; SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE matches the previously prepared2879d399 pin. No key rotation, private-key read or unverified network trust. Current public SSH scan fails; pinning cannot repair routing.",
+    "candidateChange": "Selectively bring the reviewed public ED25519 pin and explicit StrictHostKeyChecking=yes into current candidate workflow, replacing runtime discovery. Add10s/1-attempt connection bounds and15s/2-count server-alive checks. Preserve outgoing exact-commit checkout, private credentials and hosted/self-hosted queue separation. Document guarded local fallback without claiming a failed CI run green. No1.82 wholesale merge or future version labels.",
+    "regression": "Both new current-workflow host-identity/connection-policy tests fail before change: missing pin and strict/bounded outgoing command. After change, these plus actual executable checkout and runner-separation suites PASS13 in0.946s; whitespace passes. Initial test invocation lacked the restored worktree dependency link, then existing dependencies linked without installation or lock changes; do not count missing module as regression proof.",
+    "remaining": "Prepared source only, not pushed or accepted as new workflow. Actual external SSH access, repository protections/release trust and broader1.82 operations remain separate; no router/firewall/provider setting change. All F1–F5 statuses remain unaccepted and full modern-art/roadmap scope retained."
+  },
+  "october8CurrentBoundaryReview": {
+    "baseline": "Current candidate c8ff2cd668213a3cf53cd536b7067bd3404d0437 pushed; its own CI37709850553 is still in progress, monitored by authorized Luna. Do not substitute the accepted1.79 b5c3981e baseline or infer candidate deployment acceptance.",
+    "origin": "Three additional real-handshake cases exercise bracketed non-IPv6 authorities using trusted domain, localhost and IPv4 spellings. All are already rejected by the current runtime: complete existing handshake suite PASS race1.054s. Retain the new cases as future parser-regression coverage; no reproduced bug or runtime correction is claimed, and no second unchanged admission/protocol rerun is needed.",
+    "party": "Read actual party_kill_credit.go and retained party_kill_credit_test.go/party_chronicle_credit_test.go. Eligibility includes downed players still present, excludes disconnected/foreign instances, uses actual dungeon/raid types for whole-instance credit, and keeps server-owned110-unit two-default-screen radius for open-world parties. The four-role reward fixture already covers a downed healer with no damage contribution and individual manual Wizard turn-ins. Existing source already fulfills this specific promise; do not rerun a long dungeon to rediscover it or infer earned campaign/feel proof from prepared fixtures.",
+    "privacy": "Read actual RecoveryLinkBoot.js blocking head script and analytics/game.js initialization path. Private recovery/download markers suppress deferred analytics and scrub the private URL before module boot; failure to scrub keeps private-page analytics disabled. This preserves accepted recovery/privacy source scope, not independent GA4 provider-event, earlier collection or compliance approval.",
+    "inventory": "Re-read all65 distinct promise IDs with current implementation/status rows. Preserve modern art/raised-world, human pacing/device, external networking, rights/commercial and remaining operations issues; counts or retained rows do not establish every foundation or F1–F5 acceptance. Correct stale V03 six-failing-view wording and stale operations-monitor publication state using recorded accepted/scoped evidence only.",
+    "remaining": "F1–F5 remain unaccepted. This is source-specific review and narrow additional parser coverage, not a new release, content/dependency freeze, license choice, staffing/SLA, backup destination, provider setting, full art or goal completion. No production writes, automatic cleanup, extra email or long campaign/native/cohort test."
+  },
+  "october7CatalogCandidateNotFreeze": {
+    "sourceCommit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+    "method": "Read exact accepted Git trees/blob bytes, not mutable working-directory caches. Git object identities are SHA1; separate input byte hashes are SHA256. Counts include source assets and tests/non-shipped files, not a publisher allowlist or license approval.",
+    "trees": {
+      "assets": {"gitTree": "70d9114c9e6bb19a386d740c661e45cd97317f31", "trackedFiles": 580},
+      "src/art": {"gitTree": "76b686693c3550c25ee66da5ecd91a715b5b76d0", "trackedFiles": 111},
+      "src/data": {"gitTree": "17268396c2a5518236760d606e1a006633c0c47c", "trackedFiles": 28},
+      "src/ui": {"gitTree": "9ee5a7f1d8722722ccfc260da1d9c5b8ee771b95", "trackedFiles": 99},
+      "server/internal/game/content": {"gitTree": "c68d6a8e5f2721336d4e315ae77f0cd8fa9c71fb", "trackedFiles": 12},
+      "server/internal/game": {"gitTree": "45fb04acbb93444c9ff0ce92b8bcd8e75363cd24", "trackedFiles": 550},
+      "scripts": {"gitTree": "18a7a2bd5185c9312122d6680497df65fe55a836", "trackedFiles": 38}
+    },
+    "inputSha256": {
+      "package.json": "fe064ebf2d83247581b3126f8a642f86a07caf8e21d096f64aeecd94cfccfd8a",
+      "package-lock.json": "33fb3f2af672eff7d1e90a4dee5456c04f6efbcf162b25b70553382e3d4ea793",
+      "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
+      "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
+      "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f",
+      ".github/workflows/ci.yml": "ce2a95c5fa45364c9d16695f6c5fd7af81441af5af298d858c9270bf1e9d26f7"
+    },
+    "limits": "Preserve this accepted baseline for final catalog comparison. Local origin correction changes server/main.go; later qualified art/compatibility/trust candidates must appear as reviewed exceptions in the final freeze revision. No dependency update, catalog exclusion, unpublished1.87 import or content lock inferred."
+  },
+  "october7OriginAndThreatLedger": {
+    "baseline": "Accepted1.79 b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+    "reproduction": "Real WebSocket handshake regressions failed on accepted source: host-only parsing admitted non-web schemes, resource URLs, userinfo, invalid ports and first-of-multiple Origin headers. This is an admission parsing gap, not demonstrated account/role bypass; native clients may omit Origin and still require authentication.",
+    "correction": "Require one nonempty HTTP(S) scheme/host/optional-valid-port tuple when Origin is provided. Reject userinfo/path/query/fragment and empty/out-of-range ports. Retain exact existing allowed host catalog, local development ports and absent-Origin native compatibility. No credential, CORS/domain, role, item or saved-data policy changes.",
+    "verification": "Original two handshake suites failed before correction. Scoped race-enabled origin, WebSocket admission and inbound protocol/policy suite passed1.122s; no long100/native/provider rerun. Local only, not yet deployed.",
+    "ledger": "2026-10-07-release1-80-threat-and-exception-ledger.md",
+    "remaining": "Twelve adversarial boundaries reviewed with actual controls and retained limits; nine named remaining issues preserve deployment trust, operations/recovery decisions, modern art/raised terrain, rights and human evidence. This is not penetration certification or F1–F5 freeze acceptance."
+  },
+  "october7OrderedPrerequisite": {
+    "acceptedLiveVersion": "Alpha 1.79.0",
+    "commit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
+    "ci": 37600167508,
+    "receipt": "2026-10-07-release1-79-public-checks.json",
+    "effect": "Ordered1.79 publication prerequisite now passed. Original100 qualification retained. This supersedes earlier in-progress publication text, not remaining F1–F5 freeze, art, operations, licensing or human acceptance gates."
+  },
+  "october7CurrentRuntimeTrustReview": {
+    "source": "Read actual production-runtime diff from accepted1.78 c7c2c5260dd0ba806e34d81cdeec305dd2ccb3ae to corrected1.79 b5c3981e060d6dea3ef50c9c2b4abb37999856db. Exclude load-driver/test-only changes from claims about production authority. No implementation patch or new long test follows this review.",
+    "credentials": "Current login admission keeps the existing shared hash-work slots and account retry budget. Only sixteen login waiters may wait at most250ms; overflow/timeouts return busy before spending retries. Acquired work retains sync.Once release. Dispatch checks actual closed/retired transport after admission, releasing its slot and refusing delayed storage work. Other credential operations retain immediate admission. Client-side forged account identifiers/administrator claims do not become session authority.",
+    "casino": "The operation-local player roster is collected under World.Mu and includes players from all scenes. Live actor locks still determine seat/session/connection epoch/readiness, and invalid/dead/disconnected/foreign-scene seats remain pruned. Public preparation uses the existing opaque roster revision; membership indexing does not authorize a wager, reveal private seat tokens or replace the existing saved wallet/settlement gates.",
+    "world": "Structured spatial keys retain exact instance plus signed integer cells; all/player indexes change under one Grid.Mu in Add/Remove/cross-cell Update. Same-cell updates avoid the grid lock but do not cache positions. Scene transfers retain explicit Remove/Add contract. Enemy candidates are admitted from the frame-start identity roster, not arbitrary grid actors; every positive threat is included independent of spatial range, ties retain prior order. Live membership/life/scene/stealth/safe-zone/pursuit/range checks still determine eligibility. Grid lock is released before actor locks. Only inert fences skip frame work; they remain authoritative spatial/replicated entities. Worker count respects actual GOMAXPROCS and all workers join before frame-local roster retirement.",
+    "replication": "Prepared caches key by detached actor pointer, not reused playerID, and freeze membership before recipient workers. Foreign lookups cannot mutate membership or borrow another actor's encoding. Owner messages bypass public caches; non-owner progression is stripped from new protobuf objects. Original visibility/session/current-character checks and recipient-owned prior queued baselines remain. Shared immutable snapshots are scoped to one joined broadcast; no live world/player input becomes a public cache key.",
+    "persistence": "Shutdown closes admission and periodic/world work, resolves PvP, retires connections, joins character work and makes session history durable before final characters. Final journals overlap only across independent account locks, with four workers and a full join before any Mongo commit. Any journal failure keeps shutdown waiting rather than acknowledging missing data. Mongo failure stops commits and retains remaining journals for next startup. Periodic saves stop starting new work during drain; late rewards/disconnected characters are still captured in the final pass. The original current100 proof independently confirms all100 fresh saved outcomes and ordinary eight-phase drain; it is not a whole-host power-loss/off-machine restore proof.",
+    "retainedEvidence": "Current1.79 receipt preserves focused credential/casino/spatial/target/static-worker/frame-privacy/shutdown tests and exact current API/hash/native qualification. Original CI37596856794 Server Go passed; corrected CI37600167508 remains separately required and was observed running. No old CI is substituted for the corrected release gate. Existing1.71–1.78 account/value/privacy/monitor evidence retains its original scopes, not blanket penetration certification.",
+    "remaining": "Changed-runtime review found no new authority bypass in these paths, not proof of no exploits elsewhere. Actual unprotected master/no-ruleset policy, prepared1.82 workflow/SSH trust hardening, operator recovery/service objectives and full launch threat/exception ledger remain open. Do not mark F2/F freeze complete or install future guards without their ordered integration/public acceptance."
+  },
+  "october7LaterOwnerRequirementCoverage": {
+    "source": "Corrected1.79 b5c3981e060d6dea3ef50c9c2b4abb37999856db is pushed; its own CI37600167508 was independently observed in progress with all five initial jobs actually running. Production acceptance remains1.78 until exact new CI/public checks succeed. No runtime change accompanies this inventory update.",
+    "change": "Add N01–N12 to the original53 promise register, preserving later full single-branch kits, delivered four-class/item/motion imports, class/offhand/dual-cadence authority, type/eligibility tooltips, dressed Ilyra, stable Forge stat order, bulk-selling/nonblocking errors, filtered durable admin history, final stash/three-second jump, emailed recovery, reviewed privacy paths and approved alerts. Correct obsolete O03 current1.10.2 wording; the full register now has65 distinct requirements, not only its original53.",
+    "evidence": "Read current ClassEquipmentRules/ForgeStatOrder tests and actual EquipmentSlots imports, authored weapon-motion mirroring, server entity2/3 cadence, world stash/Forge/quest-house coordinates/rotations, jump authority duration tests, admin journal-before-acknowledgement path and current AdminUI filtering. Retained exact release/connected/provider/NPC/privacy receipts linked per row. This is source/retained-evidence review, not new gameplay/native execution or independent provider-policy validation.",
+    "verification": "Read-only Node24 validation PASS65 distinct requirement IDs/32 existing local evidence links and receipt JSON; git diff --check PASS. No src/server/index/package differences from actual CI b5c3981e. This checks inventory/link consistency only, not feature behavior or acceptance.",
+    "limits": "Full F1 reconciliation and F2–F5 approval remain open; expanded coverage cannot accept human feel, final modern art, real-device feedback, license rights, whole-host coverage or operations objectives. Later staged1.87 leaf/rock improvements remain unpublished and do not qualify current1.79 or freeze the launch set."
+  },
+  "october7ChangedFoliageRaisedProfile": {
+    "source": "Current649e checkout has883 all-realm foliage cell changes relative to the earlier raised-profile failure. Rerun only the affected optional raised-Earth profile; public main remains flat and placement/physics/movement/effects/save promotion remains mandatory1.87 work.",
+    "result": "Actual native SystemChrome AMD/Vulkan two-case profile FAIL: all3 High triangle limits remain exceeded; Low west-bank also exceeds85000 by875, other2 Low views pass. All original median/P95/draw/triangle limits retained, no density/geometry/shadow/art quality downgrade. Functional picking/jump/grounding/effect/culling assertions remain; measured frame intervals are not evidence of connected-world/hardware-wide/final art acceptance.",
+    "high": [{"view":"west-bank","calls":216,"triangles":338165,"medianMs":16.7,"p95Ms":16.7},{"view":"woodland-cut","calls":202,"triangles":320761,"medianMs":16.7,"p95Ms":16.7},{"view":"outer-fold","calls":209,"triangles":331040,"medianMs":16.7,"p95Ms":16.8}],
+    "low": [{"view":"west-bank","calls":93,"triangles":85875,"medianMs":16.7,"p95Ms":16.8},{"view":"woodland-cut","calls":79,"triangles":75013,"medianMs":16.7,"p95Ms":16.8},{"view":"outer-fold","calls":83,"triangles":75782,"medianMs":16.7,"p95Ms":16.7}],
+    "actualAttribution": "Existing draw diagnostic PASS12.9s; extend opt-in hook to separate actual color/shadow submitted triangles and assert their sum, without changing runtime/profiling clock. Updated diagnostic PASS12.3s/scoped lint passes. Each view body64162 color+64150 shadow; west-bank trees willow4512/63056, pine12180/49508, birch7308/46132 color/shadow. Terrain tiles768 color/no shadow; changing terrain tessellation does not target this cost. Keep actor/caster silhouettes and all art; any optimization needs current color/shadow equivalence and original budgets, not hiding actors or clipping off-screen casters.",
+    "appearance": "Root inspected current High and Low west-bank captures: gentle elevation/textured road/foliage remain visibly basic; bare-body preview is not equipped-character/final modern-art proof. Do not mark code-owned modern environments finished from unchanged16.7ms frame intervals.",
+    "artifacts": {"directory":"/tmp/eidolon-179-raised-world-current-ZflCYb","highTraceSha256":"690ce0772afcc0fe359450370a3782bc88a8d8147b77491e0e8bda6db71f40b7","lowTraceSha256":"98c46b429f252c5c7b1b053e9aa35fdf86328a9088d7abee5848a67eec94f2b8","highWestBankSha256":"5d96da2a5518096131ee59264c7c6f4d79ecec80be2eb5f33cac219602bf42c2","phaseDiagnosticDirectory":"/tmp/eidolon-179-raised-world-current-ZflCYb/phase-draws"},
+    "limits": "All browser sessions63391/55300/14520 terminal before06:37 scheduled native setup;4189 listener independently closed. No native measurement overlap, public rollout, freeze, art or1.87 acceptance. Full1.99 goal remains active."
+  },
+  "october7RaisedTerrainDeliveryAndBudgetGap": {
+    "source": "Ordinary main.go still constructs flat NewWorld; only -qa-terrain-elevation with explicit QA account allowlist selects the shared Earth elevation/outcrop profile. Older1.42/1.48 accepted flat-world receipts cannot establish delivery or current performance of the raised profile. Keep promotion a mandatory remaining1.87/code-owned environment task, not merely optional art polish.",
+    "newVerification": "Add opt-in realRAF120-sample profiling to existing elevation preview; standard CI does not pay for the profile. Six road/quality samples use the original populated-world targets: High20/33.4ms median/p95,350calls/250000triangles; Low33.4/50ms,200calls/85000triangles. Native SystemChrome AMD/Vulkan run actually FAILS both cases on all six triangle limits. Existing movement/jump/picking/grounding/effects/culling-equivalence checks remain intact; no budget relaxed or geometry changed.",
+    "high": [{"view":"west-bank","calls":227,"triangles":361715,"medianMs":16.7,"p95Ms":16.8},{"view":"woodland-cut","calls":218,"triangles":353101,"medianMs":16.7,"p95Ms":16.7},{"view":"outer-fold","calls":226,"triangles":364280,"medianMs":16.7,"p95Ms":16.8}],
+    "low": [{"view":"west-bank","calls":100,"triangles":101235,"medianMs":16.7,"p95Ms":16.7},{"view":"woodland-cut","calls":89,"triangles":93223,"medianMs":16.7,"p95Ms":16.8},{"view":"outer-fold","calls":96,"triangles":100832,"medianMs":16.7,"p95Ms":16.7}],
+    "diagnostic": "One additional High-only draw-hook scope PASS15.0s outside timed samples, reusing populated-world instrumentation. AuthoredFighter contributes128312 submitted triangles/12color+11shadow draws at each road view. Earth tree groups contribute substantial shadow geometry; water/air groups also appear in submitted counts. These are elapsed/submission diagnostics, not proof of a production culling bug, GPU-cost attribution or permission to hide scenery/lower actor detail. No speculative tile/mesh/fixture change adopted.",
+    "artifacts": {"directory":"/tmp/eidolon-179-raised-earth-profile-jSRPDL/results","highTraceSha256":"fc0a67af437dfa22187f47e8cf28ad9661fd74fbb60a8844db6f9cb6bd2e7741","lowTraceSha256":"6cd22ee54297ad18d43adc469afe31af23ed00b32f8fd8835192b36a56ef9687","highWestBankImageSha256":"d1f13296b66ae4b00c0e2aa7f57ec732dc4510c7cf6ef754ea6e7533a4eeef37","diagnosticDirectory":"/tmp/eidolon-179-raised-earth-draws-NlstRS/results"},
+    "limits": "Inspected High bank capture: broad ground/road variation and simple vegetation remain visibly unfinished; a naked prepared body is not equipped-character appearance proof. Preview is generated scenery plus one actor, not connected combat, complete world or real-phone acceptance. Both browser sessions terminal and loopback4189 closed before scheduled03:57 native launch; no runtime/API/driver/harness/production change. All F gates and full1.99 goal remain open."
+  },
+  "october7ActualRepositoryPolicyReview": {
+    "observedAt": "2026-10-07T03:27:02Z",
+    "readOnlyEvidence": "Authenticated GitHub repository APIs return master protected=false at c7c2c526 and rulesets=[]. Actions enabled/allowed_actions=all; default_workflow_permissions=read and can_approve_pull_request_reviews=false. github-pages environment has branch_policy only, custom policies enabled, exact allowed branchmaster. No repository/settings mutation or secret reads.",
+    "currentWorkflow": "Hosted PR checks remain separated from ordinary push-only native/public deployment jobs. Current predeploy-character also allows full_stabilization manual input without a branch guard; prepared1.82 explicitly restricts the repository, event and master/main refs. Postdeploy currently depends on push-only deployment jobs; prepared1.82 adds its explicit matching guard. Prepared fixes are not installed in current live1.78 or this1.79 candidate.",
+    "remaining": "F2/1.82 cannot claim protected release credentials and branches complete from workflow source alone. Owner-selected branch/ruleset and workflow-change review policy must accommodate authorized agents and operators; no automatic protection, required-review/check setting or access revocation. Default read tokens and a master-only Pages branch rule do not prove overall release trust. Revalidate actual settings at ordered1.82 acceptance."
+  },
+  "reviewBase": "Current isolated1.79 worktree: unpublished49011e16 now has actual changed-API100 mixed/raid/event/town and independent-save PASS581.88s, with112882ms common interval. Server phases remain41.74ms over33ms; a subsequently changed same-cell grid-lock candidate is not covered by that PASS. Current41db client render proof remains. This preparation is not freeze/publication/headroom acceptance.",
+  "orderedDependency": "Accepted1.78 c7c2c526/CI37543824180 is latest verified live: all ten jobs successful, exact public identities/runtime/readiness and actual independent monitor checked. Own1.79 native/headroom/release acceptance remains open. Do not skip that prerequisite or relabel this snapshot as a frozen1.80 build.",
+  "resolvedStaleClaims": [
+    "Roadmap starting-position row still called the physical Dark Realm portal missing. Current world_locations.go/world.go spawn the canonical portal; exact accepted1.12 receipt14290d22 records (28,235), personal gates/plaza/map and Guide fallback. Correct the row without claiming new portal work or final modern-art acceptance.",
+    "Promise V02 still requested the first actor pilot. Delivery and accepted1.58.2 public receiptff303dc2 show four rigged class bodies,252 equipment models/four motion banks with exact-source checks. Update to delivered integration while preserving final art/whole-catalog licensing gates; no repeated pilot request or model rewrite.",
+    "Roadmap/beta handoff still called hosting/alert ownership unanswered. Record owner's actual approval of current self-hosting/Postmark/no new paid service/existing admin recipients and explicit outage settings. Actual1.78 service acceptance, numeric budget/SLA/staffing and off-machine coverage are not inferred.",
+    "V03–V06 still described early materials/population/atlas/casino-map foundations as missing or only local. Current source has eight distinct places per elemental realm (32 unique IDs) and eight optional readings. Existing exact accepted1.11/1.14/1.15/1.16/1.17/1.18 receipts establish their original technical/public scope; reconcile foundations, not final exploration/modern-art/mobile/capacity quality.",
+    "C10 still schedules an undelivered vendor/wardrobe catalog. Current source and accepted1.67 public receipt8cbf0c1c establish the owned fitted-base palette catalog and owner-bound UI. Final unique-art/catalog quality and commercial decisions remain open; no new purchase, EP conversion or power reward."
+  ],
+  "gateReview": [
+    {"id":"F3-current-qualification-update","status":"named-workload-and-original-budget-passed-publication-open","evidence":"October7 root-consumed57874/current c323 driver8c API9a harness original full100 PASS584.92s/common112958ms/100 independent fresh saves. Mixed80, event4/all4 waves and raid5/assault/three repair waves/13 checkpoints complete. Original budget checker PASS18.847513ms versus33ms with3012/3011 samples. Exact hashed evidence/process/drain/disposable cleanup in current1.79 receipt supersedes prior pending current trial below. Own1.79 CI/public acceptance, shared-host headroom/storage, service objectives and broader freeze/beta/launch gates remain open; no general capacity certification."},
+    {"id": "F1", "requirement": "Mandatory features reviewed against promise register; remaining work stabilization/identified launch evidence, not missing foundations", "status": "incomplete", "evidence": "Correct demonstrated obsolete portal/actor-pilot/world-population/atlas/casino-map/vendor claims using current source and accepted exact-release receipts. Retain full Q/D/V/C/G promise inventory and modern-art contract; this remains partial reconciliation, not all-row acceptance. Later staged compatibility/operations changes and final integrated art/pacing still require their own scope."},
+    {"id": "F2", "requirement": "Threat model, serious exploits and authority/data boundaries reviewed", "status": "retained-targeted-evidence-not-final-freeze-review", "evidence": "Current account-bound/schema25 source and accepted1.71–1.76 security/privacy/valuable-operation receipts remain exact-source scoped. Changed-source final review remains; no broad no-exploit certification."},
+    {"id": "F3", "requirement": "Population, hosting/service budget and alert owners chosen with named capacity workload/limits", "status": "named-current-workload-qualified-final-operations-decisions-open", "evidence": "Owner plans up to100 beta players and approved existing hosting/Postmark/admin outage recipients/settings; exact1.78 public/CI/installed monitor acceptance is complete. Current c323 driver/unchanged8c API original full100 PASS584.92s/common112958ms/all100 independent fresh saves, all event members and full five-player Earth assault/checkpoint/manual repair complete. Original unchanged phase checker PASS18.847513ms versus33ms; separate sample counts3012/3011 retained. This supersedes older failed current trials, preserved as historical evidence in1.79 receipt. Client casino/raid rendering is separately scoped, not whole-game/device acceptance. Own corrected1.79 CI37600167508/public checks, shared-host/storage/headroom, supported-service objectives and off-machine incident coverage remain open. No general100-player capacity, SLA or final freeze approval."},
+    {"id": "F4", "requirement": "Privacy/retention/admin/moderation/recovery have owners and implementation paths", "status": "implementation-paths-retained-final-operations-review-open", "evidence": "Reviewed exports/removal requests retain current settings; Postmark recovery and durable role/audit/moderation paths remain. No erasure, player grant, retention/provider setting change or unsupported compliance promise. Final support staffing/retention/restore objectives remain explicit later decisions."},
+    {"id": "F5", "requirement": "Launch content/dependency set frozen with documented exception policy", "status": "not-frozen", "evidence": "Record inventory hashes below only as current source snapshot. No lock, feature exclusion, dependency upgrade or owner release/beta go/no-go inferred. Remaining catalog/license review and stabilization candidates must be reconciled before actual freeze."}
+  ],
+  "inventorySnapshotNotFreeze": {
+    "package-lock.json": "33fb3f2af672eff7d1e90a4dee5456c04f6efbcf162b25b70553382e3d4ea793",
+    "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
+    "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
+    "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f"
+  },
+  "october7PackagedNoticeReconciliation": {
+    "scope": "Source/package verification only, while native66380/supervisor572460 genuinely waits for03:17. No native restart, heavy test/browser, upstream browsing, license choice or runtime change.",
+    "correction": "Fighter PROVENANCE referred to an absent LICENSE-THREE.txt/viewer runtime. Its delivered directory has only character exports and MakeHuman source notices. Correct the stale statement to the actual separate browser-runtime notice, without changing asset sources or relicensing project-specific additions.",
+    "evidence": "package.json pins Three0.181.2; prepare-client.mjs copies node_modules/three/LICENSE unchanged to vendor/three/LICENSE. Both actual local files SHA256bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601 match. Current ci.yml line413 publishes the complete vendor directory, including that notice.",
+    "limits": "This proves one supplied notice's build/publication path, not upstream-source legal validation, full dependency/asset catalog coverage, owner licensing signoff, final art or F1/F5 completion. Existing four class CC0/provenance files remain; no new license text or commercial rights invented. No doc-only release push."
+  },
+  "october7GuideAndActorPromiseReview": {
+    "D06": "Inspect current UIManagerDungeon.js/dungeonProgression.js and authoritative dungeon_progression.go: Earth30/Water60/Fire70/Air70/Nexus100. Fresh choices filter by family floor/current server values/player band; underlevel choices are explicit disabled placeholders. Qualified existing runs retain their original saved band; current server still checks family level and story on actual resume. No policy bypass or claim that lower-level characters can return to a higher-level family.",
+    "verification": "Add only eight focused menu regressions: three fresh-family filters/payloads, three underlevel disabled/no-send cases, newer-server floor and qualified legacy saved-band continuity. Full two affected menu/rule suites PASS26 tests4.011s on Node24.18.0. No client runtime, 3D source, server, native driver or thresholds changed; no repeated hardware or100-client run.",
+    "V01": "Promise register's local-pauldrons statement predates delivered class/item assets. Accepted exact1.58.2 sourceff303dc2bbe221533f6c07fd53a77a13f522c48c/CI36920070557 establishes scoped public integration, alongside current rig/fit evidence. Correct status to delivered technical integration/final art gap, retaining A/W modern-art, readable environments, fit, device and human-quality requirements.",
+    "remaining": "These two-row corrections and focused tests do not accept the whole promise register, F1, final map/art quality or1.80. Owner project/code/art license preferences requested asynchronously once; no license grant selected. Native66380/supervisor572460 remains the same genuine pending03:17 timer, with root terminal/cleanup ownership."
+  },
+  "october7PreparedDeploymentTrustRevalidation": {
+    "scope": "Read-only revalidation of prepared1.82 source2879d399 while native66380/supervisor572460 remains live. No future commit selected into1.79, actual pin installation, key rotation, credentials, repository-setting change or deployment.",
+    "evidence": "Current r7-server local public /etc/ssh/ssh_host_ed25519_key.pub yields SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE. Independently hash the public key blob in prepared1.82's SSH_KNOWN_HOSTS; it matches that trusted local key. One bounded5s ED25519 scan of ssh.mendola.tech offers exactly one matching key. The trusted local file, not network discovery, supplies identity trust; the prepared source retains StrictHostKeyChecking=yes and no runtime keyscan.",
+    "limits": "An included sshd configuration fragment is unreadable without elevation; no daemon-wide configuration certification. Prepared1.82 already recorded this trust source, so do not ask the owner to provide a key already verified or describe it as unchosen. Its actual ordered CI/deployment acceptance, branch/workflow protection and runner-access policy remain open. No blanket F2/security approval.",
+    "deploymentStorage": "Read-only review confirms current1.79 builds API and enabled monitor before schema preflight. A schema upgrade invokes the retained consistent image/database/journal backup before migration. About1.27GB root availability and a10MB source context do not establish safe peak Docker/backup storage. No actual build, dump, production stop or shared-cache deletion performed; owner cleanup approval remains unanswered."
+  },
+  "october7PreparedReplicationBoundaryReview": {
+    "source": "49011e16 candidate remains unpublished and not accepted by prior6c native results. Source review covers state_serialization.go, state_delta_frame.go, state_public_encoding.go and new state_frame_contention_test.go; it supplements retained focused race2.188s, not a penetration test or fullF2 approval.",
+    "membership": "World-produced detached recipient maps are assembled before worker launch. Prepared caches key by actual detached actor pointer, not playerID; membership is never changed by workers or foreign lookups. Actor-local mutexes protect lazy snapshot/comparison/encoding values. Cache lifetime is one joined broadcast; immutable client history may survive intentionally, but encoded public messages do not become a cross-frame actor cache.",
+    "privacy": "forRecipient identifies an owner using the trusted recipientID and detached Player actorID under the actor lock. Owner encoding bypasses the shared public cache. Non-owner player messages zero Gold/Experience/MaxExperience/SkillPoints/TalentPoints and remove unlocked skills/talents, runes/ranks and quests in the new encoded message, never mutating source actors. Inventory, EP and account records stay outside these entity snapshots. Visible identity/spec/equipment/combat/animation fields remain available as before.",
+    "retainedVerification": "Existing concurrent public-owner privacy/proto marshal and distinct/stale/reset-baseline/history tests still pass in scoped race checks. New tests cover independent actor work with equalIDs, prepared and lazy paths, foreign lookup without membership mutation, and owner bypass before public encoding. This does not prove all network/account/privacy boundaries or current100 gameplay acceptance.",
+    "inventory": "Direct October7 hashes match all four current recorded inputs:package-lock.json,server/go.mod,server/go.sum and authored equipment manifest. This is a reproducible source snapshot, not a content/license lock, dependency upgrade or owner freeze/beta go/no-go."
+  },
+  "changedAuthorityBoundaryReview": {
+    "scope": "Read-only current1.78 monitor/diagnostic changes retained in isolated1.79; source review supplements retained focused race evidence, not a new penetration test or complete F2 approval.",
+    "administratorDiagnostics": "admin_console_handlers.go routes MsgAdminService through closed-field decoding, authenticated current-character connection and durable HasAdminRole. Privileged results require the durable audit path and recheck role/session after query/audit IO. The handler only reads typed health; no grant, movement or configuration mutation. admin_service_test.go retains denied/revoked/no-private-data/foreign-field coverage and authenticated1024-byte/burst5 policy assertions.",
+    "publicAggregateData": "main.go healthResponse and internal/operations/signals.go expose fixed process-level numeric/bool aggregates, not account/player/currency amounts, raw errors, filenames or arbitrary labels. Eight groups were independently checked against exact live1.78 at23:27:28UTC. Public availability of these aggregates is deliberate; this is not proof of privacy across unrelated APIs.",
+    "probeBoundary": "internal/operations/readiness.go accepts only exact /healthz without userinfo/query/fragment, HTTPS or loopback HTTP, finite request deadline, redirects refused and32KiB response cap. Production command uses explicit host loopback. Optional storage/pressure limits remain off; probe configuration is operator-supplied, not a player input.",
+    "mailBoundary": "internal/operations/postmark.go uses a fixed verified-HTTPS Postmark endpoint with redirects refused,10s timeout, bounded8KiB receipt and a shared1m attempt interval. Alert encoding accepts fixed incident/cause enums and typed samples, ignores caller delivery text, and never includes provider tokens/recipient addresses/raw peer errors. Existing provider/inbox proof remains one separately approved test; no further send or production failure injection occurred.",
+    "serviceBoundary": "Actual independent nonroot65532/read-only/capability-free/no-new-privileges monitor, host loopback networking, journald retention and mode600 private environment are recorded in the1.78 installation receipt. Host networking intentionally permits local readiness access and does not provide off-machine/host-failure coverage. No new paid service, retention change or public listener.",
+    "remaining": "This review does not close all exploit/data-boundary promises. Final content/dependency inventory, cross-feature authority/recovery reconciliation, representative capacity and owner operational/commercial decisions remain separate gates. Do not infer F freeze or launch security certification."
+  },
+  "limits": "Read-only source/receipt review and documentation corrections only. No new test/benchmark, asset/model/dependency/runtime change, production mutation, access restriction, purchase feature, capacity/F/CB/1.99 completion or waiver of manual review. User whole-campaign/phone feedback remains deferred, not passed."
 }
