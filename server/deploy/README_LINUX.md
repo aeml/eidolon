@@ -7,6 +7,28 @@ This deploys:
 - Nginx on host (ports 80/443) reverse-proxying to API on localhost upstream port
 - TLS via Certbot Nginx flow
 
+## SSH host identity and release runner admission
+
+Deployment pins `ssh.mendola.tech`'s reviewed public ED25519 host identity in
+`.github/workflows/ci.yml` and requires `StrictHostKeyChecking=yes`. Its
+fingerprint is `SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE`.
+The original verification used the server's local public host-key file; a
+network scan alone does not establish trust. Unknown or changed host identity
+must stop deployment. For intentional rotation, verify the replacement through
+trusted server-console access, review the workflow pin change, and run the
+release checks. Never bypass a mismatch or copy the private host key.
+
+Self-hosted predeploy QA accepts this repository's `master`/`main` pushes or an
+explicit `full_stabilization` manual dispatch on those refs. Manual feature refs
+remain excluded. Live QA additionally requires a production-branch push and
+both successful deployments. Ordinary PR checks stay on hosted runners; the
+nightly soak retains its separate trusted queue.
+
+These source guards do not establish protected branches, reviewed workflow
+changes, authorized dispatcher policy or runner administration. Those remain
+separate operational requirements. See the current release-readiness register
+for their acceptance state; historical preparation receipts retain their dates.
+
 ## Incident and maintenance playbook (prepared 1.83)
 
 This is an operator procedure, not an automatic maintenance switch. Production

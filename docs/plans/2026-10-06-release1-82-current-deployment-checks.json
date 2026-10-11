@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "milestone": "1.82 deployment and rollback reliability",
+  "baseCommit": "5757232598c353fe6bc76ca7fd65283019d62693",
+  "status": "isolated-preparation-not-published-or-complete",
+  "hostIdentityFollowUp": {
+    "trustSource": "Read-only local r7-server /etc/ssh/ssh_host_ed25519_key.pub. No private-key or credential access. ssh-keygen reports SHA256:4u6yOFA9tIp5zTHhMASbwsDVtWAKX7JyYidkJq6PDKE; one bounded public ED25519 scan of ssh.mendola.tech returns the exact same public key. The local file supplies trust; a scan alone does not.",
+    "change": "Workflow stores the reviewed public known-host line and explicitly requires StrictHostKeyChecking=yes before remote authentication/commands. Remove runtime ssh-keyscan. Document fail-closed mismatch handling and out-of-band reviewed rotation; no host-key, secret or server configuration mutation.",
+    "verification": "14 focused Jest tests pass1.802s across host identity, executable exact-commit checkout and actual runner admission conditions. Pin's OpenSSH SHA256 fingerprint is computed from its public key blob and compared with the trusted local fingerprint; actual workflow setup/SSH command retains strict checking. Focused ESLint and whitespace pass.",
+    "remaining": "Prepared only, not run through an actual deployment. Protected release branches/workflow review/authorized dispatchers and runner access require separate operational evidence. A changed host identity must not be accepted by replacing the pin with an unverified scan."
+  },
+  "changes": [
+    "Manual full-stabilization predeploy jobs now require the canonical repository and master/main ref as well as the explicit workflow_dispatch input. Previously the input alone could admit a manual non-release ref onto the self-hosted browser runner.",
+    "Live self-hosted checks now explicitly require a canonical production-branch push in addition to their existing successful-deployment dependencies. Ordinary hosted PR checks and the separate trusted nightly queue are unchanged.",
+    "Operator documentation distinguishes workflow admission guards from repository branch/workflow protection, authorized dispatchers and runner administration. No credentials, service configuration, DNS, repository settings or SSH host identity changed."
+  ],
+  "verification": {
+    "focused": "12 Jest tests pass in1.779s across RunnerQueueSeparation and DeploymentCheckout. The actual source admission expressions are evaluated across60 repository/event/ref/input combinations for each of predeploy, live and nightly, plus the allowed scheduled nightly control. Negative cases include foreign repositories, PRs, manual feature refs and tags even with full_stabilization=true.",
+    "checkout": "Existing executable checkout tests use disposable local repositories and preserve tracked/untracked operator data, reject foreign commits and invalid branch/SHA inputs, and deploy the exact tested commit even after the remote advances.",
+    "static": "Both workflows parse as YAML; focused ESLint and git diff --check pass. No actual hosted/self-hosted workflow was dispatched for this unpublished change."
+  },
+  "remaining": [
+    "Ordered1.76–1.81 milestone acceptance and own1.82 release labels, cumulative notes, CI and public live checks are still required.",
+    "Prepared host pinning has a trusted local identity source; require its own deployment acceptance. Repository protection and runner access settings need their own evidence; source guards alone do not prove them.",
+    "Reconcile known-compatible schema/binary/data recovery, asset versioning and old-client behavior using current evidence; do not assume every migration is reversible or describe this runner correction as complete rollback readiness."
+  ]
+}
