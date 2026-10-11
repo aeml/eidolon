@@ -51,3 +51,18 @@ export function createDormerGable() {
     shape.moveTo(-1.05, 0); shape.lineTo(1.05, 0); shape.lineTo(0, .78); shape.closePath();
     return new THREE.ExtrudeGeometry(shape, { depth: .12, bevelEnabled: false, curveSegments: 1 });
 }
+
+// Close the roof end at the wall line, behind its slate overhang. Heights are
+// relative to the wall top; the short shoulder fills the space beneath an
+// overhanging pitch without turning the gable into a floating triangle.
+export function createRoofEndInfill(depth, shoulderHeight, peakHeight) {
+    const shape = new THREE.Shape();
+    shape.moveTo(-depth / 2, 0); shape.lineTo(depth / 2, 0);
+    shape.lineTo(depth / 2, shoulderHeight); shape.lineTo(0, peakHeight);
+    shape.lineTo(-depth / 2, shoulderHeight); shape.closePath();
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth: .16, steps: 1,
+        bevelEnabled: false, curveSegments: 1 });
+    geometry.rotateY(Math.PI / 2); geometry.translate(-.08, 0, 0);
+    geometry.computeBoundingBox(); geometry.computeBoundingSphere();
+    return geometry;
+}
