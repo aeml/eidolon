@@ -40,13 +40,18 @@ Every explicit requirement in those sources remains part of the completion audit
   [partition qualification](2026-10-11-release31-world-review-correction.json),
   [conifer failure](2026-10-11-release31-conifer-coverage-failure.json),
   [coverage correction](2026-10-11-pine-coverage-qualification.json).
-- **New completed work after that push:** roof construction `e5087567` and
-  shared understory ownership `6bd45546` are ordinarily merged into local master;
-  both are qualified and unpublished.
-  [Roof proof](2026-10-11-town-roof-construction-qualification.json),
-  [shared ownership proof](2026-10-11-understory-shared-geometry-qualification.json).
-  Public31 is accepted; these later components remain held for a coherent next
-  milestone with its own qualification and deployment verification.
+- **Prepared Alpha 1.79.32:** qualified roof construction `e5087567`, shared
+  understory ownership `6bd45546` and directional geological faces `26a915de`
+  are ordinarily merged into master. Synchronized release identity and 467
+  cumulative patch-note entries are prepared. Four focused suites qualify 429
+  distinct checks; five distinct native publication cases pass with zero retries
+  or skips. Initial missed README/manifest versions and their affected-only
+  correction are retained. Ordinary push, exact ordered CI/deploy/live acceptance
+  and nine normal-TLS asset checks are next; accepted public31 remains current.
+  [Prepublication proof](2026-10-11-release32-world-resources-prepublication.json),
+  [roof proof](2026-10-11-town-roof-construction-qualification.json),
+  [shared ownership proof](2026-10-11-understory-shared-geometry-qualification.json),
+  [rock proof](2026-10-11-earth-directional-fault-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
   unmerged tips are now **84**, reduced from 287. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
@@ -61,7 +66,7 @@ Every explicit requirement in those sources remains part of the completion audit
   [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json),
   [release/atlas/casino histories](2026-10-11-completed-release-history-reconciliation.json).
 - **Existing 100-client soak:** run 38109009521 remains active on accepted public
-  29 `12e5e3c4`. It is not a completed capacity gate or a test of release 31.
+  29 `12e5e3c4`. It is not a completed capacity gate or a test of release 31 or 32.
   The prior failed soak remains open; no retry/cancellation or unchanged campaign
   replay has been performed.
 
@@ -76,6 +81,7 @@ Every explicit requirement in those sources remains part of the completion audit
 | Phone fixture | The 390px Earth review uses actual phone startup policy and checks visible/reachable controls. Browser emulation and prepared poses do not establish physical-phone party/dungeon feedback. |
 | Town roof construction | Two fitted gable ends and four timber edge boards per affected structure; 80 additional triangles per building, existing batches/materials/colliders/bounds retained. 30 focused and four distinct native cases pass. Actual town review covers smithy/Compact; Oathhall is constructor/unit covered, with no claim of town placement. Qualified, local master, unpublished. |
 | Understory geometry ownership | One immutable packed recipe per field instead of 326 High/320 Low duplicates. Retained raw attribute arrays reduce 17,850,456→54,756B High and 15,932,160→49,788B Low; all 13,087/7,439 plants and exact transforms/tints retained. 51 distinct focused and four native cases qualify prepared visuals and actual retirement cycles; original phone-network and lazy-PBR-baseline test failures retained. Local master, unpublished. No whole-VRAM, startup-allocation or FPS claim. |
+| Directional geological faces | One steep fault face and worn ledges within existing rock contours; all 36 flat/raised bodies retain exact bases, crowns and bounds, all triangle/attribute counts unchanged. Ten distinct focused and seven native source/copy cases pass; 45 exact reference-again pairs retain equal submissions. Qualified and merged for 32. Current public terrain stays flat-v1; no profile activation or final-art/device/performance claim. |
 
 Component receipts and exact failure/ownership/image scopes remain in the
 [preceding evidence register](2026-10-11-release-readiness-evidence-history.md)
@@ -91,7 +97,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Assemble the next coherent milestone from qualified local-master work, then qualify its exact publication, ordered CI/deploy/live gates and normal-TLS assets/readiness. Accepted public31 does not prequalify future source. | Implementation |
+| Next release | Publish prepared Alpha1.79.32 from clean synchronized master, then qualify its exact ordered CI/deploy/live gates and normal-TLS assets/readiness. Accepted public31 does not prequalify future source. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |

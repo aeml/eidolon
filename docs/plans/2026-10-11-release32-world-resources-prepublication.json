@@ -1,0 +1,71 @@
+{
+  "recordedUTC": "2026-10-11T11:34:53.743838+00:00",
+  "version": "Alpha 1.79.32",
+  "preparedRuntimeSource": "2f7bf324ee419d27a057074498046d4935ed2846",
+  "status": "Prepared coherent milestone; ordinary push and own ordered CI/deploy/live acceptance next.",
+  "components": [
+    {
+      "name": "Town gable infill and timber edge boards",
+      "receipt": "2026-10-11-town-roof-construction-qualification.json"
+    },
+    {
+      "name": "Shared ground-cover geometry and complete sector texture retirement",
+      "receipt": "2026-10-11-understory-shared-geometry-qualification.json"
+    },
+    {
+      "name": "Directional geological faces in existing negotiated rock profile",
+      "receipt": "2026-10-11-earth-directional-fault-qualification.json"
+    }
+  ],
+  "focused": {
+    "distinctPassed": 429,
+    "suites": 4,
+    "versionCorrection": "Initial four-suite run:427pass2fail (README/release.json still31). Corrected only these references, affectedVersionPresentation386pass2.199s; unchanged other43checks retained. Native initial5functional behaviors pass40.6s with32UI but old31manifest; release identity is not proved by that initial run. Final affected copied identity/lazy/four-class case strengthened to check actual HTTP manifest against package and visible UI, then passes7.1s. This supersedes that identity within5distinct, not6. No game/render code changed after component acceptance."
+  },
+  "native": {
+    "distinctPassed": 5,
+    "retries": 0,
+    "skips": 0,
+    "runs": [
+      {
+        "label": "initial-functional",
+        "stats": {
+          "total": 5,
+          "expected": 5,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        },
+        "seconds": 40.596512000000004
+      },
+      {
+        "label": "final-identity",
+        "stats": {
+          "total": 1,
+          "expected": 1,
+          "unexpected": 0,
+          "flaky": 0,
+          "skipped": 0,
+          "ok": true
+        },
+        "seconds": 7.110536
+      }
+    ],
+    "scope": "Actual login cumulative-history lazy loading; copied High/Low camp/town geometry/HUD/lifetime; copied scene-profiler transport; final actual HTTP release manifest+visible version+lazy supplied four-class construction. Existing component art/ownership native proofs reused rather than replayed.",
+    "limits": "No exact public identity/normal gameplay/party performance/device acceptance from preflight."
+  },
+  "lint": "Full locked-dependency lint passed; changed identity-case scoped lint passed; final diff and credential scans pass.",
+  "patchHistory": {
+    "exactEntries": 467,
+    "initialEntries": 10,
+    "lazyPages": 46,
+    "priorNotes": "31/30/29/28 source entries checked byte-exact; full-history pagination suite passes."
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release32-world-resources-preflight-20261011",
+    "inventoryEntries": 24,
+    "inventorySHA256": "a61138584156cfac5dab792b6d3a360c783cbca15fb14bac5225194a67db574f"
+  },
+  "limits": "Prior accepted public31 retained. Public production terrain stays flat-v1; no activation, access, commerce, migration, account/character wipe, campaign/soak replay or original-goal completion. Broad world/art/gameplay/performance/device/operations/F1-F5/beta/launch/handoff requirements remain open."
+}
