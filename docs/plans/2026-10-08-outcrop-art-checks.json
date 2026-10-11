@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "milestone": "1.87 Earth outcrop visual consolidation",
+  "status": "qualified-local-component-not-production-rollout-or-final-art",
+  "baseCommit": "2b0fd839b239a5bdfbdeb2b202ca702866819897",
+  "branch": "work/alpha-1-87-outcrop-art-current-20261008",
+  "change": "Seeded interior lean anchors and cleaved crown planes break up repeated centred block silhouettes. Correlated shoulder fractures and broader planar crowns retain206 triangles per solid,18 original solids/six formation meshes/one material. Convex blending keeps every vertex inside the unchanged authoritative footprint; buried foundations, clear walking routes and sharp/gentle normal contracts retained. Registered mineral coloration and restrained crown lichen reuse standard lighting/shadows/fog; interrupted strata no longer paint regular masonry-like stripes. Rock shader cache advancesv3→v4; other surface variants unchanged. No downloaded assets, extra meshes/textures, per-frame CPU work or collision/data/economy change.",
+  "qualification": {
+    "red": "Root54448: new seeded crown-plane assertion first FAIL(dot1), original three outcrop checks pass6.607s. Corrected geometry makes the independent geological planes differ, not a weakened threshold.",
+    "unit": "Root37802: four affected suites22 PASS15.742s, including all18 solids on flat and sampled terrain, convex footprints, finite normalized normals, buried bases, cap206 limit, landmarks/routes, shared material ownership and negotiated render/collision integration. After material revision only affected WorldSurfaceDetail rerun:12 PASS.487s, root89341 terminal0. These are22 distinct checks, not34 independent checks.",
+    "nativeGeometry": "Root97069 terminal0: High/Low preview2PASS32.5s. Original six road budgets and all movement/effect/shadow/batching/ground-culling assertions pass. Intermediate High woodlandp9533.3ms retained; not hidden or rerun to manufacture a faster result.",
+    "nativeFinal": "Root4318 terminal0: actual System Chrome AMD RADV/Vulkan2PASS37.8s. Added visible grove profile alongside all original three road views at each quality: eight120-frame RAF samples meet unchanged original limits. Actual rock color shading is now measured where the formation occupies the screen, not inferred from road views that mainly submit its shadows. All existing grounding/effects/pixel equivalence checks retained. Test-owned local unit/lint commands terminal before profiling.",
+    "visibleGrove": {
+      "high": { "calls": 176, "triangles": 163599, "medianMs": 16.7, "p95Ms": 16.7 },
+      "low": { "calls": 49, "triangles": 52788, "medianMs": 16.7, "p95Ms": 16.8 }
+    },
+    "roads": "Final High222552/243,249406/338,215944/257 triangles/calls; Low79159/117,70421/85,73416/91. Medians16.7ms, final roadp9516.8ms at both qualities. All three paired shadow/batching comparisons per quality and ground-culling comparison retain0/270080 changed pixels. This compares culling/batching alternatives under the new art, not old-versus-new art pixels.",
+    "static": "Scoped ESLint and git diff --check pass. Native handles terminal and owned4190 independently closed. Only EarthOutcrops consumes stratified-rock at runtime. Source hashes identify final geometry/material/preview scope."
+  },
+  "visualReview": "Inspected intermediate and final actual High/phone-sized Low grove formations. Broader off-centre crowns, mineral staining and interrupted seams improve the prior uniform block/parallel-band appearance. Still modest: sparse surrounding ground cover and overall scene/actor/party composition need further modern-ARPG work. No final Diablo/PoE art approval or physical-device/connected gameplay claim.",
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-outcrop-art-evidence-20261008-yRVPruW1",
+    "geometrySha256": "e6d98aa57b531bf24e89b1c1f86f295045ed626fcee18126670302a0ccb8a356",
+    "materialSha256": "88389da4b097aacd146e3b88e1aaa46e6383f79830b771855fcb1bf4db0fe5e8",
+    "previewSha256": "ae9ca4cc83321394db9e2b336d577cd6d0227b9b16aaead4ca33e2763d651416",
+    "finalLogSha256": "9e1ed281d0fe5c8eaadc108951179232cb1db97008c6067e97157fbed2134a02"
+  },
+  "draftPatchNotes": [
+    "Earth rock shelves have varied cleaved crowns and weathered shoulders while retaining their original collision boundaries.",
+    "Rock surfaces gain coherent mineral stains, interrupted seams and subtle crown lichen without additional geometry or downloaded textures."
+  ],
+  "publication": "Component retained for ordered consolidation, no extra patch/version/pipeline or production terrain switch. Corrected1.79.4 CI37744495087/exact2b0fd839 still running, Client Jest passed; latest accepted live remains1.79.3. Original1.80 F1-F5, full1.87 equipped-party/device/persisted-dungeon/rollout and all later roadmap gates remain open. No new mail, provider, save, model, account/access or retention changes."
+}
