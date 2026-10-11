@@ -1,0 +1,49 @@
+{
+  "recordedUTC": "2026-10-11T20:11:58.374544+00:00",
+  "status": "Alpha1.79.38 qualified and prepared locally; no source push before corrective37terminal deployment/public acceptance.",
+  "change": "Per-invocation exact geometry signature reuse; archive all old branch histories while keeping current selected runtime and only master as a branch.",
+  "geometryQualification": "2026-10-11-geometry-signature-preparation-qualification.json",
+  "branchConsolidation": "2026-10-11-master-only-branch-consolidation.json",
+  "source": "bcf71f820e6b62752c4ade6bc4960eb5a9966a13",
+  "focused": {
+    "distinctFocusedPassed": 457,
+    "suites": 5,
+    "versionPassed": 386,
+    "versionExecutions": 388,
+    "retainedInitialVersionFailures": 2,
+    "correction": "README current-source pointer and isolated-QA build default aligned to38; only two affected tests rerun,384filtered cases are not counted as new passes.",
+    "reusedGeometryChecks": 71,
+    "geometrySourceUnchangedFrom": "143be329",
+    "nativeGeometryEvidence": "Six existing current-source sessions preserve152distinct input/output comparisons; not replayed.",
+    "patchNotes": {
+      "total": 473,
+      "priorByteExact": 472
+    }
+  },
+  "native": {
+    "distinctCasesPassed": 3,
+    "executions": 3,
+    "retries": 0,
+    "skips": 0,
+    "failures": 0,
+    "scope": "Actual same-source copied publication fixture constructs all four classes and proves new immutable worker, stream retirement and cached offline reuse. Exact-source copied site login loads notes lazily and retries. Fixture identities are synthetic; not connected gameplay/FPS/physical-device/readiness acceptance."
+  },
+  "worker": {
+    "output": "src/core/ActorGameplayGeometryWorker.a0bfaaefee9a272a.js",
+    "sha256": "a0bfaaefee9a272a274daa813fb6e9e0f4f3e3897ebd829aae66da45a5954afd",
+    "bytes": 137254,
+    "modules": 10,
+    "imports": []
+  },
+  "patchNotes": {
+    "total": 473,
+    "priorPreservedByteExact": 472
+  },
+  "copiedPinsVerified": 86,
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release38-preparation-checks-20261011",
+    "entries": 21,
+    "inventorySHA256": "06bb9876cea6351e6e1295c8b238c32380f47e77718dc27daa7f00141e4698af"
+  },
+  "limits": "All original readiness requirements remain open as recorded. Cold triangle/connected frame budgets still fail. Only master remains local/origin; archive tips preserved remotely. Current37acceptance required before38source publication."
+}
