@@ -18,12 +18,16 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
             body: readFileSync(new URL('../fixtures/earth-surface-before-thatch.js', import.meta.url), 'utf8'),
             contentType: 'text/javascript'
         }));
+        await page.route('**/tests/e2e/renderFrameInterval.js', route => route.fulfill({
+            body: readFileSync(new URL('./renderFrameInterval.js', import.meta.url), 'utf8'),
+            contentType: 'text/javascript'
+        }));
         await page.setViewportSize({ width, height: 844 });
         await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
         await page.goto('/', { waitUntil: 'networkidle' });
-        await page.evaluate(async ({ quality, phone }) => {
+        await page.evaluate(async ({ quality, phone, engineModule }) => {
             const THREE = await import('three');
-            const { GameEngine } = await import('/src/core/GameEngine.js');
+            const { GameEngine } = await import(engineModule);
             const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
             const { applyEarthGroundComposition: reference } = await import('/src/art/EarthGroundCompositionReference.js');
             document.getElementById('start-screen').style.display = 'none';
@@ -67,7 +71,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) {
             copy.width = canvas.width; copy.height = canvas.height;
             window.__thatchReview = { game, render, actors, THREE, grounds, baseline, candidate, clock,
                 copy, context: copy.getContext('2d', { willReadFrequently: true }), reports: [], mode: null };
-        }, { quality, phone: width < 800 });
+        }, { quality, phone: width < 800, engineModule: process.env.EIDOLON_E2E_GAME_ENGINE_MODULE || '/src/core/GameEngine.js' });
         try {
             for (const [label, x, z, zoom] of [['gate-meadow', 140, 190, 18], ['road-verge', 353, 216, 18],
                 ['sheltered-grove', -83, -334, 18], ['thatch-detail', 353, 216, 10]]) {
