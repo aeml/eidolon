@@ -8,7 +8,16 @@ test('raised terrain QA uses explicit public selection without changing the flat
     expect(script).toContain('EIDOLON_E2E_TERRAIN_PROFILE="${EIDOLON_ISOLATED_QA_TERRAIN_PROFILE:-flat-v1}"');
     expect(script).toContain('npx playwright test --retries=0 tests/e2e/terrain-profile-gameplay.spec.js');
     const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
-    expect(workflow).toContain('EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server" go test -race . -run \'^TestTerrainActualSavedSessionsAcrossProfileChanges$\' -count=1 -timeout=120s');
+    const terrainGate = workflow.split('\n').filter(line => line.includes('go test -race . -run') && line.includes('TestTerrainActual'));
+    expect(terrainGate).toHaveLength(1);
+    expect(terrainGate[0]).toContain('EIDOLON_RESOURCE_BINARY="$duel_binary_dir/server"');
+    expect(terrainGate[0]).toContain('-count=1 -timeout=120s');
+    const selection = terrainGate[0].match(/-run '([^']+)'/);
+    expect(selection).not.toBeNull();
+    const selectedTests = new RegExp(selection[1]);
+    for (const name of ['TestTerrainActualSavedSessionsAcrossProfileChanges', 'TestTerrainActualHealthMatchesLoginProfile']) {
+        expect(selectedTests.test(name)).toBe(true);
+    }
 });
 
 test('the complete gate retains real-server interrupted login recovery with one UI click', () => {

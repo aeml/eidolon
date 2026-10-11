@@ -1,0 +1,69 @@
+{
+  "recordedUTC": "2026-10-11T06:54:45.608964+00:00",
+  "parent": "8accba419e07dd7170f8c63a37308270720992d6",
+  "failedCI": {
+    "run": 38117717646,
+    "attempt": 1,
+    "head": "7df6cf22c9e151625931a1e3db5ac642b18ef0ae",
+    "result": "completed/failure",
+    "clientSuites": {
+      "failed": 3,
+      "passed": 713,
+      "total": 716
+    },
+    "clientTests": {
+      "failed": 11,
+      "passed": 10536,
+      "total": 10547
+    },
+    "serverAndThreeHostedBrowserShards": "passed",
+    "predeployInputsNativeDeploymentLiveChecks": "skipped"
+  },
+  "correction": {
+    "files": [
+      "tests/GameEngineBundle.test.js",
+      "tests/IsolatedQADefaults.test.js",
+      "tests/NativeVisualEvidence.test.js"
+    ],
+    "bundle": "Copy the actual GameplayRigidIndices worker dependency into isolated publication fixtures; retain missing-input/link/entry/license guards.",
+    "terrain": "Inspect the actual race-gate selection and require both saved-session and login-health cases, unchanged count1/120s and resource binary.",
+    "nativeEvidence": "Find the unique mandatory native step by its stable artifact directory, independent of its display title; retain scan-before-upload and all original image/report/browser/gating assertions, explicitly require additive coverage."
+  },
+  "qualification": {
+    "preparedBaseline": {
+      "failedSuites": 3,
+      "failedTests": 11,
+      "passedTests": 32,
+      "seconds": 7.163
+    },
+    "focused": {
+      "suites": 5,
+      "tests": 66,
+      "seconds": 9.054,
+      "result": "passed"
+    },
+    "fullLint": "passed",
+    "fullLocalCoverage": "running; not acceptance evidence or a pass",
+    "initialUnpreparedBaseline": "12 failures included absent generated vendor; retained diagnostic, excluded from prepared baseline"
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-master-reconciliation-checks-20261011",
+  "logs": [
+    {
+      "file": "release30-fixture-baseline.log",
+      "sha256": "ea52934ff9d47d4ebdd2225f5f04750a80dc4308464b6ae7cdbab26db4b7626e"
+    },
+    {
+      "file": "release30-fixture-prepared-baseline.log",
+      "sha256": "1abffc3bdcd6bf0476153ace5465d5991b44ada139966de8e6eb92e1539cd076"
+    },
+    {
+      "file": "release30-fixture-focused.log",
+      "sha256": "a7e637bd0c008bbb44dcf34a245b6385d11770b6ce0ab8b03270bf7df005107f"
+    },
+    {
+      "file": "release30-fixture-lint.log",
+      "sha256": "04107167275cfdc683e8263103dce1807d5b99e0ff53c6316fd1551a45cc5b1a"
+    }
+  ],
+  "scope": "Current Alpha1.79.30 fixture correction only. No product runtime, source assets, native/software policy, quality budgets, thresholds or server behavior changed. Concurrent licensing8acc retained. Camp and subsequent renderer changes remain unpublished; current public acceptance is1.79.29. All future release gates must actually pass before acceptance."
+}

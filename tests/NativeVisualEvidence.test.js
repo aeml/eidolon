@@ -3,15 +3,21 @@ import { readFileSync } from 'node:fs';
 const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
 const native = workflow.split('  predeploy-character:\n')[1].split('\n  release-inputs:')[0];
 const step = name => native.split(`      - name: ${name}\n`)[1]?.split('\n      - name:')[0];
+const evidenceStep = folder => {
+    const marker = `PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/${folder}/report`;
+    const matches = native.split('\n      - name:').filter(body => body.split('\n').some(line => line.trim() === marker));
+    expect(matches).toHaveLength(1);
+    return matches[0];
+};
 
 test.each([
-    ['Run deterministic High/Low animation gallery', 'animation-gallery'],
-    ['Run required native High regional quality-switch coverage', 'regional-quality'],
-    ['Run required native dungeon materials and prepared outfits', 'dungeon-outfits'],
-    ['Run focused level-up and sanctuary presentation', 'celebration'],
-    ['Verify delivered class bodies and fitted equipment', 'authored-equipment']
-])('%s preserves both images and report outside the rolling smoke directories', (name, folder) => {
-    const body = step(name);
+    'animation-gallery',
+    'regional-quality',
+    'dungeon-outfits',
+    'celebration',
+    'authored-equipment'
+])('%s preserves both images and report outside the rolling smoke directories', folder => {
+    const body = evidenceStep(folder);
     expect(body).toContain(`PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/${folder}/report`);
     expect(body).toContain(`--output=native-visual-evidence/${folder}/results`);
     expect(body).not.toMatch(/\|\|\s*(?:true|:)|continue-on-error/);
@@ -43,10 +49,11 @@ test('artifact retention does not reduce native coverage or enable optional long
 
 
 test('native dungeon and outfit assertions block release independently of hosted functional coverage', () => {
-    const body = step('Run required native dungeon materials and prepared outfits');
+    const body = evidenceStep('dungeon-outfits');
     expect(body).toContain("EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'");
     expect(body).toContain('--workers=1 --retries=0 --reporter=line,html');
     expect(body).not.toContain('if:');
-    for (const file of ['dungeon-entry-ward', 'dungeon-floor-material', 'published-game-bundle']) expect(body).toContain(`tests/e2e/${file}.spec.js`);
+    for (const file of ['dungeon-entry-ward', 'dungeon-floor-material', 'published-game-bundle', 'additive-effects-render']) expect(body).toContain(`tests/e2e/${file}.spec.js`);
     expect(body).toContain('grounded entry wards|floor weathering|geometry scheduling|elemental floor materials');
+    expect(body).toContain('|additive status, cast and contact');
 });
