@@ -720,4 +720,13 @@ Still useful to add:
 
 ## License
 
-This project is open source.
+Eidolon is source-available under the [Eidolon Source-Available Share-Back
+License v1.0](LICENSE). Translation, modification, regional hosting, replacement
+assets, and commercial forks are permitted. Distributed or publicly hosted
+modifications must provide complete editable sources under the same license,
+notify upstream, and credit Robert Mendola as the original developer and
+maintainer. Existing third-party licenses remain in force.
+
+See [licensing and fork policy](docs/LICENSING.md) for attribution, asset source,
+payment integration, and submission requirements. Official Eidolon accepts only
+cosmetic monetization; independent forks may choose differently under the license.
