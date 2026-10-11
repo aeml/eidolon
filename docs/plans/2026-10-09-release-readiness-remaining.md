@@ -139,8 +139,22 @@ identities, ready database and all78served asset hashes/byte counts match at
   ending; no quest/reward/network mutation.29 local contributor/provenance links
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
+- **Completed terrain histories:** Moonfrost material, Earth outcrop art and
+  raised-reference/checkpoint histories are reviewed and ordinarily merged.
+  Current accepted35 runtime stays exact; omitted dual-profile checkpoint/floor
+  assertions and visible-grove performance coverage are restored. Five distinct
+  Go-race cases and two native cases/eight120-frame samples pass unchanged
+  original budgets, retries/skips0. Two retained October8 receipts stay dated;
+  prepared unequipped previews do not establish final art, connected equipped
+  gameplay or production raised-terrain acceptance. Source-only until the next
+  coherent publication. [Reconciliation](2026-10-11-terrain-history-reconciliation.json).
+- **Unselected turf detail:**28focused checks and two native four-class14-slot
+  HUD comparisons pass; added surface preparation costs about67ms High/20ms Low
+  for only marginal ordinary-zoom visual benefit. Private88eeabdb remains
+  unselected with frozen evidence; no runtime/CI enrollment or budget change.
+  [Selection](2026-10-11-earth-turf-unselected.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **64**, reduced from 287; 585 of 649 local branch names
+  unmerged tips are now **62**, reduced from 287; 588 of 650 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and

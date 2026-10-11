@@ -1,6 +1,6 @@
 {
   "recordedUTC": "2026-10-11T17:14:31.938174+00:00",
-  "status": "qualified completed historical branches ready for ordinary master merge; runtime source unchanged",
+  "status": "qualified completed historical branches ordinarily merged into master; runtime source unchanged",
   "qualification": {
     "source": "4145fd91676e0d2ab42ffa1e04ba44ecdb86f77d",
     "base": "dc0a9228",
@@ -524,5 +524,6 @@
     "inventoryEntries": 30,
     "inventorySHA256": "eeddcc37d4a80bda9a84199ef9141d85905450bc82766fd0e722d082edc657a8"
   },
-  "limits": "Historical October8 receipts remain dated scoped evidence, not current production or final-art approval. Native previews use prepared unequipped actors without connected gameplay; eight passing samples do not erase equipped-party/dynamic/combat/device failures. Production terrain remains flat-v1. No release, access, authority, assets, gameplay runtime, campaign or soak change. Full goal remains active."
+  "limits": "Historical October8 receipts remain dated scoped evidence, not current production or final-art approval. Native previews use prepared unequipped actors without connected gameplay; eight passing samples do not erase equipped-party/dynamic/combat/device failures. Production terrain remains flat-v1. No release, access, authority, assets, gameplay runtime, campaign or soak change. Full goal remains active.",
+  "masterMerge": "1a47f70abe4d2e80d776c9cee1f7b8851526bcd2"
 }
