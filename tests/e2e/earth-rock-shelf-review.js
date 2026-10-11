@@ -4,16 +4,19 @@ import { collectBrowserFailures } from './helpers.js';
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 export async function reviewEarthRockShelves({ page, baseURL }, testInfo, quality, engineURL = '/src/core/GameEngine.js', width = 1280) {
+    const phone = width <= 800;
     const failures = collectBrowserFailures(page, baseURL);
     await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
     await page.setViewportSize({ width, height: 844 });
     await page.addInitScript(quality => localStorage.setItem('eidolon.graphicsQuality', quality), quality);
     await page.goto(new URL('/', baseURL).href, { waitUntil: 'networkidle' });
-    await page.evaluate(async ({ quality, engineURL }) => {
+    await page.evaluate(async ({ quality, engineURL, phone }) => {
         const { GameEngine } = await import(engineURL);
         const THREE = await import('three');
         document.getElementById('start-screen').style.display = 'none';
-        const game = new GameEngine('Fighter', false, true, '', 'rock-review-only', null, 'earth-elevation-rocks-v1');
+        // Match startup's narrow-viewport policy. A desktop engine under phone
+        // CSS left a clipped desktop menu and never installed touch controls.
+        const game = new GameEngine('Fighter', phone, true, '', 'rock-review-only', null, 'earth-elevation-rocks-v1');
         const render = game.renderSystem, world = game.worldGenerator;
         render.setGraphicsQuality(quality); world.graphicsQuality = quality;
         await render.preloadEnvironment(); await world.loadTrees(0, 200); await world.loadBuildings(0, 200);
@@ -29,7 +32,7 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
         Object.defineProperty(performance, 'now', { configurable: true, value: () => 12000 });
         render.applyLightingPreset('earth', true); hero.playAnimation('Run', true, true);
         window.__rockReview = { game, hero, field, understory, clock, rows: [], comparisons: [], THREE };
-    }, { quality, engineURL });
+    }, { quality, engineURL, phone });
     try {
         for (const [label, x, z, zoom] of [['west-grove', -120, -200, 18], ['deep-west', -102, -311, 18], ['deep-east', 62, -297, 18], ['east-road', 390, 173, 18], ['road-break', 590, 270, 18], ['far-east', 690, 160, 18], ['road-detail', 590, 263, 10], ['grove-bed', -83, -334, 10], ['east-verge', 353, 216, 10]]) {
             const row = await page.evaluate(({ label, x, z, zoom }) => {
@@ -42,7 +45,15 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
                     hero.mesh.position.copy(hero.position); hero.updateAnimationMixer(1 / 60); render.render();
                 }
                 const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
+                const controls = game.isMobile ? [...document.querySelectorAll('#joystick-zone, #mobile-actions .mobile-btn, #hotbar-container .hotbar-slot, #btn-mobile-menu')].map(element => {
+                    const rect = element.getBoundingClientRect();
+                    return { id: element.id, x: rect.x, y: rect.y, width: rect.width, height: rect.height,
+                        reachable: element.contains(document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2)) };
+                }) : [];
                 return { label, zoom, poses: 8, formations: field.children.length,
+                    phonePolicy: game.isMobile, mobileInput: game.inputManager.isMobile,
+                    desktopMenuVisible: getComputedStyle(document.getElementById('menu-bar')).display !== 'none',
+                    controls, viewport: { width: innerWidth, height: innerHeight },
                     triangles: render.renderer.info.render.triangles, calls: render.renderer.info.render.calls,
                     displayBeforeFxaa: render.composer ? render.composer.passes.indexOf(render.outputPass) < render.composer.passes.indexOf(render.fxaaPass) : null,
                     plants: understory.userData.plantCount,
@@ -114,6 +125,21 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
         await writeFile(testInfo.outputPath('rock-review.json'), JSON.stringify(result, null, 2));
         expect(result.released).toEqual(result.expected);
         for (const row of result.rows) {
+            expect(row.phonePolicy).toBe(phone);
+            expect(Boolean(row.mobileInput)).toBe(phone);
+            expect(row.desktopMenuVisible).toBe(!phone);
+            if (phone) {
+                expect(row.controls.map(control => control.id)).toEqual(expect.arrayContaining(['joystick-zone', 'btn-mobile-menu', 'btn-mobile-attack', 'btn-mobile-ability', 'btn-mobile-interact']));
+                expect(row.controls.length).toBeGreaterThanOrEqual(7);
+                for (const control of row.controls) {
+                    expect(control.width).toBeGreaterThanOrEqual(44);
+                    expect(control.height).toBeGreaterThanOrEqual(44);
+                    expect(control.x).toBeGreaterThanOrEqual(0); expect(control.y).toBeGreaterThanOrEqual(0);
+                    expect(control.x + control.width).toBeLessThanOrEqual(row.viewport.width);
+                    expect(control.y + control.height).toBeLessThanOrEqual(row.viewport.height);
+                    expect(control.reachable, `${row.label}: ${control.id}`).toBe(true);
+                }
+            }
             expect(row.displayBeforeFxaa).toBe(quality === 'high' ? true : null);
             expect(row.formations).toBe(6); expect(row.rockTriangles).toBe(3708);
             expect(row.surfaces.every(surface => surface === 'stratified-rock')).toBe(true);
