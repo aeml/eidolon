@@ -1,6 +1,60 @@
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 
+test.describe('desktop build keyboard controls', () => {
+    test.use({ hasTouch: false, isMobile: false, viewport: { width: 1280, height: 844 } });
+    test('native Tab, Enter and Space unlock skills and toggle runes with authoritative selection', async ({ page, baseURL }, testInfo) => {
+        const failures = collectBrowserFailures(page, baseURL);
+        await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+        await page.goto('/', { waitUntil: 'networkidle' });
+        // Prepared UI only: deliberate input is real; build acknowledgements are simulated.
+        await page.evaluate(async () => {
+            const { UIManager } = await import('/src/ui/UIManager.js');
+            document.getElementById('start-screen').style.display = 'none';
+            const ui = new UIManager(false);
+            const player = { id: 'desktop-keyboard-layout', subType: 'Fighter', level: 100, skillPoints: 10,
+                selectedBranch: 'A', talentRanks: {}, skillRunes: {}, unlockedSkills: [] };
+            const calls = [];
+            ui.lastPlayerRef = player; ui.showHUD(); ui.skillTree.toggle();
+            ui.skillTree.onUnlockSkill = skill => calls.push({ skill });
+            ui.skillTree.onSelectRune = (skill, rune) => calls.push({ skill, rune });
+            window.__desktopBuildKeyboard = { ui, player, calls };
+        });
+        const content = page.locator('#skill-tree-content');
+        await content.getByRole('button', { name: 'Combos', exact: true }).focus();
+        await page.keyboard.press('Tab');
+        const skill = content.getByRole('button', { name: /^Whirlwind/ });
+        await expect(skill).toBeFocused();
+        expect(await skill.evaluate(n => getComputedStyle(n).outlineStyle)).toBe('solid');
+        await page.keyboard.press('Enter'); await page.keyboard.press('Space');
+        expect(await page.evaluate(() => window.__desktopBuildKeyboard.calls)).toEqual([{ skill: 'Whirlwind' }, { skill: 'Whirlwind' }]);
+        expect(await page.evaluate(() => window.__desktopBuildKeyboard.player.unlockedSkills)).toEqual([]);
+        expect(await content.locator('.skill-node').evaluateAll(nodes => nodes.every(node => {
+            const box = node.getBoundingClientRect(), parent = node.parentElement.getBoundingClientRect();
+            return box.left >= parent.left && box.right <= parent.right;
+        })), 'Skill cards fit their column, including the read-only starting skill').toBe(true);
+        await page.screenshot({ path: testInfo.outputPath('desktop-keyboard-skills.png') });
+        await content.getByRole('button', { name: 'Runes', exact: true }).click();
+        const rune = content.locator('button[data-rune-id]').filter({ hasText: 'Level 50' }).first();
+        await rune.focus(); await expect(rune).toBeFocused(); await expect(rune).toHaveAttribute('aria-pressed', 'false');
+        const runeId = await rune.getAttribute('data-rune-id');
+        await page.keyboard.press('Enter');
+        expect(await page.evaluate(() => window.__desktopBuildKeyboard.player.skillRunes)).toEqual({});
+        expect(await page.evaluate(() => window.__desktopBuildKeyboard.calls.at(-1))).toEqual({ skill: 'Charge', rune: runeId });
+        await page.evaluate(id => {
+            const { ui, player } = window.__desktopBuildKeyboard;
+            player.skillRunes.Charge = id; ui.skillTree.renderSkillTree('Fighter');
+        }, runeId);
+        await expect(rune).toHaveAttribute('aria-pressed', 'true');
+        await rune.focus(); await page.keyboard.press('Space');
+        expect(await page.evaluate(() => window.__desktopBuildKeyboard.calls.at(-1))).toEqual({ skill: 'Charge', rune: '' });
+        expect(await page.evaluate(() => window.__desktopBuildKeyboard.player.skillRunes.Charge)).toBe(runeId);
+        await page.screenshot({ path: testInfo.outputPath('desktop-keyboard-runes.png') });
+        await page.evaluate(() => window.__desktopBuildKeyboard.ui.dispose());
+        expect(failures, failures.join('\n')).toEqual([]);
+    });
+});
+
 test.use({ hasTouch: true, isMobile: true, actionTimeout: 12_000 });
 for (const [width, height] of [[360, 800], [390, 844], [844, 390]]) {
     test(`${width}x${height}: phone build sections stay readable with deliberate confirmed actions`, async ({ page, context, baseURL }) => {
