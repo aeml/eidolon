@@ -12,6 +12,20 @@ An allowlisted authenticated player can type `/relevel` in chat. The server cons
 
 QA authorization is independent. `EIDOLON_QA_USERNAMES` does not grant administrator access, and the administrator role does not grant QA commands.
 
+### Prepared 1.75 account-data safeguards
+
+The [data inventory](plans/2026-10-04-release1-75-data-inventory.json) includes
+verified-email recovery, private challenge records, page-local link handoff and
+transactional Postmark copies. Link validity is not physical record retention.
+No collection/deletion/export policy is approved by this inventory. In particular,
+never add a Mongo TTL to a nested recovery expiry: it would expire the whole user.
+
+Defensive JSON exclusions hide credential hashes and private recovery projections
+without changing BSON persistence. The raw `User` image still includes private
+email, roles and characters; it is not an authorized public response or support
+export. Use explicit bounded projections and the approved ownership procedure.
+Administrator privilege does not authorize private recovery-link disclosure.
+
 ### Prepared 1.74 permission review
 
 These are existing server permission boundaries, not new powers. Ordinary,
