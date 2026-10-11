@@ -10,6 +10,8 @@ export default [
             'playwright-report/**',
             'server/**',
             'src/proto/**',
+            // Prepared minified output; editable worker sources remain linted.
+            'src/core/ActorGameplayGeometryWorker.bundle.js',
             'test-results/**',
             'vendor/**'
         ]
