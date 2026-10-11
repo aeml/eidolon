@@ -46,19 +46,84 @@ function sampleLayer(x, z, source, stone = false) {
     return { coverage, height };
 }
 
-// R soil relief, G stone coverage, B moss cushion relief, A stone relief.
+// Flattened grass bundles share the vegetation channel. The fixed descriptors
+// and polynomial blade bends avoid per-texel trigonometry. This is a material
+// surface: standing plants, collisions and draw submissions stay independent.
+const GRASS_CELLS = 18;
+const GRASS = Array.from({ length: GRASS_CELLS * GRASS_CELLS }, (_, i) => {
+    const x = i % GRASS_CELLS, z = Math.floor(i / GRASS_CELLS);
+    const tone = hash(x, z, 0x6327ac91), angle = tone * Math.PI * 2;
+    return { x: .15 + hash(x, z, 0x812376af) * .7,
+        z: .15 + hash(x, z, 0x5b1473a1) * .7,
+        blades: [-.45, 0, .4].map(turn => ({ cos: Math.cos(angle + turn), sin: Math.sin(angle + turn),
+            length: .9 + tone * .5, width: .18 + tone * .1, height: .65 + tone * .35 })) };
+});
+function sampleBlade(dx, dz, blade) {
+    const along = (dx * blade.cos + dz * blade.sin) / blade.length + .2;
+    if (along <= 0 || along >= 1) return 0;
+    const across = -dx * blade.sin + dz * blade.cos - along * (1 - along) * .32;
+    const radius = Math.abs(across) / (blade.width * (1 - along * .75));
+    return (1 - smooth(.1, 1, radius)) * smooth(0, .12, along) *
+        (1 - smooth(.8, 1, along)) * blade.height;
+}
+
+export function sampleEarthThatch(x, z) {
+    const px = wrap(x, EARTH_SURFACE_TILE_METRES) / EARTH_SURFACE_TILE_METRES * GRASS_CELLS;
+    const pz = wrap(z, EARTH_SURFACE_TILE_METRES) / EARTH_SURFACE_TILE_METRES * GRASS_CELLS;
+    const cx = Math.floor(px), cz = Math.floor(pz);
+    let height = 0;
+    for (let ox = -1; ox <= 1; ox++) for (let oz = -1; oz <= 1; oz++) {
+        const ix = cx + ox, iz = cz + oz;
+        const tuft = GRASS[wrap(iz, GRASS_CELLS) * GRASS_CELLS + wrap(ix, GRASS_CELLS)];
+        const dx = px - ix - tuft.x, dz = pz - iz - tuft.z;
+        for (const blade of tuft.blades) {
+            height = Math.max(height, sampleBlade(dx, dz, blade));
+        }
+    }
+    return height;
+}
+
+// Paint only a blade's conservative rectangle. Testing all 27 blades at every
+// texture pixel wastes preparation time; wrapping these bounded stamps retains
+// the same canonical analytic field, including every tile-edge contribution.
+function rasterizeThatch(size) {
+    const data = new Float64Array(size * size), step = GRASS_CELLS / size;
+    for (let iz = 0; iz < GRASS_CELLS; iz++) for (let ix = 0; ix < GRASS_CELLS; ix++) {
+        const tuft = GRASS[iz * GRASS_CELLS + ix];
+        for (const blade of tuft.blades) {
+            const corners = [-.2 * blade.length, .8 * blade.length].flatMap(along =>
+                [-blade.width, blade.width + .08].map(across =>
+                    [along * blade.cos - across * blade.sin, along * blade.sin + across * blade.cos]));
+            const x0 = Math.ceil((ix + tuft.x + Math.min(...corners.map(p => p[0]))) / step);
+            const x1 = Math.floor((ix + tuft.x + Math.max(...corners.map(p => p[0]))) / step);
+            const z0 = Math.ceil((iz + tuft.z + Math.min(...corners.map(p => p[1]))) / step);
+            const z1 = Math.floor((iz + tuft.z + Math.max(...corners.map(p => p[1]))) / step);
+            for (let z = z0; z <= z1; z++) for (let x = x0; x <= x1; x++) {
+                const height = sampleBlade(x * step - ix - tuft.x, z * step - iz - tuft.z, blade);
+                const at = wrap(z, size) * size + wrap(x, size);
+                data[at] = Math.max(data[at], height);
+            }
+        }
+    }
+    return data;
+}
+
+// R soil relief, G stone coverage, B grass/moss relief, A stone relief.
 // No baked directional illumination or emission. Shader color/roughness and
 // shallow normal relief consume these same registered physical features.
+function sampleFields(x, z, thatch) {
+    const soil = sampleLayer(x, z, SOIL), stones = sampleLayer(x, z, STONES, true), moss = sampleLayer(x, z, MOSS);
+    return [.24 + soil.height * .62, stones.coverage, .20 + Math.max(moss.height * .35, thatch * .70), stones.height];
+}
 export function sampleEarthSurface(x, z) {
     x = wrap(x, EARTH_SURFACE_TILE_METRES); z = wrap(z, EARTH_SURFACE_TILE_METRES);
-    const soil = sampleLayer(x, z, SOIL), stones = sampleLayer(x, z, STONES, true), moss = sampleLayer(x, z, MOSS);
-    return [.24 + soil.height * .62, stones.coverage, .22 + moss.height * .70, stones.height];
+    return sampleFields(x, z, sampleEarthThatch(x, z));
 }
 
 export function createEarthSurfaceDetail(quality = 'high') {
-    const size = quality === 'low' ? 128 : 256, data = new Uint8Array(size * size * 4);
+    const size = quality === 'low' ? 128 : 256, data = new Uint8Array(size * size * 4), thatch = rasterizeThatch(size);
     for (let z = 0; z < size; z++) for (let x = 0; x < size; x++) {
-        const sample = sampleEarthSurface(x * EARTH_SURFACE_TILE_METRES / size, z * EARTH_SURFACE_TILE_METRES / size);
+        const sample = sampleFields(x * EARTH_SURFACE_TILE_METRES / size, z * EARTH_SURFACE_TILE_METRES / size, thatch[z * size + x]);
         for (let channel = 0; channel < 4; channel++) data[(z * size + x) * 4 + channel] = Math.round(clamp(sample[channel]) * 255);
     }
     const texture = new DataTexture(data, size, size);

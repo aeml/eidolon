@@ -111,7 +111,7 @@ test('owns and releases all three added maps once; leaves ground depth behavior 
     // are zero; keep it distinct from the optional forest/rock contributions.
     expect(shader.fragmentShader).toContain('vec2(.85 + earthClod * .12, earthClod * .035)');
     expect(shader.fragmentShader).toContain('earthPhysical.y + earthSurfaceSample.a * earthGravelPlacement * .055');
-    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v17');
+    expect(material.customProgramCacheKey()).toBe('eidolon-earth-ground-composition-v18');
     expect(shader.fragmentShader).not.toContain('#include <map_fragment>');
     expect(shader.fragmentShader).not.toContain('earthBroad.a * .085');
     expect(shader.vertexShader).not.toContain('transformed.y +=');
@@ -142,6 +142,9 @@ test.each(['high', 'low'])('ground layers retain registered relief and filtered 
     expect(shader.fragmentShader).toContain('earthWear.a * (1. - earthWear.a)');
     expect(shader.fragmentShader).toContain('earthMossCoverage');
     expect(shader.fragmentShader).toContain('earthLeafCoverage');
+    expect(shader.fragmentShader).toContain('earthGrassPhysical, earthDryCoverage');
+    expect(shader.fragmentShader).toContain('(1. - earthWear.g) * (1. - earthWear.r)');
+    expect(shader.fragmentShader).toContain('earthMossFiber = clamp((earthMoss - .20) / .70, 0., 1.)');
     // The same coverage owns color, roughness and relief. A painted brighter
     // leaf must not remain a flat soil normal or borrow a separate random mask.
     expect(shader.fragmentShader).toContain('earthLeafPhysical, earthLeafCoverage');
