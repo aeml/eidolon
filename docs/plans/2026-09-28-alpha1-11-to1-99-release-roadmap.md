@@ -1,6 +1,6 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-Alpha1.79.37/exact`fac6489a76fd0baf99f0f6181c7e7da381110e7b` is merged and pushed. CI38167079786attempt1 is active;36remains last accepted.448distinct focused checks/six suites and eight native publication cases pass, retries/skips0. All12versions align;472notes preserve471prior entries byte-exact.86asset pins are prepared. [Publication](2026-10-11-release37-publication.json).
+Corrective Alpha1.79.37/exact`92c7392e9be5cbc2d2a2771b17cd4f83fa012d62` is merged and ordinarily pushed; CI38169083772attempt1active,36remains last accepted. Original fac CI38167079786failed server-race/stale client layout prerequisites, with3browser shards passing and deployment skipped. The concrete delayed-impact/cast race now regresses before and passes after the guard; current real4class boss crash/recovery,465client checks/four suites and2native cases pass.472notes preserve471prior entries byte-exact; fresh86asset pins prepared. [Correction](2026-10-11-release37-server-race-correction.json).
 
 Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is accepted live. CI38161891123 attempt1 passed all ten jobs. Fresh normal-TLS checks at18:52:03UTC match frontend/backend identities, ready database and all82served asset hashes/byte counts. Four optional stages remain skips.448distinct prepublication focused checks/six suites and four native publication cases pass, retries/skips0;12versions align and471notes preserve all470prior entries byte-exact. [Publication](2026-10-11-release36-publication.json). [Acceptance](2026-10-11-public36-terminal-qualification.json).
 
@@ -8,7 +8,7 @@ Forge gem keyboard choices and identity/focus continuity are qualified and merge
 
 Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Included in pushed37; deployment acceptance pending. [Qualification](2026-10-11-buyback-keyboard-qualification.json).
 
-Completed Gold boundary history is ordinarily merged as`6422b422`, preserving current earned-credit helpers; four current Go-race subcases pass.595of654local branch names are merged;59still require individual review, down from287unmerged. Completed validated work must be merged into master before being declared done. [Reconciliation](2026-10-11-gold-boundary-history-reconciliation.json).
+Completed Gold boundary history is ordinarily merged as`6422b422`, preserving current earned-credit helpers; four current Go-race subcases pass.596of654local branch names are merged;58still require individual review, down from287unmerged. Completed bounded Gold diagnostic history is merged as`3e484320`. Completed validated work must be merged into master before being declared done. [Reconciliation](2026-10-11-gold-boundary-history-reconciliation.json).
 
 October11 historical checkpoint: Previous accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
