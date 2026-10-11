@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-11T12:06:37.125843+00:00",
+  "status": "qualified-on-current-master-source-ready-for-ordinary-merge-unpublished",
+  "base": "072e5b28c46fcddead5005b687b38863529e3443",
+  "selectedHistoricalHead": "eea1183f0acf6d42ebe167d0c0b7a56e7e698dc2",
+  "ordinaryReviewMerge": "31e69e973ec8b7ca57b30f9a837e0aef42ac841b",
+  "source": "d81b1ef83c32c759e52f056e1f7f58eef2454317",
+  "changes": [
+    "Select completed coordinated-backup verifier and restore-before-Docker integrity gate from reviewed recovery branch; preserve current scope and unrelated newer runtime.",
+    "Refuse directory and archive aliases including trailing slash/dot and ancestor links; classify canonical archive directories so /./ cannot bypass named-point missing markers.",
+    "Enroll existing disposable actual archive restore and runtime checkpoint in CI recovery step."
+  ],
+  "reproducedFailures": [
+    "Original selected verifier: directory-link-slash and directory-link-dot erroneously passed; immutable baseline log retained.",
+    "After alias correction, dot-directory-missing-markers reached mock Docker before integrity refusal; baseline JSON retained."
+  ],
+  "qualification": {
+    "focused": "26 read-only manifest/path scenarios + 8 before-Docker coordinated gate cases + 28 existing restore guard cases + one saved boss checkpoint control: 63 distinct checks, Go race package 2.234s, no fail/skip.",
+    "disposable": "Backup generated full-image/fresh-no-image points and failure writer restart (17.91s); private build-context exclusion (1.36s); actual schema25 BSON archive restore consumed through dungeon runtime (22.93s); checkpoint control reused. Four top-level tests passed, 43.413s including race overhead.",
+    "finalAffectedRestore": [
+      {
+        "Test": "TestRestoreActualArchiveRejectsMixedStateAndReplacesOnlyEidolon",
+        "Action": "pass",
+        "Elapsed": 27.51
+      },
+      {
+        "Action": "pass",
+        "Elapsed": 28.583
+      }
+    ],
+    "distinctTotal": 66,
+    "syntaxAndDiff": "bash -n for both helpers; git diff --check; gofmt.",
+    "cleanup": "All three exact owned Compose projects have zero remaining containers or volumes; read-only queries frozen.",
+    "reuse": "Final canonical-directory change leaves backup generation/verifier and private context checks unchanged; only actual restore rerun. No unchanged campaign, soak or GPU rerun."
+  },
+  "frozenEvidence": {
+    "directory": "/home/aeml/.local/share/eidolon-recovery-integrity-checks-20261011",
+    "inventory": "inventory.json",
+    "entries": 17,
+    "sha256": "9de9e05c0ae538a1c9fa2ce26f73b42ad900de1ca09b582d3715dc8bc6c88c6a"
+  },
+  "preserved": {
+    "originalDirty": {
+      "trackedModified": 203,
+      "untracked": 262
+    },
+    "goalFirst146LinesSHA256": "783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7",
+    "sourceWorkflow": "Ordinary reviewed merge; no version/dependency/future feature selection, branch deletion, force push or production restore."
+  },
+  "limits": "Disposable isolated Mongo fixtures, not production restore, full game login, saved-instance expiry, off-machine recovery, RPO/RTO or current release acceptance. No local GPU work during active predeploy GPU owner."
+}
