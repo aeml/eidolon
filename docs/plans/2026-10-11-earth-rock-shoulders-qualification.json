@@ -1,0 +1,170 @@
+{
+  "recordedUTC": "2026-10-11T07:58:30.034739+00:00",
+  "source": "11bf1a9004db918c499f64835496bbe279e3daf6",
+  "base": "ea4123b33df354fd289ac2a5b829be477a4fb414",
+  "published": false,
+  "change": "Connected upper contour edges remove thin outward fins; periodic angular weathering and inward-tapered shoulders preserve geological shape. Moss vertex colors use final smoothed normals, retaining sharp cleaves and pitched caps.",
+  "geometry": {
+    "formations": 6,
+    "solids": 18,
+    "trianglesPerSolid": 206,
+    "totalTriangles": 3708,
+    "sourceAttributeBytes": 489456,
+    "baseComparisons": 36,
+    "first96VerticesExactForEveryBodyAndTerrain": true,
+    "flatAndRaisedDiagnostic": {
+      "before": {
+        "fins": 696,
+        "colorSeams": 17696,
+        "maxOutward": 1.0426801037343534,
+        "maxColorSeam": 0.19334553059815882
+      },
+      "after": {
+        "fins": 0,
+        "colorSeams": 0,
+        "maxOutward": 3.7182401089700716e-05,
+        "maxColorSeam": 0
+      }
+    },
+    "diagnosticMeaning": "fins counts inserted upper-edge points protruding more than .0001 world units beyond their neighboring endpoints, not distinct visible spikes; colorSeams counts coincident shared-vertex pairs with equal final normals and unequal colors. Repeated flat/raised observations overlap the same18recipes.",
+    "authority": "Shared server collision recipes, XZ footprints, location/road clearances and terrain heights unchanged. Client visual upper shoulders and derived visual bounding heights change.",
+    "resources": "Same six merged meshes, shared single PBR material,27192attribute bytes/body. No new shader, map, texture, light, collider or per-frame computation."
+  },
+  "checks": {
+    "focusedPassed": 52,
+    "focusedSuites": 5,
+    "focusedLog": "final-focused.log",
+    "fullSourceLint": "pass; final wrapper/helper changes separately linted after full pass",
+    "diffCheck": "pass",
+    "nativeDistinctCases": 5,
+    "nativePassed": 5,
+    "nativeRetries": 0,
+    "nativeSkipped": 0,
+    "nativeSampledPoses": 280,
+    "hudScreenshots": 35,
+    "nativeScope": "Source High/Low desktop and Low390px; copied production-bundle High/Low desktop. Seven views cover all six formations plus closer road detail, supplied14-slot Fighter, actual prepared HUD,56manually sampled walking updates/case. No normal server input or continuous game-loop qualification.",
+    "nativeCases": [
+      {
+        "case": "source-high",
+        "views": 7,
+        "maxCalls": 196,
+        "maxTriangles": 147081,
+        "released": {
+          "geometry": 6,
+          "material": 1
+        }
+      },
+      {
+        "case": "source-low",
+        "views": 7,
+        "maxCalls": 89,
+        "maxTriangles": 50152,
+        "released": {
+          "geometry": 6,
+          "material": 1
+        }
+      },
+      {
+        "case": "copied-high",
+        "views": 7,
+        "maxCalls": 196,
+        "maxTriangles": 147081,
+        "released": {
+          "geometry": 6,
+          "material": 1
+        }
+      },
+      {
+        "case": "copied-low",
+        "views": 7,
+        "maxCalls": 89,
+        "maxTriangles": 50152,
+        "released": {
+          "geometry": 6,
+          "material": 1
+        }
+      },
+      {
+        "case": "phone-low",
+        "views": 7,
+        "maxCalls": 55,
+        "maxTriangles": 41593,
+        "released": {
+          "geometry": 6,
+          "material": 1
+        }
+      }
+    ],
+    "budgets": "Original350draws/250000trianglesHigh and200draws/85000trianglesLow unchanged, all sampled views pass. No frame-rate assertion/acceptance.",
+    "cleanup": "Each case counts exactly6geometry and1shared-material disposal through normal scene clearing twice and engine destruction. Counts prove owner disposal, not zero VRAM/driver-cache use.",
+    "sourceCopied": "14desktop PNG pairs exactRGB; Lowdeep-west submitted triangle count28124vs30318 differs despite identical pixels. Cause not attributed, not performance equivalence.",
+    "discovery": {
+      "discoveryOnly": true,
+      "nativeScope": "Four unconditional anonymous visual stages; conditional stabilization and separate isolated release-smoke are outside this discovery union.",
+      "previousNative": 39,
+      "missingPreviousNative": [],
+      "hosted": 346,
+      "native": 44,
+      "overlap": 21,
+      "distinct": 369,
+      "previousHosted": 344,
+      "missingPrevious": [],
+      "added": [
+        "[\"published-game-bundle.spec.js\",\"published-game-bundle.spec.js\",\"copied published high Earth rock shelves retain equipped views and cleanup\",\"\"]",
+        "[\"published-game-bundle.spec.js\",\"published-game-bundle.spec.js\",\"copied published low Earth rock shelves retain equipped views and cleanup\",\"\"]"
+      ],
+      "groups": [
+        44,
+        3,
+        2,
+        6,
+        3,
+        51,
+        48,
+        3,
+        3,
+        10,
+        91,
+        28,
+        4,
+        3,
+        4,
+        43
+      ]
+    }
+  },
+  "visualReview": "Viewed ordinary gameplay and detail views across all six formations, source/copy and desktop/phone. Sharp crown fins are absent and shoulder moss seams soften. Broad repeated body/heel/toe construction, modest material detail, repeated plant clumps and broader scenery/HUD composition still need work. Phone crops the adjacent large rock and shows an existing clipped bottom-navigation edge; phone review is not full mobile UI acceptance.",
+  "retainedFailures": [
+    {
+      "log": "candidate-unit-initial.log",
+      "reason": "Draft shallow cleft.07fails existing crown depth>.02normalized; selected cleft.10retains original threshold."
+    },
+    {
+      "log": "candidate-unit-final.log",
+      "reason": "New observer compared signed triangle area with a world-distance tolerance; corrected to signed distance because Float32 precision atx690is~.00006units. Original buried hash, cap/collision and resource checks unchanged."
+    },
+    {
+      "log": "final-native.log",
+      "reason": "Playwright wrapper fixture parameter must destructure its object; discovery failed before execution; corrected only wrapper."
+    },
+    {
+      "log": "final-native-corrected.log",
+      "reason": "Two source cases pass; copied cases fail because new shared helper used relative source origin rather than passed copied origin. Helper now navigates exact passed origin; only failed copied identities rerun."
+    },
+    {
+      "log": "source-copied-images.stderr",
+      "reason": "Offline comparison used obsolete Sharp entry file path. Corrected package resolution with createRequire; no browser/product rerun or image modification."
+    }
+  ],
+  "publication": "Held local component; current releaseAlpha1.79.30/2e6c6a14deployments and normal-TLS identities/assets succeed, final live QA remains pending as of07:51UTC. No next milestone publication before current ordered release gates accepted.",
+  "hostScope": "Existing100-client public29soak38109009521shares host. Initial short candidate comparison overlaps release30nativepredeploy; final art runs began after that gate succeeded. No causal FPS or isolated-device claim.",
+  "custody": "Original dirtywork/fighter-charge-20260915HEAD64ec325b retains203tracked/262untracked entries and original146-line goal prefixSHA783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7. Completed component must ordinary-merge into localmaster; no unrelated experiment selection.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-rock-current-checks-20261011",
+    "frozenInventoryEntries": 161,
+    "filesIncludingInventory": 162,
+    "inventorySHA256": "84d67aa89e456f2273f34387e6b21137f0e6aab2e7816b63086ac1733650de44",
+    "sanitization": "Anonymous/no credentialed login or account creation; scan passes,0fileschanged. Synthetic suppliedFighter only. Failure video/trace remain anonymous."
+  },
+  "remaining": "Full original roadmap, High frame-time targets, modern world/art/contact/audio/device/performance, operations/F1\u2013F5/beta/launch/handoff remain open. No campaign/soak replay, access/commerce/beta change or whole-goal completion."
+}

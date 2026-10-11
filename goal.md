@@ -543,3 +543,21 @@ CI38119634774/2e6c6a14 has client/server/browser1and3success and browser2active
 at07:34UTC. No new publication until release gates/deployment/live acceptance.
 High frame time, full modern art/world/device/operations/F1–F5/beta/launch/handoff
 and every original requirement remain open. Full original goal active.
+
+
+2026-10-11 Earth rock continuation:11bf1a90connects upper edge controls and
+periodic weathering, removing thin fins; moss colors follow final smoothed
+normals. All18solid base recipes remain exact across flat/raised checks,206
+triangles/body and489456source attribute bytes unchanged; shared authority and
+clearances retained.52focused checks/full lint and5distinct native source/copy/
+phone cases pass,0skips/retries.35HUD screenshots/280prepared walking samples,
+14source/copy desktop PNG pairs exactRGB,6geometry/1material owner disposal
+exact per case. One Lowdeep-west submitted count differs28124/30318despite
+identical pixels; no causal attribution or FPS acceptance. Draft observer and
+copy-origin failures retained, not waived. Frozen161-entry inventory84d67aa8.
+Completed component merges into localmaster per owner rule; unpublished until
+current release30ordered acceptance. Both2e6cdeployments/live nine-asset identity
+checks succeed, final live QA pending. Broad repeated rock/vegetation/world
+composition and phone bottom-navigation clipping remain for review. See
+2026-10-11-earth-rock-shoulders-qualification. Original High frame-time, modern
+art/world/contact/audio/device/operations/F1–F5/beta/launch/handoff goal active.
