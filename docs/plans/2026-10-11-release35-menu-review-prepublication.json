@@ -1,0 +1,88 @@
+{
+  "recordedUTC": "2026-10-11T16:14:58.056980+00:00",
+  "version": "Alpha 1.79.35",
+  "source": "0a2303c16165ae42348af3648721541aaf14bb19",
+  "status": "Coherent release metadata and cumulative notes qualified for ordinary master merge and copied publication; not pushed or deployed.",
+  "components": [
+    {
+      "component": "guild",
+      "qualifiedSource": "4238a1eb",
+      "paths": [
+        "src/ui/GuildEventsUI.js",
+        "src/ui/SocialUI.js"
+      ],
+      "exactQualifiedRuntime": true
+    },
+    {
+      "component": "venue",
+      "qualifiedSource": "93d5d520",
+      "paths": [
+        "src/core/CasinoController.js",
+        "src/styles/casino.css"
+      ],
+      "exactQualifiedRuntime": true
+    },
+    {
+      "component": "build continuity",
+      "qualifiedSource": "ec4763db",
+      "paths": [
+        "src/ui/SkillTreeUI.js"
+      ],
+      "exactQualifiedRuntime": true
+    },
+    {
+      "component": "build keyboard layout",
+      "qualifiedSource": "2b2bd799",
+      "paths": [
+        "src/styles/skill-tree.css"
+      ],
+      "exactQualifiedRuntime": true
+    },
+    {
+      "component": "direct trade",
+      "qualifiedSource": "032ac872",
+      "paths": [
+        "src/ui/DirectTradeUI.js",
+        "src/styles/direct-trade.css"
+      ],
+      "exactQualifiedRuntime": true
+    }
+  ],
+  "behavior": "Guild actions retain current plan/membership ownership and recruitment position; venue dialog name/disabled styles; keyboard build controls and redraw focus/scroll continuity; direct-trade drafts, pending acknowledgements and phone controls. Existing component receipts retain detailed behavior and failures.",
+  "validation": {
+    "focusedDistinct": 728,
+    "focusedSuites": 17,
+    "nativeDistinct": 2,
+    "nativeExecutions": 2,
+    "nativeRetries": 0,
+    "nativeSkips": 0,
+    "lint": "full max-warnings=0 pass",
+    "shellSyntax": "both affected scripts pass",
+    "diffCheck": "pass"
+  },
+  "native": "Actual System Chrome login loads10notes without engine, on-demand older-page failure/manual retry succeeds. Actual copied/versioned engine remains lazy and constructs all four supplied classes with renderer/network/UI and bounded module graph. Prepared anonymous fixtures, no production account or transfer.",
+  "history": {
+    "currentVersion": "1.79.35",
+    "total": 470,
+    "inline": 10,
+    "lazyPages": 46,
+    "priorEntriesByteExact": 469,
+    "priorSHA256": "09adc21527420a0bb2d52fdf42a98c083444296a17e817280508289ca80425e9"
+  },
+  "releaseVersions": "All12current release/version paths synchronized35; historical34notes unchanged. Tests verify frontend, backend, CI deployment, scripts and lockfile.",
+  "reusedEvidence": [
+    "2026-10-11-guild-calendar-action-qualification.json",
+    "2026-10-11-casino-completed-history-qualification.json",
+    "2026-10-11-desktop-build-keyboard-qualification.json",
+    "2026-10-11-desktop-build-continuity-qualification.json",
+    "2026-10-11-direct-trade-review-qualification.json"
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release35-menu-review-checks-20261011",
+    "inventoryEntries": 10,
+    "inventorySHA256": "a767e3b9d514a3095e9ea8c8377f27326a7c347d2f42a0a0fa59b232655ae12d"
+  },
+  "previousAccepted": "Alpha1.79.34/3ec8bb151f24909127b832a4035eb7e6eab9b635 exact ordered CI/live/public acceptance; see2026-10-11-public34-terminal-qualification.json.",
+  "remaining": "Build exact copied publication and pin changed/retained public assets, fetch/ordinary merge origin before push. Own35ordered CI/deploy/live and fresh post-terminal normal-TLS identity/readyDB/asset checks required before another release.",
+  "limits": "No whole-game art/performance/device, connected durable trade, earned progression, physical-phone or final-accessibility claim. Reused cases retain their original scopes and failures; optional skips remain skips. Full release-readiness goal active; ongoing public29soak untouched."
+}

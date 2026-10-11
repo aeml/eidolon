@@ -10,8 +10,12 @@ checks pass at16:10:48UTC. Four optional stages remain skips.
 [Acceptance](plans/2026-10-11-public34-terminal-qualification.json).
 Original client-fixture and predeploy network failures remain retained.
 [Diagnosis/retry](plans/2026-10-11-release34-predeploy-network-retry.json).
-Qualified guild/venue/build-menu/direct-trade work is merged into local master
-for a coherent successor.579of644local branches are merged;65unmerged histories
+Qualified guild/venue/build-menu/direct-trade work is prepared as coherent35:
+728focused checks/17suites, two native publication cases,12synchronized versions
+and470cumulative notes retain all469prior entries exactly. Own35publication and
+ordered CI/deploy/live/fresh public acceptance remain required.
+[Prepublication](plans/2026-10-11-release35-menu-review-prepublication.json).
+After the qualified35merge,580of645local branches are merged;65unmerged histories
 remain under individual review. The complete world/art/gameplay/device/
 performance/operations/F1–F5/beta/launch scope and historical failures remain
 open; these scoped fixes do not establish freeze or beta readiness.
