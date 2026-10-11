@@ -411,12 +411,14 @@ export class SkillTreeUI {
             for (let i = 2; i <= 5; i++) {
                 const tierKey = `Tier${i}`;
                 const skill = branchData[tierKey];
-                const node = document.createElement('div');
+                const node = document.createElement('button');
+                node.type = 'button';
                 node.className = 'skill-node';
 
                 const reqLevel = (i - 1) * 10;
                 const isUnlocked = skill && unlockedSkills.includes(skill.name);
                 const canUnlock = !isUnlocked && skill && playerLevel >= reqLevel && (player && (player.skillPoints || 0) > 0);
+                node.disabled = !canUnlock;
 
                 if (isUnlocked) {
                     node.classList.add('unlocked');
@@ -432,15 +434,16 @@ export class SkillTreeUI {
                     };
                 }
 
-                const nodeTitle = document.createElement('div');
+                const nodeTitle = document.createElement('span');
                 nodeTitle.className = 'skill-node-title';
                 nodeTitle.textContent = skill ? skill.name : `Tier ${i} ???`;
 
-                const nodeDesc = document.createElement('div');
+                const nodeDesc = document.createElement('span');
                 nodeDesc.className = 'skill-node-desc';
                 nodeDesc.textContent = skill ? skill.desc : 'Coming Soon...';
 
-                const levelReqDiv = document.createElement('div');
+                const levelReqDiv = document.createElement('span');
+                levelReqDiv.style.display = 'block';
                 levelReqDiv.style.fontSize = '10px';
                 levelReqDiv.style.marginTop = '4px';
                 if (isUnlocked) {
@@ -451,7 +454,8 @@ export class SkillTreeUI {
                     levelReqDiv.textContent = `Unlocks at Level ${reqLevel}`;
                 }
 
-                const pointsDiv = document.createElement('div');
+                const pointsDiv = document.createElement('span');
+                pointsDiv.style.display = 'block';
                 pointsDiv.style.fontSize = '10px';
                 pointsDiv.style.marginTop = '2px';
                 pointsDiv.style.color = canUnlock ? 'var(--color-gold)' : '#666';
@@ -731,7 +735,12 @@ export class SkillTreeUI {
                 const canEquip = isUnlocked && playerLevel >= rune.unlockLevel;
                 const isEquipped = equippedRuneId === rune.id;
 
-                const runeBtn = document.createElement('div');
+                const runeBtn = document.createElement('button');
+                runeBtn.type = 'button';
+                runeBtn.disabled = !canEquip;
+                runeBtn.dataset.runeId = rune.id;
+                runeBtn.setAttribute('aria-pressed', String(isEquipped));
+                runeBtn.style.textAlign = 'left';
                 runeBtn.style.flex = '1';
                 runeBtn.style.minWidth = '120px';
                 runeBtn.style.padding = '8px';
@@ -741,18 +750,21 @@ export class SkillTreeUI {
                 runeBtn.style.cursor = canEquip ? 'pointer' : 'default';
                 runeBtn.style.opacity = canEquip ? '1' : '0.6';
 
-                const runeName = document.createElement('div');
+                const runeName = document.createElement('span');
+                runeName.style.display = 'block';
                 runeName.style.fontSize = '12px';
                 runeName.style.fontWeight = 'bold';
                 runeName.style.color = isEquipped ? 'var(--color-success)' : (canEquip ? '#fff' : '#888');
                 runeName.textContent = rune.name;
 
-                const runeLevel = document.createElement('div');
+                const runeLevel = document.createElement('span');
+                runeLevel.style.display = 'block';
                 runeLevel.style.fontSize = '10px';
                 runeLevel.style.color = playerLevel >= rune.unlockLevel ? '#888' : '#ff6666';
                 runeLevel.textContent = `Level ${rune.unlockLevel}`;
 
-                const runeDesc = document.createElement('div');
+                const runeDesc = document.createElement('span');
+                runeDesc.style.display = 'block';
                 runeDesc.style.fontSize = '10px';
                 runeDesc.style.color = '#aaa';
                 runeDesc.style.marginTop = '4px';

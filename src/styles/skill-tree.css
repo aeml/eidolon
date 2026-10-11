@@ -115,7 +115,8 @@
     justify-content: center;
 }
 
-.skill-node {
+.skill-node,
+#skill-tree-window button.skill-node {
     background: var(--bg-surface);
     border: 1px solid var(--border-heavy);
     padding: var(--spacing-md);
@@ -123,6 +124,8 @@
     cursor: pointer;
     transition: all var(--transition-default);
     position: relative;
+    text-align: left;
+    width: 100%;
 }
 
 .skill-node:hover {
@@ -136,12 +139,14 @@
 }
 
 .skill-node-title {
+    display: block;
     font-weight: bold;
     font-size: 0.9rem;
     color: var(--color-white-bright);
 }
 
 .skill-node-desc {
+    display: block;
     font-size: 0.8rem;
     color: var(--color-text-muted);
     margin-top: var(--spacing-sm);

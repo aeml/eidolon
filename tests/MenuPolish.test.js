@@ -646,10 +646,9 @@ describe('menu polish regressions', () => {
         skillTree.onSelectRune = jest.fn();
         skillTree.renderSkillTree('Fighter');
 
-        const thornsName = [...document.querySelectorAll('#skill-tree-content div')]
-            .find((element) => element.textContent === 'Thorns');
-        expect(thornsName).toBeDefined();
-        thornsName.click();
+        const thorns = document.querySelector('#skill-tree-content button[data-rune-id="ironfortress_thorns"]');
+        expect(thorns).not.toBeNull();
+        thorns.click();
 
         expect(skillTree.onSelectRune).toHaveBeenCalledWith('Iron Fortress', 'ironfortress_thorns');
         expect(player.skillRunes['Iron Fortress']).toBe('ironfortress_extended');
