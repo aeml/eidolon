@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T04:11:17.177229+00:00",
-  "classification": "Progress: selected 5ae298f1 preserves remote swing/cast continuity at confirmed impact.106 focused checks and1 distinct native equipped-class case pass; unchanged-runtime reproduction and fixture failures retained.",
-  "qualifiedRuntime": "Held 5ae298f1 removes damage-driven source attack restarts on top of selected regional relic/floor/prop/paving/ward/root, worker, additive, HUD and actor work. Staged unpublished; public Alpha1.79.29 exact engine rehash matches. Private rejected/unselected candidates unchanged.",
+  "recordedUTC": "2026-10-11T04:44:56.933518+00:00",
+  "classification": "Progress: selected equipped class skill families and remote cast speed fix;138 focused and3 distinct native identities pass. Staged unpublished.",
+  "qualifiedRuntime": "Held 2f9c284b adds equipped skill motions and remote cast timing on selected combat impact/world/material/HUD/worker work. Public29 unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -2782,5 +2782,72 @@
       "frozen": true
     },
     "scopeLimits": "Prepared local message/mixer/render and audio-call checks, not live combat timing, physical-device, speaker/listening, busy-party performance or modern-art approval. No server, damage, cooldown, collision, assets, settings or account-data change. Prior jump/aura/admin public acceptance reused and matching public engine freshly rehashed. All historical performance failures and original roadmap/operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or public push."
+  },
+  "equippedSkillMotions": {
+    "source": "2f9c284bcf1e765046ce20ae9211de258cf1abd1",
+    "selected": true,
+    "published": false,
+    "focused": {
+      "passed": 138,
+      "suites": 7,
+      "newTests": 16,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 6.544
+    },
+    "native": {
+      "distinctPassed": 3,
+      "failedFinal": 0,
+      "skipped": 0,
+      "retries": 0,
+      "flaky": 0,
+      "artCases": 2,
+      "runtimeCases": 1,
+      "artSeconds": 115.554931,
+      "runtimeSeconds": 14.57869,
+      "selectedArtRoot": "native-contact-results",
+      "runtimeRoot": "native-runtime-qualified-results",
+      "scenariosEachQuality": 12,
+      "classQualityRigs": 8,
+      "equippedSlotsEach": 14,
+      "preparedArtFrames": 1920,
+      "artScreenshots": 110,
+      "runtimeAnimationRenderFrames": 224,
+      "remoteActorUpdates": 32,
+      "counts": "Repeated draft/final runs share three identities and count once. Art frames explicitly advance mixers at prepared time steps; runtime case includes 32 actual Actor.update calls. No full-frame game-loop performance claim.",
+      "maxPreparedDraws": {
+        "high": 76,
+        "low": 39
+      },
+      "maxPreparedTriangles": {
+        "high": 44015,
+        "low": 21492
+      },
+      "referenceCandidateDrawTrianglePairsEqual": true
+    },
+    "allocation": {
+      "generatedClipsPerRig": {
+        "Fighter": 20,
+        "Rogue": 10,
+        "Cleric": 5,
+        "Wizard": 0
+      },
+      "uniqueKeyframeArrayBytesPerRig": {
+        "Fighter": 38060,
+        "Rogue": 33460,
+        "Cleric": 29060,
+        "Wizard": 0
+      },
+      "scope": "Per-instance typed arrays, including shared stance tracks; excludes JS objects, action/binding overhead. No global cache, added GPU resource, source clip edits, assets or timer. No FPS saving claim."
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-equipped-skill-checks-20261011",
+      "inventoryEntries": 678,
+      "files": 679,
+      "inventorySHA256": "b8a4ca0ff59ddda999ae02dc7ed9f056ad3280f24df089281ade63d54c693578",
+      "frozen": true
+    },
+    "limits": "Prepared supplied-rig motion/remote-update checks, not live server combat/contact timing, speaker/listening, physical-device, sustained party performance or owner modern-art approval. Source art views precede remote-only timing guard; final actual Actor-update case qualifies the guard. Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw and Low202draw failures remain. Sparse room/world composition, contact/audio, supported devices and original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or unrelated private selection.",
+    "receipt": "docs/plans/2026-10-11-equipped-skill-motion-qualification.json"
   }
 }

@@ -552,3 +552,32 @@ Existing performance failures, contact/audio polish, world composition and all
 original operations/F1–F5/beta/launch/handoff requirements remain open. No
 campaign/soak replay or public/version/access change.
 [Scoped qualification](2026-10-11-combat-impact-continuity-qualification.json).
+
+
+### 2026-10-11 — equipped skill motions and remote cast speed
+
+Selected `2f9c284b` gives Fighter shield-led bash, heavy strike, sweep and full-turn
+spin; Rogue throws/spins and Cleric mace strikes use equipped stance clips.
+Wizard Flame Whip/Arcane Missiles reuse delivered Cast. Source GLBs, finger
+grips, logical facing/position, skill durations and gameplay remain unchanged.
+Remote ATTACKING updates no longer replace active cast speed with basic-attack
+speed; eight reproduction failures pass after the guard.138 focused checks
+pass, including16 new tests, plus3 distinct native identities without retries
+or skips. Repeated drafts are retained and counted once.
+
+High/Low actual HUD/14-slot four-class prepared review covers12 scenarios each,
+1920 mixer/render frames and110 screenshots. Reference/candidate draw/triangle
+counts match; maxima76/39draws and44015/21492triangles. Separate equipped-rig
+runtime case covers224 animation/render frames including32 actual remote Actor
+updates. Keyframe arrays cost38060/33460/29060/0bytes per Fighter/Rogue/Cleric/
+Wizard instance, excluding JS/action/binding overhead. No GPU-resource addition
+or FPS claim. Final copied production engine compiles; no copied-bundle browser
+execution this turn. Initial fixture, class-allocation, pose and remote-timing
+failures remain in the frozen evidence.
+
+Staged unpublished; public29 jump/aura/admin acceptance reused. Prepared motion
+does not prove live contact timing, sustained gameplay/party performance,
+listening, physical devices or owner art acceptance. Historical timing/draw/
+triangle failures, sparse room/world composition and full original operations/
+F1–F5/beta/launch/handoff remain open. No campaign/soak replay or public change.
+[Scoped qualification](2026-10-11-equipped-skill-motion-qualification.json).

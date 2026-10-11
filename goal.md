@@ -392,3 +392,16 @@ fixture failure retained. Staged unpublished; public29 engine freshly matches
 prior jump/aura/admin acceptance. Full original goal and historical performance,
 world/art/contact/audio/device/operations/F1–F5/beta/launch/handoff gaps stay open.
 [Evidence](docs/plans/2026-10-11-combat-impact-continuity-qualification.json).
+
+
+### 2026-10-11 — equipped skill motion continuation
+
+Selected 2f9c284b adds equipped shield/heavy/sweep/spin/throw motions while preserving
+supplied sources, equipment grips, skill duration and logical movement. Wizard
+spell releases use delivered Cast. Remote updates preserve cast playback speed.
+138 focused checks and3 distinct native identities pass;1920 prepared art frames,
+110 screenshots and32 actual remote Actor updates. Failures/drafts retained;
+copied production bundle compiles. Staged unpublished; public29 jump/aura/admin
+acceptance unchanged. Historical performance failures and original world/art/
+contact/audio/device/operations/F1–F5/beta/launch/handoff gaps stay open.
+[Evidence](docs/plans/2026-10-11-equipped-skill-motion-qualification.json).
