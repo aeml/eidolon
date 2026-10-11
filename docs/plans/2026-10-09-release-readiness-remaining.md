@@ -140,7 +140,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **78**, reduced from 287; 558 of 636 local branch names
+  unmerged tips are now **78**, reduced from 287; 559 of 637 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -190,6 +190,17 @@ Every explicit requirement in those sources remains part of the completion audit
   The prior failed soak remains open; no retry/cancellation or unchanged campaign
   replay has been performed.
 
+- **Qualified34 milestone:** source `c75c0f41`, qualification `0b120edc`,
+  ordinary master merge `88cf2985`. Steady dungeon radar, independent mixed
+  weapon grips and faster owned geometry copies combine in one publication.
+  All12 version paths align34;469 cumulative notes preserve all468prior entries
+  byte-exact.444distinct checks/five suites, full lint, shell syntax and four
+  distinct native publication cases pass with retries/skips0. Actual High/Low
+  four-class14-slot worker integration retains exact scheduler-control indices
+  and pixels; five mixed Rogue stances resolve correctly. Initial local vendor
+  preparation failure and affected-only rerun remain retained. Final23asset pins
+  and normal publication next; own release acceptance still required.
+  [Prepublication](2026-10-11-release34-motion-navigation-prepublication.json).
 - **Next qualified optimization:** exact worker geometry copies avoid component
   decoding for ordinary packed/interleaved float buffers.90 focused checks, full
   lint and one actual GLTFLoader16source/118mesh case pass; complete character

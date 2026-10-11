@@ -430,6 +430,10 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
+- Latest verified public build: `Alpha 1.79.33`, exact `9ce67fe3d2d0aeae55102d14b579107733d1a719`.
+  All ten ordered CI jobs and fresh post-terminal frontend/backend, ready-database
+  and17asset checks pass. [Acceptance](docs/plans/2026-10-11-public33-terminal-qualification.json).
+  Source34 below is a separately qualified successor; its deployment/public verification follows.
 - Current source version: `Alpha 1.79.34`, steady dungeon radar context, independent
   mixed-weapon Rogue grips and faster character geometry preparation, alongside
   private account/progress help, expanded
