@@ -101,7 +101,8 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
                 render.updateEnvironmentLighting(hero.position, 0); render.render(); render.render();
                 return { view, calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles };
             };
-            const rootBatches = current.children.filter(part => part.isMesh && part.material.vertexColors);
+            const rootBatches = current.children.filter(part => part.isMesh && part.material.vertexColors
+                && !part.material.userData.dungeonPropSurface);
             // The entry remains a normal traversable room. Presentation swaps
             // cannot register geometry as a new walk blocker or interaction.
             let blocked = 0;

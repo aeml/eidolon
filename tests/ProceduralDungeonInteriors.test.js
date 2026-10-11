@@ -182,7 +182,7 @@ describe('Procedural dungeon interior art', () => {
             surfaceTextures: 8,
             surfaceMaterials: 2,
             surfaceGeometries: 1,
-            detailGeometries: 17,
+            detailGeometries: 20,
             detailMaterials: 7
         });
     });

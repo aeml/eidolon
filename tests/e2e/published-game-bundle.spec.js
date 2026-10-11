@@ -464,6 +464,8 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
                     verdant: floor.material.userData.verdantFloorPatina, props,
                     paving: render.instanceEnvironmentGroup.children.filter(part => part.userData.processionalPaving)
                         .map(part => part.userData.processionalPaving.identity),
+                    relics: render.instanceEnvironmentGroup.children.filter(part => part.userData.regionalRelic)
+                        .map(part => part.userData.regionalRelic),
                     quality: world.graphicsQuality, mapSize: floor.material.map.image.width,
                     calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                     collidersStable: colliders === JSON.stringify(game.collisionManager.colliders) });
@@ -488,6 +490,11 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
         else expect(row).toMatchObject({ compiled: true, patina: row.type });
         expect(row.props.map(prop => `${prop.role}:${prop.vertexColors}`).sort()).toEqual(['metal:false', 'stone:false', 'stone:true']);
         for (const identity of ['entry_gate', 'treasure_cache', 'restorative_shrine']) expect(row.paving).toContain(identity);
+        if (row.type === 'verdant_bastion_catacombs') expect(row.relics).toEqual([]);
+        else {
+            expect(row.relics.length).toBeGreaterThan(0);
+            for (const relic of row.relics) expect(relic).toEqual({ type: row.type, count: 2, channels: ['body', 'metal', 'glow'], quality });
+        }
         for (const prop of row.props) {
             expect(prop.compiled, `${row.type} ${prop.role}`).toBe(true);
             for (const map of prop.maps) expect(map).toMatchObject({ size: quality === 'low' ? 64 : 128,

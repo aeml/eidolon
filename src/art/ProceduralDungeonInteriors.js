@@ -14,6 +14,7 @@ import { applyVerdantFloorPatina } from './VerdantFloorPatina.js';
 import { applyElementalFloorPatina } from './ElementalFloorPatina.js';
 import { createDungeonPropSurfaceMaps } from './DungeonPropSurface.js';
 import { createDungeonProcessionalPaving } from './DungeonProcessionalPaving.js';
+import { createDungeonRegionalRelics } from './DungeonRegionalRelics.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -220,7 +221,8 @@ function createMaterialSet(dungeonType, quality) {
     });
 }
 
-function createShapes(quality) {
+function createShapes(dungeonType, quality) {
+    const relics = dungeonType === 'verdant_bastion_catacombs' ? null : createDungeonRegionalRelics(dungeonType, quality);
     return Object.freeze({
         box: new THREE.BoxGeometry(1, 1, 1),
         cylinder6: new THREE.CylinderGeometry(0.5, 0.5, 1, 6),
@@ -238,7 +240,8 @@ function createShapes(quality) {
         fontBasin: createDungeonFontBasin(),
         entryPaving: createDungeonProcessionalPaving('entry_gate'),
         cachePaving: createDungeonProcessionalPaving('treasure_cache'),
-        shrinePaving: createDungeonProcessionalPaving('restorative_shrine')
+        shrinePaving: createDungeonProcessionalPaving('restorative_shrine'),
+        ...(relics ? { regionalBody: relics.body, regionalMetal: relics.metal, regionalGlow: relics.glow } : {})
     });
 }
 
@@ -476,38 +479,19 @@ function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
             });
             rootBeam.rotation.y = side * .6;
         }
-    } else if (dungeonType === 'molten_core') {
-        for (const side of [-1, 1]) {
-            addPart(root, `molten:crucible-fang:${side}`, shapes.cone4, materials.accent, {
-                position: [side * radius * 0.56, 0.72, radius * 0.56],
-                scale: [1.4, 2.8, 1.4]
-            });
-        }
-    } else if (dungeonType === 'tempest_spire') {
-        for (const side of [-1, 1]) {
-            addPart(root, `tempest:floating-slate:${side}`, shapes.box, materials.stone, {
-                position: [side * radius * 0.62, 1.4 + (side + 1) * 0.35, radius * 0.52],
-                rotation: [0.18, side * 0.32, side * 0.12],
-                scale: [3.2, 0.55, 2.1]
-            });
-        }
-    } else if (dungeonType === 'abyssal_well') {
-        for (const side of [-1, 1]) {
-            addPart(root, `abyssal:coral-antler:${side}`, shapes.cone6, materials.spirit, {
-                position: [side * radius * 0.58, 1.5, radius * 0.55],
-                rotation: [0, 0, side * 0.38],
-                scale: [1.15, 3.5, 1.15],
-                castShadow: false
-            });
-        }
     } else {
+        const [x, z] = dungeonType === 'molten_core' ? [.56, .56]
+            : dungeonType === 'tempest_spire' ? [.62, .52] : [.58, .55];
+        root.userData.regionalRelic = { type: dungeonType, count: 2, channels: ['body', 'metal', 'glow'],
+            quality: shapes.regionalBody.userData.dungeonRegionalRelic.quality };
         for (const side of [-1, 1]) {
-            const shard = addPart(root, `umbral:memory-shard:${side}`, shapes.octahedron, side > 0 ? materials.accent : materials.spirit, {
-                position: [side * radius * 0.58, 1.8, radius * 0.54],
-                scale: [1.4, 3.6, 1.4],
-                castShadow: false
+            for (const [role, shape, material] of [
+                ['body', shapes.regionalBody, materials.stone], ['metal', shapes.regionalMetal, materials.metal],
+                ['glow', shapes.regionalGlow, dungeonType === 'abyssal_well' || (dungeonType === 'umbral_nexus' && side < 0)
+                    ? materials.spirit : materials.accent]
+            ]) addPart(root, `regional:${dungeonType}:${side}:${role}`, shape, material, {
+                position: [side * radius * x, 0, radius * z], rotation: [0, side * .18, 0], castShadow: role !== 'glow'
             });
-            shard.rotation.z = side * 0.34;
         }
     }
 }
@@ -693,7 +677,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
     sampleCache.clear();
     const materials = new Map();
     const geometries = new Map();
-    const shapes = createShapes(surfaceQuality);
+    const shapes = createShapes(dungeonType, surfaceQuality);
     const detailMaterials = createMaterialSet(dungeonType, surfaceQuality);
 
     const surfaceMaterial = (surface, width, height, transparent = false) => {

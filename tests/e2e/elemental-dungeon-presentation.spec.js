@@ -5,6 +5,7 @@ import { test, expect } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 import { compareFilmicLighting } from './lighting-comparison.js';
 import { reviewDungeonProps, prepareDungeonPropReference } from './dungeon-prop-review.js';
+import { reviewDungeonRelics, prepareDungeonRelicReference } from './dungeon-relic-review.js';
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 const fixtures = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
@@ -17,6 +18,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
     test(`equipped elemental dungeon rooms at ${width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
         await prepareDungeonPropReference(page);
+        await prepareDungeonRelicReference(page);
         if (compareFloor) {
             const previous = execFileSync('git', ['show', `${referenceCommit}:src/art/ProceduralDungeonInteriors.js`], { encoding: 'utf8' })
                 .replace("'./ElementalDungeonSurface.js'", "'./ElementalDungeonSurfaceReference.js'");
@@ -175,6 +177,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
                 }
             }
             await reviewDungeonProps(page, testInfo, '__dungeonArtReview', type, layout);
+            await reviewDungeonRelics(page, testInfo, type, layout);
         }
         await writeFile(testInfo.outputPath('render-scopes.json'), JSON.stringify(samples, null, 2));
         const gpu = await page.evaluate(() => {
