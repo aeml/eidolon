@@ -47,7 +47,7 @@ export function createConiferBoughGeometry(quality = 'high') {
                     // of sticks when the entire crown is viewed at play zoom.
                     tip.y -= .06 + .09 * t;
                     const ridge = root.clone().lerp(tip, .48); ridge.y += .085;
-                    const edge = ridge.clone().addScaledVector(side, sign * .2); edge.y -= .075;
+                    const edge = ridge.clone().addScaledVector(side, sign * .22); edge.y -= .075;
                     triangle(root, edge, tip, shade * (sign < 0 ? .91 : 1));
                     if (quality !== 'low') triangle(root, tip, ridge, shade * 1.04);
                 }
