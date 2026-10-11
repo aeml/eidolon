@@ -1,0 +1,27 @@
+{
+  "source": "88eeabdb5d154732f673e18487d7de6a3de76415",
+  "base": "b2d710e3",
+  "status": "unselected-rejected-for-production",
+  "reason": "Ordinary gameplay HUD views show only subtle grain changes; short mat does not resolve broad green patches or sparse ground composition. Added texture preparation costs approximately67ms High/20ms Low in recorded ABBA. Visible benefit does not justify selecting this candidate.",
+  "checks": {
+    "focusedDistinct": 28,
+    "focusedSuites": 4,
+    "nativeDistinct": 2,
+    "nativeExecutions": 2,
+    "nativeRetries": 0,
+    "nativeSkips": 0,
+    "nativeSeconds": 26.9,
+    "pairedViews": 8,
+    "baselineAgainUnstablePixels": 0,
+    "drawTriangleAndMemoryEqual": true,
+    "lint": "pass",
+    "diff": "pass"
+  },
+  "limits": "Prepared four-class14-slot motion/actual HUD on native Vulkan. Not authenticated input, real gameplay, full-game performance, modern-art approval or physical-device proof. Low sampled triangle counts99891/91510 exceed original85000 budget; this candidate does not change them or establish acceptance.",
+  "next": "Retain code/evidence privately; continue substantial world composition/material work under original budgets. No production runtime or CI enrollment change.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-earth-turf-checks-20261011",
+    "inventoryEntries": 27,
+    "inventorySHA256": "4bed97b2c85abde85b0b46894d2e5720600c31e3d54ffa2632d4f304c9ecf8d5"
+  }
+}
