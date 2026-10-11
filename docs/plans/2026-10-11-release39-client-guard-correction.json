@@ -1,0 +1,57 @@
+{
+  "recordedUTC": "2026-10-11T21:51:45.475903+00:00",
+  "source": "c7271bddfa34f6267973cc1302c7512e24f1886e",
+  "ci": 38176727839,
+  "observedOverallStatus": "in_progress",
+  "clientJobFailureConfirmed": true,
+  "hostedTests": {
+    "passed": 10775,
+    "failed": 2,
+    "suitesPassed": 730,
+    "suitesFailed": 2
+  },
+  "localBefore": {
+    "passed": 12,
+    "failed": 2,
+    "suites": 2
+  },
+  "localAfter": {
+    "passed": 14,
+    "failed": 0,
+    "suites": 2
+  },
+  "changed": [
+    "tests/NativeVisualEvidence.test.js",
+    "tests/ProceduralArtMigrationGuard.test.js"
+  ],
+  "lint": "Scoped ESLint passed",
+  "diffCheck": true,
+  "runtimeWorkflowVersionsAssetsUnchanged": true,
+  "resolution": "Exact suffix-only generator audit and exact required immutable-worker native-selector expectation. No broader asset exemption, disabled coverage, relaxed budgets or retries.",
+  "status": "Qualified test-only correction committed directly on master64b80cd6. Original client job terminal failure; other original CI prerequisites still running at observation. No push or rerun requested.",
+  "correctionCommit": "64b80cd6bbc4cbb5a14716f4e9eadf5b6abf2f5f",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release39-client-failure-20261011",
+    "entries": 9,
+    "inventorySHA256": "9e62095444ed1e1f6df6259963e32cab1bbb0b72f1a64b18c209483298b9c05a"
+  },
+  "nativeSelection": {
+    "files": [
+      "tests/e2e/dungeon-entry-ward.spec.js",
+      "tests/e2e/dungeon-floor-material.spec.js",
+      "tests/e2e/published-game-bundle.spec.js",
+      "tests/e2e/additive-effects-render.spec.js",
+      "tests/e2e/camp-instance-frustum.spec.js",
+      "tests/e2e/demon-orc-rigid-delivery.spec.js",
+      "tests/e2e/singleton-actor-delivery.spec.js",
+      "tests/e2e/earth-rock-shelf-review.spec.js",
+      "tests/e2e/understory-shared-geometry.spec.js",
+      "tests/e2e/earth-thatch-composition.spec.js"
+    ],
+    "selector": "grounded entry wards|floor weathering|geometry scheduling|immutable worker|elemental floor materials|additive status, cast and contact|camp clipping preserves|DemonOrc preserves|DemonOrc defaults|singleton reviewed actors|singleton actors follow|Earth rock shelves retain|shared understory geometry survives|matted Earth thatch",
+    "immutableWorkerDiscovered": true,
+    "geometrySchedulingDiscovered": true,
+    "execution": "Discovery only; no new browser execution claimed. Exact runtime and prior native functional proof unchanged."
+  },
+  "publication": "Retain original CI failure. Wait for original terminal outcome before ordinary corrective same-version publication with refreshed exact asset identity pins; no blind retry or next milestone.38 remains last accepted. Original39 runtime unchanged."
+}

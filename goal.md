@@ -937,3 +937,38 @@ limitations and raw results retained. Qualified8c4e916d/ad81b6db ordinarily
 merged locally after corrective33 push; hold next publication until acceptance.
 See [qualification](docs/plans/2026-10-11-geometry-transfer-copy-qualification.json).
 Full world/art/gameplay/operations/F1–F5/beta/launch/handoff goal remains active.
+
+
+## October11 current connected diagnosis and corrective39 audits
+
+Previous branch-only goal turn made no new implementation progress; current
+revalidation confirms only master locally/on origin and all705original refs
+remain ancestors. This turn advances authoritative evidence and fixes current
+release blockers without narrowing the full original objective.
+
+Exact39/c7271bdd CI38176727839 client prerequisite failed two stale audits:
+new generator MIME suffix and required immutable-worker selector enrollment.
+Hosted10775pass/2fail; local unchanged12pass/2fail reproduced. Narrow test-only
+correction64b80cd6 on master passes14checks/two suites and scoped lint; original
+asset budgets, runtime, workflow, versions and native evidence coverage unchanged.
+Required native selector discovery includes geometry scheduling and immutable
+worker; discovery is not a new browser pass. Original other prerequisites still
+active at observation; no retry, cancellation or corrective push yet.38 remains
+last accepted. Retain original terminal failure before corrective same-version
+publication and own ordered CI/live/93asset acceptance.
+
+Current39 connected disposable Go-race four-class14-slot party diagnosis passes
+actual saved equipment/inventory/EP/party/logout custody. Native1pass/1optional
+skip/retry0; diagnostic mode does not assert or waive budget acceptance.180real
+frames295draws/182247tri pass counts but50median/66.7p95 fail20/33.4ms. Pending
+geometry51→0;103settled frames still50/66.6ms. Profiling identifies matrix/shadow
+traversal,70frames/167020foliage visits and unchanged camera/shadow revisions.
+Prepared High/Low renderer-only16.7ms frames exclude gameplay/network. Private
+Low early-color-cull exact1316640RGBA bytes but candidate7.0/6.6median render
+versus reference5.9/6.7ms regresses; rejected without production selection.
+Three evidence roots frozen, owned resources stopped, four synthetic identities
+sanitized; retained initial report-location sanitizer failure corrected without
+gameplay replay. No campaign/soak rerun or physical-device/art/performance waiver.
+See current-render-connected-cpu-qualification and release39-client-guard-correction.
+Every original world/art/gameplay/device/operations/F1-F5/beta/launch/handoff
+requirement remains active, including owner-deferred campaign/phone feedback.
