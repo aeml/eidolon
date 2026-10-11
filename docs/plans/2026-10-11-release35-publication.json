@@ -1,0 +1,45 @@
+{
+  "recordedUTC": "2026-10-11T16:17:45.795922+00:00",
+  "version": "Alpha 1.79.35",
+  "source": "ade204b800faa2cba8eacf1da71b100590e88d87",
+  "ciRun": 38154778403,
+  "ciURL": "https://github.com/aeml/eidolon/actions/runs/38154778403",
+  "status": "Qualified coherent35 ordinarily pushed to master; own ordered CI active, no own deployment/public acceptance yet.",
+  "normalPush": {
+    "recordedUTC": "2026-10-11T16:17:45.795922+00:00",
+    "from": "3ec8bb151f24909127b832a4035eb7e6eab9b635",
+    "to": "ade204b800faa2cba8eacf1da71b100590e88d87",
+    "fetchedAndOrdinarilyMergedOriginBeforePush": true,
+    "force": false,
+    "branch": "origin/master",
+    "qualifiedReleaseBranchAncestorOfMaster": true,
+    "localBranches": {
+      "total": 645,
+      "merged": 580,
+      "unmerged": 65
+    }
+  },
+  "qualification": "2026-10-11-release35-menu-review-prepublication.json",
+  "validation": "728distinct focused checks/17suites and2distinct native publication cases pass, retries/skips0; full lint/shell syntax;12versions synchronized;470notes/all469prior byte-exact. Component native evidence reused only after exact runtime identity checks.",
+  "expectedManifest": "/home/aeml/.local/share/eidolon-release35-publication-checks-20261011/expected-public35-assets.json",
+  "expectedManifestSHA256": "efd98cf803dd3b560de68b9b4aa38cd9c74de491b2a039ce737aa8bef5b0e618",
+  "assetPins": 78,
+  "engine": {
+    "bytes": 3499109,
+    "sha256": "f1bc44271d53a159dd52278ba22667668c2b2b4a8a5a19cc5e53615b3f278566"
+  },
+  "worker": "Unchanged immutable44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43,137178bytes. Existing34outfit/worker evidence retained.",
+  "publicationEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release35-publication-checks-20261011",
+    "inventoryEntries": 4,
+    "inventorySHA256": "623e4f51b41fcb471d9b9499b458917b389047e06dd3b64c0fc3b02168038eed"
+  },
+  "startEvidence": {
+    "root": "/home/aeml/.local/share/eidolon-release35-start-checks-20261011",
+    "inventoryEntries": 2,
+    "inventorySHA256": "6908a325ce09858cb42981e7e8db053da90f3ef10e47b66396b671c148ff51ee"
+  },
+  "previousAccepted": "Alpha1.79.34/3ec8bb151f24909127b832a4035eb7e6eab9b635 with fresh post-terminal normal-TLS identity/readyDB/all23pins at16:10:48UTC.",
+  "acceptanceStillRequired": "Exact35ordered CI/deploy/live success then fresh normal-TLS exact frontend/backend identities, database ready and all78servedasset lengths/SHA. No next release until verified.",
+  "goal": "Full original scope remains active; ongoing public29soak unchanged. No newbeta/access/commerce/terrain/schema/runtime-serverchange."
+}

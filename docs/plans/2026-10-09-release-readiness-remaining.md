@@ -167,22 +167,25 @@ Every explicit requirement in those sources remains part of the completion audit
   [completed diagnostic histories](2026-10-11-completed-diagnostic-branch-reconciliation.json),
   [SSH guard history](2026-10-11-ssh-history-branch-reconciliation.json),
   [release/atlas/casino histories](2026-10-11-completed-release-history-reconciliation.json).
-- **Prepared35 milestone:** source `0a2303c1` combines the exact qualified
+- **Merged/pushed35 milestone:** source `0a2303c1` combines the exact qualified
   guild/venue/build-menu/direct-trade runtime below in one release.728distinct
   checks/17suites, full lint, shell syntax and two native publication cases pass;
   retries/skips0. All12version paths align35;470cumulative notes preserve every
  469prior entry byte-exact. Native login/page retry and copied four-class engine
   construction pass. Component source identity checks justify reusing their
-  existing focused/browser evidence. Completed work merges to master before
-  publication; exact35asset pins, ordinary push, own ordered CI/deploy/live and
-  fresh post-terminal normal-TLS identities/readyDB/asset checks remain required.
+  existing focused/browser evidence. Ordinary master merge/push `ade204b8`
+  starts exact CI38154778403. All78copied asset pins are prepared and verified
+  before owned reproducible copy retirement; source/evidence preserved. Own
+  ordered CI/deploy/live and fresh post-terminal normal-TLS identities/readyDB/
+  asset checks remain required.
+  [Publication](2026-10-11-release35-publication.json).
   [Prepublication](2026-10-11-release35-menu-review-prepublication.json).
 - **Desktop build keyboard access:** native skill unlock/rune buttons now support
   Tab/Enter/Space, disabled eligibility and authoritative rune toggle state.
   Qualified175distinct checks/eight suites and four native desktop/phone-layout
   cases;352CI cases discovered exactly once, not352execution passes. Initial
   selector failures and visual Tier1 overflow correction retained. Merged locally,
-  unpublished; include with qualified guild/venue successor after34acceptance.
+  included in pushed35; own35acceptance pending.
   Prepared UI acknowledgements do not prove connected progression or whole-game
   accessibility. [Qualification](2026-10-11-desktop-build-keyboard-qualification.json).
 - **Desktop build continuity:** qualified source `ec4763db`, ordinary master
@@ -193,7 +196,7 @@ Every explicit requirement in those sources remains part of the completion audit
   Actual short desktop supplies nonzero overflow; tall desktop fits all runes.
   GPU-disabled DOM/keyboard evidence and simulated acknowledgements do not
   qualify GPU, earned progression or whole-game accessibility. Merged locally,
-  unpublished for the coherent successor after34acceptance.
+  included in pushed35; own35acceptance pending.
   [Qualification](2026-10-11-desktop-build-continuity-qualification.json).
 - **Direct trade review:** qualified source `032ac872`, ordinary master merge
   `40c39d76`. Partner updates and acknowledgements preserve newer unsent drafts;
@@ -206,7 +209,7 @@ Every explicit requirement in those sources remains part of the completion audit
   failure and changed-source/visual iterations;355CI cases discovered exactly
   once, not execution passes. Prepared GPU-disabled UI/simulated replies do not
   qualify durable settlement or physical-device/whole-game accessibility.
-  Merged locally, unpublished for the coherent successor after34acceptance.
+  Merged and ordinarily pushed in35; own35acceptance pending.
   [Qualification](2026-10-11-direct-trade-review-qualification.json).
 - **Dungeon radar context:** selected `260ea4d3`, qualified `5e039538`, merged
   `6d904417`. Entry-room walls and corridor mouths now fit the radar; the scale
@@ -249,7 +252,7 @@ Every explicit requirement in those sources remains part of the completion audit
   retries/skips0, preserving current account/display-name/revision and explicit
   consent rules. Reviewed1.60 history is joined without replacing newer runtime;
   only its original75-line historical preparation doc is added by that join.
-  Unpublished pending a coherent successor after exact34 acceptance.
+  Included in ordinarily pushed35; own35acceptance pending.
   [Qualification](2026-10-11-guild-calendar-action-qualification.json).
 - **Prepared/pushed34 milestone:** source `c75c0f41`, qualification `0b120edc`,
   ordinary master merge `88cf2985`. Steady dungeon radar, independent mixed
@@ -317,7 +320,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Prepare coherent35 from qualified merged guild/venue/build-menu/direct-trade work. Exact34 ordered CI/deploy/live and fresh post-terminal normal-TLS frontend/backend/readyDB/all23pinned assets are accepted. Synchronize35versions/cumulative notes and qualify its copied publication before ordinary push; exact34 acceptance does not prequalify35. | Implementation |
+| Next release | Observe exact35/ade204b8/CI38154778403 to terminal. Then verify own ordered CI/deploy/live and fresh post-terminal normal-TLS frontend/backend/readyDB/all78asset pins. All12versions/470notes and combined copied publication checks pass; exact34acceptance and reused component evidence do not prequalify35. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
