@@ -9,13 +9,14 @@ Historical test receipts do not close unchecked requirements.
 
 **Master reconciliation:** completed, qualified world/dungeon/equipment/HUD,
 renderer and contact-audio work is merged into local `master`. Branch
-reconciliation reduced distinct unmerged histories287→104; unfinished/rejected
+reconciliation reduced distinct unmerged histories287→100; unfinished/rejected
 experiments and the dirty user checkout remain preserved. New completed work
 continues to merge into `master`, without adding work branches or force-pushing.
 [Repository workflow](../../AGENTS.md),
-[branch reconciliation](2026-10-11-master-branch-reconciliation.json).
+[branch reconciliation](2026-10-11-master-branch-reconciliation.json),
+[four completed-history follow-up merges](2026-10-11-completed-branch-followup.json).
 
-**Current release custody, October11 09:04UTC:** Alpha1.79.30/1aae8407 is now
+**Current release custody, October11 09:25UTC:** Alpha1.79.30/1aae8407 is now
 fully accepted through the ordered release gate. CI38124028177 attempt1 completed
 success: all10jobs, including required native predeploy, both deployments and
 mandatory live gameplay/town-recovery/Well Rested checks. Optional stabilization,
@@ -23,9 +24,10 @@ full-character and live four-class steps were explicitly skipped; they are not
 passes. Post-terminal normal-TLS verification confirms exact frontend/backend
 identity, ready database and all9expected asset hashes/byte counts. Earlier
 2e6c6a14 final helper-import failure remains retained. The test-only delivery
-correction preserves its game runtime. Alpha1.79.31 is prepared on local master
-with cumulative notes and the six qualified renderer/environment components
-below. Exact42f06ad0 is now pushed to master; CI38126692286 is running. Its own
+correction preserves its game runtime. Alpha1.79.31 integrates cumulative notes
+and the six qualified renderer/environment components below. Exact42f06ad0 is
+pushed to master; CI38126692286 is running. Client/Server/browser1and3 have
+succeeded; browser2 remains active, with no native predeploy job yet. Its own
 deployment/CI/live acceptance remains pending. Per-component receipts below
 preserve their earlier, prepublication states. Current100-client
 soak38109009521 is still active on acceptedpublic29, not a completed capacity gate.
@@ -43,6 +45,23 @@ unattributed. No FPS/physical-phone/final-art acceptance. Repeated/coarse foliag
 rock/terrain/architecture composition and High frame targets remain open. No new
 branch; publication waits for current1.79.31acceptance and a coherent next milestone.
 [Pine qualification](2026-10-11-pine-bough-growth-qualification.json).
+
+**Next held Earth material correction:**706af5f2 is ordinary-merged into local
+masterca205f1d. Ground composition uses its registered soil/moss/stone physical
+fields without two unrelated legacy noise maps; the overwritten base-albedo
+sample is removed, shared albedo ownership retained. Actual High/Low compiled
+uniforms expose only its three composition samplers, with five custom fetches.
+Two removed maps save524288raw bytesHigh/131072Low per material before mips.
+Retained Earth maps and other-realm surface/albedo fields are byte-identical.
+54focused/5suites231.82s, full lint and11existing native cases pass0retry/skip2.4m.
+45prepared HUDviews/360sampled poses plus isolated realm/quality resource checks;
+15/18source-copy images exact, three differences retained and unattributed.
+The change is subtle in manual views; broad repeated terrain transitions,
+understory/rock silhouettes and normal-session responsive/device review remain
+open. Low390DesktopChrome prepared HUD actions appear cropped at the left edge;
+review in normal responsive gameplay before inferring a production UI failure.
+No connected-input/FPS/physical-phone/final-art acceptance or public release.
+[Earth material qualification](2026-10-11-earth-material-field-qualification.json).
 
 Contact audio76focused/3distinct native cases pass; human listening/busy-fight mix
 and physical devices remain open. Fresh required discovery preserves all337previous

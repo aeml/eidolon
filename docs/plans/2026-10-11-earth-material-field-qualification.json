@@ -1,0 +1,83 @@
+{
+  "recordedUTC": "2026-10-11T09:26:30.141933+00:00",
+  "source": "706af5f2b90f42011466711ccd1c1aed0bb17f69",
+  "base": "5e3cbf639e67c6121f11aed58989a5696973f71d",
+  "ordinaryMerge": "ca205f1d2394e17ff78417ea085143aa0b1aad38",
+  "paths": [
+    "src/art/EarthGroundComposition.js",
+    "src/art/ProceduralRealmTerrain.js",
+    "tests/EarthGroundComposition.test.js",
+    "tests/ProceduralRealmTerrain.test.js",
+    "tests/e2e/terrain-polish.spec.js"
+  ],
+  "change": "Earth composition replaces the complete albedo and already supplies physical relief/roughness from registered fields. Remove its unrelated legacy normal/roughness maps, remove the immediately overwritten base-albedo sample from the shader, and increment cache key v15 to v16. Keep shared material.map ownership and the existing three composition maps. No geometry, collisions, placements, profile selection, additional texture, light, draw pass or fetch.",
+  "focused": {
+    "passed": 54,
+    "suites": 5,
+    "seconds": 231.82,
+    "log": "focused-final.log",
+    "firstRun": "Terminated locally with143 before a summary. Replaced a deep typed-array duplicate comparison with exact byte-wise every; no assertion weakened. This does not prove that matcher caused the initial runtime. Original focused.log retained; no passes attributed to that run."
+  },
+  "lint": "Full locked-dependency npm lint and git diff --check passed.",
+  "native": {
+    "passed": 11,
+    "retry": 0,
+    "skip": 0,
+    "duration": "2.4min",
+    "log": "native.log",
+    "cases": "Five existing actual-HUD Earth shelf source/copied-engine views at High/Low1280 and Low390 Desktop Chrome; five existing terrain-polish realm cases each High/Low, and one real shadow/postprocessing quality resource transition case. Case identities unchanged.",
+    "worldScope": "45world HUD images plus8existingFXAAcomparison images and10isolatedterrain images;360manually sampled walking poses. Supplied Fighter14slots, zero visual fallback/ground error, existing raised profile only in prepared QA. No connected normal input, combat, campaign, physical-phone or sustained party performance acceptance.",
+    "samplers": "Actual GL ACTIVE_UNIFORMS reports Earth composition/detail/surface active, with map/normalMap/roughnessMap absent in High and Low. Other four realms retain all three generic samplers. Five custom composition texture fetches remain. No claim that the removed overwritten albedo fetch previously survived compiler optimization.",
+    "resources": "Repeated High/Medium/Low shadow and composer targets remain stable. Unit ownership observes each of three Earth maps disposed once and shared albedo zero. Shelf native helper observes rock+understory geometry/material disposal only, not full terrain/pine cache VRAM retirement.",
+    "host": "System Chrome native ANGLE/Vulkan AMD RADV Renoir. Native run completed before observed release31predeploy start; monitor confirms no predeploy job through09:25UTC. Existing100-clientsoak shares host; no isolated or causal FPS claim."
+  },
+  "fieldComparison": "material-comparison.json compares detached2a8d0c35 (Earth source identical to base5e3cbf63) against detached706af5f2. All retained Earth composition fields/albedo and Town/Water/Fire/Air generic fields/albedo/physical defaults are byte-identical.",
+  "rawTextureAllocationRemoved": {
+    "high": 524288,
+    "low": 131072,
+    "scope": "Two owned RGBA maps per Earth material, raw bytes before mip overhead. No shared albedo ownership change."
+  },
+  "sourceCopy": {
+    "exact": 15,
+    "pairs": 18,
+    "differences": [
+      {
+        "kind": "copy-high",
+        "view": "deep-west.png",
+        "channels": 3240960,
+        "changed": 1852,
+        "maximum": 67,
+        "mean": 0.0027069140007898894
+      },
+      {
+        "kind": "copy-high",
+        "view": "west-grove.png",
+        "channels": 3240960,
+        "changed": 4061,
+        "maximum": 86,
+        "mean": 0.009392587381516588
+      },
+      {
+        "kind": "copy-low",
+        "view": "deep-west.png",
+        "channels": 3240960,
+        "changed": 473,
+        "maximum": 46,
+        "mean": 0.0009632948262243286
+      }
+    ],
+    "scope": "Small retained differences are unattributed, not universal pixel equivalence. All27predecessor/current pairs intentionally differ after physical material change."
+  },
+  "manualReview": "Viewed High grove-bed beside its exact previous pine candidate, High west-grove, and Low390 east-road. Material change is subtle; broad repeated moss/soil transitions, coarse understory and repeated rock masses remain visibly procedural. Narrow prepared desktop HUD bottom-left actions appear cropped; requires review in the normal responsive session, not a claim of physical mobile acceptance.",
+  "setup": "Optional initial Python image comparator could not import PIL, including /usr/bin/python3. No dependency install or product change; existing Sharp-based comparator reused successfully. Failed optional Python script retained for context.",
+  "publication": "Merged local master after54focused/11native/fullLint acceptance. Not published; current exact42f06ad0 release31 remains in CI. Hold for a coherent next milestone after31own acceptance.",
+  "goal": "Full1.11\u20131.99 world/art/gameplay/device/performance/operations/F1\u2013F5/beta/launch/handoff scope remains active; no whole-goal or final modern-art approval.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-earth-layer-material-checks-20261011",
+    "manifest": "SHA256SUMS",
+    "entries": 84,
+    "files": 85,
+    "sha256": "ed051fc76f09682c29919a3bbac9b04460510b8867999d8b28cbf775412570ce",
+    "custody": "All84listed hashes verified; allfiles0444, alldirectories/root0555. No writes after freezing."
+  }
+}
