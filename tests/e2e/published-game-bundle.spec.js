@@ -808,6 +808,13 @@ for (const quality of ['high', 'low']) test(`published ${quality} geometry sched
                     [slots[i], { id: `schedule-${character}-${slots[i]}`, name, baseName: name, slot: i === 8 && character === 'Rogue' ? 'mainHand' : slots[i],
                         type: [7, 8].includes(i) ? 'WEAPON' : 'ARMOR', rarity: 'Rare', potency: 5 }])));
                 await actor.mesh.userData.equipmentReady;
+                if (character === 'Rogue') {
+                    actor.mixedWeaponStances = [];
+                    for (const state of ['Idle', 'CombatIdle', 'Walk', 'Run', 'Block']) {
+                        actor.playAnimation(state, true, true); actor.updateAnimationMixer(.2);
+                        actor.mixedWeaponStances.push(actor.currentAction.getClip().name);
+                    }
+                }
                 actor.mesh.position.set((index - 1.5) * 4, 0, 0); render.add(actor.mesh);
             }
             render.setZoom(18); render.setCameraTarget(actors[1].mesh.position);
@@ -844,7 +851,8 @@ for (const quality of ['high', 'low']) test(`published ${quality} geometry sched
             const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
             return { quality, arms, classes: actors.map(actor => ({ character: actor.mesh.userData.authoredClass,
                 quality: actor.mesh.userData.authoredQuality, items: actor.mesh.userData.equipmentVisualItemCount,
-                missing: actor.mesh.userData.equipmentVisualMissing.length, fallback: actor.mesh.userData.equipmentVisualFallback.length })),
+                missing: actor.mesh.userData.equipmentVisualMissing.length, fallback: actor.mesh.userData.equipmentVisualFallback.length,
+                mixedWeaponStances: actor.mixedWeaponStances || [] })),
                 gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER), engineSHA256: null };
         } finally {
             for (const actor of actors) actor.dispose(); game.destroy();
@@ -855,6 +863,8 @@ for (const quality of ['high', 'low']) test(`published ${quality} geometry sched
     if (requiresHardwareWebGL()) expect(result.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
     expect(result.classes).toHaveLength(4);
     for (const actor of result.classes) expect(actor).toMatchObject({ quality, items: 14, missing: 0, fallback: 0 });
+    expect(result.classes.find(actor => actor.character === 'Rogue').mixedWeaponStances)
+        .toEqual(['Idle', 'CombatIdle', 'Walk', 'Run', 'Block'].map(state => `Dagger_Sword_${state}_Dual`));
     const [reference, candidate] = result.arms;
     for (const arm of result.arms) {
         expect(arm.restored).toBe(true); expect(arm.stats.failed).toBe(0); expect(arm.stats.rejected).toBe(0);
