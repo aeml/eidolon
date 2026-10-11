@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { getRegionTheme } from './darkFantasyTheme.js';
 import { getDungeonRoomIdentityTag } from '../utils/dungeonRoomMetadata.js';
-import { createTaperedRoot } from './EarthLandmarkGeometry.js';
+import { createDungeonGraveRootGeometry } from './DungeonGraveRootGeometry.js';
 import { sampleVerdantMasonry } from './VerdantMasonry.js';
 import { createCryptWallGeometry } from './CryptWallGeometry.js';
 import { sampleElementalDungeonSurface } from './ElementalDungeonSurface.js';
@@ -10,6 +10,7 @@ import { createElementalDungeonWallGeometry } from './ElementalDungeonWallGeomet
 import { createDungeonVigilBase, createDungeonVigilShaft, createDungeonVigilCage,
     createDungeonBevelBlock, createDungeonFontBasin, createDungeonCofferLid } from './DungeonVigilGeometry.js';
 import { createDungeonEntryWard } from './DungeonEntryWard.js';
+import { applyVerdantFloorPatina } from './VerdantFloorPatina.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -164,14 +165,17 @@ function configureDungeonMaterial(material, isTransparent = false) {
 }
 
 function makeDetailMaterial(color, options = {}) {
-    return configureDungeonMaterial(new THREE.MeshStandardMaterial({
+    const material = configureDungeonMaterial(new THREE.MeshStandardMaterial({
         color,
+        vertexColors: options.vertexColors ?? false,
         roughness: options.roughness ?? 0.85,
         metalness: options.metalness ?? 0,
         emissive: options.emissive ?? 0x000000,
         emissiveIntensity: options.emissiveIntensity ?? 0,
         side: options.side ?? THREE.FrontSide
     }));
+    material.flatShading = options.flatShading ?? true;
+    return material;
 }
 
 function createMaterialSet(dungeonType) {
@@ -198,11 +202,14 @@ function createMaterialSet(dungeonType) {
         inlay: makeDetailMaterial(theme.palette.midtone, {
             roughness: .82, metalness: .25,
             emissive: theme.palette.accent, emissiveIntensity: .08
-        })
+        }),
+        ...(dungeonType === 'verdant_bastion_catacombs' ? {
+            bark: makeDetailMaterial(0x6e6451, { roughness: .94, vertexColors: true, flatShading: false })
+        } : {})
     });
 }
 
-function createShapes() {
+function createShapes(quality) {
     return Object.freeze({
         box: new THREE.BoxGeometry(1, 1, 1),
         cylinder6: new THREE.CylinderGeometry(0.5, 0.5, 1, 6),
@@ -211,7 +218,7 @@ function createShapes() {
         cone6: new THREE.ConeGeometry(0.5, 1, 6),
         cofferLid: createDungeonCofferLid(),
         vigilInlay: new THREE.RingGeometry(0.486, 0.5, 48),
-        graveRoot: createTaperedRoot([[-1, 0, 0], [-.6, .18, .12], [.2, .08, -.12], [1, 0, 0]], .07, 'low'),
+        graveRoot: createDungeonGraveRootGeometry(quality),
         octahedron: new THREE.OctahedronGeometry(0.5, 0),
         vigilBase: createDungeonVigilBase(),
         vigilShaft: createDungeonVigilShaft(),
@@ -449,9 +456,9 @@ export function animateDungeonRoomStatePresentation(presentation, elapsedSeconds
 function buildRegionalMotif(root, dungeonType, shapes, materials, radius) {
     if (dungeonType === 'verdant_bastion_catacombs') {
         for (const side of [-1, 1]) {
-            const rootBeam = addPart(root, `verdant:grave-root:${side}`, shapes.graveRoot, materials.shadow, {
+            const rootBeam = addPart(root, `verdant:grave-root:${side}`, shapes.graveRoot, materials.bark, {
                 position: [side * radius * 0.78, .2, radius * 0.58],
-                scale: [radius * .36, 2, 3]
+                scale: [radius * .24, 2, 4]
             });
             rootBeam.rotation.y = side * .6;
         }
@@ -663,7 +670,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
     sampleCache.clear();
     const materials = new Map();
     const geometries = new Map();
-    const shapes = createShapes();
+    const shapes = createShapes(surfaceQuality);
     const detailMaterials = createMaterialSet(dungeonType);
 
     const surfaceMaterial = (surface, width, height, transparent = false) => {
@@ -696,6 +703,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
         material.userData.proceduralDungeonSurface = true;
         material.userData.dungeonType = dungeonType;
         material.userData.surface = surface;
+        if (dungeonType === 'verdant_bastion_catacombs' && surface === 'floor') applyVerdantFloorPatina(material);
         materials.set(key, material);
         return material;
     };

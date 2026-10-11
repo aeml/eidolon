@@ -747,7 +747,7 @@ export class WorldGenerator {
     async createVerdantBastionCatacombs(centerX, centerZ, layout) {
         console.log(`Generating Verdant Bastion Catacombs at ${centerX},${centerZ}`);
 
-        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('verdant_bastion_catacombs');
+        this.dungeonInteriorKit = createProceduralDungeonInteriorKit('verdant_bastion_catacombs', { quality: this.graphicsQuality });
         
         if (this.createLayoutDrivenDungeon(layout)) {
             return;

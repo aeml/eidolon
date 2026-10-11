@@ -1,7 +1,7 @@
 // Original coursed flagstones. Each family closes exactly over the 64-unit
 // texture domain, so all PBR channels share joints without a repeat seam.
+import { sampleVerdantFlagstone } from './VerdantFlagstone.js';
 const courses = {
-    verdant_bastion_catacombs: [[6, 10, 7, 9, 6, 8, 9, 9], [8, 11, 7, 13, 9, 16]],
     molten_core: [[8, 6, 11, 7, 9, 10, 6, 7], [12, 9, 14, 7, 10, 12]],
     tempest_spire: [[5, 7, 6, 8, 5, 7, 6, 8, 5, 7], [7, 10, 6, 9, 11, 8, 13]],
     abyssal_well: [[9, 8, 12, 7, 10, 8, 10], [10, 15, 9, 14, 16]],
@@ -28,6 +28,7 @@ function hash(x, y) {
 }
 
 export function sampleDungeonFlagstone(x, y, type) {
+    if (type === 'verdant_bastion_catacombs') return sampleVerdantFlagstone(x, y);
     const pattern = courses[type];
     if (!pattern) throw new TypeError(`Unsupported flagstone family: ${type}`);
     x = wrap(x); y = wrap(y);
