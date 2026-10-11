@@ -1,0 +1,558 @@
+{
+  "recordedUTC": "2026-10-11T07:34:58.240417+00:00",
+  "source": "be30b96a49ceba5478157335056441779ae39129",
+  "runtimeSource": "a59b4f3fd9a9667f589737f4d55bbcb6e299fa51",
+  "base": "dfac9d4898870f66630694c5045a87cf8e0da7bc",
+  "selection": "Only ActorInstanceBatches and RenderSystem product changes. Reviewed single-actor leaves join existing same-cell/material/layout multi-draw on High quality when the extension and compatible camera/delivery are available. Low/Medium and unsupported/disabled/array-camera frames retain the prior singleton path. Settings changes and owner replacement propagate the quality policy. No geometry, actors, materials, colliders, gameplay, supplied GLBs or performance budgets removed/relaxed.",
+  "focused": {
+    "suites": 9,
+    "passed": 144,
+    "seconds": 2.749,
+    "result": "passed"
+  },
+  "lint": "Full lint passed; final QA-only copied retirement addition also linted.",
+  "nativeSource": {
+    "high": {
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "extension": true,
+      "poses": 30,
+      "families": 7,
+      "exact": 6,
+      "maximumMeanError": 0.00047177940542869455,
+      "maximumChangedFractionOver8": 9.694097371822491e-06,
+      "allReferenceAgainExact": true,
+      "allVisibilityRestored": true,
+      "qualityTransitions": [
+        {
+          "quality": "high",
+          "selected": true,
+          "restored": true
+        },
+        {
+          "quality": "low",
+          "selected": false,
+          "restored": true
+        },
+        {
+          "quality": "medium",
+          "selected": false,
+          "restored": true
+        },
+        {
+          "quality": "high",
+          "selected": true,
+          "restored": true
+        }
+      ]
+    },
+    "low": {
+      "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+      "extension": true,
+      "poses": 30,
+      "families": 7,
+      "exact": 30,
+      "maximumMeanError": 0,
+      "maximumChangedFractionOver8": 0,
+      "allReferenceAgainExact": true,
+      "allVisibilityRestored": true,
+      "qualityTransitions": [
+        {
+          "quality": "high",
+          "selected": true,
+          "restored": true
+        },
+        {
+          "quality": "low",
+          "selected": false,
+          "restored": true
+        },
+        {
+          "quality": "medium",
+          "selected": false,
+          "restored": true
+        },
+        {
+          "quality": "high",
+          "selected": true,
+          "restored": true
+        }
+      ]
+    }
+  },
+  "sourceImages": 120,
+  "nativeCopied": {
+    "distinctPassed": 2,
+    "enginePreversionSHA256": "1792731ef9b0ba1f823146a208b531b89d672c1866355eeaa38cfb57a97f0d89",
+    "posesPerQuality": 5,
+    "normalEngineNPCAndEnemyConstruction": true,
+    "qualityTransitions": [
+      "high",
+      "low",
+      "medium",
+      "high"
+    ],
+    "ownerRetirement": [
+      {
+        "quality": "high",
+        "type": "QuestNPC",
+        "expected": {
+          "instances": 15,
+          "batches": 1,
+          "geometry": 1,
+          "matrices": 1,
+          "indirection": 1
+        },
+        "actual": {
+          "instances": 15,
+          "batches": 1,
+          "geometry": 1,
+          "matrices": 1,
+          "indirection": 1
+        }
+      },
+      {
+        "quality": "high",
+        "type": "DemonOrc",
+        "expected": {
+          "instances": 18,
+          "batches": 2,
+          "geometry": 2,
+          "matrices": 2,
+          "indirection": 2
+        },
+        "actual": {
+          "instances": 18,
+          "batches": 2,
+          "geometry": 2,
+          "matrices": 2,
+          "indirection": 2
+        }
+      },
+      {
+        "quality": "low",
+        "type": "QuestNPC",
+        "expected": {
+          "instances": 2,
+          "batches": 0,
+          "geometry": 0,
+          "matrices": 0,
+          "indirection": 0
+        },
+        "actual": {
+          "instances": 2,
+          "batches": 0,
+          "geometry": 0,
+          "matrices": 0,
+          "indirection": 0
+        }
+      },
+      {
+        "quality": "low",
+        "type": "DemonOrc",
+        "expected": {
+          "instances": 5,
+          "batches": 1,
+          "geometry": 1,
+          "matrices": 1,
+          "indirection": 1
+        },
+        "actual": {
+          "instances": 5,
+          "batches": 1,
+          "geometry": 1,
+          "matrices": 1,
+          "indirection": 1
+        }
+      }
+    ],
+    "maximumMeanError": 0.000146484375,
+    "scope": "Same two copied cases rerun only after adding exact native GPU-owner retirement assertions; four distinct source/copied cases total, not six. Counts cover event disposal of owned instance meshes, batches, copied geometry and matrix/indirection textures; borrowed source recipes and renderer/driver caches persist. No zero-added-memory/total-VRAM claim."
+  },
+  "terminalBrowserResults": {
+    "source": {
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maximumRetry": 0
+    },
+    "copied-retirement": {
+      "stats": {
+        "total": 2,
+        "expected": 2,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 0,
+        "ok": true
+      },
+      "maximumRetry": 0
+    },
+    "route-high": {
+      "stats": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maximumRetry": 0
+    },
+    "route-low": {
+      "stats": {
+        "total": 2,
+        "expected": 1,
+        "unexpected": 0,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": true
+      },
+      "maximumRetry": 0
+    },
+    "party-high": {
+      "stats": {
+        "total": 2,
+        "expected": 0,
+        "unexpected": 1,
+        "flaky": 0,
+        "skipped": 1,
+        "ok": false
+      },
+      "maximumRetry": 0
+    }
+  },
+  "highRoute": {
+    "exitCode": 1,
+    "profiles": [
+      {
+        "label": "bastion-approach",
+        "draws": 105,
+        "triangles": 58967,
+        "medianMs": 16.7,
+        "p95Ms": 33.4,
+        "frames": 180,
+        "budget": {
+          "draws": 350,
+          "triangles": 250000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "violations": []
+      },
+      {
+        "label": "earth-road",
+        "draws": 196,
+        "triangles": 93874,
+        "medianMs": 33.3,
+        "p95Ms": 50,
+        "frames": 180,
+        "budget": {
+          "draws": 350,
+          "triangles": 250000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "violations": [
+          "frameMedianMs",
+          "frameP95Ms"
+        ]
+      },
+      {
+        "label": "town-start",
+        "draws": 338,
+        "triangles": 198379,
+        "medianMs": 33.3,
+        "p95Ms": 49.9,
+        "frames": 180,
+        "budget": {
+          "draws": 350,
+          "triangles": 250000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "violations": [
+          "frameMedianMs",
+          "frameP95Ms"
+        ]
+      },
+      {
+        "label": "woodland-cut",
+        "draws": 207,
+        "triangles": 130044,
+        "medianMs": 16.7,
+        "p95Ms": 33.4,
+        "frames": 180,
+        "budget": {
+          "draws": 350,
+          "triangles": 250000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "violations": []
+      }
+    ],
+    "sameFrozenControls": {
+      "town-start-singleton-comparison.json": {
+        "quality": "high",
+        "selected": true,
+        "reference": {
+          "calls": 391,
+          "triangles": 198379
+        },
+        "candidate": {
+          "calls": 338,
+          "triangles": 198379
+        },
+        "meanError": 0.00031564721563981043,
+        "changed": 7.40521327014218e-06,
+        "exactChanges": 176,
+        "unstable": 0,
+        "restored": true,
+        "scope": "Same synchronous frozen actual gameplay view, existing owner disabled versus automatic quality selection versus disabled again. No actor, camera, material, geometry or authoritative state changes. GPU caches may warm; outside ordinary frame timing. This controls submissions and visual error, not FPS or total resource use."
+      },
+      "woodland-cut-singleton-comparison.json": {
+        "quality": "high",
+        "selected": true,
+        "reference": {
+          "calls": 208,
+          "triangles": 130302
+        },
+        "candidate": {
+          "calls": 208,
+          "triangles": 130302
+        },
+        "meanError": 0,
+        "changed": 0,
+        "exactChanges": 0,
+        "unstable": 0,
+        "restored": true,
+        "scope": "Same synchronous frozen actual gameplay view, existing owner disabled versus automatic quality selection versus disabled again. No actor, camera, material, geometry or authoritative state changes. GPU caches may warm; outside ordinary frame timing. This controls submissions and visual error, not FPS or total resource use."
+      }
+    },
+    "partyAndSaves": "not reached after strict route failure"
+  },
+  "lowRoute": {
+    "exitCode": 0,
+    "profiles": [
+      {
+        "label": "bastion-approach",
+        "draws": 69,
+        "triangles": 27203,
+        "medianMs": 16.7,
+        "p95Ms": 16.8,
+        "frames": 180,
+        "budget": {
+          "draws": 200,
+          "triangles": 85000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "violations": []
+      },
+      {
+        "label": "earth-road",
+        "draws": 89,
+        "triangles": 34791,
+        "medianMs": 16.7,
+        "p95Ms": 16.7,
+        "frames": 180,
+        "budget": {
+          "draws": 200,
+          "triangles": 85000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "violations": []
+      },
+      {
+        "label": "town-start",
+        "draws": 184,
+        "triangles": 83384,
+        "medianMs": 16.7,
+        "p95Ms": 16.8,
+        "frames": 180,
+        "budget": {
+          "draws": 200,
+          "triangles": 85000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "violations": []
+      },
+      {
+        "label": "woodland-cut",
+        "draws": 94,
+        "triangles": 39309,
+        "medianMs": 16.7,
+        "p95Ms": 16.7,
+        "frames": 180,
+        "budget": {
+          "draws": 200,
+          "triangles": 85000,
+          "frameMedianMs": 20,
+          "frameP95Ms": 33.4
+        },
+        "violations": []
+      }
+    ],
+    "sameFrozenControls": {
+      "town-start-singleton-comparison.json": {
+        "quality": "low",
+        "selected": false,
+        "reference": {
+          "calls": 184,
+          "triangles": 83382
+        },
+        "candidate": {
+          "calls": 184,
+          "triangles": 83382
+        },
+        "meanError": 0,
+        "changed": 0,
+        "exactChanges": 0,
+        "unstable": 0,
+        "restored": true,
+        "scope": "Same synchronous frozen actual gameplay view, existing owner disabled versus automatic quality selection versus disabled again. No actor, camera, material, geometry or authoritative state changes. GPU caches may warm; outside ordinary frame timing. This controls submissions and visual error, not FPS or total resource use."
+      },
+      "woodland-cut-singleton-comparison.json": {
+        "quality": "low",
+        "selected": false,
+        "reference": {
+          "calls": 94,
+          "triangles": 39307
+        },
+        "candidate": {
+          "calls": 94,
+          "triangles": 39307
+        },
+        "meanError": 0,
+        "changed": 0,
+        "exactChanges": 0,
+        "unstable": 0,
+        "restored": true,
+        "scope": "Same synchronous frozen actual gameplay view, existing owner disabled versus automatic quality selection versus disabled again. No actor, camera, material, geometry or authoritative state changes. GPU caches may warm; outside ordinary frame timing. This controls submissions and visual error, not FPS or total resource use."
+      }
+    },
+    "strictFinalParty": {
+      "startup": {
+        "selectedAutomatically": true,
+        "groups": 33,
+        "extension": true,
+        "restored": true
+      },
+      "budget": {
+        "maximumDraws": 200,
+        "maximumTriangles": 85000,
+        "maximumFrameMedianMs": 20,
+        "maximumFrameP95Ms": 33.4
+      },
+      "sample": {
+        "frames": 180,
+        "drawCallsMedian": 174,
+        "trianglesMedian": 81318,
+        "frameMedianMs": 16.7,
+        "frameP95Ms": 33.4,
+        "activeEntitiesMin": 38,
+        "activeEntitiesMax": 38
+      }
+    },
+    "normalFourClassFourteenSlotSavedCustody": "passed",
+    "renderers": "One native GPU renderer plus three normal authenticated socket peers; optional four-renderer test skipped."
+  },
+  "separateHighParty": {
+    "exitCode": 1,
+    "startup": {
+      "selectedAutomatically": true,
+      "groups": 36,
+      "extension": true,
+      "restored": true
+    },
+    "budget": {
+      "maximumDraws": 350,
+      "maximumTriangles": 250000,
+      "maximumFrameMedianMs": 20,
+      "maximumFrameP95Ms": 33.4
+    },
+    "sample": {
+      "frames": 180,
+      "drawCallsMedian": 305,
+      "trianglesMedian": 181444,
+      "frameMedianMs": 33.3,
+      "frameP95Ms": 50,
+      "activeEntitiesMin": 27,
+      "activeEntitiesMax": 27
+    },
+    "normalSavedCustody": "not reached after strict original frame budget failure; no rerun or waiver"
+  },
+  "discovery": {
+    "discoveryOnly": true,
+    "nativeScope": "Four unconditional anonymous visual stages; conditional stabilization and separate isolated release-smoke are outside this discovery union.",
+    "previousNative": 35,
+    "missingPreviousNative": [],
+    "hosted": 344,
+    "native": 39,
+    "overlap": 19,
+    "distinct": 364,
+    "previousHosted": 342,
+    "missingPrevious": [],
+    "added": [
+      "[\"published-game-bundle.spec.js\",\"published-game-bundle.spec.js\",\"published high singleton actors follow quality changes and restore source visibility\",\"\"]",
+      "[\"published-game-bundle.spec.js\",\"published-game-bundle.spec.js\",\"published low singleton actors follow quality changes and restore source visibility\",\"\"]"
+    ],
+    "groups": [
+      44,
+      3,
+      2,
+      6,
+      3,
+      51,
+      48,
+      3,
+      3,
+      10,
+      89,
+      28,
+      4,
+      3,
+      4,
+      43
+    ]
+  },
+  "sanitization": {
+    "observedPreparedAccountsRedacted": 9,
+    "preparedAccountsPerFixture": 4,
+    "plainFilesScanned": 108,
+    "embeddedEntriesScanned": 12,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled",
+    "explicitPostLoginImages": "retained for visual review; synthetic names may remain in pixels"
+  },
+  "sharedHost": {
+    "observedUTC": "2026-10-11T07:28:33.773519+00:00",
+    "ps": "    PID ELAPSED %CPU COMMAND\n1561128   13798  241 server\n1561401   13796  151 loadtest\n",
+    "activeSoak": 38109009521,
+    "soakSource": "12e5e3c41a3b4e897138973a7514fc8da7881bcb",
+    "scope": "Same-host long-running load; frame samples do not establish causal FPS or isolated-device acceptance. No process altered."
+  },
+  "localOverlap": {
+    "tests": "copied-retirement High/Low",
+    "startsUTC": [
+      "2026-10-11T07:29:11.122Z",
+      "2026-10-11T07:29:23.537Z"
+    ],
+    "scope": "Overlaps the Low route process; no isolated frame-time or causal FPS claim. Low original route and final party assertions still pass. Subsequent High party is sequential."
+  },
+  "retainedDiagnostics": [
+    "Two new focused behavior controls fail on unchanged baseline,48existing checks pass.",
+    "First follow-up pattern command passes88checks in4matched suites; two nonexistent paths match no suites. Final run explicitly names9existing paths and144checks pass.",
+    "High route fails original town/road frame targets, and separate High party fails original frame targets. Draw and triangle medians fit original limits. Low original route/party budgets and normal saved custody pass."
+  ],
+  "scope": "Bounded High-quality submission improvement; same frozen town391 to338draws with198379triangles preserved and existing pixel thresholds unchanged. Low same frozen town184 to184 and woodland94 to94 with exact pixels; old broader singleton Low83 to90 counterexample retained separately and not selected. Active100-client public29 soak shares host; local copied retirement run also overlaps Low route. No causal FPS, isolated-device, High whole-route/party/performance, modern-art, physical-phone, campaign/freeze/beta/launch/handoff acceptance. Current public remains accepted1.79.29; release30 acceptance pending and this component not published.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-town-current-checks-20261011",
+  "inventoryEntries": 1056,
+  "inventorySHA256": "7f09a579ca37d6c589a2a12bcff2f67599a36a420a62b34f624c8a7d907f3348"
+}
