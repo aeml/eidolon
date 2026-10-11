@@ -1,0 +1,32 @@
+{
+  "recordedUTC": "2026-10-11T13:53:06.754830+00:00",
+  "status": "two-clean-merged-owned-scratch-worktrees-retired",
+  "freeMiBBefore": 2010,
+  "initialRefusal": "First read-only audit expected the dependency symlink to target master. It instead targets another retained owned geometry-delivery worktree. Nothing was removed; revised check verifies the external target and will unlink without following it.",
+  "scope": "Only these two owned completed merged worktrees. All tracked files retained by commits/master ancestry; every ignored regular file either matches current master or is preserved byte-exact outside the worktree. No evidence, original dirty checkout, unmerged experiment, CI checkout, production data/log/backup/container or storage-guard change.",
+  "finishedUTC": "2026-10-11T13:53:24.994081+00:00",
+  "freeMiBAfter": 2795,
+  "targets": [
+    {
+      "path": "/home/aeml/.local/share/eidolon-dungeon-entry-ward-20261011",
+      "head": "68e30c834d5369ebac1f3ae2325963a58d5f8356",
+      "branch": "work/dungeon-entry-ward-20261011",
+      "trackedClean": true,
+      "masterAncestor": true,
+      "verifiedIgnoredEntries": 409
+    },
+    {
+      "path": "/home/aeml/.local/share/eidolon-dungeon-floor-artifact-20261011",
+      "head": "420a3cfabbc715e4405ba5ed28ed9b1392861b5a",
+      "branch": "work/dungeon-floor-artifact-20261011",
+      "trackedClean": true,
+      "masterAncestor": true,
+      "verifiedIgnoredEntries": 409
+    }
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release33-scratch-capacity-20261011",
+    "entries": 2,
+    "inventorySHA256": "c2aa08a28af031960e202ef2510205bff706376813fa77567d0dea5e793dafab"
+  }
+}

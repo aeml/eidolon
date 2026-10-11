@@ -27,6 +27,13 @@ Every explicit requirement in those sources remains part of the completion audit
   CI38142813857 is active after ordinary publication; exact17asset pins refreshed.
   [Receipt](2026-10-11-release33-client-guard-correction.json),
   [corrective publication](2026-10-11-release33-guard-corrective-publication.json).
+- **Release33 storage headroom:** two clean merged owned scratch worktrees
+  retired after all818 ignored entries were checked against retained master;
+  shared dependency symlink targets and every source commit remain intact.
+  Free space2010→2795MiB during active predeploy/deployment, guard2048MiB
+  unchanged. No production, CI, evidence, log or backup cleanup. This capacity
+  repair does not establish deployment success.
+  [Receipt](2026-10-11-release33-scratch-capacity.json).
 
 - **Last accepted public build:** Alpha1.79.32,
   `d31246e9b53fbe73bd7f59beea4c3235df30a922`.
