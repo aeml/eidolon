@@ -1,7 +1,30 @@
+import { BufferAttribute, InterleavedBufferAttribute } from 'three';
+
 // Staged delivery; callers explicitly own tracking, the worker and controller.
 // Never transfer a live Three buffer or keep source copies queued on the UI thread.
 function copyAttribute(attribute) {
+    // Supplied packed floats need no component decoding. Copy only this view,
+    // preserving source ownership. Normalized and custom readers retain their
+    // original component-reading path below.
+    if (attribute.isBufferAttribute && attribute.normalized === false &&
+        attribute.array instanceof Float32Array && attribute.array.length === attribute.count * attribute.itemSize &&
+        attribute.getComponent === BufferAttribute.prototype.getComponent) {
+        return { itemSize: attribute.itemSize, array: new Float32Array(attribute.array) };
+    }
     const array = new Float32Array(attribute.count * attribute.itemSize);
+    // GLTFLoader retains the supplied files' interleaved float views. Gather
+    // their lanes without per-component division or method dispatch; padding
+    // and neighboring attributes never enter the worker's copied payload.
+    if (attribute.isInterleavedBufferAttribute && attribute.normalized === false &&
+        attribute.array instanceof Float32Array &&
+        attribute.getComponent === InterleavedBufferAttribute.prototype.getComponent) {
+        let output = 0;
+        for (let vertex = 0; vertex < attribute.count; vertex++) {
+            const start = vertex * attribute.data.stride + attribute.offset;
+            for (let component = 0; component < attribute.itemSize; component++) array[output++] = attribute.array[start + component];
+        }
+        return { itemSize: attribute.itemSize, array };
+    }
     for (let i = 0; i < array.length; i++) array[i] = attribute.getComponent(Math.floor(i / attribute.itemSize), i % attribute.itemSize);
     return { itemSize: attribute.itemSize, array };
 }
