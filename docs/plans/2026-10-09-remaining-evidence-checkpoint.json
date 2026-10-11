@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T03:31:46.110103+00:00",
-  "classification": "Progress: selected3da66d67 gives shared dungeon stone and metal props physical mineral/forge finishes across all five themes.68 distinct focused and7 distinct native checks pass cumulatively; copied High/Low engine compiles actual materials and returns exact warmed GPU resources after every room.",
-  "qualifiedRuntime": "Held3da66d67 adds shared dungeon prop materials to9ff955b4, retaining selected elemental/Verdant floors, roots, entry wards, geometry-priority worker, additive effects, HUD and actor corrections. Staged unpublished; public Alpha1.79.29 unchanged. Private camp/singleton/DemonOrc/route QA and rejected matrix-product cache remain unselected.",
+  "recordedUTC": "2026-10-11T03:44:55.428686+00:00",
+  "classification": "Progress: selected aa97abd3 connects entry wards/vigils, coffers and fonts with shallow worn paving across all five themes.74 distinct focused and6 distinct native checks pass cumulatively; first pale/raised draft rejected and fixture issues retained.",
+  "qualifiedRuntime": "Held aa97abd3 adds shared processional paving to f3adbbf0, preserving selected floor/prop materials, roots, wards, geometry-priority worker, additive effects, HUD and actor corrections. Staged unpublished; public Alpha1.79.29 unchanged. Private cache/camp/singleton/DemonOrc/route QA remains unselected.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -98,12 +98,12 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Continue coherent dungeon/world composition and regional motifs, contact/audio and representative device work. Performance changes require concrete measured hypotheses; retain stock matrix-force behavior and existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures. Prepared prop motion does not establish continuous engine or physical-device performance. Original operations/F1-F5/beta/launch/handoff remains open; no campaign/soak replay.",
-  "currentReceipt": "docs/plans/2026-10-11-dungeon-prop-material-qualification.json",
+  "nextRequiredResult": "Continue broader room/world composition and regional construction, contact/audio and representative devices; local paving is partial art implementation. Performance work requires concrete hypotheses from retained attribution. Preserve original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures. Original operations/F1-F5/beta/launch/handoff active; no campaign/soak replay.",
+  "currentReceipt": "docs/plans/2026-10-11-dungeon-processional-paving-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Continue coherent dungeon/world composition and regional motifs, contact/audio and representative device work. Performance changes require concrete measured hypotheses; retain stock matrix-force behavior and existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures. Prepared prop motion does not establish continuous engine or physical-device performance. Original operations/F1-F5/beta/launch/handoff remains open; no campaign/soak replay.",
-  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-prop-material-qualification.json",
+  "nextAction": "Continue broader room/world composition and regional construction, contact/audio and representative devices; local paving is partial art implementation. Performance work requires concrete hypotheses from retained attribution. Preserve original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures. Original operations/F1-F5/beta/launch/handoff active; no campaign/soak replay.",
+  "qualifiedRuntimeReceipt": "docs/plans/2026-10-11-dungeon-processional-paving-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
     "preparedNotSelected": true,
@@ -2708,5 +2708,31 @@
     },
     "cost": "Six added RGBA maps:384KiB raw CPU pixels High/96KiB Low per kit; approximately512KiB/128KiB for full RGBA8 mip chains, excluding driver overhead. Existing PBR shaders now sample albedo/normal/roughness. This adds shading/texture work; no FPS or broad performance improvement claimed.",
     "scopeLimits": "Staged unpublished. PublicAlpha1.79.29 motion/aura/admin fixes unchanged; prior unselected matrix/cache/camp/singleton/DemonOrc branches not merged. Existing50/66.7ms and49.9/66.6ms timing,386370/281603/289302triangles,438/361draw andLow202draw counterexamples remain. Full original world/art/contact/audio/devices/performance/operations/F1-F5/beta/launch/handoff goal active. No campaign/soak replay, version/access/commerce or beta change."
+  },
+  "dungeonProcessionalPaving": {
+    "receipt": "docs/plans/2026-10-11-dungeon-processional-paving-qualification.json",
+    "source": "aa97abd38b8c597fcaed5d8c5f787fa01f64d015",
+    "selected": true,
+    "published": false,
+    "themes": 5,
+    "focusedDistinctPassed": 74,
+    "newChecks": 13,
+    "nativeDistinctPassed": 6,
+    "propViews": 30,
+    "pairedScreenshots": 60,
+    "preparedAnimationUpdates": 2088,
+    "engineSHA256": "3969f7501a16c163dc156590809c34c065478ff99b987e5ba50c9d01582b7834",
+    "addedSourceGeometryBytesPerKit": 231264,
+    "addedMaterialPerKit": 1,
+    "addedBatchPerPavedRoom": 1,
+    "newTextures": 0,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-paving-checks-20261011",
+      "inventoryEntries": 133,
+      "files": 134,
+      "inventorySHA256": "a21e9d9adc288a117c269cf587f4923c00c8fc3a3b207bfcc0da138db5537c21",
+      "frozen": true
+    },
+    "scopeLimits": "Staged unpublished; publicAlpha1.79.29 requested jump/aura/admin acceptance retained. No unrelated private cache/camp/singleton/DemonOrc/route QA selected. Original50/66.7ms,49.9/66.6ms,386370/281603/289302triangle,438/361draw andLow202draw failures unresolved. No full-room/device/party/combat performance or owner art approval. Original world/art/contact/audio/devices/operations/F1-F5/beta/launch/handoff goal active; no campaign/soak replay, version/access/commerce/beta change."
   }
 }

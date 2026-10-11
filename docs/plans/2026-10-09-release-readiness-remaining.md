@@ -452,3 +452,39 @@ audio/devices, existing dynamic frame/triangle/draw failures and original
 operations/F1–F5/beta/launch/handoff remain open. No campaign/soak replay, fresh
 server route, physical-device/full-art approval or version/access change.
 [Prop materials and retained failures](2026-10-11-dungeon-prop-material-qualification.json).
+
+
+2026-10-11 dungeon construction: selected `aa97abd3` privately across all five
+themes. Worn paving joins both entry vigils and the ward to the room center and
+grounds coffers/fonts. Staggered joints, chipped corners, bevels and broad stone
+shade use the six existing prop maps. One darker vertex-color finish and three
+kit-local shapes add231264source attribute bytes per kit; each paved production
+room adds its own merged attributes and one opaque material batch. Entry792
+triangles, coffer/font480 each; no textures, lights, colliders or interactions
+added. Same shape detail on High/Low; no GPU/FPS saving claim. Relief is2–3cm
+above the rendered floor, beneath decorative and objective seals.
+
+74 distinct focused checks pass cumulatively, including13new paving checks,
+shared-map cleanup and precise source/baked far-origin bounds. Initial stale
+parent matrices, conservative bounding comparisons and two-to-three-finish
+expectations remain retained; no weakened budget or counted skip. Six distinct
+native cases pass with zero retries/skips: five actual production layouts on
+desktop/phone,30prop views/60paired screenshots and2088prepared animation updates,
+then actual copied High/Low engine compilation and exact warmed GPU cleanup
+after each of five themes. Additional two-case shader extension overlaps the
+same copied cases; six distinct, not eight. Prepared next-RAF timing is not
+continuous gameplay, party/server-route or physical-device performance.
+
+The pale first draft crossed outer floor rings and was rejected despite one
+native pass. Final darker/lower construction preserves seals; a prepared fixture
+now updates genuine room-state roots rather than hiding runes through child
+mesh updates.337hosted/15native/348distinct required CI identities are unchanged;
+discovery only. Frozen133-entry/134-file inventory
+`a21e9d9adc288a117c269cf587f4923c00c8fc3a3b207bfcc0da138db5537c21`.
+
+This is partial local construction, staged and unpublished. Broad rooms remain
+sparse, regional silhouettes basic and courses repetitive. Public29 jump/aura/
+admin acceptance remains unchanged. Historical timing/geometry/draw failures,
+world/contact/audio/devices, original operations/F1–F5/beta/launch/handoff stay
+open. No campaign/soak replay, public push, version/access change or owner art
+approval. [Paving qualification and retained drafts](2026-10-11-dungeon-processional-paving-qualification.json).
