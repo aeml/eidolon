@@ -2565,5 +2565,49 @@
     },
     "partyPerformanceAccepted": false,
     "limits": "New uninstrumented party33.3msmedian FAIL20 and50msp95 FAIL33.4,35\u201336active entities versus earlier28\u201331. New instrumented startup386370triangles also retains failure against250000; timing there is invalid. Earlier281603/289302triangle,438/361draw and other historical failures remain. Current lower triangle totals cannot clear different populations or prove causal FPS gains. Broader modern world/art/contact/audio/device acceptance, original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay, public push/version/access change or wholesale private camp/singleton/DemonOrc selection."
+  },
+  "partyCPUAttribution20261011": {
+    "source": "7890349eb4aca35e32d9d17991f54a961dd6148c",
+    "runtimeChanged": false,
+    "published": false,
+    "receipt": "docs/plans/2026-10-11-party-cpu-attribution.json",
+    "method": "Existing connected-party-observer High scenario, one native hardware renderer and three normal authenticated socket peers; prepared four-class fourteen-slot fixture and actual UI party formation. Existing opt-in three-second CDP CPU sampler runs after the ordinary sixty-warmup/180-frame sample. No new instrumentation or source edits. Go race/save fixture passes; one browser pass and one optional four-browser skip.",
+    "nativeStats": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "ordinaryFrame": {
+      "frames": 180,
+      "frameMedianMs": 49.9,
+      "frameP95Ms": 66.6,
+      "drawCallsMedian": 269,
+      "trianglesMedian": 169766,
+      "activeEntitiesMin": 30,
+      "activeEntitiesMax": 31,
+      "maximumCalls": 269,
+      "maximumTriangles": 233828
+    },
+    "performanceAccepted": false,
+    "foliage": {
+      "frames": 70,
+      "visits": 167020,
+      "viewChanges": 0,
+      "shadowChanges": 0,
+      "initialRoots": 10
+    },
+    "interpretation": "Sampled matrix propagation/composition, scene projection/frustum checks and shadow traversal remain significant costs. updateMatrixWorld contributes189977sample-weighted microseconds; multiplyMatrices182667. The actor live-light traversal caller contributes82322. Foliage still revisits2386cells/frame despite unchanged view/light revisions. These are sampled elapsed attribution with profiler and wrapper overhead, not exclusive hardware CPU time or a causal frame-rate repair.",
+    "decision": "Retain stock world-force propagation and actual live light scanning. Previously rejected ancestor-force skips break manual descendants; light-membership registration adds thousands of listeners without established whole-frame benefit; animated world-box caching had1.06percent hits. Current evidence does not justify selecting them or changing geometry-copy code. Future matrix ownership diagnosis can use the existing EIDOLON_TERRAIN_PARTY_MATRIX_OWNERS opt-in; do not create duplicate instrumentation or repeat unchanged campaigns.",
+    "scopeLimits": "This private source includes unselected camp/singleton/DemonOrc context. It is not a held/public performance qualification. Population30-31 differs from earlier35-36; recorded shared-host load21.76 on16CPUs cannot establish the cause or waive49.9msmedian/66.6msp95 failures. No fresh normal dungeon route, campaign, combat, physical-device or long-soak acceptance. Existing historical failures and original full roadmap gates remain open. Jump/aura/admin fixes already accepted public29; no new public mutation.",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-party-cpu-checks-20261011",
+      "inventoryEntries": 22,
+      "files": 23,
+      "inventorySHA256": "1d08fe52a19a63e50c0e9e85fffbb190bd362170cb0a872338d2963f377d0605",
+      "frozen": true
+    }
   }
 }

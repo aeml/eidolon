@@ -350,3 +350,22 @@ actual CPU costs versus population and preparation before first appearance, then
 continue cohesive world/scenery/material/contact/audio and device work. Original
 operations/F1–F5/beta/launch/handoff remain open; no campaign/soak replay or public
 push/version/access change. [Qualification and retained failures](2026-10-11-geometry-preparation-priority-qualification.json).
+
+2026-10-11 CPU attribution: the existing post-timing three-second profiler on
+unchanged private7890349e identifies scene matrix propagation, projection/frustum
+checks and shadow traversal as significant sampled costs. The ordinary180frame
+High sample retains49.9msmedian/66.6msp95 failures;269draws/169766median triangles
+pass geometry limits. One native renderer/three equipped socket peers and
+four-class fourteen-slot Go-race saves pass; optional four-browser case skipped.
+Population30–31 and recorded shared-host load differ from earlier runs, so no
+cross-run speedup, causal host diagnosis or held/public performance acceptance.
+
+No runtime change selected: retain stock matrix-force semantics and actual live
+light discovery. Earlier light-membership and animated world-box prototypes
+remain rejected on their measured costs. Existing matrix-owner instrumentation
+is available for a concrete future hypothesis; avoid duplicate probes and
+unchanged campaign/soak reruns. Frozen22-entry inventory and source pins preserve
+the diagnostic, with synthetic text identities removed. Public29 jump/aura/admin
+acceptance remains valid; broader scenery/material/contact/audio, devices,
+performance and original operations/F1–F5/beta/launch/handoff remain open.
+[CPU qualification](2026-10-11-party-cpu-attribution.json).
