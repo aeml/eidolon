@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 // Average only connected faces of one bent leaf ribbon. Keep distinct leaves
 // and each folded fern leaflet separate even where rooted vertices meet.
-// Positions, colors and triangle count stay intact; work happens at creation.
+// Distinct pinnae retain their own folded surface; work happens at creation.
 function smoothRibbonNormals(geometry, ranges) {
     const { position, normal } = geometry.attributes;
     const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
@@ -93,14 +93,22 @@ export function createWoodlandUnderstoryGeometry(kind, { quality = 'high' } = {}
             for (const side of [-1, 1]) {
                 const end = offset(origin, sx * side, sz * side, length, -.025);
                 end[0] += dx * .14; end[2] += dz * .14;
-                const mid = origin.map((value, i) => (value + end[i]) / 2);
-                const left = offset(mid, dx, dz, -.065, -.02);
-                const right = offset(mid, dx, dz, .065, -.02);
-                // One continuous folded pinna, rather than two flat triangles
-                // with different baked colors along their shared spine.
+                // A curved, tapered pinna replaces the old four-corner
+                // diamond. Keep every original leaflet root/tip and the same
+                // reach; four faces describe a broad shoulder and narrow tip
+                // without alpha cards or another material/scene object.
+                const ridge = u => origin.map((value, i) => value + (end[i] - value) * u
+                    + (i === 1 ? Math.sin(Math.PI * u) * .018 : 0));
+                const width = .052 * Math.pow(Math.sin(t * Math.PI), .6);
+                const leftShoulder = offset(ridge(.35), dx, dz, -width, -.009);
+                const leftTaper = offset(ridge(.74), dx, dz, -width * .34, -.006);
+                const rightTaper = offset(ridge(.74), dx, dz, width * .34, -.003);
+                const rightShoulder = offset(ridge(.35), dx, dz, width, -.006);
                 const pinnaStart = positions.length / 3;
-                triangle(origin, left, end, tone);
-                triangle(origin, end, right, tone);
+                triangle(origin, leftShoulder, leftTaper, tone);
+                triangle(origin, leftTaper, end, tone);
+                triangle(origin, end, rightTaper, tone);
+                triangle(origin, rightTaper, rightShoulder, tone);
                 ribbons.push([pinnaStart, positions.length / 3]);
             }
         }

@@ -2,9 +2,9 @@ import { createWoodlandUnderstoryGeometry } from '../src/art/WoodlandUnderstoryG
 import { createHash } from 'node:crypto';
 
 test.each([
-    ['bracken', ['12a59b1f52aea48bb47f6bdb623a1e669457b0aa7ef1a61a90b5c3fbc0230e2e',
-        '2206fa07a29e3edd909289c256371323bf9356ea7823afa05d1cd75f79ebfe1a',
-        'ec07cf85f8126082b592a79e045a1b2e3224be1b50987fe9adf6526a657a51c4']],
+    ['bracken', ['4c8030f5bc78bc441dfe72a78ea761b5aeefec4a7530145edc7d240311a63622',
+        '99742c3399c4e9bd06b7d4994629f952bfa9aa5751fb72311692295059a460e8',
+        '6db68955f1ea07cd86f47622ed135798a89bba762040d028f907f42cb385d45a']],
     ['sedge', ['6003d7c03d0cca012fbb05c44b075f16efd0ab318b685e0959a9e6b247b4043f',
         '716973847a69be12e23be3828a32c3ebe4a3cf71703414017b13e8ec76ac0e7f',
         'e2f3abd273a90b5fd39a47971b5109d2aae56ad5c88b9dba8dcf04da95dd7c69']]
@@ -18,7 +18,7 @@ test.each([
     } finally { geometry.dispose(); }
 });
 
-test.each([['bracken', 7, 99, 93, 217], ['sedge', 16, 15, 9, 48]])(
+test.each([['bracken', 7, 183, 177, 413], ['sedge', 16, 15, 9, 48]])(
     '%s Low retains every leaf root, tip and fern leaflet with fewer ribbon faces', (kind, blades, highStride, lowStride, triangles) => {
     const high = createWoodlandUnderstoryGeometry(kind), low = createWoodlandUnderstoryGeometry(kind, { quality: 'low' });
     try {
@@ -75,7 +75,7 @@ test.each(['bracken', 'sedge'])('%s ribbon seams share smooth unit normals witho
     const geometry = createWoodlandUnderstoryGeometry(kind);
     try {
         const { position: p, normal: n } = geometry.attributes;
-        const stride = kind === 'sedge' ? 15 : 99;
+        const stride = kind === 'sedge' ? 15 : 183;
         for (let start = 0; start < p.count; start += stride) {
             for (const offsets of [[2, 5, 6], [4, 7, 9], [8, 11, 12]]) {
                 const [a, ...others] = offsets.map(i => start + i);
@@ -125,11 +125,11 @@ test.each(['high', 'low'])('fern folds have continuous unit normals and colors w
     const geometry = createWoodlandUnderstoryGeometry('bracken', { quality });
     try {
         const { position: p, normal: n, color: c } = geometry.attributes;
-        const stride = quality === 'high' ? 99 : 93, ribbon = quality === 'high' ? 15 : 9;
+        const stride = quality === 'high' ? 183 : 177, ribbon = quality === 'high' ? 15 : 9;
         let folds = 0;
         for (let blade = 0; blade < 7; blade++) for (let pinna = 0; pinna < 14; pinna++) {
-            const start = blade * stride + ribbon + pinna * 6;
-            for (const [a, b] of [[start, start + 3], [start + 2, start + 4]]) {
+            const start = blade * stride + ribbon + pinna * 12;
+            for (const [a, b] of [[start, start + 3], [start, start + 6], [start, start + 9], [start + 2, start + 4], [start + 5, start + 7], [start + 8, start + 10]]) {
                 for (const attribute of [p, n, c]) {
                     expect([attribute.getX(a), attribute.getY(a), attribute.getZ(a)])
                         .toEqual([attribute.getX(b), attribute.getY(b), attribute.getZ(b)]);
@@ -137,7 +137,7 @@ test.each(['high', 'low'])('fern folds have continuous unit normals and colors w
                 expect(Math.hypot(n.getX(a), n.getY(a), n.getZ(a))).toBeCloseTo(1, 5);
             }
             // Preserve the bend: the two outer edges keep distinct normals.
-            const left = start + 1, right = start + 5;
+            const left = start + 1, right = start + 11;
             expect([n.getX(left), n.getY(left), n.getZ(left)])
                 .not.toEqual([n.getX(right), n.getY(right), n.getZ(right)]);
             folds++;
