@@ -98,8 +98,23 @@ Highparty361draw/Lowwoodland83→90draw counterexamples remain retained; differe
 party populations do not causally resolve them. No universal-world-budget,
 modern-art/device/beta/launch acceptance or new public release.
 [Camp qualification and scoped controls](2026-10-10-camp-instance-frustum-qualification.json).
-Next: ordinary equipped fight/first-dungeon moving evidence and representative
-dynamic-population budgets, then supported-device and full milestone acceptance.
+**Combined equipped fight→walking return→first dungeon now passes in private QA
+846d63ed; runtime is unchanged and unselected.** Both High and Low normal-input
+sequences complete two kit kills, dungeon entry/movement, Recall and four-class
+14slot Go-race save custody;2native passes/2optional peer-renderer skips, retry0.
+Low also reaches the retained failure origin through actual walking and requires
+a real detour around generated scenery before returning to the road.30focused
+checks pass, including production scenery reproduction of the blocked chord.
+The earlier rock-only fixture failed to reproduce it; all fixture and prior
+native failures remain retained. High combat348median/173799tri and Low124median/
+33469tri pass existing sample gates;High438draw peak and87of180frames over350
+remain open, as does the party's279698triangle startup peak. Different populations
+do not causally clear historical failures. No gameplay/stat/collision/rendering
+or public change; modern-art/contact/device acceptance remains open.
+[Combined route and retained limits](2026-10-11-collision-aware-fight-return-qualification.json).
+Next: controlled dynamic actor/effect/shadow submission attribution and
+source-preserving improvements, representative devices and code-owned
+world/interior/material polish, then full milestone acceptance.
 
 The full modern-art/world/contact/combat, supported-browser/device/accessibility,
 save/security/operations/support/notices, F1–F5 freeze, closed-beta, launch and

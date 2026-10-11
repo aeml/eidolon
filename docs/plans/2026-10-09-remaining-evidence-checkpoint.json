@@ -2297,5 +2297,31 @@
       "runtimeUnchanged": true,
       "published": false
     }
+  },
+  "collisionAwareFightReturn": {
+    "source": "846d63edf54bc56d3c9f56f347f093312f6586b5",
+    "runtimeUnchanged": true,
+    "selected": false,
+    "published": false,
+    "receipt": "docs/plans/2026-10-11-collision-aware-fight-return-qualification.json",
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-collision-return-checks-20261011",
+      "inventoryEntries": 1588,
+      "files": 1589,
+      "inventorySHA256": "d950e6040a4a05d4e1af5b9f604653a537ade12ae2591865ecadf0924eb95041",
+      "frozen": true
+    },
+    "focusedUniquePassed": 30,
+    "nativePassed": 2,
+    "nativeSkipped": 2,
+    "highLowCombinedFightDungeonAndSavePassed": true,
+    "lowRetainedPositionWalkingDetourPassed": true,
+    "highCombatMedianDraws": 348,
+    "highCombatMaximumDraws": 438,
+    "highCombatFramesOver350": 87,
+    "lowCombatMedianDraws": 124,
+    "lowCombatMedianTriangles": 33469,
+    "previousFailuresRetained": true,
+    "scope": "Private QA only; normal movement around actual generated scenery. Existing per-sample median gates pass; dynamic costs, modern art, contact/audio and supported-device acceptance stay open."
   }
 }
