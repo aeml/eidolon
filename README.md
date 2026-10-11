@@ -500,6 +500,8 @@ For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
 - Forge gem keyboard choices and identity/focus continuity are qualified and merged locally as`eeade50f` for a later coherent milestone.68distinct focused checks/seven suites and four distinct Chrome desktop/phone cases pass; one reproduced reorder-visibility failure and original fixture correction are retained. Source-only while36qualification runs. [Qualification](docs/plans/2026-10-11-forge-gem-keyboard-qualification.json).
 
+- Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Source-only for a later coherent milestone while36deployment is active. [Qualification](docs/plans/2026-10-11-buyback-keyboard-qualification.json).
+
 - Accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend

@@ -1,0 +1,84 @@
+{
+  "recordedUTC": "2026-10-11T18:42:03.610932+00:00",
+  "sourceCommit": "db3346cb10dc59ec496b789b6a1384662fc5e531",
+  "focused": {
+    "suites": 5,
+    "passed": 65,
+    "failed": 0,
+    "skipped": 0,
+    "ui": 45,
+    "browserPlan": 20
+  },
+  "browser": {
+    "distinctPassed": 2,
+    "executions": 6,
+    "passes": 4,
+    "failures": 2,
+    "retries": 0,
+    "skips": 0,
+    "finalDurationMs": 10860.608,
+    "widths": [
+      1280,
+      390
+    ],
+    "scope": "Native System Chrome DOM and keyboard on actual UIManager, viewport emulation; GPU disabled, synthetic callback/model updates. No connected server/economy transaction, physical-phone or performance acceptance."
+  },
+  "ciDiscovery": "359 cases exactly once, no omissions or duplicates; discovery only",
+  "lint": "Full initial lint passed; final changed JavaScript lint passed",
+  "sourceChange": "Native named buttons, visible names/stack/total prices, server-compatible legacy value/stack defaults, safe total and duplicate-ID refusal, keyed refresh/focus/scroll, held-key continuity, empty/removal group fallback, obsolete/disposed actions refused. Existing callback signature/server authority unchanged.",
+  "retainedFailures": [
+    "Baseline four new focused cases fail on original missing buttons/focus/price validation.",
+    "Initial focused run43pass/2fail: unsupported Jest matcher. Replaced with existing call-count and argument assertions, retaining exact once expectations.",
+    "Initial native two cases reach all interaction assertions but fail final collector assertion: shared collector is an array, not separate named arrays. Corrected to exact empty-array assertion, no errors ignored.",
+    "Source review corrected CSS specificity before final native layout checks. Final suites require two desktop/one phone columns."
+  ],
+  "serverEvidenceReused": [
+    "server/internal/game/economy_actions.go:vendorStackPrice and PerformBuyback reviewed",
+    "server/internal/game/vendor_invariants_test.go:legacy defaults/exact wallet/replay tests retained",
+    "server/internal/game/buyback_capacity_test.go:capacity refusal/full item restore/replay no double-charge retained"
+  ],
+  "screenshots": "Both final actual item-art desktop and phone screenshots visually inspected; names, prices, art, focus and scrolling clear; no overflow.",
+  "publication": "Source-only; release36 exactaee9c3db CI38161891123 active on deployment. No successor push.",
+  "masterMerge": "49b50d7b9ba32cee56b881933ca4e074d52bd2bd",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-buyback-keyboard-checks-20261011",
+    "entries": 38,
+    "inventorySHA256": "31dcc91ae6998619bcd1e81f3e94d2ff037bb01a78afdf739b39c45b38f60234"
+  },
+  "sourceManifest": [
+    {
+      "path": "index.html",
+      "bytes": 120563,
+      "sha256": "80d2696c93cbf55af63aaf93947703ebc2911dded108618c64ae45afe158ae10"
+    },
+    {
+      "path": "package.json",
+      "bytes": 7169,
+      "sha256": "d7fd706b837392d5dc0e5d61a5445567f8dd52880cb6c0d137c1a61c172759e9"
+    },
+    {
+      "path": "src/styles/windows.css",
+      "bytes": 47127,
+      "sha256": "2a29a844b383d4cfa9aae3d861563fb088e75f645384299c31c7074801faad8e"
+    },
+    {
+      "path": "src/ui/InventoryUI.js",
+      "bytes": 75200,
+      "sha256": "0faec8ad11f33ac5cc635a8b78364b1205ca73efcc1c25e8be75f3c86f5d1a2d"
+    },
+    {
+      "path": "tests/InventoryBuybackChoices.test.js",
+      "bytes": 4697,
+      "sha256": "f7b07964489d4ea5da4bab304fc045cca136e43795144bd0cf1bd0220c2084c5"
+    },
+    {
+      "path": "tests/e2e/buyback-keyboard.spec.js",
+      "bytes": 6428,
+      "sha256": "3ebb942e3db2efdf459142b09ef49f4cd1eef11f3bafa9957776cadfa10f2905"
+    }
+  ],
+  "localBranches": {
+    "merged": 594,
+    "no-merged": 60
+  }
+}
