@@ -19,6 +19,10 @@
 #forge-screen .btn-menu:hover:not(:disabled) { background: #374456; border-color: #d5bb87; }
 #forge-screen .btn-menu:disabled { background: #19212b; color: #9fa8b5; border-color: #53607066; cursor: default; }
 .mobile-mode #forge-screen :is(#forge-equipment-list, #forge-potency-list, #forge-socket-list, #forge-gem-equipment, #forge-gem-remove-equipment) { grid-auto-rows: max-content; align-content: start; }
+.forge-gem-choice { position: relative; min-width: 44px; min-height: 44px; padding: 0; font: inherit; color: inherit; scroll-margin: 4px; }
+.forge-gem-choice:disabled { cursor: default !important; opacity: .5; }
+.forge-gem-choice[aria-pressed="true"]::after { content: '✓'; position: absolute; bottom: 0; right: 2px; color: #fff; font-size: 12px; text-shadow: 0 1px 2px #000; }
+.forge-gem-choice:focus-visible, .forge-gem-choices:focus-visible { outline: 2px solid #ffd700; outline-offset: 2px; }
 
 @media (min-width: 1000px) {
     body:not(.mobile-mode) #forge-screen { width: min(960px, calc(100vw - 48px)); }
