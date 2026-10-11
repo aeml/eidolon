@@ -17,6 +17,7 @@ export class ActorInstanceMultiDraw {
         this.group = new Group(); this.group.name = 'ActorInstanceMultiDraw'; this.group.visible = false;
         parent.add(this.group); this.entries = new Map(); this.hidden = [];
         this.frustum = new Frustum(); this.projection = new Matrix4(); this.matrix = new Matrix4();
+        this.storedMatrix = new Matrix4();
         this.enabled = true; this.perInstanceFrustum = false; this.identities = new WeakMap(); this.nextIdentity = 0;
     }
 
@@ -100,7 +101,10 @@ export class ActorInstanceMultiDraw {
                 for (const { source, slots } of entry.sourceSlots) {
                     for (let i = 0; i < slots.length; i++) {
                         entry.mesh.setVisibleAt(slots[i], i < source.count);
-                        if (i < source.count) { source.getMatrixAt(i, this.matrix); entry.mesh.setMatrixAt(slots[i], this.matrix); }
+                        if (i < source.count) {
+                            source.getMatrixAt(i, this.matrix);
+                            this.updateMatrixAt(entry.mesh, slots[i], this.matrix);
+                        }
                     }
                     this.hidden.push(source); source.visible = false;
                 }
@@ -111,6 +115,19 @@ export class ActorInstanceMultiDraw {
             }
             this.group.visible = used.size > 0;
         } catch (error) { this.endFrame(); this.clearEntries(); throw error; }
+    }
+
+    updateMatrixAt(mesh, index, matrix) {
+        // Read the actual destination, rather than trusting a previous frame's
+        // snapshot. Identical float32 bits need no texture upload; animation,
+        // signed zero changes and direct writes still replace the row now.
+        mesh.getMatrixAt(index, this.storedMatrix);
+        for (let axis = 0; axis < 16; axis++) {
+            if (!Object.is(matrix.elements[axis], this.storedMatrix.elements[axis])) {
+                mesh.setMatrixAt(index, matrix);
+                return;
+            }
+        }
     }
 
     endFrame() {

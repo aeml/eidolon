@@ -17,6 +17,83 @@ function fixture() {
     return { group, sources, material, owner, camera, renderer, begin };
 }
 
+test('unchanged float32 rows retain their texture version across frames', () => {
+    const f = fixture();
+    try {
+        f.begin(); const { mesh } = [...f.owner.entries.values()][0];
+        const write = jest.spyOn(mesh, 'setMatrixAt'), version = mesh._matricesTexture.version;
+        const stored = mesh._matricesTexture.image.data.slice();
+        f.owner.endFrame(); f.begin(); f.owner.endFrame(); f.begin();
+        expect(write).not.toHaveBeenCalled(); expect(mesh._matricesTexture.version).toBe(version);
+        expect(mesh._matricesTexture.image.data).toEqual(stored);
+    } finally { f.owner.dispose(); jest.restoreAllMocks(); }
+});
+
+test('a changed live source row updates immediately without rewriting other rows', () => {
+    const f = fixture();
+    try {
+        f.begin(); const { mesh, sourceSlots } = [...f.owner.entries.values()][0];
+        const write = jest.spyOn(mesh, 'setMatrixAt'), version = mesh._matricesTexture.version;
+        f.owner.endFrame();
+        const pose = new THREE.Matrix4().makeRotationY(.73); pose.setPosition(.234, 1.25, -2.5);
+        f.sources[1].setMatrixAt(1, pose); f.begin();
+        const original = new THREE.Matrix4(), delivered = new THREE.Matrix4();
+        f.sources[1].getMatrixAt(1, original); mesh.getMatrixAt(sourceSlots[1].slots[1], delivered);
+        expect(delivered.elements).toEqual(original.elements);
+        expect(write).toHaveBeenCalledTimes(1); expect(mesh._matricesTexture.version).toBe(version + 1);
+    } finally { f.owner.dispose(); jest.restoreAllMocks(); }
+});
+
+test.each(['API', 'storage'])('a destination changed through %s is repaired from the current source', boundary => {
+    const f = fixture();
+    try {
+        f.begin(); const { mesh, sourceSlots } = [...f.owner.entries.values()][0], slot = sourceSlots[0].slots[0];
+        f.owner.endFrame();
+        if (boundary === 'API') mesh.setMatrixAt(slot, new THREE.Matrix4().makeTranslation(999, 999, 999));
+        else mesh._matricesTexture.image.data[slot * 16 + 12] = 999;
+        const write = jest.spyOn(mesh, 'setMatrixAt'); f.begin();
+        const source = new THREE.Matrix4(), delivered = new THREE.Matrix4();
+        f.sources[0].getMatrixAt(0, source); mesh.getMatrixAt(slot, delivered);
+        expect(delivered.elements).toEqual(source.elements); expect(write).toHaveBeenCalledTimes(1);
+    } finally { f.owner.dispose(); jest.restoreAllMocks(); }
+});
+
+test('signed zero changes retain the exact source float32 bits', () => {
+    const f = fixture();
+    try {
+        f.begin(); const { mesh, sourceSlots } = [...f.owner.entries.values()][0]; f.owner.endFrame();
+        const matrix = new THREE.Matrix4(); f.sources[0].getMatrixAt(0, matrix); matrix.elements[1] = -0;
+        f.sources[0].setMatrixAt(0, matrix); const write = jest.spyOn(mesh, 'setMatrixAt'); f.begin();
+        mesh.getMatrixAt(sourceSlots[0].slots[0], matrix);
+        expect(Object.is(matrix.elements[1], -0)).toBe(true); expect(write).toHaveBeenCalledTimes(1);
+    } finally { f.owner.dispose(); jest.restoreAllMocks(); }
+});
+
+test('a hidden capacity row follows its new source transform when the count grows again', () => {
+    const f = fixture();
+    try {
+        f.begin(); const { mesh, sourceSlots } = [...f.owner.entries.values()][0], slot = sourceSlots[0].slots[1];
+        f.owner.endFrame(); f.sources[0].count = 1; f.begin();
+        expect(mesh.getVisibleAt(slot)).toBe(false); f.owner.endFrame();
+        f.sources[0].setMatrixAt(1, new THREE.Matrix4().makeTranslation(7, 8, 9));
+        f.sources[0].count = 2; const write = jest.spyOn(mesh, 'setMatrixAt'); f.begin();
+        const delivered = new THREE.Matrix4(); mesh.getMatrixAt(slot, delivered);
+        expect(delivered.elements.slice(12, 15)).toEqual([7, 8, 9]);
+        expect(mesh.getVisibleAt(slot)).toBe(true); expect(write).toHaveBeenCalledTimes(1);
+    } finally { f.owner.dispose(); jest.restoreAllMocks(); }
+});
+
+test('a destination-read exception restores the source visibility and retires owned delivery', () => {
+    const f = fixture();
+    try {
+        f.begin(); const { mesh } = [...f.owner.entries.values()][0]; f.owner.endFrame();
+        jest.spyOn(mesh, 'getMatrixAt').mockImplementation(() => { throw Error('read failed'); });
+        expect(f.begin).toThrow('read failed');
+        expect(f.sources.every(source => source.visible)).toBe(true);
+        expect(f.owner.entries.size).toBe(0); expect(f.owner.group.visible).toBe(false);
+    } finally { f.owner.dispose(); jest.restoreAllMocks(); }
+});
+
 test('same-origin source geometry and existing float32 instance rows survive delivery exactly', () => {
     const f = fixture();
     try {
