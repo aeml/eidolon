@@ -9,9 +9,11 @@ with cumulative notes and exact frontend/backend deployment checks.
 ## Before editing
 
 Fetch and reconcile current `master`; do not overwrite another contributor's
-work or use a force push. Use a clean branch/worktree for your own changes.
+work or use a force push. Use a clean, detached owned worktree for your own changes.
 Merge completed, validated work into `master` before declaring it done. Keep
-unfinished experiments isolated until reviewed and selected.
+unfinished experiments isolated until reviewed and selected. Only `master`
+should remain as an active local or remote branch; archive obsolete histories
+and retire branch names after consolidation.
 Install the pinned dependencies with Node24 and `npm ci`. Do not copy production
 `.env`, credentials, player exports or logs into fixtures, commits or screenshots.
 Blender source files use Git LFS; fetch the relevant sources before editing.
