@@ -256,11 +256,12 @@ describe('Procedural dungeon interior art', () => {
         ['createVerdantBastionCatacombs', 'verdant_bastion_catacombs'],
         ['createMoltenCore', 'molten_core'],
         ['createTempestSpire', 'tempest_spire'],
-        ['createAbyssalWell', 'abyssal_well']
-    ])('%s builds exact canonical surfaces without loading authored cobblestone textures', async (methodName, dungeonType) => {
+        ['createAbyssalWell', 'abyssal_well'],
+        ['createUmbralNexus', 'umbral_nexus']
+    ].flatMap(entry => ['low', 'high'].map(quality => [quality, ...entry])))('%s %s builds exact canonical surfaces without loading authored cobblestone textures', async (quality, methodName, dungeonType) => {
         const scene = new THREE.Group();
         const collisionManager = { addCollider: jest.fn() };
-        const generator = new WorldGenerator(scene, collisionManager);
+        const generator = new WorldGenerator(scene, collisionManager, { graphicsQuality: quality });
         const preloadSpy = jest.spyOn(generator, 'preloadTextures');
         const layout = {
             rooms: [
@@ -274,6 +275,7 @@ describe('Procedural dungeon interior art', () => {
 
         await generator[methodName](0, 0, layout);
 
+        expect(generator.dungeonInteriorKit.surfaceQuality).toBe(quality);
         expect(preloadSpy).not.toHaveBeenCalled();
         const floor = scene.getObjectByName('ProceduralDungeonRoomFloor');
         const dressing = scene.children.find((child) => child.userData?.proceduralDungeonInterior);
@@ -282,6 +284,10 @@ describe('Procedural dungeon interior art', () => {
         expect(floor.material.map).toBeInstanceOf(THREE.DataTexture);
         expect(floor.geometry.parameters).toEqual(expect.objectContaining({ width: 120, height: 120 }));
         expect(dressing.userData.roomIdentity).toBe('entry_gate');
+        if (dungeonType === 'verdant_bastion_catacombs') {
+            const bark = dressing.children.find(part => part.isMesh && part.material.vertexColors);
+            expect(bark.geometry.attributes.position.count / 3).toBe(quality === 'low' ? 864 : 2880);
+        }
         expect(collisionManager.addCollider).toHaveBeenCalledTimes(4);
 
         const colliderSizes = collisionManager.addCollider.mock.calls.map(([box]) => box.getSize(new THREE.Vector3()));
