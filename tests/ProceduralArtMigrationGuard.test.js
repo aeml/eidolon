@@ -93,6 +93,9 @@ const auditedAssetReferenceAllowlist = new Map([
     // The validated catalog builder checks this exact suffix; it introduces no
     // model path and remains subject to the same exact token-count audit.
     ['scripts/generate-authored-equipment.mjs', new Set(['.glb'])],
+    // Local-only generator serves the supplied models with this exact MIME
+    // suffix; no model path or additional asset payload is authorized.
+    ['scripts/generate-gameplay-geometry-precomputed.mjs', new Set(['.glb'])],
     ['scripts/derive-wearable-pilot.mjs', new Set(['.glb', '${stem}-pilot-${quality}.glb'])],
     ['scripts/derive-body-lod-pilot.mjs', new Set(['${directory}/${stem}.glb', '${directory}/${stem}-runtime-${quality}.glb', '${stem}-body-pilot-${quality}.glb'])],
     ['scripts/derive-wearable-attribute-pilot.mjs', new Set(['.glb', '${stem}-pilot-${quality}.glb'])],
