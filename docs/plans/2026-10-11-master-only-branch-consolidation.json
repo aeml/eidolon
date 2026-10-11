@@ -41,5 +41,10 @@
   ],
   "remoteDeleted": 50,
   "archiveTag": "archive/branch-consolidation-20261011",
-  "archiveTagPeeledSHA": "c83a5def5399cce6c172ceee1fece6be8c0cc0cf"
+  "archiveTagPeeledSHA": "c83a5def5399cce6c172ceee1fece6be8c0cc0cf",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-unmerged-review-20261011",
+    "entries": 15,
+    "inventorySHA256": "3b2f1a7b0d8405a2ff475363eb43effa0633e9e54090bc0cd75a3a9664b9d1a0"
+  }
 }
