@@ -9,6 +9,7 @@ import { bundleGameEngine } from '../../scripts/bundle-game-engine.mjs';
 import { versionPagesRuntime } from '../../scripts/version-pages-runtime.mjs';
 import { collectBrowserFailures } from './helpers.js';
 import { measureJumpWallClock } from './jump-clock-observation.js';
+import { profileGameplayScene } from './scene-performance.js';
 import { reviewEarthRockShelves } from './earth-rock-shelf-review.js';
 
 const release = 'bundlefixture20261009';
@@ -186,6 +187,49 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} camp cl
             if (review.clock) Object.defineProperty(performance, 'now', review.clock); else delete performance.now;
             review.hero?.dispose(); review.game.destroy(); delete window.__publishedCampReview;
         });
+    }
+});
+
+test('copied published scene profiler works without deployed test modules', async ({ page, request }, testInfo) => {
+    // This is delivery/ownership coverage with a minimal RAF fixture, not a
+    // game-performance measurement. The publication contains no tests folder.
+    for (const file of ['scene-performance.js', 'renderFrameInterval.js'])
+        expect((await request.get(`${origin}/tests/e2e/${file}`)).status()).toBe(404);
+    await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
+    await page.goto(origin, { waitUntil: 'networkidle' });
+    const installFixture = () => {
+        const info = { autoReset: true, render: { calls: 0, triangles: 0 }, memory: { geometries: 0, textures: 0 },
+            reset() { this.render.calls = this.render.triangles = 0; } };
+        const original = () => { info.render.calls += 3; info.render.triangles += 7; };
+        window.game = { loop: original, uiManager: {}, activeEntitiesCache: [], renderSystem: { renderer: {
+            info, getContext: () => ({ getExtension: () => null, getParameter: () => 'delivery-fixture' }) } } };
+        window.__profileDeliveryOriginal = original;
+        const tick = time => {
+            if (!window.__profileDeliveryOriginal) return;
+            window.game.loop(time); requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+    };
+    await page.evaluate(installFixture);
+    try {
+        const reports = [];
+        for (const label of ['first', 'repeat', 'after-navigation']) {
+            if (label === 'after-navigation') {
+                await page.reload({ waitUntil: 'networkidle' });
+                await page.evaluate(installFixture);
+            }
+            const report = await profileGameplayScene(page, label);
+            expect(report.frames).toBe(180); expect(report.visibleFrames).toBe(180);
+            expect(report.drawCallsMedian).toBe(3); expect(report.trianglesMedian).toBe(7);
+            expect(report.restored).toBe(true); expect(report.renderer).toBe('delivery-fixture');
+            expect(await page.evaluate(() => window.game.loop === window.__profileDeliveryOriginal &&
+                window.game.renderSystem.renderer.info.autoReset)).toBe(true);
+            reports.push(report);
+        }
+        expect(await page.evaluate(async () => (await fetch('/tests/e2e/renderFrameInterval.js')).status)).toBe(404);
+        await testInfo.attach('profiler-delivery-fixture', { body: JSON.stringify(reports), contentType: 'application/json' });
+    } finally {
+        await page.evaluate(() => { delete window.__profileDeliveryOriginal; delete window.game; });
     }
 });
 
