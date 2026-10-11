@@ -1,0 +1,168 @@
+{
+  "recordedUTC": "2026-10-11T22:24:48.280887+00:00",
+  "status": "Qualified QA-only exact scene/camera renderer-role split; current connected timing still fails.",
+  "source": "709166bc2c11b1204134816326eb2726b23e93ba",
+  "implementation": "Extend the existing opt-in phase observer without extra wrappers. rendererWorld requires both captured live gameplay scene and camera identities; rendererOther includes all other calls. Same elapsed CPU duration contributes to aggregate renderer and exactly one role. Identity replacement rejects the diagnostic. Default observation has no phase hooks or fields.",
+  "focused": {
+    "command": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --runTestsByPath tests/ScenePerformanceObservation.test.js",
+    "testsPassed": 24,
+    "suitesPassed": 1,
+    "exitCode": 0,
+    "seconds": 1.368,
+    "lint": "Scoped ESLint both changed QA files, max-warnings0: exit0",
+    "qaPatchSHA256": "8a4e50fdfb8ed464942fb3d17438ddf1ed96d88e4b7431426e90b950a76d4375"
+  },
+  "native": {
+    "observedPreparedAccounts": 4,
+    "plaintextFilesScanned": 9,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "serverMarkers": {
+      "WARNING: DATA RACE": 0,
+      "panic:": 0,
+      "fatal error:": 0,
+      "Worker panic:": 0,
+      "Recovered from panic in Update:": 0
+    },
+    "native": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    },
+    "maxRetry": 0
+  },
+  "ordinary": {
+    "frames": 180,
+    "frameMedianMs": 33.4,
+    "frameP95Ms": 66.7,
+    "cpuLoopMedianMs": 37.19999998807907,
+    "cpuLoopP95Ms": 52.5,
+    "drawCallsMedian": 280,
+    "trianglesMedian": 173005,
+    "activeEntitiesMin": 29,
+    "activeEntitiesMax": 31,
+    "restored": true,
+    "visibleFrames": 180
+  },
+  "instrumented": {
+    "frames": 180,
+    "frameMedianMs": 33.4,
+    "frameP95Ms": 50.1,
+    "cpuLoopMedianMs": 37.69999998807907,
+    "cpuLoopP95Ms": 49.60000002384186,
+    "drawCallsMedian": 260,
+    "trianglesMedian": 173650,
+    "activeEntitiesMin": 27,
+    "activeEntitiesMax": 28,
+    "restored": true,
+    "visibleFrames": 180
+  },
+  "phaseSummary": {
+    "scope": "Opt-in inclusive synchronous CPU clocks; renderer includes Three.js traversal/submission, not GPU elapsed time. rendererWorld matches the exact gameplay scene AND camera; rendererOther is every other call, including fullscreen composer passes. Exclusive components subtract nested clocks. Instrumentation overhead is included; this separate diagnostic does not replace the ordinary budget sample.",
+    "components": {
+      "update": {
+        "medianMs": 4.5,
+        "p95Ms": 11
+      },
+      "presentation": {
+        "medianMs": 32.19999998807907,
+        "p95Ms": 42.69999998807907
+      },
+      "renderSystem": {
+        "medianMs": 31.5,
+        "p95Ms": 42.19999998807907
+      },
+      "renderer": {
+        "medianMs": 31.100000023841858,
+        "p95Ms": 41.40000003576279
+      },
+      "rendererWorld": {
+        "medianMs": 30.700000047683716,
+        "p95Ms": 39.90000003576279
+      },
+      "rendererOther": {
+        "medianMs": 0.30000001192092896,
+        "p95Ms": 1.899999976158142
+      },
+      "presentationOutsideRenderSystem": {
+        "medianMs": 0.5,
+        "p95Ms": 2
+      },
+      "renderSystemOutsideRenderer": {
+        "medianMs": 0.2999999523162842,
+        "p95Ms": 1.5
+      },
+      "loopOutsideUpdateAndPresentation": {
+        "medianMs": 0.10000002384185791,
+        "p95Ms": 0.30000007152557373
+      }
+    },
+    "calls": {
+      "update": {
+        "min": 1,
+        "max": 2
+      },
+      "presentation": {
+        "min": 1,
+        "max": 1
+      },
+      "renderSystem": {
+        "min": 1,
+        "max": 1
+      },
+      "renderer": {
+        "min": 16,
+        "max": 16
+      },
+      "rendererWorld": {
+        "min": 1,
+        "max": 1
+      },
+      "rendererOther": {
+        "min": 15,
+        "max": 15
+      }
+    }
+  },
+  "originalBudgets": {
+    "drawCallsMedian": {
+      "actual": 280,
+      "maximum": 350,
+      "passes": true
+    },
+    "trianglesMedian": {
+      "actual": 173005,
+      "maximum": 250000,
+      "passes": true
+    },
+    "frameMedianMs": {
+      "actual": 33.4,
+      "maximum": 20,
+      "passes": false
+    },
+    "frameP95Ms": {
+      "actual": 66.7,
+      "maximum": 33.4,
+      "passes": false
+    }
+  },
+  "interpretation": "Every instrumented frame has exactly one world call and15othercalls. World median30.7ms/p9539.9ms versus other0.3/1.9ms localizes aggregate synchronous renderer work to the world. Preserve bloom/output/FXAA settings. CPU clocks include wrappers and synchronous GPU waits, not GPU elapsed time. Sequential populations differ, so no optimization gain is claimed.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-connected39-render-role-checks-20261011",
+    "entries": 21,
+    "inventorySHA256": "aff4b70a958fb698bf6ac2edcd56af6f250d98b558224cd997bafaec66a03661"
+  },
+  "custody": "Actual Go-race four-class14-slot equipment/inventory/EP/party/logout save checks pass. Native1pass/1optional skip/retry0; four synthetic identities sanitized. Owned database removed/API/browser terminal, all940runtime/vendor pins remain exact.",
+  "nextAction": "Private identity/pure-translation foliage product prototype is rejected after six exact rendered controls but mixed High/worse Low timing and an independent signed-zero counterexample. Retain ordinary multiplication and stop matrix variants. Continue world actor/light/submission and code-owned visual quality work using this attribution; exact39ordered/public acceptance remains mandatory.",
+  "limits": [
+    "No product runtime edit, performance acceptance, density change, actor freeze or target relaxation.",
+    "Prior cold-triangle and connected timing failures remain valid.",
+    "No unchanged full campaign/soak replay, physical-phone or final-art acceptance.",
+    "All original1.11\u20131.99 world/art/gameplay/device/operations/F1\u2013F5/beta/launch/handoff scope remains active."
+  ],
+  "release": "Corrective39 CI38178405817attempt1 has all5prerequisites successful and Predeploy Character QA active.38 remains last accepted until own ordered terminalCI/live/93asset normal-TLS acceptance. Hold local QA/docs from publication.",
+  "rejectedPrototype": "2026-10-11-foliage-identity-product-unselected.json"
+}

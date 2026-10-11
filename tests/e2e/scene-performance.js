@@ -16,7 +16,7 @@ export function observeGameplayScene(game, label, { phases = false } = {}) {
         const samples = [];
         const hooks = [];
         let phaseFrame = null;
-        const phaseNames = ['update', 'presentation', 'renderSystem', 'renderer'];
+        const phaseNames = ['update', 'presentation', 'renderSystem', 'renderer', 'rendererWorld', 'rendererOther'];
         let warmup = 60;
         let previous = null;
         let firstPreviewFrame = null;
@@ -36,7 +36,8 @@ export function observeGameplayScene(game, label, { phases = false } = {}) {
                     else delete hook.owner[hook.method];
                 } else error ??= new Error(`Scene profiler lost ${hook.name} phase ownership`);
             }
-            if (phases && (game.renderSystem !== renderSystem || renderSystem.renderer !== renderer))
+            if (phases && (game.renderSystem !== renderSystem || renderSystem.renderer !== renderer
+                || renderSystem.scene !== worldScene || renderSystem.camera !== worldCamera))
                 error ??= new Error('Scene profiler lost phase renderer ownership');
             if (renderInfo.autoReset === false) renderInfo.autoReset = originalReset;
             if (renderer.info !== renderInfo || renderInfo.autoReset !== originalReset)
@@ -51,7 +52,7 @@ export function observeGameplayScene(game, label, { phases = false } = {}) {
                 const gl = renderer.getContext();
                 const debug = gl.getExtension('WEBGL_debug_renderer_info');
                 const phaseSummary = phases ? {
-                    scope: 'Opt-in inclusive synchronous CPU clocks; renderer includes Three.js traversal/submission, not GPU elapsed time. Exclusive components subtract nested clocks. Instrumentation overhead is included; this separate diagnostic does not replace the ordinary budget sample.',
+                    scope: 'Opt-in inclusive synchronous CPU clocks; renderer includes Three.js traversal/submission, not GPU elapsed time. rendererWorld matches the exact gameplay scene AND camera; rendererOther is every other call, including fullscreen composer passes. Exclusive components subtract nested clocks. Instrumentation overhead is included; this separate diagnostic does not replace the ordinary budget sample.',
                     components: Object.fromEntries(Object.keys(samples[0].phaseCpuMs).map(name => [name, {
                         medianMs: percentile(samples.map(sample => sample.phaseCpuMs[name]), .5),
                         p95Ms: percentile(samples.map(sample => sample.phaseCpuMs[name]), .95)
@@ -92,7 +93,8 @@ export function observeGameplayScene(game, label, { phases = false } = {}) {
             let result, started;
             try {
                 if (phases && (hooks.some(hook => hook.owner[hook.method] !== hook.wrapper)
-                    || game.renderSystem !== renderSystem || renderSystem.renderer !== renderer))
+                    || game.renderSystem !== renderSystem || renderSystem.renderer !== renderer
+                    || renderSystem.scene !== worldScene || renderSystem.camera !== worldCamera))
                     throw new Error('Scene profiler lost phase ownership');
                 if (phases) phaseFrame = {
                     cpu: Object.fromEntries(phaseNames.map(name => [name, 0])),
@@ -101,7 +103,8 @@ export function observeGameplayScene(game, label, { phases = false } = {}) {
                 started = performance.now();
                 renderInfo.reset();
                 result = originalLoop.call(this, time);
-                if (phases && hooks.some(hook => hook.owner[hook.method] !== hook.wrapper))
+                if (phases && (hooks.some(hook => hook.owner[hook.method] !== hook.wrapper)
+                    || renderSystem.scene !== worldScene || renderSystem.camera !== worldCamera))
                     throw new Error('Scene profiler lost phase ownership');
             } catch (error) {
                 phaseFrame = null;
@@ -131,9 +134,11 @@ export function observeGameplayScene(game, label, { phases = false } = {}) {
             return result;
         }
         const renderSystem = game.renderSystem;
+        const worldScene = renderSystem.scene, worldCamera = renderSystem.camera;
         observers.set(game, observedLoop);
         try {
             if (phases) {
+                if (!worldScene || !worldCamera) throw new Error('Scene phase profiling requires a gameplay scene and camera');
                 const targets = [[game, 'update', 'update'], [game, 'render', 'presentation'],
                     [renderSystem, 'render', 'renderSystem'], [renderer, 'render', 'renderer']];
                 if (targets.some(([owner, method]) => typeof owner[method] !== 'function'))
@@ -143,9 +148,15 @@ export function observeGameplayScene(game, label, { phases = false } = {}) {
                     const hook = { owner, method, name, descriptor, installed: false, wrapper: function (...args) {
                         const frame = phaseFrame;
                         if (!frame) return original.apply(this, args);
+                        const role = name === 'renderer' ? (args[0] === worldScene && args[1] === worldCamera ? 'rendererWorld' : 'rendererOther') : null;
                         const started = performance.now(); frame.calls[name]++;
+                        if (role) frame.calls[role]++;
                         try { return original.apply(this, args); }
-                        finally { frame.cpu[name] += performance.now() - started; }
+                        finally {
+                            const elapsed = performance.now() - started;
+                            frame.cpu[name] += elapsed;
+                            if (role) frame.cpu[role] += elapsed;
+                        }
                     } };
                     hooks.push(hook);
                     owner[method] = hook.wrapper; hook.installed = true;

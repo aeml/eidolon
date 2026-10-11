@@ -1,0 +1,266 @@
+{
+  "recordedUTC": "2026-10-11T22:27:48.028326+00:00",
+  "status": "Rejected private prototype; no product selection or runtime changes.",
+  "hypothesis": "Avoid native matrix arithmetic only for foliage leaf identity local matrices under a pure-translation parent, while retaining native updateMatrixWorld traversal/dirty/force propagation and fallback for other operands. This is algebraic specialization, not previously rejected matrix-product result caching.",
+  "source": {
+    "source": "709166bc2c11b1204134816326eb2726b23e93ba",
+    "referenceSHA256": "09b55219719dddf6c3b7081f8069d218762d8ae20128ffdb1de6bc54aba6e4ec",
+    "scope": "Private identity/pure-translation matrix algebra prototype, installed only on constructor-owned foliage leaf matrix objects. No runtime source edits. Unknown operands keep native multiplication; existing traversal/force/dirty behavior is untouched."
+  },
+  "results": [
+    {
+      "quality": "high",
+      "foliageLeaves": 3146,
+      "groups": 3,
+      "controls": [
+        {
+          "pose": 0.11,
+          "offset": 0,
+          "bytes": 4321280,
+          "changed": 0,
+          "unstable": 0,
+          "matrixDifferences": 0,
+          "reference": {
+            "calls": 338,
+            "triangles": 242748
+          },
+          "candidate": {
+            "calls": 338,
+            "triangles": 242748
+          },
+          "hits": 6292,
+          "misses": 12584,
+          "restored": true
+        },
+        {
+          "pose": 0.43,
+          "offset": 65,
+          "bytes": 4321280,
+          "changed": 0,
+          "unstable": 0,
+          "matrixDifferences": 0,
+          "reference": {
+            "calls": 186,
+            "triangles": 143259
+          },
+          "candidate": {
+            "calls": 186,
+            "triangles": 143259
+          },
+          "hits": 6292,
+          "misses": 31460,
+          "restored": true
+        },
+        {
+          "pose": 0.79,
+          "offset": -65,
+          "bytes": 4321280,
+          "changed": 0,
+          "unstable": 0,
+          "matrixDifferences": 0,
+          "reference": {
+            "calls": 219,
+            "triangles": 169573
+          },
+          "candidate": {
+            "calls": 219,
+            "triangles": 169573
+          },
+          "hits": 12584,
+          "misses": 44044,
+          "restored": true
+        }
+      ],
+      "arms": [
+        {
+          "enabled": false,
+          "frames": 180,
+          "renderMedianMs": 21.69999998807907,
+          "renderP95Ms": 32.89999997615814,
+          "frameMedianMs": 16.700000000000728,
+          "frameP95Ms": 33.400000000001455,
+          "hitsMedian": 0,
+          "missesMedian": 3146
+        },
+        {
+          "enabled": true,
+          "frames": 180,
+          "renderMedianMs": 22,
+          "renderP95Ms": 34.39999997615814,
+          "frameMedianMs": 16.700000000000728,
+          "frameP95Ms": 33.400000000001455,
+          "hitsMedian": 3146,
+          "missesMedian": 0
+        },
+        {
+          "enabled": true,
+          "frames": 180,
+          "renderMedianMs": 19.600000023841858,
+          "renderP95Ms": 25.400000035762787,
+          "frameMedianMs": 16.700000000000728,
+          "frameP95Ms": 33.39999999999782,
+          "hitsMedian": 3146,
+          "missesMedian": 0
+        },
+        {
+          "enabled": false,
+          "frames": 180,
+          "renderMedianMs": 19.899999976158142,
+          "renderP95Ms": 25.30000001192093,
+          "frameMedianMs": 16.69999999999709,
+          "frameP95Ms": 33.400000000001455,
+          "hitsMedian": 0,
+          "missesMedian": 3146
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "foliageLeaves": 3146,
+      "groups": 3,
+      "controls": [
+        {
+          "pose": 0.11,
+          "offset": 0,
+          "bytes": 4321280,
+          "changed": 0,
+          "unstable": 0,
+          "matrixDifferences": 0,
+          "reference": {
+            "calls": 183,
+            "triangles": 109122
+          },
+          "candidate": {
+            "calls": 183,
+            "triangles": 109122
+          },
+          "hits": 6292,
+          "misses": 12584,
+          "restored": true
+        },
+        {
+          "pose": 0.43,
+          "offset": 65,
+          "bytes": 4321280,
+          "changed": 0,
+          "unstable": 0,
+          "matrixDifferences": 0,
+          "reference": {
+            "calls": 43,
+            "triangles": 24091
+          },
+          "candidate": {
+            "calls": 43,
+            "triangles": 24091
+          },
+          "hits": 6292,
+          "misses": 31460,
+          "restored": true
+        },
+        {
+          "pose": 0.79,
+          "offset": -65,
+          "bytes": 4321280,
+          "changed": 0,
+          "unstable": 0,
+          "matrixDifferences": 0,
+          "reference": {
+            "calls": 58,
+            "triangles": 30383
+          },
+          "candidate": {
+            "calls": 58,
+            "triangles": 30383
+          },
+          "hits": 12584,
+          "misses": 44044,
+          "restored": true
+        }
+      ],
+      "arms": [
+        {
+          "enabled": false,
+          "frames": 180,
+          "renderMedianMs": 13.5,
+          "renderP95Ms": 18.600000023841858,
+          "frameMedianMs": 16.69999999999891,
+          "frameP95Ms": 16.80000000000109,
+          "hitsMedian": 0,
+          "missesMedian": 3146
+        },
+        {
+          "enabled": true,
+          "frames": 180,
+          "renderMedianMs": 13.800000011920929,
+          "renderP95Ms": 18,
+          "frameMedianMs": 16.69999999999891,
+          "frameP95Ms": 16.700000000000728,
+          "hitsMedian": 3146,
+          "missesMedian": 0
+        },
+        {
+          "enabled": true,
+          "frames": 180,
+          "renderMedianMs": 14,
+          "renderP95Ms": 18.5,
+          "frameMedianMs": 16.69999999999709,
+          "frameP95Ms": 16.799999999999272,
+          "hitsMedian": 3146,
+          "missesMedian": 0
+        },
+        {
+          "enabled": false,
+          "frames": 180,
+          "renderMedianMs": 13.100000023841858,
+          "renderP95Ms": 19.099999964237213,
+          "frameMedianMs": 16.69999999999709,
+          "frameP95Ms": 16.799999999999272,
+          "hitsMedian": 0,
+          "missesMedian": 3146
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    }
+  ],
+  "decision": "REJECT. High reference21.7/19.9ms medians versus candidate22.0/19.6ms is mixed; Low reference13.5/13.1ms versus candidate13.8/14.0ms worsens. High first candidate p9534.4ms worsens reference32.9ms. No consistent gain. Also an actual signed-zero counterexample fails native exact semantics beyond rendered ordinary constructor inputs. Do not select or pursue another variant to justify this optimization.",
+  "renderControls": {
+    "qualities": 2,
+    "rgbaPairs": 6,
+    "bytesEach": 4321280,
+    "matrixComponentsEach": 50336,
+    "changedOrUnstableChannels": 0,
+    "matrixDifferences": 0,
+    "scope": "Constructor ordinary identity/pure-translation inputs, translated and rotated parent controls. Arbitrary manual matrices are not qualified."
+  },
+  "signedZeroCounterexample": {
+    "nativeIsNegativeZero": true,
+    "candidateIsNegativeZero": false,
+    "exactMatch": false,
+    "candidateGuardHit": true,
+    "methodsRestored": true,
+    "decision": "Rejected prototype also fails exact signed-zero semantics for an unqualified manual matrix input. Initial rendered controls covered constructor-owned ordinary matrices only; they did not establish arbitrary-input correctness. No product selection or additional variant justified."
+  },
+  "scope": "Private exact identity/pure-translation foliage product prototype; original traversal/dirty propagation retained, unsupported operands use native multiplication; High/Low prepared populated Earth, four supplied14-slot outfits and16live animated Skeletons, ABBA60warmup/180frames per arm. Normal RAF, elapsed mixer clock and moving roots during timing. Brief frozen pixel controls only. Not connected party, arbitrary-source lifecycle, device or full performance acceptance.",
+  "limits": [
+    "No arbitrary-input, manual-matrix, hook/lifetime or production correctness qualification. Exact rendered controls cover ordinary constructor inputs and parent translation/rotation only.",
+    "Initial guard also accepts signed translation zeros; a retained direct control proves a bit-exact mismatch on a manual matrix pair. No further variant or unchanged benchmark justified after mixed/worse timing.",
+    "Control hit/miss totals accumulate across captures; only timing-arm counters are reset per render and show3146fast-path hits per enabled frame.",
+    "Two native quality sessions are a custom anonymous harness, not two Playwright test passes. Timing includes normal natural-clock animation/moving roots; frozen clocks are limited to pixel controls.",
+    "Prior cold-triangle, connected FPS, broader device/art and all original readiness gates remain open."
+  ],
+  "cleanup": {
+    "browserClosed": true,
+    "specializedMethodsRestored": true,
+    "ownedServerPID": 2068634,
+    "ownedServerStopped": true,
+    "allRuntimePinsUnchanged": true,
+    "runtimePins": 940
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-foliage-identity-product-prototype-20261011",
+    "entries": 13,
+    "inventorySHA256": "84213c733e4be65008084c3aca97b120d771b88adf92086c60a864a2da220f7f"
+  },
+  "nextAction": "Retain normal multiplication and every original rendering/quality/content target. Stop foliage matrix-cache/product variants on this evidence. Use world-render CPU attribution for broader actor/light/submission work and continue code-owned composition/material quality; exact39ordered deployment/live/93asset acceptance remains the current release gate."
+}

@@ -1034,3 +1034,44 @@ from push until own39ordered CI/live/normal-TLS93asset/frontend/backend/readyDB
 acceptance. Existing100clientsoak38109009521 remains active, not capacity proof.
 Every original world/art/gameplay/device/performance/operations/F1–F5/beta/launch/
 handoff requirement and owner-deferred campaign/phone feedback remains active.
+
+
+## October11 world-render attribution and rejected identity specialization
+
+Previous goal turn made concrete progress with qualified phase tooling and new
+connected data. This turn extends that same observer with exact gameplay scene
+AND camera role classification, no duplicate wrappers or default phase hooks.
+24focused checks and scoped lint pass, including role accounting, missing-input
+rejection and live camera ownership loss. Actual Go-race four-class14-slot saves
+pass; native1pass/1optional skip/retry0. Ordinary180frames280draw/173005tri meet
+counts,33.4msmedian/66.7p95 fail20/33.4ms. Separate diagnostic180frames always1world
+and15other calls: world30.7/39.9msmedian/p95 versus other0.3/1.9ms. This localizes
+aggregate synchronous CPU to world submission/traversal; it is not GPU elapsed
+time or a paired optimization result. Preserve every bloom/output/FXAA setting.
+All940runtime/vendor pins remain exact; owned fixture removed and four synthetic
+identities sanitized.21entry frozen inventory
+aff4b70a958fb698bf6ac2edcd56af6f250d98b558224cd997bafaec66a03661.
+See connected-renderer-role-qualification.
+
+Private algebraic foliage identity/pure-translation product specialization
+preserves original traversal/force/dirty behavior. Six full4321280-byteRGBA and
+50336component current-matrix controls are exact across High/Low poses and parent
+translation/rotation. Real-clock ABBA60warmup/180frames per arm hits3146fast paths
+per enabled frame, but High21.7/19.9ms reference versus22.0/19.6candidate is mixed,
+Low13.5/13.1 versus13.8/14.0 worsens. Reject. A separate native arithmetic control
+also proves initial guard mishandles an unqualified manual signed-zero matrix;
+rendered constructor inputs did not establish general correctness. No production
+selection or another variant to justify it. Owned4216server stopped, browser
+closed and specialized methods restored;13entry frozen inventory
+84213c733e4be65008084c3aca97b120d771b88adf92086c60a864a2da220f7f.
+See foliage-identity-product-unselected. Retain ordinary matrix multiplication;
+continue broader world actor/light/submission and code-owned visual quality work.
+
+Corrective39/a1ebc404 CI38178405817attempt1 has all five prerequisites successful;
+Predeploy Character QA remains authoritatively active.38last accepted. Hold local
+qualified QA/docs from push until own39ordered terminalCI/live and fresh normal-
+TLS93asset/frontend/backend/readyDB acceptance. Sparse monitor continues existing
+100clientsoak38109009521 without retries/cancel/mutations. All original1.11–1.99
+world/art/gameplay/device/performance/operations/F1–F5/beta/launch/handoff and
+owner-deferred campaign/physical-phone feedback remain active. No performance,
+art/device, campaign or capacity acceptance is inferred from these diagnostics.

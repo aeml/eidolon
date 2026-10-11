@@ -117,14 +117,15 @@ test('a destroyed game cannot contribute an apparently successful completed samp
 
 function phaseFixture() {
     const setup = fixture(), { game, renderer, original } = setup;
-    renderer.render = jest.fn(function (scene) {
-        expect(this).toBe(renderer); expect(scene).toBe('scene');
+    const renderSystem = game.renderSystem;
+    renderSystem.scene = {}; renderSystem.camera = {};
+    renderer.render = jest.fn(function (scene, camera) {
+        expect(this).toBe(renderer); expect(scene).toBe(renderSystem.scene); expect(camera).toBe(renderSystem.camera);
         jest.advanceTimersByTime(5); return 'renderer-return';
     });
-    const renderSystem = game.renderSystem;
     Object.setPrototypeOf(renderSystem, { render: function () {
         expect(this).toBe(renderSystem); jest.advanceTimersByTime(3);
-        return this.renderer.render('scene');
+        return this.renderer.render(this.scene, this.camera);
     } });
     game.update = jest.fn(function (dt, flag) {
         expect(this).toBe(game); expect(dt).toBe(.01); expect(flag).toBe(false);
@@ -152,8 +153,8 @@ test('opt-in phases measure inclusive clocks and disjoint components across mult
     expect(report.frameSamples).toHaveLength(180);
     for (const row of report.frameSamples) {
         expect(row.cpuMs).toBe(15);
-        expect(row.phaseCalls).toEqual({ update: 2, presentation: 1, renderSystem: 1, renderer: 1 });
-        expect(row.phaseCpuMs).toEqual({ update: 4, presentation: 10, renderSystem: 8, renderer: 5,
+        expect(row.phaseCalls).toEqual({ update: 2, presentation: 1, renderSystem: 1, renderer: 1, rendererWorld: 1, rendererOther: 0 });
+        expect(row.phaseCpuMs).toEqual({ update: 4, presentation: 10, renderSystem: 8, renderer: 5, rendererWorld: 5, rendererOther: 0,
             presentationOutsideRenderSystem: 2, renderSystemOutsideRenderer: 3, loopOutsideUpdateAndPresentation: 1 });
     }
     expect(report.phaseSummary.components.renderer).toEqual({ medianMs: 5, p95Ms: 5 });
@@ -209,7 +210,41 @@ test('partial phase installation failure restores methods already wrapped', asyn
 
 test('missing phase methods reject before installing any hook and allow an ordinary observer', async () => {
     const { game, renderer, original } = fixture();
+    game.renderSystem.scene = {}; game.renderSystem.camera = {};
     await expect(observeGameplayScene(game, 'missing', { phases: true })).rejects.toThrow('requires update and render');
     expect(game.loop).toBe(original); expect(renderer.info.autoReset).toBe(true);
     const promise = observeGameplayScene(game, 'ordinary'); drive(game); await promise;
+});
+
+test('renderer roles require both exact gameplay identities and sum to the inclusive renderer clock', async () => {
+    const { game, renderer } = phaseFixture();
+    renderer.render.mockImplementation(function () { expect(this).toBe(renderer); jest.advanceTimersByTime(5); });
+    Object.getPrototypeOf(game.renderSystem).render = function () {
+        jest.advanceTimersByTime(3);
+        this.renderer.render(this.scene, this.camera);
+        this.renderer.render({}, this.camera);
+        return this.renderer.render(this.scene, {});
+    };
+    const promise = observeGameplayScene(game, 'roles', { phases: true }); drive(game);
+    const report = await promise;
+    for (const row of report.frameSamples) {
+        expect(row.phaseCalls.renderer).toBe(3); expect(row.phaseCalls.rendererWorld).toBe(1); expect(row.phaseCalls.rendererOther).toBe(2);
+        expect(row.phaseCpuMs.renderer).toBe(15); expect(row.phaseCpuMs.rendererWorld).toBe(5); expect(row.phaseCpuMs.rendererOther).toBe(10);
+        expect(row.phaseCpuMs.renderSystemOutsideRenderer).toBe(3);
+    }
+});
+
+test('a gameplay camera replacement rejects phase totals and preserves the new camera', async () => {
+    const { game, renderer, original } = phaseFixture(), update = game.update, replacement = {};
+    original.mockImplementation(() => { game.renderSystem.camera = replacement; });
+    const promise = observeGameplayScene(game, 'camera', { phases: true }), rejection = expect(promise).rejects.toThrow('phase ownership');
+    expect(() => game.loop(1)).toThrow('phase ownership'); await rejection;
+    expect(game.renderSystem.camera).toBe(replacement); expect(game.update).toBe(update); expect(renderer.info.autoReset).toBe(true);
+});
+
+test('missing gameplay identities reject before phase hook installation', async () => {
+    const { game, renderer, original } = phaseFixture(), update = game.update;
+    delete game.renderSystem.scene;
+    await expect(observeGameplayScene(game, 'missing-scene', { phases: true })).rejects.toThrow('gameplay scene and camera');
+    expect(game.loop).toBe(original); expect(game.update).toBe(update); expect(renderer.info.autoReset).toBe(true);
 });
