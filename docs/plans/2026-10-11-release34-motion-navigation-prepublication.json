@@ -1,0 +1,53 @@
+{
+  "recordedUTC": "2026-10-11T14:23:40.186240+00:00",
+  "source": "c75c0f4131213c25048b8c2454452c6d8551d5ab",
+  "version": "Alpha 1.79.34",
+  "components": [
+    "2026-10-11-geometry-transfer-copy-qualification.json",
+    "2026-10-11-interior-radar-context-qualification.json",
+    "2026-10-11-mixed-weapon-stance-qualification.json"
+  ],
+  "previousAccepted": "Alpha1.79.33/9ce67fe3d2d0aeae55102d14b579107733d1a719; CI38142813857 attempt2 and fresh post-terminal17asset/source/readyDB acceptance. Receipt master2105153f.",
+  "focused": {
+    "suites": 5,
+    "passed": 5,
+    "distinctTests": 444,
+    "initialFailure": "Six copied vendor tests started before preparation; source tests and unchanged remaining checks passed. Retain units.json/log; only affected suite rerun after preparation, plus BrowserSmokePlan."
+  },
+  "native": {
+    "distinctPassed": 4,
+    "retries": 0,
+    "skips": 0,
+    "bundleThreeCasesSeconds": 45.480501,
+    "actualCopiedNotesCaseSeconds": 3.203068,
+    "scope": "Actual copied/versioned engine login laziness/four-class construction, High/Low four-class14-slot fitted outfits through actual immutable geometry worker and selected scheduling, five mixed Rogue stances, exact FIFO/selected scheduler indices and readback pixels. Actual prepared source-ID publication HTTP manifest and cumulative note pagination/retry. Native AMD RADV RENOIR WebGL; no production account or earned campaign claim.",
+    "preparedOutfitDrawsTriangles": {
+      "high": [
+        183,
+        127461
+      ],
+      "low": [
+        88,
+        58278
+      ]
+    },
+    "workerFailures": 0,
+    "workerRejected": 0,
+    "workerFallback": "11 High and5 Low legitimate unsupported per-arm fallbacks, unchanged between controls; not failures.",
+    "comparisonLimit": "Both FIFO and selected scheduling arms use the same current geometry producer; this is integrated worker/ownership/pixel qualification, not a new causal timing benchmark. Original exact-producer copy ABBA evidence retained."
+  },
+  "metadata": "All12 runtime/version paths align34.469 cumulative entries; every468previous entry byte-exact, initial10/46lazy pages. Full lint, shell syntax and diff checks pass.",
+  "publication": "23 expected asset pins include previous17, four changed source modules and first/last new note pages. Strict copied engine3493602B after source version rewriting; worker remains immutable44618fbd1160aa63. Owned generated public copy excluded from frozen evidence, retained temporarily for final query-identity rewriting and pin verification before retirement.",
+  "retainedFailures": [
+    "Initial preflight started six GameEngineBundle vendor cases before local vendor preparation. Other suites passed; after preparation only affected suite rerun plus BrowserSmokePlan;444 distinct passes across5suites.",
+    "Initial optional archive label extractor assumed every legacy entry has data-version. Byte-exact history comparison already passed; extractor corrected to retain null for legacy labels. Final full468entry custody passes."
+  ],
+  "limits": "Coherent scoped navigation/equipment/preparation improvement. Prior component evidence reused without replaying unchanged campaigns/soaks. No terrain activation, data/schema/access/economy/wipe or final world/art/device/frame/performance/F1\u2013F5/beta/launch/handoff approval. Full original goal remains active.",
+  "status": "Qualified coherent milestone; ordinary merge, fresh final pins and ordinary push next. Own ordered deployment/live acceptance remains required.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release34-motion-navigation-checks-20261011",
+    "inventoryEntries": 23,
+    "inventorySHA256": "1926230bf64a3b670da07a44b2d94408d4ae0f173984d334e3791b7e47f3a868",
+    "excluded": "Reproducible temporary public/ copy; final retirement recorded separately."
+  }
+}
