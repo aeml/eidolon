@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-10T23:58:33.424726+00:00",
-  "classification": "Progress: public29 jump/aura/admin fixes accepted. Qualified automatic same-cell actor multi-draw and conservative instance clipping selected only into held integration695cee4a. Ordinary candidate High/Low sampled budgets and integrated source/publication technical checks pass. New real movement route town400/woodland468draw failures keep whole-world acceptance open.",
-  "qualifiedRuntime": "Held695cee4a selects three qualified actor runtime files from5e3c4d3f/d2a82c66, with prior e8 default lazy geometry/conservative actor shadows and accepted public29 motion/admin. Private rigid-handgear pilot remains excluded. Not published. Independent HUD27bf88a8 now selected on heldae675ba2: font-independent21status icons, keyed desktop controls/live keyboard tooltips and phone symbols. No new core/entities/world/server/assets/package changes or private camp/DemonOrc/singleton selection. Exact held copied bundle status/lazy four-class checks pass; not published.",
+  "recordedUTC": "2026-10-11T01:29:54.422130+00:00",
+  "classification": "Progress: selected420a3cfa Verdant root art and missing Low preset forwarding.72distinct focused checks,20production layouts per High/Low,140prepared views/1440frames and exact copied-bundle ward/root/lazy-class checks pass. Prior turn restated accepted public29 motion/admin evidence; full original goal remains active.",
+  "qualifiedRuntime": "Held420a3cfa retains qualified automatic actor rendering, HUD27bf88a8, additive effects cd92dc01/CIca03de05 and entry ward68e30c83, and adds the qualified Verdant root art/preset repair. Public Alpha1.79.29 remains unchanged. Private camp/DemonOrc/singleton/route QA is not selected wholesale.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -98,7 +98,7 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Causal dynamic combat/party peak attribution and source-preserving improvement, normal collision-aware return from off-road fight, Lowcombat and representative devices. Retain High361/384draw and Low83\u219290draw counterexamples, independent dungeon-entry scope and original budgets. No whole-world/art/F1\u2013F5/beta/launch/handoff completion claim.",
+  "nextRequiredResult": "Continue code-owned dungeon floor repetition, broader world/scenery/material/contact/audio polish and representative dynamic startup/combat/party costs. Preserve High438/361draw and289302triangle peak counterexamples, physical-device/owner-art gaps and the original operations/F1-F5/beta/launch/handoff gates. No campaign/soak replay or whole-goal completion claim.",
   "currentReceipt": "docs/plans/2026-10-10-status-hud-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
@@ -2410,6 +2410,38 @@
     },
     "engineSHA256": "62f538c037982250147e7896c225bf9cc10d3c2178463861887c7d59d2fe23d4",
     "requiredDiscoveredCases": 335,
-    "limits": "Entry-ward art stage only; private connected QA context unselected. Historical dynamic draw failures, startup triangle peak289302, narrow floor/shadow artifacts and broader world/art/device/operations/F1\u2013F5/beta/launch/handoff remain open."
+    "limits": "Entry-ward art stage only; private connected QA context unselected. Historical dynamic draw failures, startup triangle peak289302, narrow floor/shadow artifacts and broader world/art/device/operations/F1\u2013F5/beta/launch/handoff remain open.",
+    "laterNarrowViewDiagnosis": "See dungeonGraveRoots: thin floor strokes were decorative grave-root geometry; bottom straight line was the XP bar. No shadow/batching fault established. The old narrow-artifact hypothesis is historical, superseded by native component isolation and ray/pixel probes."
+  },
+  "dungeonGraveRoots": {
+    "receipt": "docs/plans/2026-10-11-verdant-grave-roots-qualification.json",
+    "source": "420a3cfabbc715e4405ba5ed28ed9b1392861b5a",
+    "selected": true,
+    "published": false,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-floor-checks-20261011",
+      "frozen": true,
+      "inventoryEntries": 580,
+      "files": 581,
+      "inventorySHA256": "17eb49e3128525c87f28ef9405dce3d28948afd28a098a33e193123e47b58a36"
+    },
+    "focusedPassed": 72,
+    "preparedLayoutsPerQuality": 20,
+    "preparedViews": 140,
+    "preparedAnimatedFrames": 1440,
+    "cameraSweepFrames": 288,
+    "copiedBundlePassed": 2,
+    "engineSHA256": "e0760ffb4f0e9b8938ebcb8dfc6f4c7874874e9554b70492583278cb3c5a3009",
+    "maximumPreparedCalls": {
+      "high": 92,
+      "low": 47
+    },
+    "maximumPreparedTriangles": {
+      "high": 117231,
+      "low": 37143
+    },
+    "lowFactoryFailureRetained": true,
+    "scope": "Prepared production layouts, ordinary gameplay zoom, actual supplied14slot Fighter, HUD and touch controls; ready/inactive and root-side views, bounded camera pans. No server-earned clear, normal-input route, timing, physical-device, whole-world or final art certificate.",
+    "limits": "Floor repetition, broader code-owned scenery/material/contact/audio quality, actual-device/owner art feedback, dynamic High438/361draw and289302triangle peak counterexamples and original operations/F1-F5/beta/launch/handoff remain open. No threshold waiver, campaign/soak replay, public push or beta/access change."
   }
 }

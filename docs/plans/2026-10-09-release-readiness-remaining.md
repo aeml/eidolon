@@ -252,3 +252,32 @@ visible narrow-view artifacts and continue coherent world/interior/material poli
 then finish representative dynamic budgets and original operations/F1–F5/beta/launch/
 handoff. No campaign/soak replay, unrelated renderer selection or public release.
 [Source, comparison, normal route and frozen evidence](2026-10-11-dungeon-entry-ward-qualification.json).
+
+
+October11 Verdant root/preset continuation: selected420a3cfa privately, unpublished.
+Native component isolation and ray probes identify the supposed thin floor
+artifacts as the old almost-black grave-root props; the bottom straight line is
+the XP bar. This supersedes the earlier shadow/batching hypothesis. Curved,
+branched, partially buried roots now have smooth, restrained bark tones, preserving
+two motifs and one batch per room with no textures, lights or collisions added.
+High uses2880source triangles/380160merged bytes per room; Low864/114048.
+Intentional extra detail is recorded, not presented as a memory or FPS saving.
+
+The default Low check caught Verdant failing to forward its graphics preset.
+The one-line factory repair passes High/Low checks for all five dungeon factories;
+all eight existing Verdant masonry maps remain byte-identical256px across presets.
+72distinct focused checks pass. Final native review covers20production layouts
+per quality,140state/root views and1440animated frames, including288camera-pan
+frames;14equipped slots, colliders and walk samples remain intact. Maximum prepared
+High92draw/117231tri and Low47draw/37143tri pass unchanged scene bounds. Exact
+copied/versioned bundle ward/ten-root lifecycle plus lazy four-class checks pass.
+Two initial fixture-matrix failures, the real default-Low quality failure and
+superseded draft reviews are retained in the frozen580-entry evidence inventory.
+
+Prepared views/pans are not normal-input walking, timing, device or final-art
+acceptance. Prior normal entry/Recall and saved-party evidence retains its own
+source/scope. Floor repetition, broader world/material/contact/audio polish,
+dynamic438/361draw and289302triangle peak counterexamples, device/owner feedback
+and original operations/F1–F5/beta/launch/handoff remain open. No campaign/soak
+replay, unrelated private renderer selection, public version, beta/access change
+or public push. [Source, retained failures and qualification](2026-10-11-verdant-grave-roots-qualification.json).
