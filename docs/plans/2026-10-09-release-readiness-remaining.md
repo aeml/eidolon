@@ -21,6 +21,11 @@ Every explicit requirement in those sources remains part of the completion audit
 
 ## Release and source custody
 
+- **Release33 CI correction:** its sole client asset-audit failure is reproduced
+  and corrected with33 focused passing checks; original CI remains active with
+  no deployment. The correction is on local master awaiting terminal state and
+  ordinary publication. [Receipt](2026-10-11-release33-client-guard-correction.json).
+
 - **Last accepted public build:** Alpha1.79.32,
   `d31246e9b53fbe73bd7f59beea4c3235df30a922`.
   [CI38136326810](https://github.com/aeml/eidolon/actions/runs/38136326810)

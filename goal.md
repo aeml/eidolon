@@ -886,3 +886,16 @@ geometry detail. Older town-masonry/dungeon-surface branches contain staged
 terrain/performance predecessors, so remain unselected pending current-source
 review rather than blanketmerge. Full world/art/gameplay/device/performance/
 operations/F1–F5/beta/launch/handoff goal remainsactive,79unmerged histories.
+
+## October11: completed-work branch rule and release33 guard correction
+
+Owner reiterates completed, validated work must merge into master. Current632
+local names include553 already merged and79 unmerged, reduced from287. Root
+AGENTS.md retains the ordinary-merge/fetch/no-force policy; unfinished/rejected
+experiments and dirty original checkout remain preserved. Release33 CI38140628469
+failed its sole asset-audit check (10613 pass); the new validated generator needs
+an exact one-token .glb suffix audit. Unchanged local repro fails; narrow correction
+and generator checks pass33/2suites plus scoped lint. Runtime/public assets and
+limits unchanged. Correction is on local master pending original terminal CI and
+ordinary publication. Accepted32 and the full goal remain; see
+[guard correction](docs/plans/2026-10-11-release33-client-guard-correction.json).

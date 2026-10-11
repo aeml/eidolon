@@ -90,6 +90,9 @@ const auditedAssetReferenceAllowlist = new Map([
     ]],
     ['scripts/import-wearable-runtime.mjs', new Set(['${destination}/${actorClass}/${item.id}-${tier}-${quality}.glb'])],
     ['scripts/derive-wearable-catalog.mjs', new Set(['.glb'])],
+    // The validated catalog builder checks this exact suffix; it introduces no
+    // model path and remains subject to the same exact token-count audit.
+    ['scripts/generate-authored-equipment.mjs', new Set(['.glb'])],
     ['scripts/derive-wearable-pilot.mjs', new Set(['.glb', '${stem}-pilot-${quality}.glb'])],
     ['scripts/derive-body-lod-pilot.mjs', new Set(['${directory}/${stem}.glb', '${directory}/${stem}-runtime-${quality}.glb', '${stem}-body-pilot-${quality}.glb'])],
     ['scripts/derive-wearable-attribute-pilot.mjs', new Set(['.glb', '${stem}-pilot-${quality}.glb'])],

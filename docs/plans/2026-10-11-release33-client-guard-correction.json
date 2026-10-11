@@ -1,0 +1,33 @@
+{
+  "recordedUTC": "2026-10-11T13:02:10.680368+00:00",
+  "status": "corrected-and-focused-validated-on-master-awaiting-original-ci-terminal-state",
+  "failedRun": 38140628469,
+  "failedSource": "cc001f0062d161d1b706fa2ca4275a1724b6c221",
+  "failedJob": 114473591792,
+  "failure": "The audited equipment generator added a literal .glb suffix validator; the exact asset-reference audit omitted this newly reviewed script.",
+  "hostedResults": {
+    "failedSuites": 1,
+    "passedSuites": 719,
+    "failedTests": 1,
+    "passedTests": 10613
+  },
+  "reproduction": "Local unchanged guard reproduces 1 failed and 5 passed checks.",
+  "correction": "Add only scripts/generate-authored-equipment.mjs with exactly one literal .glb token to the existing audited map. No blanket script exemption, model allowance, runtime asset, renderer, version or budget change.",
+  "validation": {
+    "focused": "33 checks in ProceduralArtMigrationGuard and AuthoredEquipmentGenerator pass; 2 suites, 2.514s.",
+    "lint": "Both audited generator and changed guard pass with max-warnings=0.",
+    "whitespace": "git diff --check passes"
+  },
+  "branchWorkflow": {
+    "localNames": 632,
+    "mergedIntoMaster": 553,
+    "unmerged": 79,
+    "originalUnmerged": 287,
+    "cause": "Historical cherry-picks left branch ancestry unreconciled; the former local master also lagged origin by1567 commits. Remaining tips require individual review and include rejected experiments and staged work.",
+    "rule": "Completed, validated work belongs on master, as recorded in root AGENTS.md. Preserve unfinished/rejected experiments and original dirty user checkout."
+  },
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-release33-client-failure-20261011",
+  "inventorySHA256": "1d342f4ff0cfab6727f1ddcc7510d283419f56306655402c48dda625a2d52bf0",
+  "publication": "Original run remains in progress with failed prerequisite and no deployment. Keep public32 acceptance; no blind retry or claim that33 is accepted. Correction is local until original run terminal and ordinary fetch/merge/push.",
+  "goal": "Full original release-readiness goal remains active."
+}
