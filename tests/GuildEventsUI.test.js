@@ -103,3 +103,33 @@ test('ordinary members cannot see editor and cancellation requires explicit seco
     expect(panel.list.textContent).toContain('CANCELLED');
     expect([...panel.list.querySelectorAll('button')].map(button => button.textContent)).not.toContain('Going');
 });
+
+test.each(['refresh', 'revision', 'other-guild', 'permissions', 'cancelled', 'left', 'disposed', 'expired'])(
+    'all calendar card actions retire after %s, including an armed cancellation', change => {
+        const { ui, guild, panel } = setup();
+        guild.events[0].rsvps.push({ playerId: 'a', role: 'healer', status: 'going' });
+        ui.update({ guild });
+        click(panel.list, 'Cancel event');
+        const captured = [...panel.list.querySelectorAll('button')];
+        expect(captured.map(button => button.textContent)).toEqual(expect.arrayContaining([
+            'Find companions for this activity', 'Going', 'Tentative', 'Withdraw',
+            'Edit event', 'Confirm cancellation', 'Invite to party'
+        ]));
+        const draft = panel.title.value;
+        const next = { ...guild, events: [{ ...guild.events[0] }] };
+        if (change === 'revision') next.events[0].revision++;
+        if (change === 'other-guild') next.id = 'other';
+        if (change === 'permissions') next.permissions = {};
+        if (change === 'cancelled') next.events[0].cancelled = true;
+        if (change === 'disposed') ui.dispose();
+        else if (change === 'expired') {
+            jest.useFakeTimers(); jest.setSystemTime(new Date('2099-09-14T20:00:00Z'));
+        } else ui.update({ guild: change === 'left' ? null : next });
+        try {
+            for (const button of captured) button.click();
+            expect(ui.onEvent).not.toHaveBeenCalled();
+            expect(ui.onPartyInvite).not.toHaveBeenCalled();
+            expect(ui.onFindGroup).not.toHaveBeenCalled();
+            expect(panel.title.value).toBe(draft);
+        } finally { jest.useRealTimers(); }
+    });

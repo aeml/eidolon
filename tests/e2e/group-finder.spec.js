@@ -25,12 +25,13 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'} Groups p
         ui.social.groupFinder.update(data);
         ui.social.guild.onEvent = payload => sent.push({ unexpectedCalendarWrite: payload });
         ui.social.guild.update({ guild: { id: 'guild', name: 'Lantern Wardens', tag: 'LW', members: [], activities: data.activities,
-            events: [{ id: 'event', revision: 1, title: 'Evening exploration', activity: 'world',
-                startsAt: new Date(Date.now() + 1800000).toISOString(), durationMinutes: 120, capacity: 4, rsvps: [] }] } });
+            events: Array.from({ length: 8 }, (_, index) => ({ id: `event-${index}`, revision: 1,
+                title: `Private evening exploration ${index + 1}`, activity: 'world',
+                startsAt: new Date(Date.now() + 1800000).toISOString(), durationMinutes: 120, capacity: 4, rsvps: [] })) } });
     }, phone);
     await page.getByRole('tab', { name: 'Guild', exact: true }).click();
     const calendar = page.locator('#tab-panel-guild');
-    const handoff = calendar.getByRole('button', { name: 'Find companions for this activity' });
+    const handoff = calendar.getByRole('button', { name: 'Find companions for this activity' }).last();
     await expect(handoff).toBeVisible();
     await handoff.scrollIntoViewIfNeeded();
     await expect(handoff).toBeInViewport();
@@ -43,6 +44,8 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'} Groups p
     const panel = page.locator('#tab-panel-groups');
     await expect(panel).toBeVisible();
     await expect(panel.getByLabel('Activity filter')).toHaveValue('world');
+    expect(await page.locator('#social-window').evaluate(node => node.scrollTop)).toBe(0);
+    await expect(panel.getByLabel('Activity filter')).toBeInViewport();
     await panel.getByLabel('Join as').selectOption('healer');
     await panel.getByRole('button', { name: 'Ask to join' }).click();
     expect(await page.evaluate(() => window.__groupFinder.sent.at(-1))).toEqual({ action: 'request', ownerId: 'owner', listingId: 'listing-current', role: 'healer' });
@@ -77,6 +80,23 @@ for (const phone of [false, true]) test(`${phone ? 'phone' : 'desktop'} Groups p
     await expect(page.locator('#party-request-benefits')).toContainText('Archmage Ilyra');
     await page.locator('#btn-accept-party').click();
     expect(await page.evaluate(() => window.__groupFinder.sent.at(-1))).toEqual({ response: 'IlyraFan', accepted: true, invitationId: 'invitation-current' });
+    expect(await page.evaluate(() => {
+        const { ui, sent, data } = window.__groupFinder;
+        const guild = ui.social.guild;
+        guild.update({ guild: { id: 'card-lifetime', name: 'Wardens', tag: 'W', permissions: { manage_events: true },
+            members: [{ playerId: 'companion', username: 'Bob', online: true }], activities: data.activities,
+            events: [{ id: 'event', revision: 1, title: 'Evening exploration', activity: 'world',
+                startsAt: new Date(Date.now() + 60000).toISOString(), durationMinutes: 120, capacity: 4,
+                rsvps: [{ playerId: 'companion', role: 'tank', status: 'going' }] }] } });
+        const buttons = () => [...guild.events.list.querySelectorAll('button')];
+        buttons().find(button => button.textContent === 'Cancel event').click();
+        const captured = buttons(), before = sent.length, draft = guild.events.title.value;
+        guild.update({ guild: null });
+        captured.forEach(button => button.click());
+        return { writes: sent.length - before, draftUnchanged: guild.events.title.value === draft,
+            captured: captured.map(button => button.textContent) };
+    })).toMatchObject({ writes: 0, draftUnchanged: true,
+        captured: expect.arrayContaining(['Going', 'Tentative', 'Edit event', 'Confirm cancellation', 'Invite to party']) });
     await page.evaluate(() => window.__groupFinder.ui.dispose());
     expect(failures, failures.join('\n')).toEqual([]);
 });

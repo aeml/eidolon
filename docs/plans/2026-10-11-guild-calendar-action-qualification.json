@@ -1,0 +1,34 @@
+{
+  "recordedUTC": "2026-10-11T14:35:19.539814+00:00",
+  "source": "4238a1eba23bde036ee9208bb322873e85f33b03",
+  "historyMerge": "db108b1b31354f92e98edd9337ec1f155c11b96b",
+  "selectedHistoricalBranch": "work/alpha-1-60-integration-20261001",
+  "selectedHistoricalHead": "62eb40f5d8b888ccc02423639f00cfe7bee6c1ff",
+  "behavior": "Every calendar-card action retires on replacement, cleared guild, disposal or natural event expiry, including already-armed cancellation. Calendar-to-Groups handoff resets the window scroll so the activity filter/guidance remain visible after long calendar traversal. Current server revision checks, activity-only handoff, stable account targeting, display names and explicit party/listing consent stay intact.",
+  "baseline": "Eight new focused card-lifetime cases fail on original product. Phone-sized eight-event calendar handoff reproduces scrollTop402 rather than0. Retain baseline.log and scroll-baseline JSON/screenshot/error context.",
+  "focused": {
+    "distinctPassed": 116,
+    "suites": 5,
+    "seconds": 3.767,
+    "skips": 0,
+    "scopedLint": "all five changed paths pass max-warnings0",
+    "diffCheck": "pass"
+  },
+  "native": {
+    "distinctPassed": 2,
+    "seconds": 14.509720999999999,
+    "retries": 0,
+    "skips": 0,
+    "scope": "Existing native desktop and phone-sized Groups UI cases extended with eight private calendar plans, normal pointer navigation from the last card, top-visible activity filter, unchanged explicit request/invitation/listing payloads, no stale card writes after actual guild removal. Current phone stage also retains320px overflow and44pxcontrol checks. Prepared replies only; no production guild/account/party mutation or physical-phone claim."
+  },
+  "historyReconciliation": "Four previously unmerged1.60 commits are reviewed and joined by ordinary merge. Six conflicted authoritative/runtime/test paths retain current qualified versions, preserving newer account/display-name/lifecycle behavior and the full roadmap. Only the original75-line historical1.60 preparation document is added by the history merge, byte-exact. Its former branch versions, temporary artifacts and83check claims remain historical; fresh current-source116checks/two native cases are authoritative here. No older casino/future operation branches merged.",
+  "visualReview": "Inspected native-final phone group-preparation.png. Normal scrolled form controls and explicit listing payload remain readable; initial handoff filter is separately asserted in viewport at scrollTop0.",
+  "publication": "Merge completed validated work into master now. Do not push a successor before exact34/f7c7b9e0/CI38147178300 resolves its own release acceptance.",
+  "limits": "Scoped guild-calendar/recruitment integration only; not full social/endgame S closure, real population, earned campaign/raid, staff/moderation ownership, final art/device/performance/F1\u2013F5/beta/launch approval. Full goal remains active.",
+  "status": "Qualified selected current-source fix and completed historical integration; ordinary master merge follows.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-guild-calendar-action-checks-20261011",
+    "inventoryEntries": 26,
+    "inventorySHA256": "88b5049ca3252c9c4aa62e89b4dc37c97a52dc396bbd561f2b5ee9d358fea1ff"
+  }
+}
