@@ -11,7 +11,7 @@ Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
 [Prepublication](2026-10-11-release35-menu-review-prepublication.json).
 [Publication](2026-10-11-release35-publication.json).
-588of650local branch names are ancestors of master;62unmerged histories remain
+589of651local branch names are ancestors of master;62unmerged histories remain
 under individual review. Completed content-validation and environment histories
 are merged locally for the next coherent publication. Prior34 failures remain
 retained in its historical acceptance receipt.

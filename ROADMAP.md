@@ -19,7 +19,7 @@ identities, ready database and all78served asset hashes/byte counts match at
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
 [Publication](docs/plans/2026-10-11-release35-publication.json).
 [Prepublication](docs/plans/2026-10-11-release35-menu-review-prepublication.json).
-- 588of650local branch names are ancestors of master;62unmerged histories remain
+- 589of651local branch names are ancestors of master;62unmerged histories remain
 under individual review. Completed content-validation and environment histories
 are merged locally for the next coherent publication. Prior34 failures remain
 retained in its historical acceptance receipt.

@@ -139,6 +139,21 @@ identities, ready database and all78served asset hashes/byte counts match at
   ending; no quest/reward/network mutation.29 local contributor/provenance links
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
+- **Selected Earth ground composition:**64679263 is qualified and ordinarily
+  merged into master. Existing packed texture channels supply visible dry thatch
+  and living grass color/roughness/relief, with unchanged macro mask, standing
+  plants, geometry, collisions and GPU resource counts. Conservative stamps
+  retain exact analytic High/Low RGBA while reducing preparation overhead.
+ 48distinct focused checks/five suites and two distinct native cases qualify
+  eight paired views with full four-class14-slot outfits/HUD. Eight settled
+  ABBA120-frame samples pass original budgets after correcting High shadow
+  focus. Five browser case executions retain the initial150-module network
+  failure; an earlier High timing sample is excluded as a fixture error.
+  High gate285210tri and Low gate88749/road85030tri remain above original limits
+  in paired views; no whole-game performance or final-art clearance.
+ 39native cases (including both new cases) and355ordinary browser cases are
+  discovered, not all newly executed. Source-only until next coherent release.
+  [Qualification](2026-10-11-earth-thatch-composition-qualification.json).
 - **Completed terrain histories:** Moonfrost material, Earth outcrop art and
   raised-reference/checkpoint histories are reviewed and ordinarily merged.
   Current accepted35 runtime stays exact; omitted dual-profile checkpoint/floor
@@ -154,7 +169,7 @@ identities, ready database and all78served asset hashes/byte counts match at
   unselected with frozen evidence; no runtime/CI enrollment or budget change.
   [Selection](2026-10-11-earth-turf-unselected.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **62**, reduced from 287; 588 of 650 local branch names
+  unmerged tips are now **62**, reduced from 287; 589 of 651 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -326,7 +341,7 @@ identities, ready database and all78served asset hashes/byte counts match at
 
 | Work | Current state and limits |
 | --- | --- |
-| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30–34. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
+| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30–35. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
 | Supplied actors and equipment | Four class GLBs, equipment catalog and motion banks are delivered and integrated. Retain originals, provenance, rig/bone/morph/material/slot identity and compatibility. No replacement procedural player catalog or repeated asset request. |
 | Dungeon/environment/combat/HUD milestone | Selected ground/floor/prop maps, entrance wards, regional relics, paving, shallow boss masonry, equipped motions, impact continuity, bounded contact foley and status symbols are merged and included in accepted 30. Old “private/not published” labels in dated receipts are historical. Final art, human listening, busy fights and device gates remain open. |
 | Renderer/environment milestone 31 | High-only singleton batching, reviewed DemonOrc packing, camp instance clipping, display-space FXAA, rock shoulders, rooted foliage shading, pine growth/coverage, Earth map cleanup/ordered physical layers and tapered fern pinnae are merged and pushed as 88be47c5. Exact ordered publication acceptance passed; broader art/performance remains open. Earlier rejected all-quality singleton and renderer prototypes remain separate. |
@@ -349,7 +364,7 @@ acceptance is incomplete.
 
 | Requirement | Remaining work and evidence needed | Owner |
 | --- | --- | --- |
-| Next release | Observe exact35/ade204b8/CI38154778403 to terminal. Then verify own ordered CI/deploy/live and fresh post-terminal normal-TLS frontend/backend/readyDB/all78asset pins. All12versions/470notes and combined copied publication checks pass; exact34acceptance and reused component evidence do not prequalify35. | Implementation |
+| Next release | Exact35 is accepted after all ten ordered jobs and fresh normal-TLS identities/readyDB/78asset pins. Prepare the next coherent milestone from selected merged Earth thatch/material work, restored content checks/Chronicle icons and terrain QA; synchronize versions/cumulative notes, qualify the copied publication and verify its own ordered CI/deploy/live/public assets. Local master work is not yet deployed. | Implementation |
 | Modern world and atlas | Finish coherent material scale, terrain transitions, grounded architecture, roads, vegetation/rock composition, landmarks, interiors, lighting, atmosphere and readable travel/combat spaces. Moving equipped/HUD review starts Lanternhold → Earth → fight → first dungeon, then all elemental realms/borders, dungeons/raids, Dark Realm, both casino floors and PvP. Required named places, optional interactions and accurate maps remain governed by the full world contract. Repetition, sparse rooms and broad muddy patches are not final art. | Implementation; final owner review |
 | Supplied actor/equipment presentation | Finish full/mixed/cosmetic fits and material identity across all classes, weapon restrictions, dual wielding, local/remote swaps, pooling/reconnect and motion. Preserve delivered assets and approved geometry/rig constraints. | Implementation; final owner review |
 | Combat, classes and audio | Validate all twelve specialization kits, attack anticipation/contact/recovery, movement, threat readability and role feel. Finish contact/audio integration and human listening/busy-group mix; essential warnings survive Low/reduced effects/mute. Prepared mixer frames or audio API calls are insufficient for full acceptance. | Implementation and playtests |
