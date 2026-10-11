@@ -1,4 +1,3 @@
-import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 import { expect, test } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -148,7 +147,7 @@ for (const [quality, width] of [['high', 1280], ['low', 390]]) test(`${quality}:
         });
         reports.push({ type, fixtureIndex, quality, referenceCommit: comparePredecessor ? referenceCommit : null, ...setup, views, motion });
         await writeFile(testInfo.outputPath('entry-ward-review.json'), JSON.stringify(reports, null, 2));
-        if (requiresHardwareWebGL()) expect(setup.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
+        expect(setup.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
         expect(setup.blocked).toBe(0); expect(setup.equippedItems).toBe(14); expect(setup.missing + setup.fallback).toBe(0);
         expect(setup.rootBatches).toBe(type === 'verdant_bastion_catacombs' ? 1 : 0);
         expect(setup.floorPatina).toBe(type === 'verdant_bastion_catacombs');
