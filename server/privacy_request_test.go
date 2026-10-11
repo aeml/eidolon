@@ -39,7 +39,8 @@ func TestAccountSupportMongoPersistsWithoutWorldEntryAndProtectsOwnerStatus(t *t
 	if uri == "" {
 		t.Skip("explicit disposable report Mongo required")
 	}
-	if !regexp.MustCompile(`^mongodb://127\.0\.0\.1:[0-9]+/?$`).MatchString(uri) {
+	if os.Getenv("EIDOLON_REPORT_DISPOSABLE_DATABASE") != "1" ||
+		!regexp.MustCompile(`^mongodb://127\.0\.0\.1:[0-9]+(?:/eidolon)?/?$`).MatchString(uri) {
 		t.Fatal("requires explicit disposable loopback Mongo")
 	}
 	restore := installChatTestState(t)

@@ -171,7 +171,7 @@ jobs:
           EIDOLON_REPORT_DISPOSABLE_DATABASE: '1'
         run: |
           go test -race ./internal/database -run '^TestReportReviewMongo' -count=1 -v
-          go test -race . -run '^TestReportReviewMongoPreparedChatModerationFlow$' -count=1 -v
+          go test -race . -run '^Test(ReportReviewMongoPreparedChatModerationFlow|AccountSupportMongoPersistsWithoutWorldEntryAndProtectsOwnerStatus)$' -count=1 -v
 
       - name: Verify disposable account-bound character journal replay
         working-directory: server
