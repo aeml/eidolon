@@ -581,3 +581,37 @@ listening, physical devices or owner art acceptance. Historical timing/draw/
 triangle failures, sparse room/world composition and full original operations/
 F1–F5/beta/launch/handoff remain open. No campaign/soak replay or public change.
 [Scoped qualification](2026-10-11-equipped-skill-motion-qualification.json).
+
+
+### 2026-10-11 — room-scale dungeon floor composition
+
+Selected `51b84ca2` frames naves, courts, approaches and arenas with shallow mapped
+stone bands. All five themes reuse existing materials/maps; four shapes are
+lazily kit-owned (150480source attribute bytes if all used). Added triangles
+320/440/220/160 per nave/court/approach/arena, plus merged room attributes.
+Entry/cache batches unchanged; approach/arena adds one. Original8room batches,
+350/200draw and250000/85000triangle bounds preserved. No textures, materials,
+lights, colliders, interaction/prop centers or FPS claim added.
+
+80 focused checks pass,11 new. Seven distinct native cases pass: four source
+art and three actual copied/versioned engine cases. An extra default desktop
+case repeats an identity and proves historical comparison is optional.
+38 paired art views/76screenshots and912 prepared animation/render updates
+show supplied14-slot Fighter/HUD at normal zoom. Source maxima102/51draw and
+64707/25201triangles. Copied High/Low renders38plan views across all five themes,
+links existing materials and returns exact warmed GPU counts after each clear.
+Prepared motion is not continuous gameplay/server/device performance.
+
+Initial downward diagonal bevel normals fixed by centroid contraction; parent
+matrix observer and explicit lazy resource counts corrected. Unchanged parent
+proves stale bark observer counts792triangle paving instead of864/2880roots;
+mapless selectors retain original root checks. Missing vendor/worker environment
+failures retained; final prepare-client/native checks pass without retries.
+
+Staged unpublished. The existing boss dais is visibly a broad almost-black
+polygon and is the next concrete room material/geometry repair. Broad tile
+repetition, sparse furniture/world composition, contact/audio, supported devices
+and all historical performance failures remain open. Public29 jump/aura/admin
+acceptance unchanged. Original operations/F1–F5/beta/launch/handoff goal active;
+no campaign/soak replay, public/version/access change or unrelated selection.
+[Scoped qualification](2026-10-11-dungeon-floor-composition-qualification.json).

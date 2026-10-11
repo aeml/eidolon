@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T04:44:56.933518+00:00",
-  "classification": "Progress: selected equipped class skill families and remote cast speed fix;138 focused and3 distinct native identities pass. Staged unpublished.",
-  "qualifiedRuntime": "Held 2f9c284b adds equipped skill motions and remote cast timing on selected combat impact/world/material/HUD/worker work. Public29 unchanged.",
+  "recordedUTC": "2026-10-11T05:04:45.415922+00:00",
+  "classification": "Progress: selected shallow room-scale floor composition;80 focused and7 distinct native cases pass, including copied-bundle cleanup. Existing black boss dais is the next concrete art repair.",
+  "qualifiedRuntime": "Held 51b84ca2 adds nave/court/procession/arena stone borders on equipped skill/world/material/HUD/worker staged milestone. Public29 unchanged.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -2849,5 +2849,175 @@
     },
     "limits": "Prepared supplied-rig motion/remote-update checks, not live server combat/contact timing, speaker/listening, physical-device, sustained party performance or owner modern-art approval. Source art views precede remote-only timing guard; final actual Actor-update case qualifies the guard. Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw and Low202draw failures remain. Sparse room/world composition, contact/audio, supported devices and original operations/F1-F5/beta/launch/handoff remain open. No campaign/soak replay or unrelated private selection.",
     "receipt": "docs/plans/2026-10-11-equipped-skill-motion-qualification.json"
+  },
+  "dungeonFloorComposition": {
+    "source": "51b84ca2380f5362bd1094940c9c0ce214c38a3f",
+    "selected": true,
+    "published": false,
+    "focused": {
+      "passed": 80,
+      "newChecks": 11,
+      "suites": 4,
+      "failedFinal": 0,
+      "skipped": 0,
+      "seconds": 156.341
+    },
+    "native": {
+      "distinctPassed": 7,
+      "sourceArtCases": 4,
+      "copiedBundleCases": 3,
+      "additionalDefaultHistoryFreePass": 1,
+      "counts": "Default desktop Verdant repeats one of the four art identities; count once. Repeated draft/final runs are not additional identities.",
+      "retries": 0,
+      "skips": 0,
+      "flaky": 0,
+      "sourceArtStats": {
+        "startTime": "2026-10-11T04:57:24.255Z",
+        "duration": 165423.348,
+        "expected": 4,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "copiedStats": {
+        "startTime": "2026-10-11T05:01:17.176Z",
+        "duration": 29244.728000000003,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "defaultStats": {
+        "startTime": "2026-10-11T05:02:22.986Z",
+        "duration": 12710.559000000001,
+        "expected": 1,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "artViews": 38,
+      "artPairedScreenshots": 76,
+      "preparedAnimationUpdates": 912,
+      "copiedPlanViews": 38,
+      "themes": 5,
+      "qualities": [
+        "high",
+        "low"
+      ],
+      "hero": "Supplied fourteen-slot Fighter with actual desktop/phone HUD at zoom15.",
+      "sourceMaxPreparedDraws": {
+        "high": 102,
+        "low": 51
+      },
+      "sourceMaxPreparedTriangles": {
+        "high": 64707,
+        "low": 25201
+      },
+      "scope": "Actual production layouts, one room for each present plan. Umbral has three plans and no pure boss_approach in this layout; all four plans covered by other themes. Mixer/render time steps are prepared presentation, not full engine cadence, server combat, sustained party performance or physical devices.",
+      "sourceControl": "Historical parent dressing at the exact same hero/camera/lighting state. Entry/cache geometry adds320/440triangles without another batch; approach/arena adds220/160triangles and one opaque batch. Production room batch cap8 and whole-scene350/200draw,250000/85000triangle assertions remain unchanged.",
+      "copiedGPU": "Actual production copier/versioned engine; all five themes render available plans and compile PBR/patina/prop materials. Exact warmed geometry/texture counts after every cleared theme and final cleanup. Ward state/collider/matrix stability and original High root2880triangles retained.",
+      "historyFreeCI": "Default comparator disabled and deliberately unavailable historical reference; desktop Verdant passes. Default CI does not invoke git show or import parent modules. No test identities or CI commands added/removed; no claim full CI executed."
+    },
+    "cost": {
+      "plans": [
+        {
+          "plan": "nave",
+          "stones": 32,
+          "visualOnly": true,
+          "triangles": 320,
+          "sourceAttributeBytes": 42240,
+          "bounds": [
+            [
+              -20.875,
+              0.10400000214576721,
+              -20.875
+            ],
+            [
+              20.875,
+              0.12300000339746475,
+              20.875
+            ]
+          ]
+        },
+        {
+          "plan": "court",
+          "stones": 44,
+          "visualOnly": true,
+          "triangles": 440,
+          "sourceAttributeBytes": 58080,
+          "bounds": [
+            [
+              -20.25,
+              0.10400000214576721,
+              -20.25
+            ],
+            [
+              20.25,
+              0.12300000339746475,
+              20.25
+            ]
+          ]
+        },
+        {
+          "plan": "procession",
+          "stones": 22,
+          "visualOnly": true,
+          "triangles": 220,
+          "sourceAttributeBytes": 29040,
+          "bounds": [
+            [
+              -7,
+              0.10400000214576721,
+              -22.954999923706055
+            ],
+            [
+              7,
+              0.12300000339746475,
+              22.954999923706055
+            ]
+          ]
+        },
+        {
+          "plan": "arena",
+          "stones": 16,
+          "visualOnly": true,
+          "triangles": 160,
+          "sourceAttributeBytes": 21120,
+          "bounds": [
+            [
+              -21.497968673706055,
+              0.10400000214576721,
+              -21.497968673706055
+            ],
+            [
+              21.497968673706055,
+              0.12300000339746475,
+              21.497968673706055
+            ]
+          ]
+        }
+      ],
+      "sourceAttributeBytesIfAllFourUsed": 150480,
+      "mergedRoomOwnership": "Each optimized room additionally owns its plan attribute bytes in the existing material batch (or one new batch). Source shapes lazily cached at most four per kit; no global cache.",
+      "newTextures": 0,
+      "newMaterials": 0,
+      "newLights": 0,
+      "newColliders": 0,
+      "surface": "Opaque existing mapped stone material with vertex colors, receives shadows and does not cast. Nonemissive, no animation clock or time uniform. TopY=.119-.123 above authoritative rendered floorY=.1 and below local inlays.",
+      "performance": "Additional geometry, buffer and fragment work; no FPS saving or clearance of historical performance failures."
+    },
+    "visualFindings": {
+      "improved": "Nave borders frame vigils/ward; courtyard edging grounds central coffers/fonts; processional bands and arena perimeter give broad empty floor a room-scale composition without adding obstacles.",
+      "remaining": "Existing boss buried dais remains a broad almost-black polygon and primary next material/geometry repair. Repeated base tiles, sparse furniture/composition, simple props and broader world/actor/contact/audio remain short of final owner art acceptance."
+    },
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-dungeon-floor-composition-checks-20261011",
+      "inventoryEntries": 546,
+      "files": 547,
+      "inventorySHA256": "6ae2f67471530b5a4f7d4872ff2b93813df5b1cad6819c48739582a864c0bb09",
+      "frozen": true
+    },
+    "limits": "Prepared source and copied-bundle presentation/lifecycle proof only. Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw andLow202draw counterexamples remain. No server route/campaign/soak replay, listening, supported physical-device, whole-party performance or owner modern-art approval. Original operations/F1-F5/beta/launch/handoff scope remains active. No unrelated private source selected.",
+    "receipt": "docs/plans/2026-10-11-dungeon-floor-composition-qualification.json"
   }
 }

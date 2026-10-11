@@ -405,3 +405,17 @@ copied production bundle compiles. Staged unpublished; public29 jump/aura/admin
 acceptance unchanged. Historical performance failures and original world/art/
 contact/audio/device/operations/F1–F5/beta/launch/handoff gaps stay open.
 [Evidence](docs/plans/2026-10-11-equipped-skill-motion-qualification.json).
+
+
+### 2026-10-11 — dungeon floor composition continuation
+
+Previous turn selected equipped skill motions and remote cast timing. Selected
+51b84ca2 adds shallow room-scale stone borders across all5dungeon themes, reusing
+existing materials/maps and preserving collisions/props/state/ward behavior.
+80focused checks and7distinct native cases pass, including actual copied engine
+and exact warmed GPU cleanup.38paired views/76screenshots/912prepared animation
+updates; initial normal/observer/environment failures retained. Staged unpublished.
+Existing almost-black boss dais is next concrete art repair. Broader modern world/
+contact/audio/device/performance and original operations/F1–F5/beta/launch/handoff
+remain open; public29 jump/aura/admin unchanged. No campaign/soak/public change.
+[Evidence](docs/plans/2026-10-11-dungeon-floor-composition-qualification.json).

@@ -1,0 +1,225 @@
+{
+  "recordedUTC": "2026-10-11T05:04:45.415922+00:00",
+  "source": "51b84ca2380f5362bd1094940c9c0ce214c38a3f",
+  "parent": "5ee21689d7b311ee3c53be413ab58ca2a1862ad2",
+  "selected": true,
+  "published": false,
+  "change": "Four lazy kit-owned room floor masonry plans: framed nave, bordered court, paired processional bands and arena perimeter. Existing prop positions, floor/collision authority, surfaces, state seals and entry wards retained.",
+  "focused": {
+    "passed": 80,
+    "newChecks": 11,
+    "suites": 4,
+    "failedFinal": 0,
+    "skipped": 0,
+    "seconds": 156.341
+  },
+  "native": {
+    "distinctPassed": 7,
+    "sourceArtCases": 4,
+    "copiedBundleCases": 3,
+    "additionalDefaultHistoryFreePass": 1,
+    "counts": "Default desktop Verdant repeats one of the four art identities; count once. Repeated draft/final runs are not additional identities.",
+    "retries": 0,
+    "skips": 0,
+    "flaky": 0,
+    "sourceArtStats": {
+      "startTime": "2026-10-11T04:57:24.255Z",
+      "duration": 165423.348,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "copiedStats": {
+      "startTime": "2026-10-11T05:01:17.176Z",
+      "duration": 29244.728000000003,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "defaultStats": {
+      "startTime": "2026-10-11T05:02:22.986Z",
+      "duration": 12710.559000000001,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "artViews": 38,
+    "artPairedScreenshots": 76,
+    "preparedAnimationUpdates": 912,
+    "copiedPlanViews": 38,
+    "themes": 5,
+    "qualities": [
+      "high",
+      "low"
+    ],
+    "hero": "Supplied fourteen-slot Fighter with actual desktop/phone HUD at zoom15.",
+    "sourceMaxPreparedDraws": {
+      "high": 102,
+      "low": 51
+    },
+    "sourceMaxPreparedTriangles": {
+      "high": 64707,
+      "low": 25201
+    },
+    "scope": "Actual production layouts, one room for each present plan. Umbral has three plans and no pure boss_approach in this layout; all four plans covered by other themes. Mixer/render time steps are prepared presentation, not full engine cadence, server combat, sustained party performance or physical devices.",
+    "sourceControl": "Historical parent dressing at the exact same hero/camera/lighting state. Entry/cache geometry adds320/440triangles without another batch; approach/arena adds220/160triangles and one opaque batch. Production room batch cap8 and whole-scene350/200draw,250000/85000triangle assertions remain unchanged.",
+    "copiedGPU": "Actual production copier/versioned engine; all five themes render available plans and compile PBR/patina/prop materials. Exact warmed geometry/texture counts after every cleared theme and final cleanup. Ward state/collider/matrix stability and original High root2880triangles retained.",
+    "historyFreeCI": "Default comparator disabled and deliberately unavailable historical reference; desktop Verdant passes. Default CI does not invoke git show or import parent modules. No test identities or CI commands added/removed; no claim full CI executed."
+  },
+  "cost": {
+    "plans": [
+      {
+        "plan": "nave",
+        "stones": 32,
+        "visualOnly": true,
+        "triangles": 320,
+        "sourceAttributeBytes": 42240,
+        "bounds": [
+          [
+            -20.875,
+            0.10400000214576721,
+            -20.875
+          ],
+          [
+            20.875,
+            0.12300000339746475,
+            20.875
+          ]
+        ]
+      },
+      {
+        "plan": "court",
+        "stones": 44,
+        "visualOnly": true,
+        "triangles": 440,
+        "sourceAttributeBytes": 58080,
+        "bounds": [
+          [
+            -20.25,
+            0.10400000214576721,
+            -20.25
+          ],
+          [
+            20.25,
+            0.12300000339746475,
+            20.25
+          ]
+        ]
+      },
+      {
+        "plan": "procession",
+        "stones": 22,
+        "visualOnly": true,
+        "triangles": 220,
+        "sourceAttributeBytes": 29040,
+        "bounds": [
+          [
+            -7,
+            0.10400000214576721,
+            -22.954999923706055
+          ],
+          [
+            7,
+            0.12300000339746475,
+            22.954999923706055
+          ]
+        ]
+      },
+      {
+        "plan": "arena",
+        "stones": 16,
+        "visualOnly": true,
+        "triangles": 160,
+        "sourceAttributeBytes": 21120,
+        "bounds": [
+          [
+            -21.497968673706055,
+            0.10400000214576721,
+            -21.497968673706055
+          ],
+          [
+            21.497968673706055,
+            0.12300000339746475,
+            21.497968673706055
+          ]
+        ]
+      }
+    ],
+    "sourceAttributeBytesIfAllFourUsed": 150480,
+    "mergedRoomOwnership": "Each optimized room additionally owns its plan attribute bytes in the existing material batch (or one new batch). Source shapes lazily cached at most four per kit; no global cache.",
+    "newTextures": 0,
+    "newMaterials": 0,
+    "newLights": 0,
+    "newColliders": 0,
+    "surface": "Opaque existing mapped stone material with vertex colors, receives shadows and does not cast. Nonemissive, no animation clock or time uniform. TopY=.119-.123 above authoritative rendered floorY=.1 and below local inlays.",
+    "performance": "Additional geometry, buffer and fragment work; no FPS saving or clearance of historical performance failures."
+  },
+  "failuresRetained": [
+    "Initial focused:15failed/65passed. Ring bevel axis inset crossed diagonal edges and produced downward normals; centroid contraction fixes actual geometry. New bounds observer measured child before updating parent matrix; corrected. Resource-count expectations account for lazy composition geometries without changing material/texture bounds.",
+    "Initial source unit bark selector and copied ward selector confused mapped vertex-color paving with mapless bark. Unchanged parent probe reproduces first match792paving, with actual roots864Low/2880High. Corrected mapless selectors retain original root requirements; no root mesh changes.",
+    "First native command:4failed before browser scene setup because this new worktree lacked prepared vendor directory. Next native command:4failed because generated geometry worker bundle was missing; complete prepare-client setup fixes owned environment. Both raw failures and their artifacts retained. Final four cases pass with no retries."
+  ],
+  "checks": {
+    "scopedESLint": "pass",
+    "gitDiffCheck": "pass",
+    "copiedProductionBundle": {
+      "worker": {
+        "output": "src/core/ActorGameplayGeometryWorker.44618fbd1160aa63.js",
+        "sha256": "44618fbd1160aa63a3656794cc6e22d56e6ffa0599254801285dca017f7a2e43",
+        "bytes": 137178,
+        "modules": 10,
+        "imports": []
+      },
+      "bundledModules": 461,
+      "bytes": 3477677,
+      "sharedLoginModules": 22,
+      "vendorModules": [
+        "vendor/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+        "vendor/three/examples/jsm/loaders/GLTFLoader.js",
+        "vendor/three/examples/jsm/postprocessing/EffectComposer.js",
+        "vendor/three/examples/jsm/postprocessing/MaskPass.js",
+        "vendor/three/examples/jsm/postprocessing/OutputPass.js",
+        "vendor/three/examples/jsm/postprocessing/Pass.js",
+        "vendor/three/examples/jsm/postprocessing/RenderPass.js",
+        "vendor/three/examples/jsm/postprocessing/ShaderPass.js",
+        "vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js",
+        "vendor/three/examples/jsm/shaders/CopyShader.js",
+        "vendor/three/examples/jsm/shaders/FXAAShader.js",
+        "vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js",
+        "vendor/three/examples/jsm/shaders/OutputShader.js",
+        "vendor/three/examples/jsm/utils/BufferGeometryUtils.js",
+        "vendor/three/examples/jsm/utils/SkeletonUtils.js"
+      ],
+      "externalImports": [
+        "../assets/ServiceWorkerBoot.js",
+        "../data/worldGeography.js",
+        "../ui/EmailRecoveryUI.js",
+        "../ui/OwnedEvents.js",
+        "../ui/PasswordChangeUI.js",
+        "../ui/ReportUI.js",
+        "../ui/reportTypes.js",
+        "./CredentialToken.js",
+        "./GraphicsStartup.js",
+        "three"
+      ],
+      "engineSHA256": "c587d312ed7c0a673109ff874701f6a8c775aa0c58d4f0a6c57522b82cfd1549"
+    },
+    "ownedStaticServer": "stopped;4203 free"
+  },
+  "visualFindings": {
+    "improved": "Nave borders frame vigils/ward; courtyard edging grounds central coffers/fonts; processional bands and arena perimeter give broad empty floor a room-scale composition without adding obstacles.",
+    "remaining": "Existing boss buried dais remains a broad almost-black polygon and primary next material/geometry repair. Repeated base tiles, sparse furniture/composition, simple props and broader world/actor/contact/audio remain short of final owner art acceptance."
+  },
+  "public": "Alpha1.79.29 jump/aura/admin accepted evidence reused; no deployment, version/access/account/server change.",
+  "limits": "Prepared source and copied-bundle presentation/lifecycle proof only. Existing50/66.7ms,49.9/66.6ms,386370/281603/289302triangles,438/361draw andLow202draw counterexamples remain. No server route/campaign/soak replay, listening, supported physical-device, whole-party performance or owner modern-art approval. Original operations/F1-F5/beta/launch/handoff scope remains active. No unrelated private source selected.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-dungeon-floor-composition-checks-20261011",
+    "inventoryEntries": 546,
+    "files": 547,
+    "inventorySHA256": "6ae2f67471530b5a4f7d4872ff2b93813df5b1cad6819c48739582a864c0bb09",
+    "frozen": true
+  }
+}
