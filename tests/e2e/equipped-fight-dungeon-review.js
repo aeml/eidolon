@@ -1,3 +1,4 @@
+import { observeFightTargetsInPage } from '../fightTargetObservation.js';
 import { capturePartySubmissionFrames } from './party-submission-frames.js';
 import { readPlayerStateInPage } from '../groundInputObservations.js';
 import { expect } from '@playwright/test';
@@ -36,21 +37,18 @@ async function defeat(page, testInfo, stage, target = null) {
     if (!protectedAlready) {
         await page.keyboard.press('4'); attempt.inputs.push('4:IronFortress');
         await expect.poll(() => page.evaluate(() => window.game.player.ironFortressTimer)).toBeGreaterThan(0);
+        // The accepted defensive buff still owns the server's500ms global cooldown.
+        await page.waitForTimeout(550);
     }
-    await page.mouse.click(pointer.x, pointer.y, { button: 'right' }); attempt.inputs.push('RMB:Charge');
+    const chargePointer = await projectEntity(page, target.id);
+    expect(chargePointer?.visible).toBe(true);
+    await page.mouse.move(chargePointer.x, chargePointer.y); await page.waitForTimeout(75);
+    await page.mouse.click(chargePointer.x, chargePointer.y, { button: 'right' }); attempt.inputs.push('RMB:Charge');
     await page.waitForTimeout(350);
-    let selectedId = target.id;
+    let selectedId = target.id, acquiredIds = [];
     await expect.poll(async () => {
-        const state = await page.evaluate(id => {
-            const game = window.game, pending = game.pendingInteraction;
-            const selected = pending?.id && pending.isActive && game.isHostileActorTarget(pending) ? pending : game.remotePlayers.get(id);
-            return { id: selected?.id || id, dead: !selected || selected.state === 'DEAD' || !selected.isActive || (selected.health ?? selected.stats?.hp) <= 0,
-                hp: game.player.stats.hp, instance: game.currentInstanceId || '',
-                localState: game.player.state, clip: game.player.currentAction?.getClip?.().name,
-                clipTime: game.player.currentAction?.time, cooldown: game.player.abilityCooldown,
-                targetHp: selected?.health ?? selected?.stats?.hp,
-                position: game.player.position.toArray(), ironFortress: game.player.ironFortressTimer } ;
-        }, selectedId);
+        const state = await page.evaluate(observeFightTargetsInPage, { requestedId: target.id, acquiredIds });
+        acquiredIds = state.acquiredIds;
         selectedId = state.id; samples.push({ time: performance.now(), ...state });
         expect(state.hp).toBeGreaterThan(0); expect(state.instance).toBe(initial.instanceId || '');
         if (state.dead) return true;
@@ -116,20 +114,25 @@ export async function beginFightReview(page) {
 }
 
 export async function captureEarthFight(page, testInfo, sample, screenshot) {
-    const recorded = await defeat(page, testInfo, 'recorded-kit');
-    await screenshot('earth-fight-after-kit');
-    const nextTarget = await liveTarget(page);
     if (process.env.EIDOLON_E2E_COMBAT_SUBMISSIONS === '1') {
         const capture = capturePartySubmissionFrames(page, testInfo, 'combat-submission-frames.json',
             { frameCount: 180, activity: true }).then(evidence => ({ evidence }), error => ({ error }));
         await expect.poll(() => page.evaluate(() => window.game.renderSystem.render.name)).toBe('observedDraw');
-        const diagnostic = await defeat(page, testInfo, 'diagnostic-kit', nextTarget);
+        let diagnostic, failure;
+        try { diagnostic = await defeat(page, testInfo, 'diagnostic-kit'); }
+        catch (error) { failure = error; }
         const result = await capture;
+        await writeFile(testInfo.outputPath('combat-submission-meta.json'), JSON.stringify({ diagnostic,
+            failure: failure ? { name: failure.name, message: failure.message } : null,
+            scope: 'Separate instrumented180frame combat draw attribution. Capture starts before the first kit encounter and survives a later encounter assertion failure. Normal kit/pointer inputs, no state or renderer-policy changes. Not a combat timing or frame-budget qualification.' }, null, 2));
+        if (failure) throw failure;
         if (result.error) throw result.error;
-        await writeFile(testInfo.outputPath('combat-submission-meta.json'), JSON.stringify({ recorded, diagnostic,
-            scope: 'Separate instrumented180frame combat draw attribution. Normal kit/pointer inputs, no state or renderer-policy changes. Not a combat timing or frame-budget qualification.' }, null, 2));
+        await screenshot('earth-fight-after-diagnostic-kit');
         return;
     }
+    const recorded = await defeat(page, testInfo, 'recorded-kit');
+    await screenshot('earth-fight-after-kit');
+    const nextTarget = await liveTarget(page);
     const profiling = sample('earth-active-fight', { warmupFrames: 0, activity: true })
         .then(profile => ({ profile }), error => ({ error }));
     await expect.poll(() => page.evaluate(() => window.game.loop.name)).toBe('observedLoop');

@@ -16,7 +16,7 @@ export function observeSubmissionFramesInPage({ frameCount = 12, activity = fals
         const boundaries = new Set([render.scene, render.staticEnvironmentGroup, render.instanceEnvironmentGroup,
             render.entityGroup, render.actorInstances?.group].filter(Boolean));
         const frames = [], lights = new Map();
-        let rows, cameras, closed = false;
+        let rows, cameras, kinds, closed = false;
         const finish = error => {
             if (closed) return;
             closed = true; clearTimeout(timer);
@@ -38,6 +38,14 @@ export function observeSubmissionFramesInPage({ frameCount = 12, activity = fals
             const beforeTriangles = renderer.info.render.triangles;
             const result = direct.call(this, camera, scene, geometry, material, object, group);
             if (!rows) return result;
+            if (!kinds) {
+                kinds = new Map();
+                for (const entry of render.actorInstances?.roster || []) {
+                    const key = `${entry.geometry.uuid}:${entry.material.uuid}`;
+                    if (!kinds.has(key)) kinds.set(key, new Set());
+                    kinds.get(key).add(entry.root.userData.proceduralActorType || 'ProceduralHumanoid');
+                }
+            }
             let root = object;
             while (root.parent && !boundaries.has(root.parent) && !root.userData.authoredClass) root = root.parent;
             const family = root.userData.authoredClass ? `Equipped ${root.userData.authoredClass}`
@@ -47,16 +55,21 @@ export function observeSubmissionFramesInPage({ frameCount = 12, activity = fals
             const key = `${pass}:${object.uuid}:${material.uuid}:${group?.start ?? 0}`;
             let row = rows.get(key);
             if (!row) {
-                row = { family, pass, mesh: object.name, root: root.name, actorType: root.userData.proceduralActorType || null,
+                row = { family, pass, mesh: object.name, root: root.name, rootUUID: root.uuid, matrixWorld: object.matrixWorld.toArray(), actorType: root.userData.proceduralActorType || null,
                     castShadow: object.castShadow, sourceTriangles: (geometry.index?.count ?? geometry.attributes?.position?.count ?? 0) / 3,
                     geometry: geometry.uuid, material: material.uuid,
                     sourceMaterial: Array.isArray(object.material) ? null : object.material?.uuid,
                     type: object.type, submittedCalls: 0, submittedTriangles: 0, callbacks: 0,
                     instances: object.isInstancedMesh ? object.count : null,
                     origin: object.isInstancedMesh ? [object.matrixWorld.elements[12], object.matrixWorld.elements[13], object.matrixWorld.elements[14]] : null,
-                    sourceKinds: object.parent === render.actorInstances?.group ? [...render.actorInstances.roots.keys()]
-                        .filter(root => render.actorInstances.roster.some(entry => entry.root === root && entry.geometry === geometry && entry.material === object.material))
-                        .map(root => root.userData.proceduralActorType || 'ProceduralHumanoid') : null };
+                    sourceKinds: object.parent === render.actorInstances?.group
+                        ? [...(kinds.get(`${geometry.uuid}:${object.material?.uuid}`) || [])] : null,
+                    batchSources: object.isBatchedMesh ? [...(render.actorInstances?.multiDraw?.entries.values() || [])]
+                        .find(entry => entry.mesh === object)?.sourceSlots.map(({ source }) => ({
+                            geometry: source.geometry.uuid, material: source.material.uuid, instances: source.count,
+                            origin: [source.matrixWorld.elements[12], source.matrixWorld.elements[13], source.matrixWorld.elements[14]],
+                            kinds: [...(kinds.get(`${source.geometry.uuid}:${source.material.uuid}`) || [])]
+                        })) || null : null };
                 rows.set(key, row);
             }
             row.submittedCalls += renderer.info.render.calls - before;
@@ -65,7 +78,7 @@ export function observeSubmissionFramesInPage({ frameCount = 12, activity = fals
             return result;
         }
         function observedDraw(...args) {
-            rows = new Map(); cameras = new Map();
+            rows = new Map(); cameras = new Map(); kinds = null;
             render.scene.traverse(light => {
                 if (!light.isLight || !light.shadow?.camera) return;
                 if (!lights.has(light)) lights.set(light, { pass: `shadow-${lights.size}`, type: light.type,
