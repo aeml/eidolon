@@ -500,3 +500,9 @@ camp milestone will publish coherently after current release gates/deployment
 acceptance. Original dirty work/fighter-charge checkout is preserved at64ec325b
 with203tracked/262untracked entries;104unmerged historical branches remain
 under review. Frozen camp96-entry/97file inventory verified without mutation.
+
+Current-master ca4f685e ordinary-input route is retained as a terminal failed
+performance diagnostic: High town391/woodland398draws exceed350; all four
+median intervals33.3ms exceed20ms. Full route captured, strict assertion fails
+before final party/save custody. See2026-10-11-current-master-route-diagnostic;
+no waiver, retry, publication or whole-goal completion.

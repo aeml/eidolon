@@ -1,0 +1,350 @@
+{
+  "recordedUTC": "2026-10-11T06:52:22.491548+00:00",
+  "source": "ca4f685e6966abd92b07aba69c760a93b7d7e135",
+  "terminalExitCode": 1,
+  "ordinaryRouteCompleted": true,
+  "optionalFourRendererCase": "skipped",
+  "partyAssemblyAndSavedCustody": "not reached after strict route-budget failure",
+  "profiles": [
+    {
+      "label": "bastion-approach",
+      "quality": "high",
+      "budget": {
+        "draws": 350,
+        "triangles": 250000,
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4
+      },
+      "sample": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 114,
+        "trianglesMedian": 64909,
+        "frameMedianMs": 33.3,
+        "frameP95Ms": 50,
+        "cpuLoopMedianMs": 26.19999998807907,
+        "cpuLoopP95Ms": 40.5,
+        "activeEntitiesMin": 31,
+        "activeEntitiesMax": 31,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      "measuredBudgetViolations": [
+        "frameMedianMs",
+        "frameP95Ms"
+      ]
+    },
+    {
+      "label": "earth-road",
+      "quality": "high",
+      "budget": {
+        "draws": 350,
+        "triangles": 250000,
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4
+      },
+      "sample": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 181,
+        "trianglesMedian": 91010,
+        "frameMedianMs": 33.3,
+        "frameP95Ms": 50,
+        "cpuLoopMedianMs": 25.5,
+        "cpuLoopP95Ms": 40.59999996423721,
+        "activeEntitiesMin": 71,
+        "activeEntitiesMax": 71,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      "measuredBudgetViolations": [
+        "frameMedianMs",
+        "frameP95Ms"
+      ]
+    },
+    {
+      "label": "town-start",
+      "quality": "high",
+      "budget": {
+        "draws": 350,
+        "triangles": 250000,
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4
+      },
+      "sample": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 391,
+        "trianglesMedian": 198527,
+        "frameMedianMs": 33.3,
+        "frameP95Ms": 50,
+        "cpuLoopMedianMs": 29.69999998807907,
+        "cpuLoopP95Ms": 43.09999996423721,
+        "activeEntitiesMin": 156,
+        "activeEntitiesMax": 156,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      "measuredBudgetViolations": [
+        "draws",
+        "frameMedianMs",
+        "frameP95Ms"
+      ]
+    },
+    {
+      "label": "woodland-cut",
+      "quality": "high",
+      "budget": {
+        "draws": 350,
+        "triangles": 250000,
+        "frameMedianMs": 20,
+        "frameP95Ms": 33.4
+      },
+      "sample": {
+        "frames": 180,
+        "visibleFrames": 180,
+        "restored": true,
+        "drawCallsMedian": 398,
+        "trianglesMedian": 130002,
+        "frameMedianMs": 33.3,
+        "frameP95Ms": 33.4,
+        "cpuLoopMedianMs": 24,
+        "cpuLoopP95Ms": 31.80000001192093,
+        "activeEntitiesMin": 27,
+        "activeEntitiesMax": 28,
+        "renderer": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      "measuredBudgetViolations": [
+        "draws",
+        "frameMedianMs"
+      ]
+    }
+  ],
+  "submissionScenes": {
+    "woodland-cut-submission-frames.json": {
+      "frames": 12,
+      "restored": true,
+      "allCallsAccountedFor": true,
+      "callsRange": [
+        357,
+        361
+      ],
+      "lastFrame": {
+        "calls": 361,
+        "triangles": 128866,
+        "activeEntities": 28
+      },
+      "lastFrameContributors": [
+        {
+          "family": "ProceduralDemonOrc",
+          "pass": "color",
+          "calls": 87
+        },
+        {
+          "family": "ProceduralDemonOrc",
+          "pass": "shadow-0",
+          "calls": 80
+        },
+        {
+          "family": "foliage:earth:grave_pine",
+          "pass": "shadow-0",
+          "calls": 37
+        },
+        {
+          "family": "foliage:earth:ossuary_birch",
+          "pass": "shadow-0",
+          "calls": 29
+        },
+        {
+          "family": "foliage:earth:ossuary_birch",
+          "pass": "color",
+          "calls": 23
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "calls": 23
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "shadow-0",
+          "calls": 20
+        },
+        {
+          "family": "foliage:earth:grave_pine",
+          "pass": "color",
+          "calls": 19
+        },
+        {
+          "family": "Mesh",
+          "pass": "auxiliary",
+          "calls": 15
+        },
+        {
+          "family": "foliage:earth:mourning_willow",
+          "pass": "shadow-0",
+          "calls": 8
+        },
+        {
+          "family": "Gloamwood heath and fern beds",
+          "pass": "color",
+          "calls": 8
+        },
+        {
+          "family": "Canonical terrain tiles",
+          "pass": "color",
+          "calls": 4
+        },
+        {
+          "family": "Earth authored paths",
+          "pass": "color",
+          "calls": 2
+        },
+        {
+          "family": "Earth exposed rock shelves",
+          "pass": "shadow-0",
+          "calls": 1
+        },
+        {
+          "family": "Mesh",
+          "pass": "color",
+          "calls": 1
+        },
+        {
+          "family": "ProceduralEidolicBlackwater",
+          "pass": "color",
+          "calls": 1
+        },
+        {
+          "family": "ProceduralRealmTerrain:water",
+          "pass": "color",
+          "calls": 1
+        },
+        {
+          "family": "ProceduralRealmTerrain:air",
+          "pass": "color",
+          "calls": 1
+        }
+      ]
+    },
+    "town-start-submission-frames.json": {
+      "frames": 12,
+      "restored": true,
+      "allCallsAccountedFor": true,
+      "callsRange": [
+        391,
+        391
+      ],
+      "lastFrame": {
+        "calls": 391,
+        "triangles": 229643,
+        "activeEntities": 158
+      },
+      "lastFrameContributors": [
+        {
+          "family": "Lanternhold communal courtyards",
+          "pass": "shadow-0",
+          "calls": 29
+        },
+        {
+          "family": "ProceduralRespecNPC",
+          "pass": "color",
+          "calls": 27
+        },
+        {
+          "family": "ArchmageIlyra",
+          "pass": "color",
+          "calls": 25
+        },
+        {
+          "family": "ProceduralQuestNPC",
+          "pass": "color",
+          "calls": 24
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "calls": 23
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "shadow-0",
+          "calls": 20
+        },
+        {
+          "family": "ArchmageIlyra",
+          "pass": "shadow-0",
+          "calls": 20
+        },
+        {
+          "family": "ProceduralQuestNPC",
+          "pass": "shadow-0",
+          "calls": 18
+        },
+        {
+          "family": "Mesh",
+          "pass": "auxiliary",
+          "calls": 15
+        },
+        {
+          "family": "ProceduralRespecNPC",
+          "pass": "shadow-0",
+          "calls": 12
+        },
+        {
+          "family": "lanternhold-casino-shell",
+          "pass": "shadow-0",
+          "calls": 11
+        },
+        {
+          "family": "lanternhold-casino-shell",
+          "pass": "color",
+          "calls": 11
+        },
+        {
+          "family": "Lanternhold:Votive Market",
+          "pass": "shadow-0",
+          "calls": 10
+        },
+        {
+          "family": "Lanternhold:Ashen Smithy",
+          "pass": "shadow-0",
+          "calls": 10
+        },
+        {
+          "family": "OpaqueActorInstances",
+          "pass": "color",
+          "calls": 10
+        },
+        {
+          "family": "Lanternhold:Pilgrim Vigil Field",
+          "pass": "shadow-0",
+          "calls": 9
+        },
+        {
+          "family": "ProceduralDwarfSalesman",
+          "pass": "shadow-0",
+          "calls": 9
+        },
+        {
+          "family": "Lanternhold:Votive Market",
+          "pass": "color",
+          "calls": 9
+        }
+      ]
+    }
+  },
+  "sanitization": {
+    "observedPreparedAccountsRedacted": 1,
+    "preparedFixtureAccounts": 4,
+    "loggedInPlayers": 1,
+    "embeddedEntriesScanned": 2,
+    "remainingPreparedNames": 0,
+    "automaticCredentialRecordings": "disabled",
+    "explicitPostLoginMovingImages": true
+  },
+  "scope": "Fresh actual normal-server modular current master including qualified camp clipping, prepared level30 fourteen-slot Fighter and HUD, native AMD Vulkan, normal ground clicks through all four stops. Original budgets unchanged. Every median frame interval exceeds20ms; town and woodland draws exceed350. Untimed submission census has streaming populations and geometry, not steady-state attribution or a causal FPS comparison. No retry, waiver, final art/device/campaign/party/save or global performance acceptance.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-current-master-route-checks-20261011",
+  "inventoryEntries": 352,
+  "inventorySHA256": "87d9a290aa341ed10d024d71cf7150d44f8ea86e0de84147c0156f67d48bde45"
+}

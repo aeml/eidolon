@@ -102,6 +102,17 @@ plan checks pass; discovery assigns all329cases exactly once. This is discovery,
 not execution of329cases. Runtime inputs and frozen native evidence are unchanged.
 [CI enrollment](2026-10-11-status-hud-ci-enrollment.json).
 
+**Fresh current-master route ca4f685e remains a failed performance diagnostic.**
+All four ordinary-input stops complete at unchanged High budgets, with draws
+391/181/398/114 and triangles198527/91010/130002/64909 for town/road/woodland/
+approach. Every median is33.3ms against20ms; p95 is50/50/33.4/50ms against33.4ms.
+The strict route assertion fails before final party assembly/saved custody.
+A separate untimed woodland census identifies167DemonOrc color/shadow draws;
+streaming populations differ from the timed profile, so this is not a steady-state
+or causal FPS comparison. No retry or waiver. Frozen352-entry evidence inventory
+87d9a290aa341ed10d024d71cf7150d44f8ea86e0de84147c0156f67d48bde45.
+[Current route diagnostic](2026-10-11-current-master-route-diagnostic.json).
+
 **Whole-world performance remains open.** The selected runtime's original
 ordinary route retains town400draw/woodland468draw failures against350; original
 Low202draw/87602triangle and High389draw failures also remain retained.
