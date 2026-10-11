@@ -7,10 +7,18 @@ if [ "$#" -ne 1 ] || [ ! -d "$1" ] || [ -L "$1" ]; then
   echo "Usage: $0 /exact/completed-upgrade-backup-directory" >&2
   exit 1
 fi
-for tool in sha256sum gzip; do
+for tool in sha256sum gzip realpath; do
   command -v "${tool}" >/dev/null || exit 1
 done
-cd -- "$1"
+# A trailing slash or /. makes test -L follow a directory link. Compare the
+# lexical absolute path with its physical target, including ancestor links.
+selected="$(realpath --canonicalize-existing --no-symlinks -- "$1")"
+physical="$(realpath --canonicalize-existing -- "$1")"
+if [ "${selected}" != "${physical}" ]; then
+  echo "Selected backup directory must not traverse symlinks." >&2
+  exit 1
+fi
+cd -- "${physical}"
 for name in COMPLETE SHA256SUMS mongo.archive.gz logs.tar.gz previous-image-id.txt; do
   if [ -L "${name}" ] || [ ! -f "${name}" ] || [ ! -r "${name}" ] || [ ! -s "${name}" ]; then
     echo "Incomplete or unsafe backup artifact: ${name}" >&2

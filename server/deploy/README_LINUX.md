@@ -456,7 +456,9 @@ It requires nonempty regular completion/checksum markers, Mongo and journal
 archives, and the recorded previous-image identity/archive pair (or the explicit
 fresh-install no-image marker). Only fixed artifact names may appear in the
 checksum manifest; duplicates, symlinks, absolute/traversal/escaped paths,
-missing artifacts, checksum mismatch and corrupt gzip refuse. It does not
+missing artifacts, checksum mismatch and corrupt gzip refuse. GNU coreutils
+`realpath` rejects directory aliases, including ancestor links and links with
+trailing `/` or `/.`; select the regular directory by its physical path. It does not
 extract files, access Docker/Mongo, choose the newest backup or remove anything.
 Checksums detect corruption, not authenticity or format compatibility.
 
@@ -465,6 +467,7 @@ Mongo-only restore helper invokes that verifier before Docker/database access.
 Deleting markers from a named point does not silently downgrade it to a
 standalone dump. Only that point's regular `mongo.archive.gz` may be selected.
 Standalone Mongo dumps retain their distinct, explicitly approved recovery path;
+all selected restore archives must also use a regular path without symlink traversal.
 neither path restores journals/images or authorizes reopening game admission.
 Production restoration, off-machine destination, retention and recovery-time/
 recovery-point objectives still require their own operator decisions.

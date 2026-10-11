@@ -19,13 +19,20 @@ fi
 replace_database=false
 if [ "$#" -eq 4 ]; then replace_database=true; fi
 archive_file="$1"
-if [ ! -f "${archive_file}" ] || [ ! -r "${archive_file}" ]; then
+if [ -L "${archive_file}" ] || [ ! -f "${archive_file}" ] || [ ! -r "${archive_file}" ]; then
   echo "Explicit restore archive is missing or unreadable." >&2
   exit 1
 fi
+archive_path="$(realpath --canonicalize-existing --no-symlinks -- "${archive_file}")"
+if [ "${archive_path}" != "$(realpath --canonicalize-existing -- "${archive_file}")" ]; then
+  echo "Selected restore archive must not traverse symlinks." >&2
+  exit 1
+fi
+archive_file="${archive_path}"
 archive_dir="$(dirname -- "${archive_file}")"
 # Coordinated points require their matching journal/image artifacts before any
-# database access. Preserve the selected path so symlink checks see it unchanged.
+# database access. Classify the canonical directory after refusing path aliases;
+# /./ must not hide a named point when its completion markers are missing.
 if [[ "$(basename -- "${archive_dir}")" == save-upgrade-* ]] ||
    [ -e "${archive_dir}/COMPLETE" ] || [ -L "${archive_dir}/COMPLETE" ] ||
    [ -e "${archive_dir}/SHA256SUMS" ] || [ -L "${archive_dir}/SHA256SUMS" ]; then

@@ -17,9 +17,15 @@ func TestUpgradeBackupVerificationReadOnlyAndRefusesUnsafeManifests(t *testing.T
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, scenario := range []string{"complete", "fresh-no-image", "no-marker", "empty-marker", "no-sums", "missing-required-sum", "duplicate", "foreign", "traversal", "absolute", "escaped", "checksum-mismatch", "corrupt-gzip", "missing-artifact", "image-not-covered", "missing-image-and-sum", "invalid-image-id", "unexpected-fresh-image", "artifact-link", "manifest-link", "directory-link"} {
+	for _, scenario := range []string{"complete", "fresh-no-image", "no-marker", "empty-marker", "no-sums", "missing-required-sum", "duplicate", "foreign", "traversal", "absolute", "escaped", "checksum-mismatch", "corrupt-gzip", "missing-artifact", "image-not-covered", "missing-image-and-sum", "invalid-image-id", "unexpected-fresh-image", "artifact-link", "manifest-link", "directory-link", "directory-link-slash", "directory-link-dot", "ancestor-link", "complete-spaced-path", "complete-dot"} {
 		t.Run(scenario, func(t *testing.T) {
 			dir := t.TempDir()
+			if scenario == "complete-spaced-path" {
+				dir = filepath.Join(dir, "backup ' ; touch shell-executed ; #")
+				if err := os.Mkdir(dir, 0700); err != nil {
+					t.Fatal(err)
+				}
+			}
 			var zipped bytes.Buffer
 			writer := gzip.NewWriter(&zipped)
 			_, _ = writer.Write([]byte("synthetic fixture, not a Mongo restore proof"))
@@ -101,11 +107,25 @@ func TestUpgradeBackupVerificationReadOnlyAndRefusesUnsafeManifests(t *testing.T
 				if err := os.Symlink("original", filepath.Join(dir, name)); err != nil {
 					t.Fatal(err)
 				}
-			case "directory-link":
+			case "directory-link", "directory-link-slash", "directory-link-dot":
 				selected = filepath.Join(t.TempDir(), "selected-link")
 				if err := os.Symlink(dir, selected); err != nil {
 					t.Fatal(err)
 				}
+				if scenario == "directory-link-slash" {
+					selected += "/"
+				} else if scenario == "directory-link-dot" {
+					selected += "/."
+				}
+			}
+			if scenario == "ancestor-link" {
+				link := filepath.Join(t.TempDir(), "ancestor")
+				if err := os.Symlink(filepath.Dir(dir), link); err != nil {
+					t.Fatal(err)
+				}
+				selected = filepath.Join(link, filepath.Base(dir))
+			} else if scenario == "complete-dot" {
+				selected += "/."
 			}
 			before := map[string][]byte{}
 			entries, err := os.ReadDir(dir)
@@ -119,7 +139,7 @@ func TestUpgradeBackupVerificationReadOnlyAndRefusesUnsafeManifests(t *testing.T
 				}
 			}
 			output, runErr := exec.Command("bash", script, selected).CombinedOutput()
-			pass := scenario == "complete" || scenario == "fresh-no-image"
+			pass := scenario == "complete" || scenario == "fresh-no-image" || scenario == "complete-spaced-path" || scenario == "complete-dot"
 			if (runErr == nil) != pass || pass && !strings.Contains(string(output), "integrity verified (read-only)") {
 				t.Fatalf("unexpected integrity result: %v %s", runErr, output)
 			}
@@ -138,7 +158,7 @@ func TestUpgradeBackupVerificationReadOnlyAndRefusesUnsafeManifests(t *testing.T
 }
 
 func TestRestoreCoordinatedPointIntegrityBeforeDockerAccess(t *testing.T) {
-	for _, scenario := range []string{"valid", "corrupt", "missing-markers", "alternate-archive", "linked-archive", "linked-directory"} {
+	for _, scenario := range []string{"valid", "corrupt", "missing-markers", "alternate-archive", "linked-archive", "linked-directory", "linked-directory-missing-markers", "dot-directory-missing-markers"} {
 		t.Run(scenario, func(t *testing.T) {
 			root := t.TempDir()
 			point := filepath.Join(root, "save-upgrade-fixture")
@@ -173,7 +193,7 @@ func TestRestoreCoordinatedPointIntegrityBeforeDockerAccess(t *testing.T) {
 				}
 				fmt.Fprintf(&sums, "%x  %s\n", sha256.Sum256(data), name)
 			}
-			if scenario != "missing-markers" {
+			if scenario != "missing-markers" && scenario != "linked-directory-missing-markers" && scenario != "dot-directory-missing-markers" {
 				for name, data := range map[string]string{"COMPLETE": "synthetic completion\n", "SHA256SUMS": sums.String()} {
 					if err := os.WriteFile(filepath.Join(point, name), []byte(data), 0600); err != nil {
 						t.Fatal(err)
@@ -182,6 +202,8 @@ func TestRestoreCoordinatedPointIntegrityBeforeDockerAccess(t *testing.T) {
 			}
 			archive := filepath.Join(point, "mongo.archive.gz")
 			switch scenario {
+			case "dot-directory-missing-markers":
+				archive = point + "/./mongo.archive.gz"
 			case "corrupt":
 				if err := os.WriteFile(archive, []byte("changed"), 0600); err != nil {
 					t.Fatal(err)
@@ -198,7 +220,7 @@ func TestRestoreCoordinatedPointIntegrityBeforeDockerAccess(t *testing.T) {
 				if err := os.Symlink("original.archive.gz", archive); err != nil {
 					t.Fatal(err)
 				}
-			case "linked-directory":
+			case "linked-directory", "linked-directory-missing-markers":
 				link := filepath.Join(root, "linked-point")
 				if err := os.Symlink(point, link); err != nil {
 					t.Fatal(err)
