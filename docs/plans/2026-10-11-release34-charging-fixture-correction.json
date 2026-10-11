@@ -1,0 +1,36 @@
+{
+  "recordedUTC": "2026-10-11T14:48:22.096905+00:00",
+  "status": "Reproduced and corrected; fixture correction qualified for master. Original CI still running with failed client prerequisite; no34deployment.",
+  "failedRun": 38147178300,
+  "failedSource": "f7c7b9e05fc703fb459af721729f4a1133e770a6",
+  "failedJob": 114492877301,
+  "correctionCommit": "03189ee9f01aaa79e887af5ccf1f317e459438fd",
+  "failure": "GameSimulation remote-charging fixture substitutes a plain object without Three Object3D userData. New lazy animation lookup reads mesh.userData.animations while updating the mocked charging actor. Production meshes are Three Object3D instances.",
+  "hostedResults": {
+    "passedTests": 10630,
+    "failedTests": 1,
+    "passedSuites": 720,
+    "failedSuites": 1
+  },
+  "reproduction": {
+    "passed": 52,
+    "failed": 1,
+    "sameFailure": true
+  },
+  "correction": "Use THREE.Group for both remote-movement fixtures, retaining lookAt spy and every existing charging/interpolation assertion. No product source, asset, animation, version, gate or workflow change.",
+  "validation": {
+    "focusedTests": 59,
+    "focusedSuites": 2,
+    "suites": [
+      "GameSimulation",
+      "AuthoredWeaponMotions"
+    ],
+    "lint": "Changed fixture max-warnings=0; git diff --check passes",
+    "retainedInitialQualificationError": "A requested nonexistent ActorWeaponStanceAnimation.test.js path caused an ENOENT suite; actual two suites already passed59. Corrected explicit2suite run passes, original invocation retained."
+  },
+  "runtimeEvidence": "Qualified release34 runtime/native evidence remains valid because only this test file and qualification documentation differ from exact failed publication. Final publication identity and asset pins still need preparation.",
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-release34-client-failure-20261011",
+  "inventorySHA256": "f2ef96379b315ccf6e312e52639c9c48890306eb5613ea52b45c2fbcc3466332",
+  "next": "Wait for original CI terminal status; ordinary fetch/merge/push corrective34source and verify its own complete deployment and fresh23asset acceptance. No blind retry.",
+  "goal": "Full original release readiness goal remains active."
+}
