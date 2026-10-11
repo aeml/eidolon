@@ -57,43 +57,62 @@ export function createEarthOutcropGeometry(solid, terrain = null) {
     const pitchZ = (random(solid.seed + 1013) - .5) * .34;
     const fractureSide = Math.floor(random(solid.seed + 1297) * outline.length);
     const layers = [[0, 1], [.22, .98], [.40, .94], [.60, .86], [.78, .70], [.93, .49], [1, .32]];
-    const rings = layers.map(([level, width], tier) => contour.map(([x, z], side) => {
+    const rings = layers.slice(0, 2).map(([level, width], tier) => contour.map(([x, z], side) => {
         const weathering = (random(solid.seed + side * 31) - .5) * .10;
         const cleave = Math.sin(side * .71 + solid.seed) * Math.sin(level * Math.PI) * .13;
-        // A single seeded cleft breaks the broad rectangular shoulder. It
-        // follows one edge through the upper rings, rather than putting the
-        // same sawtooth notch in every side. Keep the buried/base rings exact;
-        // the upper silhouette stays inside the original collision perimeter.
-        const edge = Math.floor(side / 2);
-        const splitCleft = side % 2 && edge === fractureSide
-            ? .05 * Math.max(0, (level - .22) / .78) : 0;
-        // Broad correlated crown weathering gives each formation its own
-        // shoulder widths. Do not add a centre spike or change the cap plane.
-        const shoulderWear = tier > 1 ? (random(solid.seed + edge * 97 + 1511) - .5) *
-            .13 * Math.sin(level * Math.PI / 2) : 0;
-        const erosion = tier ? Math.min(.985, width + cleave + weathering + shoulderWear - splitCleft) : 1;
+        const erosion = tier ? Math.min(.985, width + cleave + weathering) : 1;
         const px = x * erosion + leanX * (1 - erosion);
         const pz = z * erosion + leanZ * (1 - erosion);
-        // Correlated shoulder fractures avoid uniform stacked contour bands.
-        // The last two rings remain planar; no noisy central cap or spikes.
-        const bedding = tier < 5 ? Math.sin(side * .71 + solid.seed) * Math.sin(level * Math.PI) * .07 : 0;
+        const bedding = Math.sin(side * .71 + solid.seed) * Math.sin(level * Math.PI) * .07;
         const tilt = (px * pitchX + pz * pitchZ) * level;
         return [solid.x + px * solid.width / 2,
             tier ? ground + (level + bedding + tilt) * solid.height : minimum - .8,
             solid.z + pz * solid.depth / 2];
     }));
+    // The buried foundation and first shoulder retain their exact recipe.
+    // Above them, connected edge controls replace independently displaced
+    // midpoints: an edge cannot sprout a thin fin between its two endpoints.
+    // Periodic angular wear also joins continuously at the contour's seam.
+    const phase = random(solid.seed + 1723) * Math.PI * 2;
+    for (let tier = 2; tier < layers.length; tier++) {
+        const [level, width] = layers[tier];
+        const controls = outline.map(([x, z], edge) => {
+            const angle = Math.atan2(z, x);
+            const wear = Math.sin(angle * 2 + phase) * .045 + Math.cos(angle * 3 - phase) * .02;
+            const previous = rings[tier - 1][edge * 2];
+            const previousX = (previous[0] - solid.x) / (solid.width / 2) - leanX;
+            const previousZ = (previous[2] - solid.z) / (solid.depth / 2) - leanZ;
+            const previousWidth = (previousX * (x - leanX) + previousZ * (z - leanZ)) /
+                ((x - leanX) ** 2 + (z - leanZ) ** 2);
+            const erosion = Math.min(width + wear * Math.sin(level * Math.PI / 2), previousWidth - .015);
+            const px = x * erosion + leanX * (1 - erosion);
+            const pz = z * erosion + leanZ * (1 - erosion);
+            const bedding = tier < 5 ? Math.cos(angle + phase) * Math.sin(level * Math.PI) * .025 : 0;
+            return [solid.x + px * solid.width / 2,
+                ground + (level + bedding + (px * pitchX + pz * pitchZ) * level) * solid.height,
+                solid.z + pz * solid.depth / 2];
+        });
+        rings[tier] = controls.flatMap((a, edge) => {
+            const b = controls[(edge + 1) % controls.length];
+            const split = .35 + random(solid.seed + edge * 47) * .3;
+            const middle = a.map((value, axis) => value + (b[axis] - value) * split);
+            // A shallow inward joint, rather than an outward tooth. The crown
+            // stays on its pitched plane when the midpoint moves inward.
+            if (edge === fractureSide) {
+                const cleft = .10 * (level - .22) / .78;
+                const dx = (solid.x + leanX * solid.width / 2 - middle[0]) * cleft;
+                const dz = (solid.z + leanZ * solid.depth / 2 - middle[2]) * cleft;
+                middle[0] += dx; middle[2] += dz;
+                middle[1] += (dx / (solid.width / 2) * pitchX + dz / (solid.depth / 2) * pitchZ) * level * solid.height;
+            }
+            return [a, middle];
+        });
+    }
     const faceNormal = (a, b, c) => new THREE.Vector3().subVectors(b, a).cross(new THREE.Vector3().subVectors(c, a)).normalize();
     const addFace = (a, b, c, normal = faceNormal(a, b, c)) => {
         for (const point of [a, b, c]) {
             positions.push(point.x, point.y, point.z); uv.push(point.x * .1, point.z * .1);
             normals.push(normal.x, normal.y, normal.z);
-            const up = Math.max(0, normal.y);
-            const moss = up * Math.max(0, Math.sin(point.x * .47 + point.z * .39)) * .3;
-            const wet = Math.max(0, 1 - (point.y - ground) / 1.3) * .22;
-            // Continuous mineral coloration avoids artificial triangle patches.
-            const tone = .86 + Math.sin(point.x * .29 + point.z * .17 + solid.seed) * .075;
-            colors.push(tone * (1 - wet - moss * .6), tone * (1 - wet * .7 - moss * .2),
-                tone * (1 - wet - moss));
         }
     };
     const point = array => new THREE.Vector3(...array);
@@ -113,6 +132,17 @@ export function createEarthOutcropGeometry(solid, terrain = null) {
     const cap = THREE.ShapeUtils.triangulateShape(top.map(([x, , z]) => new THREE.Vector2(x, z)), []);
     for (const [a, b, c] of cap) {
         addFace(point(top[a]), point(top[c]), point(top[b]));
+    }
+    // Color follows the final lighting normal. Gentle shared joins must not
+    // retain different moss colors from their original unsmoothed triangles.
+    for (let i = 0; i < positions.length; i += 3) {
+        const x = positions[i], y = positions[i + 1], z = positions[i + 2];
+        const up = Math.max(0, normals[i + 1]);
+        const moss = up * Math.max(0, Math.sin(x * .47 + z * .39)) * .3;
+        const wet = Math.max(0, 1 - (y - ground) / 1.3) * .22;
+        const tone = .86 + Math.sin(x * .29 + z * .17 + solid.seed) * .075;
+        colors.push(tone * (1 - wet - moss * .6), tone * (1 - wet * .7 - moss * .2),
+            tone * (1 - wet - moss));
     }
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
