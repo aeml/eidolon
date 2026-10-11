@@ -1,3 +1,4 @@
+import { prepareBirchComparison, installBirchComparison, captureBirchComparison, retireBirchComparison } from './birch-crown-comparison.js';
 import { expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
@@ -6,6 +7,8 @@ import { prepareRockPlaneComparison, installRockPlaneComparison, captureRockPlan
 
 export async function reviewEarthRockShelves({ page, baseURL }, testInfo, quality, engineURL = '/src/core/GameEngine.js', width = 1280, viewRange = [0, 9]) {
     const phone = width <= 800;
+    const compareBirch = process.env.EIDOLON_E2E_BIRCH_CROWN_REVIEW === '1';
+    if (compareBirch) await prepareBirchComparison(page);
     const compareRockPlanes = process.env.EIDOLON_E2E_ROCK_PLANES_REVIEW === '1';
     if (compareRockPlanes) await prepareRockPlaneComparison(page);
     const failures = collectBrowserFailures(page, baseURL);
@@ -40,6 +43,7 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
             independentPlantGeometry, THREE };
     }, { quality, engineURL, phone, comparePlantGeometry: process.env.EIDOLON_E2E_UNDERSTORY_GEOMETRY_REVIEW === '1' });
     if (compareRockPlanes) await installRockPlaneComparison(page);
+    if (compareBirch) await installBirchComparison(page, quality);
     try {
         const views = [['west-grove', -120, -200, 18], ['deep-west', -102, -311, 18], ['deep-east', 62, -297, 18], ['east-road', 390, 173, 18], ['road-break', 590, 270, 18], ['far-east', 690, 160, 18], ['road-detail', 590, 263, 10], ['grove-bed', -83, -334, 10], ['east-verge', 353, 216, 10]].slice(...viewRange);
         for (const [label, x, z, zoom] of views) {
@@ -76,6 +80,12 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
                     groundError: Math.abs(hero.mesh.position.y - game.terrainElevation.sample(hero.mesh.position.x, hero.mesh.position.z)),
                     gpu: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER) };
             }, { label, x, z, zoom });
+            if (compareBirch) {
+                const comparison = await page.evaluate(captureBirchComparison, label);
+                expect(comparison.stability.changed).toBe(0);
+                for (const variant of ['before', 'after']) await writeFile(testInfo.outputPath(`${label}-birch-${variant}.png`),
+                    Buffer.from(comparison[`${variant}PNG`].split(',')[1], 'base64'));
+            }
             const rockComparison = compareRockPlanes ? await page.evaluate(captureRockPlaneComparison, label) : null;
             if (rockComparison) {
                 expect(rockComparison.stability.changed).toBe(0);
@@ -158,6 +168,8 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
             await page.screenshot({ path: testInfo.outputPath(`${label}.png`) });
             await page.evaluate(row => window.__rockReview.rows.push(row), row);
         }
+        const birch = compareBirch ? await page.evaluate(retireBirchComparison) : null;
+        if (birch) expect(birch.released).toEqual(birch.expected);
         const rockPlanes = compareRockPlanes ? await page.evaluate(retireRockPlaneComparison) : null;
         if (rockPlanes) {
             expect(rockPlanes.released).toEqual(rockPlanes.expected);
@@ -190,7 +202,7 @@ export async function reviewEarthRockShelves({ page, baseURL }, testInfo, qualit
                 expected: { geometry: geometry.size, material: material.size, plantTexture: plantTextures.size },
                 scope: `Prepared supplied14-slot Fighter across${rows.length * 8}sampled walking poses in${rows.length}views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval.` };
         });
-        await writeFile(testInfo.outputPath('rock-review.json'), JSON.stringify({ ...result, rockPlanes }, null, 2));
+        await writeFile(testInfo.outputPath('rock-review.json'), JSON.stringify({ ...result, rockPlanes, birch }, null, 2));
         expect(result.rows.map(row => row.label)).toEqual(views.map(view => view[0]));
         expect(result.rows.every(row => row.poses === 8)).toBe(true);
         expect(result.comparisons.map(row => row.label)).toEqual(quality === 'high' ? views.map(view => view[0]).filter(label => ['west-grove', 'grove-bed'].includes(label)) : []);

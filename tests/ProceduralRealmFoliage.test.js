@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import {
     FOLIAGE_HAZARD_CLEARINGS,
@@ -26,6 +27,38 @@ function parseServerHazardAnchors(sliceName) {
 }
 
 describe('procedural realm foliage', () => {
+    test('birch crown support preserves every rooted trunk vertex, normal, UV and transform', () => {
+        const stem = getProceduralFoliageArchetype('ossuary_birch')[0];
+        const expected = {
+            position: 'b65cb04427da5af2876b323430fd59cabc7710533acf09723b6180952337aacf',
+            uv: 'c4ccafcffed08edd476629f036976ee88946f597fcfb1ba4a84e0501dbfd369e',
+            normal: 'c182099644f35206491b6d4f5ccbe688611249510f5eef41b1b6df735d41033d'
+        };
+        for (const [name, digest] of Object.entries(expected)) {
+            const attribute = stem.geometry.attributes[name];
+            const bytes = Buffer.from(attribute.array.buffer, attribute.array.byteOffset,
+                720 * attribute.itemSize * attribute.array.BYTES_PER_ELEMENT);
+            expect(createHash('sha256').update(bytes).digest('hex')).toBe(digest);
+        }
+        expect(stem.matrix.elements).toEqual([
+            .9982005399352042, -.09894061069108359, 0, 0,
+            .0599640064794446, 1.6470308908930869, 0, 0,
+            0, 0, 1, 0, 0, 5.129756044139815, 0, 1
+        ]);
+    });
+    test('the upper birch bough reaches its crown without another branch mesh', () => {
+        const parts = getProceduralFoliageArchetype('ossuary_birch');
+        const stem = parts[0], crown = parts.find(part => part.name === 'layered birch leaves');
+        const target = new THREE.Vector3().setFromMatrixPosition(crown.matrix), point = new THREE.Vector3();
+        let nearest = Infinity;
+        for (let i = 720; i < stem.geometry.attributes.position.count; i++) {
+            point.fromBufferAttribute(stem.geometry.attributes.position, i).applyMatrix4(stem.matrix);
+            nearest = Math.min(nearest, point.distanceTo(target));
+        }
+        expect(nearest).toBeLessThan(.03);
+        expect(stem.geometry.attributes.position.count).toBe(1056);
+        expect(parts).toHaveLength(5);
+    });
     test('new woodland stems stay inside existing walking boxes at character height', () => {
         for (const recipe of PROCEDURAL_FOLIAGE_RECIPES.filter(recipe => recipe.region === 'earth')) {
             const stem = getProceduralFoliageArchetype(recipe.id)[0], point = new THREE.Vector3();

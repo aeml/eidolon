@@ -3,7 +3,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 // Ring-built, tapered timber with a restrained bend and fluted bark. Its root
 // stays inside the original cylinder radius; fork growth is overhead only.
-export function createWoodlandStemGeometry({ height, baseRadius, tipRadius, bend = .18, forks = 0, seed = 1 }) {
+export function createWoodlandStemGeometry({ height, baseRadius, tipRadius, bend = .18, forks = 0, seed = 1, forkTips = null }) {
     const sides = 12, rings = 10, positions = [], uvs = [], indices = [];
     const center = t => new THREE.Vector3(bend * t * t * Math.sin(t * 2.1 + seed),
         (t - .5) * height, bend * .5 * t * t * Math.sin(t * 3.2 + seed * 2));
@@ -36,8 +36,11 @@ export function createWoodlandStemGeometry({ height, baseRadius, tipRadius, bend
     const pieces = [trunk.toNonIndexed()]; trunk.dispose();
     for (let fork = 0; fork < forks; fork++) {
         const t = .6 + fork * .085, angle = fork * 2.4 + seed;
-        const start = center(t), end = start.clone().add(new THREE.Vector3(
-            Math.cos(angle) * .85, height * .22, Math.sin(angle) * .85));
+        // Authored crown sockets let the existing boughs reach the actual leaf
+        // masses. Unspecified species retain their original geometry exactly.
+        const start = center(t), end = forkTips?.[fork]
+            ? new THREE.Vector3(...forkTips[fork]) : start.clone().add(new THREE.Vector3(
+                Math.cos(angle) * .85, height * .22, Math.sin(angle) * .85));
         const branch = new THREE.CylinderGeometry(.025, baseRadius * .32, start.distanceTo(end), 7, 3);
         branch.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize()));
         branch.translate(...start.clone().add(end).multiplyScalar(.5).toArray());

@@ -76,7 +76,20 @@ const shard = geometry('foliage-shard', createFracturedCrystalGeometry);
 const crystal = geometry('foliage-crystal', () => new THREE.OctahedronGeometry(0.7, 0));
 const root = geometry('foliage-root', () => new THREE.ConeGeometry(0.2, 1.9, 5));
 const lantern = geometry('foliage-lantern', () => new THREE.OctahedronGeometry(0.2, 0));
-const birchStem = geometry('woodland-birch-stem', () => createWoodlandStemGeometry({ height: 6.2, baseRadius: .32, tipRadius: .11, bend: .2, forks: 2, seed: 3 }));
+// Crown centres in the stem's local coordinates, before matureWoodland applies
+// the shared height growth. Reuse both existing boughs and their triangle budget.
+const birchCrowns = [
+    { name: 'layered birch leaves', position: [-.25, 6.55, 0], scale: [1.65, .92, 1.35] },
+    { name: 'low gloam crown', position: [.78, 5.5, .08], scale: [1.1, .72, .96] }
+];
+const birchStem = geometry('woodland-birch-stem', () => {
+    const inverse = new THREE.Matrix4().makeRotationZ(-.06);
+    inverse.setPosition(0, 3.1, 0); inverse.invert();
+    // The lower fork already enters its crown. Preserve that fork exactly,
+    // including the stem's original maximum X and buried-base compensation.
+    const forkTips = [new THREE.Vector3(...birchCrowns[0].position).applyMatrix4(inverse).toArray(), null];
+    return createWoodlandStemGeometry({ height: 6.2, baseRadius: .32, tipRadius: .11, bend: .2, forks: 2, seed: 3, forkTips });
+});
 const pineStem = geometry('woodland-pine-stem', () => createWoodlandStemGeometry({ height: 5.4, baseRadius: .48, tipRadius: .16, bend: .13, forks: 3, seed: 7 }));
 const willowStem = geometry('woodland-willow-stem', () => createWoodlandStemGeometry({ height: 5.4, baseRadius: .48, tipRadius: .19, bend: .26, forks: 3, seed: 11 }));
 
@@ -110,8 +123,7 @@ function createOssuaryBirch() {
     return matureWoodland([
         part('pale scarred trunk', birchStem, bark, { position: [0, 3.1, 0], rotation: [0, 0, -0.06] }),
         part('black bark seam', narrowTrunk, scar, { position: [0.12, 3.35, 0.08], rotation: [0, 0, -0.09], scale: [0.18, 0.92, 0.16] }),
-        part('layered birch leaves', leafCrown, leaf, { position: [-0.25, 6.55, 0], scale: [1.25, 0.82, 1.08] }),
-        part('low gloam crown', leafCrown, leaf, { position: [0.78, 5.62, 0.08], scale: [0.8, 0.58, 0.74] }),
+        ...birchCrowns.map(({ name, ...transform }) => part(name, leafCrown, leaf, transform)),
         part('grave lantern fruit', lantern, glow, { position: [-0.98, 4.75, 0.15], castShadow: false })
     ]);
 }
