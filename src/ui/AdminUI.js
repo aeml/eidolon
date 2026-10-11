@@ -57,6 +57,7 @@ export class AdminUI {
                     <label>Report category<select data-report-type><option value="">All categories</option>
                         <option value="Player Report">Player conduct</option><option value="Moderation Appeal">Moderation appeals</option>
                         <option value="Bug Report">Bug reports</option><option value="Feature Request">Feature requests</option>
+                        <option value="Account / Progress Help">Account / progress help</option>
                         <option value="Account Data Export">Account data exports</option><option value="Account Removal Request">Account removal requests</option></select></label>
                 </div>
                 <div class="administration-actions"><button type="button" data-refresh>Refresh players</button>

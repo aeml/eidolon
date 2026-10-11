@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T02:23:12Z",
+  "milestone": "1.84 player support readiness",
+  "status": "current-authority-private-progress-help-prepared-not-deployed",
+  "authority": {
+    "branch": "work/alpha-1-84-support-current-20261008",
+    "parent": "89c18f71",
+    "worktree": "/home/aeml/.local/share/eidolon-freeze-180-LPJZ9Alg",
+    "integration": "Select only inspected67c97dfd progress-help hunks and tests onto current1.79.1 authority plus prepared1.80 trust/1.83 optional probes. Preserve current administrator Service diagnostics, email recovery, privacy/download boot protections, equipment, shader/runtime fixes and version identity. No old1.84 wholesale merge or unrelated announcement code."
+  },
+  "implementation": "The shared private report category Account / Progress Help is allowed for authenticated players before world entry and in-game. Reuse durable report submission, bounded shared rate/payload rules, correlated saved acknowledgement, retained unconfirmed drafts and owner-only reference lookup. No automatic context/optional diagnostics for this category. Login Account help defaults to it and clears prior context; opening now focuses the report-category field rather than the obsolete moderation control. Administration category filtering and explicit case-only review retain current role/connection/audit gates. No restoration, grant, teleport, ownership transfer or sanction change occurs on case resolution.",
+  "guidance": "Ask for what happened, approximate time/area if known and expected result; warn against passwords/recovery links/tokens/documents/payment details. Point verified-email sign-in recovery to the existing form. State no response-time or restoration guarantee; resolved means review completed. Prepared operator procedure uses existing private report/activity/audited workflows and preserves retention. No new external support channel, billing integration or staffing decision.",
+  "regressions": {
+    "server": "Current-source private progress category test first fails race0.019s because the literal category is unsupported.",
+    "client": "Current login progress-help test first fails0.486s because the category remains disabled. After selective integration, a new focus assertion fails0.461s: opening still targets btn-check-moderation instead of report-type. Correct only that focus destination and retain existing close/appeal/recovery behavior."
+  },
+  "verification": {
+    "client": "Five affected Jest suites PASS94 distinct checks1.884s, including current Administration rather than replacing it with the older tree. Final changed LoginModerationUI suite PASS20/0.665s after focus correction; these are a subset of94, not additional distinct cases. Preserve diagnostics consent, unconfirmed draft/timeout/acknowledgement, owner lookup, case-only review and cancel/disconnect behavior.",
+    "server": "Scoped report/category/database and authenticated admission/privacy/report checks PASS race: database1.046s, root1.487s. New support admission still refuses anonymous input, retains the shared two-per-minute budget and existing payload bound. No explicit Mongo URI is set for this current run; conditional persistence tests are not new native acceptance.",
+    "persistenceReuse": "Read retained67c97dfd isolated Mongo proof in2026-10-06-release1-84-current-support-checks.json. Current report_store.go, report_status.go, database/reports.go, database/report_reviews.go and the expanded privacy_request_test.go are byte-identical to that qualified commit after selective integration: git diff67c97dfd across the five files is empty. Retain that scoped historical persistence/queue/owner-status/review-replay proof without starting another Mongo merely for the same pipeline. This equivalence is not a blanket current auth/role/full-game certificate or new native run.",
+    "browser": "Root96362 terminal PASS2/11.0s: actual System Chrome login/shared-form flow at1280x800 and390x844 with explicit synthetic WebSocket replies. Current initial integration verifies category/default/private submission/no world engine/reference/Escape and existing appeals/name correction. After focus-only correction, final phone-sized case root84633 PASS1/6.1s adds actual focused selector and entry capture. Desktop initial result precedes that one focus line; no claim of a fresh final-source desktop run.",
+    "visual": "Inspect final390px entry screenshot: focused gold-bordered category, progress guidance and body field visible, text wraps, fixed header/scrolling retained. Earlier acknowledgement screenshot was scrolled to the footer and did not demonstrate the new entry view; retain the final entry capture instead. This is browser viewport evidence, not a physical-phone party/dungeon test.",
+    "static": "Scoped ESLint and git diff --check pass; existing prepare-client.mjs generates missing ignored browser dependencies from unchanged installed packages before native checks. No dependency/lock update. Both browser handles terminal; owned4190 independently closed."
+  },
+  "evidence": {
+    "directory": "/home/aeml/.local/share/eidolon-support-evidence-20261008-W2RYm6n7",
+    "entryImageSha256": "a4740a0d41759c9122cae837995a36e6b7dd9e51dce5d6f1abcd10647eb6aaa9",
+    "reportUIsha256": "f41e2f81e0521e8567ecda699f25eadf6a30d885c22d600df312fba83ae6653e",
+    "loginUIsha256": "bf97798806389eddc61606f25b2217c0b13160619234ac59a2c6e23761d0d995",
+    "reportModelSha256": "009f88f3c524edb669d354c0124fecdcf7151682b35c1051fc9f02ef0ea24c3e",
+    "reportStoreSha256": "952c3a657b372ec374d165a84b0922e392aef7cb0fc74c9abc3e372df0b1b81d",
+    "reportStatusSha256": "2e990bf6d9d0dca0589e727e4b79b7506a65fffc918aa1eb68c37c6c274bdef4",
+    "reportReviewSha256": "928f69336482845d66b5c1fec92fc76cf57f2158ead5f3fe5186a5079bddcf31"
+  },
+  "draftPlayerNotes": [
+    "Account help supports private lost-progress, stuck-character and failed-world-entry cases before entering the game; the category is also available in-game.",
+    "Progress-help reports attach no automatic diagnostics, retain unconfirmed drafts and provide a saved reference for private status lookup.",
+    "Account help opens focused on its report selector; staff review is explicitly separate from restoring characters or granting compensation."
+  ],
+  "publication": "Local current-source preparation only: no version bump, push, CI dispatch, public access change or deployment. No real account/DB/provider/email/retention/admin mutation, new Mongo fixture, broad campaign/cohort/profile replay or user-data cleanup. Ordered1.80 freeze, owner service/support decisions,1.84 own release acceptance, full modern art/performance and original1.99 goal remain open."
+}

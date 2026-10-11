@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "observedAt": "2026-10-08T02:14:18Z",
+  "milestone": "1.83 public-reachability and incident preparation",
+  "status": "optional-publication-probe-prepared-not-enabled-or-deployed",
+  "authority": {
+    "branch": "work/alpha-1-83-public-probes-current-20261008",
+    "parent": "82c9f8fa",
+    "worktree": "/home/aeml/.local/share/eidolon-freeze-180-LPJZ9Alg",
+    "publicRelease": "Alpha 1.79.1 / c8ff2cd668213a3cf53cd536b7067bd3404d0437",
+    "integration": "New isolated branch on current authority and prepared1.80 trust guards. Original1.80 branch remains82c9f8fa; inspect the active branch before further freeze edits. No old1.83 wholesale merge or future release labels."
+  },
+  "requirement": "Existing roadmap X04/1.81–1.83 requires bounded public probes rather than mistaking local API readiness for public reachability. Preserve existing self-hosting/Postmark/approved recipients and30s/3failure/2recovery/30m settings. Off-machine ownership, service objectives and whole-host coverage remain unresolved rather than invented.",
+  "implementation": "Add optional frontend-release-url checking verified HTTPS or loopback HTTP /release.json. Require valid frontend commit/version matching the same poll's ready API. API and frontend reads share one request deadline; refuse redirects, credentials, queries, fragments, encoded paths and invalid ports. Limit frontend JSON to4096bytes; emit only fixed sanitized causes and authoritative API identity. Backend failures retain precedence and skip the frontend. Existing pressure, storage, detector, cancellation and mail-throttle behavior remain; disabled constructors/callers remain API-only.",
+  "compose": "Optional EIDOLON_MONITOR_HEALTH_URL and EIDOLON_MONITOR_FRONTEND_RELEASE_URL pass through the same Compose service. Unset settings retain the original APP_HOST_PORT-aware loopback health URL and an empty/disabled frontend flag. No second monitor, production .env change, provider call or recipient/threshold mutation. Existing pre-replacement configuration-only validation accepts the new options without probing or emailing.",
+  "regressions": {
+    "command": "New frontend opt-in/silent-construction test initially FAIL0.015s because the actual command does not accept the option. Final checks cover private-value rejection and zero network/output during configuration-only validation.",
+    "compose": "After fixing the new test fixture to copy the actual Compose source with an empty synthetic .env and activate its operations profile, all three actual parser cases fail on missing optional arguments/public override0.233s. Earlier missing-.env and excluded-profile failures are fixture setup errors, not runtime-regression evidence. After wiring, defaults/custom-loopback/public cases pass without Docker daemon or service calls."
+  },
+  "verification": {
+    "focused": "Race-enabled new frontend/command checks PASS: operations1.268s and monitor1.018s.",
+    "affectedPackages": "Complete affected operations and monitor command packages PASS with race detector:6.636s/10.028s, root39810 terminal exit0. Actual HTTP tests cover ready/mismatched commits and versions, missing/malformed/trailing/private/oversized data, exact4096-byte boundary,503/redirect refusal, disabled/backend-failure precedence, untrusted versus explicitly trusted synthetic TLS, one shared deadline, stalled body and caller cancellation. All fixed frontend incident causes serialize through the existing sanitized mail adapter without delivery.",
+    "commandLoop": "Actual monitor command observes a healthy backend and two mismatched frontend polls, emits one sanitized outage, then after two matching polls emits one recovery and cancels cleanly. Four actual requests to each endpoint; no peer text, URL or wrong frontend identity leaks into output. No real provider request.",
+    "deployment": "Actual Compose parser plus existing executable deploy-monitor opt-in/preflight-order fixture PASS race1.464s, root56916 terminal exit0. Synthetic files/environment only; preserve original threshold settings and validate before API replacement. No Docker build/container/volume or production service mutation.",
+    "static": "Final focused race URL-validation check also passes, including empty fragment delimiter/empty host/unbracketed IPv6 refusal. gofmt and git diff --check pass. No unchanged full-package rerun for that constructor-only tightening, full game/campaign/cohort/native-profile rerun or new dependency."
+  },
+  "sourceSha256": {
+    "server/internal/operations/frontend_release.go": "a32ce9b7b1ad4e4503f226b5f435dade377278378b5ea19ecb3165b9e14826fd",
+    "server/internal/operations/readiness.go": "1c2627822c0f19eb5ae0d307f3e3b2cd61233d057278afb4f9d856bdcdee81a8",
+    "server/cmd/monitor/main.go": "c08280b6d4e529471461e61a67976d092a2f3128f945fea0b8d195ec7e283418",
+    "server/docker-compose.yml": "a956adf403b121f9ccf52b360b98b7713ec1e35a79ccbb05e30421f80f620dbb"
+  },
+  "draftPlayerNote": "Prepare optional public frontend/backend publication checks so operators can detect unavailable or mismatched releases through the existing outage monitor. Current alert thresholds and recipients are unchanged; public checking requires its own ordered opt-in rollout.",
+  "limits": "Not enabled, pushed, deployed or proof of live public probe delivery. Matching manifests can coexist with broken HTML/JavaScript/assets/WebSockets/login/gameplay. Default resolver/address selection does not qualify every advertised IPv4/IPv6 path. Same-host monitoring cannot email through whole-host/Docker/power/complete-network loss. No new paid service, off-machine export, policy/SLA/retention assumption, real email, incident, player or save change.1.80 F1–F5, full modern art, remaining woodland budget and original full-roadmap goal stay open."
+}

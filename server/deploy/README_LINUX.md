@@ -736,3 +736,51 @@ Optional reboot resilience check:
 sudo systemctl enable docker
 sudo systemctl is-enabled docker
 ```
+
+## Player support procedure (prepared1.84; not a staffing/SLA commitment)
+
+Players who can sign in use **Account help → Account / Progress Help**, including
+when world entry is unavailable. In-game access is **Menu → Report Bug / Feature**
+with the same category. The case attaches no automatic diagnostics. Ask for what
+happened, approximate UTC time/area if known and the expected result; never request
+passwords, recovery links/tokens, identity documents or payment details. A saved
+reference confirms storage, not a promised fix. Players can explicitly check their
+own reference; unconfirmed drafts remain and are never retried automatically.
+
+For sign-in problems, direct players with a verified recovery email to **Forgot
+your password? / Recovery link**. Do not claim an account can be recovered without
+that proof; an unauthenticated requester cannot submit or read private cases.
+Support must not bypass ownership, share another account's history or set a
+password on a player's behalf. No external contact channel is promised until the
+owner selects one.
+
+Staff procedure:
+
+1. Use **Administration → Player reports**, filter **Account / progress help**,
+   and view the private case JSON only in an authorized current admin session.
+   The submitted account is server-bound; descriptions and allegations are
+   unverified player evidence, not authority for action.
+2. Check the necessary bounded **Online players** / **Activity history** views
+   and relevant existing audited-operation receipts. Preserve originals, current
+   retention and pending economic journals; do not dump unrelated accounts,
+   change saved progress or send private case text to global chat/analytics.
+3. A stuck-character recovery, grant or sanction change is a separate explicit
+   authorized audited/reversible workflow, not an effect of case resolution.
+   Verify its target, preview, confirmation and outcome; never compensate a
+   pending settlement by creating a fresh reward or deleting its receipt.
+   Unknown outcomes require investigation/exact-operation recovery, not a second
+   mutation. Do not initiate live mutations as part of routine support tests.
+4. Record a brief private review reason using **Review and resolve report**;
+   review the frozen case/revision, then confirm or cancel. Resolve means review
+   finished, not restoration fulfilled. Reopen a case for additional review
+   rather than promising an automatic correction. Owner-visible status excludes
+   private staff reasons and allegations; it is not a two-way messaging service.
+5. Suspected save loss, security/ownership exposure or stuck economic custody
+   escalates to the coordinating operator and existing incident procedure. Stop
+   unsafe deploy/recovery work and preserve evidence; ordinary cosmetic/UI reports
+   can remain queued. No emergency response or guaranteed time is advertised.
+
+Support/moderation staffing, response targets, alternate operator and external
+contact route still require owner assignment before closed beta. Billing support
+is conditional on a separately approved enabled commerce branch; no payment
+integration is implemented or authorized by this procedure.

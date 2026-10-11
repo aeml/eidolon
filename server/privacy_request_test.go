@@ -34,7 +34,7 @@ func TestPrivacyRequestsKeepAuthenticatedSharedAdmissionBudget(t *testing.T) {
 	}
 }
 
-func TestPrivacyRequestMongoPersistsWithoutWorldEntryAndProtectsOwnerStatus(t *testing.T) {
+func TestAccountSupportMongoPersistsWithoutWorldEntryAndProtectsOwnerStatus(t *testing.T) {
 	uri := os.Getenv("EIDOLON_REPORT_TEST_MONGO_URI")
 	if uri == "" {
 		t.Skip("explicit disposable report Mongo required")
@@ -52,7 +52,7 @@ func TestPrivacyRequestMongoPersistsWithoutWorldEntryAndProtectsOwnerStatus(t *t
 	previous := db
 	db = repo
 	t.Cleanup(func() { db = previous })
-	for _, category := range []string{"Account Data Export", "Account Removal Request"} {
+	for _, category := range []string{"Account / Progress Help", "Account Data Export", "Account Removal Request"} {
 		c := &Client{username: "privacy-fixture-owner", send: make(chan []byte, 4)}
 		body := "Review my own account; synthetic private request"
 		payload, _ := json.Marshal(ReportPayload{ReportType: category, Text: body, RequestID: "privacy-request-001"})

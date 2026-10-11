@@ -19,6 +19,21 @@ beforeEach(() => {
 });
 afterEach(() => { ui.dispose(); jest.useRealTimers(); });
 
+test('progress-help resolution reviews only the case, not character recovery or compensation', () => {
+    expect([...ui.reportType.options].map(option => option.value)).toContain('Account / Progress Help');
+    ui.refresh.click(); reply({reports: {reports: [{...report, reportType: 'Account / Progress Help'}]}});
+    const row = review();
+    expect(row.status.textContent).toContain('no character restoration');
+    expect(ui.reportModerations).toHaveLength(0);
+    row.reason.value = 'Checked case; recovery needs separate authorization'; row.action.click();
+    expect(row.confirmation.textContent).toContain('separately authorized audited workflow');
+    const calls = send.mock.calls.length;
+    row.cancel.click(); expect(send).toHaveBeenCalledTimes(calls);
+    row.action.click(); row.confirm.click();
+    expect(send).toHaveBeenLastCalledWith('admin_report_review', expect.objectContaining({reportId: report.id}));
+    expect(send.mock.calls.some(([type]) => /grant|teleport|moderation_apply/.test(type))).toBe(false);
+});
+
 test.each(['Account Data Export', 'Account Removal Request'])('%s staff review changes only the case and has no fulfillment action', reportType => {
     expect([...ui.reportType.options].map(option => option.value)).toContain(reportType);
     ui.refresh.click(); reply({reports: {reports: [{...report, reportType}]}});
