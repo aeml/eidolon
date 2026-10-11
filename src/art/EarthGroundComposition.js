@@ -174,7 +174,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality), surface = createEarthSurfaceDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail, surface };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v16';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v17';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail }, earthSurface: { value: surface }, earthSurfaceScale: { value: 1 / EARTH_SURFACE_TILE_METRES },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -191,6 +191,14 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             uniform sampler2D earthSurface;
             uniform float earthSurfaceScale;
             uniform vec4 earthBounds;
+            // Every visible coating owns its color, roughness and relief with
+            // the same coverage and order. Buried layers cannot keep changing
+            // the lighting after a leaf or mineral surface covers their color.
+            void earthBlendSurface(inout vec3 color, inout vec2 physical,
+                vec3 layerColor, vec2 layerPhysical, float coverage) {
+                color = mix(color, layerColor, coverage);
+                physical = mix(physical, layerPhysical, coverage);
+            }
         `).replace('#include <map_fragment>', `
             // The composition supplies the complete albedo below. Keep the
             // shared material.map ownership contract without sampling a color
@@ -261,40 +269,43 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             // don't inherit a blurry broad color stain as the entire soil bed.
             vec3 earthSoil = mix(vec3(.050, .040, .030), vec3(.093, .074, .052), earthClod);
             vec3 earthGravelColor = mix(vec3(.084, .091, .092), vec3(.123, .128, .122), earthBroad.r);
-            earthSoil = mix(earthSoil, earthGravelColor, earthGravel);
+            vec2 earthPhysical = vec2(.85 + earthClod * .12, earthClod * .035);
+            earthBlendSurface(earthSoil, earthPhysical, earthGravelColor,
+                vec2(.79 + earthSurfaceSample.a * .10,
+                    earthPhysical.y + earthSurfaceSample.a * earthGravelPlacement * .055), earthGravel);
+            float earthSoilRelief = earthPhysical.y;
             vec3 forestBed = earthSoil * vec3(.72, .76, .66);
             vec3 fallenLeaf = mix(vec3(.065, .038, .016), vec3(.17, .115, .052), earthScatter);
             fallenLeaf *= .9 + earthGrain.b * .1;
             vec3 heathBed = mix(vec3(.037, .062, .024), vec3(.065, .086, .033), earthMossFiber);
             heathBed *= mix(.96, 1.04, earthMossFiber) * mix(.96, 1.04, earthClod);
-            diffuseColor.rgb = mix(earthSoil, heathBed, earthMossCoverage);
-            diffuseColor.rgb = mix(diffuseColor.rgb, forestBed, earthWear.r);
-            diffuseColor.rgb = mix(diffuseColor.rgb, heathBed, earthShelteredMoss * .72);
-            diffuseColor.rgb = mix(diffuseColor.rgb, fallenLeaf, earthLeafCoverage);
-            diffuseColor.rgb = mix(diffuseColor.rgb, fallenLeaf,
-                earthGrain.g * earthWear.a * (1. - earthWear.r) * .22);
+            diffuseColor.rgb = earthSoil;
+            earthBlendSurface(diffuseColor.rgb, earthPhysical, heathBed,
+                vec2(.96, earthSoilRelief + earthMoss * .012), earthMossCoverage);
+            earthBlendSurface(diffuseColor.rgb, earthPhysical, forestBed,
+                vec2(.92 + earthGrain.r * .07, earthSoilRelief), earthWear.r);
+            earthBlendSurface(diffuseColor.rgb, earthPhysical, heathBed,
+                vec2(.96, earthSoilRelief + earthMossFiber * .018), earthShelteredMoss * .72);
+            // Coatings add shallow relief above their substrate. Using just
+            // their thickness as absolute height could recess a visible leaf
+            // below a soil aggregate at its boundary.
+            vec2 earthLeafPhysical = vec2(.88 + earthClod * .08, earthPhysical.y + .018 + earthGrain.b * .01);
+            earthBlendSurface(diffuseColor.rgb, earthPhysical, fallenLeaf,
+                earthLeafPhysical, earthLeafCoverage);
+            earthBlendSurface(diffuseColor.rgb, earthPhysical, fallenLeaf,
+                earthLeafPhysical, earthGrain.g * earthWear.a * (1. - earthWear.r) * .22);
             // Cool slate separates exposed stone from warmer soil and heath;
             // an olive tint on all three made the entire scene read as mud.
             float earthMineralTone = earthStone.a * .4 + earthBroad.r * .6;
             vec3 mineral = mix(vec3(.083, .093, .098), vec3(.133, .145, .148), earthMineralTone);
             mineral *= .86 + earthGrain.r * .24;
-            diffuseColor.rgb = mix(diffuseColor.rgb, mineral, earthRock);
+            earthBlendSurface(diffuseColor.rgb, earthPhysical, mineral,
+                vec2(.81 + earthStone.a * .15, earthStone.a * .028 + earthBroad.r * .012), earthRock);
             diffuseColor.rgb *= mix(.94, 1.08, earthWear.g) * (.94 + earthGrain.r * .12);
         `).replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
-            roughnessFactor = mix(roughnessFactor, .92 + earthGrain.r * .07, earthWear.r);
-            roughnessFactor = mix(roughnessFactor, .81 + earthStone.a * .15, earthRock);
-            roughnessFactor = mix(roughnessFactor, .85 + earthClod * .12,
-                (1. - earthWear.r) * (1. - earthRock));
-            roughnessFactor = mix(roughnessFactor, .88 + earthClod * .08, earthLeafCoverage * (1. - earthRock));
-            roughnessFactor = mix(roughnessFactor, .96,
-                max(earthMossCoverage, earthShelteredMoss) * (1. - earthRock));
-            roughnessFactor = mix(roughnessFactor, .79 + earthSurfaceSample.a * .10, earthGravel * (1. - earthRock));
+            roughnessFactor = earthPhysical.x;
         `).replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
-            float earthRelief = (earthClod * .035 + earthSurfaceSample.a * earthGravelPlacement * .055) * (1. - earthRock)
-                + earthMossCoverage * earthMoss * .012
-                + earthShelteredMoss * earthMossFiber * .018
-                + earthLeafCoverage * (.018 + earthGrain.b * .01)
-                + (earthStone.a * .028 + earthBroad.r * .012) * earthRock;
+            float earthRelief = earthPhysical.y;
             vec3 earthDx = dFdx(-vViewPosition), earthDy = dFdy(-vViewPosition);
             vec3 earthR1 = cross(earthDy, normal), earthR2 = cross(normal, earthDx);
             float earthDet = dot(earthDx, earthR1);
