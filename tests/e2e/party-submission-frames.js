@@ -1,10 +1,11 @@
 import { expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 
-// This separate diagnostic interval follows the uninstrumented performance
-// sample. Renderer-boundary hooks preserve object callbacks and batch eligibility.
-export async function capturePartySubmissionFrames(page, testInfo, filename = 'party-submission-frames.json') {
-    const evidence = await page.evaluate(() => new Promise((resolve, reject) => {
+// Separate diagnostic interval; renderer-boundary hooks preserve object callbacks
+// and batch eligibility. Its instrumented frames never certify frame timing.
+export async function capturePartySubmissionFrames(page, testInfo, filename = 'party-submission-frames.json', frameCount = 12) {
+    if (!Number.isInteger(frameCount) || frameCount < 1 || frameCount > 180) throw new Error('Bounded1–180frame submission diagnostic required');
+    const evidence = await page.evaluate(frameCount => new Promise((resolve, reject) => {
         const game = window.game, render = game.renderSystem, renderer = render.renderer;
         const direct = renderer.renderBufferDirect, draw = render.render;
         const directDescriptor = Object.getOwnPropertyDescriptor(renderer, 'renderBufferDirect');
@@ -27,7 +28,7 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
             }
             if (error || !owned) reject(error || Error('Submission diagnostic lost hook ownership'));
             else resolve({ frames, lights: [...lights.values()], restored: true, quality: render.graphicsQuality,
-                zoom: render.currentZoom, scope: 'Twelve actual game renders at the caller-selected diagnostic point; live animation/network and camera unchanged. Instrumented interval establishes submission identity/counts only, never frame timing or performance acceptance. No per-object callbacks, visibility, render policy, materials, geometry or actor state changed.' });
+                zoom: render.currentZoom, frameCount, scope: 'Bounded actual game renders at the caller-selected diagnostic point; live animation/network and camera unchanged. Instrumented interval establishes submission identity/counts only, never frame timing or performance acceptance. No per-object callbacks, visibility, render policy, materials, geometry or actor state changed.' });
         };
         function observedDirect(camera, scene, geometry, material, object, group) {
             const before = renderer.info.render.calls;
@@ -45,6 +46,7 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
             if (!row) {
                 row = { family, pass, mesh: object.name, geometry: geometry.uuid, material: material.uuid,
                     sourceMaterial: Array.isArray(object.material) ? null : object.material?.uuid,
+                    prepared: render.actorGameplayGeometry?.pass?.entries.get(object)?.candidate === geometry,
                     type: object.type, submittedCalls: 0, submittedTriangles: 0, callbacks: 0,
                     instances: object.isInstancedMesh ? object.count : null,
                     origin: object.isInstancedMesh ? [object.matrixWorld.elements[12], object.matrixWorld.elements[13], object.matrixWorld.elements[14]] : null,
@@ -73,19 +75,21 @@ export async function capturePartySubmissionFrames(page, testInfo, filename = 'p
                     activeEntities: game.activeEntitiesCache?.length || 0,
                     gameplayGeometry: { enabled: Boolean(pass?.enabled), reduced: Boolean(pass?.reduced),
                         entries: pass?.entries.size || 0, lastSwaps: pass?.lastSwaps || 0,
-                        pending: delivery?.jobs.size || 0, stats: delivery ? { ...delivery.stats } : null },
+                        pending: delivery?.jobs.size || 0,
+                        active: delivery?.active ? { mesh: delivery.active.generation.mesh.name, kind: delivery.active.generation.kind,
+                            sourceTriangles: delivery.active.generation.source.index.count / 3 } : null, stats: delivery ? { ...delivery.stats } : null },
                     rows: [...rows.values()] });
                 rows = null;
-                if (frames.length === 12) finish();
+                if (frames.length === frameCount) finish();
                 return result;
             } catch (error) { finish(error); throw error; }
         }
         const timer = setTimeout(() => finish(Error(`Submission diagnostic timed out after ${frames.length} frames`)), 10_000);
         renderer.renderBufferDirect = observedDirect;
         render.render = observedDraw;
-    }));
+    }), frameCount);
     await writeFile(testInfo.outputPath(filename), JSON.stringify(evidence, null, 2));
-    expect(evidence.restored).toBe(true); expect(evidence.frames).toHaveLength(12);
+    expect(evidence.restored).toBe(true); expect(evidence.frames).toHaveLength(frameCount);
     for (const frame of evidence.frames) {
         expect(frame.rows.reduce((total, row) => total + row.submittedCalls, 0)).toBe(frame.calls);
         expect(frame.rows.reduce((total, row) => total + row.submittedTriangles, 0)).toBe(frame.triangles);

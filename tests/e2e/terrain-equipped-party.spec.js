@@ -522,6 +522,10 @@ test('single native renderer observes three live equipped party socket peers on 
             recordPeerLiveness('geometry-lifecycle-prepared');
         }
         if (process.env.EIDOLON_E2E_ACTOR_CELL_MULTI_DRAW === '1') await prepareActorCellMultiDrawParty(page, testInfo);
+        if (process.env.EIDOLON_E2E_PARTY_STARTUP_SUBMISSIONS === '1') {
+            await capturePartySubmissionFrames(page, testInfo, 'party-startup-submission-frames.json', 120);
+            recordPeerLiveness('startup-submissions-complete');
+        }
         recordPeerLiveness('profiling');
         const report = await profileGameplayScene(page, `single-renderer-equipped-raised-party-${quality}`);
         expect(report.frames).toBe(180);
