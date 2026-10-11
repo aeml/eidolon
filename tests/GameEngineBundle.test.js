@@ -18,7 +18,7 @@ async function fixture() {
     fixtures.push(root);
     await mkdir(path.join(root, 'src/core'), { recursive: true });
     await mkdir(path.join(root, 'src/ui'), { recursive: true });
-    for (const filename of ['core/ActorGameplayGeometryWorker.js', 'core/ActorGameplayGeometryDelivery.js', 'art/GameplayBodyIndices.js', 'art/GameplayColorIndices.js']) {
+    for (const filename of ['core/ActorGameplayGeometryWorker.js', 'core/ActorGameplayGeometryDelivery.js', 'art/GameplayBodyIndices.js', 'art/GameplayColorIndices.js', 'art/GameplayRigidIndices.js']) {
         await mkdir(path.dirname(path.join(root, 'src', filename)), { recursive: true });
         await cp(path.join('src', filename), path.join(root, 'src', filename));
     }
