@@ -1,5 +1,14 @@
 # Offline Earthshaker rune parity
 
+## Full preceding-source regression — September 11, 05:53 UTC
+
+65176 completed exit0 on frozenf2c1f468 (Charge plus Earthshaker):339 client
+suites/4753 tests195.965s, full lint; Go race root29.301s/game441.151s/
+loadtest1.040s/database1.129s/lifecycle1.036s. Logs:
+`/tmp/eidolon-fighter-charge-earth-full-{client,lint,server}.log`.
+Later Shield Slam825f9b0c and the broader ability-defense diagnostic are not
+covered by this run. Native/rune/save and complete roadmap gates remain open.
+
 This follows isolated Fighter Charge8d4256fd, not queued domain1.0.61. Required
 native, saved training, remaining Fighter rune/combo and full roadmap gates stay
 open. No deployment or complete160-talent audit claim.
