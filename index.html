@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.38</span>
+                    <span class="start-version-row__label">Alpha 1.79.39</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -843,7 +843,16 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.38" data-notes-pages="47" data-notes-total="473">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.39" data-notes-pages="47" data-notes-total="474">
+                <div class="patch-note-entry" data-version="1.79.39">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.39 (Prepared character geometry)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Supplied characters and supported outfits load exact prepared geometry in the background, reducing repeated model preparation while preserving their appearance and animation.</li>
+                        <li>Changed outfits and unavailable preparation data retain the existing model preparation path. Prepared data remains available for cached offline sessions.</li>
+                        <li>Retains approximately 1.5-second jump arrival, smooth takeoff and landing, Well Rested aura tracking and separate automation-account population reporting.</li>
+                        <li>Existing characters, items and Gold remain intact. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.38">
                     <h3 class="patch-note-entry__title">Alpha 1.79.38 (Character preparation)</h3>
                     <ul class="patch-note-entry__list">
@@ -939,16 +948,6 @@
                         <li>Status effects use clear consistent symbols on desktop and phone. World and atlas surfaces gain regional detail, and prepared equipment geometry reduces work when presenting supplied outfits.</li>
                         <li>Includes the approximately 1.5-second jump arrival, smooth takeoff and landing, Well Rested aura tracking and separate automation-account population reporting from the preceding maintenance releases.</li>
                         <li>Saved accounts, progression and access remain unchanged. This milestone does not mark final world art, whole-party performance, physical-device feedback or closed-beta approval complete. Raised terrain retains the operator-selected profile. Full prior patch history remains available through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.29">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.29 (Complete jump pose continuity)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Removed a remaining pose snap as characters untuck midway through a jump. Takeoff, roll and landing now ease smoothly between poses.</li>
-                        <li>Starting a jump retires any earlier walking correction, preventing a pull back toward takeoff after landing.</li>
-                        <li>The first server acknowledgement now renders the current jump position immediately, eliminating a brief backward snap at takeoff.</li>
-                        <li>Includes smooth jump prediction and sparse network updates, the Well Rested aura tracking fix and correct separation of automation accounts in administration.</li>
-                        <li>Long jumps retain 1.3 seconds of flight for approximately 1.5-second total arrival. Full prior patch history remains available through Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">

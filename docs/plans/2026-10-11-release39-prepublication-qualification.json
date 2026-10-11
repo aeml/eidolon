@@ -1,0 +1,57 @@
+{
+  "recordedUTC": "2026-10-11T21:27:03.803254+00:00",
+  "version": "Alpha 1.79.39",
+  "status": "Prepared and qualified locally; publication requires release38 own terminal CI/live/fresh public acceptance.",
+  "change": "Exact precomputed supplied-character initial/equipped indices, reproducible generator and stale-content checks, strict bounded source/content/output identity validation, original algorithm fallback, immutable offline-cached delivery and normal worker/root retirement.",
+  "geometryQualification": "2026-10-11-precomputed-geometry-qualification.json",
+  "runtimeQualification": "2026-10-11-precomputed-runtime-qualification.json",
+  "focused": {
+    "freshVersionChecks": 413,
+    "freshVersionSuites": 4,
+    "reusedExactGeometryChecks": 142,
+    "reusedGeometrySuites": 10,
+    "combinedDistinct": 555,
+    "combinedSuites": 14
+  },
+  "native": {
+    "freshPublicationCases": 2,
+    "freshSeconds": 21.4,
+    "reusedExactGeometryCases": 3,
+    "combinedDistinct": 5,
+    "freshRetries": 0,
+    "freshSkips": 0,
+    "freshFailures": 0,
+    "freshScope": "Copied/versioned login lazy-load and interrupted-import recovery; four supplied class constructors.",
+    "reusedScope": "Three existing exact runtime/worker copied-publication High/Low geometry/offline/lifetime cases; source/worker/data bytes remain exact."
+  },
+  "checks": {
+    "lintPassed": true,
+    "generatedContentGroups": 12,
+    "shellSyntaxPassed": true,
+    "workingWhitespacePassed": true
+  },
+  "notes": {
+    "total": 474,
+    "priorPreservedByteExact": 473,
+    "workerByteExact": true,
+    "worker": {
+      "output": "src/core/ActorGameplayGeometryWorker.bundle.js",
+      "sha256": "ed74163bff6f2ccc48d8f4364cbca258858d68b95b1cc42f4b91d04304fc9203",
+      "bytes": 173395,
+      "modules": 15,
+      "imports": [],
+      "precomputed": {
+        "path": "assets/gameplay-geometry/indices.6aa8c7e199c910b5.bin",
+        "sha256": "6aa8c7e199c910b5fbf0f78dfae873b64e79aa0045e39b5775ff9ac7d7e93346",
+        "bytes": 777321,
+        "entries": 133
+      }
+    }
+  },
+  "limits": "Performance qualification is limited to exact-geometry preparation latency. Cold triangle and connected frame-time failures, first application frame, peak memory, supported physical devices, final modern art and all original F1-F5/beta/launch/handoff requirements remain open. Nothing is pushed by this preparation.",
+  "custody": {
+    "root": "/home/aeml/.local/share/eidolon-release39-preparation-checks-20261011",
+    "entries": 9,
+    "inventorySHA256": "ed778930f2aa9d599ee1b3f0543e1ce24aa789e41fdd13d8767e1fc290649b68"
+  }
+}
