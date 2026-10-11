@@ -1,0 +1,33 @@
+{
+  "recordedUTC": "2026-10-11T16:03:17.613557+00:00",
+  "source": "032ac8724b51ff061b181ba36754c8b96eef3b14",
+  "status": "Qualified direct-trade review fix for ordinary master merge; unpublished.",
+  "problem": "Partner refreshes erased unsent item/Gold edits and focus; confirmation could act on an older offer while edits or a changed offer request were outstanding. An old terminal message could close a newer trade, and replacement characters could act on previous trade controls.",
+  "change": "Preserve drafts and checkbox focus across same-trade updates, including edits/reverts after submit. Compare visible draft with authoritative offer and track outstanding offer acknowledgements before enabling Confirm. Retain offer retries during save/recovery; freeze recovery inputs. Normalize submitted Gold to displayed bounded whole amount. Guard current participant/window/disposal and ignore unrelated participant/terminal messages. Center scrollable window above HUD with44px actions and status announcements. Server authority, escrow/settlement, prices, limits and protocol unchanged.",
+  "validation": {
+    "focusedDistinct": 77,
+    "suites": 6,
+    "nativeDistinct": 3,
+    "nativeExecutions": 15,
+    "nativeRetries": 0,
+    "nativeSkips": 0,
+    "ciDiscovered": 355,
+    "ciDiscoveryIsExecution": false,
+    "lint": "pass",
+    "diffCheck": "pass"
+  },
+  "baseline": "Original source1pass10fail unit cases and native desktop dirty-confirm failure retained. Two original expectations corrected for real participant payload and explicit acknowledgement. Initial native passes prompted visual correction; later iterations explicitly cover post-submit edits, whole-Gold and pending-request reversion. Final exact-source qualification supersedes intermediate source phases.",
+  "native": "Actual Chromium desktop Tab/Enter/Space and emulated phone touch390x844/844x390 preserve draft, block confirm through pending-request revert, retain newer edits on acknowledgement, then deliberately confirm matching acknowledged offer. Panel stays within viewport; actions44px and close hit-test above HUD. Landscape scroll reaches actions. Three final passes;355case CI discovery is enrollment only.",
+  "imagesInspected": [
+    "browser-final/direct-trade-review-390-di-5b586-aits-for-acknowledged-offer/direct-trade-unsent-review.png",
+    "browser-final/direct-trade-review-1280-d-cd960-aits-for-acknowledged-offer/direct-trade-acknowledged-review.png",
+    "browser-visual-final/direct-trade-review-390-di-5b586-aits-for-acknowledged-offer/direct-trade-unsent-review.png",
+    "browser-pending-final/direct-trade-review-844-di-5b2ba-aits-for-acknowledged-offer/direct-trade-unsent-review.png",
+    "browser-pending-final/direct-trade-review-390-di-5b586-aits-for-acknowledged-offer/direct-trade-acknowledged-review.png"
+  ],
+  "evidenceRoot": "/home/aeml/.local/share/eidolon-direct-trade-review-checks-20261011",
+  "inventoryEntries": 97,
+  "inventorySHA256": "7b4731a79c515d87a048ad11adde298fb23a20b256a53f20749958cfbc53aea2",
+  "limits": "Prepared UI, blocked WebSocket and simulated authoritative acknowledgements with GPU disabled for DOM/input/layout only. Not durable settlement, earned item/Gold custody, physical-phone or whole-game accessibility acceptance. Full original readiness goal remains active.",
+  "publication": "Combine with qualified guild/venue/build-menu successor after exact corrective34 acceptance; no tiny release."
+}
