@@ -548,13 +548,22 @@ export class Actor extends Entity {
         return Math.max(0.35, Math.min(2.5, effectiveSpeed / authoredSpeed));
     }
 
+    getAnimationAction(name) {
+        if (this.animations[name]) return this.animations[name];
+        // Mixed weapon stances are composed only when equipped/used. Bind
+        // their action once and let the existing mixer lifecycle own cleanup.
+        const clip = this.mesh?.userData.animations?.find(clip => clip.name === name);
+        if (!clip || !this.mixer) return null;
+        return this.animations[name] = this.mixer.clipAction(clip);
+    }
+
     syncMovementAnimationSpeed(speed = this.stats?.speed) {
         const movementName = this.getMovementAnimationName(this.isRunning);
         if (!movementName) return false;
         const resolvedName = this.mesh?.userData?.resolveAnimationName?.(movementName, {
             restart: false, currentName: this.currentAnimationName
         }) || movementName;
-        const movementAction = this.animations[resolvedName] || this.animations[movementName];
+        const movementAction = this.getAnimationAction(resolvedName) || this.animations[movementName];
         if (!movementAction || this.currentAction !== movementAction) return false;
         this.currentAction.setEffectiveTimeScale?.(
             this.scaleAnimSpeed ? this.getMovementAnimationTimeScale(speed) : 1.0
@@ -685,7 +694,7 @@ export class Actor extends Entity {
         }
 
         const resolvedName = this.mesh?.userData?.resolveAnimationName?.(name, { restart: force, currentName: this.currentAnimationName }) || name;
-        const action = this.animations[resolvedName] || this.animations[name];
+        const action = this.getAnimationAction(resolvedName) || this.animations[name];
         if (!force && this.currentAction === action) return true;
 
         if (this.currentAction !== action) {

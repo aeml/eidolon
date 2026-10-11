@@ -121,8 +121,46 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
             rogue.actor.playAnimation('Attack', false); // Reconciliation must not flip hands each frame.
             if (strikes[i] !== rogue.actor.currentAction.getClip().name) throw new Error('Attack hand changed mid-strike');
         }
+        // Exercise the normal setMesh/equipment/mixer path on both delivered
+        // rigs. Different weapons must retain their own wrist and finger grip.
+        const handGrips = [];
+        const names = { Sword: 'Iron Sword', Dagger: 'Steel Dagger', Mace: 'Cleric Mace' };
+        for (const entry of actors.filter(entry => entry.type === 'Rogue')) {
+            for (const [main, off] of [['Sword', 'Dagger'], ['Dagger', 'Sword'], ['Sword', 'Mace'],
+                ['Mace', 'Sword'], ['Dagger', 'Mace'], ['Mace', 'Dagger']]) {
+                const gear = { ...entry.gear };
+                for (const [slot, profile] of [['mainHand', main], ['offHand', off]]) {
+                    gear[slot] = { ...gear[slot], id: `${entry.quality}-${slot}-${profile}`, name: names[profile], baseName: names[profile] };
+                }
+                entry.actor.syncEquipmentVisuals(gear); await entry.root.userData.equipmentReady;
+                if (entry.root.userData.equipmentVisualMissing?.length || entry.root.userData.equipmentVisualFallback?.length) {
+                    throw new Error(`Mixed weapon equipment failed: ${main}/${off}`);
+                }
+                for (const state of ['Idle', 'CombatIdle', 'Walk', 'Run', 'Block']) {
+                    entry.actor.mixer.stopAllAction(); entry.root.userData.resetRestPose(); entry.actor.currentAction = null;
+                    entry.actor.playAnimation(state, true, true); entry.actor.updateAnimationMixer(.3);
+                    const action = entry.actor.currentAction, clip = action.getClip();
+                    if (clip.name !== `${main}_${off}_${state}_Dual`) throw new Error(`Wrong mixed stance: ${clip.name}`);
+                    let maxGripError = 0;
+                    for (const [side, profile, suffix] of [['r', main, ''], ['l', off, '_Left']]) {
+                        const source = entry.root.userData.animations.find(c => c.name === `${profile}_${state}${suffix}`);
+                        for (const joint of ['hand', 'index_01']) {
+                            const bone = entry.root.getObjectByName(`${joint}_${side}`);
+                            const track = source.tracks.find(t => t.name === `${bone.name}.quaternion`);
+                            if (clip.tracks.find(t => t.name === track.name) !== track) throw new Error('Copied or incorrect grip track');
+                            const expected = new THREE.Quaternion().fromArray(track.createInterpolant().evaluate(action.time)).normalize();
+                            maxGripError = Math.max(maxGripError, 1 - Math.abs(bone.quaternion.dot(expected)));
+                        }
+                    }
+                    if (maxGripError > .000001) throw new Error(`Mixed wrist/finger pose error: ${maxGripError}`);
+                    handGrips.push({ quality: entry.quality, main, off, state, clip: clip.name, maxGripError });
+                }
+            }
+            entry.actor.syncEquipmentVisuals(entry.gear); await entry.root.userData.equipmentReady;
+        }
+        sample('CombatIdle');
         window.__classGear = { actors, renderer, scene, camera, sample, MeshFactory };
-        return { classes: actors.map(({ type, quality, attached, wrongBones, items }) => ({ type, quality, attached, wrongBones, items })), strikes, costs, resources,
+        return { handGrips, classes: actors.map(({ type, quality, attached, wrongBones, items }) => ({ type, quality, attached, wrongBones, items })), strikes, costs, resources,
             independent: actors.every(({ root }, i) => i % 2 === 0 || root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0] !== actors[i - 1].root.getObjectByName(`${actors[i].type}_Body`).skeleton.bones[0]) };
     });
     if (process.env.EIDOLON_E2E_SHADOW_GEOMETRY_PILOT === '1') await captureShadowGeometryPilot(page, testInfo);
@@ -178,6 +216,8 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
         }))));
     }
     expect(evidence.independent).toBe(true);
+    expect(evidence.handGrips).toHaveLength(60);
+    await testInfo.attach('mixed-weapon-hand-grips', { body: JSON.stringify(evidence.handGrips), contentType: 'application/json' });
     await testInfo.attach('equipped-surface-costs', { body: JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources }), contentType: 'application/json' });
     console.log(`[equipped surface costs] ${JSON.stringify({ surfaceReference, costs: evidence.costs, resources: evidence.resources })}`);
     expect(evidence.classes).toHaveLength(8);
@@ -322,7 +362,7 @@ test('all delivered classes use fitted gear, independent rigs and alternating Ro
                 independent: shown.getObjectByName(`${type}_Body`).skeleton.bones[0] !== actor.root.getObjectByName(`${type}_Body`).skeleton.bones[0],
                 idle: shown.userData.resolveAnimationName('Idle'), batched };
         }, type);
-        expect(preview).toEqual({ type, quality: 'low', items: 14, independent: true, idle: { Rogue: 'Dagger_Idle_Dual', Wizard: 'Staff_Idle', Cleric: 'Mace_Idle' }[type], batched: true });
+        expect(preview).toEqual({ type, quality: 'low', items: 14, independent: true, idle: { Rogue: 'Dagger_Sword_Idle_Dual', Wizard: 'Staff_Idle', Cleric: 'Mace_Idle' }[type], batched: true });
         await page.locator('.character-preview-stage canvas').screenshot({ path: testInfo.outputPath(`${type}-equipped-preview.png`) });
     }
     await page.evaluate(() => { window.__classGear.preview.dispose(); window.__classGear.previewHost.remove(); });
