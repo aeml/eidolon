@@ -15,15 +15,19 @@ continues to merge into `master`, without adding work branches or force-pushing.
 [Repository workflow](../../AGENTS.md),
 [branch reconciliation](2026-10-11-master-branch-reconciliation.json).
 
-**Current release custody, October11 08:39UTC:** last fully accepted public build
-is Alpha1.79.29/12e5e3c. Alpha1.79.30/2e6c6a14 deployed successfully but failed its
-final live QA at a test-helper module download; it is not fully accepted.
-Corrective1aae8407 changes only QA delivery/regression/evidence, retaining the
-same game runtime and version. CI38124028177 has passed client, server and all
-three hosted browser jobs; required native predeployment QA is still running.
-Deployment/live identity, database and exact served assets must pass before the
-next feature milestone is published. The earlier lint/metadata/fixture failures
-and partial local coverage OOM remain in their receipts, not execution passes.
+**Current release custody, October11 08:55UTC:** Alpha1.79.30/1aae8407 is now
+fully accepted through the ordered release gate. CI38124028177 attempt1 completed
+success: all10jobs, including required native predeploy, both deployments and
+mandatory live gameplay/town-recovery/Well Rested checks. Optional stabilization,
+full-character and live four-class steps were explicitly skipped; they are not
+passes. Post-terminal normal-TLS verification confirms exact frontend/backend
+identity, ready database and all9expected asset hashes/byte counts. Earlier
+2e6c6a14 final helper-import failure remains retained. The test-only delivery
+correction preserves its game runtime. Alpha1.79.31 is prepared on local master
+with cumulative notes and the six qualified renderer/environment components
+below; its own publication/CI/live acceptance remains pending. Current100-client
+soak38109009521 is still active on acceptedpublic29, not a completed capacity gate.
+[Release30 acceptance](2026-10-11-public30-terminal-qualification.json),
 [Live profiling correction](2026-10-11-live-profile-delivery-correction.json).
 
 Contact audio76focused/3distinct native cases pass; human listening/busy-fight mix
@@ -55,7 +59,7 @@ through temporary page routes, retires the routes before sampling, and preserves
 the observer,180samples, cleanup and all gates. Its copied-publication transport
 regression and unchanged actual live two-player case pass with540sampled frames;
 that targeted proof does not waive the original failed CI. The new ordered run
-is pending as described above. The all-in-one local coverage diagnostic exited
+completed successfully and is accepted as described above. The all-in-one local coverage diagnostic exited
 134 after exhausting its4GBV8heap without a suite summary; no automatic replay.
 [Fixture correction](2026-10-11-release30-fixture-correction.json),
 [live correction](2026-10-11-live-profile-delivery-correction.json),

@@ -629,3 +629,17 @@ Soak38109009521 remains active. Current release acceptance precedes next coheren
 held milestone. Broader world/material/contact/audio/device/High-frame-time and
 full original roadmap/operations/F1–F5/beta/launch/handoff remain open. No
 campaign/soak replay, access/commerce/beta change or whole-goal completion.
+
+October11 08:55UTC: corrective Alpha1.79.30/1aae8407 accepted after CI38124028177
+attempt1 completes all10jobs and post-terminal normal-TLS frontend/backend/readyDB
+and9asset hashes match. Optional stabilization/full-character/live-four-class
+skips remain explicit, not passes. Combined1.79.31 version/notes prepared on
+master04794e4e: camp clipping, DemonOrc packing, supportedHighsingleton delivery,
+Earth rock shoulders, rooted foliage shading and display-spaceFXAA.415focused
+version/history/enrollment checks and full lint pass; discovery347hosted/44native/
+21overlap/370distinct retains all prior cases (discovery only). Three existing combined-publication native cases pass0retry/skip24.3s: login
+history, exact observer transport and lazy engine/four supplied class construction.
+Frozen36-entry preflight inventory2c7335832ba4782ce1b8743fe445e6d6ac8d8c602ae794093987c044f70baa49.
+Publication is next, followed by its own ordered gates.
+Full original world/art/gameplay/devices/performance/ops/F1-F5/beta/launch/handoff
+objective remains active; no owner-deferred campaign or physical-phone replay.

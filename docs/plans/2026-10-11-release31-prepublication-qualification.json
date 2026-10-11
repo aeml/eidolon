@@ -1,0 +1,106 @@
+{
+  "recordedUTC": "2026-10-11T08:57:34.096732+00:00",
+  "version": "Alpha 1.79.31",
+  "preparedSource": "04794e4ea22aa58c6fee34c07a275ba2475e087a",
+  "productQualifiedMaster": "51e4c64588d73467e02c398d69a2414829b7f2f4",
+  "published": false,
+  "selection": "One coherent renderer/environment milestone selecting only the six already qualified components merged into master. Previous dungeon/equipment/contact/HUD and jump/aura/admin changes retained. Separate unfinished pine draft and rejected renderer experiments excluded.",
+  "components": [
+    {
+      "name": "camp clipping",
+      "receipt": "2026-10-11-current-master-camp-clipping-qualification.json"
+    },
+    {
+      "name": "DemonOrc packing",
+      "receipt": "2026-10-11-current-master-demon-orc-qualification.json"
+    },
+    {
+      "name": "High singleton batching",
+      "receipt": "2026-10-11-current-master-high-singleton-qualification.json"
+    },
+    {
+      "name": "Earth rock shoulders",
+      "receipt": "2026-10-11-earth-rock-shoulders-qualification.json"
+    },
+    {
+      "name": "rooted foliage shading",
+      "receipt": "2026-10-11-rooted-foliage-shading-qualification.json"
+    },
+    {
+      "name": "display-space FXAA",
+      "receipt": "2026-10-11-display-fxaa-qualification.json"
+    }
+  ],
+  "priorReleaseAccepted": {
+    "version": "Alpha 1.79.30",
+    "source": "1aae8407e51c0a6016ac9a27cff75be060001306",
+    "run": 38124028177,
+    "receipt": "2026-10-11-public30-terminal-qualification.json"
+  },
+  "versionAndHistory": {
+    "focusedPassed": 415,
+    "suites": 4,
+    "retainedEntries": 466,
+    "initialEntries": 10,
+    "lazyArchivePages": 46,
+    "exactPriorEntriesPreserved": true,
+    "fullSourceLint": "passed",
+    "diffCheck": "passed",
+    "dependenciesLockScriptsOverrides": "unchanged"
+  },
+  "combinedPublicationPreflight": {
+    "passed": 3,
+    "retries": 0,
+    "skipped": 0,
+    "seconds": 24.3,
+    "cases": [
+      "login loads ten notes without the game engine; older pages load only on demand and retry cleanly",
+      "copied published scene profiler works without deployed test modules",
+      "actual published engine stays lazy at login and constructs each class from the bounded module graph"
+    ],
+    "scope": "Existing anonymous native Chrome identities on prepared combined source. Copied profiling fixture is synthetic RAF/draw transport proof; supplied-class construction is not live four-class gameplay. No FPS or physical-device acceptance."
+  },
+  "coverageDiscovery": {
+    "discoveryOnly": true,
+    "nativeScope": "Four unconditional anonymous visual stages; conditional stabilization and separate isolated release-smoke are outside this discovery union.",
+    "previousNative": 44,
+    "missingPreviousNative": [],
+    "hosted": 347,
+    "native": 44,
+    "overlap": 21,
+    "distinct": 370,
+    "previousHosted": 346,
+    "missingPrevious": [],
+    "added": [
+      "[\"published-game-bundle.spec.js\",\"published-game-bundle.spec.js\",\"copied published scene profiler works without deployed test modules\",\"\"]"
+    ],
+    "groups": [
+      44,
+      3,
+      2,
+      6,
+      3,
+      51,
+      48,
+      3,
+      3,
+      10,
+      92,
+      28,
+      4,
+      3,
+      4,
+      43
+    ]
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release31-preflight-checks-20261011",
+    "inventoryEntries": 36,
+    "inventorySHA256": "2c7335832ba4782ce1b8743fe445e6d6ac8d8c602ae794093987c044f70baa49",
+    "readOnly": true,
+    "sanitization": "passed;0fileschanged",
+    "manifestScope": "Frozen expected manifest is preflight04794e4e. Final commit gets a freshly built expected-public31-assets.json under mutable eidolon-release31-publication-checks-20261011 before push."
+  },
+  "workflow": "All completed components and version preparation are on master. Fetch and ordinary-merge any upstream changes before normal push. No force push. This receipt records preparation; each deployment and live gate must be observed for exact final commit before acceptance or another release.",
+  "limits": "Whole-world modern art/composition, High frame budgets, actual physical-phone review, human contact-sound/busy-fight listening, owner-deferred uninterrupted campaign/pacing, operations/F1-F5/beta/launch/handoff remain open. Active100-clientsoak38109009521is not complete; no repeat or cancellation. No access, commerce, retention, raised-terrain selection or data wipe change. Full original goal stays active."
+}
