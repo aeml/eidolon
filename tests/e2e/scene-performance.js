@@ -1,6 +1,7 @@
 import { renderFrameInterval } from './renderFrameInterval.js';
 
 const observers = new WeakMap();
+const profileModuleLoads = new WeakMap();
 
 /** Optional real-game profiling; no account state or network commands changed. */
 export function observeGameplayScene(game, label) {
@@ -94,6 +95,28 @@ export function observeGameplayScene(game, label) {
 }
 
 export async function profileGameplayScene(page, label) {
+    if (!profileModuleLoads.has(page)) {
+        page.once('domcontentloaded', () => profileModuleLoads.delete(page));
+        // Only the Node test runner executes this wrapper. A published site
+        // deliberately has no /tests/ tree: deliver the two observer modules
+        // from this checkout, then remove our routes before sampling frames.
+        // The observer, interval arithmetic and sample budgets stay unchanged.
+        const loading = (async () => {
+            const { readFile } = await import('node:fs/promises');
+            const modules = await Promise.all(['scene-performance.js', 'renderFrameInterval.js'].map(async file => {
+                const body = await readFile(new URL(file, import.meta.url), 'utf8');
+                return { url: `**/tests/e2e/${file}`, handler: route => route.fulfill({ body, contentType: 'text/javascript' }) };
+            }));
+            try {
+                for (const module of modules) await page.route(module.url, module.handler);
+                await page.evaluate(async () => { await import('/tests/e2e/scene-performance.js'); });
+            } finally {
+                for (const module of modules) await page.unroute(module.url, module.handler);
+            }
+        })();
+        profileModuleLoads.set(page, loading);
+    }
+    await profileModuleLoads.get(page);
     return page.evaluate(async label => {
         const { observeGameplayScene } = await import('/tests/e2e/scene-performance.js');
         return observeGameplayScene(window.game, label);
