@@ -141,7 +141,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **65**, reduced from 287; 580 of 645 local branch names
+  unmerged tips are now **66**, reduced from 287; 580 of 646 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -365,6 +365,16 @@ draws/174,118median triangles,246,694peak,33.4msmedian/50.1msp95 fails the
 unchanged20/33.4ms targets. Settled frames still have33.3msmedian. This
 correlation selects no optimization, clears no prior failure and stops before
 subsequent save-custody assertions. [Evidence](2026-10-11-party-startup-geometry-observation.json).
+
+New exact matrix-upload experiment `8cf75e19` remains unselected.112focused
+checks/four suites and two corrected native High/Low cases pass functional
+controls, including six exact pose image pairs and all four14slot outfits.
+The initial two cases used incomplete Rogue/Wizard outfits and retain that
+limitation.960corrected RAF renders show normal idle/walk still dirties all
+three actor matrix textures each frame; zero updates occurs only with frozen
+poses. ABBA timing is mixed, including Low regressions. This rejects the
+unchanged-matrix hypothesis for current normal animation; no product change or
+frame/performance acceptance. [Decision](2026-10-11-actor-matrix-upload-unselected.json).
 
 Keep rejected forest visibility, woodland spatial geometry duplication, soil
 contrast, unsafe descendant/light discovery, exact matrix-product and

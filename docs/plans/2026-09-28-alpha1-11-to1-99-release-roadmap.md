@@ -1,30 +1,30 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October11 current checkpoint: last accepted publicAlpha1.79.32,
-exact `d31246e9b53fbe73bd7f59beea4c3235df30a922`, CI38136326810attempt2.
-All10orderedjobs succeed; post-terminal normal-TLS frontend/backend/readyDB
-and9served asset hashes/byte counts match at12:33:35UTC.
-[Acceptance](2026-10-11-public32-terminal-qualification.json).
-Attempt1's1675MiB/2048MiB storage refusal and clean merged scratch capacity
-repair remain retained; one failed-job-only retry reused passing prerequisites.
-[Failure and repair](2026-10-11-release32-storage-preflight-recovery.json).
-Alpha1.79.33 coherent player-help/recovery milestone is ordinarily pushed onmaster
-exact9ce67fe3, corrective CI38142813857active:
-qualified birch/recovery/account-help/Player-Guide/content-authoring/lore.
-429distinct focused release checks and8browser publication cases pass with
-retries/skips0;468cumulative notes retain all467prior entries byte-exact.
-[Prepublication](2026-10-11-release33-support-recovery-prepublication.json).
-[Publication](2026-10-11-release33-publication.json).
-Original33 failed only its client audit before deployment; exact test-only
-correction is pushed. [Corrective publication](2026-10-11-release33-guard-corrective-publication.json).
-Own ordered CI/deploy/live/17asset acceptance is pending;
-public32 remains last accepted.78unmerged histories remain reviewed individually;
-unfinished/rejected source and originaldirty checkout preserved.
-Historical High frame-time failures, broader world/art/combat/audio, whole-game
-performance/devices/operations/F1-F5/beta/launch/handoff requirements stayopen.
-Existing100-clientsoak38109009521is active onpublic29, not capacity acceptance.
-Owner-deferred uninterrupted campaign/pacing and physical-phone review remain
-for playtests. See the [remaining register](2026-10-09-release-readiness-remaining.md).
+October11 current checkpoint: last accepted publicAlpha1.79.34,
+exact `3ec8bb151f24909127b832a4035eb7e6eab9b635`, CI38149199718attempt2.
+All ten ordered jobs succeed; fresh post-terminal normal-TLS frontend/backend
+identities, ready database and all23served asset hashes/byte counts match at
+16:10:48UTC. Four optional stages remain skips.
+[Acceptance](2026-10-11-public34-terminal-qualification.json).
+Original client-fixture failure and diagnosed predeploy network failure remain
+retained; one failed-job-only retry changed no source, threshold or gate.
+[Diagnosis/retry](2026-10-11-release34-predeploy-network-retry.json).
+Coherent Alpha1.79.35 guild/venue/build-menu/direct-trade milestone is merged
+and ordinarily pushed onmaster, exactade204b8, CI38154778403active.
+728distinct focused checks/17suites and two native publication cases pass;
+12versions align35;470cumulative notes preserve all469prior entries byte-exact.
+All78copied asset pins are prepared. Own ordered CI/deploy/live and fresh
+post-terminal identity/readyDB/asset acceptance remain pending.
+[Prepublication](2026-10-11-release35-menu-review-prepublication.json).
+[Publication](2026-10-11-release35-publication.json).
+580of646local branch names are already ancestors ofmaster;66unmerged
+unfinished/rejected/historical tips remain individually reviewed. Original
+uncommitted user changes are preserved. Historical High frame-time failures,
+broader world/art/combat/audio, whole-game performance/devices/operations/
+F1–F5/beta/launch/handoff requirements stay open. Existing100-clientsoak
+38109009521 is active onpublic29, not capacity acceptance. Owner-deferred
+uninterrupted campaign/pacing and physical-phone review remain for playtests.
+See the [remaining register](2026-10-09-release-readiness-remaining.md).
 The dated checkpoints below retain historical evidence and superseded queues.
 
 October9 current checkpoint: accepted public1.79.22/exact30a8b603 with all ten

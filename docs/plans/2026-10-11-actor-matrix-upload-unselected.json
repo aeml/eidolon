@@ -1,0 +1,494 @@
+{
+  "recordedUTC": "2026-10-11T16:33:26.691161+00:00",
+  "source": "8cf75e196c3d4a7737f76b90801b8d8f1120bb1f",
+  "selected": false,
+  "reason": "Exact destination-read comparison eliminates texture dirtying only with frozen poses. Corrected four-class14slot native High/Low idle and walking still dirty all3textures/frame. ABBA CPU samples are mixed, including Low regressions; no stable whole-frame benefit proven. Keep production upload behavior unchanged.",
+  "originalBaseline": {
+    "passed": 16,
+    "failed": 7
+  },
+  "candidateFocused": {
+    "passed": 112,
+    "suites": 4
+  },
+  "native": {
+    "distinct": 2,
+    "executions": 4,
+    "finalPasses": 2,
+    "failures": 0,
+    "retries": 0,
+    "skips": 0,
+    "finalRafRenders": 960,
+    "finalExactPoseComparisons": 6,
+    "firstScopeLimitation": "Initial Rogue6/Wizard7equipped items; no full-outfit claim from initial2passes. Corrected class loadouts assert all four14slot/no fallback; added normalIdle arm, all prior raw outputs retained."
+  },
+  "nextAction": "Do not wire this copy-only matrix comparison into production or claim improved frame pacing. Real idle/walk invalidates the proposed unchanged-row benefit. Continue broader representative frame/submission bottlenecks; original budget failures remain.",
+  "limits": "Prepared one-renderer populated world,16Skeletons,four supplied classes; anonymous/blocked sockets. Frozen-frame pixel proof and bounded RAF comparisons; no connected party, combat, physical-device, art acceptance or capacity proof.",
+  "branch": "work/actor-matrix-uploads-20261011",
+  "masterRuntimeChanged": false,
+  "publication": "Not selected, not merged into runtime, not published. Exact35CI remains onade204b8.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-actor-matrix-upload-checks-20261011",
+    "inventoryEntries": 24,
+    "inventorySHA256": "87b42398cf0176102c1686116b8ee5575dc5ddf16f481d2e36f6648fe60f85b1"
+  },
+  "correctedComparisons": [
+    {
+      "phase": "native-corrected-results",
+      "quality": "high",
+      "motion": "frozen",
+      "reuse": false,
+      "frames": 80,
+      "cpuMedianMs": 28.900000005960464,
+      "cpuP95Ms": 45.69999998807907,
+      "frameMedianMs": 33.29999999999927,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        32.44999998807907,
+        26.350000023841858
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "high",
+      "motion": "frozen",
+      "reuse": true,
+      "frames": 80,
+      "cpuMedianMs": 24.099999994039536,
+      "cpuP95Ms": 37.09999996423721,
+      "frameMedianMs": 33.29999999999927,
+      "matrixTexturesDirtiedMean": 0,
+      "blockCpuMediansMs": [
+        23.599999994039536,
+        25.599999994039536
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "high",
+      "motion": "idle",
+      "reuse": false,
+      "frames": 80,
+      "cpuMedianMs": 23.549999982118607,
+      "cpuP95Ms": 33.5,
+      "frameMedianMs": 33.29999999999927,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        23.099999994039536,
+        23.599999994039536
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "high",
+      "motion": "idle",
+      "reuse": true,
+      "frames": 80,
+      "cpuMedianMs": 23.30000001192093,
+      "cpuP95Ms": 34.80000001192093,
+      "frameMedianMs": 33.29999999999927,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        23.600000023841858,
+        23.19999998807907
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "high",
+      "motion": "walk",
+      "reuse": false,
+      "frames": 80,
+      "cpuMedianMs": 22.55000001192093,
+      "cpuP95Ms": 33.40000003576279,
+      "frameMedianMs": 33.20000000000073,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        25.55000001192093,
+        21.400000005960464
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "high",
+      "motion": "walk",
+      "reuse": true,
+      "frames": 80,
+      "cpuMedianMs": 22.349999994039536,
+      "cpuP95Ms": 30.600000023841858,
+      "frameMedianMs": 16.700000000000728,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        23.849999964237213,
+        21.249999970197678
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "low",
+      "motion": "frozen",
+      "reuse": false,
+      "frames": 80,
+      "cpuMedianMs": 15.599999994039536,
+      "cpuP95Ms": 26.19999998807907,
+      "frameMedianMs": 16.69999999999891,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        16.0,
+        14.550000011920929
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "low",
+      "motion": "frozen",
+      "reuse": true,
+      "frames": 80,
+      "cpuMedianMs": 14.300000011920929,
+      "cpuP95Ms": 26.099999964237213,
+      "frameMedianMs": 16.700000000000728,
+      "matrixTexturesDirtiedMean": 0,
+      "blockCpuMediansMs": [
+        16.0,
+        13.199999988079071
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "low",
+      "motion": "idle",
+      "reuse": false,
+      "frames": 80,
+      "cpuMedianMs": 13.399999976158142,
+      "cpuP95Ms": 19,
+      "frameMedianMs": 16.69999999999891,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        12.5,
+        14.199999988079071
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "low",
+      "motion": "idle",
+      "reuse": true,
+      "frames": 80,
+      "cpuMedianMs": 14.099999994039536,
+      "cpuP95Ms": 19.900000035762787,
+      "frameMedianMs": 16.69999999999891,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        14.049999982118607,
+        14.350000023841858
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "low",
+      "motion": "walk",
+      "reuse": false,
+      "frames": 80,
+      "cpuMedianMs": 13.0,
+      "cpuP95Ms": 18.299999952316284,
+      "frameMedianMs": 16.69999999999891,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        12.900000005960464,
+        13.0
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    },
+    {
+      "phase": "native-corrected-results",
+      "quality": "low",
+      "motion": "walk",
+      "reuse": true,
+      "frames": 80,
+      "cpuMedianMs": 13.450000017881393,
+      "cpuP95Ms": 18.69999998807907,
+      "frameMedianMs": 16.69999999999709,
+      "matrixTexturesDirtiedMean": 3,
+      "blockCpuMediansMs": [
+        14.0,
+        12.800000011920929
+      ],
+      "outfits": [
+        {
+          "class": "Fighter",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Rogue",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Cleric",
+          "items": 14,
+          "fallback": 0
+        },
+        {
+          "class": "Wizard",
+          "items": 14,
+          "fallback": 0
+        }
+      ],
+      "groups": 3
+    }
+  ],
+  "retainedScope": "All previous High/Low draw/triangle/frame failures remain. No gate, timeout, scene density, models, lighting, shadows or target relaxed. Full original goal active."
+}
