@@ -29,13 +29,34 @@
     "sourceCommit": "b5c3981e060d6dea3ef50c9c2b4abb37999856db",
     "method": "Read exact accepted Git trees/blob bytes, not mutable working-directory caches. Git object identities are SHA1; separate input byte hashes are SHA256. Counts include source assets and tests/non-shipped files, not a publisher allowlist or license approval.",
     "trees": {
-      "assets": {"gitTree": "70d9114c9e6bb19a386d740c661e45cd97317f31", "trackedFiles": 580},
-      "src/art": {"gitTree": "76b686693c3550c25ee66da5ecd91a715b5b76d0", "trackedFiles": 111},
-      "src/data": {"gitTree": "17268396c2a5518236760d606e1a006633c0c47c", "trackedFiles": 28},
-      "src/ui": {"gitTree": "9ee5a7f1d8722722ccfc260da1d9c5b8ee771b95", "trackedFiles": 99},
-      "server/internal/game/content": {"gitTree": "c68d6a8e5f2721336d4e315ae77f0cd8fa9c71fb", "trackedFiles": 12},
-      "server/internal/game": {"gitTree": "45fb04acbb93444c9ff0ce92b8bcd8e75363cd24", "trackedFiles": 550},
-      "scripts": {"gitTree": "18a7a2bd5185c9312122d6680497df65fe55a836", "trackedFiles": 38}
+      "assets": {
+        "gitTree": "70d9114c9e6bb19a386d740c661e45cd97317f31",
+        "trackedFiles": 580
+      },
+      "src/art": {
+        "gitTree": "76b686693c3550c25ee66da5ecd91a715b5b76d0",
+        "trackedFiles": 111
+      },
+      "src/data": {
+        "gitTree": "17268396c2a5518236760d606e1a006633c0c47c",
+        "trackedFiles": 28
+      },
+      "src/ui": {
+        "gitTree": "9ee5a7f1d8722722ccfc260da1d9c5b8ee771b95",
+        "trackedFiles": 99
+      },
+      "server/internal/game/content": {
+        "gitTree": "c68d6a8e5f2721336d4e315ae77f0cd8fa9c71fb",
+        "trackedFiles": 12
+      },
+      "server/internal/game": {
+        "gitTree": "45fb04acbb93444c9ff0ce92b8bcd8e75363cd24",
+        "trackedFiles": 550
+      },
+      "scripts": {
+        "gitTree": "18a7a2bd5185c9312122d6680497df65fe55a836",
+        "trackedFiles": 38
+      }
     },
     "inputSha256": {
       "package.json": "fe064ebf2d83247581b3126f8a642f86a07caf8e21d096f64aeecd94cfccfd8a",
@@ -82,20 +103,120 @@
   "october7ChangedFoliageRaisedProfile": {
     "source": "Current649e checkout has883 all-realm foliage cell changes relative to the earlier raised-profile failure. Rerun only the affected optional raised-Earth profile; public main remains flat and placement/physics/movement/effects/save promotion remains mandatory1.87 work.",
     "result": "Actual native SystemChrome AMD/Vulkan two-case profile FAIL: all3 High triangle limits remain exceeded; Low west-bank also exceeds85000 by875, other2 Low views pass. All original median/P95/draw/triangle limits retained, no density/geometry/shadow/art quality downgrade. Functional picking/jump/grounding/effect/culling assertions remain; measured frame intervals are not evidence of connected-world/hardware-wide/final art acceptance.",
-    "high": [{"view":"west-bank","calls":216,"triangles":338165,"medianMs":16.7,"p95Ms":16.7},{"view":"woodland-cut","calls":202,"triangles":320761,"medianMs":16.7,"p95Ms":16.7},{"view":"outer-fold","calls":209,"triangles":331040,"medianMs":16.7,"p95Ms":16.8}],
-    "low": [{"view":"west-bank","calls":93,"triangles":85875,"medianMs":16.7,"p95Ms":16.8},{"view":"woodland-cut","calls":79,"triangles":75013,"medianMs":16.7,"p95Ms":16.8},{"view":"outer-fold","calls":83,"triangles":75782,"medianMs":16.7,"p95Ms":16.7}],
+    "high": [
+      {
+        "view": "west-bank",
+        "calls": 216,
+        "triangles": 338165,
+        "medianMs": 16.7,
+        "p95Ms": 16.7
+      },
+      {
+        "view": "woodland-cut",
+        "calls": 202,
+        "triangles": 320761,
+        "medianMs": 16.7,
+        "p95Ms": 16.7
+      },
+      {
+        "view": "outer-fold",
+        "calls": 209,
+        "triangles": 331040,
+        "medianMs": 16.7,
+        "p95Ms": 16.8
+      }
+    ],
+    "low": [
+      {
+        "view": "west-bank",
+        "calls": 93,
+        "triangles": 85875,
+        "medianMs": 16.7,
+        "p95Ms": 16.8
+      },
+      {
+        "view": "woodland-cut",
+        "calls": 79,
+        "triangles": 75013,
+        "medianMs": 16.7,
+        "p95Ms": 16.8
+      },
+      {
+        "view": "outer-fold",
+        "calls": 83,
+        "triangles": 75782,
+        "medianMs": 16.7,
+        "p95Ms": 16.7
+      }
+    ],
     "actualAttribution": "Existing draw diagnostic PASS12.9s; extend opt-in hook to separate actual color/shadow submitted triangles and assert their sum, without changing runtime/profiling clock. Updated diagnostic PASS12.3s/scoped lint passes. Each view body64162 color+64150 shadow; west-bank trees willow4512/63056, pine12180/49508, birch7308/46132 color/shadow. Terrain tiles768 color/no shadow; changing terrain tessellation does not target this cost. Keep actor/caster silhouettes and all art; any optimization needs current color/shadow equivalence and original budgets, not hiding actors or clipping off-screen casters.",
     "appearance": "Root inspected current High and Low west-bank captures: gentle elevation/textured road/foliage remain visibly basic; bare-body preview is not equipped-character/final modern-art proof. Do not mark code-owned modern environments finished from unchanged16.7ms frame intervals.",
-    "artifacts": {"directory":"/tmp/eidolon-179-raised-world-current-ZflCYb","highTraceSha256":"690ce0772afcc0fe359450370a3782bc88a8d8147b77491e0e8bda6db71f40b7","lowTraceSha256":"98c46b429f252c5c7b1b053e9aa35fdf86328a9088d7abee5848a67eec94f2b8","highWestBankSha256":"5d96da2a5518096131ee59264c7c6f4d79ecec80be2eb5f33cac219602bf42c2","phaseDiagnosticDirectory":"/tmp/eidolon-179-raised-world-current-ZflCYb/phase-draws"},
+    "artifacts": {
+      "directory": "/tmp/eidolon-179-raised-world-current-ZflCYb",
+      "highTraceSha256": "690ce0772afcc0fe359450370a3782bc88a8d8147b77491e0e8bda6db71f40b7",
+      "lowTraceSha256": "98c46b429f252c5c7b1b053e9aa35fdf86328a9088d7abee5848a67eec94f2b8",
+      "highWestBankSha256": "5d96da2a5518096131ee59264c7c6f4d79ecec80be2eb5f33cac219602bf42c2",
+      "phaseDiagnosticDirectory": "/tmp/eidolon-179-raised-world-current-ZflCYb/phase-draws"
+    },
     "limits": "All browser sessions63391/55300/14520 terminal before06:37 scheduled native setup;4189 listener independently closed. No native measurement overlap, public rollout, freeze, art or1.87 acceptance. Full1.99 goal remains active."
   },
   "october7RaisedTerrainDeliveryAndBudgetGap": {
     "source": "Ordinary main.go still constructs flat NewWorld; only -qa-terrain-elevation with explicit QA account allowlist selects the shared Earth elevation/outcrop profile. Older1.42/1.48 accepted flat-world receipts cannot establish delivery or current performance of the raised profile. Keep promotion a mandatory remaining1.87/code-owned environment task, not merely optional art polish.",
     "newVerification": "Add opt-in realRAF120-sample profiling to existing elevation preview; standard CI does not pay for the profile. Six road/quality samples use the original populated-world targets: High20/33.4ms median/p95,350calls/250000triangles; Low33.4/50ms,200calls/85000triangles. Native SystemChrome AMD/Vulkan run actually FAILS both cases on all six triangle limits. Existing movement/jump/picking/grounding/effects/culling-equivalence checks remain intact; no budget relaxed or geometry changed.",
-    "high": [{"view":"west-bank","calls":227,"triangles":361715,"medianMs":16.7,"p95Ms":16.8},{"view":"woodland-cut","calls":218,"triangles":353101,"medianMs":16.7,"p95Ms":16.7},{"view":"outer-fold","calls":226,"triangles":364280,"medianMs":16.7,"p95Ms":16.8}],
-    "low": [{"view":"west-bank","calls":100,"triangles":101235,"medianMs":16.7,"p95Ms":16.7},{"view":"woodland-cut","calls":89,"triangles":93223,"medianMs":16.7,"p95Ms":16.8},{"view":"outer-fold","calls":96,"triangles":100832,"medianMs":16.7,"p95Ms":16.7}],
+    "high": [
+      {
+        "view": "west-bank",
+        "calls": 227,
+        "triangles": 361715,
+        "medianMs": 16.7,
+        "p95Ms": 16.8
+      },
+      {
+        "view": "woodland-cut",
+        "calls": 218,
+        "triangles": 353101,
+        "medianMs": 16.7,
+        "p95Ms": 16.7
+      },
+      {
+        "view": "outer-fold",
+        "calls": 226,
+        "triangles": 364280,
+        "medianMs": 16.7,
+        "p95Ms": 16.8
+      }
+    ],
+    "low": [
+      {
+        "view": "west-bank",
+        "calls": 100,
+        "triangles": 101235,
+        "medianMs": 16.7,
+        "p95Ms": 16.7
+      },
+      {
+        "view": "woodland-cut",
+        "calls": 89,
+        "triangles": 93223,
+        "medianMs": 16.7,
+        "p95Ms": 16.8
+      },
+      {
+        "view": "outer-fold",
+        "calls": 96,
+        "triangles": 100832,
+        "medianMs": 16.7,
+        "p95Ms": 16.7
+      }
+    ],
     "diagnostic": "One additional High-only draw-hook scope PASS15.0s outside timed samples, reusing populated-world instrumentation. AuthoredFighter contributes128312 submitted triangles/12color+11shadow draws at each road view. Earth tree groups contribute substantial shadow geometry; water/air groups also appear in submitted counts. These are elapsed/submission diagnostics, not proof of a production culling bug, GPU-cost attribution or permission to hide scenery/lower actor detail. No speculative tile/mesh/fixture change adopted.",
-    "artifacts": {"directory":"/tmp/eidolon-179-raised-earth-profile-jSRPDL/results","highTraceSha256":"fc0a67af437dfa22187f47e8cf28ad9661fd74fbb60a8844db6f9cb6bd2e7741","lowTraceSha256":"6cd22ee54297ad18d43adc469afe31af23ed00b32f8fd8835192b36a56ef9687","highWestBankImageSha256":"d1f13296b66ae4b00c0e2aa7f57ec732dc4510c7cf6ef754ea6e7533a4eeef37","diagnosticDirectory":"/tmp/eidolon-179-raised-earth-draws-NlstRS/results"},
+    "artifacts": {
+      "directory": "/tmp/eidolon-179-raised-earth-profile-jSRPDL/results",
+      "highTraceSha256": "fc0a67af437dfa22187f47e8cf28ad9661fd74fbb60a8844db6f9cb6bd2e7741",
+      "lowTraceSha256": "6cd22ee54297ad18d43adc469afe31af23ed00b32f8fd8835192b36a56ef9687",
+      "highWestBankImageSha256": "d1f13296b66ae4b00c0e2aa7f57ec732dc4510c7cf6ef754ea6e7533a4eeef37",
+      "diagnosticDirectory": "/tmp/eidolon-179-raised-earth-draws-NlstRS/results"
+    },
     "limits": "Inspected High bank capture: broad ground/road variation and simple vegetation remain visibly unfinished; a naked prepared body is not equipped-character appearance proof. Preview is generated scenery plus one actor, not connected combat, complete world or real-phone acceptance. Both browser sessions terminal and loopback4189 closed before scheduled03:57 native launch; no runtime/API/driver/harness/production change. All F gates and full1.99 goal remain open."
   },
   "october7ActualRepositoryPolicyReview": {
@@ -114,12 +235,41 @@
     "C10 still schedules an undelivered vendor/wardrobe catalog. Current source and accepted1.67 public receipt8cbf0c1c establish the owned fitted-base palette catalog and owner-bound UI. Final unique-art/catalog quality and commercial decisions remain open; no new purchase, EP conversion or power reward."
   ],
   "gateReview": [
-    {"id":"F3-current-qualification-update","status":"named-workload-and-original-budget-passed-publication-open","evidence":"October7 root-consumed57874/current c323 driver8c API9a harness original full100 PASS584.92s/common112958ms/100 independent fresh saves. Mixed80, event4/all4 waves and raid5/assault/three repair waves/13 checkpoints complete. Original budget checker PASS18.847513ms versus33ms with3012/3011 samples. Exact hashed evidence/process/drain/disposable cleanup in current1.79 receipt supersedes prior pending current trial below. Own1.79 CI/public acceptance, shared-host headroom/storage, service objectives and broader freeze/beta/launch gates remain open; no general capacity certification."},
-    {"id": "F1", "requirement": "Mandatory features reviewed against promise register; remaining work stabilization/identified launch evidence, not missing foundations", "status": "incomplete", "evidence": "Correct demonstrated obsolete portal/actor-pilot/world-population/atlas/casino-map/vendor claims using current source and accepted exact-release receipts. Retain full Q/D/V/C/G promise inventory and modern-art contract; this remains partial reconciliation, not all-row acceptance. Later staged compatibility/operations changes and final integrated art/pacing still require their own scope."},
-    {"id": "F2", "requirement": "Threat model, serious exploits and authority/data boundaries reviewed", "status": "retained-targeted-evidence-not-final-freeze-review", "evidence": "Current account-bound/schema25 source and accepted1.71–1.76 security/privacy/valuable-operation receipts remain exact-source scoped. Changed-source final review remains; no broad no-exploit certification."},
-    {"id": "F3", "requirement": "Population, hosting/service budget and alert owners chosen with named capacity workload/limits", "status": "named-current-workload-qualified-final-operations-decisions-open", "evidence": "Owner plans up to100 beta players and approved existing hosting/Postmark/admin outage recipients/settings; exact1.78 public/CI/installed monitor acceptance is complete. Current c323 driver/unchanged8c API original full100 PASS584.92s/common112958ms/all100 independent fresh saves, all event members and full five-player Earth assault/checkpoint/manual repair complete. Original unchanged phase checker PASS18.847513ms versus33ms; separate sample counts3012/3011 retained. This supersedes older failed current trials, preserved as historical evidence in1.79 receipt. Client casino/raid rendering is separately scoped, not whole-game/device acceptance. Own corrected1.79 CI37600167508/public checks, shared-host/storage/headroom, supported-service objectives and off-machine incident coverage remain open. No general100-player capacity, SLA or final freeze approval."},
-    {"id": "F4", "requirement": "Privacy/retention/admin/moderation/recovery have owners and implementation paths", "status": "implementation-paths-retained-final-operations-review-open", "evidence": "Reviewed exports/removal requests retain current settings; Postmark recovery and durable role/audit/moderation paths remain. No erasure, player grant, retention/provider setting change or unsupported compliance promise. Final support staffing/retention/restore objectives remain explicit later decisions."},
-    {"id": "F5", "requirement": "Launch content/dependency set frozen with documented exception policy", "status": "not-frozen", "evidence": "Record inventory hashes below only as current source snapshot. No lock, feature exclusion, dependency upgrade or owner release/beta go/no-go inferred. Remaining catalog/license review and stabilization candidates must be reconciled before actual freeze."}
+    {
+      "id": "F3-current-qualification-update",
+      "status": "named-workload-and-original-budget-passed-publication-open",
+      "evidence": "October7 root-consumed57874/current c323 driver8c API9a harness original full100 PASS584.92s/common112958ms/100 independent fresh saves. Mixed80, event4/all4 waves and raid5/assault/three repair waves/13 checkpoints complete. Original budget checker PASS18.847513ms versus33ms with3012/3011 samples. Exact hashed evidence/process/drain/disposable cleanup in current1.79 receipt supersedes prior pending current trial below. Own1.79 CI/public acceptance, shared-host headroom/storage, service objectives and broader freeze/beta/launch gates remain open; no general capacity certification."
+    },
+    {
+      "id": "F1",
+      "requirement": "Mandatory features reviewed against promise register; remaining work stabilization/identified launch evidence, not missing foundations",
+      "status": "incomplete",
+      "evidence": "Correct demonstrated obsolete portal/actor-pilot/world-population/atlas/casino-map/vendor claims using current source and accepted exact-release receipts. Retain full Q/D/V/C/G promise inventory and modern-art contract; this remains partial reconciliation, not all-row acceptance. Later staged compatibility/operations changes and final integrated art/pacing still require their own scope."
+    },
+    {
+      "id": "F2",
+      "requirement": "Threat model, serious exploits and authority/data boundaries reviewed",
+      "status": "retained-targeted-evidence-not-final-freeze-review",
+      "evidence": "Current account-bound/schema25 source and accepted1.71–1.76 security/privacy/valuable-operation receipts remain exact-source scoped. Changed-source final review remains; no broad no-exploit certification."
+    },
+    {
+      "id": "F3",
+      "requirement": "Population, hosting/service budget and alert owners chosen with named capacity workload/limits",
+      "status": "named-current-workload-qualified-final-operations-decisions-open",
+      "evidence": "Owner plans up to100 beta players and approved existing hosting/Postmark/admin outage recipients/settings; exact1.78 public/CI/installed monitor acceptance is complete. Current c323 driver/unchanged8c API original full100 PASS584.92s/common112958ms/all100 independent fresh saves, all event members and full five-player Earth assault/checkpoint/manual repair complete. Original unchanged phase checker PASS18.847513ms versus33ms; separate sample counts3012/3011 retained. This supersedes older failed current trials, preserved as historical evidence in1.79 receipt. Client casino/raid rendering is separately scoped, not whole-game/device acceptance. Own corrected1.79 CI37600167508/public checks, shared-host/storage/headroom, supported-service objectives and off-machine incident coverage remain open. No general100-player capacity, SLA or final freeze approval."
+    },
+    {
+      "id": "F4",
+      "requirement": "Privacy/retention/admin/moderation/recovery have owners and implementation paths",
+      "status": "implementation-paths-retained-final-operations-review-open",
+      "evidence": "Reviewed exports/removal requests retain current settings; Postmark recovery and durable role/audit/moderation paths remain. No erasure, player grant, retention/provider setting change or unsupported compliance promise. Final support staffing/retention/restore objectives remain explicit later decisions."
+    },
+    {
+      "id": "F5",
+      "requirement": "Launch content/dependency set frozen with documented exception policy",
+      "status": "not-frozen",
+      "evidence": "Record inventory hashes below only as current source snapshot. No lock, feature exclusion, dependency upgrade or owner release/beta go/no-go inferred. Remaining catalog/license review and stabilization candidates must be reconciled before actual freeze."
+    }
   ],
   "inventorySnapshotNotFreeze": {
     "package-lock.json": "33fb3f2af672eff7d1e90a4dee5456c04f6efbcf162b25b70553382e3d4ea793",
@@ -161,5 +311,52 @@
     "serviceBoundary": "Actual independent nonroot65532/read-only/capability-free/no-new-privileges monitor, host loopback networking, journald retention and mode600 private environment are recorded in the1.78 installation receipt. Host networking intentionally permits local readiness access and does not provide off-machine/host-failure coverage. No new paid service, retention change or public listener.",
     "remaining": "This review does not close all exploit/data-boundary promises. Final content/dependency inventory, cross-feature authority/recovery reconciliation, representative capacity and owner operational/commercial decisions remain separate gates. Do not infer F freeze or launch security certification."
   },
-  "limits": "Read-only source/receipt review and documentation corrections only. No new test/benchmark, asset/model/dependency/runtime change, production mutation, access restriction, purchase feature, capacity/F/CB/1.99 completion or waiver of manual review. User whole-campaign/phone feedback remains deferred, not passed."
+  "limits": "Read-only source/receipt review and documentation corrections only. No new test/benchmark, asset/model/dependency/runtime change, production mutation, access restriction, purchase feature, capacity/F/CB/1.99 completion or waiver of manual review. User whole-campaign/phone feedback remains deferred, not passed.",
+  "october8AcceptedSourceReconciliation": {
+    "sourceCommit": "f9cbd41b2e5e0a9ca29dc19c07070658e57f0849",
+    "liveReceipt": "2026-10-08-release1-79-2-public-checks.json",
+    "method": "Exact accepted Git trees and blob bytes, not the dirty checkout or staged future work. Historical October7 records below keep their original scopes; this current record supersedes their not-yet-deployed origin/trust and failed woodland-reference states.",
+    "trees": {
+      "assets": {
+        "gitTree": "70d9114c9e6bb19a386d740c661e45cd97317f31",
+        "trackedFiles": 580
+      },
+      "src/art": {
+        "gitTree": "3bd4d00b465fd4769081ff4cb3aa8e4cf4898a7e",
+        "trackedFiles": 112
+      },
+      "src/data": {
+        "gitTree": "8a2f4c5290917c379db3241d8541af7c8a8681f3",
+        "trackedFiles": 28
+      },
+      "src/ui": {
+        "gitTree": "9ee5a7f1d8722722ccfc260da1d9c5b8ee771b95",
+        "trackedFiles": 99
+      },
+      "server/internal/game/content": {
+        "gitTree": "c68d6a8e5f2721336d4e315ae77f0cd8fa9c71fb",
+        "trackedFiles": 12
+      },
+      "server/internal/game": {
+        "gitTree": "45fb04acbb93444c9ff0ce92b8bcd8e75363cd24",
+        "trackedFiles": 550
+      },
+      "scripts": {
+        "gitTree": "b34a325adc10562797c7f9e909cdc5f24df400ca",
+        "trackedFiles": 38
+      }
+    },
+    "inputSha256": {
+      "package.json": "c4ee9781c0cea134672aa4603fdaa69357f2a5e9f6cc8594f22e585f42179bed",
+      "package-lock.json": "fea236b4b71848b2087c94d480209b24d5763337458edd29c1639f0f4e1f94b5",
+      "server/go.mod": "386637275b3efad0184104b2ee7d96ddacea39054fd5545c59401801a4589ee7",
+      "server/go.sum": "dad7cba8c91c44943b60403bd33b59f755612f7f65c92bfa14018b6954bc3cbc",
+      "assets/equipment/authored/manifest.json": "4117c60435a68a31699f9aec9553215f6196cb2008cb887a64e8e8c2a6d9fd0f",
+      ".github/workflows/ci.yml": "e2088682a332e601cc126b90c2548db9f4e6cb87d1bcbba1a13867618d0f3206"
+    },
+    "boundaryReview": "Read actual b5c3981e-to-f9 runtime/deploy/fit diff: origin tuple/cardinality checks delivered1.79.1; minimum-storage/deploy guards, trusted SSH identity and canonical native-QA ref admission delivered1.79.2. Fitted replacement generation owns completed parts and epoch-limited failure signatures; existing ownership checks retained. No new review test/campaign or claim of no exploits.",
+    "catalogContinuity": "Assets, UI, authoritative game and content trees remain exact October7 baseline identities. Changed data is only qualified worldFoliage batching; changed script is isolated-QA version default. Package roots change release versions, not dependency resolution; Go/asset manifest hashes unchanged. Source catalog counts are not a publisher allowlist or license approval.",
+    "externalState": "Read-only GitHub API reports master protected=false and no rulesets. Native QA source guards now published; repository/runner settings unchanged. Hosted SSH key setup passes but network connection times out, retained as failed CI rather than green deployment.",
+    "remaining": "F1–F5 not accepted: original65 requirements, final modern all-family art, compatible raised production delivery, rights/notices, service/budget/support/recovery choices and human launch evidence remain. No dependency/content freeze or1.80 version inferred; future qualified material/terrain/support work remains staged for selective ordered integration."
+  }
 }
