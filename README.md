@@ -430,7 +430,9 @@ analytics); the private recovery-link scrub must still run before analytics.
 Login registers the cache worker without importing the 3D asset catalog.
 For local Firefox QA, use port4173 or4192, not its restricted port4190.
 
-- Current source version: `Alpha 1.79.31`, smoother Earth rock and woodland shading,
+- Current source version: `Alpha 1.79.32`, fitted town roof ends and edge boards,
+  shared ground-cover geometry memory and directional raised-profile rock faces,
+  retaining smoother Earth rock and woodland shading,
   varied pine growth and registered ground material response,
   display-space edge filtering, supported camp/monster/rigid-actor submission
   improvements, and the cumulative grounded dungeon materials and masonry,

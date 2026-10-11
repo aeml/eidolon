@@ -347,7 +347,7 @@
         <div id="start-screen">
             <h1 id="game-title">EIDOLON ONLINE</h1>
             <div class="start-version-row">
-                    <span class="start-version-row__label">Alpha 1.79.31</span>
+                    <span class="start-version-row__label">Alpha 1.79.32</span>
                 <button id="login-patch-notes-link" class="start-version-row__link" type="button">Patch notes</button>
                 <button id="login-account-help" class="start-version-row__link" type="button" hidden aria-label="Account security, moderation notices and appeals">Account help</button>
                 <p id="game-startup-status" class="game-startup-status" role="alert" tabindex="-1" hidden></p>
@@ -781,7 +781,18 @@
                 </span>
                 <button id="btn-close-patch-notes-header" class="close-btn" type="button" aria-label="Close patch notes">×</button>
             </div>
-            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.31" data-notes-pages="46" data-notes-total="466">
+            <div id="patch-notes-history" class="support-window__body support-window__body--patch-notes" data-notes-release="1.79.32" data-notes-pages="46" data-notes-total="467">
+                <div class="patch-note-entry" data-version="1.79.32">
+                    <h3 class="patch-note-entry__title">Alpha 1.79.32 (Town construction and world resources)</h3>
+                    <ul class="patch-note-entry__list">
+                        <li>Lanternhold’s smithy and Gilded Compact gain fitted roof ends and timber edge boards, closing gaps above their stone walls.</li>
+                        <li>Earth ground cover uses less duplicated geometry memory and releases its resources correctly when changing areas or graphics quality. Plant density, shapes and lighting are retained.</li>
+                        <li>Earth outcrops gain distinct geological faces and worn ledges within the existing raised-terrain profile.</li>
+                        <li>Includes the preceding woodland surfaces, scene rendering, dungeon stonework, equipped motions, contact sounds and status symbols.</li>
+                        <li>Includes approximately 1.5-second jump arrival, smooth takeoff and landing, Well Rested aura tracking and separate automation-account population reporting.</li>
+                        <li>World art and whole-party performance remain in progress. Raised terrain retains the operator-selected profile. Existing accounts, saved progression and access remain unchanged. Full prior patch history remains available through Load more notes.</li>
+                    </ul>
+                </div>
                 <div class="patch-note-entry" data-version="1.79.31">
                     <h3 class="patch-note-entry__title">Alpha 1.79.31 (Woodland surfaces and scene rendering)</h3>
                     <ul class="patch-note-entry__list">
@@ -867,16 +878,6 @@
                         <li>Long Ctrl-click jumps now take at most 1.5 seconds from takeoff to the landing point, down from three seconds. Nearby short hops stay quick.</li>
                         <li>Client prediction and the authoritative server share the new timing. Jump arcs, destination constraints and saved progress remain unchanged.</li>
                         <li>Full prior patch history remains available through Load more notes.</li>
-                    </ul>
-                </div>
-                <div class="patch-note-entry" data-version="1.79.22">
-                    <h3 class="patch-note-entry__title">Alpha 1.79.22 (Actor lighting correctness)</h3>
-                    <ul class="patch-note-entry__list">
-                        <li>Procedural fallback characters and Skeletons retain correct surface lighting when a stretched animation hierarchy produces shear. Unsupported transforms use the original mesh renderer rather than the instance shader’s inaccurate normal approximation; normal rotations and ordinary nonuniform scale retain batching.</li>
-                        <li>Live animation and equipment transforms remain responsive. Original materials, triangles, visibility and shadow behavior are retained, including returning to batching when a pose becomes supported again.</li>
-                        <li>Focused native High/Low comparisons cover Skeletons and ten fully equipped procedural characters spanning all four classes. Existing pixel, triangle and visibility limits remain unchanged. Unsupported poses intentionally retain original draw counts; this is a correctness fix, not a frame-rate claim.</li>
-                        <li>Supplied rigged GLBs, fitted equipment, gameplay, rewards and saved progress remain unchanged. Full modern-world art, equipped-party and physical-device qualification remain ongoing; raised terrain is still disabled by default.</li>
-                        <li>Full prior patch history is retained; login shows ten notes initially with Load more notes.</li>
                     </ul>
                 </div>
                 <div class="patch-notes-controls">
