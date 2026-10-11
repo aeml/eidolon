@@ -47,9 +47,9 @@ test('server spawn exclusions match every client woodland trunk exactly', () => 
         width: tree.radius * 2, depth: tree.radius * 2 }));
 });
 
-test('needle boughs have finite folded surfaces within a bounded reusable crown', () => {
-    const geometry = createConiferBoughGeometry(), positions = geometry.attributes.position;
-    expect(positions.count / 3).toBe(840);
+test.each(['high', 'low'])('%s needle boughs have finite folded surfaces within a bounded reusable crown', quality => {
+    const geometry = createConiferBoughGeometry(quality), positions = geometry.attributes.position;
+    expect(positions.count / 3).toBe(quality === 'low' ? 420 : 840);
     expect(positions.count).toBeGreaterThan(300);
     expect([...positions.array, ...geometry.attributes.normal.array, ...geometry.attributes.color.array].every(Number.isFinite)).toBe(true);
     expect(geometry.attributes.color.count).toBe(positions.count);
