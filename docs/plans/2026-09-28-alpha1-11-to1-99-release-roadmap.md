@@ -6,6 +6,8 @@ Forge gem keyboard choices and identity/focus continuity are qualified and merge
 
 Merchant buyback keyboard and price controls are qualified and merged locally as`49b50d7b`. Native item buttons show quantities and exact total Gold prices, preserve focus/scroll across refresh and reordering, and refuse obsolete, ambiguous or invalid choices.65focused checks/five suites and two Chrome desktop/phone cases pass;359mandatory browser cases are discovered exactly once. Source-only for a coherent successor to accepted36. [Qualification](2026-10-11-buyback-keyboard-qualification.json).
 
+Completed Gold boundary history is ordinarily merged as`6422b422`, preserving current earned-credit helpers; four current Go-race subcases pass.595of654local branch names are merged;59still require individual review, down from287unmerged. Completed validated work must be merged into master before being declared done. [Reconciliation](2026-10-11-gold-boundary-history-reconciliation.json).
+
 October11 historical checkpoint: Previous accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend

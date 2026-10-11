@@ -1,0 +1,469 @@
+{
+  "recordedUTC": "2026-10-11T19:01:37.302420+00:00",
+  "source": "3aba946d",
+  "status": "Bounded current-source native diagnosis only; original cold and frame-time failures remain open. No runtime change.",
+  "fixture": "Existing four-class, full14-slot Earth fixture; exact gate-meadow and road-verge cameras, High1280 and Low390, native AMD GPU, actual HUD. No geometry/visibility/content changes. performance.now frozen for pose comparison; no FPS inference.",
+  "observer": "Renderer.renderBufferDirect actual submission deltas; sums fully account for all draws/triangles. Before, observed and restored render totals match exactly in all12 observations; original descriptor restored. No object callbacks.",
+  "execution": {
+    "initialObservations": 4,
+    "pairedColdSettledObservations": 8,
+    "nativeTestCasePassCount": null,
+    "strictBrowserFailures": 0,
+    "wait": "Bounded waitForFunction for existing preparation jobs.size===0, no fixed sleep. Current scheduler already prioritizes large jobs and stays selected unchanged.",
+    "operationalCorrection": "First attempted settled process launch used a not-yet-created cwd and was rejected before execution; corrected parent cwd. No browser/test started in that invocation."
+  },
+  "sourcePins": {
+    "tests/e2e/earth-thatch-composition.spec.js": "b534aec7352e02b28b1f519bd61909425aac26334e0a2d569080090918982946",
+    "src/core/ActorGameplayGeometry.js": "95d4acd5f6c00d2c00a8991f677be4edadd93241c727b6a0daee4d1bc3a76ffe",
+    "src/core/ActorGameplayGeometryDelivery.js": "fdbca3c2a4abc5e022196a194ac1829c25a73451143e746c7f15e5e529dcc4a5",
+    "src/core/ActorGameplayGeometryRuntime.js": "0b653f14817e98e9e5dd8a1aea877dc42554daa15e0c48da049f8f6355d30b4f",
+    "src/core/RenderSystem.js": "ecd20bd2d4580012131a9c44a39cdcea2de8cf6b945ddd046bc2583193f57ccc"
+  },
+  "observations": [
+    {
+      "quality": "high",
+      "label": "gate-meadow",
+      "submitted": {
+        "calls": 220,
+        "triangles": 301626
+      },
+      "preparation": {
+        "entries": 4,
+        "swaps": 4,
+        "reduced": true,
+        "jobs": 72,
+        "stats": {
+          "requested": 76,
+          "installed": 4,
+          "stale": 0,
+          "fallback": 0,
+          "failed": 0,
+          "cacheHits": 0,
+          "rejected": 0,
+          "maxCopiedBytes": 2995424,
+          "workerCacheBytes": 202512,
+          "workerCacheEntries": 4
+        }
+      },
+      "largestFamilies": [
+        {
+          "family": "Equipped Wizard",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 46927
+        },
+        {
+          "family": "Equipped Wizard",
+          "pass": "shadow",
+          "calls": 21,
+          "triangles": 46723
+        },
+        {
+          "family": "Equipped Rogue",
+          "pass": "color",
+          "calls": 20,
+          "triangles": 36818
+        },
+        {
+          "family": "Equipped Rogue",
+          "pass": "shadow",
+          "calls": 18,
+          "triangles": 36614
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "high",
+      "label": "road-verge",
+      "submitted": {
+        "calls": 274,
+        "triangles": 305035
+      },
+      "preparation": {
+        "entries": 6,
+        "swaps": 6,
+        "reduced": true,
+        "jobs": 70,
+        "stats": {
+          "requested": 76,
+          "installed": 6,
+          "stale": 0,
+          "fallback": 0,
+          "failed": 0,
+          "cacheHits": 0,
+          "rejected": 0,
+          "maxCopiedBytes": 2995424,
+          "workerCacheBytes": 296352,
+          "workerCacheEntries": 6
+        }
+      },
+      "largestFamilies": [
+        {
+          "family": "Equipped Wizard",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 38719
+        },
+        {
+          "family": "Equipped Wizard",
+          "pass": "shadow",
+          "calls": 21,
+          "triangles": 38515
+        },
+        {
+          "family": "Equipped Cleric",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 30560
+        },
+        {
+          "family": "Equipped Cleric",
+          "pass": "shadow",
+          "calls": 21,
+          "triangles": 30356
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "high",
+      "label": "gate-meadow-settled",
+      "submitted": {
+        "calls": 220,
+        "triangles": 147466
+      },
+      "preparation": {
+        "entries": 65,
+        "swaps": 65,
+        "reduced": true,
+        "jobs": 0,
+        "stats": {
+          "requested": 76,
+          "installed": 65,
+          "stale": 0,
+          "fallback": 11,
+          "failed": 0,
+          "cacheHits": 6,
+          "rejected": 0,
+          "maxCopiedBytes": 2995424,
+          "workerCacheBytes": 727644,
+          "workerCacheEntries": 67
+        }
+      },
+      "largestFamilies": [
+        {
+          "family": "Equipped Wizard",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 17539
+        },
+        {
+          "family": "Equipped Wizard",
+          "pass": "shadow",
+          "calls": 21,
+          "triangles": 17335
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "calls": 22,
+          "triangles": 16660
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "shadow",
+          "calls": 20,
+          "triangles": 16456
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "high",
+      "label": "road-verge-settled",
+      "submitted": {
+        "calls": 274,
+        "triangles": 189499
+      },
+      "preparation": {
+        "entries": 65,
+        "swaps": 65,
+        "reduced": true,
+        "jobs": 0,
+        "stats": {
+          "requested": 76,
+          "installed": 65,
+          "stale": 0,
+          "fallback": 11,
+          "failed": 0,
+          "cacheHits": 6,
+          "rejected": 0,
+          "maxCopiedBytes": 2995424,
+          "workerCacheBytes": 727644,
+          "workerCacheEntries": 67
+        }
+      },
+      "largestFamilies": [
+        {
+          "family": "Equipped Wizard",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 17539
+        },
+        {
+          "family": "Equipped Wizard",
+          "pass": "shadow",
+          "calls": 21,
+          "triangles": 17335
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "calls": 22,
+          "triangles": 16660
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "shadow",
+          "calls": 20,
+          "triangles": 16456
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "label": "gate-meadow",
+      "submitted": {
+        "calls": 110,
+        "triangles": 106063
+      },
+      "preparation": {
+        "entries": 4,
+        "swaps": 4,
+        "reduced": true,
+        "jobs": 72,
+        "stats": {
+          "requested": 76,
+          "installed": 4,
+          "stale": 0,
+          "fallback": 0,
+          "failed": 0,
+          "cacheHits": 0,
+          "rejected": 0,
+          "maxCopiedBytes": 2840900,
+          "workerCacheBytes": 189024,
+          "workerCacheEntries": 4
+        }
+      },
+      "largestFamilies": [
+        {
+          "family": "Equipped Wizard",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 32340
+        },
+        {
+          "family": "Equipped Rogue",
+          "pass": "color",
+          "calls": 20,
+          "triangles": 25145
+        },
+        {
+          "family": "Equipped Cleric",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 21366
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "calls": 22,
+          "triangles": 19841
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "label": "road-verge",
+      "submitted": {
+        "calls": 141,
+        "triangles": 102486
+      },
+      "preparation": {
+        "entries": 8,
+        "swaps": 8,
+        "reduced": true,
+        "jobs": 68,
+        "stats": {
+          "requested": 76,
+          "installed": 8,
+          "stale": 0,
+          "fallback": 0,
+          "failed": 0,
+          "cacheHits": 0,
+          "rejected": 0,
+          "maxCopiedBytes": 2840900,
+          "workerCacheBytes": 307188,
+          "workerCacheEntries": 8
+        }
+      },
+      "largestFamilies": [
+        {
+          "family": "Equipped Cleric",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 21366
+        },
+        {
+          "family": "Equipped Wizard",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 20936
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "calls": 22,
+          "triangles": 19589
+        },
+        {
+          "family": "Equipped Rogue",
+          "pass": "color",
+          "calls": 20,
+          "triangles": 19487
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "label": "gate-meadow-settled",
+      "submitted": {
+        "calls": 110,
+        "triangles": 65649
+      },
+      "preparation": {
+        "entries": 71,
+        "swaps": 71,
+        "reduced": true,
+        "jobs": 0,
+        "stats": {
+          "requested": 76,
+          "installed": 71,
+          "stale": 0,
+          "fallback": 5,
+          "failed": 0,
+          "cacheHits": 8,
+          "rejected": 0,
+          "maxCopiedBytes": 2840900,
+          "workerCacheBytes": 664224,
+          "workerCacheEntries": 67
+        }
+      },
+      "largestFamilies": [
+        {
+          "family": "Equipped Wizard",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 15788
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "calls": 22,
+          "triangles": 15223
+        },
+        {
+          "family": "Equipped Rogue",
+          "pass": "color",
+          "calls": 20,
+          "triangles": 13711
+        },
+        {
+          "family": "Equipped Cleric",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 13556
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "low",
+      "label": "road-verge-settled",
+      "submitted": {
+        "calls": 141,
+        "triangles": 79386
+      },
+      "preparation": {
+        "entries": 71,
+        "swaps": 71,
+        "reduced": true,
+        "jobs": 0,
+        "stats": {
+          "requested": 76,
+          "installed": 71,
+          "stale": 0,
+          "fallback": 5,
+          "failed": 0,
+          "cacheHits": 8,
+          "rejected": 0,
+          "maxCopiedBytes": 2840900,
+          "workerCacheBytes": 664224,
+          "workerCacheEntries": 67
+        }
+      },
+      "largestFamilies": [
+        {
+          "family": "Equipped Wizard",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 15788
+        },
+        {
+          "family": "Equipped Fighter",
+          "pass": "color",
+          "calls": 22,
+          "triangles": 15223
+        },
+        {
+          "family": "Equipped Rogue",
+          "pass": "color",
+          "calls": 20,
+          "triangles": 13711
+        },
+        {
+          "family": "Equipped Cleric",
+          "pass": "color",
+          "calls": 23,
+          "triangles": 13556
+        }
+      ],
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    }
+  ],
+  "finding": "Both sampled views exceed triangle budgets while65\u201372preparations remain pending, and both fit their original budgets after the existing preparation queue drains. High gate301626\u2192147466, road305035\u2192189499; Low gate106063\u219265649, road102486\u219279386. Draw calls unchanged220/274High and110/141Low. This isolates pending equipment derivatives in these fixtures; it does not clear startup budgets or connected CPU/frame-time failures.",
+  "visualReview": "Inspected settled Highgate and Lowroad screenshots: actual HUD and four equipped actors retained. No final-art acceptance claimed.",
+  "limits": [
+    "Standalone prepared/untimed observations are not connected gameplay, real phone/device or full-world acceptance.",
+    "Prior release36 cold High285210/Low106063/91510 and connected High50/66.7ms remain retained failures. Different preparation progress explains why cold counts differ; no cross-run causal saving is claimed.",
+    "Existing11High/5Low fallback outcomes are preserved; failed/stale/rejected counters remain zero.",
+    "No source runtime optimization, policy/budget weakening, hiding scenery, campaign/soak replay, release push or version change."
+  ],
+  "next": "Measure preparation latency/CPU ownership with unchanged startup requirements before selecting any further runtime optimization. Continue broader art/gameplay/device/operations and original readiness goal.",
+  "evidence": [
+    {
+      "root": "/home/aeml/.local/share/eidolon-earth-triangle-census-20261011",
+      "inventoryEntries": 10,
+      "inventorySHA256": "9751125f179dbf50cb1358b0c48d04e9621921304c8a07835d3d1bc0f341dffe"
+    },
+    {
+      "root": "/home/aeml/.local/share/eidolon-earth-triangle-settled-census-20261011",
+      "inventoryEntries": 13,
+      "inventorySHA256": "a28f5bbb164d9c300780bc46eacc60c32b77833ecfb8876f1e81f49659a8793c"
+    }
+  ]
+}
