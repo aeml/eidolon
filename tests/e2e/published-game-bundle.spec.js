@@ -432,7 +432,8 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
             render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true }); render.render();
             const baseline = { ...render.renderer.info.memory }, cleared = [];
             const methods = { molten_core: 'createMoltenCore', tempest_spire: 'createTempestSpire',
-                abyssal_well: 'createAbyssalWell', umbral_nexus: 'createUmbralNexus' };
+                abyssal_well: 'createAbyssalWell', umbral_nexus: 'createUmbralNexus',
+                verdant_bastion_catacombs: 'createVerdantBastionCatacombs' };
             const gl = render.renderer.getContext(), debug = gl.getExtension('WEBGL_debug_renderer_info');
             for (const [type, method] of Object.entries(methods)) {
                 render.clearGroupChildren(render.instanceEnvironmentGroup, { dispose: true });
@@ -446,7 +447,20 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
                 const program = render.renderer.properties.get(floor.material).currentProgram;
                 const compiled = Boolean(program && gl.getShaderSource(program.fragmentShader)?.includes('elementalFloorWeather') &&
                     gl.getProgramParameter(program.program, gl.LINK_STATUS));
-                samples.push({ type, compiled, patina: floor.material.userData.elementalFloorPatina,
+                const propMaterials = new Map();
+                render.instanceEnvironmentGroup.traverse(part => {
+                    const role = part.material?.userData.dungeonPropSurface;
+                    if (role) propMaterials.set(role, part.material);
+                });
+                const props = [...propMaterials].map(([role, material]) => {
+                    const propProgram = render.renderer.properties.get(material).currentProgram;
+                    return { role, compiled: Boolean(propProgram && gl.getProgramParameter(propProgram.program, gl.LINK_STATUS)),
+                        maps: ['map', 'normalMap', 'roughnessMap'].map(key => ({ key, size: material[key].image.width,
+                            colorSpace: material[key].colorSpace })) };
+                });
+                samples.push({ type, compiled, floorLinked: Boolean(program && gl.getProgramParameter(program.program, gl.LINK_STATUS)),
+                    patina: floor.material.userData.elementalFloorPatina,
+                    verdant: floor.material.userData.verdantFloorPatina, props,
                     quality: world.graphicsQuality, mapSize: floor.material.map.image.width,
                     calls: render.renderer.info.render.calls, triangles: render.renderer.info.render.triangles,
                     collidersStable: colliders === JSON.stringify(game.collisionManager.colliders) });
@@ -465,7 +479,16 @@ for (const quality of ['high', 'low']) test(`copied published ${quality} element
     await testInfo.attach('published-elemental-floors', { body: JSON.stringify({ ...result, engineSHA256: metadata.engineSHA256,
         scope: 'Actual copied/versioned engine, normal saved quality preference and world builders. Prepared materials, shader compilation, collider stability and GPU cleanup; no server, gameplay timing or physical-device claim.' }), contentType: 'application/json' });
     for (const row of result.samples) {
-        expect(row).toMatchObject({ compiled: true, patina: row.type, quality, mapSize: quality === 'low' ? 64 : 256, collidersStable: true });
+        expect(row).toMatchObject({ quality, floorLinked: true,
+            mapSize: quality === 'low' && row.type !== 'verdant_bastion_catacombs' ? 64 : 256, collidersStable: true });
+        if (row.type === 'verdant_bastion_catacombs') expect(row.verdant).toBe(true);
+        else expect(row).toMatchObject({ compiled: true, patina: row.type });
+        expect(row.props.map(prop => prop.role).sort()).toEqual(['metal', 'stone']);
+        for (const prop of row.props) {
+            expect(prop.compiled, `${row.type} ${prop.role}`).toBe(true);
+            for (const map of prop.maps) expect(map).toMatchObject({ size: quality === 'low' ? 64 : 128,
+                colorSpace: map.key === 'map' ? 'srgb' : '' });
+        }
         expect(row.calls).toBeGreaterThan(0); expect(row.calls).toBeLessThanOrEqual(quality === 'low' ? 200 : 350);
         expect(row.triangles).toBeGreaterThan(0); expect(row.triangles).toBeLessThanOrEqual(quality === 'low' ? 85000 : 250000);
     }

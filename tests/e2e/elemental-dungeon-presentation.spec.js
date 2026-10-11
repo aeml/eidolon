@@ -4,7 +4,7 @@ import { writeFile } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 import { compareFilmicLighting } from './lighting-comparison.js';
-import { reviewDungeonProps } from './dungeon-prop-review.js';
+import { reviewDungeonProps, prepareDungeonPropReference } from './dungeon-prop-review.js';
 import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 const fixtures = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'));
@@ -16,6 +16,7 @@ const referenceCommit = process.env.EIDOLON_E2E_ELEMENTAL_FLOOR_REFERENCE || '34
 for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
     test(`equipped elemental dungeon rooms at ${width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
+        await prepareDungeonPropReference(page);
         if (compareFloor) {
             const previous = execFileSync('git', ['show', `${referenceCommit}:src/art/ProceduralDungeonInteriors.js`], { encoding: 'utf8' })
                 .replace("'./ElementalDungeonSurface.js'", "'./ElementalDungeonSurfaceReference.js'");

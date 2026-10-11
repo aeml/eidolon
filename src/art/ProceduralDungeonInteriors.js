@@ -12,6 +12,7 @@ import { createDungeonVigilBase, createDungeonVigilShaft, createDungeonVigilCage
 import { createDungeonEntryWard } from './DungeonEntryWard.js';
 import { applyVerdantFloorPatina } from './VerdantFloorPatina.js';
 import { applyElementalFloorPatina } from './ElementalFloorPatina.js';
+import { createDungeonPropSurfaceMaps } from './DungeonPropSurface.js';
 
 const TEXTURE_SIZE = 64;
 export const DUNGEON_FLOOR_TEXTURE_SPAN = 24;
@@ -179,16 +180,19 @@ function makeDetailMaterial(color, options = {}) {
     return material;
 }
 
-function createMaterialSet(dungeonType) {
+function createMaterialSet(dungeonType, quality) {
     const theme = getRegionTheme(dungeonType);
+    const finished = (surface, color, metalness) => {
+        const material = makeDetailMaterial(color, { roughness: 1, metalness, flatShading: false });
+        Object.assign(material, createDungeonPropSurfaceMaps(surface, quality));
+        material.normalScale.set(.35, .35);
+        material.userData.dungeonPropSurface = surface;
+        return material;
+    };
     return Object.freeze({
         shadow: makeDetailMaterial(theme.palette.shadow, { roughness: 0.98 }),
-        stone: makeDetailMaterial(theme.palette.midtone, { roughness: 0.94 }),
-        metal: makeDetailMaterial(mixBytes(
-            colorBytes(theme.palette.shadow),
-            colorBytes(theme.palette.midtone),
-            0.62
-        ).reduce((value, byte) => (value << 8) + byte, 0), { roughness: 0.42, metalness: 0.68 }),
+        stone: finished('stone', new THREE.Color(theme.palette.midtone).lerp(new THREE.Color(0x92908a), .8), 0),
+        metal: finished('metal', new THREE.Color(0x8e887d).lerp(new THREE.Color(theme.palette.midtone), .08), .68),
         accent: makeDetailMaterial(theme.palette.accent, {
             roughness: 0.4,
             emissive: theme.palette.accent,
@@ -672,7 +676,7 @@ export function createProceduralDungeonInteriorKit(dungeonType, { quality = 'hig
     const materials = new Map();
     const geometries = new Map();
     const shapes = createShapes(surfaceQuality);
-    const detailMaterials = createMaterialSet(dungeonType);
+    const detailMaterials = createMaterialSet(dungeonType, surfaceQuality);
 
     const surfaceMaterial = (surface, width, height, transparent = false) => {
         // Keep masonry legible at gameplay zoom without adding geometry.

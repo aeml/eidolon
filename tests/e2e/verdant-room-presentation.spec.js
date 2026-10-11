@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { collectBrowserFailures } from './helpers.js';
 import { compareFilmicLighting } from './lighting-comparison.js';
-import { reviewDungeonProps } from './dungeon-prop-review.js';
+import { reviewDungeonProps, prepareDungeonPropReference } from './dungeon-prop-review.js';
 
 const fixture = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-layouts.json', 'utf8'))
     .find(value => value.dungeonType === 'verdant_bastion_catacombs');
@@ -11,6 +11,7 @@ const fixture = JSON.parse(fs.readFileSync('tests/fixtures/production-dungeon-la
 for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
     test(`Verdant masonry with gameplay HUD at ${width}px`, async ({ page, baseURL }, testInfo) => {
         const failures = collectBrowserFailures(page, baseURL);
+        await prepareDungeonPropReference(page);
         await page.routeWebSocket(/\/ws(?:\?|$)/, () => {});
         await page.setViewportSize({ width, height });
         await page.goto('/', { waitUntil: 'networkidle' });
@@ -21,6 +22,7 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             const { UIManager } = await import('/src/ui/UIManager.js');
             const { InputManager } = await import('/src/core/InputManager.js');
             const { Fighter } = await import('/src/entities/Fighter.js');
+            const { BASE_ITEMS } = await import('/src/core/ItemSystem.js');
             const { applyDungeonRoomStatePresentation } = await import('/src/art/ProceduralDungeonInteriors.js');
             document.getElementById('start-screen').style.display = 'none';
             document.body.classList.toggle('mobile-mode', mobile);
@@ -32,11 +34,23 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             ui.showHUD(); ui.toggleChat(true);
             const hero = new Fighter('masonry-review');
             await hero.ensureMesh();
+            const loadout = { head: 'Iron Helm', shoulders: 'Steel Pauldrons', chest: 'Plate Mail',
+                gloves: 'Iron Gauntlets', belt: 'Plated Girdle', legs: 'Plate Greaves', feet: 'Iron Boots',
+                neck: 'Pendant', ring1: 'Ruby Ring', ring2: 'Gold Ring', trinket1: 'Amulet of Power',
+                trinket2: 'Talisman of Speed', mainHand: 'Iron Sword', offHand: 'Wooden Shield' };
+            hero.syncEquipmentVisuals(Object.fromEntries(Object.entries(loadout).map(([slot, name]) => {
+                const base = BASE_ITEMS.find(item => item.name === name);
+                if (!base) throw new Error(`Missing dungeon review gear: ${name}`);
+                return [slot, { ...base, id: `dungeon-review-${slot}`, baseName: name, name, level: 70,
+                    rarity: slot === 'mainHand' ? 'Rare' : 'Uncommon', stats: {}, potency: 0,
+                    sockets: 0, gems: [], setId: '', uniqueEffect: '' }];
+            })), { force: true });
+            await hero.mesh.userData.equipmentReady;
             hero.position.set(layout.rooms[0].x, 0, layout.rooms[0].z);
             hero.mesh.position.copy(hero.position); render.entityGroup.add(hero.mesh);
             ui.updatePlayerStats(hero);
             ui.quest.renderObjectivesPanel([{ id: 'room', title: 'Explore the Thorncrypt', progressLabel: 'Entry', hint: 'Prepared art review' }]);
-            const generator = new WorldGenerator(render.instanceEnvironmentGroup, new CollisionManager());
+            const generator = new WorldGenerator(render.instanceEnvironmentGroup, new CollisionManager(), { graphicsQuality: render.graphicsQuality });
             await generator.createVerdantBastionCatacombs(0, 0, layout);
             render.instanceEnvironmentGroup.traverse(part => {
                 if (part.userData.proceduralDungeonRoomState && part.userData.roomIndex === 0)
@@ -50,6 +64,10 @@ for (const [width, height, mobile] of [[1280, 900, false], [390, 844, true]]) {
             return { zoom: render.currentZoom, textureSize: floor.material.map.image.width,
                 width: floor.material.map.repeat.x, height: floor.material.map.repeat.y };
         }, { layout: fixture.layout, mobile });
+        await page.waitForFunction(() => {
+            const delivery = window.__masonryReview.render.actorGameplayGeometry?.delivery;
+            return delivery && !delivery.active && delivery.jobs.size === 0;
+        });
         await page.screenshot({ path: testInfo.outputPath('verdant-room.png'), style: '#perf-overlay { visibility: hidden !important; }' });
         await compareFilmicLighting(page, testInfo, '__masonryReview', 'verdant');
         const wallReview = await page.evaluate(room => {

@@ -46,7 +46,13 @@ test('constructed vigil stays in its former apron and shares kit shapes across r
     }
     expect(cage.position.y + cage.geometry.boundingBox.min.y).toBeLessThan(shaft.position.y + shaft.scale.y * .5);
     expect(first.userData.visualOnly).toBe(true);
-    expect(first.getObjectByName('DungeonExitPortal').position.toArray()).toEqual([0, 3.7, -10.08]);
+    const portal = first.getObjectByName('DungeonExitPortal');
+    expect(portal.parent.name).toBe('DungeonEntryWard');
+    expect(portal.parent.position.toArray()).toEqual([0, 0, -10.08]);
+    expect(portal.position.toArray()).toEqual([0, 0, -.05]);
+    expect(portal.getWorldPosition(new THREE.Vector3()).toArray()).toEqual([0, 0, -10.13]);
+    const opening = new THREE.Box3().setFromObject(portal);
+    expect(opening.min.y).toBeGreaterThanOrEqual(.28); expect(opening.max.y).toBeGreaterThan(8);
 });
 
 test('cache and font retain interaction centers and fit the former visual aprons', () => {
