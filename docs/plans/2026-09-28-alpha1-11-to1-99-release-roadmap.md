@@ -2,6 +2,8 @@
 
 Alpha1.79.36/exact`aee9c3dba85da6f11555439a3ad4476597aaada3` is merged and pushed; CI38161891123 attempt1 is active.448distinct focused checks/six suites and four native publication cases pass, retries/skips0.12versions align;471notes preserve all470prior entries byte-exact.82public asset pins are prepared; public35 remains last accepted. [Publication](2026-10-11-release36-publication.json).
 
+Forge gem keyboard choices and identity/focus continuity are qualified and merged locally as`eeade50f` for a later coherent milestone.68distinct focused checks/seven suites and four distinct Chrome desktop/phone cases pass; one reproduced reorder-visibility failure and original fixture correction are retained. Source-only while36qualification runs. [Qualification](2026-10-11-forge-gem-keyboard-qualification.json).
+
 October11 current checkpoint: Accepted public release: Alpha1.79.35, exact
 `ade204b800faa2cba8eacf1da71b100590e88d87`, CI38154778403 attempt1.
 All ten ordered jobs succeed. Fresh post-terminal normal-TLS frontend/backend
@@ -13,7 +15,7 @@ Coherent35 combines qualified guild/venue/build-menu/direct-trade work.
 12versions align35;470cumulative notes preserve all469prior entries byte-exact.
 [Prepublication](2026-10-11-release35-menu-review-prepublication.json).
 [Publication](2026-10-11-release35-publication.json).
-591of652local branch names are ancestors of master;61unmerged histories remain
+592of653local branch names are ancestors of master;61unmerged histories remain
 under individual review. Completed content-validation, environment and selected Earth ground histories
 are merged and included in the pushed36 milestone. Prior34 failures remain
 retained in its historical acceptance receipt.

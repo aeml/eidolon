@@ -1,0 +1,81 @@
+{
+  "recordedUTC": "2026-10-11T18:19:07.780491+00:00",
+  "source": "1af38973b0ed08951c13ae59a9e91ad6aa7078ea",
+  "masterMerge": "eeade50fc7cf6515d7aa28927d042a0f70e66dab",
+  "changes": [
+    "Native gem insertion/combine/removal and socket buttons with names, pressed/disabled semantics,44px targets, visible focus and non-color selected marks.",
+    "Stable equipment/item identity and labeled-group fallback on removal; preserves scroll for ordinary redraws and reveals relocated focused gems after sorting.",
+    "Existing inventory-change selection resets, quotes and destructive item/gem guards retained. Highest Radiant quality honors existing case aliases.",
+    "Both desktop/phone keyboard flows enrolled in existing mandatory interface partition."
+  ],
+  "focused": {
+    "distinctPassed": 68,
+    "suites": 7,
+    "failedFinal": 0,
+    "skippedFinal": 0,
+    "ui": 48,
+    "browserPlan": 20
+  },
+  "browser": {
+    "distinctPassed": 4,
+    "caseExecutions": 7,
+    "executionPasses": 6,
+    "executionFailures": 1,
+    "retries": 0,
+    "skips": 0,
+    "finalAffectedCases": 2,
+    "reusedUnchangedCases": 2,
+    "widths": [
+      1280,
+      390
+    ],
+    "scope": "Actual native System Chrome UI/keyboard and browser viewport emulation. Prepared UIManager fixtures, synthetic operation callbacks/authoritative refreshes; no real accounts, server operations, actual mobile hardware or GPU/performance acceptance."
+  },
+  "retainedFailures": [
+    "Baseline new four focused checks all fail on missing native choices/selection/focus.",
+    "Initial six-suite run47pass/1fail: unit fixture placed socket groups outside their actual info containers. Corrected fixture nesting; all original assertions retained.",
+    "Extended1280browser case fails because reordered focused gem was outside scroll viewport. Corrected reveal-on-relocation; final desktop/phone pass without retry."
+  ],
+  "assertions": "Trusted Tab/Enter/Space; exact insertion/combine/removal callback quotes once; local model not mutated; disabled filled/mixed/full/Radiant choices and deselection; selected states; list scroll unchanged on redraw; identity/visible focus after reorder; selection reset on refreshed inventory; destructive item replacement reset and labeled fallback when removed; no horizontal window overflow.",
+  "lint": "full max-warnings=0 pass",
+  "diffCheck": "pass",
+  "ciDiscovery": "357 browser cases discovered exactly once; no omissions/duplicates. Discovery is not357execution passes.",
+  "limits": "Source-only on local master while release36 CI38161891123 remains active. No new version, dependency or server/economy change. Full goal and prior failures remain open.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-forge-gem-keyboard-checks-20261011",
+    "entries": 41,
+    "inventorySHA256": "13c2dc525ee7bee9d11f7199341a19421361a052db883c7ff3391adb3cc16a8c"
+  },
+  "sourceManifest": [
+    {
+      "path": "index.html",
+      "bytes": 120578,
+      "sha256": "5916224b616b35143e5aa76314feb243ddae7aec3e4bd0360bd6a34e985da8f5"
+    },
+    {
+      "path": "package.json",
+      "bytes": 7134,
+      "sha256": "2787eb70d20bbc294eb61d367bdc8b0bf9df5b73764504b12ddd45df8e044bd8"
+    },
+    {
+      "path": "src/styles/equipment-decisions.css",
+      "bytes": 4371,
+      "sha256": "9ddfa3e8b23611b22c3087508ebe87c812486a93701902106c283d39df40594a"
+    },
+    {
+      "path": "src/ui/ForgeUI.js",
+      "bytes": 70121,
+      "sha256": "66680f2e8063430f5de88ab915578d5ff72c0ad95ba235fa816e1411ad2fc4df"
+    },
+    {
+      "path": "tests/ForgeGemChoices.test.js",
+      "bytes": 6136,
+      "sha256": "c29b3868977c62f94f2a16554e022408ec6b40e321f0ba0e19de1e0715b5e26b"
+    },
+    {
+      "path": "tests/e2e/forge-gem-keyboard.spec.js",
+      "bytes": 9307,
+      "sha256": "8bc9b754cd1843a36ab9c84cf96d9c7ffcf3b2ecfe91875c4b0e7a7b32a80249"
+    }
+  ]
+}
