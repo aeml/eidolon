@@ -33,6 +33,17 @@ hosted identities and adds one:338hosted/25native/11overlap/352distinct. Earlier
 coverage; this is discovery, not fresh hosted execution.
 [Audio qualification](2026-10-11-combat-contact-foley-qualification.json).
 
+**Release gate correction:** initial Browser1 also rejects hosted SwiftShader
+with an unconditional additive GPU assertion. Shared launch policy now preserves
+hosted rendering checks and requires the same High/Low cases in mandatory native
+predeploy. Local software2/native2 passes retain all original comparison limits;
+130factories/780comparisons per quality and renderer. Plan/coverage23checks and
+full locked-dependency lint pass. Actual discovery338hosted/27native/13overlap/
+352distinct retains every previous hosted identity. This supersedes the earlier
+25native/11overlap counts above; discovery is not hosted execution. Concurrent
+upstream licensing/docs4e7fbe6f is preserved. Release deployment remains pending.
+[Correction proof](2026-10-11-additive-hosted-native-gate-correction.json).
+
 **Live: Alpha1.79.29/12e5e3c4 is accepted.** Exact CI38078784320 succeeded on
 attempt1; frontend/backend/database and eight served asset hashes match.
 The requested jump, takeoff/landing, aura attachment and test-account filtering

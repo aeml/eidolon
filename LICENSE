@@ -1,0 +1,127 @@
+Eidolon Source-Available Share-Back License, Version 1.0
+Copyright (c) 2026 Robert Mendola
+
+1. Scope and definitions
+
+"Project" means the Eidolon code, documentation, translations, game content,
+and assets that their copyright holders make available under this license.
+"Upstream" means https://github.com/aeml/eidolon, maintained by Robert Mendola,
+or a successor repository designated there by him.
+"Modified Version" means your adaptation of the Project, including code changes,
+translations, features, and new or replacement game content integrated into it:
+character and monster models, weapons, armor, equipment, mounts, textures, rigs,
+animations, audio, and other assets. Independent services communicating through
+ordinary external APIs are not included solely because of that communication.
+"Editable Source" means the preferred form for making changes, including source
+code, translation files, build and installation instructions and scripts, and
+original editable asset files (such as Blender scenes, rigs, animation projects,
+and layered textures), together with exports and any custom generation tools
+needed to reproduce the version you distribute or operate.
+
+Separately identified third-party material remains governed by its own license.
+This license grants only rights the relevant copyright holder can grant; it does
+not replace third-party notices or impose new terms on their original material.
+
+2. Permission
+
+Subject to these conditions, each copyright holder grants you a worldwide,
+non-exclusive, royalty-free license to use, copy, translate, modify, distribute,
+and publicly operate the Project and Modified Versions, for commercial or
+noncommercial purposes. You may host servers in any country, charge for access,
+offer VIP subscriptions, sell virtual items, and integrate payment providers.
+No separate permission or revenue payment to Upstream is required for activities
+that comply with this license. Downstream recipients receive these permissions
+directly from the applicable copyright holders under this same license.
+
+3. Attribution and notices
+
+Preserve this license and all applicable copyright, attribution, third-party,
+and provenance notices in source and distributed copies. In a reasonably
+accessible player-facing credits or about screen, and on any public server
+website, display "Based on Eidolon by Robert Mendola, original developer and
+maintainer" with a link to Upstream where links are supported. Equivalent
+translations are permitted if Robert Mendola and Eidolon remain identifiable.
+Credit your own contributors too; do not claim their work was authored by Robert
+Mendola. Clearly identify modified versions and independently operated servers,
+and describe substantive changes in a changelog or equivalent documentation.
+No trademark license or right to imply official status or endorsement is granted.
+
+4. Sharing back when distributing or hosting
+
+If you distribute a Modified Version to anyone outside your organization, or
+allow anyone outside your organization to interact with it over a network,
+you must, no later than that distribution or network availability:
+
+(a) Make the complete Editable Source of that Modified Version available in a
+public repository or download, free of charge and under this same license,
+including all integrated changes and new or replacement game assets. Provide
+a prominent source link to recipients and network users in an accessible
+in-game menu or equivalent interface. Keep it current with each deployed or
+distributed version and accessible for as long as that version is offered and
+for at least three years after its last distribution or public operation.
+
+(b) Notify Upstream through an issue or pull request containing the source link,
+version identifier, and a summary of your changes. Update that submission, or a
+linked release history, for subsequent versions. A pull request is welcome but
+not required: a complete, accessible source submission satisfies this duty even
+if Upstream declines to merge it. If Upstream's submission channels are
+unavailable, retain the public source and submit when a channel becomes available.
+
+(c) License your integrated contributions under this same license, granting
+Upstream and all other recipients the rights in section 2. Obtain the necessary
+rights from contributors before including their work. Do not integrate assets
+whose terms prevent this sharing and reuse. Existing separately licensed
+third-party components may retain their licenses; supply their notices and
+source or acquisition instructions as required by their terms. New third-party
+assets used as replacement game content must allow the editable-source delivery
+and upstream reuse required here.
+
+You retain ownership of your contributions. No copyright assignment, acceptance
+of a contribution, or obligation for Upstream to merge or maintain it is implied.
+Private development that is neither distributed nor offered to outside network
+users does not trigger this section. Once it is shared or hosted, this section
+applies to the entire Modified Version, not only to changes you consider useful.
+
+Do not publish passwords, private keys, payment credentials, player records,
+personal data, or transaction records. Supply configuration templates instead.
+Independent payment services and their proprietary infrastructure need not be
+published; your integrated Project-side payment code must be shared. This
+exception does not permit hiding Project modifications in a separate process.
+
+5. Downstream terms and monetization
+
+Distribute the Project and Modified Versions under this license without adding
+restrictions on the permissions it grants. You may set prices and service terms
+for your hosted service, but those terms must not restrict recipients' rights
+to the licensed source and assets. Preserve third-party license obligations.
+You are responsible for your service, payment agreements, and applicable laws.
+
+The license does not restrict whether a fork sells cosmetics, convenience,
+subscriptions, or gameplay advantages. Upstream's cosmetics-only monetization
+and refusal to merge paid-power features are contribution policies, not license
+restrictions. All integrated modifications remain subject to section 4,
+including modifications Upstream would decline to merge.
+
+6. Termination and reinstatement
+
+Permissions terminate automatically if you violate these conditions. They are
+automatically reinstated if you cure the violation within 30 days after first
+receiving notice of it from a copyright holder, provided this is your first
+notice of a violation from that holder. Otherwise reinstatement requires that
+holder's written permission. Termination of your permissions does not terminate
+the rights of downstream recipients who comply with this license.
+
+7. Disclaimer
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE PROJECT IS PROVIDED "AS IS",
+WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. NO COPYRIGHT
+HOLDER OR CONTRIBUTOR SHALL BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY,
+WHETHER IN CONTRACT, TORT, OR OTHERWISE, ARISING FROM THE PROJECT OR ITS USE.
+
+8. License identity
+
+This is a custom source-available license, not the GNU AGPL or an OSI-approved
+open-source license. Its mandatory submission requirement is intentional.
+Only the relevant copyright holders may grant exceptions to their material.
+Later versions of this license do not automatically replace this version.

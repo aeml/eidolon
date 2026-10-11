@@ -469,3 +469,11 @@ metadata guard; final movement/cast/contact fallbacks pass122focused checks in
 diagnosis and not counted as full-suite success. Corrective release gates and
 exact public acceptance remain pending; public29 remains last accepted.
 Full original goal remains active.
+
+2026-10-11 release-gate follow-up: hosted additive High/Low failed only an
+unconditional native GPU assertion on SwiftShader. Corrected shared launch policy
+and enrolled both unchanged visual comparisons in mandatory native predeploy.
+Local software2/native2,23plan checks and full locked lint pass; discovery retains
+338hosted and expands native25→27, overlap11→13,352distinct unchanged. Concurrent
+upstream licensing/docs preserved by ordinary merge. No runtime/version change;
+CI/public acceptance pending, public29 last accepted. Full goal remains active.

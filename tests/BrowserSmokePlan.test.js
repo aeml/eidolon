@@ -146,9 +146,9 @@ test('all planned stages must succeed, and failed launch or signal is never succ
 });
 
 
-test('hardware dungeon reviews move intact to the mandatory native release job', () => {
+test('hardware dungeon and additive reviews retain a mandatory native release gate', () => {
     const workflow = readFileSync('.github/workflows/ci.yml', 'utf8');
-    const native = workflow.split('      - name: Run required native dungeon materials and prepared outfits\n')[1].split('\n      - name:')[0];
+    const native = workflow.split('      - name: Run required native dungeon materials, prepared outfits and additive surfaces\n')[1].split('\n      - name:')[0];
     expect(native).not.toContain('if:');
     expect(native).toContain("EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'");
     for (const file of ['dungeon-entry-ward', 'dungeon-floor-material']) {
@@ -156,4 +156,7 @@ test('hardware dungeon reviews move intact to the mandatory native release job',
         expect(browserSmokeBaselineFiles(manifest)).not.toContain(name);
         expect(native).toContain(name);
     }
+    expect(browserSmokeBaselineFiles(manifest)).toContain('tests/e2e/additive-effects-render.spec.js');
+    expect(native).toContain('tests/e2e/additive-effects-render.spec.js');
+    expect(native).toContain('additive status, cast and contact');
 });
