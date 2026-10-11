@@ -140,7 +140,7 @@ Every explicit requirement in those sources remains part of the completion audit
   and both copied package notices verify. Complete rights/1.86/campaign/device
   gates remain open. [Qualification](2026-10-11-content-authoring-qualification.json).
 - **Branch workflow:** reviewed completed work merges into `master`. Local
-  unmerged tips are now **69**, reduced from 287; 571 of 640 local branch names
+  unmerged tips are now **65**, reduced from 287; 576 of 641 local branch names
   are already merged. Unfinished/rejected experiments
   and the original dirty checkout are preserved. No blanket merge, deletion,
   reset, stash or force-push. The latest historical merges retain dated diagnostic/release evidence and
@@ -152,6 +152,10 @@ Every explicit requirement in those sources remains part of the completion audit
   Eight completed1.61–1.68casino branches are now reconciled; six later joins
   preserve the current source tree exactly. The venue accessible-name/style
   omission is restored and qualified with102checks/one browser case.
+  Four original privacy/notices/support/guide branches are also reconciled with
+  current implementations preserved; completed geometry observer work is merged.
+  [Original feature histories](2026-10-11-original-support-history-reconciliation.json),
+  [privacy history](2026-10-11-original-privacy-history-reconciliation.json),
   [Casino reconciliation](2026-10-11-casino-branch-reconciliation.json),
   [Workflow](../../AGENTS.md),
   [maintenance-notice history](2026-10-11-maintenance-notice-history-reconciliation.json),
@@ -239,7 +243,7 @@ Every explicit requirement in those sources remains part of the completion audit
 
 | Work | Current state and limits |
 | --- | --- |
-| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30–32 and deployed, unaccepted 33. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
+| Requested jump, aura and admin fixes | Merged and accepted in public 29, retained in accepted 30–33 and the active corrective 34 candidate. Approximately 1.5-second jump arrival, continuous takeoff/landing and network pose handling; Well Rested follows final rendered pose; automation accounts are reported separately. No final whole-game performance claim. |
 | Supplied actors and equipment | Four class GLBs, equipment catalog and motion banks are delivered and integrated. Retain originals, provenance, rig/bone/morph/material/slot identity and compatibility. No replacement procedural player catalog or repeated asset request. |
 | Dungeon/environment/combat/HUD milestone | Selected ground/floor/prop maps, entrance wards, regional relics, paving, shallow boss masonry, equipped motions, impact continuity, bounded contact foley and status symbols are merged and included in accepted 30. Old “private/not published” labels in dated receipts are historical. Final art, human listening, busy fights and device gates remain open. |
 | Renderer/environment milestone 31 | High-only singleton batching, reviewed DemonOrc packing, camp instance clipping, display-space FXAA, rock shoulders, rooted foliage shading, pine growth/coverage, Earth map cleanup/ordered physical layers and tapered fern pinnae are merged and pushed as 88be47c5. Exact ordered publication acceptance passed; broader art/performance remains open. Earlier rejected all-quality singleton and renderer prototypes remain separate. |
@@ -300,6 +304,13 @@ Low 202 calls/89,808 or 103,110 triangles, and the earlier Low woodland 83→90
 regression. Different populations, later passing medians, prepared scenes or
 shared-host measurements do not causally clear them. Source-specific additional
 failures and raw measurements remain in the archived register and receipts.
+
+New completed geometry observer records preparation after each actual timed frame.
+The bounded four-class High sample has118pending/62settled frames;297median
+draws/174,118median triangles,246,694peak,33.4msmedian/50.1msp95 fails the
+unchanged20/33.4ms targets. Settled frames still have33.3msmedian. This
+correlation selects no optimization, clears no prior failure and stops before
+subsequent save-custody assertions. [Evidence](2026-10-11-party-startup-geometry-observation.json).
 
 Keep rejected forest visibility, woodland spatial geometry duplication, soil
 contrast, unsafe descendant/light discovery, exact matrix-product and
