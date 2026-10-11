@@ -236,6 +236,7 @@ export class CasinoController {
         this.engine.inputManager?.clearInputState?.();
         if (this.engine.player) this.engine.player.targetPosition = null;
         const heading = document.createElement('h2'); heading.textContent = guard ? 'VIP Guard' : 'Lanternhold Casino';
+        this.dialogue.setAttribute('aria-label', heading.textContent);
         const copy = document.createElement('p');
         copy.textContent = guard ? (this.vipActive ? 'Welcome to the Sovereign Lounge. Upstairs games wager and return only EP, usable for cosmetics—not Gold or combat power.' : 'You must be a VIP to enter')
             : downstairs ? 'Return to the main Gold gaming floor? Your saved outcomes and bonus features remain yours.'
