@@ -6,6 +6,25 @@ import { EARTH_ELEVATION } from '../src/data/worldElevation.js';
 import { EARTH_LOCATIONS, EARTH_PATHS, distanceToPath } from '../src/data/worldPopulation.js';
 import { CollisionManager } from '../src/core/CollisionManager.js';
 
+test.each([
+    ['flat', null, 'e3fab4219bd55e11e4eeab5e01eec9b38d38280f28bd7712d0256523bd9061a6', 'f129cbca2db74ea650bcd4db284b1aaab90337851e79e94afbc37bc65ad5b32b'],
+    ['raised', EARTH_ELEVATION, 'df1564dfc80022b9df09f9143e169418b033e84acb7f8298a301ec3ac8e8fe46', '2e26340230adc221199d40f231c542b26995410a36eb23dc63ae3c1a44a00da8']
+])('directional faults retain every pre-change buried base and crown (%s)', (label, terrain, baseSHA256, capSHA256) => {
+    // Independent a8890a84 recipe bytes, not a golden of the new silhouette.
+    const base = createHash('sha256'), cap = createHash('sha256');
+    for (const solid of EARTH_OUTCROP_SOLIDS) {
+        const geometry = createEarthOutcropGeometry(solid, terrain);
+        try {
+            const positions = geometry.attributes.position.array;
+            for (const [hash, values] of [[base, positions.subarray(0, 16 * 6 * 3)], [cap, positions.subarray(192 * 3 * 3)]]) {
+                hash.update(Buffer.from(values.buffer, values.byteOffset, values.byteLength));
+            }
+        } finally { geometry.dispose(); }
+    }
+    expect(base.digest('hex')).toBe(baseSHA256);
+    expect(cap.digest('hex')).toBe(capSHA256);
+});
+
 test('upper rock clefts retain the buried recipe and use the existing bounded surfaces', () => {
     const solid = EARTH_OUTCROP_SOLIDS[0];
     const first = createEarthOutcropGeometry(solid, EARTH_ELEVATION);
