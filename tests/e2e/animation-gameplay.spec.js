@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { CONSTANTS } from '../../src/core/Constants.js';
 import { readAnimationCastState, readAnimationPresentation } from '../animationPresentationRecord.js';
 import { clearPreparedRune } from './prepared-rune-input.js';
+import { sampleMovingCastFrames } from '../movingCastFrameProbe.js';
 import {
     PLAYER_ABILITY_VISUALS,
     getAbilityRuneVariants,
@@ -335,33 +336,6 @@ async function castThroughInput(page, className, skillName, key, presentation, o
     return snapshot;
 }
 
-async function sampleMovingCastFrames(page, durationMs = 650) {
-    return page.evaluate((duration) => new Promise((resolve) => {
-        const frames = [];
-        const startedAt = performance.now();
-        const capture = (now) => {
-            const player = window.game?.player;
-            if (player?.position) {
-                frames.push({
-                    elapsedMs: now - startedAt,
-                    x: player.position.x,
-                    z: player.position.z,
-                    state: player.state,
-                    targetX: player.targetPosition?.x ?? null,
-                    targetZ: player.targetPosition?.z ?? null,
-                    ability: player.currentAbilityAnimation?.skillName || null
-                });
-            }
-            if (now - startedAt >= duration) {
-                resolve(frames);
-                return;
-            }
-            requestAnimationFrame(capture);
-        };
-        requestAnimationFrame(capture);
-    }), durationMs);
-}
-
 async function exerciseMovingBaseCast(page, className, skillName, presentation, testInfo, renderer) {
     await page.keyboard.press('b');
     await expect.poll(async () => {
@@ -400,7 +374,7 @@ async function exerciseMovingBaseCast(page, className, skillName, presentation, 
     expect(before.targetX).not.toBeNull();
     expect(Math.hypot(before.targetX - before.x, before.targetZ - before.z)).toBeGreaterThan(8);
 
-    const framesPromise = sampleMovingCastFrames(page);
+    const framesPromise = page.evaluate(sampleMovingCastFrames, 650);
     await castThroughInput(page, className, skillName, 'right', presentation, { prepare: false });
     const frames = await framesPromise;
     // Retain the actual frame timing/movement before any assertion. This probe
