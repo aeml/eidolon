@@ -3,6 +3,7 @@ import { writeFile } from 'node:fs/promises';
 
 export async function compareSavedCharacterAdditiveEffects(page, testInfo) {
     await expect.poll(() => page.evaluate(() => window.game.player.mesh?.userData.equipmentVisualItemCount)).toBe(14);
+    await expect.poll(() => page.evaluate(() => window.game.player.hotbar.slice(0, 4))).toEqual(['Charge', 'Whirlwind', 'Shield Slam', 'Iron Fortress']);
     await page.keyboard.press('4');
     await expect.poll(() => page.evaluate(() => window.game.player.ironFortressTimer)).toBeGreaterThan(0);
     const evidence = await page.evaluate(async () => {
