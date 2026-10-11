@@ -36,7 +36,7 @@ test('actual GLTFLoader character and fitted buffers retain exact worker payload
                 if (sha256 !== asset.sha256) throw new Error(`Asset hash mismatch: ${asset.file}`);
                 const gltf = await new GLTFLoader().parseAsync(bytes, new URL('.', response.url).href);
                 const geometries = new Set(), materials = new Set(), textures = new Set();
-                const generations = [], counts = { packedFloat: 0, interleavedFloat: 0, other: 0, skipped: 0 };
+                const generations = [], counts = { packedFloat: 0, interleavedFloat: 0, other: 0, integer: 0, skipped: 0 };
                 try {
                     gltf.scene.traverse(mesh => {
                         if (!mesh.isMesh) return;
@@ -55,7 +55,10 @@ test('actual GLTFLoader character and fitted buffers retain exact worker payload
                             if (copied && (copied.itemSize !== decoded.itemSize || !bytesEqual(copied.array, decoded.array))) throw new Error(`Attribute copy mismatch: ${name}`);
                             if (actual.transfers.includes(attribute.array.buffer)) throw new Error('Source buffer transferred');
                             if (attribute.array instanceof Float32Array && !attribute.normalized) counts[attribute.isInterleavedBufferAttribute ? 'interleavedFloat' : 'packedFloat']++;
-                            else counts.other++;
+                            else {
+                                counts.other++;
+                                if (!attribute.normalized && (attribute.array instanceof Uint8Array || attribute.array instanceof Uint16Array)) counts.integer++;
+                            }
                         }
                         for (const [index, target] of (expected.morphTargets || []).entries()) for (const name of ['position', 'normal']) {
                             if (!bytesEqual(actual.source.morphTargets[index][name].array, target[name].array)) throw new Error('Morph copy mismatch');
@@ -93,5 +96,6 @@ test('actual GLTFLoader character and fitted buffers retain exact worker payload
     expect(report.rows.every(row => row.exact && row.sourceBuffersRetainedAfterTransfer && row.meshes > 0)).toBe(true);
     expect(report.rows.reduce((sum, row) => sum + row.counts.interleavedFloat, 0)).toBeGreaterThan(0);
     expect(report.rows.reduce((sum, row) => sum + row.counts.packedFloat, 0)).toBeGreaterThan(0);
+    expect(report.rows.reduce((sum, row) => sum + row.counts.integer, 0)).toBeGreaterThan(0);
     expect(failures, failures.join('\n')).toEqual([]);
 });

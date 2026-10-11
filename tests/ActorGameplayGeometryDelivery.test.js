@@ -220,6 +220,41 @@ test.each(['normalized', 'custom-reader', 'interleaved-custom-reader'])('%s attr
     } finally { f.dispose(); }
 });
 
+test.each([Uint8Array, Uint16Array])('packed %p bone indices retain their exact numeric values in a separate worker buffer', Type => {
+    const f = fixture();
+    try {
+        const maximum = Type === Uint8Array ? 255 : 65535;
+        const backing = new Type([7, 8, ...Array.from({ length: 16 }, (_, index) => index % 2 ? maximum : index), 9]);
+        const view = backing.subarray(2, 18);
+        f.source.setAttribute('skinIndex', new THREE.BufferAttribute(view, 4));
+        const payload = copyGameplayGeometry(f.pass.capture(f.mesh), 100_000);
+        const copied = payload.source.attributes.skinIndex.array;
+        expect(copied).toEqual(new Float32Array(view));
+        expect(copied.byteLength).toBe(16 * 4);
+        expect(payload.transfers).not.toContain(backing.buffer);
+        copied.fill(0);
+        expect(backing[3]).toBe(maximum);
+        expect(backing[0]).toBe(7); expect(backing[18]).toBe(9);
+    } finally { f.dispose(); }
+});
+
+test.each([Uint8Array, Uint16Array])('interleaved %p bone indices omit padding and preserve source ownership', Type => {
+    const f = fixture();
+    try {
+        const maximum = Type === Uint8Array ? 255 : 65535;
+        const backing = new Type([8, 9, ...Array.from({ length: 4 }, (_, index) => [7, index, maximum, 0, 1, 6]).flat(), 10]);
+        const view = backing.subarray(2, 26);
+        f.source.setAttribute('skinIndex', new THREE.InterleavedBufferAttribute(new THREE.InterleavedBuffer(view, 6), 4, 1));
+        const payload = copyGameplayGeometry(f.pass.capture(f.mesh), 100_000);
+        const copied = payload.source.attributes.skinIndex.array;
+        expect(copied).toEqual(new Float32Array(Array.from({ length: 4 }, (_, index) => [index, maximum, 0, 1]).flat()));
+        expect(payload.transfers).not.toContain(backing.buffer);
+        copied.fill(0);
+        expect(backing[4]).toBe(maximum);
+        expect(backing[0]).toBe(8); expect(backing[26]).toBe(10);
+    } finally { f.dispose(); }
+});
+
 test('rigid mount work carries its quality without fabricated skin attributes and ignores other meshes', () => {
     const f = fixture();
     try {
