@@ -307,12 +307,12 @@ jobs:
         # assertions. This step is mandatory and blocks both deploy jobs.
         run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/populated-earth-world.spec.js --grep "high at 1280px quality switches" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/regional-quality/results'
 
-      - name: Run required native dungeon materials and prepared outfits
+      - name: Run required native dungeon materials, prepared outfits and additive surfaces
         env:
           EIDOLON_E2E_BROWSER_PATH: /usr/bin/google-chrome
           EIDOLON_E2E_REQUIRE_NATIVE_GPU: '1'
           PLAYWRIGHT_HTML_OUTPUT_DIR: native-visual-evidence/dungeon-outfits/report
-        run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/dungeon-entry-ward.spec.js tests/e2e/dungeon-floor-material.spec.js tests/e2e/published-game-bundle.spec.js --grep "grounded entry wards|floor weathering|geometry scheduling|elemental floor materials" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/dungeon-outfits/results'
+        run: sg render -c 'node node_modules/@playwright/test/cli.js test tests/e2e/dungeon-entry-ward.spec.js tests/e2e/dungeon-floor-material.spec.js tests/e2e/published-game-bundle.spec.js tests/e2e/additive-effects-render.spec.js --grep "grounded entry wards|floor weathering|geometry scheduling|elemental floor materials|additive status, cast and contact" --workers=1 --retries=0 --reporter=line,html --output=native-visual-evidence/dungeon-outfits/results'
 
       - name: Run required Well Rested rendering and GPU lifecycle QA
         if: inputs.full_stabilization == true || vars.EIDOLON_FULL_STABILIZATION == 'true'

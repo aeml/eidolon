@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
 import { collectBrowserFailures } from './helpers.js';
+import { requiresHardwareWebGL } from './browserLaunchPolicy.js';
 
 for (const quality of ['high', 'low']) test(`${quality}: additive status, cast and contact effects preserve their source surfaces in one pass`, async ({ page, baseURL }, testInfo) => {
     test.setTimeout(180000);
@@ -77,7 +78,7 @@ for (const quality of ['high', 'low']) test(`${quality}: additive status, cast a
             scope: 'Isolated actual factory corpus: all canonical ability layers, all status definitions and all feedback definitions at two early phases and three front/back oblique views. Exact same geometry, transforms and material properties except forceSinglePass. Technical surface/call-count comparison, not gameplay timing, final art or physical-device acceptance.' };
     }, quality);
     await writeFile(testInfo.outputPath('effect-policy-comparison.json'), JSON.stringify(evidence, null, 2));
-    expect(evidence.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
+    if (requiresHardwareWebGL()) expect(evidence.gpu).not.toMatch(/swiftshader|llvmpipe|software/i);
     expect(evidence.cases).toBeGreaterThan(52);
     for (const report of evidence.reports) {
         expect(report.materials, report.label).toBeGreaterThan(0);
