@@ -68,7 +68,24 @@ export function prepareWeaponMotions(root, scene) {
             }
             return byName.has(selectedAttack) ? selectedAttack : state;
         }
-        const resolved = `${profile}_${state}${root.userData.dualWield && state !== 'Attack' ? '_Dual' : ''}`;
+        const dual = root.userData.dualWield && state !== 'Attack';
+        const offhand = root.userData.offhandWeaponProfile;
+        if (dual && offhand !== profile) {
+            const mixedName = `${profile}_${offhand}_${state}_Dual`;
+            if (!byName.has(mixedName)) {
+                const main = byName.get(`${profile}_${state}`), off = byName.get(`${offhand}_${state}_Left`);
+                if (main && off) {
+                    // Share the delivered tracks; only the left arm changes
+                    // profile. Create a pair when used, not every possible
+                    // loadout at actor startup. Actor binds its action lazily.
+                    const mixed = new THREE.AnimationClip(mixedName, main.duration,
+                        [...main.tracks.filter(track => !leftArm(track.name)), ...off.tracks.filter(track => leftArm(track.name))]);
+                    clips.push(mixed); byName.set(mixedName, mixed);
+                }
+            }
+            if (byName.has(mixedName)) return mixedName;
+        }
+        const resolved = `${profile}_${state}${dual ? '_Dual' : ''}`;
         return byName.has(resolved) ? resolved : state;
     };
 }

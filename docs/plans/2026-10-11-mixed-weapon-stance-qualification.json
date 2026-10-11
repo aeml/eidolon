@@ -1,0 +1,47 @@
+{
+  "recordedUTC": "2026-10-11T14:08:44.150963+00:00",
+  "source": "66992b942ab6c042b4ec3c7db2e3af4916eb8361",
+  "base": "ddef1dce92bb03b5acdc27895a0ef6fc7b7ef97f",
+  "status": "Qualified selected runtime change; ordinary master merge follows. Unpublished pending corrected33 acceptance.",
+  "problem": "A mixed Rogue loadout formerly resolved every non-attack stance from the main-hand profile for both hands. Lazy mixed clips retain the main profile body/right arm and the existing bind-space mirrored off-hand left-arm tracks.",
+  "checks": {
+    "focusedUnits": 83,
+    "suites": 4,
+    "seconds": 4.346,
+    "fullLint": "pass before final fixture additions",
+    "finalScopedLint": "pass for all four changed paths",
+    "nativeCases": 1,
+    "nativeSeconds": 21.4,
+    "retries": 0,
+    "skips": 0,
+    "nativeMixedGripSamples": 60,
+    "nativeClasses": 8,
+    "nativeQualities": [
+      "high",
+      "low"
+    ],
+    "nativeOrderedMixedPairs": 6,
+    "nativeStates": [
+      "Idle",
+      "CombatIdle",
+      "Walk",
+      "Run",
+      "Block"
+    ]
+  },
+  "ownership": "Reuse existing supplied tracks/typed arrays. No upfront pair clips/actions. Existing Actor mixer cleanup uncaches all lazy actions/bindings; verified for all six loadouts. Supplied GLBs, rigs, geometry, materials and attack cadence unchanged.",
+  "retainedFailures": [
+    "Initial unit fixture lacked required Actor config; baseline-units.log.",
+    "Corrected fixture on original product failed all six ordered mixed loadouts; baseline-corrected-fixture.log."
+  ],
+  "visualReview": [
+    "1-Run.png",
+    "Rogue-equipped-preview.png"
+  ],
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-mixed-weapon-stance-checks-20261011",
+    "inventoryEntries": 27,
+    "inventorySHA256": "6f968519bdef5ade19d5dfeff409edfbde36f29b35391cb90aeddc60a3933571"
+  },
+  "limits": "Actual supplied assets and normal Actor.setMesh/fitted-equipment/mixer path in native gallery, not connected party/device/campaign or final art acceptance. No new release; wait for exact corrected33 acceptance before successor milestone."
+}
