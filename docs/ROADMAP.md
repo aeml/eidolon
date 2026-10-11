@@ -2,17 +2,18 @@
 
 Last refreshed: October 11, 2026
 
-This file is a short pointer. Last accepted public release: Alpha1.79.31,
-exact88be47c55e56b00f7d7cdb659c6ed51020391cb3
-([ordered CI and live acceptance](plans/2026-10-11-public31-terminal-qualification.json)).
-Pushed Alpha1.79.32/d31246e9 CI38136326810 passed source/browser/native checks
-and frontend publication, but attempt1 server deployment refused insufficient
-storage before build/service replacement. After verified clean merged scratch
-retirement, one failed-job-only attempt2 deployed the server successfully; live
-browser/character QA is active. Own ordered live/normal-TLS nine-asset acceptance
-remains pending.
-[Failure and capacity repair](plans/2026-10-11-release32-storage-preflight-recovery.json).
-Qualified birch/recovery/support/Player Guide work is merged locally, unpublished.
+This file is a short pointer. Last accepted public release: Alpha1.79.32,
+exact `d31246e9b53fbe73bd7f59beea4c3235df30a922`, CI38136326810 attempt2.
+All ten ordered jobs succeed; post-terminal normal-TLS frontend/backend identity,
+ready database and all nine served asset hashes/byte counts match at12:33:35UTC.
+[Acceptance](plans/2026-10-11-public32-terminal-qualification.json).
+Attempt1's storage-preflight refusal and verified clean-scratch capacity repair
+remain recorded; the unchanged2048MiB guard was not lowered.
+[Failure and repair](plans/2026-10-11-release32-storage-preflight-recovery.json).
+Qualified birch/recovery/support/Player Guide and content-authoring/lore work is
+merged into local master, awaiting coherent publication.79 histories remain
+unmerged; unfinished/rejected work stays isolated.
+[Authoring qualification](plans/2026-10-11-content-authoring-qualification.json).
 The [remaining register](plans/2026-10-09-release-readiness-remaining.md) retains
 all inherited world/art/gameplay/device/performance/operations/F1–F5/beta/launch
 requirements and historical failures. No freeze or beta acceptance is claimed.

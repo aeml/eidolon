@@ -803,3 +803,35 @@ Storage failure/repair receipt frozen. No newpush until ownorderedlive/9asset
 acceptance; public31lastaccepted, public29soak38109009521 separatelyactive.
 Originaldirty203/262 and scopeheader preserved. Alloriginalworld/art/gameplay/
 device/performance/operations/F1-F5/beta/launch/handoff requirements stayactive.
+
+
+## October11 current authoring merge and accepted public32 — 2026-10-11T12:38:35.252640+00:00
+
+Previous branch-count-only turn did not advance authoritative implementation.
+This turn revalidated current source and live jobs, completed the next safe work
+and retained the full original goal.
+
+Public32/exactd31246e9b53fbe73bd7f59beea4c3235df30a922/CI38136326810attempt2 is terminal
+success. All10orderedjobs and post-terminal12:33:35UTC normal-TLS exactfrontend/
+backend/readyDB/9asset bytes+hashes verify. Originalattempt1 storage refusal and
+one failed-job-only retry after verified clean scratch retirement remain retained;
+unchanged2048MiB guard. See2026-10-11-public32-terminal-qualification.json.
+
+Selected completed authoring aff0fe10 ordinarily merged into current source
+596c170f and qualified3d00395d; fresh fetch+ordinarymerge into localmaster.
+Preserved current744-path catalog byte-for-byte, selected character/equipment
+derivatives and retained baselines while adding read-only --check/import and
+coverage/grip/hash/path/motion validation.58distinct focused checks/7suites,
+2nativeChrome1280/390cases pass; retries/skips0. Fixed lore header+scroll region,
+keyboardEnd/fullending/control bounds/input/lifetime/no-network qualification.
+29links/both copied notices verify; actualdesktop/phoneending inspected.
+Contributor merge-to-master rule explicit. Unmerged80→79(original287); no branch
+deletion or blanket merge. Currentauthoring qualification retains originaldated
+264-path receipt/failures separately; no claim old generator supportsnew assets.
+
+Birch/recovery/support/guide/authoring remain qualified merged but unpublished,
+ready for coherent next milestone. Existing100-clientsoak38109009521 onpublic29
+remains active, not capacity acceptance. No unchanged campaign/soak replay.
+All originalworld/art/gameplay/device/performance/operations/F1–F5/beta/launch/
+handoff requirements stay open. No new license, policy, account/access/terrain
+activation, production restore or final visual-quality approval.

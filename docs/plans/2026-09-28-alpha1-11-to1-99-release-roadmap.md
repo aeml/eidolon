@@ -1,20 +1,19 @@
 # Eidolon 1.11–1.99: open-alpha completion, closed beta and release readiness
 
-October11 current checkpoint: last accepted publicAlpha1.79.31,
-exact88be47c55e56b00f7d7cdb659c6ed51020391cb3,
-CI38131408628attempt1 all10orderedjobs successful. Post-terminal normal-TLS
-frontend/backend/readyDB and9served assets match.
-[Acceptance](2026-10-11-public31-terminal-qualification.json).
-PushedAlpha1.79.32/exactd31246e9 CI38136326810attempt1 passes all source,
-browser/native and frontend publication, but server deployment refuses1675MiB
-against unchanged2048MiB storage preflight before build/service replacement.
-Verified clean merged scratch retirement restores3104MiB. One failed-job-only
-attempt2 deployed the server successfully; live browser/character QA is active.
-Own ordered live/nineasset acceptance is pending.
+October11 current checkpoint: last accepted publicAlpha1.79.32,
+exact `d31246e9b53fbe73bd7f59beea4c3235df30a922`, CI38136326810attempt2.
+All10orderedjobs succeed; post-terminal normal-TLS frontend/backend/readyDB
+and9served asset hashes/byte counts match at12:33:35UTC.
+[Acceptance](2026-10-11-public32-terminal-qualification.json).
+Attempt1's1675MiB/2048MiB storage refusal and clean merged scratch capacity
+repair remain retained; one failed-job-only retry reused passing prerequisites.
 [Failure and repair](2026-10-11-release32-storage-preflight-recovery.json).
-Qualified birch/recovery-integrity/account-help/Player-Guide components are
-merged into localmaster, unpublished.80unmerged histories remain reviewed
-individually; unfinished/rejected source and originaldirty checkout preserved.
+Qualified birch/recovery/account-help/Player-Guide/content-authoring components
+are merged into localmaster, awaiting a coherent publication.79unmerged histories
+remain individually reviewed; unfinished/rejected source and originaldirty
+checkout preserved. Authoring retains exact744-path catalog and qualifies58
+focused checks plus2native desktop/phone cases.
+[Authoring qualification](2026-10-11-content-authoring-qualification.json).
 Historical High frame-time failures, broader world/art/combat/audio, whole-game
 performance/devices/operations/F1-F5/beta/launch/handoff requirements stayopen.
 Existing100-clientsoak38109009521is active onpublic29, not capacity acceptance.
