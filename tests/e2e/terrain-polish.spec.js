@@ -103,16 +103,25 @@ test(`${surface} ground keeps gameplay-scale detail on both graphics settings`, 
                 requestAnimationFrame(sample);
             });
             frames.sort((a, b) => a - b);
+            const surfaceMaps = surface === 'earth'
+                ? Object.entries(floor.material.userData.earthGroundComposition)
+                : ['normalMap', 'roughnessMap'].map(channel => [channel, floor.material[channel]]);
+            const program = render.renderer.properties.get(floor.material).currentProgram;
+            const gl = render.renderer.getContext();
+            const activeUniforms = Array.from({ length: gl.getProgramParameter(program.program, gl.ACTIVE_UNIFORMS) },
+                (_, i) => gl.getActiveUniform(program.program, i).name);
             return {
                 quality, generationMs, medianMs: frames[Math.floor(frames.length / 2)],
                 p95Ms: frames[Math.floor(frames.length * 0.95)],
                 textureBytes: floor.material.map.image.data.byteLength,
-                surfaceMaps: ['normalMap', 'roughnessMap'].map(channel => ({
+                surfaceMaps: surfaceMaps.map(([channel, texture]) => ({
                     channel,
-                    bytes: floor.material[channel]?.image.data.byteLength || 0,
-                    colorSpace: floor.material[channel]?.colorSpace,
-                    repeat: floor.material[channel]?.repeat.toArray()
+                    bytes: texture.image.data.byteLength,
+                    colorSpace: texture.colorSpace,
+                    repeat: texture.repeat.toArray()
                 })),
+                activeUniforms,
+                genericSurfaceMaps: Boolean(floor.material.normalMap || floor.material.roughnessMap),
                 repeat: floor.material.map.repeat.toArray(),
                 geometries: render.renderer.info.memory.geometries,
                 textures: render.renderer.info.memory.textures,
@@ -123,10 +132,20 @@ test(`${surface} ground keeps gameplay-scale detail on both graphics settings`, 
         console.log(`Terrain comparison: ${JSON.stringify(metrics)}`);
         expect(metrics.textureBytes).toBe(quality === 'high' ? 256 * 256 * 4 : 128 * 128 * 4);
         expect(metrics.surfaceTriangles).toBe(2);
+        expect(metrics.surfaceMaps.map(map => map.channel)).toEqual(surface === 'earth'
+            ? ['mask', 'detail', 'surface'] : ['normalMap', 'roughnessMap']);
         for (const surfaceMap of metrics.surfaceMaps) {
-            expect(surfaceMap.bytes).toBe(metrics.textureBytes);
+            expect(surfaceMap.bytes).toBe(metrics.textureBytes * (surfaceMap.channel === 'mask' ? 4 : 1));
             expect(surfaceMap.colorSpace).toBe(''); // Three.NoColorSpace, not sRGB albedo.
-            expect(surfaceMap.repeat).toEqual(metrics.repeat);
+            expect(surfaceMap.repeat).toEqual(surface === 'earth' ? [1, 1] : metrics.repeat);
+        }
+        if (surface === 'earth') {
+            expect(metrics.genericSurfaceMaps).toBe(false);
+            expect(metrics.activeUniforms).toEqual(expect.arrayContaining(['earthComposition', 'earthDetail', 'earthSurface']));
+            for (const unused of ['map', 'normalMap', 'roughnessMap']) expect(metrics.activeUniforms).not.toContain(unused);
+        } else {
+            expect(metrics.genericSurfaceMaps).toBe(true);
+            expect(metrics.activeUniforms).toEqual(expect.arrayContaining(['map', 'normalMap', 'roughnessMap']));
         }
         await testInfo.attach(`terrain-${quality}-metrics`, { body: JSON.stringify(metrics, null, 2), contentType: 'application/json' });
         await page.screenshot({ path: testInfo.outputPath(`${surface}-${quality}.png`) });

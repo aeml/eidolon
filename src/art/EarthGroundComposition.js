@@ -174,7 +174,7 @@ export function applyEarthGroundComposition(material, quality = 'high') {
     const mask = createEarthCompositionMask(quality), detail = createForestFloorDetail(quality), surface = createEarthSurfaceDetail(quality);
     const region = WORLD_REGIONS.earth;
     material.userData.earthGroundComposition = { mask, detail, surface };
-    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v15';
+    material.customProgramCacheKey = () => 'eidolon-earth-ground-composition-v16';
     material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, { earthComposition: { value: mask }, earthDetail: { value: detail }, earthSurface: { value: surface }, earthSurfaceScale: { value: 1 / EARTH_SURFACE_TILE_METRES },
             earthBounds: { value: new THREE.Vector4(region.minX, region.minZ, region.maxX - region.minX, region.maxZ - region.minZ) } });
@@ -191,7 +191,10 @@ export function applyEarthGroundComposition(material, quality = 'high') {
             uniform sampler2D earthSurface;
             uniform float earthSurfaceScale;
             uniform vec4 earthBounds;
-        `).replace('#include <map_fragment>', `#include <map_fragment>
+        `).replace('#include <map_fragment>', `
+            // The composition supplies the complete albedo below. Keep the
+            // shared material.map ownership contract without sampling a color
+            // that would immediately be overwritten.
             vec4 earthWear = texture2D(earthComposition, (vEarthGround - earthBounds.xy) / earthBounds.zw);
             vec4 earthBroad = texture2D(earthDetail, vEarthGround * .043 + vec2(.37, .19));
             // Continuous physical-space warping breaks the visible five-metre

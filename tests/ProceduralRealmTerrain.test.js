@@ -36,6 +36,40 @@ describe('procedural dark-fantasy realm terrain', () => {
         const high = createProceduralTerrainMaterial(key);
         const duplicate = createProceduralTerrainMaterial(key);
         const low = createProceduralTerrainMaterial(key, { quality: 'low' });
+        if (key === 'earth') {
+            // Earth derives physical response from these same world-registered
+            // fields, rather than independently tiled noise surface maps.
+            expect(high.normalMap).toBeNull(); expect(high.roughnessMap).toBeNull();
+            expect(low.normalMap).toBeNull(); expect(low.roughnessMap).toBeNull();
+            const maps = high.userData.earthGroundComposition;
+            for (const [channel, texture] of Object.entries(maps)) {
+                const lowTexture = low.userData.earthGroundComposition[channel];
+                const size = channel === 'mask' ? 512 : 256;
+                expect(texture.isDataTexture).toBe(true);
+                expect(texture.colorSpace).toBe(THREE.NoColorSpace);
+                expect(texture.image.data.byteLength).toBe(size * size * 4);
+                expect(lowTexture.image.data.byteLength).toBe(size * size);
+                const duplicateData = duplicate.userData.earthGroundComposition[channel].image.data;
+                expect(texture.image.data.every((value, index) => value === duplicateData[index])).toBe(true);
+                expect(texture.generateMipmaps).toBe(channel !== 'mask');
+                expect(texture.wrapS).toBe(channel === 'mask' ? THREE.ClampToEdgeWrapping : THREE.RepeatWrapping);
+                expect(texture.wrapT).toBe(texture.wrapS);
+                expect(new Set(texture.image.data).size).toBeGreaterThan(100);
+                for (let y = 0; y < size / 2; y += 7) for (let x = 0; x < size / 2; x += 7) {
+                    const highOffset = (y * 2 * size + x * 2) * 4;
+                    const lowOffset = (y * size / 2 + x) * 4;
+                    expect(lowTexture.image.data.slice(lowOffset, lowOffset + 4))
+                        .toEqual(texture.image.data.slice(highOffset, highOffset + 4));
+                }
+            }
+            const counts = [0, 0, 0, 0];
+            [...Object.values(maps), high.map].forEach((texture, i) => texture.addEventListener('dispose', () => counts[i]++));
+            high.dispose(); high.dispose();
+            expect(counts).toEqual([1, 1, 1, 0]);
+            high.map.dispose();
+            for (const material of [duplicate, low]) { material.map.dispose(); material.dispose(); }
+            return;
+        }
         for (const channel of ['normalMap', 'roughnessMap']) {
             const texture = high[channel];
             expect(texture.isDataTexture).toBe(true);
