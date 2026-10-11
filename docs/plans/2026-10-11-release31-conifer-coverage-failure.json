@@ -1,0 +1,68 @@
+{
+  "recordedUTC": "2026-10-11T10:14:29.310617+00:00",
+  "run": 38129763146,
+  "attempt": 1,
+  "commit": "2c41890c8e1abd296326e30f5a1972c70ae6dcfe",
+  "conclusion": "failure",
+  "jobs": [
+    {
+      "name": "Browser Smoke (Playwright 3/3)",
+      "id": 114441475662,
+      "conclusion": "success"
+    },
+    {
+      "name": "Browser Smoke (Playwright 1/3)",
+      "id": 114441475717,
+      "conclusion": "success"
+    },
+    {
+      "name": "Client Tests (Jest)",
+      "id": 114441475788,
+      "conclusion": "failure"
+    },
+    {
+      "name": "Browser Smoke (Playwright 2/3)",
+      "id": 114441475837,
+      "conclusion": "success"
+    },
+    {
+      "name": "Server Tests (Go)",
+      "id": 114441475840,
+      "conclusion": "success"
+    },
+    {
+      "name": "Predeploy Character QA (System Chrome)",
+      "id": 114445097982,
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "id": 114445098446,
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Validate Production QA Inputs",
+      "id": 114445098589,
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Deploy Server (SSH)",
+      "id": 114445098727,
+      "conclusion": "skipped"
+    },
+    {
+      "name": "Live Release and Character QA",
+      "id": 114445099022,
+      "conclusion": "skipped"
+    }
+  ],
+  "cause": "Unchanged coniferHigh/Lowprojectedcoverage>18fails17.2538after selectedboughgrowth.716suites10563tests pass;1suite2tests fail. Server/allbrowser shards pass. No retry/cancel; allfive downstreamjobs skip, no31deployment.",
+  "correction": "aaad93ce productedge .20to.22 restores originalgate with unchanged count/cost;16focused3suites plus7native pass. Full orderedCI/deploy/live/exactassets due on corrected milestone.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release31-client-failure-checks-20261011",
+    "entries": 4,
+    "files": 5,
+    "inventorySHA256": "0b2a043efdf69458eb21fa34d09689ccc4ab97b818bdc664b2c6dc0d05277a6d",
+    "readOnly": true
+  }
+}

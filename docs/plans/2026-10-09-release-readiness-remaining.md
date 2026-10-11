@@ -9,16 +9,17 @@ Historical test receipts do not close unchecked requirements.
 
 **Master reconciliation:** completed, qualified world/dungeon/equipment/HUD,
 renderer and contact-audio work is merged into local `master`. Branch
-reconciliation reduced distinct unmerged histories287→98; unfinished/rejected
+reconciliation reduced distinct unmerged histories287→96; unfinished/rejected
 experiments and the dirty user checkout remain preserved. New completed work
 continues to merge into `master`, without adding work branches or force-pushing.
 [Repository workflow](../../AGENTS.md),
 [branch reconciliation](2026-10-11-master-branch-reconciliation.json),
 [four completed-history follow-up merges](2026-10-11-completed-branch-followup.json),
 [completed regeneration history](2026-10-11-regeneration-branch-reconciliation.json),
-[completed opening reward history](2026-10-11-opening-reward-branch-reconciliation.json).
+[completed opening reward history](2026-10-11-opening-reward-branch-reconciliation.json),
+[completed stale-hover and rune histories](2026-10-11-stale-hover-rune-branch-reconciliation.json).
 
-**Current release custody, October11 09:53UTC:** Alpha1.79.30/1aae8407 is now
+**Current release custody, October11 10:16UTC:** Alpha1.79.30/1aae8407 is now
 fully accepted through the ordered release gate. CI38124028177 attempt1 completed
 success: all10jobs, including required native predeploy, both deployments and
 mandatory live gameplay/town-recovery/Well Rested checks. Optional stabilization,
@@ -39,11 +40,21 @@ Software4cases174.58s/native7cases89.25s/combined3cases24.73s pass0retry/skip;
 415version/history/plan and28enrollment checks plusfull lint pass. Discovery is
 349hosted/46native/23overlap/372distinct; two old copied titles become four,
 with allother identities retained. Correctedexact2c41890c is pushed normally; CI38129763146attempt1 started09:49:52UTC
-and remains active. Its ownordereddeployment/live/normalTLSassets remain due.
+and terminated failure10:10:32UTC. Allbrowser shards andserver passed; client
+716suites/10563tests passed, but two unchanged conifer coverage checks failed.
+Allfive downstreamjobs skipped; no31deployment. Product correctionaaad93ce
+widens existing needlefanedge .20to.22, restoring projected triangle area
+17.2538→18.9792 above the original>18gate, preserving counts/bytes/bounds.
+16focused/3suites and7native cases pass0retry/skip; ordinary-mergedd0271a3a.
+The earlier pine40focused checks omitted the original conifer coverage suite;
+that qualification gap is recorded. No assertion or budget changed.
+A newly corrected coherent31publication still needs its full ordered gates.
+[Retained terminal failure](2026-10-11-release31-conifer-coverage-failure.json),
+[coverage correction](2026-10-11-pine-coverage-qualification.json).
 New nine-asset expectedmanifest is preserved separately from failed42source.
 Engine3486705bytes/SHA299195a1c8d2e9fd77aa9e8fe034e8b8e9a6c50c67337c615577975a7c913019.
-Openingrewardancestry was subsequently merged localmaster20704ed0 with an unchanged
-tree; that98-branch checkpoint is held until currentexactreleaseverification.
+Openingreward and stale-hover/rune ancestry were subsequently merged with
+unchanged trees;96unmerged tips remain for individual review.
 [World review correction](2026-10-11-release31-world-review-correction.json).
 Per-component receipts below preserve their
 earlier prepublication states. Current100-clientsoak38109009521 remains active on
@@ -51,6 +62,21 @@ acceptedpublic29, not a completed capacity gate.
 [Release31 failure](2026-10-11-release31-hosted-review-failure.json),
 [Release30 acceptance](2026-10-11-public30-terminal-qualification.json),
 [Live profiling correction](2026-10-11-live-profile-delivery-correction.json).
+
+
+**Additional qualified world work on master:** Earth v17 `33a63731` is ordinarily
+merged at `35a37c6b`: shared layer coverage/order now governs color, roughness
+and relief; moss/leaf thickness rests above its underlying surface. Existing
+maps and five fetches stay unchanged. Nine final native cases pass, including
+actual GL samplers and resource transitions; original failures/drafts retained.
+Fern `5dc19471` is ordinarily merged at `4a4890ae`:98original root/tip pairs
+become curved tapered pinnae.27focused/4suites and7native cases pass. All plants,
+placements, sedge buffers and owners retained. Adds196triangles/21168raw bytes
+per fern recipe and~6.9MBHigh/~6.8MBLow spatial geometry copies; original world
+budgets pass. No FPS saving, source/copy pixel equivalence, physical-device or
+final modern-art acceptance. Both changes await corrected31publication.
+[Earth layer qualification](2026-10-11-earth-layer-order-qualification.json),
+[fern qualification](2026-10-11-fern-pinnae-qualification.json).
 
 **Qualified pine refinement:**2a8d0c35 is ordinary-merged into local master9e85a67c.
 Pine boughs vary angle/height/length/curvature and needle-spray width, with coherent

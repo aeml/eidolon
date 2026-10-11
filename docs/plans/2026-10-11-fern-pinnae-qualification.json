@@ -1,0 +1,397 @@
+{
+  "recordedUTC": "2026-10-11T10:14:29.310617+00:00",
+  "source": "5dc1947156f0b42fd9d1b76924369b0525bbef5d",
+  "base": "35a37c6bef2edfc4ff50c1660934f8fd522248fe",
+  "masterMerge": "4a4890ae8783b516930807767d13b45228ee0717",
+  "published": false,
+  "geometry": [
+    {
+      "quality": "high",
+      "matchingOriginalRootsAndTips": 196,
+      "sedgeIdentical": true,
+      "plants": 13087,
+      "placementSHA256": "64b641a2f746bae22b989a808cb55fc4a381006393b5e5b5ae692d497c83fa3a",
+      "before": {
+        "triangles": 231,
+        "attributeBytes": 24948,
+        "field": {
+          "sectors": 326,
+          "geometryAttributeBytes": 10949688
+        }
+      },
+      "after": {
+        "triangles": 427,
+        "attributeBytes": 46116,
+        "field": {
+          "sectors": 326,
+          "geometryAttributeBytes": 17850456
+        },
+        "bounds": {
+          "min": [
+            -1.0759308338165283,
+            0,
+            -1.0639079809188843
+          ],
+          "max": [
+            1.0961835384368896,
+            0.7132851481437683,
+            0.9777871966362
+          ]
+        }
+      }
+    },
+    {
+      "quality": "low",
+      "matchingOriginalRootsAndTips": 196,
+      "sedgeIdentical": true,
+      "plants": 7439,
+      "placementSHA256": "0649a5dfffc344c46785a27cd433fdb3d6dc494ed7fc7993b002ee2d28e546dd",
+      "before": {
+        "triangles": 217,
+        "attributeBytes": 23436,
+        "field": {
+          "sectors": 320,
+          "geometryAttributeBytes": 9158400
+        }
+      },
+      "after": {
+        "triangles": 413,
+        "attributeBytes": 44604,
+        "field": {
+          "sectors": 320,
+          "geometryAttributeBytes": 15932160
+        },
+        "bounds": {
+          "min": [
+            -1.0759308338165283,
+            0,
+            -1.0639079809188843
+          ],
+          "max": [
+            1.0961835384368896,
+            0.7132851481437683,
+            0.9777871966362
+          ]
+        }
+      }
+    }
+  ],
+  "native": {
+    "stats": {
+      "total": 7,
+      "expected": 7,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "durationMs": 83159.92300000001,
+    "summary": [
+      {
+        "case": "earth-rock-shelf-review-hi-5dfcd-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 196,
+        "maxTriangles": 159233,
+        "plants": 13087,
+        "disposal": {
+          "comparisons": [
+            {
+              "label": "west-grove",
+              "change": {
+                "changed": 223094,
+                "maximum": 45,
+                "mean": 0.1295326847600711
+              },
+              "stability": {
+                "changed": 0,
+                "maximum": 0,
+                "mean": 0
+              },
+              "before": {
+                "calls": 91,
+                "triangles": 113545
+              },
+              "after": {
+                "calls": 91,
+                "triangles": 113545
+              }
+            },
+            {
+              "label": "grove-bed",
+              "change": {
+                "changed": 385307,
+                "maximum": 73,
+                "mean": 0.19856176873518958
+              },
+              "stability": {
+                "changed": 0,
+                "maximum": 0,
+                "mean": 0
+              },
+              "before": {
+                "calls": 76,
+                "triangles": 65041
+              },
+              "after": {
+                "calls": 76,
+                "triangles": 65041
+              }
+            }
+          ],
+          "released": {
+            "geometry": 332,
+            "material": 2
+          },
+          "expected": {
+            "geometry": 332,
+            "material": 2
+          },
+          "scope": "Prepared supplied14-slot Fighter across72sampled walking poses in9views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval."
+        },
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-ba37f-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 80,
+        "maxTriangles": 55784,
+        "plants": 7439,
+        "disposal": {
+          "comparisons": [],
+          "released": {
+            "geometry": 326,
+            "material": 2
+          },
+          "expected": {
+            "geometry": 326,
+            "material": 2
+          },
+          "scope": "Prepared supplied14-slot Fighter across72sampled walking poses in9views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval."
+        },
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-fae49-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 89,
+        "maxTriangles": 57404,
+        "plants": 7439,
+        "disposal": {
+          "comparisons": [],
+          "released": {
+            "geometry": 326,
+            "material": 2
+          },
+          "expected": {
+            "geometry": 326,
+            "material": 2
+          },
+          "scope": "Prepared supplied14-slot Fighter across72sampled walking poses in9views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval."
+        },
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "case": "published-game-bundle-copi-0ae7b-views-and-cleanup-all-views",
+        "views": 9,
+        "maxCalls": 89,
+        "maxTriangles": 57404,
+        "plants": 7439,
+        "disposal": {
+          "comparisons": [],
+          "released": {
+            "geometry": 326,
+            "material": 2
+          },
+          "expected": {
+            "geometry": 326,
+            "material": 2
+          },
+          "scope": "Prepared supplied14-slot Fighter across72sampled walking poses in9views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval."
+        },
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "case": "published-game-bundle-copi-bd2bd-d-views-and-cleanup-details",
+        "views": 3,
+        "maxCalls": 128,
+        "maxTriangles": 153946,
+        "plants": 13087,
+        "disposal": {
+          "comparisons": [
+            {
+              "label": "grove-bed",
+              "change": {
+                "changed": 385485,
+                "maximum": 98,
+                "mean": 0.19885334900770144
+              },
+              "stability": {
+                "changed": 0,
+                "maximum": 0,
+                "mean": 0
+              },
+              "before": {
+                "calls": 76,
+                "triangles": 142097
+              },
+              "after": {
+                "calls": 76,
+                "triangles": 142097
+              }
+            }
+          ],
+          "released": {
+            "geometry": 332,
+            "material": 2
+          },
+          "expected": {
+            "geometry": 332,
+            "material": 2
+          },
+          "scope": "Prepared supplied14-slot Fighter across24sampled walking poses in3views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval."
+        },
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "case": "published-game-bundle-copi-cd828-ped-views-and-cleanup-roads",
+        "views": 3,
+        "maxCalls": 196,
+        "maxTriangles": 186765,
+        "plants": 13087,
+        "disposal": {
+          "comparisons": [],
+          "released": {
+            "geometry": 332,
+            "material": 2
+          },
+          "expected": {
+            "geometry": 332,
+            "material": 2
+          },
+          "scope": "Prepared supplied14-slot Fighter across24sampled walking poses in3views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval."
+        },
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "case": "published-game-bundle-copi-e81d3-ed-views-and-cleanup-groves",
+        "views": 3,
+        "maxCalls": 91,
+        "maxTriangles": 159233,
+        "plants": 13087,
+        "disposal": {
+          "comparisons": [
+            {
+              "label": "west-grove",
+              "change": {
+                "changed": 223094,
+                "maximum": 45,
+                "mean": 0.1295326847600711
+              },
+              "stability": {
+                "changed": 0,
+                "maximum": 0,
+                "mean": 0
+              },
+              "before": {
+                "calls": 91,
+                "triangles": 113545
+              },
+              "after": {
+                "calls": 91,
+                "triangles": 113545
+              }
+            }
+          ],
+          "released": {
+            "geometry": 332,
+            "material": 2
+          },
+          "expected": {
+            "geometry": 332,
+            "material": 2
+          },
+          "scope": "Prepared supplied14-slot Fighter across24sampled walking poses in3views, production raised-world generator and actual HUD; no normal server input, frame-rate, combat, campaign or final-art approval."
+        },
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      }
+    ]
+  },
+  "nativeScope": "7existing native AMD/RADV sourceHigh/Low,390pxphoneLow,copiedHigh3part/copyLow cases.45actualHUDviews/360prepared walking poses+4FXAAcomparison pairs. Original budgets/equipment14slots/ground/cleanup assertions retained. No connected normal input, sustained FPS, physicalphone or final modern-art acceptance.",
+  "lint": "Full locked-dependency npm lint and git diff --check passed.",
+  "sanitization": "Anonymous prepared evidence scan passed0changes.",
+  "limits": "All historical performance failures and broader world/art/audio/device/operations/F1-F5/beta/launch/handoff stay open; public30 accepted. No unrelated private sources selected.",
+  "change": "Each of98pinnae becomes a curved tapered4triangle leaf rather than2triangle diamond. Keep7fronds,98root/tip pairs, originalrandom sequence/reach/placements/wind/material owners; sedge byte-identical. Existing normals smooth each leaf independently. No new scene objects/materials/textures/lights/colliders.",
+  "focused": "27passed4suites67.843s,0skips/failures; existing fingerprints/counts/indices updated for intended shape. Original finite/unitnormal/determinism/reach/450triangle envelope retained.",
+  "cost": "196additional triangles/21168raw source attribute bytes per High/Lowfern. Spatial batch copies add6900768High and6773760Low raw geometry attribute bytes across326/320sectors; matrix/color/indirection textures unchanged, not included in these geometry values. No FPS savings claim.",
+  "manualReview": "Ordinary actualHUDHighgrovebed compared to retained before: smaller tapered curved leaflets replace diamond pinnae. Repeated clump patterns, broad ground patches and all final art acceptance remain unfinished.",
+  "images": {
+    "sourceCopyHighExact": 3,
+    "sourceCopyLowExact": 8,
+    "differences": [
+      {
+        "kind": "copy-high",
+        "view": "east-road.png",
+        "channels": 3240960,
+        "changed": 11006,
+        "maximum": 171,
+        "mean": 0.06363824298973143
+      },
+      {
+        "kind": "copy-high",
+        "view": "east-verge.png",
+        "channels": 3240960,
+        "changed": 23683,
+        "maximum": 193,
+        "mean": 0.07588122037914692
+      },
+      {
+        "kind": "copy-high",
+        "view": "far-east.png",
+        "channels": 3240960,
+        "changed": 9890,
+        "maximum": 173,
+        "mean": 0.06538649042259084
+      },
+      {
+        "kind": "copy-high",
+        "view": "grove-bed.png",
+        "channels": 3240960,
+        "changed": 31295,
+        "maximum": 177,
+        "mean": 0.13053539691943128
+      },
+      {
+        "kind": "copy-high",
+        "view": "road-break.png",
+        "channels": 3240960,
+        "changed": 12132,
+        "maximum": 131,
+        "mean": 0.10012527152448657
+      },
+      {
+        "kind": "copy-high",
+        "view": "road-detail.png",
+        "channels": 3240960,
+        "changed": 33098,
+        "maximum": 203,
+        "mean": 0.19690153534755134
+      },
+      {
+        "kind": "copy-low",
+        "view": "deep-west.png",
+        "channels": 3240960,
+        "changed": 306,
+        "maximum": 146,
+        "mean": 0.001879998518957346
+      }
+    ],
+    "limits": "Unattributed retained differences; preceding v17 already shows source/copy differences. No universal pixel equivalence."
+  },
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-fern-pinnae-checks-20261011",
+    "entries": 77,
+    "files": 78,
+    "inventorySHA256": "318caf7799d0a785ec444760a7ee637a7c32767f8a631d3f31dc4abcc33885b0",
+    "readOnly": true
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "recordedUTC": "2026-10-11T10:16:43.551242+00:00",
+  "version": "Alpha1.79.31",
+  "runtimeMaster": "d0271a3a99bf1406bdd5fe0d55955eb9f3f7e7bd",
+  "failedSource": "2c41890c8e1abd296326e30f5a1972c70ae6dcfe",
+  "failedRun": 38129763146,
+  "selection": "Previously selected31components plus qualified v17orderedEarthphysical layers and fern pinnae, with unchanged conifercoverage gate restored through fuller fanedge. All completed components ordinarily merged into master. No31deployment yet; remains coherent corrected31milestone.",
+  "focused": {
+    "passed": 432,
+    "suites": 5,
+    "seconds": 5.405,
+    "scope": "Version/presentation, fullcumulativepatchhistory pagination, requiredsmokeplan, publicruntimeversioning and unchanged conifercoverage suite."
+  },
+  "native": {
+    "passed": 2,
+    "retries": 0,
+    "skipped": 0,
+    "secondsApprox": 29.1,
+    "scope": "Combined exactruntime High/Low actualHUDsource world;18views144sampledposes+2FXAAcomparison pairs. Originalbudgets/equipment/ground/cleanup retained; not continuous normalinput/FPS/device acceptance.",
+    "summary": [
+      {
+        "case": "earth-rock-shelf-review-hi-5dfcd-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 196,
+        "maxTriangles": 159233,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      },
+      {
+        "case": "earth-rock-shelf-review-lo-fae49-d-views-and-owned-resources",
+        "views": 9,
+        "maxCalls": 89,
+        "maxTriangles": 57404,
+        "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+      }
+    ],
+    "initialDiscovery": "Anchoredtitlegrep selected0tests; commandexited1beforetestexecution. Initialnative.log retained; correctedfull-titlegrep selectedbothcases. No testexecutionretry."
+  },
+  "lint": "Full locked-dependency lint and git diff --check passed.",
+  "sourceCustody": "Originaldirtycheckout preserved203trackedchanges262untrackedpaths; originalgoal146lineprefixSHA783256a0f1b53608906612a5900e3c2e73d9d3c22e9cf893ea4b08c4bde949a7.632localbranchnames/96distinctunmergedtips. No branchdeletions or forcepush.",
+  "limits": "Current acceptedpublic30 remains. Full CI/deploy/live readiness/exact9asset acceptance due for newly corrected commit. All original art/performance/devices/operations/F1-F5/beta/launch/handoff remain open.",
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-release31-world-corrected-preflight-20261011",
+    "entries": 33,
+    "files": 34,
+    "inventorySHA256": "b46e54c59b72584737c6590103ee4c08903698a20fc74fe4347c102940efbdeb",
+    "readOnly": true
+  }
+}
