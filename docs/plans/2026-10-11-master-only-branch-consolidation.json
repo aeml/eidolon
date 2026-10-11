@@ -1,0 +1,39 @@
+{
+  "recordedUTC": "2026-10-11T20:06:31.782460+00:00",
+  "status": "All original local/remote tips consolidated into local master;653old local branch names removed. Remote retirement pending durable archive publication.",
+  "ownerInstruction": "Merge old aged branches and remove old branch names, keeping only master/main.",
+  "archiveMerge": {
+    "merge": "4a1a417663f130e75472bbf26c5b606c44d7507f",
+    "tree": "1cfbb230198abc9e514388694cfaa023ea1d572c",
+    "treeEqualsPreMerge": true,
+    "allOriginalLocalAndRemoteTipsAreAncestors": true,
+    "bundleBytes": 4155802,
+    "bundleSHA256": "0949c87063c0bc990b5205e0a0ab0fadba1962186f027bef69675ef6e96d7ee8"
+  },
+  "manifest": "2026-10-11-archived-branch-tips.json",
+  "before": {
+    "localBranches": 654,
+    "unmergedLocal": 58,
+    "remoteBranches": 51
+  },
+  "localAfter": [
+    "master"
+  ],
+  "archiveResolution": "Explicit ours-strategy archival history consolidation preserves the selected master tree byte-for-byte. All old tips are ancestors. This does not enable rejected/unselected experiments or qualify unfinished work. Original readiness scope remains open.",
+  "preservation": {
+    "existingWorkingTrees": 129,
+    "detachedRegistrations": 440,
+    "changedOriginalFiles": 465,
+    "sameHEADIndexStatusAndChangedFileHashes": true,
+    "method": "Update each retired worktree HEAD to the identical commit with --no-deref; no checkout/reset/stash or working-file edits."
+  },
+  "backup": {
+    "root": "/home/aeml/.local/share/eidolon-unmerged-review-20261011",
+    "bundle": "old-branches.bundle",
+    "bundleBytes": 4155802,
+    "bundleSHA256": "0949c87063c0bc990b5205e0a0ab0fadba1962186f027bef69675ef6e96d7ee8",
+    "bundleVerified": true,
+    "prerequisite": "Current repository master ancestry; incremental archive includes the61unmerged local/tracking refs. Previously merged tips remain reachable from master."
+  },
+  "publication": "Master source push waits for the active corrective37 deployment and exact public acceptance; archive tag and branch deletion do not trigger a release."
+}
