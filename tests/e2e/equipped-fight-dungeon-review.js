@@ -1,3 +1,4 @@
+import { capturePartySubmissionFrames } from './party-submission-frames.js';
 import { readPlayerStateInPage } from '../groundInputObservations.js';
 import { expect } from '@playwright/test';
 import { writeFile } from 'node:fs/promises';
@@ -118,6 +119,17 @@ export async function captureEarthFight(page, testInfo, sample, screenshot) {
     const recorded = await defeat(page, testInfo, 'recorded-kit');
     await screenshot('earth-fight-after-kit');
     const nextTarget = await liveTarget(page);
+    if (process.env.EIDOLON_E2E_COMBAT_SUBMISSIONS === '1') {
+        const capture = capturePartySubmissionFrames(page, testInfo, 'combat-submission-frames.json',
+            { frameCount: 180, activity: true }).then(evidence => ({ evidence }), error => ({ error }));
+        await expect.poll(() => page.evaluate(() => window.game.renderSystem.render.name)).toBe('observedDraw');
+        const diagnostic = await defeat(page, testInfo, 'diagnostic-kit', nextTarget);
+        const result = await capture;
+        if (result.error) throw result.error;
+        await writeFile(testInfo.outputPath('combat-submission-meta.json'), JSON.stringify({ recorded, diagnostic,
+            scope: 'Separate instrumented180frame combat draw attribution. Normal kit/pointer inputs, no state or renderer-policy changes. Not a combat timing or frame-budget qualification.' }, null, 2));
+        return;
+    }
     const profiling = sample('earth-active-fight', { warmupFrames: 0, activity: true })
         .then(profile => ({ profile }), error => ({ error }));
     await expect.poll(() => page.evaluate(() => window.game.loop.name)).toBe('observedLoop');
