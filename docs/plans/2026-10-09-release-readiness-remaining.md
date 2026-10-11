@@ -281,3 +281,33 @@ dynamic438/361draw and289302triangle peak counterexamples, device/owner feedback
 and original operations/F1–F5/beta/launch/handoff remain open. No campaign/soak
 replay, unrelated private renderer selection, public version, beta/access change
 or public push. [Source, retained failures and qualification](2026-10-11-verdant-grave-roots-qualification.json).
+
+
+October11 Verdant floor continuation: selected ef70a3b4 privately, unpublished.
+Fitted irregular flagstones and lighter worn grout replace the long repeating
+courses; subtle world-space weathering stays continuous across floor partitions.
+The existing PBR maps, textures, geometry, lights and collision layout are retained.
+The floor adds one shader variant and two sine expressions per fragment; this is
+material polish, with no claimed GPU/FPS reduction. Walls and the other four floor
+families retain identical bounded surface-field probes.
+
+70distinct focused checks pass. Native High/Low reviews cover all20production
+layouts per quality,168state/root views and1440animated frames including288camera
+pan frames. Four Verdant layouts per quality compare the actual predecessor floor.
+A separate default Low path passes all20layouts. Native far-origin material reads
+show partition delta at most1RGBA level and world variation absent from the periodic
+control. Exact copied bundle compiles the floor shader and preserves the ward,
+ten root batches and lazy four-class startup. Seven native checks pass with one
+optional peer-renderer skip;336required CI cases are discovered exactly once,
+not counted as execution passes.
+
+Actual normal saved14slot Fighter authored-road entry, first-room movement and
+Recall plus four-class Go-race saves pass in the private route context. The actual
+floor shader is compiled there. Dungeon180frames:105draw/55079triangles,
+16.7median16.8p95. Party180frames:285draw/211709triangles,16.7median16.8p95,
+but281603startup triangles exceed250000; prior289302triangle and438/361draw
+counterexamples remain. Private camp/singleton/DemonOrc and route QA stay unselected.
+Frozen evidence contains851entries/852files. No public push, version/access change,
+campaign/soak replay or final art/device acceptance. Broader scenery/material/
+contact/audio, dynamic population budgets and original operations/F1–F5/beta/launch/
+handoff remain open. [Qualification](2026-10-11-verdant-floor-qualification.json).

@@ -1,0 +1,417 @@
+{
+  "recordedUTC": "2026-10-11T01:51:06.354798+00:00",
+  "status": "Selected privately for held milestone; unpublished",
+  "source": "ef70a3b4241618570214e12905d6b1540bb10450",
+  "privateNormalRouteSource": "603efd84fc5d0de1c2f432aeeb28f59c592e0c3f",
+  "base": "2317c972",
+  "previousGoalTurn": "Progress: qualified/staged root art and repaired Verdant quality forwarding. This turn adds the next code-owned material improvement without shrinking the full goal.",
+  "scope": "Verdant floor only: deterministic periodic fitted irregular slabs, lighter worn grout, registered existing PBR maps and restrained world-space patina across mesh/UV partitions. Established walls and other four floor families retained. No new geometry, textures, lights, collisions, gameplay/authority changes or imported actor replacements.",
+  "cost": "Existing256px floor color/normal/roughness/emissive maps and one standard-material draw.64immutable CPU slab cells built once; one floor shader variant with two sine/dot expressions per fragment, no clock or extra texture fetch/pass. This is not a claimed GPU/FPS reduction.",
+  "unchangedSurfaceProbe": [
+    {
+      "type": "molten_core",
+      "unchanged": true,
+      "digest": "0567ee9cfe174efa03b1d01477d8ad8931de242fc201310dfc20a6e60663fa85",
+      "samples": 16384
+    },
+    {
+      "type": "tempest_spire",
+      "unchanged": true,
+      "digest": "ab3877c04544a6b962c07456fa0ef48faa5c498f4caba726c6f04daa83fa3e7e",
+      "samples": 16384
+    },
+    {
+      "type": "abyssal_well",
+      "unchanged": true,
+      "digest": "48d704e5d323a50237268aef1c71a09cf347bca218c56498177b4ca183cf2630",
+      "samples": 16384
+    },
+    {
+      "type": "umbral_nexus",
+      "unchanged": true,
+      "digest": "f4e8c19d052f0c83a647a2bc4d3cc428a987c160f7c90a821839312b5d4ca716",
+      "samples": 16384
+    },
+    {
+      "type": "verdant-wall",
+      "unchanged": true,
+      "digest": "f36831ab3ad4383175714e70849382a69da04c0e92413bad846dddbeab09b142",
+      "samples": 16384
+    }
+  ],
+  "focusedPassed": 70,
+  "nativeStats": {
+    "native-floor-compare": {
+      "total": 2,
+      "expected": 2,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "native-material-bundle": {
+      "total": 3,
+      "expected": 3,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "default-low": {
+      "total": 1,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 0,
+      "ok": true
+    },
+    "connected-high": {
+      "total": 2,
+      "expected": 1,
+      "unexpected": 0,
+      "flaky": 0,
+      "skipped": 1,
+      "ok": true
+    }
+  },
+  "nativeCompare": [
+    {
+      "quality": "low",
+      "layouts": 20,
+      "stateAndRootViews": 84,
+      "animatedFrames": 720,
+      "cameraSweepFrames": 144,
+      "floorComparisonLayouts": 4,
+      "maximumCalls": 47,
+      "maximumTriangles": 37399,
+      "walkBlockedSamples": 0,
+      "collidersUnchanged": true,
+      "equippedSlots": 14,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    },
+    {
+      "quality": "high",
+      "layouts": 20,
+      "stateAndRootViews": 84,
+      "animatedFrames": 720,
+      "cameraSweepFrames": 144,
+      "floorComparisonLayouts": 4,
+      "maximumCalls": 92,
+      "maximumTriangles": 122415,
+      "walkBlockedSamples": 0,
+      "collidersUnchanged": true,
+      "equippedSlots": 14,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    }
+  ],
+  "defaultCIPath": [
+    {
+      "quality": "low",
+      "layouts": 20,
+      "stateAndRootViews": 56,
+      "animatedFrames": 720,
+      "cameraSweepFrames": 144,
+      "floorComparisonLayouts": 0,
+      "maximumCalls": 47,
+      "maximumTriangles": 37399,
+      "walkBlockedSamples": 0,
+      "collidersUnchanged": true,
+      "equippedSlots": 14,
+      "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)"
+    }
+  ],
+  "materialReadback": {
+    "maximumPartitionDelta": 1,
+    "samples": [
+      {
+        "patched": false,
+        "rgb": [
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ]
+        ],
+        "span": 0
+      },
+      {
+        "patched": true,
+        "rgb": [
+          [
+            21,
+            20,
+            17
+          ],
+          [
+            22,
+            20,
+            17
+          ],
+          [
+            22,
+            21,
+            17
+          ],
+          [
+            20,
+            19,
+            16
+          ],
+          [
+            21,
+            20,
+            17
+          ],
+          [
+            21,
+            20,
+            16
+          ],
+          [
+            21,
+            20,
+            16
+          ],
+          [
+            22,
+            21,
+            17
+          ],
+          [
+            21,
+            19,
+            16
+          ]
+        ],
+        "span": 2
+      }
+    ],
+    "gpu": "ANGLE (AMD, Vulkan 1.4.318 (AMD Radeon Graphics (RADV RENOIR) (0x00001638)), radv)",
+    "scope": "Native material readbacks at production far-origin coordinates. One plane versus four UV-registered partitions; patched/unpatched periodic controls. No gameplay timing or device claim."
+  },
+  "copiedBundle": {
+    "passed": 2,
+    "engineSHA256": "df7410314c5d40694d7fac097ec5565e7e829f420605aee00b3a946be2ebb02f",
+    "floorPatinaCompiled": true,
+    "wardAndTenRootStateLifecycle": {
+      "parts": 3,
+      "visualOnly": true,
+      "phases": [
+        {
+          "ready": false,
+          "appliedOpacity": 0.18,
+          "time": 0.25,
+          "stable": true
+        },
+        {
+          "ready": true,
+          "appliedOpacity": 0.9,
+          "time": 0.5,
+          "stable": true
+        },
+        {
+          "ready": false,
+          "appliedOpacity": 0.18,
+          "time": 0.75,
+          "stable": true
+        }
+      ],
+      "roots": [
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        },
+        {
+          "triangles": 2880,
+          "maxY": 0.7279506921768188,
+          "roughness": 0.94,
+          "smooth": true,
+          "textures": 0
+        }
+      ],
+      "floorPatinaCompiled": true,
+      "floorPatina": true,
+      "collidersStable": true
+    },
+    "lazyFourClassPassed": true
+  },
+  "requiredCIDiscovery": {
+    "cases": 336,
+    "scheduledExactlyOnce": true,
+    "isExecution": false,
+    "planChecksPassed": 19
+  },
+  "normalEntry": {
+    "profile": {
+      "frames": 180,
+      "drawCallsMedian": 105,
+      "trianglesMedian": 55079,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "maximumCalls": 105,
+      "maximumTriangles": 55079
+    },
+    "activeFloorShader": {
+      "floorMeshes": 39,
+      "floorPatina": true,
+      "compiled": true
+    },
+    "normalWalkingEntryMovementRecallPassed": true,
+    "fourClassFourteenSlotGoRaceSavesPassed": true,
+    "nativePassed": 1,
+    "optionalPeerRendererSkipped": 1,
+    "scope": "Existing isolated normal authored-road movement/portal UI/level30Normal first dungeon/movement/Recall, actual supplied14slot Fighter and HUD. Prepared save, not an earned story clear/campaign/combat/device certificate. Subsequent independent party check retains the existing QA encounter waypoint; that is not part of the normal walking route.",
+    "party": {
+      "frames": 180,
+      "drawCallsMedian": 285,
+      "trianglesMedian": 211709,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "maximumCalls": 286,
+      "maximumTriangles": 281603
+    },
+    "criticalServerScan": {
+      "syntheticIdentities": 4,
+      "remainingTextualIdentities": 0,
+      "criticalServerSignatures": {
+        "race": 0,
+        "panic": 0,
+        "fatal": 0,
+        "worker": 0
+      },
+      "binaryPostLoginSyntheticLabelsRetained": true
+    },
+    "privateContext": "Private camp/singleton/DemonOrc and existing route QA remain unselected; six art leaves byte-identical to the staged source. Added shader observation is read-only. No character stat/cooldown/movement overrides in the normal route."
+  },
+  "limits": "New281603triangle party startup peak exceeds250000; older289302triangle and438/361draw counterexamples remain. Prepared scene/normal180frame successes do not causally clear different populations or establish sustained device/owner art acceptance. Broader world/scenery/material/contact/audio, original operations/F1-F5/beta/launch/handoff still open. No campaign/soak replay, public push/version/beta/access change.",
+  "failures": "No product/unit/native failures in this stage. Initial plaintext-only synthetic-name enumeration was incomplete; report ZIP decoding recovered all four names before successful redaction. No validation result was retried or waived.",
+  "sourceSHA256": {
+    "package.json": "8493f80ec8edbda3b49d54c1c52a30cedde8697d827eecd460bac04ca283a2db",
+    "src/art/DungeonFlagstone.js": "cd92fb7f362773e3247123273b55049dabf4aa5c805d7a118564f8ec00456626",
+    "src/art/ProceduralDungeonInteriors.js": "50903cb29f24ae6c23623f6eb6de622e5ca4789ca32baf09b9777e8c158985d9",
+    "src/art/VerdantFlagstone.js": "adb81ff59c21e8194207801d5787add35db2c6f1aeb708c63a7bacc27e71cf31",
+    "src/art/VerdantFloorPatina.js": "593122c3eb8dc9aa0b05eb45643ebabdbdd70d1cb57e4a0cb059c0e658f67dbb",
+    "src/art/VerdantMasonry.js": "c665f7dd371fe04894dd2100c7aa4e5c2b970d6554d8157965f36e44ad7fa43b",
+    "tests/BrowserSmokePlan.test.js": "755693f42d3b04816e2044ca1afa4c4425e54a5fde1d69a12548e0cd903bc7dd",
+    "tests/VerdantFlagstone.test.js": "a5cef43efa6d7feb52553beb07e1de079e4bd6a32d4ca9efa2b019b0e7c4e78f",
+    "tests/e2e/dungeon-entry-ward.spec.js": "ed8d5a3ed76f924105ff47e7b6707279a44e77c8706c6a9970a8b31f0f21604c",
+    "tests/e2e/dungeon-floor-material.spec.js": "a0c8eb134a7441cb741208aeedf6bd857147e118e60306b04b99e413e6195100",
+    "tests/e2e/published-game-bundle.spec.js": "a1723d7a024b2fa768d42647612dfe59ece3c355e3d0b5b58d28eca7798300ec"
+  },
+  "normalArtSHA256": {
+    "src/art/DungeonFlagstone.js": "cd92fb7f362773e3247123273b55049dabf4aa5c805d7a118564f8ec00456626",
+    "src/art/DungeonGraveRootGeometry.js": "c663c86e4416fa1e884e0103c7bd80797fc1a2783962ff90c57391847096161c",
+    "src/art/ProceduralDungeonInteriors.js": "50903cb29f24ae6c23623f6eb6de622e5ca4789ca32baf09b9777e8c158985d9",
+    "src/art/VerdantFlagstone.js": "adb81ff59c21e8194207801d5787add35db2c6f1aeb708c63a7bacc27e71cf31",
+    "src/art/VerdantFloorPatina.js": "593122c3eb8dc9aa0b05eb45643ebabdbdd70d1cb57e4a0cb059c0e658f67dbb",
+    "src/art/VerdantMasonry.js": "c665f7dd371fe04894dd2100c7aa4e5c2b970d6554d8157965f36e44ad7fa43b"
+  },
+  "selectedPrivately": true,
+  "published": false,
+  "evidence": {
+    "root": "/home/aeml/.local/share/eidolon-verdant-floor-checks-20261011",
+    "frozen": true,
+    "inventoryEntries": 851,
+    "files": 852,
+    "inventorySHA256": "12fb3e169976543bead0e390a76c71be0ce1bcd3af427db6a6e56171fc07ff72"
+  }
+}

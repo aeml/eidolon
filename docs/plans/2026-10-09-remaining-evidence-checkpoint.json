@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "recordedUTC": "2026-10-11T01:29:54.422130+00:00",
-  "classification": "Progress: selected420a3cfa Verdant root art and missing Low preset forwarding.72distinct focused checks,20production layouts per High/Low,140prepared views/1440frames and exact copied-bundle ward/root/lazy-class checks pass. Prior turn restated accepted public29 motion/admin evidence; full original goal remains active.",
-  "qualifiedRuntime": "Held420a3cfa retains qualified automatic actor rendering, HUD27bf88a8, additive effects cd92dc01/CIca03de05 and entry ward68e30c83, and adds the qualified Verdant root art/preset repair. Public Alpha1.79.29 remains unchanged. Private camp/DemonOrc/singleton/route QA is not selected wholesale.",
+  "recordedUTC": "2026-10-11T01:54:23.731920+00:00",
+  "classification": "Progress: selected ef70a3b4 Verdant irregular floor and continuous world-space weathering, with70focused and7native passes/1optional skip. Normal entry/Recall and four-class saves pass;281603party startup triangle failure retained. Full goal remains active.",
+  "qualifiedRuntime": "Held ef70a3b4 retains automatic actor rendering, status HUD, additive effects, dungeon ward and root/preset repair; adds qualified Verdant floor material. Public Alpha1.79.29 unchanged. Private camp/DemonOrc/singleton/route QA not selected wholesale.",
   "rejectedSourceCommits": [
     "282d0a78",
     "ab3ce06d",
@@ -98,11 +98,11 @@
     "action": "Terminal failure and successful upload inspected read-only. Retained raw evidence hashes/source pins; original ZIP digest is API metadata only. No restart/cancel or substitute soak. Failure remains open.",
     "receipt": "docs/plans/2026-10-10-soak-transport-diagnostics.json"
   },
-  "nextRequiredResult": "Continue code-owned dungeon floor repetition, broader world/scenery/material/contact/audio polish and representative dynamic startup/combat/party costs. Preserve High438/361draw and289302triangle peak counterexamples, physical-device/owner-art gaps and the original operations/F1-F5/beta/launch/handoff gates. No campaign/soak replay or whole-goal completion claim.",
-  "currentReceipt": "docs/plans/2026-10-10-status-hud-qualification.json",
+  "nextRequiredResult": "Continue coherent code-owned world/scenery/material/contact/audio polish and representative dynamic startup/combat/party costs. Preserve281603/289302triangle and438/361draw counterexamples, device/owner-art gaps and original operations/F1-F5/beta/launch/handoff. No campaign/soak replay or full-goal completion claim.",
+  "currentReceipt": "docs/plans/2026-10-11-verdant-floor-qualification.json",
   "actualSceneControl": "Corrected selective prior-family control now measured, retains Skeleton/humanoid instances: previous town CPU no gain. New incremental strict-rig versus packed-PBR ABBA preserves all previous instances; local town/approach CPU gains, full whole-game budgets still fail. Old globally disabled reference unchanged historical evidence.",
   "previousGoalTurnClassification": "progress",
-  "nextAction": "Resume measured dynamic combat/party peak attribution and source-preserving improvements, normal collision-aware off-road return, Lowcombat/devices and code-owned world/interior/material polish. Keep supplied GLBs, all population/geometry/materials and original budgets; publish a coherent milestone after its complete qualification, without campaign/soak replay.",
+  "nextAction": "Continue coherent code-owned world/scenery/material/contact/audio polish and representative dynamic startup/combat/party costs. Preserve281603/289302triangle and438/361draw counterexamples, device/owner-art gaps and original operations/F1-F5/beta/launch/handoff. No campaign/soak replay or full-goal completion claim.",
   "qualifiedRuntimeReceipt": "docs/plans/2026-10-10-actor-shadow-influence-qualification.json",
   "wearableMaterialLayerPreparation": {
     "receipt": "docs/plans/2026-10-09-wearable-material-layer-preparation.json",
@@ -2443,5 +2443,45 @@
     "lowFactoryFailureRetained": true,
     "scope": "Prepared production layouts, ordinary gameplay zoom, actual supplied14slot Fighter, HUD and touch controls; ready/inactive and root-side views, bounded camera pans. No server-earned clear, normal-input route, timing, physical-device, whole-world or final art certificate.",
     "limits": "Floor repetition, broader code-owned scenery/material/contact/audio quality, actual-device/owner art feedback, dynamic High438/361draw and289302triangle peak counterexamples and original operations/F1-F5/beta/launch/handoff remain open. No threshold waiver, campaign/soak replay, public push or beta/access change."
+  },
+  "verdantFloorMaterial": {
+    "receipt": "docs/plans/2026-10-11-verdant-floor-qualification.json",
+    "source": "ef70a3b4241618570214e12905d6b1540bb10450",
+    "selected": true,
+    "published": false,
+    "evidence": {
+      "root": "/home/aeml/.local/share/eidolon-verdant-floor-checks-20261011",
+      "frozen": true,
+      "inventoryEntries": 851,
+      "files": 852,
+      "inventorySHA256": "12fb3e169976543bead0e390a76c71be0ce1bcd3af427db6a6e56171fc07ff72"
+    },
+    "focusedPassed": 70,
+    "nativePassed": 7,
+    "nativeSkipped": 1,
+    "preparedLayoutsPerQuality": 20,
+    "preparedAnimatedFrames": 1440,
+    "copiedBundle": "df7410314c5d40694d7fac097ec5565e7e829f420605aee00b3a946be2ebb02f",
+    "normalDungeon": {
+      "frames": 180,
+      "drawCallsMedian": 105,
+      "trianglesMedian": 55079,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "maximumCalls": 105,
+      "maximumTriangles": 55079
+    },
+    "party": {
+      "frames": 180,
+      "drawCallsMedian": 285,
+      "trianglesMedian": 211709,
+      "frameMedianMs": 16.7,
+      "frameP95Ms": 16.8,
+      "maximumCalls": 286,
+      "maximumTriangles": 281603
+    },
+    "savedFourClassCustodyPassed": true,
+    "requiredCIDiscovered": 336,
+    "limits": "New281603triangle party startup peak exceeds250000; older289302triangle and438/361draw counterexamples remain. Prepared scene/normal180frame successes do not causally clear different populations or establish sustained device/owner art acceptance. Broader world/scenery/material/contact/audio, original operations/F1-F5/beta/launch/handoff still open. No campaign/soak replay, public push/version/beta/access change."
   }
 }
